@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-21T00:33:48Z",
+  "approval_source": "Randall webchat 2026-05-20 17:29 MST: Yes, approved to promote VRT to owner-gated Conditional Candidate / Promotion Review",
+  "ticker": "VRT",
+  "categories": [
+    "ticker_state",
+    "sleeve",
+    "sizing"
+  ],
+  "approved_workspace_mutation": "promote VRT from Watch/Research to owner-gated Conditional Candidate / Promotion Review; keep ETN primary; starter sizing plan review-only",
+  "files_updated": [
+    "tmp\\portfolio-config.json",
+    "03. Portfolio\\Execution Board.md",
+    "03. Portfolio\\Portfolio Snapshot.md",
+    "04. Research\\Coverage and Watchlist.md",
+    "06. Playbooks\\Promotion Review Queue.md"
+  ],
+  "source_evidence": [
+    "tmp/review-packets/vrt-research-sizing-recommendation-2026-05-20.md",
+    "tmp/review-packets/vrt-official-source-review-2026-05-19.md",
+    "tmp/review-packets/vrt-vs-etn-ai-power-pair-review-2026-05-19.md"
+  ],
+  "authority": {
+    "canonical_note_mutation_allowed": true,
+    "portfolio_mutation_allowed": true,
+    "owner_approval_granted": true,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false,
+    "paper_order_allowed": false,
+    "cash_movement_allowed": false,
+    "brokerage_account_action_allowed": false,
+    "per_order_owner_approval_inferred": false
+  },
+  "rollback_path": "backups/20260520T1729MST-vrt-promotion",
+  "stop_lines": [
+    "No live/paper trade or account action authorized",
+    "No cash movement",
+    "No deployable-now state",
+    "No probability/model-driven deployment claim"
+  ]
+}

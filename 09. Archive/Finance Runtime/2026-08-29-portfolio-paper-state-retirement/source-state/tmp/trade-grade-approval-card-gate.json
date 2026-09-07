@@ -1,0 +1,2147 @@
+{
+  "schema": "veritas.trade_grade_approval_card_gate.v1",
+  "generated_at_utc": "2026-08-29T21:44:07Z",
+  "workflow_id": "WF85",
+  "status": "ok",
+  "summary": {
+    "card_count": 300,
+    "review_ready_count": 0,
+    "approval_band_eligible_count": 0,
+    "approval_card_draft_count": 0,
+    "decision_blocked_count": 300,
+    "approval_draft_blocked_count": 300,
+    "blocked_count": 300,
+    "blocked_count_semantics": "approval_draft_blocked_count",
+    "expected_approval_card_draft_count_before_freshness_repair": 0,
+    "wf67_paper_guard_fresh": false,
+    "wf67_paper_guard_clean": false,
+    "wf67_paper_guard_status": "blocked",
+    "wf67_paper_guard_ready_for_paper_submit_cancel": false,
+    "wf67_paper_guard_age_days": 53.93
+  },
+  "approval_card_drafts": [],
+  "blocked": [
+    {
+      "ticker": "BRK.B",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "missing_or_stale_evidence_family"
+      ]
+    },
+    {
+      "ticker": "LIN",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "LLY",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "BKNG",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "CVX",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "GOOG",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "ITA",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "JPM",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "NVDA",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "VRT",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "XLB",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "XOM",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "PH",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "AAPL",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ABBV",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ACN",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "ADBE",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ADI",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ADP",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ADSK",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AJG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AKAM",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ALB",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "ALLE",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AMAT",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "AMCR",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AME",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ANET",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AON",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AOS",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "APD",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "APH",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "APP",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "AVGO",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AXON",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CASY",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CCL",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CDNS",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CRM",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CRWD",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "DASH",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DDOG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DECK",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "EMR",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ETN",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "FCX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "GS",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "MA",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "MDB",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "MSFT",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "MU",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "NOW",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "PANW",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "PLTR",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "QCOM",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "SCCO",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "SHOP",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "SNOW",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "TSM",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "TXN",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "V",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AMD",
+      "decision_state": "monitor_only",
+      "reason": [
+        "not_owner_review_candidate"
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "decision_state": "no_chase",
+      "reason": [
+        "band_status=ABOVE_BAND"
+      ]
+    },
+    {
+      "ticker": "CAT",
+      "decision_state": "monitor_only",
+      "reason": [
+        "not_owner_review_candidate"
+      ]
+    },
+    {
+      "ticker": "GE",
+      "decision_state": "monitor_only",
+      "reason": [
+        "not_owner_review_candidate"
+      ]
+    },
+    {
+      "ticker": "KTOS",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "META",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "NFLX",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "PAVE",
+      "decision_state": "monitor_only",
+      "reason": [
+        "not_owner_review_candidate"
+      ]
+    },
+    {
+      "ticker": "RTX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "not_owner_review_candidate"
+      ]
+    },
+    {
+      "ticker": "TMUS",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "VMC",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "XLC",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "A",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ABNB",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ABT",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ACGL",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ADM",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AEE",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AEP",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "AES",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AFL",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AIG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AIZ",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ALGN",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "ALL",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AMGN",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AMP",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AMT",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "APA",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "APO",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "APTV",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "ARE",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "ARES",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ASML",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ATO",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "AVB",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AVY",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AWK",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AXP",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "AZO",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "BA",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BAC",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BALL",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BAX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BBY",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BDX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BEN",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BF-B",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BG",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "BIIB",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BKR",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BLDR",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "BLK",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BMY",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BNY",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BR",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "BRO",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BSX",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "BX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "BXP",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "C",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CAG",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CAH",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CARR",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CB",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CBOE",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CBRE",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CCI",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CDW",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CEG",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CF",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CFG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CHD",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CHRW",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CHTR",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CI",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CIEN",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CINF",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CL",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CLX",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CMCSA",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CME",
+      "decision_state": "no_chase",
+      "reason": [
+        "band_status=ABOVE_BAND"
+      ]
+    },
+    {
+      "ticker": "CMG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CMI",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CMS",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CNC",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CNP",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "COHR",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "COO",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "COP",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "COR",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "COST",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CPB",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CPRT",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CPT",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CRH",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CRL",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CSCO",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CSGP",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "CSX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CTAS",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CTSH",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CTVA",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CVNA",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "CVS",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "D",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DAL",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DD",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DE",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DELL",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DGX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DHI",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DHR",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DIS",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DLR",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DLTR",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DOC",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DOV",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DOW",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "DPZ",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DRI",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DTE",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "DUK",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "DVA",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "DVN",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EA",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EBAY",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ECL",
+      "decision_state": "no_chase",
+      "reason": [
+        "band_status=ABOVE_BAND"
+      ]
+    },
+    {
+      "ticker": "ED",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EFX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EIX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EL",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "EME",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EOG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EQIX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EQR",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EQT",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "ES",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ESS",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ETR",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EVRG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EXC",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EXE",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "EXPD",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EXPE",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "EXR",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "F",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "FANG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "FAST",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "FE",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "FFIV",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "FICO",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "FLEX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "FOX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "FOXA",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "FRT",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "FSLR",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "GD",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "GIS",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "GM",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "GOOGL",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "GPC",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "GRMN",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "HAL",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "HAS",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "HD",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "HON",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "HRL",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "HST",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "HSY",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "IFF",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "INTU",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "INVH",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "IP",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "IRM",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ISRG",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "KDP",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "KHC",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "KMB",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "KMI",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "LMT",
+      "decision_state": "blocked_missing_freshness",
+      "reason": [
+        "primary_state=blocked_missing_freshness"
+      ]
+    },
+    {
+      "ticker": "LNG",
+      "decision_state": "no_chase",
+      "reason": [
+        "band_status=ABOVE_BAND"
+      ]
+    },
+    {
+      "ticker": "LNT",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "LYB",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "LYV",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "MCD",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "MCK",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "MLM",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "MOS",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "MPC",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "NEE",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "NEM",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "NI",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "NOC",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "NUE",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "NWS",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "NWSA",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "OKE",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "OMC",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "ORCL",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "ORLY",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "OXY",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "PEP",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "PG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "PKG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "PPG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "PSKY",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "PSX",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "SAP",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "SHW",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "SLB",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "SLV",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "SMCI",
+      "decision_state": "no_chase",
+      "reason": [
+        "band_status=ABOVE_BAND"
+      ]
+    },
+    {
+      "ticker": "SO",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "STLD",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "SYK",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "T",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "TDG",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "TKO",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "TLT",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "TMO",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "TPL",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "TRGP",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "TTD",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "TTWO",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "UBER",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "UNH",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "UNP",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "URI",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "VAW",
+      "decision_state": "no_chase",
+      "reason": [
+        "band_status=ABOVE_BAND"
+      ]
+    },
+    {
+      "ticker": "VLO",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "VXUS",
+      "decision_state": "no_chase",
+      "reason": [
+        "band_status=ABOVE_BAND"
+      ]
+    },
+    {
+      "ticker": "VZ",
+      "decision_state": "monitor_only",
+      "reason": [
+        "thin_monitor_not_decision_grade"
+      ]
+    },
+    {
+      "ticker": "WMB",
+      "decision_state": "no_chase",
+      "reason": [
+        "band_status=ABOVE_BAND"
+      ]
+    },
+    {
+      "ticker": "WMT",
+      "decision_state": "below_stop_or_invalidation",
+      "reason": [
+        "primary_state_or_band_below_stop"
+      ]
+    },
+    {
+      "ticker": "XLE",
+      "decision_state": "no_chase",
+      "reason": [
+        "band_status=ABOVE_BAND"
+      ]
+    },
+    {
+      "ticker": "XLF",
+      "decision_state": "no_chase",
+      "reason": [
+        "band_status=ABOVE_BAND"
+      ]
+    },
+    {
+      "ticker": "XLI",
+      "decision_state": "no_chase",
+      "reason": [
+        "band_status=ABOVE_BAND"
+      ]
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "decision_support_only": true,
+    "approval_card_draft_allowed": true,
+    "wf67_paper_request_draft_allowed": true,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_or_risk_rule_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "customer_account_pii_or_suitability_data_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "stop_line": "Approval-card drafts are not approval; WF67 paper action remains blocked until Randall exact approval and fresh guards."
+}

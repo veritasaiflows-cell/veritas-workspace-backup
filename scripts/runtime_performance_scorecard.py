@@ -33,6 +33,8 @@ DEFAULT_MD = DEFAULT_JSON.with_suffix(".md")
 SMOKE_JSON = TMP / "runtime-performance-scorecard-smoke.json"
 SMOKE_MD = SMOKE_JSON.with_suffix(".md")
 SCHEMA = "runtime.performance_scorecard.v1"
+DURABLE_OUTPUT_SCHEMA = "veritas.python_go_durable_output_parity_repeated_gate.v2"
+DURABLE_OUTPUT_CASE_NAMES = ["finance_universe_validation"]
 
 
 def utc_now() -> str:
@@ -52,6 +54,36 @@ def as_dict(value: Any) -> dict[str, Any]:
 
 def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
+
+
+def validated_durable_output_payload(value: Any) -> dict[str, Any]:
+    payload = as_dict(value)
+    summary = as_dict(payload.get("summary"))
+    observed_case_names = [str(item) for item in as_list(summary.get("case_names"))]
+    contract_ok = (
+        payload.get("schema") == DURABLE_OUTPUT_SCHEMA
+        and observed_case_names == DURABLE_OUTPUT_CASE_NAMES
+        and summary.get("cases") == len(DURABLE_OUTPUT_CASE_NAMES)
+        and summary.get("case_contract_status") == "ok"
+    )
+    if contract_ok:
+        return payload
+    return {
+        "schema": DURABLE_OUTPUT_SCHEMA,
+        "status": "blocked",
+        "summary": {
+            "case_contract_status": "error",
+            "expected_case_names": list(DURABLE_OUTPUT_CASE_NAMES),
+            "observed_case_names": observed_case_names,
+            "observed_schema": payload.get("schema"),
+            "cases": summary.get("cases"),
+        },
+        "validation": {
+            "status": "error",
+            "errors": ["durable_output_case_contract_mismatch"],
+            "warnings": [],
+        },
+    }
 
 
 def tail(text: str, limit: int = 2200) -> str:
@@ -145,7 +177,6 @@ def smoke_command_plan(args: argparse.Namespace) -> list[tuple[str, list[str], P
         ("python_go_sql_parity_check", [sys.executable, "scripts\\python_go_sql_parity_check.py", "--write", "--validate"], ROOT, 60),
         ("python_go_sql_consumer_authority_guard_parity", [sys.executable, "scripts\\python_go_sql_consumer_authority_guard_parity.py", "--write", "--validate"], ROOT, 60),
         ("python_go_sql_helper_contract_gate", [sys.executable, "scripts\\python_go_sql_helper_contract_gate.py", "--write", "--validate", "--allow-runtime-self-cycle"], ROOT, 60),
-        ("python_capital_deployment_band_integrity_validator", [sys.executable, "scripts\\capital_deployment_band_integrity_validator.py", "--write", "--write-md", "--validate"], ROOT, 60),
     ]
     if args.include_human_note_migration_checks:
         plan.extend(
@@ -234,9 +265,6 @@ def command_plan(args: argparse.Namespace) -> list[tuple[str, list[str], Path, i
         ("python_finance_universe_validator", [sys.executable, "scripts\\finance_universe_validator.py", "--validate"], ROOT, 240),
         ("go_finance_universe_validation_probe", go_script_bin_command("go-finance-universe-validation-probe", "--root", str(ROOT), "--out", str(TMP / "go-finance-universe-validation-probe.json")), ROOT, 240),
         ("python_go_finance_universe_validation_parity", [sys.executable, "scripts\\python_go_finance_universe_validation_parity.py", "--write", "--validate"], ROOT, 240),
-        ("python_wf78_sql_phase2_readiness", [sys.executable, "scripts\\wf78_sql_phase2_readiness.py"], ROOT, 240),
-        ("go_wf78_sql_phase2_readiness_probe", go_script_bin_command("go-wf78-sql-phase2-readiness-probe", "--root", str(ROOT), "--out", str(TMP / "go-wf78-sql-phase2-readiness-probe.json")), ROOT, 240),
-        ("python_go_wf78_sql_phase2_readiness_parity", [sys.executable, "scripts\\python_go_wf78_sql_phase2_readiness_parity.py", "--write", "--validate"], ROOT, 240),
         ("python_go_durable_output_parity_repeated_gate", [sys.executable, "scripts\\python_go_durable_output_parity_repeated_gate.py", "--write", "--validate", "--cycles", "3"], ROOT, 240),
         ("go_sql_consumer_authority_guard", go_script_bin_command("go-sql-consumer-authority-guard", "--root", str(ROOT), "--driver", "inprocess", "--out", str(TMP / "go-sql-consumer-authority-guard.json")), ROOT, 240),
         ("python_go_sql_consumer_authority_guard_parity", [sys.executable, "scripts\\python_go_sql_consumer_authority_guard_parity.py", "--write", "--validate"], ROOT, 240),
@@ -259,7 +287,6 @@ def command_plan(args: argparse.Namespace) -> list[tuple[str, list[str], Path, i
         ("python_artifact_index_incremental", [sys.executable, "scripts\\artifact_index.py", "incremental"], ROOT, 240),
         ("python_artifact_index_validate", [sys.executable, "scripts\\artifact_index.py", "validate"], ROOT, 240),
         ("python_sql_coverage_guard", [sys.executable, "scripts\\sql_coverage_guard.py", "--write", "--validate"], ROOT, 240),
-        ("python_capital_deployment_band_integrity_validator", [sys.executable, "scripts\\capital_deployment_band_integrity_validator.py", "--write", "--write-md", "--validate"], ROOT, 120),
     ]
     if args.include_human_note_migration_checks:
         migration_group = [
@@ -477,9 +504,9 @@ def artifact_snapshot() -> dict[str, Any]:
     go_sql_inprocess_driver_pilot = as_dict(load_json_artifact(TMP / "go-sql-inprocess-driver-pilot-gate.json"))
     go_finance_universe_validation = as_dict(load_json_artifact(TMP / "go-finance-universe-validation-probe.json"))
     finance_universe_validation_parity = as_dict(load_json_artifact(TMP / "python-go-finance-universe-validation-parity.json"))
-    go_wf78_phase2_readiness = as_dict(load_json_artifact(TMP / "go-wf78-sql-phase2-readiness-probe.json"))
-    wf78_phase2_readiness_parity = as_dict(load_json_artifact(TMP / "python-go-wf78-sql-phase2-readiness-parity.json"))
-    durable_output_repeated_gate = as_dict(load_json_artifact(TMP / "python-go-durable-output-parity-repeated-gate.json"))
+    durable_output_repeated_gate = validated_durable_output_payload(
+        load_json_artifact(TMP / "python-go-durable-output-parity-repeated-gate.json")
+    )
     go_sql_consumer_authority = as_dict(load_json_artifact(TMP / "go-sql-consumer-authority-guard.json"))
     sql_consumer_authority_parity = as_dict(load_json_artifact(TMP / "python-go-sql-consumer-authority-guard-parity.json"))
     sql_consumer_authority_fixture_parity = as_dict(load_json_artifact(TMP / "python-go-sql-consumer-authority-guard-fixture-parity.json"))
@@ -498,7 +525,6 @@ def artifact_snapshot() -> dict[str, Any]:
     schema_lint = as_dict(load_json_artifact(TMP / "sql-schema-drift-lint.json"))
     sql_proof_probe = as_dict(load_json_artifact(TMP / "sql-proof-probe.json"))
     smb_lint = as_dict(load_json_artifact(TMP / "wf75-smb-boundary-lint.json"))
-    capital_band_integrity = as_dict(load_json_artifact(TMP / "capital-deployment-band-integrity-validator.json"))
     pm_state = pm_program_state()
     artifacts = {
         "sql_latency": {
@@ -561,15 +587,6 @@ def artifact_snapshot() -> dict[str, Any]:
             "candidates_total": as_dict(python_go_candidates.get("summary")).get("candidates_total"),
             "ready_for_go_spike": as_dict(python_go_candidates.get("summary")).get("ready_for_go_spike"),
             "keep_python_governed": as_dict(python_go_candidates.get("summary")).get("keep_python_governed"),
-        },
-        "capital_deployment_band_integrity": {
-            "path": "tmp/capital-deployment-band-integrity-validator.json",
-            "status": capital_band_integrity.get("status"),
-            "domain_status": as_dict(capital_band_integrity.get("validation")).get("domain_status"),
-            "ticker_count": as_dict(capital_band_integrity.get("summary")).get("ticker_count"),
-            "critical_count": as_dict(capital_band_integrity.get("summary")).get("critical_count"),
-            "warning_count": as_dict(capital_band_integrity.get("summary")).get("warning_count"),
-            "mismatch_tickers": as_dict(capital_band_integrity.get("summary")).get("mismatch_tickers"),
         },
         "go_sql_source_truth_manifest": {
             "path": "tmp/go-sql-source-truth-authority-manifest.json",
@@ -659,21 +676,6 @@ def artifact_snapshot() -> dict[str, Any]:
             "critical": as_dict(finance_universe_validation_parity.get("summary")).get("critical"),
             "warnings": as_dict(finance_universe_validation_parity.get("summary")).get("warnings"),
         },
-        "go_wf78_sql_phase2_readiness_probe": {
-            "path": "tmp/go-wf78-sql-phase2-readiness-probe.json",
-            "status": go_wf78_phase2_readiness.get("status"),
-            "workflow": as_dict(go_wf78_phase2_readiness.get("semantic_summary")).get("workflow"),
-            "phase": as_dict(go_wf78_phase2_readiness.get("semantic_summary")).get("phase"),
-            "surface_count": as_dict(go_wf78_phase2_readiness.get("semantic_summary")).get("surface_count"),
-            "blocked_surface_count": as_dict(go_wf78_phase2_readiness.get("semantic_summary")).get("blocked_surface_count"),
-        },
-        "python_go_wf78_sql_phase2_readiness_parity": {
-            "path": "tmp/python-go-wf78-sql-phase2-readiness-parity.json",
-            "status": wf78_phase2_readiness_parity.get("status"),
-            "checks": as_dict(wf78_phase2_readiness_parity.get("summary")).get("checks"),
-            "critical": as_dict(wf78_phase2_readiness_parity.get("summary")).get("critical"),
-            "warnings": as_dict(wf78_phase2_readiness_parity.get("summary")).get("warnings"),
-        },
         "python_go_durable_output_parity_repeated_gate": {
             "path": "tmp/python-go-durable-output-parity-repeated-gate.json",
             "status": durable_output_repeated_gate.get("status"),
@@ -682,6 +684,8 @@ def artifact_snapshot() -> dict[str, Any]:
             "warnings": as_dict(durable_output_repeated_gate.get("summary")).get("warnings"),
             "cycles": as_dict(durable_output_repeated_gate.get("summary")).get("cycles"),
             "cases": as_dict(durable_output_repeated_gate.get("summary")).get("cases"),
+            "case_names": as_dict(durable_output_repeated_gate.get("summary")).get("case_names"),
+            "case_contract_status": as_dict(durable_output_repeated_gate.get("summary")).get("case_contract_status"),
             "stable_case_fingerprints": as_dict(durable_output_repeated_gate.get("summary")).get("stable_case_fingerprints"),
             "durable_output_signal": as_dict(durable_output_repeated_gate.get("summary")).get("durable_output_signal"),
         },
@@ -882,7 +886,13 @@ def artifact_snapshot() -> dict[str, Any]:
             "lanes": len(as_list(pm_state.get("lanes"))),
         },
     }
-    return decorate_artifact_snapshot(artifacts, payload_overrides={"pm_program_state": pm_state})
+    return decorate_artifact_snapshot(
+        artifacts,
+        payload_overrides={
+            "pm_program_state": pm_state,
+            "python_go_durable_output_parity_repeated_gate": durable_output_repeated_gate,
+        },
+    )
 
 
 def build_scorecard(args: argparse.Namespace) -> dict[str, Any]:

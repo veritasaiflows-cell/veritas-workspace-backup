@@ -1,0 +1,1122 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-08-30T01:20:12Z",
+  "artifact_type": "finance_intelligence_state_ticker_packet",
+  "status": "ok",
+  "ticker": "VRT",
+  "db_path": "tmp/finance-intelligence-state.sqlite",
+  "front_door_role": {
+    "default_for_ticker_questions": true,
+    "purpose": "single ticker finance intelligence lookup envelope",
+    "route_chain": "ticker request -> finance_cache_frontdoor -> WF84 data plane -> WF85 full answer/card -> source-open fallback when material or stale",
+    "source_hierarchy": [
+      "Finance cache front door for lightweight chat answers and source-open/material-claim flags",
+      "WF85 full-answer assembler for section-level JSON plus human answer text when WF84/WF85 gates are clean",
+      "WF84 canonical data-plane overlay for read-only normalized routing/decision joins when available",
+      "WF72 entry/stop SQL cache as support/index infrastructure only, never the answer front door",
+      "legacy ticker_answer_packet compatibility snapshot when older consumers require it",
+      "current ticker_intelligence_card plus source artifacts when packet is stale or missing",
+      "WF78 repair/promotion surfaces only for repair, promotion, freshness debt, owner-card, or capital-review questions"
+    ],
+    "not_a_new_source_of_truth": true
+  },
+  "preferred_answer_source": "wf85_full_answer_assembler",
+  "finance_cache_frontdoor": {
+    "status": "ok",
+    "path": "tmp/finance-cache-frontdoor.json",
+    "generated_at_utc": "2026-08-29T21:46:25Z",
+    "row": {
+      "ticker": "VRT",
+      "name": "Vertiv Holdings Co",
+      "instrument_type": "operating_company",
+      "sector": "Industrials",
+      "auto_tier": "Tier A",
+      "auto_state": "A-CHALLENGED",
+      "route_priority": 40,
+      "latest_price": 257.08,
+      "band_status": "IN_BAND",
+      "wf84_band_status": "IN_BAND",
+      "band_status_source": "wf84_current_decision_overview",
+      "quote_freshness_status": "post_close_final_quote_available_for_non_executing_review",
+      "route_quote_freshness_status": "post_close_final_quote_available_for_non_executing_review",
+      "entry_band_low": 230.66,
+      "entry_band_high": 280.95,
+      "stop_or_invalidation": 207.79,
+      "tier_c_monitor_grade_band_applied": false,
+      "monitor_grade_reference_band_low": null,
+      "monitor_grade_reference_band_high": null,
+      "monitor_grade_reference_stop": null,
+      "monitor_grade_band_context": {},
+      "primary_state": "blocked_missing_freshness",
+      "queue_state": "blocked_missing_freshness",
+      "decision_state": "blocked_missing_freshness",
+      "routing_tier": "Tier A",
+      "routing_state": "A-CHALLENGED",
+      "timing_state": "in_band_review_only_quote",
+      "trade_readiness_state": "not_trade_ready_evidence_or_freshness_repair",
+      "authority_state": "review_only_no_capital_or_execution_authority",
+      "route_readiness": {
+        "routing_tier": "Tier A",
+        "routing_state": "A-CHALLENGED",
+        "timing_state": "in_band_review_only_quote",
+        "decision_state": "blocked_missing_freshness",
+        "trade_readiness_state": "not_trade_ready_evidence_or_freshness_repair",
+        "authority_state": "review_only_no_capital_or_execution_authority",
+        "band_status": "IN_BAND",
+        "quote_freshness_status": "post_close_final_quote_available_for_non_executing_review",
+        "review_only": true,
+        "requires_exact_owner_approval_before_capital_or_execution": true,
+        "authority": {
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false,
+        "next_route_action": "Repair source, freshness, or decision blockers before review escalation."
+      },
+      "actionability": "review_only_owner_gated",
+      "recommended_next_action": "monitor_only_no_owner_action",
+      "source_open_status": "verified",
+      "freshness_status": "blocked",
+      "material_claim_requires_source_open": false,
+      "source_open_required_before_material_claim": false,
+      "safe_to_answer_from_cache": false,
+      "safe_for_material_claim_from_cache": false,
+      "needs_refresh_or_source_open": true,
+      "needs_refresh_reason": [
+        "freshness_status=blocked"
+      ],
+      "answer_missing_section_count": 0,
+      "canonical_answer_path": "tmp/trade-grade-full-answer/VRT.json",
+      "review_only": true,
+      "answer": {
+        "status": "ok",
+        "path": "tmp/trade-grade-full-answer/VRT.json",
+        "generated_at_utc": "2026-08-29T21:46:17Z",
+        "age_hours": 0.0,
+        "confidence": "medium",
+        "confidence_score": 0.6,
+        "decision_state": "blocked_missing_freshness",
+        "primary_state": "blocked_missing_freshness",
+        "queue_state": "blocked_missing_freshness",
+        "recommended_next_action": "monitor_only_no_owner_action",
+        "missing_sections": [],
+        "source_count": 20
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    "route_readiness": {
+      "routing_tier": "Tier A",
+      "routing_state": "A-CHALLENGED",
+      "timing_state": "in_band_review_only_quote",
+      "decision_state": "blocked_missing_freshness",
+      "trade_readiness_state": "not_trade_ready_evidence_or_freshness_repair",
+      "authority_state": "review_only_no_capital_or_execution_authority",
+      "band_status": "IN_BAND",
+      "quote_freshness_status": "post_close_final_quote_available_for_non_executing_review",
+      "review_only": true,
+      "requires_exact_owner_approval_before_capital_or_execution": true,
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      },
+      "capital_deployment_approved": false,
+      "trade_or_execution_approved": false,
+      "paper_or_live_execution_allowed": false,
+      "owner_approval_inferred": false,
+      "next_route_action": "Repair source, freshness, or decision blockers before review escalation."
+    },
+    "routing_tier": "Tier A",
+    "routing_state": "A-CHALLENGED",
+    "timing_state": "in_band_review_only_quote",
+    "decision_state": "blocked_missing_freshness",
+    "trade_readiness_state": "not_trade_ready_evidence_or_freshness_repair",
+    "authority_state": "review_only_no_capital_or_execution_authority",
+    "summary": {
+      "ticker_count": 300,
+      "safe_cached_review_answer_count": 281,
+      "safe_material_claim_from_cache_count": 281,
+      "material_claim_source_open_required_count": 0,
+      "refresh_or_source_open_needed_count": 19,
+      "status_counts": {
+        "needs_refresh_or_source_open": 19,
+        "safe": 281
+      },
+      "source_open_status_counts": {
+        "verified": 300
+      },
+      "decision_state_counts": {
+        "below_stop_or_invalidation": 63,
+        "blocked_missing_freshness": 18,
+        "monitor_only": 208,
+        "no_chase": 11
+      },
+      "timing_state_counts": {
+        "above_band_monitor_grade_no_chase": 3,
+        "above_band_no_chase": 80,
+        "band_status_missing_required_refresh": 3,
+        "below_band_monitor_grade_reclaim_watch": 17,
+        "below_band_reclaim_watch": 19,
+        "below_stop_or_invalidation": 86,
+        "in_band_fresh_review": 3,
+        "in_band_monitor_grade": 21,
+        "in_band_review_only_quote": 35,
+        "near_band_monitor_grade": 27,
+        "reclaim_only_monitor_grade": 6
+      },
+      "trade_readiness_state_counts": {
+        "not_trade_ready_below_stop_or_invalidation": 87,
+        "not_trade_ready_evidence_or_freshness_repair": 11,
+        "not_trade_ready_in_band_monitor_only": 27,
+        "not_trade_ready_monitor_grade": 54,
+        "not_trade_ready_monitor_only": 3,
+        "not_trade_ready_no_chase": 83,
+        "not_trade_ready_reclaim_watch": 35
+      },
+      "authority_state_counts": {
+        "review_only_no_capital_or_execution_authority": 300
+      },
+      "tier_c_monitor_grade_band_overlay_count": 98,
+      "max_answer_age_hours": 12.0,
+      "chat_route": "SQL-first truth production, cache-first chat consumption, explicit route/timing/decision/trade/authority states.",
+      "next_safe_action": "Use route_readiness for lightweight chat answers; source-open and market-window proof before material recommendation, readiness, approval, or action claims."
+    }
+  },
+  "sql_canon_state": {
+    "schema": "veritas.finance_intelligence_state.sql_canon_context.v1",
+    "status": "ok",
+    "access_validation_status": "ok",
+    "sql_canon_db": "state/finance/finance-canon.sqlite",
+    "production_answer_count": 12,
+    "production_answer_tickers": [
+      "BKNG",
+      "BRK.B",
+      "CME",
+      "CVX",
+      "ECL",
+      "GOOG",
+      "JPM",
+      "LIN",
+      "LLY",
+      "META",
+      "PLTR",
+      "XOM"
+    ],
+    "production_answer_definition": "validated proof-joined production-grade set",
+    "legacy_production_answer_count": 0,
+    "legacy_production_answer_tickers": [],
+    "legacy_production_answer_definition": "hard-retired Legacy 42 answer scope; expected empty after schema apply",
+    "legacy_42_retired_from_blocking": true,
+    "legacy_42_count_advisory_only": true,
+    "compatibility_scope_active": false,
+    "migration_registry_summary": {
+      "priority_counts": {
+        "P0": 21,
+        "P1": 459,
+        "P2": 204
+      },
+      "lane_counts": {
+        "answer_path_parity_lane": 21,
+        "cron_pm_governance_lane": 14,
+        "pm_cockpit_lane": 2,
+        "source_loader_lane": 436,
+        "test_parity_lane": 203,
+        "typed_access_guard_lane": 3,
+        "wf78_wf77_routing_lane": 5
+      },
+      "cutover_state_counts": {
+        "not_cut_over": 116,
+        "source_producer": 389,
+        "sql_primary_guarded": 179
+      },
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": [],
+      "p0_answer_path_lane_status": {
+        "ok": true,
+        "errors": [],
+        "p0_count": 21,
+        "answer_path_lane_count": 21,
+        "p0_answer_path_lane_count": 21,
+        "p0_non_answer_path_count": 0,
+        "answer_path_non_p0_count": 0,
+        "p0_non_answer_path_consumers": [],
+        "answer_path_non_p0_consumers": []
+      }
+    },
+    "p0_registry_lane_status": {
+      "ok": true,
+      "errors": [],
+      "p0_count": 21,
+      "answer_path_lane_count": 21,
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": []
+    },
+    "answer_route_policy": {
+      "strategic_answer_route": "sql_first_tier_routing_plus_production_grade_policy",
+      "production_grade_empty_is_valid_wait_state": true,
+      "legacy_42_retired_from_blocking": true,
+      "legacy_42_role": "historical_compatibility_only_not_readiness_or_repair_authority"
+    },
+    "field_family_summary": {
+      "review_only_internal_sql_primary": true,
+      "review_only_sql_json_canon_owner": true,
+      "canon_owner_metadata": {
+        "schema_version": "finance_sql_canon_owner_field_families.v1",
+        "promoted_at_utc": "2026-06-19T19:30:27Z",
+        "structured_truth_owner": "state/finance/finance-canon.sqlite plus generated JSON proof packets",
+        "markdown_owner_scope": "policy, narrative, owner decisions, weekly reasoning, and audit context",
+        "fallback_retained": true,
+        "archive_delete_apply_allowed": false,
+        "promoted_field_families": [
+          "answer_path_scope",
+          "evidence_freshness",
+          "reference_levels",
+          "source_lineage",
+          "ticker_state",
+          "tier_routing_state",
+          "universe_membership"
+        ]
+      },
+      "source_open_required_before_material_claims": true,
+      "field_families": {
+        "ticker_state": {
+          "sql_primary_current_state": true,
+          "row_count": 300,
+          "active_rows": 300,
+          "authority_scope": "review_only_ticker_identity_and_route_state",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "universe_membership": {
+          "sql_primary_current_state": true,
+          "row_count": 300,
+          "legacy_production_rows": 0,
+          "production_scope_rows": 12,
+          "review_monitor_rows": 258,
+          "decision_grade_rows": 32,
+          "sql_tier_counts": {
+            "Tier A": 15,
+            "Tier B": 17,
+            "Tier C": 268
+          },
+          "legacy_42_role": "hard_retired_from_active_runtime_schema",
+          "authority_scope": "review_only_universe_membership_and_monitoring_role",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "reference_levels": {
+          "sql_primary_current_state": true,
+          "row_count": 200,
+          "complete_reference_rows": 200,
+          "authority_scope": "review_only_entry_band_stop_metadata",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "evidence_freshness": {
+          "sql_primary_current_state": true,
+          "row_count": 200,
+          "authority_scope": "review_only_freshness_and_source_confidence_metadata",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "source_lineage": {
+          "sql_primary_current_state": true,
+          "row_count": 3521,
+          "scope_key_count": 734,
+          "rows_by_field_family": {
+            "consumer_migration_registry": 434,
+            "evidence_freshness": 800,
+            "reference_levels": 1087,
+            "tier_routing_state": 1200
+          },
+          "authority_scope": "review_only_source_traceability_metadata",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "answer_path_scope": {
+          "sql_primary_current_state": true,
+          "row_count": 300,
+          "production_answer_rows": 12,
+          "authority_scope": "review_only_answer_routing_scope",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "production_grade_policy": {
+          "sql_primary_current_state": true,
+          "row_count": 300,
+          "legacy_tier_a_ready_compatibility_rows": 0,
+          "dynamic_production_review_rows": 61,
+          "dynamic_production_review_definition": "current SQL-first Tier A/B routing surface for review-only production attention",
+          "production_grade_rows": 12,
+          "production_grade_definition": "proof-joined routing Tier A/B, decision-grade fresh, zero critical data conflicts, confidence ready, in coverage, card on disk, with router authority flags still closed",
+          "legacy_42_role": "compatibility_only_not_strategic_authority",
+          "authority_scope": "review_only_production_grade_answer_eligibility_no_execution_authority",
+          "canon_owner": false,
+          "canon_owner_source": null
+        },
+        "tier_routing_state": {
+          "sql_primary_current_state": true,
+          "row_count": 300,
+          "authority_scope": "review_only_non_capital_tier_routing",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "consumer_registry": {
+          "sql_primary_current_state": true,
+          "cutover_state_counts": {
+            "not_cut_over": 116,
+            "source_producer": 389,
+            "sql_primary_guarded": 179
+          },
+          "authority_scope": "review_only_consumer_guard_and_migration_registry",
+          "canon_owner": false,
+          "canon_owner_source": null
+        }
+      },
+      "authority_boundary": {
+        "capital_deployment_allowed": false,
+        "paper_or_live_execution_allowed": false,
+        "brokerage_or_account_action_allowed": false,
+        "customer_or_external_delivery_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    "ticker_state": {
+      "ticker": "VRT",
+      "name": "Vertiv Holdings Co",
+      "instrument_type": "operating_company",
+      "sector": "Industrials",
+      "industry": null,
+      "universe_scope": "active_internal_universe",
+      "legacy_tier": "A",
+      "legacy_production_42": false,
+      "production_scope_member": false,
+      "production_scope_source": "proof_joined_routing_tier_ab_fresh_confident_card_coverage",
+      "tier_ab_decision_scope": null,
+      "compatibility_reason": null,
+      "sql_tier": "Tier A",
+      "sql_tier_state": "sql_first_wait_for_routing",
+      "tier_decision_scope": "tier_a_sql_first_review_scope",
+      "auto_tier": "Tier A",
+      "auto_state": "A-CHALLENGED",
+      "answer_scope": "sql_first_review_monitor",
+      "production_card_generation_allowed": false,
+      "has_production_card": true,
+      "provider_status": null
+    },
+    "reference_level": {
+      "ticker": "VRT",
+      "reference_price_low": 230.66,
+      "reference_price_high": 280.95,
+      "reference_invalidation_level": 207.79,
+      "reference_confidence": null,
+      "reference_band_status": "IN_BAND",
+      "authority_class": "reference_metadata_review_only_no_deployment_authority",
+      "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+    },
+    "evidence_freshness": {
+      "ticker": "VRT",
+      "resolution_state": "resolved_to_post_close_final_quote_review",
+      "required_depth": "decision_repair",
+      "card_generated_at_utc": "2026-06-16T21:17:39Z",
+      "card_missing_or_stale_count": 1,
+      "stale_families": [
+        "fresh_price_quote"
+      ],
+      "source_confidence_class": "decision_or_monitor_freshness_metadata",
+      "authority_class": "machine_control_state_no_capital_authority"
+    },
+    "validation": {
+      "status": "ok",
+      "critical_errors": [],
+      "warnings": []
+    },
+    "authority_boundary": {
+      "durable_sql_canon_current_state": true,
+      "internal_sql_canon_primary_guarded": true,
+      "read_only_access_layer_required": true,
+      "tmp_finance_intelligence_state_is_compatibility_cache": true,
+      "source_open_required_before_material_finance_claims": true,
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "answer_packet": {
+    "ticker": "VRT",
+    "compatibility_route": "ticker_answer_packet_v1",
+    "canonical_answer_path": "tmp/trade-grade-full-answer/VRT.json",
+    "legacy_file_dependency": false,
+    "fallback_chain": [
+      "tmp/ticker-intelligence-cards/VRT.current.json",
+      "03. Portfolio/Execution Board.md",
+      "04. Research/Coverage and Watchlist.md"
+    ],
+    "review_only": true,
+    "availability": "present_from_wf85_assembler",
+    "preferred_source": "wf85_full_answer_assembler",
+    "reason": "legacy packet route is satisfied by the WF85 canonical full-answer assembler",
+    "card_generated_at_utc": "2026-08-29T21:40:55Z",
+    "answer_generated_at_utc": "2026-08-29T21:46:17Z",
+    "answer_age_hours": 3.57,
+    "answer_confidence": "medium",
+    "answer_confidence_score": 0.6,
+    "decision_state": "blocked_missing_freshness",
+    "recommended_next_action": "monitor_only_no_owner_action",
+    "required_section_count": 17,
+    "missing_sections": [],
+    "source_count": 20
+  },
+  "canonical_data_plane_overlay": {
+    "status": "ok",
+    "fallback_used": false,
+    "db_path": "tmp/canonical-finance-data-plane.sqlite",
+    "view": "v_current_decision_overview",
+    "current": {
+      "ticker": "VRT",
+      "name": "Vertiv Holdings Co",
+      "instrument_type": "operating_company",
+      "sector": "Industrials",
+      "auto_tier": "Tier A",
+      "auto_state": "A-CHALLENGED",
+      "route_priority": 40,
+      "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate",
+      "latest_known_price": 257.08,
+      "band_status": "IN_BAND",
+      "quote_freshness_status": "post_close_final_quote_available_for_non_executing_review",
+      "entry_band_low": 230.66,
+      "entry_band_high": 280.95,
+      "stop_or_invalidation": 207.79,
+      "primary_state": "blocked_missing_freshness",
+      "queue_state": "blocked_missing_freshness",
+      "actionability": "review_only_owner_gated",
+      "owner_action_required": 0,
+      "gate_verdict": "promote_for_owner_review",
+      "gate_vetoes_json": "[]",
+      "capital_deployment_approved": 0,
+      "trade_or_execution_approved": 0,
+      "paper_or_live_execution_allowed": 0,
+      "owner_approval_inferred": 0
+    },
+    "authority_false_view": {
+      "routing_forbidden_count": 0,
+      "decision_forbidden_count": 0
+    },
+    "answer_contract": {
+      "internal_review_only": true,
+      "canonical_interface_not_owner_truth": true,
+      "does_not_authorize_capital_or_execution": true,
+      "existing_finance_intelligence_state_fallback_retained": true
+    }
+  },
+  "entry_stop_cache_freshness_guard": {
+    "ticker": "VRT",
+    "status": "ok_sql_canon_authoritative_legacy_decoupled",
+    "owner_source_path": "03. Portfolio/Execution Board.md",
+    "owner_source_sha256": null,
+    "layers": [
+      {
+        "name": "finance_intelligence_state",
+        "status": "fallback_required",
+        "reason": "entry_stop_source_not_execution_board",
+        "source_artifact_path": "tmp/band-proposals.json",
+        "validation_status": "ok",
+        "freshness_status": "current"
+      },
+      {
+        "name": "wf84_canonical_data_plane",
+        "status": "fallback_required",
+        "reason": "entry_stop_source_not_execution_board",
+        "source_artifact_path": "tmp/band-proposals.json",
+        "validation_status": "ok",
+        "freshness_status": "current"
+      }
+    ],
+    "value_consistency": {
+      "status": "ok",
+      "checks": [
+        {
+          "field": "entry_band_low",
+          "ok": true,
+          "finance_state": 230.66,
+          "wf84": 230.66
+        },
+        {
+          "field": "entry_band_high",
+          "ok": true,
+          "finance_state": 280.95,
+          "wf84": 280.95
+        },
+        {
+          "field": "stop_or_invalidation",
+          "ok": true,
+          "finance_state": 207.79,
+          "wf84": 207.79
+        }
+      ]
+    },
+    "sql_canon_reference_consistency": {
+      "status": "authoritative",
+      "reference_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "entry_band_low": 230.66,
+        "entry_band_high": 280.95,
+        "stop_or_invalidation": 207.79
+      },
+      "finance_state_vs_sql_canon": {
+        "status": "ok",
+        "checks": [
+          {
+            "field": "entry_band_low",
+            "ok": true,
+            "finance_state": 230.66,
+            "wf84": 230.66
+          },
+          {
+            "field": "entry_band_high",
+            "ok": true,
+            "finance_state": 280.95,
+            "wf84": 280.95
+          },
+          {
+            "field": "stop_or_invalidation",
+            "ok": true,
+            "finance_state": 207.79,
+            "wf84": 207.79
+          }
+        ]
+      },
+      "wf84_vs_sql_canon": {
+        "status": "ok",
+        "checks": [
+          {
+            "field": "entry_band_low",
+            "ok": true,
+            "finance_state": 230.66,
+            "wf84": 230.66
+          },
+          {
+            "field": "entry_band_high",
+            "ok": true,
+            "finance_state": 280.95,
+            "wf84": 280.95
+          },
+          {
+            "field": "stop_or_invalidation",
+            "ok": true,
+            "finance_state": 207.79,
+            "wf84": 207.79
+          }
+        ]
+      },
+      "legacy_value_mismatch_blocks_front_door": false
+    },
+    "legacy_compatibility_hash_warning": {
+      "present": true,
+      "reason": "legacy compatibility entry/stop cache trails SQL-canon current-state references; recorded as lineage drift only and not allowed to block the front door",
+      "warning_layers": [],
+      "blocks_front_door": false
+    },
+    "legacy_compatibility_value_warning": {
+      "present": true,
+      "finance_state_vs_wf84": {
+        "status": "ok",
+        "checks": [
+          {
+            "field": "entry_band_low",
+            "ok": true,
+            "finance_state": 230.66,
+            "wf84": 230.66
+          },
+          {
+            "field": "entry_band_high",
+            "ok": true,
+            "finance_state": 280.95,
+            "wf84": 280.95
+          },
+          {
+            "field": "stop_or_invalidation",
+            "ok": true,
+            "finance_state": 207.79,
+            "wf84": 207.79
+          }
+        ]
+      },
+      "finance_state_vs_sql_canon": {
+        "status": "ok",
+        "checks": [
+          {
+            "field": "entry_band_low",
+            "ok": true,
+            "finance_state": 230.66,
+            "wf84": 230.66
+          },
+          {
+            "field": "entry_band_high",
+            "ok": true,
+            "finance_state": 280.95,
+            "wf84": 280.95
+          },
+          {
+            "field": "stop_or_invalidation",
+            "ok": true,
+            "finance_state": 207.79,
+            "wf84": 207.79
+          }
+        ]
+      },
+      "wf84_vs_sql_canon": {
+        "status": "ok",
+        "checks": [
+          {
+            "field": "entry_band_low",
+            "ok": true,
+            "finance_state": 230.66,
+            "wf84": 230.66
+          },
+          {
+            "field": "entry_band_high",
+            "ok": true,
+            "finance_state": 280.95,
+            "wf84": 280.95
+          },
+          {
+            "field": "stop_or_invalidation",
+            "ok": true,
+            "finance_state": 207.79,
+            "wf84": 207.79
+          }
+        ]
+      },
+      "blocks_front_door": false
+    },
+    "sql_canon_reference_authority": {
+      "current_state_authority": true,
+      "reference_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "json_proof_required_before_material_claims": true,
+      "legacy_42_entry_stop_retirement_ready": true
+    },
+    "front_door_policy": {
+      "prefer_wf85_full_answer": true,
+      "source_open_required_before_material_claims": true,
+      "stale_entry_stop_cache_blocks_generated_answer": false,
+      "legacy_compatibility_blocks_front_door": false
+    }
+  },
+  "canonical_data_plane_default_route": {
+    "enabled": true,
+    "switch_gate": {
+      "status": "enabled",
+      "phase_path": "tmp/canonical-finance-data-plane-phase6-10.json",
+      "phase_generated_at_utc": "2026-08-29T21:46:47Z",
+      "phase_status": "ok",
+      "validation_status": "ok",
+      "consumer_default_switch_allowed": true,
+      "default_route_switch_allowed": true,
+      "source_open_required_before_material_finance_claims": true,
+      "fallback_surfaces_retained_for_resilience": true,
+      "reason": "WF84 phase proof clean and switch allowed"
+    },
+    "preferred_source_when_enabled": "wf85_full_answer_assembler",
+    "fallback_preferred_source": "wf85_full_answer_assembler",
+    "entry_stop_cache_guard_status": "ok_sql_canon_authoritative_legacy_decoupled",
+    "sql_canon_guard_status": "ok",
+    "source_open_required_before_material_claims": true,
+    "does_not_authorize_capital_or_execution": true
+  },
+  "full_intelligence_answer_parity": {
+    "ticker": "VRT",
+    "status": "ok",
+    "artifact": "tmp/full-answer-parity/VRT.json",
+    "rollup_artifact": "tmp/full-answer-parity/full-answer-parity-rollup.json",
+    "rollup_status": "ok",
+    "critical_errors": [],
+    "warnings": [],
+    "ready_to_start_duplicate_surface_retirement_planning": true,
+    "full_answer_claim_mode": "wf84_wf85_full_answer_allowed",
+    "source_open_required_before_material_claims": true,
+    "archive_delete_apply_allowed": false
+  },
+  "trade_grade_full_answer": {
+    "ticker": "VRT",
+    "status": "ok",
+    "artifact": "tmp/trade-grade-full-answer/VRT.json",
+    "rollup_artifact": "tmp/trade-grade-full-answer-assembler.json",
+    "assembled_in_memory": false,
+    "issues": [],
+    "schema": "veritas.trade_grade_full_answer_assembler.v1",
+    "generated_at_utc": "2026-08-29T21:46:17Z",
+    "section_count": 17,
+    "required_section_count": 17,
+    "missing_sections": [],
+    "machine_state": {
+      "research_tier": "Tier A",
+      "decision_state": "blocked_missing_freshness",
+      "primary_state": "blocked_missing_freshness",
+      "queue_state": "blocked_missing_freshness",
+      "trade_grade": "D",
+      "actionability": "blocked_or_unknown",
+      "owner_action": "monitor_only_no_owner_action"
+    },
+    "human_answer_text": "VRT Trade-Grade Full Answer\nDecision state: blocked_missing_freshness\nDecision-grade gate: not_decision_grade_yet / repair: freshness_blocker_must_clear_before_review_ready\nTrade grade: D / actionability: blocked_or_unknown\nOwner action: monitor_only_no_owner_action\nAuthority: review-only; no trade, capital, account, or approval authority.\n\nThesis: thesis: Vertiv Holdings Co has a review-only synthesized Tier A thesis from local sourced artifacts: revenue YoY 24.12%, EPS YoY 53.01%, FCF YoY 234.04%. Entry posture is IN_BAND; 0 evidence/freshness gaps still require review before decision-grade use.\nBusiness / Moat / Quality: fundamental enrichment: 4 API-auto group(s), 1 official-capture group(s), 1 manual/source-open group(s)\nBull Case: mapped fields: bull_case, wf85_bull_case\nBear Case: mapped fields: bear_case, wf85_bear_case, risks\nEarnings + Guidance: official capture: 7 captured field(s), 0 unresolved field(s)\nFinancial Metrics: fundamental enrichment: 4 API-auto group(s), 1 official-capture group(s), 1 manual/source-open group(s)\nValuation: derived book value: book/share 10.8253; derived P/B 30.7659\nTechnical Setup: band_status: IN_BAND\nCatalyst / News / Macro Sensitivity: official capture: 7 captured field(s), 0 unresolved field(s)\nRisk + Invalidation: mapped fields: risk_register, wf85_key_risks, counterargument, stop_or_invalidation, macro_risk_context\nPortfolio Fit: route: Tier A / A-CHALLENGED; timing: in_band_review_only_quote; decision: blocked_missing_freshness; trade readiness: not_trade_ready_evidence_or_freshness_repair; authority: review_only_no_capital_or_execution_authority\nEntry / Stop / Sizing: mapped fields: current_price, entry_band, stop_or_invalidation, sizing\nDecision State: decision-grade gate: not_decision_grade_yet; repair: freshness_blocker_must_clear_before_review_ready\nTrade Grade: decision-grade gate: not_decision_grade_yet; repair: freshness_blocker_must_clear_before_review_ready\nOwner Action: decision-grade gate: not_decision_grade_yet; repair: freshness_blocker_must_clear_before_review_ready\nAuthority / Approval Status: mapped fields: wf85_authority_boundary, assembler_authority_boundary\nEvidence / Freshness / Confidence: mapped fields: source_freshness, evidence_family_status, wf84_drillback_count",
+    "human_answer_preview": "VRT Trade-Grade Full Answer\nDecision state: blocked_missing_freshness\nDecision-grade gate: not_decision_grade_yet / repair: freshness_blocker_must_clear_before_review_ready\nTrade grade: D / actionability: blocked_or_unknown\nOwner action: monitor_only_no_owner_action\nAuthority: review-only; no trade, capital, account, or approval authority.\n\nThesis: thesis: Vertiv Holdings Co has a review-only synthesized Tier A thesis from local sourced artifacts: revenue YoY 24.12%, EPS YoY 53.01%, FCF YoY 234.04%. Entry posture is IN_BAND; 0 evidence/freshness gaps still require review before decision-grade use.\nBusiness / Moat / Quality: fundamental enrichment: 4 API-auto group(s), 1 official-capture group(s), 1 manual/source-open group(s)\nBull Case: mapped fields: bull_case, wf85_bull_case\nBear Case: mapped fields: bear_case, wf85_bear_case, risks\nEarnings + Guidance: official capture: 7 captured field(s), 0 unresolved field(s)\nFinancial Metrics: fundamental enrichment: 4 API-auto group(s), 1 official-capture group(s), 1 manual/source-open group(s)\nValuation: derived book value: book/share 10.8253; derived P/B 30.7659\nTechnical Setup: band_status: IN_BAND\nCatalyst / News / Macro Sensitivity: of",
+    "answer_packet_role": "legacy_compatibility_snapshot_only",
+    "review_only": true,
+    "source_open_required_before_material_claims": true,
+    "archive_delete_apply_allowed": false
+  },
+  "current": {
+    "ticker": "VRT",
+    "name": "Vertiv Holdings Co",
+    "tier": "A",
+    "monitoring_role": "decision_queue_or_near_action",
+    "sector": "Industrials",
+    "instrument_type": "operating_company",
+    "universe_scope": "active_internal_universe",
+    "production_answer_path_member": 0,
+    "thin_monitor_row": 0,
+    "decision_grade_eligible": 1,
+    "card_exists": 1,
+    "latest_known_price": 257.08,
+    "band_status": "IN_BAND",
+    "technical_status": null,
+    "entry_band_low": 230.66,
+    "entry_band_high": 280.95,
+    "stop_or_invalidation": 207.79,
+    "entry_stop_freshness_status": "current",
+    "entry_stop_validation_status": "ok",
+    "valuation_status": "covered",
+    "key_metrics_status": "available",
+    "latest_earnings_status": "available",
+    "analyst_status": "auto_sourced_yfinance",
+    "recommendation_posture": "approval-ready paper starter if fresh in band",
+    "recommendation_posture_key": "approval_ready_if_fresh",
+    "actionability": "review_only_owner_gated",
+    "card_path": "tmp/ticker-intelligence-cards/VRT.current.json",
+    "card_generated_at_utc": "2026-08-29T21:40:55Z",
+    "source_open_required": 1,
+    "authority_forbidden_true_json": "[]"
+  },
+  "family_status": [
+    {
+      "ticker": "VRT",
+      "family_id": "analyst_consensus",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "analyst_price_targets",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "analyst_ratings",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "catalyst_earnings_state",
+      "status": "covered_but_source_stale",
+      "missing_count": 0,
+      "stale_count": 1,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "competitive_moat",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "current_sector_performance",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "deployment_readiness",
+      "status": "covered_but_source_stale",
+      "missing_count": 0,
+      "stale_count": 1,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "key_financial_metrics",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "latest_earnings_performance",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "official_fundamentals",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "orders_backlog_book_to_bill",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "portfolio_fit_concentration",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "price_band_stop",
+      "status": "covered_but_source_stale",
+      "missing_count": 0,
+      "stale_count": 1,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "recent_developments",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "recommendation_support",
+      "status": "covered_but_source_stale",
+      "missing_count": 0,
+      "stale_count": 1,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "revenue_growth_margins_fcf_debt",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "risk_register",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "technical_posture",
+      "status": "covered_but_source_stale",
+      "missing_count": 0,
+      "stale_count": 1,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "thesis_bull_bear_entry_context",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "family_id": "valuation_multiples",
+      "status": "covered",
+      "missing_count": 0,
+      "stale_count": 0,
+      "source_required": 1,
+      "source_paths_json": "[]"
+    }
+  ],
+  "entry_stop_reference": {
+    "ticker": "VRT",
+    "entry_band_low": 230.66,
+    "entry_band_high": 280.95,
+    "stop_or_invalidation": 207.79,
+    "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+    "stop_source": "state/finance/finance-canon.sqlite:reference_levels",
+    "freshness_status": "current",
+    "validation_status": "ok",
+    "owner_note_path": "03. Portfolio/Execution Board.md",
+    "source_artifact_path": "tmp/band-proposals.json",
+    "source_artifact_hash": "66b5818d66e36d5d899724b69aa4c6d5f9ff59f2d8b4e408e72a459925243e90",
+    "source_timestamp": "2026-08-21T20:31:52.979543+00:00",
+    "legacy_raw_json_omitted": true,
+    "legacy_raw_json_role": "compatibility_lineage_only_not_current_state"
+  },
+  "disciplined_entry_band": {
+    "present": false,
+    "ticker": "VRT",
+    "reason": "no_disciplined_row_for_ticker",
+    "is_written_buy_zone": true,
+    "distinct_from_tracking_band": true
+  },
+  "entry_stop_legacy_lineage": {
+    "cache_role": "legacy_compatibility_cache_lineage_not_current_state",
+    "source_artifact_path": "tmp/band-proposals.json",
+    "source_artifact_hash": "66b5818d66e36d5d899724b69aa4c6d5f9ff59f2d8b4e408e72a459925243e90",
+    "source_timestamp": "2026-08-21T20:31:52.979543+00:00",
+    "freshness_status": "current",
+    "validation_status": "ok",
+    "raw_json_omitted_from_front_door": true
+  },
+  "provenance": [
+    {
+      "ticker": "VRT",
+      "source_kind": "card",
+      "source_path": "tmp/ticker-intelligence-cards/VRT.current.json",
+      "generated_at_utc": "2026-08-29T21:40:55Z"
+    },
+    {
+      "ticker": "VRT",
+      "source_kind": "competitive_moat",
+      "source_path": "tmp/official-earnings-bridge.json",
+      "generated_at_utc": null
+    },
+    {
+      "ticker": "VRT",
+      "source_kind": "entry_stop_reference",
+      "source_path": "tmp/band-proposals.json",
+      "generated_at_utc": "2026-08-21T20:31:52.979543+00:00"
+    },
+    {
+      "ticker": "VRT",
+      "source_kind": "official_capture_developments_orders_backlog",
+      "source_path": "tmp/official-earnings-bridge.json",
+      "generated_at_utc": null
+    },
+    {
+      "ticker": "VRT",
+      "source_kind": "orders_backlog_book_to_bill",
+      "source_path": "tmp/official-earnings-bridge.json",
+      "generated_at_utc": null
+    },
+    {
+      "ticker": "VRT",
+      "source_kind": "recent_developments",
+      "source_path": "tmp/official-earnings-bridge.json",
+      "generated_at_utc": null
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "database_path": "tmp/finance-intelligence-state.sqlite",
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_sql_canon_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_sql_canon_current_state_field_families": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "tmp_database_is_compatibility_cache": true,
+    "database_path_migration_performed": false,
+    "tmp_database_promotion_performed": false,
+    "full_sql_canon_migration_allowed": false,
+    "sql_canon_authority_expanded": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_trade_execution_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "source_open_required_before_finance_claims": true
+  },
+  "answer_contract": {
+    "default_ticker_info_front_door": "python scripts\\finance_cache_frontdoor.py ticker <TICKER> --read-only --pretty",
+    "deeper_ticker_envelope": "python scripts\\finance_intelligence_state.py ticker <TICKER> --pretty",
+    "ticker_card_is_current_evidence_cache": true,
+    "finance_cache_frontdoor_is_chat_read_facade": true,
+    "sql_first_truth_production_cache_first_chat_consumption": true,
+    "wf85_full_answer_assembler_is_default_full_answer_path": true,
+    "answer_packet_is_legacy_compatibility_snapshot": true,
+    "wf78_operational_surfaces_are_escalation_only": true,
+    "wf72_sql_cache_is_support_only": true,
+    "wf72_finance_answer_front_door_allowed": false,
+    "may_answer_from_sql_for_inventory_or_routing": true,
+    "durable_sql_canon_required_for_current_state": true,
+    "finance_intelligence_state_sqlite_is_compatibility_cache": true,
+    "prefer_answer_packet_when_present_and_fresh": false,
+    "prefer_wf84_canonical_data_plane_when_phase_switch_enabled": true,
+    "prefer_wf85_full_answer_assembler_when_available": true,
+    "full_answer_parity_required_before_retiring_duplicate_surfaces": true,
+    "canonical_data_plane_overlay_is_read_only_and_fallback_backed": true,
+    "thin_monitor_rows_are_not_decision_grade": true,
+    "material_finance_claim_requires_source_open": true,
+    "must_not_infer_approval_or_execution_authority": true,
+    "must_state_missing_or_stale_evidence": true
+  }
+}

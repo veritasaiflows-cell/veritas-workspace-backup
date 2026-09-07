@@ -114,6 +114,15 @@
         "Keeps customer data, credentials, and production access blocked."
       ],
       "xapi_object": "activity/reflection-next-step"
+    },
+    {
+      "id": "boundary-walkthrough-clip",
+      "type": "screen_recording",
+      "title": "Boundary Walkthrough Clip",
+      "prompt": "Watch the short local screen recording that walks through the approval-card minimums, then mark the clip reviewed.",
+      "capture_hint": "No clip recorded yet. Capture one with Windows Snipping Tool screen recording (Win+Shift+R), save the file under training/interactive-training-builder/recordings/ as a .webm or .mp4, then rerun the builder so the player picks it up.",
+      "caption": "Walkthrough of the approval-card minimums inside the local training runtime.",
+      "xapi_object": "activity/boundary-walkthrough-clip"
     }
   ],
   "xapi": {

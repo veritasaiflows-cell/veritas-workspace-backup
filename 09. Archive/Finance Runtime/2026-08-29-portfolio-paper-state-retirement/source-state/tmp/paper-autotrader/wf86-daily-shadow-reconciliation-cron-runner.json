@@ -1,0 +1,386 @@
+{
+  "schema": "veritas.wf86_daily_shadow_reconciliation_cron_runner.v1",
+  "generated_at_utc": "2026-08-28T21:40:48Z",
+  "status": "blocked",
+  "operator_action": "BLOCKED",
+  "purpose": "Scheduled WF86 shadow accumulation plus GET-only paper reconciliation proof.",
+  "authority_boundary": {
+    "review_only": true,
+    "paper_only_design": true,
+    "shadow_logging_allowed": true,
+    "get_only_paper_reconciliation_allowed": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "autonomous_paper_execution_allowed_now": false,
+    "paper_submit_allowed": false,
+    "paper_cancel_allowed": false,
+    "paper_sell_allowed": false,
+    "paper_replace_allowed": false,
+    "live_trade_allowed": false,
+    "live_endpoint_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "sql_canon_context": {
+    "schema_version": "finance_sql_canon_guard_context.v1",
+    "generated_at_utc": "2026-08-28T21:40:48Z",
+    "consumer": "scripts/wf86_daily_shadow_reconciliation_cron_runner.py",
+    "status": "ok",
+    "db_path": "state/finance/finance-canon.sqlite",
+    "typed_access_layer": "scripts/finance_sql_canon_access.py",
+    "access_validation_status": "ok",
+    "production_answer_count": 14,
+    "legacy_production_answer_count": 0,
+    "migration_registry_summary": {
+      "priority_counts": {
+        "P0": 21,
+        "P1": 459,
+        "P2": 204
+      },
+      "lane_counts": {
+        "answer_path_parity_lane": 21,
+        "cron_pm_governance_lane": 14,
+        "pm_cockpit_lane": 2,
+        "source_loader_lane": 436,
+        "test_parity_lane": 203,
+        "typed_access_guard_lane": 3,
+        "wf78_wf77_routing_lane": 5
+      },
+      "cutover_state_counts": {
+        "not_cut_over": 116,
+        "source_producer": 389,
+        "sql_primary_guarded": 179
+      },
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": [],
+      "p0_answer_path_lane_status": {
+        "ok": true,
+        "errors": [],
+        "p0_count": 21,
+        "answer_path_lane_count": 21,
+        "p0_answer_path_lane_count": 21,
+        "p0_non_answer_path_count": 0,
+        "answer_path_non_p0_count": 0,
+        "p0_non_answer_path_consumers": [],
+        "answer_path_non_p0_consumers": []
+      }
+    },
+    "validation": {
+      "status": "ok",
+      "errors": [],
+      "warnings": []
+    },
+    "authority_boundary": {
+      "read_only_access_layer": true,
+      "db_mutation_allowed": false,
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "customer_or_external_delivery_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "parameters": {
+    "skip_paper_reconciliation": false
+  },
+  "summary": {
+    "shadow_decision_count": 51,
+    "clean_shadow_decision_count": 21,
+    "unique_clean_market_sessions": 7,
+    "required_clean_decisions": 20,
+    "required_clean_market_sessions": 5,
+    "shadow_threshold_met": true,
+    "would_buy_shadow_tickers": [
+      "VRT",
+      "GOOG",
+      "VRT",
+      "GOOG",
+      "VRT",
+      "GOOG",
+      "VRT",
+      "GOOG",
+      "VRT",
+      "GOOG",
+      "VRT",
+      "VRT",
+      "GOOG",
+      "GOOG",
+      "GOOG",
+      "GOOG",
+      "GOOG",
+      "GOOG",
+      "NVDA",
+      "GOOG",
+      "NVDA",
+      "NVDA"
+    ],
+    "wf86_status": "shadow_ready",
+    "autonomous_paper_buy_ready": false,
+    "blockers_before_autonomous_paper_execution": [
+      "wf67_guard_not_clean",
+      "fresh_short_lived_kill_switch_not_active",
+      "redacted_audit_schema_not_clean_for_autonomy",
+      "post_trade_reconciliation_not_proven_for_autonomy"
+    ],
+    "post_trade_reconciliation_blocker_present": true,
+    "paper_reconciliation_status": "ok",
+    "paper_reconciliation_freshness_status": "fresh",
+    "paper_open_orders_count": 0,
+    "paper_positions_count": 10,
+    "paper_order_history_status": "ok",
+    "paper_order_history_validation_status": "ok",
+    "submitted_paper_order_count": 15,
+    "classified_filled_count": 15,
+    "classified_partially_filled_count": 0,
+    "classified_terminal_non_fill_count": 0,
+    "classified_unresolved_count": 0,
+    "submitted_open_count": 0,
+    "fill_reconciled_count": 15,
+    "wf87_v2_status": "phase_a_hardening_implemented_runtime_blocked",
+    "wf87_v2_validation_status": "ok",
+    "wf87_phase_a_components_installed": true,
+    "wf87_phase_a_runtime_gates_clean": false,
+    "wf87_phase_a_hardening_gates_clean": false,
+    "wf87_blocker_count": 3,
+    "wf87_maturity_blocker_count": 0,
+    "wf87_fail_closed_at_rest_count": 0,
+    "wf87_runtime_blocker_count": 3,
+    "assisted_cadence_status": "candidate_review_window_open",
+    "assisted_current_week_attempt_count": 0,
+    "assisted_current_week_terminal_attempt_count": 0,
+    "assisted_current_week_maturity_rep_count": 0,
+    "assisted_all_time_attempt_count": 2,
+    "assisted_all_time_terminal_attempt_count": 0,
+    "assisted_all_time_maturity_rep_count": 0,
+    "assisted_all_time_filled_round_trip_count": 0,
+    "shadow_outcome_status": "ok",
+    "shadow_outcome_scoreable_count": 22,
+    "shadow_outcome_pending_regular_session_count": 0,
+    "shadow_outcome_stale_pending_count": 0,
+    "wf87_market_probe_status": "daylight_gates_blocked",
+    "wf87_market_probe_daylight_result": "blocked",
+    "wf87_command_center_status": "runtime_blocked",
+    "wf87_command_center_operator_action": "MAIN_HANDOFF_REQUIRED",
+    "wf87_command_center_autonomy_state": "runtime_blocked",
+    "next_safe_action": "Continue scheduled shadow accumulation and GET-only reconciliation; do not enable autonomous paper execution yet."
+  },
+  "steps": [
+    {
+      "name": "wf84_wf85_freshness_repair",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\trade_grade_os_freshness_cron_runner.py",
+        "--component",
+        "daily_core",
+        "--write",
+        "--write-md",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-28T21:40:09Z",
+      "completed_at_utc": "2026-08-28T21:40:48Z",
+      "returncode": 1,
+      "ok": false,
+      "nonzero_returncode_allowed_by_fail_closed_artifact": false,
+      "fail_closed_artifact": null,
+      "fail_closed_artifact_status": null,
+      "fail_closed_artifact_validation_status": null,
+      "duration_ms": 39246.312,
+      "stdout_tail": "status=blocked validation=error operator_action=BLOCKED steps_ok=21/22 wf84=ok wf85_review_ready=0 approval_drafts=0 repair_candidates=3\n  [error] failed_steps:wf84_canonical_data_plane\n  [warning] trade_grade_data_not_ready:24/61_tier_a_b_threshold_48\n  [warning] tier_a_b_band_cron_guard_finance_domain_debt_present\n",
+      "stderr_tail": ""
+    }
+  ],
+  "artifact_records": [
+    {
+      "name": "wf85_freshness_runner",
+      "path": "tmp/trade-grade-os-freshness-cron-runner.json",
+      "exists": true,
+      "status": "blocked",
+      "validation_status": "error",
+      "generated_at_utc": "2026-08-28T21:40:48Z"
+    },
+    {
+      "name": "wf86_shadow_eligibility",
+      "path": "tmp/paper-autotrader/shadow-eligibility.json",
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T18:05:21Z"
+    },
+    {
+      "name": "wf86_assisted_order_cards",
+      "path": "tmp/paper-autotrader/assisted-order-cards.json",
+      "exists": true,
+      "status": "no_current_card_candidate",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-27T21:42:00Z"
+    },
+    {
+      "name": "wf86_shadow_ledger",
+      "path": "tmp/paper-autotrader/shadow-decisions.json",
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T18:05:22Z"
+    },
+    {
+      "name": "paper_reconciliation",
+      "path": "tmp/alpaca-paper-readiness/paper-order-reconciliation.vrt-wf86-assisted-approved.json",
+      "exists": true,
+      "status": "ok",
+      "validation_status": null,
+      "generated_at_utc": "2026-08-27T21:42:02Z"
+    },
+    {
+      "name": "paper_order_history_classifier",
+      "path": "tmp/alpaca-paper-readiness/paper-order-history-classifier.json",
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-27T21:42:03Z"
+    },
+    {
+      "name": "wf86_readiness",
+      "path": "tmp/paper-autotrader/autotrader-readiness.json",
+      "exists": true,
+      "status": "shadow_ready",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-27T21:42:04Z"
+    },
+    {
+      "name": "wf86_guard_readiness",
+      "path": "tmp/paper-autotrader/guard-readiness.json",
+      "exists": true,
+      "status": "blocked",
+      "validation_status": null,
+      "generated_at_utc": "2026-08-27T21:42:04Z"
+    },
+    {
+      "name": "trade_grade_os_rollup",
+      "path": "tmp/trade-grade-os-readiness-rollup.json",
+      "exists": true,
+      "status": "warning",
+      "validation_status": "warning",
+      "generated_at_utc": "2026-08-28T20:57:31Z"
+    },
+    {
+      "name": "wf87_trade_decision_journal",
+      "path": "tmp/paper-autotrader/trade-decision-journal.jsonl",
+      "exists": true,
+      "status": "ok",
+      "validation_status": null,
+      "generated_at_utc": null,
+      "record_count": 51
+    },
+    {
+      "name": "wf87_position_sizing_runtime_check",
+      "path": "tmp/wf87-position-sizing-runtime-check.json",
+      "exists": true,
+      "status": "idle_no_candidates",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T18:05:22Z"
+    },
+    {
+      "name": "wf87_portfolio_circuit_breakers",
+      "path": "tmp/wf87-portfolio-circuit-breakers.json",
+      "exists": true,
+      "status": "blocked",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T18:05:22Z"
+    },
+    {
+      "name": "wf87_approval_freshness_ttl",
+      "path": "tmp/wf87-approval-freshness-ttl.json",
+      "exists": true,
+      "status": "blocked",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T18:05:22Z"
+    },
+    {
+      "name": "wf87_intraday_monitor",
+      "path": "tmp/wf87-intraday-monitor.json",
+      "exists": true,
+      "status": "wake_recommended",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T19:07:01Z"
+    },
+    {
+      "name": "wf87_assisted_paper_cadence",
+      "path": "tmp/wf87-assisted-paper-cadence.json",
+      "exists": true,
+      "status": "candidate_review_window_open",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T18:05:22Z"
+    },
+    {
+      "name": "wf87_shadow_outcome_scorecard",
+      "path": "tmp/wf87-shadow-outcome-scorecard.json",
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T18:05:22Z"
+    },
+    {
+      "name": "wf87_market_hours_gate_probe",
+      "path": "tmp/wf87-market-hours-gate-probe.json",
+      "exists": true,
+      "status": "daylight_gates_blocked",
+      "validation_status": "warning",
+      "generated_at_utc": "2026-08-28T18:05:22Z"
+    },
+    {
+      "name": "wf87_v2_readiness_rollup",
+      "path": "tmp/wf87-v2-readiness-rollup.json",
+      "exists": true,
+      "status": "phase_a_hardening_implemented_runtime_blocked",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T18:05:22Z"
+    },
+    {
+      "name": "wf87_autonomy_command_center",
+      "path": "tmp/wf87-autonomy-command-center.json",
+      "exists": true,
+      "status": "runtime_blocked",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T18:05:22Z"
+    }
+  ],
+  "source_artifacts": {
+    "wf85_freshness_runner": "tmp/trade-grade-os-freshness-cron-runner.json",
+    "wf86_shadow_eligibility": "tmp/paper-autotrader/shadow-eligibility.json",
+    "wf86_assisted_order_cards": "tmp/paper-autotrader/assisted-order-cards.json",
+    "wf86_shadow_ledger": "tmp/paper-autotrader/shadow-decisions.json",
+    "paper_reconciliation": "tmp/alpaca-paper-readiness/paper-order-reconciliation.vrt-wf86-assisted-approved.json",
+    "paper_order_history_classifier": "tmp/alpaca-paper-readiness/paper-order-history-classifier.json",
+    "wf86_readiness": "tmp/paper-autotrader/autotrader-readiness.json",
+    "wf86_guard_readiness": "tmp/paper-autotrader/guard-readiness.json",
+    "trade_grade_os_rollup": "tmp/trade-grade-os-readiness-rollup.json",
+    "wf87_trade_decision_journal": "tmp/paper-autotrader/trade-decision-journal.jsonl",
+    "wf87_position_sizing_runtime_check": "tmp/wf87-position-sizing-runtime-check.json",
+    "wf87_portfolio_circuit_breakers": "tmp/wf87-portfolio-circuit-breakers.json",
+    "wf87_approval_freshness_ttl": "tmp/wf87-approval-freshness-ttl.json",
+    "wf87_intraday_monitor": "tmp/wf87-intraday-monitor.json",
+    "wf87_assisted_paper_cadence": "tmp/wf87-assisted-paper-cadence.json",
+    "wf87_shadow_outcome_scorecard": "tmp/wf87-shadow-outcome-scorecard.json",
+    "wf87_market_hours_gate_probe": "tmp/wf87-market-hours-gate-probe.json",
+    "wf87_v2_readiness_rollup": "tmp/wf87-v2-readiness-rollup.json",
+    "wf87_autonomy_command_center": "tmp/wf87-autonomy-command-center.json"
+  },
+  "stop_lines": [
+    "Cron runner is review-only and GET-only for paper reconciliation.",
+    "No submit, cancel, sell, replace, live endpoint, account action, money movement, or owner approval inference.",
+    "Autonomous paper execution remains disabled until threshold and reconciliation proof are clean and WF67 still gates execution."
+  ],
+  "validation": {
+    "status": "error",
+    "errors": [
+      "failed_steps:wf84_wf85_freshness_repair"
+    ],
+    "warnings": []
+  }
+}

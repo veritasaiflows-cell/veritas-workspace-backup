@@ -5,7 +5,7 @@
   "required": true,
   "owner_workflow": "WF88",
   "contract_reason": "Daily review-only WF88 outcome-grading, WF74 opportunity/router refresh, actionable improvement queue, no-orphan validation, and wiki/front-door refresh so self-improvement recommendations surface as durable action rows without apply authority.",
-  "description": "Daily review-only WF88 outcome-grading, WF74 opportunity/proposal/router refresh, actionable improvement queue, no-orphan validation, and wiki synthesis refresh. Rebuilds WF55 grade history, finance digest, WF74 opportunity/proposal/router packets, WF88 follow-up triage, improvement/actionability packets, WF88 OS2/wiki packets, future-session, startup, and status surfaces. No auto-apply, delete/archive, cron schedule mutation inside run, finance/canon/portfolio mutation, execution, customer output, or owner approval inference.",
+  "description": "Daily review-only WF88 evidence, improvement, no-orphan, wiki, future-session, startup, and status refresh. Finance outcome context is limited to alerts and non-executing recommendations; retired portfolio, sizing, deployment, paper, order, and execution routes are excluded. No auto-apply, delete/archive, cron schedule mutation, external delivery, or owner approval inference.",
   "enabled": true,
   "schedule": {
     "kind": "cron",
@@ -25,7 +25,7 @@
   "payload": {
     "kind": "command",
     "argv": [
-      "python",
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
       "scripts\\wf88_daily_actionability_refresh.py",
       "--write",
       "--validate"
@@ -113,6 +113,6 @@
     "raw_prompt_or_tool_capture_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-06-29T23:57:22Z",
-  "contract_update_reason": "Cron prompt-integrity repair: converted deterministic single-command wrapper from quiet-only agentTurn to direct command payload; schedule/delivery/enablement unchanged."
+  "updated_at_utc": "2026-09-06T22:13:50Z",
+  "contract_update_reason": "Pin command argv to CPython 3.13 so Gateway can spawn the job after python ENOENT auto-failures."
 }

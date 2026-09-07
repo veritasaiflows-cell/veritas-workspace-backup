@@ -2,8 +2,8 @@
 # Current Scorecards And Evals
 
 Canonical page: `wiki/scorecards-and-evals/Current Map.md`
-Canonical rendered SHA-256: `02cc6469225604900ce0adf60c3293601fe9bb013c44720d318a3eda13e3bc1d`.
-Source snapshot SHA-256: `a1233468c72b1cab176cded8e6fe0893cfd2a490d0ea3a9f33f15a2fa81b8e54`.
+Canonical rendered SHA-256: `efd02ad09386cbeb5015f5a40f149cfca3adf22a48643337d4156fffacfe0eb4`.
+Source snapshot SHA-256: `f6ee80a8d183635520f429f34c7ca23360ebdb6d238c1622f6dffae691bee7f1`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -45,7 +45,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - Decision compiler: `9` objects; conflicts `0`; leak guard `True`.
 - RSI later-outcome maturity: `warning_insufficient_real_outcome_evidence`; stable closures `0`; linkage debt `40`.
 - Advanced capability pilots: `6` fixture-ready, `0` executed, `0` promotion-ready.
-- Recommendation later-outcome rows (current preview / durable / grade history): `0` / `247` / `247`. The aggregate `247` uses scope `durable_recommendation_outcome_ledger_max_of_preview_durable_and_grade_history`; model-performance claim allowed now: `False`.
+- Recommendation later-outcome rows (current preview / durable / grade history): `0` / `304` / `304`. The aggregate `304` uses scope `durable_recommendation_outcome_ledger_max_of_preview_durable_and_grade_history`; model-performance claim allowed now: `False`.
 - RSI maturity status from primary WF74 eval: `proof_worker_ready`.
 - WF74 eval primary first-hop surface: `tmp/wf74-learning-loop-eval-harness.json`.
 
@@ -53,20 +53,20 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 
 - Token usage ledger status: `warning`.
 - Token efficiency scorecard status: `warning`.
-- Token events observed: `907`.
-- Total observed tokens: `48819242`.
-- API-equivalent token benchmark (not an invoice): `13.233436` (`partial_unknown_input_semantics_or_missing_rate`; `186/907` events priced).
-- Estimated ChatGPT credits (not an observed debit): `302.49816` (`partial_separate_no_public_rate_or_missing_rate`; `186/907` events priced).
-- Rolling 5h / observed 7d tokens: `137375` / `1193338`; usage timestamp coverage `18.9636`%.
+- Token events observed: `927`.
+- Total observed tokens: `49288324`.
+- API-equivalent token benchmark (not an invoice): `13.453455` (`partial_unknown_input_semantics_or_missing_rate`; `191/927` events priced).
+- Estimated ChatGPT credits (not an observed debit): `307.998645` (`partial_separate_no_public_rate_or_missing_rate`; `191/927` events priced).
+- Rolling 5h / observed 7d tokens: `0` / `348982`; usage timestamp coverage `20.0647`%.
 - Actual billed cost (owner-entered only): `None`.
 - OAuth quota state / remaining / days to reset: `stale` / `58.0` / `0.0`.
-- Cron token events: `721`.
+- Cron token events: `735`.
 - Implementation token events: `1`.
-- Implementation token gaps: `597`.
-- API-call reduction candidates: `6`.
-- Prompt-compression candidates: `6`.
-- Failure-cost candidates: `0`.
-- Top token candidate: `Runtime - OS Audit Companion Packets Refresh`.
+- Implementation token gaps: `598`.
+- API-call reduction candidates: `5`.
+- Prompt-compression candidates: `3`.
+- Failure-cost candidates: `1`.
+- Top token candidate: `Runtime - Status Card Freshness Refresh`.
 
 ## Interpretation
 
@@ -74,4 +74,4 @@ These scorecards prove routing, regression behavior, and cost-attribution target
 
 ## Claim evidence
 
-- `recommendation-outcome-closure`: `{"current_preview_later_outcome_graded_rows":0,"durable_later_outcome_graded_rows":247,"grade_history_graded_ledger_event_count":247,"later_outcome_graded_rows":247}`; authority `review_only`; source refs `wf88_os2_control#/summary/recommendation_later_outcome_graded_rows`, `wf88_os2_control#/summary/recommendation_current_preview_later_outcome_graded_rows`, `wf88_os2_control#/summary/recommendation_durable_later_outcome_graded_rows`, `wf88_os2_control#/summary/recommendation_grade_history_graded_ledger_event_count`.
+- `recommendation-outcome-closure`: `{"current_preview_later_outcome_graded_rows":0,"durable_later_outcome_graded_rows":304,"grade_history_graded_ledger_event_count":304,"later_outcome_graded_rows":304}`; authority `review_only`; source refs `wf88_os2_control#/summary/recommendation_later_outcome_graded_rows`, `wf88_os2_control#/summary/recommendation_current_preview_later_outcome_graded_rows`, `wf88_os2_control#/summary/recommendation_durable_later_outcome_graded_rows`, `wf88_os2_control#/summary/recommendation_grade_history_graded_ledger_event_count`.

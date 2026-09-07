@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
+import market_calendar_freshness as calendar_owner
 import market_execution_readiness_cron_hardening as hardening
 
 
@@ -32,6 +33,11 @@ def test_quote_snapshot_retry_reasons_are_market_hours_only() -> None:
     assert "ITA:calendar_freshness:stale_unexpected" in reasons, reasons
     assert "ITA:freshness:current_but_not_intraday_fresh" in reasons, reasons
     assert hardening.quote_snapshot_retry_reasons(stale, validation, after_close) == []
+
+
+def test_market_calendar_constants_use_the_active_calendar_owner() -> None:
+    assert hardening.NYSE_FULL_HOLIDAYS_2026 is calendar_owner.NYSE_FULL_HOLIDAYS_2026
+    assert hardening.NYSE_EARLY_CLOSES_2026 is calendar_owner.NYSE_EARLY_CLOSES_2026
 
 
 def test_quote_snapshot_validation_gap_triggers_retry() -> None:
@@ -280,6 +286,7 @@ def test_market_date_gate_allows_prior_completed_session_preopen() -> None:
 
 
 def main() -> int:
+    test_market_calendar_constants_use_the_active_calendar_owner()
     test_quote_snapshot_retry_reasons_are_market_hours_only()
     test_quote_snapshot_validation_gap_triggers_retry()
     test_retry_quote_snapshot_if_needed_clears_after_refresh()

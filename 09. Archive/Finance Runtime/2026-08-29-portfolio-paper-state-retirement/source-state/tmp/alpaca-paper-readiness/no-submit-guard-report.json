@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-07-02T02:12:35Z",
+  "artifact_type": "wf63_no_submit_guard_report",
+  "status": "ok",
+  "scope": {
+    "scan_dirs": [
+      "scripts",
+      "skills",
+      "06. Playbooks",
+      "07. Risk"
+    ],
+    "excluded_parts": [
+      ".git",
+      "09. Archive",
+      "node_modules",
+      "tmp"
+    ],
+    "allowed_reference_files": [
+      "06. Playbooks/Project Continuity/Workflow 63 - Alpaca Paper Trading Readiness.md",
+      "06. Playbooks/Project Continuity/Workflow 67 - Alpaca Paper Execution Guardrail.md",
+      "07. Risk/Alpaca Paper Trading Guardrails.md",
+      "scripts/alpaca_paper_execution_guard_validator.py",
+      "scripts/alpaca_paper_readiness_validator.py",
+      "scripts/alpaca_paper_trade_executor.py",
+      "scripts/test_alpaca_paper_readiness_validator.py",
+      "scripts/test_alpaca_paper_trade_executor.py"
+    ]
+  },
+  "authority": {
+    "read_only_static_scan": true,
+    "openclaw_paper_submit_allowed": false,
+    "live_submit_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "brokerage_write_path_allowed": false
+  },
+  "summary": {
+    "critical": 0,
+    "warning": 0
+  },
+  "findings": []
+}

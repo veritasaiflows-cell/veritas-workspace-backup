@@ -511,7 +511,7 @@ def test_startup_efficiency_semantics_are_generated_and_gated() -> None:
                 "total_retry_count": 3,
                 "comparable_cohorts": {},
                 "comparable_cohort_sample_gate": {
-                    "required_accepted_count": 10,
+                    "required_accepted_count": 999,
                     "eligible_cohort_count": 0,
                     "route_ranking_or_promotion_before_gate": False,
                 },
@@ -524,11 +524,12 @@ def test_startup_efficiency_semantics_are_generated_and_gated() -> None:
         token = pages["wiki/scorecards-and-evals/Token Efficiency Map.md"]
         for marker in ["model_free_command", "persistent_isolated_agent", "codex_native_subagent", "actual backend/model/thinking", "What proof is required before dispatching a persistent isolated agent?"]:
             assert marker in cold
-        for marker in ["uncached input tokens per Main-accepted job", "retry tax", "ten comparable Main-accepted jobs", "automatic route ranking and promotion remain disabled", "How should a new session measure token efficiency?"]:
+        for marker in ["uncached input tokens per Main-accepted job", "retry tax", "owner-directed on-demand evidence review", "no fixed cohort pilot is required", "automatic route ranking and promotion remain disabled", "How should a new session measure token efficiency?"]:
             assert marker in token
         assert packet["startup_efficiency_semantic_contract"]["schema"] == module.STARTUP_EFFICIENCY_SEMANTIC_SCHEMA
         assert packet["execution_efficiency_policy"]["schema"] == module.implementation_router.EFFICIENCY_POLICY_SCHEMA
         assert "coding_outcome_premature_route_ranking_or_promotion" not in packet["validation"]["errors"]
+        assert "coding_outcome_comparable_cohort_gate_invalid" not in packet["validation"]["errors"]
 
         tampered = json.loads(json.dumps(packet))
         tampered["startup_efficiency_semantic_contract"]["required_anchors"]["wiki/syntheses/Cold Session Operating Routes.md"].append("missing-semantic-anchor")
@@ -1104,6 +1105,31 @@ def test_component_actions_fail_closed_on_upstream_validation_or_unattested_coun
         assert "frontier_ranking_without_complete_trusted_attestation" in unattested_packet["validation"]["errors"]
 
 
+def test_blocked_token_bridge_blocks_efficiency_claims_not_wiki_content() -> None:
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+        seed_workspace(root, module)
+
+        token_bridge_path = root / module.SOURCES["implementation_token_attribution_bridge"]["path"]
+        token_bridge = json.loads(token_bridge_path.read_text(encoding="utf-8"))
+        token_bridge["status"] = "blocked"
+        token_bridge["validation"]["status"] = "blocked"
+        token_bridge["summary"]["unclassified_supported_runtime_gap_count"] = 1
+        token_bridge["summary"]["closeout_enforcement_required"] = True
+        write_json(token_bridge_path, token_bridge)
+
+        packet = module.build_packet()
+        states = {row["id"]: row["state"] for row in packet["action_items"]}
+        assert packet["validation"]["status"] != "blocked"
+        assert "implementation_token_attribution_bridge_blocked" not in packet["validation"]["errors"]
+        assert (
+            "implementation_token_attribution_bridge_blocked_efficiency_claims_only"
+            in packet["validation"]["warnings"]
+        )
+        assert states["optimize-token-heavy-cron-api-calls"] == "repair_required"
+
+
 if __name__ == "__main__":
     test_wiki_synthesis_routes_recommendations_without_apply_authority()
     test_startup_efficiency_semantics_are_generated_and_gated()
@@ -1117,4 +1143,5 @@ if __name__ == "__main__":
     test_claim_catalog_page_types_and_optional_review_references_are_governed()
     test_claim_catalog_delta_is_comparison_only_and_main_snapshots_prior_packet()
     test_component_actions_fail_closed_on_upstream_validation_or_unattested_counters()
+    test_blocked_token_bridge_blocks_efficiency_claims_not_wiki_content()
     print("wf88 wiki synthesis packet tests passed")

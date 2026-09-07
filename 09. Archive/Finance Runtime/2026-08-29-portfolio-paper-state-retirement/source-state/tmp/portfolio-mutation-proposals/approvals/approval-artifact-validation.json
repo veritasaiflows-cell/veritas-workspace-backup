@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-16T04:29:30Z",
+  "status": "blocked",
+  "input": "tmp/portfolio-mutation-proposals/approvals/draft-etn-scoped-apply-approval-2026-05-14.json",
+  "proposal_id": "post-close:ETN:capital-deployment-review:2026-05-14",
+  "authority": {
+    "approval_artifact_can_scope_owner_file_write": false,
+    "approved_adjustment_categories": [
+      "review_note",
+      "ticker_state"
+    ],
+    "trade_or_account_action_allowed": false,
+    "owner_approval_inferred": false,
+    "legacy_sizing_sleeve_cash_risk_rule_field_allowed": false,
+    "execution_entitlement_allowed": false
+  },
+  "summary": {
+    "critical": 4,
+    "warning": 0
+  },
+  "findings": [
+    {
+      "severity": "critical",
+      "issue": "approval_status must be approved"
+    },
+    {
+      "severity": "critical",
+      "issue": "owner_approval_granted must be true on the approval artifact"
+    },
+    {
+      "severity": "critical",
+      "issue": "scoped_owner_file_write_allowed must be true"
+    },
+    {
+      "severity": "critical",
+      "issue": "canonical_note_write_allowed must be true"
+    }
+  ]
+}

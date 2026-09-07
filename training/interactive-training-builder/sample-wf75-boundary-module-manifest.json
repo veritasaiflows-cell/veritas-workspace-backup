@@ -1,6 +1,6 @@
 {
   "schema": "veritas.interactive_training_module_manifest.v1",
-  "generated_at_utc": "2026-07-04T14:40:02Z",
+  "generated_at_utc": "2026-09-07T04:48:28Z",
   "status": "ok",
   "module_id": "wf75-boundary-practice",
   "outputs": {
@@ -25,13 +25,15 @@
   },
   "counts": {
     "lessons": 2,
-    "interactions": 5,
+    "interactions": 6,
     "xapi_seed_statements": 2,
     "standards_reviewed": 0
   },
   "validation": {
     "errors": [],
-    "warnings": []
+    "warnings": [
+      "screen_recording_placeholder_no_clip:boundary-walkthrough-clip"
+    ]
   },
   "authority_boundary": {
     "internal_training_only": true,

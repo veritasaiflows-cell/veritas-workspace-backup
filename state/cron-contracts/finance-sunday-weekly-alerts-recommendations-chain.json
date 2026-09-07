@@ -1,0 +1,74 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "1d3355fd-a322-455e-a3e9-19393652c837",
+  "name": "Finance - Sunday Weekly Alerts and Recommendations Refresh",
+  "required": true,
+  "owner_workflow": "WF84/WF85 alerts-and-recommendations OS",
+  "contract_reason": "Weekly bounded refresh of guarded SQL, explicit quote proof, alert freshness, and non-executing recommendation evidence.",
+  "description": "Deterministic Sunday weekly alerts-and-recommendations chain over guarded SQL, explicit quote proof, the alert-level controller, and a non-delivery weekly digest. No portfolio state, paper/live execution, accounts, capital, or approval authority.",
+  "enabled": true,
+  "deleteAfterRun": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 8 * * 0",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "python",
+      "scripts\\run_alerts_recommendations_chain.py",
+      "weekly",
+      "--timeout-seconds",
+      "120",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 600
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "deleteAfterRun",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/alerts-recommendations-chain-weekly.json",
+    "tmp/alert-level-freshness-controller.json",
+    "tmp/finance-alert-os-weekly-digest.json",
+    "tmp/intraday-alerts/quote-snapshot-proof.json",
+    "tmp/intraday-alerts/quote-snapshot-proof-validation.json",
+    "tmp/finance-sql-canon-access-validation.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "alerts_and_non_executing_recommendations_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "finance_alert_canon_mutation_allowed": false,
+    "portfolio_state_maintenance_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-08-30T02:07:00Z",
+  "contract_update_reason": "Replaced the legacy printable portfolio/deployment refresh with the deterministic alerts-and-recommendations chain while preserving its Sunday cadence."
+}

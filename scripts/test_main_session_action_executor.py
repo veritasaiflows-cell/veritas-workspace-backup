@@ -45,15 +45,15 @@ def configure_paths(module, root: Path) -> None:
 
 def base_job() -> dict:
     return {
-        "job_id": "pm-01-trade-grade-decision-os-execute-safe-next-step",
+        "job_id": "pm-01-runtime-proof-refresh",
         "rank": 1,
         "status": "ready_for_main_or_helper",
-        "title": "Advance WF85 Personal Trade-Grade Decision OS",
-        "implementation_class": "trade_grade_decision_os",
-        "collision_group": "trade_grade_decision_os",
+        "title": "Refresh runtime health proof",
+        "implementation_class": "runtime_proof_refresh",
+        "collision_group": "runtime_proof_refresh",
         "readiness_score": 90,
-        "target_files": ["scripts/trade_grade_decision_os_contract.py"],
-        "proof_commands": ["python scripts\\trade_grade_decision_os_contract.py --write --validate"],
+        "target_files": ["scripts/runtime_health_proof.py"],
+        "proof_commands": ["python scripts\\runtime_health_proof.py --write --validate"],
         "validation_budget": {"budget": "narrow"},
         "closeout_mode": "pm_state",
         "helper_packet": {"packet_id": "pm-01-helper"},
@@ -183,8 +183,68 @@ def test_main_context_selects_proof_execution() -> None:
         report = module.build_report(run_args)
         assert report["validation"]["status"] == "ok"
         assert report["action"]["action_type"] == "execute_pm_proof"
-        assert report["summary"]["selected_pm_job"]["job_id"] == "pm-01-trade-grade-decision-os-execute-safe-next-step"
+        assert report["summary"]["selected_pm_job"]["job_id"] == "pm-01-runtime-proof-refresh"
         assert report["summary"]["executed"] is False
+
+
+def test_retired_finance_routes_are_suppressed_even_when_marked_safe() -> None:
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+        configure_paths(module, root)
+        retired = base_job()
+        retired.update({
+            "job_id": "wf86-shadow-reconciliation",
+            "rank": 1,
+            "title": "WF86 shadow reconciliation",
+            "implementation_class": "wf86_shadow_reconciliation",
+            "collision_group": "wf86",
+            "target_files": ["scripts/wf86_daily_shadow_reconciliation_cron_runner.py"],
+            "proof_commands": ["python scripts\\wf86_daily_shadow_reconciliation_cron_runner.py --write --validate"],
+        })
+        safe = base_job()
+        safe["rank"] = 2
+        write_surfaces(module, root, retired)
+        pm = json.loads(module.PM_CONTROL.read_text(encoding="utf-8"))
+        pm["sections"]["pm_implementation_job_queue"]["jobs"].append(safe)
+        write_json(module.PM_CONTROL, pm)
+        run_args = args("main_session")
+        run_args.ledger = module.LEDGER
+        report = module.build_report(run_args)
+        assert report["validation"]["status"] == "ok"
+        assert report["summary"]["selected_pm_job"]["job_id"] == "pm-01-runtime-proof-refresh"
+        assert "wf86" not in json.dumps(report).lower()
+
+        run_args.execute_safe = True
+        crafted = {"action_type": "execute_pm_proof", "selected_pm_job": {"job_id": "wf86-shadow-reconciliation"}}
+        assert module.execute_action(crafted, run_args) == []
+
+        safe["automation_capabilities"]["auto_main_may_execute"] = False
+        safe["automation_capabilities"]["auto_cron_may_execute"] = False
+        write_surfaces(module, root, safe)
+        write_json(module.PARALLEL_RECOMMENDATION, {
+            "status": "ok",
+            "lease_command": "python scripts\\concurrent_lane_manager.py --lease WF76 --workstream retired --write --validate",
+            "summary": {"eligible_candidate_count": 1},
+            "recommendation": {"top_candidate": {
+                "workflow_id": "WF76",
+                "workstream_id": "retired-finance",
+                "title": "Retired finance route",
+                "pm_job_id": "wf76-retired",
+            }},
+        })
+        report = module.build_report(run_args)
+        assert report["action"]["action_type"] == "no_action"
+        assert "wf76" not in json.dumps(report).lower()
+
+        priority = priority_item(module, "wf86-priority", "P0")
+        priority["next_action"] = "Run WF86 shadow reconciliation."
+        priority["acceptance_proof"]["artifact"] = "tmp/wf86-shadow-reconciliation.json"
+        write_priority_handoff(module, priority)
+        report = module.build_report(run_args)
+        assert report["validation"]["status"] == "blocked"
+        assert report["action"]["selected_priority_item"] == {}
+        assert "wf86" not in json.dumps(report).lower()
 
 
 def test_heartbeat_context_never_executes_phase() -> None:
@@ -290,7 +350,7 @@ def test_p2_priority_is_monitor_only_and_does_not_starve_generic_pm_work() -> No
         report = module.build_report(run_args)
         assert report["validation"]["status"] == "ok"
         assert report["action"]["action_type"] == "execute_pm_proof"
-        assert report["summary"]["selected_pm_job"]["job_id"] == "pm-01-trade-grade-decision-os-execute-safe-next-step"
+        assert report["summary"]["selected_pm_job"]["job_id"] == "pm-01-runtime-proof-refresh"
 
 
 def test_tampered_priority_authority_and_selection_are_blocked() -> None:
@@ -447,6 +507,7 @@ def test_closeout_uses_cron_execution_eligibility() -> None:
 
 def main() -> int:
     test_main_context_selects_proof_execution()
+    test_retired_finance_routes_are_suppressed_even_when_marked_safe()
     test_heartbeat_context_never_executes_phase()
     test_priority_handoff_precedes_generic_pm_work()
     test_heartbeat_execute_safe_is_blocked_and_direct_execution_fails_closed()

@@ -1,0 +1,4225 @@
+{
+  "schema": "veritas.trade_grade_risk_sizing_overlay.v1",
+  "generated_at_utc": "2026-08-29T21:44:07Z",
+  "workflow_id": "WF85",
+  "status": "ok",
+  "summary": {
+    "risk_posture_counts": {
+      "refresh_first": 11,
+      "wait_no_chase": 80,
+      "do_not_touch_invalidation_review": 63,
+      "monitor_or_repair_first": 146
+    },
+    "row_count": 300
+  },
+  "rows": [
+    {
+      "ticker": "BRK.B",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "refresh_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Refresh source/quote/card path before any decision-card promotion.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "LIN",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "refresh_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Refresh source/quote/card path before any decision-card promotion.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "LLY",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "refresh_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Refresh source/quote/card path before any decision-card promotion.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BKNG",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "refresh_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Refresh source/quote/card path before any decision-card promotion.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CVX",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "GOOG",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "refresh_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Refresh source/quote/card path before any decision-card promotion.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ITA",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "JPM",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "NVDA",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "VRT",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "refresh_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Refresh source/quote/card path before any decision-card promotion.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "XLB",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "XOM",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "refresh_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Refresh source/quote/card path before any decision-card promotion.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "PH",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "refresh_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Refresh source/quote/card path before any decision-card promotion.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AAPL",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ABBV",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ACN",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ADBE",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ADI",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ADP",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ADSK",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AJG",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AKAM",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ALB",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ALLE",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AMAT",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AMCR",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AME",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ANET",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AON",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AOS",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "APD",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "APH",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "APP",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AVGO",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AXON",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CASY",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CCL",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CDNS",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CRM",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CRWD",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DASH",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DDOG",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DECK",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EMR",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ETN",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "refresh_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Refresh source/quote/card path before any decision-card promotion.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "FCX",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "GS",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "refresh_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Refresh source/quote/card path before any decision-card promotion.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "MA",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "MDB",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "MSFT",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "MU",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "NOW",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "PANW",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "PLTR",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "QCOM",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "SCCO",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "SHOP",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "SNOW",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "TSM",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "TXN",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "V",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AMD",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AMZN",
+      "decision_state": "no_chase",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CAT",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "GE",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "KTOS",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "META",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "NFLX",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "PAVE",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "RTX",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "TMUS",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "VMC",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "XLC",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "A",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ABNB",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ABT",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ACGL",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ADM",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AEE",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AEP",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AES",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AFL",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AIG",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AIZ",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ALGN",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ALL",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AMGN",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AMP",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AMT",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "APA",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "APO",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "APTV",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ARE",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ARES",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ASML",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ATO",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AVB",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AVY",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AWK",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AXP",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "AZO",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BA",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BAC",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BALL",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BAX",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BBY",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BDX",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BEN",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BF-B",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BG",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BIIB",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BKR",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BLDR",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BLK",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BMY",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BNY",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BR",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BRO",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BSX",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BX",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "BXP",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "C",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CAG",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CAH",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CARR",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CB",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CBOE",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CBRE",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CCI",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CDW",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CEG",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CF",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CFG",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CHD",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CHRW",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CHTR",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CI",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CIEN",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CINF",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CL",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CLX",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CMCSA",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CME",
+      "decision_state": "no_chase",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CMG",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CMI",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CMS",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CNC",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CNP",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "COHR",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "COO",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "COP",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "COR",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "COST",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CPB",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CPRT",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CPT",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CRH",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CRL",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CSCO",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CSGP",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CSX",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CTAS",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CTSH",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CTVA",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CVNA",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "CVS",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "D",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DAL",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DD",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DE",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DELL",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DG",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DGX",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DHI",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DHR",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DIS",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DLR",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DLTR",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DOC",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DOV",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DOW",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DPZ",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DRI",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DTE",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DUK",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DVA",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "DVN",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EA",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EBAY",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ECL",
+      "decision_state": "no_chase",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ED",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EFX",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EIX",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EL",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EME",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EOG",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EQIX",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EQR",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EQT",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ES",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ESS",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ETR",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EVRG",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EXC",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EXE",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EXPD",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EXPE",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "EXR",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "F",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "FANG",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "FAST",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "FE",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "FFIV",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "FICO",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "FLEX",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "FOX",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "FOXA",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "FRT",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "FSLR",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "GD",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "GIS",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "GM",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "GOOGL",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "GPC",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "GRMN",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "HAL",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "HAS",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "HD",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "HON",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "HRL",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "HST",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "HSY",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "IFF",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "INTU",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "INVH",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "IP",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "IRM",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ISRG",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "KDP",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "KHC",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "KMB",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "KMI",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "LMT",
+      "decision_state": "blocked_missing_freshness",
+      "risk_posture": "refresh_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Refresh source/quote/card path before any decision-card promotion.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "LNG",
+      "decision_state": "no_chase",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "LNT",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "LYB",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "LYV",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "MCD",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "MCK",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "MLM",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "MOS",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "MPC",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "NEE",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "NEM",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "NI",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "NOC",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "NUE",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "NWS",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "NWSA",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "OKE",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "OMC",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ORCL",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "ORLY",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "OXY",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "PEP",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "PG",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "PKG",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "PPG",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "PSKY",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "PSX",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "SAP",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "SHW",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "SLB",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "SLV",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "SMCI",
+      "decision_state": "no_chase",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "SO",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "STLD",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "SYK",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "T",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "TDG",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "BELOW_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "TKO",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "TLT",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "TMO",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "TPL",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "TRGP",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "TTD",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "TTWO",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "UBER",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "UNH",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "UNP",
+      "decision_state": "monitor_only",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "URI",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "IN_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "VAW",
+      "decision_state": "no_chase",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "VLO",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "VXUS",
+      "decision_state": "no_chase",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "VZ",
+      "decision_state": "monitor_only",
+      "risk_posture": "monitor_or_repair_first",
+      "band_status": "missing_required_refresh",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Repair evidence or keep monitor-only.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "WMB",
+      "decision_state": "no_chase",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "WMT",
+      "decision_state": "below_stop_or_invalidation",
+      "risk_posture": "do_not_touch_invalidation_review",
+      "band_status": "BELOW_STOP",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Review invalidation/stop breach; no add proposal.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "XLE",
+      "decision_state": "no_chase",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "XLF",
+      "decision_state": "no_chase",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "ticker": "XLI",
+      "decision_state": "no_chase",
+      "risk_posture": "wait_no_chase",
+      "band_status": "ABOVE_BAND",
+      "sizing_staggering": "recommendation_only_no_cash_or_portfolio_mutation",
+      "next_safe_action": "Wait for a better entry or refreshed band review.",
+      "authority_boundary": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "portfolio_or_cash_mutation_allowed": false,
+        "owner_approval_inferred": false
+      }
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "sizing_staggering_recommendation_only": true,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "portfolio_or_cash_mutation_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

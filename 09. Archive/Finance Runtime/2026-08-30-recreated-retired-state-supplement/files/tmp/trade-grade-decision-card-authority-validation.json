@@ -1,0 +1,18 @@
+{
+  "schema": "veritas.trade_grade_decision_card_authority_validation.v1",
+  "generated_at_utc": "2026-08-30T03:18:20Z",
+  "workflow_id": "WF85",
+  "status": "ok",
+  "summary": {
+    "scanned_card_count": 0,
+    "false_authority_violation_count": 0,
+    "forbidden_action_phrase_count": 0
+  },
+  "false_authority_violations": [],
+  "forbidden_action_phrase_hits": [],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

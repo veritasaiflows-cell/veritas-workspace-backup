@@ -1,0 +1,118 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-08-28T02:51:52Z",
+  "artifact_type": "finance_intelligence_state_source_proof_packet",
+  "db_path": "tmp/finance-intelligence-state.sqlite",
+  "authority_boundary": {
+    "review_only": true,
+    "database_path": "tmp/finance-intelligence-state.sqlite",
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_sql_canon_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_sql_canon_current_state_field_families": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "tmp_database_is_compatibility_cache": true,
+    "database_path_migration_performed": false,
+    "tmp_database_promotion_performed": false,
+    "full_sql_canon_migration_allowed": false,
+    "sql_canon_authority_expanded": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_trade_execution_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "source_open_required_before_finance_claims": true
+  },
+  "answer_contract": {
+    "sql_is_routing_and_current_state_only": true,
+    "material_finance_claim_requires_source_open": true,
+    "canonical_markdown_remains_owner_truth": true,
+    "must_not_infer_approval_or_execution_authority": true,
+    "must_disclose_stale_or_conflicting_rows": true
+  },
+  "sql_canon_migration": {
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_current_state_field_families_promoted": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "this_tmp_db_is_compatibility_cache": true,
+    "sql_canon_authority_expanded": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "status": "ok",
+  "ticker": "CME",
+  "card": {
+    "ticker": "CME",
+    "card_path": "tmp/ticker-intelligence-cards/CME.current.json",
+    "card_generated_at_utc": "2026-08-27T20:55:42Z",
+    "source_open_required": 1
+  },
+  "entry_stop_owner_proof": {
+    "ticker": "CME",
+    "owner_note_path": "03. Portfolio/Execution Board.md",
+    "source_artifact_path": "tmp/band-proposals.json",
+    "source_artifact_hash": "66b5818d66e36d5d899724b69aa4c6d5f9ff59f2d8b4e408e72a459925243e90",
+    "source_timestamp": "2026-08-21T20:31:52.979543+00:00",
+    "freshness_status": "current",
+    "validation_status": "ok"
+  },
+  "provenance": [
+    {
+      "ticker": "CME",
+      "source_kind": "card",
+      "source_path": "tmp/ticker-intelligence-cards/CME.current.json",
+      "generated_at_utc": "2026-08-27T20:55:42Z"
+    },
+    {
+      "ticker": "CME",
+      "source_kind": "competitive_moat",
+      "source_path": "tmp/official-earnings-bridge.json",
+      "generated_at_utc": null
+    },
+    {
+      "ticker": "CME",
+      "source_kind": "entry_stop_reference",
+      "source_path": "tmp/band-proposals.json",
+      "generated_at_utc": "2026-08-21T20:31:52.979543+00:00"
+    },
+    {
+      "ticker": "CME",
+      "source_kind": "official_capture_developments_orders_backlog",
+      "source_path": "tmp/official-earnings-bridge.json",
+      "generated_at_utc": null
+    },
+    {
+      "ticker": "CME",
+      "source_kind": "orders_backlog_book_to_bill",
+      "source_path": "tmp/official-earnings-bridge.json",
+      "generated_at_utc": null
+    },
+    {
+      "ticker": "CME",
+      "source_kind": "recent_developments",
+      "source_path": "tmp/official-earnings-bridge.json",
+      "generated_at_utc": null
+    }
+  ],
+  "source_open_rule": "Open the listed source artifact or owner note before making a material finance, readiness, recommendation, or authority claim."
+}

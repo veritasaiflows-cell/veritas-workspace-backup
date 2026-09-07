@@ -1,6 +1,6 @@
 ---
 name: "ai-drop-service-os-contract"
-description: "GPT-5.6 Sol/Terra/Luna routing migration"
+description: "Design and govern AI drop-service delivery workflows."
 ---
 
 # AI Drop-Service OS Contract
@@ -112,6 +112,8 @@ Avoid starting with:
 
 ## Logical Multi-Agent Department Model
 
+These are task roles, not instructions to create additional persistent agents. Map them onto the current roster: Main owns architecture and acceptance; Research Scout handles public research and bounded offer drafting; Implementation Builder handles delivery-system code and templates; QA Red-Team challenges claims and implementations; Docs Continuity Editor handles accepted continuity updates.
+
 Main Veritas session:
 
 - owns strategy, truth integration, authority boundaries, final recommendation, and user-facing closeout
@@ -124,51 +126,44 @@ Research Scout helper:
 - writes only to a leased research packet or returns a draft
 - stop line: no final recommendation, no outreach, no claims without sources
 
-Offer Architect helper:
+Offer Architect task on Research Scout:
 
 - drafts offer, niche hypothesis, deliverables, pricing logic, guarantee-safe language, and intake questions
 - stop line: no legal/tax/compliance claim and no public-facing launch without main review
 
-Workflow Engineer helper:
+Workflow Engineer task on Implementation Builder:
 
 - designs the actual delivery system: intake, diagnosis, automation map, artifact templates, acceptance checklist, and implementation proof
 - may draft scripts/templates only to leased paths
 - stop line: no credential, vendor, customer, or runtime mutation
 
-QA / Red-Team helper:
+QA / Red-Team task on QA Red-Team:
 
 - challenges the offer for hype, weak evidence, operational risk, privacy risk, delivery gaps, and over-promising
 - verifies that claims are evidence-backed and that the delivery contract can be fulfilled
 
-Continuity / Recovery helper:
+Continuity / Recovery task on Docs Continuity Editor:
 
 - builds or checks the long-work packet, compaction recovery notes, lane status, proof artifacts, and next-pickup instructions
 - ensures a future session can resume without relying on chat memory
 
 ## Physical Isolated-Agent Topology
 
-Start logical before physical. Use transient `sessions_spawn` helper lanes until the role proves repeated value. Promote a role into a persistent isolated OpenClaw agent only when it needs its own memory, workspace, auth posture, schedule, or standing routing.
+Use the existing persistent roster before considering another agent. OpenClaw does not auto-discover agents from a workspace folder; live `agents.list[]` configuration is the authority. Verify it with `openclaw agents list --json` before dispatch.
 
-Path truth: OpenClaw does not auto-discover agents from a fixed `~/.openclaw/workspaces/` folder. Persistent isolated agents are configured through explicit `agents.list[].workspace` and `agents.list[].agentDir` values. The workspace paths below are examples only; use the actual approved path in the `agents.list[]` entry and verify with `openclaw agents list --json` before treating an agent as configured.
+Current approved roster:
 
-Recommended initial persistent roster after approval:
+| Agent | Purpose | Exact model |
+|---|---|---|
+| `main` | architect, queue owner, final integrator, and acceptance owner | `openai/gpt-5.6-sol` |
+| `research-scout` | public market, competitor, niche, and offer research | `openai/gpt-5.6-terra` |
+| `implementation-builder` | scoped implementation and proof | `meta/muse-spark-1.3-contributor` |
+| `qa-redteam` | independent implementation and claim review | `ollama-cloud/glm-5.3:cloud` |
+| `docs-continuity-editor` | accepted documentation and continuity updates | `ollama-cloud/glm-5.3-flash:cloud` |
+| `finance-source-scout` | finance evidence gathering | `openai/gpt-5.6-terra` |
+| `finance-redteam` | independent finance challenge | `openai/gpt-5.6-terra` |
 
-| Agent | Purpose | Suggested model | Workspace | Agent dir |
-|---|---|---|---|---|
-| `veritas-ceo` or existing `main` | Orchestrator/final integrator | `openai/gpt-5.6-sol`, high for premium builds | `~/.openclaw/workspace` | existing main |
-| `research-scout` | public market/competitor/niche research | cheaper read-only model or GPT-5.6 Luna/GPT-5.6 Terra depending quality | explicit `agents.list[].workspace`, for example `~/.openclaw/workspace-research-scout` | `~/.openclaw/agents/research-scout/agent` |
-| `offer-architect` | offer, buyer, pricing, copy, packaging | GPT-5.6 Terra for serious or routine helper work for bounded drafting | explicit `agents.list[].workspace`, for example `~/.openclaw/workspace-offer-architect` | `~/.openclaw/agents/offer-architect/agent` |
-| `workflow-engineer` | templates, SOPs, internal automation design | GPT-5.6 Terra for routine implementation | explicit `agents.list[].workspace`, for example `~/.openclaw/workspace-workflow-engineer` | `~/.openclaw/agents/workflow-engineer/agent` |
-| `qa-redteam` | challenge/review claims, risk, privacy, quality | GPT-5.6 Terra/DeepSeek challenger as draft only | explicit `agents.list[].workspace`, for example `~/.openclaw/workspace-qa-redteam` | `~/.openclaw/agents/qa-redteam/agent` |
-| `continuity-clerk` | memory, recovery packets, status, next steps | GPT-5.6 Terra; Luna only for a separately proven deterministic cron turn | explicit `agents.list[].workspace`, for example `~/.openclaw/workspace-continuity-clerk` | `~/.openclaw/agents/continuity-clerk/agent` |
-
-Example creation command shape after exact owner approval:
-
-```powershell
-openclaw agents add research-scout --workspace "$HOME\.openclaw\workspace-research-scout" --agent-dir "$HOME\.openclaw\agents\research-scout\agent" --model openai/gpt-5.6-terra --non-interactive --json
-```
-
-Do not run `openclaw agents add` with placeholders. Use exact names, exact paths, exact models, and a rollback/delete plan. A local convention such as `$HOME\.openclaw\workspaces\research-scout` is acceptable only when the specific `agents.list[]` entry explicitly points there; do not describe it as automatic discovery.
+Treat logical offer architecture, workflow engineering, and recovery roles as bounded assignments to this roster, not reasons to create duplicate persistent agents. Add a new agent only after repeated work proves an unmet capability, isolation, memory, tool-policy, or standing-routing need and Randall explicitly approves the config mutation.
 
 Each persistent agent should have:
 
@@ -287,7 +282,7 @@ Minimum recovery surfaces:
 
 After compaction or recovery:
 
-1. Read `SOUL.md`, `USER.md`, `TOOLS.md`, Startup Truth Index, today/yesterday memory, and the work packet.
+1. Read `SOUL.md`, `USER.md`, `AGENTS.md` and its local route map, Startup Truth Index, today/yesterday memory, and the work packet.
 2. Reconstruct the objective, stop lines, source surfaces, and latest accepted state.
 3. Check lane register before writing.
 4. Resume from `next_safe_step`, not from scratch.
@@ -314,11 +309,11 @@ Phase 2: Delivery OS v0
 - define helper-lane prompts and acceptance checks
 - run a dry internal test from fake client brief to final packet
 
-Phase 3: Persistent agent pilot
+Phase 3: Existing persistent-agent pilot
 
-- create only 1-2 persistent isolated agents first, usually `research-scout` and `qa-redteam`
-- keep them read-only or distinct-output
-- verify agent-specific memory, team-board sync, and message routing
+- use the current configured specialist roster before proposing another agent
+- keep research and QA read-only or distinct-output; use Builder write access only through the scoped sandbox/writeback contract
+- verify agent-specific bootstraps, transport, model parity, memory boundaries, and message routing
 - no external channel bindings unless exact approval exists
 
 Phase 4: Private pilot readiness

@@ -1,0 +1,1238 @@
+{
+  "schema_version": 1,
+  "artifact_type": "wf77_ticker_card_registry_build_summary",
+  "generated_at_utc": "2026-06-06T03:15:29Z",
+  "status": "ok",
+  "mode": "all_from_coverage",
+  "validate_only": false,
+  "requested_ticker_count": 200,
+  "cards": [
+    {
+      "ticker": "A",
+      "path": "tmp\\ticker-intelligence-cards\\A.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AAPL",
+      "path": "tmp\\ticker-intelligence-cards\\AAPL.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ABBV",
+      "path": "tmp\\ticker-intelligence-cards\\ABBV.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ABNB",
+      "path": "tmp\\ticker-intelligence-cards\\ABNB.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ABT",
+      "path": "tmp\\ticker-intelligence-cards\\ABT.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ACGL",
+      "path": "tmp\\ticker-intelligence-cards\\ACGL.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ACN",
+      "path": "tmp\\ticker-intelligence-cards\\ACN.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ADBE",
+      "path": "tmp\\ticker-intelligence-cards\\ADBE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ADI",
+      "path": "tmp\\ticker-intelligence-cards\\ADI.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ADM",
+      "path": "tmp\\ticker-intelligence-cards\\ADM.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ADP",
+      "path": "tmp\\ticker-intelligence-cards\\ADP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ADSK",
+      "path": "tmp\\ticker-intelligence-cards\\ADSK.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AEE",
+      "path": "tmp\\ticker-intelligence-cards\\AEE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AEP",
+      "path": "tmp\\ticker-intelligence-cards\\AEP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AES",
+      "path": "tmp\\ticker-intelligence-cards\\AES.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AFL",
+      "path": "tmp\\ticker-intelligence-cards\\AFL.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AIG",
+      "path": "tmp\\ticker-intelligence-cards\\AIG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AIZ",
+      "path": "tmp\\ticker-intelligence-cards\\AIZ.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AJG",
+      "path": "tmp\\ticker-intelligence-cards\\AJG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AKAM",
+      "path": "tmp\\ticker-intelligence-cards\\AKAM.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ALB",
+      "path": "tmp\\ticker-intelligence-cards\\ALB.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ALGN",
+      "path": "tmp\\ticker-intelligence-cards\\ALGN.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ALL",
+      "path": "tmp\\ticker-intelligence-cards\\ALL.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ALLE",
+      "path": "tmp\\ticker-intelligence-cards\\ALLE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AMAT",
+      "path": "tmp\\ticker-intelligence-cards\\AMAT.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AMCR",
+      "path": "tmp\\ticker-intelligence-cards\\AMCR.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AMD",
+      "path": "tmp\\ticker-intelligence-cards\\AMD.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AME",
+      "path": "tmp\\ticker-intelligence-cards\\AME.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AMGN",
+      "path": "tmp\\ticker-intelligence-cards\\AMGN.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AMP",
+      "path": "tmp\\ticker-intelligence-cards\\AMP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AMT",
+      "path": "tmp\\ticker-intelligence-cards\\AMT.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AMZN",
+      "path": "tmp\\ticker-intelligence-cards\\AMZN.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ANET",
+      "path": "tmp\\ticker-intelligence-cards\\ANET.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AON",
+      "path": "tmp\\ticker-intelligence-cards\\AON.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AOS",
+      "path": "tmp\\ticker-intelligence-cards\\AOS.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "APA",
+      "path": "tmp\\ticker-intelligence-cards\\APA.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "APD",
+      "path": "tmp\\ticker-intelligence-cards\\APD.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "APH",
+      "path": "tmp\\ticker-intelligence-cards\\APH.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "APO",
+      "path": "tmp\\ticker-intelligence-cards\\APO.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "APP",
+      "path": "tmp\\ticker-intelligence-cards\\APP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "APTV",
+      "path": "tmp\\ticker-intelligence-cards\\APTV.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ARE",
+      "path": "tmp\\ticker-intelligence-cards\\ARE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ARES",
+      "path": "tmp\\ticker-intelligence-cards\\ARES.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ASML",
+      "path": "tmp\\ticker-intelligence-cards\\ASML.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ATO",
+      "path": "tmp\\ticker-intelligence-cards\\ATO.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AVB",
+      "path": "tmp\\ticker-intelligence-cards\\AVB.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AVGO",
+      "path": "tmp\\ticker-intelligence-cards\\AVGO.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AVY",
+      "path": "tmp\\ticker-intelligence-cards\\AVY.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AWK",
+      "path": "tmp\\ticker-intelligence-cards\\AWK.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AXON",
+      "path": "tmp\\ticker-intelligence-cards\\AXON.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AXP",
+      "path": "tmp\\ticker-intelligence-cards\\AXP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "AZO",
+      "path": "tmp\\ticker-intelligence-cards\\AZO.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BA",
+      "path": "tmp\\ticker-intelligence-cards\\BA.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BALL",
+      "path": "tmp\\ticker-intelligence-cards\\BALL.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BAX",
+      "path": "tmp\\ticker-intelligence-cards\\BAX.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BBY",
+      "path": "tmp\\ticker-intelligence-cards\\BBY.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BDX",
+      "path": "tmp\\ticker-intelligence-cards\\BDX.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BF-B",
+      "path": "tmp\\ticker-intelligence-cards\\BF-B.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BG",
+      "path": "tmp\\ticker-intelligence-cards\\BG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BIIB",
+      "path": "tmp\\ticker-intelligence-cards\\BIIB.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BKNG",
+      "path": "tmp\\ticker-intelligence-cards\\BKNG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BKR",
+      "path": "tmp\\ticker-intelligence-cards\\BKR.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BLDR",
+      "path": "tmp\\ticker-intelligence-cards\\BLDR.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BMY",
+      "path": "tmp\\ticker-intelligence-cards\\BMY.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BR",
+      "path": "tmp\\ticker-intelligence-cards\\BR.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BRK.B",
+      "path": "tmp\\ticker-intelligence-cards\\BRK.B.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 1
+    },
+    {
+      "ticker": "BSX",
+      "path": "tmp\\ticker-intelligence-cards\\BSX.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "BXP",
+      "path": "tmp\\ticker-intelligence-cards\\BXP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CAG",
+      "path": "tmp\\ticker-intelligence-cards\\CAG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CARR",
+      "path": "tmp\\ticker-intelligence-cards\\CARR.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CASY",
+      "path": "tmp\\ticker-intelligence-cards\\CASY.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CAT",
+      "path": "tmp\\ticker-intelligence-cards\\CAT.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CBRE",
+      "path": "tmp\\ticker-intelligence-cards\\CBRE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CCI",
+      "path": "tmp\\ticker-intelligence-cards\\CCI.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CCL",
+      "path": "tmp\\ticker-intelligence-cards\\CCL.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CDNS",
+      "path": "tmp\\ticker-intelligence-cards\\CDNS.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CEG",
+      "path": "tmp\\ticker-intelligence-cards\\CEG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CF",
+      "path": "tmp\\ticker-intelligence-cards\\CF.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CHD",
+      "path": "tmp\\ticker-intelligence-cards\\CHD.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CHRW",
+      "path": "tmp\\ticker-intelligence-cards\\CHRW.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CHTR",
+      "path": "tmp\\ticker-intelligence-cards\\CHTR.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CL",
+      "path": "tmp\\ticker-intelligence-cards\\CL.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CLX",
+      "path": "tmp\\ticker-intelligence-cards\\CLX.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CMCSA",
+      "path": "tmp\\ticker-intelligence-cards\\CMCSA.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CME",
+      "path": "tmp\\ticker-intelligence-cards\\CME.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CMG",
+      "path": "tmp\\ticker-intelligence-cards\\CMG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CMS",
+      "path": "tmp\\ticker-intelligence-cards\\CMS.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CNP",
+      "path": "tmp\\ticker-intelligence-cards\\CNP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "COP",
+      "path": "tmp\\ticker-intelligence-cards\\COP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "COST",
+      "path": "tmp\\ticker-intelligence-cards\\COST.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CPB",
+      "path": "tmp\\ticker-intelligence-cards\\CPB.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CPT",
+      "path": "tmp\\ticker-intelligence-cards\\CPT.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CRH",
+      "path": "tmp\\ticker-intelligence-cards\\CRH.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CRM",
+      "path": "tmp\\ticker-intelligence-cards\\CRM.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CRWD",
+      "path": "tmp\\ticker-intelligence-cards\\CRWD.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CSGP",
+      "path": "tmp\\ticker-intelligence-cards\\CSGP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CTVA",
+      "path": "tmp\\ticker-intelligence-cards\\CTVA.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CVNA",
+      "path": "tmp\\ticker-intelligence-cards\\CVNA.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "CVX",
+      "path": "tmp\\ticker-intelligence-cards\\CVX.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "D",
+      "path": "tmp\\ticker-intelligence-cards\\D.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "DASH",
+      "path": "tmp\\ticker-intelligence-cards\\DASH.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "DD",
+      "path": "tmp\\ticker-intelligence-cards\\DD.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "DDOG",
+      "path": "tmp\\ticker-intelligence-cards\\DDOG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "DE",
+      "path": "tmp\\ticker-intelligence-cards\\DE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "DECK",
+      "path": "tmp\\ticker-intelligence-cards\\DECK.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "DIS",
+      "path": "tmp\\ticker-intelligence-cards\\DIS.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "DLR",
+      "path": "tmp\\ticker-intelligence-cards\\DLR.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "DOW",
+      "path": "tmp\\ticker-intelligence-cards\\DOW.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "DTE",
+      "path": "tmp\\ticker-intelligence-cards\\DTE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "DUK",
+      "path": "tmp\\ticker-intelligence-cards\\DUK.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "DVN",
+      "path": "tmp\\ticker-intelligence-cards\\DVN.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "EA",
+      "path": "tmp\\ticker-intelligence-cards\\EA.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ECL",
+      "path": "tmp\\ticker-intelligence-cards\\ECL.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "EMR",
+      "path": "tmp\\ticker-intelligence-cards\\EMR.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "EOG",
+      "path": "tmp\\ticker-intelligence-cards\\EOG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "EQT",
+      "path": "tmp\\ticker-intelligence-cards\\EQT.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ETN",
+      "path": "tmp\\ticker-intelligence-cards\\ETN.current.json",
+      "recommendation_support": "no chase",
+      "missing_or_stale_count": 1
+    },
+    {
+      "ticker": "EXE",
+      "path": "tmp\\ticker-intelligence-cards\\EXE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "FANG",
+      "path": "tmp\\ticker-intelligence-cards\\FANG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "FCX",
+      "path": "tmp\\ticker-intelligence-cards\\FCX.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "FOX",
+      "path": "tmp\\ticker-intelligence-cards\\FOX.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "FOXA",
+      "path": "tmp\\ticker-intelligence-cards\\FOXA.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "GD",
+      "path": "tmp\\ticker-intelligence-cards\\GD.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "GE",
+      "path": "tmp\\ticker-intelligence-cards\\GE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "GOOG",
+      "path": "tmp\\ticker-intelligence-cards\\GOOG.current.json",
+      "recommendation_support": "approval-ready paper starter if fresh in band",
+      "missing_or_stale_count": 1
+    },
+    {
+      "ticker": "GOOGL",
+      "path": "tmp\\ticker-intelligence-cards\\GOOGL.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "GS",
+      "path": "tmp\\ticker-intelligence-cards\\GS.current.json",
+      "recommendation_support": "no chase",
+      "missing_or_stale_count": 1
+    },
+    {
+      "ticker": "HAL",
+      "path": "tmp\\ticker-intelligence-cards\\HAL.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "HD",
+      "path": "tmp\\ticker-intelligence-cards\\HD.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "HON",
+      "path": "tmp\\ticker-intelligence-cards\\HON.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "INTU",
+      "path": "tmp\\ticker-intelligence-cards\\INTU.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ISRG",
+      "path": "tmp\\ticker-intelligence-cards\\ISRG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ITA",
+      "path": "tmp\\ticker-intelligence-cards\\ITA.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "JPM",
+      "path": "tmp\\ticker-intelligence-cards\\JPM.current.json",
+      "recommendation_support": "no chase",
+      "missing_or_stale_count": 1
+    },
+    {
+      "ticker": "KMI",
+      "path": "tmp\\ticker-intelligence-cards\\KMI.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "KTOS",
+      "path": "tmp\\ticker-intelligence-cards\\KTOS.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "LIN",
+      "path": "tmp\\ticker-intelligence-cards\\LIN.current.json",
+      "recommendation_support": "no chase",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "LLY",
+      "path": "tmp\\ticker-intelligence-cards\\LLY.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "LMT",
+      "path": "tmp\\ticker-intelligence-cards\\LMT.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 1
+    },
+    {
+      "ticker": "LNG",
+      "path": "tmp\\ticker-intelligence-cards\\LNG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "LYV",
+      "path": "tmp\\ticker-intelligence-cards\\LYV.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "MA",
+      "path": "tmp\\ticker-intelligence-cards\\MA.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "MCD",
+      "path": "tmp\\ticker-intelligence-cards\\MCD.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "MCK",
+      "path": "tmp\\ticker-intelligence-cards\\MCK.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "MDB",
+      "path": "tmp\\ticker-intelligence-cards\\MDB.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "META",
+      "path": "tmp\\ticker-intelligence-cards\\META.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "MPC",
+      "path": "tmp\\ticker-intelligence-cards\\MPC.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "MSFT",
+      "path": "tmp\\ticker-intelligence-cards\\MSFT.current.json",
+      "recommendation_support": "no chase",
+      "missing_or_stale_count": 1
+    },
+    {
+      "ticker": "MU",
+      "path": "tmp\\ticker-intelligence-cards\\MU.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "NEE",
+      "path": "tmp\\ticker-intelligence-cards\\NEE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "NFLX",
+      "path": "tmp\\ticker-intelligence-cards\\NFLX.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "NOC",
+      "path": "tmp\\ticker-intelligence-cards\\NOC.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "NOW",
+      "path": "tmp\\ticker-intelligence-cards\\NOW.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "NUE",
+      "path": "tmp\\ticker-intelligence-cards\\NUE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "NVDA",
+      "path": "tmp\\ticker-intelligence-cards\\NVDA.current.json",
+      "recommendation_support": "promotion review",
+      "missing_or_stale_count": 1
+    },
+    {
+      "ticker": "NWS",
+      "path": "tmp\\ticker-intelligence-cards\\NWS.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "OKE",
+      "path": "tmp\\ticker-intelligence-cards\\OKE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ORCL",
+      "path": "tmp\\ticker-intelligence-cards\\ORCL.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "ORLY",
+      "path": "tmp\\ticker-intelligence-cards\\ORLY.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "PANW",
+      "path": "tmp\\ticker-intelligence-cards\\PANW.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "PAVE",
+      "path": "tmp\\ticker-intelligence-cards\\PAVE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "PEP",
+      "path": "tmp\\ticker-intelligence-cards\\PEP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "PG",
+      "path": "tmp\\ticker-intelligence-cards\\PG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "PH",
+      "path": "tmp\\ticker-intelligence-cards\\PH.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "PLTR",
+      "path": "tmp\\ticker-intelligence-cards\\PLTR.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "QCOM",
+      "path": "tmp\\ticker-intelligence-cards\\QCOM.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "RTX",
+      "path": "tmp\\ticker-intelligence-cards\\RTX.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "SAP",
+      "path": "tmp\\ticker-intelligence-cards\\SAP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "SCCO",
+      "path": "tmp\\ticker-intelligence-cards\\SCCO.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "SHOP",
+      "path": "tmp\\ticker-intelligence-cards\\SHOP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "SHW",
+      "path": "tmp\\ticker-intelligence-cards\\SHW.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "SLB",
+      "path": "tmp\\ticker-intelligence-cards\\SLB.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "SLV",
+      "path": "tmp\\ticker-intelligence-cards\\SLV.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "SMCI",
+      "path": "tmp\\ticker-intelligence-cards\\SMCI.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "SNOW",
+      "path": "tmp\\ticker-intelligence-cards\\SNOW.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "SO",
+      "path": "tmp\\ticker-intelligence-cards\\SO.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "SYK",
+      "path": "tmp\\ticker-intelligence-cards\\SYK.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "TDG",
+      "path": "tmp\\ticker-intelligence-cards\\TDG.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "TLT",
+      "path": "tmp\\ticker-intelligence-cards\\TLT.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "TMO",
+      "path": "tmp\\ticker-intelligence-cards\\TMO.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "TMUS",
+      "path": "tmp\\ticker-intelligence-cards\\TMUS.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "TSM",
+      "path": "tmp\\ticker-intelligence-cards\\TSM.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "TXN",
+      "path": "tmp\\ticker-intelligence-cards\\TXN.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "UBER",
+      "path": "tmp\\ticker-intelligence-cards\\UBER.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "UNH",
+      "path": "tmp\\ticker-intelligence-cards\\UNH.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "UNP",
+      "path": "tmp\\ticker-intelligence-cards\\UNP.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "URI",
+      "path": "tmp\\ticker-intelligence-cards\\URI.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "V",
+      "path": "tmp\\ticker-intelligence-cards\\V.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "VAW",
+      "path": "tmp\\ticker-intelligence-cards\\VAW.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "VMC",
+      "path": "tmp\\ticker-intelligence-cards\\VMC.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "VRT",
+      "path": "tmp\\ticker-intelligence-cards\\VRT.current.json",
+      "recommendation_support": "promotion review",
+      "missing_or_stale_count": 1
+    },
+    {
+      "ticker": "VXUS",
+      "path": "tmp\\ticker-intelligence-cards\\VXUS.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "WMB",
+      "path": "tmp\\ticker-intelligence-cards\\WMB.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "WMT",
+      "path": "tmp\\ticker-intelligence-cards\\WMT.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "XLB",
+      "path": "tmp\\ticker-intelligence-cards\\XLB.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "XLC",
+      "path": "tmp\\ticker-intelligence-cards\\XLC.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "XLE",
+      "path": "tmp\\ticker-intelligence-cards\\XLE.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "XLF",
+      "path": "tmp\\ticker-intelligence-cards\\XLF.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "XLI",
+      "path": "tmp\\ticker-intelligence-cards\\XLI.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 2
+    },
+    {
+      "ticker": "XOM",
+      "path": "tmp\\ticker-intelligence-cards\\XOM.current.json",
+      "recommendation_support": "blocked stale",
+      "missing_or_stale_count": 1
+    }
+  ],
+  "errors": [],
+  "authority_boundary": {
+    "artifact_role": "derived_review_and_question_routing_surface_only",
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "sizing_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed_by_card": false,
+    "paper_order_cancel_allowed_by_card": false,
+    "live_trade_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "source_open_required_before_final_recommendation_or_action_claim": true
+  },
+  "wf72_entry_stop_no_drift_pilot": {
+    "status": "no_drift",
+    "path": "tmp/wf72-entry-stop-helper-no-drift-pilot.json",
+    "tickers": [
+      "ETN",
+      "VRT",
+      "NVDA"
+    ]
+  },
+  "card_count": 200,
+  "error_count": 0
+}

@@ -31,7 +31,13 @@ DEFAULT_QUERY_OUT = TMP / "vector-memory-query.json"
 DEFAULT_SOURCE_REGISTRY = ROOT / "data" / "vector-memory-sources.json"
 SCHEMA = "veritas.vector_memory_index.v0_1"
 SOURCE_PROFILES = ("primary", "durable", "full")
-PRIMARY_DERIVED_SOURCE_PATHS = {"tmp/finance-vector-retrieval-summary.json"}
+PRIMARY_DERIVED_SOURCE_PATHS = {
+    "tmp/finance-sql-canon-access-validation.json",
+    "tmp/intraday-alerts/quote-snapshot-proof.json",
+    "tmp/alert-level-freshness-controller.json",
+    "tmp/finance-alert-os-digest.json",
+    "tmp/alerts-os-pivot-validator.json",
+}
 
 BUILTIN_SOURCE_PATTERNS = [
     "memory/*.md",
@@ -53,9 +59,11 @@ BUILTIN_SOURCE_PATTERNS = [
     "tmp/wf74-wf88-generic-checkpointed-execution.json",
     "tmp/wf84-wf85-checkpointed-execution.json",
     "tmp/workflow-checkpoint-runner.json",
-    "tmp/canonical-finance-data-plane.json",
-    "tmp/trade-grade-decision-cards.json",
-    "tmp/trade-grade-full-answer-assembler.json",
+    "tmp/finance-sql-canon-access-validation.json",
+    "tmp/intraday-alerts/quote-snapshot-proof.json",
+    "tmp/alert-level-freshness-controller.json",
+    "tmp/finance-alert-os-digest.json",
+    "tmp/alerts-os-pivot-validator.json",
 ]
 
 
@@ -173,7 +181,6 @@ def source_family_for(relative_path: str) -> str:
         "tmp/finance-decision-performance-digest.json": "finance_decision_outcome_packet",
         "tmp/coding-outcome-ledger-current.json": "coding_outcome_memory_packet",
         "tmp/wf55-autonomy-outcome-ledger.json": "wf55_autonomy_outcome_packet",
-        "tmp/wf87-shadow-outcome-scorecard.json": "wf87_shadow_outcome_packet",
     }
     if relative_path in outcome_packet_families:
         return outcome_packet_families[relative_path]
@@ -187,8 +194,15 @@ def source_family_for(relative_path: str) -> str:
         return "pm_control_summary_packet"
     if relative_path == "tmp/vector-memory-graph-packet.json":
         return "vector_memory_graph_packet"
-    if relative_path == "tmp/finance-vector-retrieval-summary.json":
-        return "finance_vector_retrieval_summary"
+    alert_os_packet_families = {
+        "tmp/finance-sql-canon-access-validation.json": "finance_alert_sql_guard_packet",
+        "tmp/intraday-alerts/quote-snapshot-proof.json": "finance_alert_quote_proof_packet",
+        "tmp/alert-level-freshness-controller.json": "finance_alert_freshness_packet",
+        "tmp/finance-alert-os-digest.json": "finance_alert_recommendation_digest",
+        "tmp/alerts-os-pivot-validator.json": "finance_alert_os_boundary_packet",
+    }
+    if relative_path in alert_os_packet_families:
+        return alert_os_packet_families[relative_path]
     if relative_path == "tmp/agi-os-eval-gate-packet.json":
         return "agi_os_eval_gate_packet"
     if relative_path == "tmp/agent-message-ledger-current.json":
@@ -196,13 +210,10 @@ def source_family_for(relative_path: str) -> str:
     if relative_path == "tmp/token-efficiency-review-packet.json":
         return "wf88_token_efficiency_review_packet"
     workflow_packet_families = {
-        "tmp/wf67-": "wf67_paper_guard_packet",
         "tmp/wf73-": "wf73_audit_boot_packet",
         "tmp/wf75-": "wf75_product_readiness_packet",
         "tmp/retail-": "wf75_retail_truth_packet",
         "tmp/sql-retail-": "wf75_retail_truth_packet",
-        "tmp/wf78-": "wf78_finance_routing_packet",
-        "tmp/finance-intelligence-": "wf78_finance_routing_packet",
         "tmp/wf79-": "wf79_smb_workflow_packet",
         "tmp/wf84-": "wf84_finance_data_plane_packet",
         "tmp/wf85-": "wf85_decision_os_packet",
@@ -210,19 +221,8 @@ def source_family_for(relative_path: str) -> str:
     for prefix, family in workflow_packet_families.items():
         if relative_path.startswith(prefix):
             return family
-    if (
-        relative_path.startswith("tmp/alpaca-paper-")
-        or relative_path.startswith("tmp/go-paper-trading-guard-")
-        or relative_path.startswith("tmp/morning-paper-")
-        or relative_path.startswith("tmp/midday-market-paper-")
-        or relative_path.startswith("tmp/postclose-paper-")
-        or relative_path.startswith("tmp/stale-paper-")
-    ):
-        return "wf67_paper_guard_packet"
     if relative_path.startswith("tmp/token-") or relative_path.startswith("tmp/implementation-token-"):
         return "wf88_token_metadata_packet"
-    if relative_path.startswith("tmp/canonical-finance") or relative_path.startswith("tmp/trade-grade"):
-        return "finance_reference_packet"
     if relative_path.startswith("06. Playbooks/Project Continuity/"):
         return "workflow_continuity_note"
     return "workspace_reference"
@@ -267,30 +267,12 @@ def source_tier_for(relative_path: str) -> str:
 
 
 def transitive_source_drift(root: Path, relative_path: str) -> list[str]:
-    """Check compact summaries against the raw sources they explicitly route to."""
-    if relative_path != "tmp/finance-vector-retrieval-summary.json":
-        return []
-    summary_path = root / relative_path
-    try:
-        payload = json.loads(summary_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return ["summary_unreadable"]
-    packets = payload.get("source_packets")
-    if not isinstance(packets, list):
-        return ["summary_source_packets_missing"]
-    drifted: list[str] = []
-    for packet in packets:
-        if not isinstance(packet, dict):
-            continue
-        source_path = str(packet.get("path") or "")
-        expected_sha = str(packet.get("sha256") or "")
-        if not source_path or not expected_sha:
-            drifted.append(source_path or "summary_source_packet_invalid")
-            continue
-        raw_path = root / source_path
-        if not raw_path.exists() or sha256_bytes(raw_path.read_bytes()) != expected_sha:
-            drifted.append(source_path)
-    return sorted(set(drifted))
+    """Return transitive drift for registered summaries.
+
+    The alerts OS indexes its bounded proof packets directly, so no active
+    finance summary hides an additional mutable dependency graph.
+    """
+    return []
 
 
 def select_sources(root: Path, patterns: Iterable[str], *, source_profile: str = "full") -> list[Path]:

@@ -1,0 +1,55 @@
+{
+  "schema": "veritas.nvda_small_paper_order_proposal.v1",
+  "generated_at_utc": "2026-06-18T15:21:17Z",
+  "status": "proposal_prepared_pending_exact_approval",
+  "ticker": "NVDA",
+  "proposal": {
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 208.75,
+    "notional_usd": 150.0,
+    "estimated_max_loss_to_stop_usd": 19.7
+  },
+  "quote": {
+    "price": 209.25,
+    "bid": null,
+    "ask": null,
+    "quote_source": "yfinance_fast_info",
+    "quote_time_utc": "2026-06-18T15:21:17Z"
+  },
+  "entry_band": {
+    "low": 191.15,
+    "high": 212.77,
+    "stop": 181.33,
+    "band_status": "IN_BAND"
+  },
+  "promotion_veto_handling": "cleared_for_this_non_executing_proposal_only_by_owner_request; global promotion gate/canon/portfolio state not mutated",
+  "authority": {
+    "review_only": true,
+    "paper_order_execution_allowed": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "requires_exact_randall_approval": true,
+    "requires_fresh_wf67_guard": true,
+    "requires_fresh_kill_switch": true
+  },
+  "artifacts": {
+    "owner_card": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.owner-card.small-2026-06-18.json",
+    "wf67_request": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-small-paper-proposal-2026-06-18.json",
+    "wf67_guard_validation": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
+    "wf67_dry_run_result": "tmp/alpaca-paper-readiness/paper-execution-dry-run-result.json"
+  },
+  "wf67_status": {
+    "request_artifact_created": true,
+    "request_id": "nvda-small-paper-proposal-2026-06-18",
+    "request_exact_approval_status": "pending_exact_randall_approval",
+    "dry_run_status": "blocked",
+    "dry_run_blocked_reason": "kill_switch_missing_or_expired",
+    "guard_status": "blocked",
+    "guard_critical_count": 3,
+    "expected_blocker": "kill_switch_missing_or_expired; exact Randall approval still required before any execution",
+    "paper_submit_allowed_now": false,
+    "execution_ready_now": false
+  }
+}

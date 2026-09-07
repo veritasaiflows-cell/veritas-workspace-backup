@@ -135,8 +135,9 @@ def main() -> int:
     friction = summaries.get("operational_friction", {})
     expect("cron" in friction, "cron friction summary missing", errors)
     expect("workflow_advancement" in friction, "workflow advancement friction summary missing", errors)
-    expect("wf87_shadow_outcomes" in friction, "wf87 shadow outcome friction summary missing", errors)
-    expect("wf87_readiness" in friction, "wf87 readiness friction summary missing", errors)
+    serialized = json.dumps(payload).lower()
+    for retired_marker in ("wf67", "wf87", "paper-autotrader", "would_buy", "autonomous_paper_buy", "trade-grade"):
+        expect(retired_marker not in serialized, f"retired finance residue present: {retired_marker}", errors)
     if errors:
         for error in errors:
             print(f"FAIL: {error}")

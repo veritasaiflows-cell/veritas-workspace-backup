@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "wf67-filled-position-001-msft-marketable-buy",
+  "created_at_utc": "2026-05-18T03:08:00Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true
+  },
+  "order": {
+    "symbol": "MSFT",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 499.0,
+    "qty": 1,
+    "notional": null
+  },
+  "risk_check": {
+    "status": "ok",
+    "max_loss_usd": 499.0,
+    "max_notional_usd": 500.0,
+    "position_size_reviewed": true,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "estimated_notional_usd": 499.0,
+    "fill_probability_assessment": "High during regular market hours if MSFT trades below the $499 marketable limit; outside regular hours or before next open the order may remain accepted/unfilled until eligible session handling.",
+    "rationale": "WF67 intentional filled-position paper pilot. Highly liquid MSFT, 1 share, marketable limit/day under the $500 cap. Purpose is to test paper submit, fill/position readback, and monitoring; not a portfolio recommendation, live trade, or real-capital action. Leave any filled paper position open for monitoring unless Randall later instructs cancel/close."
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "Randall approved on 2026-05-17 20:08 MST: use a tiny highly liquid name, paper-only, 1 share, marketable limit, hold briefly, then leave it as paper position for monitoring.",
+    "recommendation_source": "chat-owner-instruction-2026-05-17T20:08MST",
+    "authority_boundary": "Paper-only mechanism and position-monitoring pilot. Does not grant live trading, live endpoint, money movement, account mutation, portfolio recommendation, or inferred approval authority.",
+    "hold_policy": "If filled, leave the paper position open for monitoring. Do not close, cancel, replace, or submit additional orders without explicit owner instruction.",
+    "selection_reason": "MSFT is highly liquid, under the $500 one-share cap with a $499 marketable limit, and already present in reviewed workspace candidate context."
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "headers_persistence_allowed": false
+  }
+}

@@ -1,0 +1,356 @@
+{
+  "schema": "veritas.retrieval_live_gold.v1",
+  "status": "draft_review_required",
+  "purpose": "Pilot gold set for live hash+FTS, semantic+FTS, and FTS-only retrieval discrimination.",
+  "source_registry": "data/evals/retrieval-live-source-registry.json",
+  "source_manifest_sha256": "d1d35ee1a2b5da71a4097134068204db666e450b64862c986adf9216168644cc",
+  "max_k": 5,
+  "required_fixture_classes": [
+    "exact",
+    "paraphrase",
+    "distractor",
+    "absent"
+  ],
+  "measurement_contract": {
+    "positive_metrics": [
+      "recall_at_1",
+      "recall_at_3",
+      "recall_at_5",
+      "mrr"
+    ],
+    "distractor_metric": "named_distractor_error_rate",
+    "absent_posture": "abstention_uncalibrated",
+    "provider_comparison": "paired_same_frozen_corpus",
+    "promotion_thresholds_defined": false,
+    "provider_promotion_allowed": false
+  },
+  "human_review": {
+    "status": "required_before_trusted_baseline",
+    "sole_relevance_review_complete": false,
+    "review_rule": "Rewrite or remove any fixture where reviewers disagree that the labeled passage is the sole correct answer within the frozen corpus.",
+    "absent_calibration_rule": "Use a separate sealed calibration set; never tune abstention thresholds on these evaluation fixtures."
+  },
+  "fixtures": [
+    {
+      "fixture_id": "live_exact_long_work_idle",
+      "fixture_class": "exact",
+      "split": "evaluation",
+      "query": "Long-work next safe action: No resumable long jobs are waiting.",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/os2/OTEL To Proposal Route.md",
+          "start_line": 41,
+          "end_line": 41
+        }
+      ],
+      "distractor_passages": [],
+      "absence_certified": false,
+      "review_note": "Literal sanity control; intentionally easy."
+    },
+    {
+      "fixture_id": "live_exact_scorecard_scope",
+      "fixture_class": "exact",
+      "split": "evaluation",
+      "query": "These scorecards prove routing, regression behavior, and cost-attribution targets, not investment skill, model performance, or execution readiness.",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/scorecards-and-evals/Current Map.md",
+          "start_line": 50,
+          "end_line": 52
+        }
+      ],
+      "distractor_passages": [],
+      "absence_certified": false,
+      "review_note": "Literal sanity control; intentionally easy."
+    },
+    {
+      "fixture_id": "live_exact_token_reduction_guard",
+      "fixture_class": "exact",
+      "split": "evaluation",
+      "query": "Any API-call reduction must pass a separate regression harness before changing cron commands or model routing.",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/scorecards-and-evals/Token Efficiency Map.md",
+          "start_line": 36,
+          "end_line": 38
+        }
+      ],
+      "distractor_passages": [],
+      "absence_certified": false,
+      "review_note": "Literal sanity control; intentionally easy."
+    },
+    {
+      "fixture_id": "live_exact_promotion_rule",
+      "fixture_class": "exact",
+      "split": "evaluation",
+      "query": "A recommendation is not action until it is routed into WF74 docket, PM job, owner packet, Skill Workshop proposal, validator patch, or monitor-only state with proof.",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/recommendations/Action Promotion Map.md",
+          "start_line": 36,
+          "end_line": 38
+        }
+      ],
+      "distractor_passages": [],
+      "absence_certified": false,
+      "review_note": "Literal sanity control; intentionally easy."
+    },
+    {
+      "fixture_id": "live_para_rsi_model_weights",
+      "fixture_class": "paraphrase",
+      "split": "evaluation",
+      "query": "Which page says recursive improvement may evaluate and route changes but cannot rewrite the underlying model weights?",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/self-improvement/RSI Control Loop.md",
+          "start_line": 40,
+          "end_line": 42
+        }
+      ],
+      "distractor_passages": [],
+      "absence_certified": false,
+      "review_note": "Mild semantic advantage; retains a model-weights lexical bridge."
+    },
+    {
+      "fixture_id": "live_para_debt_destination",
+      "fixture_class": "paraphrase",
+      "split": "evaluation",
+      "query": "Where are unresolved improvement items counted, with their leading destination named as the WF74 decision docket?",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/gaps/Open Follow Up Debt.md",
+          "start_line": 15,
+          "end_line": 24
+        }
+      ],
+      "distractor_passages": [],
+      "absence_certified": false,
+      "review_note": "Fair paraphrase with a workflow identifier retained."
+    },
+    {
+      "fixture_id": "live_para_source_open",
+      "fixture_class": "paraphrase",
+      "split": "evaluation",
+      "query": "Which map only points readers to exact evidence and says material claims still require opening the original source?",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/source-map/WF88 Wiki Source Map.md",
+          "start_line": 73,
+          "end_line": 73
+        }
+      ],
+      "distractor_passages": [],
+      "absence_certified": false,
+      "review_note": "Mild semantic advantage; retains source and exact lexical bridges."
+    },
+    {
+      "fixture_id": "live_para_checkpoint_wiki_roundtrip",
+      "fixture_class": "paraphrase",
+      "split": "evaluation",
+      "query": "Which workflow checkpoint definition first seeds WF88 OS2 control, then renders the wiki, then rebuilds the final control packet?",
+      "relevant_passages": [
+        {
+          "source_path": "data/workflow-checkpoints/wf74-wf88.json",
+          "start_line": 77,
+          "end_line": 96
+        }
+      ],
+      "distractor_passages": [],
+      "absence_certified": false,
+      "review_note": "Evidence spans adjacent chunks; score passage overlap and source rank."
+    },
+    {
+      "fixture_id": "live_para_closeout_release_chain",
+      "fixture_class": "paraphrase",
+      "split": "evaluation",
+      "query": "Which checkpoint definition closes implementation work by running changed-file validation, bundle validation, and finally the blocking release contract?",
+      "relevant_passages": [
+        {
+          "source_path": "data/workflow-checkpoints/implementation-closeout.json",
+          "start_line": 56,
+          "end_line": 75
+        }
+      ],
+      "distractor_passages": [],
+      "absence_certified": false,
+      "review_note": "Evidence spans adjacent chunks; score passage overlap and source rank."
+    },
+    {
+      "fixture_id": "live_para_wiki_navigation",
+      "fixture_class": "paraphrase",
+      "split": "evaluation",
+      "query": "Which landing page navigates across telemetry routing, evaluation scorecards, token efficiency, recursive improvement, action promotion, unresolved debt, and the source map?",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/index.md",
+          "start_line": 12,
+          "end_line": 23
+        }
+      ],
+      "distractor_passages": [],
+      "absence_certified": false,
+      "review_note": "Likely easy because the landing page enumerates the corpus."
+    },
+    {
+      "fixture_id": "live_dist_token_quality_limit",
+      "fixture_class": "distractor",
+      "split": "evaluation",
+      "query": "Where is the warning that reducing token or API usage says nothing about response quality or model competence and cannot establish investment or execution readiness?",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/scorecards-and-evals/Token Efficiency Map.md",
+          "start_line": 32,
+          "end_line": 38
+        }
+      ],
+      "distractor_passages": [
+        {
+          "source_path": "wiki/scorecards-and-evals/Current Map.md",
+          "start_line": 50,
+          "end_line": 52
+        }
+      ],
+      "absence_certified": false,
+      "review_note": "Borderline similar interpretation; requires explicit human review."
+    },
+    {
+      "fixture_id": "live_dist_autoapply_health_block",
+      "fixture_class": "distractor",
+      "split": "evaluation",
+      "query": "What page turns a positive auto_apply_count into a hard stop before health may be advertised on startup or status surfaces?",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/recommendations/Action Promotion Map.md",
+          "start_line": 29,
+          "end_line": 34
+        }
+      ],
+      "distractor_passages": [
+        {
+          "source_path": "wiki/os2/OTEL To Proposal Route.md",
+          "start_line": 33,
+          "end_line": 44
+        }
+      ],
+      "absence_certified": false,
+      "review_note": "The distractor merely reports zero; the relevant page defines the hard stop."
+    },
+    {
+      "fixture_id": "live_dist_otel_metadata_queue",
+      "fixture_class": "distractor",
+      "split": "evaluation",
+      "query": "Where does OTEL telemetry become metadata-safe learning input before entering a WF74 improvement-opportunity queue?",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/os2/OTEL To Proposal Route.md",
+          "start_line": 20,
+          "end_line": 24
+        }
+      ],
+      "distractor_passages": [
+        {
+          "source_path": "wiki/self-improvement/RSI Control Loop.md",
+          "start_line": 15,
+          "end_line": 22
+        }
+      ],
+      "absence_certified": false,
+      "review_note": "The distractor is conceptually adjacent but does not define the OTEL route."
+    },
+    {
+      "fixture_id": "live_dist_freshness_status_pairs",
+      "fixture_class": "distractor",
+      "split": "evaluation",
+      "query": "Where are artifacts paired with freshness and status labels such as ready_to_collect and fixture_ready_no_execution_authority?",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/source-map/WF88 Wiki Source Map.md",
+          "start_line": 40,
+          "end_line": 61
+        }
+      ],
+      "distractor_passages": [
+        {
+          "source_path": "wiki/scorecards-and-evals/Current Map.md",
+          "start_line": 21,
+          "end_line": 30
+        }
+      ],
+      "absence_certified": false,
+      "review_note": "Snapshot-sensitive; source hashes must remain pinned."
+    },
+    {
+      "fixture_id": "live_dist_agent_ledger_before_eval",
+      "fixture_class": "distractor",
+      "split": "evaluation",
+      "query": "Which checkpoint config runs agent_message_ledger_packet before agi_os_eval_gate_packet?",
+      "relevant_passages": [
+        {
+          "source_path": "data/workflow-checkpoints/implementation-closeout.json",
+          "start_line": 28,
+          "end_line": 45
+        }
+      ],
+      "distractor_passages": [
+        {
+          "source_path": "data/workflow-checkpoints/wf74-wf88.json",
+          "start_line": 27,
+          "end_line": 60
+        }
+      ],
+      "absence_certified": false,
+      "review_note": "Structurally easy JSON control; useful for schema-level distraction."
+    },
+    {
+      "fixture_id": "live_absent_kubernetes_budget",
+      "fixture_class": "absent",
+      "split": "evaluation",
+      "query": "What Kubernetes pod disruption budget is approved for the production cluster?",
+      "relevant_passages": [],
+      "distractor_passages": [],
+      "absence_certified": true,
+      "review_note": "Kubernetes and pod disruption are absent; budget is a likely lexical lure."
+    },
+    {
+      "fixture_id": "live_absent_customer_sla_refund",
+      "fixture_class": "absent",
+      "split": "evaluation",
+      "query": "What refund percentage applies when the customer response-time SLA is missed?",
+      "relevant_passages": [],
+      "distractor_passages": [],
+      "absence_certified": true,
+      "review_note": "Refund and response-time SLA are absent; customer and SLA occur separately."
+    },
+    {
+      "fixture_id": "live_absent_embedding_temperature",
+      "fixture_class": "absent",
+      "split": "evaluation",
+      "query": "What embedding temperature is configured for the semantic retriever?",
+      "relevant_passages": [],
+      "distractor_passages": [],
+      "absence_certified": true,
+      "review_note": "Temperature is absent; vector-memory terminology is a likely lure."
+    },
+    {
+      "fixture_id": "live_absent_wiki_cron_time",
+      "fixture_class": "absent",
+      "split": "evaluation",
+      "query": "Is wiki synthesis scheduled at 03:15 UTC?",
+      "relevant_passages": [],
+      "distractor_passages": [],
+      "absence_certified": true,
+      "review_note": "The time is absent; wiki synthesis and cron stop lines occur separately."
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "draft_gold_not_trusted_baseline": true,
+    "provider_promotion_allowed": false,
+    "protected_default_index_mutation_allowed": false,
+    "finance_or_canon_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

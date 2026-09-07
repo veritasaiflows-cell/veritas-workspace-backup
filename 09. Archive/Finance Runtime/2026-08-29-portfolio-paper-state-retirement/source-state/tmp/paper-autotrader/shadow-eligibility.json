@@ -1,0 +1,72 @@
+{
+  "schema": "veritas.wf86_shadow_eligibility.v1",
+  "generated_at_utc": "2026-08-28T18:05:21Z",
+  "status": "ok",
+  "workflow_id": "WF86",
+  "purpose": "Classify paper-autotrader shadow decisions separately from assisted review and execution readiness.",
+  "authority_boundary": {
+    "review_only": true,
+    "shadow_mode_only": true,
+    "paper_only_design": true,
+    "autonomous_paper_execution_allowed_now": false,
+    "paper_submit_allowed": false,
+    "paper_cancel_allowed": false,
+    "paper_sell_allowed": false,
+    "live_trade_allowed": false,
+    "live_endpoint_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "policy": {
+    "path": "tmp/paper-autotrader/policy.json",
+    "mode": "shadow_first_no_execution",
+    "model_portfolio_ceiling_usd": 100000,
+    "max_notional_per_order_usd": 5000,
+    "max_notional_per_order_role": "absolute_order_ceiling_not_default_size",
+    "setup_notional_caps_usd": {
+      "CLEAN_ADD": 2500,
+      "TACTICAL_DIP_RECLAIM": 1500
+    },
+    "initial_universe": "Tier A only",
+    "shadow_min_market_sessions": 5,
+    "shadow_min_clean_decisions": 20
+  },
+  "wf67_snapshot": {
+    "manager_status": "ok",
+    "guard_status": "blocked",
+    "ready_for_submit_cancel": false
+  },
+  "summary": {
+    "candidate_count": 0,
+    "shadow_eligible_count": 0,
+    "would_buy_shadow_count": 0,
+    "would_buy_shadow_tickers": [],
+    "execution_ready_count": 0,
+    "next_safe_action": "Log shadow decisions only; do not submit/cancel/sell until WF67 guard and separate scoped Randall pilot approval are clean."
+  },
+  "decisions": [],
+  "source_artifacts": [
+    "tmp/paper-autotrader/policy.json",
+    "tmp/wf78-capital-review-queue.json",
+    "tmp/finance-decision-factory.json",
+    "tmp/morning-paper-deployment-recommendation-cards.json",
+    "tmp/paper-autotrader/band-review-closures.json",
+    "tmp/alpaca-paper-readiness/wf67-autonomous-paper-manager-current.json",
+    "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
+    "tmp/ticker-intelligence-cards"
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "no_shadow_decisions"
+    ]
+  },
+  "stop_lines": [
+    "Shadow decision does not equal approval or execution.",
+    "WF67 submit/cancel/sell remains blocked.",
+    "No live endpoint, live credentials, account action, money movement, portfolio/canon mutation, or owner approval inference."
+  ]
+}

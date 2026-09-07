@@ -1,0 +1,143 @@
+{"at_utc": "2026-07-05T07:48:47Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T07:49:02Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T07:52:03Z", "detail": {"processed_this_run": 4088}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T07:52:13Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T07:55:13Z", "detail": {"processed_this_run": 2328}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T07:55:23Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T07:58:24Z", "detail": {"processed_this_run": 2608}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T07:58:35Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T08:01:25Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T08:02:19Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T08:02:53Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T08:03:05Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T08:03:07Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T15:13:20Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-07-05T15:16:28Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T15:16:42Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T15:16:45Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T15:17:20Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T15:17:28Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T15:17:29Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T15:17:41Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T15:18:50Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T15:21:02Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T15:21:30Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T15:21:31Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T15:24:49Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T15:27:55Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T16:21:07Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T16:22:34Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T16:25:29Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-07-05T16:25:51Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T16:26:00Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T16:26:02Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T16:27:03Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T16:56:42Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T16:57:03Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T16:57:04Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T16:57:29Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T17:00:30Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T17:00:47Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T17:00:48Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T17:01:15Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T17:54:35Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T17:54:48Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T17:56:48Z", "detail": {"processed_this_run": 1744}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T18:00:03Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T18:00:14Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T18:02:14Z", "detail": {"processed_this_run": 1832}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T18:02:23Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T18:04:24Z", "detail": {"processed_this_run": 1712}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T18:04:34Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T18:06:34Z", "detail": {"processed_this_run": 1656}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T18:07:02Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T18:07:26Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T18:07:42Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T18:08:37Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T18:11:18Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T18:11:29Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T18:11:30Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T18:11:41Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T19:08:55Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T19:09:06Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T19:10:21Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-07-05T19:11:48Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T19:12:00Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T19:12:02Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T19:13:25Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T19:24:04Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T19:24:14Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T19:24:16Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T19:42:27Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-07-05T19:57:07Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T19:57:17Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T19:57:33Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T19:58:31Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T20:01:26Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T20:01:37Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T20:01:45Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T20:10:56Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-07-05T20:11:16Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T20:11:17Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-07-05T20:11:39Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T20:11:50Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T20:11:51Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T20:11:53Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T20:13:21Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T20:18:29Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-05T22:51:26Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T22:51:27Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-07-05T22:58:19Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T22:58:36Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T23:08:36Z", "detail": {"processed_this_run": 9464}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T23:55:16Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-05T23:59:16Z", "detail": {"processed_this_run": 2776}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-05T23:59:34Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-06T00:03:34Z", "detail": {"processed_this_run": 2872}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-06T00:05:49Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-06T00:06:41Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-07-06T00:07:21Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-06T00:07:30Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-06T00:07:56Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-06T00:10:23Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-06T00:10:35Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-06T00:13:29Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-06T00:25:36Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-06T00:25:45Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-06T00:25:46Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-06T01:23:18Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-06T01:23:19Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-07-06T01:23:36Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-06T01:23:50Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-06T01:24:22Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-06T01:26:27Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-06T01:29:22Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "complete"}
+{"at_utc": "2026-07-06T05:05:43Z", "detail": {}, "event": "validated", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-07-06T05:05:50Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-06T05:05:51Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-07-06T05:06:11Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-07-06T05:06:20Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-07-06T05:16:20Z", "detail": {"processed_this_run": 8464}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-08-08T15:30:47Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-08-08T15:35:26Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-08-08T15:38:49Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-08-08T15:38:49Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-08-08T15:51:37Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-08-08T15:52:21Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-08-08T16:01:22Z", "detail": {"processed_this_run": 9088}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-08-08T16:21:28Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-08-08T16:30:28Z", "detail": {"processed_this_run": 5728}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-08-08T16:48:56Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-08-08T16:51:20Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-08-08T16:51:37Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-08-08T16:53:27Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-08-08T16:58:00Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-08-08T17:02:28Z", "detail": {"processed_this_run": 6256}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-08-08T17:07:00Z", "detail": {"processed_this_run": 5264}, "event": "resume_paused", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-08-08T17:09:06Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-08-08T17:12:44Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-08-08T17:16:03Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-08-08T17:16:03Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "warning"}
+{"at_utc": "2026-08-08T17:16:24Z", "detail": {}, "event": "started", "job_id": "vector-memory-ollama-full", "status": "resumable"}
+{"at_utc": "2026-08-08T17:16:38Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-ollama-full", "status": "running"}
+{"at_utc": "2026-08-08T17:16:51Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-ollama-full", "status": "complete"}

@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "contract_name": "wf70_official_company_source_capture_contract",
+  "source_posture": "review_only_official_company_source_capture",
+  "authority": {
+    "review_packet_generation_allowed": true,
+    "official_source_evidence_allowed": true,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "deployment_authority_allowed": false,
+    "owner_approval_inferred": false,
+    "owner_approval_granted": false,
+    "proposal_apply_allowed": false,
+    "trade_execution_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "brokerage_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "sizing_allocation_action_allowed": false,
+    "sizing_sleeve_cash_risk_rule_authority": false
+  },
+  "source_priority": [
+    "sec_8k_exhibit_99_1_or_earnings_release_exhibit",
+    "issuer_ir_earnings_release",
+    "issuer_investor_presentation_or_supplement",
+    "issuer_transcript_or_call_remarks",
+    "manual_review_required"
+  ],
+  "capture_statuses": {
+    "official_captured": "Value or qualitative disclosure is directly supported by an official source excerpt.",
+    "partial": "Official source contains relevant disclosure but does not fully resolve the field.",
+    "not_disclosed_in_release": "Official release/exhibit was reviewed and did not disclose this field; this is a closed field for that source, not a missing fetch.",
+    "not_applicable": "Field is not applicable to this issuer/source context and must include rationale.",
+    "manual_required": "No validated official-source capture exists yet; downstream confidence must remain degraded.",
+    "not_fetched": "Source candidate is known or expected but has not been fetched/captured.",
+    "missing_metadata": "Required source metadata is absent from the local inventory and must be repaired before capture can be considered complete."
+  },
+  "field_dictionary": {
+    "adjusted_eps": {
+      "description": "Company-reported adjusted/non-GAAP EPS or explicit not-disclosed state.",
+      "freshness_rule": "latest reported quarter or current earnings release cycle",
+      "requires": ["status", "value", "period", "source_url", "source_section", "excerpt", "inferred=false"]
+    },
+    "guidance": {
+      "description": "Company-issued outlook/guidance, including explicit no-guidance/not-disclosed state.",
+      "freshness_rule": "latest reported quarter, current fiscal-year outlook, or stated forward period",
+      "requires": ["status", "value", "period", "source_url", "source_section", "excerpt", "inferred=false"]
+    },
+    "growth_bridge": {
+      "description": "Revenue/growth bridge, key drivers, organic growth, FX, price/volume, or comparable decomposition when officially disclosed.",
+      "freshness_rule": "latest reported quarter or year-to-date management bridge",
+      "requires": ["status", "value", "period", "source_url", "source_section", "excerpt", "inferred=false"]
+    },
+    "segment_margins": {
+      "description": "Reported segment margin, operating margin, or equivalent segment profitability disclosures.",
+      "freshness_rule": "latest reported quarter or year-to-date official segment table/commentary",
+      "requires": ["status", "value", "period", "source_url", "source_section", "excerpt", "inferred=false"]
+    },
+    "orders_backlog": {
+      "description": "Orders, backlog, book-to-bill, remaining performance obligations, or explicit not-disclosed state.",
+      "freshness_rule": "latest reported quarter; do not substitute stale annual backlog for current-quarter silence without status=partial and note.",
+      "requires": ["status", "value", "period", "source_url", "source_section", "excerpt", "inferred=false"]
+    },
+    "management_explanation": {
+      "description": "Official management explanation of quarter drivers, demand, risks, or outlook from release, exhibit, presentation, or transcript.",
+      "freshness_rule": "latest earnings cycle",
+      "requires": ["status", "value", "period", "source_url", "source_section", "excerpt", "inferred=false"]
+    },
+    "acquisition_debt_notes": {
+      "description": "Material official notes on acquisitions, divestitures, leverage, debt issuance/maturity, buybacks, or capital allocation relevant to thesis/risk.",
+      "freshness_rule": "latest earnings cycle plus any current official financing/acquisition disclosure",
+      "requires": ["status", "value", "period", "source_url", "source_section", "excerpt", "inferred=false"]
+    }
+  },
+  "inventory_shape": {
+    "ticker": "string",
+    "company_name": "string|null",
+    "portfolio_role": "string|null",
+    "coverage_tier": "string|null",
+    "sources": {
+      "ir_home": "source_candidate",
+      "earnings_release": "source_candidate",
+      "sec_exhibit": "source_candidate",
+      "investor_presentation": "source_candidate",
+      "transcript": "source_candidate"
+    },
+    "source_candidate": {
+      "status": "known|not_fetched|missing_metadata|manual_required",
+      "url": "string|null",
+      "source_type": "string",
+      "priority": "integer",
+      "notes": "string"
+    }
+  },
+  "downstream_boundaries": {
+    "bridge_present_does_not_mean_reconciled": true,
+    "official_capture_does_not_mean_apply_ready": true,
+    "packets_must_keep_review_only_authority": true,
+    "generated_artifact_is_not_canonical_owner_truth": true
+  }
+}

@@ -22,22 +22,16 @@ ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 GO_ROOT = ROOT / "scripts" / "go"
 DEFAULT_JSON = TMP / "python-go-durable-output-parity-repeated-gate.json"
-SCHEMA = "veritas.python_go_durable_output_parity_repeated_gate.v1"
+SCHEMA = "veritas.python_go_durable_output_parity_repeated_gate.v2"
+ACTIVE_CASE_NAMES = ("finance_universe_validation",)
 
 CASES = [
     {
-        "name": "finance_universe_validation",
+        "name": ACTIVE_CASE_NAMES[0],
         "go_command": ["go", "run", ".\\cmd\\go-finance-universe-validation-probe", "--root", "..\\..", "--out", "..\\..\\tmp\\go-finance-universe-validation-probe.json"],
         "parity_command": [sys.executable, "scripts\\python_go_finance_universe_validation_parity.py", "--write", "--validate"],
         "parity_path": TMP / "python-go-finance-universe-validation-parity.json",
         "go_path": TMP / "go-finance-universe-validation-probe.json",
-    },
-    {
-        "name": "wf78_sql_phase2_readiness",
-        "go_command": ["go", "run", ".\\cmd\\go-wf78-sql-phase2-readiness-probe", "--root", "..\\..", "--out", "..\\..\\tmp\\go-wf78-sql-phase2-readiness-probe.json"],
-        "parity_command": [sys.executable, "scripts\\python_go_wf78_sql_phase2_readiness_parity.py", "--write", "--validate"],
-        "parity_path": TMP / "python-go-wf78-sql-phase2-readiness-parity.json",
-        "go_path": TMP / "go-wf78-sql-phase2-readiness-probe.json",
     },
 ]
 
@@ -87,9 +81,20 @@ def build_report(cycles: int) -> dict[str, Any]:
     cycle_rows: list[dict[str, Any]] = []
     findings: list[dict[str, Any]] = []
     fingerprints_by_case: dict[str, list[str]] = {case["name"]: [] for case in CASES}
+    case_names = [str(case["name"]) for case in CASES]
+    case_contract_ok = case_names == list(ACTIVE_CASE_NAMES)
 
     def add(case: str, cycle: int, check: str, ok: bool, severity: str, detail: Any) -> None:
         findings.append({"case": case, "cycle": cycle, "check": check, "ok": ok, "severity": "info" if ok else severity, "detail": detail})
+
+    add(
+        "case_contract",
+        0,
+        "active_case_identity_exact",
+        case_contract_ok,
+        "critical",
+        {"expected": list(ACTIVE_CASE_NAMES), "observed": case_names},
+    )
 
     for cycle in range(1, cycles + 1):
         for case in CASES:
@@ -132,6 +137,8 @@ def build_report(cycles: int) -> dict[str, Any]:
             "warnings": len(warnings),
             "cycles": cycles,
             "cases": len(CASES),
+            "case_names": case_names,
+            "case_contract_status": "ok" if case_contract_ok else "error",
             "stable_case_fingerprints": sum(1 for fps in fingerprints_by_case.values() if len(set(fps)) == 1),
             "retire_python_now": 0,
             "durable_output_signal": "durable_output_repeated_parity_clean" if not critical else "blocked",

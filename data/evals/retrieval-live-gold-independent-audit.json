@@ -1,0 +1,198 @@
+{
+  "schema": "veritas.retrieval_live_label_audit.v1",
+  "status": "independent_machine_audit_complete",
+  "reviewer_type": "independent_machine",
+  "reviewer": {
+    "type": "independent_machine",
+    "method": "fresh-context, source-open audit against the frozen registry",
+    "human_review_satisfied": false
+  },
+  "gold_sha256": "5670c595981a99dcff1a7d191d735abc1b8a878c34760d71445a7f54b767270f",
+  "source_registry_sha256": "8dee423bea7fb157d93c6c9d04fe67d1f25e92ea6ac71d6749898007601cf4ce",
+  "source_manifest_sha256": "d1d35ee1a2b5da71a4097134068204db666e450b64862c986adf9216168644cc",
+  "audit_scope": {
+    "frozen_gold_fixture_count": 19,
+    "positive_fixture_count": 15,
+    "absent_fixture_count": 4,
+    "frozen_source_count": 10,
+    "result": "All 15 answer-bearing labels were independently found uniquely sufficient; all 4 absent labels were unsupported by the full frozen corpus.",
+    "evidence_detail_worker": "tmp/retrieval-live-gold-independent-audit.worker.json"
+  },
+  "human_review": {
+    "satisfied": false,
+    "reason": "An independent machine/subagent audit is evidence, not the human sign-off required by the frozen gold contract."
+  },
+  "fixture_reviews": [
+    {
+      "fixture_id": "live_exact_long_work_idle",
+      "fixture_class": "exact",
+      "query_sha256": "4d1de614709294e80dbae4dc2efadc5214690974216adf14b5ec3c63c7e46c4c",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "wiki/os2/OTEL To Proposal Route.md:41-41",
+      "reason": "The labeled sentence is the only complete literal answer."
+    },
+    {
+      "fixture_id": "live_exact_scorecard_scope",
+      "fixture_class": "exact",
+      "query_sha256": "b2fbebea7c40cc6b7c0b1394d63b315683b7755aa1ef24fa0e3796c56fc8bc69",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "wiki/scorecards-and-evals/Current Map.md:50-52",
+      "reason": "Only the labeled passage supplies the whole stated proof boundary."
+    },
+    {
+      "fixture_id": "live_exact_token_reduction_guard",
+      "fixture_class": "exact",
+      "query_sha256": "f0b667e111d3910ccc2ab6333acd2297f76bf53c15c4133c9fba4625c2d63c42",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "wiki/scorecards-and-evals/Token Efficiency Map.md:36-38",
+      "reason": "The label is the only complete guard statement."
+    },
+    {
+      "fixture_id": "live_exact_promotion_rule",
+      "fixture_class": "exact",
+      "query_sha256": "d6ed7072bef17000347b983575c88a9d44b9642ba6dd8481ff0eccdd165bcfa5",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "wiki/recommendations/Action Promotion Map.md:36-38",
+      "reason": "No other passage is equally complete or normative."
+    },
+    {
+      "fixture_id": "live_para_rsi_model_weights",
+      "fixture_class": "paraphrase",
+      "query_sha256": "1dba4230038e1571e1c2b7f59fe912011ec58a23c5a9e743a3c213f89305c79a",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "wiki/self-improvement/RSI Control Loop.md:40-42",
+      "reason": "The label directly and uniquely resolves both halves of the paraphrase."
+    },
+    {
+      "fixture_id": "live_para_debt_destination",
+      "fixture_class": "paraphrase",
+      "query_sha256": "447322977a388ba682c169c174f99c7b794bea449c16dc74591574dfd5464e99",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "wiki/gaps/Open Follow Up Debt.md:15-24",
+      "reason": "Only the labeled section combines counts with the named destination."
+    },
+    {
+      "fixture_id": "live_para_source_open",
+      "fixture_class": "paraphrase",
+      "query_sha256": "e73b455f8754ee216d51589d890ec4f8a39e59aca428c22efdb7c9e696a51fc4",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "wiki/source-map/WF88 Wiki Source Map.md:73-73",
+      "reason": "This is the only explicit source-open caveat in the frozen corpus."
+    },
+    {
+      "fixture_id": "live_para_checkpoint_wiki_roundtrip",
+      "fixture_class": "paraphrase",
+      "query_sha256": "d86a216ed73d5d1775b7006fa39bef17fb563b42d5661b0ffb1193c7509c976a",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "data/workflow-checkpoints/wf74-wf88.json:77-96",
+      "reason": "The three-stage round trip appears only in this checkpoint definition."
+    },
+    {
+      "fixture_id": "live_para_closeout_release_chain",
+      "fixture_class": "paraphrase",
+      "query_sha256": "7165f5165c2e010a66184415e77fd9b85088d5444032a94e2fdd3b0692290cc2",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "data/workflow-checkpoints/implementation-closeout.json:56-75",
+      "reason": "Only this configuration contains the complete ordered closeout chain."
+    },
+    {
+      "fixture_id": "live_para_wiki_navigation",
+      "fixture_class": "paraphrase",
+      "query_sha256": "a74e3db27ea9666acd1957f034ce216769d1bd4a8cd45ac81d328b4d0683be8e",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "wiki/index.md:12-23",
+      "reason": "The landing-page enumeration is unique and fully sufficient."
+    },
+    {
+      "fixture_id": "live_dist_token_quality_limit",
+      "fixture_class": "distractor",
+      "query_sha256": "30879ccb4ff6346d405c4a81abc183ad343523806d835163921cea1b6e74f3d1",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "wiki/scorecards-and-evals/Token Efficiency Map.md:32-38",
+      "reason": "The named distractor is semantically adjacent but omits the query's token/API premise and answer-quality constraint."
+    },
+    {
+      "fixture_id": "live_dist_autoapply_health_block",
+      "fixture_class": "distractor",
+      "query_sha256": "ff0ebc49b9a600b2aaf4fa0b3eb378ac019f089d0a4f954ef3bc4dc75df6c7df",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "wiki/recommendations/Action Promotion Map.md:29-34",
+      "reason": "Only the label provides the requested conditional hard-stop rule."
+    },
+    {
+      "fixture_id": "live_dist_otel_metadata_queue",
+      "fixture_class": "distractor",
+      "query_sha256": "64370d98d5209f8cf9974a6870251922f4d975b48aa77c7eb392ce19b13ef69c",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "wiki/os2/OTEL To Proposal Route.md:20-24",
+      "reason": "The labeled route is uniquely complete."
+    },
+    {
+      "fixture_id": "live_dist_freshness_status_pairs",
+      "fixture_class": "distractor",
+      "query_sha256": "716391bd12ae60c6e681645b4789c82dd20013acaa99622d50dbd3676cea7111",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "wiki/source-map/WF88 Wiki Source Map.md:40-61",
+      "reason": "Only the label supplies the full freshness-plus-status mapping requested."
+    },
+    {
+      "fixture_id": "live_dist_agent_ledger_before_eval",
+      "fixture_class": "distractor",
+      "query_sha256": "aab7ea44327706e344cd9cd9c1c637831a47fa96f409f85789036d03870536d8",
+      "decision": "confirmed",
+      "sole_relevance_confirmed": true,
+      "evidence": "data/workflow-checkpoints/implementation-closeout.json:28-45",
+      "reason": "The sequence and both exact identifiers occur only in the labeled configuration."
+    },
+    {
+      "fixture_id": "live_absent_kubernetes_budget",
+      "fixture_class": "absent",
+      "query_sha256": "93bfb129e2a8b6ba71a3dbe498621060c9b2b31bb6ae2c6c5fac960edc40e202",
+      "decision": "confirmed",
+      "absence_certified": true,
+      "evidence": "Full 10-source frozen corpus review.",
+      "reason": "Full frozen-corpus review found no Kubernetes, pod disruption budget, production cluster, or approved value."
+    },
+    {
+      "fixture_id": "live_absent_customer_sla_refund",
+      "fixture_class": "absent",
+      "query_sha256": "287d8cb547f3c1d2cd4710c238ece931fadc6280c9914c1c6cc9667a5712e558",
+      "decision": "confirmed",
+      "absence_certified": true,
+      "evidence": "Full 10-source frozen corpus review.",
+      "reason": "The corpus contains no policy connecting a customer response-time miss to any refund percentage."
+    },
+    {
+      "fixture_id": "live_absent_embedding_temperature",
+      "fixture_class": "absent",
+      "query_sha256": "e4c89b5a5a5625b8d9f9b3fe9a9290c4f9d7a1d4d3c4fa4394dc99b1b610ecbb",
+      "decision": "confirmed",
+      "absence_certified": true,
+      "evidence": "Full 10-source frozen corpus review.",
+      "reason": "No frozen source specifies an embedding temperature or semantic-retriever temperature setting."
+    },
+    {
+      "fixture_id": "live_absent_wiki_cron_time",
+      "fixture_class": "absent",
+      "query_sha256": "7c62f6db91ee4a2fe328b415a97dd5f66e92c919f4182628259c2ddef6e424fb",
+      "decision": "confirmed",
+      "absence_certified": true,
+      "evidence": "Full 10-source frozen corpus review.",
+      "reason": "Wiki synthesis appears, but no frozen source states 03:15, UTC, or any schedule."
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "declarationKey": "veritas.embedding-keepalive-guard.v1",
+  "job_id": "3c3b13b7-6520-464b-91ee-d5fc6f2a086c",
+  "name": "Runtime - Embedding Keepalive Guard",
+  "required": true,
+  "owner_workflow": "WF88",
+  "contract_reason": "A cold Ollama embedding load costs 4-7s and consumes a large share of the memory_search tool deadline, which has produced hard recall failures on the first search of a session. This job keeps the embedding model resident so recall does not degrade after idle periods or an Ollama restart.",
+  "description": "Keeps the local Ollama memory-search embedding model resident so the first memory_search of a session does not pay a 4-7s cold-load penalty against the tool deadline. Local embedding residency only: no config/auth/service/schedule mutation, no external delivery, no finance/canon/capital/account authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "7 * * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts/embedding_keepalive_guard.py",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 120
+  },
+  "compare_fields": [
+    "declarationKey",
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/embedding-keepalive-guard.json"
+  ],
+  "authority_boundary": {
+    "review_only": false,
+    "cron_contract_only": true,
+    "local_embedding_residency_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "stop_lines": [
+    "Contract validation only; do not add, update, remove, enable, disable, reschedule, or force-run the cron job from this artifact.",
+    "The job may load an embedding model into the local Ollama server and may not change OpenClaw config, auth, credentials, channels, services, startup, plugins, or network state.",
+    "No finance, canon, portfolio, cash, sizing, capital, paper/live, brokerage, account, or execution action.",
+    "No deletion, archive, external delivery, skill application, or owner approval inference."
+  ],
+  "created_at_utc": "2026-08-30T22:56:00Z",
+  "updated_at_utc": "2026-09-06T22:20:16Z",
+  "contract_update_reason": "Pin command argv to CPython 3.13 and restore enabled after Gateway python ENOENT auto-disable."
+}

@@ -94,9 +94,9 @@ Add `--include-long-work` only when Randall asks about resumable/overdue long-ru
 python scripts\current_opportunity_approval_brief.py --refresh --include-long-work --write --write-md --validate
 ```
 
-This route refreshes only PM control, cron control, trade-grade decision cards, WF85 paper-deployment visibility, and owner-gated action queue packets. It targets a 6-7 call budget including memory recall, instead of broad exploratory scans. It does not use broad search, status-card fallback, or paper-position checks unless the packet is missing, stale, blocked, or Randall asks for those surfaces.
+This route refreshes PM control, cron control, the current alerts-and-recommendations digest, and owner-gated action review packets. It targets a 6-7 call budget including memory recall instead of broad exploratory scans. Finance detail must come from guarded SQL, explicit quote proof, the alert controller, and the current digest.
 
-Authority remains review-only: no cron schedule/runtime/config mutation, no finance canon/portfolio/cash/sizing/risk mutation, no capital deployment, no paper/live execution, no external delivery, and no owner approval inference.
+Authority remains review-only: no schedule/runtime/config mutation, no finance-canon mutation, no maintained portfolio or simulated-account state, no account/order/execution action, no external delivery, and no owner-approval inference.
 
 ## Question Route Catalog
 
@@ -109,7 +109,7 @@ python scripts\question_route_catalog.py --write --write-md --validate
 For deterministic selection proof:
 
 ```powershell
-python scripts\question_route_catalog.py --question "What are my capital deployment recommendations?" --write --write-md --validate
+python scripts\question_route_catalog.py --question "What are my current finance alerts and recommendations?" --write --write-md --validate
 ```
 
 V1 route cards:
@@ -119,7 +119,7 @@ V1 route cards:
 | `current_opportunities_and_approvals` | current opportunities, overdue items, owner approvals | 6 |
 | `skill_proposals_and_patches` | Skill Workshop proposals and skill patch state | 6 |
 | `skills_modified_or_created` | live skills changed or newly created | 5 |
-| `capital_deployment_recommendations` | capital deployment recommendations with finance stop lines | 8 |
+| `finance_alerts_and_recommendations` | current guarded alerts, freshness, and non-executing recommendations | 8 |
 | `daily_improvements_and_opportunities` | today's workflow/OS improvement queue | 7 |
 | `implementation_agent_orchestration` | bounded implementation agents, model effort, QA posture, and validator proof | 8 |
 | `prompt_book_asi_harness_readiness` | ASI-style harness discipline and Prompt Book readiness | 8 |

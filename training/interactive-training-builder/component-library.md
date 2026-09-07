@@ -1,6 +1,6 @@
 # Interactive Training Component Library
 
-Generated UTC: 2026-07-04T14:40:03Z
+Generated UTC: 2026-09-07T04:48:28Z
 
 Reusable local components for schema-backed HTML training modules.
 
@@ -15,6 +15,8 @@ Reusable local components for schema-backed HTML training modules.
 | Local xAPI Events | Record local started, answered, completed, passed, failed, and boundary review events. | xapi.activity_id, xapi.verbs |
 | SCORM Package | Package the module for later LMS smoke/import testing. | index.html, module.json, xapi-seed.json, imsmanifest.xml |
 | Browser QA | Prove desktop/mobile rendering, accessibility, console, and overflow behavior. | desktop screenshot, mobile screenshot, axe result, console result |
+| Screen Recording | Play a local screen-capture clip inside the module, or show $0 capture steps when no clip exists yet. | id, type, title, prompt, capture_hint, xapi_object |
+| Local Capture Helper | Inventory local recordings and print $0 Windows capture steps without any upload or LMS. | recordings manifest, recordings README |
 
 ## Boundary
 

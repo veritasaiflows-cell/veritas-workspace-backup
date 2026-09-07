@@ -1,0 +1,75 @@
+{
+  "generated_at_utc": "2026-05-11T00:35:00Z",
+  "status": "clean",
+  "workflow": "WF43 State History and Review Outcome Retention",
+  "validation": {
+    "command": "python scripts\\state_history_capture.py validate",
+    "passed": true,
+    "output": "state_history_validation_passed rows=2 path=data/state-history/state-history-v1.jsonl"
+  },
+  "durable_history": {
+    "path": "data/state-history/state-history-v1.jsonl",
+    "row_count": 2,
+    "latest_capture_run_id": "20260510T232051Z_postclose_ee2357cf8e68",
+    "latest_captured_at_utc": "2026-05-10T23:20:51Z",
+    "row_type": "state_snapshot_v1",
+    "schema_version": 1,
+    "window": "post-close"
+  },
+  "authority_check": {
+    "consumer_posture": "historical_review_only",
+    "canonical_note_mutation_allowed": false,
+    "deployment_state_mutation_allowed": false,
+    "model_driven_deployment_allowed": false,
+    "model_training_enabled": false,
+    "owner_approval_granted": false,
+    "portfolio_mutation_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "future_outcomes_check": {
+    "owner_decision": null,
+    "owner_decision_at_utc": null,
+    "owner_decision_provenance": null,
+    "outcome_notes": [],
+    "realized_outcomes": [],
+    "realized_outcomes_updated_at_utc": null
+  },
+  "provenance_check": {
+    "source_artifact_count": 6,
+    "all_source_artifacts_exist": true,
+    "all_source_artifacts_have_sha256": true
+  },
+  "latest_row_counts": {
+    "deployment_states": 10,
+    "band_statuses": 19,
+    "review_objects": 12,
+    "capital_deployment_recommendations": 6,
+    "market_intelligence_events": 14,
+    "known_gaps": 4
+  },
+  "wf40_cron_context": {
+    "scheduled_1710_run_status": "cron envelope ok but proof failed closed before the later WF40 residual exception patch",
+    "latest_controlled_proof_after_exception": {
+      "proof_status": "ok",
+      "audit_status": "warning",
+      "audit_stop_line": false,
+      "errors": []
+    }
+  },
+  "handoff": {
+    "wf43_state": "durable-proof-passed",
+    "requested_wf53_handoff": "superseded_by_current_control_surfaces",
+    "current_control_surface_next": "WF55 probability-readiness report / validator gate",
+    "note": "WF53 sector/correlation proof is already v1 implemented / QA accepted; no queue regression to WF53 was made."
+  },
+  "mutations_avoided": [
+    "config",
+    "auth",
+    "external_channels",
+    "canonical_finance_notes",
+    "portfolio_state",
+    "deployment_state",
+    "trades",
+    "owner_approvals"
+  ]
+}

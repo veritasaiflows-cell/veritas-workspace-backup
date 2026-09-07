@@ -1,0 +1,148 @@
+{
+  "schema_version": "deployment_contract_migration_validation_bundle.v1",
+  "generated_at_utc": "2026-06-18T04:55:12Z",
+  "mode": "quick",
+  "status": "ok",
+  "authority": {
+    "review_only": true,
+    "canonical_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "sql_canon_promotion_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "summary": {
+    "commands": 10,
+    "failed": 0,
+    "failed_labels": []
+  },
+  "results": [
+    {
+      "label": "py_compile_migration_surfaces",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "-m",
+        "py_compile",
+        "scripts/board_state_contract.py",
+        "scripts/deployment_contract_agreement_validator.py",
+        "scripts/deployment_contract_legacy_read_audit.py",
+        "scripts/deployment_contract_migration_validation_bundle.py",
+        "scripts/deployment_readiness_surface.py",
+        "scripts/test_board_state_contract.py",
+        "scripts/test_dashboard_acceptance.py"
+      ],
+      "returncode": 0,
+      "status": "ok",
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "label": "board_state_contract_tests",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts/test_board_state_contract.py"
+      ],
+      "returncode": 0,
+      "status": "ok",
+      "stdout_tail": "board_state_contract_tests_passed",
+      "stderr_tail": ""
+    },
+    {
+      "label": "regenerate_deployment_readiness_surface",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts/deployment_readiness_surface.py"
+      ],
+      "returncode": 0,
+      "status": "ok",
+      "stdout_tail": "deployment_readiness_surface: wrote C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\deployment-readiness-surface.json\n  source run summary: run-summary-post-close.json\n  macro gate: DEGRADED\n  warnings: 0 critical / 4 warning / 0 info\n  SYSTEM HOLD: 10\n  WARNING: run-summary (2026-06-18T01:27:48+00:00) predates the trigger surface (2026-06-17T20:27:51.086287+00:00) by 5.0h\n  WARNING: validation artifact is stale (13.73h old > 8.0h threshold)",
+      "stderr_tail": ""
+    },
+    {
+      "label": "deployment_contract_agreement",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts/deployment_contract_agreement_validator.py",
+        "--write"
+      ],
+      "returncode": 0,
+      "status": "ok",
+      "stdout_tail": "wrote tmp\\deployment-contract-agreement-validation.json\ndeployment_contract_agreement_validator: ok (10 checked, 0 critical, 0 warning)",
+      "stderr_tail": ""
+    },
+    {
+      "label": "deployment_contract_legacy_read_audit",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts/deployment_contract_legacy_read_audit.py",
+        "--write",
+        "--fail-on-unclassified"
+      ],
+      "returncode": 0,
+      "status": "ok",
+      "stdout_tail": "wrote tmp/deployment-contract-legacy-read-audit.json\ndeployment_contract_legacy_read_audit: warning (35 files, 112 hits, 23 warning hits, 0 unclassified warning hits)",
+      "stderr_tail": ""
+    },
+    {
+      "label": "canonical_status_invariant",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts/canonical_status_invariant_validator.py",
+        "--write"
+      ],
+      "returncode": 0,
+      "status": "ok",
+      "stdout_tail": "wrote C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\canonical-status-invariant-validation.json\ncanonical_status_invariant_validator: ok (0 critical, 0 warning)",
+      "stderr_tail": ""
+    },
+    {
+      "label": "dashboard_payload",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts/dashboard_payload.py",
+        "--write",
+        "--validate"
+      ],
+      "returncode": 0,
+      "status": "ok",
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "label": "dashboard_acceptance",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts/test_dashboard_acceptance.py"
+      ],
+      "returncode": 0,
+      "status": "ok",
+      "stdout_tail": "y_manual_remediation_path\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"macro_regime_policy_distribution_shape_guard\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"macro_regime_credit_shape_guard\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"macro_regime_breadth_shape_guard\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"delta_summary_honesty\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"earnings_lifecycle_closeout_candidate\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"earnings_new_alert_visibility\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"trigger_note_uses_current_execution_band\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"neutral_deployment_evidence_shadow_display_only\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"phase4a_sql_consumer_authority_guard_fail_closed\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"fundamental_trend_panel_review_only\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"deployment_readiness_source_conflict_guard\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"auto_apply_clears_deployment_surface_band_debt\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"event_risk_band_freeze_is_structured_review_debt\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"post_apply_band_review_does_not_loop_auto_apply\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"payload_shape_contract\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"workflow8_command_center_alignment\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"generic_authority_conflict_guard\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"decision_queue_visibility\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"wf63_command_center_readiness_only\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    },\n    {\n      \"name\": \"wf63_validator_fails_on_misleading_language\",\n      \"passed\": true,\n      \"errors\": [],\n      \"exec_freshness\": null,\n      \"validation\": {},\n      \"trust_summary\": null\n    }\n  ]\n}",
+      "stderr_tail": ""
+    },
+    {
+      "label": "artifact_index_incremental",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts/artifact_index.py",
+        "incremental"
+      ],
+      "returncode": 0,
+      "status": "ok",
+      "stdout_tail": "incremental_rebuilt tmp/veritas-artifact-index.sqlite\nsource_files=159 changed_or_new=12 unchanged=147 removed=0",
+      "stderr_tail": ""
+    },
+    {
+      "label": "artifact_index_validate",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts/artifact_index.py",
+        "validate"
+      ],
+      "returncode": 0,
+      "status": "ok",
+      "stdout_tail": "status=ok checks=28 failed=0\nok | integrity_check | ok\nok | foreign_key_check | rows=0\nok | view_exists:v_cockpit_action_queue | \nok | view_exists:v_cockpit_ticker_timeline | \nok | view_exists:v_cockpit_trust_boundary | \nok | view_exists:v_cockpit_official_source_fields | \nok | view_exists:v_cockpit_canon_staging | \nok | view_exists:v_cockpit_earnings_lifecycle | \nok | view_exists:v_cockpit_dashboard_findings | \nok | view_exists:v_cockpit_source_freshness | \nok | view_exists:v_cockpit_deployment_readiness | \nok | forbidden_true_authority_flags_zero | count=0\nok | canon_stage_apply_allowed_zero | count=0\nok | canon_stage_activation_or_apply_ready_rows_zero | count=0\nok | official_ir_fields_have_lineage | missing=0\nok | cockpit_action_queue_has_rows | rows=60\nok | official_field_proof_amd_adjusted_eps | rows=1\nok | ticker_timeline_etn_has_rows | rows=26\nok | earnings_lifecycle_nvda_review_only | rows=1\nok | deployment_readiness_etn_indexed | rows=1 buckets=['SYSTEM HOLD']\nok | source_freshness_rows_indexed | rows=20\nok | dashboard_findings_indexed | rows=4\nok | ticker_expression_index_query_plan | (5, 0, 52, 'SEARCH daily_review_objects USING INDEX idx_daily_review_ticker_upper_time (<expr>=?)')\nok | drift_fingerprint_row_counts_match | \nok | freshness_live_files_all_indexed | not_indexed=0\nok | freshness_no_orphaned_rows | orphaned=0\nok | freshness_no_stale_content | stale=0\nok | freshness_index_has_been_built | last_rebuilt=2026-06-16T20:32:24Z last_incremental=2026-06-18T04:55:12Z",
+      "stderr_tail": ""
+    }
+  ]
+}

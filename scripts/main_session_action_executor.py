@@ -4,8 +4,8 @@
 This is the thin action layer above cron control, greenkeeper, PM control, and
 the parallel lane recommender. It chooses one safe action per run and can
 execute only allowlisted proof/refresh work. It does not patch code, spawn
-helpers, mutate finance canon/portfolio state, change cron/config/runtime, or
-infer owner approval.
+helpers, alter finance alert canon or owner financial state, change
+cron/config/runtime, or infer owner approval.
 """
 from __future__ import annotations
 
@@ -81,6 +81,41 @@ PRIORITY_AUTHORITY_BOUNDARY = {
 }
 PRIORITY_DUE_WINDOWS = {"immediate", "next_main_session", "scheduled_monitoring"}
 
+RETIRED_FINANCE_ROUTE_TOKENS = (
+    "weekday-morning-review-cron-runner.py",
+    "post-close-review-cron-runner.py",
+    "run-finance-refresh-chain.py",
+    "wf67",
+    "wf68",
+    "wf76",
+    "wf78",
+    "wf86",
+    "wf87",
+    "trade-grade",
+    "portfolio-config",
+    "model-portfolio",
+    "portfolio-snapshot",
+    "portfolio-update",
+    "portfolio-state",
+    "portfolio-management",
+    "paper-trading",
+    "paper-position",
+    "position-sizing",
+    "capital-deployment",
+    "deployment-readiness",
+    "execution-board",
+    "shadow-reconciliation",
+)
+JOB_ROUTE_FIELDS = (
+    "job_id",
+    "title",
+    "implementation_class",
+    "collision_group",
+    "target_files",
+    "proof_commands",
+    "helper_packet",
+)
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -99,6 +134,42 @@ def as_dict(value: Any) -> dict[str, Any]:
 
 def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
+
+
+def route_projection(value: Any) -> Any:
+    if isinstance(value, dict):
+        projected: dict[str, Any] = {}
+        for key, child in value.items():
+            lowered = str(key).lower()
+            if lowered in {"authority_boundary", "automation_capabilities"}:
+                continue
+            if lowered.endswith(("_allowed", "_approved", "_inferred")):
+                continue
+            projected[str(key)] = route_projection(child)
+        return projected
+    if isinstance(value, list):
+        return [route_projection(item) for item in value]
+    return value
+
+
+def retired_finance_route_findings(value: Any) -> list[str]:
+    """Return matched retired route families without echoing unsafe targets."""
+    rendered = json.dumps(route_projection(value), sort_keys=True, default=str).lower()
+    normalized = rendered.replace("_", "-").replace(" ", "-")
+    return [token for token in RETIRED_FINANCE_ROUTE_TOKENS if token in normalized]
+
+
+def job_route_payload(job: dict[str, Any]) -> dict[str, Any]:
+    return {field: job.get(field) for field in JOB_ROUTE_FIELDS if field in job}
+
+
+def safe_route_text(value: Any, fallback: str = "") -> str:
+    text = str(value or "")
+    return fallback if retired_finance_route_findings(text) else text
+
+
+def safe_route_list(value: Any) -> list[Any]:
+    return [item for item in as_list(value) if not retired_finance_route_findings(item)]
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -211,6 +282,9 @@ def select_pm_job(jobs: list[dict[str, Any]], context: str, busy_groups: set[str
     skipped: list[dict[str, Any]] = []
     ranked = sorted(jobs, key=lambda row: (int(row.get("rank") or 9999), -float(row.get("readiness_score") or 0)))
     for job in ranked:
+        if retired_finance_route_findings(job_route_payload(job)):
+            skipped.append({"job_id": "suppressed", "reason": "retired_finance_route_suppressed"})
+            continue
         job_id = str(job.get("job_id") or "")
         group = str(job.get("collision_group") or "")
         caps = as_dict(job.get("automation_capabilities"))
@@ -236,13 +310,24 @@ def select_pm_job(jobs: list[dict[str, Any]], context: str, busy_groups: set[str
 def top_helper_candidate(parallel: dict[str, Any]) -> dict[str, Any]:
     recommendation = as_dict(parallel.get("recommendation"))
     top_candidate = as_dict(recommendation.get("top_candidate"))
-    if top_candidate and as_dict(parallel.get("summary")).get("eligible_candidate_count"):
+    lease_command = parallel.get("lease_command")
+    if (
+        top_candidate
+        and as_dict(parallel.get("summary")).get("eligible_candidate_count")
+        and not retired_finance_route_findings({"candidate": top_candidate, "lease_command": lease_command})
+    ):
         return top_candidate
-    if recommendation.get("eligible") is True:
+    if (
+        recommendation.get("eligible") is True
+        and not retired_finance_route_findings({"candidate": recommendation, "lease_command": lease_command})
+    ):
         return recommendation
     for candidate in as_list(parallel.get("ranked_candidates")):
         row = as_dict(candidate)
-        if row.get("eligible") is True:
+        if (
+            row.get("eligible") is True
+            and not retired_finance_route_findings({"candidate": row, "lease_command": lease_command})
+        ):
             return row
     for candidate in as_list(parallel.get("candidates")):
         row = as_dict(candidate)
@@ -315,7 +400,8 @@ def select_priority_handoff(priority_handoff: dict[str, Any]) -> dict[str, Any]:
         or not str(selected.get("owner") or "").strip()
         or selected.get("due_window") not in PRIORITY_DUE_WINDOWS
     )
-    if validation.get("status") != "ok" or boundary_invalid or structure_invalid:
+    retired_route_invalid = bool(retired_finance_route_findings(selected))
+    if validation.get("status") != "ok" or boundary_invalid or structure_invalid or retired_route_invalid:
         return {
             "action_type": "review_priority_handoff",
             "classification": "main_handoff",
@@ -435,7 +521,7 @@ def execute_action(action: dict[str, Any], args: argparse.Namespace) -> list[dic
     if action.get("action_type") != "execute_pm_proof":
         return []
     job_id = as_dict(action.get("selected_pm_job")).get("job_id")
-    if not job_id:
+    if not job_id or retired_finance_route_findings(action.get("selected_pm_job")):
         return []
     return [
         run_step(
@@ -476,6 +562,8 @@ def validate_report(report: dict[str, Any]) -> dict[str, Any]:
     if report.get("authority_boundary") != AUTHORITY_BOUNDARY:
         errors.append("authority_boundary_changed")
     action = as_dict(report.get("action"))
+    if retired_finance_route_findings(action):
+        errors.append("retired_finance_route_surfaced")
     if action.get("classification") == "auto_execute":
         caps = as_dict(as_dict(action.get("selected_pm_job")).get("automation_capabilities"))
         if caps.get("owner_gate_required"):
@@ -576,16 +664,21 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "execution_failed": [result.get("name") for result in execution_results if not result.get("ok")],
             "pm_execution_loop_status": pm_execution.get("status"),
             "pm_execution_loop_mode": pm_execution.get("mode"),
-            "pm_execution_loop_selected_jobs": as_dict(pm_execution.get("summary")).get("selected_jobs"),
+            "pm_execution_loop_selected_jobs": safe_route_list(as_dict(pm_execution.get("summary")).get("selected_jobs")),
             "parallel_eligible_candidate_count": as_dict(as_dict(artifacts["parallel"].get("summary"))).get("eligible_candidate_count"),
             "greenkeeper_action_counts": as_dict(as_dict(artifacts["greenkeeper"].get("summary")).get("action_counts")),
             "escalation_consumer_status": artifacts["escalation_consumer"].get("status"),
             "escalation_consumer_executed_safe_action_count": as_dict(artifacts["escalation_consumer"].get("summary")).get("executed_safe_action_count"),
             "escalation_consumer_unresolved_count": as_dict(artifacts["escalation_consumer"].get("summary")).get("unresolved_count"),
-            "escalation_consumer_next_safe_action": as_dict(artifacts["escalation_consumer"].get("summary")).get("next_safe_action"),
+            "escalation_consumer_next_safe_action": safe_route_text(
+                as_dict(artifacts["escalation_consumer"].get("summary")).get("next_safe_action"),
+                "Inspect the current alerts-and-recommendations or runtime proof owner.",
+            ),
             "handoff_first_proof_status": artifacts["handoff_first_proof"].get("status"),
             "handoff_first_proof_needs_repair_count": as_dict(artifacts["handoff_first_proof"].get("summary")).get("needs_repair_count"),
-            "handoff_first_proof_target_lanes": as_dict(artifacts["handoff_first_proof"].get("repair_lane_packet")).get("target_lanes"),
+            "handoff_first_proof_target_lanes": safe_route_list(
+                as_dict(artifacts["handoff_first_proof"].get("repair_lane_packet")).get("target_lanes")
+            ),
             "priority_handoff_status": artifacts["priority_handoff"].get("status"),
             "priority_handoff_receipt": artifacts["priority_handoff"].get("receipt"),
             "selected_priority_item": selected_priority_item,

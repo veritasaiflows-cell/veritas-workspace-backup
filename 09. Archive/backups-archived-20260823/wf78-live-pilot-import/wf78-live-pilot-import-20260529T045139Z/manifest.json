@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "artifact_type": "wf78_live_pilot_import_backup_manifest",
+  "generated_at_utc": "2026-05-29T04:51:39Z",
+  "run_id": "wf78-live-pilot-import-20260529T045139Z",
+  "backup_dir": "backups/wf78-live-pilot-import/wf78-live-pilot-import-20260529T045139Z",
+  "copied": [
+    {
+      "source": "data/finance/universe-v1.json",
+      "backup": "backups/wf78-live-pilot-import/wf78-live-pilot-import-20260529T045139Z/universe-v1.json",
+      "sha256": "00d0d33e004f883a6d1a589d071d5c0ed9d6675383d3619c0b64e77d8a9743a8",
+      "bytes": 161162
+    },
+    {
+      "source": "tmp/finance-intelligence-state.sqlite",
+      "backup": "backups/wf78-live-pilot-import/wf78-live-pilot-import-20260529T045139Z/finance-intelligence-state.sqlite",
+      "sha256": "445447bda213c6ba26289bf24faadfd3fe7cb23f4ed554fab142423d74776c14",
+      "bytes": 2048000
+    },
+    {
+      "source": "tmp/wf78-live-25-pilot-preflight.json",
+      "backup": "backups/wf78-live-pilot-import/wf78-live-pilot-import-20260529T045139Z/wf78-live-25-pilot-preflight.json",
+      "sha256": "e6324db936d462c026edac577b67a9d768f02d4d142b26b17207725b2d010594",
+      "bytes": 26637
+    }
+  ],
+  "production_ticker_card_hashes": [
+    {
+      "path": "tmp/ticker-intelligence-cards/AMD.current.json",
+      "sha256": "26e85fa6ccb8262ad79bb3f5742cebf89348c8b8efd366928b427868e226638d"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/AMZN.current.json",
+      "sha256": "afa1dc77a732659f19c14e5ccdea0b61bfb7313560ad84d4626623ee5efb2615"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/BKNG.current.json",
+      "sha256": "a45ae1a02e609b337a249b1a2a4b9e72dc73d6df1b40450234dc88d54160c7de"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/BRK.B.current.json",
+      "sha256": "2cc560075bde071878b6ac53308848ec1285ff1c84e996383d147e2cd92a28ea"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/CAT.current.json",
+      "sha256": "886ce40c8f444566b63e2d59ede12761fd5fa4b1d13e7a0c844feb4b28b912e4"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/CME.current.json",
+      "sha256": "079c70708a8bb704889629e97049912f1d890a7dcb631be3df75f5b6a85c7fec"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/CVX.current.json",
+      "sha256": "0cf6a3e01429cacdb492fc31df83603c407fc62a5fb9da1e3949ccc34f8a68c1"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/ECL.current.json",
+      "sha256": "93b1a41db1f21b572314cc243e63bf767ae4178691bd62940ad3469eef5ab495"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/ETN.current.json",
+      "sha256": "1ef859bdd442758516dfa29187f256e0a2090f5b2a56c288921ebbf14416a71e"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/GE.current.json",
+      "sha256": "d573544ae6ed32a7b0de3e3e20e39169ce0d543b5eb97e914785b5d44f709cc0"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/GOOG.current.json",
+      "sha256": "8be5ef35199159a8f4e6394715c2c6a2785d411559f0a33b9ffce5889007ad0e"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/GS.current.json",
+      "sha256": "19d1b54625ef4a1473740965ea5117ceca9c40a80efbb1712377b22db14f2df3"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/ITA.current.json",
+      "sha256": "40c2cef55e5544f0efb67c262bcbae6c698a498dbc9f859cbe972ef251e6eb02"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/JPM.current.json",
+      "sha256": "986b6a0a7cf9b9366a94696cbba0ecd8e0a2f4dc0be8a5cdfcf781558c7a1894"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/KTOS.current.json",
+      "sha256": "c6f9f14f1f0a576beeb0ca1e5b46019d882585812358dc734502305c0e929adc"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/LIN.current.json",
+      "sha256": "619041983f219d5c264567438d4559461a89db725b4e32ed2221e28afea5ba3f"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/LLY.current.json",
+      "sha256": "02051540a5272e2594aaba24b69aed27c8845b011936b1a945d63a3b64c9ae41"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/LMT.current.json",
+      "sha256": "547079ac3f0e8d097e4c155c87ac0af4c4bc92b1d30083791dc57575687ca97e"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/LNG.current.json",
+      "sha256": "ea691addd21464afe0e637edf7c5bcad2353c1329243ff1f6230c600d1c14cfb"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/META.current.json",
+      "sha256": "75bd35c120f307fd6febc6a79c629261a39fda5514bd98a73affc673a8317263"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/MSFT.current.json",
+      "sha256": "ce520c6ce809ca47593dd31a1cf003408bac9d804f20531e805af7b69a843802"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/NFLX.current.json",
+      "sha256": "caa879fa3097f98b1c187c12f100f53b3c71ca1426504e025786d6327451b800"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/NVDA.current.json",
+      "sha256": "f1ca87b56527b20c6f9ff155a25c09d17a8524ece94c8f61490e41beef154227"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/PAVE.current.json",
+      "sha256": "aaf411396760a63f1927252e2a14ede44e4c39d5968fb37ea661dd0713ef4d37"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/PH.current.json",
+      "sha256": "7b2a3d50c6a2c44b374015f8100da9eaa0afc484be9e9ee8a191372f223fd239"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/PLTR.current.json",
+      "sha256": "bcd19e13b40feb65643a6641a100a41802bc0aee20144728836e988bab6262d4"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/RTX.current.json",
+      "sha256": "cdad1db49f374e37599fabbfe4b653ea34dc6d5a1d6691bea2184f8e5dd2c01b"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/SLV.current.json",
+      "sha256": "c6d4f9ac55c448765cf175f1860d7f94fc8a56d02db39d360fafc74be92c9f0a"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/SMCI.current.json",
+      "sha256": "a697985f5e19def9a06c0f4f005e4824abd3d87049f8a47ae866394538111122"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/TLT.current.json",
+      "sha256": "8ffa9e905734c9ac11ca356ce9455b3f87862d62526e796fb3813add1298bd1f"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/TMUS.current.json",
+      "sha256": "569b1c05e7c613079dc22a9b426475e383f4ac33e7a3e5435a97436a3863d5ea"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/VAW.current.json",
+      "sha256": "5272afa6ff8d3595b02af094f0c5bd1ab9eda18991bce3cde39ad26184e12043"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/VMC.current.json",
+      "sha256": "435af6259d4bc4a083f71d1e4e81e36cb5ad02159d3e4e70d0d3f859f4155099"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/VRT.current.json",
+      "sha256": "f7335396261d57c87910cccda27b8a42196e06facd63bbe8f06706411e7e61da"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/VXUS.current.json",
+      "sha256": "6e5ad589dd3755a8afe74ba00219af32140d795e2150596f46b5c49ab8d1c731"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/WMB.current.json",
+      "sha256": "4895134fe5041572b2e90cf614b09e66e0318f17e4749cc1bf35d37421dbbb0f"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/XLB.current.json",
+      "sha256": "d64f177051354cca7d91190bbcd27735fdf05d74d10e9619dabb918e1c5c94e6"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/XLC.current.json",
+      "sha256": "d53f12a8800a7b8760521a84a90fccbf94bf7427daf32b15c8026b3859dae3a6"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/XLE.current.json",
+      "sha256": "62eeaaa3d4d91f006426276881d61b947d473d6216ebfc664bbcb2efa45d5185"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/XLF.current.json",
+      "sha256": "ec756af3f2c9d9594a58085786219c42bbb936fe47476c74b3d012b0dab271d1"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/XLI.current.json",
+      "sha256": "92c650795e446c4a3c9b26200978aa2a58fadb1ff00719fb13815d1f25981bee"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/XOM.current.json",
+      "sha256": "f47f16ff0c2b0620f8f81aea9343f6015269cd7c93815306681fb367b34bdc79"
+    }
+  ],
+  "rollback_route": [
+    "restore data/finance/universe-v1.json from backup if touched",
+    "restore tmp/finance-intelligence-state.sqlite from backup if pilot SQL rollback is required",
+    "delete only newly generated live-pilot artifacts after reference check",
+    "rerun production 42 validators and artifact/workspace indexes"
+  ]
+}

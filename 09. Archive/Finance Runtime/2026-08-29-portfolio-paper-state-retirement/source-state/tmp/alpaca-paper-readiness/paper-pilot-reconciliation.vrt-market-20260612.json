@@ -1,0 +1,100 @@
+{
+  "artifact_type": "wf67_paper_pilot_reconciliation",
+  "artifacts": {
+    "cancel_request": "tmp/alpaca-paper-readiness/paper-cancel-request.wf67-pilot-001.json",
+    "dry_run_result": "tmp\\alpaca-paper-readiness\\paper-execution-dry-run-result.vrt-market-20260612.json",
+    "execution_result": "tmp\\alpaca-paper-readiness\\paper-execution-result.vrt-market-20260612.json",
+    "guard_validation": "tmp\\alpaca-paper-readiness\\paper-execution-guard-validation.vrt-market-20260612.post-submit.json",
+    "trade_request": "tmp\\alpaca-paper-readiness\\paper-trade-request.vrt-market-20260612.json",
+    "wf63_readiness": "tmp/alpaca-paper-readiness/wf63-readiness-report.json"
+  },
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "inferred_owner_approval_allowed": false,
+    "live_credentials_allowed": false,
+    "live_endpoint_allowed": false,
+    "live_trading_allowed": false,
+    "money_movement_allowed": false,
+    "paper_only": true,
+    "replace_close_liquidate_allowed": false
+  },
+  "findings": [
+    {
+      "code": "execution_result_not_cancelled",
+      "severity": "critical"
+    },
+    {
+      "code": "order_field_mismatch",
+      "expected": "VRT",
+      "field": "symbol",
+      "observed": "MSFT",
+      "severity": "critical"
+    },
+    {
+      "code": "order_field_mismatch",
+      "expected": "market",
+      "field": "type",
+      "observed": "limit",
+      "severity": "critical"
+    },
+    {
+      "code": "order_field_mismatch",
+      "expected": "None",
+      "field": "limit_price",
+      "observed": "385",
+      "severity": "critical"
+    },
+    {
+      "code": "order_field_mismatch",
+      "expected": "None",
+      "field": "qty",
+      "observed": "1",
+      "severity": "critical"
+    }
+  ],
+  "generated_at_utc": "2026-06-12T15:43:57Z",
+  "order_lifecycle": {
+    "cancelled": true,
+    "expected": {
+      "limit_price": "None",
+      "qty": "None",
+      "side": "buy",
+      "symbol": "VRT",
+      "time_in_force": "day",
+      "type": "market"
+    },
+    "filled_qty_zero": true,
+    "observed_redacted": {
+      "canceled_at": "2026-05-18T02:32:05.991987Z",
+      "created_at": "2026-05-18T02:27:51.134522Z",
+      "expired_at": null,
+      "expires_at": "2026-05-18T20:00:00Z",
+      "filled_at": null,
+      "filled_qty": "0",
+      "limit_price": "385",
+      "order_id_present": true,
+      "qty": "1",
+      "side": "buy",
+      "status": "canceled",
+      "submitted_at": "2026-05-18T02:27:51.134522Z",
+      "symbol": "MSFT",
+      "time_in_force": "day",
+      "type": "limit"
+    },
+    "submitted": true
+  },
+  "pilot_id": "wf67-pilot-001",
+  "redaction": {
+    "headers_persisted": false,
+    "order_id_present_only_in_cancel_artifact": true,
+    "raw_response_bodies_persisted": false,
+    "secrets_persisted": false
+  },
+  "schema_version": 1,
+  "status": "blocked",
+  "summary": {
+    "critical": 5,
+    "warning": 0
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

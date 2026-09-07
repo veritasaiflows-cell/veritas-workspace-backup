@@ -1,0 +1,46 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T16:32:50Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-archive-microbatch-2026-05-25-3.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 3,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/openclaw-otel-enabled-proof.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/openclaw-otel-enabled-proof.md",
+      "sha256_before": "426033ec06d019f5ffd9025593b468b880ba26e68905bcd5642707a5dad8f1bd",
+      "sha256_after": "426033ec06d019f5ffd9025593b468b880ba26e68905bcd5642707a5dad8f1bd"
+    },
+    {
+      "path": "tmp/os-opt-cron-runtime-prework.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/os-opt-cron-runtime-prework.md",
+      "sha256_before": "b7502ec23998756286d1f2397863aabeb555769b8a1f4944251f24e448501741",
+      "sha256_after": "b7502ec23998756286d1f2397863aabeb555769b8a1f4944251f24e448501741"
+    },
+    {
+      "path": "tmp/os-opt-rsi-routing-prework.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/os-opt-rsi-routing-prework.md",
+      "sha256_before": "5554277faf382215733c07f51b81ed63b29d8f38aae17b10f9df727a696a8cfd",
+      "sha256_after": "5554277faf382215733c07f51b81ed63b29d8f38aae17b10f9df727a696a8cfd"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; only explicit apply_allowed true suggestions with zero references and approved destination roots can move"
+}

@@ -1,6 +1,6 @@
 ---
 name: "veritas-isolated-agent-contract"
-description: "Require v3 schema binding and actual post-apply diff/QA proof for isolated patch drafts."
+description: "Isolated-agent transport, provenance, writeback, and validation contract."
 ---
 
 # Veritas Isolated Agent Contract
@@ -14,7 +14,7 @@ Use persistent isolated agents and Codex-native subagents without confusing work
 | Form | Runtime identity | Workspace/context | Best use | Not authority for |
 |---|---|---|---|---|
 | Persistent isolated agent | configured `agentId` with its own workspace, agent directory, session store, and tool policy | receives its own bootstrap; shared Main context requires proven transport | durable specialist persona or department | self-routing, self-acceptance, final truth |
-| Codex-native subagent | task-scoped Codex session sharing the Main workspace | bounded task context; actual rollout metadata may be imported | narrow read-only work or eligible one-file implementation | broad multi-file work, hidden model/backend changes |
+| Codex-native subagent | task-scoped Codex session sharing the Main workspace | bounded task context; actual rollout metadata may be imported | bounded non-QA read-only work; no code authorship | broad multi-file work, hidden model/backend changes |
 | OpenClaw sub-agent | child session of an OpenClaw agent | inherits the parent agent scope and bootstrap | background work inside that agent | a separate persistent persona |
 | Bootstrap/capability packet | generated read-only context | current bounded doctrine and task contract | cold-start orientation | approval, canon, or execution authority |
 
@@ -25,11 +25,11 @@ OpenClaw does not discover agents from a fixed workspace folder. Use configured 
 Use `veritas.execution_efficiency_policy.v1` in this order:
 
 1. deterministic model-free command;
-2. explicit eligible Codex-native route;
-3. explicit Main exception;
-4. persistent Terra helper with fresh strict transport proof.
+2. explicit eligible read-only Codex-native route, not code authorship or independent QA;
+3. Main/Astra for integration, acceptance and authority-sensitive judgment;
+4. the selected persistent role on its exact configured model with fresh strict transport proof.
 
-A Main model exception must be explicit, approval-backed, and recorded. Do not silently use Main when persistent transport is unavailable. Do not select an isolated agent merely because parallelism is possible; the lane must be independently bounded and lower-cost or higher-quality than Main doing the same work.
+Resolve exact primaries through `scripts/agent_fleet_policy.py` and live config: Opportunity Intelligence/Grok 4.6, Engineering QA/GLM 5.3, Finance Evidence/Terra, Finance Risk Challenger/GLM 5.3, Engineering Builder/Muse Spark 1.3 Contributor, Knowledge and Continuity/Luna. Default code authorship is Muse; default independent QA is GLM 5.3. Randall accepted Sol as final QA for the generated bootstrap diff on this closeout. Model routing grants no unattended-repair or runtime/config authority. Require the expected model to match the selected agent's live configured model exactly. Do not silently use Main or substitute another model when persistent transport is unavailable. Do not select an isolated agent merely because parallelism is possible; the lane must be independently bounded and lower-cost or higher-quality than Main doing the same work.
 
 ## Persistent Context-Transport Gate
 
@@ -47,8 +47,8 @@ A tiny nonce proves only basic attachment delivery. It does not prove decompress
 
 Every persistent lane declares one of these mutually exclusive modes:
 
-- **`patch_draft`** â€” the agent reads the frozen handoff and returns a unified diff or structured change proposal. Main applies any accepted diff, then validates the applied sources. The agent must never be described as having changed the shared workspace.
-- **`scoped_worktree_implementation`** â€” the agent may write only after a fresh proof verifies its exact scoped writeback mount, path allowlist, and post-write diff/hash readback. Main still independently validates and accepts the applied sources.
+- **`patch_draft`** -- the agent reads the frozen handoff and returns a unified diff or structured change proposal. Main applies any accepted diff, then validates the applied sources. The agent must never be described as having changed the shared workspace.
+- **`scoped_worktree_implementation`** -- the agent may write only after a fresh proof verifies its exact scoped writeback mount, path allowlist, and post-write diff/hash readback. Main still independently validates and accepts the applied sources.
 
 Default to `patch_draft`. Granting a decoder or sandboxed shell does not grant shared-workspace writeback. Never solve a handoff problem by granting generic host shell, broad workspace access, elevation, network, session tooling, or execution authority.
 
@@ -82,7 +82,7 @@ For v3 completion, the top-level manifest schema and handoff contract version mu
 
 ## Sandboxed Shell/Decoder Pilot
 
-A persistent agent is shell-free by default. A shell/decoder pilot requires explicit owner approval and all of the following:
+A persistent agent is shell-free unless its live role-specific configuration grants sandboxed execution. Enabling or changing a shell/decoder route requires explicit owner approval and all of the following:
 
 - Docker sandbox is live and independently verified before `exec` or `process` is permitted;
 - one named agent only; no policy change for other agents;
@@ -93,7 +93,7 @@ A persistent agent is shell-free by default. A shell/decoder pilot requires expl
 - positive proof that the allowed local command can process a benign supplied attachment; and
 - negative proof that network, host-workspace reads, elevation, and forbidden commands remain blocked.
 
-If Docker or the sandbox proof is unavailable, retain the shell-free path. Do not fall back to direct host execution. A successful pilot does not become standing shell authority; it expires unless renewed by a separately approved policy change.
+If Docker or the sandbox proof is unavailable, retain the shell-free path. Do not fall back to direct host execution. A successful canary proves only the configured role capability; it does not broaden another agent's tools, mount, network, or authority.
 
 ## Retry Taxonomy And Attempt Accounting
 
@@ -115,10 +115,7 @@ Retries are never reported as first-pass success. A patch draft is not an applie
 
 ## Codex-Native Eligibility And Provenance
 
-Codex-native is opt-in. Allow:
-
-- bounded read-only work at Terra low; or
-- one exact leased implementation file at Terra medium when scope is single-surface and non-sensitive.
+Codex-native is opt-in for bounded read-only work at Terra low, excluding independent QA. Route all implementation code, including one-file fixes, to Muse Builder; route all independent QA to GLM 5.3.
 
 Reject multi-file, forbidden-path, shared-contract, broad, finance-sensitive, runtime/config/auth, external, destructive, or ambiguous implementation. Actual JSONL rollout import must consume only allowlisted metadata, require a unique safe completed subagent rollout, reconcile inclusive-cache usage, and preserve reasoning separately from total tokens.
 
@@ -153,14 +150,14 @@ Generated agent bootstraps must project:
 - current profile revision;
 - Main as sole router, final QC, acceptance, judgment, and user-facing integration owner;
 - the versioned efficiency policy;
-- persistent Terra as the configured helper family with Sol helper upgrades disabled;
+- Main on its explicit keyed Astra model (Sol backup) and each specialist on its exact role primary from `scripts/agent_fleet_policy.py`; Muse authors code by default, GLM 5.3 performs independent QA by default, and silent model substitution remains disabled;
 - exact transport and handoff requirements;
 - role-specific read/write/tool boundaries;
 - the wiki context-supply route, including truthful direct-retrieval capability;
 - privacy-safe attribution and `provider_usage_unavailable` fallback;
 - no finance, external, runtime/config, or execution authority expansion.
 
-`scripts/agent_bootstrap_generator.py` produces these packets and `scripts/agent_bootstrap_linter.py` validates them. A generated packet never outranks `SOUL.md`, `AGENTS.md`, `TOOLS.md`, this skill, or exact owner artifacts.
+`scripts/agent_bootstrap_generator.py` produces these packets and `scripts/agent_bootstrap_linter.py` validates them. A generated packet never outranks `SOUL.md`, `AGENTS.md` and its local route map, this skill, or exact owner artifacts.
 
 ## Usage And Outcome Attribution
 
@@ -182,7 +179,7 @@ Before acceptance verify:
 - focused tests and risk-budgeted QA;
 - Main verification and acceptance evidence.
 
-For a Main-applied patch draft, QA must inspect and test the applied source files and their diffâ€”not only the agent's proposed diff.
+For a Main-applied patch draft, QA must inspect and test the applied source files and their diff--not only the agent's proposed diff.
 
 ## Stop Lines
 
@@ -191,4 +188,3 @@ Stop when transport cannot be proven, context exceeds budget, source files mutat
 ## Closeout
 
 Report selected runtime form, lane mode, exact agent/session privacy-safe reference, expected and actual route, transport/sandbox proof, handoff snapshot, attempts/retries, usage availability, validators, QA result, Main acceptance, remaining limitations, and owner-gated actions.
-

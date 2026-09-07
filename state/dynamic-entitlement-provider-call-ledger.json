@@ -1,0 +1,17 @@
+{
+  "days": {
+    "2026-09-02": {
+      "last_reserved_at_utc": "2026-09-03T05:27:07Z",
+      "last_settled_at_utc": "2026-09-03T05:27:14Z",
+      "open_reservations": {},
+      "reserved_calls": 128,
+      "run_ids": [
+        "smoke-20260902T223346Z",
+        "policy-20260903T052707Z"
+      ],
+      "runs": 2,
+      "settled_calls": 64
+    }
+  },
+  "schema": "veritas.dynamic_entitlement_provider_call_ledger.v1"
+}

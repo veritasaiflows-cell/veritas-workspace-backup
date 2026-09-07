@@ -1,0 +1,51 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "b5339f15-208c-4091-805e-6bb8c001619e",
+  "name": "Retired — Finance - Autonomy Spine Readiness Rollup",
+  "required": false,
+  "owner_workflow": "Retired finance automation history",
+  "contract_reason": "Historical scheduler contract retained after the alerts-and-recommendations OS cutover.",
+  "description": "Retired 2026-08-29 by the owner-authorized alerts-and-recommendations OS pivot. Legacy job 'Finance - Autonomy Spine Readiness Rollup' is outside the active alerts OS or duplicates its clean chain. It remains disabled; re-enable only through a new explicit owner cron gate.",
+  "enabled": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "25 15 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "QUIET CRON OUTPUT RULE (hard): delivery.mode=none; on clean success/no-action reply exactly NO_REPLY and nothing else; if blocked, report only proof path, failed command, validation errors, and next repair owner. Work in C:\\Users\\Veritas\\.openclaw\\workspace. Objective: refresh read-only autonomy-spine measurement/readiness proof for WF55/WF71/WF74/WF76. Execute exactly these commands in order: 1. python scripts\\autonomy_spine_promotion_contract.py --write --validate; 2. python scripts\\wf55_autonomy_outcome_ledger.py --write --validate; 3. python scripts\\autonomy_spine_readiness_rollup.py --write --validate; 4. python scripts\\workflow_advancement_scorecard.py --write --validate; 5. python scripts\\autonomy_spine_readiness_rollup.py --write --validate; 6. python scripts\\cron_freshness_spine.py --write --validate; 7. python scripts\\cron_control_packet.py --write --validate. No predictive claims, --apply, schedule mutation, canon/portfolio mutation, paper/live/account action, money movement, or approval inference.",
+    "model": "openai/gpt-5.6-luna",
+    "thinking": "low",
+    "timeoutSeconds": 600,
+    "lightContext": true,
+    "toolsAllow": [
+      "cron",
+      "get_goal",
+      "create_goal",
+      "update_goal",
+      "skill_workshop",
+      "update_plan",
+      "sessions_list",
+      "sessions_history",
+      "sessions_send",
+      "sessions_spawn",
+      "sessions_yield",
+      "subagents",
+      "session_status",
+      "web_search",
+      "web_fetch",
+      "memory_search",
+      "memory_get"
+    ]
+  },
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired by the owner-authorized alerts-and-recommendations OS pivot; historical proof only and no automatic resume.",
+  "rollback_requires_owner_gate": true
+}

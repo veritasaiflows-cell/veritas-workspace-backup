@@ -1,0 +1,18 @@
+{
+  "allowed_methods": [
+    "GET"
+  ],
+  "alpaca_access_enabled": true,
+  "approval_note": "Randall requested paper order status at 2026-05-26 06:43 MST; GET-only paper status check, no submit/cancel/account mutation.",
+  "approved_by": "Randall",
+  "endpoint": "https://paper-api.alpaca.markets",
+  "expires_at_utc": "2026-05-26T14:15:18Z",
+  "generated_at_utc": "2026-05-26T13:45:18Z",
+  "live_submit_enabled": false,
+  "paper_submit_enabled": false,
+  "phase": "phase_1_read_only_connection_proof",
+  "read_only_enabled": true,
+  "schema_version": 1,
+  "trade_or_account_action_allowed": false,
+  "workflow": "WF63 - Alpaca Paper Trading Readiness"
+}

@@ -1,0 +1,78 @@
+{
+  "artifact_type": "wf67_paper_trade_request",
+  "audit": {
+    "headers_persistence_allowed": false,
+    "raw_response_persistence_allowed": false,
+    "secret_material_present": false
+  },
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "live_submit_allowed": false,
+    "money_movement_allowed": false,
+    "no_inferred_approval": true,
+    "paper_cancel_allowed": true,
+    "paper_only": true,
+    "paper_submit_allowed": true
+  },
+  "created_at_utc": "2026-05-18T02:49:46Z",
+  "order": {
+    "limit_price": 364.49,
+    "notional": null,
+    "qty": 1,
+    "side": "buy",
+    "symbol": "ETN",
+    "time_in_force": "day",
+    "type": "limit"
+  },
+  "request_id": "wf67-reviewed-packet-001-etn-passive-buy",
+  "risk_check": {
+    "estimated_notional_usd": 364.49,
+    "fill_probability_assessment": "low \u2014 paper pilot limit is set about 8.75% below recommendation-packet close 399.44; intended as passive mechanism test, not portfolio action.",
+    "max_loss_usd": 364.49,
+    "max_notional_usd": 500.0,
+    "pilot_notional_cap_usd": 500.0,
+    "pilot_qty_cap": 1,
+    "position_size_reviewed": true,
+    "rationale": "WF67 reviewed-recommendation packet pilot \u2014 mechanism test only, not portfolio approval. 1 share ETN buy limit intentionally set below packet close. Paper account only; no live endpoint, live credentials, margin, leverage, shorting, options, crypto, account mutation, or real capital at risk.",
+    "status": "ok"
+  },
+  "schema_version": 1,
+  "source": {
+    "authority_boundary": "Recommendation packet is review-only source context. It does not grant portfolio action, owner approval, trade/account authority, or live execution.",
+    "owner_or_pilot_scope": "WF67 reviewed recommendation packet paper pilot; dry-run only until Randall confirms exact order terms for paper execution.",
+    "proposal_id": "sunday:ETN:capital-deployment-review:2026-05-17",
+    "proposal_status": {
+      "band_status": "IN_BAND",
+      "band_status_note": null,
+      "daily_review_state": "DEPLOYABLE NOW",
+      "deployment_state": "DEPLOYABLE NOW",
+      "raw_band_status": "IN_BAND",
+      "source_window": "sunday"
+    },
+    "recommendation_source": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "recommendation_validation": "tmp/capital-deployment-recommendation-validation.json",
+    "scoped_paper_trade_or_pilot": true,
+    "source_freshness": {
+      "capital_action_allowed": false,
+      "explicit_blocker": true,
+      "overall_classification": "stale",
+      "owner_review_required": true,
+      "trust_level": "review_required"
+    },
+    "technical_gate": {
+      "band_status": "IN_BAND",
+      "band_status_note": null,
+      "below_stop": false,
+      "close": 399.44,
+      "distance_to_band_pct": -2.59,
+      "entry_band_status": "IN_BAND",
+      "in_entry_band": true,
+      "raw_band_status": "IN_BAND",
+      "status": "review_required",
+      "stop_line": "Do not treat in-band status as approval, sizing, or account-action authority."
+    }
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

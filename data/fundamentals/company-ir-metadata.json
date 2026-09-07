@@ -1,0 +1,494 @@
+{
+  "schema_version": 1,
+  "source_posture": "official_ir_url_metadata_review_only",
+  "authority": {
+    "review_packet_generation_allowed": true,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "deployment_authority_allowed": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "sizing_sleeve_cash_risk_rule_authority": false
+  },
+  "notes": "Official company IR URL metadata for WF65 adjusted-EPS/guidance reconciliation packets. URLs are review sources only; packets do not scrape, overwrite, or infer approval.",
+  "official_earnings_bridge_default": {
+    "status": "manual_required",
+    "source_posture": "review_only",
+    "review_only": true,
+    "manual_review_required": true,
+    "official_source_required": true,
+    "official_period_end": null,
+    "official_adjusted_eps": null,
+    "official_guidance": null,
+    "reconciled": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "deployment_authority_allowed": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "sizing_sleeve_cash_risk_rule_authority": false,
+    "instructions": "Use official company IR earnings materials only; do not infer approval, deployment readiness, or portfolio mutation."
+  },
+  "tickers": {
+    "ETN": {
+      "company_name": "Eaton Corporation plc",
+      "ir_home_url": "https://www.eaton.com/us/en-us/company/investor-relations.html",
+      "earnings_url": "https://www.eaton.com/us/en-us/company/investor-relations/quarterly-earnings.html",
+      "guidance_url": "https://www.eaton.com/us/en-us/company/investor-relations.html",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_investor_presentation"
+    },
+    "JPM": {
+      "company_name": "JPMorgan Chase & Co.",
+      "ir_home_url": "https://www.jpmorganchase.com/ir",
+      "earnings_url": "https://www.jpmorganchase.com/ir/quarterly-earnings",
+      "guidance_url": "https://www.jpmorganchase.com/ir",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_presentation",
+      "bank_native_capital": {
+        "period": "2Q26 / June 30, 2026",
+        "filing_date": "2026-07-14",
+        "source": "official_sec_8k_financial_supplement",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026048078/a2q26erfex992supplement.htm",
+        "supplement_url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026048078/a2q26erfex992supplement.htm",
+        "source_section": "Capital and Other Selected Balance Sheet Items / Risk-based capital metrics (page 9)",
+        "trust": "manual_confirmed",
+        "manual_capture_date": "2026-08-10",
+        "no_derived_ratio": true,
+        "primary_framework": "advanced",
+        "binding_framework": "advanced",
+        "binding_framework_note": "JPM states the Advanced total capital ratio was more binding than the Standardized total capital ratio as of June 30, 2026.",
+        "cet1_capital": 302620000000,
+        "tier1_capital": 322576000000,
+        "risk_weighted_assets_standardized": 2141738000000,
+        "risk_weighted_assets_advanced": 2128199000000,
+        "cet1_ratio": {
+          "primary": 14.2,
+          "primary_basis": "advanced_binding",
+          "standardized": 14.1,
+          "advanced": 14.2
+        },
+        "tier1_ratio": {
+          "primary": 15.2,
+          "primary_basis": "advanced_binding",
+          "standardized": 15.1,
+          "advanced": 15.2
+        },
+        "leverage_separation_note": "Tier 1 leverage ratio and SLR are leverage-based metrics and must not substitute for CET1 or Tier 1 risk-based capital ratios.",
+        "note": "Official reported 2Q26 risk-based capital ratios manually captured from JPM's SEC-filed earnings supplement; the firm labels the June 30 capital metrics estimated. Primary uses Advanced because JPM identifies the Advanced total capital ratio as more binding. Ratios are not derived from capital/RWA or leverage metrics."
+      },
+      "bank_native_tbv": {
+        "period": "1Q26 / March 31, 2026",
+        "filing_date": "2026-05-01",
+        "source": "official_sec_10q_tce_reconciliation",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026029344/jpm-20260331.htm",
+        "source_section": "Explanation and Reconciliation of the Firm?s Use of Non-GAAP Financial Measures / TCE reconciliation",
+        "trust": "manual_confirmed",
+        "manual_capture_date": "2026-05-16",
+        "common_stockholders_equity": 343993000000,
+        "goodwill": 52706000000,
+        "other_intangible_assets": 2490000000,
+        "deferred_tax_liabilities_addback": 2911000000,
+        "tangible_common_equity": 291708000000,
+        "tbv_per_share": 108.87,
+        "note": "Official JPM TBV/share reconciliation overrides the SEC companyfacts proxy, which used incomplete intangible components and overstated TBV/share."
+      }
+    },
+    "GOOG": {
+      "company_name": "Alphabet Inc.",
+      "ir_home_url": "https://abc.xyz/investor/",
+      "earnings_url": "https://abc.xyz/investor/",
+      "guidance_url": "https://abc.xyz/investor/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_call_or_release"
+    },
+    "MSFT": {
+      "company_name": "Microsoft Corporation",
+      "ir_home_url": "https://www.microsoft.com/en-us/Investor/",
+      "earnings_url": "https://www.microsoft.com/en-us/Investor/earnings",
+      "guidance_url": "https://www.microsoft.com/en-us/Investor/earnings",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_call_or_release"
+    },
+    "LMT": {
+      "company_name": "Lockheed Martin Corporation",
+      "ir_home_url": "https://investors.lockheedmartin.com/",
+      "earnings_url": "https://investors.lockheedmartin.com/news-releases",
+      "guidance_url": "https://investors.lockheedmartin.com/financials/annual-reports",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_outlook"
+    },
+    "BRK.B": {
+      "company_name": "Berkshire Hathaway Inc.",
+      "ir_home_url": "https://www.berkshirehathaway.com/reports.html",
+      "earnings_url": "https://www.berkshirehathaway.com/reports.html",
+      "guidance_url": "https://www.berkshirehathaway.com/reports.html",
+      "adjusted_eps_source": "not_usually_applicable",
+      "guidance_source": "limited_or_none"
+    },
+    "XOM": {
+      "company_name": "Exxon Mobil Corporation",
+      "ir_home_url": "https://corporate.exxonmobil.com/investors",
+      "earnings_url": "https://corporate.exxonmobil.com/investors/investor-relations/quarterly-earnings",
+      "guidance_url": "https://corporate.exxonmobil.com/investors",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_investor_presentation"
+    },
+    "NVDA": {
+      "company_name": "NVIDIA Corporation",
+      "ir_home_url": "https://investor.nvidia.com/",
+      "earnings_url": "https://investor.nvidia.com/financial-info/quarterly-results/default.aspx",
+      "guidance_url": "https://investor.nvidia.com/financial-info/quarterly-results/default.aspx",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release"
+    },
+    "AMZN": {
+      "company_name": "Amazon.com, Inc.",
+      "ir_home_url": "https://ir.aboutamazon.com/",
+      "earnings_url": "https://ir.aboutamazon.com/quarterly-results/default.aspx",
+      "guidance_url": "https://ir.aboutamazon.com/quarterly-results/default.aspx",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release"
+    },
+    "BKNG": {
+      "company_name": "Booking Holdings Inc.",
+      "ir_home_url": "https://ir.bookingholdings.com/",
+      "earnings_url": "https://ir.bookingholdings.com/financial-information/quarterly-results",
+      "guidance_url": "https://ir.bookingholdings.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_call"
+    },
+    "VRT": {
+      "company_name": "Vertiv Holdings Co",
+      "ir_home_url": "https://investors.vertiv.com/",
+      "earnings_url": "https://investors.vertiv.com/financial-information/quarterly-results",
+      "guidance_url": "https://investors.vertiv.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_presentation"
+    },
+    "RTX": {
+      "company_name": "RTX Corporation",
+      "ir_home_url": "https://investors.rtx.com/",
+      "earnings_url": "https://investors.rtx.com/financial-information/quarterly-results",
+      "guidance_url": "https://investors.rtx.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_outlook"
+    },
+    "CAT": {
+      "company_name": "Caterpillar Inc.",
+      "ir_home_url": "https://investors.caterpillar.com/",
+      "earnings_url": "https://investors.caterpillar.com/financials/quarterly-results/default.aspx",
+      "guidance_url": "https://investors.caterpillar.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_outlook"
+    },
+    "GS": {
+      "company_name": "The Goldman Sachs Group, Inc.",
+      "ir_home_url": "https://www.goldmansachs.com/investor-relations/",
+      "earnings_url": "https://www.goldmansachs.com/investor-relations/financials/current-subpage.html",
+      "guidance_url": "https://www.goldmansachs.com/investor-relations/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_presentation",
+      "bank_native_capital": {
+        "period": "1Q26 / March 31, 2026",
+        "filing_date": "2026-05-01",
+        "source": "official_sec_10q_regulatory_capital_table",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000088698226000118/gs-20260331.htm",
+        "filing_index_url": "https://www.sec.gov/Archives/edgar/data/886982/000088698226000118/0000886982-26-000118-index.htm",
+        "source_section": "Regulatory Capital - The Goldman Sachs Group, Inc.; Standardized and Advanced risk-based capital table",
+        "trust": "manual_confirmed",
+        "manual_capture_date": "2026-05-16",
+        "no_derived_ratio": true,
+        "primary_framework": "standardized",
+        "primary_framework_note": "Standardized is the lower reported 1Q26 ratio; Advanced is captured separately. No binding-framework inference beyond the official reported values.",
+        "cet1_capital": 101800000000,
+        "tier1_capital": 115189000000,
+        "risk_weighted_assets_standardized": 815106000000,
+        "risk_weighted_assets_advanced": 763768000000,
+        "cet1_ratio": {
+          "primary": 12.5,
+          "primary_basis": "standardized_lower_reported",
+          "standardized": 12.5,
+          "advanced": 13.3
+        },
+        "tier1_ratio": {
+          "primary": 14.1,
+          "primary_basis": "standardized_lower_reported",
+          "standardized": 14.1,
+          "advanced": 15.1
+        },
+        "leverage_separation_note": "Tier 1 leverage ratio and SLR are leverage-based metrics and must not substitute for CET1 or Tier 1 risk-based capital ratios.",
+        "note": "Official reported 1Q26 Group Inc. risk-based capital ratios manually captured from GS 10-Q. Ratios are not derived from capital/RWA or leverage metrics."
+      }
+    },
+    "CVX": {
+      "company_name": "Chevron Corporation",
+      "ir_home_url": "https://www.chevron.com/investors",
+      "earnings_url": "https://www.chevron.com/investors/quarterly-results",
+      "guidance_url": "https://www.chevron.com/investors",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_presentation"
+    },
+    "PLTR": {
+      "company_name": "Palantir Technologies Inc.",
+      "ir_home_url": "https://investors.palantir.com/",
+      "earnings_url": "https://investors.palantir.com/financials/quarterly-results/default.aspx",
+      "guidance_url": "https://investors.palantir.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release"
+    },
+    "KTOS": {
+      "company_name": "Kratos Defense & Security Solutions, Inc.",
+      "ir_home_url": "https://ir.kratosdefense.com/",
+      "earnings_url": "https://ir.kratosdefense.com/news-events/press-releases",
+      "guidance_url": "https://ir.kratosdefense.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_call"
+    },
+    "AMD": {
+      "company_name": "Advanced Micro Devices, Inc.",
+      "ir_home_url": "https://ir.amd.com/",
+      "earnings_url": "https://ir.amd.com/financial-information/quarterly-results",
+      "guidance_url": "https://ir.amd.com/financial-information/quarterly-results",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release"
+    },
+    "LNG": {
+      "company_name": "Cheniere Energy, Inc.",
+      "ir_home_url": "https://lngir.cheniere.com/",
+      "earnings_url": "https://lngir.cheniere.com/financials/quarterly-results/default.aspx",
+      "guidance_url": "https://lngir.cheniere.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_presentation"
+    },
+    "SMCI": {
+      "company_name": "Super Micro Computer, Inc.",
+      "ir_home_url": "https://ir.supermicro.com/",
+      "earnings_url": "https://ir.supermicro.com/financials/quarterly-results/default.aspx",
+      "guidance_url": "https://ir.supermicro.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release"
+    },
+    "LLY": {
+      "company_name": "Eli Lilly and Company",
+      "ir_home_url": "https://investor.lilly.com/",
+      "earnings_url": "https://investor.lilly.com/financial-information/quarterly-results",
+      "guidance_url": "https://investor.lilly.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_outlook"
+    },
+    "LIN": {
+      "company_name": "Linde plc",
+      "ir_home_url": "https://investors.linde.com/",
+      "earnings_url": "https://investors.linde.com/financial-reports/quarterly-results",
+      "guidance_url": "https://investors.linde.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_outlook"
+    },
+    "ECL": {
+      "company_name": "Ecolab Inc.",
+      "ir_home_url": "https://investor.ecolab.com/",
+      "earnings_url": "https://investor.ecolab.com/financials/quarterly-results/default.aspx",
+      "guidance_url": "https://investor.ecolab.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_outlook"
+    },
+    "VMC": {
+      "company_name": "Vulcan Materials Company",
+      "ir_home_url": "https://ir.vulcanmaterials.com/",
+      "earnings_url": "https://ir.vulcanmaterials.com/financials/quarterly-results/default.aspx",
+      "guidance_url": "https://ir.vulcanmaterials.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_outlook"
+    },
+    "META": {
+      "company_name": "Meta Platforms, Inc.",
+      "ir_home_url": "https://investor.atmeta.com/",
+      "earnings_url": "https://investor.atmeta.com/financials/",
+      "guidance_url": "https://investor.atmeta.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_call"
+    },
+    "NFLX": {
+      "company_name": "Netflix, Inc.",
+      "ir_home_url": "https://ir.netflix.net/",
+      "earnings_url": "https://ir.netflix.net/financials/quarterly-earnings/default.aspx",
+      "guidance_url": "https://ir.netflix.net/financials/quarterly-earnings/default.aspx",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release"
+    },
+    "TMUS": {
+      "company_name": "T-Mobile US, Inc.",
+      "ir_home_url": "https://investor.t-mobile.com/",
+      "earnings_url": "https://investor.t-mobile.com/financials/quarterly-results/default.aspx",
+      "guidance_url": "https://investor.t-mobile.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_guidance"
+    },
+    "PH": {
+      "company_name": "Parker-Hannifin Corporation",
+      "ir_home_url": "https://investors.parker.com/",
+      "earnings_url": "https://investors.parker.com/financials/quarterly-results/default.aspx",
+      "guidance_url": "https://investors.parker.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_outlook"
+    },
+    "GE": {
+      "company_name": "GE Aerospace",
+      "ir_home_url": "https://www.geaerospace.com/investor-relations",
+      "earnings_url": "https://www.geaerospace.com/investor-relations/events-reports",
+      "guidance_url": "https://www.geaerospace.com/investor-relations",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_outlook"
+    },
+    "CME": {
+      "company_name": "CME Group Inc.",
+      "ir_home_url": "https://investor.cmegroup.com/",
+      "earnings_url": "https://investor.cmegroup.com/financial-information/quarterly-results",
+      "guidance_url": "https://investor.cmegroup.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_call"
+    },
+    "ASML": {
+      "company_name": "ASML Holding N.V.",
+      "ir_home_url": "https://www.asml.com/en/investors",
+      "earnings_url": "https://www.asml.com/en/news/press-releases/2026/q1-2026-financial-results",
+      "guidance_url": "https://www.asml.com/en/news/press-releases/2026/q1-2026-financial-results",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release",
+      "official_fundamental_reconciliation": {
+        "source_url": "https://www.asml.com/en/news/press-releases/2026/q1-2026-financial-results",
+        "source_label": "ASML Q1 2026 financial results",
+        "period_label": "Q1 2026",
+        "official_period_end": "2026-03-31",
+        "workspace_expected_period_end": "2026-03-31",
+        "accounting_basis": "US GAAP quarterly release, figures in millions of euros unless otherwise indicated",
+        "currency": "EUR",
+        "notes": [
+          "ASML is a foreign issuer; current quarterly local fundamentals are reconciled to official company IR release rather than SEC companyfacts-only.",
+          "Official release table labels EPS as basic; local aggregator EPS field uses the same 7.15 value for the review-monitor row."
+        ],
+        "metrics": {
+          "revenue": {
+            "official_label": "Total net sales",
+            "basis": "quarterly_company_ir",
+            "unit": "EUR",
+            "normalized_value": 8767000000,
+            "tolerance_pct": 1.0
+          },
+          "net_income": {
+            "official_label": "Net income",
+            "basis": "quarterly_company_ir",
+            "unit": "EUR",
+            "normalized_value": 2757000000,
+            "tolerance_pct": 1.0
+          },
+          "diluted_eps": {
+            "official_label": "EPS (basic; in euros)",
+            "basis": "basic_eps_company_ir_used_by_local_aggregator",
+            "unit": "EUR/share",
+            "normalized_value": 7.15,
+            "tolerance_pct": 3.0
+          }
+        }
+      }
+    },
+    "TSM": {
+      "company_name": "Taiwan Semiconductor Manufacturing Company Limited",
+      "ir_home_url": "https://investor.tsmc.com/english",
+      "earnings_url": "https://pr.tsmc.com/english/news/3297",
+      "guidance_url": "https://pr.tsmc.com/english/news/3297",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release",
+      "official_fundamental_reconciliation": {
+        "source_url": "https://pr.tsmc.com/english/news/3297",
+        "source_label": "TSMC Reports First Quarter EPS of NT$22.08",
+        "period_label": "Q1 2026",
+        "official_period_end": "2026-03-31",
+        "workspace_expected_period_end": "2026-03-31",
+        "accounting_basis": "TIFRS consolidated quarterly release",
+        "currency": "TWD",
+        "notes": [
+          "TSM is a foreign issuer/ADR; current quarterly local fundamentals are reconciled to official TSMC IR/press release rather than SEC companyfacts-only.",
+          "Official EPS is NT$22.08 per common share; local aggregator value is ADR-equivalent at 5 ordinary shares per ADR, so the normalized comparison value is NT$110.40."
+        ],
+        "metrics": {
+          "revenue": {
+            "official_label": "Consolidated revenue / net sales",
+            "basis": "quarterly_company_ir",
+            "unit": "TWD",
+            "normalized_value": 1134103000000,
+            "tolerance_pct": 1.0
+          },
+          "net_income": {
+            "official_label": "Net income",
+            "basis": "quarterly_company_ir",
+            "unit": "TWD",
+            "normalized_value": 572480000000,
+            "tolerance_pct": 1.0
+          },
+          "diluted_eps": {
+            "official_label": "Diluted EPS, ADR-normalized",
+            "basis": "official_ntd_eps_times_5_ordinary_shares_per_adr",
+            "unit": "TWD/ADR",
+            "normalized_value": 110.4,
+            "tolerance_pct": 3.0
+          }
+        }
+      }
+    },
+    "CRWD": {
+      "company_name": "CrowdStrike Holdings, Inc.",
+      "ir_home_url": "https://ir.crowdstrike.com/",
+      "earnings_url": "https://ir.crowdstrike.com/news-releases/news-release-details/crowdstrike-reports-fourth-quarter-and-fiscal-year-2026/",
+      "guidance_url": "https://ir.crowdstrike.com/news-releases/news-release-details/crowdstrike-reports-fourth-quarter-and-fiscal-year-2026/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release",
+      "official_fundamental_reconciliation": {
+        "source_url": "https://ir.crowdstrike.com/news-releases/news-release-details/crowdstrike-reports-fourth-quarter-and-fiscal-year-2026/",
+        "source_label": "CrowdStrike Q4 FY2026 and fiscal year 2026 results",
+        "period_label": "Fiscal Q4 2026",
+        "official_period_end": "2026-01-31",
+        "workspace_expected_period_end": "2026-01-31",
+        "accounting_basis": "GAAP quarterly company IR release, figures in thousands of US dollars unless otherwise indicated",
+        "currency": "USD",
+        "notes": [
+          "CRWD local revenue and EPS align with official Q4 GAAP release values. Yahoo's generic quarterly net income row conflicts with official GAAP attributable net income and implied diluted EPS; use the explicit official IR net income repair for this period."
+        ],
+        "metrics": {
+          "revenue": {
+            "official_label": "Total revenue",
+            "basis": "quarterly_company_ir_gaap",
+            "unit": "USD",
+            "normalized_value": 1305375000,
+            "tolerance_pct": 1.0
+          },
+          "net_income": {
+            "official_label": "GAAP net income attributable to CrowdStrike",
+            "basis": "quarterly_company_ir_gaap_attributable",
+            "unit": "USD",
+            "normalized_value": 38691000,
+            "tolerance_pct": 1.0,
+            "local_repair_action": "override_with_official_ir_value",
+            "note": "Official Q4 GAAP attributable net income is 38.7M; Yahoo's generic local row reports 59.377M, while diluted EPS of 0.15 on 258.133M diluted shares implies the official attributable basis."
+          },
+          "diluted_eps": {
+            "official_label": "GAAP diluted net income per share attributable to CrowdStrike common stockholders",
+            "basis": "quarterly_company_ir_gaap",
+            "unit": "USD/share",
+            "normalized_value": 0.15,
+            "tolerance_pct": 3.0
+          }
+        }
+      }
+    },
+    "WMB": {
+      "company_name": "The Williams Companies, Inc.",
+      "ir_home_url": "https://investor.williams.com/",
+      "earnings_url": "https://investor.williams.com/financials/quarterly-results/default.aspx",
+      "guidance_url": "https://investor.williams.com/",
+      "adjusted_eps_source": "earnings_release",
+      "guidance_source": "earnings_release_or_guidance"
+    }
+  }
+}

@@ -9,7 +9,29 @@
       "Bash(python -c ' *)",
       "Bash(python3 -c ' *)",
       "Bash(python3 *)",
-      "Bash(Get-ChildItem *)"
+      "Bash(Get-ChildItem *)",
+      "Bash(where openclaw *)",
+      "Bash(openclaw --version)",
+      "Bash(openclaw doctor *)",
+      "Bash(openclaw status *)",
+      "Bash(openclaw logs *)",
+      "Bash(openclaw gateway *)",
+      "Bash(grep -oE '\"message\":\"[^\"]{0,300}\"' \"C:/Users/Veritas/AppData/Local/Temp/openclaw/openclaw-2026-09-06.log\")",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(Get-Content *)",
+      "PowerShell(schtasks.exe /Query /TN 'OpenClaw Gateway' /V /FO LIST | Select-String -Pattern 'TaskName|Status|Last Run|Next Run|Last Result|Run As User|Scheduled Task State' | ForEach-Object { $_.Line })",
+      "Bash(timeout 30 cmd //c C:\\\\\\\\Users\\\\\\\\Veritas\\\\\\\\.openclaw\\\\\\\\gateway.cmd)",
+      "PowerShell(Wait-Job *)",
+      "PowerShell(Get-Process *)",
+      "Read(//c/Users/Veritas/AppData/Roaming/npm/node_modules/openclaw/**)",
+      "PowerShell(Join-Path *)",
+      "Bash(Get-Process node *)",
+      "Bash(Select-Object Id,StartTime)",
+      "Bash(Sort-Object StartTime -Descending)",
+      "Bash(Select-Object -First 6)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(Test-NetConnection -ComputerName 127.0.0.1 -Port 18789 -InformationLevel Quiet -WarningAction SilentlyContinue)",
+      "PowerShell(Get-NetTCPConnection *)"
     ]
   }
 }

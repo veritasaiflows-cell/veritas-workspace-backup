@@ -1,0 +1,66 @@
+{
+  "artifact_type": "wf67_paper_trade_request",
+  "audit": {
+    "live_endpoint_forbidden": "https://api.alpaca.markets",
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "secret_material_present": false
+  },
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "live_submit_allowed": false,
+    "money_movement_allowed": false,
+    "no_inferred_approval": true,
+    "paper_cancel_allowed": true,
+    "paper_only": true,
+    "paper_submit_allowed": true
+  },
+  "created_at_utc": "2026-06-12T19:08:35Z",
+  "order": {
+    "limit_price": 298.87,
+    "notional": 1500.0,
+    "qty": null,
+    "side": "buy",
+    "symbol": "VRT",
+    "time_in_force": "day",
+    "type": "limit"
+  },
+  "request_id": "wf86-assisted-VRT-buy-limit-20260612T174732Z",
+  "risk_check": {
+    "entry_band_high": 318.01,
+    "entry_band_low": 265.07,
+    "estimated_notional_usd": 1500.0,
+    "full_scope_artifact": "tmp/paper-autotrader/policy.json",
+    "max_loss_usd": 290.39,
+    "max_notional_usd": 1500.0,
+    "observed_entry_status": "IN_BAND",
+    "observed_price": 298.87,
+    "pilot_notional_cap_usd": 5000.0,
+    "pilot_qty_cap": 1,
+    "position_size_reviewed": true,
+    "sizing_rationale": "WF86 tactical dip/reclaim paper draft capped at $1,500; $5,000 is the absolute policy ceiling, not default size.",
+    "status": "ok",
+    "stop": 241.01
+  },
+  "schema_version": 1,
+  "source": {
+    "approval_artifact": "tmp/alpaca-paper-readiness/owner-approval.vrt-wf86-assisted-20260612T1806Z.json",
+    "approved_by": "Randall",
+    "capital_recommendation_source": "wf86_shadow_decision_ledger",
+    "chief_intelligence_promotion_gate": null,
+    "exact_order_owner_approval_status": "approved_exact_order",
+    "exact_order_owner_approval_text": "Approve WF86 assisted paper-only buy order for VRT, request_id wf86-assisted-VRT-buy-limit-20260612T174732Z: buy VRT as a day limit order with $1,500 notional at limit price $298.87. I understand this is a tactical dip/reclaim setup, not a clean add, and I approve this exact paper order only. No live trading is approved.",
+    "main_session_capital_package_notification_required": true,
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/main-session-cards/VRT.wf86-assisted-card.json",
+    "market_order_owner_approved": false,
+    "mutable_request_overwrite_note": "The mutable WF86 assisted request path was regenerated after submit; this immutable artifact preserves the exact approved request used for the 2026-06-12T19:08Z paper submit.",
+    "owner_or_pilot_scope": "WF86 assisted paper-only VRT limit/day order approved exactly by Randall for request wf86-assisted-VRT-buy-limit-20260612T174732Z; no live trading approved.",
+    "recommendation_source": "main_session_order_decision_card",
+    "scoped_paper_trade_or_pilot": true,
+    "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json"
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

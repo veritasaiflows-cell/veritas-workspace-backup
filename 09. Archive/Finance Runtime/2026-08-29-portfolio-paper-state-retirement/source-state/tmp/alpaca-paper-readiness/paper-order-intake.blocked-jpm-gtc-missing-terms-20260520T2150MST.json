@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_order_intake_blocker",
+  "generated_at_utc": "2026-05-21T04:58:20Z",
+  "owner_instruction_local": "2026-05-20T21:50:00-07:00",
+  "owner_instruction_summary": "Proceed to build and place a GTC order for JPM.",
+  "status": "blocked_missing_exact_order_terms",
+  "paper_only": true,
+  "live_submit_allowed": false,
+  "money_movement_allowed": false,
+  "account_settings_mutation_allowed": false,
+  "inferred_approval_allowed": false,
+  "ticker": "JPM",
+  "requested_time_in_force": "gtc",
+  "supported_after_build": {
+    "paper_limit_gtc_supported": true,
+    "paper_market_gtc_supported": false,
+    "required_endpoint": "https://paper-api.alpaca.markets"
+  },
+  "missing_required_terms": [
+    "side: buy or sell",
+    "quantity or notional",
+    "limit price",
+    "risk cap / max loss acceptance"
+  ],
+  "why_blocked": "A JPM limit/GTC paper order can persist beyond one trading day. A buy limit above current/reclaim levels can execute immediately when marketable, and a buy limit below current price has different intent. Current WF67 support does not include stop-limit/reclaim-trigger orders, so Veritas must not invent a side, size, or limit price.",
+  "current_jpm_context": {
+    "close": 301.98,
+    "written_trigger_band_low": 306.82,
+    "written_trigger_band_high": 318.12,
+    "reference_stop": 301.17,
+    "state": "ALMOST DEPLOYABLE / wait_for_band / reclaim-only",
+    "data_date": "2026-05-20"
+  },
+  "next_owner_input_needed": "Provide exact paper order terms, e.g. 'JPM paper buy 1 share limit GTC at $___, max loss $___.'"
+}

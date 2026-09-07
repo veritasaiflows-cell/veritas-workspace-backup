@@ -1,0 +1,72 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "69921dfa-7c85-4dd6-a992-6c111c65be74",
+  "name": "Retired \u2014 Finance - Static Alert-Level Exceptions Telegram",
+  "required": false,
+  "owner_workflow": "Static alert-level exception/no-chase review-only Telegram delivery",
+  "freshness_hours": 80,
+  "contract_reason": "Register the weekday review-only static alert-level exception delivery with a drift-checked command payload.",
+  "description": "Weekday review-only delivery of static alert-level exceptions and no-chase signals. Levels never re-derive from price; human review is required before changes. Script sends directly to Randall Telegram; no capital, trade/account, canon, or execution authority.",
+  "enabled": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "52 6 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "python",
+      "scripts/disciplined_band_staleness_notifier.py",
+      "--send",
+      "--weekday-only",
+      "--write",
+      "--write-md",
+      "--validate",
+      "--timeout-seconds",
+      "120"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 600
+  },
+  "compare_fields": [
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/disciplined-band-staleness-notifier.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "owner_telegram_delivery_allowed": true,
+    "customer_or_public_delivery_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-08-29T16:00:00Z",
+  "contract_update_reason": "Converted naming and delivery language from disciplined-band maintenance to static alert-level exceptions; command, cadence, and owner delivery target are retained.",
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired from the active scheduler contract set. Historical proof only; no automatic resume.",
+  "rollback_requires_owner_gate": true
+}

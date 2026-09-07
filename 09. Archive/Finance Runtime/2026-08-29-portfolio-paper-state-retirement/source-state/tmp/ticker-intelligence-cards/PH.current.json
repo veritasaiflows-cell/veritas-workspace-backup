@@ -1,0 +1,1118 @@
+{
+  "schema_version": 2,
+  "artifact_type": "wf77_ticker_intelligence_card",
+  "generated_at_utc": "2026-08-29T21:40:54Z",
+  "ticker": "PH",
+  "review_only": true,
+  "instrument_type": "equity",
+  "universe_metadata": {
+    "ticker": "PH",
+    "name": "Parker-Hannifin Corporation",
+    "instrument_type": "operating_company",
+    "source_symbols": {
+      "yfinance": "PH",
+      "sec_cik": "0000076334",
+      "company_ir": "https://investors.parker.com/"
+    },
+    "active": true,
+    "tier": "A",
+    "monitoring_role": "decision_queue_or_near_action",
+    "sector": "Industrials",
+    "industry": null,
+    "coverage_reason": {
+      "wf77_current_coverage": true,
+      "fundamental_row_present": true,
+      "deployment_surface_group": null,
+      "workflow_state": "PROMOTION REVIEW",
+      "coverage_lane": "watch",
+      "portfolio_role": "portfolio_review_candidate",
+      "retired_legacy_42": true,
+      "production_answer_path_member": false,
+      "dynamic_sql_first_production_required": true
+    },
+    "decision_grade_eligible": true,
+    "promotion_required_before_action": true,
+    "monitoring_cadence": {
+      "price_technical": "daily_and_intraday_when_market_open",
+      "fundamentals": "weekly_or_event_driven",
+      "analyst": "weekly",
+      "official_evidence": "event_driven_source_open"
+    },
+    "data_requirements": {
+      "price_band_stop": "daily_required",
+      "technical_posture": "daily_required",
+      "fundamentals": "weekly_required",
+      "analyst_consensus": "weekly_required",
+      "official_evidence": "source_open_required",
+      "risk_register": "required",
+      "authority_guardrails": "required"
+    },
+    "promotion_triggers": [
+      "enters_or_reclaims_written_entry_band",
+      "fresh_official_or_fundamental_catalyst_improves_thesis",
+      "technical_relative_strength_or_sector_leadership_improves",
+      "owner_promotes_from_monitor_to_decision_queue"
+    ],
+    "demotion_triggers": [
+      "breaks_stop_or_invalidation",
+      "source_freshness_or_validator_status_blocks_claims",
+      "thesis_evidence_deteriorates_or_conflicts_with_canon",
+      "owner_demotes_or_removes_from_active_monitoring"
+    ],
+    "source_open_required": true,
+    "authority_boundary": {
+      "posture": "durable_review_only_universe_registry_not_canon_not_approval_not_apply_authority",
+      "canonical_note_mutation_allowed": false,
+      "portfolio_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "sizing_sleeve_cash_risk_rule_authority": false,
+      "owner_approval_granted": false,
+      "owner_approval_inferred": false,
+      "trade_execution_allowed": false,
+      "trade_or_account_action_allowed": false,
+      "live_brokerage_or_account_action_allowed": false,
+      "paper_order_execution_allowed": false,
+      "paper_order_submit_allowed_by_this_registry": false,
+      "paper_order_cancel_allowed_by_this_registry": false,
+      "sql_canon_migration_allowed": false,
+      "db_path_migration_allowed": false,
+      "tmp_artifact_promotion_allowed": false
+    },
+    "universe_scope": "active_internal_universe",
+    "production_scope": false,
+    "pilot_scope": false,
+    "retired_legacy_42_scope": true,
+    "sql_first_production_scope": "derived_from_finance_sql_canon_access",
+    "production_scope_source": "retired_legacy_42_no_current_answer_authority"
+  },
+  "durable_sql_canon_state": {
+    "ticker": "PH",
+    "name": "Parker-Hannifin Corporation",
+    "instrument_type": "operating_company",
+    "sector": "Industrials",
+    "industry": null,
+    "universe_scope": "active_internal_universe",
+    "legacy_tier": "A",
+    "legacy_production_42": false,
+    "production_scope_member": false,
+    "production_scope_source": "not_decision_grade_fresh",
+    "tier_ab_decision_scope": null,
+    "compatibility_reason": null,
+    "sql_tier": "Tier A",
+    "sql_tier_state": "sql_first_wait_for_routing",
+    "tier_decision_scope": "tier_a_sql_first_review_scope",
+    "auto_tier": "Tier B",
+    "auto_state": "B-CHALLENGED",
+    "answer_scope": "sql_first_review_monitor",
+    "production_card_generation_allowed": false,
+    "has_production_card": false,
+    "provider_status": null
+  },
+  "wf78_auto_tier_routing": {
+    "ticker": "PH",
+    "name": "Parker-Hannifin Corporation",
+    "sector": "Industrials",
+    "instrument_type": "operating_company",
+    "asset_class": "equity",
+    "instrument_class": "operating_company",
+    "exposure_type": "single_company_equity",
+    "review_lane": "equity_depth",
+    "deployment_role": "company_specific_growth_quality_income_or_turnaround",
+    "opportunity_tier": "Tier B",
+    "lane_tier": "Tier B Equity",
+    "lane_tier_label": "Tier B Equity",
+    "tier_seeded_from_legacy_label": false,
+    "legacy_monitoring_role": "decision_queue_or_near_action",
+    "auto_tier": "Tier B",
+    "auto_state": "B-CHALLENGED",
+    "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate; auto_demoted_a_to_b_by_tier_a_confidence_gate_force_a_challenged",
+    "route_priority": 40,
+    "data_confidence_rating": "conflicted",
+    "fundamentals_confidence": "conflicted",
+    "tier_a_confidence_status": "challenged",
+    "tier_a_confidence_promotion_effect": "force_a_challenged",
+    "tier_a_confidence_source": "artifact",
+    "critical_data_conflict_count": 1,
+    "tier_a_packet_freshness_status": null,
+    "tier_a_packet_stale_reasons": [],
+    "tier_a_packet_age_hours": null,
+    "tier_a_packet_quote_age_hours": null,
+    "tier_a_packet_ttl_hours": null,
+    "tier_a_packet_quote_ttl_hours": null,
+    "phase2_validated_tier_b": false,
+    "tier_c_attention_score": null,
+    "tier_c_attention_next_action": null,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "requires_separate_capital_or_execution_approval": true,
+    "would_mutate_universe": false
+  },
+  "latest_known_price": 995.02,
+  "price_band_stop": {
+    "latest_known_price": 995.02,
+    "price_source": "tmp/post-close-final-quote-ledger.json",
+    "entry_band_low": 965.41,
+    "entry_band_high": 1026.18,
+    "stop_or_invalidation": 931.65,
+    "band_status": "IN_BAND",
+    "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+    "stop_source": "state/finance/finance-canon.sqlite:reference_levels",
+    "fresh_quote_required": false,
+    "staleness_note": null,
+    "reference_band_refresh_required": false,
+    "sql_canon_reference": {
+      "ticker": "PH",
+      "reference_price_low": 965.41,
+      "reference_price_high": 1026.18,
+      "reference_invalidation_level": 931.65,
+      "reference_confidence": null,
+      "reference_band_status": "IN_BAND",
+      "authority_class": "reference_metadata_review_only_no_deployment_authority",
+      "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+    },
+    "post_close_final_quote": {
+      "market_date": "2026-08-28",
+      "retrieved_at_utc": "2026-08-29T16:23:22Z",
+      "source": "yfinance",
+      "review_only": true,
+      "execution_freshness_approved": false
+    }
+  },
+  "entry_stop_reference_metadata": {
+    "schema_version": "wf72_entry_stop_reference_metadata.v1",
+    "status": "available",
+    "ticker": "PH",
+    "authority_boundary": "wf72_entry_stop_reference_metadata_exact_key_gated_no_execution_authority",
+    "sql_cache_path": "tmp/veritas-canon-cache.sqlite",
+    "sql_read_mode": "sqlite_uri_mode_ro",
+    "approved_row_family": "exact_252_wf72_entry_stop_reference_metadata_rows",
+    "approved_fields": [
+      "reference_price_low",
+      "reference_price_high",
+      "reference_invalidation_level",
+      "reference_level_source_timestamp",
+      "reference_level_source_sha256",
+      "reference_level_owner_source_path"
+    ],
+    "row_keys": [
+      "PH:reference_price_low",
+      "PH:reference_price_high",
+      "PH:reference_invalidation_level",
+      "PH:reference_level_source_timestamp",
+      "PH:reference_level_source_sha256",
+      "PH:reference_level_owner_source_path"
+    ],
+    "values": {
+      "reference_price_low": 851.36,
+      "reference_price_high": 908.98,
+      "reference_invalidation_level": 819.35,
+      "reference_level_source_timestamp": "2026-06-18",
+      "reference_level_source_sha256": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+      "reference_level_owner_source_path": "03. Portfolio/Execution Board.md"
+    },
+    "source_lineage": {
+      "owner_source_path": "03. Portfolio/Execution Board.md",
+      "source_timestamp": "2026-06-18",
+      "source_sha256": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9"
+    },
+    "source_rows": [
+      {
+        "key": "PH:reference_invalidation_level",
+        "source_artifact_path": "03. Portfolio/Execution Board.md",
+        "source_artifact_hash": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+        "freshness_status": "fresh",
+        "last_reconciled_at_utc": "2026-06-19T13:20:38Z",
+        "updated_at_utc": "2026-06-19T13:20:38Z"
+      },
+      {
+        "key": "PH:reference_level_owner_source_path",
+        "source_artifact_path": "03. Portfolio/Execution Board.md",
+        "source_artifact_hash": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+        "freshness_status": "fresh",
+        "last_reconciled_at_utc": "2026-06-19T13:20:38Z",
+        "updated_at_utc": "2026-06-19T13:20:38Z"
+      },
+      {
+        "key": "PH:reference_level_source_sha256",
+        "source_artifact_path": "03. Portfolio/Execution Board.md",
+        "source_artifact_hash": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+        "freshness_status": "fresh",
+        "last_reconciled_at_utc": "2026-06-19T13:20:38Z",
+        "updated_at_utc": "2026-06-19T13:20:38Z"
+      },
+      {
+        "key": "PH:reference_level_source_timestamp",
+        "source_artifact_path": "03. Portfolio/Execution Board.md",
+        "source_artifact_hash": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+        "freshness_status": "fresh",
+        "last_reconciled_at_utc": "2026-06-19T13:20:38Z",
+        "updated_at_utc": "2026-06-19T13:20:38Z"
+      },
+      {
+        "key": "PH:reference_price_high",
+        "source_artifact_path": "03. Portfolio/Execution Board.md",
+        "source_artifact_hash": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+        "freshness_status": "fresh",
+        "last_reconciled_at_utc": "2026-06-19T13:20:38Z",
+        "updated_at_utc": "2026-06-19T13:20:38Z"
+      },
+      {
+        "key": "PH:reference_price_low",
+        "source_artifact_path": "03. Portfolio/Execution Board.md",
+        "source_artifact_hash": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+        "freshness_status": "fresh",
+        "last_reconciled_at_utc": "2026-06-19T13:20:38Z",
+        "updated_at_utc": "2026-06-19T13:20:38Z"
+      }
+    ],
+    "missing_fields": [],
+    "issues": [],
+    "notes": [
+      "Reference metadata only; does not replace price_band_stop fallback values.",
+      "No recommendation, deployment/action state, approval, portfolio mutation, or execution authority."
+    ],
+    "display_reference_only": true,
+    "fallback_required": true,
+    "recommendation_allowed": false,
+    "deployment_or_action_state_change_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "markdown_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "proposal_apply_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "paper_trade_authority_allowed": false,
+    "live_trade_authority_allowed": false,
+    "money_movement_allowed": false
+  },
+  "thesis_bull_bear_entry_context": {
+    "status": "synthesized_review_only_source_backed",
+    "thesis": "Parker-Hannifin Corporation has a review-only synthesized Tier A thesis from local sourced artifacts: Industrials via XLI versus SPY; leadership=deteriorating. Entry posture is IN_BAND; 1 evidence/freshness gaps still require review before decision-grade use.",
+    "bull_case_inputs": [
+      "latest_earnings_performance",
+      "key_financial_metrics",
+      "official_capture_developments_orders_backlog",
+      "current_sector_performance",
+      "technical_posture"
+    ],
+    "bear_case_inputs": [
+      "risk_register",
+      "missing_or_stale_evidence",
+      "valuation",
+      "price_band_stop"
+    ],
+    "entry_context": {
+      "latest_known_price": 995.02,
+      "price_source": "tmp/post-close-final-quote-ledger.json",
+      "entry_band_low": 965.41,
+      "entry_band_high": 1026.18,
+      "stop_or_invalidation": 931.65,
+      "band_status": "IN_BAND",
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "stop_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "fresh_quote_required": false,
+      "staleness_note": null,
+      "reference_band_refresh_required": false,
+      "sql_canon_reference": {
+        "ticker": "PH",
+        "reference_price_low": 965.41,
+        "reference_price_high": 1026.18,
+        "reference_invalidation_level": 931.65,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "post_close_final_quote": {
+        "market_date": "2026-08-28",
+        "retrieved_at_utc": "2026-08-29T16:23:22Z",
+        "source": "yfinance",
+        "review_only": true,
+        "execution_freshness_approved": false
+      }
+    },
+    "synthesis_evidence": [
+      {
+        "label": "sector_proxy_context",
+        "summary": "Industrials via XLI versus SPY; leadership=deteriorating",
+        "source_artifact": "tmp\\sector-expansion-board.json",
+        "as_of": "2026-08-28",
+        "match_basis": "exact"
+      }
+    ],
+    "source_open_required": true,
+    "limits": [
+      "Review-only synthesis generated from existing local sourced artifacts.",
+      "This does not clear owner approval, capital deployment, paper/live execution, or final recommendation authority."
+    ]
+  },
+  "latest_earnings_performance": {
+    "status": "available",
+    "period_type": "quarterly",
+    "period_end": "2026-06-30",
+    "comparison_period_end": "2026-03-31",
+    "revenue": null,
+    "revenue_yoy_pct": null,
+    "net_income": null,
+    "net_income_yoy_pct": null,
+    "diluted_eps": null,
+    "eps_yoy_pct": null,
+    "free_cash_flow": null,
+    "free_cash_flow_yoy_pct": null,
+    "official_adjusted_eps": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "official_growth_bridge": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "official_guidance": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "management_explanation": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "period_alignment": {
+      "status": "newer_official_period_normalized_metrics_catch_up_required",
+      "latest_official_period_end": "2026-06-30",
+      "normalized_metrics_period_end": "2026-03-31",
+      "normalized_metrics_stale": true,
+      "source_url": "https://www.sec.gov/Archives/edgar/data/76334/000007633426000105/ph-20260630.htm",
+      "withheld_fields": [
+        "revenue",
+        "revenue_prior",
+        "revenue_yoy_pct",
+        "net_income",
+        "net_income_prior",
+        "net_income_yoy_pct",
+        "diluted_eps",
+        "diluted_eps_prior",
+        "eps_yoy_pct",
+        "gross_profit",
+        "gross_margin_pct",
+        "operating_income",
+        "operating_margin_pct",
+        "net_margin_pct",
+        "ebitda",
+        "operating_cash_flow",
+        "capital_expenditure",
+        "free_cash_flow",
+        "free_cash_flow_prior",
+        "free_cash_flow_yoy_pct",
+        "fcf_per_share",
+        "fcf_per_share_prior",
+        "fcf_per_share_yoy_pct",
+        "cash_and_equivalents",
+        "total_debt",
+        "net_debt",
+        "debt_to_annualized_ebitda",
+        "total_assets",
+        "total_equity",
+        "invested_capital_proxy",
+        "roic_proxy_pct",
+        "debt_issued",
+        "debt_repaid",
+        "net_debt_issued",
+        "dividends_paid",
+        "share_repurchases",
+        "net_share_repurchases",
+        "buyback_yield_pct",
+        "dividend_yield_pct",
+        "shareholder_yield_pct",
+        "stock_based_compensation",
+        "sbc_pct_of_revenue",
+        "sbc_pct_of_fcf",
+        "capital_return_to_fcf_pct",
+        "capital_allocation_anomalies",
+        "capital_allocation_anomaly_count",
+        "capital_allocation_quality",
+        "capital_allocation_notes",
+        "enterprise_value",
+        "trailing_pe",
+        "forward_pe",
+        "fcf_yield_pct",
+        "earnings_yield_pct",
+        "price_to_sales",
+        "price_to_book",
+        "ev_to_ebitda_proxy",
+        "ev_to_fcf_proxy"
+      ],
+      "prior_normalized_metrics_retained": true
+    },
+    "source_open_required": true
+  },
+  "key_financial_metrics": {
+    "status": "available",
+    "period_end": "2026-06-30",
+    "growth": {
+      "revenue_yoy_pct": null,
+      "net_income_yoy_pct": null,
+      "eps_yoy_pct": null,
+      "free_cash_flow_yoy_pct": null
+    },
+    "profitability": {
+      "gross_margin_pct": null,
+      "operating_margin_pct": null,
+      "net_margin_pct": null,
+      "roic_proxy_pct": null
+    },
+    "cash_flow": {
+      "operating_cash_flow": null,
+      "free_cash_flow": null,
+      "fcf_per_share": null,
+      "fcf_yield_pct": null
+    },
+    "balance_sheet": {
+      "cash_and_equivalents": null,
+      "total_debt": null,
+      "net_debt": null,
+      "debt_to_annualized_ebitda": null
+    },
+    "valuation": {
+      "market_cap": 125419755066.24,
+      "enterprise_value": null,
+      "trailing_pe": null,
+      "forward_pe": null,
+      "price_to_sales": null,
+      "price_to_book": null,
+      "ev_to_ebitda_proxy": null,
+      "ev_to_fcf_proxy": null,
+      "earnings_yield_pct": null
+    },
+    "capital_returns": {
+      "buyback_yield_pct": null,
+      "dividend_yield_pct": null,
+      "shareholder_yield_pct": null,
+      "capital_return_to_fcf_pct": null
+    },
+    "data_quality": "partial",
+    "period_alignment": {
+      "status": "newer_official_period_normalized_metrics_catch_up_required",
+      "latest_official_period_end": "2026-06-30",
+      "normalized_metrics_period_end": "2026-03-31",
+      "normalized_metrics_stale": true,
+      "source_url": "https://www.sec.gov/Archives/edgar/data/76334/000007633426000105/ph-20260630.htm",
+      "withheld_fields": [
+        "revenue",
+        "revenue_prior",
+        "revenue_yoy_pct",
+        "net_income",
+        "net_income_prior",
+        "net_income_yoy_pct",
+        "diluted_eps",
+        "diluted_eps_prior",
+        "eps_yoy_pct",
+        "gross_profit",
+        "gross_margin_pct",
+        "operating_income",
+        "operating_margin_pct",
+        "net_margin_pct",
+        "ebitda",
+        "operating_cash_flow",
+        "capital_expenditure",
+        "free_cash_flow",
+        "free_cash_flow_prior",
+        "free_cash_flow_yoy_pct",
+        "fcf_per_share",
+        "fcf_per_share_prior",
+        "fcf_per_share_yoy_pct",
+        "cash_and_equivalents",
+        "total_debt",
+        "net_debt",
+        "debt_to_annualized_ebitda",
+        "total_assets",
+        "total_equity",
+        "invested_capital_proxy",
+        "roic_proxy_pct",
+        "debt_issued",
+        "debt_repaid",
+        "net_debt_issued",
+        "dividends_paid",
+        "share_repurchases",
+        "net_share_repurchases",
+        "buyback_yield_pct",
+        "dividend_yield_pct",
+        "shareholder_yield_pct",
+        "stock_based_compensation",
+        "sbc_pct_of_revenue",
+        "sbc_pct_of_fcf",
+        "capital_return_to_fcf_pct",
+        "capital_allocation_anomalies",
+        "capital_allocation_anomaly_count",
+        "capital_allocation_quality",
+        "capital_allocation_notes",
+        "enterprise_value",
+        "trailing_pe",
+        "forward_pe",
+        "fcf_yield_pct",
+        "earnings_yield_pct",
+        "price_to_sales",
+        "price_to_book",
+        "ev_to_ebitda_proxy",
+        "ev_to_fcf_proxy"
+      ],
+      "prior_normalized_metrics_retained": true
+    },
+    "source_open_required": true
+  },
+  "valuation": {
+    "valuation_context": "partial_newer_period_metrics_withheld",
+    "market_cap": 125419755066.24,
+    "enterprise_value": null,
+    "trailing_pe": null,
+    "forward_pe": null,
+    "fcf_yield_pct": null,
+    "earnings_yield_pct": null,
+    "price_to_sales": null,
+    "price_to_book": null,
+    "ev_to_ebitda_proxy": null,
+    "ev_to_fcf_proxy": null
+  },
+  "official_fundamentals": {
+    "source": "official_sec_earnings_release_period_overlay",
+    "source_tier": "official_primary_review_only",
+    "period_type": "quarterly",
+    "period_end": "2026-06-30",
+    "comparison_period_end": "2026-03-31",
+    "revenue": null,
+    "revenue_yoy_pct": null,
+    "net_income": null,
+    "net_income_yoy_pct": null,
+    "diluted_eps": null,
+    "eps_yoy_pct": null,
+    "gross_margin_pct": null,
+    "operating_margin_pct": null,
+    "net_margin_pct": null,
+    "operating_cash_flow": null,
+    "free_cash_flow": null,
+    "free_cash_flow_yoy_pct": null,
+    "fcf_per_share": null,
+    "fcf_per_share_yoy_pct": null,
+    "cash_and_equivalents": null,
+    "total_debt": null,
+    "net_debt": null,
+    "debt_to_annualized_ebitda": null,
+    "roic_proxy_pct": null,
+    "data_quality": "partial"
+  },
+  "fundamental_period_alignment": {
+    "status": "newer_official_period_normalized_metrics_catch_up_required",
+    "latest_official_period_end": "2026-06-30",
+    "normalized_metrics_period_end": "2026-03-31",
+    "normalized_metrics_stale": true,
+    "source_url": "https://www.sec.gov/Archives/edgar/data/76334/000007633426000105/ph-20260630.htm",
+    "withheld_fields": [
+      "revenue",
+      "revenue_prior",
+      "revenue_yoy_pct",
+      "net_income",
+      "net_income_prior",
+      "net_income_yoy_pct",
+      "diluted_eps",
+      "diluted_eps_prior",
+      "eps_yoy_pct",
+      "gross_profit",
+      "gross_margin_pct",
+      "operating_income",
+      "operating_margin_pct",
+      "net_margin_pct",
+      "ebitda",
+      "operating_cash_flow",
+      "capital_expenditure",
+      "free_cash_flow",
+      "free_cash_flow_prior",
+      "free_cash_flow_yoy_pct",
+      "fcf_per_share",
+      "fcf_per_share_prior",
+      "fcf_per_share_yoy_pct",
+      "cash_and_equivalents",
+      "total_debt",
+      "net_debt",
+      "debt_to_annualized_ebitda",
+      "total_assets",
+      "total_equity",
+      "invested_capital_proxy",
+      "roic_proxy_pct",
+      "debt_issued",
+      "debt_repaid",
+      "net_debt_issued",
+      "dividends_paid",
+      "share_repurchases",
+      "net_share_repurchases",
+      "buyback_yield_pct",
+      "dividend_yield_pct",
+      "shareholder_yield_pct",
+      "stock_based_compensation",
+      "sbc_pct_of_revenue",
+      "sbc_pct_of_fcf",
+      "capital_return_to_fcf_pct",
+      "capital_allocation_anomalies",
+      "capital_allocation_anomaly_count",
+      "capital_allocation_quality",
+      "capital_allocation_notes",
+      "enterprise_value",
+      "trailing_pe",
+      "forward_pe",
+      "fcf_yield_pct",
+      "earnings_yield_pct",
+      "price_to_sales",
+      "price_to_book",
+      "ev_to_ebitda_proxy",
+      "ev_to_fcf_proxy"
+    ],
+    "prior_normalized_metrics_retained": true
+  },
+  "fundamental_reconciliation": {
+    "sec_status": "matched",
+    "sec_source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000076334.json",
+    "company_ir_status": "configured_manual_review_required",
+    "company_ir_source_url": "https://investors.parker.com/",
+    "quality_notes": [
+      "A newer validated official earnings release was captured.",
+      "Period-sensitive normalized fields not present in the release are withheld until the 10-Q/normalized refresh catches up."
+    ],
+    "period_alignment": {
+      "status": "newer_official_period_normalized_metrics_catch_up_required",
+      "latest_official_period_end": "2026-06-30",
+      "normalized_metrics_period_end": "2026-03-31",
+      "normalized_metrics_stale": true,
+      "source_url": "https://www.sec.gov/Archives/edgar/data/76334/000007633426000105/ph-20260630.htm",
+      "withheld_fields": [
+        "revenue",
+        "revenue_prior",
+        "revenue_yoy_pct",
+        "net_income",
+        "net_income_prior",
+        "net_income_yoy_pct",
+        "diluted_eps",
+        "diluted_eps_prior",
+        "eps_yoy_pct",
+        "gross_profit",
+        "gross_margin_pct",
+        "operating_income",
+        "operating_margin_pct",
+        "net_margin_pct",
+        "ebitda",
+        "operating_cash_flow",
+        "capital_expenditure",
+        "free_cash_flow",
+        "free_cash_flow_prior",
+        "free_cash_flow_yoy_pct",
+        "fcf_per_share",
+        "fcf_per_share_prior",
+        "fcf_per_share_yoy_pct",
+        "cash_and_equivalents",
+        "total_debt",
+        "net_debt",
+        "debt_to_annualized_ebitda",
+        "total_assets",
+        "total_equity",
+        "invested_capital_proxy",
+        "roic_proxy_pct",
+        "debt_issued",
+        "debt_repaid",
+        "net_debt_issued",
+        "dividends_paid",
+        "share_repurchases",
+        "net_share_repurchases",
+        "buyback_yield_pct",
+        "dividend_yield_pct",
+        "shareholder_yield_pct",
+        "stock_based_compensation",
+        "sbc_pct_of_revenue",
+        "sbc_pct_of_fcf",
+        "capital_return_to_fcf_pct",
+        "capital_allocation_anomalies",
+        "capital_allocation_anomaly_count",
+        "capital_allocation_quality",
+        "capital_allocation_notes",
+        "enterprise_value",
+        "trailing_pe",
+        "forward_pe",
+        "fcf_yield_pct",
+        "earnings_yield_pct",
+        "price_to_sales",
+        "price_to_book",
+        "ev_to_ebitda_proxy",
+        "ev_to_fcf_proxy"
+      ],
+      "prior_normalized_metrics_retained": true
+    }
+  },
+  "analyst_consensus_ratings_targets": {
+    "ticker": "PH",
+    "accessed_at_utc": "2026-08-29T16:48:21Z",
+    "as_of_date": null,
+    "average_target": 1160.9535,
+    "buy_count": 16,
+    "confidence": "medium",
+    "consensus_rating": "Buy skew",
+    "consensus_score_derived": 3.84,
+    "current_price": 995.02,
+    "errors": [],
+    "high_target": 1358.0,
+    "hold_count": 5,
+    "implied_upside_downside_pct": 16.68,
+    "low_target": 680.0,
+    "manual_review_reason": "Tier A/B weekly review requires source-open or manual cross-check before high-consequence use.",
+    "manual_review_required": true,
+    "median_target": 1214.0,
+    "provider": "yfinance",
+    "provider_symbol": "PH",
+    "rating_change_notes": [],
+    "recommendation_period": "0m",
+    "sell_count": 1,
+    "source_open_required": true,
+    "source_url": "https://finance.yahoo.com/quote/PH/analysis",
+    "stale": false,
+    "stale_after_days": 7,
+    "status": "auto_sourced_yfinance",
+    "strong_buy_count": 3,
+    "strong_sell_count": 0,
+    "tier": "A"
+  },
+  "competitive_moat": {
+    "status": "partially_structured_source_backed_review_required",
+    "summary": "Parker-Hannifin Corporation has preliminary moat evidence from profitability, official operating commentary, demand/activity signals, or sector proxy context; this is not a final competitive-position conclusion.",
+    "evidence": [
+      {
+        "label": "sector_proxy_position",
+        "summary": "Industrials proxy XLI leadership=deteriorating",
+        "source_artifact": "tmp\\sector-expansion-board.json",
+        "as_of": "2026-08-28",
+        "match_basis": "exact"
+      }
+    ],
+    "source_open_required": true,
+    "limits": [
+      "Evidence supports structured review coverage, not a final moat grade.",
+      "Peer comparison and source-open competitive research remain required before decision-grade use."
+    ]
+  },
+  "recent_developments": {
+    "status": "missing_manual_required",
+    "value": null,
+    "source_url": null,
+    "source_section": null,
+    "manual_capture_required": true,
+    "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+  },
+  "orders_backlog_book_to_bill": {
+    "status": "missing_manual_required",
+    "value": null,
+    "source_url": null,
+    "source_section": null,
+    "manual_capture_required": true,
+    "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+  },
+  "official_capture_developments_orders_backlog": {
+    "management_explanation": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "acquisition_debt_notes": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "orders_backlog": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "source_open_required": true
+  },
+  "current_sector_performance": {
+    "status": "available",
+    "sector": "Industrials",
+    "sector_query": "Industrials",
+    "sector_match_basis": "exact",
+    "sector_proxy_ticker": "XLI",
+    "as_of": "2026-08-28",
+    "relative_strength_vs_spy": {
+      "1d": -0.7015,
+      "5d": -2.1995,
+      "20d": -4.4891
+    },
+    "sector_returns_pct": {
+      "1d": -0.9284,
+      "5d": -1.7254,
+      "20d": -1.5013
+    },
+    "spy_returns_pct": {
+      "1d": -0.2269,
+      "5d": 0.4741,
+      "20d": 2.9878
+    },
+    "relative_labels": {
+      "1d": "underperforming",
+      "5d": "underperforming",
+      "20d": "underperforming"
+    },
+    "leadership_status": "deteriorating",
+    "portfolio_exposure": {
+      "draft_weight_pct": 7.0,
+      "tickers": [
+        "ETN",
+        "VRT"
+      ],
+      "status": "within_limit",
+      "risk_cap_pct": 25,
+      "distance_to_cap_pct": 18.0
+    },
+    "underexposed": false,
+    "owner_gated_next_review_action": "Existing exposure with queued candidates: keep promotion review owner-gated and check risk/sizing before any change."
+  },
+  "etf_or_macro_proxy_profile": null,
+  "catalyst_earnings_state": {
+    "workflow_state": "PROMOTION REVIEW",
+    "surface_state": "WATCH / RESEARCH NEEDED",
+    "days_to_earnings": 76,
+    "earnings_date_confirmed": "UNCONFIRMED",
+    "last_earnings_date": null,
+    "post_earnings_review_confirmed": null
+  },
+  "technical_posture": {
+    "band_status": "IN_BAND",
+    "latest_close": 995.02,
+    "ma20": 1031.69,
+    "ma50": 991.34,
+    "ma200": 931.33,
+    "ma_posture": "above 50d and 200d, below 20d",
+    "above_ma20": false,
+    "above_ma50": true,
+    "above_ma200": true,
+    "data_date": "2026-08-28",
+    "deployment_surface_state": "WATCH / RESEARCH NEEDED",
+    "macro_gate": "DEGRADED",
+    "near_earnings_caution": false,
+    "why": "WF85 timing gate: repair_first"
+  },
+  "portfolio_fit_concentration": {
+    "sector": "Industrials",
+    "wf78_tier": "A",
+    "sql_canon_legacy_tier": "A",
+    "sql_canon_universe_scope": "active_internal_universe",
+    "sql_canon_production_answer_path_member": false,
+    "wf78_auto_tier": "Tier B",
+    "wf78_auto_state": "B-CHALLENGED",
+    "wf78_monitoring_role": "decision_queue_or_near_action",
+    "wf78_decision_grade_eligible": true,
+    "wf78_promotion_required_before_action": true,
+    "coverage_tier": "event",
+    "portfolio_role": "portfolio_review_candidate",
+    "coverage_lane": "watch",
+    "readiness_tier": "tier2",
+    "recommended_starter_notional": {
+      "low_usd": 200,
+      "high_usd": 350,
+      "mid_usd": 275
+    },
+    "recommended_target_notional": {
+      "low_usd": 400,
+      "high_usd": 700,
+      "mid_usd": 550
+    },
+    "decision_note": "Promotion-review candidate; prepare exact paper request only after owner chooses it and fresh quote remains in band.",
+    "prepared_order_card_path": "tmp\\alpaca-paper-readiness\\order-card.ph-tight-limit-2026-05-26T0659.json"
+  },
+  "capital_allocation_quality": {
+    "quality": "tracked",
+    "anomalies": [],
+    "notes": []
+  },
+  "risk_register": [
+    {
+      "category": "evidence_gap",
+      "severity": "context",
+      "detail": "Official period 2026-06-30 is newer than normalized metrics period 2026-03-31; withheld fields remain manual/10-Q required.",
+      "family": "fundamental_period_alignment"
+    }
+  ],
+  "recommendation_support": {
+    "posture": "approval-ready paper starter if fresh in band",
+    "posture_key": "approval_ready_if_fresh",
+    "deployment_contract": {
+      "deployment_status": "WATCH",
+      "status_reason": "watch_research_needed",
+      "display_label": "watch / research needed",
+      "raw_context": {
+        "workflow_state": "WATCH",
+        "machine_state": "WATCH",
+        "action_state": "WATCH",
+        "surface_state": "WATCH / RESEARCH NEEDED",
+        "base_surface_state": "WATCH / RESEARCH NEEDED",
+        "band_status": "IN_BAND",
+        "below_stop": false
+      },
+      "authority": {
+        "review_only": true,
+        "paper_order_execution_allowed": false,
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false
+      }
+    },
+    "support_level": "prepared_order_card_present",
+    "state_source": "WATCH / RESEARCH NEEDED",
+    "readiness_state_source": "WATCH / RESEARCH NEEDED",
+    "deployment_surface_state_source": "WATCH / RESEARCH NEEDED",
+    "band_status": "IN_BAND",
+    "fresh_quote_required": false,
+    "prepared_order_card_present": true,
+    "actionability": "review_only_owner_gated",
+    "blockers_or_gates": [
+      "owner promotion/selection still required before treating as deployed",
+      "card itself grants no paper/live execution authority and infers no approval"
+    ],
+    "notes": [
+      "This is recommendation support, not a black-box buy/sell engine.",
+      "Open source artifacts before final readiness, recommendation, approval, or action claims."
+    ]
+  },
+  "missing_or_stale_evidence": [
+    {
+      "family": "fundamental_period_alignment",
+      "severity": "context",
+      "status": "newer_official_period_normalized_metrics_catch_up_required",
+      "detail": "Official period 2026-06-30 is newer than normalized metrics period 2026-03-31; withheld fields remain manual/10-Q required."
+    }
+  ],
+  "source_artifacts": [
+    {
+      "path": "tmp\\fundamental-metrics-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T20:20:09Z",
+      "status": null
+    },
+    {
+      "path": "tmp\\deployment-readiness-surface.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-21T20:32:55.183959+00:00",
+      "status": null
+    },
+    {
+      "path": "tmp\\position-sizing-readiness-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T21:39:55Z",
+      "status": "critical"
+    },
+    {
+      "path": "tmp\\analyst-consensus-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T16:48:34Z",
+      "status": "sourced_current"
+    },
+    {
+      "path": "tmp\\official-earnings-bridge.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T20:28:47Z",
+      "status": "manual_confirmed_partial"
+    },
+    {
+      "path": "tmp\\sector-expansion-board.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T21:05:19Z",
+      "status": "degraded"
+    },
+    {
+      "path": "tmp\\technical-refresh.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T16:23:33.592368+00:00",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\portfolio-config.json",
+      "exists": true,
+      "generated_at_utc": "2026-05-23T19:50:12Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\post-close-final-quote-ledger.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T16:23:25Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\finance-decision-sync-spine.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T13:25:27Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\wf78-capital-review-queue.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T13:24:42Z",
+      "status": "ok"
+    },
+    {
+      "path": "data\\finance\\universe-v1.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-22T15:33:19Z",
+      "status": "wf78_tier_c_scaleout_monitor_ready"
+    },
+    {
+      "path": "tmp\\wf78-auto-tier-routing.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T16:23:27Z",
+      "status": "ok"
+    },
+    {
+      "path": "state\\finance\\finance-canon.sqlite",
+      "exists": true,
+      "generated_at_utc": null,
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\alpaca-paper-readiness\\order-card.ph-tight-limit-2026-05-26T0659.json",
+      "exists": true,
+      "created_at_utc": "2026-05-26T13:59:30Z",
+      "status": "approved_exact_order_pending_wf67_guards"
+    }
+  ],
+  "authority_boundary": {
+    "artifact_role": "derived_review_and_question_routing_surface_only",
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "sizing_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed_by_card": false,
+    "paper_order_cancel_allowed_by_card": false,
+    "durable_sql_canon_current_state_allowed": true,
+    "sql_canon_mutation_allowed": false,
+    "live_trade_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "source_open_required_before_final_recommendation_or_action_claim": true
+  }
+}

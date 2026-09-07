@@ -110,7 +110,7 @@ OpenClaw pilot control note:
 
 Only after current lanes stabilize:
 - OpenClaw Parallel Pilot Queue execution
-- Healthcare Sleeve Thesis Tightening
+- Healthcare Theme Thesis Tightening
 - Controlled Note Reconciliation
 - Morning Deployment Surface
 

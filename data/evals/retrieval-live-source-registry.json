@@ -1,0 +1,87 @@
+{
+  "schema": "veritas.retrieval_live_source_registry.v1",
+  "status": "frozen_draft_review_required",
+  "purpose": "Small isolated corpus for measuring live hybrid retrieval discrimination without touching the protected default vector-memory index.",
+  "source_profile": "primary",
+  "source_manifest_sha256": "d1d35ee1a2b5da71a4097134068204db666e450b64862c986adf9216168644cc",
+  "manifest_hash_contract": "sha256 of sorted UTF-8 rows formatted as path:sha256 followed by a newline",
+  "chunking": {
+    "lines_per_chunk": 36,
+    "overlap": 4,
+    "max_chars": 6000
+  },
+  "providers": {
+    "hash": {
+      "embedding_provider": "hash",
+      "embedding_model": "hashing-vector-v0"
+    },
+    "semantic": {
+      "embedding_provider": "ollama",
+      "embedding_model": "nomic-embed-text:latest",
+      "resolved_digest_required": true
+    },
+    "fts_only": {
+      "source_db": "hash",
+      "ranking": "raw SQLite FTS5 bm25 ascending",
+      "embedding_independent": true
+    }
+  },
+  "sources": [
+    {
+      "path": "data/workflow-checkpoints/implementation-closeout.json",
+      "sha256": "4255e9866bd3fed827f3204d50d073ba4afa6fa41dc8fdbf338e990340dad01d"
+    },
+    {
+      "path": "data/workflow-checkpoints/wf74-wf88.json",
+      "sha256": "92abab4116a4f61c0bb705e49d906ae2bf17c065b90461ef033953c253490ab6"
+    },
+    {
+      "path": "wiki/gaps/Open Follow Up Debt.md",
+      "sha256": "5fc5a526f84875c9450eef36e0caae0a170bf154631321ca4cdfce3321f5f81a"
+    },
+    {
+      "path": "wiki/index.md",
+      "sha256": "5f6cdc875d0037dd874c3b4411764bdd0da1a792c72749d36b6ee9d222d8bde2"
+    },
+    {
+      "path": "wiki/os2/OTEL To Proposal Route.md",
+      "sha256": "c2a1d7a6430299b11bf55e83064e2bf5d70eccebc75182ab1dd5f909d318e567"
+    },
+    {
+      "path": "wiki/recommendations/Action Promotion Map.md",
+      "sha256": "4d0ee468171881216079177fc5eb5ed24b98d1f731ea4d6a08cc3308331d9346"
+    },
+    {
+      "path": "wiki/scorecards-and-evals/Current Map.md",
+      "sha256": "2bd123ad0a91a5e91e47303dafef7c454b23ad5beb969178d7ae060e3cc5b612"
+    },
+    {
+      "path": "wiki/scorecards-and-evals/Token Efficiency Map.md",
+      "sha256": "1f47a02b978aa32211aa5842f239f7247a80ac4e1e144d78911375c216648037"
+    },
+    {
+      "path": "wiki/self-improvement/RSI Control Loop.md",
+      "sha256": "d1387319036a27b23fc6b9dc1edf486f656c03e5cbadcd7e2cf2e48a446d6962"
+    },
+    {
+      "path": "wiki/source-map/WF88 Wiki Source Map.md",
+      "sha256": "f52e938ae981089b581b7f759d35885d9d00591dee756351acff0d7e7c061ffe"
+    }
+  ],
+  "exclusions": [
+    "memory history",
+    "tmp proof bodies",
+    "finance canon and portfolio surfaces",
+    "brokerage, account, credential, config, and runtime surfaces"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "derived_eval_only": true,
+    "protected_default_index_mutation_allowed": false,
+    "finance_or_canon_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

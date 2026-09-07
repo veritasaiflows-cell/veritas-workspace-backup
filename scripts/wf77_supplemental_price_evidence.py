@@ -35,6 +35,7 @@ TECHNICAL_REFRESH_PATH = TMP / "technical-refresh.json"
 DEFAULT_OUT = TMP / "wf77-supplemental-price-evidence.json"
 SNAPSHOT_DIR = DATA / "market" / "price-snapshots"
 CURRENT_SNAPSHOT = SNAPSHOT_DIR / "wf77-supplemental-price-evidence-current.json"
+SUPPLEMENTAL_FRESH_DAYS = 4
 
 SCHEMA_VERSION = "wf77_supplemental_price_evidence.v1"
 
@@ -139,14 +140,48 @@ def technical_entitled(ticker: str, config: dict[str, Any]) -> bool | None:
         return None
 
 
-def default_tickers(universe_payload: dict[str, Any], config: dict[str, Any], technical: dict[str, dict[str, Any]]) -> list[str]:
+def supplemental_index(path: Path) -> dict[str, dict[str, Any]]:
+    """Index prior supplemental records for freshness-skip.
+
+    Steady-state gate: tickers with fresh ok evidence are not refetched, so
+    routine runs stay cheap and fetch cost is paid only on drift/staleness.
+    """
+    payload = load_dict(path)
+    records = payload.get("records")
+    if not isinstance(records, list):
+        return {}
+    return {
+        str(row.get("ticker") or "").upper(): row
+        for row in records
+        if isinstance(row, dict) and row.get("ticker")
+    }
+
+
+def supplemental_fresh(row: dict[str, Any] | None) -> bool:
+    if not isinstance(row, dict) or row.get("status") != "ok":
+        return False
+    try:
+        data_date = datetime.strptime(str(row.get("data_date") or "")[:10], "%Y-%m-%d").date()
+    except (ValueError, TypeError):
+        return False
+    return (datetime.now(timezone.utc).date() - data_date).days <= SUPPLEMENTAL_FRESH_DAYS
+
+
+def default_tickers(universe_payload: dict[str, Any], config: dict[str, Any], technical: dict[str, dict[str, Any]], prior: dict[str, dict[str, Any]] | None = None) -> list[str]:
+    prior = prior or {}
     tickers: list[str] = []
     for row in production_rows(universe_payload):
         ticker = str(row.get("ticker") or "").upper()
         has_valid_technical = technical.get(ticker, {}).get("close") not in (None, "")
         if has_valid_technical:
             continue
-        if technical_entitled(ticker, config) is False:
+        if supplemental_fresh(prior.get(ticker)):
+            continue
+        # portfolio-config is retired: entitlement that cannot be resolved must
+        # not silently suppress review-only public price evidence. Fetch on
+        # False (not entitled) and on None (unknown); skip only when the
+        # technical lane affirmatively owns the ticker.
+        if technical_entitled(ticker, config) is not True:
             tickers.append(ticker)
     return tickers
 
@@ -356,7 +391,8 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     config = load_dict(args.portfolio_config)
     technical = technical_index(args.technical)
     row_by_ticker = {str(row.get("ticker") or "").upper(): row for row in production_rows(universe_payload)}
-    tickers = [ticker.upper() for ticker in args.tickers] if args.tickers else default_tickers(universe_payload, config, technical)
+    prior = {} if args.tickers else supplemental_index(CURRENT_SNAPSHOT)
+    tickers = [ticker.upper() for ticker in args.tickers] if args.tickers else default_tickers(universe_payload, config, technical, prior)
     records = []
     for ticker in tickers:
         row = row_by_ticker.get(ticker, {"ticker": ticker})
@@ -366,6 +402,15 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             continue
         records.append(asdict(fetch_record(ticker, symbol, now)))
     ok_records = [row for row in records if row.get("status") == "ok"]
+    if not args.tickers:
+        # Carry forward prior records (new fetch wins per ticker) so
+        # freshness-skipped tickers keep their evidence instead of the
+        # snapshot collapsing to only the newly fetched subset.
+        carried = supplemental_index(CURRENT_SNAPSHOT)
+        for row in records:
+            carried[str(row.get("ticker") or "").upper()] = row
+        records = [carried[key] for key in sorted(carried) if key in row_by_ticker or key in {str(row.get("ticker") or "").upper() for row in records}]
+        ok_records = [row for row in records if row.get("status") == "ok"]
     payload: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "generated_at_utc": now,
@@ -398,6 +443,14 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     payload["validation"] = validate_payload(payload)
     if payload["validation"]["status"] != "ok":
         payload["status"] = "error"
+    uncovered_count = sum(1 for ticker in row_by_ticker if technical.get(ticker, {}).get("close") in (None, ""))
+    payload_warnings = list(payload.get("warnings") or [])
+    if not tickers and uncovered_count and not args.tickers:
+        payload_warnings.append(f"supplemental_requested_zero_tickers_despite_{uncovered_count}_uncovered")
+    if payload_warnings:
+        payload["warnings"] = payload_warnings
+        if payload.get("status") == "ok":
+            payload["status"] = "warning"
     return payload
 
 

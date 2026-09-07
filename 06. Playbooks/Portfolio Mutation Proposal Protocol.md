@@ -1,3 +1,16 @@
+# Retired — Portfolio Mutation Proposal Protocol
+
+Status: retired on 2026-08-29.
+
+The alerts-and-recommendations OS does not own, propose, validate, or apply portfolio construction or portfolio-state changes. No workflow may maintain sleeves, holdings, positions, allocations, weights, sizing, tranches, cash, rebalancing, simulated positions, or execution entitlement.
+
+Active finance work routes to the alert canon in `03. Alerts and Recommendations/` and stops at evidence-backed, non-executing recommendations. Historical validators and audit records may be retained only as deny-only evidence; they grant no apply authority.
+
+<details>
+<summary>Retired historical source — non-operative</summary>
+
+The preserved protocol below is audit history. Every mutation scope, proposal route, apply gate, standing approval, and owner-permission statement in it is revoked.
+
 # Portfolio Mutation Proposal Protocol
 
 Purpose: let Veritas prepare and, when a scoped workflow is explicitly approved, apply guarded portfolio note/model changes without silently crossing into trade/account action or inferred owner approval.
@@ -168,3 +181,5 @@ Generated packets are still proposals, not applied changes.
 Trade/account execution remains separately blocked.
 
 The default output is a proposal/report/validator surface, not an applied change.
+
+</details>

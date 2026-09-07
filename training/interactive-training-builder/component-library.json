@@ -1,6 +1,6 @@
 {
   "schema": "veritas.interactive_training_component_library.v1",
-  "generated_at_utc": "2026-07-04T14:40:03Z",
+  "generated_at_utc": "2026-09-07T04:48:28Z",
   "status": "ok",
   "purpose": "Reusable component contract for local interactive training modules.",
   "components": [
@@ -180,6 +180,43 @@
         "overflow 0"
       ],
       "reuse_notes": "Run after each new module or runtime change."
+    },
+    {
+      "id": "screen_recording",
+      "label": "Screen Recording",
+      "purpose": "Play a local screen-capture clip inside the module, or show $0 capture steps when no clip exists yet.",
+      "required_fields": [
+        "id",
+        "type",
+        "title",
+        "prompt",
+        "capture_hint",
+        "xapi_object"
+      ],
+      "validation": [
+        "capture_hint at least 10 chars",
+        "video_src stays under recordings/ when present",
+        "missing clip is a placeholder warning, not an error"
+      ],
+      "reuse_notes": "Use for walkthroughs. Capture with Snipping Tool (Win+Shift+R) into training/interactive-training-builder/recordings/.",
+      "xapi_verbs": [
+        "answered",
+        "completed"
+      ]
+    },
+    {
+      "id": "local_capture_helper",
+      "label": "Local Capture Helper",
+      "purpose": "Inventory local recordings and print $0 Windows capture steps without any upload or LMS.",
+      "required_fields": [
+        "recordings manifest",
+        "recordings README"
+      ],
+      "validation": [
+        "external_upload_allowed false",
+        "lms_configured false"
+      ],
+      "reuse_notes": "Run scripts/interactive_training_screen_capture.py --write --validate before catalog builds."
     }
   ],
   "authority_boundary": {

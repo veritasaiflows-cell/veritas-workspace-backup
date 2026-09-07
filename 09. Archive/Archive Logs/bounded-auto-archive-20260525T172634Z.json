@@ -1,0 +1,18 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T17:26:34Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-producer-contract-archive-microbatch-2026-05-25.json",
+  "moves_performed": false,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 0,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; only explicit apply_allowed true suggestions with zero references and approved destination roots can move"
+}

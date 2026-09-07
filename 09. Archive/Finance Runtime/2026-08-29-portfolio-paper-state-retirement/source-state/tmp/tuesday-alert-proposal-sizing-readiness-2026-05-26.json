@@ -1,0 +1,280 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-25T02:50:02Z",
+  "status": "ok",
+  "purpose": "Tuesday alert/proposal/sizing readiness for Randall review and approval; no execution authority.",
+  "focus_tickers": [
+    "VRT",
+    "CME",
+    "PH",
+    "ITA",
+    "GE",
+    "NVDA"
+  ],
+  "source_artifacts": [
+    "tmp/active-entry-monitor-list-2026-05-24.json",
+    "tmp/tuesday-position-sizing-readiness-2026-05-26.json",
+    "tmp/intraday-alerts/runtime-handoff-status.json",
+    "tmp/intraday-alerts/delivery-router-status.json",
+    "tmp/capital-deployment-recommendation-validation.json"
+  ],
+  "runtime_state": {
+    "wf68_runtime_status": "ok",
+    "wf68_handoff_status": "NO_REPLY",
+    "wf68_authority_clean": true,
+    "delivery_router_status": "NO_REPLY",
+    "delivery_router_action_needed": false,
+    "capital_validator_status": "ok",
+    "capital_validator_summary": {
+      "packets_checked": 7,
+      "critical": 0,
+      "warning": 0
+    }
+  },
+  "alert_rules": [
+    "Send a main-session alert only for fresh Tuesday in-band proposal-ready candidates, blocked/critical validation, or execution-packet-ready WF67 package state.",
+    "Grouped no-chase/monitor alerts should stay digest-only unless Randall asks.",
+    "Every alert must include ticker, price, band, stop, starter sizing, blocker, and exact approval needed.",
+    "No live or paper execution unless Randall approves exact WF67 scoped order terms and guard path is clean."
+  ],
+  "items": [
+    {
+      "ticker": "VRT",
+      "state": "PROMOTION REVIEW",
+      "close_reference": 327.46,
+      "band_low": 286.6,
+      "band_high": 338.58,
+      "stop": "262.98",
+      "trigger": "PROPOSAL_READY_IF_FRESH_TUESDAY_QUOTE_STAYS_IN_BAND",
+      "proposal_behavior": "send review alert with starter sizing and ask Randall whether to generate exact WF67 paper request artifact",
+      "starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "wf67_before_order": [
+        "exact owner order terms or explicit approval of generated request",
+        "WF67 request artifact",
+        "dry run passes",
+        "paper/live isolation guard validates",
+        "fresh short-lived kill switch",
+        "main-session notification"
+      ],
+      "authority": {
+        "review_alert_allowed": true,
+        "proposal_generation_allowed": true,
+        "paper_request_generation_allowed_after_exact_owner_terms": true,
+        "paper_order_execution_allowed": false,
+        "live_trade_allowed": false,
+        "owner_approval_inferred": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false
+      }
+    },
+    {
+      "ticker": "CME",
+      "state": "PROMOTION REVIEW",
+      "close_reference": 291.23,
+      "band_low": 287.74,
+      "band_high": 298.86,
+      "stop": "276.68",
+      "trigger": "PROPOSAL_READY_IF_FRESH_TUESDAY_QUOTE_STAYS_IN_BAND",
+      "proposal_behavior": "send review alert with starter sizing and ask Randall whether to generate exact WF67 paper request artifact",
+      "starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "wf67_before_order": [
+        "exact owner order terms or explicit approval of generated request",
+        "WF67 request artifact",
+        "dry run passes",
+        "paper/live isolation guard validates",
+        "fresh short-lived kill switch",
+        "main-session notification"
+      ],
+      "authority": {
+        "review_alert_allowed": true,
+        "proposal_generation_allowed": true,
+        "paper_request_generation_allowed_after_exact_owner_terms": true,
+        "paper_order_execution_allowed": false,
+        "live_trade_allowed": false,
+        "owner_approval_inferred": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false
+      }
+    },
+    {
+      "ticker": "PH",
+      "state": "PROMOTION REVIEW",
+      "close_reference": 866.96,
+      "band_low": 851.36,
+      "band_high": 908.98,
+      "stop": "819.35",
+      "trigger": "PROPOSAL_READY_IF_FRESH_TUESDAY_QUOTE_STAYS_IN_BAND",
+      "proposal_behavior": "send review alert with starter sizing and ask Randall whether to generate exact WF67 paper request artifact",
+      "starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "wf67_before_order": [
+        "exact owner order terms or explicit approval of generated request",
+        "WF67 request artifact",
+        "dry run passes",
+        "paper/live isolation guard validates",
+        "fresh short-lived kill switch",
+        "main-session notification"
+      ],
+      "authority": {
+        "review_alert_allowed": true,
+        "proposal_generation_allowed": true,
+        "paper_request_generation_allowed_after_exact_owner_terms": true,
+        "paper_order_execution_allowed": false,
+        "live_trade_allowed": false,
+        "owner_approval_inferred": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false
+      }
+    },
+    {
+      "ticker": "ITA",
+      "state": "PROMOTION REVIEW",
+      "close_reference": 225.37,
+      "band_low": 212.15,
+      "band_high": 223.44,
+      "stop": "205.88",
+      "trigger": "NO_CHASE_ALERT_ONLY",
+      "proposal_behavior": "alert only if pullback re-enters band or owner asks for band review",
+      "starter_notional": null,
+      "target_notional": null,
+      "wf67_before_order": [
+        "exact owner order terms or explicit approval of generated request",
+        "WF67 request artifact",
+        "dry run passes",
+        "paper/live isolation guard validates",
+        "fresh short-lived kill switch",
+        "main-session notification"
+      ],
+      "authority": {
+        "review_alert_allowed": true,
+        "proposal_generation_allowed": true,
+        "paper_request_generation_allowed_after_exact_owner_terms": true,
+        "paper_order_execution_allowed": false,
+        "live_trade_allowed": false,
+        "owner_approval_inferred": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false
+      }
+    },
+    {
+      "ticker": "GE",
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 302.84,
+      "band_low": 299.03,
+      "band_high": 311.84,
+      "stop": "288.78",
+      "trigger": "REVIEW_ONLY_PROMOTION_DECISION_REQUIRED",
+      "proposal_behavior": "send review-only alert; no paper request until promotion/sizing decision",
+      "starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "wf67_before_order": [
+        "exact owner order terms or explicit approval of generated request",
+        "WF67 request artifact",
+        "dry run passes",
+        "paper/live isolation guard validates",
+        "fresh short-lived kill switch",
+        "main-session notification"
+      ],
+      "authority": {
+        "review_alert_allowed": true,
+        "proposal_generation_allowed": true,
+        "paper_request_generation_allowed_after_exact_owner_terms": true,
+        "paper_order_execution_allowed": false,
+        "live_trade_allowed": false,
+        "owner_approval_inferred": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false
+      }
+    },
+    {
+      "ticker": "NVDA",
+      "state": "PROMOTION REVIEW",
+      "close_reference": 215.33,
+      "band_low": 198.47,
+      "band_high": 216.66,
+      "stop": "187.90",
+      "trigger": "CAP_LIMITED_REVIEW_IF_FRESH_TUESDAY_QUOTE_STAYS_IN_BAND",
+      "proposal_behavior": "send red/amber review alert: tech cap/crowding requires explicit substitution or exception decision before any request artifact",
+      "starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "wf67_before_order": [
+        "exact owner order terms or explicit approval of generated request",
+        "WF67 request artifact",
+        "dry run passes",
+        "paper/live isolation guard validates",
+        "fresh short-lived kill switch",
+        "main-session notification"
+      ],
+      "authority": {
+        "review_alert_allowed": true,
+        "proposal_generation_allowed": true,
+        "paper_request_generation_allowed_after_exact_owner_terms": true,
+        "paper_order_execution_allowed": false,
+        "live_trade_allowed": false,
+        "owner_approval_inferred": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false
+      }
+    }
+  ],
+  "authority": {
+    "review_alert_allowed": true,
+    "proposal_generation_allowed": true,
+    "paper_request_generation_allowed_after_exact_owner_terms": true,
+    "paper_order_execution_allowed": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "sizing_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "next_owner_decision": "On Tuesday, choose among VRT/CME/PH/ITA/GE/NVDA after fresh quote/read; ETN remains the separate first ready-if-fresh candidate."
+}

@@ -63,6 +63,15 @@ TOKEN_CLOSEOUT_HARD_ENFORCEMENT_START_UTC = "2026-07-07T00:00:00Z"
 ATTRIBUTION_GRADE_ALL_LANES_ENFORCEMENT_START_UTC = "2026-08-09T00:00:00Z"
 EFFICIENCY_ENFORCEMENT_START_UTC = "2026-08-12T05:46:00Z"
 IDENTITY_METADATA_HARD_ENFORCEMENT_START_UTC = "2026-08-22T15:42:23Z"
+# The terminal ledger contains valid bounded outcome summaries from before the
+# append-only ``outcome_events`` list was durably materialized.  The last such
+# retained closeout is 2026-08-26T13:57:13Z.  Keep those rows visible without
+# inventing history; every event at or after this boundary must carry the list.
+OUTCOME_EVENT_HISTORY_HARD_ENFORCEMENT_START_UTC = "2026-08-26T13:57:14Z"
+# Proof files were not governed by an immutable-retention contract before the
+# Wave 1 identity cutover.  Missing older paths remain explicit audit debt;
+# newer completed lanes continue to fail closed.
+PROOF_ARTIFACT_EXISTENCE_HARD_ENFORCEMENT_START_UTC = IDENTITY_METADATA_HARD_ENFORCEMENT_START_UTC
 # New model work must have a deterministic source-to-lane join.  Older rows
 # remain visible for audit but are never silently upgraded into a savings
 # cohort by this change.
@@ -154,6 +163,172 @@ V2_CANONICAL_SOURCE_FIELDS = (
 ROUTE_MODEL_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._/-]{0,255}")
 ROUTE_THINKING_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,63}")
 ROUTE_PROVIDER_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,63}")
+ROOT_LINEAGE_ID_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}")
+SLICE_ID_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}")
+TECHNICAL_ACCEPTANCE_STATUSES = {"pending", "accepted", "rejected"}
+ACCOUNTING_STATUSES = {"pending", "credited", "blocked", "unavailable"}
+ADMIN_CLOSURE_STATUSES = {"open", "blocked", "closed"}
+ACTIVATION_STATUSES = {"blocked", "ready"}
+FOUR_STATE_DEFAULTS = {
+    "technical_acceptance_status": "pending",
+    "accounting_status": "pending",
+    "administrative_closure_status": "open",
+    "activation_status": "blocked",
+}
+
+
+def normalize_lineage_id(value: object, field: str) -> str:
+    text = str(value or "").strip()
+    if not text:
+        raise SystemExit(f"{field} must be a non-empty identifier")
+    if not ROOT_LINEAGE_ID_PATTERN.fullmatch(text):
+        raise SystemExit(f"invalid {field}")
+    return text
+
+
+def normalize_slice_id(value: object) -> str:
+    text = str(value or "").strip()
+    if not text:
+        raise SystemExit("objective_slice_id must be a non-empty identifier")
+    if not SLICE_ID_PATTERN.fullmatch(text):
+        raise SystemExit("invalid objective_slice_id")
+    return text
+
+
+def normalize_four_state(value: object, allowed: set[str], field: str, default: str) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return default
+    if text not in allowed:
+        raise SystemExit(f"invalid {field}")
+    return text
+
+
+def normalize_root_lineage_fields(runtime: dict[str, Any]) -> None:
+    has_root = str(runtime.get("root_objective_id") or "").strip() != ""
+    has_slice = str(runtime.get("objective_slice_id") or "").strip() != ""
+    has_pred = str(runtime.get("predecessor_lane_id") or "").strip() != ""
+    has_cum = runtime.get("cumulative_attempt_number") not in (None, "") or runtime.get("cumulative_retry_count") not in (None, "")
+    has_accepted = str(runtime.get("accepted_slice_id") or "").strip() != ""
+    if has_root:
+        runtime["root_objective_id"] = normalize_lineage_id(runtime.get("root_objective_id"), "root_objective_id")
+    if has_slice:
+        runtime["objective_slice_id"] = normalize_slice_id(runtime.get("objective_slice_id"))
+    if has_root != has_slice:
+        raise SystemExit("root_objective_id and objective_slice_id must be supplied together")
+    if has_pred and not has_root:
+        raise SystemExit("predecessor_lane_id requires root_objective_id and objective_slice_id")
+    if has_cum and not has_root:
+        raise SystemExit("cumulative counters require root_objective_id and objective_slice_id")
+    if has_root and has_pred:
+        runtime["predecessor_lane_id"] = normalize_lineage_id(runtime.get("predecessor_lane_id"), "predecessor_lane_id")
+    for field, allowed in (
+        ("technical_acceptance_status", TECHNICAL_ACCEPTANCE_STATUSES),
+        ("accounting_status", ACCOUNTING_STATUSES),
+        ("administrative_closure_status", ADMIN_CLOSURE_STATUSES),
+        ("activation_status", ACTIVATION_STATUSES),
+    ):
+        runtime[field] = normalize_four_state(runtime.get(field), allowed, field, FOUR_STATE_DEFAULTS[field])
+    for field, minimum in (("cumulative_attempt_number", 1), ("cumulative_retry_count", 0)):
+        if runtime.get(field) not in (None, ""):
+            parsed = strict_attempt_int(runtime.get(field), minimum=minimum)
+            if parsed is None:
+                raise SystemExit(f"{field} must be an integer greater than or equal to {minimum}")
+            runtime[field] = parsed
+    if has_accepted:
+        runtime["accepted_slice_id"] = normalize_slice_id(runtime.get("accepted_slice_id"))
+        if runtime.get("technical_acceptance_status") != "accepted":
+            raise SystemExit("accepted_slice_id is present only when technical_acceptance_status is accepted")
+    if runtime.get("cumulative_attempt_number") not in (None, "") and runtime.get("cumulative_retry_count") not in (None, ""):
+        if int(runtime["cumulative_attempt_number"]) != int(runtime["cumulative_retry_count"]) + 1:
+            raise SystemExit("cumulative_attempt_number must equal cumulative_retry_count + 1")
+
+
+def root_slice_key(runtime: dict[str, Any]) -> tuple[str, str] | None:
+    root = str(runtime.get("root_objective_id") or "").strip()
+    sl = str(runtime.get("objective_slice_id") or "").strip()
+    if root and sl:
+        return (root, sl)
+    return None
+
+
+def rework_group_key(runtime: dict[str, Any]) -> tuple[str, str]:
+    key = root_slice_key(runtime)
+    if key is not None:
+        return (f"root:{key[0]}", f"slice:{key[1]}")
+    return ("parent", str(runtime.get("parent_job_id") or ""))
+
+
+def find_lane_by_id(register: dict[str, Any], lane_id: str) -> dict[str, Any] | None:
+    for item in as_list(register.get("lanes")):
+        if isinstance(item, dict) and str(item.get("lane_id") or "") == lane_id:
+            return item
+    return None
+
+
+def validate_root_lineage(register: dict[str, Any], lane: dict[str, Any]) -> None:
+    runtime = as_dict(lane.get("runtime"))
+    root = str(runtime.get("root_objective_id") or "").strip()
+    sl = str(runtime.get("objective_slice_id") or "").strip()
+    if not root and not sl:
+        return
+    if bool(root) != bool(sl):
+        raise SystemExit("root_objective_id and objective_slice_id must be supplied together")
+    lane_id = str(lane.get("lane_id") or "")
+    predecessor = str(runtime.get("predecessor_lane_id") or "").strip()
+    group = [
+        item for item in as_list(register.get("lanes"))
+        if isinstance(item, dict)
+        and str(item.get("lane_id") or "") != lane_id
+        and str(as_dict(item.get("runtime")).get("root_objective_id") or "").strip() == root
+        and str(as_dict(item.get("runtime")).get("objective_slice_id") or "").strip() == sl
+    ]
+    if predecessor:
+        pred = find_lane_by_id(register, predecessor)
+        if pred is None:
+            raise SystemExit("predecessor_lane_id not found in register")
+        pred_rt = as_dict(pred.get("runtime"))
+        if str(pred_rt.get("root_objective_id") or "").strip() != root or str(pred_rt.get("objective_slice_id") or "").strip() != sl:
+            raise SystemExit("cross-root predecessor rejected")
+        pred_attempt = pred_rt.get("cumulative_attempt_number")
+        pred_retry = pred_rt.get("cumulative_retry_count")
+        try:
+            base_attempt = int(pred_attempt) if pred_attempt not in (None, "") else 1
+            base_retry = int(pred_retry) if pred_retry not in (None, "") else 0
+        except (TypeError, ValueError):
+            raise SystemExit("predecessor cumulative counters are not integers")
+        expected_attempt = base_attempt + 1
+        expected_retry = base_retry + 1
+        if runtime.get("cumulative_attempt_number") in (None, ""):
+            runtime["cumulative_attempt_number"] = expected_attempt
+        elif int(runtime["cumulative_attempt_number"]) != expected_attempt:
+            raise SystemExit("non-monotonic cumulative_attempt_number")
+        if runtime.get("cumulative_retry_count") in (None, ""):
+            runtime["cumulative_retry_count"] = expected_retry
+        elif int(runtime["cumulative_retry_count"]) != expected_retry:
+            raise SystemExit("non-monotonic cumulative_retry_count")
+        lane["runtime"] = runtime
+        return
+    if group:
+        raise SystemExit("missing predecessor_lane_id for successor slice attempt")
+    if runtime.get("cumulative_attempt_number") in (None, ""):
+        runtime["cumulative_attempt_number"] = 1
+    elif int(runtime["cumulative_attempt_number"]) != 1:
+        raise SystemExit("attempted cumulative reset rejected")
+    if runtime.get("cumulative_retry_count") in (None, ""):
+        runtime["cumulative_retry_count"] = 0
+    elif int(runtime["cumulative_retry_count"]) != 0:
+        raise SystemExit("attempted cumulative reset rejected")
+    lane["runtime"] = runtime
+
+
+def is_release_blocked(runtime: dict[str, Any]) -> bool:
+    return not (
+        str(runtime.get("technical_acceptance_status") or "pending") == "accepted"
+        and str(runtime.get("accounting_status") or "pending") == "credited"
+        and str(runtime.get("administrative_closure_status") or "open") == "closed"
+        and str(runtime.get("activation_status") or "blocked") == "ready"
+    )
 
 
 def configured_openclaw_runtime_root() -> Path:
@@ -856,6 +1031,88 @@ def is_provably_pre_identity_enforcement_terminal(lane: dict[str, Any]) -> bool:
     )
 
 
+def is_provably_pre_outcome_event_history_enforcement_terminal(
+    lane: dict[str, Any], runtime: dict[str, Any]
+) -> bool:
+    """Classify only terminal rows whose retained event predates list enforcement."""
+    event_time = parse_outcome_utc(runtime.get("outcome_recorded_at_utc"))
+    start = parse_utc(OUTCOME_EVENT_HISTORY_HARD_ENFORCEMENT_START_UTC)
+    return bool(
+        lane.get("status") in TERMINAL_STATUSES
+        and event_time is not None
+        and start is not None
+        and event_time < start
+    )
+
+
+HISTORICAL_TERMINAL_SESSION_INDEX_RETENTION_REASON = "dispatch_binding_session_index_unavailable"
+
+
+def is_historical_terminal_session_index_retention_gap(
+    lane: dict[str, Any],
+    runtime: dict[str, Any],
+    credit: dict[str, Any],
+) -> bool:
+    """Classify one aged-out terminal canary as retention debt, not new failure.
+
+    Event-time credit is immutable historical evidence; the live session-index
+    row has aged out, so current source re-verification and accounting credit
+    are unavailable by design.  Release and current credit remain blocked.
+    ``usage_credit_assessment()`` is never altered by this classification.
+
+    Every near miss returns False and stays critical: post-cutoff event time,
+    an extra or different current reason, receipt/binding/source mismatch,
+    current accounting credited, release-ready state, missing Main acceptance,
+    a non-pass validator, unverified closure, a present ``outcome_events``
+    list, or a non-complete status.
+    """
+    if lane.get("status") != "complete":
+        return False
+    if not is_provably_pre_outcome_event_history_enforcement_terminal(lane, runtime):
+        return False
+    # Historical absence only: an empty modern list must not qualify.
+    if "outcome_events" in lane:
+        return False
+    if runtime.get("token_attribution_source") != "openclaw_isolated_session_store_v2":
+        return False
+    if runtime.get("usage_credit_status") != "creditable" or runtime.get("usage_creditable") is not True:
+        return False
+    if runtime.get("source_reverification_status") != "verified":
+        return False
+    if runtime.get("main_acceptance_status") != "accepted":
+        return False
+    if runtime.get("outcome_status") != "accepted":
+        return False
+    if runtime.get("validator_result") != "pass":
+        return False
+    if runtime.get("closure_durability") != "verified":
+        return False
+    if credit.get("required") is not True:
+        return False
+    if credit.get("usage_creditable") is not False:
+        return False
+    if list(credit.get("reasons") or []) != [HISTORICAL_TERMINAL_SESSION_INDEX_RETENTION_REASON]:
+        return False
+    if runtime.get("accounting_status") == "credited":
+        return False
+    # NOTE: ``is_release_blocked`` takes the lane runtime mapping, not the lane.
+    if not is_release_blocked(runtime):
+        return False
+    return True
+
+
+def is_provably_pre_proof_artifact_enforcement_complete(lane: dict[str, Any]) -> bool:
+    """Classify missing paths only for completed rows created before retention enforcement."""
+    created = parse_utc(lane.get("created_at_utc"))
+    start = parse_utc(PROOF_ARTIFACT_EXISTENCE_HARD_ENFORCEMENT_START_UTC)
+    return bool(
+        lane.get("status") == "complete"
+        and created is not None
+        and start is not None
+        and created < start
+    )
+
+
 def resource_budget_defaults(runtime: dict[str, Any]) -> dict[str, int]:
     phase = str(runtime.get("phase") or runtime.get("task_shape") or "default").strip().lower()
     if phase in IMPLEMENTATION_PHASES:
@@ -977,7 +1234,15 @@ def enforce_usage_creditability(
     lane["status"] = "blocked"
     runtime["incident_code"] = "telemetry_attribution_unavailable"
     runtime["outcome_status"] = "telemetry_blocked"
-    runtime["main_acceptance_status"] = "telemetry_blocked"
+    if str(runtime.get("technical_acceptance_status") or "").strip() not in TECHNICAL_ACCEPTANCE_STATUSES:
+        runtime["technical_acceptance_status"] = "pending"
+    if str(runtime.get("main_acceptance_status") or "").strip() not in ("accepted", "telemetry_blocked"):
+        runtime["main_acceptance_status"] = "telemetry_blocked"
+    runtime["accounting_status"] = "blocked"
+    runtime.setdefault("accounting_detail", "provider_usage_unavailable")
+    runtime["administrative_closure_status"] = "blocked"
+    runtime["activation_status"] = "blocked"
+    runtime["release_blocked"] = True
     lane["runtime"] = runtime
     stamp_status_times(lane, "blocked", previous_status)
     record_outcome_transition(lane, event_kind="incident", previous_status=previous_status, state_changed=True)
@@ -986,15 +1251,18 @@ def enforce_usage_creditability(
 
 def enforce_rework_policy(register: dict[str, Any], lane: dict[str, Any]) -> None:
     runtime = as_dict(lane.get("runtime"))
+    group = rework_group_key(runtime)
     parent_job_id = str(runtime.get("parent_job_id") or "")
     phase = str(runtime.get("phase") or "").strip().lower()
-    if not parent_job_id or phase not in {"repair", "qa"}:
+    if group[0] == "parent" and not parent_job_id:
+        return
+    if phase not in {"repair", "qa"}:
         return
     siblings = [
         item for item in as_list(register.get("lanes"))
         if isinstance(item, dict)
         and item.get("lane_id") != lane.get("lane_id")
-        and str(as_dict(item.get("runtime")).get("parent_job_id") or "") == parent_job_id
+        and rework_group_key(as_dict(item.get("runtime"))) == group
     ]
     prior_repairs = [item for item in siblings if str(as_dict(item.get("runtime")).get("phase") or "").lower() == "repair"]
     prior_qa_retries = [
@@ -2070,6 +2338,16 @@ def apply_runtime_metadata(
         "outcome_status",
         "main_acceptance_status",
         "main_acceptance_evidence",
+        "root_objective_id",
+        "objective_slice_id",
+        "predecessor_lane_id",
+        "cumulative_attempt_number",
+        "cumulative_retry_count",
+        "accepted_slice_id",
+        "technical_acceptance_status",
+        "accounting_status",
+        "administrative_closure_status",
+        "activation_status",
         "validator_result",
         "closure_durability",
         "estimated_cost_usd",
@@ -2145,6 +2423,7 @@ def apply_runtime_metadata(
         runtime["session_ref_hash"] = runtime.get("session_id_hash") or runtime.get("session_key_hash")
     runtime = {key: value for key, value in runtime.items() if value is not None}
     normalize_attempt_metadata(runtime)
+    normalize_root_lineage_fields(runtime)
     if active_implementation_attempt_outcome_baseline_applies(lane, runtime):
         runtime.setdefault("incident_code", "")
         runtime.setdefault("incident_count", 0)
@@ -2179,6 +2458,14 @@ def apply_runtime_metadata(
     # overwrite the canonical source fields imported from a protected bind.
     runtime.update(canonical_v2_source_fields)
     bind_attempt_correlation(lane, runtime)
+    # Model imports and the v2 canonical binding above may populate model_path
+    # after the pre-import baseline. Initialize the clean outcome baseline here,
+    # idempotently, so imported active implementation attempts start clean
+    # without overwriting any existing incident/history state.
+    if active_implementation_attempt_outcome_baseline_applies(lane, runtime):
+        runtime.setdefault("incident_code", "")
+        runtime.setdefault("incident_count", 0)
+        lane.setdefault("outcome_events", [])
     source_reverified_this_action = bool(
         getattr(args, "import_isolated_session_usage", False)
         or getattr(args, "import_codex_native_rollout", False)
@@ -2329,6 +2616,7 @@ def apply_lease(
             datetime.now(timezone.utc) + timedelta(hours=float(args.lease_hours))
         ).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     apply_runtime_metadata(lane, args, persist_usage_receipt=persist_usage_receipt)
+    validate_root_lineage(register, lane)
     enforce_rework_policy(register, lane)
     enforce_resource_budget(lane, previous_status)
     if args.allowed_write:
@@ -2361,6 +2649,7 @@ def apply_complete(register: dict[str, Any], args: argparse.Namespace) -> dict[s
     lane["status"] = "complete"
     stamp_status_times(lane, "complete", previous_status)
     source_reverified_this_action = apply_runtime_metadata(lane, args)
+    validate_root_lineage(register, lane)
     declare_usage_receipt_write(lane, Path(args.register), source_reverified_this_action)
     budget_blocked = enforce_resource_budget(lane, previous_status)
     telemetry_blocked = False if budget_blocked else enforce_usage_creditability(
@@ -2433,6 +2722,7 @@ def apply_status(
         args,
         persist_usage_receipt=persist_usage_receipt,
     )
+    validate_root_lineage(register, lane)
     declare_usage_receipt_write(lane, Path(args.register), source_reverified_this_action)
     budget_blocked = enforce_resource_budget(lane, previous_status)
     telemetry_blocked = False
@@ -2642,6 +2932,9 @@ ARCHIVED_PROOF_EXACT_RELOCATIONS = {
     "tmp/legacy-42-lifecycle-gate-packet.json": (
         "09. Archive/WF78 Legacy 42 Full Archive/2026-06-24/tmp/legacy-42-lifecycle-gate-packet.json"
     ),
+    "tmp/finance-vector-retrieval-summary.json": (
+        "09. Archive/Finance Runtime/2026-08-29-portfolio-paper-state-retirement/source-state/tmp/finance-vector-retrieval-summary.json"
+    ),
 }
 
 
@@ -2737,11 +3030,15 @@ def validate_register(
     attribution_grade_closeout_gaps: list[dict[str, Any]] = []
     attribution_grade_pricing_unavailable: list[dict[str, Any]] = []
     telemetry_credit_gaps: list[dict[str, Any]] = []
+    historical_terminal_session_index_retention_gaps: list[dict[str, Any]] = []
     missing_proof: list[dict[str, str]] = []
+    historical_missing_proof: list[dict[str, str]] = []
     invalid_attempt_metadata: list[dict[str, Any]] = []
     legacy_attempt_metadata: list[dict[str, Any]] = []
     invalid_outcome_event_metadata: list[dict[str, Any]] = []
+    historical_outcome_event_history_gaps: list[dict[str, Any]] = []
     terminal_route_conformance_gaps: list[dict[str, Any]] = []
+    terminal_nonaccepted_route_conformance_incidents: list[dict[str, Any]] = []
     native_backend_invariant_gaps: list[dict[str, Any]] = []
     efficiency_identity_gaps: list[dict[str, Any]] = []
     historical_efficiency_identity_gaps: list[dict[str, Any]] = []
@@ -2894,7 +3191,19 @@ def validate_register(
                 elif event_kind:
                     event_errors.append("outcome_event_history_required")
         if event_errors:
-            invalid_outcome_event_metadata.append({"lane_id": lid, "errors": sorted(set(event_errors))})
+            normalized_event_errors = sorted(set(event_errors))
+            gap = {"lane_id": lid, "errors": normalized_event_errors}
+            if (
+                normalized_event_errors == ["outcome_events_list_required"]
+                and is_provably_pre_outcome_event_history_enforcement_terminal(lane, lane_runtime)
+            ):
+                historical_outcome_event_history_gaps.append({
+                    **gap,
+                    "classification": "historical_outcome_event_history_unavailable_not_backfilled",
+                    "outcome_recorded_at_utc": lane_runtime.get("outcome_recorded_at_utc"),
+                })
+            else:
+                invalid_outcome_event_metadata.append(gap)
         if status in TERMINAL_STATUSES and lane_runtime.get("token_attribution_source") == "codex_native_rollout_jsonl":
             expected_model = lane_runtime.get("expected_model_path")
             expected_thinking = lane_runtime.get("expected_thinking")
@@ -2913,7 +3222,16 @@ def validate_register(
                 if expected_backend != actual_backend:
                     route_errors.append("execution_backend_mismatch")
             if route_errors:
-                terminal_route_conformance_gaps.append({"lane_id": lid, "errors": route_errors})
+                gap = {"lane_id": lid, "errors": route_errors}
+                if status == "complete":
+                    terminal_route_conformance_gaps.append(gap)
+                else:
+                    terminal_nonaccepted_route_conformance_incidents.append({
+                        **gap,
+                        "status": status,
+                        "incident_code": lane_runtime.get("incident_code"),
+                        "classification": "terminal_nonaccepted_route_mismatch_incident",
+                    })
         writes = [normalize_path(str(item)) for item in as_list(lane.get("allowed_writes")) if str(item).strip()]
         if status in ACTIVE_STATUSES:
             if not lane.get("owner") or lane.get("owner") == "unassigned":
@@ -2976,13 +3294,23 @@ def validate_register(
                     codex_sessions_root=codex_sessions_root,
                 )
                 if credit.get("usage_creditable") is not True:
-                    telemetry_credit_gaps.append({
+                    gap = {
                         "lane_id": lid,
                         "model_path": runtime.get("model_path") or lane.get("model_path"),
                         "status": credit.get("status"),
                         "reasons": credit.get("reasons"),
                         "token_attribution_source": runtime.get("token_attribution_source"),
-                    })
+                    }
+                    if is_historical_terminal_session_index_retention_gap(lane, runtime, credit):
+                        historical_terminal_session_index_retention_gaps.append({
+                            **gap,
+                            "classification": "historical_terminal_session_index_retention_gap",
+                            "event_time_credit": "immutable_historical_evidence",
+                            "current_source_reverification": "unavailable",
+                            "current_accounting_credit": "unavailable",
+                        })
+                    else:
+                        telemetry_credit_gaps.append(gap)
                 if assessment.get("token_valid") is not True:
                     attribution_grade_closeout_gaps.append({
                         "lane_id": lid,
@@ -3016,14 +3344,37 @@ def validate_register(
             for proof in proofs:
                 for proof_path in proof_path_candidates(proof):
                     if not proof_path_exists(proof_path):
-                        missing_proof.append({"lane_id": lid, "proof": proof_path})
+                        gap = {"lane_id": lid, "proof": proof_path}
+                        if is_provably_pre_proof_artifact_enforcement_complete(lane):
+                            historical_missing_proof.append({
+                                **gap,
+                                "classification": "historical_proof_path_unavailable_not_retargeted",
+                            })
+                        else:
+                            missing_proof.append(gap)
 
     collisions = {path: owners for path, owners in active_write_owners.items() if len(owners) > 1}
     check("attempt_metadata_is_typed_derived_and_consistent", not invalid_attempt_metadata, invalid_attempt_metadata)
     check("legacy_numeric_string_attempt_metadata", True, legacy_attempt_metadata, "info")
     check("outcome_event_metadata_is_bounded_and_complete", not invalid_outcome_event_metadata, invalid_outcome_event_metadata)
+    check(
+        "historical_terminal_outcome_event_history_gaps_are_classified_not_backfilled",
+        not historical_outcome_event_history_gaps,
+        {
+            "hard_enforcement_start_utc": OUTCOME_EVENT_HISTORY_HARD_ENFORCEMENT_START_UTC,
+            "classification": "historical_outcome_event_history_unavailable_not_backfilled",
+            "gaps": historical_outcome_event_history_gaps,
+        },
+        "warning",
+    )
     check("native_rollout_provenance_requires_codex_native_subagent_backend", not native_backend_invariant_gaps, native_backend_invariant_gaps)
     check("terminal_codex_native_route_conforms_to_expected_route", not terminal_route_conformance_gaps, terminal_route_conformance_gaps)
+    check(
+        "terminal_nonaccepted_route_mismatch_incidents_are_classified",
+        not terminal_nonaccepted_route_conformance_incidents,
+        terminal_nonaccepted_route_conformance_incidents,
+        "warning",
+    )
     check("new_model_lanes_have_parent_phase_attempt_identity", not efficiency_identity_gaps, efficiency_identity_gaps)
     check(
         "historical_model_lane_identity_gaps_are_classified_not_backfilled",
@@ -3084,6 +3435,20 @@ def validate_register(
         },
     )
     check(
+        "historical_terminal_session_index_retention_gaps_are_classified_not_recredited",
+        not historical_terminal_session_index_retention_gaps,
+        {
+            "classification": "historical_terminal_session_index_retention_gap",
+            "detail": (
+                "Event-time credit is immutable historical evidence; current source "
+                "re-verification and accounting credit are unavailable, and release "
+                "and current credit remain blocked."
+            ),
+            "gaps": historical_terminal_session_index_retention_gaps,
+        },
+        "warning",
+    )
+    check(
         "new_model_driven_implementation_and_isolated_lanes_require_complete_reconciled_usage",
         not attribution_grade_closeout_gaps,
         {
@@ -3108,6 +3473,16 @@ def validate_register(
         "info",
     )
     check("proof_artifacts_exist", not missing_proof, missing_proof)
+    check(
+        "historical_missing_proof_artifacts_are_classified_not_retargeted",
+        not historical_missing_proof,
+        {
+            "hard_enforcement_start_utc": PROOF_ARTIFACT_EXISTENCE_HARD_ENFORCEMENT_START_UTC,
+            "classification": "historical_proof_path_unavailable_not_retargeted",
+            "gaps": historical_missing_proof,
+        },
+        "warning",
+    )
 
     errors = [item for item in checks if item["severity"] == "critical" and not item["ok"]]
     warnings = [item for item in checks if item["severity"] == "warning" and not item["ok"]]
@@ -3693,6 +4068,16 @@ def main() -> int:
     parser.add_argument("--outcome-status", default="", help="Implementation outcome classification.")
     parser.add_argument("--main-acceptance-status", default="", help="Main-session acceptance state.")
     parser.add_argument("--main-acceptance-evidence", default="", help="Path/label for Main acceptance evidence.")
+    parser.add_argument("--root-objective-id", default="", help="Persistent root objective identity for state lineage.")
+    parser.add_argument("--objective-slice-id", default="", help="Stable acceptance slice under the root.")
+    parser.add_argument("--predecessor-lane-id", default="", help="Exact predecessor lane id when a successor exists.")
+    parser.add_argument("--cumulative-attempt-number", type=positive_int_arg, default=None, help="Cumulative attempt across successor labels; derived when omitted.")
+    parser.add_argument("--cumulative-retry-count", type=nonnegative_int_arg, default=None, help="Cumulative retry across successor labels; derived when omitted.")
+    parser.add_argument("--accepted-slice-id", default="", help="Accepted slice id; present only when technically accepted.")
+    parser.add_argument("--technical-acceptance-status", default="", choices=("", *sorted(TECHNICAL_ACCEPTANCE_STATUSES)), help="Orthogonal technical acceptance state.")
+    parser.add_argument("--accounting-status", default="", choices=("", *sorted(ACCOUNTING_STATUSES)), help="Orthogonal accounting state.")
+    parser.add_argument("--administrative-closure-status", default="", choices=("", *sorted(ADMIN_CLOSURE_STATUSES)), help="Orthogonal administrative closure state.")
+    parser.add_argument("--activation-status", default="", choices=("", *sorted(ACTIVATION_STATUSES)), help="Orthogonal activation state; default remains blocked.")
     parser.add_argument("--validator-result", default="", choices=("", *VALIDATOR_RESULTS), help="Terminal validator disposition for the lane's acceptance commands (metadata-only).")
     parser.add_argument("--closure-durability", default="", choices=("", *CLOSURE_DURABILITY_STATES), help="Whether the closure was verified durable (stayed closed) or not yet (metadata-only).")
     parser.add_argument("--estimated-cost-usd", type=float, default=None, help="Optional closeout cost estimate when exposed; token_usage_ledger remains the canonical local estimate.")

@@ -1,0 +1,73 @@
+{
+  "approval_id": "xlb-nvda-vrt-paper-buy-20260701T1450Z",
+  "approval_status": "approved_exact_orders",
+  "approval_text": "Randall approved exact WF67 paper-only buy orders in Telegram message 5742: XLB buy limit/day notional $250 at limit $51.17; NVDA buy limit/day notional $150 at limit $196.38; VRT buy limit/day notional $200 at limit $320.11. Paper only; WF67 wrapper and fresh guard/kill switch required; no live trading approved.",
+  "approved_by": "Randall",
+  "approved_orders": [
+    {
+      "active_band_high": 51.68,
+      "active_band_low": 49.84,
+      "limit_price": 51.17,
+      "notional": 250.0,
+      "qty": null,
+      "rank": 1,
+      "side": "buy",
+      "stop": 48.81,
+      "symbol": "XLB",
+      "time_in_force": "day",
+      "type": "limit"
+    },
+    {
+      "active_band_high": 205.25,
+      "active_band_low": 185.14,
+      "limit_price": 196.38,
+      "notional": 150.0,
+      "qty": null,
+      "rank": 2,
+      "side": "buy",
+      "stop": 176.01,
+      "symbol": "NVDA",
+      "time_in_force": "day",
+      "type": "limit"
+    },
+    {
+      "active_band_high": 324.0,
+      "active_band_low": 301.67,
+      "limit_price": 320.11,
+      "notional": 200.0,
+      "qty": null,
+      "rank": 3,
+      "side": "buy",
+      "stop": 273.8,
+      "symbol": "VRT",
+      "time_in_force": "day",
+      "type": "limit"
+    }
+  ],
+  "artifact_type": "wf67_exact_order_owner_approval_bundle",
+  "authority_boundary": {
+    "account_settings_mutation_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "fresh_short_lived_kill_switch_required": true,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "live_submit_allowed": false,
+    "live_trade_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_only": true,
+    "portfolio_or_canon_mutation_allowed": false,
+    "post_submit_reconciliation_required": true,
+    "pre_submit_guard_validation_required": true,
+    "wf67_wrapper_required": true
+  },
+  "created_at_utc": "2026-07-01T14:54:47Z",
+  "schema_version": 1,
+  "source_context": {
+    "approval_received_at_local": "2026-07-01 07:48:19 MST",
+    "conversation": "Telegram direct conversation",
+    "message_id": "5742",
+    "reply_to_message_id": "5741"
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

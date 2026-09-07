@@ -1,138 +1,244 @@
 from __future__ import annotations
 
+import ast
+import json
+import subprocess
+import sys
+import tempfile
+import unittest
 from pathlib import Path
 
-import alpaca_paper_trade_executor as wf67
-import wf67_order_card_request_generator as gen
+
+SCRIPTS = Path(__file__).resolve().parent
+MODULES = (
+    SCRIPTS / "wf86_autotrader_readiness_packet.py",
+    SCRIPTS / "wf67_autonomous_paper_manager.py",
+)
+EXPECTED_PAYLOAD = {
+    "status": "blocked",
+    "reason": "retired_surface",
+    "retired": True,
+    "tombstone": True,
+    "network_allowed": False,
+    "filesystem_mutation_allowed": False,
+    "paper_authority": False,
+    "order_authority": False,
+    "account_authority": False,
+}
+LEGACY_FLAGS = (
+    "--policy",
+    "--eligibility",
+    "--ledger",
+    "--wf67-guard",
+    "--wf67-manager",
+    "--pilot-approval",
+    "--out",
+    "--guard-out",
+    "--write",
+    "--validate",
+    "--refresh-requests",
+    "--target-session-date",
+    "--promotion-gate",
+    "--paper-positions",
+    "--packet-index",
+    "--output",
+    "--validation-output",
+)
 
 
-POLICY = "tmp/paper-autotrader/policy.json"
+def call_name(node: ast.Call) -> str:
+    current: ast.AST = node.func
+    pieces: list[str] = []
+    while isinstance(current, ast.Attribute):
+        pieces.append(current.attr)
+        current = current.value
+    if isinstance(current, ast.Name):
+        pieces.append(current.id)
+    return ".".join(reversed(pieces))
 
 
-def base_request(max_notional: float = 5000.0) -> dict:
-    return {
-        "schema_version": 1,
-        "workflow": "WF67 - Alpaca Paper Execution Guardrail",
-        "artifact_type": "wf67_paper_trade_request",
-        "request_id": "wf67-wf86-cap-bridge-test",
-        "created_at_utc": "2026-06-11T17:00:00Z",
-        "authority": {
-            "paper_only": True,
-            "paper_submit_allowed": True,
-            "paper_cancel_allowed": True,
-            "live_submit_allowed": False,
-            "live_cancel_allowed": False,
-            "live_endpoint_forbidden": True,
-            "money_movement_allowed": False,
-            "account_settings_mutation_allowed": False,
-            "no_inferred_approval": True,
-        },
-        "order": {
-            "symbol": "VRT",
-            "side": "buy",
-            "type": "limit",
-            "time_in_force": "day",
-            "limit_price": 290.0,
-            "qty": None,
-            "notional": 1000.0,
-        },
-        "risk_check": {
-            "status": "ok",
-            "estimated_notional_usd": 1000.0,
-            "max_loss_usd": 1000.0,
-            "max_notional_usd": max_notional,
-            "position_size_reviewed": True,
-            "pilot_qty_cap": 1,
-            "pilot_notional_cap_usd": max_notional,
-            "full_scope_artifact": POLICY,
-        },
-        "source": {
-            "scoped_paper_trade_or_pilot": True,
-            "owner_or_pilot_scope": "WF86 cap bridge validation only; no execution approval.",
-            "recommendation_source": "test",
-            "market_order_owner_approved": False,
-            "exact_order_owner_approval_status": "pending_exact_randall_approval",
-        },
-        "audit": {
-            "secret_material_present": False,
-            "raw_response_persistence_allowed": False,
-            "redaction_required": True,
-            "paper_endpoint": "https://paper-api.alpaca.markets",
-            "live_endpoint_forbidden": "https://api.alpaca.markets",
-        },
-    }
+def assignment_literal(tree: ast.Module, name: str) -> object:
+    for node in tree.body:
+        if (
+            isinstance(node, ast.Assign)
+            and len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)
+            and node.targets[0].id == name
+        ):
+            return ast.literal_eval(node.value)
+    raise AssertionError(f"missing literal assignment: {name}")
 
 
-def expect_blocked(request: dict, text: str) -> None:
-    try:
-        wf67.validate_trade_request(request)
-    except wf67.BlockedRun as exc:
-        assert text in str(exc), str(exc)
-        return
-    raise AssertionError(f"expected BlockedRun containing {text}")
+def tree_state(root: Path) -> list[tuple[str, bool, bytes | None]]:
+    return [
+        (path.relative_to(root).as_posix(), path.is_dir(), None if path.is_dir() else path.read_bytes())
+        for path in sorted(root.rglob("*"))
+    ]
 
 
-def test_oversize_request_requires_full_scope_artifact() -> None:
-    request = base_request()
-    request["risk_check"].pop("full_scope_artifact")
-    request["risk_check"]["pilot_notional_cap_usd"] = 500.0
-    expect_blocked(request, "request_notional_exceeds_pilot_cap")
+class Wf67Wf86RetiredBridgeTests(unittest.TestCase):
+    def test_sources_are_minimal_fail_closed_tombstones(self) -> None:
+        for module in MODULES:
+            with self.subTest(module=module.name):
+                source = module.read_text(encoding="utf-8")
+                lowered = source.lower()
+                tree = ast.parse(source, filename=str(module))
 
+                imports: list[tuple[str, tuple[str, ...]]] = []
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.Import):
+                        imports.extend((alias.name, ()) for alias in node.names)
+                    elif isinstance(node, ast.ImportFrom):
+                        imports.append((node.module or "", tuple(alias.name for alias in node.names)))
+                self.assertEqual(imports, [("__future__", ("annotations",)), ("json", ())])
 
-def test_wf86_policy_allows_non_executing_5000_request_validation() -> None:
-    request = base_request()
-    assert wf67.validate_trade_request(request) == "ok"
-    try:
-        wf67.validate_exact_order_owner_approval_for_execute(request)
-    except wf67.BlockedRun as exc:
-        assert "exact_order_owner_approval_missing_for_execute" in str(exc)
-    else:
-        raise AssertionError("cap bridge must not bypass exact owner approval")
+                functions = [
+                    node
+                    for node in ast.walk(tree)
+                    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+                ]
+                self.assertEqual([node.name for node in functions], ["main"])
+                main = functions[0]
+                self.assertEqual([argument.arg for argument in main.args.args], ["_argv"])
+                self.assertEqual(len(main.args.defaults), 1)
+                self.assertIsNone(ast.literal_eval(main.args.defaults[0]))
+                self.assertFalse(
+                    any(
+                        isinstance(node, ast.Name)
+                        and node.id == "_argv"
+                        and isinstance(node.ctx, ast.Load)
+                        for node in ast.walk(main)
+                    ),
+                    "main must ignore every supplied argv shape",
+                )
 
+                calls = {call_name(node) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+                self.assertEqual(calls, {"print", "json.dumps", "SystemExit", "main"})
+                self.assertEqual(assignment_literal(tree, "EXIT_BLOCKED"), 2)
+                self.assertEqual(assignment_literal(tree, "BLOCKED_PAYLOAD"), EXPECTED_PAYLOAD)
+                self.assertIn("retired", lowered)
+                self.assertIn("tombstone", lowered)
 
-def test_request_generator_carries_full_scope_cap() -> None:
-    card = {
-        "schema_version": 1,
-        "artifact_type": "main_session_wf67_order_decision_card",
-        "request_id": "wf67-wf86-card-cap-bridge-test",
-        "authority": {
-            "main_session_recommendation_allowed": True,
-            "wf67_request_artifact_generation_allowed": True,
-            "paper_only": True,
-            "paper_order_execution_allowed_by_card": False,
-            "live_trade_allowed": False,
-            "owner_approval_inferred": False,
-            "portfolio_or_canon_apply_allowed": False,
-            "cash_or_risk_rule_mutation_allowed": False,
-        },
-        "order": {"symbol": "VRT", "side": "buy", "type": "limit", "time_in_force": "day", "limit_price": 290.0, "qty": None, "notional": 1000.0},
-        "risk_check": {
-            "status": "ok",
-            "estimated_notional_usd": 1000.0,
-            "max_loss_usd": 1000.0,
-            "max_notional_usd": 5000.0,
-            "entry_band_low": 265.9,
-            "entry_band_high": 318.35,
-            "observed_price": 289.185,
-            "observed_entry_status": "IN_BAND",
-            "stop": 242.07,
-            "sizing_rationale": "WF86 cap bridge validation only.",
-            "full_scope_artifact": POLICY,
-        },
-        "source": {
-            "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
-            "owner_or_pilot_scope": "WF86 cap bridge validation only; no execution approval.",
-        },
-        "owner_approval": {"status": "pending_exact_randall_approval"},
-    }
-    request = gen.build_request(card, card_path=Path("tmp/card.json"))
-    assert request["risk_check"]["pilot_notional_cap_usd"] == 5000.0
-    assert request["risk_check"]["full_scope_artifact"] == POLICY
-    assert wf67.validate_trade_request(request) == "ok"
+                forbidden = (
+                    *LEGACY_FLAGS,
+                    "--apply",
+                    "--execute",
+                    "argparse",
+                    "pathlib",
+                    "subprocess",
+                    "socket",
+                    "requests",
+                    "httpx",
+                    "urllib",
+                    "http://",
+                    "https://",
+                    "credential",
+                    "os.environ",
+                    "sys.argv",
+                    "__import__",
+                    "importlib",
+                    "eval(",
+                    "exec(",
+                    "open(",
+                    "read_text",
+                    "read_bytes",
+                    "write_text",
+                    "write_bytes",
+                    "mkdir(",
+                    "unlink(",
+                    "rename(",
+                    "replace(",
+                )
+                for token in forbidden:
+                    self.assertNotIn(token, lowered, token)
+
+    def test_legacy_bridge_argv_is_ignored_without_filesystem_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            sandbox = Path(temporary_directory)
+            sentinel = sandbox / "input-sentinel.json"
+            sentinel.write_text('{"sentinel":"must-remain-unchanged"}\n', encoding="utf-8")
+            owner_directory = sandbox / "owner"
+            owner_directory.mkdir()
+            owner_sentinel = owner_directory / "paper-state-sentinel.json"
+            owner_sentinel.write_text('{"owner":"must-remain-unchanged"}\n', encoding="utf-8")
+            targets = {
+                module.name: sandbox / f"must-not-exist-{module.stem}.json"
+                for module in MODULES
+            }
+            legacy_argv = {
+                "wf86_autotrader_readiness_packet.py": (
+                    "--policy",
+                    str(sentinel),
+                    "--eligibility",
+                    str(sentinel),
+                    "--ledger",
+                    str(owner_sentinel),
+                    "--wf67-guard",
+                    str(sentinel),
+                    "--wf67-manager",
+                    str(owner_sentinel),
+                    "--pilot-approval",
+                    str(sentinel),
+                    "--out",
+                    str(targets["wf86_autotrader_readiness_packet.py"]),
+                    "--guard-out",
+                    str(owner_sentinel),
+                    "--write",
+                    "--validate",
+                ),
+                "wf67_autonomous_paper_manager.py": (
+                    "--write",
+                    "--validate",
+                    "--refresh-requests",
+                    "--target-session-date",
+                    "2026-06-01",
+                    "--promotion-gate",
+                    str(sentinel),
+                    "--paper-positions",
+                    str(owner_sentinel),
+                    "--packet-index",
+                    str(sentinel),
+                    "--output",
+                    str(targets["wf67_autonomous_paper_manager.py"]),
+                    "--validation-output",
+                    str(owner_sentinel),
+                ),
+            }
+            before = tree_state(sandbox)
+            expected_stdout = json.dumps(EXPECTED_PAYLOAD, sort_keys=True) + "\n"
+
+            for module in MODULES:
+                invocations = (
+                    (),
+                    ("--help",),
+                    ("--unknown-legacy-flag", "ignored", str(sentinel)),
+                    legacy_argv[module.name],
+                    ("--apply", "--execute", "--cancel", "--brokerage-account", str(owner_sentinel)),
+                )
+                for argv in invocations:
+                    with self.subTest(module=module.name, argv=argv):
+                        completed = subprocess.run(
+                            [sys.executable, "-B", str(module), *argv],
+                            cwd=sandbox,
+                            capture_output=True,
+                            text=True,
+                            check=False,
+                            timeout=10,
+                        )
+                        self.assertEqual(completed.returncode, 2, completed)
+                        self.assertEqual(completed.stdout, expected_stdout)
+                        self.assertEqual(completed.stderr, "")
+                        self.assertEqual(json.loads(completed.stdout), EXPECTED_PAYLOAD)
+                        self.assertEqual(tree_state(sandbox), before)
+
+            for target in targets.values():
+                self.assertFalse(target.exists())
+            self.assertEqual(sentinel.read_text(encoding="utf-8"), '{"sentinel":"must-remain-unchanged"}\n')
+            self.assertEqual(
+                owner_sentinel.read_text(encoding="utf-8"),
+                '{"owner":"must-remain-unchanged"}\n',
+            )
 
 
 if __name__ == "__main__":
-    test_oversize_request_requires_full_scope_artifact()
-    test_wf86_policy_allows_non_executing_5000_request_validation()
-    test_request_generator_carries_full_scope_cap()
-    print("wf67_wf86_cap_bridge_tests_passed")
+    unittest.main()

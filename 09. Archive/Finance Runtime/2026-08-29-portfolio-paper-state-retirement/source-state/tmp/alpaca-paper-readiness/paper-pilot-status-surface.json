@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-06-21T23:50:28Z",
+  "status": "warning",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "authority": {
+    "paper_simulation_only": true,
+    "scoped_paper_submit_cancel_allowed": false,
+    "general_autonomous_paper_submit_allowed": false,
+    "live_trading_allowed": false,
+    "live_endpoint_allowed": false,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "promotion_to_live_allowed": false
+  },
+  "summary": {
+    "pilot_count": 2,
+    "active_pilot_count": 1,
+    "filled_or_position_observed_count": 1,
+    "paper_pnl_available": true
+  },
+  "pilots": [
+    {
+      "pilot_id": "wf67-reviewed-packet-001",
+      "ticker": "ETN",
+      "side": "buy",
+      "qty": 1.0,
+      "order_type": "limit",
+      "limit_price": 364.49,
+      "status": "accepted_unfilled",
+      "filled_qty": 0.0,
+      "filled_avg_price": null,
+      "position_observed": false,
+      "paper_order_id_present": true,
+      "submitted_at": "2026-05-18T03:02:43.282419598Z",
+      "expires_at": "2026-05-18T20:00:00Z",
+      "source_recommendation": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+      "source_proposal_id": "sunday:ETN:capital-deployment-review:2026-05-17",
+      "source_artifacts": [
+        "tmp/alpaca-paper-readiness/paper-submit-reconciliation.wf67-reviewed-packet-001.json",
+        "tmp/alpaca-paper-readiness/paper-trade-request.wf67-reviewed-packet-001.json"
+      ],
+      "performance_state": "not_started_unfilled",
+      "paper_pnl_available": false
+    },
+    {
+      "pilot_id": "wf67-filled-position-001",
+      "ticker": "MSFT",
+      "side": "buy",
+      "qty": 1.0,
+      "order_type": "limit",
+      "limit_price": 499.0,
+      "status": "filled_position_observed",
+      "filled_qty": 1.0,
+      "filled_avg_price": 420.26,
+      "position_observed": true,
+      "paper_order_id_present": true,
+      "submitted_at": "2026-05-18T08:00:48.063981Z",
+      "expires_at": "2026-05-18T20:00:00Z",
+      "hold_policy": "If filled, leave the paper position open for monitoring until Randall explicitly instructs close/cancel/sell.",
+      "source_recommendation": "chat-owner-instruction-2026-05-17T20:08MST",
+      "source_proposal_id": null,
+      "source_artifacts": [
+        "tmp/alpaca-paper-readiness/paper-position-reconciliation.wf67-filled-position-001.json",
+        "tmp/alpaca-paper-readiness/paper-trade-request.wf67-filled-position-001.json"
+      ],
+      "performance_state": "filled_monitoring",
+      "paper_pnl_available": true
+    }
+  ],
+  "findings": [
+    {
+      "severity": "warning",
+      "issue": "wf67_guard_not_ok",
+      "status": "blocked"
+    }
+  ],
+  "source_artifacts": [
+    "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
+    "tmp/alpaca-paper-readiness/wf63-readiness-report.json"
+  ],
+  "stop_lines": [
+    "Paper simulation only; no live trade/account/money movement authority.",
+    "No owner approval inferred from recommendation packets, validation, or paper fills.",
+    "No close/cancel/sell unless Randall explicitly instructs inside WF67 guardrails.",
+    "Paper results do not promote a ticker to live deployment or portfolio mutation authority."
+  ]
+}

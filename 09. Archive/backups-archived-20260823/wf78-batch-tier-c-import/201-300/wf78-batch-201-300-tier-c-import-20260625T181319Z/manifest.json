@@ -1,0 +1,21 @@
+{
+  "schema": "veritas.wf78_batch_tier_c_import_backup.v1",
+  "generated_at_utc": "2026-06-25T18:13:19Z",
+  "batch": "201-300",
+  "run_id": "wf78-batch-201-300-tier-c-import-20260625T181319Z",
+  "files": [
+    {
+      "path": "data/finance/universe-v1.json",
+      "exists": true,
+      "sha256": "49aaee6d32b608300506479f66515acfde52c24f55ecfda5df09ab50dceb9368",
+      "backup_path": "backups/wf78-batch-tier-c-import/201-300/wf78-batch-201-300-tier-c-import-20260625T181319Z/data/finance/universe-v1.json",
+      "rollback": "Copy backups/wf78-batch-tier-c-import/201-300/wf78-batch-201-300-tier-c-import-20260625T181319Z/data/finance/universe-v1.json back to data/finance/universe-v1.json"
+    }
+  ],
+  "authority_boundary": {
+    "backup_only": true,
+    "delete_allowed": false,
+    "archive_move_allowed": false,
+    "portfolio_or_trade_authority": false
+  }
+}

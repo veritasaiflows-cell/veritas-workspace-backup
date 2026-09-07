@@ -5,29 +5,52 @@
   "job_name": "Runtime - Status Card Freshness Refresh",
   "job_id": "01849102-719f-41e1-9be2-7f8ca37532f8",
   "enabled": true,
-  "description": "Deterministic (non-LLM) refresh of the status card freshness chain every 30 minutes during waking hours. Runs scripts/status_card_freshness_runner.py which executes 5 subprocess steps in order: WF84 capsule, WF85 capsule, future-session packet, startup brief, status card. No LLM, no interpretation, no drift. Review-only; no config/auth/runtime/canon/portfolio mutation, no paper/live/execution, no owner approval inference.",
+  "description": "Deterministic alerts-OS status-card freshness gate every 30 minutes during waking hours. The changed-input prefilter directly refreshes status_card_packet.py when required and records a one-step runner proof. Review-only; no finance-state, config/auth/runtime, delivery, account, order, or execution authority.",
   "schedule": {
     "kind": "cron",
     "expr": "*/30 6-22 * * *",
     "tz": "America/Phoenix"
   },
-  "session_target": "isolated",
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
   "delivery": {
-    "mode": "none"
+    "mode": "none",
+    "bestEffort": true
+  },
+  "failureAlert": {
+    "after": 2,
+    "mode": "announce"
   },
   "payload": {
-    "kind": "agentTurn",
-    "model": "openai/gpt-5.6-luna",
-    "thinking": "low",
-    "timeout_seconds": 300,
-    "delivery_mode": "none",
-    "message": "QUIET CRON OUTPUT RULE (hard): delivery.mode=none; on clean success/no-action reply exactly NO_REPLY and nothing else; if blocked, report only the failed command, validation errors, and next repair owner. Work in C:\\Users\\Veritas\\.openclaw\\workspace. Objective: run the deterministic status card freshness chain. Execute exactly one command: python scripts\\status_card_freshness_runner.py --write --validate. No extra commands. The script handles all 5 steps internally with subprocess calls and exit-code checks. No cleanup, cron schedule/config/auth/runtime mutation, finance/canon/portfolio mutation, paper/live/brokerage/account execution, external delivery, or owner approval inference."
+    "kind": "command",
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts\\status_card_freshness_predispatch_prefilter.py",
+      "--execute",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 300
   },
-  "command": "python scripts\\status_card_freshness_runner.py --write --validate",
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "command": "python scripts\\status_card_freshness_predispatch_prefilter.py --execute --write --validate",
   "expected_artifacts": [
+    "tmp/status-card-freshness-predispatch-prefilter.json",
     "tmp/status-card-freshness-runner.json",
-    "state/workflows/WF84.json",
-    "state/workflows/WF85.json",
     "tmp/future-session-enhancement-packet.json",
     "tmp/future-session-enhancement-packet.md",
     "tmp/startup-brief-packet.json",
@@ -56,6 +79,6 @@
     "No external delivery or owner approval inference."
   ],
   "created_at_utc": "2026-07-08T00:56:00Z",
-  "updated_at_utc": "2026-08-08T01:04:00Z",
-  "contract_update_reason": "Model-only migration to Luna low after a clean forced canary; schedule, prompt, delivery, timeout, and authority unchanged."
+  "updated_at_utc": "2026-09-06T22:20:16Z",
+  "contract_update_reason": "Pin command argv to CPython 3.13 and restore enabled after Gateway python ENOENT auto-disable."
 }

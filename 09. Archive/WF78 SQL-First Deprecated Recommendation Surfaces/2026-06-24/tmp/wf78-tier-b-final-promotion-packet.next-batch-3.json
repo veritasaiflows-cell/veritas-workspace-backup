@@ -1,0 +1,1292 @@
+{
+  "schema": "veritas.wf78_tier_b_final_promotion_packet.v1",
+  "generated_at_utc": "2026-06-05T19:51:01Z",
+  "status": "auto_routing_input_ready",
+  "workflow": "WF78 - Tier B Final Promotion Auto-Routing Input",
+  "purpose": "Prepare validated Tier B research-bench routing inputs from a repeatable source queue.",
+  "authority_boundary": {
+    "review_only": true,
+    "report_only": true,
+    "auto_routing_input_packet_allowed": true,
+    "tier_b_label_applied": false,
+    "tier_a_label_applied": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "production_answer_path_change_allowed": false,
+    "capital_deployment_allowed": false,
+    "sizing_sleeve_cash_risk_rule_mutation_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "capital_or_execution_approval_inferred": false
+  },
+  "source_artifacts": {
+    "production_adjudication": "tmp/wf78-production-tier-adjudication.json",
+    "phase2_gate": "tmp/wf78-tier-funnel-promotion-gate.json",
+    "tier_b_evidence_repair": "tmp/wf78-tier-b-evidence-repair.json",
+    "ticker_cards": "tmp/ticker-intelligence-cards"
+  },
+  "summary": {
+    "candidate_source": "phase2_eligible",
+    "candidate_limit": 5,
+    "candidate_offset": 10,
+    "candidate_count": 5,
+    "eligible_for_auto_tier_b_routing_count": 5,
+    "blocked_before_auto_routing_count": 0,
+    "eligible_tickers": [
+      "ALB",
+      "ALLE",
+      "AMCR",
+      "AME",
+      "AOS"
+    ],
+    "blocked_tickers": [],
+    "auto_routing_action": "Feed ALB, ALLE, AMCR, AME, AOS to wf78_auto_tier_router.py for non-capital Tier B routing.",
+    "recommended_answer": "auto_route_research_bench_after_reviewing_cautions",
+    "next_safe_action": "Run wf78_auto_tier_router.py; reserve Randall approval for capital deployment or execution decisions only."
+  },
+  "rows": [
+    {
+      "ticker": "ALB",
+      "name": "Albemarle Corporation",
+      "instrument_type": "operating_company",
+      "candidate_source": "phase2_eligible",
+      "source_eligibility": {
+        "ok": true,
+        "status": "eligible_for_admission",
+        "reason": "Research-worthiness evidence complete and within batch/cap room; eligible for Tier B research-candidate nomination (report-only).",
+        "batch_id": "101-200",
+        "batch_nomination_index": 11
+      },
+      "adjudication_rank": null,
+      "adjudication_score": null,
+      "prior_recommendation": null,
+      "quote": {
+        "current_price": null,
+        "effective_price_used": 157.64,
+        "source": "OpenAI finance feed",
+        "quote_time_utc": "2026-06-05T17:33:31Z",
+        "fresh_quote_supplied": true,
+        "from_evidence_repair": true
+      },
+      "written_band": {
+        "entry_band_low": null,
+        "entry_band_high": null,
+        "stop_or_invalidation": null,
+        "card_reference_price": null,
+        "card_band_status": null,
+        "current_or_reference_band_status": "UNKNOWN"
+      },
+      "card_context": {
+        "legacy_tier": "C",
+        "monitoring_role": "tier_c_review_monitor_breadth_only",
+        "portfolio_role": "tier_c_review_monitor_breadth_only",
+        "workflow_state": null,
+        "recommendation_posture": "blocked stale",
+        "technical_data_date": null,
+        "ma_posture": null,
+        "forward_pe": 13.72,
+        "prepared_order_card_present": false
+      },
+      "tier_b_interpretation": {
+        "research_bench_only": true,
+        "deployment_ready": false,
+        "tier_a_candidate": false,
+        "owner_approval_required_for_routing": false,
+        "separate_trade_or_paper_order_approval_required": true
+      },
+      "decision_status": "eligible_for_auto_tier_b_routing",
+      "blockers": [],
+      "cautions": [
+        "card recommendation posture is blocked_stale; acceptable for Tier B research only, not action",
+        "deployment_readiness_surface: Ticker not present in current deployment-readiness surface groups",
+        "price_band_stop_position_sizing: No row in Tuesday position-sizing readiness packet",
+        "technical data date missing; Phase 2 repair supplies research-only price context",
+        "universe marks decision_grade_eligible false; treat as sector/proxy research bench, not decision queue",
+        "using evidence-repair fresh price context; fresh quote not supplied directly to final packet",
+        "written band/stop missing; acceptable for Tier B research-bench label only, not deployment"
+      ],
+      "source_artifacts": [
+        "tmp/ticker-intelligence-cards/ALB.current.json",
+        "tmp/wf78-tier-funnel-promotion-gate.json",
+        "tmp/wf78-tier-b-evidence-repair.json"
+      ],
+      "authority_boundary": {
+        "tier_b_label_applied": false,
+        "owner_approval_required_for_routing": false,
+        "owner_approval_required_for_capital_or_execution": true,
+        "paper_or_live_execution_allowed": false,
+        "canon_or_portfolio_mutation_allowed": false
+      }
+    },
+    {
+      "ticker": "ALLE",
+      "name": "Allegion",
+      "instrument_type": "operating_company",
+      "candidate_source": "phase2_eligible",
+      "source_eligibility": {
+        "ok": true,
+        "status": "eligible_for_admission",
+        "reason": "Research-worthiness evidence complete and within batch/cap room; eligible for Tier B research-candidate nomination (report-only).",
+        "batch_id": "101-200",
+        "batch_nomination_index": 12
+      },
+      "adjudication_rank": null,
+      "adjudication_score": null,
+      "prior_recommendation": null,
+      "quote": {
+        "current_price": null,
+        "effective_price_used": 129.82,
+        "source": "OpenAI finance feed",
+        "quote_time_utc": "2026-06-05T17:33:31Z",
+        "fresh_quote_supplied": true,
+        "from_evidence_repair": true
+      },
+      "written_band": {
+        "entry_band_low": null,
+        "entry_band_high": null,
+        "stop_or_invalidation": null,
+        "card_reference_price": null,
+        "card_band_status": null,
+        "current_or_reference_band_status": "UNKNOWN"
+      },
+      "card_context": {
+        "legacy_tier": "C",
+        "monitoring_role": "tier_c_review_monitor_breadth_only",
+        "portfolio_role": "tier_c_review_monitor_breadth_only",
+        "workflow_state": null,
+        "recommendation_posture": "blocked stale",
+        "technical_data_date": null,
+        "ma_posture": null,
+        "forward_pe": 13.68,
+        "prepared_order_card_present": false
+      },
+      "tier_b_interpretation": {
+        "research_bench_only": true,
+        "deployment_ready": false,
+        "tier_a_candidate": false,
+        "owner_approval_required_for_routing": false,
+        "separate_trade_or_paper_order_approval_required": true
+      },
+      "decision_status": "eligible_for_auto_tier_b_routing",
+      "blockers": [],
+      "cautions": [
+        "Buybacks plus dividends exceeded free cash flow for the latest cash-flow period.",
+        "Net debt issuance coincided with capital returns and weak/strained FCF coverage.",
+        "card recommendation posture is blocked_stale; acceptable for Tier B research only, not action",
+        "deployment_readiness_surface: Ticker not present in current deployment-readiness surface groups",
+        "price_band_stop_position_sizing: No row in Tuesday position-sizing readiness packet",
+        "technical data date missing; Phase 2 repair supplies research-only price context",
+        "universe marks decision_grade_eligible false; treat as sector/proxy research bench, not decision queue",
+        "using evidence-repair fresh price context; fresh quote not supplied directly to final packet",
+        "written band/stop missing; acceptable for Tier B research-bench label only, not deployment"
+      ],
+      "source_artifacts": [
+        "tmp/ticker-intelligence-cards/ALLE.current.json",
+        "tmp/wf78-tier-funnel-promotion-gate.json",
+        "tmp/wf78-tier-b-evidence-repair.json"
+      ],
+      "authority_boundary": {
+        "tier_b_label_applied": false,
+        "owner_approval_required_for_routing": false,
+        "owner_approval_required_for_capital_or_execution": true,
+        "paper_or_live_execution_allowed": false,
+        "canon_or_portfolio_mutation_allowed": false
+      }
+    },
+    {
+      "ticker": "AMCR",
+      "name": "Amcor",
+      "instrument_type": "operating_company",
+      "candidate_source": "phase2_eligible",
+      "source_eligibility": {
+        "ok": true,
+        "status": "eligible_for_admission",
+        "reason": "Research-worthiness evidence complete and within batch/cap room; eligible for Tier B research-candidate nomination (report-only).",
+        "batch_id": "101-200",
+        "batch_nomination_index": 13
+      },
+      "adjudication_rank": null,
+      "adjudication_score": null,
+      "prior_recommendation": null,
+      "quote": {
+        "current_price": null,
+        "effective_price_used": 37.71,
+        "source": "OpenAI finance feed",
+        "quote_time_utc": "2026-06-05T17:33:31Z",
+        "fresh_quote_supplied": true,
+        "from_evidence_repair": true
+      },
+      "written_band": {
+        "entry_band_low": null,
+        "entry_band_high": null,
+        "stop_or_invalidation": null,
+        "card_reference_price": null,
+        "card_band_status": null,
+        "current_or_reference_band_status": "UNKNOWN"
+      },
+      "card_context": {
+        "legacy_tier": "C",
+        "monitoring_role": "tier_c_review_monitor_breadth_only",
+        "portfolio_role": "tier_c_review_monitor_breadth_only",
+        "workflow_state": null,
+        "recommendation_posture": "blocked stale",
+        "technical_data_date": null,
+        "ma_posture": null,
+        "forward_pe": 8.78,
+        "prepared_order_card_present": false
+      },
+      "tier_b_interpretation": {
+        "research_bench_only": true,
+        "deployment_ready": false,
+        "tier_a_candidate": false,
+        "owner_approval_required_for_routing": false,
+        "separate_trade_or_paper_order_approval_required": true
+      },
+      "decision_status": "eligible_for_auto_tier_b_routing",
+      "blockers": [],
+      "cautions": [
+        "Buybacks plus dividends exceeded free cash flow for the latest cash-flow period.",
+        "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context.",
+        "Diluted average shares increased materially; EPS growth needs denominator review.",
+        "Net debt issuance coincided with capital returns and weak/strained FCF coverage.",
+        "Repurchases occurred but diluted share count still increased; check SBC/issuance offset.",
+        "SBC consumes more than half of gross repurchases; net shareholder return quality is weaker.",
+        "card recommendation posture is blocked_stale; acceptable for Tier B research only, not action",
+        "critical risk: Capital returns occurred while free cash flow was negative; funding quality requires review.",
+        "deployment_readiness_surface: Ticker not present in current deployment-readiness surface groups",
+        "price_band_stop_position_sizing: No row in Tuesday position-sizing readiness packet",
+        "technical data date missing; Phase 2 repair supplies research-only price context",
+        "universe marks decision_grade_eligible false; treat as sector/proxy research bench, not decision queue",
+        "using evidence-repair fresh price context; fresh quote not supplied directly to final packet",
+        "written band/stop missing; acceptable for Tier B research-bench label only, not deployment"
+      ],
+      "source_artifacts": [
+        "tmp/ticker-intelligence-cards/AMCR.current.json",
+        "tmp/wf78-tier-funnel-promotion-gate.json",
+        "tmp/wf78-tier-b-evidence-repair.json"
+      ],
+      "authority_boundary": {
+        "tier_b_label_applied": false,
+        "owner_approval_required_for_routing": false,
+        "owner_approval_required_for_capital_or_execution": true,
+        "paper_or_live_execution_allowed": false,
+        "canon_or_portfolio_mutation_allowed": false
+      }
+    },
+    {
+      "ticker": "AME",
+      "name": "Ametek",
+      "instrument_type": "operating_company",
+      "candidate_source": "phase2_eligible",
+      "source_eligibility": {
+        "ok": true,
+        "status": "eligible_for_admission",
+        "reason": "Research-worthiness evidence complete and within batch/cap room; eligible for Tier B research-candidate nomination (report-only).",
+        "batch_id": "101-200",
+        "batch_nomination_index": 14
+      },
+      "adjudication_rank": null,
+      "adjudication_score": null,
+      "prior_recommendation": null,
+      "quote": {
+        "current_price": null,
+        "effective_price_used": 227.4,
+        "source": "OpenAI finance feed",
+        "quote_time_utc": "2026-06-05T17:33:31Z",
+        "fresh_quote_supplied": true,
+        "from_evidence_repair": true
+      },
+      "written_band": {
+        "entry_band_low": null,
+        "entry_band_high": null,
+        "stop_or_invalidation": null,
+        "card_reference_price": null,
+        "card_band_status": null,
+        "current_or_reference_band_status": "UNKNOWN"
+      },
+      "card_context": {
+        "legacy_tier": "C",
+        "monitoring_role": "tier_c_review_monitor_breadth_only",
+        "portfolio_role": "tier_c_review_monitor_breadth_only",
+        "workflow_state": null,
+        "recommendation_posture": "blocked stale",
+        "technical_data_date": null,
+        "ma_posture": null,
+        "forward_pe": 25.96,
+        "prepared_order_card_present": false
+      },
+      "tier_b_interpretation": {
+        "research_bench_only": true,
+        "deployment_ready": false,
+        "tier_a_candidate": false,
+        "owner_approval_required_for_routing": false,
+        "separate_trade_or_paper_order_approval_required": true
+      },
+      "decision_status": "eligible_for_auto_tier_b_routing",
+      "blockers": [],
+      "cautions": [
+        "card recommendation posture is blocked_stale; acceptable for Tier B research only, not action",
+        "deployment_readiness_surface: Ticker not present in current deployment-readiness surface groups",
+        "price_band_stop_position_sizing: No row in Tuesday position-sizing readiness packet",
+        "technical data date missing; Phase 2 repair supplies research-only price context",
+        "universe marks decision_grade_eligible false; treat as sector/proxy research bench, not decision queue",
+        "using evidence-repair fresh price context; fresh quote not supplied directly to final packet",
+        "written band/stop missing; acceptable for Tier B research-bench label only, not deployment"
+      ],
+      "source_artifacts": [
+        "tmp/ticker-intelligence-cards/AME.current.json",
+        "tmp/wf78-tier-funnel-promotion-gate.json",
+        "tmp/wf78-tier-b-evidence-repair.json"
+      ],
+      "authority_boundary": {
+        "tier_b_label_applied": false,
+        "owner_approval_required_for_routing": false,
+        "owner_approval_required_for_capital_or_execution": true,
+        "paper_or_live_execution_allowed": false,
+        "canon_or_portfolio_mutation_allowed": false
+      }
+    },
+    {
+      "ticker": "AOS",
+      "name": "A. O. Smith",
+      "instrument_type": "operating_company",
+      "candidate_source": "phase2_eligible",
+      "source_eligibility": {
+        "ok": true,
+        "status": "eligible_for_admission",
+        "reason": "Research-worthiness evidence complete and within batch/cap room; eligible for Tier B research-candidate nomination (report-only).",
+        "batch_id": "101-200",
+        "batch_nomination_index": 15
+      },
+      "adjudication_rank": null,
+      "adjudication_score": null,
+      "prior_recommendation": null,
+      "quote": {
+        "current_price": null,
+        "effective_price_used": 57.24,
+        "source": "OpenAI finance feed",
+        "quote_time_utc": "2026-06-05T17:33:31Z",
+        "fresh_quote_supplied": true,
+        "from_evidence_repair": true
+      },
+      "written_band": {
+        "entry_band_low": null,
+        "entry_band_high": null,
+        "stop_or_invalidation": null,
+        "card_reference_price": null,
+        "card_band_status": null,
+        "current_or_reference_band_status": "UNKNOWN"
+      },
+      "card_context": {
+        "legacy_tier": "C",
+        "monitoring_role": "tier_c_review_monitor_breadth_only",
+        "portfolio_role": "tier_c_review_monitor_breadth_only",
+        "workflow_state": null,
+        "recommendation_posture": "blocked stale",
+        "technical_data_date": null,
+        "ma_posture": null,
+        "forward_pe": 13.64,
+        "prepared_order_card_present": false
+      },
+      "tier_b_interpretation": {
+        "research_bench_only": true,
+        "deployment_ready": false,
+        "tier_a_candidate": false,
+        "owner_approval_required_for_routing": false,
+        "separate_trade_or_paper_order_approval_required": true
+      },
+      "decision_status": "eligible_for_auto_tier_b_routing",
+      "blockers": [],
+      "cautions": [
+        "Net debt issuance coincided with capital returns and weak/strained FCF coverage.",
+        "card recommendation posture is blocked_stale; acceptable for Tier B research only, not action",
+        "deployment_readiness_surface: Ticker not present in current deployment-readiness surface groups",
+        "price_band_stop_position_sizing: No row in Tuesday position-sizing readiness packet",
+        "technical data date missing; Phase 2 repair supplies research-only price context",
+        "universe marks decision_grade_eligible false; treat as sector/proxy research bench, not decision queue",
+        "using evidence-repair fresh price context; fresh quote not supplied directly to final packet",
+        "written band/stop missing; acceptable for Tier B research-bench label only, not deployment"
+      ],
+      "source_artifacts": [
+        "tmp/ticker-intelligence-cards/AOS.current.json",
+        "tmp/wf78-tier-funnel-promotion-gate.json",
+        "tmp/wf78-tier-b-evidence-repair.json"
+      ],
+      "authority_boundary": {
+        "tier_b_label_applied": false,
+        "owner_approval_required_for_routing": false,
+        "owner_approval_required_for_capital_or_execution": true,
+        "paper_or_live_execution_allowed": false,
+        "canon_or_portfolio_mutation_allowed": false
+      }
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [],
+    "checks": [
+      {
+        "name": "phase2_gate_present",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": "tmp/wf78-tier-funnel-promotion-gate.json"
+      },
+      {
+        "name": "phase2_gate_validation_ok",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": {
+          "status": "ok",
+          "errors": [],
+          "warnings": [],
+          "checks": [
+            {
+              "name": "contract_artifact_present",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": "tmp/wf78-tier-funnel-contract.json"
+            },
+            {
+              "name": "contract_schema_matches",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": "veritas.wf78_tier_funnel_contract.v1"
+            },
+            {
+              "name": "contract_validation_ok_if_present",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": "ok"
+            },
+            {
+              "name": "contract_transitions_loaded",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": [
+                "b_to_a",
+                "c_to_b",
+                "d_to_c"
+              ]
+            },
+            {
+              "name": "tier_b_cap_from_contract_is_50",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": 50
+            },
+            {
+              "name": "tier_b_batch_limit_from_contract_is_15",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": 15
+            },
+            {
+              "name": "capacity_gate_present",
+              "ok": true,
+              "status": "ok",
+              "severity": "warning",
+              "detail": "tmp/wf78-tier-capacity-policy-gate.json"
+            },
+            {
+              "name": "capacity_gate_validation_ok_if_present",
+              "ok": true,
+              "status": "ok",
+              "severity": "warning",
+              "detail": "ok"
+            },
+            {
+              "name": "review_gate_present",
+              "ok": true,
+              "status": "ok",
+              "severity": "warning",
+              "detail": "tmp/wf78-tier-promotion-review-gate.json"
+            },
+            {
+              "name": "self_test_d_to_c_complete_clean_eligible",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "expected": "eligible_for_admission",
+                "actual": "eligible_for_admission"
+              }
+            },
+            {
+              "name": "self_test_d_to_c_missing_evidence_blocked",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "expected": "blocked_missing_evidence",
+                "actual": "blocked_missing_evidence"
+              }
+            },
+            {
+              "name": "self_test_d_to_c_reject_state_blocked",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "expected": "blocked_decay_state",
+                "actual": "blocked_decay_state"
+              }
+            },
+            {
+              "name": "self_test_c_to_b_complete_with_room_eligible",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "expected": "eligible_for_admission",
+                "actual": "eligible_for_admission"
+              }
+            },
+            {
+              "name": "self_test_c_to_b_missing_evidence_blocked",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "expected": "blocked_missing_evidence",
+                "actual": "blocked_missing_evidence"
+              }
+            },
+            {
+              "name": "self_test_c_to_b_batch_limit_blocked",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "expected": "blocked_batch_nomination_limit",
+                "actual": "blocked_batch_nomination_limit"
+              }
+            },
+            {
+              "name": "self_test_c_to_b_cap_pressure_blocked",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "expected": "blocked_tier_b_cap",
+                "actual": "blocked_tier_b_cap"
+              }
+            },
+            {
+              "name": "self_test_c_to_b_decay_state_blocked",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "expected": "blocked_decay_state",
+                "actual": "blocked_decay_state"
+              }
+            },
+            {
+              "name": "self_test_c_to_b_invalid_state_blocked",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "expected": "blocked_invalid_state",
+                "actual": "blocked_invalid_state"
+              }
+            },
+            {
+              "name": "self_test_b_to_a_routed_to_phase3",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "expected": "routed_to_other_gate",
+                "actual": "routed_to_other_gate"
+              }
+            },
+            {
+              "name": "self_test_unknown_transition_blocked",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "expected": "blocked_unknown_transition",
+                "actual": "blocked_unknown_transition"
+              }
+            },
+            {
+              "name": "every_eligible_has_complete_evidence",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": []
+            },
+            {
+              "name": "no_decision_executed_admission",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "c_to_b_eligible_within_batch_limit",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "c_to_b_eligible_within_tier_b_cap",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "admitted": 0,
+                "nominated": 15,
+                "cap": 50
+              }
+            },
+            {
+              "name": "authority_evaluation_gate_only_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_report_only_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_review_only_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_admission_executed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_apply_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_brokerage_or_account_action_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_canon_or_portfolio_mutation_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_capital_deployment_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_customer_or_external_delivery_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_owner_approval_inferred_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_paper_or_live_execution_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_production_answer_path_change_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_promotion_by_score_or_checklist_alone_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_sql_first_promotion_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_ticker_import_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_tier_a_promotion_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_tier_b_promotion_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            }
+          ]
+        }
+      },
+      {
+        "name": "all_candidates_phase2_eligible",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": {
+          "ALB": "eligible_for_admission",
+          "ALLE": "eligible_for_admission",
+          "AMCR": "eligible_for_admission",
+          "AME": "eligible_for_admission",
+          "AOS": "eligible_for_admission"
+        }
+      },
+      {
+        "name": "evidence_repair_present",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": "tmp/wf78-tier-b-evidence-repair.json"
+      },
+      {
+        "name": "evidence_repair_validation_ok",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": {
+          "status": "ok",
+          "errors": [],
+          "warnings": [],
+          "checks": [
+            {
+              "name": "research_packets_present",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": "tmp/wf78-tier-b-research-packets.json"
+            },
+            {
+              "name": "research_packets_validation_ok",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "status": "ok",
+                "checks": [
+                  {
+                    "name": "schema_current",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": "veritas.wf78_tier_b_research_packets.v1"
+                  },
+                  {
+                    "name": "macro_overlay_ok",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "macro_overlay_status": "ok",
+                      "macro_overlay_validation": "ok",
+                      "ticker_card_refresh_status": "ok_with_stale_cards",
+                      "finance_coverage_status": "ok",
+                      "tier_promotion_review_status": "ok",
+                      "tier_b_evidence_repair_status": "ok"
+                    }
+                  },
+                  {
+                    "name": "packet_count_matches_shortlist",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "shortlist_count": 15,
+                      "packet_count": 15,
+                      "phase2_request_count": 15,
+                      "phase2_ready_request_count": 15,
+                      "needs_evidence_repair_count": 0,
+                      "tier_b_admission_executed_count": 0,
+                      "tier_a_admission_executed_count": 0,
+                      "owner_approval_inferred_count": 0,
+                      "evidence_repair_rows": 15,
+                      "evidence_repair_repaired_count": 15,
+                      "missing_evidence_counts": {},
+                      "next_safe_action": "Feed phase2_requests into wf78_tier_funnel_promotion_gate --requests, then build/repair the missing evidence families before any owner Tier B admission decision."
+                    }
+                  },
+                  {
+                    "name": "shortlist_bounded_15",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "shortlist_count": 15,
+                      "packet_count": 15,
+                      "phase2_request_count": 15,
+                      "phase2_ready_request_count": 15,
+                      "needs_evidence_repair_count": 0,
+                      "tier_b_admission_executed_count": 0,
+                      "tier_a_admission_executed_count": 0,
+                      "owner_approval_inferred_count": 0,
+                      "evidence_repair_rows": 15,
+                      "evidence_repair_repaired_count": 15,
+                      "missing_evidence_counts": {},
+                      "next_safe_action": "Feed phase2_requests into wf78_tier_funnel_promotion_gate --requests, then build/repair the missing evidence families before any owner Tier B admission decision."
+                    }
+                  },
+                  {
+                    "name": "phase2_request_count_matches_packets",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "requests": 15,
+                      "packets": 15
+                    }
+                  },
+                  {
+                    "name": "no_tier_b_admission_executed",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "shortlist_count": 15,
+                      "packet_count": 15,
+                      "phase2_request_count": 15,
+                      "phase2_ready_request_count": 15,
+                      "needs_evidence_repair_count": 0,
+                      "tier_b_admission_executed_count": 0,
+                      "tier_a_admission_executed_count": 0,
+                      "owner_approval_inferred_count": 0,
+                      "evidence_repair_rows": 15,
+                      "evidence_repair_repaired_count": 15,
+                      "missing_evidence_counts": {},
+                      "next_safe_action": "Feed phase2_requests into wf78_tier_funnel_promotion_gate --requests, then build/repair the missing evidence families before any owner Tier B admission decision."
+                    }
+                  },
+                  {
+                    "name": "no_owner_approval_inferred",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "shortlist_count": 15,
+                      "packet_count": 15,
+                      "phase2_request_count": 15,
+                      "phase2_ready_request_count": 15,
+                      "needs_evidence_repair_count": 0,
+                      "tier_b_admission_executed_count": 0,
+                      "tier_a_admission_executed_count": 0,
+                      "owner_approval_inferred_count": 0,
+                      "evidence_repair_rows": 15,
+                      "evidence_repair_repaired_count": 15,
+                      "missing_evidence_counts": {},
+                      "next_safe_action": "Feed phase2_requests into wf78_tier_funnel_promotion_gate --requests, then build/repair the missing evidence families before any owner Tier B admission decision."
+                    }
+                  },
+                  {
+                    "name": "authority_true_flags_preserved",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "review_only": true,
+                      "report_only": true,
+                      "research_packet_only": true,
+                      "phase2_request_generation_only": true,
+                      "ticker_import_allowed": false,
+                      "apply_allowed": false,
+                      "promotion_allowed": false,
+                      "tier_b_admission_executed": false,
+                      "tier_a_admission_executed": false,
+                      "capital_deployment_allowed": false,
+                      "production_answer_path_change_allowed": false,
+                      "sql_first_promotion_allowed": false,
+                      "canon_or_portfolio_mutation_allowed": false,
+                      "customer_or_external_delivery_allowed": false,
+                      "paper_or_live_execution_allowed": false,
+                      "brokerage_or_account_action_allowed": false,
+                      "money_movement_allowed": false,
+                      "owner_approval_inferred": false
+                    }
+                  },
+                  {
+                    "name": "authority_false_flags_preserved",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "review_only": true,
+                      "report_only": true,
+                      "research_packet_only": true,
+                      "phase2_request_generation_only": true,
+                      "ticker_import_allowed": false,
+                      "apply_allowed": false,
+                      "promotion_allowed": false,
+                      "tier_b_admission_executed": false,
+                      "tier_a_admission_executed": false,
+                      "capital_deployment_allowed": false,
+                      "production_answer_path_change_allowed": false,
+                      "sql_first_promotion_allowed": false,
+                      "canon_or_portfolio_mutation_allowed": false,
+                      "customer_or_external_delivery_allowed": false,
+                      "paper_or_live_execution_allowed": false,
+                      "brokerage_or_account_action_allowed": false,
+                      "money_movement_allowed": false,
+                      "owner_approval_inferred": false
+                    }
+                  },
+                  {
+                    "name": "all_ready_requires_repair_backing",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "warning",
+                    "detail": {
+                      "shortlist_count": 15,
+                      "packet_count": 15,
+                      "phase2_request_count": 15,
+                      "phase2_ready_request_count": 15,
+                      "needs_evidence_repair_count": 0,
+                      "tier_b_admission_executed_count": 0,
+                      "tier_a_admission_executed_count": 0,
+                      "owner_approval_inferred_count": 0,
+                      "evidence_repair_rows": 15,
+                      "evidence_repair_repaired_count": 15,
+                      "missing_evidence_counts": {},
+                      "next_safe_action": "Feed phase2_requests into wf78_tier_funnel_promotion_gate --requests, then build/repair the missing evidence families before any owner Tier B admission decision."
+                    }
+                  }
+                ],
+                "errors": [],
+                "warnings": []
+              }
+            },
+            {
+              "name": "target_rows_present",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "target_count": 15
+              }
+            },
+            {
+              "name": "all_targets_have_quotes",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": []
+            },
+            {
+              "name": "no_written_band_created",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "no_stop_created",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_review_only_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_report_only_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_tier_b_research_evidence_repair_only_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_production_answer_path_change_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_capital_deployment_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_paper_or_live_execution_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_brokerage_or_account_action_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_owner_approval_inferred_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_deployment_ready_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_tier_b_label_applied_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_apply_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_admission_executed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_written_entry_band_created_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_stop_or_invalidation_created_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_canon_or_portfolio_mutation_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_tier_a_label_applied_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            }
+          ]
+        }
+      },
+      {
+        "name": "candidate_count_within_limit",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": {
+          "count": 5,
+          "max": 5
+        }
+      },
+      {
+        "name": "at_least_one_candidate_auto_routing_eligible",
+        "ok": true,
+        "status": "ok",
+        "severity": "warning",
+        "detail": [
+          "ALB",
+          "ALLE",
+          "AMCR",
+          "AME",
+          "AOS"
+        ]
+      },
+      {
+        "name": "no_tier_b_label_applied",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "tier_b_packet_allows_no_deployment",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": null
+      },
+      {
+        "name": "authority_auto_routing_input_packet_allowed_true",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": true
+      },
+      {
+        "name": "authority_report_only_true",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": true
+      },
+      {
+        "name": "authority_review_only_true",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": true
+      },
+      {
+        "name": "authority_canon_or_portfolio_mutation_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_paper_or_live_execution_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_tier_b_label_applied_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_customer_or_external_delivery_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_capital_or_execution_approval_inferred_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_tier_a_label_applied_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_capital_deployment_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_brokerage_or_account_action_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_sizing_sleeve_cash_risk_rule_mutation_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_production_answer_path_change_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      }
+    ]
+  },
+  "stop_lines": [
+    "This packet does not apply Tier B labels.",
+    "Tier B means research bench only, not deployment readiness.",
+    "This packet does not approve any buy/sell/paper/live order.",
+    "This packet does not mutate canon, portfolio, sizing, cash, sleeve, or risk-rule state.",
+    "This packet does not infer capital deployment or execution approval from validation."
+  ]
+}

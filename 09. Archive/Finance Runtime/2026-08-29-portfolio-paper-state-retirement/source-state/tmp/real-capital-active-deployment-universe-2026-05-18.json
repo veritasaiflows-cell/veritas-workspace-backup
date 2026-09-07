@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-19T02:15:00Z",
+  "artifact_type": "real_capital_active_deployment_universe",
+  "status": "review_ready",
+  "capital_base": {
+    "approved_by": "Randall",
+    "approved_at_local": "2026-05-18 19:12 MST",
+    "account_capital_usd": 10000,
+    "cash_target_pct": 10,
+    "cash_target_usd": 1000,
+    "investable_capital_usd": 9000,
+    "fractional_shares_default": true,
+    "tranche_framework": "two_tranche_default",
+    "tier1_target_usd": "800-1200",
+    "tier1_starter_usd": "400-600",
+    "tier2_target_usd": "400-700",
+    "tier2_starter_usd": "200-350",
+    "tier3_target_usd": "100-300",
+    "tier3_starter_usd": "50-150"
+  },
+  "authority": {
+    "canonical_note_mutation_allowed": true,
+    "portfolio_mutation_allowed": true,
+    "owner_approval_granted": true,
+    "scope": "workspace canon/config/model sizing and deployment-universe preparation only",
+    "trade_or_account_action_allowed": false,
+    "live_trading_allowed": false,
+    "paper_trade_submit_cancel_allowed_by_this_packet": false,
+    "requires_WF67_before_paper_order": true
+  },
+  "selection_policy": {
+    "paper_trade_source": "Paper-trading candidates should come from the real-capital eligible universe, not convenience-only mechanics.",
+    "etf_policy": "ETFs remain valid active-deployment candidates when they improve diversification, reduce single-name sizing distortion, or express a desired sleeve more cleanly than blocked/high-price single names.",
+    "whole_share_policy": "Whole-share-only orders are acceptable only when one share fits the intended tier and risk cap; otherwise use fractions, defer, or select an ETF only after a model/sleeve gate."
+  },
+  "ranked_universe": [
+    {
+      "rank": 1,
+      "ticker": "ETN",
+      "instrument": "single_name",
+      "lane": "deployable_now_first_priority",
+      "current_state": "Deployable now / in band / manual-only",
+      "starter_usd": "400-600",
+      "target_usd": "800-1200",
+      "paper_readiness": "Primary next paper candidate if fresh next-day quote/band/stop check, canon drift gate, fresh kill switch, WF67 guard validation, and exact owner/scoped order terms are clean.",
+      "blocker": "Below 20d/50d, so use limit discipline and no chase; no paper order from this packet alone."
+    },
+    {
+      "rank": 2,
+      "ticker": "VXUS",
+      "instrument": "ETF",
+      "lane": "international_diversification_candidate_review",
+      "current_state": "Review-only ETF monitor; official proof and band exist; close slightly above upper band on 2026-05-18",
+      "starter_usd": "200-350",
+      "conditional_cap_usd": 500,
+      "paper_readiness": "Eligible for paper-prep only after model/sleeve/sizing acceptance, pro-forma currency/EM/overlap review, and fresh in-band/no-chase check.",
+      "blocker": "Not yet model-accepted; do not chase above band."
+    },
+    {
+      "rank": 3,
+      "ticker": "ITA",
+      "instrument": "ETF",
+      "lane": "conditional_defense_etf_candidate_review",
+      "current_state": "Promotion-review ETF candidate in band; 0% active, conditional future 5%/$500 cap",
+      "starter_usd": "200-350",
+      "conditional_cap_usd": 500,
+      "paper_readiness": "Eligible only after look-through concentration acceptance, model/sleeve/sizing gate, fresh quote/band check, and WF67 validation.",
+      "blocker": "GE/RTX/BA concentration acceptance and Defense sleeve decision still required."
+    },
+    {
+      "rank": 4,
+      "ticker": "GOOG",
+      "instrument": "single_name",
+      "lane": "almost_deployable_wait_for_band",
+      "current_state": "Almost deployable; above band / no chase",
+      "starter_usd": "400-600",
+      "target_usd": "800-1200",
+      "paper_readiness": "Candidate after pullback into 354.05-377.00 and explicit promotion/revalidation.",
+      "blocker": "Above written band."
+    },
+    {
+      "rank": 5,
+      "ticker": "MSFT",
+      "instrument": "single_name",
+      "lane": "quality_candidate_wait_above_band_tech_cap_sequencing",
+      "current_state": "Owner-promoted staged manual candidate, but above band / no chase",
+      "starter_usd": "400-600",
+      "target_usd": "800-1200",
+      "paper_readiness": "Candidate after pullback into 389.64-412.56 or explicit band review plus Tech-cap sequencing.",
+      "blocker": "Above band, below 200d, direct Tech at cap."
+    },
+    {
+      "rank": 6,
+      "ticker": "GS",
+      "instrument": "single_name",
+      "lane": "financials_secondary_fractional_or_defer",
+      "current_state": "Almost deployable; above band; secondary to JPM",
+      "starter_usd": "200-350",
+      "target_usd": "400-700",
+      "paper_readiness": "Candidate only after pullback into 894.64-935.77, promotion, and explicit fractional sizing decision.",
+      "blocker": "One whole share exceeds intended Tier 2 sizing even at $10k."
+    },
+    {
+      "rank": 7,
+      "ticker": "CME",
+      "instrument": "single_name",
+      "lane": "financial_infrastructure_review_candidate",
+      "current_state": "Portfolio-review only; defined setup, not model accepted",
+      "starter_usd": "200-350",
+      "paper_readiness": "Not paper-ready until model/sleeve/sizing gate and valuation/regime fit review clear.",
+      "blocker": "Review-only."
+    },
+    {
+      "rank": 8,
+      "ticker": "LIN",
+      "instrument": "single_name",
+      "lane": "quality_materials_review_candidate",
+      "current_state": "Portfolio-review only; premium valuation; above preferred band/no chase",
+      "starter_usd": "200-350",
+      "paper_readiness": "Not paper-ready until valuation/entry clears and model/sleeve gate exists.",
+      "blocker": "Premium valuation and no-chase entry discipline."
+    },
+    {
+      "rank": 9,
+      "ticker": "PH",
+      "instrument": "single_name",
+      "lane": "industrial_candidate_review_behind_ETN",
+      "current_state": "Portfolio-review only; mixed posture; needs incremental value vs ETN",
+      "starter_usd": "200-350",
+      "paper_readiness": "Not paper-ready until official-source/valuation/overlap proof supports it over ETN.",
+      "blocker": "ETN already owns first industrial/electrification priority."
+    },
+    {
+      "rank": 10,
+      "ticker": "NVDA",
+      "instrument": "single_name",
+      "lane": "event_risk_no_chase_wait",
+      "current_state": "Wait/no chase; earnings risk freeze",
+      "starter_usd": "200-350",
+      "paper_readiness": "Not paper-ready until earnings event risk clears and price/band reset supports entry.",
+      "blocker": "Above band and near earnings."
+    }
+  ],
+  "bench_or_repair": ["JPM", "LMT", "RTX", "BRK.B", "BKNG", "LNG", "XOM"],
+  "next_actions": [
+    "Use ETN for the next WF67 paper-readiness check only if fresh next-day conditions remain clean.",
+    "Prepare VXUS and ITA ETF model/sleeve/sizing review packets before any ETF paper-order prep.",
+    "Keep GOOG/MSFT/GS as pullback candidates, not chase candidates.",
+    "Do not paper trade repair/bench names just to test mechanics."
+  ]
+}

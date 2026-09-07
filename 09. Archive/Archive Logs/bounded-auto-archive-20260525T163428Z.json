@@ -1,0 +1,28 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T16:34:28Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-archive-microbatch-2026-05-25-4.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 1,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/quality-bench-bond-cash-lane.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/quality-bench-bond-cash-lane.md",
+      "sha256_before": "14511c4275542f1f1a1ff075c7257addd04c79ef9494c70453545572433c1d57",
+      "sha256_after": "14511c4275542f1f1a1ff075c7257addd04c79ef9494c70453545572433c1d57"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; only explicit apply_allowed true suggestions with zero references and approved destination roots can move"
+}

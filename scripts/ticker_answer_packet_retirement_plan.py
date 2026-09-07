@@ -19,12 +19,20 @@ ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 PACKET_DIR = TMP / "ticker-answer-packets"
 ARCHIVE_DIR = ROOT / "09. Archive" / "WF85 Legacy Ticker Answer Packets" / "preview"
-ASSEMBLER_ROLLUP = TMP / "trade-grade-full-answer-assembler.json"
 PARITY_ROLLUP = TMP / "full-answer-parity" / "full-answer-parity-rollup.json"
 RETIREMENT_READINESS = TMP / "canonical-finance-data-plane-retirement-readiness.json"
 DEFAULT_OUT = TMP / "ticker-answer-packet-retirement-approval-plan-20260609.json"
+TOMBSTONE_SOURCE = ROOT / "scripts" / "ticker_answer_packet.py"
 
 SCHEMA = "veritas.ticker_answer_packet_retirement_plan.v1"
+TOMBSTONE_SCHEMA = "veritas.ticker_answer_packet.retired_compatibility.v1"
+TOMBSTONE_MARKERS = (
+    TOMBSTONE_SCHEMA,
+    '"compatibility_mode": "deny_only"',
+    '"legacy_read_allowed": False',
+    '"legacy_write_allowed": False',
+    '"filesystem_mutation_allowed": False',
+)
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -45,6 +53,11 @@ AUTHORITY_BOUNDARY = {
 }
 
 REFERENCE_CLASSIFICATIONS = {
+    "scripts/alerts_os_pivot_validator.py": (
+        "retired_surface_absence_validator",
+        False,
+        "pivot validation lists the retired directory only to prove that it remains absent",
+    ),
     "scripts/canonical_finance_data_plane_retirement_readiness.py": (
         "retirement_governance_owner",
         False,
@@ -56,9 +69,9 @@ REFERENCE_CLASSIFICATIONS = {
         "lane proof validator resolves approved archived WF85 packet paths; it is not an active packet consumer",
     ),
     "scripts/ticker_answer_packet.py": (
-        "legacy_compatibility_wrapper",
+        "deny_only_compatibility_tombstone",
         False,
-        "compatibility writer remains only to emit assembler-built snapshots when explicitly allowed",
+        "retired historical surface denies every legacy read and write invocation",
     ),
     "scripts/ticker_answer_packet_retirement_plan.py": (
         "current_retirement_planner",
@@ -70,15 +83,25 @@ REFERENCE_CLASSIFICATIONS = {
         False,
         "lifecycle gate references the candidate surface as governance proof, not as an active packet consumer",
     ),
+    "scripts/retire_portfolio_paper_runtime_state.py": (
+        "historical_archive_governance",
+        False,
+        "retirement tooling lists the historical directory as an archive candidate, not as an active reader",
+    ),
     "scripts/sql_canon_parallel_phase_executor.py": (
         "parallel_phase_governance_packet",
         False,
         "parallel phase executor references the candidate surface to build review packets only",
     ),
-    "scripts/trade_grade_full_answer_assembler.py": (
-        "replacement_owner_with_compatibility_emitter",
+    "scripts/test_wf88_route_contraction_packet.py": (
+        "deny_only_tombstone_regression_test",
         False,
-        "replacement owner can emit legacy snapshots for compatibility while active packet files remain",
+        "the test hashes retired output locations to prove every legacy CLI shape performs zero writes",
+    ),
+    "scripts/trade_grade_full_answer_assembler.py": (
+        "retired_historical_emitter_residue",
+        False,
+        "standalone legacy emitter residue is historical evidence, not an active replacement owner",
     ),
 }
 
@@ -124,7 +147,12 @@ def text_files() -> list[Path]:
         if not root.exists():
             continue
         for path in root.rglob("*"):
-            if path.is_file() and path.suffix.lower() in suffixes and "__pycache__" not in path.parts:
+            if (
+                path.is_file()
+                and path.suffix.lower() in suffixes
+                and "__pycache__" not in path.parts
+                and "graphify-out" not in path.parts
+            ):
                 out.append(path)
     return out
 
@@ -196,6 +224,30 @@ def packet_status_rows() -> list[dict[str, Any]]:
     return rows
 
 
+def tombstone_status() -> dict[str, Any]:
+    """Confirm the retired wrapper is the exact deny-only, zero-write tombstone."""
+    try:
+        source = TOMBSTONE_SOURCE.read_text(encoding="utf-8")
+    except OSError as exc:
+        return {
+            "status": "blocked",
+            "path": rel(TOMBSTONE_SOURCE),
+            "schema": TOMBSTONE_SCHEMA,
+            "missing_markers": list(TOMBSTONE_MARKERS),
+            "error": str(exc),
+        }
+    missing = [marker for marker in TOMBSTONE_MARKERS if marker not in source]
+    return {
+        "status": "confirmed" if not missing else "blocked",
+        "path": rel(TOMBSTONE_SOURCE),
+        "schema": TOMBSTONE_SCHEMA,
+        "missing_markers": missing,
+        "deny_only": not missing,
+        "legacy_reads_allowed": False,
+        "legacy_writes_allowed": False,
+    }
+
+
 def build_packet() -> dict[str, Any]:
     sql_canon = FinanceSqlCanonAccess()
     sql_canon_validation = sql_canon.validate()
@@ -203,7 +255,6 @@ def build_packet() -> dict[str, Any]:
     if sql_canon_validation.get("status") == "ok":
         sql_canon_registry = sql_canon.migration_registry_summary()
     route = strategic_answer_route_context(consumer="ticker_answer_packet_retirement_plan")
-    assembler = as_dict(load_json(ASSEMBLER_ROLLUP, {}))
     parity = as_dict(load_json(PARITY_ROLLUP, {}))
     parity_summary = as_dict(parity.get("summary"))
     parity_sql_scope = as_dict(parity.get("sql_canon_scope"))
@@ -213,11 +264,11 @@ def build_packet() -> dict[str, Any]:
     refs = active_references()
     reference_rows = reference_inventory(refs)
     blocking_refs = [row for row in reference_rows if row["blocking"]]
+    wrapper_tombstone = tombstone_status()
     all_from_assembler = all(row["built_from_assembler"] for row in rows)
     all_archived = all(row["archived"] and not row["exists"] for row in rows)
     all_present = all((row["exists"] or row["archived"]) and row["required_legacy_fields_present"] for row in rows)
     parity_ready = route.get("status") == "ok"
-    assembler_ready = assembler.get("status") == "ok" and as_dict(assembler.get("summary")).get("legacy_packet_generation_source") == "trade_grade_full_answer_assembler"
     validation_errors: list[dict[str, Any]] = []
     if not all_present:
         validation_errors.append({"check": "all_legacy_packets_present_with_required_fields", "detail": [row for row in rows if not row["exists"] or not row["required_legacy_fields_present"]]})
@@ -225,17 +276,27 @@ def build_packet() -> dict[str, Any]:
         validation_errors.append({"check": "all_legacy_packets_generated_from_assembler", "detail": [row for row in rows if not row["built_from_assembler"]]})
     if not parity_ready:
         validation_errors.append({"check": "sql_first_route_ready_for_legacy_packet_retirement", "detail": route.get("validation")})
-    if not assembler_ready:
-        validation_errors.append({"check": "assembler_rollup_ready", "detail": assembler.get("summary")})
+    if wrapper_tombstone.get("status") != "confirmed":
+        validation_errors.append({"check": "ticker_answer_packet_deny_only_tombstone", "detail": wrapper_tombstone})
     if sql_canon_validation.get("status") != "ok":
         validation_errors.append({"check": "sql_canon_access_ready", "detail": sql_canon_validation.get("errors")})
     p0_status = as_dict(route.get("p0_registry_lane_status"))
     if p0_status.get("ok") is not True:
         validation_errors.append({"check": "sql_canon_p0_registry_lane", "detail": p0_status})
-    planning_ready = not validation_errors
-    archive_ready_now = planning_ready and not blocking_refs and not all_archived
-    archive_completed = planning_ready and not blocking_refs and all_archived
-    status = "archived" if archive_completed else "planning_ready" if planning_ready else "blocked"
+    if blocking_refs:
+        validation_errors.append({"check": "no_unclassified_active_packet_references", "detail": blocking_refs})
+    validation_errors.append({
+        "check": "retired_answer_packet_family_has_no_active_writer_or_current_replacement",
+        "detail": {
+            "wrapper_tombstone_status": wrapper_tombstone.get("status"),
+            "operational_replacement_claimed": False,
+            "historical_snapshot_structure_is_current_evidence": False,
+        },
+    })
+    planning_ready = False
+    archive_ready_now = False
+    archive_completed = all_archived and all_present
+    status = "blocked"
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -245,9 +306,11 @@ def build_packet() -> dict[str, Any]:
         "candidate_surface": {
             "path": "tmp/ticker-answer-packets",
             "owner_before_retirement": "legacy ticker answer packet response layer",
-            "replacement_owner": "scripts/trade_grade_full_answer_assembler.py",
-            "replacement_artifact": "tmp/trade-grade-full-answer/<TICKER>.json",
-            "compatibility_mode": "ticker_answer_packet.py writes compatibility snapshots from the assembler",
+            "replacement_owner": None,
+            "replacement_artifact": None,
+            "compatibility_mode": "deny_only_tombstone_no_reads_or_writes",
+            "operational_replacement_claimed": False,
+            "wrapper_tombstone": wrapper_tombstone,
         },
         "sql_canon_migration_context": {
             "access_validation_status": sql_canon_validation.get("status"),
@@ -267,9 +330,10 @@ def build_packet() -> dict[str, Any]:
             "legacy_packets_archived_count": sum(1 for row in rows if row["archived"] and not row["exists"]),
             "legacy_packets_present_with_required_fields": all_present,
             "legacy_packets_generated_from_assembler": all_from_assembler,
-            "assembler_rollup_status": assembler.get("status"),
+            "historical_assembler_lineage_only": True,
             "full_answer_parity_status": parity.get("status"),
-            "production_answer_packet_retirement_planning_ready": parity_ready,
+            "production_answer_packet_retirement_planning_ready": False,
+            "current_operational_replacement_ready": False,
             "global_full_answer_parity_blocks_legacy_packet_retirement": False,
             "sql_canon_access_status": sql_canon_validation.get("status"),
             "sql_canon_scope_status": parity_sql_scope.get("status"),
@@ -295,19 +359,19 @@ def build_packet() -> dict[str, Any]:
         "proposed_archive_destination": "09. Archive/WF85 Legacy Ticker Answer Packets/preview",
         "packet_rows": rows,
         "approval_sequence": [
-            "Keep ticker_answer_packet.py as a compatibility wrapper while active readers still exist.",
-            "Migrate each active reader to trade_grade_full_answer_assembler or finance_intelligence_state ticker front door.",
-            "Rerun assembler, legacy packet wrapper, WF84, WF85, full-answer parity, and retirement readiness.",
-            "Prove active_reference_count is zero or each remaining reader is compatibility-only.",
-            "Prepare DB/file lifecycle packet with rollback path.",
-            "Ask Randall for exact archive/delete/apply approval before any action.",
+            "Keep ticker_answer_packet.py as a deny-only historical tombstone.",
+            "Keep archived legacy packet artifacts as non-current historical evidence; do not regenerate them.",
+            "Review remaining references and classify them as governance-only residue or migrate them to a current owner.",
+            "Use current finance-intelligence front doors without claiming replacement equivalence for this retired packet family.",
+            "Prepare a separate scoped lifecycle packet before any archive, delete, move, or cleanup action.",
+            "Ask Randall for exact archive/delete/apply approval before any lifecycle action.",
         ],
         "validation": {
-            "status": "ok" if planning_ready else "blocked",
+            "status": "blocked",
             "errors": validation_errors,
             "warnings": [
-                "Planning-ready is not archive/delete/apply authority.",
-                "Ticker-intelligence cards and WF78 feeders remain retained.",
+                "Archived packet structure and stale generated artifacts are historical evidence only.",
+                "The standalone legacy emitter and other classified governance references remain residue.",
             ],
         },
         "stop_lines": [

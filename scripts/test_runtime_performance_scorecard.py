@@ -189,5 +189,91 @@ class AuthorityBoundaryTests(unittest.TestCase):
         self.assertEqual(command[command.index("--driver") + 1], "inprocess")
 
 
+class RetiredProofContractTests(unittest.TestCase):
+    def test_smoke_and_full_plans_exclude_obsolete_wf78_and_capital_commands(self) -> None:
+        full_args = SimpleNamespace(
+            smoke=False,
+            quick=True,
+            sql_iterations=1,
+            include_human_note_migration_checks=False,
+        )
+        smoke_args = SimpleNamespace(
+            smoke=True,
+            quick=True,
+            sql_iterations=1,
+            include_human_note_migration_checks=False,
+        )
+        full_plan = scorecard.command_plan(full_args)
+        smoke_plan = scorecard.command_plan(smoke_args)
+        command_text = "\n".join(
+            part
+            for plan in (full_plan, smoke_plan)
+            for name, command, _cwd, _timeout in plan
+            for part in [name, *command]
+        )
+        for token in (
+            "wf78_sql_phase2_readiness.py",
+            "go-wf78-sql-phase2-readiness-probe",
+            "python_go_wf78_sql_phase2_readiness_parity.py",
+            "capital_deployment_band_integrity_validator.py",
+        ):
+            self.assertNotIn(token, command_text)
+        self.assertIn(
+            "python_go_durable_output_parity_repeated_gate",
+            {name for name, _command, _cwd, _timeout in full_plan},
+        )
+
+    def test_stale_retired_artifacts_are_absent_and_legacy_durable_gate_blocks(self) -> None:
+        legacy_durable = {
+            "schema": "veritas.python_go_durable_output_parity_repeated_gate.v1",
+            "status": "ok",
+            "summary": {
+                "cases": 2,
+                "case_names": ["finance_universe_validation", "retired_case"],
+                "stable_case_fingerprints": 2,
+            },
+            "validation": {"status": "ok", "errors": [], "warnings": []},
+        }
+
+        def fake_load(path: Path) -> dict:
+            if path.name == "python-go-durable-output-parity-repeated-gate.json":
+                return legacy_durable
+            return {"status": "ok", "validation": {"status": "ok", "errors": [], "warnings": []}}
+
+        with patch.object(scorecard, "load_json_artifact", side_effect=fake_load), patch.object(
+            scorecard, "pm_program_state", return_value={"status": "ok"}
+        ):
+            artifacts = scorecard.artifact_snapshot()
+
+        for key in (
+            "go_wf78_sql_phase2_readiness_probe",
+            "python_go_wf78_sql_phase2_readiness_parity",
+            "capital_deployment_band_integrity",
+        ):
+            self.assertNotIn(key, artifacts)
+        durable = artifacts["python_go_durable_output_parity_repeated_gate"]
+        self.assertEqual(durable["artifact_health"], "blocked")
+        self.assertEqual(durable["case_contract_status"], "error")
+        self.assertIn(
+            "python_go_durable_output_parity_repeated_gate",
+            scorecard.artifact_health_summary(artifacts)["blocked_artifacts"],
+        )
+
+    def test_exact_current_durable_case_contract_keeps_normal_health(self) -> None:
+        payload = {
+            "schema": scorecard.DURABLE_OUTPUT_SCHEMA,
+            "status": "ok",
+            "summary": {
+                "cases": 1,
+                "case_names": list(scorecard.DURABLE_OUTPUT_CASE_NAMES),
+                "case_contract_status": "ok",
+                "stable_case_fingerprints": 1,
+            },
+            "validation": {"status": "ok", "errors": [], "warnings": []},
+        }
+        self.assertEqual(scorecard.validated_durable_output_payload(payload), payload)
+        self.assertEqual(scorecard.artifact_health(payload)["artifact_health"], "ok")
+
+
 if __name__ == "__main__":
     unittest.main()

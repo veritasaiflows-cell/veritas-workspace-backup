@@ -1,0 +1,12 @@
+{"at_utc": "2026-08-09T18:55:45Z", "detail": {}, "event": "started", "job_id": "vector-memory-primary-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T18:55:53Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-primary-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T18:55:57Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-primary-refresh-20260809", "status": "complete"}
+{"at_utc": "2026-08-09T18:56:04Z", "detail": {}, "event": "validated", "job_id": "vector-memory-primary-refresh-20260809", "status": "complete"}
+{"at_utc": "2026-08-09T18:57:15Z", "detail": {}, "event": "started", "job_id": "vector-memory-primary-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T18:57:16Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-primary-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T18:57:16Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-primary-refresh-20260809", "status": "complete"}
+{"at_utc": "2026-08-09T18:57:18Z", "detail": {}, "event": "validated", "job_id": "vector-memory-primary-refresh-20260809", "status": "complete"}
+{"at_utc": "2026-08-09T19:22:38Z", "detail": {}, "event": "started", "job_id": "vector-memory-primary-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:22:39Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-primary-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:22:40Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-primary-refresh-20260809", "status": "complete"}
+{"at_utc": "2026-08-09T19:22:41Z", "detail": {}, "event": "validated", "job_id": "vector-memory-primary-refresh-20260809", "status": "complete"}

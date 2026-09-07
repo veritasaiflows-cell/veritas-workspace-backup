@@ -43,10 +43,11 @@ def configure_temp_paths(module, root: Path) -> None:
     module.TMP_ARTIFACT_SPIRE_PACKET = tmp / "tmp-artifact-spire.json"
     module.SECURITY_WARNING_LEDGER_PACKET = tmp / "security-warning-ledger.json"
     module.CRON_FRESHNESS_SPINE_PACKET = tmp / "cron-freshness-spine.json"
-    module.WF78_PROMOTION_VISIBILITY_PACKET = tmp / "wf78-promotion-visibility-top10.json"
-    module.WF67_MANAGER_PACKET = tmp / "alpaca-paper-readiness" / "wf67-autonomous-paper-manager-current.json"
-    module.WF67_PAPER_GUARD_PACKET = tmp / "alpaca-paper-readiness" / "paper-execution-guard-validation.json"
-    module.SHADOW_ELIGIBILITY_PACKET = tmp / "paper-autotrader" / "shadow-eligibility.json"
+    module.FINANCE_SQL_CANON_VALIDATION_PACKET = tmp / "finance-sql-canon-access-validation.json"
+    module.QUOTE_SNAPSHOT_PROOF_PACKET = tmp / "intraday-alerts" / "quote-snapshot-proof.json"
+    module.ALERT_FRESHNESS_CONTROLLER_PACKET = tmp / "alert-level-freshness-controller.json"
+    module.FINANCE_ALERT_DIGEST_PACKET = tmp / "finance-alert-os-digest.json"
+    module.ALERTS_OS_PIVOT_VALIDATOR_PACKET = tmp / "alerts-os-pivot-validator.json"
     module.ARTIFACT_INDEX_DB = tmp / "veritas-artifact-index.sqlite"
     module.OWNER_GATED_PACKET = tmp / "owner-gated-action-review-queue.json"
     module.IMPROVEMENT_PACKET = tmp / "improvement-ledger-current.json"
@@ -205,41 +206,51 @@ def write_fixture_packets(module) -> None:
         "jobs": [],
         "validation": {"status": "ok", "errors": [], "warnings": []},
     })
-    write_json(module.WF78_PROMOTION_VISIBILITY_PACKET, {
+    write_json(module.FINANCE_SQL_CANON_VALIDATION_PACKET, {
         "status": "ok",
-        "summary": {
-            "candidate_count": 4,
-            "owner_review_ready_count": 0,
-            "market_refresh_pending_count": 1,
-            "actionable_now_count": 1,
-            "actionable_top10_count": 1,
-            "production_visible_count": 1,
-            "c_to_b_actionable_count": 1,
-            "tier_c_attention_count": 1,
-            "evidence_repair_count": 1,
-        },
-        "lanes": {"c_to_b_actionable": {"actionable_count": 1}},
+        "generated_at_utc": "2026-06-20T06:00:00Z",
+        "counts": {"securities": 18, "reference_levels": 200, "answer_path_scope": 18},
         "validation": {"status": "ok", "errors": [], "warnings": []},
     })
-    write_json(module.WF67_MANAGER_PACKET, {
+    write_json(module.QUOTE_SNAPSHOT_PROOF_PACKET, {
         "status": "ok",
-        "consumer_posture": "review_only_owner_gated_paper_manager",
-        "summary": {"position_count": 1, "ready_tickers": ["NVDA"], "blocked_tickers": []},
+        "generated_at_utc": "2026-06-20T06:00:00Z",
+        "provider": "market_data_fixture",
+        "symbols_requested": ["NVDA", "MSFT"],
+        "symbols_observed": ["NVDA", "MSFT"],
+        "symbols_missing": [],
+        "freshness_summary": {
+            "fresh_intraday": 2,
+            "current_last_completed_session": 0,
+            "stale_unexpected": 0,
+            "provider_missing": 0,
+        },
+        "market_session": {"market_session_window": "regular_session", "latest_market_date": "2026-06-20"},
     })
-    write_json(module.WF67_PAPER_GUARD_PACKET, {
+    write_json(module.ALERT_FRESHNESS_CONTROLLER_PACKET, {
+        "schema": "veritas.alert_level_freshness_controller.v1",
         "status": "ok",
-        "ready_for_paper_submit_cancel": False,
-        "findings": [{"code": "kill_switch_missing_or_expired", "severity": "critical", "value": "expired"}],
+        "generated_at_utc": "2026-06-20T06:00:00Z",
+        "summary": {
+            "ticker_count": 2,
+            "alert_state_counts": {"band_entry": 1, "no_chase": 1},
+            "freshness_review_tickers": [],
+            "invalidation_signal_tickers": [],
+        },
         "validation": {"status": "ok", "errors": [], "warnings": []},
     })
-    write_json(module.SHADOW_ELIGIBILITY_PACKET, {
+    write_json(module.FINANCE_ALERT_DIGEST_PACKET, {
+        "schema": "veritas.finance_alert_os_digest.v2",
         "status": "ok",
-        "summary": {
-            "would_buy_shadow_tickers": ["NVDA"],
-            "execution_ready_count": 0,
-            "next_safe_action": "Log shadow decisions only.",
-        },
-        "wf67_snapshot": {"guard_status": "blocked"},
+        "generated_at_utc": "2026-06-20T06:00:00Z",
+        "mode": "midday",
+        "summary": {"ticker_count": 2, "alert_state_counts": {"band_entry": 1, "no_chase": 1}},
+        "validation": {"status": "ok", "errors": [], "warnings": []},
+    })
+    write_json(module.ALERTS_OS_PIVOT_VALIDATOR_PACKET, {
+        "schema": "veritas.alerts_os_pivot_validation.v1",
+        "status": "ok",
+        "generated_at_utc": "2026-06-20T06:00:00Z",
         "validation": {"status": "ok", "errors": [], "warnings": []},
     })
     write_json(module.OWNER_GATED_PACKET, {
@@ -457,13 +468,21 @@ def test_status_card_builds_cached_rich_status_without_control_regeneration() ->
         assert payload["operating_posture"]["tokens"]["session_tokens"] == "unavailable_to_workspace_script"
         assert "not cached by this card" not in json.dumps(payload["operating_posture"])
         assert payload["artifact_index_health"]["tmp_json_count"] == 10
+        assert "wf78_json_count" not in payload["artifact_index_health"]
         assert payload["cron_fleet_health"]["requires_attention_count"] == 0
-        assert payload["wf78_visibility"]["canonical_top_of_funnel"] == "owner_review_ready_count"
-        assert payload["paper_top_blocker_summary"]["top_blocker_code"] == "kill_switch_missing_or_expired"
         assert payload["security_warnings"]["open_warning_count"] == 0
-        assert payload["finance_os"]["sql_canon"]["securities"] == 200
+        assert "finance_os" not in payload
+        assert "wf78_visibility" not in payload
+        assert "paper_top_blocker_summary" not in payload
+        assert payload["finance_alerts_os"]["status"] == "ok"
+        assert payload["finance_alerts_os"]["source_artifacts"] == module.ALERTS_OS_SOURCE_ARTIFACTS
+        assert payload["finance_alerts_os"]["guarded_sql"]["securities"] == 18
+        assert payload["finance_alerts_os"]["quote_snapshot"]["observed_count"] == 2
+        assert payload["finance_alerts_os"]["alert_freshness_controller"]["ticker_count"] == 2
+        assert payload["finance_alerts_os"]["digest"]["mode"] == "midday"
+        assert payload["finance_alerts_os"]["pivot_validation"]["error_count"] == 0
         assert payload["pm_queue"]["stale_cockpit_sources"] == 13
-        assert payload["pm_queue"]["autonomy"]["inbox_top_job"] == "pm-finance-engine-refresh-artifact"
+        assert "autonomy" not in payload["pm_queue"]
         assert payload["wf74_pickup"]["cron_blocked_or_escalated_count"] == 0
         assert payload["wf74_pickup"]["cron_migration_repair_visible"] is False
         assert payload["wf74_pickup"]["cron_migration_residue_visible"] is True
@@ -487,15 +506,91 @@ def test_status_card_builds_cached_rich_status_without_control_regeneration() ->
         assert payload["recent_work"][-1] == "Post-Close SQL-First Cron Cleanup"
 
         text = module.render_markdown(payload)
-        assert "### Finance OS" in text
+        assert "### Alerts and Recommendations OS" in text
         assert "### PM & Queue" in text
-        assert "WF78 lanes" in text
+        assert "Guarded SQL" in text
+        assert "Alert freshness" in text
         assert "OTEL carry-forward" in text
         assert "Wiki bootstrap proof" in text
         assert "Actionable improvements" in text
-        assert "Paper blocker" in text
         assert "Capital deployment approved: `no`" in text
         assert "Read tmp/veritas-status-card-frontdoor.json" in text
+
+
+def test_alerts_os_projection_strips_operational_finance_routes_but_keeps_retired_history() -> None:
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+        configure_temp_paths(module, root)
+        write_fixture_packets(module)
+        legacy_payload = {
+            "status": "ok",
+            "finance_os": {"trade_grade_repair": {"rows": 5}},
+            "wf78_visibility": {"status": "ok"},
+            "wf78_legacy_label_guard": {"status": "ok"},
+            "paper_top_blocker_summary": {"status": "blocked"},
+            "input_artifacts": {
+                "wf78_promotion_visibility_packet": {"path": "tmp/wf78-promotion-visibility-top10.json"},
+                "cron_control_packet": {"path": "tmp/cron-control-packet.json"},
+            },
+            "artifact_index_health": {
+                "wf78_json_count": 4,
+                "truth_pointers": {
+                    "cron": "tmp/cron-control-packet.json",
+                    "paper": "tmp/alpaca-paper-readiness/current.json",
+                },
+                "next_safe_action": "Run the WF67 paper manager.",
+            },
+            "pm_queue": {
+                "pm_readiness_band": "green",
+                "ready_jobs": 1,
+                "blocked_jobs": 0,
+                "cron_escalation_signals": 0,
+                "cron_blocked": 0,
+                "autonomy": {"inbox_top_job": "pm-wf87-runtime"},
+            },
+            "active_items": [
+                {"item": "Run WF78 deployment refresh", "state": "ready"},
+                {"item": "Refresh alert evidence", "state": "ready"},
+            ],
+            "next_actions": ["Open the Execution Board", "Refresh the alert digest"],
+            "stale_inputs": ["wf67_manager_packet", "cron_control_packet"],
+            "input_validation_warnings": ["wf78_promotion_visibility_packet.warning", "cron_control_packet.warning"],
+            "workflow_routing": {
+                "routes": [
+                    {
+                        "workflow_id": "WF78",
+                        "lifecycle": "paused",
+                        "current_state": "Retired; preserve history only.",
+                        "next_action": "Do not advance.",
+                        "authority_class": "paused_review_only",
+                    },
+                    {
+                        "workflow_id": "WF85",
+                        "lifecycle": "active",
+                        "current_state": "Alerts and recommendations review.",
+                    },
+                ]
+            },
+        }
+
+        projected = module.apply_alerts_os_pivot_projection(legacy_payload)
+
+        assert "finance_os" not in projected
+        assert "wf78_visibility" not in projected
+        assert "paper_top_blocker_summary" not in projected
+        assert projected["finance_alerts_os"]["status"] == "ok"
+        assert list(projected["input_artifacts"]) == ["cron_control_packet"]
+        assert "wf78_json_count" not in projected["artifact_index_health"]
+        assert "paper" not in projected["artifact_index_health"]["truth_pointers"]
+        assert projected["artifact_index_health"]["next_safe_action"].startswith("Use the artifact lifecycle owner")
+        assert "autonomy" not in projected["pm_queue"]
+        assert [item["item"] for item in projected["active_items"]] == ["Refresh alert evidence"]
+        assert projected["next_actions"] == ["Refresh the alert digest"]
+        assert projected["stale_inputs"] == ["cron_control_packet"]
+        assert projected["input_validation_warnings"] == ["cron_control_packet.warning"]
+        assert projected["workflow_routing"]["routes"][0]["workflow_id"] == "WF78"
+        assert projected["workflow_routing"]["routes"][0]["lifecycle"] == "paused"
 
 
 def test_status_card_surfaces_sanitized_isolated_agent_fleet() -> None:
@@ -598,7 +693,13 @@ def test_compact_frontdoor_defers_nested_proof_with_exact_hashes() -> None:
         assert len(serialized.encode("utf-8")) < 20_000
         assert "input_artifacts" not in frontdoor
         assert "workflow_capsules" not in serialized
-        assert frontdoor["efficiency_guard"]["minimum_comparable_main_accepted_jobs"] == 10
+        assert frontdoor["finance_alerts_os"]["status"] == "ok"
+        assert frontdoor["finance_alerts_os"]["ticker_count"] == 2
+        assert "wf78_legacy_label_guard" not in frontdoor
+        assert frontdoor["efficiency_guard"]["minimum_comparable_main_accepted_jobs"] == (
+            module.implementation_router.execution_efficiency_policy()["quality_weighted_efficiency"]
+            .get("minimum_comparable_main_accepted_jobs")
+        )
         assert frontdoor["efficiency_guard"]["automatic_route_promotion_allowed"] is False
         assert module.validation_for_loaded_frontdoor(frontdoor)["status"] == "ok"
 
@@ -706,10 +807,12 @@ def test_stale_autonomy_handoff_does_not_win_active_items_when_job_not_ready() -
         payload = module.build_payload(max_age_minutes=90)
 
         assert payload["validation"]["status"] == "ok"
-        assert payload["pm_queue"]["autonomy"]["current_handoff_valid"] is False
+        assert "autonomy" not in payload["pm_queue"]
         assert "pm_autonomy_handoff.stale_or_not_ready" in payload["input_validation_warnings"]
-        assert payload["active_items"][0]["item"] == "Advance 500-ticker feeder scaleout through the reputation gate"
-        assert payload["active_items"][0]["state"] == "not_ready"
+        assert all(
+            item["item"] != "Advance 500-ticker feeder scaleout through the reputation gate"
+            for item in payload["active_items"]
+        )
 
 
 def test_wf74_monitor_only_residue_does_not_create_active_pickup() -> None:
@@ -819,6 +922,7 @@ def test_status_card_repairs_stale_policy_projections_without_mislabeling_source
 
 def main() -> int:
     test_status_card_builds_cached_rich_status_without_control_regeneration()
+    test_alerts_os_projection_strips_operational_finance_routes_but_keeps_retired_history()
     test_status_card_surfaces_sanitized_isolated_agent_fleet()
     test_read_only_renderer_uses_cached_card_without_writing()
     test_compact_frontdoor_defers_nested_proof_with_exact_hashes()

@@ -1,7 +1,7 @@
 {
   "schema": "veritas.cron_contract.v1",
   "job_id": "306b35e0-fee9-4e7b-93ff-50e73bfa54c4",
-  "name": "WF87 shadow threshold after-market check",
+  "name": "Retired \u2014 WF87 shadow threshold after-market check",
   "required": false,
   "owner_workflow": "WF87",
   "contract_reason": "One-shot owner-requested after-market WF87 threshold reminder/check. The job is enabled until its scheduled run and must remain governed even though it is review-only and delete-after-run.",
@@ -80,5 +80,7 @@
     "owner_approval_inferred": false
   },
   "updated_at_utc": "2026-06-23T04:21:00Z",
-  "contract_update_reason": "Learning Loop V2 implementation: govern the owner-requested WF87 after-market one-shot reminder so enabled scheduler jobs never sit outside the freshness spine."
+  "contract_update_reason": "Learning Loop V2 implementation: govern the owner-requested WF87 after-market one-shot reminder so enabled scheduler jobs never sit outside the freshness spine.",
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "rollback_requires_owner_gate": true
 }

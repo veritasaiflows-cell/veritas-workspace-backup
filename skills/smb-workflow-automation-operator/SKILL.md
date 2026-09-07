@@ -1,131 +1,52 @@
 ---
-name: smb-workflow-automation-operator
-description: "Operate the Veritas SMB Workflow Clarity lane for fake-scenario practice, manual service packets, workflow automation blueprints, tool-fit recommendations, and customer-safety stop lines."
+name: "smb-workflow-automation-operator"
+description: "Operate sanitized SMB workflow design with strict customer-safety gates."
 ---
 
 # SMB Workflow Automation Operator
 
 ## Purpose
 
-Use this skill for Veritas SMB / Workflow Clarity / Lead Rescue work. It owns the SMB department lane so finance skills stay focused on public-market intelligence, portfolio posture, and owner-gated capital decisions.
+Own the SMB Workflow Clarity / Lead Rescue lane so public-market alerts and recommendations remain separate. Turn fake or sanitized scenarios into manual packets, automation blueprints, training simulations, and readiness proof.
 
-This skill turns fake or sanitized SMB scenarios into manual review packets, automation blueprints, operator handoffs, training simulations, and readiness proof. It does not implement live customer automations by default.
+## Use
 
-## Use When
+Use for lead intake, missed-call recovery, follow-up tracking, owner dashboards, Zapier/Make/n8n tool fit, fake scenarios, and internal service drills.
 
-- Randall asks about SMB Workflow Clarity, Lead Rescue, missed-call recovery, lead intake, follow-up tracking, owner dashboards, or SMB automation service delivery.
-- The task involves Zapier, Make, n8n, CRM/email/calendar/forms/spreadsheets, or workflow automation tool-fit selection for SMB customers.
-- The work is a fake scenario, training simulation, manual service packet, operator handoff, or internal readiness drill.
-- The Node cockpit, SQL service-state adapter, PM control lane, Academy training lane, or cron reminder lane needs SMB-specific interpretation.
-
-## Source Order
-
-Start with current workspace truth before inventing a service story:
-
-1. `06. Playbooks/Active Workflows.md`
-2. `TOOLS.md`
-3. today's `memory/YYYY-MM-DD.md`
-4. `tmp/generic-service-run-contract.json`
-5. `tmp/wf75-smb-workflow-scenario-library.json`
-6. `tmp/wf75-smb-customer-preview.json`
-7. `tmp/wf75-smb-customer-preview-validation.json`
-8. `tmp/wf75-smb-pilot-decision-packet.json`
-9. `tmp/wf75-smb-automation-blueprints.json`
-10. `tmp/wf75-smb-automation-blueprints-validation.json`
-11. `tmp/wf75-smb-boundary-lint.json`
-12. `tmp/generic-service-state.sqlite`
-13. `tmp/wf75-service-state.sqlite`
-14. PM cockpit routes: `/smb`, `/academy`, `/sql`, `/api/sql/service-state`, `/api/smb/service-runs`
-15. Academy assets under `training/wf75-academy/`
-
-SQL and cockpit routes are derived control-plane visibility, not customer canon, launch authority, customer-data import authority, or approval.
-
-`tmp/wf75-smb-boundary-lint.json` is the independent Go validator proof for SMB authority drift. Treat `status=blocked` as a hard stop before readiness, cockpit, or PM handoff claims.
+Start with Active Workflows, TOOLS, current memory, the WF75 scenario/blueprint/boundary artifacts, derived service-state databases, and PM cockpit routes. These are control-plane evidence, not customer canon or launch approval.
 
 ## Department Split
 
-- Finance skills own market, portfolio, ticker, macro, technical, positioning, paper-trading, and financial-planning work.
-- `smb-workflow-automation-operator` owns SMB operational workflow automation, service packets, fake scenarios, manual handoffs, and tool-fit recommendations.
-- `veritas-pm-department` coordinates PM prioritization, readiness posture, queues, and launch-gate framing.
-- `cron-automation-manager` owns scheduled reminders and generated review-only packets.
-- `SQLite` owns local database boundaries, read/write safety, schema inspection, and SQL adapter rules.
-- `workspace-qa-pass` audits output quality, stop lines, and cross-surface consistency.
+- Finance skills own public-market evidence, alerts, macro, fundamental/technical research, and non-executing recommendations.
+- This skill owns SMB workflow design and sanitized service packets.
+- PM coordinates readiness and queues.
+- Cron owns scheduled internal packets.
+- SQLite owns database safety.
+- QA audits boundaries and output quality.
 
-## ClawHub Pattern Intake
+## Packet
 
-ClawHub skills may be inspected for ideas, but do not install or activate external automation skills by default. Useful pattern classes from ClawHub include:
+For each scenario provide:
 
-- automation opportunity audit
-- trigger / condition / action workflow design
-- Zapier / Make / n8n tool-fit comparison
-- testing with edge cases
-- error handling, retry, monitoring, and documentation
-- sales workflow examples for CRM, email, forms, spreadsheets, and notifications
+1. scenario classification
+2. manual workflow and bottleneck
+3. service packet and handoff owner
+4. automation blueprint
+5. trigger/input contract
+6. dedupe and idempotency behavior
+7. ordered actions and human checkpoint
+8. retry/fallback/audit trail
+9. tool candidate
+10. activation state and stop lines
 
-Copy only the useful pattern into Veritas-owned skills, scripts, validators, training, or packets after review. External skills do not override Veritas stop lines.
-
-## Packet Workflow
-
-For each SMB scenario:
-
-1. Classify the request as fake scenario, sanitized practice case, internal service drill, or future real-client gate.
-2. Map the manual workflow: trigger, intake fields, owner action, follow-up timing, current bottleneck, failure mode, and desired customer-visible result.
-3. Build the service packet: problem summary, workflow map, priority, next best manual step, script/template, handoff owner, and success criteria.
-4. Build the automation blueprint: trigger, input contract, dedupe key, idempotency store, ordered actions, human review checkpoint, error/fallback route, retry/backoff, audit log, and tool candidate.
-5. Mark implementation posture clearly: manual-only, fake-data simulation, dry-run design, internal pilot, or blocked until explicit future gate.
-6. Add QA stop lines and unresolved assumptions.
-
-## Automation Blueprint Minimum Fields
-
-Every automation blueprint should include:
-
-- trigger event
-- required inputs and source system
-- unique ID / dedupe key
-- idempotency behavior
-- ordered steps
-- human review checkpoint
-- notification path
-- retry / backoff behavior
-- failure fallback
-- audit log or status trail
-- tool candidate: Zapier, Make, n8n, custom Node, manual-only, or undecided
-- activation state: design-only, fake-data simulation, dry run, internal pilot, or blocked
-
-## Node And SQL Cockpit Usage
-
-Use the PM cockpit as the operating surface:
-
-- `/smb` for current SMB scenarios and manual service posture.
-- `/academy` for Randall/Randall-team training status.
-- `/sql` for read-only SQL service-state visibility.
-- `/api/sql/service-state` for SQL-backed service-run, queue, artifact, event, and metadata rows.
-- `/api/smb/service-runs` for service-run rows with SQL-backed expansion.
-
-Do not accept arbitrary SQL from chat, browser, or generated artifacts. Node should use allowlisted read-only queries over approved local SQLite files.
+Allowed activation labels are design-only, fake-data simulation, dry run, internal pilot, or blocked.
 
 ## Stop Lines
 
-Stop and state the boundary before proceeding if the task would require:
+Stop before real customer identity, suitability or financial data, private business data, retention/import, outbound communications, customer-system writes, credentials/OAuth/billing, external delivery, public launch, ROI/legal/compliance/security claims, purchases, or account changes.
 
-- real customer identity, customer portfolio, suitability, risk profile, income/net-worth, tax, retirement, brokerage, account, credential, or private business data
-- customer-data retention or import
-- outbound calls, texts, emails, social posts, review requests, ads, or customer communications
-- writing to a customer's CRM, email, calendar, forms, payment system, website, or automation account
-- using live customer credentials, API keys, OAuth, or billing
-- external delivery, public launch, or client-facing representation
-- ROI, revenue, legal, compliance, security, or certification claims
-- spending, subscriptions, tool purchases, or account changes
-- treating SQL as canon, owner approval, customer source of truth, or implementation authority
+Use allowlisted read-only SQL only. Never treat a derived DB as customer truth or implementation authority.
 
-## Output Format
+## Output
 
-Return:
-
-1. conclusion
-2. scenario classification
-3. manual packet summary
-4. automation blueprint
-5. tool-fit recommendation
-6. stop lines / blockers
-7. next action
+Lead with the conclusion, then scenario, manual packet, blueprint, tool fit, blockers, and next safe action.

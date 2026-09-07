@@ -1,0 +1,36 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "5918839c-25a0-4220-8d4a-75f8e71b8e4e",
+  "name": "Retired — Finance - Sunday Research Opportunity Reset",
+  "required": false,
+  "owner_workflow": "Retired finance automation history",
+  "contract_reason": "Historical scheduler contract retained after the alerts-and-recommendations OS cutover.",
+  "description": "Retired 2026-08-29 by the owner-authorized alerts-and-recommendations OS pivot. Legacy job 'Finance - Sunday Research Opportunity Reset' is outside the active alerts OS or duplicates its clean chain. It remains disabled; re-enable only through a new explicit owner cron gate.",
+  "enabled": false,
+  "deleteAfterRun": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "35 9 * * 0",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "python",
+      "scripts\\sunday_research_opportunity_reset_cron_runner.py",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 1800
+  },
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired by the owner-authorized alerts-and-recommendations OS pivot; historical proof only and no automatic resume.",
+  "rollback_requires_owner_gate": true
+}

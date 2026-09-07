@@ -1,233 +1,186 @@
 from __future__ import annotations
 
-import copy
+import ast
 import json
+import subprocess
+import sys
 import tempfile
+import unittest
 from pathlib import Path
 
-import wf67_order_card_request_generator as gen
-import alpaca_paper_trade_executor as wf67
+
+MODULE = Path(__file__).resolve().with_name("wf67_order_card_request_generator.py")
+EXPECTED_PAYLOAD = {
+    "status": "blocked",
+    "reason": "retired_surface",
+    "retired": True,
+    "tombstone": True,
+    "network_allowed": False,
+    "filesystem_mutation_allowed": False,
+    "paper_authority": False,
+    "order_authority": False,
+    "account_authority": False,
+}
+LEGACY_FLAGS = (
+    "--card",
+    "--output",
+    "--promotion-gate",
+    "--require-promotion-gate",
+)
 
 
-def base_card() -> dict:
-    return {
-        "schema_version": 1,
-        "artifact_type": "main_session_wf67_order_decision_card",
-        "request_id": "wf67-main-card-etn-test",
-        "authority": {
-            "main_session_recommendation_allowed": True,
-            "wf67_request_artifact_generation_allowed": True,
-            "paper_only": True,
-            "paper_order_execution_allowed_by_card": False,
-            "live_trade_allowed": False,
-            "owner_approval_inferred": False,
-            "portfolio_or_canon_apply_allowed": False,
-            "cash_or_risk_rule_mutation_allowed": False,
-        },
-        "order": {"symbol": "ETN", "side": "buy", "type": "limit", "time_in_force": "day", "limit_price": 391.35, "qty": None, "notional": 100.0},
-        "risk_check": {
-            "status": "ok",
-            "estimated_notional_usd": 100.0,
-            "max_loss_usd": 100.0,
-            "max_notional_usd": 125.0,
-            "entry_band_low": 356.99,
-            "entry_band_high": 400.66,
-            "observed_price": 391.35,
-            "observed_entry_status": "IN_BAND",
-            "stop": 337.14,
-            "sizing_rationale": "ETN optional incremental starter top-up; existing 1 paper share already counts as starter exposure.",
-        },
-        "source": {
-            "source_artifact": "tmp/tuesday-position-sizing-readiness-2026-05-26.json",
-            "capital_recommendation_source": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
-            "owner_or_pilot_scope": "approval-ready ETN paper-order card pending exact Randall approval",
-            "approval_artifact": "tmp/alpaca-paper-readiness/phase-7-advisor-paper-execution-approval-2026-05-19.json",
-        },
-        "owner_approval": {"status": "pending_exact_randall_approval"},
-    }
+def call_name(node: ast.Call) -> str:
+    current: ast.AST = node.func
+    pieces: list[str] = []
+    while isinstance(current, ast.Attribute):
+        pieces.append(current.attr)
+        current = current.value
+    if isinstance(current, ast.Name):
+        pieces.append(current.id)
+    return ".".join(reversed(pieces))
 
 
-def expect_card_error(card: dict, text: str) -> None:
-    try:
-        gen.validate_card(card)
-    except gen.CardError as exc:
-        assert text in str(exc), str(exc)
-        return
-    raise AssertionError(f"expected CardError containing {text}")
+def assignment_literal(tree: ast.Module, name: str) -> object:
+    for node in tree.body:
+        if (
+            isinstance(node, ast.Assign)
+            and len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)
+            and node.targets[0].id == name
+        ):
+            return ast.literal_eval(node.value)
+    raise AssertionError(f"missing literal assignment: {name}")
 
 
-def test_pending_card_builds_request_but_cannot_execute() -> None:
-    with tempfile.TemporaryDirectory() as tmp:
-        path = Path(tmp) / "card.json"
-        card = base_card()
-        path.write_text("{}", encoding="utf-8")
-        request = gen.build_request(card, card_path=path)
-        assert wf67.validate_trade_request(request) == "ok"
-        assert request["source"]["exact_order_owner_approval_status"] == "pending_exact_randall_approval"
-        assert request["authority"]["paper_submit_allowed"] is True
-        assert request["authority"]["paper_submit_allowed_after_exact_approval_and_guard"] is True
-        assert request["authority"]["currently_executable"] is False
-        assert request["execution_readiness"]["currently_executable"] is False
-        assert request["execution_readiness"]["execution_by_this_artifact_allowed"] is False
-        assert request["execution_readiness"]["requires_exact_owner_approval"] is True
-        try:
-            wf67.validate_exact_order_owner_approval_for_execute(request)
-        except wf67.BlockedRun as exc:
-            assert "exact_order_owner_approval_missing_for_execute" in str(exc)
-        else:
-            raise AssertionError("pending request must not be executable")
+def tree_state(root: Path) -> list[tuple[str, bool, bytes | None]]:
+    return [
+        (path.relative_to(root).as_posix(), path.is_dir(), None if path.is_dir() else path.read_bytes())
+        for path in sorted(root.rglob("*"))
+    ]
 
 
-def test_approved_card_carries_execute_approval_metadata() -> None:
-    card = base_card()
-    card["owner_approval"] = {
-        "status": "approved_exact_order",
-        "approved_by": "Randall",
-        "approval_text": "Randall approved this exact ETN paper order card for test validation.",
-    }
-    request = gen.build_request(card, card_path=Path("tmp/card.json"))
-    assert wf67.validate_exact_order_owner_approval_for_execute(request) == "ok"
+class Wf67OrderCardRequestGeneratorRetirementTests(unittest.TestCase):
+    def test_source_is_a_minimal_fail_closed_tombstone(self) -> None:
+        source = MODULE.read_text(encoding="utf-8")
+        lowered = source.lower()
+        tree = ast.parse(source, filename=str(MODULE))
 
+        imports: list[tuple[str, tuple[str, ...]]] = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                imports.extend((alias.name, ()) for alias in node.names)
+            elif isinstance(node, ast.ImportFrom):
+                imports.append((node.module or "", tuple(alias.name for alias in node.names)))
+        self.assertEqual(imports, [("__future__", ("annotations",)), ("json", ())])
 
-def test_card_rejects_authority_drift_and_oversize() -> None:
-    card = base_card()
-    bad = copy.deepcopy(card)
-    bad["authority"]["live_trade_allowed"] = True
-    expect_card_error(bad, "authority_false_missing:live_trade_allowed")
+        functions = [
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        ]
+        self.assertEqual([node.name for node in functions], ["main"])
+        main = functions[0]
+        self.assertEqual([argument.arg for argument in main.args.args], ["_argv"])
+        self.assertEqual(len(main.args.defaults), 1)
+        self.assertIsNone(ast.literal_eval(main.args.defaults[0]))
+        self.assertFalse(
+            any(
+                isinstance(node, ast.Name)
+                and node.id == "_argv"
+                and isinstance(node.ctx, ast.Load)
+                for node in ast.walk(main)
+            ),
+            "main must ignore every supplied argv shape",
+        )
 
-    bad = copy.deepcopy(card)
-    bad["risk_check"]["estimated_notional_usd"] = 501
-    expect_card_error(bad, "estimated_notional_exceeds_wf67_pilot_cap")
+        calls = {call_name(node) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+        self.assertEqual(calls, {"print", "json.dumps", "SystemExit", "main"})
+        self.assertEqual(assignment_literal(tree, "EXIT_BLOCKED"), 2)
+        self.assertEqual(assignment_literal(tree, "BLOCKED_PAYLOAD"), EXPECTED_PAYLOAD)
 
+        self.assertIn("retired", lowered)
+        self.assertIn("tombstone", lowered)
+        forbidden = (
+            *LEGACY_FLAGS,
+            "--apply",
+            "--execute",
+            "argparse",
+            "pathlib",
+            "subprocess",
+            "socket",
+            "requests",
+            "httpx",
+            "urllib",
+            "http://",
+            "https://",
+            "credential",
+            "os.environ",
+            "sys.argv",
+            "__import__",
+            "importlib",
+            "eval(",
+            "exec(",
+            "open(",
+            "read_text",
+            "read_bytes",
+            "write_text",
+            "write_bytes",
+            "mkdir(",
+            "unlink(",
+            "rename(",
+            "replace(",
+        )
+        for token in forbidden:
+            self.assertNotIn(token, lowered, token)
 
-def test_card_rejects_schema_and_execution_surface_drift() -> None:
-    card = base_card()
-    bad = copy.deepcopy(card)
-    bad["schema_version"] = 2
-    expect_card_error(bad, "schema_version_must_be_1")
+    def test_all_argv_shapes_block_with_stable_json_and_no_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            sandbox = Path(temporary_directory)
+            sentinel = sandbox / "input-sentinel.json"
+            sentinel.write_text('{"sentinel":"must-remain-unchanged"}\n', encoding="utf-8")
+            nested = sandbox / "nested"
+            nested.mkdir()
+            nested_sentinel = nested / "owner-sentinel.txt"
+            nested_sentinel.write_text("OWNER SENTINEL\n", encoding="utf-8")
+            target = sandbox / "must-not-exist.json"
+            before = tree_state(sandbox)
+            expected_stdout = json.dumps(EXPECTED_PAYLOAD, sort_keys=True) + "\n"
+            invocations = (
+                (),
+                ("--help",),
+                ("--unknown-legacy-flag", "ignored", str(sentinel)),
+                (
+                    "--card",
+                    str(sentinel),
+                    "--output",
+                    str(target),
+                    "--promotion-gate",
+                    str(nested_sentinel),
+                    "--require-promotion-gate",
+                ),
+                ("--execute", "--submit-order", "--account", str(target), "positional-value"),
+            )
 
-    bad = copy.deepcopy(card)
-    bad["kill_switch"] = {"created": True}
-    expect_card_error(bad, "forbidden_card_top_level_key:kill_switch")
+            for argv in invocations:
+                with self.subTest(argv=argv):
+                    completed = subprocess.run(
+                        [sys.executable, "-B", str(MODULE), *argv],
+                        cwd=sandbox,
+                        capture_output=True,
+                        text=True,
+                        check=False,
+                        timeout=10,
+                    )
+                    self.assertEqual(completed.returncode, 2, completed)
+                    self.assertEqual(completed.stdout, expected_stdout)
+                    self.assertEqual(completed.stderr, "")
+                    self.assertEqual(json.loads(completed.stdout), EXPECTED_PAYLOAD)
+                    self.assertEqual(tree_state(sandbox), before)
 
-    bad = copy.deepcopy(card)
-    bad["owner_approval"] = {
-        "status": "pending_exact_randall_approval",
-        "approved_by": "Randall",
-        "approval_text": "Looks good",
-    }
-    expect_card_error(bad, "pending_card_must_not_carry_approval_metadata")
-
-
-def test_market_order_requires_explicit_exact_approval() -> None:
-    card = base_card()
-    card["order"] = {"symbol": "ETN", "side": "buy", "type": "market", "time_in_force": "day", "limit_price": None, "qty": 1, "notional": None}
-    expect_card_error(card, "market_order_requires_explicit_owner_approval")
-
-    card["owner_approval"] = {
-        "status": "approved_exact_order",
-        "approved_by": "Randall",
-        "approval_text": "Randall approved this exact ETN market paper order card for test validation.",
-        "market_order_owner_approved": True,
-    }
-    request = gen.build_request(card, card_path=Path("tmp/card.json"))
-    assert request["source"]["market_order_owner_approved"] is True
-
-
-def test_required_promotion_gate_blocks_non_promoted_buy() -> None:
-    card = base_card()
-    with tempfile.TemporaryDirectory() as tmp:
-        gate_path = Path(tmp) / "gate.json"
-        gate_path.write_text(json.dumps({
-            "status": "ok",
-            "schema_version": "test",
-            "generated_at_utc": "2026-05-31T00:00:00Z",
-            "candidates": [{
-                "ticker": "ETN",
-                "rank": 1,
-                "chief_intelligence_score": 80,
-                "chief_intelligence_verdict": "monitor_only",
-                "band_status": "IN_BAND",
-                "vetoes": [],
-                "authority": {
-                    "paper_order_execution_allowed": False,
-                    "owner_approval_inferred": False,
-                },
-            }],
-        }), encoding="utf-8")
-        try:
-            gen.build_request(card, card_path=Path("tmp/card.json"), promotion_gate_path=gate_path)
-        except gen.CardError as exc:
-            assert "promotion_gate_verdict_not_buy_ready:ETN:monitor_only" in str(exc), str(exc)
-        else:
-            raise AssertionError("non-promoted buy must be blocked by required promotion gate")
-
-
-def test_required_promotion_gate_is_carried_into_request_source() -> None:
-    card = base_card()
-    with tempfile.TemporaryDirectory() as tmp:
-        gate_path = Path(tmp) / "gate.json"
-        gate_path.write_text(json.dumps({
-            "status": "ok",
-            "schema_version": "test",
-            "generated_at_utc": "2026-05-31T00:00:00Z",
-            "candidates": [{
-                "ticker": "ETN",
-                "rank": 3,
-                "chief_intelligence_score": 83.4,
-                "chief_intelligence_verdict": "promote_for_owner_review",
-                "band_status": "IN_BAND",
-                "vetoes": [],
-                "entry_band": {"low": 356.99, "high": 400.66, "stop": 337.14},
-                "authority": {
-                    "paper_order_execution_allowed": False,
-                    "owner_approval_inferred": False,
-                },
-            }],
-        }), encoding="utf-8")
-        request = gen.build_request(card, card_path=Path("tmp/card.json"), promotion_gate_path=gate_path)
-        gate = request["source"]["chief_intelligence_promotion_gate"]
-        assert gate["ticker"] == "ETN"
-        assert gate["chief_intelligence_verdict"] == "promote_for_owner_review"
-
-
-def test_required_promotion_gate_band_must_match_card() -> None:
-    card = base_card()
-    with tempfile.TemporaryDirectory() as tmp:
-        gate_path = Path(tmp) / "gate.json"
-        gate_path.write_text(json.dumps({
-            "status": "ok",
-            "schema_version": "test",
-            "generated_at_utc": "2026-05-31T00:00:00Z",
-            "candidates": [{
-                "ticker": "ETN",
-                "rank": 3,
-                "chief_intelligence_score": 83.4,
-                "chief_intelligence_verdict": "promote_for_owner_review",
-                "band_status": "IN_BAND",
-                "vetoes": [],
-                "entry_band": {"low": 382.9, "high": 401.36, "stop": 362.67},
-                "authority": {
-                    "paper_order_execution_allowed": False,
-                    "owner_approval_inferred": False,
-                },
-            }],
-        }), encoding="utf-8")
-        try:
-            gen.build_request(card, card_path=Path("tmp/card.json"), promotion_gate_path=gate_path)
-        except gen.CardError as exc:
-            assert "promotion_gate_band_mismatch:ETN" in str(exc), str(exc)
-        else:
-            raise AssertionError("stale promotion-gate bands must not be embedded in a WF67 request")
+            self.assertFalse(target.exists())
+            self.assertEqual(sentinel.read_text(encoding="utf-8"), '{"sentinel":"must-remain-unchanged"}\n')
+            self.assertEqual(nested_sentinel.read_text(encoding="utf-8"), "OWNER SENTINEL\n")
 
 
 if __name__ == "__main__":
-    test_pending_card_builds_request_but_cannot_execute()
-    test_approved_card_carries_execute_approval_metadata()
-    test_card_rejects_authority_drift_and_oversize()
-    test_card_rejects_schema_and_execution_surface_drift()
-    test_market_order_requires_explicit_exact_approval()
-    test_required_promotion_gate_blocks_non_promoted_buy()
-    test_required_promotion_gate_is_carried_into_request_source()
-    test_required_promotion_gate_band_must_match_card()
-    print("wf67_order_card_request_generator_tests_passed")
+    unittest.main()

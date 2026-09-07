@@ -1,0 +1,52 @@
+[
+  {
+    "id": "seed-started",
+    "timestamp": "2026-09-07T04:48:28Z",
+    "actor": {
+      "name": "local learner"
+    },
+    "verb": {
+      "id": "https://adlnet.gov/expapi/verbs/started",
+      "display": {
+        "en-US": "started"
+      }
+    },
+    "object": {
+      "id": "https://veritas.local/training/openclaw-day1-gateway-control-ui",
+      "definition": {
+        "name": {
+          "en-US": "OpenClaw Day 1: Gateway, Session, and Control UI"
+        }
+      }
+    },
+    "context": {
+      "platform": "Veritas local HTML training runtime"
+    }
+  },
+  {
+    "id": "seed-reviewed-boundary",
+    "timestamp": "2026-09-07T04:48:28Z",
+    "actor": {
+      "name": "local learner"
+    },
+    "verb": {
+      "id": "https://adlnet.gov/expapi/verbs/reviewed_boundary",
+      "display": {
+        "en-US": "reviewed_boundary"
+      }
+    },
+    "object": {
+      "id": "https://veritas.local/training/openclaw-day1-gateway-control-ui/authority-boundary"
+    },
+    "result": {
+      "completion": true,
+      "success": true
+    },
+    "context": {
+      "extensions": {
+        "https://veritas.local/extensions/internal_training_only": true,
+        "https://veritas.local/extensions/external_delivery_approved": false
+      }
+    }
+  }
+]

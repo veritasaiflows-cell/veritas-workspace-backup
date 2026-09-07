@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "phase": "phase_8_full_paper_trading_approval",
+  "approval_status": "approved_full_paper_trading_when_randall_approves_order_under_wf67_guardrails",
+  "approved_by": "Randall",
+  "approved_at_local": "2026-05-20T21:37:00-07:00",
+  "approved_at_utc": "2026-05-21T04:37:00Z",
+  "approval_text_summary": "Explicit approval provided for paper-trading only to allow full paper trading abilities to place trades when Randall approves order.",
+  "paper_only": true,
+  "live_submit_allowed": false,
+  "live_cancel_allowed": false,
+  "live_endpoint_forbidden": true,
+  "required_endpoint": "https://paper-api.alpaca.markets",
+  "forbidden_endpoint": "https://api.alpaca.markets",
+  "money_movement_allowed": false,
+  "account_settings_mutation_allowed": false,
+  "live_credentials_allowed": false,
+  "paper_results_promote_to_live_allowed": false,
+  "owner_approval_inference_allowed": false,
+  "per_order_owner_approval_required": true,
+  "standing_autonomous_order_authority": false,
+  "allowed_intent_under_guard": [
+    "create scoped paper order request after Randall approves exact order terms",
+    "submit scoped paper buy or sell orders through approved WF67 paper wrapper after validation",
+    "cancel scoped paper orders through approved WF67 paper wrapper after validation",
+    "read and reconcile paper account/orders/positions",
+    "record paper lifecycle/outcome artifacts for WF55/WF68 review-only feedback"
+  ],
+  "implementation_truth": {
+    "current_single_order_wrapper_supports": {
+      "sides": ["buy", "sell"],
+      "order_types": ["limit", "market"],
+      "time_in_force": ["day", "gtc"],
+      "endpoint": "https://paper-api.alpaca.markets",
+      "method": "POST /v2/orders"
+    },
+    "capabilities_not_yet_enabled_without_schema_executor_validator_upgrade": [
+      "extended-hours flags",
+      "short sales",
+      "margin or leverage",
+      "options",
+      "crypto",
+      "multi-leg/bracket/OCO/OTO orders",
+      "basket execution outside an exact validated full-scope artifact"
+    ],
+    "plain_english": "This approval records Randall's paper-only intent. Paper limit/GTC support is enabled only through the matching request schema, wrapper, validator, risk checks, fresh kill switch, audit log, and exact owner-approved order terms. Market/GTC remains blocked; current executable wrapper supports limit/market day orders and limit GTC orders only."
+  },
+  "required_before_any_paper_order": [
+    "Randall-approved exact order terms or a scoped validated pilot/full-scope artifact",
+    "paper-only request artifact naming ticker, side, quantity/notional, order type, time-in-force, rationale, and risk check",
+    "fresh short-lived WF67 kill switch",
+    "WF67 guard validation status ok with 0 critical / 0 warning or explicitly accepted non-safety warning",
+    "paper-specific credentials only",
+    "exact paper endpoint only",
+    "append-only redacted audit log",
+    "main-session capital package notification and post-action reconciliation"
+  ],
+  "blocked_scope": [
+    "live trading",
+    "live endpoint",
+    "live credentials",
+    "money movement",
+    "account setting mutation",
+    "unwrapped brokerage writes",
+    "close-position or liquidation endpoint",
+    "owner approval inferred from score, alert, validation, ranking, packet quality, or paper fill",
+    "promotion of paper results to live deployment"
+  ]
+}

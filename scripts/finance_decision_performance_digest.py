@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Build a finance decision performance digest from WF55 and WF87 evidence.
+"""Build a review-only recommendation outcome digest.
 
-The digest is a review-only finance slice: it summarizes tracked
-recommendations, forward checkpoints, WF87 shadow outcomes, and paper journal
-status. It does not assign predictive skill, approve trades, mutate finance
-canon, or grant paper/live execution authority.
+The digest summarizes recommendation tracking and forward checkpoints from the
+durable outcome ledgers.  It intentionally has no simulated-account, order,
+execution-readiness, or retired workflow inputs.
 """
 from __future__ import annotations
 
@@ -17,11 +16,8 @@ from typing import Any
 from market_data_utils import atomic_write_json, atomic_write_text
 
 ROOT = Path(__file__).resolve().parents[1]
-WF55_LEDGER = ROOT / "data" / "state-history" / "outcome-ledger-v2.jsonl"
-WF55_GRADE_HISTORY = ROOT / "data" / "state-history" / "recommendation-outcome-grades.jsonl"
-WF87_JOURNAL = ROOT / "tmp" / "paper-autotrader" / "trade-decision-journal.jsonl"
-WF87_SHADOW_SCORECARD = ROOT / "tmp" / "wf87-shadow-outcome-scorecard.json"
-WF87_READINESS = ROOT / "tmp" / "wf87-v2-readiness-rollup.json"
+RECOMMENDATION_LEDGER = ROOT / "data" / "state-history" / "outcome-ledger-v2.jsonl"
+RECOMMENDATION_GRADE_HISTORY = ROOT / "data" / "state-history" / "recommendation-outcome-grades.jsonl"
 OUT = ROOT / "tmp" / "finance-decision-performance-digest.json"
 MD_OUT = ROOT / "tmp" / "finance-decision-performance-digest.md"
 
@@ -29,26 +25,19 @@ SCHEMA = "veritas.finance_decision_performance_digest.v1"
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
-    "decision_performance_tracking_only": True,
+    "recommendation_outcome_tracking_only": True,
     "predictive_skill_claim_allowed_now": False,
     "model_performance_claim_allowed_now": False,
     "capital_deployment_approved": False,
     "trade_or_execution_approved": False,
     "paper_or_live_execution_allowed": False,
-    "paper_submit_allowed": False,
-    "paper_cancel_allowed": False,
-    "paper_sell_allowed": False,
-    "live_endpoint_allowed": False,
     "brokerage_or_account_action_allowed": False,
     "money_movement_allowed": False,
     "portfolio_or_canon_mutation_allowed": False,
     "owner_approval_inferred": False,
 }
 
-FORBIDDEN_TRUE_KEYS = {
-    key for key, value in AUTHORITY_BOUNDARY.items()
-    if value is False
-}
+FORBIDDEN_TRUE_KEYS = {key for key, value in AUTHORITY_BOUNDARY.items() if value is False}
 
 
 def utc_now() -> str:
@@ -68,13 +57,6 @@ def as_dict(value: Any) -> dict[str, Any]:
 
 def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
-
-
-def load_json(path: Path) -> Any:
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {}
 
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -123,11 +105,11 @@ def summarize_grade_history(rows: list[dict[str, Any]], source_path: Path) -> di
     }
 
 
-def summarize_wf55(
+def summarize_recommendation_outcomes(
     rows: list[dict[str, Any]],
     now: datetime,
     grade_rows: list[dict[str, Any]] | None = None,
-    grade_history_path: Path = WF55_GRADE_HISTORY,
+    grade_history_path: Path = RECOMMENDATION_GRADE_HISTORY,
 ) -> dict[str, Any]:
     clean = [row for row in rows if not row.get("_parse_error")]
     tracking = [row for row in clean if row.get("event_family") == "recommendation_tracking"]
@@ -155,7 +137,7 @@ def summarize_wf55(
     legacy_assigned = sum(1 for row in tracking if as_dict(row.get("forward_scorecard")).get("outcome_grade_assigned") is True)
     history_assigned = int(grade_summary.get("graded_ledger_event_count") or 0)
     return {
-        "source": rel(WF55_LEDGER),
+        "source": rel(RECOMMENDATION_LEDGER),
         "row_count": len(clean),
         "parse_error_count": len(rows) - len(clean),
         "recommendation_tracking_rows": len(tracking),
@@ -168,27 +150,6 @@ def summarize_wf55(
         "outcome_grade_assigned_count": max(legacy_assigned, history_assigned),
         "legacy_forward_scorecard_grade_count": legacy_assigned,
         "grade_history": grade_summary,
-    }
-
-
-def summarize_journal(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    clean = [row for row in rows if not row.get("_parse_error")]
-    terminal = [row for row in clean if as_dict(row.get("outcome")).get("terminal") is True]
-    tracked = [row for row in clean if as_dict(row.get("outcome")).get("tracked") is True]
-    tickers = sorted({str(as_dict(row.get("decision")).get("ticker") or "").upper() for row in clean if as_dict(row.get("decision")).get("ticker")})
-    status_counts: dict[str, int] = {}
-    for row in clean:
-        status = str(as_dict(row.get("outcome")).get("status") or "unknown")
-        status_counts[status] = status_counts.get(status, 0) + 1
-    return {
-        "source": rel(WF87_JOURNAL),
-        "record_count": len(clean),
-        "parse_error_count": len(rows) - len(clean),
-        "tracked_order_outcome_count": len(tracked),
-        "terminal_order_outcome_count": len(terminal),
-        "outcome_status_counts": dict(sorted(status_counts.items())),
-        "tickers": tickers,
-        "ticker_count": len(tickers),
     }
 
 
@@ -213,17 +174,17 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
     for key, expected in AUTHORITY_BOUNDARY.items():
         if boundary.get(key) is not expected:
             errors.append(f"authority_boundary_{key}_not_{str(expected).lower()}")
-    if authority_true_paths(payload):
+    drift = authority_true_paths(payload)
+    if drift:
         errors.append("authority_drift_detected")
-    wf55 = as_dict(payload.get("wf55_recommendation_outcomes"))
-    shadow = as_dict(payload.get("wf87_shadow_outcomes"))
-    if int(wf55.get("outcome_grade_assigned_count") or 0) == 0 and int(shadow.get("scoreable_decision_count") or 0) == 0:
-        warnings.append("no_mature_performance_observations_yet")
+    outcomes = as_dict(payload.get("recommendation_outcomes"))
+    if int(outcomes.get("outcome_grade_assigned_count") or 0) == 0:
+        warnings.append("no_mature_recommendation_outcomes_yet")
     return {
         "status": "error" if errors else "warning" if warnings else "ok",
         "errors": errors,
         "warnings": warnings,
-        "authority_drift_paths": authority_true_paths(payload),
+        "authority_drift_paths": drift,
     }
 
 
@@ -232,62 +193,27 @@ def build_payload(paths: dict[str, Path], now: datetime | None = None) -> dict[s
     if current.tzinfo is None:
         current = current.replace(tzinfo=timezone.utc)
     current = current.astimezone(timezone.utc)
-
-    wf55_rows = load_jsonl(paths["wf55_ledger"])
-    wf55_grade_rows = load_jsonl(paths.get("wf55_grade_history", WF55_GRADE_HISTORY))
-    journal_rows = load_jsonl(paths["wf87_journal"])
-    shadow_scorecard = as_dict(load_json(paths["wf87_shadow_scorecard"]))
-    readiness = as_dict(load_json(paths["wf87_readiness"]))
-    wf55_summary = summarize_wf55(
-        wf55_rows,
-        current,
-        wf55_grade_rows,
-        paths.get("wf55_grade_history", WF55_GRADE_HISTORY),
-    )
-    journal_summary = summarize_journal(journal_rows)
-    shadow_summary = as_dict(shadow_scorecard.get("summary"))
-    readiness_phase = as_dict(readiness.get("phase_readiness"))
-    has_mature_observations = (
-        int(wf55_summary.get("outcome_grade_assigned_count") or 0) > 0
-        or int(shadow_summary.get("scoreable_decision_count") or 0) > 0
-    )
-    status = "ok" if has_mature_observations else "pending_mature_observations"
+    ledger_rows = load_jsonl(paths["recommendation_ledger"])
+    grade_rows = load_jsonl(paths["recommendation_grade_history"])
+    outcomes = summarize_recommendation_outcomes(ledger_rows, current, grade_rows, paths["recommendation_grade_history"])
+    mature = int(outcomes.get("outcome_grade_assigned_count") or 0) > 0
     payload = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
-        "status": status,
-        "purpose": "Daily finance slice for decision capture, forward checkpoints, WF87 shadow scoring, and journal outcomes.",
+        "status": "ok" if mature else "pending_mature_observations",
+        "purpose": "Daily review-only recommendation outcome and forward-checkpoint digest.",
         "authority_boundary": AUTHORITY_BOUNDARY,
-        "wf55_recommendation_outcomes": wf55_summary,
-        "wf87_trade_decision_journal": journal_summary,
-        "wf87_shadow_outcomes": {
-            "source": rel(paths["wf87_shadow_scorecard"]),
-            "status": shadow_scorecard.get("status"),
-            "decision_count": shadow_summary.get("decision_count"),
-            "scoreable_decision_count": shadow_summary.get("scoreable_decision_count"),
-            "pending_regular_session_followup_count": shadow_summary.get("pending_regular_session_followup_count"),
-            "would_buy_favorable_count": shadow_summary.get("would_buy_favorable_count"),
-            "would_buy_adverse_count": shadow_summary.get("would_buy_adverse_count"),
-            "decision_quality_claim_allowed_now": shadow_summary.get("decision_quality_claim_allowed_now"),
-            "model_performance_claim_allowed_now": shadow_summary.get("model_performance_claim_allowed_now"),
-        },
-        "wf87_v2_readiness": {
-            "source": rel(paths["wf87_readiness"]),
-            "status": readiness.get("status"),
-            "phase_a_hardening_components_installed": readiness_phase.get("phase_a_hardening_components_installed"),
-            "phase_a_runtime_gates_clean": readiness_phase.get("phase_a_runtime_gates_clean"),
-            "phase_b_assisted_round_trip_ready": readiness_phase.get("phase_b_assisted_round_trip_ready"),
-            "phase_c_autonomous_paper_buy_ready": readiness_phase.get("phase_c_autonomous_paper_buy_ready"),
-        },
+        "recommendation_outcomes": outcomes,
         "performance_claim_status": {
-            "mature_observations_present": has_mature_observations,
+            "mature_observations_present": mature,
             "predictive_skill_claim_allowed_now": False,
-            "reason": "Forward windows and shadow outcomes are still too sparse for a skill or win-rate claim." if not has_mature_observations else "Mature observations exist, but claims still require a separate policy gate.",
+            "model_performance_claim_allowed_now": False,
+            "reason": "Outcome observations support review but never independently authorize predictive or model-ranking claims.",
         },
-        "next_safe_action": "Keep collecting decisions; score only after forward windows mature and source observations are present.",
+        "next_safe_action": "Keep collecting recommendation outcomes and source observations; preserve review-only claim gates.",
         "stop_lines": [
-            "Digest rows are not recommendation approval.",
-            "No predictive skill, win-rate, expected-return, capital, paper/live execution, account, or owner approval inference.",
+            "Outcome rows are not recommendation approval.",
+            "No predictive skill, expected-return, capital, execution, account, or owner-approval inference.",
         ],
         "source_artifacts": {key: rel(path) for key, path in paths.items()},
     }
@@ -298,40 +224,28 @@ def build_payload(paths: dict[str, Path], now: datetime | None = None) -> dict[s
 
 
 def render_md(payload: dict[str, Any]) -> str:
-    wf55 = as_dict(payload.get("wf55_recommendation_outcomes"))
-    journal = as_dict(payload.get("wf87_trade_decision_journal"))
-    shadow = as_dict(payload.get("wf87_shadow_outcomes"))
-    readiness = as_dict(payload.get("wf87_v2_readiness"))
+    outcomes = as_dict(payload.get("recommendation_outcomes"))
     claim = as_dict(payload.get("performance_claim_status"))
-    lines = [
-        "# Finance Decision Performance Digest",
+    return "\n".join([
+        "# Recommendation Outcome Performance Digest",
         "",
         f"- Generated UTC: `{payload.get('generated_at_utc')}`",
         f"- Status: `{payload.get('status')}`",
         f"- Validation: `{as_dict(payload.get('validation')).get('status')}`",
-        f"- WF55 recommendation rows: `{wf55.get('recommendation_tracking_rows')}` across `{wf55.get('tracked_ticker_count')}` tickers",
-        f"- WF55 later-outcome graded rows: `{wf55.get('outcome_grade_assigned_count')}`",
-        f"- WF55 due unobserved checkpoints: `{wf55.get('due_unobserved_checkpoint_count')}`",
-        f"- WF87 journal rows: `{journal.get('record_count')}`; terminal order outcomes: `{journal.get('terminal_order_outcome_count')}`",
-        f"- WF87 shadow scoreable decisions: `{shadow.get('scoreable_decision_count')}`; pending follow-up: `{shadow.get('pending_regular_session_followup_count')}`",
-        f"- WF87 readiness: `{readiness.get('status')}`; Phase C autonomous paper buy ready: `{readiness.get('phase_c_autonomous_paper_buy_ready')}`",
+        f"- Recommendation rows: `{outcomes.get('recommendation_tracking_rows')}` across `{outcomes.get('tracked_ticker_count')}` tickers",
+        f"- Later-outcome graded rows: `{outcomes.get('outcome_grade_assigned_count')}`",
+        f"- Due unobserved checkpoints: `{outcomes.get('due_unobserved_checkpoint_count')}`",
         f"- Predictive skill claim allowed now: `{claim.get('predictive_skill_claim_allowed_now')}`",
         "",
-        "## Boundary",
+        "Review-only outcome tracking. No approval, execution, account, capital, canon, or predictive-performance authority.",
         "",
-        "Review-only tracking. No approval, execution, account, capital, canon, or predictive-performance authority.",
-        "",
-    ]
-    return "\n".join(lines)
+    ])
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--wf55-ledger", type=Path, default=WF55_LEDGER)
-    parser.add_argument("--wf55-grade-history", type=Path, default=WF55_GRADE_HISTORY)
-    parser.add_argument("--wf87-journal", type=Path, default=WF87_JOURNAL)
-    parser.add_argument("--wf87-shadow-scorecard", type=Path, default=WF87_SHADOW_SCORECARD)
-    parser.add_argument("--wf87-readiness", type=Path, default=WF87_READINESS)
+    parser.add_argument("--recommendation-ledger", dest="recommendation_ledger", type=Path, default=RECOMMENDATION_LEDGER)
+    parser.add_argument("--recommendation-grade-history", dest="recommendation_grade_history", type=Path, default=RECOMMENDATION_GRADE_HISTORY)
     parser.add_argument("--out", type=Path, default=OUT)
     parser.add_argument("--md-out", type=Path, default=MD_OUT)
     parser.add_argument("--write", action="store_true")
@@ -347,11 +261,8 @@ def abs_path(path: Path) -> Path:
 def main() -> int:
     args = parse_args()
     paths = {
-        "wf55_ledger": abs_path(args.wf55_ledger),
-        "wf55_grade_history": abs_path(args.wf55_grade_history),
-        "wf87_journal": abs_path(args.wf87_journal),
-        "wf87_shadow_scorecard": abs_path(args.wf87_shadow_scorecard),
-        "wf87_readiness": abs_path(args.wf87_readiness),
+        "recommendation_ledger": abs_path(args.recommendation_ledger),
+        "recommendation_grade_history": abs_path(args.recommendation_grade_history),
     }
     payload = build_payload(paths)
     out = abs_path(args.out)
@@ -360,19 +271,13 @@ def main() -> int:
         atomic_write_json(out, payload)
     if args.write_md:
         atomic_write_text(md_out, render_md(payload), encoding="utf-8")
+    outcomes = payload["recommendation_outcomes"]
     print(
-        "status={status} validation={validation} wf55_rows={wf55} journal_rows={journal} shadow_scoreable={shadow} out={out}".format(
-            status=payload["status"],
-            validation=payload["validation"]["status"],
-            wf55=payload["wf55_recommendation_outcomes"]["recommendation_tracking_rows"],
-            journal=payload["wf87_trade_decision_journal"]["record_count"],
-            shadow=payload["wf87_shadow_outcomes"]["scoreable_decision_count"],
-            out=rel(out) if args.write else None,
-        )
+        f"status={payload['status']} validation={payload['validation']['status']} "
+        f"recommendation_rows={outcomes['recommendation_tracking_rows']} "
+        f"graded={outcomes['outcome_grade_assigned_count']} out={rel(out) if args.write else None}"
     )
-    if args.validate and payload["validation"]["status"] == "error":
-        return 1
-    return 0
+    return 1 if args.validate and payload["validation"]["status"] == "error" else 0
 
 
 if __name__ == "__main__":

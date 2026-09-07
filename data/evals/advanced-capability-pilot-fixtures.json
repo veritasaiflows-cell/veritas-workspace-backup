@@ -1,0 +1,296 @@
+{
+  "schema": "veritas.advanced_capability_pilot_fixtures.v1",
+  "fixture_version": "2026-08-08",
+  "execution_mode": "fixture_only",
+  "official_sources": [
+    {
+      "url": "https://developers.openai.com/api/docs/guides/latest-model.md",
+      "claims": [
+        "gpt-5.6 model family",
+        "programmatic tool calling",
+        "multi-agent beta",
+        "explicit prompt caching",
+        "persisted reasoning",
+        "max reasoning effort",
+        "pro reasoning mode"
+      ]
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/guides/migrate-to-responses",
+      "claims": [
+        "Responses API recommended for new agentic projects",
+        "typed input and output items",
+        "previous_response_id continuation"
+      ]
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/guides/structured-outputs",
+      "claims": [
+        "strict JSON Schema adherence",
+        "programmatically detectable refusals",
+        "text format versus function calling split"
+      ]
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/guides/prompt-caching",
+      "claims": [
+        "explicit cache breakpoints on supported Responses input content blocks",
+        "stable prompt_cache_key reuse",
+        "minimum 1024-token cacheable prefix",
+        "cached_tokens and cache_write_tokens usage measurements"
+      ]
+    }
+  ],
+  "pilots": [
+    {
+      "pilot_id": "structured_decision_output_v1",
+      "capability": "structured_outputs",
+      "task_shape": "Compile synthetic evidence metadata into one decision object that conforms to decision_object_v1.",
+      "baseline": "gpt-5.5_json_validation_retry",
+      "variant": "gpt-5.6-terra_strict_json_schema",
+      "case_set": "synthetic_decision_contract_cases",
+      "request_shape": {
+        "contract_kind": "api_request_template",
+        "api_request_template": {
+          "model": "gpt-5.6-terra",
+          "text": {
+            "format": {
+              "type": "json_schema",
+              "name": "decision_object",
+              "schema_ref": "decision_object_v1",
+              "strict": true
+            }
+          }
+        },
+        "runner_requirements": {
+          "api": "responses",
+          "synthetic_input_injected_at_runtime": true,
+          "refusal_handling_required": true
+        }
+      },
+      "measures": [
+        "schema_valid_first_pass",
+        "refusal_detected",
+        "authority_fields_preserved",
+        "retry_count",
+        "latency_ms",
+        "total_tokens"
+      ]
+    },
+    {
+      "pilot_id": "programmatic_tool_recovery_v1",
+      "capability": "programmatic_tool_calling",
+      "task_shape": "Resolve a synthetic three-source contradiction with bounded read-only tools and one injected tool failure.",
+      "baseline": "gpt-5.6-terra_standard_function_loop",
+      "variant": "gpt-5.6-terra_programmatic_tool_calling",
+      "case_set": "synthetic_tool_recovery_cases",
+      "request_shape": {
+        "contract_kind": "api_request_template",
+        "api_request_template": {
+          "model": "gpt-5.6-terra",
+          "tools": [
+            {
+              "type": "programmatic_tool_calling"
+            },
+            {
+              "type": "function",
+              "name": "read_synthetic_source",
+              "description": "Read one bounded synthetic evidence source by identifier.",
+              "parameters": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "source_id"
+                ],
+                "properties": {
+                  "source_id": {
+                    "type": "string"
+                  }
+                }
+              },
+              "strict": true,
+              "allowed_callers": [
+                "programmatic"
+              ]
+            }
+          ]
+        },
+        "runner_requirements": {
+          "api": "responses",
+          "synthetic_input_injected_at_runtime": true,
+          "preserve_call_id_and_caller_linkage": true,
+          "inject_one_tool_failure": true
+        }
+      },
+      "measures": [
+        "task_complete",
+        "required_evidence_count",
+        "tool_failure_recovered",
+        "tool_calls",
+        "latency_ms",
+        "total_tokens"
+      ]
+    },
+    {
+      "pilot_id": "multi_agent_contradiction_audit_v1",
+      "capability": "responses_multi_agent_beta",
+      "task_shape": "Assign three independent synthetic evidence bundles to bounded subagents and synthesize one contradiction report.",
+      "baseline": "gpt-5.6-sol_serial_single_agent",
+      "variant": "gpt-5.6-sol_multi_agent_beta",
+      "case_set": "synthetic_parallel_audit_cases",
+      "request_shape": {
+        "contract_kind": "api_request_template",
+        "api_request_template": {
+          "model": "gpt-5.6-sol",
+          "multi_agent": {
+            "enabled": true,
+            "max_concurrent_subagents": 3
+          }
+        },
+        "runner_requirements": {
+          "api": "responses",
+          "beta_opt_in_header_name": "OpenAI-Beta",
+          "beta_opt_in_header_value": "responses_multi_agent=v1",
+          "synthetic_input_injected_at_runtime": true,
+          "final_integrator_required": true
+        }
+      },
+      "measures": [
+        "accepted_findings",
+        "missed_contradictions",
+        "duplicate_findings",
+        "authority_violations",
+        "wall_clock_ms",
+        "total_tokens"
+      ]
+    },
+    {
+      "pilot_id": "explicit_cache_breakpoint_v1",
+      "capability": "explicit_prompt_caching",
+      "task_shape": "Repeat a synthetic stable-prefix evaluation while changing only the final case metadata.",
+      "baseline": "gpt-5.6-terra_implicit_cache",
+      "variant": "gpt-5.6-terra_explicit_cache",
+      "case_set": "synthetic_stable_prefix_cases",
+      "request_shape": {
+        "contract_kind": "api_request_template",
+        "api_request_template": {
+          "model": "gpt-5.6-terra",
+          "prompt_cache_key": "{{stable_synthetic_prefix_key}}",
+          "prompt_cache_options": {
+            "mode": "explicit"
+          },
+          "input": [
+            {
+              "type": "message",
+              "role": "developer",
+              "content": [
+                {
+                  "type": "input_text",
+                  "text": "{{synthetic_stable_prefix_min_1024_tokens}}",
+                  "prompt_cache_breakpoint": {
+                    "mode": "explicit"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "message",
+              "role": "user",
+              "content": [
+                {
+                  "type": "input_text",
+                  "text": "{{synthetic_variable_case_metadata}}"
+                }
+              ]
+            }
+          ]
+        },
+        "runner_requirements": {
+          "api": "responses",
+          "synthetic_input_injected_at_runtime": true,
+          "stable_prefix_hash_required": true,
+          "minimum_cacheable_prefix_tokens": 1024,
+          "rendered_prefix_token_count_verification_required": true,
+          "same_prompt_cache_key_required": true,
+          "variable_suffix_after_breakpoint_required": true,
+          "two_request_measurement_required": true,
+          "cache_write_and_read_measurement_required": true,
+          "required_usage_fields": [
+            "usage.input_tokens_details.cached_tokens",
+            "usage.input_tokens_details.cache_write_tokens"
+          ]
+        }
+      },
+      "measures": [
+        "task_complete",
+        "cached_input_tokens",
+        "cache_write_tokens",
+        "uncached_input_tokens",
+        "latency_ms",
+        "estimated_cost_usd_when_pricing_available"
+      ]
+    },
+    {
+      "pilot_id": "persisted_reasoning_continuation_v1",
+      "capability": "persisted_reasoning",
+      "task_shape": "Continue a synthetic multi-turn decision with stable assumptions, then inject a context reset case.",
+      "baseline": "gpt-5.6-terra_current_turn",
+      "variant": "gpt-5.6-terra_all_turns",
+      "case_set": "synthetic_reasoning_continuation_cases",
+      "request_shape": {
+        "contract_kind": "api_request_template",
+        "api_request_template": {
+          "model": "gpt-5.6-terra",
+          "reasoning": {
+            "context": "all_turns"
+          }
+        },
+        "runner_requirements": {
+          "api": "responses",
+          "synthetic_input_injected_at_runtime": true,
+          "previous_response_id_required": true,
+          "reasoning_content_persistence_in_workspace": false
+        }
+      },
+      "measures": [
+        "assumption_consistency",
+        "context_reset_obeyed",
+        "repeated_analysis_rate",
+        "latency_ms",
+        "cached_input_tokens",
+        "total_tokens"
+      ]
+    },
+    {
+      "pilot_id": "quality_first_reasoning_v1",
+      "capability": "max_and_pro_reasoning",
+      "task_shape": "Solve a synthetic cross-contract architecture case with an exact validator and authority rubric.",
+      "baseline": "gpt-5.6-sol_xhigh_standard",
+      "variant": "gpt-5.6-sol_max_pro",
+      "case_set": "synthetic_hard_architecture_cases",
+      "request_shape": {
+        "contract_kind": "api_request_template",
+        "api_request_template": {
+          "model": "gpt-5.6-sol",
+          "reasoning": {
+            "effort": "max",
+            "mode": "pro"
+          }
+        },
+        "runner_requirements": {
+          "api": "responses",
+          "synthetic_input_injected_at_runtime": true,
+          "exact_validator_required": true
+        }
+      },
+      "measures": [
+        "rubric_score",
+        "validator_pass",
+        "accepted_findings",
+        "authority_violations",
+        "latency_ms",
+        "total_tokens"
+      ]
+    }
+  ]
+}

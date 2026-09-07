@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "artifact_type": "wf67_exact_order_owner_approval",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "created_at_utc": "2026-06-09T18:12:27Z",
+  "approved_by": "Randall",
+  "approval_status": "approved_exact_order",
+  "approval_text": "I approve the exact GOOG paper-only buy order: limit/day, notional $361.98, limit $361.98, using WF67 paper-only guardrails",
+  "approved_order": {
+    "symbol": "GOOG",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 361.98,
+    "notional": 361.98,
+    "qty": null
+  },
+  "authority_boundary": {
+    "paper_only": true,
+    "wf67_wrapper_required": true,
+    "fresh_short_lived_kill_switch_required": true,
+    "pre_submit_guard_validation_required": true,
+    "post_submit_reconciliation_required": true,
+    "live_trade_allowed": false,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_context": {
+    "conversation": "Telegram direct conversation",
+    "message_id": "1491",
+    "approval_received_at_local": "2026-06-09 11:12:27 MST"
+  }
+}

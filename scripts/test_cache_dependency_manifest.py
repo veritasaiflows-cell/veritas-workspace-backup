@@ -1,385 +1,253 @@
 from __future__ import annotations
 
-import cache_dependency_manifest as manifest
-import finance_intelligence_state as finance_state
+import ast
+import hashlib
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+import finance_cache_cleanup_readiness as cleanup_readiness
+import tier_entitlement_surface_inventory as tier_inventory
 
 
-def expect(condition: bool, message: str, errors: list[str]) -> None:
-    if not condition:
-        errors.append(message)
+ROOT = Path(__file__).resolve().parents[1]
+SCRIPT = ROOT / "scripts" / "cache_dependency_manifest.py"
+RETIRED_ARTIFACT = ROOT / "tmp" / "cache-dependency-manifest.json"
+WRITE_PROBE = ROOT / "tmp" / "cache-dependency-manifest-retirement-write-probe.json"
+PRIMARY_SQL = ROOT / "state" / "finance" / "finance-canon.sqlite"
+LEGACY_PATHS = (
+    ROOT / "03. Portfolio" / "Execution Board.md",
+    ROOT / "tmp" / "portfolio-config.json",
+    ROOT / "tmp" / "veritas-canon-cache.sqlite",
+    ROOT / "tmp" / "canonical-finance-data-plane.sqlite",
+)
+
+EXPECTED_PAYLOAD: dict[str, object] = {
+    "schema": "veritas.cache_dependency_manifest.retired_compatibility.v1",
+    "status": "blocked",
+    "reason": "retired_surface",
+    "surface": "cache_dependency_manifest",
+    "retired": True,
+    "tombstone": True,
+    "compatibility_mode": "deny_only",
+    "current_truth_allowed": False,
+    "legacy_manifest_read_allowed": False,
+    "legacy_manifest_write_allowed": False,
+    "cache_chain_build_allowed": False,
+    "cache_or_sql_read_allowed": False,
+    "filesystem_read_allowed": False,
+    "filesystem_write_allowed": False,
+    "subprocess_allowed": False,
+    "network_allowed": False,
+    "schedule_mutation_allowed": False,
+    "sql_mutation_allowed": False,
+    "canon_mutation_allowed": False,
+    "tier_mutation_allowed": False,
+    "portfolio_state_or_mutation_allowed": False,
+    "capital_deployment_allowed": False,
+    "brokerage_or_account_action_allowed": False,
+    "trade_order_or_execution_allowed": False,
+    "paper_or_live_execution_allowed": False,
+    "owner_approval_inferred": False,
+    "exit_code": 2,
+}
+EXPECTED_STDOUT = json.dumps(EXPECTED_PAYLOAD, sort_keys=True, separators=(",", ":")) + "\n"
 
 
-def test_layer_status_hash_gating(errors: list[str]) -> None:
-    expect(
-        manifest.layer_status("abc", "abc", "ok")["status"] == "ok",
-        "matching source hash should be ok",
-        errors,
-    )
-    expect(
-        manifest.layer_status("old", "new", "ok")["status"] == "stale",
-        "mismatched source hash should be stale",
-        errors,
-    )
-    expect(
-        manifest.layer_status("", "new", "ok")["status"] == "blocked",
-        "missing source hash should block",
-        errors,
-    )
+def file_state(path: Path) -> tuple[bool, str | None, int | None, int | None]:
+    if not path.exists():
+        return False, None, None, None
+    stat = path.stat()
+    digest = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+    return True, digest, stat.st_size if path.is_file() else None, stat.st_mtime_ns
 
 
-def test_value_consistency_blocks_cross_layer_mismatch(errors: list[str]) -> None:
-    ok = manifest.value_consistency(
-        {"entry_band_low": 1, "entry_band_high": 2, "stop_or_invalidation": 0.5},
-        {"entry_band_low": 1, "entry_band_high": 2, "stop_or_invalidation": 0.5},
-    )
-    expect(ok["status"] == "ok", f"matching values should be ok, got {ok}", errors)
-    blocked = manifest.value_consistency(
-        {"entry_band_low": 1, "entry_band_high": 2, "stop_or_invalidation": 0.5},
-        {"entry_band_low": 1.5, "entry_band_high": 2, "stop_or_invalidation": 0.5},
-    )
-    expect(blocked["status"] == "blocked", f"value mismatch should block, got {blocked}", errors)
+def protected_states() -> dict[str, tuple[bool, str | None, int | None, int | None]]:
+    paths = (RETIRED_ARTIFACT, WRITE_PROBE, PRIMARY_SQL, *LEGACY_PATHS)
+    return {str(path): file_state(path) for path in paths}
 
 
-def test_empty_production_scope_is_clean_wait_state(errors: list[str]) -> None:
-    packet = manifest.build_manifest(
+def test_every_legacy_cli_shape_is_the_same_zero_read_zero_write_denial() -> None:
+    assert not WRITE_PROBE.exists()
+    before = protected_states()
+    cli_shapes = [
         [],
-        {
-            "preferred_source": "finance_sql_canon_access.production_answer_tickers",
-            "production_scope_definition": "proof_joined_sql_tier_a_ready",
-            "production_ticker_count": 0,
-            "production_tickers": [],
-            "empty_scope_is_valid_wait_state": True,
+        ["--tickers", "NVDA,ETN"],
+        ["--write"],
+        ["--validate", "--pretty"],
+        ["--out", str(WRITE_PROBE)],
+        ["--tickers", "NOT-A-TICKER", "--write", "--validate", "--unknown", "value"],
+    ]
+    outputs: list[str] = []
+    for args in cli_shapes:
+        proc = subprocess.run(
+            [sys.executable, "-B", str(SCRIPT), *args],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert proc.returncode == 2
+        assert proc.stderr == ""
+        assert proc.stdout == EXPECTED_STDOUT
+        assert json.loads(proc.stdout) == EXPECTED_PAYLOAD
+        outputs.append(proc.stdout)
+    assert len(set(outputs)) == 1
+    assert protected_states() == before
+
+
+def test_tombstone_has_no_operational_read_or_write_capability() -> None:
+    source = SCRIPT.read_text(encoding="utf-8")
+    tree = ast.parse(source)
+    imported_modules: list[str] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            imported_modules.extend(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            imported_modules.append(node.module or "")
+    assert sorted(imported_modules) == ["__future__", "json"]
+
+    forbidden_calls = {
+        "open",
+        "read_text",
+        "read_bytes",
+        "write_text",
+        "write_bytes",
+        "mkdir",
+        "unlink",
+        "rename",
+        "replace",
+        "run",
+        "Popen",
+        "connect",
+        "urlopen",
+    }
+    invoked: set[str] = set()
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        if isinstance(node.func, ast.Name):
+            invoked.add(node.func.id)
+        elif isinstance(node.func, ast.Attribute):
+            invoked.add(node.func.attr)
+    assert invoked.isdisjoint(forbidden_calls)
+
+    retired_helper = "wf72_entry_stop_" + "reference_helper"
+    forbidden_operational_tokens = {
+        retired_helper,
+        "finance_intelligence_state",
+        "finance_production_scope",
+        "sqlite3",
+        "atomic_write_json",
+        "load_json_artifact",
+        "cache-dependency-manifest.json",
+        "veritas-canon-cache.sqlite",
+        "canonical-finance-data-plane.sqlite",
+        "trade-grade-full-answer",
+    }
+    assert all(token not in source for token in forbidden_operational_tokens)
+
+
+def test_retired_artifact_cannot_report_current_or_green_cache_truth() -> None:
+    payload = json.loads(RETIRED_ARTIFACT.read_text(encoding="utf-8"))
+    assert payload == {
+        "schema": "veritas.cache_dependency_manifest.retired_artifact.v1",
+        "generated_at_utc": "2026-09-01T05:00:00Z",
+        "status": "retired",
+        "reason": "retired_surface",
+        "surface": "cache_dependency_manifest",
+        "retired": True,
+        "tombstone": True,
+        "compatibility_mode": "deny_only",
+        "current_truth_allowed": False,
+        "historical_green_state_superseded": True,
+        "authority": {
+            "review_only": True,
+            "filesystem_mutation_allowed": False,
+            "sql_or_cache_access_allowed": False,
+            "schedule_mutation_allowed": False,
+            "canon_or_tier_mutation_allowed": False,
+            "portfolio_capital_account_order_or_execution_allowed": False,
+            "paper_or_live_execution_allowed": False,
+            "owner_approval_inferred": False,
         },
+    }
+    assert "cache_chain" not in payload
+    assert "tickers" not in payload
+    assert "summary" not in payload
+    assert payload["status"] != "ok"
+    assert payload["current_truth_allowed"] is False
+
+
+def test_cleanup_readiness_observes_retired_status_without_promoting_truth() -> None:
+    record = cleanup_readiness.json_artifact_record(
+        "cache_dependency_manifest",
+        RETIRED_ARTIFACT,
+        "cache_dependency_guard",
     )
-    expect(packet["status"] == "ok", f"empty valid production scope should be ok, got {packet['status']}", errors)
-    expect(
-        packet["summary"]["empty_scope_valid_wait_state"] is True,
-        "empty valid production scope should be labeled in summary",
-        errors,
+    assert record["status"] == "retired"
+    assert record["generated_at_utc"] == "2026-09-01T05:00:00Z"
+    assert record["delete_allowed_now"] is False
+    assert record["requires_owner_packet_for_delete_or_archive"] is True
+
+
+def test_inventory_structurally_classifies_only_capability_free_tombstone() -> None:
+    source_lines = SCRIPT.read_text(encoding="utf-8").splitlines()
+    evidence = tier_inventory.detect_explicit_deny_only_tombstone(source_lines)
+    assert {item["detail"] for item in evidence} == {
+        "retired_true",
+        "tombstone_true",
+        "deny_only",
+        "current_truth_false",
+        "retired_exit_two",
+    }
+
+    operational_variant = [*source_lines, "import sqlite3", "sqlite3.connect('legacy.sqlite')"]
+    assert tier_inventory.detect_explicit_deny_only_tombstone(operational_variant) == []
+    hidden_runtime_variant = [*source_lines, "eval('1 + 1')"]
+    assert tier_inventory.detect_explicit_deny_only_tombstone(hidden_runtime_variant) == []
+    rebound_main_variant = [
+        *source_lines,
+        "main = eval",
+        "main(\"__import__('os').system('echo classifier-bypass')\")",
+    ]
+    assert tier_inventory.detect_explicit_deny_only_tombstone(rebound_main_variant) == []
+    marker_spoof = "\n".join(source_lines).replace(
+        "\nEXIT_RETIRED = 2\n",
+        "\nEXIT_RETIRED = 0\n",
+        1,
+    ).replace(
+        "Every legacy CLI shape receives the same deterministic denial.",
+        "Every legacy CLI shape receives the same deterministic denial. EXIT_RETIRED = 2",
     )
-    expect(
-        packet["stale_read_policy"]["empty_production_scope_is_valid_wait_state_when_sql_scope_says_so"] is True,
-        "stale read policy should preserve empty-scope wait-state rule",
-        errors,
+    assert tier_inventory.detect_explicit_deny_only_tombstone(marker_spoof.splitlines()) == []
+
+    row = tier_inventory.build_row(
+        SCRIPT,
+        ROOT,
+        source_lines,
+        SCRIPT.read_bytes(),
+        {},
+        {},
+        None,
+        None,
+        False,
     )
-    cache_chain_roles = {row["role"] for row in packet["cache_chain"]}
-    downstream_roles = {row["role"] for row in packet["downstream_chat_consumers"]}
-    expect(
-        "finance_cache_chat_frontdoor_consumer" not in cache_chain_roles,
-        "finance cache front door should not be part of the canonical cache chain",
-        errors,
-    )
-    expect(
-        "finance_cache_chat_frontdoor_consumer" in downstream_roles,
-        "finance cache front door should be exposed as a downstream chat consumer",
-        errors,
-    )
-
-
-def test_empty_scope_without_valid_wait_state_blocks(errors: list[str]) -> None:
-    packet = manifest.build_manifest(
-        [],
-        {
-            "production_ticker_count": 0,
-            "production_tickers": [],
-            "empty_scope_is_valid_wait_state": False,
-        },
-    )
-    expect(packet["status"] == "blocked", f"empty invalid production scope should block, got {packet['status']}", errors)
-
-
-def test_manifest_allows_legacy_hash_residue_when_sql_front_door_guard_is_clean(errors: list[str]) -> None:
-    original_guard = manifest.entry_stop_cache_freshness_guard
-    original_query_one = manifest.query_one
-    original_wf72 = manifest.build_entry_stop_reference_metadata
-    original_load_card = manifest.load_wf85_card
-    try:
-        def fake_query_one(_db_path, _sql, params):
-            ticker = params[0]
-            return {
-                "ticker": ticker,
-                "entry_band_low": 1,
-                "entry_band_high": 2,
-                "stop_or_invalidation": 0.5,
-                "source_artifact_path": "03. Portfolio/Execution Board.md",
-                "source_artifact_hash": "legacy-hash",
-                "source_timestamp": "2026-06-18",
-                "freshness_status": "fresh",
-                "validation_status": "ok",
-            }
-
-        manifest.query_one = fake_query_one  # type: ignore[assignment]
-        manifest.build_entry_stop_reference_metadata = lambda _ticker: {  # type: ignore[assignment]
-            "status": "stale",
-            "source_lineage": {"source_sha256": "legacy-hash"},
-            "row_keys": [],
-            "issues": [],
-        }
-        manifest.load_wf85_card = lambda _ticker: {}  # type: ignore[assignment]
-        manifest.entry_stop_cache_freshness_guard = lambda _ticker, _finance: {  # type: ignore[assignment]
-            "status": "ok_sql_canon_authoritative_legacy_decoupled",
-            "front_door_policy": {
-                "prefer_wf85_full_answer": True,
-                "stale_entry_stop_cache_blocks_generated_answer": False,
-            },
-        }
-        row = manifest.ticker_row("GS", "current-board-hash")
-        expect(row["status"] == "ok", f"SQL-canon guard should allow legacy hash residue, got {row['status']}", errors)
-        expect(
-            row["layer_status"]["sql_canon_front_door_guard"]["status"] == "ok",
-            f"SQL-canon front-door guard layer should be ok, got {row['layer_status']['sql_canon_front_door_guard']}",
-            errors,
-        )
-    finally:
-        manifest.entry_stop_cache_freshness_guard = original_guard  # type: ignore[assignment]
-        manifest.query_one = original_query_one  # type: ignore[assignment]
-        manifest.build_entry_stop_reference_metadata = original_wf72  # type: ignore[assignment]
-        manifest.load_wf85_card = original_load_card  # type: ignore[assignment]
-
-
-def test_manifest_allows_sql_authoritative_value_residue_when_wf84_matches_sql(errors: list[str]) -> None:
-    original_guard = manifest.entry_stop_cache_freshness_guard
-    original_query_one = manifest.query_one
-    original_wf72 = manifest.build_entry_stop_reference_metadata
-    original_load_card = manifest.load_wf85_card
-    try:
-        def fake_query_one(db_path, _sql, params):
-            ticker = params[0]
-            if db_path == manifest.FINANCE_STATE_DB:
-                return {}
-            return {
-                "ticker": ticker,
-                "entry_band_low": 1,
-                "entry_band_high": 2,
-                "stop_or_invalidation": 0.5,
-                "source_artifact_path": "tmp/band-proposals.json",
-                "source_artifact_hash": "fresh-sql-hash",
-                "source_timestamp": "2026-06-24",
-                "freshness_status": "current",
-                "validation_status": "ok",
-            }
-
-        manifest.query_one = fake_query_one  # type: ignore[assignment]
-        manifest.build_entry_stop_reference_metadata = lambda _ticker: {  # type: ignore[assignment]
-            "status": "stale",
-            "source_lineage": {"source_sha256": "legacy-hash"},
-            "row_keys": [],
-            "issues": [],
-        }
-        manifest.load_wf85_card = lambda _ticker: {}  # type: ignore[assignment]
-        manifest.entry_stop_cache_freshness_guard = lambda _ticker, _finance: {  # type: ignore[assignment]
-            "status": "ok_sql_canon_authoritative_legacy_decoupled",
-            "front_door_policy": {
-                "prefer_wf85_full_answer": True,
-                "stale_entry_stop_cache_blocks_generated_answer": False,
-                "legacy_compatibility_blocks_front_door": False,
-            },
-            "sql_canon_reference_consistency": {
-                "wf84_vs_sql_canon": {
-                    "status": "ok",
-                    "checks": [
-                        {"field": "entry_band_low", "ok": True},
-                        {"field": "entry_band_high", "ok": True},
-                        {"field": "stop_or_invalidation", "ok": True},
-                    ],
-                }
-            },
-        }
-        row = manifest.ticker_row("NVDA", "current-board-hash")
-        expect(
-            row["status"] == "ok",
-            f"SQL-authoritative WF84-vs-SQL match should allow legacy value residue, got {row['status']}",
-            errors,
-        )
-    finally:
-        manifest.entry_stop_cache_freshness_guard = original_guard  # type: ignore[assignment]
-        manifest.query_one = original_query_one  # type: ignore[assignment]
-        manifest.build_entry_stop_reference_metadata = original_wf72  # type: ignore[assignment]
-        manifest.load_wf85_card = original_load_card  # type: ignore[assignment]
-
-
-def test_front_door_guard_does_not_block_legacy_hash_mismatch_when_sql_is_authoritative(errors: list[str]) -> None:
-    original_hash = finance_state.sha256_file
-    original_wf84 = finance_state.wf84_entry_stop_reference
-    original_sql_canon = finance_state.sql_canon_state_context
-    try:
-        finance_state.sha256_file = lambda _path: "current-hash"  # type: ignore[assignment]
-        finance_state.wf84_entry_stop_reference = lambda _ticker: {  # type: ignore[assignment]
-            "source_artifact_path": "03. Portfolio/Execution Board.md",
-            "source_artifact_hash": "current-hash",
-            "validation_status": "ok",
-            "freshness_status": "fresh",
-        }
-        finance_state.sql_canon_state_context = lambda _ticker=None: {  # type: ignore[assignment]
-            "status": "ok",
-            "reference_level": {
-                "reference_price_low": 1,
-                "reference_price_high": 2,
-                "reference_invalidation_level": 0.5,
-            },
-            "validation": {"status": "ok", "critical_errors": [], "warnings": []},
-        }
-        guard = finance_state.entry_stop_cache_freshness_guard(
-            "ETN",
-            {
-                "source_artifact_path": "03. Portfolio/Execution Board.md",
-                "source_artifact_hash": "old-hash",
-                "validation_status": "ok",
-                "freshness_status": "fresh",
-            },
-        )
-        expect(
-            guard["status"] == "ok_sql_canon_authoritative_legacy_decoupled",
-            f"expected SQL-authoritative legacy decoupling, got {guard}",
-            errors,
-        )
-        expect(
-            guard["front_door_policy"]["prefer_wf85_full_answer"] is True,
-            "front door should prefer WF85 when SQL-canon reference levels are authoritative",
-            errors,
-        )
-        expect(
-            guard["front_door_policy"]["stale_entry_stop_cache_blocks_generated_answer"] is False,
-            "legacy hash mismatch should not block generated answer when SQL-canon is authoritative",
-            errors,
-        )
-    finally:
-        finance_state.sha256_file = original_hash  # type: ignore[assignment]
-        finance_state.wf84_entry_stop_reference = original_wf84  # type: ignore[assignment]
-        finance_state.sql_canon_state_context = original_sql_canon  # type: ignore[assignment]
-
-
-def test_front_door_guard_warns_hash_mismatch_when_values_match_sql_canon(errors: list[str]) -> None:
-    original_hash = finance_state.sha256_file
-    original_wf84 = finance_state.wf84_entry_stop_reference
-    original_sql_canon = finance_state.sql_canon_state_context
-    try:
-        finance_state.sha256_file = lambda _path: "current-hash"  # type: ignore[assignment]
-        finance_state.wf84_entry_stop_reference = lambda _ticker: {  # type: ignore[assignment]
-            "source_artifact_path": "03. Portfolio/Execution Board.md",
-            "source_artifact_hash": "old-wf84-hash",
-            "validation_status": "ok",
-            "freshness_status": "fresh",
-            "entry_band_low": 1,
-            "entry_band_high": 2,
-            "stop_or_invalidation": 0.5,
-        }
-        finance_state.sql_canon_state_context = lambda _ticker=None: {  # type: ignore[assignment]
-            "status": "ok",
-            "reference_level": {
-                "reference_price_low": 1,
-                "reference_price_high": 2,
-                "reference_invalidation_level": 0.5,
-            },
-            "validation": {"status": "ok", "critical_errors": [], "warnings": []},
-        }
-        guard = finance_state.entry_stop_cache_freshness_guard(
-            "ETN",
-            {
-                "source_artifact_path": "03. Portfolio/Execution Board.md",
-                "source_artifact_hash": "old-finance-hash",
-                "validation_status": "ok",
-                "freshness_status": "fresh",
-                "entry_band_low": 1,
-                "entry_band_high": 2,
-                "stop_or_invalidation": 0.5,
-            },
-        )
-        expect(
-            guard["status"] == "ok_sql_canon_authoritative_legacy_decoupled",
-            f"expected SQL-authoritative legacy warning when old hashes trail SQL-canon, got {guard}",
-            errors,
-        )
-        expect(
-            guard["front_door_policy"]["prefer_wf85_full_answer"] is True,
-            "front door should remain WF85-preferred when only legacy hashes are stale",
-            errors,
-        )
-        expect(
-            guard["front_door_policy"]["stale_entry_stop_cache_blocks_generated_answer"] is False,
-            "legacy hash warning should not block generated answer",
-            errors,
-        )
-    finally:
-        finance_state.sha256_file = original_hash  # type: ignore[assignment]
-        finance_state.wf84_entry_stop_reference = original_wf84  # type: ignore[assignment]
-        finance_state.sql_canon_state_context = original_sql_canon  # type: ignore[assignment]
-
-
-def test_front_door_guard_does_not_block_legacy_value_mismatch_when_sql_is_authoritative(errors: list[str]) -> None:
-    original_hash = finance_state.sha256_file
-    original_wf84 = finance_state.wf84_entry_stop_reference
-    original_sql_canon = finance_state.sql_canon_state_context
-    try:
-        finance_state.sha256_file = lambda _path: "current-hash"  # type: ignore[assignment]
-        finance_state.wf84_entry_stop_reference = lambda _ticker: {  # type: ignore[assignment]
-            "source_artifact_path": "03. Portfolio/Execution Board.md",
-            "source_artifact_hash": "current-hash",
-            "validation_status": "ok",
-            "freshness_status": "fresh",
-            "entry_band_low": 1.5,
-            "entry_band_high": 2,
-            "stop_or_invalidation": 0.5,
-        }
-        finance_state.sql_canon_state_context = lambda _ticker=None: {  # type: ignore[assignment]
-            "status": "ok",
-            "reference_level": {
-                "reference_price_low": 1,
-                "reference_price_high": 2,
-                "reference_invalidation_level": 0.5,
-            },
-            "validation": {"status": "ok", "critical_errors": [], "warnings": []},
-        }
-        guard = finance_state.entry_stop_cache_freshness_guard(
-            "ETN",
-            {
-                "source_artifact_path": "03. Portfolio/Execution Board.md",
-                "source_artifact_hash": "current-hash",
-                "validation_status": "ok",
-                "freshness_status": "fresh",
-                "entry_band_low": 1,
-                "entry_band_high": 2,
-                "stop_or_invalidation": 0.5,
-            },
-        )
-        expect(
-            guard["status"] == "ok_sql_canon_authoritative_legacy_decoupled",
-            f"expected SQL-authoritative legacy value warning, got {guard}",
-            errors,
-        )
-        expect(
-            guard["front_door_policy"]["prefer_wf85_full_answer"] is True,
-            "front door should prefer WF85 when legacy values disagree with SQL-canon authority",
-            errors,
-        )
-        expect(
-            guard["front_door_policy"]["legacy_compatibility_blocks_front_door"] is False,
-            "legacy value mismatch must be a warning, not a front-door blocker",
-            errors,
-        )
-    finally:
-        finance_state.sha256_file = original_hash  # type: ignore[assignment]
-        finance_state.wf84_entry_stop_reference = original_wf84  # type: ignore[assignment]
-        finance_state.sql_canon_state_context = original_sql_canon  # type: ignore[assignment]
+    assert row is not None
+    assert row["lifecycle"] == "retired"
+    assert row["operational_status"] == "retired_not_operational"
+    assert row["proposed_disposition"] == "retirement_review"
+    assert "explicit_deny_only_tombstone" in row["detection_classes"]
 
 
 def main() -> int:
-    errors: list[str] = []
-    test_layer_status_hash_gating(errors)
-    test_value_consistency_blocks_cross_layer_mismatch(errors)
-    test_empty_production_scope_is_clean_wait_state(errors)
-    test_empty_scope_without_valid_wait_state_blocks(errors)
-    test_manifest_allows_legacy_hash_residue_when_sql_front_door_guard_is_clean(errors)
-    test_manifest_allows_sql_authoritative_value_residue_when_wf84_matches_sql(errors)
-    test_front_door_guard_does_not_block_legacy_hash_mismatch_when_sql_is_authoritative(errors)
-    test_front_door_guard_warns_hash_mismatch_when_values_match_sql_canon(errors)
-    test_front_door_guard_does_not_block_legacy_value_mismatch_when_sql_is_authoritative(errors)
-    if errors:
-        print("cache_dependency_manifest_tests_failed")
-        for error in errors:
-            print(f"- {error}")
-        return 1
-    print("cache_dependency_manifest_tests_passed")
+    test_every_legacy_cli_shape_is_the_same_zero_read_zero_write_denial()
+    test_tombstone_has_no_operational_read_or_write_capability()
+    test_retired_artifact_cannot_report_current_or_green_cache_truth()
+    test_cleanup_readiness_observes_retired_status_without_promoting_truth()
+    test_inventory_structurally_classifies_only_capability_free_tombstone()
+    print("cache_dependency_manifest_retirement_tests_passed")
     return 0
 
 

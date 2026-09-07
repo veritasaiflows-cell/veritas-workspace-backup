@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "preview_id": "wf63-preview:post-close-GS-capital-deployment-review-2026-05-14",
+  "generated_at_utc": "2026-05-15T05:55:25Z",
+  "artifact_type": "wf63_non_executable_order_preview",
+  "status": "blocked_owner_inputs_required",
+  "ticker": "GS",
+  "side": "buy_review_only",
+  "order_type": "limit",
+  "time_in_force": "day",
+  "limit_price": {
+    "value": null,
+    "currency": "USD",
+    "status": "missing_owner_limit_price",
+    "reference_close": 968.96,
+    "source": "proposal.technical_gate.close"
+  },
+  "quantity_or_notional": {
+    "quantity": null,
+    "notional": null,
+    "currency": "USD",
+    "status": "missing_owner_sizing",
+    "source": null
+  },
+  "source_proposal_id": "post-close:GS:capital-deployment-review:2026-05-14",
+  "source_artifact": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+  "source_window": "post-close",
+  "risk_check_summary": {
+    "risk_rule_check": {
+      "status": "review_required",
+      "references": [
+        "25% sector cap",
+        "15% normal single-name ceiling",
+        "speculative sleeve cap",
+        "catalyst-window exception"
+      ],
+      "review_boundary": "Risk context only; no size, cash, sleeve, or account action is authorized by this packet."
+    },
+    "concentration_check": {
+      "status": "review_required",
+      "ticker": "GS",
+      "single_name_after_pct": null,
+      "max_single_name_after_pct": null,
+      "sector_after_pct": null,
+      "normal_single_name_ceiling_pct": 15,
+      "sector_cap_pct": 25,
+      "written_exception": false,
+      "note": "No pro-forma exposure change is proposed; owner must review concentration before any action."
+    },
+    "technical_gate": {
+      "status": "review_required",
+      "entry_band_status": "ABOVE_BAND_WAIT",
+      "band_status": "ABOVE_BAND_WAIT",
+      "distance_to_band_pct": 3.76,
+      "close": 968.96,
+      "in_entry_band": false,
+      "below_stop": false,
+      "stop_line": "Do not treat in-band status as approval, sizing, or account-action authority."
+    },
+    "catalyst_gate": {
+      "status": "review_required",
+      "days_to_earnings": 61,
+      "earnings_state": "CLEAR",
+      "blockers": [
+        "Next earnings 2026-07-14 (61d out)",
+        "band proposal remains review-only / non-applyable",
+        "dashboard validation has 1 warning(s)",
+        "1 event-risk band freeze remains: NVDA. This is intentionally review-only / non-applyable through the catalyst window; keep manual review or wait-state active: NVDA.",
+        "state-history / owner-outcome retention is not wired; no predictive outcome score is available"
+      ]
+    },
+    "source_freshness": {
+      "overall_classification": "stale",
+      "trust_level": "review_required",
+      "owner_review_required": true,
+      "explicit_blocker": true,
+      "capital_action_allowed": false
+    },
+    "blockers": [
+      "owner_limit_price_required",
+      "owner_quantity_or_notional_required"
+    ]
+  },
+  "restrictions": {
+    "order_type": "limit",
+    "time_in_force": "day",
+    "market_orders_allowed": false,
+    "short_sales_allowed": false,
+    "margin_allowed": false,
+    "leverage_allowed": false,
+    "options_allowed": false,
+    "crypto_allowed": false,
+    "bracket_orders_allowed": false,
+    "oco_orders_allowed": false,
+    "oto_orders_allowed": false,
+    "multi_leg_allowed": false
+  },
+  "owner_decision_required": true,
+  "owner_approval_granted": false,
+  "paper_submit_allowed": false,
+  "live_submit_allowed": false,
+  "trade_or_account_action_allowed": false,
+  "execution_status": {
+    "is_order": false,
+    "is_approval": false,
+    "would_submit": false,
+    "brokerage_endpoint_calls_made": false,
+    "brokerage_write_path_present": false,
+    "portfolio_or_account_state_mutated": false
+  },
+  "stop_lines": [
+    "This preview is not an order and is not owner approval.",
+    "Owner must explicitly decide before any manual paper pilot activity.",
+    "No OpenClaw brokerage submit/cancel/replace or account action is authorized."
+  ]
+}

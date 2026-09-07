@@ -1,0 +1,279 @@
+{
+  "schema": "veritas.wf85_paper_deployment_telegram_cron_runner.v1",
+  "generated_at_utc": "2026-08-28T18:05:21Z",
+  "status": "ok",
+  "operator_action": "NO_REPLY",
+  "mode": "send",
+  "authority_boundary": {
+    "review_only": true,
+    "telegram_delivery_allowed": true,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "paper_order_sell_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_sleeve_risk_rule_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "summary": {
+    "step_count": 8,
+    "failed_step_count": 0,
+    "digest_status": "ok",
+    "digest_operator_action": "TELEGRAM_NOTIFY",
+    "deployment_ready_count": 0,
+    "near_deployment_count": 0,
+    "execution_ready_count": 0,
+    "wf67_guard_status": "blocked",
+    "morning_cards_status": "warning",
+    "morning_cards_age_minutes": 10,
+    "morning_cards_validation": "ok",
+    "band_integrity_status": "warning",
+    "band_integrity_age_minutes": 0,
+    "band_integrity_mismatch_tickers": [],
+    "band_integrity_warning_tickers": [
+      "NVDA",
+      "VRT"
+    ],
+    "notifier_status": "SENT",
+    "notifier_sent_count": 1,
+    "notifier_blockers": [],
+    "notifier_alert_window": "midday",
+    "notifier_duplicate": false,
+    "sql_canon_status": "ok",
+    "sql_canon_production_answer_count": 14,
+    "skip_builder": true,
+    "quote_snapshot_proof_status": "ok",
+    "quote_snapshot_proof_age_minutes": 0
+  },
+  "sql_canon_health": {
+    "status": "ok",
+    "source": "scripts/finance_sql_canon_access.py",
+    "db_path": "state/finance/finance-canon.sqlite",
+    "counts": {
+      "answer_path_scope": 300,
+      "authority_events": 3,
+      "consumer_migration_registry": 684,
+      "evidence_freshness": 200,
+      "evidence_status": 300,
+      "migration_validation_runs": 35,
+      "reference_levels": 200,
+      "securities": 300,
+      "source_lineage": 3521,
+      "tier_routing_state": 300,
+      "universe_membership": 300
+    },
+    "errors": [],
+    "production_answer_count": 14,
+    "migration_registry_summary": {
+      "priority_counts": {
+        "P0": 21,
+        "P1": 459,
+        "P2": 204
+      },
+      "lane_counts": {
+        "answer_path_parity_lane": 21,
+        "cron_pm_governance_lane": 14,
+        "pm_cockpit_lane": 2,
+        "source_loader_lane": 436,
+        "test_parity_lane": 203,
+        "typed_access_guard_lane": 3,
+        "wf78_wf77_routing_lane": 5
+      },
+      "cutover_state_counts": {
+        "not_cut_over": 116,
+        "source_producer": 389,
+        "sql_primary_guarded": 179
+      },
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": [],
+      "p0_answer_path_lane_status": {
+        "ok": true,
+        "errors": [],
+        "p0_count": 21,
+        "answer_path_lane_count": 21,
+        "p0_answer_path_lane_count": 21,
+        "p0_non_answer_path_count": 0,
+        "answer_path_non_p0_count": 0,
+        "p0_non_answer_path_consumers": [],
+        "answer_path_non_p0_consumers": []
+      }
+    },
+    "authority_boundary": {
+      "read_only_access_layer": true,
+      "db_mutation_allowed": false,
+      "sql_canon_cutover_allowed": false,
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "customer_or_external_delivery_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "delivery_confirmation": {
+    "send_mode": true,
+    "digest_blocked": false,
+    "blocker_surfaced_by_telegram": false,
+    "notifier_status": "SENT",
+    "notifier_sent_count": 1,
+    "notifier_blockers": [],
+    "notifier_duplicate": false
+  },
+  "steps": [
+    {
+      "name": "morning_paper_deployment_recommendation_builder",
+      "command": [],
+      "started_at_utc": "2026-08-28T18:05:04Z",
+      "completed_at_utc": "2026-08-28T18:05:04Z",
+      "returncode": 0,
+      "ok": true,
+      "required": true,
+      "skipped": true,
+      "reason": "skip_builder_uses_fresh_existing_morning_cards",
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "name": "capital_deployment_band_integrity_validator",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\capital_deployment_band_integrity_validator.py",
+        "--write",
+        "--write-md",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-28T18:05:04Z",
+      "completed_at_utc": "2026-08-28T18:05:04Z",
+      "returncode": 0,
+      "ok": true,
+      "required": true,
+      "stdout_tail": "{\n  \"md_out\": \"tmp/capital-deployment-band-integrity-validator.md\",\n  \"out\": \"tmp/capital-deployment-band-integrity-validator.json\",\n  \"status\": \"warning\",\n  \"summary\": {\n    \"band_record_count\": 24,\n    \"critical_count\": 0,\n    \"mismatch_tickers\": [],\n    \"next_safe_action\": \"Core and active review-card band surfaces are internally consistent.\",\n    \"ticker_count\": 18,\n    \"warning_count\": 2,\n    \"warning_tickers\": [\n      \"NVDA\",\n      \"VRT\"\n    ]\n  },\n  \"validation\": {\n    \"domain_status\": \"warning\",\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": [\n      \"review_context_entry_band_drift\",\n      \"review_context_entry_band_drift\"\n    ]\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf67_autonomous_paper_manager",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf67_autonomous_paper_manager.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-28T18:05:04Z",
+      "completed_at_utc": "2026-08-28T18:05:04Z",
+      "returncode": 0,
+      "ok": true,
+      "required": true,
+      "stdout_tail": "{\n  \"status\": \"ok\",\n  \"validation\": \"ok\",\n  \"output\": \"tmp/alpaca-paper-readiness/wf67-autonomous-paper-manager-current.json\",\n  \"ready_tickers\": [\n    \"XLB\",\n    \"VRT\",\n    \"NVDA\"\n  ],\n  \"blocked_tickers\": [\n    \"ETN\",\n    \"LIN\"\n  ],\n  \"repair_review_tickers\": [\n    \"AMZN\",\n    \"MSFT\",\n    \"PH\",\n    \"VRT\",\n    \"XOM\"\n  ],\n  \"execution_allowed\": false\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "intraday_quote_snapshot_proof_pre_digest",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\intraday_quote_snapshot_proof.py"
+      ],
+      "started_at_utc": "2026-08-28T18:05:04Z",
+      "completed_at_utc": "2026-08-28T18:05:05Z",
+      "returncode": 0,
+      "ok": true,
+      "required": false,
+      "stdout_tail": "{\n  \"blocked_reason\": null,\n  \"json_output\": \"tmp/intraday-alerts/quote-snapshot-proof.json\",\n  \"markdown_output\": \"tmp/intraday-alerts/quote-snapshot-proof.md\",\n  \"secrets_redacted\": true,\n  \"status\": \"ok\",\n  \"validation_output\": \"tmp/intraday-alerts/quote-snapshot-proof-validation.json\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf85_paper_deployment_notification_digest",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf85_paper_deployment_notification_digest.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-28T18:05:05Z",
+      "completed_at_utc": "2026-08-28T18:05:05Z",
+      "returncode": 0,
+      "ok": true,
+      "required": true,
+      "stdout_tail": "{\n  \"deployment_ready_tickers\": [],\n  \"execution_ready_count\": 0,\n  \"near_deployment_tickers\": [],\n  \"operator_action\": \"TELEGRAM_NOTIFY\",\n  \"output\": \"tmp/wf85-paper-deployment-notification-digest.json\",\n  \"status\": \"ok\",\n  \"wf67_guard_status\": \"blocked\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf85_paper_deployment_telegram_notifier",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf85_paper_deployment_telegram_notifier.py",
+        "--write",
+        "--validate",
+        "--max-age-minutes",
+        "240",
+        "--alert-window",
+        "midday",
+        "--market-hours-only",
+        "--send"
+      ],
+      "started_at_utc": "2026-08-28T18:05:05Z",
+      "completed_at_utc": "2026-08-28T18:05:18Z",
+      "returncode": 0,
+      "ok": true,
+      "required": true,
+      "stdout_tail": "{\n  \"blockers\": [],\n  \"message_kind\": \"radar\",\n  \"mode\": \"send\",\n  \"output\": \"tmp/wf85-paper-deployment-telegram-notifier.json\",\n  \"sent_count\": 1,\n  \"status\": \"SENT\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "cron_freshness_spine",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\cron_freshness_spine.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-28T18:05:18Z",
+      "completed_at_utc": "2026-08-28T18:05:20Z",
+      "returncode": 0,
+      "ok": true,
+      "required": true,
+      "stdout_tail": "{\n  \"out\": \"tmp/cron-freshness-spine.json\",\n  \"status\": \"blocked\",\n  \"summary\": {\n    \"attention_buckets\": {\n      \"main_review_queue\": 3,\n      \"monitor_only_or_stale\": 3,\n      \"quiet_success\": 26,\n      \"urgent_blocked_or_owner_decision\": 25\n    },\n    \"attention_classes\": {\n      \"known_monitor_only\": 11,\n      \"monitor_only\": 3,\n      \"new_or_changed\": 3,\n      \"quiet\": 15,\n      \"urgent\": 25\n    },\n    \"blocked_count\": 25,\n    \"disabled_job_count\": 1,\n    \"enabled_job_count\": 57,\n    \"fresh_count\": 15,\n    \"implementation_attention_count\": 28,\n    \"job_count\": 58,\n    \"known_monitor_only_attention_count\": 11,\n    \"live_scheduler_last_run_exception_count\": 10,\n    \"missing_expected_artifact_contract_count\": 0,\n    \"monitor_only_or_stale_count\": 3,\n    \"quiet_success_count\": 26,\n    \"requires_attention_count\": 3,\n    \"review_queue_count\": 3,\n    \"stale_count\": 3,\n    \"standing_review_quiet_count\": 11,\n    \"unregistered_enabled_count\": 0,\n    \"urgent_attention_count\": 25,\n    \"wf78_tier_semantic_lineage_blocked_job_count\": 0,\n    \"wf78_tier_semantic_lineage_blocked_jobs\": []\n  },\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": [\n      \"one_or_more_enabled_jobs_have_stale_artifacts\",\n      \"one_or_more_enabled_jobs_require_attention\",\n      \"one_or_more_enabled_jobs_blocked\"\n    ]\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "cron_control_packet",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\cron_control_packet.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-28T18:05:20Z",
+      "completed_at_utc": "2026-08-28T18:05:21Z",
+      "returncode": 0,
+      "ok": true,
+      "required": true,
+      "stdout_tail": "wrote tmp/cron-control-packet.json status=ok escalation=25\n",
+      "stderr_tail": ""
+    }
+  ],
+  "source_artifacts": {
+    "morning_paper_deployment_recommendation_cards": "tmp/morning-paper-deployment-recommendation-cards.json",
+    "capital_deployment_band_integrity_validator": "tmp/capital-deployment-band-integrity-validator.json",
+    "quote_snapshot_proof": "tmp/intraday-alerts/quote-snapshot-proof.json",
+    "wf85_paper_deployment_notification_digest": "tmp/wf85-paper-deployment-notification-digest.json",
+    "wf85_paper_deployment_telegram_notifier": "tmp/wf85-paper-deployment-telegram-notifier.json"
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "paper_execution_still_requires_exact_randall_order_approval_and_wf67_guard",
+      "telegram_delivery_only_no_approve_path"
+    ]
+  }
+}

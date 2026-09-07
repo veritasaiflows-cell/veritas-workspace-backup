@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "phase": "phase_7_advisor_paper_execution_package",
+  "approval_status": "approved_standing_advisor_paper_buy_sell_under_wf67_guardrails",
+  "approved_by": "Randall",
+  "approved_at_local": "2026-05-19T21:23:00-07:00",
+  "approved_at_utc": "2026-05-20T04:23:00Z",
+  "approval_text_summary": "Explicit approval is given to place paper trades and sell during and after market hours. Veritas may get an order from the advisor surface and notify the main session with a capital package notification. Reminders and crons should reflect this position.",
+  "paper_only": true,
+  "required_endpoint": "https://paper-api.alpaca.markets",
+  "forbidden_endpoint": "https://api.alpaca.markets",
+  "allowed_actions_under_guard": [
+    "create advisor-derived paper order package",
+    "submit scoped paper buy order through WF67 wrapper",
+    "submit scoped paper sell order through WF67 wrapper",
+    "cancel scoped paper order through WF67 wrapper",
+    "read/reconcile paper account/orders/positions",
+    "notify main session with capital package status"
+  ],
+  "default_pilot_limits_preserved": {
+    "max_qty": 1,
+    "max_notional_usd": 500.0,
+    "larger_scope_requires_valid_full_portfolio_scope_artifact": true
+  },
+  "required_before_paper_submit_or_sell": [
+    "advisor or capital packet source artifact",
+    "exact scoped paper-trade request artifact naming ticker, side, quantity/notional, order type, time-in-force, rationale, and risk check",
+    "fresh short-lived WF67 kill switch enabling paper submit/cancel only",
+    "WF67 guard validation status ok with 0 critical / 0 warning or explicitly accepted non-safety warning",
+    "paper-specific credentials only",
+    "append-only redacted audit log",
+    "main-session capital package notification before or immediately with execution result"
+  ],
+  "allowed_order_scope": {
+    "sides": ["buy", "sell"],
+    "order_types": ["limit", "market"],
+    "time_in_force": ["day"],
+    "market_order_requires_explicit_owner_approval_field": true,
+    "submission_window": "during or after market hours is allowed for paper orders; execution/fill behavior is whatever Alpaca paper accepts for the order terms"
+  },
+  "blocked_scope": [
+    "live trading",
+    "live endpoint",
+    "live credentials",
+    "money movement",
+    "account setting mutation",
+    "order replacement",
+    "close-position or liquidation endpoint",
+    "short sales unless separately scoped and validated",
+    "margin, leverage, options, crypto, multi-leg/bracket/OCO/OTO orders",
+    "promotion of paper results to live deployment",
+    "owner approval inferred from score, alert, validation, packet quality, or paper fill"
+  ],
+  "notes": "This artifact widens standing paper-only authority for advisor-derived buy/sell packages, but does not authorize live execution or remove WF67 wrapper/kill-switch/validator/audit requirements."
+}

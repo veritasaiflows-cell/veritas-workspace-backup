@@ -1,0 +1,68 @@
+{
+  "schema": "veritas.wf86_assisted_order_cards.v1",
+  "generated_at_utc": "2026-06-22T15:07:01Z",
+  "status": "draft_ready_for_exact_owner_review_but_execution_blocked",
+  "workflow_id": "WF67/WF86",
+  "authority_boundary": {
+    "paper_only": true,
+    "request_generation_only": true,
+    "paper_submit_allowed": false,
+    "paper_cancel_allowed": false,
+    "paper_sell_allowed": false,
+    "live_trade_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "summary": {
+    "card_count": 1,
+    "ticker": "NVDA",
+    "side": "buy",
+    "notional_usd": 300.0,
+    "limit_price": 209.5,
+    "estimated_max_loss_usd": 23.7,
+    "execution_ready": false,
+    "next_safe_action": "Present for exact Randall review only; if approved later, refresh quote, kill switch, and WF67 guard before any paper submit."
+  },
+  "cards": [
+    {
+      "ticker": "NVDA",
+      "card_path": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.small-starter-review-2026-06-22.owner-card.json",
+      "request_path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-small-starter-review-2026-06-22.json",
+      "request_id": "nvda-small-starter-review-20260622-buy-limit",
+      "owner_approval_status": "pending_exact_randall_approval",
+      "execute_allowed_by_card": false,
+      "execute_allowed_by_request": false,
+      "assisted_review_blockers": [
+        "decision_factory_disposition=not_card_preparable",
+        "exact_randall_approval_required",
+        "fresh_execution_quote_needed",
+        "fresh_kill_switch_not_proven",
+        "fresh_quote_must_remain_inside_band_or_limit_pullback_only",
+        "stale_or_mismatched_owner_approval:approval_order_mismatch:symbol",
+        "tactical_dip_reclaim_requires_fresh_exact_owner_review",
+        "trade_grade_freshness_runner_blocked:tier_a_b_complete_band_context_stale",
+        "wf67_guard_not_clean"
+      ],
+      "execution_blockers": [
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing",
+        "wf67_guard_not_clean"
+      ]
+    }
+  ],
+  "validation": {
+    "status": "warning",
+    "errors": [],
+    "warnings": [
+      "execution_blocked_until_exact_approval_and_fresh_wf67_guard",
+      "external_quote_crosscheck_near_or_above_band_high_pullback_only"
+    ]
+  },
+  "stop_lines": [
+    "This approval card is not approval.",
+    "No paper submit/cancel/sell from this builder.",
+    "No live endpoint, credentials, account action, money movement, portfolio/canon mutation, or owner approval inference."
+  ]
+}

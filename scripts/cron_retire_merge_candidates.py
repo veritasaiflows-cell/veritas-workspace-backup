@@ -7,11 +7,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
+from cron_freshness_spine import scheduler_error_text
+from cron_operator_ledger import cron_jobs as live_cron_jobs
+from market_data_utils import atomic_write_json, atomic_write_text
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
-CRON_STORE = ROOT.parent / "cron" / "jobs.json"
 DEFAULT_OUT = TMP / "cron-retire-merge-candidates.json"
 DEFAULT_MD = TMP / "cron-retire-merge-candidates.md"
 
@@ -54,12 +55,6 @@ def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
-def load(path: Path) -> Any:
-    if not path.exists():
-        return None
-    return load_json_artifact(path)
-
-
 def rel(path: Path) -> str:
     try:
         return path.relative_to(ROOT).as_posix()
@@ -67,15 +62,8 @@ def rel(path: Path) -> str:
         return path.as_posix()
 
 
-def cron_jobs() -> list[dict[str, Any]]:
-    data = load(CRON_STORE)
-    if isinstance(data, dict):
-        jobs = data.get("jobs") or data.get("items")
-        if isinstance(jobs, list):
-            return [item for item in jobs if isinstance(item, dict)]
-    if isinstance(data, list):
-        return [item for item in data if isinstance(item, dict)]
-    return []
+def cron_jobs() -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    return live_cron_jobs()
 
 
 def job_name(job: dict[str, Any]) -> str:
@@ -115,7 +103,10 @@ def prompt_bytes(job: dict[str, Any]) -> int:
 
 def last_error(job: dict[str, Any]) -> str:
     state = as_dict(job.get("state"))
-    return str(state.get("lastError") or state.get("lastDiagnosticSummary") or "")
+    return scheduler_error_text({
+        "last_error": state.get("lastError"),
+        "last_diagnostic_summary": state.get("lastDiagnosticSummary"),
+    }) or ""
 
 
 def candidate(
@@ -226,6 +217,27 @@ def build_candidates(jobs: list[dict[str, Any]]) -> list[dict[str, Any]]:
             ],
         ))
 
+    # Name-matched rules above only cover jobs that still carry their original
+    # title, so a renamed or newly failing job would otherwise never reach the PM
+    # follow-up lane. Sweep the rest by live status instead of by name.
+    named = {item["name"] for item in candidates}
+    for job in jobs:
+        if not enabled(job) or status(job) != "error" or job_name(job) in named:
+            continue
+        reason = " ".join(last_error(job).split())[:300]
+        candidates.append(candidate(
+            job,
+            "repair_before_next_run",
+            "P1",
+            "Diagnose the recorded scheduler error and repair the producer before the next scheduled run.",
+            f"Enabled job is failing on the live scheduler. Last recorded error: {reason or 'not captured by the scheduler'}",
+            [
+                "run the job's producer command manually and capture exit code",
+                "openclaw cron run <job_id>",
+                "python scripts\\cron_signal_scorecard.py --write --validate",
+            ],
+        ))
+
     large = sorted(
         [job for job in jobs if enabled(job) and prompt_bytes(job) > 3500],
         key=prompt_bytes,
@@ -251,7 +263,7 @@ def build_candidates(jobs: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def build_payload() -> dict[str, Any]:
-    jobs = cron_jobs()
+    jobs, cron_source = cron_jobs()
     enabled_jobs = [job for job in jobs if enabled(job)]
     disabled_jobs = [job for job in jobs if not enabled(job)]
     candidates = build_candidates(jobs)
@@ -263,11 +275,26 @@ def build_payload() -> dict[str, Any]:
         if repair_now
         else "No immediate disable is recommended; review P1/P2 retire-merge candidates before adding enabled jobs while cap is full."
     )
+    errors: list[str] = []
+    warnings: list[str] = []
+    if not jobs:
+        # A silently empty read produced a frozen zero-job report for two months
+        # after the cron store moved; an empty scheduler is not a clean result.
+        errors.append("no_cron_jobs_loaded")
+    if cron_source.get("gateway_fallback_used"):
+        warnings.append("live_gateway_unreadable_used_legacy_store_fallback")
+    if errors:
+        report_status = "error"
+    elif repair_now:
+        report_status = "attention"
+    else:
+        report_status = "ok"
     return {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
-        "status": "attention" if repair_now else "ok",
+        "status": report_status,
         "authority_boundary": AUTHORITY_BOUNDARY,
+        "cron_source": cron_source,
         "summary": {
             "job_count": len(jobs),
             "enabled_count": len(enabled_jobs),
@@ -289,9 +316,9 @@ def build_payload() -> dict[str, Any]:
         },
         "candidates": candidates,
         "validation": {
-            "status": "ok",
-            "errors": [],
-            "warnings": [],
+            "status": "error" if errors else "ok",
+            "errors": errors,
+            "warnings": warnings,
         },
     }
 

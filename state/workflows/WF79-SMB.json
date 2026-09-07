@@ -63,7 +63,7 @@
     ],
     "lane_status": "route_only",
     "readiness_score": 90,
-    "rank": 13,
+    "rank": 15,
     "pm_packet_only": true,
     "source_lane_status": "ready",
     "superseded_by_route_contract": true

@@ -1,0 +1,151 @@
+{
+  "schema": "veritas.wf86_autotrader_readiness.v1",
+  "generated_at_utc": "2026-08-27T21:42:04Z",
+  "status": "shadow_ready",
+  "workflow_id": "WF86",
+  "purpose": "Single readiness packet for the paper autotrader next-step gate.",
+  "authority_boundary": {
+    "review_only": true,
+    "paper_only_design": true,
+    "shadow_logging_allowed": true,
+    "assisted_request_generation_allowed": true,
+    "autonomous_paper_execution_allowed_now": false,
+    "paper_submit_allowed_now": false,
+    "paper_cancel_allowed_now": false,
+    "paper_sell_allowed_now": false,
+    "live_trade_allowed": false,
+    "live_endpoint_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "phase_readiness": {
+    "shadow_mode_ready": true,
+    "assisted_paper_mode_ready": false,
+    "autonomous_paper_buy_ready": false,
+    "autonomous_paper_sell_ready": false,
+    "live_trading_ready": false
+  },
+  "policy": {
+    "path": "tmp/paper-autotrader/policy.json",
+    "mode": "shadow_first_no_execution",
+    "wf86_max_notional_per_order_usd": 5000,
+    "wf67_current_executor_pilot_cap_usd": 500.0,
+    "wf67_wf86_full_scope_cap_bridge_available": true
+  },
+  "shadow": {
+    "eligibility_status": "ok",
+    "candidate_count": 0,
+    "shadow_eligible_count": 0,
+    "would_buy_shadow_tickers": [],
+    "ledger_decision_count": 51,
+    "clean_shadow_decision_count": 21,
+    "unique_clean_market_sessions": 7,
+    "threshold_met": true
+  },
+  "guard": {
+    "schema": "veritas.wf86_guard_readiness.v1",
+    "generated_at_utc": "2026-08-27T21:42:04Z",
+    "status": "blocked",
+    "workflow_id": "WF86",
+    "authority_boundary": {
+      "review_only": true,
+      "paper_only_design": true,
+      "shadow_logging_allowed": true,
+      "assisted_request_generation_allowed": true,
+      "autonomous_paper_execution_allowed_now": false,
+      "paper_submit_allowed_now": false,
+      "paper_cancel_allowed_now": false,
+      "paper_sell_allowed_now": false,
+      "live_trade_allowed": false,
+      "live_endpoint_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "money_movement_allowed": false,
+      "portfolio_or_canon_mutation_allowed": false,
+      "owner_approval_inferred": false
+    },
+    "wf67": {
+      "manager_status": "ok",
+      "guard_status": "blocked",
+      "ready_for_paper_submit_cancel": false,
+      "current_executor_pilot_cap_usd": 500.0,
+      "wf86_policy_cap_usd": 5000,
+      "cap_aligned_for_wf86_policy": true,
+      "wf86_full_scope_cap_bridge_validated": true,
+      "wf86_full_scope_cap_bridge_error": null,
+      "critical_findings": [
+        {
+          "code": "kill_switch_missing_or_expired",
+          "severity": "critical",
+          "value": "2026-06-21T02:42:06Z"
+        }
+      ]
+    },
+    "shadow_threshold": {
+      "clean_shadow_decision_count": 21,
+      "unique_clean_market_sessions": 7,
+      "required_clean_decisions": 20,
+      "required_clean_market_sessions": 5,
+      "threshold_met": true
+    },
+    "pilot_approval": {
+      "path": "tmp/paper-autotrader/autonomous-pilot-approval.json",
+      "present": true,
+      "valid": true,
+      "errors": [],
+      "approved_by": "Randall",
+      "approved_at_mst": "2026-06-11 10:52:31 MST",
+      "scope": {
+        "paper_only": true,
+        "tier_a_buy_candidates_only": true,
+        "limit_day_orders_only": true,
+        "max_notional_per_order_usd": 5000,
+        "max_orders_per_day": 3,
+        "market_hours_only": true,
+        "live_trading_allowed": false,
+        "brokerage_or_account_actions_allowed": false,
+        "stop_on_any_guard_warning": true
+      }
+    },
+    "blockers": [
+      "wf67_guard_not_clean",
+      "fresh_short_lived_kill_switch_not_active",
+      "redacted_audit_schema_not_clean_for_autonomy",
+      "post_trade_reconciliation_not_proven_for_autonomy"
+    ],
+    "next_safe_action": "Keep WF86 in shadow mode; implement WF67 cap bridge and guard/audit/reconciliation proof before assisted or autonomous paper execution."
+  },
+  "blockers_before_assisted_mode": [
+    "wf67_guard_not_clean"
+  ],
+  "blockers_before_autonomous_paper_execution": [
+    "wf67_guard_not_clean",
+    "fresh_short_lived_kill_switch_not_active",
+    "redacted_audit_schema_not_clean_for_autonomy",
+    "post_trade_reconciliation_not_proven_for_autonomy"
+  ],
+  "source_artifacts": [
+    "tmp/paper-autotrader/policy.json",
+    "tmp/paper-autotrader/shadow-eligibility.json",
+    "tmp/paper-autotrader/shadow-decisions.json",
+    "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
+    "tmp/alpaca-paper-readiness/wf67-autonomous-paper-manager-current.json",
+    "tmp/paper-autotrader/autonomous-pilot-approval.json"
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "next_implementation_steps": [
+    "Repair WF67 guard critical findings: kill switch freshness, audit required fields, and audit guard status.",
+    "Complete assisted-mode request proof for VRT using WF86 policy, while keeping owner exact approval required.",
+    "Prove post-trade reconciliation after any assisted paper execution before autonomous paper execution can be considered ready."
+  ],
+  "stop_lines": [
+    "No order execution from WF86 readiness packets.",
+    "No live endpoint, live credentials, account action, money movement, or owner approval inference.",
+    "Cron and Telegram cannot submit/cancel/sell orders."
+  ]
+}

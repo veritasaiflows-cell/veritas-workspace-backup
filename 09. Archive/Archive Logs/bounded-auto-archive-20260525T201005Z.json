@@ -1,0 +1,46 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T20:10:05Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-artifact-index-json-first-md-archive-microbatch-2026-05-25.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 3,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/sql-canon-phase3b-writepath-preflight.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Artifact Index JSON First Markdown/sql-canon-phase3b-writepath-preflight.md",
+      "sha256_before": "2b654cb3e93daf446070e7ee2b41797c1b9f6f17f503785ac91e34607094453f",
+      "sha256_after": "2b654cb3e93daf446070e7ee2b41797c1b9f6f17f503785ac91e34607094453f"
+    },
+    {
+      "path": "tmp/sql-canon-phase3d-consumer-parity.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Artifact Index JSON First Markdown/sql-canon-phase3d-consumer-parity.md",
+      "sha256_before": "7b26dd56a47355e210302a7e2ef44841d1fb2728cd8f2a74906dc2842aa492be",
+      "sha256_after": "7b26dd56a47355e210302a7e2ef44841d1fb2728cd8f2a74906dc2842aa492be"
+    },
+    {
+      "path": "tmp/sql-canon-phase3e-dashboard-proof-pilot.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Artifact Index JSON First Markdown/sql-canon-phase3e-dashboard-proof-pilot.md",
+      "sha256_before": "90b31d17d84eb03f5d3f4bcdc2c84285812866a9f05d4df3143ff1b6a3937a04",
+      "sha256_after": "90b31d17d84eb03f5d3f4bcdc2c84285812866a9f05d4df3143ff1b6a3937a04"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; explicit apply_allowed suggestions can move only with zero references, the WF72 adjacent-JSON historical-reference-only exception, or the WF72 adjacent-JSON script-output-constant exception"
+}

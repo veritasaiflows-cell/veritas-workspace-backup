@@ -917,10 +917,10 @@ async function buildState() {
       human_notes: [
         { title: "Executive Brief", path: "01. Dashboards/Executive Brief.md", role: "first_read" },
         { title: "Thesis Ranking and Leadership Board", path: "05. Intelligence/Thesis Ranking and Leadership Board.md", role: "thesis_ranking_leadership" },
-        { title: "Weekly Positioning Review", path: "05. Intelligence/Weekly Positioning Review.md", role: "weekly_posture" },
-        { title: "Execution Board", path: "03. Portfolio/Execution Board.md", role: "entry_band_and_execution_posture" },
-        { title: "Portfolio Snapshot", path: "03. Portfolio/Portfolio Snapshot.md", role: "portfolio_posture" },
-        { title: "Coverage and Watchlist", path: "04. Research/Coverage and Watchlist.md", role: "research_universe" },
+        { title: "Alert Operations Board", path: "03. Alerts and Recommendations/Alert Operations Board.md", role: "alert_operations" },
+        { title: "Alert Trigger Policy", path: "03. Alerts and Recommendations/Alert Trigger Policy.md", role: "alert_state_policy" },
+        { title: "Alert Bands and Invalidation Register", path: "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md", role: "ticker_alert_levels" },
+        { title: "Coverage Universe", path: "04. Research/Coverage Universe.md", role: "research_universe" },
         { title: "Risk Rules", path: "07. Risk/Risk Rules.md", role: "risk_boundary" },
       ],
       finance: {
@@ -935,7 +935,7 @@ async function buildState() {
         "no capital approval",
         "no paper or live execution approval",
         "no brokerage or account action",
-        "no portfolio or canon mutation",
+        "no maintained account or execution state",
         "no proof deletion",
       ],
     },

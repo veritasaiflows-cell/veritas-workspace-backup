@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Stable runner for the weekday post-close finance refresh cron.
+"""Compatibility runner for the weekday post-close alerts-and-recommendations chain.
 
-The scheduled job should run one deterministic command and let this runner
-classify the proof artifacts. The underlying post-close chain still owns the
-approved scoped band/reference/sizing note sync steps.
+The enabled cron contract invokes the bounded chain directly. This entrypoint
+remains as a fail-closed compatibility wrapper for manual or legacy callers;
+it does not own schedules, ticker tiers, finance canon, or portfolio state.
 """
 from __future__ import annotations
 
@@ -35,16 +35,13 @@ LAUNCH_SCHEMA = "veritas.post_close_review_cron_launcher.v1"
 
 AUTHORITY_BOUNDARY = {
     "review_only_runner": True,
-    "approved_scoped_entry_band_maintenance_may_run": True,
-    "approved_reference_band_visibility_sync_may_run": True,
-    "approved_position_sizing_semantic_sync_may_run": True,
+    "alerts_and_non_executing_recommendations_only": True,
+    "finance_canon_mutation_allowed": False,
+    "portfolio_state_mutation_allowed": False,
     "cron_state_mutation_allowed": False,
     "cron_schedule_mutation_allowed": False,
     "runtime_config_mutation_allowed": False,
-    "unscoped_canon_or_portfolio_mutation_allowed": False,
     "capital_deployment_allowed": False,
-    "capital_deployment_approved": False,
-    "proposal_apply_allowed": False,
     "trade_or_account_action_allowed": False,
     "paper_or_live_execution_allowed": False,
     "brokerage_or_account_action_allowed": False,
@@ -202,7 +199,7 @@ Get-CimInstance Win32_Process -Filter "name = 'python.exe'" |
   Where-Object {
     $_.ProcessId -ne $currentPid -and (
       ($_.CommandLine -like '*post_close_review_cron_runner.py*' -and $_.CommandLine -notlike '*--launch-background*') -or
-      ($_.CommandLine -like '*run_finance_refresh_chain.py*' -and $_.CommandLine -like '*post-close*')
+      ($_.CommandLine -like '*run_alerts_recommendations_chain.py*' -and $_.CommandLine -like '*post-close*')
     )
   } |
   Select-Object ProcessId,ParentProcessId,CommandLine,CreationDate |
@@ -233,7 +230,7 @@ Get-CimInstance Win32_Process -Filter "name = 'python.exe'" |
 
 
 def chain_recently_running(max_age_seconds: int = 4 * 3600) -> bool:
-    run_chain = TMP / "run-chain-post-close.json"
+    run_chain = TMP / "alerts-recommendations-chain-post-close.json"
     payload = load(run_chain)
     if payload.get("status") != "running":
         return False
@@ -362,7 +359,11 @@ def build_steps(skip_chain: bool) -> list[tuple[str, list[str], int]]:
     if skip_chain:
         return []
     return [
-        ("post_close_finance_refresh_chain", [sys.executable, "scripts\\run_finance_refresh_chain.py", "post-close"], 3000),
+        (
+            "post_close_alerts_recommendations_chain",
+            [sys.executable, "scripts\\run_alerts_recommendations_chain.py", "post-close", "--write", "--validate"],
+            3000,
+        ),
         ("state_history_validate", [sys.executable, "scripts\\state_history_capture.py", "validate"], 180),
         ("cron_operator_ledger", [sys.executable, "scripts\\cron_operator_ledger.py", "--write", "--write-md", "--validate"], 240),
         ("cron_freshness_spine", [sys.executable, "scripts\\cron_freshness_spine.py", "--write", "--validate"], 240),
@@ -386,64 +387,30 @@ def artifact(path: str) -> dict[str, Any]:
 
 
 def build_summary() -> dict[str, Any]:
-    run_chain = load(TMP / "run-chain-post-close.json")
-    run_summary = load(TMP / "run-summary-post-close.json")
-    run_summary_execution = as_dict(run_summary.get("execution"))
-    data_quality = as_dict(run_summary_execution.get("data_quality_repair"))
-    auto_band = load(TMP / "auto-band-apply.json")
-    ref_sync = load(TMP / "reference-band-note-sync.json")
-    sizing_sync = load(TMP / "auto-position-sizing-semantic-sync.json")
-    dashboard = load(TMP / "dashboard-validation.json")
-    capital_validator = load(TMP / "capital-deployment-recommendation-validation.json")
-    capital_bundle = load(TMP / "portfolio-mutation-proposals" / "current-capital-deployment-recommendations.json")
-    post_apply = load(TMP / "post-apply-validation-chain.json")
+    run_chain = load(TMP / "alerts-recommendations-chain-post-close.json")
+    alert_levels = load(TMP / "alert-level-freshness-controller.json")
+    digest = load(TMP / "finance-alert-os-post-close-digest.json")
     cron_control = load(TMP / "cron-control-packet.json")
     sql_health = sql_canon_health()
+    chain_validation = as_dict(run_chain.get("validation"))
     return {
         "run_chain_status": run_chain.get("status"),
-        "run_chain_exit_code": run_chain.get("exit_code"),
-        "run_chain_started_at_utc": run_chain.get("started_at_utc"),
-        "run_chain_completed_at_utc": run_chain.get("completed_at_utc"),
-        "run_summary_status": run_summary.get("status"),
-        "run_summary_run_id": run_summary.get("run_id"),
-        "run_summary_generated_at_utc": run_summary.get("generated_at_utc"),
-        "run_summary_stop_line": run_summary.get("stop_line"),
-        "run_summary_blockers_count": len(as_list(run_summary.get("blockers"))),
-        "run_summary_data_quality_classification": data_quality.get("classification"),
-        "run_summary_data_quality_only": run_summary_execution.get("data_quality_only"),
-        "run_summary_data_quality_ticker_count": int_or_zero(data_quality.get("ticker_count")),
-        "run_summary_data_quality_tickers": as_list(data_quality.get("tickers")),
-        "auto_band_status": auto_band.get("status"),
-        "auto_band_applied_count": len(as_list(auto_band.get("applied"))),
-        "reference_band_sync_status": ref_sync.get("status"),
-        "position_sizing_semantic_sync_status": sizing_sync.get("status"),
-        "position_sizing_semantic_sync_writes": as_dict(sizing_sync.get("summary")).get("writes_performed"),
-        "post_apply_validation_status": post_apply.get("status"),
-        "post_apply_failed_steps": as_dict(post_apply.get("summary")).get("failed"),
-        "dashboard_critical": int_or_zero(as_dict(dashboard.get("summary")).get("critical")),
-        "dashboard_warning": int_or_zero(as_dict(dashboard.get("summary")).get("warning")),
-        "capital_validator_status": capital_validator.get("status"),
-        "capital_validator_critical": int_or_zero(as_dict(capital_validator.get("summary")).get("critical")),
-        "capital_bundle_status": capital_bundle.get("status"),
+        "run_chain_validation_status": chain_validation.get("status"),
+        "run_chain_generated_at_utc": run_chain.get("generated_at_utc"),
+        "run_chain_critical_errors": as_list(as_dict(run_chain.get("summary")).get("critical_errors")),
+        "run_chain_warnings": as_list(as_dict(run_chain.get("summary")).get("warnings")),
+        "run_chain_retired_stage_hits": as_list(as_dict(run_chain.get("summary")).get("retired_stage_hits")),
+        "run_chain_authority": as_dict(run_chain.get("authority")),
+        "alert_level_status": alert_levels.get("status"),
+        "alert_level_validation_status": as_dict(alert_levels.get("validation")).get("status"),
+        "digest_status": digest.get("status"),
+        "digest_validation_status": as_dict(digest.get("validation")).get("status"),
         "cron_control_status": cron_control.get("status"),
         "cron_control_escalation_signal_count": int_or_zero(as_dict(cron_control.get("summary")).get("escalation_signal_count")),
         "sql_canon_status": sql_health.get("status"),
         "sql_canon_production_answer_count": sql_health.get("production_answer_count"),
         "sql_canon_health": sql_health,
     }
-
-
-def capital_validator_review_only_ok(summary: dict[str, Any]) -> bool:
-    """Treat no-candidate capital warnings as review-only cron attention."""
-    critical = int_or_zero(summary.get("capital_validator_critical"))
-    if critical != 0:
-        return False
-    status = summary.get("capital_validator_status")
-    if status == "ok":
-        return True
-    if status == "warning" and summary.get("capital_bundle_status") in {"no_candidates", "ok_no_candidates"}:
-        return True
-    return False
 
 
 def validate(payload: dict[str, Any]) -> dict[str, Any]:
@@ -467,39 +434,32 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
     if attention_steps:
         warnings.append(f"attention_steps:{','.join(str(item) for item in attention_steps)}")
     summary = as_dict(payload.get("summary"))
-    ticker_scoped_chain_ok = (
-        summary.get("run_chain_status") == "completed_with_ticker_repairs"
-        and summary.get("run_summary_status") == "warning"
-        and summary.get("run_summary_stop_line") is False
-        and int_or_zero(summary.get("run_summary_blockers_count")) == 0
-        and summary.get("run_summary_data_quality_classification") == "ticker_scoped_repair"
-        and summary.get("run_summary_data_quality_only") is True
-        and int_or_zero(summary.get("run_summary_data_quality_ticker_count")) == 1
-        and int_or_zero(summary.get("post_apply_failed_steps")) == 0
-    )
-    systemic_data_quality_chain_ok = (
-        summary.get("run_chain_status") == "completed_with_systemic_data_quality"
-        and summary.get("run_summary_status") == "blocked"
-        and summary.get("run_summary_stop_line") is True
-        and summary.get("run_summary_data_quality_classification") == "systemic_data_quality"
-        and summary.get("run_summary_data_quality_only") is True
-        and int_or_zero(summary.get("run_summary_data_quality_ticker_count")) >= 2
-        and int_or_zero(summary.get("post_apply_failed_steps")) == 0
-    )
-    if summary.get("run_chain_status") != "ok" and not (ticker_scoped_chain_ok or systemic_data_quality_chain_ok):
+    if summary.get("run_chain_status") != "ok":
         errors.append(f"run_chain_status:{summary.get('run_chain_status')}")
-    if summary.get("auto_band_status") not in {"ok", "ok_no_changes", None}:
-        errors.append(f"auto_band_status:{summary.get('auto_band_status')}")
-    if summary.get("reference_band_sync_status") not in {"ok", "ok_no_changes", None}:
-        errors.append(f"reference_band_sync_status:{summary.get('reference_band_sync_status')}")
-    if summary.get("position_sizing_semantic_sync_status") not in {"ok", "ok_no_changes", None}:
-        errors.append(f"position_sizing_semantic_sync_status:{summary.get('position_sizing_semantic_sync_status')}")
-    if int_or_zero(summary.get("post_apply_failed_steps")) != 0:
-        errors.append("post_apply_validation_failed_steps_nonzero")
-    if int_or_zero(summary.get("dashboard_critical")) != 0:
-        errors.append("dashboard_validation_has_critical")
-    if not capital_validator_review_only_ok(summary):
-        errors.append("capital_deployment_recommendation_validator_not_ok")
+    if summary.get("run_chain_validation_status") != "ok":
+        errors.append(f"run_chain_validation_status:{summary.get('run_chain_validation_status')}")
+    critical_errors = as_list(summary.get("run_chain_critical_errors"))
+    if critical_errors:
+        errors.append(f"run_chain_critical_errors:{','.join(str(item) for item in critical_errors)}")
+    retired_hits = as_list(summary.get("run_chain_retired_stage_hits"))
+    if retired_hits:
+        errors.append(f"run_chain_retired_stage_hits:{','.join(str(item) for item in retired_hits)}")
+    if summary.get("alert_level_status") != "ok" or summary.get("alert_level_validation_status") != "ok":
+        errors.append("alert_level_freshness_not_ok")
+    if summary.get("digest_status") != "ok" or summary.get("digest_validation_status") != "ok":
+        errors.append("recommendation_digest_not_ok")
+
+    chain_authority = as_dict(summary.get("run_chain_authority"))
+    for key in (
+        "writes_finance_canon",
+        "maintains_portfolio_state",
+        "maintains_simulated_account_state",
+        "capital_or_order_authority",
+        "paper_or_live_execution_allowed",
+        "owner_approval_inferred",
+    ):
+        if chain_authority.get(key) is not False:
+            errors.append(f"run_chain_authority_{key}_not_false")
     sql_health = as_dict(summary.get("sql_canon_health"))
     if sql_health.get("status") != "ok":
         errors.append(f"sql_canon_guard_blocked:{sql_health.get('status')}")
@@ -516,36 +476,11 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
         if sql_boundary.get(key) is not False:
             errors.append(f"sql_canon_authority_{key}_not_false")
 
-    auto_band_auth = as_dict(artifact("tmp/auto-band-apply.json").get("authority"))
-    if auto_band_auth.get("capital_action_allowed") is not False or auto_band_auth.get("owner_approval_inferred") is not False:
-        errors.append("auto_band_authority_widened")
-    ref_auth = as_dict(artifact("tmp/reference-band-note-sync.json").get("authority"))
-    if ref_auth.get("capital_action_allowed") is not False or ref_auth.get("owner_approval_inferred") is not False:
-        errors.append("reference_band_sync_authority_widened")
-    sizing_auth = as_dict(artifact("tmp/auto-position-sizing-semantic-sync.json").get("authority"))
-    if (
-        sizing_auth.get("portfolio_config_weight_mutation_allowed") is not False
-        or sizing_auth.get("cash_risk_rule_sleeve_execution_mutation_allowed") is not False
-        or sizing_auth.get("trade_or_account_action_allowed") is not False
-        or sizing_auth.get("owner_approval_inferred") is not False
-    ):
-        errors.append("position_sizing_semantic_sync_authority_widened")
-    capital_auth = as_dict(artifact("tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json").get("authority"))
-    if (
-        capital_auth.get("proposal_apply_allowed") is not False
-        or capital_auth.get("per_packet_owner_approval_inferred") is not False
-        or capital_auth.get("trade_or_account_action_allowed") is not False
-        or capital_auth.get("trade_execution_allowed") is not False
-    ):
-        errors.append("capital_recommendation_authority_widened")
-    if int_or_zero(summary.get("dashboard_warning")):
-        warnings.append("dashboard_validation_warnings_present_for_main_visibility")
     if int_or_zero(summary.get("cron_control_escalation_signal_count")):
         warnings.append("cron_control_escalation_signal_present_for_main_visibility")
-    if ticker_scoped_chain_ok:
-        warnings.append("ticker_scoped_data_quality_repair_present_for_main_visibility")
-    if systemic_data_quality_chain_ok:
-        warnings.append("systemic_data_quality_repair_present_for_main_visibility")
+    chain_warnings = as_list(summary.get("run_chain_warnings"))
+    if chain_warnings:
+        warnings.append(f"run_chain_warnings:{','.join(str(item) for item in chain_warnings)}")
     return {"status": "error" if errors else "warning" if warnings else "ok", "errors": errors, "warnings": warnings}
 
 
@@ -556,6 +491,8 @@ def build_payload(steps: list[dict[str, Any]], skip_chain: bool, launch_id: str 
         if not bool(step.get("ok")) and step.get("blocking") is False
     ]
     summary = build_summary()
+    chain_generated_at = summary.get("run_chain_generated_at_utc")
+    compatibility_run_id = f"alerts-recommendations:post-close:{chain_generated_at}" if chain_generated_at else None
     payload = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -570,11 +507,13 @@ def build_payload(steps: list[dict[str, Any]], skip_chain: bool, launch_id: str 
             "launch_id": launch_id,
             "runner_executed_chain": not skip_chain,
             "run_chain_status": summary.get("run_chain_status"),
-            "run_chain_started_at_utc": summary.get("run_chain_started_at_utc"),
-            "run_chain_completed_at_utc": summary.get("run_chain_completed_at_utc"),
-            "run_summary_status": summary.get("run_summary_status"),
-            "run_summary_run_id": summary.get("run_summary_run_id"),
-            "run_summary_generated_at_utc": summary.get("run_summary_generated_at_utc"),
+            "run_chain_validation_status": summary.get("run_chain_validation_status"),
+            "run_chain_generated_at_utc": chain_generated_at,
+            "run_chain_started_at_utc": chain_generated_at,
+            "run_chain_completed_at_utc": chain_generated_at,
+            "run_summary_status": summary.get("run_chain_validation_status"),
+            "run_summary_run_id": compatibility_run_id,
+            "run_summary_generated_at_utc": chain_generated_at,
         },
         "step_rollup": {
             "ok": len([step for step in steps if step.get("ok")]),
@@ -584,40 +523,33 @@ def build_payload(steps: list[dict[str, Any]], skip_chain: bool, launch_id: str 
         },
         "steps": steps,
         "artifacts": [
-            artifact("tmp/run-chain-post-close.json"),
-            artifact("tmp/run-summary-post-close.json"),
-            artifact("tmp/auto-band-apply.json"),
-            artifact("tmp/reference-band-note-sync.json"),
-            artifact("tmp/auto-position-sizing-semantic-sync.json"),
-            artifact("tmp/post-apply-validation-chain.json"),
-            artifact("tmp/dashboard-validation.json"),
-            artifact("tmp/capital-deployment-recommendation-validation.json"),
+            artifact("tmp/alerts-recommendations-chain-post-close.json"),
+            artifact("tmp/alert-level-freshness-controller.json"),
+            artifact("tmp/finance-alert-os-post-close-digest.json"),
+            artifact("tmp/finance-sql-canon-access-validation.json"),
             artifact("tmp/cron-control-packet.json"),
         ],
         "stop_lines": [
-            "The runner may execute only the existing approved post-close chain and validation proof.",
+            "The compatibility runner may execute only the bounded post-close alerts-and-recommendations chain and existing local cron-control proof.",
             "No trade/account action, paper/live execution, money movement, execution approval, or owner approval inference.",
         ],
     }
     validation = validate(payload)
     payload["validation"] = validation
-    data_quality_classification = as_dict(payload.get("summary")).get("run_summary_data_quality_classification")
     payload["status"] = (
         "blocked" if validation["errors"]
-        else "completed_with_ticker_repairs" if data_quality_classification == "ticker_scoped_repair"
-        else "completed_with_systemic_data_quality" if data_quality_classification == "systemic_data_quality"
-        else "warning" if attention_steps
+        else "warning" if validation["warnings"] or attention_steps
         else "ok"
     )
     payload["operator_action"] = (
         "BLOCKED" if validation["errors"]
-        else "MAIN_SESSION_REQUIRED" if validation["warnings"] or data_quality_classification else "NO_REPLY"
+        else "MAIN_SESSION_REQUIRED" if validation["warnings"] else "NO_REPLY"
     )
     return payload
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run and classify weekday post-close finance refresh cron proof.")
+    parser = argparse.ArgumentParser(description="Run and classify weekday post-close alerts-and-recommendations proof.")
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--validate", action="store_true")
     parser.add_argument("--skip-chain", action="store_true", help="Do not run the post-close chain; classify current artifacts only.")
@@ -647,6 +579,7 @@ def main() -> int:
     print(
         f"status={payload['status']} validation={payload['validation']['status']} "
         f"operator_action={payload['operator_action']} run_chain={summary.get('run_chain_status')} "
+        f"alert_levels={summary.get('alert_level_status')} digest={summary.get('digest_status')} "
         f"cron_escalation={summary.get('cron_control_escalation_signal_count')}"
     )
     for error in payload["validation"]["errors"]:

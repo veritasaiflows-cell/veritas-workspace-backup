@@ -57,6 +57,24 @@ class CronOperatorLedgerTests(unittest.TestCase):
         self.assertEqual(jobs[0]["last_error"], "")
         self.assertEqual(jobs[0]["last_diagnostic_summary"], "validated warning-grade proof")
 
+    def test_gateway_last_run_milliseconds_are_projected_as_utc(self) -> None:
+        jobs = ledger.summarize_jobs(
+            [
+                {
+                    "id": "failed",
+                    "name": "Failed scheduler job",
+                    "enabled": True,
+                    "state": {
+                        "lastStatus": "error",
+                        "lastRunAtMs": 1787876092000,
+                        "consecutiveErrors": 2,
+                    },
+                }
+            ]
+        )
+
+        self.assertEqual(jobs[0]["last_run_utc"], "2026-08-28T00:14:52Z")
+
 
 if __name__ == "__main__":
     unittest.main()

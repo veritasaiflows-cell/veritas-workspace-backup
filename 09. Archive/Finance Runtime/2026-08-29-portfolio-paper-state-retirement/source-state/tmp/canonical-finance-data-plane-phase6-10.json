@@ -1,0 +1,1244 @@
+{
+  "schema": "veritas.canonical_finance_data_plane_phase6_10.v1",
+  "generated_at_utc": "2026-08-29T21:46:47Z",
+  "workflow_id": "WF84",
+  "status": "ok",
+  "purpose": "WF84 phase 6-10 read-only consumer, parity, source drillback, queue prioritization, and retirement proof.",
+  "authority_boundary": {
+    "review_only": true,
+    "report_only": true,
+    "source_feeders_required": true,
+    "fallback_surfaces_retained_for_resilience": true,
+    "fallback_required_for_default_consumers": false,
+    "source_open_required_before_material_finance_claims": true,
+    "default_route_switch_allowed": true,
+    "archive_allowed": false,
+    "delete_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "tmp/canonical-finance-data-plane.json",
+    "tmp/canonical-finance-data-plane-validation.json",
+    "tmp/canonical-finance-data-plane.sqlite",
+    "tmp/wf78-auto-tier-routing.json",
+    "tmp/finance-intelligence-state.sqlite",
+    "tmp/wf78-tier-weighted-freshness-resolution.json",
+    "tmp/wf78-capital-review-queue.json",
+    "data/finance/universe-v1.json"
+  ],
+  "phases": {
+    "phase_6_consumer_expansion": {
+      "status": "ok",
+      "consumers": [
+        {
+          "name": "finance_intelligence_state_ticker",
+          "mode": "wf84_preferred_when_phase_gate_clean_with_answer_packet_fallback",
+          "default_switch": true
+        },
+        {
+          "name": "pm_control_cockpit_finance_os",
+          "mode": "read_only_sql_adapter_default",
+          "default_switch": true
+        },
+        {
+          "name": "wf85_trade_grade_decision_cards",
+          "mode": "wf84_sqlite_primary_input",
+          "default_switch": true
+        },
+        {
+          "name": "morning_paper_recommendation_cards",
+          "mode": "wf84_canonical_overlay_required_for_clean_card",
+          "default_switch": true
+        },
+        {
+          "name": "artifact_index_artifact_awareness",
+          "mode": "artifact_discovery_only",
+          "default_switch": false
+        }
+      ],
+      "source_feeders_required": true,
+      "fallback_surfaces_retained_for_resilience": true,
+      "fallback_required_for_default_consumers": false,
+      "view_counts": {
+        "v_current_decision_overview": 300,
+        "v_pm_decision_queue_overlay": 300,
+        "v_wf84_priority_queue": 300,
+        "v_full_ticker_answer_context": 5100,
+        "v_full_answer_source_drillback": 5100
+      }
+    },
+    "phase_7_parity_harness": {
+      "status": "ok",
+      "router_count": 300,
+      "tier_weighted_count": 300,
+      "canonical_count": 300,
+      "tier_counts": {
+        "Tier A": 12,
+        "Tier B": 49,
+        "Tier C": 239
+      },
+      "owner_action_count": 16
+    },
+    "phase_7b_full_answer_value_parity": {
+      "status": "ok",
+      "rollup_status": "ok",
+      "summary": {
+        "ticker_count": 300,
+        "ticker_pass_count": 300,
+        "critical_ticker_count": 0,
+        "strategic_production_critical_ticker_count": 0,
+        "retirement_blocker_ticker_count": 0,
+        "warning_ticker_count": 0,
+        "section_count": 5100,
+        "section_ok_count": 5100,
+        "section_ok_ratio": 1.0,
+        "section_status_counts": {
+          "ok": 5100
+        },
+        "section_reason_counts": {
+          "mapped": 5100
+        },
+        "section_coverage_status": "ok",
+        "section_missing_both_count": 0,
+        "material_section_missing_both_count": 0,
+        "technical_posture_missing_both_count": 0,
+        "wf84_population_ticker_count": 300,
+        "full_population_covered": true,
+        "production_answer_path_count": 12,
+        "sql_canon_scope_status": "ok",
+        "sql_canon_production_answer_count": 12,
+        "sql_canon_production_scope_diff": {
+          "missing_from_sql": [],
+          "extra_in_sql": []
+        },
+        "thin_monitor_count": 258,
+        "production_critical_ticker_count": 0,
+        "thin_monitor_critical_ticker_count": 0,
+        "production_answer_packet_retirement_planning_ready": true,
+        "ready_to_start_duplicate_surface_retirement_planning": true,
+        "archive_delete_apply_allowed": false
+      },
+      "artifact": "tmp/full-answer-parity/full-answer-parity-rollup.json",
+      "next_safe_action": "Use section-level parity failures to repair old/new answer drift; do not archive duplicate surfaces until rollup is ok and DB lifecycle gates clear."
+    },
+    "phase_8_source_drillback": {
+      "status": "ok",
+      "source_lineage_rows": [
+        {
+          "artifact_id": "src_finance_canon",
+          "path": "state/finance/finance-canon.sqlite",
+          "role": "durable SQL-canon reference_levels feed",
+          "status": "ok",
+          "validation_status": "ok",
+          "sha256": "c4a709f51d725fb9e748acffb6a15d45d437d7715e6bae4a1ad1ac35d38be05c",
+          "routing_rows": 0
+        },
+        {
+          "artifact_id": "src_finance_decision_sync_spine",
+          "path": "tmp/finance-decision-sync-spine.json",
+          "role": "decision-readiness spine feed",
+          "status": "ok",
+          "validation_status": "ok",
+          "sha256": "42836bbc94267f8095e22a9e2710f5391cc7b8f5952dec8c1f6075e4b3d98aaa",
+          "routing_rows": 0
+        },
+        {
+          "artifact_id": "src_finance_intelligence_state",
+          "path": "tmp/finance-intelligence-state.sqlite",
+          "role": "current-state SQL feeder",
+          "status": "ok",
+          "validation_status": "ok",
+          "sha256": "03f8190cd26f632ffd449fa3f2a6793cfc0a8bd3ebd9f3b0b6d52b453a764c2c",
+          "routing_rows": 0
+        },
+        {
+          "artifact_id": "src_finance_ticker_card_refresh_gate",
+          "path": "tmp/finance-ticker-card-refresh-gate.json",
+          "role": "ticker-card repair/staleness feed",
+          "status": "ok_with_expected_context",
+          "validation_status": "ok",
+          "sha256": "c275f15d56b8f8030bc52212c40a2a88c64e1d75e056395a6a56a954e4fca873",
+          "routing_rows": 0
+        },
+        {
+          "artifact_id": "src_post_close_final_quote_ledger",
+          "path": "tmp/post-close-final-quote-ledger.json",
+          "role": "review-only closed-market quote overlay",
+          "status": "ok",
+          "validation_status": "ok",
+          "sha256": "e4ec49d4a47465e08357af03466e23c909b19a21e86e974d4de0621e3e25c3ad",
+          "routing_rows": 0
+        },
+        {
+          "artifact_id": "src_technical_refresh",
+          "path": "tmp/technical-refresh.json",
+          "role": "review-only current technical price overlay",
+          "status": "ok",
+          "validation_status": null,
+          "sha256": "83b7c9d13a400d01f5802e8bdb490bd64161c21e7081efe92d2ae57420d69bae",
+          "routing_rows": 0
+        },
+        {
+          "artifact_id": "src_tier_c_band_status",
+          "path": "tmp/tier-c-band-status.json",
+          "role": "Tier C monitor-grade price/technical fallback",
+          "status": "ok",
+          "validation_status": "ok",
+          "sha256": "036df3e59322dfb39858dba0268e06a79f28a1a3359a1370e1ddeb2afbb30261",
+          "routing_rows": 0
+        },
+        {
+          "artifact_id": "src_universe_v1",
+          "path": "data/finance/universe-v1.json",
+          "role": "universe/security base feed",
+          "status": "wf78_tier_c_scaleout_monitor_ready",
+          "validation_status": null,
+          "sha256": "207e6e575662806c01edff45fbdd53cbee410599684266aa429f033fa022b774",
+          "routing_rows": 0
+        },
+        {
+          "artifact_id": "src_wf78_auto_tier_routing",
+          "path": "tmp/wf78-auto-tier-routing.json",
+          "role": "primary non-capital tier/routing feed",
+          "status": "ok",
+          "validation_status": "ok",
+          "sha256": "e09508493232924d962e6162cfac07e21ae08d7fe1c0e5ca58ef720383550d23",
+          "routing_rows": 300
+        },
+        {
+          "artifact_id": "src_wf78_capital_review_queue",
+          "path": "tmp/wf78-capital-review-queue.json",
+          "role": "non-executing owner-review queue feed",
+          "status": "ok",
+          "validation_status": "ok",
+          "sha256": "0d8edecfafa5781a3f80181e27af57a3e06be522e4ff2a45b06429091c0eb1e7",
+          "routing_rows": 0
+        },
+        {
+          "artifact_id": "src_wf78_missing_band_context_repair",
+          "path": "tmp/wf78-missing-band-context-repair.json",
+          "role": "Tier A/B review-only missing band-context repair feed",
+          "status": "ok",
+          "validation_status": "ok",
+          "sha256": "e06aad84e919c7913f7faf47369f383efc3aab7bc5b4b77237454591f2c7b102",
+          "routing_rows": 0
+        },
+        {
+          "artifact_id": "src_wf78_tier_weighted_freshness_resolution",
+          "path": "tmp/wf78-tier-weighted-freshness-resolution.json",
+          "role": "tier-weighted evidence/freshness feed",
+          "status": "ok",
+          "validation_status": "ok",
+          "sha256": "7af047e51facc3ce58b76e198e0776b883776a0fe8c18452117595af8e05b740",
+          "routing_rows": 0
+        }
+      ],
+      "ticker_source_drillback_count": 800,
+      "unresolved_source_refs": 0
+    },
+    "phase_9_decision_queue_prioritization": {
+      "status": "ok",
+      "owner_action_rows": 16,
+      "top_25": [
+        {
+          "ticker": "LLY",
+          "auto_tier": "Tier A",
+          "auto_state": "A-WATCH",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 1,
+          "review_priority_score": 375,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "BRK.B",
+          "auto_tier": "Tier A",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "in_band_not_clean",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 1,
+          "review_priority_score": 375,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "LIN",
+          "auto_tier": "Tier A",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 1,
+          "review_priority_score": 375,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "BKNG",
+          "auto_tier": "Tier A",
+          "auto_state": "A-WATCH",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 325,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "CVX",
+          "auto_tier": "Tier A",
+          "auto_state": "A-WATCH",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 325,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "XLB",
+          "auto_tier": "Tier A",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 325,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "GOOG",
+          "auto_tier": "Tier A",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 325,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "ITA",
+          "auto_tier": "Tier A",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 325,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "JPM",
+          "auto_tier": "Tier A",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 325,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "NVDA",
+          "auto_tier": "Tier A",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 325,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "VRT",
+          "auto_tier": "Tier A",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 325,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "XOM",
+          "auto_tier": "Tier A",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 325,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "PH",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 1,
+          "review_priority_score": 275,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "AAPL",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "evidence_repair",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 225,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "ABBV",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "evidence_repair",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 225,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "ACN",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 225,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "ADBE",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "evidence_repair",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 225,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "ADI",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 225,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "ADP",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 225,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "ADSK",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 225,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "AJG",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "evidence_repair",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 225,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "AKAM",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 225,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "ALB",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 225,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "ALLE",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 225,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        },
+        {
+          "ticker": "AMAT",
+          "auto_tier": "Tier B",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "actionability": "review_only_owner_gated",
+          "owner_action_required": 0,
+          "review_priority_score": 225,
+          "priority_boundary": "review_only_ranking_not_capital_or_execution_approval"
+        }
+      ],
+      "next_safe_action": "Use this as internal review ordering only; open sources before material claims and ask Randall before any capital/execution action."
+    },
+    "phase_10_retirement_candidate_proof": {
+      "status": "ok",
+      "summary": {
+        "surface_count": 8,
+        "archive_ready_count": 0,
+        "delete_ready_count": 0,
+        "apply_allowed_count": 0,
+        "approval_plan_prepared": true,
+        "source_feeder_retirement_ready_count": 0,
+        "duplicate_surface_retirement_ready_count": 0,
+        "full_answer_parity_status": "ok",
+        "full_answer_parity_ready_to_start_duplicate_surface_retirement_planning": true,
+        "archive_plan_owner_action_required": true,
+        "next_safe_action": "Use the prepared owner-approval plan only; keep source feeders/fallback surfaces until additional consumer parity and DB lifecycle approval gates clear."
+      },
+      "surface_count": 8,
+      "next_safe_action": "Keep archive/delete/apply at zero until parity is broader and Randall gives exact lifecycle approval."
+    }
+  },
+  "validation": {
+    "status": "ok",
+    "critical_errors": [],
+    "warnings": [],
+    "checks": [
+      {
+        "check": "finance_ticker_overlay_present",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "file": "scripts/finance_intelligence_state.py"
+        }
+      },
+      {
+        "check": "finance_ticker_default_switch_gate_present",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "consumer": "scripts/finance_intelligence_state.py"
+        }
+      },
+      {
+        "check": "consumer_keeps_fallback_and_source_open_contract",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "consumer": "scripts/finance_intelligence_state.py",
+          "scope": "WF84 can be preferred only after this phase gate; answer-packet fallback and source-open rule remain"
+        }
+      },
+      {
+        "check": "pm_cockpit_default_reads_wf84_views",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "consumer": "apps/pm-control-cockpit/src/server.ts"
+        }
+      },
+      {
+        "check": "pm_cockpit_registry_has_wf84_sqlite",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "registry_key_present": true
+        }
+      },
+      {
+        "check": "pm_cockpit_server_queries_wf84_views",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "file": "apps/pm-control-cockpit/src/server.ts"
+        }
+      },
+      {
+        "check": "pm_cockpit_ui_renders_wf84_section",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "file": "apps/pm-control-cockpit/public/app.js"
+        }
+      },
+      {
+        "check": "wf85_decision_cards_default_to_wf84_sqlite",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "consumer": "scripts/trade_grade_decision_cards.py"
+        }
+      },
+      {
+        "check": "morning_recommendation_uses_wf84_switch_gate",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "consumer": "scripts/morning_paper_deployment_recommendation_builder.py"
+        }
+      },
+      {
+        "check": "full_answer_parity_script_present",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "script": "scripts/full_intelligence_answer_parity.py"
+        }
+      },
+      {
+        "check": "artifact_index_knows_wf84_surfaces",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "file": "scripts/artifact_index.py"
+        }
+      },
+      {
+        "check": "consumer_views_populated",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "v_current_decision_overview": 300,
+          "v_pm_decision_queue_overlay": 300,
+          "v_wf84_priority_queue": 300,
+          "v_full_ticker_answer_context": 5100,
+          "v_full_answer_source_drillback": 5100
+        }
+      },
+      {
+        "check": "router_tickers_match_wf84",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "router_only": [],
+          "wf84_only": []
+        }
+      },
+      {
+        "check": "tier_weighted_tickers_match_wf84",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "tier_weighted_only": [],
+          "wf84_only": []
+        }
+      },
+      {
+        "check": "router_tier_counts_match_wf84",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "router": {
+            "Tier A": 12,
+            "Tier B": 49,
+            "Tier C": 239
+          },
+          "wf84": {
+            "Tier A": 12,
+            "Tier B": 49,
+            "Tier C": 239
+          }
+        }
+      },
+      {
+        "check": "router_core_fields_match_wf84",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "mismatch_count": 0,
+          "sample": []
+        }
+      },
+      {
+        "check": "post_close_price_overlay_matches_wf84",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "mismatch_count": 0,
+          "sample": []
+        }
+      },
+      {
+        "check": "owner_action_queue_covers_capital_queue",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "wf84_owner_action_count": 16,
+          "capital_queue_owner_action_count": 0
+        }
+      },
+      {
+        "check": "authority_forbidden_counts_zero",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "routing_forbidden_count": 0,
+          "decision_forbidden_count": 0
+        }
+      },
+      {
+        "check": "overlay_field_scope_matches_populated_columns_only",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "scoped_fields": [
+            "ticker",
+            "tier",
+            "state",
+            "price",
+            "band",
+            "entry_stop",
+            "queue",
+            "actionability",
+            "authority"
+          ],
+          "lossy_fields_keep_fallback": [
+            "full analyst targets",
+            "full earnings detail",
+            "full fundamentals narrative"
+          ]
+        }
+      },
+      {
+        "check": "numeric_parity_scope_explicit",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "validated_now": [
+            "router ticker set",
+            "router tier counts",
+            "router core fields",
+            "post-close price overlay"
+          ],
+          "not_yet_validated": [
+            "full answer-packet narrative fields",
+            "full analyst target value parity",
+            "full earnings-detail value parity"
+          ],
+          "future_field_parity_must_use_numeric_tolerance": true
+        }
+      },
+      {
+        "check": "overlay_coverage_matches_router_tickers",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "canonical_count": 300,
+          "router_count": 300
+        }
+      },
+      {
+        "check": "full_answer_section_context_17_sections_per_ticker",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "section_count": 5100,
+          "bad_tickers": []
+        }
+      },
+      {
+        "check": "full_answer_section_context_source_open_required",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "source_open_gaps": 0
+        }
+      },
+      {
+        "check": "spine_extras_excluded",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "spine_extra_count": 6,
+          "spine_extra": [
+            "XLK",
+            "XLP",
+            "XLRE",
+            "XLU",
+            "XLV",
+            "XLY"
+          ]
+        }
+      },
+      {
+        "check": "freshness_divergence_blocks_migration",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "policy": "freshness divergence is a blocker for default route switch; overlay remains additive"
+        }
+      },
+      {
+        "check": "full_answer_parity_rollup_present",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "artifact": "tmp/full-answer-parity/full-answer-parity-rollup.json"
+        }
+      },
+      {
+        "check": "full_answer_parity_has_evaluated_tickers",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "ticker_count": 300,
+          "ticker_pass_count": 300,
+          "critical_ticker_count": 0,
+          "strategic_production_critical_ticker_count": 0,
+          "retirement_blocker_ticker_count": 0,
+          "warning_ticker_count": 0,
+          "section_count": 5100,
+          "section_ok_count": 5100,
+          "section_ok_ratio": 1.0,
+          "section_status_counts": {
+            "ok": 5100
+          },
+          "section_reason_counts": {
+            "mapped": 5100
+          },
+          "section_coverage_status": "ok",
+          "section_missing_both_count": 0,
+          "material_section_missing_both_count": 0,
+          "technical_posture_missing_both_count": 0,
+          "wf84_population_ticker_count": 300,
+          "full_population_covered": true,
+          "production_answer_path_count": 12,
+          "sql_canon_scope_status": "ok",
+          "sql_canon_production_answer_count": 12,
+          "sql_canon_production_scope_diff": {
+            "missing_from_sql": [],
+            "extra_in_sql": []
+          },
+          "thin_monitor_count": 258,
+          "production_critical_ticker_count": 0,
+          "thin_monitor_critical_ticker_count": 0,
+          "production_answer_packet_retirement_planning_ready": true,
+          "ready_to_start_duplicate_surface_retirement_planning": true,
+          "archive_delete_apply_allowed": false
+        }
+      },
+      {
+        "check": "full_answer_parity_carries_section_contract",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "ticker_count": 300,
+          "ticker_pass_count": 300,
+          "critical_ticker_count": 0,
+          "strategic_production_critical_ticker_count": 0,
+          "retirement_blocker_ticker_count": 0,
+          "warning_ticker_count": 0,
+          "section_count": 5100,
+          "section_ok_count": 5100,
+          "section_ok_ratio": 1.0,
+          "section_status_counts": {
+            "ok": 5100
+          },
+          "section_reason_counts": {
+            "mapped": 5100
+          },
+          "section_coverage_status": "ok",
+          "section_missing_both_count": 0,
+          "material_section_missing_both_count": 0,
+          "technical_posture_missing_both_count": 0,
+          "wf84_population_ticker_count": 300,
+          "full_population_covered": true,
+          "production_answer_path_count": 12,
+          "sql_canon_scope_status": "ok",
+          "sql_canon_production_answer_count": 12,
+          "sql_canon_production_scope_diff": {
+            "missing_from_sql": [],
+            "extra_in_sql": []
+          },
+          "thin_monitor_count": 258,
+          "production_critical_ticker_count": 0,
+          "thin_monitor_critical_ticker_count": 0,
+          "production_answer_packet_retirement_planning_ready": true,
+          "ready_to_start_duplicate_surface_retirement_planning": true,
+          "archive_delete_apply_allowed": false
+        }
+      },
+      {
+        "check": "full_answer_parity_population_gate_controls_retirement",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "coverage": {
+            "mode": "all_wf84_population",
+            "evaluated_ticker_count": 300,
+            "wf84_population_ticker_count": 300,
+            "full_population_covered": true,
+            "population_coverage_ratio": 1.0
+          },
+          "summary": {
+            "ticker_count": 300,
+            "ticker_pass_count": 300,
+            "critical_ticker_count": 0,
+            "strategic_production_critical_ticker_count": 0,
+            "retirement_blocker_ticker_count": 0,
+            "warning_ticker_count": 0,
+            "section_count": 5100,
+            "section_ok_count": 5100,
+            "section_ok_ratio": 1.0,
+            "section_status_counts": {
+              "ok": 5100
+            },
+            "section_reason_counts": {
+              "mapped": 5100
+            },
+            "section_coverage_status": "ok",
+            "section_missing_both_count": 0,
+            "material_section_missing_both_count": 0,
+            "technical_posture_missing_both_count": 0,
+            "wf84_population_ticker_count": 300,
+            "full_population_covered": true,
+            "production_answer_path_count": 12,
+            "sql_canon_scope_status": "ok",
+            "sql_canon_production_answer_count": 12,
+            "sql_canon_production_scope_diff": {
+              "missing_from_sql": [],
+              "extra_in_sql": []
+            },
+            "thin_monitor_count": 258,
+            "production_critical_ticker_count": 0,
+            "thin_monitor_critical_ticker_count": 0,
+            "production_answer_packet_retirement_planning_ready": true,
+            "ready_to_start_duplicate_surface_retirement_planning": true,
+            "archive_delete_apply_allowed": false
+          }
+        }
+      },
+      {
+        "check": "full_answer_parity_fail_closed_for_retirement",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "status": "ok",
+          "ready_to_start_duplicate_surface_retirement_planning": true,
+          "coverage": {
+            "mode": "all_wf84_population",
+            "evaluated_ticker_count": 300,
+            "wf84_population_ticker_count": 300,
+            "full_population_covered": true,
+            "population_coverage_ratio": 1.0
+          }
+        }
+      },
+      {
+        "check": "full_answer_parity_never_allows_archive_apply",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "ticker_count": 300,
+          "ticker_pass_count": 300,
+          "critical_ticker_count": 0,
+          "strategic_production_critical_ticker_count": 0,
+          "retirement_blocker_ticker_count": 0,
+          "warning_ticker_count": 0,
+          "section_count": 5100,
+          "section_ok_count": 5100,
+          "section_ok_ratio": 1.0,
+          "section_status_counts": {
+            "ok": 5100
+          },
+          "section_reason_counts": {
+            "mapped": 5100
+          },
+          "section_coverage_status": "ok",
+          "section_missing_both_count": 0,
+          "material_section_missing_both_count": 0,
+          "technical_posture_missing_both_count": 0,
+          "wf84_population_ticker_count": 300,
+          "full_population_covered": true,
+          "production_answer_path_count": 12,
+          "sql_canon_scope_status": "ok",
+          "sql_canon_production_answer_count": 12,
+          "sql_canon_production_scope_diff": {
+            "missing_from_sql": [],
+            "extra_in_sql": []
+          },
+          "thin_monitor_count": 258,
+          "production_critical_ticker_count": 0,
+          "thin_monitor_critical_ticker_count": 0,
+          "production_answer_packet_retirement_planning_ready": true,
+          "ready_to_start_duplicate_surface_retirement_planning": true,
+          "archive_delete_apply_allowed": false
+        }
+      },
+      {
+        "check": "source_lineage_rows_present",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "source_lineage_rows": 12
+        }
+      },
+      {
+        "check": "ticker_source_drillback_rows_present",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "ticker_source_drillback_count": 800
+        }
+      },
+      {
+        "check": "source_artifact_refs_resolve_in_sql",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "unresolved": 0
+        }
+      },
+      {
+        "check": "every_required_source_artifact_exists_and_has_sha256",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "missing_sha256": 0
+        }
+      },
+      {
+        "check": "price_provenance_reflects_winning_source",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "policy": "price_technical_current.source_artifact_id is assigned to decision spine, capital queue, or finance-state according to winning latest_known_price source"
+        }
+      },
+      {
+        "check": "validation_result_run_id_joins_schema_run",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "unjoined_validation_rows": 0
+        }
+      },
+      {
+        "check": "drillback_requires_source_open",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "source_open_false": 0
+        }
+      },
+      {
+        "check": "material_rows_keep_source_open_requirement",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "source_open_false": 0
+        }
+      },
+      {
+        "check": "priority_queue_populated",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "sample_count": 25
+        }
+      },
+      {
+        "check": "priority_queue_contains_owner_rows",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "owner_rows": 16
+        }
+      },
+      {
+        "check": "priority_boundary_review_only",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "forbidden_text": []
+        }
+      },
+      {
+        "check": "no_capital_or_sizing_field_in_ranking",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "ranking_inputs": [
+            "auto_tier",
+            "owner_action_required",
+            "os_decision_state",
+            "primary_state",
+            "route_priority",
+            "ticker"
+          ],
+          "excluded": [
+            "capital_deployment_approved",
+            "trade_or_execution_approved",
+            "paper_or_live_execution_allowed",
+            "position_size",
+            "notional"
+          ]
+        }
+      },
+      {
+        "check": "no_row_actionable_and_authority_flag_true",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "violations": []
+        }
+      },
+      {
+        "check": "freshness_blocked_not_top_ranked_as_approval",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "top_freshness_blocked": [
+            {
+              "ticker": "BKNG",
+              "os_decision_state": "review_only_freshness_blocked",
+              "review_priority_score": 325
+            }
+          ],
+          "policy": "freshness-blocked rows can surface for repair triage but never approval"
+        }
+      },
+      {
+        "check": "deterministic_ordering_with_null_rank_tiebreak",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "order": "score DESC, route_priority IS NULL, route_priority, ticker"
+        }
+      },
+      {
+        "check": "retirement_script_remains_preview_only",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "file": "scripts/canonical_finance_data_plane_retirement_readiness.py"
+        }
+      },
+      {
+        "check": "archive_ready_zero",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "surface_count": 8,
+          "archive_ready_count": 0,
+          "delete_ready_count": 0,
+          "apply_allowed_count": 0,
+          "approval_plan_prepared": true,
+          "source_feeder_retirement_ready_count": 0,
+          "duplicate_surface_retirement_ready_count": 0,
+          "full_answer_parity_status": "ok",
+          "full_answer_parity_ready_to_start_duplicate_surface_retirement_planning": true,
+          "archive_plan_owner_action_required": true,
+          "next_safe_action": "Use the prepared owner-approval plan only; keep source feeders/fallback surfaces until additional consumer parity and DB lifecycle approval gates clear."
+        }
+      },
+      {
+        "check": "delete_ready_zero",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "surface_count": 8,
+          "archive_ready_count": 0,
+          "delete_ready_count": 0,
+          "apply_allowed_count": 0,
+          "approval_plan_prepared": true,
+          "source_feeder_retirement_ready_count": 0,
+          "duplicate_surface_retirement_ready_count": 0,
+          "full_answer_parity_status": "ok",
+          "full_answer_parity_ready_to_start_duplicate_surface_retirement_planning": true,
+          "archive_plan_owner_action_required": true,
+          "next_safe_action": "Use the prepared owner-approval plan only; keep source feeders/fallback surfaces until additional consumer parity and DB lifecycle approval gates clear."
+        }
+      },
+      {
+        "check": "apply_allowed_zero",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "surface_count": 8,
+          "archive_ready_count": 0,
+          "delete_ready_count": 0,
+          "apply_allowed_count": 0,
+          "approval_plan_prepared": true,
+          "source_feeder_retirement_ready_count": 0,
+          "duplicate_surface_retirement_ready_count": 0,
+          "full_answer_parity_status": "ok",
+          "full_answer_parity_ready_to_start_duplicate_surface_retirement_planning": true,
+          "archive_plan_owner_action_required": true,
+          "next_safe_action": "Use the prepared owner-approval plan only; keep source feeders/fallback surfaces until additional consumer parity and DB lifecycle approval gates clear."
+        }
+      },
+      {
+        "check": "archive_ready_zero_unless_owner_token_present",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "owner_approval_token_present": false,
+          "surface_count": 8,
+          "archive_ready_count": 0,
+          "delete_ready_count": 0,
+          "apply_allowed_count": 0,
+          "approval_plan_prepared": true,
+          "source_feeder_retirement_ready_count": 0,
+          "duplicate_surface_retirement_ready_count": 0,
+          "full_answer_parity_status": "ok",
+          "full_answer_parity_ready_to_start_duplicate_surface_retirement_planning": true,
+          "archive_plan_owner_action_required": true,
+          "next_safe_action": "Use the prepared owner-approval plan only; keep source feeders/fallback surfaces until additional consumer parity and DB lifecycle approval gates clear."
+        }
+      },
+      {
+        "check": "retirement_hands_off_to_lifecycle_authority",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "script": "scripts/canonical_finance_data_plane_retirement_readiness.py"
+        }
+      },
+      {
+        "check": "active_references_block_retirement",
+        "status": "ok",
+        "severity": "info",
+        "detail": {
+          "surface_count": 8
+        }
+      }
+    ]
+  },
+  "summary": {
+    "phase_count": 6,
+    "critical_error_count": 0,
+    "warning_count": 0,
+    "checks": 54,
+    "consumer_default_switch_allowed": true,
+    "default_switched_consumer_count": 4,
+    "source_feeders_required": true,
+    "fallback_surfaces_retained_for_resilience": true,
+    "fallback_required_for_default_consumers": false,
+    "archive_delete_apply_allowed": false
+  },
+  "stop_lines": [
+    "Consumer default-route switch is read-only and only allowed while this phase proof stays clean.",
+    "No material finance claim from generated SQLite alone.",
+    "No archive, move, delete, cleanup, or retirement action.",
+    "No capital deployment, paper/live order, brokerage/account action, money movement, or owner approval inference."
+  ]
+}

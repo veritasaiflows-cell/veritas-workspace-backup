@@ -1,0 +1,31 @@
+{
+  "allowed_methods": [
+    "GET",
+    "POST",
+    "DELETE"
+  ],
+  "allowed_paths": [
+    "/v2/orders",
+    "/v2/orders/{paper_order_id}"
+  ],
+  "alpaca_access_enabled": false,
+  "approval_note": "Randall approved exact XLB/NVDA/VRT paper-only buy limit/day orders in Telegram message 5742; WF63 readiness repaired clean; paper-only WF67 execution window.",
+  "approved_by": "Randall",
+  "endpoint": "https://paper-api.alpaca.markets",
+  "expires_at_utc": "2026-07-01T15:34:20Z",
+  "generated_at_utc": "2026-07-01T15:04:20Z",
+  "live_cancel_enabled": false,
+  "live_endpoint_forbidden": true,
+  "live_submit_enabled": false,
+  "no_inferred_approval": true,
+  "paper_cancel_enabled": false,
+  "paper_only": true,
+  "paper_submit_enabled": false,
+  "phase": "phase_6_paper_execution_guardrail",
+  "read_only_enabled": true,
+  "schema_version": 1,
+  "trade_or_account_action_allowed": false,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "disabled_at_utc": "2026-07-01T15:10:40Z",
+  "disabled_reason": "Owner-approved XLB/NVDA/VRT paper submit window completed; disable short-lived execution switch after post-submit guard and reconciliation."
+}

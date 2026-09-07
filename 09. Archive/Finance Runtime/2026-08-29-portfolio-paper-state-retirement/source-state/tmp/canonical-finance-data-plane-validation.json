@@ -1,0 +1,240 @@
+{
+  "status": "ok",
+  "errors": [],
+  "warnings": [],
+  "summary": {
+    "canonical_table_count": 15,
+    "source_artifact_count": 12,
+    "routing_state_current_count": 300,
+    "security_master_count": 300,
+    "decision_queue_state_count": 300,
+    "evidence_family_status_count": 6300,
+    "full_answer_section_context_count": 5100,
+    "tier_counts": {
+      "Tier C": 239,
+      "Tier B": 49,
+      "Tier A": 12
+    },
+    "forbidden_authority_true_count": 0,
+    "owner_action_required_count": 16,
+    "decision_spine_extra_count": 6
+  },
+  "checks": [
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "required_sources_exist",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"missing\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "accepted_source_schemas",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"mismatches\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "required_source_freshness_thresholds",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"stale\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "durable_registry_semantic_validity",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"gaps\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "active_router_rows_supported_dynamic",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"observed\":300,\"supported\":[100,200,300,400,500]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "security_master_rows_match_router",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"analyst_snapshot\":300,\"decision_queue_state\":300,\"earnings_catalyst\":300,\"entry_stop_reference\":300,\"evidence_family_status\":6300,\"full_answer_section_context\":5100,\"fundamental_snapshot\":300,\"official_evidence\":1200,\"price_technical_current\":300,\"routing_state_current\":300,\"schema_run\":1,\"security_master\":300,\"source_artifact\":12,\"universe_membership\":300,\"validation_result\":0}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "universe_membership_rows_match_router",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"analyst_snapshot\":300,\"decision_queue_state\":300,\"earnings_catalyst\":300,\"entry_stop_reference\":300,\"evidence_family_status\":6300,\"full_answer_section_context\":5100,\"fundamental_snapshot\":300,\"official_evidence\":1200,\"price_technical_current\":300,\"routing_state_current\":300,\"schema_run\":1,\"security_master\":300,\"source_artifact\":12,\"universe_membership\":300,\"validation_result\":0}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "full_answer_section_context_complete",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"actual\":5100,\"expected\":5100}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "full_answer_sections_keep_source_open_required",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"gaps\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "generated_table_primary_keys_unique",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "router_ticker_set_matches_finance_state_universe",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"compatibility_wait_state_allowed\":false,\"finance_only\":[],\"router_only\":[],\"router_only_active_internal_non_production_compatibility\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "tier_weighted_ticker_set_matches_router",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"freshness_only\":[],\"router_only\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "decision_spine_extra_rows_recorded_as_optional",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"router_missing_from_spine\":[],\"spine_extra\":[\"XLK\",\"XLP\",\"XLRE\",\"XLU\",\"XLV\",\"XLY\"]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "tier_a_cap",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"cap_tier_a_count\":12,\"cap_tier_b_count\":49,\"lane_tier_counts\":{\"Tier A Equity\":10,\"Tier A Sleeve\":2,\"Tier B Equity\":49,\"Tier C Commodity\":1,\"Tier C Equity\":230,\"Tier C Rates/Income\":1,\"Tier C Sleeve\":7},\"source\":\"lane_qualified\",\"tier_counts\":{\"Tier A\":12,\"Tier B\":49,\"Tier C\":239}}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "tier_b_cap",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"cap_tier_a_count\":12,\"cap_tier_b_count\":49,\"lane_tier_counts\":{\"Tier A Equity\":10,\"Tier A Sleeve\":2,\"Tier B Equity\":49,\"Tier C Commodity\":1,\"Tier C Equity\":230,\"Tier C Rates/Income\":1,\"Tier C Sleeve\":7},\"source\":\"lane_qualified\",\"tier_counts\":{\"Tier A\":12,\"Tier B\":49,\"Tier C\":239}}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "tier_a_b_combined_cap",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"cap_tier_a_count\":12,\"cap_tier_b_count\":49,\"lane_tier_counts\":{\"Tier A Equity\":10,\"Tier A Sleeve\":2,\"Tier B Equity\":49,\"Tier C Commodity\":1,\"Tier C Equity\":230,\"Tier C Rates/Income\":1,\"Tier C Sleeve\":7},\"source\":\"lane_qualified\",\"tier_counts\":{\"Tier A\":12,\"Tier B\":49,\"Tier C\":239}}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "flat_auto_tier_b_cap_compatibility_classified",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"current_cap_source\":\"lane_qualified\",\"flat_tier_counts\":{\"Tier A\":12,\"Tier B\":49,\"Tier C\":239}}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "routing_enum_domain_known",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"bad_states\":[],\"bad_tiers\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "router_summary_approval_counts_zero",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"active_ticker_count\":300,\"auto_state_counts\":{\"A-CHALLENGED\":9,\"A-WATCH\":3,\"B-CANDIDATE\":45,\"B-CHALLENGED\":4,\"C-CANDIDATE-REPAIR\":4,\"C-MONITOR\":233,\"C-REPAIR\":1,\"C-THEME-WATCH\":1},\"auto_tier_a_capacity_demoted_count\":0,\"auto_tier_a_capacity_demoted_tickers\":[],\"auto_tier_a_count\":12,\"auto_tier_a_tickers\":[\"BKNG\",\"BRK.B\",\"CVX\",\"GOOG\",\"ITA\",\"JPM\",\"LIN\",\"LLY\",\"NVDA\",\"VRT\",\"XLB\",\"XOM\"],\"auto_tier_b_capacity_demoted_count\":0,\"auto_tier_b_capacity_demoted_tickers\":[],\"auto_tier_b_count\":49,\"auto_tier_b_tickers\":[\"AAPL\",\"ABBV\",\"ACN\",\"ADBE\",\"ADI\",\"ADP\",\"ADSK\",\"AJG\",\"AKAM\",\"ALB\",\"ALLE\",\"AMAT\",\"AMCR\",\"AME\",\"ANET\",\"AON\",\"AOS\",\"APD\",\"APH\",\"APP\",\"AVGO\",\"AXON\",\"CASY\",\"CCL\",\"CDNS\",\"CRM\",\"CRWD\",\"DASH\",\"DDOG\",\"DECK\",\"EMR\",\"ETN\",\"FCX\",\"GS\",\"MA\",\"MDB\",\"MSFT\",\"MU\",\"NOW\",\"PANW\",\"PH\",\"PLTR\",\"QCOM\",\"SCCO\",\"SHOP\",\"SNOW\",\"TSM\",\"TXN\",\"V\"],\"auto_tier_counts\":{\"Tier A\":12,\"Tier B\":49,\"Tier C\":239},\"capital_deployment_approved_count\":0,\"competitive_gate_auto_tier_a_candidate_count\":4,\"competitive_gate_auto_tier_a_candidates\":[\"BKNG\",\"CVX\",\"LLY\",\"XLB\"],\"competitive_gate_auto_tier_a_capacity_held\":[],\"competitive_gate_auto_tier_a_capacity_held_count\":0,\"flat_auto_tier_compatibility_retained\":true,\"held_phase2_b_candidates\":[],\"held_phase2_b_candidates_count\":0,\"inline_confidence_convergence_count\":0,\"inline_confidence_convergence_tickers\":[],\"lane_qualified_routing_version\":\"2026-06-25\",\"lane_tier_a_b_count\":61,\"lane_tier_a_count\":12,\"lane_tier_b_count\":49,\"lane_tier_counts\":{\"Tier A Equity\":10,\"Tier A Sleeve\":2,\"Tier B Equity\":49,\"Tier C Commodity\":1,\"Tier C Equity\":230,\"Tier C Rates/Income\":1,\"Tier C Sleeve\":7},\"next_safe_action\":\"Use lane_tier/review_lane for opportunity routing; flat auto_tier remains compatibility only. Capital deployment and execution still require separate exact approval.\",\"phase2_auto_tier_b_candidate_count\":0,\"phase2_auto_tier_b_candidates\":[],\"phase2_eligible_c_to_b_candidate_count\":0,\"phase2_eligible_c_to_b_candidates\":[],\"phase2_ready_but_not_admitted_count\":0,\"phase2_ready_but_not_admitted_tickers\":[],\"phase2_validated_tier_b_candidates\":[],\"phase2_validated_tier_b_count\":0,\"production_adjudication_active_bucket_count\":42,\"production_adjudication_deprecated_for_authority\":false,\"review_lane_counts\":{\"commodity_proxy\":1,\"equity_depth\":289,\"rates_income_proxy\":1,\"sleeve_proxy\":9},\"tier_a_commodity_count\":0,\"tier_a_conflicted_ready_count\":0,\"tier_a_conflicted_ready_tickers\":[],\"tier_a_crypto_proxy_count\":0,\"tier_a_equity_count\":10,\"tier_a_macro_currency_count\":0,\"tier_a_missing_confidence_count\":0,\"tier_a_missing_confidence_tickers\":[],\"tier_a_packet_active_authority_row_count\":0,\"tier_a_packet_deprecated_for_authority\":true,\"tier_a_packet_historical_row_count\":3,\"tier_a_packet_max_age_hours\":24,\"tier_a_packet_quote_max_age_hours\":24,\"tier_a_rates_income_count\":0,\"tier_a_sleeve_count\":2,\"tier_a_stale_packet_row_count\":0,\"tier_a_stale_packet_tickers\":[],\"tier_by_review_lane_counts\":{\"Tier A|equity_depth\":10,\"Tier A|sleeve_proxy\":2,\"Tier B|equity_depth\":49,\"Tier C|commodity_proxy\":1,\"Tier C|equity_depth\":230,\"Tier C|rates_income_proxy\":1,\"Tier C|sleeve_proxy\":7},\"tier_c_attention_candidate_count\":5,\"tier_c_attention_candidates\":[\"CDW\",\"CMG\",\"CVNA\",\"META\",\"SLB\"],\"trade_or_execution_approved_count\":0,\"wf78_recommendation_language_retired\":true}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "no_a_ready_critical_conflicts",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"tickers\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "decision_queue_rows_cover_router",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"missing\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "decision_actionability_domain_review_only",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"risk\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "source_artifact_references_resolve",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"missing_refs\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "forbidden_authority_true_count_zero",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"count\":0,\"forbidden\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "feeder_forbidden_authority_true_count_zero",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"count\":0,\"forbidden\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "paper_rows_read_only_boundary",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"tickers\":[]}",
+      "source_artifact_id": null
+    },
+    {
+      "run_id": "wf84-20260829T214623Z",
+      "check_name": "source_open_required_or_explicit_context",
+      "status": "ok",
+      "severity": "info",
+      "detail_json": "{\"source_open_false\":[]}",
+      "source_artifact_id": null
+    }
+  ]
+}

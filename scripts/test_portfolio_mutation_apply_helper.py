@@ -1,19 +1,30 @@
 from __future__ import annotations
 
+import ast
+import hashlib
 import json
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any
 
-SCRIPTS_DIR = Path(__file__).resolve().parent
-if str(SCRIPTS_DIR) not in sys.path:
-    sys.path.insert(0, str(SCRIPTS_DIR))
 
-import portfolio_mutation_apply_helper as helper
-
-ROOT = Path(__file__).resolve().parents[1]
+HELPER = Path(__file__).resolve().with_name("portfolio_mutation_apply_helper.py")
+RETIRED_MARKER = "portfolio_mutation_surface_retired_tombstone_v1"
+EXPECTED_RESULT = {
+    "status": "blocked",
+    "reason": "retired_surface",
+    "marker": RETIRED_MARKER,
+    "retired": True,
+    "tombstone": True,
+    "approval_artifact_read_allowed": False,
+    "backup_creation_allowed": False,
+    "owner_or_canon_write_allowed": False,
+    "portfolio_mutation_allowed": False,
+    "filesystem_mutation_allowed": False,
+    "network_allowed": False,
+}
 
 
 def expect(condition: bool, message: str, errors: list[str]) -> None:
@@ -21,214 +32,181 @@ def expect(condition: bool, message: str, errors: list[str]) -> None:
         errors.append(message)
 
 
-def base_packet() -> dict[str, Any]:
-    return {
-        "schema_version": 1,
-        "generated_at_utc": "2026-05-14T00:00:00Z",
-        "proposal_id": "test-phase3-preview",
-        "mutation_type": "canonical_status_move",
-        "ticker_or_scope": "TEST",
-        "current_state": {},
-        "proposed_state": {},
-        "why_now": "review-only proposal; no authority granted",
-        "evidence": ["manual review evidence"],
-        "source_freshness": {"overall_classification": "current", "trust_level": "clean"},
-        "base_case": "review only",
-        "bear_case": "review only",
-        "risk_rule_check": {"status": "pass", "references": ["25% sector cap", "15% normal single-name ceiling", "speculative sleeve cap", "catalyst-window exception"]},
-        "concentration_check": {"status": "pass", "single_name_after_pct": 10},
-        "technical_gate": {"status": "pass"},
-        "catalyst_gate": {"status": "clear"},
-        "proposed_files_to_edit": ["tmp/portfolio-mutation-proposals/test-owner-surface.md"],
-        "rollback_or_reversal_note": "discard preview artifact if rejected",
-        "stop_lines_triggered": ["owner decision required"],
-        "owner_decision_required": True,
-        "owner_approval_granted": False,
-        "apply_allowed": False,
-        "canonical_mutation_allowed": False,
-        "portfolio_mutation_allowed": False,
-        "trade_or_account_action_allowed": False,
-        "main_session_final_action_required": True,
-        "current_status_tuple": {
-            "coverage_watchlist": "tracked",
-            "execution_board": "watch",
-            "portfolio_snapshot": "watch",
-            "portfolio_config": "WATCH",
-        },
-        "proposed_status_tuple": {
-            "coverage_watchlist": "tracked",
-            "execution_board": "watch",
-            "portfolio_snapshot": "watch",
-            "portfolio_config": "WATCH",
-        },
-        "affected_owner_surfaces": ["coverage_watchlist", "execution_board", "portfolio_snapshot", "portfolio_config"],
-        "field_level_deltas": [{"owner_surface": "execution_board", "field": "note", "from": "old", "to": "new", "mutation_class": "review_only"}],
-        "canonical_invariant_checks": {"status": "pass"},
-        "exact_patch_preview": {
-            "adjustment_category": "review_note",
-            "apply_allowed": False,
-            "owner_approval_granted": False,
-            "trade_or_account_action_allowed": False,
-            "main_session_final_action_required": True,
-            "changes": [
-                {
-                    "path": "tmp/portfolio-mutation-proposals/test-owner-surface.md",
-                    "adjustment_category": "review_note",
-                    "old_text": "Old owner-reviewed sentence.",
-                    "new_text": "New owner-reviewed sentence.",
-                    "rationale": "test exact preview",
-                }
-            ]
-        },
-    }
+def call_name(node: ast.Call) -> str:
+    if isinstance(node.func, ast.Name):
+        return node.func.id
+    if isinstance(node.func, ast.Attribute) and isinstance(node.func.value, ast.Name):
+        return f"{node.func.value.id}.{node.func.attr}"
+    return "<dynamic>"
 
 
-def write_json(path: Path, data: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+def snapshot_tree(root: Path) -> dict[str, tuple[str, int, str]]:
+    snapshot: dict[str, tuple[str, int, str]] = {}
+    for path in sorted(root.rglob("*"), key=lambda item: str(item.relative_to(root))):
+        relative = path.relative_to(root).as_posix()
+        if path.is_dir():
+            snapshot[relative] = ("directory", 0, "")
+        elif path.is_file():
+            data = path.read_bytes()
+            snapshot[relative] = ("file", len(data), hashlib.sha256(data).hexdigest())
+        else:
+            snapshot[relative] = ("other", 0, "")
+    return snapshot
 
 
-def preview_diff_hash(preview: dict[str, Any]) -> str:
-    diffs = []
-    for item in preview.get("file_previews") or []:
-        if isinstance(item, dict):
-            diffs.append(str(item.get("path") or ""))
-            diffs.append(str(item.get("diff") or ""))
-    return helper.sha256_text("\n".join(diffs))
+def run_helper(helper: Path, cwd: Path, argv: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, "-B", str(helper), *argv],
+        cwd=cwd,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=10,
+    )
 
 
-def approval_artifact(proposal_path: Path, preview_path: Path, preview: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "schema_version": 1,
-        "artifact_type": "wf56_scoped_apply_approval",
-        "approval_status": "approved",
-        "owner_approval_granted": True,
-        "scoped_owner_file_write_allowed": True,
-        "canonical_note_write_allowed": True,
-        "trade_or_account_action_allowed": False,
-        "trade_execution_allowed": False,
-        "brokerage_order_allowed": False,
-        "money_movement_allowed": False,
-        "execution_entitlement_allowed": False,
-        "owner_approval_inferred": False,
-        "sizing_sleeve_cash_risk_rule_allowed": False,
-        "approved_adjustment_categories": ["review_note"],
-        "expires_at_utc": "2099-01-01T00:00:00Z",
-        "proposal_id": "test-phase3-preview",
-        "proposal_artifact": str(proposal_path.relative_to(ROOT)).replace("\\", "/"),
-        "preview_artifact": str(preview_path.relative_to(ROOT)).replace("\\", "/"),
-        "approved_diff_sha256": preview_diff_hash(preview),
-        "approved_target_files": [item["path"] for item in preview.get("file_previews") or []],
-    }
-
-
-def test_exact_preview(errors: list[str]) -> None:
-    target = ROOT / "tmp" / "portfolio-mutation-proposals" / "test-owner-surface.md"
-    target.parent.mkdir(parents=True, exist_ok=True)
-    original = "Header\nOld owner-reviewed sentence.\nFooter\n"
-    target.write_text(original, encoding="utf-8")
+def test_static_fail_closed_contract(errors: list[str]) -> None:
+    source = HELPER.read_text(encoding="utf-8")
     try:
-        with tempfile.TemporaryDirectory() as td:
-            bundle_path = Path(td) / "proposal.json"
-            write_json(bundle_path, base_packet())
-            preview = helper.build_preview(bundle_path, "test-phase3-preview", "post-close")
-            expect(preview["status"] == "ready_for_scoped_main_session_review", f"preview should be ready: {preview}", errors)
-            expect(preview["summary"]["previewed_file_changes"] == 1, "one file preview expected", errors)
-            expect(preview["authority"]["apply_allowed_by_this_helper"] is False, "helper must not grant apply authority", errors)
-            expect(preview["authority"]["write_owner_files_allowed"] is False, "helper must not write owner files", errors)
-            expect("New owner-reviewed sentence." in preview["file_previews"][0]["diff"], "diff should include new text", errors)
-            expect(target.read_text(encoding="utf-8") == original, "dry-run preview must not mutate target file", errors)
-    finally:
-        target.unlink(missing_ok=True)
+        tree = ast.parse(source, filename=str(HELPER))
+    except SyntaxError as exc:
+        errors.append(f"helper must be parseable: {exc}")
+        return
+
+    lower_source = source.lower()
+    expect("retired" in lower_source, "helper must declare that the surface is retired", errors)
+    expect("tombstone" in lower_source, "helper must declare itself a tombstone", errors)
+    expect("--apply" not in source, "former apply flag must not exist", errors)
+    expect("--execute" not in source, "execution flag must not exist", errors)
+    expect("http://" not in lower_source and "https://" not in lower_source, "helper must contain no network URL", errors)
+
+    imports: list[tuple[str, tuple[str, ...]]] = []
+    for node in tree.body:
+        if isinstance(node, ast.Import):
+            imports.extend((alias.name, ()) for alias in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            imports.append((node.module or "", tuple(alias.name for alias in node.names)))
+    expect(
+        imports == [("__future__", ("annotations",)), ("json", ())],
+        f"helper imports must be limited to __future__/json, got {imports}",
+        errors,
+    )
+
+    functions = [node for node in ast.walk(tree) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
+    expect([node.name for node in functions] == ["main"], f"only main may remain, got {[node.name for node in functions]}", errors)
+
+    calls = [call_name(node) for node in ast.walk(tree) if isinstance(node, ast.Call)]
+    allowed_calls = {"json.dumps", "print", "main", "SystemExit"}
+    expect(set(calls) == allowed_calls, f"unexpected or missing helper calls: {calls}", errors)
+    expect("<dynamic>" not in calls, "dynamic calls must not exist", errors)
+
+    main_function = next((node for node in functions if node.name == "main"), None)
+    if main_function is not None:
+        return_values = [
+            node.value.value
+            for node in ast.walk(main_function)
+            if isinstance(node, ast.Return) and isinstance(node.value, ast.Constant) and isinstance(node.value.value, int)
+        ]
+        expect(2 in return_values, f"main must return 2, got {return_values}", errors)
+        expect(0 not in return_values, "main must have no zero return", errors)
+
+    forbidden_text = (
+        "portfolio_mutation_proposal_schema_validator",
+        "proposal_patch_scope_validator",
+        "execute_apply",
+        "build_apply_plan",
+        "build_preview",
+        "write_apply_result",
+        "write_outputs",
+        "atomic_write_text",
+        "subprocess",
+        "socket",
+        "urllib",
+        "requests",
+        "eval(",
+        "exec(",
+        "__import__(",
+    )
+    for item in forbidden_text:
+        expect(item not in source, f"forbidden capability remains in helper: {item}", errors)
 
 
-def test_missing_exact_patch_is_noop(errors: list[str]) -> None:
-    with tempfile.TemporaryDirectory() as td:
-        packet = base_packet()
-        packet.pop("exact_patch_preview")
-        bundle_path = Path(td) / "proposal.json"
-        write_json(bundle_path, packet)
-        preview = helper.build_preview(bundle_path, "test-phase3-preview", "post-close")
-        expect(preview["status"] == "blocked_missing_exact_patch_material", "missing exact patch should fail closed", errors)
-        expect(preview["summary"]["ready_for_main_session_portfolio_mutation_review"] is False, "missing exact patch is not mutation-ready", errors)
-        expect(preview["summary"]["approval_artifact_required"] is True, "approval artifact should remain required", errors)
+def test_subprocess_is_stable_and_effect_free(errors: list[str]) -> None:
+    with tempfile.TemporaryDirectory() as temporary_directory:
+        sandbox = Path(temporary_directory)
+        scripts_directory = sandbox / "scripts"
+        scripts_directory.mkdir()
+        helper_copy = scripts_directory / HELPER.name
+        shutil.copyfile(HELPER, helper_copy)
 
+        inputs_directory = sandbox / "inputs"
+        inputs_directory.mkdir()
+        proposal = inputs_directory / "proposal.json"
+        approval = inputs_directory / "approval.json"
+        proposal.write_text('{"sentinel":"proposal-must-not-be-read-or-written"}\n', encoding="utf-8")
+        approval.write_text('{"sentinel":"approval-must-not-be-read-or-written"}\n', encoding="utf-8")
 
-def test_forbidden_apply_flag_blocks(errors: list[str]) -> None:
-    with tempfile.TemporaryDirectory() as td:
-        packet = base_packet()
-        packet["apply_allowed"] = True
-        bundle_path = Path(td) / "proposal.json"
-        write_json(bundle_path, packet)
-        preview = helper.build_preview(bundle_path, "test-phase3-preview", "post-close")
-        expect(preview["status"] == "blocked", "apply_allowed=true must block", errors)
-        expect(preview["validation"]["schema_validator_ok"] is False, "schema validator should fail apply_allowed=true", errors)
+        owner_directory = sandbox / "owner"
+        owner_directory.mkdir()
+        owner_surface = owner_directory / "canon.md"
+        owner_surface.write_text("OWNER CANON SENTINEL\n", encoding="utf-8")
+        backup_directory = sandbox / "tmp" / "portfolio-mutation-proposals" / "apply-backups"
 
+        cases = {
+            "no_args": [],
+            "harmless_legacy_args": [
+                "--proposal-bundle",
+                str(proposal),
+                "--proposal-id",
+                "legacy-proposal",
+                "--window",
+                "post-close",
+                "--write",
+            ],
+            "retired_operational_args": [
+                "--apply",
+                "--approval-artifact",
+                str(approval),
+                "--plan-apply",
+                "--execute",
+                str(owner_surface),
+            ],
+            "arbitrary_args": ["--unknown-option", "ignored-value", "positional-value"],
+        }
 
-def test_apply_requires_valid_approval(errors: list[str]) -> None:
-    with tempfile.TemporaryDirectory(dir=ROOT / "tmp" / "portfolio-mutation-proposals") as td:
-        fixture = Path(td)
-        target = fixture / "test-owner-surface.md"
-        target.write_text("Header\nOld owner-reviewed sentence.\nFooter\n", encoding="utf-8")
-        packet = base_packet()
-        rel_target = str(target.relative_to(ROOT)).replace("\\", "/")
-        packet["proposed_files_to_edit"] = [rel_target]
-        packet["exact_patch_preview"]["changes"][0]["path"] = rel_target
-        proposal_path = fixture / "proposal.json"
-        write_json(proposal_path, packet)
-        preview = helper.build_preview(proposal_path, "test-phase3-preview", "post-close")
-        preview_path = fixture / "preview.json"
-        write_json(preview_path, preview)
-        approval = approval_artifact(proposal_path, preview_path, preview)
-        approval["approved_diff_sha256"] = "bad-hash"
-        approval_path = fixture / "approval.json"
-        write_json(approval_path, approval)
-        plan = helper.build_apply_plan(approval_path, "post-close")
-        expect(plan["status"] == "blocked", "bad approval hash must block apply plan", errors)
-        expect(plan["authority"]["apply_allowed"] is False, "invalid approval must keep apply_allowed false", errors)
-        expect(target.read_text(encoding="utf-8") == "Header\nOld owner-reviewed sentence.\nFooter\n", "blocked plan must not mutate target", errors)
+        before = snapshot_tree(sandbox)
+        expected_stdout = json.dumps(EXPECTED_RESULT, sort_keys=True) + "\n"
+        for name, argv in cases.items():
+            completed = run_helper(helper_copy, sandbox, argv)
+            expect(completed.returncode == 2, f"{name}: expected exit 2, got {completed.returncode}", errors)
+            expect(completed.stdout == expected_stdout, f"{name}: unstable blocked JSON: {completed.stdout!r}", errors)
+            expect(completed.stderr == "", f"{name}: unexpected stderr: {completed.stderr!r}", errors)
+            try:
+                payload = json.loads(completed.stdout)
+            except json.JSONDecodeError as exc:
+                errors.append(f"{name}: stdout must be JSON: {exc}")
+            else:
+                expect(payload == EXPECTED_RESULT, f"{name}: wrong blocked payload: {payload}", errors)
+            expect(snapshot_tree(sandbox) == before, f"{name}: subprocess changed the sandbox", errors)
 
-
-def test_approval_gated_apply_creates_backup_and_writes_fixture(errors: list[str]) -> None:
-    with tempfile.TemporaryDirectory(dir=ROOT / "tmp" / "portfolio-mutation-proposals") as td:
-        fixture = Path(td)
-        target = fixture / "test-owner-surface.md"
-        original = "Header\nOld owner-reviewed sentence.\nFooter\n"
-        target.write_text(original, encoding="utf-8")
-        packet = base_packet()
-        rel_target = str(target.relative_to(ROOT)).replace("\\", "/")
-        packet["proposed_files_to_edit"] = [rel_target]
-        packet["exact_patch_preview"]["changes"][0]["path"] = rel_target
-        proposal_path = fixture / "proposal.json"
-        write_json(proposal_path, packet)
-        preview = helper.build_preview(proposal_path, "test-phase3-preview", "post-close")
-        preview_path = fixture / "preview.json"
-        write_json(preview_path, preview)
-        approval_path = fixture / "approval.json"
-        write_json(approval_path, approval_artifact(proposal_path, preview_path, preview))
-        result = helper.execute_apply(approval_path, "post-close")
-        expect(result["status"] == "applied_pending_post_apply_validation", f"valid approval should apply fixture: {result}", errors)
-        expect(result["summary"]["writes_performed"] is True, "valid approved apply should write fixture", errors)
-        expect("New owner-reviewed sentence." in target.read_text(encoding="utf-8"), "target fixture should contain approved new text", errors)
-        backup_files = result.get("applied_files") or []
-        expect(len(backup_files) == 1, "one backup/apply record expected", errors)
-        if backup_files:
-            backup_path = ROOT / backup_files[0]["backup_path"]
-            expect(backup_path.exists(), "backup file should exist", errors)
-            if backup_path.exists():
-                expect(backup_path.read_text(encoding="utf-8") == original, "backup must preserve original content", errors)
-        backup_root = result.get("rollback_plan", {}).get("backup_root")
-        if backup_root:
-            shutil.rmtree(ROOT / backup_root, ignore_errors=True)
+        expect(not backup_directory.exists(), "retired helper must not create a backup directory", errors)
+        expect(owner_surface.read_text(encoding="utf-8") == "OWNER CANON SENTINEL\n", "owner/canon sentinel changed", errors)
+        expect(
+            approval.read_text(encoding="utf-8") == '{"sentinel":"approval-must-not-be-read-or-written"}\n',
+            "approval sentinel changed",
+            errors,
+        )
+        expect(
+            proposal.read_text(encoding="utf-8") == '{"sentinel":"proposal-must-not-be-read-or-written"}\n',
+            "proposal sentinel changed",
+            errors,
+        )
 
 
 def main() -> int:
     errors: list[str] = []
-    test_exact_preview(errors)
-    test_missing_exact_patch_is_noop(errors)
-    test_forbidden_apply_flag_blocks(errors)
-    test_apply_requires_valid_approval(errors)
-    test_approval_gated_apply_creates_backup_and_writes_fixture(errors)
+    test_static_fail_closed_contract(errors)
+    test_subprocess_is_stable_and_effect_free(errors)
     if errors:
         print("portfolio_mutation_apply_helper_tests_failed")
         for error in errors:

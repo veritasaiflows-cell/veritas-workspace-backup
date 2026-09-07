@@ -1,0 +1,28 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T17:35:47Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-full-sweep-sidecar-archive-microbatch-2026-05-25.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 1,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/wf72-full-tmp-md-sweep-2026-05-25.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-full-tmp-md-sweep-2026-05-25.md",
+      "sha256_before": "d91e881cafbef374f3c3bce81c77636a7a5035323ac8886c91f85ae7f6a146ab",
+      "sha256_after": "d91e881cafbef374f3c3bce81c77636a7a5035323ac8886c91f85ae7f6a146ab"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; only explicit apply_allowed true suggestions with zero references and approved destination roots can move"
+}

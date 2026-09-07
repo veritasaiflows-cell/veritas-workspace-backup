@@ -1,0 +1,54 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "bcae8cbb-f568-44cb-9ae2-554319c6d6b9",
+  "name": "Finance - Sunday Alerts OS Proof Handoff",
+  "required": true,
+  "owner_workflow": "WF85 alerts-and-recommendations proof review",
+  "contract_reason": "Main-session review of the bounded weekly chain so stale, missing, or conflicted evidence is surfaced without mutating finance state.",
+  "description": "Main-session review of the bounded weekly alert-chain proof. Reports truth and freshness gaps only; no note, portfolio, account, capital, order, or execution mutation.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "55 9 * * 0",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "main",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "systemEvent",
+    "text": "Sunday alerts-and-recommendations review: inspect tmp/alerts-recommendations-chain-weekly.json, tmp/alert-level-freshness-controller.json, tmp/finance-alert-os-weekly-digest.json, tmp/intraday-alerts/quote-snapshot-proof.json, tmp/intraday-alerts/quote-snapshot-proof-validation.json, and tmp/finance-sql-canon-access-validation.json. Report exact stale, missing, or conflicted evidence and the next review owner. Do not mutate finance canon, portfolio/account state, capital, orders, execution, cron schedules, or owner approval. Generated artifacts are evidence only."
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.text"
+  ],
+  "expected_artifacts": [
+    "tmp/alerts-recommendations-chain-weekly.json",
+    "tmp/alert-level-freshness-controller.json",
+    "tmp/finance-alert-os-weekly-digest.json",
+    "tmp/intraday-alerts/quote-snapshot-proof.json",
+    "tmp/intraday-alerts/quote-snapshot-proof-validation.json",
+    "tmp/finance-sql-canon-access-validation.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "main_session_truth_review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "finance_alert_canon_mutation_allowed": false,
+    "portfolio_state_maintenance_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-08-30T02:07:00Z",
+  "contract_update_reason": "Narrowed the Sunday handoff to the active weekly alerts-OS proof spine and removed legacy portfolio/deployment and derived-cache review routes."
+}

@@ -1,0 +1,12 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "be59c68a-6336-42ac-a1ef-402a1f4705b6",
+  "name": "Retired — Runtime - Cleanup Autopilot Phase 1 Review",
+  "required": false,
+  "enabled": false,
+  "owner_workflow": "RUNTIME",
+  "original_schedule": {"kind": "cron", "expr": "35 9 * * 0", "tz": "America/Phoenix"},
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired during the alerts-and-recommendations OS cutover because its approval packet still regenerated obsolete portfolio, sizing, paper-readiness, and execution routes.",
+  "rollback_requires_owner_gate": true
+}

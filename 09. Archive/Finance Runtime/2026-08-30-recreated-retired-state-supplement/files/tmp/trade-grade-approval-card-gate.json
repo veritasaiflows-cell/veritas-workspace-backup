@@ -1,0 +1,46 @@
+{
+  "schema": "veritas.trade_grade_approval_card_gate.v1",
+  "generated_at_utc": "2026-08-30T03:18:20Z",
+  "workflow_id": "WF85",
+  "status": "ok",
+  "summary": {
+    "card_count": 0,
+    "review_ready_count": 0,
+    "approval_band_eligible_count": 0,
+    "approval_card_draft_count": 0,
+    "decision_blocked_count": 0,
+    "approval_draft_blocked_count": 0,
+    "blocked_count": 0,
+    "blocked_count_semantics": "approval_draft_blocked_count",
+    "expected_approval_card_draft_count_before_freshness_repair": 0,
+    "wf67_paper_guard_fresh": false,
+    "wf67_paper_guard_clean": false,
+    "wf67_paper_guard_status": null,
+    "wf67_paper_guard_ready_for_paper_submit_cancel": null,
+    "wf67_paper_guard_age_days": null
+  },
+  "approval_card_drafts": [],
+  "blocked": [],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "decision_support_only": true,
+    "approval_card_draft_allowed": true,
+    "wf67_paper_request_draft_allowed": true,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_or_risk_rule_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "customer_account_pii_or_suitability_data_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "stop_line": "Approval-card drafts are not approval; WF67 paper action remains blocked until Randall exact approval and fresh guards."
+}

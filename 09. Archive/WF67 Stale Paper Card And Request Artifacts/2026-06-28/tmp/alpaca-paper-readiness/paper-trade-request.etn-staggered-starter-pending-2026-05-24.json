@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "wf67-main-card-etn-staggered-starter-pending-20260524",
+  "created_at_utc": "2026-05-25T03:10:40Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true
+  },
+  "order": {
+    "symbol": "ETN",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 400.66,
+    "qty": 0.25,
+    "notional": null
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 100.17,
+    "max_loss_usd": 100.17,
+    "max_notional_usd": 125.0,
+    "position_size_reviewed": true,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "entry_band_low": 356.99,
+    "entry_band_high": 400.66,
+    "observed_price": 391.35,
+    "observed_entry_status": "IN_BAND_REFERENCE_FROM_2026_05_22_REQUIRES_TUESDAY_REFRESH",
+    "stop": 337.14,
+    "sizing_rationale": "ETN is the primary ready-if-fresh candidate, but existing paper ETN 1 share already counts as starter exposure. This card proposes only an optional small incremental top-up (~$100) so diversification capital remains available for VRT/CME/PH/ITA/GE/NVDA if Tuesday gates clear. Do not use if fresh Tuesday price exits the band or if Randall chooses to count existing ETN as enough starter exposure."
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "ETN staggered starter top-up pending fresh Tuesday quote and exact Randall approval",
+    "recommendation_source": "main_session_order_decision_card",
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/order-card.etn-staggered-starter-pending-2026-05-24.json",
+    "capital_recommendation_source": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "source_artifact": "tmp/tuesday-position-sizing-readiness-2026-05-26.json",
+    "market_order_owner_approved": false,
+    "exact_order_owner_approval_status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "exact_order_owner_approval_text": null,
+    "main_session_capital_package_notification_required": true,
+    "approval_artifact": "tmp/alpaca-paper-readiness/phase-7-advisor-paper-execution-approval-2026-05-19.json"
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_forbidden": "https://api.alpaca.markets"
+  }
+}

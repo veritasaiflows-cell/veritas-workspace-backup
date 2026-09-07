@@ -1,3 +1,34 @@
+# Alert Evidence Repair Packet Contract
+
+Status: active replacement for the retired deployment-readiness contract as of 2026-08-29.
+
+## Purpose
+
+Define bounded, read-only packets that repair or explain missing evidence for alerts and non-executing recommendations without creating a competing truth layer.
+
+## Packet contract
+
+Each packet must identify:
+
+- ticker and timeframe
+- question or alert condition being evaluated
+- source lineage and evidence date
+- freshness and confidence
+- thesis, catalyst, risk, and invalidation context
+- unresolved contradictions or missing evidence
+- Randall's decision point, when one exists
+
+Packets may recommend research, source repair, freshness repair, or human review. They may not change alert canon, promote an execution state, create portfolio/account/order state, or invoke paper/live execution.
+
+## Output
+
+Use a clearly non-canonical proof location under `tmp/` with deterministic provenance and validation. A packet remains evidence only until Main checks it against the active owners in `03. Alerts and Recommendations/`.
+
+<details>
+<summary>Retired deployment-era contract — non-operative</summary>
+
+The preserved contract below is historical only. Its deployment, execution-board, promotion, and action-readiness semantics were retired on 2026-08-29.
+
 # Deployment Readiness Helper Packet Contract
 
 ## Purpose
@@ -109,3 +140,5 @@ Preferred initial output locations if these packets are later scripted:
 - `tmp/deployment-contradiction-qa.json`
 
 These are staging artifacts only. None are canonical notes.
+
+</details>

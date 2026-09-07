@@ -1,0 +1,351 @@
+#!/usr/bin/env python3
+"""Compose a WF60 review-only research freshness/opportunity surface.
+
+This script consumes existing review artifacts and writes a bounded operator
+review packet. It does not mutate canonical notes, portfolio state, deployment
+state, watchlists, approvals, sizing, or trades.
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+from collections import Counter
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
+
+WORKSPACE = Path(__file__).resolve().parents[1]
+TMP = WORKSPACE / "tmp"
+
+DEFAULT_SECTOR_BOARD = TMP / "sector-expansion-board.json"
+DEFAULT_TICKER_PERFORMANCE = TMP / "ticker-monitoring-performance.json"
+DEFAULT_PROMOTION_QUEUE = TMP / "sector-dashboard-promotion-queue.csv"
+DEFAULT_DASHBOARD_HTML = TMP / "sector-dashboard-suite.html"
+DEFAULT_OUTPUT = TMP / "research-freshness-opportunity-review.json"
+DEFAULT_MARKDOWN_OUTPUT = TMP / "research-freshness-opportunity-review.md"
+
+SCHEMA_VERSION = 1
+CONTEXT_FRESH_HOURS = 36
+
+AUTHORITY = {
+    "canonical_mutation_allowed": False,
+    "portfolio_mutation_allowed": False,
+    "deployment_state_mutation_allowed": False,
+    "watchlist_mutation_allowed": False,
+    "watchlist_promotion_allowed": False,
+    "sizing_allocation_recommendation_allowed": False,
+    "trade_execution_allowed": False,
+    "owner_approval_granted": False,
+    "owner_approval_inference_allowed": False,
+    "probability_or_modeling_authority": False,
+    "model_ranked_deployment_allowed": False,
+    "model_driven_deployment_allowed": False,
+    "capital_action_allowed": False,
+}
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def parse_dt(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    text = value.strip()
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def rel(path: Path) -> str:
+    try:
+        return str(path.relative_to(WORKSPACE)).replace("\\", "/")
+    except ValueError:
+        return str(path).replace("\\", "/")
+
+
+def workspace_path(path: str | Path) -> Path:
+    value = Path(path)
+    return value if value.is_absolute() else WORKSPACE / value
+
+
+def load_json(path: Path) -> dict[str, Any]:
+    data = load_json_artifact(path)
+    return data if isinstance(data, dict) else {}
+
+
+def source_artifact(path: Path, payload: dict[str, Any] | None, *, required: bool, now: datetime, kind: str = "json") -> dict[str, Any]:
+    exists = path.exists()
+    generated = (payload or {}).get("generated_at_utc") or (payload or {}).get("generated_at")
+    generated_dt = parse_dt(generated)
+    freshness = "missing"
+    age_hours: float | None = None
+    if exists and generated_dt:
+        age_hours = round((now - generated_dt).total_seconds() / 3600, 2)
+        freshness = "fresh" if age_hours <= CONTEXT_FRESH_HOURS else "stale"
+    elif exists:
+        freshness = "unknown_generated_at" if kind == "json" else "present_unstamped"
+    return {
+        "path": rel(path),
+        "required": required,
+        "exists": exists,
+        "status": (payload or {}).get("status"),
+        "generated_at_utc": generated,
+        "freshness": freshness,
+        "age_hours": age_hours,
+        "fresh_enough_for_context": bool(exists and freshness in {"fresh", "unknown_generated_at", "present_unstamped"}),
+    }
+
+
+def load_promotion_csv(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open("r", encoding="utf-8", newline="") as fh:
+        return [dict(row) for row in csv.DictReader(fh)]
+
+
+def ticker_index(ticker_performance: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    out: dict[str, dict[str, Any]] = {}
+    for item in ticker_performance.get("tickers") or []:
+        if not isinstance(item, dict):
+            continue
+        ticker = str(item.get("ticker") or "").upper().strip()
+        if ticker:
+            out[ticker] = item
+    return out
+
+
+def promotion_candidates_from_board(sector_board: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    out: dict[str, dict[str, Any]] = {}
+    for sector in sector_board.get("sectors") or []:
+        if not isinstance(sector, dict):
+            continue
+        for row in sector.get("promotion_review_status") or []:
+            if not isinstance(row, dict):
+                continue
+            ticker = str(row.get("candidate") or "").upper().strip()
+            if not ticker:
+                continue
+            out[ticker] = {
+                "ticker": ticker,
+                "sector": sector.get("sector"),
+                "sector_etf": sector.get("ticker"),
+                "sector_leadership_status": sector.get("leadership_status"),
+                "sector_underexposed": bool(sector.get("underexposed")),
+                "promotion_review_pending": row.get("promotion_review_pending"),
+                "blocking_gate": row.get("blocking_gate"),
+                "queue_judgment": row.get("automated_queue_judgment"),
+                "next_action": row.get("next_action"),
+                "owner_approval_granted": False,
+                "watchlist_promotion_allowed": False,
+            }
+    return out
+
+
+def merge_csv_rows(candidates: dict[str, dict[str, Any]], csv_rows: list[dict[str, str]]) -> dict[str, dict[str, Any]]:
+    out = {key: dict(value) for key, value in candidates.items()}
+    for row in csv_rows:
+        ticker = str(row.get("Candidate") or "").upper().strip()
+        if not ticker:
+            continue
+        current = out.setdefault(ticker, {"ticker": ticker})
+        current.setdefault("sector", row.get("Sector"))
+        current.setdefault("sector_etf", row.get("ETF"))
+        current.setdefault("blocking_gate", row.get("Blocking Gate"))
+        current.setdefault("queue_judgment", row.get("Queue Judgment"))
+        current.setdefault("next_action", row.get("Next Action"))
+        current["owner_approval_granted"] = False
+        current["watchlist_promotion_allowed"] = False
+    return out
+
+
+def candidate_review_rows(candidates: dict[str, dict[str, Any]], tickers: dict[str, dict[str, Any]], *, sector_fresh: bool, ticker_fresh: bool) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for ticker, candidate in sorted(candidates.items()):
+        monitor = tickers.get(ticker, {})
+        known_at_time = monitor.get("known_at_time") if isinstance(monitor.get("known_at_time"), dict) else {}
+        rows.append({
+            **candidate,
+            "monitoring_context_available": bool(monitor),
+            "sector_context_fresh_enough": sector_fresh,
+            "ticker_monitoring_fresh_enough": ticker_fresh,
+            "workflow_state": monitor.get("workflow_state"),
+            "deployment_status": monitor.get("deployment_status"),
+            "band_status": monitor.get("band_status"),
+            "below_stop_or_repair": monitor.get("below_stop_or_repair"),
+            "monitoring_flags": monitor.get("monitoring_flags") or [],
+            "blocked_reasons": monitor.get("blocked_reasons") or [],
+            "data_date": known_at_time.get("data_date"),
+            "close": known_at_time.get("close"),
+            "review_only_next_step": "Human review only: verify research freshness, blocker state, and owner approval before any canonical or portfolio action.",
+        })
+    return rows
+
+
+def build_payload(
+    window: str = "post-close",
+    *,
+    sector_board_path: Path = DEFAULT_SECTOR_BOARD,
+    ticker_performance_path: Path = DEFAULT_TICKER_PERFORMANCE,
+    promotion_queue_path: Path = DEFAULT_PROMOTION_QUEUE,
+    dashboard_html_path: Path = DEFAULT_DASHBOARD_HTML,
+) -> dict[str, Any]:
+    now = datetime.now(timezone.utc)
+    sector_board = load_json(sector_board_path)
+    ticker_performance = load_json(ticker_performance_path)
+    promotion_csv = load_promotion_csv(promotion_queue_path)
+
+    sources = {
+        "sector_expansion_board": source_artifact(sector_board_path, sector_board, required=True, now=now),
+        "ticker_monitoring_performance": source_artifact(ticker_performance_path, ticker_performance, required=True, now=now),
+        "sector_dashboard_promotion_queue": source_artifact(promotion_queue_path, {}, required=False, now=now, kind="csv"),
+        "sector_dashboard_suite_html": source_artifact(dashboard_html_path, {}, required=False, now=now, kind="html"),
+    }
+    sector_fresh = bool(sources["sector_expansion_board"].get("fresh_enough_for_context"))
+    ticker_fresh = bool(sources["ticker_monitoring_performance"].get("fresh_enough_for_context"))
+
+    warnings: list[str] = []
+    errors: list[str] = []
+    for name, source in sources.items():
+        if source["required"] and not source["exists"]:
+            errors.append(f"required source missing: {name}")
+        elif source["required"] and source["freshness"] == "stale":
+            warnings.append(f"required source stale: {name} age_hours={source['age_hours']}")
+        elif source["required"] and source["freshness"] == "missing":
+            errors.append(f"required source has no usable payload: {name}")
+        elif not source["required"] and not source["exists"]:
+            warnings.append(f"optional source missing: {name}")
+    for name, doc in (("sector_expansion_board", sector_board), ("ticker_monitoring_performance", ticker_performance)):
+        status = doc.get("status")
+        if status not in {"ok", None}:
+            warnings.append(f"source {name} status={status}")
+
+    candidates = merge_csv_rows(promotion_candidates_from_board(sector_board), promotion_csv)
+    tickers = ticker_index(ticker_performance)
+    candidate_rows = candidate_review_rows(candidates, tickers, sector_fresh=sector_fresh, ticker_fresh=ticker_fresh)
+
+    sector_summary = sector_board.get("summary") if isinstance(sector_board.get("summary"), dict) else {}
+    ticker_summary = ticker_performance.get("summary") if isinstance(ticker_performance.get("summary"), dict) else {}
+    blocked = [row["ticker"] for row in candidate_rows if row.get("blocked_reasons")]
+    missing_monitor = [row["ticker"] for row in candidate_rows if not row.get("monitoring_context_available")]
+    leadership_counts = Counter(str(row.get("sector_leadership_status") or "unknown") for row in candidate_rows)
+
+    status = "blocked" if errors else "degraded" if warnings or missing_monitor else "ok"
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "generated_at_utc": utc_now(),
+        "window": window,
+        "status": status,
+        "consumer_posture": "review_only",
+        "authority": dict(AUTHORITY),
+        "source_artifacts": sources,
+        "research_freshness_review": {
+            "all_required_sources_fresh_enough": bool(sector_fresh and ticker_fresh),
+            "stale_or_missing_required_sources": [name for name, source in sources.items() if source["required"] and not source["fresh_enough_for_context"]],
+            "outcome_analytics_ready": ((ticker_performance.get("history_status") or {}).get("outcome_analytics_ready") is True),
+            "future_realized_outcomes_used": False,
+        },
+        "opportunity_review": {
+            "improving_leadership_sectors": sector_summary.get("improving_leadership_sectors") or [],
+            "underexposed_sectors": sector_summary.get("underexposed_sectors") or [],
+            "promotion_review_candidates": sorted(candidates),
+            "candidate_count": len(candidate_rows),
+            "candidate_leadership_counts": dict(sorted(leadership_counts.items())),
+            "blocked_or_review_required_candidates": blocked,
+            "candidates_missing_monitoring_context": missing_monitor,
+            "fail_closed_tickers_from_monitoring": ticker_summary.get("fail_closed_tickers") or [],
+        },
+        "candidate_reviews": candidate_rows,
+        "warnings": warnings,
+        "errors": errors,
+        "limits": [
+            "review-only composition of existing artifacts; no canonical note mutation, portfolio mutation, deployment mutation, watchlist promotion, sizing, trade execution, owner-approval inference, probability modeling, or capital action authority",
+            "sector and ticker context are descriptive freshness/opportunity inputs only; stale or missing sources degrade the artifact instead of filling gaps",
+            "candidate rows are review objects, not recommendations to add, size, promote, or execute",
+        ],
+    }
+    validate_payload(payload)
+    return payload
+
+
+def validate_payload(payload: dict[str, Any]) -> None:
+    if payload.get("consumer_posture") != "review_only":
+        raise ValueError("consumer_posture must be review_only")
+    for key, expected in AUTHORITY.items():
+        if (payload.get("authority") or {}).get(key) is not expected:
+            raise ValueError(f"authority flag mismatch: {key}")
+    freshness = payload.get("research_freshness_review") or {}
+    if freshness.get("future_realized_outcomes_used") is not False:
+        raise ValueError("future realized outcomes must not be used")
+    for row in payload.get("candidate_reviews") or []:
+        if row.get("owner_approval_granted") is not False:
+            raise ValueError(f"candidate owner approval drift: {row.get('ticker')}")
+        if row.get("watchlist_promotion_allowed") is not False:
+            raise ValueError(f"candidate watchlist promotion authority drift: {row.get('ticker')}")
+
+
+def markdown_summary(payload: dict[str, Any]) -> str:
+    opp = payload.get("opportunity_review") or {}
+    fresh = payload.get("research_freshness_review") or {}
+    warnings = payload.get("warnings") or []
+    errors = payload.get("errors") or []
+    return "\n".join([
+        "# Research Freshness Opportunity Review v1",
+        "",
+        f"- Generated: {payload.get('generated_at_utc')}",
+        f"- Status: {payload.get('status')}",
+        "- Posture: review-only; no canonical, portfolio, deployment, watchlist, sizing, trade, approval, probability, or capital-action authority.",
+        f"- Required sources fresh enough: {fresh.get('all_required_sources_fresh_enough')}",
+        f"- Promotion-review candidates: {', '.join(opp.get('promotion_review_candidates') or []) or 'none'}",
+        f"- Blocked/review-required candidates: {', '.join(opp.get('blocked_or_review_required_candidates') or []) or 'none'}",
+        f"- Missing monitoring context: {', '.join(opp.get('candidates_missing_monitoring_context') or []) or 'none'}",
+        f"- Improving leadership sectors: {', '.join(opp.get('improving_leadership_sectors') or []) or 'none'}",
+        f"- Underexposed sectors: {', '.join(opp.get('underexposed_sectors') or []) or 'none'}",
+        f"- Warnings: {'; '.join(warnings) if warnings else 'none'}",
+        f"- Errors: {'; '.join(errors) if errors else 'none'}",
+        "",
+    ])
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Build WF60 review-only research freshness/opportunity review artifact.")
+    parser.add_argument("--window", default="post-close", help="Review window label.")
+    parser.add_argument("--sector-board", type=Path, default=DEFAULT_SECTOR_BOARD, help="Input sector expansion board JSON.")
+    parser.add_argument("--ticker-performance", type=Path, default=DEFAULT_TICKER_PERFORMANCE, help="Input ticker monitoring performance JSON.")
+    parser.add_argument("--promotion-queue", type=Path, default=DEFAULT_PROMOTION_QUEUE, help="Optional dashboard promotion queue CSV.")
+    parser.add_argument("--dashboard-html", type=Path, default=DEFAULT_DASHBOARD_HTML, help="Optional sector dashboard HTML.")
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Output JSON path.")
+    parser.add_argument("--markdown-output", type=Path, default=DEFAULT_MARKDOWN_OUTPUT, help="Output Markdown path.")
+    parser.add_argument("--no-markdown", action="store_true", help="Skip Markdown summary generation.")
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    payload = build_payload(
+        args.window,
+        sector_board_path=workspace_path(args.sector_board),
+        ticker_performance_path=workspace_path(args.ticker_performance),
+        promotion_queue_path=workspace_path(args.promotion_queue),
+        dashboard_html_path=workspace_path(args.dashboard_html),
+    )
+    output = workspace_path(args.output)
+    atomic_write_json(output, payload, indent=2, ensure_ascii=False)
+    if not args.no_markdown:
+        atomic_write_text(workspace_path(args.markdown_output), markdown_summary(payload))
+    print(f"wrote {rel(output)}")
+    print(f"status={payload['status']} candidates={payload['opportunity_review']['candidate_count']} required_fresh={payload['research_freshness_review']['all_required_sources_fresh_enough']}")
+    return 0 if payload["status"] != "blocked" else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

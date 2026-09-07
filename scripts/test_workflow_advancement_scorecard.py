@@ -37,19 +37,6 @@ def write_sources(paths: dict[str, Path], *, execution_drift: bool = False) -> N
     }
     write_json(paths["cron_freshness"], cron)
 
-    pilot = base_payload()
-    pilot["summary"] = {
-        "window_count": 2,
-        "ok_window_count": 2,
-        "mutating_step_count": 0,
-        "cron_update_recommended": False,
-    }
-    write_json(paths["layered_pilot"], pilot)
-
-    timing = base_payload()
-    timing["summary"] = {"window_count": 2, "cron_update_recommended": False}
-    write_json(paths["layered_timing"], timing)
-
     command = base_payload("runtime_blocked")
     command["operator_action"] = "MAIN_HANDOFF_REQUIRED"
     command["summary"] = {
@@ -103,7 +90,7 @@ def test_scorecard_separates_cron_progress_from_wf87_blocker() -> None:
         assert payload["validation"]["status"] == "ok"
         by_wf = {signal["workflow_id"]: signal for signal in payload["signals"]}
         assert by_wf["CRON"]["signal"] == "advanced"
-        assert by_wf["WF73"]["signal"] == "advanced"
+        assert "WF73" not in by_wf
         assert by_wf["WF87"]["signal"] == "blocked"
         assert by_wf["WF55"]["signal"] == "advanced"
         assert by_wf["AUTONOMY-SPINE"]["signal"] == "blocked"
@@ -115,6 +102,31 @@ def test_scorecard_separates_cron_progress_from_wf87_blocker() -> None:
         assert followups["AUTONOMY-SPINE"]["route"] == "dependency_rollup"
         assert followups["AUTONOMY-SPINE"]["acceptance_validators"]
         assert followups["WF87"]["authority_boundary"]["paper_or_live_execution_allowed"] is False
+
+
+def test_retired_layered_artifacts_cannot_restore_wf73_green() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        paths = make_paths(root)
+        write_sources(paths)
+        stale_green = base_payload()
+        stale_green["summary"] = {
+            "window_count": 2,
+            "ok_window_count": 2,
+            "mutating_step_count": 0,
+            "cron_update_recommended": False,
+        }
+        write_json(root / "layered-finance-cron-pilot-runner.json", stale_green)
+        write_json(root / "layered-finance-refresh-timing-probe.json", stale_green)
+
+        payload = scorecard.build_payload(paths)
+        source_names = {record["name"] for record in payload["source_records"]}
+        workflow_ids = {signal["workflow_id"] for signal in payload["signals"]}
+        assert "layered_pilot" not in scorecard.SOURCES
+        assert "layered_timing" not in scorecard.SOURCES
+        assert "layered_pilot" not in source_names
+        assert "layered_timing" not in source_names
+        assert "WF73" not in workflow_ids
 
 
 def test_scorecard_keeps_stale_only_cron_warning_out_of_blockers() -> None:
@@ -185,6 +197,7 @@ def test_scorecard_blocks_execution_authority_drift() -> None:
 
 if __name__ == "__main__":
     test_scorecard_separates_cron_progress_from_wf87_blocker()
+    test_retired_layered_artifacts_cannot_restore_wf73_green()
     test_scorecard_keeps_stale_only_cron_warning_out_of_blockers()
     test_scorecard_keeps_reconciled_scheduler_exceptions_out_of_blockers()
     test_scorecard_blocks_scheduler_exceptions_when_hard_cron_blocker_present()

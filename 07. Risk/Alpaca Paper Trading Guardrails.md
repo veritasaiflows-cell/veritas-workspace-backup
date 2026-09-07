@@ -1,3 +1,25 @@
+# Retired — Alpaca Paper Trading Guardrails
+
+Status: operational paper trading retired on 2026-08-29.
+
+## Current deny-only boundary
+
+OpenClaw has no paper or live brokerage operating route. No workflow may read account, position, order, or credential state; prepare or submit an order; cancel or replace an order; reconcile a simulated account; or invoke a broker endpoint.
+
+Only these static safety principles survive:
+
+- keep paper/live environments isolated
+- redact credentials and secrets from every artifact and log
+- fail closed when authorization, provenance, or isolation is uncertain
+- preserve immutable historical audit evidence without treating it as current authority
+
+Prior approvals and executable procedures below are revoked. Re-enabling any brokerage capability would require a new owner decision outside the alerts-and-recommendations OS and a separately governed system.
+
+<details>
+<summary>Retired historical source — non-operative</summary>
+
+Everything below is preserved solely as audit history. “Current,” “allowed,” approval, endpoint, wrapper, credential, order, submit, cancel, sell, reconciliation, and readiness language below has no present authority.
+
 # Alpaca Paper Trading Guardrails
 
 ## Purpose
@@ -287,3 +309,5 @@ Minimum criteria:
 - Audit log validates and contains no secrets.
 - First paper submit/cancel uses a bounded scoped paper-trade/pilot artifact.
 - Main-session final check confirms the request matches the approved scope.
+
+</details>

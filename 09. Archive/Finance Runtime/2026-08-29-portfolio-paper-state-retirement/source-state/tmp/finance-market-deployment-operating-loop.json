@@ -1,0 +1,605 @@
+{
+  "schema": "veritas.finance_market_deployment_operating_loop.v1",
+  "generated_at_utc": "2026-08-28T19:07:02Z",
+  "status": "ok",
+  "window": "late_session",
+  "purpose": "Unified review-only market-day operating packet for autonomous tier routing, data freshness, and trade-readiness probing.",
+  "authority_boundary": {
+    "review_only": true,
+    "autonomous_non_capital_tier_routing_allowed": true,
+    "cron_may_refresh_review_proof": true,
+    "creates_owner_cards": false,
+    "creates_approval_cards": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "paper_order_sell_allowed": false,
+    "live_trade_allowed": false,
+    "live_endpoint_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_sleeve_risk_rule_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "owner_approval_inferred": false,
+    "cron_direct_execution_allowed": false
+  },
+  "market_session": {
+    "timezone": "America/Phoenix",
+    "now_utc": "2026-08-28T19:07:00Z",
+    "now_local": "2026-08-28T12:07:00-07:00",
+    "window": "late_session",
+    "regular_market_hours": true,
+    "market_holiday": false,
+    "holiday_name": null,
+    "early_close": false,
+    "market_close_time_az": "13:00",
+    "deployment_fresh_price_allowed": true,
+    "current_capital_candidate_labels_allowed": true,
+    "closed_or_unsettled_market": false,
+    "fresh_price_window_policy": "Current deployable/review-ready labels require a weekday regular-session quote window after 06:42 AZ and before the NYSE close mapped to Arizona time. Holidays, weekend, pre-open, open-settling, and post-close output is candidate-pending-refresh only.",
+    "recommended_probe_times_az": [
+      "06:42",
+      "07:14",
+      "12:07"
+    ],
+    "market_calendar_policy": "Hardcoded NYSE 2026 full holidays and known early closes; update annually or replace with an exchange-calendar provider before 2027.",
+    "assumption": "US regular equity market approximated as 06:30 America/Phoenix to NYSE close on weekdays, with hardcoded NYSE 2026 holiday/early-close overrides."
+  },
+  "weekday_morning_cron_schedule": [
+    {
+      "time_az": "05:35",
+      "job": "Macro - Energy and Geopolitical Inputs Refresh",
+      "purpose": "Refresh macro/energy/geopolitical inputs before finance scoring."
+    },
+    {
+      "time_az": "05:58",
+      "job": "Finance - Sector Allocation Decision Matrix",
+      "purpose": "Refresh sector context before ticker-level deploy/wait review."
+    },
+    {
+      "time_az": "06:05",
+      "job": "Finance - Weekday Morning Review Refresh and WF68 producer",
+      "purpose": "Refresh morning review chain, alert quote proof, band/stop alerts."
+    },
+    {
+      "time_az": "06:08",
+      "job": "Finance - WF78 Daily Freshness and Promotion Proof",
+      "purpose": "Move derived Tier A/B/C routing and repair queues without capital authority."
+    },
+    {
+      "time_az": "06:20",
+      "job": "Finance - WF78 Open-Ready Owner Review Proof",
+      "purpose": "Prepare owner-review context for Tier A/B candidates."
+    },
+    {
+      "time_az": "06:35-06:42",
+      "job": "Open-ready cards, WF85 radar, WF87 daylight gates",
+      "purpose": "Open-settling proof only; suppress current deployment labels until the first settled probe."
+    },
+    {
+      "time_az": "06:42",
+      "job": "Finance - Tier A Intraday Opportunity Probe",
+      "purpose": "First fresh-price opportunity probe after the open has settled."
+    },
+    {
+      "time_az": "07:14",
+      "job": "Finance - Tier A Confirmation Opportunity Probe",
+      "purpose": "Confirm that early deployable/watch labels survive a second fresh quote pass."
+    },
+    {
+      "time_az": "08:00-08:50",
+      "job": "WF68/WF87 intraday gates",
+      "purpose": "Mid-morning alert and autonomy readiness proof."
+    },
+    {
+      "time_az": "12:07",
+      "job": "WF87 gate and late-session Tier A probe",
+      "purpose": "Final opportunity/risk/drift check during the last regular-session hour."
+    },
+    {
+      "time_az": "13:10-15:00",
+      "job": "Post-close alerts, refresh, reconciliation, control digest",
+      "purpose": "Close the loop, update quotes/cards, paper positions, shadow outcomes, and cron proof."
+    }
+  ],
+  "manual_probe_audit": {
+    "force_probe_requested": false,
+    "reason": "",
+    "audit_only": true,
+    "bypasses_market_session_gate": false,
+    "creates_execution_or_approval_authority": false
+  },
+  "fresh_price_gate": {
+    "current_deployable_labels_allowed": true,
+    "suppressed_when": [
+      "market_closed",
+      "weekend",
+      "pre_open",
+      "open_settling",
+      "post_close"
+    ],
+    "suppressed_labels": [
+      "deployable_now",
+      "owner_review_candidate",
+      "review_opportunity",
+      "risk_review_now"
+    ],
+    "closed_market_replacement_state": "candidate_pending_market_refresh",
+    "required_probe_times_az": [
+      "06:42",
+      "07:14",
+      "12:07"
+    ]
+  },
+  "cross_surface_reconciliation": {
+    "status": "aligned",
+    "reasons": [],
+    "fresh_price_gate_allows_current_labels": true,
+    "decision_layer_ready": true,
+    "opportunity_layer_requests_review": true,
+    "downgrade_state": "candidate_pending_decision_layer_confirmation"
+  },
+  "determinism_guard": {
+    "status": "ok",
+    "input_fingerprint": "b4754e24a427ca4aee6040fba6aa86f486677aa13fab29dbd3c29093d56e30f4",
+    "decision_fingerprint": "76cfaf1d1daea3730a66206ae0c507bc9cd044052dc9a337ec1de6a26cfc716e",
+    "previous_input_fingerprint": "90c8ecffa83b8cfab2c4311c1e3f68388248dce082fc901321d1a5f079295792",
+    "previous_decision_fingerprint": "cba2e8ec221a073ce8c151de347b1818515b1a12cdbcc2fb8e359804967e242c",
+    "same_semantic_inputs_as_previous_packet": false,
+    "same_inputs_same_decision_counts": true,
+    "policy": "Same semantic session/tier/freshness/opportunity inputs must produce the same decision-count fingerprint."
+  },
+  "tier_state": {
+    "status": "ok",
+    "validation_status": "ok",
+    "active_ticker_count": 300,
+    "auto_tier_counts": {
+      "Tier A": 12,
+      "Tier B": 49,
+      "Tier C": 239
+    },
+    "lane_tier_counts": {
+      "Tier A Equity": 10,
+      "Tier A Sleeve": 2,
+      "Tier B Equity": 49,
+      "Tier C Commodity": 1,
+      "Tier C Equity": 230,
+      "Tier C Rates/Income": 1,
+      "Tier C Sleeve": 7
+    },
+    "review_lane_counts": {
+      "commodity_proxy": 1,
+      "equity_depth": 289,
+      "rates_income_proxy": 1,
+      "sleeve_proxy": 9
+    },
+    "tier_a_equity_count": 10,
+    "tier_a_sleeve_count": 2,
+    "tier_a_commodity_count": 0,
+    "tier_a_rates_income_count": 0,
+    "tier_a_macro_currency_count": 0,
+    "tier_a_crypto_proxy_count": 0,
+    "auto_state_counts": {
+      "A-CHALLENGED": 9,
+      "A-WATCH": 3,
+      "B-CANDIDATE": 45,
+      "B-CHALLENGED": 4,
+      "C-CANDIDATE-REPAIR": 2,
+      "C-MONITOR": 236,
+      "C-REPAIR": 1
+    },
+    "tier_a_count": 12,
+    "tier_b_count": 49,
+    "tier_a_tickers": [
+      "BKNG",
+      "BRK.B",
+      "CVX",
+      "GOOG",
+      "ITA",
+      "JPM",
+      "LIN",
+      "LLY",
+      "NVDA",
+      "VRT",
+      "XLB",
+      "XOM"
+    ],
+    "tier_b_tickers": [
+      "AAPL",
+      "ABBV",
+      "ACN",
+      "ADBE",
+      "ADI",
+      "ADP",
+      "ADSK",
+      "AJG",
+      "AKAM",
+      "ALB",
+      "ALLE",
+      "AMAT",
+      "AMCR",
+      "AME",
+      "ANET",
+      "AON",
+      "AOS",
+      "APD",
+      "APH",
+      "APP",
+      "AVGO",
+      "AXON",
+      "CASY",
+      "CCL",
+      "CDNS",
+      "CRM",
+      "CRWD",
+      "DASH",
+      "DDOG",
+      "DECK",
+      "EMR",
+      "ETN",
+      "FCX",
+      "GS",
+      "MA",
+      "MDB",
+      "MSFT",
+      "MU",
+      "NOW",
+      "PANW",
+      "PH",
+      "PLTR",
+      "QCOM",
+      "SCCO",
+      "SHOP",
+      "SNOW",
+      "TSM",
+      "TXN",
+      "V"
+    ],
+    "capital_deployment_approved_count": 0,
+    "trade_or_execution_approved_count": 0
+  },
+  "freshness_state": {
+    "wf85_runner_status": "ok",
+    "wf85_runner_operator_action": "MAIN_HANDOFF_REQUIRED",
+    "wf85_runner_validation": "warning",
+    "wf84_status": "ok",
+    "wf84_rows": null,
+    "wf85_card_count": 300,
+    "tier_a_b_band_complete_current": 17,
+    "tier_a_b_stale_band_count": 0,
+    "deployment_timing_status": "ok",
+    "deployment_timing_validation": "ok",
+    "tier_a_b_timing_counts": {
+      "repair_first": 53,
+      "blocked_below_stop_or_invalidation": 8
+    },
+    "quote_freshness_class_counts": {
+      "review_only_price_context": 61
+    },
+    "market_hours_refresh_classification": "READY",
+    "market_hours_refresh_status": "ok"
+  },
+  "opportunity_probe_state": {
+    "tier_a_probe_status": "alert",
+    "tier_a_probe_operator_action": "TELEGRAM_NOTIFY",
+    "tier_a_probe_recommended_action": "REVIEW",
+    "new_review_opportunity_count": 1,
+    "clean_paper_prep_count": 0,
+    "near_deployment_blocked_count": 0,
+    "no_chase_count": 4,
+    "invalidation_count": 0,
+    "paper_drift_count": 4,
+    "wf87_gate_status": "daylight_gates_blocked",
+    "wf87_operator_action": "MAIN_HANDOFF_REQUIRED",
+    "wf87_daylight_gate_result": "blocked",
+    "morning_cards_status": "warning",
+    "morning_cards_validation": "ok",
+    "morning_clean_review_card_count": null,
+    "autonomous_routing_cards_status": "ok",
+    "autonomous_routing_cards_validation": "ok",
+    "autonomous_owner_review_card_candidate_count": 0,
+    "autonomous_clean_randall_review_card_count": 0,
+    "autonomous_blocked_or_waiting_count": 61,
+    "autonomous_execution_allowed_now": false,
+    "paper_positions_status": "ok",
+    "paper_position_count": null
+  },
+  "scenario_context_panel": {
+    "status": "ok",
+    "source_artifact": "tmp/current-regime-analog-match.json",
+    "generated_at_utc": "2026-08-28T13:14:16Z",
+    "active_current_tags": [
+      "breadth_repair",
+      "rate_stabilization",
+      "small_mid_broadening_review"
+    ],
+    "primary_analog_labels": [
+      "2023-2024 soft-landing / broadening attempt",
+      "1980-1982 Volcker tightening / recession",
+      "1994 bond/rate shock",
+      "2022 inflation / rate shock"
+    ],
+    "stress_caution_analog_labels": [
+      "1973-1974 oil shock / stagflation bear market",
+      "1987 crash",
+      "1990 Gulf War / recession shock",
+      "1998 LTCM / emerging-market stress",
+      "2007-2009 Global Financial Crisis"
+    ],
+    "scenario_observations": [
+      "Use direct analogs to challenge the current rate-stabilization and breadth-repair thesis.",
+      "Use stress analogs to test whether credit/liquidity/geopolitical risk can break the small/mid-cap broadening setup.",
+      "Small-cap rebound behavior is conditional; rate stabilization is supportive only when earnings, credit, and liquidity do not deteriorate."
+    ],
+    "authority": {
+      "scenario_context_only": true,
+      "probability_or_score_allowed": false,
+      "deployment_ranking_allowed": false,
+      "capital_action_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "owner_approval_inference_allowed": false
+    }
+  },
+  "final_market_deployment_state": "review_opportunity",
+  "operator_action": "MAIN_SESSION_REVIEW",
+  "next_safe_action": "Review Tier A opportunity/drift rows; no approval is inferred.",
+  "blockers": [],
+  "source_artifacts": {
+    "wf78_auto_router": "tmp/wf78-auto-tier-routing.json",
+    "wf78_routing_delta": "tmp/wf78-routing-delta.json",
+    "wf84_data_plane": "tmp/canonical-finance-data-plane.json",
+    "wf85_freshness_runner": "tmp/trade-grade-os-freshness-cron-runner.json",
+    "wf85_timing_gate": "tmp/wf85-deployment-timing-gate.json",
+    "wf85_readiness_rollup": "tmp/trade-grade-os-readiness-rollup.json",
+    "wf85_market_hours_readiness": "tmp/wf85-market-hours-refresh-readiness.json",
+    "autonomous_routing_cards": "tmp/autonomous-routing-deployment-cards.json",
+    "tier_a_probe": "tmp/tier-a-intraday-opportunity-probe.json",
+    "wf87_market_gate": "tmp/wf87-market-hours-gate-probe.json",
+    "wf87_command_center": "tmp/wf87-autonomy-command-center.json",
+    "morning_cards": "tmp/morning-paper-deployment-recommendation-cards.json",
+    "paper_positions": "tmp/finance-intelligence-state-paper-positions.json",
+    "current_regime_analog_match": "tmp/current-regime-analog-match.json"
+  },
+  "artifact_records": [
+    {
+      "name": "wf78_auto_router",
+      "path": "tmp/wf78-auto-tier-routing.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "operator_action": null,
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T14:33:31Z",
+      "age_minutes": 273.48,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "wf78_routing_delta",
+      "path": "tmp/wf78-routing-delta.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "operator_action": null,
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T13:23:34Z",
+      "age_minutes": 343.43,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "wf84_data_plane",
+      "path": "tmp/canonical-finance-data-plane.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "operator_action": null,
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T13:24:12Z",
+      "age_minutes": 342.8,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "wf85_freshness_runner",
+      "path": "tmp/trade-grade-os-freshness-cron-runner.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "operator_action": "MAIN_HANDOFF_REQUIRED",
+      "validation_status": "warning",
+      "generated_at_utc": "2026-08-28T13:24:22Z",
+      "age_minutes": 342.63,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "wf85_timing_gate",
+      "path": "tmp/wf85-deployment-timing-gate.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "operator_action": null,
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T13:23:40Z",
+      "age_minutes": 343.33,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "wf85_readiness_rollup",
+      "path": "tmp/trade-grade-os-readiness-rollup.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "warning",
+      "operator_action": null,
+      "validation_status": "warning",
+      "generated_at_utc": "2026-08-28T14:34:46Z",
+      "age_minutes": 272.23,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "wf85_market_hours_readiness",
+      "path": "tmp/wf85-market-hours-refresh-readiness.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "operator_action": null,
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T19:07:00Z",
+      "age_minutes": 0.0,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "autonomous_routing_cards",
+      "path": "tmp/autonomous-routing-deployment-cards.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "operator_action": null,
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T19:07:02Z",
+      "age_minutes": 0.0,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "tier_a_probe",
+      "path": "tmp/tier-a-intraday-opportunity-probe.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "alert",
+      "operator_action": "TELEGRAM_NOTIFY",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T19:07:01Z",
+      "age_minutes": 0.0,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "wf87_market_gate",
+      "path": "tmp/wf87-market-hours-gate-probe.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "daylight_gates_blocked",
+      "operator_action": "MAIN_HANDOFF_REQUIRED",
+      "validation_status": "warning",
+      "generated_at_utc": "2026-08-28T18:05:22Z",
+      "age_minutes": 61.63,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "wf87_command_center",
+      "path": "tmp/wf87-autonomy-command-center.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "runtime_blocked",
+      "operator_action": "MAIN_HANDOFF_REQUIRED",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T18:05:22Z",
+      "age_minutes": 61.63,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "morning_cards",
+      "path": "tmp/morning-paper-deployment-recommendation-cards.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "warning",
+      "operator_action": null,
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T17:55:01Z",
+      "age_minutes": 71.98,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "paper_positions",
+      "path": "tmp/finance-intelligence-state-paper-positions.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "operator_action": null,
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-27T21:42:02Z",
+      "age_minutes": 1284.97,
+      "forbidden_true_authority_paths": []
+    },
+    {
+      "name": "current_regime_analog_match",
+      "path": "tmp/current-regime-analog-match.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "operator_action": null,
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T13:14:16Z",
+      "age_minutes": 352.73,
+      "forbidden_true_authority_paths": []
+    }
+  ],
+  "refresh_steps": [
+    {
+      "name": "wf85_market_hours_refresh_readiness",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf85_market_hours_refresh_readiness.py",
+        "--write",
+        "--validate"
+      ],
+      "required": true,
+      "started_at_utc": "2026-08-28T19:07:00Z",
+      "completed_at_utc": "2026-08-28T19:07:00Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_tail": "classification=READY status=ok validation=ok market_state=REGULAR_MARKET_HOURS blockers=0 reasons=1\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "tier_a_intraday_opportunity_probe",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\tier_a_intraday_opportunity_probe.py",
+        "--refresh-wf68",
+        "--refresh-wf87",
+        "--refresh-wf85",
+        "--write",
+        "--write-md",
+        "--validate"
+      ],
+      "required": true,
+      "started_at_utc": "2026-08-28T19:07:00Z",
+      "completed_at_utc": "2026-08-28T19:07:01Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_tail": "{\n  \"operator_action\": \"TELEGRAM_NOTIFY\",\n  \"output\": \"tmp/tier-a-intraday-opportunity-probe.json\",\n  \"recommended_action\": \"REVIEW\",\n  \"status\": \"alert\",\n  \"summary\": {\n    \"clean_paper_prep_count\": 0,\n    \"invalidation_count\": 0,\n    \"near_deployment_blocked_count\": 0,\n    \"new_review_opportunity_count\": 1,\n    \"no_chase_count\": 4,\n    \"paper_drift_count\": 4,\n    \"recommended_action\": \"REVIEW\",\n    \"safety_quality_halt_count\": 2,\n    \"source_ages_minutes\": {\n      \"quote_snapshot\": 0.02,\n      \"wf68_alerts\": 0.02,\n      \"wf85_digest\": 0.02,\n      \"wf87_monitor\": 0.02\n    },\n    \"suppressed_recent_wf85_overlap_count\": 0,\n    \"tier_a_count\": 12,\n    \"wf68_alert_count\": 9,\n    \"wf85_recent_overlap_active\": false,\n    \"wf85_recent_overlap_age_minutes\": 61.72,\n    \"wf85_recent_overlap_window_minutes\": 30.0,\n    \"wf85_status\": \"ok\",\n    \"wf87_status\": \"wake_recommended\"\n  },\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "autonomous_routing_deployment_cards",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\autonomous_routing_deployment_cards.py",
+        "--write",
+        "--validate"
+      ],
+      "required": true,
+      "started_at_utc": "2026-08-28T19:07:01Z",
+      "completed_at_utc": "2026-08-28T19:07:02Z",
+      "returncode": 0,
+      "ok": true,
+      "stdout_tail": "{\n  \"out\": \"tmp/autonomous-routing-deployment-cards.json\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"autonomous_execution_allowed_now\": false,\n    \"autonomous_routing_action_counts\": {\n      \"invalidation_review\": 8,\n      \"repair_first\": 53\n    },\n    \"blocked_or_waiting_count\": 61,\n    \"candidate_docket_count\": 61,\n    \"clean_randall_review_card_count\": 0,\n    \"exact_order_preparation_allowed_now\": false,\n    \"execution_time_gates_clean\": false,\n    \"final_timing_state_counts\": {\n      \"blocked_below_stop_or_invalidation\": 8,\n      \"repair_first\": 53\n    },\n    \"forward_surface_name\": \"autonomous_review_card_queue\",\n    \"historical_deployment_card_name_retained_for_compatibility\": true,\n    \"materialized_owner_card_reference_count\": 0,\n    \"next_safe_action\": \"Continue scheduled shadow accrual, market-hours quote refresh, and repair/no-chase/reclaim monitoring.\",\n    \"owner_card_materialization_blocked_count\": 0,\n    \"owner_review_card_candidate_count\": 0,\n    \"reconciliation_mature\": true,\n    \"shadow_threshold_met\": true,\n    \"tier_a_b_queue_count\": 61,\n    \"wf78_recommendation_language_retired\": true\n  },\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "stop_lines": [
+    "Autonomous tier movement is non-capital derived routing only.",
+    "No generated row, card, score, alert, or packet is owner approval.",
+    "No paper/live order, account action, money movement, or portfolio/canon/cash/sizing/risk-rule mutation.",
+    "Paper execution still requires exact Randall approval plus fresh WF67 guard and kill-switch proof."
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [],
+    "critical_count": 0,
+    "warning_count": 0
+  }
+}

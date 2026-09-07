@@ -1,0 +1,23 @@
+{
+  "account_settings_mutation_allowed": false,
+  "action": "submit",
+  "approval_status": "ok",
+  "artifact_type": "wf67_paper_execution_result",
+  "credential_status": "not_required_for_dry_run",
+  "endpoint": "https://paper-api.alpaca.markets",
+  "execute_requested": false,
+  "generated_at_utc": "2026-06-09T18:14:48Z",
+  "headers_persisted": false,
+  "kill_switch_status": "ok",
+  "live_endpoint_detected": false,
+  "live_submit_allowed": false,
+  "money_movement_allowed": false,
+  "no_inferred_approval": true,
+  "phase": "phase_6_paper_execution_guardrail",
+  "raw_response_bodies_persisted": false,
+  "request_status": "ok",
+  "schema_version": 1,
+  "secrets_persisted": false,
+  "status": "validated_dry_run",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

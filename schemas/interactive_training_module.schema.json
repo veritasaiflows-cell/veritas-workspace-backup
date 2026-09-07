@@ -116,7 +116,8 @@
               "multiple_choice",
               "checklist",
               "reflection",
-              "boundary_ack"
+              "boundary_ack",
+              "screen_recording"
             ]
           },
           "title": {
@@ -157,6 +158,24 @@
           },
           "expected": {
             "type": "string"
+          },
+          "video_src": {
+            "type": "string",
+            "pattern": "^recordings/[a-z0-9][a-z0-9._-]{1,80}\\.(webm|mp4)$"
+          },
+          "poster_src": {
+            "type": "string",
+            "pattern": "^recordings/[a-z0-9][a-z0-9._-]{1,80}\\.(png|jpg|svg)$"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "capture_hint": {
+            "type": "string"
+          },
+          "walkthrough_src": {
+            "type": "string",
+            "pattern": "^walkthroughs/[a-z0-9][a-z0-9._-]{1,80}\\.html$"
           },
           "checklist_items": {
             "type": "array",

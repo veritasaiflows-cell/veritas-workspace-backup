@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-17T04:45:44Z",
+  "status": "applied_pending_post_apply_validation",
+  "window": "post-close",
+  "approval_artifact": "tmp/portfolio-mutation-proposals/approvals/standing-approved/standing-post-close-ETN-capital-deployment-review-2026-05-17-20260517T044530Z.json",
+  "proposal_id": "post-close:ETN:capital-deployment-review:2026-05-17",
+  "authority": {
+    "phase": "WF64 approval-gated atomic apply foundation",
+    "apply_allowed_without_valid_approval_artifact": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false,
+    "brokerage_order_allowed": false,
+    "money_movement_allowed": false,
+    "rollback_required_on_failure": true,
+    "post_apply_validation_required": true,
+    "valid_approval_artifact": true,
+    "apply_allowed": true,
+    "scoped_owner_file_write_allowed": true
+  },
+  "validation": {
+    "schema_version": 1,
+    "generated_at_utc": "2026-05-17T04:45:44Z",
+    "status": "ok",
+    "input": "tmp/portfolio-mutation-proposals/approvals/standing-approved/standing-post-close-ETN-capital-deployment-review-2026-05-17-20260517T044530Z.json",
+    "proposal_id": "post-close:ETN:capital-deployment-review:2026-05-17",
+    "authority": {
+      "approval_artifact_can_scope_owner_file_write": true,
+      "approved_adjustment_categories": [
+        "entry_band"
+      ],
+      "trade_or_account_action_allowed": false,
+      "owner_approval_inferred": false,
+      "legacy_sizing_sleeve_cash_risk_rule_field_allowed": false,
+      "execution_entitlement_allowed": false
+    },
+    "summary": {
+      "critical": 0,
+      "warning": 0
+    },
+    "findings": []
+  },
+  "summary": {
+    "files_to_write": 1,
+    "writes_performed": true,
+    "rollback_plan_created": true,
+    "post_apply_validation_required": true,
+    "files_written": 1,
+    "rollback_performed": false,
+    "failure": null
+  },
+  "build_errors": [],
+  "rollback_plan": {
+    "backup_root": "tmp/portfolio-mutation-proposals/apply-backups/2026-05-17T04-45-44Z-post-close-ETN-capital-deployment-review-2026-05-17",
+    "restore_method": "copy each backup file back to its original relative path using atomic replace; apply helper also restores from backups automatically on failure",
+    "files": [
+      {
+        "path": "03. Portfolio/Execution Board.md",
+        "backup_path": "tmp/portfolio-mutation-proposals/apply-backups/2026-05-17T04-45-44Z-post-close-ETN-capital-deployment-review-2026-05-17/03. Portfolio/Execution Board.md.bak",
+        "original_sha256": "5e6d57c45a1489fe6bb05389f5893d983ef7797e9a5f9b747e0da04053bae951",
+        "updated_sha256": "8406ab18ae74fe645680ec931191cb4d2cba7489094c0f96134597eb0b433110",
+        "changes": [
+          {
+            "change_type": "exact_text_replace",
+            "adjustment_category": "entry_band",
+            "old_text_sha256": "4a1a992025b45c3585b74c041745e93727b7501a4714df4d4ec6f283ebe7e6ff",
+            "new_text_sha256": "b2fd252c161c99c60e04acca9974eaa981c45da67e3ee47ec65ee274e2bbeff7"
+          }
+        ]
+      }
+    ]
+  },
+  "stop_lines": [
+    "Apply is blocked unless the approval artifact validator returns ok for an unexpired, hash-matched, target-file-matched approval artifact.",
+    "Proposal packet authority flags remain false; this helper grants only scoped owner-file write mechanics for the approved exact diff.",
+    "No trade, order, brokerage, account, money-movement, owner-approval inference, or execution authority is granted.",
+    "Post-apply validators remain required before any workflow closure claim."
+  ],
+  "applied_files": [
+    {
+      "path": "03. Portfolio/Execution Board.md",
+      "backup_path": "tmp/portfolio-mutation-proposals/apply-backups/2026-05-17T04-45-44Z-post-close-ETN-capital-deployment-review-2026-05-17/03. Portfolio/Execution Board.md.bak",
+      "updated_sha256": "8406ab18ae74fe645680ec931191cb4d2cba7489094c0f96134597eb0b433110"
+    }
+  ]
+}

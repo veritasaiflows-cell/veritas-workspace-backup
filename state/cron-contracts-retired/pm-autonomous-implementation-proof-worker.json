@@ -1,0 +1,31 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "7c4dbc22-7363-4b05-83fd-df010acef97a",
+  "name": "Retired — PM - Autonomous Implementation Proof Worker",
+  "required": false,
+  "owner_workflow": "Retired PM automation history",
+  "contract_reason": "Historical scheduler contract retained after the proof worker was superseded and its replacement was retired.",
+  "description": "Retired 2026-08-30 America/Phoenix as a superseded PM proof worker. The replacement job is also retired; this definition remains disabled for historical rollback evidence only. Re-enable only through a new explicit owner cron gate.",
+  "enabled": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "52 7,14,20 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Work in C:\\Users\\Veritas\\.openclaw\\workspace. Objective: advance PM implementation work autonomously within phase-1 safety boundaries by running the PM autonomy worker once. Execute exactly this single command: python scripts\\pm_autonomous_worker_predispatch_prefilter.py --execute --write --validate. Do not run any other commands; do not inspect unrelated files manually; do not patch code; do not spawn helpers; do not mutate cron schedule/config/runtime, finance canon/portfolio, SQL imports, customer/external surfaces, paper/live/account/brokerage state, capital deployment, money movement, or approval state. Response contract: reply exactly NO_REPLY if the command exits 0; if blocked, report only worker status, selected job, validation errors, and proof paths tmp\\pm-job-worker-runner.json, tmp\\pm-autonomy-dispatcher.json, tmp\\pm-autonomy-verifier.json, tmp\\pm-main-session-action-inbox.json.",
+    "model": "openai/gpt-5.5",
+    "thinking": "medium",
+    "timeoutSeconds": 1800
+  },
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "retired_at_local": "2026-08-30 America/Phoenix",
+  "retirement_reason": "Superseded PM proof worker; the replacement job is also retired. Historical rollback evidence only and no automatic resume.",
+  "rollback_requires_owner_gate": true
+}

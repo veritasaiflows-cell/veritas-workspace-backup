@@ -2,51 +2,51 @@
   "schema": "veritas.workflow_capsule.v1",
   "workflow_id": "WF67",
   "display_name": "Alpaca Paper Execution Guardrail",
-  "tier": "P1",
-  "priority": "P1",
-  "lifecycle": "active",
-  "readiness": "blocked",
-  "effective_status": "blocked",
-  "current_state": "Paper-only guardrail active; paper sandbox separate from the real planning portfolio.",
-  "next_action": "Refresh gate/manager/cards; execute only after fresh kill switch, guards, redacted audit, notification, and Randall exact approval.",
-  "authoritative_next_action": "Refresh gate/manager/cards; execute only after fresh kill switch, guards, redacted audit, notification, and Randall exact approval.",
+  "tier": "P3",
+  "priority": "P3",
+  "lifecycle": "paused",
+  "readiness": "paused",
+  "effective_status": "on_hold",
+  "current_state": "**Superseded as deny-only safety history 2026-08-29**.",
+  "next_action": "Preserve redaction, endpoint isolation, stale-artifact rejection, and audit history; do not run broker, manager, card, position, submit, cancel, or sell paths.",
+  "authoritative_next_action": "Preserve redaction, endpoint isolation, stale-artifact rejection, and audit history; do not run broker, manager, card, position, submit, cancel, or sell paths.",
   "helper_safe": false,
   "owner_action_required": true,
-  "authority_boundary": "paper-only simulation; exact owner approval required to execute; WF88/WF87 consume status only",
-  "authority_class": "paper_guard_fail_closed",
+  "authority_boundary": "deny-only historical safety proof; no operational authority",
+  "authority_class": "paused_review_only",
   "primary_owner_lane": "main-session-veritas",
-  "secondary_consumers": [
-    "Randall"
-  ],
+  "secondary_consumers": [],
   "human_approval_owner": "Randall",
-  "proof_artifact": "scripts/wf67_autonomous_paper_manager.py",
+  "proof_artifact": "06. Playbooks/Project Continuity/Workflow 67 - Alpaca Paper Execution Guardrail.md",
   "freshness_sla": {
     "primary_artifact_max_age_hours": 72.0,
     "owner_context_max_age_hours": 72.0,
-    "material_owner_context_required": true
+    "material_owner_context_required": false
   },
   "blockers": [
-    "Execution requires fresh kill switch + guards + redacted audit + notification + exact approval",
-    "WF88/WF87 may consume WF67 state only as review-only guard proof"
+    "Operational paper/account route retired",
+    "Canonical Active Workflows hold: **Superseded as deny-only safety history 2026-08-29**."
   ],
   "stop_lines": [
-    "No live endpoint/credentials, money movement/account settings, close/liquidation endpoints, inferred approval, autonomous paper orders, refresh-triggered submit/cancel/sell, or paper-to-live promotion."
+    "Deny-only safety evidence. No broker GET, account, position, order, manager, submit, cancel, sell, simulated-state maintenance, or paper/live execution."
   ],
   "continuity_note": "06. Playbooks/Project Continuity/Workflow 67 - Alpaca Paper Execution Guardrail.md",
-  "primary_route_artifact": "scripts/wf67_autonomous_paper_manager.py",
-  "secondary_artifacts": [
-    "tmp/wf67-paper-position-state.sqlite",
-    "tmp/alpaca-paper-readiness/wf67-autonomous-paper-manager-current.json",
-    "tmp/wf87-paper-autonomy-runtime-governor.json",
-    "tmp/wf88-os2-control-packet.json"
-  ],
-  "validator_commands": [
-    "python scripts\\chief_intelligence_promotion_gate.py --write --validate",
-    "python scripts\\wf67_autonomous_paper_manager.py --write --validate",
-    "python scripts\\wf88_os2_control_packet.py --write --write-md --validate"
-  ],
+  "primary_route_artifact": null,
+  "secondary_artifacts": [],
+  "validator_commands": [],
   "default_resume_command": null,
-  "control_override": null,
+  "control_override": {
+    "status": "on_hold",
+    "set_by": "Randall",
+    "set_at_local": "2026-08-29 America/Phoenix",
+    "set_at_utc": "2026-08-30T01:20:00Z",
+    "reason": "Superseded as deny-only safety history by Randall's alerts-and-recommendations OS pivot.",
+    "resume_condition": "No paper manager, order card, broker refresh, submit, cancel, or sell path may resume without a new explicit architecture decision.",
+    "aliases": [
+      "workflow_67"
+    ],
+    "next_action": "Preserve endpoint isolation, redaction, stale-artifact rejection, and immutable audit history only."
+  },
   "pm_action": null,
   "pm_job": null,
   "sources": {

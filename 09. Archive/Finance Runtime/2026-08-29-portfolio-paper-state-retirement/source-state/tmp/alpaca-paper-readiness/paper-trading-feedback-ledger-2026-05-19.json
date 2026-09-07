@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "artifact_type": "paper_trading_feedback_ledger_v1",
+  "generated_at_local": "2026-05-19T10:26:00-07:00",
+  "status": "active_review_only",
+  "authority": {
+    "paper_feedback_tracking_allowed": true,
+    "live_trade_allowed": false,
+    "paper_order_submit_cancel_allowed_by_this_ledger": false,
+    "brokerage_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_mutation_allowed": false,
+    "sizing_sleeve_cash_risk_rule_authority": false,
+    "note": "This ledger tracks paper-trading feedback only. It does not authorize paper/live submit, cancel, sell, replace, account action, money movement, or portfolio mutation. Any paper close/sell requires a fresh scoped WF67 request/guard unless separately approved."
+  },
+  "positions": [
+    {
+      "ledger_id": "paper-feedback-etn-2026-05-19-market",
+      "symbol": "ETN",
+      "company": "Eaton Corporation plc",
+      "paper_account_only": true,
+      "status": "open_paper_position_observed_from_read_only_check",
+      "side": "buy",
+      "qty": 1,
+      "order_type": "market",
+      "time_in_force": "day",
+      "submitted_at_utc": "2026-05-19T15:34:55Z",
+      "filled_at_utc": "2026-05-19T15:34:56Z",
+      "avg_fill_price": 372.76,
+      "entry_reference": {
+        "artifact_close_area": "368.92-369.40 before execution; paper fill 372.76",
+        "execution_board_close": 368.92,
+        "execution_board_date": "2026-05-19",
+        "gated_band_low": 360.79,
+        "gated_band_high": 404.65,
+        "explicit_stop": 340.85,
+        "band_status_at_entry": "IN_BAND",
+        "below_stop_at_entry": false,
+        "distance_from_fill_to_stop_pct": -8.56,
+        "distance_from_fill_to_band_high_pct": 8.56,
+        "distance_from_fill_to_band_low_pct": -3.21
+      },
+      "source_artifacts": {
+        "request": "tmp/alpaca-paper-readiness/paper-trade-request.etn-2026-05-19-market.json",
+        "execution_result": "tmp/alpaca-paper-readiness/paper-execution-result.etn-2026-05-19-market.json",
+        "fill_observation": "memory/2026-05-19.md ETN paper execution log; read-only Alpaca paper order check observed fill avg 372.76 at 2026-05-19T15:34:56Z",
+        "model_packet": "tmp/financial-model-packets-core-a-2026-05-19.md/.json",
+        "execution_board": "03. Portfolio/Execution Board.md"
+      },
+      "thesis_at_entry": {
+        "summary": "ETN is the primary AI-power/electrification industrial candidate: data-center power, grid modernization, electrical infrastructure, and electrification demand can support multi-year growth if orders/backlog and margins validate the thesis.",
+        "business_quality": "High-quality industrial compounder, but Q1 earnings conversion was not clean: revenue growth was strong while EPS/net income declined in the local model packet.",
+        "valuation_view": "Not cheap; entry discipline matters. Premium valuation requires durable AI-power/electrification growth and margin normalization.",
+        "portfolio_role": "Paper simulation of the first real-capital-quality deployment candidate; not live capital and not authority to scale.",
+        "confidence_at_entry": "Medium: thesis quality is strong, but official IR guidance/orders/backlog bridge and cash-conversion/debt details remain manual-required."
+      },
+      "what_must_be_true": [
+        "AI/data-center power and grid modernization demand remain durable rather than one-cycle hype.",
+        "Q1 earnings pressure proves temporary and margins normalize.",
+        "Cash conversion improves enough to cover dividends/capital returns without worsening debt-funded optics.",
+        "Price respects the written stop/band discipline rather than breaking trend support quickly after entry."
+      ],
+      "fastest_thesis_breakers": [
+        "Close below explicit stop area around 340.85/340.89 or failed reclaim after a stop breach.",
+        "Orders/backlog or management commentary contradicts the AI-power/electrification demand thesis.",
+        "Debt-funded capital returns persist while FCF remains weak.",
+        "Broader AI-power/capex complex breaks down and ETN loses relative-strength role."
+      ],
+      "expected_hold_period": {
+        "initial_review_window": "1 trading day, 1 week, 1 month, and pre-next-earnings review",
+        "base_case_hold": "4-8 weeks for paper feedback unless stop/risk event triggers earlier review",
+        "thesis_case_hold": "Through next earnings only if paper thesis behavior remains intact and review checkpoints stay clean",
+        "next_earnings_watch": "2026-08-04 provider-estimate date from current artifacts; verify with company IR before treating as primary-confirmed"
+      },
+      "stop_behavior": {
+        "paper_stop_level": 340.85,
+        "paper_stop_policy": "If ETN closes below the stop or trades materially through it intraday, flag for immediate review. This ledger does not auto-submit a paper sell/close. Any paper close/sell requires fresh scoped WF67 guard/request unless Randall separately approves a standing paper exit rule.",
+        "soft_warning_zone": "Approach within 2% of stop: review thesis, market regime, and whether breach risk is thesis-specific or market-wide.",
+        "no_chase_rule": "Do not treat gains above the band high as permission to add; above 404.65 is no-chase without a new review."
+      },
+      "feedback_metrics": {
+        "entry_quality": {
+          "fill_inside_band": true,
+          "fill_price_vs_morning_close_area": "Fill 372.76 was above morning artifact close area 368.92-369.40 but still inside written band.",
+          "slippage_note": "Market order filled roughly +0.9% to +1.0% above the morning close/reference area; track whether market order urgency harmed entry quality."
+        },
+        "drawdown_tracking": {
+          "max_drawdown_pct_from_fill": null,
+          "max_favorable_excursion_pct_from_fill": null,
+          "current_unrealized_pnl_usd": null,
+          "current_unrealized_pnl_pct": null,
+          "last_price_checked": null,
+          "last_price_checked_at_utc": null
+        },
+        "behavioral_tracking": {
+          "would_veritas_hold_if_down_3pct": "Review if thesis and band intact; do not panic-close paper position without rule breach.",
+          "would_veritas_hold_if_down_7pct": "High-alert review; near stop. Require explicit stop/thesis/risk check.",
+          "would_veritas_take_profit_if_up_8pct": "No automatic action; review whether price is near/above no-chase band high and whether thesis remains intact.",
+          "decision_quality_questions": [
+            "Was entry driven by thesis and band discipline, or urgency after user prompt?",
+            "Did the market order materially worsen entry versus limit discipline?",
+            "Did paper P&L behavior change the thesis judgment or just emotion?",
+            "Did stop discipline remain clear when drawdown appeared?"
+          ]
+        }
+      },
+      "review_schedule": [
+        {
+          "review_id": "etn-paper-tplus1-2026-05-20",
+          "date_local": "2026-05-20",
+          "type": "T+1 execution quality review",
+          "checklist": [
+            "Confirm paper position still open from read-only state.",
+            "Record current price, P&L, max adverse/favorable excursion if available.",
+            "Compare fill 372.76 to 2026-05-20 band/stop state.",
+            "Judge whether market order caused avoidable entry slippage."
+          ]
+        },
+        {
+          "review_id": "etn-paper-week1-2026-05-27",
+          "date_local": "2026-05-27",
+          "type": "1-week thesis/behavior review",
+          "checklist": [
+            "Update drawdown/favorable excursion.",
+            "Review ETN relative strength vs Industrials, Tech/AI-power, and XLI/XLK/SMH context.",
+            "Check stop distance and whether thesis remains intact.",
+            "Record whether Veritas would hold, reduce, or exit if this were real capital ? review-only."
+          ]
+        },
+        {
+          "review_id": "etn-paper-month1-2026-06-18",
+          "date_local": "2026-06-18",
+          "type": "1-month paper outcome review",
+          "checklist": [
+            "Quantify P&L, drawdown, and relative performance.",
+            "Review whether initial thesis assumptions improved or weakened.",
+            "Decide whether ETN remains first real-capital-quality deployment candidate or needs demotion/review.",
+            "Capture lessons for market/limit order choice and sizing discipline."
+          ]
+        },
+        {
+          "review_id": "etn-paper-preearnings-2026-08-01",
+          "date_local": "2026-08-01",
+          "type": "pre-earnings paper risk review",
+          "checklist": [
+            "Verify official ETN earnings date from company IR.",
+            "Decide whether paper position should remain open through earnings simulation or be closed under a fresh scoped paper request.",
+            "Review orders/backlog, margins, FCF, debt/capital returns, and guidance bridge.",
+            "Preserve distinction between paper learning and live execution authority."
+          ]
+        }
+      ],
+      "current_judgment": {
+        "state": "active_paper_feedback_position",
+        "verdict": "Keep open for feedback tracking unless a stop/risk review or Randall instruction changes scope.",
+        "next_action": "Run T+1 read-only review on 2026-05-20; do not submit any paper/live exit order from this ledger."
+      }
+    }
+  ],
+  "ledger_level_next_actions": [
+    "Create/update a read-only paper position review artifact at each scheduled checkpoint.",
+    "Add price/P&L fields only from read-only paper/account/market data checks; do not persist secrets/raw broker bodies.",
+    "If a stop breach occurs, create a review packet first; do not auto-submit paper/live sell orders from this ledger."
+  ]
+}

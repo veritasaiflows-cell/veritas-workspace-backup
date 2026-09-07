@@ -1,0 +1,34 @@
+{
+  "schema_version": "wf67_autonomous_paper_manager_validation.v1",
+  "generated_at_utc": "2026-08-28T18:05:04Z",
+  "status": "ok",
+  "manager_packet": "tmp/alpaca-paper-readiness/wf67-autonomous-paper-manager-current.json",
+  "checks": [
+    {
+      "name": "manager_packet_status_ok",
+      "ok": true,
+      "severity": "error"
+    },
+    {
+      "name": "authority_execution_false",
+      "ok": true,
+      "severity": "error"
+    },
+    {
+      "name": "candidate_cards_present",
+      "ok": true,
+      "severity": "error"
+    },
+    {
+      "name": "source_gate_present",
+      "ok": true,
+      "severity": "error"
+    }
+  ],
+  "authority": {
+    "paper_or_live_execution_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "money_movement_allowed": false
+  }
+}

@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-17T03:13:35Z",
+  "proposal_id": "post-close:ETN:capital-deployment-review:2026-05-17",
+  "mutation_type": "ticker_lane_change",
+  "ticker_or_scope": "ETN",
+  "current_state": {
+    "source_window": "post-close",
+    "daily_review_state": "DEPLOYABLE NOW",
+    "deployment_state": "DEPLOYABLE NOW",
+    "band_status": "IN_BAND"
+  },
+  "proposed_state": {
+    "recommendation_posture": "wait_for_band",
+    "state_change_requested": false,
+    "review_packet_only": true
+  },
+  "why_now": "ETN surfaced from post-close capital-review output with entry-band status IN_BAND and action family wait.",
+  "evidence": [
+    "Daily review object action family: wait",
+    "Entry-band status: IN_BAND",
+    "Deployment state: DEPLOYABLE NOW",
+    "Band proposal status: IN_BAND",
+    "Official earnings bridge: available_review_only; SEC reconciliation: matched; adjusted EPS/guidance remain manual where unresolved."
+  ],
+  "source_freshness": {
+    "overall_classification": "stale",
+    "trust_level": "review_required",
+    "owner_review_required": true,
+    "explicit_blocker": true,
+    "capital_action_allowed": false
+  },
+  "base_case": "Base case: ETN remains review-worthy only if thesis, macro fit, written entry band, stop/invalidation, and catalyst gates are manually confirmed.",
+  "bear_case": "Bear case: defer or reject ETN if price violates stop/invalidation, catalyst risk worsens, macro fit deteriorates, or evidence remains incomplete.",
+  "risk_rule_check": {
+    "status": "review_required",
+    "references": [
+      "25% sector cap",
+      "15% normal single-name ceiling",
+      "speculative sleeve cap",
+      "catalyst-window exception"
+    ],
+    "review_boundary": "Risk context only; no size, cash, sleeve, or account action is authorized by this packet."
+  },
+  "concentration_check": {
+    "status": "review_required",
+    "ticker": "ETN",
+    "single_name_after_pct": null,
+    "max_single_name_after_pct": null,
+    "sector_after_pct": null,
+    "normal_single_name_ceiling_pct": 15,
+    "sector_cap_pct": 25,
+    "written_exception": false,
+    "note": "No pro-forma exposure change is proposed; owner must review concentration before any action."
+  },
+  "technical_gate": {
+    "status": "review_required",
+    "entry_band_status": "IN_BAND",
+    "band_status": "IN_BAND",
+    "distance_to_band_pct": -2.59,
+    "close": 399.44,
+    "in_entry_band": true,
+    "below_stop": false,
+    "stop_line": "Do not treat in-band status as approval, sizing, or account-action authority."
+  },
+  "catalyst_gate": {
+    "status": "review_required",
+    "days_to_earnings": 81,
+    "earnings_state": "CLEAR",
+    "blockers": [
+      "Next earnings 2026-08-04 (80d out)",
+      "dashboard validation has 1 warning(s)",
+      "1 event-risk band freeze remains: NVDA. This is intentionally review-only / non-applyable through the catalyst window; keep manual review or wait-state active: NVDA.",
+      "sector/correlation check artifact is missing or stale; treat as manual fallback before position-impact judgment",
+      "state-history / owner-outcome retention is not wired; no predictive outcome score is available"
+    ]
+  },
+  "official_earnings_gate": {
+    "status": "available_review_only",
+    "manual_review_required": true,
+    "capital_action_allowed": false,
+    "deployment_authority_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "summary": "Official earnings bridge is present as review-only context; adjusted EPS, guidance, growth bridge, segment margin, and management explanation remain manual-required until official capture."
+  },
+  "official_earnings_bridge": {
+    "status": "available_review_only",
+    "source_artifact": "tmp/fundamental-ir-reconciliation-packets.json",
+    "period_end": "2026-03-31",
+    "source_urls": {
+      "ir_home_url": "https://www.eaton.com/us/en-us/company/investor-relations.html",
+      "earnings_url": "https://www.eaton.com/us/en-us/company/investor-relations/quarterly-earnings.html",
+      "guidance_url": "https://www.eaton.com/us/en-us/company/investor-relations.html"
+    },
+    "sec_reconciliation_status": "matched",
+    "adjusted_eps_status": "manual_required",
+    "guidance_status": "manual_required",
+    "manual_review_required": true,
+    "blockers": [],
+    "summary": "Official earnings bridge is present as review-only context; adjusted EPS, guidance, growth bridge, segment margin, and management explanation remain manual-required until official capture.",
+    "capital_action_allowed": false,
+    "deployment_authority_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "proposed_files_to_edit": [
+    "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "03. Portfolio/Portfolio Snapshot.md"
+  ],
+  "rollback_or_reversal_note": "Delete or ignore this generated packet; it has no apply path and changes no canonical state. Semantic exact patch material remains preview-only until a valid standing/scoped approval artifact exists.",
+  "stop_lines_triggered": [
+    "Owner decision required before any portfolio state changes.",
+    "No canonical note, portfolio, size, sleeve, cash, or account-action mutation is authorized.",
+    "Recommendation has unresolved blockers or missing evidence."
+  ],
+  "owner_decision_required": true,
+  "owner_approval_granted": false,
+  "apply_allowed": false,
+  "canonical_mutation_allowed": false,
+  "portfolio_mutation_allowed": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "ticker": "ETN",
+  "current_lane_status_tuple": {
+    "ticker": "ETN",
+    "workflow_state": "DEPLOYED",
+    "coverage_lane": "owner-gated action",
+    "entry_policy": "band_defined",
+    "recommendation_action": "wait",
+    "review_state": "owner_review_required"
+  },
+  "proposed_lane_status_tuple": {
+    "ticker": "ETN",
+    "workflow_state": "DEPLOYED",
+    "coverage_lane": "owner-gated action",
+    "entry_policy": "band_defined",
+    "recommendation_action": "wait",
+    "review_state": "review_packet_only_no_state_change",
+    "recommendation_posture": "wait_for_band"
+  },
+  "thesis_gate": {
+    "status": "manual_review_required",
+    "summary": "intact; owner-gated action Tier 1 explicit add on 2026-05-10 after fresh band review"
+  },
+  "macro_regime_gate": {
+    "status": "review_required",
+    "summary": "CLEAN"
+  },
+  "risk_sizing_gate": {
+    "status": "review_required",
+    "summary": "Owner-gated risk envelope only; no dollar/share amount, portfolio mutation, deployment-state mutation, or owner-gated action owner-gated action authority."
+  },
+  "sector_correlation_artifact": {
+    "status": "missing_or_stale_manual_fallback_required",
+    "fresh_artifacts": [],
+    "summary": "Sector/correlation context is review-only and does not grant authority."
+  },
+  "owner_conflict_check": {
+    "status": "review_required",
+    "summary": "Check owner notes before any state change."
+  },
+  "promotion_review_queue": {
+    "status": "review_only",
+    "recommended_action": "wait_for_band"
+  },
+  "current_portfolio_model": "unchanged",
+  "proposed_portfolio_model": "unchanged",
+  "current_cash_target_pct": 10,
+  "proposed_cash_target_pct": 10,
+  "sleeve_deltas": [],
+  "sector_exposure_before_after": [],
+  "correlated_sleeve_exposure_before_after": [],
+  "semantic_patch_generator": {
+    "script": "portfolio_mutation_semantic_patch_generator.py",
+    "category": "sector_posture",
+    "generated_at_utc": "2026-05-17T04:49:53Z",
+    "source_artifacts": [
+      "tmp/portfolio-config.json"
+    ]
+  },
+  "exact_patch_preview": {
+    "schema_version": 1,
+    "generated_at_utc": "2026-05-17T04:49:53Z",
+    "generator": "portfolio_mutation_semantic_patch_generator.py",
+    "generation_target": "sector_posture",
+    "adjustment_category": "sector_posture",
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "trade_or_account_action_allowed": false,
+    "main_session_final_action_required": true,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "writes_performed": false,
+    "changes": [
+      {
+        "target_file": "03. Portfolio/Portfolio Snapshot.md",
+        "operation": "exact_text_replace",
+        "old_text": "## Freshness and refresh policy",
+        "new_text": "## WF64 semantic sync notes\n\n- WF64 sector-posture semantic sync (ETN): sector=`Industrials`, model_sector_weight=`7%`; source `tmp/portfolio-config.json`; proposal `post-close:ETN:capital-deployment-review:2026-05-17`; risk-review context only, no sector-cap/risk-rule mutation.\n\n## Freshness and refresh policy",
+        "mutation_class": "sector_posture_semantic_sync",
+        "adjustment_category": "sector_posture",
+        "owner_surface": "portfolio_snapshot",
+        "rationale": "Synchronize sector_posture semantic context from current portfolio artifacts without widening external-action authority."
+      }
+    ],
+    "stop_lines": [
+      "Semantic patch material is exact-diff workspace maintenance only.",
+      "Proposal packets remain non-self-applying; write authority requires a valid standing/scoped approval artifact.",
+      "No external financial action or entitlement is authorized."
+    ]
+  }
+}

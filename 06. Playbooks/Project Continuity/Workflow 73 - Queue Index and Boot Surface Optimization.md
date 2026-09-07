@@ -95,51 +95,15 @@ WF73 owns proposals and implementation plans for:
 - Boundary preserved: SQL cockpit is derived proof/index/staging only. It is not canon, not owner approval, not an apply engine, not portfolio mutation authority, and not trade/account/paper execution authority. `tmp/current-window-artifacts.*` remains compatibility/fallback and cross-check, not the primary generated-artifact lookup path.
 
 ## Next Action
-- Keep WF73 in monitor/guard mode: run `scripts/boot_surface_size_guard.py` after boot/control edits, keep `Active Workflows.md` and `Startup Truth Index.md` route-only, and use workflow-hygiene validation to catch stale queue rows. Active implementation returns to WF72 SQL/readiness work and WF68 advisor-validation repair.
+- The 2026-08-28 pass cleared all boot-size warnings. Keep WF73 in monitor/guard mode: run `scripts/boot_surface_size_guard.py` after boot/control edits, keep route surfaces thin, and use workflow-hygiene validation for stale queue rows.
 
-## 2026-05-29 OpenClaw update and boot-bloat rebaseline
-- Randall updated OpenClaw to `2026.5.27`. Post-update smoke tests passed for core runtime reachability and local tools: `openclaw status --deep` reported gateway reachable/local loopback/up to date, `openclaw config validate` passed, `openclaw skills check` showed 48 visible/eligible skills and 0 missing requirements, `python --version`, `sqlite3 --version`, `rg --version`, `jq --version`, and `obsidian-cli --version` all returned live versions.
-- Known post-update caveats: `openclaw doctor` still reports bootstrap truncation (`TOOLS.md` and `MEMORY.md` truncated at inject time; total bootstrap at 96% of budget), memory semantic search fails because the configured provider expects an OpenAI API key, security audit remains 0 critical / 2 warnings / 1 info, and stale legacy session/plugin state should not be auto-fixed without approval. No `doctor --fix` was run.
-- WF68 intraday alert producer cron survived scheduling but is currently failing its advisor validation path, not its authority boundary: latest direct run reports `step_failed:advisor_enricher` with `in_band_alert_labeled_wait_for_band:0,1`; authority flags remain false. Treat this as a separate WF68 repair item, not a blocker to WF73 boot-bloat reduction.
-- Bloat baseline/proposal artifact: `tmp/wf73-boot-core-bloat-baseline-2026-05-29.json` parsed cleanly and remains review-only. It confirms largest pressure surfaces are WF72 continuity (~127.8 KB), `Active Workflows.md` (~52.1 KB), `Automation Orchestration Protocol.md` (~20.5 KB), `Startup Truth Index.md` (~17 KB), and root boot files `TOOLS.md`/`MEMORY.md`/`AGENTS.md`/`SOUL.md`.
-
-## 2026-05-29 Boot-bloat reduction apply
-- Applied the first boot-bloat reduction phases under WF73 after Randall approved proceeding. Backup paths: `backups/20260529-1222-wf73-active-workflows-bloat-reduction/` and `backups/20260529-1222-wf73-root-bootstrap-bloat-reduction/`.
-- Reduced `06. Playbooks/Active Workflows.md` from ~52.1 KB to 20.8 KB by preserving live queue state, blockers, proof routes, and stop lines while removing long dated proof history.
-- Reduced `TOOLS.md` from ~13.6 KB to 9.4 KB and `MEMORY.md` from ~11.9 KB to 8.6 KB. This cleared the OpenClaw doctor truncation warning for those files.
-- Reduced `06. Playbooks/Startup Truth Index.md` from ~17.0 KB to 8.7 KB by converting it back to a route-only startup map.
-- Apply proof: `tmp/wf73-boot-bloat-reduction-apply-2026-05-29.json`. Validation: `openclaw doctor` now reports no truncation, only near-limit notes for `AGENTS.md` and `SOUL.md`; artifact index validates 28/0; dashboard truth lint remains ok with only the pre-existing Execution Board info finding.
-- Boundaries preserved: no new durable control surface, no archive/move/delete, no config/auth/channel/service/runtime mutation, no SQL-canon expansion, no finance/canon/portfolio mutation, no trade/account/paper/live authority, and no owner approval inference.
-- Next recommendation: do not cut `SOUL.md`; leave `AGENTS.md` for a separate doctrine-preserving trim only if needed. The next lower-risk load-reduction phase is a WF72 continuity rollup proposal.
-
-## 2026-05-29 SOUL/AGENTS doctrine-preserving trim
-- Randall requested the next phase including `SOUL.md` and `AGENTS.md`. Applied a conservative doctrine-preserving trim with backups at `backups/20260529-1232-wf73-soul-agents-bloat-reduction/`.
-- Reduced `SOUL.md` from ~10.6 KB to 7.8 KB while preserving identity, truth standard, doctrine hierarchy, mission, operating posture, scope, hard finance/trading boundaries, paper-trading boundary, financial decision standard, startup behavior, and escalation rules.
-- Reduced `AGENTS.md` from ~11.4 KB to 7.7 KB while preserving startup/recovery, response shape, continuity rules, action boundaries, finance authority, helper-lane orchestration, heartbeat/cron, real-work bias, commit cadence, and group behavior.
-- Apply proof: `tmp/wf73-soul-agents-bloat-reduction-apply-2026-05-29.json`. Validation: `openclaw doctor` now shows no bootstrap-size warning; artifact index validates 28/0; dashboard truth lint remains ok with only the pre-existing Execution Board info finding.
-- Boundaries preserved: no identity change, no weakened finance/trading/paper boundary, no new control surface, no archive/move/delete, no config/auth/channel/service/runtime mutation, no SQL-canon expansion, no finance/canon/portfolio mutation, no trade/account/paper/live authority, and no owner approval inference.
-- Next recommendation: stop trimming doctrine unless a new doctor warning appears. Continue with WF72 continuity rollup/proposal or add a lightweight boot-size validator to prevent recurrence.
-
-## 2026-05-29 boot-size guard added
-- Added `scripts/boot_surface_size_guard.py` as a report-only validator for startup/control Markdown size. It checks the trimmed root boot files, Active Workflows, Startup Truth Index, Automation Orchestration Protocol, and two WF72/WF73 continuity watch items.
-- Proof artifact: `tmp/boot-surface-size-guard.json`. Current status is `warning` with `hard_failures=0`; the only warning is the oversized WF72 historical continuity file, which is intentionally a watch item and does not fail validation because it is not a startup surface.
-- Validation: `python -m py_compile scripts\boot_surface_size_guard.py`, `python scripts\boot_surface_size_guard.py --validate`, and `python scripts\boot_surface_size_guard.py --write --validate` passed. Updated `scripts/README.md` so the guard is discoverable with the existing efficiency validators.
-- Boundary preserved: report-only JSON output, no config/auth/channel/service/runtime mutation, no archive/move/delete, no SQL-canon expansion, no finance/canon/portfolio mutation, no trade/account/paper/live authority, and no owner approval inference.
-- Next recommendation: continue with a WF72 continuity rollup/proposal to reduce the remaining historical proof tail, while keeping live boot/control files route-only.
-
-## 2026-05-29 workflow hygiene validator added
-- Added `scripts/workflow_hygiene_check.py` as a report-only queue/control-surface validator. It checks required P0/P1 active lanes, WF68 advisor-validation visibility, core stop-line terms, WF72/WF73 next-action hygiene, `tmp/boot-surface-size-guard.json` hard-failure status, and that WF50 is not in the P0/P1 active register.
-- Trimmed redundant wording in `Active Workflows.md` while preserving live queue truth, WF68 advisor-validation blocker text, proof routes, and stop lines; this brought Active Workflows below the boot-size warning threshold.
-- Proof artifact: `tmp/workflow-hygiene-check.json`. Validate exits nonzero only for blocking findings; warnings remain report-only.
-- Boundary preserved: no config/auth/channel/service/runtime mutation, no archive/move/delete, no SQL-canon expansion, no finance/canon/portfolio mutation, no trade/account/paper/live authority, and no owner approval inference.
-
-## 2026-05-29 WF72 continuity rollup applied
-- Rolled up the oversized WF72 continuity note from 130.9 KB / 704 lines to 11.0 KB / 166 lines, preserving current state, boundaries, next actions, key files, and proof routes.
-- Full pre-rollup text was preserved at `backups/20260529-1248-wf72-continuity-rollup/Workflow 72 - Financial OS Efficiency Restructure and Priority Compression.md` with SHA-256 `3AD013B0B7D691BA8426AA17EE631257686EF91187B6FFD74078448087892136`.
-- New active WF72 note SHA-256: `98F037D284DD63A40D6A32200147BB93E04C2A54A8DA3FBEF2D0980DEED99F98`.
-- `python scripts\boot_surface_size_guard.py --write --validate` now reports `status=ok`, `hard_failures=0`, `warnings=0`; the previous WF72 continuity warning is cleared.
-- Validation also passed: `openclaw doctor` still has no bootstrap-size warning, `artifact_index.py validate` passed 28/0, and `dashboard_truth_lint.py` stayed ok. `workspace_boundary_check.py` remains warning-only due the known 18 `tmp/*.py` helper residues.
-- Boundary preserved: backup-only, no evidence deletion, no archive move/delete, no config/auth/channel/service/runtime mutation, no SQL-canon expansion, no finance/canon/portfolio mutation, no trade/account/paper/live authority, and no owner approval inference.
+## 2026-05-29 boot-surface reduction rollup
+- Baseline proof: `tmp/wf73-boot-core-bloat-baseline-2026-05-29.json`. The approved pass converted startup/control files back to thin routing surfaces while preserving identity, finance/trading boundaries, live queue state, proof routes, and stop lines.
+- Apply proof: `tmp/wf73-boot-bloat-reduction-apply-2026-05-29.json` and `tmp/wf73-soul-agents-bloat-reduction-apply-2026-05-29.json`. Reversible snapshots are preserved under `09. Archive/backups-archived-20260823/20260529-1222-wf73-*` and `09. Archive/backups-archived-20260823/20260529-1232-wf73-soul-agents-bloat-reduction/`.
+- Added report-only guards: `scripts/boot_surface_size_guard.py` with `tmp/boot-surface-size-guard.json`, and `scripts/workflow_hygiene_check.py` with `tmp/workflow-hygiene-check.json`.
+- WF72's historical continuity tail was compacted with its full snapshot under `09. Archive/backups-archived-20260823/20260529-1248-wf72-continuity-rollup/`; active state, boundaries, next actions, and proof routes stayed in the owner note.
+- Detailed chronology remains in daily memory, proof artifacts, backups, and Git history. This note retains only the routing decision and durable outcome.
+- No archive/delete, config/auth/channel/service/runtime, SQL-canon, finance/canon/portfolio, paper/live/account, or approval authority was added.
 
 ## SaaS/service UI and operator-routing dependency - 2026-05-28 21:08 MST
 - WF75 now carries the service-led SaaS/product readiness plan at `tmp/wf75-saas-service-readiness-plan.*`.

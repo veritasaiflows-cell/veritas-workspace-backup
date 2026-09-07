@@ -3,10 +3,8 @@
 
 This is deliberately local-only.  It checks the current cache first and
 rebuilds it only when a registered source has drifted, the cache is missing,
-or the validation result is otherwise unexpected.  A known finance-derived
-summary can be stale because its upstream review artifacts are stale; that is
-reported as a warning and is never used as a reason to repeatedly rebuild the
-same semantic index.
+or validation reports any mismatch. Retired finance summaries are absent from
+the source registry and receive no stale-cache exception.
 """
 from __future__ import annotations
 
@@ -14,8 +12,10 @@ import argparse
 import json
 import os
 import re
+import sqlite3
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -26,11 +26,6 @@ import vector_memory_index as vmi
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "tmp" / "semantic-memory-maintenance.json"
 DB = ROOT / "tmp" / "vector-memory.sqlite"
-KNOWN_STALE_SOURCE = "tmp/finance-vector-retrieval-summary.json"
-KNOWN_TRANSITIVE_PATHS = {
-    "tmp/canonical-finance-data-plane.json",
-    "tmp/trade-grade-decision-cards.json",
-}
 RUNTIME_DIST_DIR = (
     Path(os.environ.get("APPDATA", ""))
     / "npm"
@@ -46,8 +41,22 @@ RUNTIME_TOOLS_LOADER_PATTERN = re.compile(
 RUNTIME_PATCH_MARKERS = (
     "MEMORY_SEARCH_ALL_MEMORY_INIT_TIMEOUT_MS",
     "memory corpus unavailable in corpus=all",
+    "MEMORY_SEARCH_SKIP_SESSION_VISIBILITY_FOR_NON_SESSION_HITS",
 )
+RUNTIME_NON_SESSION_FAST_PATH_PATTERN = re.compile(
+    r"async function filterMemorySearchHitsBySessionVisibility\(params\)\s*\{"
+    r"(?:(?!const visibility = resolveEffectiveSessionToolsVisibility\(\{).)*?"
+    r'if \(!params\.hits\.some\(\(hit\) => hit\.source === "sessions"\)\) return params\.hits;\s*'
+    r"const visibility = resolveEffectiveSessionToolsVisibility\(\{",
+    re.DOTALL,
+)
+AGENT_STORE_ROOT = Path.home() / ".openclaw" / "agents"
+AGENT_STORE_NAME = "openclaw-agent.sqlite"
+VECTOR_TABLE = "memory_index_chunks_vec"
+VECTOR_ROWID_TABLE = "memory_index_chunks_vec_rowids"
+CHUNK_TABLE = "memory_index_chunks"
 SCHEMA = "veritas.semantic_memory_maintenance.v1"
+MAX_STABILITY_REBUILD_ATTEMPTS = 2
 
 AUTHORITY_BOUNDARY = {
     "derived_index_only": True,
@@ -76,25 +85,21 @@ def validation_state(validation: dict[str, Any]) -> tuple[str, bool, list[str]]:
     """Return (status, refresh_needed, notes) without hiding validation drift."""
     if validation.get("status") == "ok":
         return "ok", False, []
-
-    stale_sources = [as_dict(item) for item in as_list(validation.get("stale_sources"))]
-    stale_paths = {str(item.get("source_path") or "") for item in stale_sources}
-    transitive_paths = {str(path) for path in as_list(validation.get("transitive_stale_paths"))}
-    only_known_finance_staleness = (
-        bool(stale_sources)
-        and stale_paths == {KNOWN_STALE_SOURCE}
-        and transitive_paths.issubset(KNOWN_TRANSITIVE_PATHS)
-    )
-    if only_known_finance_staleness:
-        return (
-            "warning",
-            False,
-            [
-                "known_finance_dependency_stale: finance-derived summary remains excluded from freshness claims "
-                "until its upstream review artifacts are refreshed",
-            ],
-        )
     return "attention", True, ["primary_semantic_cache_requires_refresh"]
+
+
+def has_volatile_source_drift(validation: dict[str, Any]) -> bool:
+    """Return whether a post-rebuild mismatch is safe to retry once.
+
+    Registered derived proof packets can be atomically rewritten by their
+    producing cron job while the semantic rebuild is embedding them.  A second
+    bounded rebuild is useful for that race; structural cache failures are not
+    retried because another rebuild would only add load without new evidence.
+    """
+    errors = [str(item) for item in as_list(validation.get("errors"))]
+    return bool(as_list(validation.get("stale_sources"))) or any(
+        item.startswith("stale_source_hashes:") for item in errors
+    )
 
 
 def safe_validate() -> tuple[dict[str, Any], str | None]:
@@ -105,7 +110,7 @@ def safe_validate() -> tuple[dict[str, Any], str | None]:
 
 
 def runtime_patch_state() -> dict[str, Any]:
-    """Detect an OpenClaw upgrade that replaced the approved partial-result patch.
+    """Detect an OpenClaw upgrade that replaced an approved memory-search overlay.
 
     This is intentionally detection-only.  Reapplying a code patch to a new
     runtime build requires review because the surrounding implementation may
@@ -159,12 +164,91 @@ def runtime_patch_state() -> dict[str, Any]:
         }
 
     missing = [marker for marker in RUNTIME_PATCH_MARKERS if marker not in source]
+    fast_path_guard_before_visibility = RUNTIME_NON_SESSION_FAST_PATH_PATTERN.search(source) is not None
+    if not fast_path_guard_before_visibility:
+        missing.append("MEMORY_SEARCH_NON_SESSION_FAST_PATH_GUARD")
     return {
         "status": "ok" if not missing else "attention",
         "path": str(runtime_tools_source),
         "loader_path": str(loader_path),
         "missing_markers": missing,
+        "non_session_fast_path_guard_before_visibility": fast_path_guard_before_visibility,
         "reason": None if not missing else "approved_runtime_patch_missing_or_replaced",
+    }
+
+
+def inspect_agent_store(db_path: Path) -> dict[str, Any]:
+    """Read-only integrity read of one agent memory store."""
+    store: dict[str, Any] = {"agent": db_path.parents[1].name}
+    try:
+        conn = sqlite3.connect(f"file:{db_path.as_posix()}?mode=ro", uri=True, timeout=10)
+    except sqlite3.Error as exc:
+        store.update(status="attention", reason="store_unreadable", detail=type(exc).__name__)
+        return store
+    try:
+        names = {
+            row[0]
+            for row in conn.execute("SELECT name FROM sqlite_master WHERE type IN ('table','view')")
+        }
+        if CHUNK_TABLE not in names:
+            store.update(status="ok", reason="memory_index_absent", chunks=0)
+            return store
+        chunks = conn.execute(f"SELECT count(*) FROM {CHUNK_TABLE}").fetchone()[0]
+        store["chunks"] = chunks
+        if VECTOR_TABLE not in names:
+            store.update(
+                status="attention" if chunks else "ok",
+                reason="vector_table_missing" if chunks else "vector_table_absent_empty_index",
+                vector_rows=0,
+            )
+            return store
+        # The vec0 virtual table needs the sqlite-vec extension, but its rowid
+        # shadow table is plain SQLite and carries one row per stored vector.
+        if VECTOR_ROWID_TABLE not in names:
+            store.update(status="attention", reason="vector_shadow_table_missing")
+            return store
+        vector_rows = conn.execute(f"SELECT count(*) FROM {VECTOR_ROWID_TABLE}").fetchone()[0]
+        store["vector_rows"] = vector_rows
+        if vector_rows != chunks:
+            store.update(status="attention", reason="vector_row_count_drift")
+            return store
+        store["status"] = "ok"
+        return store
+    except sqlite3.Error as exc:
+        store.update(status="attention", reason="store_query_failed", detail=type(exc).__name__)
+        return store
+    finally:
+        conn.close()
+
+
+def vector_store_integrity_state() -> dict[str, Any]:
+    """Detect silent semantic-vector loss across OpenClaw agent memory stores.
+
+    The runtime drops and recreates `memory_index_chunks_vec` outside any
+    cross-process lock, and its full-reindex publish path can drop the live
+    table without recreating it when the shadow build lacked sqlite-vec. Either
+    outcome degrades semantic recall to keyword-only with no error at query
+    time, so it has to be detected rather than waited for.
+    """
+    if not AGENT_STORE_ROOT.is_dir():
+        return {
+            "status": "attention",
+            "path": str(AGENT_STORE_ROOT),
+            "reason": "agent_store_root_missing",
+            "stores": [],
+        }
+    stores = [
+        inspect_agent_store(db_path)
+        for db_path in sorted(AGENT_STORE_ROOT.glob(f"*/agent/{AGENT_STORE_NAME}"))
+    ]
+    degraded = [store for store in stores if store.get("status") != "ok"]
+    return {
+        "status": "ok" if not degraded else "attention",
+        "path": str(AGENT_STORE_ROOT),
+        "reason": None if not degraded else "agent_vector_store_integrity_drift",
+        "checked": len(stores),
+        "degraded_agents": [store["agent"] for store in degraded],
+        "stores": stores,
     }
 
 
@@ -203,35 +287,60 @@ def run_maintenance(*, max_seconds: int, batch_size: int, write: bool) -> tuple[
         payload["action"] = "rebuild_registered_sources"
         command = rebuild_command(batch_size)
         payload["rebuild_command"] = command
-        try:
-            completed = subprocess.run(
-                command,
-                cwd=ROOT,
-                capture_output=True,
-                text=True,
-                timeout=max_seconds,
-                check=False,
-            )
-            payload["rebuild_exit_code"] = completed.returncode
-        except subprocess.TimeoutExpired:
-            payload["status"] = "error"
-            payload["validation"] = {"status": "error", "errors": ["rebuild_timeout"], "warnings": []}
-            payload["notes"].append("rebuild_timeout: cache may require a manually bounded long-work repair")
-            if write:
-                vmi.atomic_write_json(OUT, payload)
-            return 1, payload
+        deadline = time.monotonic() + max_seconds
+        rebuild_attempts: list[dict[str, Any]] = []
+        for attempt in range(1, MAX_STABILITY_REBUILD_ATTEMPTS + 1):
+            remaining_seconds = max(1, int(deadline - time.monotonic()))
+            attempt_payload: dict[str, Any] = {
+                "attempt": attempt,
+                "timeout_seconds": remaining_seconds,
+            }
+            try:
+                completed = subprocess.run(
+                    command,
+                    cwd=ROOT,
+                    capture_output=True,
+                    text=True,
+                    timeout=remaining_seconds,
+                    check=False,
+                )
+                attempt_payload["rebuild_exit_code"] = completed.returncode
+                payload["rebuild_exit_code"] = completed.returncode
+            except subprocess.TimeoutExpired:
+                attempt_payload["reason"] = "rebuild_timeout"
+                rebuild_attempts.append(attempt_payload)
+                payload["rebuild_attempts"] = rebuild_attempts
+                payload["status"] = "error"
+                payload["validation"] = {"status": "error", "errors": ["rebuild_timeout"], "warnings": []}
+                payload["notes"].append("rebuild_timeout: cache may require a manually bounded long-work repair")
+                if write:
+                    vmi.atomic_write_json(OUT, payload)
+                return 1, payload
 
-        post_validation, post_exception = safe_validate()
-        post_status, _, post_notes = validation_state(post_validation)
-        payload["validation"] = post_validation
-        payload["status"] = post_status
-        payload["notes"].extend(post_notes)
-        if post_exception:
-            payload["post_validation_exception"] = post_exception
-            payload["status"] = "error"
-        # vector_memory_index intentionally exits nonzero for any stale source;
-        # that is nonfatal only for the explicitly classified finance dependency.
-        if completed.returncode != 0 and payload["status"] not in {"warning", "ok"}:
+            post_validation, post_exception = safe_validate()
+            post_status, _, post_notes = validation_state(post_validation)
+            attempt_payload["post_validation"] = post_validation
+            rebuild_attempts.append(attempt_payload)
+            payload["validation"] = post_validation
+            payload["status"] = post_status
+            payload["notes"].extend(post_notes)
+            if post_exception:
+                payload["post_validation_exception"] = post_exception
+                payload["status"] = "error"
+                break
+            if post_status == "ok":
+                break
+            if (
+                attempt < MAX_STABILITY_REBUILD_ATTEMPTS
+                and has_volatile_source_drift(post_validation)
+                and time.monotonic() < deadline
+            ):
+                payload["notes"].append("post_rebuild_volatile_source_drift_retrying")
+                continue
+            break
+
+        payload["rebuild_attempts"] = rebuild_attempts
+        if payload.get("rebuild_exit_code") != 0 and payload["status"] not in {"warning", "ok"}:
             payload["status"] = "error"
             payload["notes"].append("rebuild_command_failed")
 
@@ -240,6 +349,15 @@ def run_maintenance(*, max_seconds: int, batch_size: int, write: bool) -> tuple[
     if runtime_patch["status"] != "ok":
         payload["status"] = "attention"
         payload["notes"].append("runtime_patch_missing_or_replaced: inspect the current OpenClaw build before reapplying")
+
+    vector_store = vector_store_integrity_state()
+    payload["vector_store_integrity"] = vector_store
+    if vector_store["status"] != "ok":
+        payload["status"] = "attention"
+        payload["notes"].append(
+            "agent_vector_store_integrity_drift: semantic recall may be degraded for "
+            + (", ".join(vector_store.get("degraded_agents") or []) or "an unreadable agent store")
+        )
 
     if write:
         vmi.atomic_write_json(OUT, payload)

@@ -1,0 +1,160 @@
+{
+  "schema": "veritas.retrieval_live_abstention_calibration.v1",
+  "status": "sealed_unrun_review_only",
+  "sealed": true,
+  "execution_status": "unrun",
+  "review_only": true,
+  "gold_sha256": "5670c595981a99dcff1a7d191d735abc1b8a878c34760d71445a7f54b767270f",
+  "source_registry_sha256": "8dee423bea7fb157d93c6c9d04fe67d1f25e92ea6ac71d6749898007601cf4ce",
+  "source_manifest_sha256": "d1d35ee1a2b5da71a4097134068204db666e450b64862c986adf9216168644cc",
+  "authority_boundary": {
+    "provider_promotion_allowed": false,
+    "default_execution_allowed": false,
+    "provider_metrics_included": false,
+    "provider_comparison_included": false,
+    "history_metrics_included": false,
+    "model_tuning_allowed": false
+  },
+  "sealed_protocol": {
+    "purpose": "Future calibration of when retrieval should return no reliable answer.",
+    "held_out_from_default_evaluation": true,
+    "requires_separate_reviewer_release_before_execution": true,
+    "must_not_be_used_to_tune_the_existing_gold_fixtures": true,
+    "first_draft_disposition": "Rejected before sealing after an independent span-isolation audit found gold-passage overlap.",
+    "answer_cases_use_only_registered_ranges_disjoint_from_every_gold_relevant_and_distractor_range": true
+  },
+  "cases": [
+    {
+      "calibration_id": "abstention-answer-001",
+      "case_type": "answer",
+      "query": "Does clean implementation-closeout validation authorize the runner to apply a source edit automatically?",
+      "expected_response_outline": "No. The authority boundary is review-only and explicitly prohibits auto-apply and SQL or source mutation.",
+      "relevant_passages": [
+        {
+          "source_path": "data/workflow-checkpoints/implementation-closeout.json",
+          "start_line": 7,
+          "end_line": 25
+        }
+      ]
+    },
+    {
+      "calibration_id": "abstention-answer-002",
+      "case_type": "answer",
+      "query": "Which two inputs feed the implementation token attribution bridge checkpoint?",
+      "expected_response_outline": "The concurrent lane register and the current token-usage ledger.",
+      "relevant_passages": [
+        {
+          "source_path": "data/workflow-checkpoints/wf74-wf88.json",
+          "start_line": 71,
+          "end_line": 75
+        }
+      ]
+    },
+    {
+      "calibration_id": "abstention-answer-003",
+      "case_type": "answer",
+      "query": "What keeps long provider-backed or full-source local jobs resumable instead of one blocking foreground tool call?",
+      "expected_response_outline": "The long-work job status packet routes them to the WF88 control packet and wiki synthesis, where they run through bounded slices.",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/os2/OTEL To Proposal Route.md",
+          "start_line": 27,
+          "end_line": 28
+        }
+      ]
+    },
+    {
+      "calibration_id": "abstention-answer-004",
+      "case_type": "answer",
+      "query": "Which workstream is the top token candidate, and how many API-call reduction candidates are listed?",
+      "expected_response_outline": "Runtime - OS Audit Companion Packets Refresh is the top candidate, and six API-call reduction candidates are listed.",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/scorecards-and-evals/Current Map.md",
+          "start_line": 35,
+          "end_line": 48
+        }
+      ]
+    },
+    {
+      "calibration_id": "abstention-answer-005",
+      "case_type": "answer",
+      "query": "What check must precede accepting shorter prompts?",
+      "expected_response_outline": "Fixture-based prompt-compression checks.",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/scorecards-and-evals/Token Efficiency Map.md",
+          "start_line": 40,
+          "end_line": 45
+        }
+      ]
+    },
+    {
+      "calibration_id": "abstention-answer-006",
+      "case_type": "answer",
+      "query": "What status is assigned to the actionable improvement queue in the WF88 source map?",
+      "expected_response_outline": "fresh / actionable_queue_ready_no_apply_authority.",
+      "relevant_passages": [
+        {
+          "source_path": "wiki/source-map/WF88 Wiki Source Map.md",
+          "start_line": 70,
+          "end_line": 70
+        }
+      ]
+    },
+    {
+      "calibration_id": "abstention-abstain-001",
+      "case_type": "abstain",
+      "query": "What exact digest is currently resolved and pinned for the semantic nomic-embed-text embedding provider?",
+      "expected_response_outline": "No reliable answer from the frozen corpus.",
+      "relevant_passages": [],
+      "absence_certified": true,
+      "absence_basis": "The frozen corpus has no resolved provider digest."
+    },
+    {
+      "calibration_id": "abstention-abstain-002",
+      "case_type": "abstain",
+      "query": "Which model or provider finished first in the 100-case frontier evaluation, and what was its score?",
+      "expected_response_outline": "No reliable answer from the frozen corpus.",
+      "relevant_passages": [],
+      "absence_certified": true,
+      "absence_basis": "The frozen corpus contains no completed 100-case frontier result or provider ranking."
+    },
+    {
+      "calibration_id": "abstention-abstain-003",
+      "case_type": "abstain",
+      "query": "What specific file-and-line patch repaired the overdue high-priority cron regression?",
+      "expected_response_outline": "No reliable answer from the frozen corpus.",
+      "relevant_passages": [],
+      "absence_certified": true,
+      "absence_basis": "The frozen corpus records the debt but not a verified file-and-line repair."
+    },
+    {
+      "calibration_id": "abstention-abstain-004",
+      "case_type": "abstain",
+      "query": "What dollar cost belongs just to Runtime - OS Audit Companion Packets Refresh, rather than the overall token ledger?",
+      "expected_response_outline": "No reliable answer from the frozen corpus.",
+      "relevant_passages": [],
+      "absence_certified": true,
+      "absence_basis": "The frozen corpus identifies the top candidate and an aggregate cost, not a per-job dollar cost."
+    },
+    {
+      "calibration_id": "abstention-abstain-005",
+      "case_type": "abstain",
+      "query": "Which person gave final approval to execute an advanced capability pilot?",
+      "expected_response_outline": "No reliable answer from the frozen corpus.",
+      "relevant_passages": [],
+      "absence_certified": true,
+      "absence_basis": "The frozen corpus describes gated pilot posture but records no execution approval by a named person."
+    },
+    {
+      "calibration_id": "abstention-abstain-006",
+      "case_type": "abstain",
+      "query": "Which individual implementation lane is responsible for most of the 493 token-attribution gaps?",
+      "expected_response_outline": "No reliable answer from the frozen corpus.",
+      "relevant_passages": [],
+      "absence_certified": true,
+      "absence_basis": "The frozen corpus gives only the aggregate gap count, not an attributable majority lane."
+    }
+  ]
+}

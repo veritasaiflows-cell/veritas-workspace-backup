@@ -67,9 +67,11 @@ EXPECTED_MARKERS = {
         "skipped_default",
     ],
     "scripts/ticker_answer_packet.py": [
-        "COMPATIBILITY_ROUTE_CONTRACT",
-        "legacy_packet_write_requires_explicit_allow_legacy_write",
-        "trade_grade_full_answer_assembler.py",
+        "veritas.ticker_answer_packet.retired_compatibility.v1",
+        '"compatibility_mode": "deny_only"',
+        '"legacy_read_allowed": False',
+        '"legacy_write_allowed": False',
+        '"filesystem_mutation_allowed": False',
     ],
     "scripts/today_card_generator.py": [
         "human_context_links",
@@ -243,7 +245,7 @@ def route_invariants(routing_index: dict[str, Any], file_rows: list[dict[str, An
         check("wf88_frontdoor_is_os2_control_packet", wf88.get("primary_route_artifact") == "tmp/wf88-os2-control-packet.json", wf88.get("primary_route_artifact")),
         check("wf88_includes_route_contraction_packet", "tmp/wf88-route-contraction-packet.json" in as_list(wf88.get("secondary_artifacts")), as_list(wf88.get("secondary_artifacts"))),
         check("runtime_performance_human_note_checks_opt_in", as_dict(exact_paths.get("scripts/runtime_performance_scorecard.py")).get("status") == "contracted_or_already_narrowed", exact_paths.get("scripts/runtime_performance_scorecard.py")),
-        check("ticker_answer_packet_compatibility_only", as_dict(exact_paths.get("scripts/ticker_answer_packet.py")).get("status") == "contracted_or_already_narrowed", exact_paths.get("scripts/ticker_answer_packet.py")),
+        check("ticker_answer_packet_deny_only_tombstone", as_dict(exact_paths.get("scripts/ticker_answer_packet.py")).get("status") == "contracted_or_already_narrowed", exact_paths.get("scripts/ticker_answer_packet.py")),
         check("legacy_table_checks_mode_gated", as_dict(exact_paths.get("scripts/validate_canonical_ownership.py")).get("status") == "contracted_or_already_narrowed", exact_paths.get("scripts/validate_canonical_ownership.py")),
         check("question_router_has_wf87_wf88_frontdoors", as_dict(exact_paths.get("scripts/veritas_question_router.py")).get("status") == "contracted_or_already_narrowed", exact_paths.get("scripts/veritas_question_router.py")),
     ]

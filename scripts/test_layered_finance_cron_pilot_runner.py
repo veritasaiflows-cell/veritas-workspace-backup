@@ -1,55 +1,134 @@
 from __future__ import annotations
 
-import layered_finance_cron_pilot_runner as runner
+import ast
+import json
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
 
 
-def fake_ok_window(window: str, *, max_workers: int, timeout_seconds: int) -> dict:
-    return {
-        "window": window,
-        "status": "ok",
-        "command_result": {"returncode": 0},
-        "plan_path": f"tmp/layered-finance-refresh-chain-plan-{window}.json",
-        "plan_summary": {
-            "step_count": 10,
-            "layer_count": 3,
-            "max_layer_width": 4,
-            "mutating_step_count": 0,
-            "skipped_step_count": 2,
-        },
-        "plan_validation": {"status": "ok", "errors": [], "warnings": []},
-        "blockers": [],
+MODULE = Path(__file__).with_name("layered_finance_cron_pilot_runner.py")
+
+
+def call_name(node: ast.Call) -> str:
+    current: ast.AST = node.func
+    pieces: list[str] = []
+    while isinstance(current, ast.Attribute):
+        pieces.append(current.attr)
+        current = current.value
+    if isinstance(current, ast.Name):
+        pieces.append(current.id)
+    return ".".join(reversed(pieces))
+
+
+def tree_state(root: Path) -> list[tuple[str, bool, bytes | None]]:
+    return [
+        (path.relative_to(root).as_posix(), path.is_dir(), None if path.is_dir() else path.read_bytes())
+        for path in sorted(root.rglob("*"))
+    ]
+
+
+def test_source_is_a_minimal_fail_closed_tombstone() -> None:
+    source = MODULE.read_text(encoding="utf-8")
+    lowered = source.lower()
+    tree = ast.parse(source)
+
+    imports = {
+        alias.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
     }
+    imports.update(
+        node.module or ""
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom)
+    )
+    assert imports == {"__future__", "json"}
+    functions = [node.name for node in ast.walk(tree) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
+    assert functions == ["main"]
+    calls = {call_name(node) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+    assert calls == {"print", "json.dumps", "SystemExit", "main"}
+
+    for marker in (
+        '"status": "blocked"',
+        '"reason": "retired_surface"',
+        '"retired": True',
+        '"tombstone": True',
+        '"cron_pilot_allowed": False',
+        '"finance_chain_execution_allowed": False',
+        '"scorecard_refresh_allowed": False',
+        '"subprocess_execution_allowed": False',
+        '"network_allowed": False',
+        '"filesystem_mutation_allowed": False',
+        '"cron_schedule_mutation_allowed": False',
+        '"sql_or_canon_mutation_allowed": False',
+        '"tier_mutation_allowed": False',
+        '"capital_account_order_or_execution_allowed": False',
+        '"paper_or_live_execution_allowed": False',
+        '"owner_approval_inferred": False',
+    ):
+        assert marker in source
+
+    for token in (
+        "import subprocess",
+        "subprocess.run",
+        "atomic_write",
+        "pathlib",
+        "socket",
+        "requests",
+        "urllib",
+        "layered_finance_refresh_chain",
+        "workflow_advancement_scorecard",
+    ):
+        assert token not in lowered
 
 
-def test_runner_payload_is_dry_run_only(monkeypatch) -> None:
-    monkeypatch.setattr(runner, "run_window", fake_ok_window)
-    payload = runner.build_payload(["morning", "post-close"], max_workers=4, timeout_seconds=30)
-    assert payload["status"] == "ok"
-    assert payload["validation"]["status"] == "ok"
-    assert payload["summary"]["window_count"] == 2
-    assert payload["summary"]["ok_window_count"] == 2
-    assert payload["summary"]["mutating_step_count"] == 0
-    assert payload["authority_boundary"]["dry_run_only"] is True
-    assert payload["authority_boundary"]["runs_finance_chain_steps"] is False
-
-
-def test_runner_blocks_if_read_only_window_has_mutating_steps(monkeypatch) -> None:
-    def bad_window(window: str, *, max_workers: int, timeout_seconds: int) -> dict:
-        data = fake_ok_window(window, max_workers=max_workers, timeout_seconds=timeout_seconds)
-        data["plan_summary"]["mutating_step_count"] = 1
-        return data
-
-    monkeypatch.setattr(runner, "run_window", bad_window)
-    payload = runner.build_payload(["morning"], max_workers=4, timeout_seconds=30)
-    assert payload["status"] == "blocked"
-    assert "mutating_steps_present_in_cron_pilot" in payload["validation"]["errors"]
+def test_all_legacy_cli_shapes_return_identical_block_without_writes() -> None:
+    with tempfile.TemporaryDirectory() as tmp_name:
+        tmp = Path(tmp_name)
+        marker = tmp / "preexisting.txt"
+        marker.write_text("unchanged\n", encoding="utf-8")
+        before = tree_state(tmp)
+        out = tmp / "must-not-exist.json"
+        invocations = (
+            (),
+            ("--help",),
+            ("--window", "morning", "--max-workers", "4", "--timeout-seconds", "30"),
+            ("--window", "post-close", "--skip-scorecard", "--write", "--validate"),
+            ("--out", str(out), "--write", "--validate"),
+            ("--unknown-legacy-flag", "value"),
+        )
+        stdout_values: list[str] = []
+        for args in invocations:
+            completed = subprocess.run(
+                [sys.executable, "-B", str(MODULE), *args],
+                cwd=tmp,
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=10,
+            )
+            assert completed.returncode == 2, completed
+            assert completed.stderr == ""
+            payload = json.loads(completed.stdout)
+            assert payload["status"] == "blocked"
+            assert payload["reason"] == "retired_surface"
+            assert payload["retired"] is True
+            assert payload["tombstone"] is True
+            assert payload["cron_pilot_allowed"] is False
+            assert payload["finance_chain_execution_allowed"] is False
+            assert payload["scorecard_refresh_allowed"] is False
+            assert payload["subprocess_execution_allowed"] is False
+            assert payload["network_allowed"] is False
+            assert payload["filesystem_mutation_allowed"] is False
+            assert tree_state(tmp) == before
+            stdout_values.append(completed.stdout)
+        assert len(set(stdout_values)) == 1
 
 
 if __name__ == "__main__":
-    class MonkeyPatch:
-        def setattr(self, obj, name, value):
-            setattr(obj, name, value)
-
-    test_runner_payload_is_dry_run_only(MonkeyPatch())
-    test_runner_blocks_if_read_only_window_has_mutating_steps(MonkeyPatch())
-    print("layered_finance_cron_pilot_runner tests passed")
+    test_source_is_a_minimal_fail_closed_tombstone()
+    test_all_legacy_cli_shapes_return_identical_block_without_writes()
+    print("layered_finance_cron_pilot_runner retirement tests passed")

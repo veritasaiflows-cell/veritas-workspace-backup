@@ -1,0 +1,545 @@
+{
+  "schema": "veritas.trade_grade_decision_os_contract.v1",
+  "generated_at_utc": "2026-08-29T21:44:06Z",
+  "workflow_id": "WF85",
+  "display_name": "Trade-Grade Decision and Approval Card OS",
+  "status": "ok",
+  "purpose": "Review-only decision and approval-card layer above WF84's canonical finance data plane.",
+  "authority_boundary": {
+    "review_only": true,
+    "decision_support_only": true,
+    "approval_card_draft_allowed": true,
+    "wf67_paper_request_draft_allowed": true,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_or_risk_rule_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "customer_account_pii_or_suitability_data_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "inputs": [
+    {
+      "key": "wf84_canonical_finance_data_plane",
+      "path": "tmp/canonical-finance-data-plane.json",
+      "role": "normalized read-only ticker, routing, decision, price, band, evidence, and authority state",
+      "required": true,
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:03Z"
+    },
+    {
+      "key": "wf84_phase6_10_proof",
+      "path": "tmp/canonical-finance-data-plane-phase6-10.json",
+      "role": "consumer parity, source drillback, priority queue, and retirement-gate proof",
+      "required": true,
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T16:24:19Z"
+    },
+    {
+      "key": "wf84_sqlite_companion",
+      "path": "tmp/canonical-finance-data-plane.sqlite",
+      "role": "derived read-only query layer for decision-card construction",
+      "required": true,
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:03Z",
+      "sqlite_integrity_status": "ok",
+      "table_counts": {
+        "schema_run": 1,
+        "source_artifact": 12,
+        "security_master": 300,
+        "routing_state_current": 300,
+        "price_technical_current": 300,
+        "entry_stop_reference": 300,
+        "decision_queue_state": 300,
+        "evidence_family_status": 6300,
+        "official_evidence": 1200,
+        "validation_result": 27
+      }
+    },
+    {
+      "key": "wf78_capital_review_queue",
+      "path": "tmp/wf78-capital-review-queue.json",
+      "role": "non-executing owner-review candidate queue",
+      "required": true,
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T13:24:42Z"
+    },
+    {
+      "key": "finance_decision_sync_spine",
+      "path": "tmp/finance-decision-sync-spine.json",
+      "role": "cross-artifact decision-state synchronization feed",
+      "required": true,
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T13:25:27Z"
+    },
+    {
+      "key": "wf67_paper_guard_context",
+      "path": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
+      "role": "paper-only guard context for future request-card boundaries",
+      "required": false,
+      "exists": true,
+      "status": "blocked",
+      "validation_status": null,
+      "generated_at_utc": "2026-07-06T23:22:06Z",
+      "max_age_days": 2,
+      "age_days": 53.93
+    }
+  ],
+  "decision_card_required_fields": [
+    "ticker",
+    "decision_state",
+    "thesis_snapshot",
+    "current_price",
+    "entry_band",
+    "stop_or_invalidation",
+    "source_freshness",
+    "source_drillback",
+    "base_case",
+    "bull_case",
+    "bear_case",
+    "key_risks",
+    "counterargument",
+    "sizing_staggering_recommendation",
+    "owner_action_required",
+    "authority_boundary"
+  ],
+  "state_precedence_policy": {
+    "highest_priority": [
+      "below_stop_or_invalidation",
+      "blocked_missing_freshness",
+      "blocked_missing_source_open",
+      "blocked_missing_band_or_stop",
+      "blocked_wf67_guard_context",
+      "evidence_repair"
+    ],
+    "rule": "decision_queue_state.primary_state overrides routing_state_current.auto_state for readiness and approval-card draft decisions",
+    "approval_card_draft_prerequisites": [
+      "decision_state == review_ready",
+      "source_freshness == fresh",
+      "source_open_status == verified",
+      "band_status == IN_BAND",
+      "stop_or_invalidation present",
+      "primary_state not in blocked or invalidation states",
+      "wf67 guard context fresh if a paper-request draft is included",
+      "inline_not_approved_stamp present"
+    ],
+    "initial_expected_approval_card_drafts": 0
+  },
+  "allowed_decision_states": [
+    "review_ready",
+    "approval_card_draft",
+    "blocked_missing_freshness",
+    "blocked_missing_source_open",
+    "blocked_missing_band_or_stop",
+    "blocked_wf67_guard_context",
+    "below_stop_or_invalidation",
+    "evidence_repair",
+    "no_chase",
+    "invalidation_review",
+    "monitor_only"
+  ],
+  "phase1_prerequisite_gates": {
+    "wf84_sqlite_json_parity": {
+      "status": "ok",
+      "json_generated_at_utc": "2026-08-29T21:44:03Z",
+      "sqlite_generated_at_utc": "2026-08-29T21:44:03Z",
+      "sqlite_integrity_status": "ok",
+      "json_counts": {
+        "schema_run": 1,
+        "source_artifact": 12,
+        "security_master": 300,
+        "routing_state_current": 300,
+        "evidence_family_status": 6300,
+        "price_technical_current": 300,
+        "entry_stop_reference": 300,
+        "official_evidence": 1200,
+        "decision_queue_state": 300,
+        "validation_result": 27
+      },
+      "sqlite_counts": {
+        "schema_run": 1,
+        "source_artifact": 12,
+        "security_master": 300,
+        "routing_state_current": 300,
+        "price_technical_current": 300,
+        "entry_stop_reference": 300,
+        "decision_queue_state": 300,
+        "evidence_family_status": 6300,
+        "official_evidence": 1200,
+        "validation_result": 27
+      },
+      "mismatches": {}
+    },
+    "wf84_feeder_status_warnings": [
+      {
+        "artifact_id": "src_universe_v1",
+        "path": "data/finance/universe-v1.json",
+        "status": "wf78_tier_c_scaleout_monitor_ready",
+        "validation_status": null,
+        "source": "wf84.source_artifact"
+      },
+      {
+        "artifact_id": "src_finance_ticker_card_refresh_gate",
+        "path": "tmp/finance-ticker-card-refresh-gate.json",
+        "status": "ok_with_expected_context",
+        "validation_status": "ok",
+        "source": "wf84.source_artifact"
+      }
+    ],
+    "paper_guard_context": {
+      "required_for_card_generation": false,
+      "required_for_wf67_request_drafts": true,
+      "max_age_days": 2,
+      "current_age_days": 53.93,
+      "stale_for_request_drafts": true
+    },
+    "state_precedence_probe": {
+      "status": "ok",
+      "policy": "primary_state precedence wins over auto_state; blocked and below-stop states cannot become approval_card_draft",
+      "counts": {
+        "a_ready_but_blocked": 0,
+        "below_stop_or_invalidation": 3,
+        "approval_card_draft_expected": 0
+      },
+      "sample": [
+        {
+          "ticker": "LLY",
+          "auto_state": "A-WATCH",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "IN_BAND"
+        },
+        {
+          "ticker": "BRK.B",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "in_band_not_clean",
+          "band_status": "IN_BAND"
+        },
+        {
+          "ticker": "LIN",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "IN_BAND"
+        },
+        {
+          "ticker": "BKNG",
+          "auto_state": "A-WATCH",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "IN_BAND"
+        },
+        {
+          "ticker": "CVX",
+          "auto_state": "A-WATCH",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "ABOVE_BAND"
+        },
+        {
+          "ticker": "XLB",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "ABOVE_BAND"
+        },
+        {
+          "ticker": "GOOG",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "IN_BAND"
+        },
+        {
+          "ticker": "ITA",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "ABOVE_BAND"
+        },
+        {
+          "ticker": "JPM",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "ABOVE_BAND"
+        },
+        {
+          "ticker": "NVDA",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "ABOVE_BAND"
+        },
+        {
+          "ticker": "VRT",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "IN_BAND"
+        },
+        {
+          "ticker": "XOM",
+          "auto_state": "A-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "IN_BAND"
+        },
+        {
+          "ticker": "PH",
+          "auto_state": "B-CHALLENGED",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "IN_BAND"
+        },
+        {
+          "ticker": "AAPL",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "evidence_repair",
+          "band_status": "ABOVE_BAND"
+        },
+        {
+          "ticker": "ABBV",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "evidence_repair",
+          "band_status": "ABOVE_BAND"
+        },
+        {
+          "ticker": "ACN",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "BELOW_STOP"
+        },
+        {
+          "ticker": "ADBE",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "evidence_repair",
+          "band_status": "BELOW_BAND"
+        },
+        {
+          "ticker": "ADI",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "IN_BAND"
+        },
+        {
+          "ticker": "ADP",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "ABOVE_BAND"
+        },
+        {
+          "ticker": "ADSK",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "IN_BAND"
+        },
+        {
+          "ticker": "AJG",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "evidence_repair",
+          "band_status": "ABOVE_BAND"
+        },
+        {
+          "ticker": "AKAM",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "IN_BAND"
+        },
+        {
+          "ticker": "ALB",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "BELOW_STOP"
+        },
+        {
+          "ticker": "ALLE",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "IN_BAND"
+        },
+        {
+          "ticker": "AMAT",
+          "auto_state": "B-CANDIDATE",
+          "primary_state": "blocked_missing_freshness",
+          "band_status": "BELOW_STOP"
+        }
+      ]
+    },
+    "authority_validator_required_from_phase": 1,
+    "expected_fail_closed_posture": "Most cards should remain blocked_missing_freshness until WF84 feeder freshness repair clears; approval_card_draft count above zero before that is suspect."
+  },
+  "parallel_lanes": [
+    {
+      "lane_id": "wf85_contract_and_schema",
+      "purpose": "Define decision-card schema, authority flags, status vocabulary, and validation gates.",
+      "writes": [
+        "tmp/trade-grade-decision-os-contract.json"
+      ],
+      "can_parallelize": false,
+      "stop_line": "No card generation until schema and authority contract validate."
+    },
+    {
+      "lane_id": "wf85_decision_card_builder",
+      "purpose": "Build review-only decision cards from WF84/WF78/WF67 inputs after source/freshness and state-precedence checks pass.",
+      "writes": [
+        "tmp/trade-grade-decision-cards.json"
+      ],
+      "depends_on": [
+        "wf85_contract_and_schema",
+        "wf85_source_and_freshness_gate"
+      ],
+      "can_parallelize": false,
+      "stop_line": "Cards may recommend review and draft approval terms only; blocked or below-stop primary states must override optimistic auto_state."
+    },
+    {
+      "lane_id": "wf85_phase1_authority_validator",
+      "purpose": "Scan generated decision cards for true authority flags and forbidden action vocabulary from Phase 1 onward.",
+      "writes": [
+        "tmp/trade-grade-decision-card-authority-validation.json"
+      ],
+      "depends_on": [
+        "wf85_decision_card_builder"
+      ],
+      "can_parallelize": false,
+      "stop_line": "Generated cards with true capital/execution/account/canon/customer authority flags are invalid artifacts."
+    },
+    {
+      "lane_id": "wf85_approval_card_gate",
+      "purpose": "Separate review-ready, blocked, stale, and approval-card-draft states.",
+      "writes": [
+        "tmp/trade-grade-approval-card-gate.json"
+      ],
+      "depends_on": [
+        "wf85_decision_card_builder",
+        "wf85_phase1_authority_validator"
+      ],
+      "can_parallelize": true,
+      "stop_line": "Approval-card draft is allowed only after review_ready gates pass; it is not Randall approval and cannot trigger paper/live action."
+    },
+    {
+      "lane_id": "wf85_risk_and_sizing_overlay",
+      "purpose": "Draft sizing, staggering, invalidation, concentration, and no-chase context.",
+      "writes": [
+        "tmp/trade-grade-risk-sizing-overlay.json"
+      ],
+      "depends_on": [
+        "wf85_decision_card_builder"
+      ],
+      "can_parallelize": true,
+      "stop_line": "No cash, sizing, risk-rule, canon, or portfolio mutation."
+    },
+    {
+      "lane_id": "wf85_source_and_freshness_gate",
+      "purpose": "Require source-open, source-age, and material-claim freshness before card readiness.",
+      "writes": [
+        "tmp/trade-grade-source-freshness-gate.json"
+      ],
+      "depends_on": [
+        "wf85_contract_and_schema"
+      ],
+      "can_parallelize": false,
+      "stop_line": "No material finance claim from SQLite alone."
+    },
+    {
+      "lane_id": "wf85_pm_cockpit_decision_view",
+      "purpose": "Expose decision-card state through local PM cockpit read-only views after cards exist.",
+      "writes": [
+        "apps/pm-control-cockpit/*",
+        "state/pm-cockpit-source-registry.json"
+      ],
+      "depends_on": [
+        "wf85_decision_card_builder",
+        "wf85_approval_card_gate"
+      ],
+      "can_parallelize": true,
+      "stop_line": "Local read-only visibility only; no external delivery or action endpoint."
+    },
+    {
+      "lane_id": "wf85_challenger_qa",
+      "purpose": "Independent critique of decision vocabulary, authority boundaries, and false-ready risks.",
+      "writes": [
+        "tmp/trade-grade-decision-os-challenger-review.json"
+      ],
+      "can_parallelize": true,
+      "stop_line": "Challenger output is advisory until main-session Veritas verifies it."
+    }
+  ],
+  "phases": [
+    {
+      "phase": 0,
+      "name": "Contract and Route Registration",
+      "acceptance": [
+        "WF85 contract validates",
+        "workflow router and PM lane see WF85",
+        "authority flags remain hard false for capital/execution/account/customer/canon mutation"
+      ]
+    },
+    {
+      "phase": 1,
+      "name": "Decision Card Schema and Builder",
+      "acceptance": [
+        "cards include thesis, price/band/stop, freshness, source drillback, base/bull/bear, invalidation, and owner action",
+        "missing or stale evidence blocks readiness instead of filling guesses",
+        "blocked or below-stop primary_state wins over optimistic auto_state",
+        "initial approval_card_draft count is expected to be zero until WF84 freshness blockers clear",
+        "all card authority flags remain false",
+        "card authority/vocabulary validator runs against generated cards in this phase"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Approval Draft Gate",
+      "acceptance": [
+        "review-ready, blocked, stale, no-chase, invalidation-review, and approval-draft states are distinct",
+        "paper request drafts require fresh WF67 guard context",
+        "approval-draft is reachable only from fully gated review_ready",
+        "approval-draft carries an inline NOT APPROVED stamp and never implies Randall approval"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "Risk, Sizing, and Staggering Overlay",
+      "acceptance": [
+        "sizing/staggering is recommendation-only",
+        "concentration and no-chase checks are visible",
+        "no portfolio/cash/risk-rule mutation or execution entitlement changes"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "PM Cockpit Decision View",
+      "acceptance": [
+        "local cockpit shows card queue and blockers",
+        "queries are allowlisted and read-only",
+        "no external delivery or action endpoint is added"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "Parallel QA and Promotion Criteria",
+      "acceptance": [
+        "Opus/challenger review finds no authority drift",
+        "validator proves no forbidden action vocabulary or true authority flags",
+        "WF85 can feed WF67 request-card prep only after Randall exact approval remains separately required"
+      ]
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "wf84_feeder_status_not_plain_ok",
+      "wf67_paper_guard_context_stale_for_request_drafts"
+    ]
+  },
+  "stop_lines": [
+    "No capital deployment approval, paper/live execution, brokerage/account action, or money movement.",
+    "No generated decision card, score, SQL row, or approval-card draft implies Randall approval.",
+    "No canon/portfolio/cash/sizing/risk-rule mutation.",
+    "No customer/account/PII/suitability/retail-public schema or external delivery.",
+    "No material finance claim from WF84 SQLite alone; source-open proof remains required."
+  ],
+  "next_safe_action": "Implement Phase 1 only after SQLite/JSON parity passes; build source/freshness/state-precedence gates first, then generate fail-closed decision cards and run authority validation before any approval-card gate."
+}

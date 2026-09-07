@@ -31,7 +31,7 @@
     "payload.timeoutSeconds"
   ],
   "contract_reason": "Command-backed cron payload contract so quiet-only agentTurn drift is caught by validation.",
-  "contract_update_reason": "Restore quiet-only agentTurn cron to command-backed pre-dispatch proof path; preserve schedule/session/delivery.",
+  "contract_update_reason": "Pin command argv to CPython 3.13 so Gateway can spawn the job after python ENOENT auto-failures.",
   "deleteAfterRun": false,
   "delivery": {
     "bestEffort": true,
@@ -52,7 +52,7 @@
   "owner_workflow": "future session carryover packet refresh",
   "payload": {
     "argv": [
-      "python",
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
       "scripts\\future_session_enhancement_packet.py",
       "--write",
       "--write-md",
@@ -71,6 +71,6 @@
   },
   "schema": "veritas.cron_contract.v1",
   "sessionTarget": "isolated",
-  "updated_at_utc": "2026-06-29T04:55:48Z",
+  "updated_at_utc": "2026-09-06T22:13:50Z",
   "wakeMode": "now"
 }

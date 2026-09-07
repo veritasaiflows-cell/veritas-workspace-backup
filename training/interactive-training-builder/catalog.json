@@ -1,6 +1,6 @@
 {
   "schema": "veritas.interactive_training_catalog.v1",
-  "generated_at_utc": "2026-07-04T14:39:43Z",
+  "generated_at_utc": "2026-09-07T04:48:28Z",
   "status": "ok",
   "modules": [
     {
@@ -9,8 +9,8 @@
       "summary": "Hands-on practice for explaining a service-led AI workflow review without overpromising, collecting customer data, or implying outreach approval.",
       "audience": "Randall internal operator training",
       "lessons": 2,
-      "interactions": 5,
-      "generated_at_utc": "2026-07-04T14:38:07Z",
+      "interactions": 6,
+      "generated_at_utc": "2026-09-07T04:48:17Z",
       "status": "ok",
       "errors": [],
       "links": {
@@ -58,7 +58,7 @@
       "audience": "Randall internal operator training",
       "lessons": 3,
       "interactions": 15,
-      "generated_at_utc": "2026-07-04T14:38:07Z",
+      "generated_at_utc": "2026-09-07T04:48:17Z",
       "status": "ok",
       "errors": [],
       "links": {
@@ -111,7 +111,7 @@
       "audience": "Randall internal finance research operator training",
       "lessons": 3,
       "interactions": 9,
-      "generated_at_utc": "2026-07-04T14:38:08Z",
+      "generated_at_utc": "2026-09-07T04:48:17Z",
       "status": "ok",
       "errors": [],
       "links": {
@@ -164,7 +164,7 @@
       "audience": "Randall internal operations proof and validator training",
       "lessons": 3,
       "interactions": 10,
-      "generated_at_utc": "2026-07-04T14:38:08Z",
+      "generated_at_utc": "2026-09-07T04:48:17Z",
       "status": "ok",
       "errors": [],
       "links": {
@@ -212,6 +212,58 @@
         "finance_canon_portfolio_mutation_approved": false,
         "paper_live_account_action_approved": false
       }
+    },
+    {
+      "module_id": "openclaw-day1-gateway-control-ui",
+      "title": "OpenClaw Day 1: Gateway, Session, and Control UI",
+      "summary": "Fifteen-minute practice for naming Gateway, agent, session, and Control UI correctly, inspecting this WebChat without changing settings, and keeping updates/config owner-gated.",
+      "audience": "Randall internal OpenClaw operator training",
+      "lessons": 2,
+      "interactions": 5,
+      "generated_at_utc": "2026-09-07T04:48:17Z",
+      "status": "ok",
+      "errors": [],
+      "links": {
+        "launch": "interactive-training-builder/openclaw-day1-gateway-module.html",
+        "source_json": "interactive-training-builder/openclaw-day1-gateway-module.json",
+        "manifest": "interactive-training-builder/openclaw-day1-gateway-module-manifest.json",
+        "xapi_seed": "interactive-training-builder/openclaw-day1-gateway-module.xapi.json",
+        "scorm_zip": "interactive-training-builder/openclaw-day1-gateway-module-scorm.zip"
+      },
+      "qa": {
+        "status": "ok",
+        "severe_axe_violations": 0,
+        "console_errors": 0,
+        "overflow": 0,
+        "screenshots": [
+          {
+            "viewport": "desktop",
+            "href": "interactive-training-builder/qa-screenshots/openclaw-day1-gateway-control-ui-desktop.png"
+          },
+          {
+            "viewport": "mobile",
+            "href": "interactive-training-builder/qa-screenshots/openclaw-day1-gateway-control-ui-mobile.png"
+          }
+        ]
+      },
+      "scorm": {
+        "status": "ok",
+        "runtime_initialized": true,
+        "runtime_finished": true,
+        "lesson_status": "completed",
+        "screenshot": "interactive-training-builder/scorm-smoke-screenshots/openclaw-day1-gateway-control-ui-scorm-smoke.png"
+      },
+      "authority_boundary": {
+        "internal_training_only": true,
+        "external_delivery_approved": false,
+        "customer_data_allowed": false,
+        "credential_access_allowed": false,
+        "owner_approval_inferred": false,
+        "runtime_config_mutation_approved": false,
+        "channel_expansion_approved": false,
+        "gateway_update_approved": false,
+        "pairing_or_allowlist_mutation_approved": false
+      }
     }
   ],
   "authoring_resources": {
@@ -233,11 +285,30 @@
     "external_lrs_configured": false
   },
   "counts": {
-    "modules": 4,
-    "lessons": 11,
-    "interactions": 39,
-    "qa_ok": 4,
-    "scorm_ok": 4
+    "modules": 5,
+    "lessons": 13,
+    "interactions": 45,
+    "qa_ok": 5,
+    "scorm_ok": 5,
+    "local_clips": 0,
+    "teaching_walkthroughs": 1
+  },
+  "recordings": {
+    "manifest": "training/interactive-training-builder/recordings/manifest.json",
+    "readme": "interactive-training-builder/recordings/README.md",
+    "clips": []
+  },
+  "walkthroughs": [
+    {
+      "file": "interactive-training-builder/walkthroughs/openclaw-day1.html",
+      "title": "openclaw day1",
+      "watch_only": true
+    }
+  ],
+  "capabilities": {
+    "screen_recording_player": true,
+    "local_screen_capture_helper": true,
+    "external_lms_lrs_configured": false
   },
   "validation": {
     "errors": [],

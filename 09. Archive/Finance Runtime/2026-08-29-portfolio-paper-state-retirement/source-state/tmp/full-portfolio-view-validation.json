@@ -1,0 +1,16 @@
+{
+  "authority": {
+    "canonical_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "findings": [],
+  "generated_at_utc": "2026-08-14T13:15:56Z",
+  "schema_version": 1,
+  "status": "ok",
+  "summary": {
+    "critical": 0,
+    "finding_count": 0,
+    "warning": 0
+  }
+}

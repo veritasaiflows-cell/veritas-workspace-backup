@@ -1,0 +1,269 @@
+{
+  "artifact_type": "wf67_paper_order_readiness_packet",
+  "schema_version": 2,
+  "generated_at_utc": "2026-06-22T14:50:58Z",
+  "workflow": "WF67/WF86/WF85",
+  "target_session_date": "2026-06-22",
+  "requested_tickers": [
+    "NVDA",
+    "GOOG"
+  ],
+  "status": "prepared_blocked_before_approval",
+  "execution_ready": false,
+  "kill_switch_created": false,
+  "orders_submitted": false,
+  "sql_json_review_boundary": "SQL/JSON proof supports internal review routing only; it does not approve paper execution.",
+  "authority_boundary": {
+    "review_only": true,
+    "paper_order_request_artifact_generation_allowed": true,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "paper_order_sell_allowed": false,
+    "live_trade_allowed": false,
+    "live_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "summary": {
+    "clean_approval_card_count": 0,
+    "prepared_review_card_count": 1,
+    "prepared_review_card_tickers": [
+      "NVDA"
+    ],
+    "no_current_deployment_card_candidate_tickers": [
+      "GOOG"
+    ],
+    "execution_ready_count": 0,
+    "primary_read": "NVDA has a refreshed review-only paper draft but remains blocked before approval/execution; GOOG is now below band and no current deployment card should be used.",
+    "next_safe_action": "Review NVDA only as a blocked approval-card draft; keep GOOG on wait-for-band watch."
+  },
+  "proof_summary": {
+    "sql_guard_status": "ok",
+    "trade_grade_freshness_runner_status": "blocked",
+    "trade_grade_freshness_blocker": "tier_a_b_complete_band_context_stale",
+    "shadow_eligibility_status": "ok",
+    "shadow_would_buy_tickers": [
+      "NVDA"
+    ],
+    "morning_cards_status": "warning",
+    "morning_clean_card_count": 0,
+    "morning_blocked_tickers": [
+      "NVDA",
+      "VRT",
+      "GOOG"
+    ]
+  },
+  "supporting_artifacts": {
+    "nvda_card": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.paper-readiness-2026-06-22.owner-card.json",
+    "nvda_request": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-paper-readiness-2026-06-22.json",
+    "nvda_assisted_index": "tmp/paper-autotrader/assisted-order-cards.nvda-paper-readiness-2026-06-22.json",
+    "goog_assisted_index": "tmp/paper-autotrader/assisted-order-cards.goog-paper-readiness-2026-06-22.json",
+    "shadow_eligibility": "tmp/paper-autotrader/shadow-eligibility.json",
+    "morning_cards": "tmp/morning-paper-deployment-recommendation-cards.json"
+  },
+  "items": [
+    {
+      "ticker": "NVDA",
+      "packet_status": "draft_blocked_before_approval",
+      "shadow_decision": "would_buy_shadow",
+      "current_price_local": 209.46,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 202.81,
+        "entry_band_high": 212.23,
+        "stop_or_invalidation": 192.95,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "external_quote_crosscheck": {
+        "source": "web.finance",
+        "latest_trade_time_utc": "2026-06-22T14:34:56Z",
+        "price": 210.1,
+        "intraday_high": 213.92,
+        "intraday_low": 208.97,
+        "open": 211.5
+      },
+      "assisted_index_path": "tmp/paper-autotrader/assisted-order-cards.nvda-paper-readiness-2026-06-22.json",
+      "assisted_index_status": "draft_blocked_before_approval",
+      "assisted_summary": {
+        "card_count": 1,
+        "ticker": "NVDA",
+        "side": "buy",
+        "notional_usd": 1500.0,
+        "limit_price": 209.46,
+        "assisted_review_blockers": [
+          "decision_factory_disposition=not_card_preparable",
+          "fresh_execution_quote_needed",
+          "stale_or_mismatched_owner_approval:approval_order_mismatch:symbol",
+          "tactical_dip_reclaim_requires_fresh_exact_owner_review"
+        ],
+        "execution_ready": false,
+        "next_safe_action": "Review/repair assisted blockers; do not execute this request."
+      },
+      "owner_card_path": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.paper-readiness-2026-06-22.owner-card.json",
+      "wf67_request_path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-paper-readiness-2026-06-22.json",
+      "paper_execution_ready": false,
+      "paper_submit_allowed": false,
+      "owner_approval_inferred": false,
+      "required_before_execution": [
+        "exact Randall approval for ticker, side, notional or quantity, order type, TIF, and limit price",
+        "fresh short-lived WF67 kill switch created after exact approval",
+        "fresh WF67 guard validation returns ready_for_paper_submit_cancel=true",
+        "redacted audit/reconciliation proof and main-session notification path clean",
+        "WF67 wrapper-only paper endpoint execution path, never live endpoint"
+      ],
+      "draft_order": {
+        "symbol": "NVDA",
+        "side": "buy",
+        "type": "limit",
+        "time_in_force": "day",
+        "limit_price": 209.46,
+        "qty": null,
+        "notional": 1500.0
+      },
+      "risk_check": {
+        "status": "ok",
+        "estimated_notional_usd": 1500.0,
+        "max_loss_usd": 118.23,
+        "max_notional_usd": 1500.0,
+        "policy_max_notional_usd": 5000.0,
+        "setup_notional_cap_usd": 1500.0,
+        "technical_notional_multiplier": 0.3,
+        "technical_setup_label": "TACTICAL_DIP_RECLAIM",
+        "entry_band_low": 202.81,
+        "entry_band_high": 212.23,
+        "observed_price": 209.46,
+        "observed_entry_status": "IN_BAND",
+        "stop": 192.95,
+        "sizing_rationale": "WF86 tactical dip/reclaim paper draft capped at $1,500; the $5,000 policy number is an absolute order ceiling, not the default size. Price is below the 20D/50D MA zone but above the 200D MA, so reclaim confirmation is required. Limit/day and notional sizing are paper-only; execution remains blocked until fresh exact Randall order approval and clean WF67 guard proof.",
+        "full_scope_artifact": "tmp/paper-autotrader/policy.json"
+      },
+      "owner_approval": {
+        "status": "pending_exact_randall_approval",
+        "approved_by": null,
+        "approval_text": null,
+        "market_order_owner_approved": false,
+        "stale_or_mismatched_prior_approval": "approval_order_mismatch:symbol"
+      }
+    },
+    {
+      "ticker": "GOOG",
+      "packet_status": "no_current_deployment_card_candidate",
+      "shadow_decision": "no_action_wait_for_band",
+      "current_price_local": 346.4,
+      "current_band_status": "BELOW_BAND",
+      "written_band": {
+        "entry_band_low": 354.25,
+        "entry_band_high": 369.69,
+        "stop_or_invalidation": 341.07,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "BELOW_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "external_quote_crosscheck": {
+        "source": "web.finance",
+        "latest_trade_time_utc": "2026-06-22T14:34:39Z",
+        "price": 347.37,
+        "intraday_high": 363.57,
+        "intraday_low": 346.86,
+        "open": 356.57
+      },
+      "assisted_index_path": "tmp/paper-autotrader/assisted-order-cards.goog-paper-readiness-2026-06-22.json",
+      "assisted_index_status": "no_current_card_candidate",
+      "assisted_summary": {
+        "card_count": 0,
+        "requested_ticker": "GOOG",
+        "would_buy_shadow_tickers": [
+          "NVDA"
+        ],
+        "candidate_count": 3,
+        "reason": "ticker_not_would_buy_shadow:GOOG:no_action_wait_for_band",
+        "execution_ready": false,
+        "next_safe_action": "No assisted order card was refreshed; continue shadow logging and do not execute."
+      },
+      "owner_card_path": "tmp/alpaca-paper-readiness/main-session-cards/GOOG.paper-readiness-2026-06-22.owner-card.json",
+      "wf67_request_path": "tmp/alpaca-paper-readiness/paper-trade-request.goog-paper-readiness-2026-06-22.json",
+      "paper_execution_ready": false,
+      "paper_submit_allowed": false,
+      "owner_approval_inferred": false,
+      "required_before_execution": [
+        "exact Randall approval for ticker, side, notional or quantity, order type, TIF, and limit price",
+        "fresh short-lived WF67 kill switch created after exact approval",
+        "fresh WF67 guard validation returns ready_for_paper_submit_cancel=true",
+        "redacted audit/reconciliation proof and main-session notification path clean",
+        "WF67 wrapper-only paper endpoint execution path, never live endpoint"
+      ],
+      "draft_order": {
+        "symbol": "GOOG",
+        "side": "buy",
+        "type": "limit",
+        "time_in_force": "day",
+        "limit_price": 367.46,
+        "qty": null,
+        "notional": 1500.0
+      },
+      "risk_check": {
+        "status": "ok",
+        "estimated_notional_usd": 1500.0,
+        "max_loss_usd": 107.73,
+        "max_notional_usd": 1500.0,
+        "policy_max_notional_usd": 5000.0,
+        "setup_notional_cap_usd": 1500.0,
+        "technical_notional_multiplier": 0.3,
+        "technical_setup_label": "TACTICAL_DIP_RECLAIM",
+        "entry_band_low": 354.25,
+        "entry_band_high": 369.69,
+        "observed_price": 367.46,
+        "observed_entry_status": "IN_BAND",
+        "stop": 341.07,
+        "sizing_rationale": "WF86 tactical dip/reclaim paper draft capped at $1,500; the $5,000 policy number is an absolute order ceiling, not the default size. Price is below the 20D/50D MA zone but above the 200D MA, so reclaim confirmation is required. Limit/day and notional sizing are paper-only; execution remains blocked until fresh exact Randall order approval and clean WF67 guard proof.",
+        "full_scope_artifact": "tmp/paper-autotrader/policy.json"
+      },
+      "owner_approval": {
+        "status": "pending_exact_randall_approval",
+        "approved_by": null,
+        "approval_text": null,
+        "market_order_owner_approved": false,
+        "stale_or_mismatched_prior_approval": "approval_order_mismatch:symbol"
+      }
+    }
+  ],
+  "next_safe_actions": [
+    "Do not request execution approval yet; proof is still blocked/warning-grade.",
+    "For NVDA, decide whether the $1,500 assisted draft is too large versus the older $150 manager shell before any exact approval card is presented.",
+    "For GOOG, wait for price to reclaim the written band before preparing a new deployment card.",
+    "Repair or refresh the Tier A/B band-context freshness blocker before treating cards as clean."
+  ],
+  "stop_lines": [
+    "Review-only packet; no paper/live submit, cancel, sell, replace, account action, money movement, portfolio/canon mutation, or owner approval inference.",
+    "Paper execution requires exact Randall order approval, fresh short-lived kill switch, clean WF67 guard, redacted audit/reconciliation, and WF67 wrapper-only paper endpoint."
+  ],
+  "validation": {
+    "status": "warning",
+    "errors": [],
+    "warnings": [
+      "trade_grade_freshness_runner_blocked:tier_a_b_complete_band_context_stale",
+      "nvda_assisted_review_blocked_before_approval",
+      "goog_no_current_card_candidate_below_band"
+    ]
+  }
+}

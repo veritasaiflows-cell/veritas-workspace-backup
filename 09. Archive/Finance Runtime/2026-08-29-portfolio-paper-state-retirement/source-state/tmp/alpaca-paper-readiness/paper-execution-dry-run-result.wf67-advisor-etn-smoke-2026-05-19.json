@@ -1,0 +1,16 @@
+{
+  "action": "submit",
+  "artifact_type": "wf67_paper_execution_result",
+  "blocked_reason": "kill_switch_missing_or_expired",
+  "endpoint": "https://paper-api.alpaca.markets",
+  "execute_requested": false,
+  "generated_at_utc": "2026-05-20T05:21:03Z",
+  "live_endpoint_detected": false,
+  "no_inferred_approval": true,
+  "phase": "phase_6_paper_execution_guardrail",
+  "raw_response_bodies_persisted": false,
+  "schema_version": 1,
+  "secrets_persisted": false,
+  "status": "blocked",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

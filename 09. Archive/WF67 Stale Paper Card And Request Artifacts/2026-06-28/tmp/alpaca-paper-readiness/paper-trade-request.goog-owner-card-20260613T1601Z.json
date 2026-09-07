@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "goog-owner-card-20260613T1601Z",
+  "created_at_utc": "2026-06-13T16:02:33Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true
+  },
+  "order": {
+    "symbol": "GOOG",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 358.16,
+    "qty": 0.5,
+    "notional": null
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 179.08,
+    "max_loss_usd": 10.16,
+    "max_notional_usd": 179.08,
+    "position_size_reviewed": true,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "entry_band_low": 350.28,
+    "entry_band_high": 372.67,
+    "observed_price": 358.16,
+    "observed_entry_status": "IN_BAND",
+    "stop": 337.84,
+    "sizing_rationale": "Paper-only incremental GOOG add sized at 0.5 share because the paper account already holds about 2 GOOG shares; limit is no higher than the 2026-06-12 close and remains inside the written band. Execution remains blocked pending Randall exact approval, fresh market-window quote, short-lived kill switch, and clean WF67 guard proof.",
+    "full_scope_artifact": null
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "GOOG first capital-review candidate, paper-only incremental approval-card draft for next market window; pending exact Randall approval and fresh WF67 guard proof.",
+    "recommendation_source": "main_session_order_decision_card",
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/main-session-cards/GOOG.owner-card-20260613T1601Z.json",
+    "capital_recommendation_source": "wf78_non_executing_owner_card_prep",
+    "source_artifact": "tmp/wf78-capital-review-queue.json",
+    "market_order_owner_approved": false,
+    "exact_order_owner_approval_status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "exact_order_owner_approval_text": null,
+    "main_session_capital_package_notification_required": true,
+    "approval_artifact": null,
+    "chief_intelligence_promotion_gate": {
+      "gate_artifact": "tmp/chief-intelligence-promotion-gate.json",
+      "gate_schema_version": "chief_intelligence_promotion_gate.v1",
+      "gate_generated_at_utc": "2026-06-13T02:00:05Z",
+      "ticker": "GOOG",
+      "rank": 3,
+      "chief_intelligence_score": 68.66,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "band_status": "IN_BAND",
+      "entry_band": {
+        "low": 350.28,
+        "high": 372.67,
+        "stop": 337.84,
+        "label": "350.28–372.67",
+        "band_last_set": "2026-06-10"
+      }
+    }
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_forbidden": "https://api.alpaca.markets"
+  }
+}

@@ -1,0 +1,687 @@
+{
+  "schema": "veritas.capital_deployment_band_integrity_validator.v1",
+  "generated_at_utc": "2026-08-29T15:13:53Z",
+  "status": "warning",
+  "purpose": "Detect cross-artifact entry-band/stop drift before any owner approval-card use.",
+  "authority_boundary": {
+    "review_only": true,
+    "band_integrity_report_only": true,
+    "source_artifact_mutation_allowed": false,
+    "owner_card_mutation_allowed": false,
+    "wf67_request_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_sleeve_risk_rule_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": {
+    "wf78_capital_review_queue": "tmp/wf78-capital-review-queue.json",
+    "finance_decision_factory": "tmp/finance-decision-factory.json",
+    "capital_recommendations": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "owner_cards": "tmp/alpaca-paper-readiness/main-session-cards",
+    "wf67_requests": "tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-*.json"
+  },
+  "summary": {
+    "ticker_count": 18,
+    "band_record_count": 24,
+    "critical_count": 0,
+    "warning_count": 2,
+    "mismatch_tickers": [],
+    "warning_tickers": [
+      "NVDA",
+      "VRT"
+    ],
+    "next_safe_action": "Core and active review-card band surfaces are internally consistent."
+  },
+  "ticker_summaries": [
+    {
+      "ticker": "AMD",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "AMD",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[0].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 411.81,
+          "entry_band_high": 495.52,
+          "stop_or_invalidation": 373.76
+        }
+      ]
+    },
+    {
+      "ticker": "BKNG",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "BKNG",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[1].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 188.28,
+          "entry_band_high": 205.72,
+          "stop_or_invalidation": 178.75
+        }
+      ]
+    },
+    {
+      "ticker": "BRK.B",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "BRK.B",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[2].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 488.39,
+          "entry_band_high": 506.98,
+          "stop_or_invalidation": 478.07
+        }
+      ]
+    },
+    {
+      "ticker": "CVX",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "CVX",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[3].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 186.9,
+          "entry_band_high": 196.84,
+          "stop_or_invalidation": 181.26
+        }
+      ]
+    },
+    {
+      "ticker": "ETN",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "ETN",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[4].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 386.81,
+          "entry_band_high": 428.41,
+          "stop_or_invalidation": 367.89
+        }
+      ]
+    },
+    {
+      "ticker": "GE",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "GE",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[5].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 341.38,
+          "entry_band_high": 363.52,
+          "stop_or_invalidation": 329.08
+        }
+      ]
+    },
+    {
+      "ticker": "GOOG",
+      "source_count": 3,
+      "active_source_count": 3,
+      "core_approval_source_count": 2,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 1,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 1,
+      "current_core_band": [
+        354.63,
+        376.48
+      ],
+      "records": [
+        {
+          "ticker": "GOOG",
+          "source": "wf67_owner_card",
+          "source_path": "tmp/alpaca-paper-readiness/main-session-cards/GOOG.owner-card.json",
+          "detail_path": "risk_check",
+          "source_generated_at_utc": "2026-06-06T17:52:48Z",
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49
+        },
+        {
+          "ticker": "GOOG",
+          "source": "wf67_request_risk_check",
+          "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-goog.json",
+          "detail_path": "risk_check",
+          "source_generated_at_utc": "2026-06-06T17:52:48Z",
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49
+        },
+        {
+          "ticker": "GOOG",
+          "source": "wf67_request_embedded_promotion_gate",
+          "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-goog.json",
+          "detail_path": "source.chief_intelligence_promotion_gate.entry_band",
+          "source_generated_at_utc": "2026-06-06T02:52:17Z",
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49
+        }
+      ]
+    },
+    {
+      "ticker": "ITA",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "ITA",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[6].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 212.15,
+          "entry_band_high": 223.44,
+          "stop_or_invalidation": 205.88
+        }
+      ]
+    },
+    {
+      "ticker": "JPM",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "JPM",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[7].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 344.45,
+          "entry_band_high": 356.8,
+          "stop_or_invalidation": 337.59
+        }
+      ]
+    },
+    {
+      "ticker": "LLY",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "LLY",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[8].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 1146.8,
+          "entry_band_high": 1217.12,
+          "stop_or_invalidation": 1093.23
+        }
+      ]
+    },
+    {
+      "ticker": "LMT",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "LMT",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[9].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 550.09,
+          "entry_band_high": 583.84,
+          "stop_or_invalidation": 531.34
+        }
+      ]
+    },
+    {
+      "ticker": "MSFT",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "MSFT",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[10].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 439.68,
+          "entry_band_high": 472.96,
+          "stop_or_invalidation": 417.51
+        }
+      ]
+    },
+    {
+      "ticker": "NVDA",
+      "source_count": 2,
+      "active_source_count": 2,
+      "core_approval_source_count": 1,
+      "distinct_band_count": 2,
+      "distinct_active_band_count": 2,
+      "distinct_core_band_count": 1,
+      "distinct_band_stop_count": 2,
+      "distinct_active_band_stop_count": 2,
+      "distinct_core_band_stop_count": 1,
+      "current_core_band": [
+        198.47,
+        216.66
+      ],
+      "records": [
+        {
+          "ticker": "NVDA",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[11].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 202.15,
+          "entry_band_high": 217.11,
+          "stop_or_invalidation": 193.84
+        },
+        {
+          "ticker": "NVDA",
+          "source": "wf67_owner_card",
+          "source_path": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.owner-card.json",
+          "detail_path": "risk_check",
+          "source_generated_at_utc": "2026-06-06T17:52:47Z",
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9
+        }
+      ]
+    },
+    {
+      "ticker": "PH",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "PH",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[12].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 965.41,
+          "entry_band_high": 1026.18,
+          "stop_or_invalidation": 931.65
+        }
+      ]
+    },
+    {
+      "ticker": "PLTR",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "PLTR",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[13].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 139.89,
+          "entry_band_high": 163.76,
+          "stop_or_invalidation": 129.04
+        }
+      ]
+    },
+    {
+      "ticker": "VRT",
+      "source_count": 4,
+      "active_source_count": 4,
+      "core_approval_source_count": 2,
+      "distinct_band_count": 3,
+      "distinct_active_band_count": 3,
+      "distinct_core_band_count": 1,
+      "distinct_band_stop_count": 3,
+      "distinct_active_band_stop_count": 3,
+      "distinct_core_band_stop_count": 1,
+      "current_core_band": [
+        284.01,
+        334.59
+      ],
+      "records": [
+        {
+          "ticker": "VRT",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[14].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 234.82,
+          "entry_band_high": 275.17,
+          "stop_or_invalidation": 216.49
+        },
+        {
+          "ticker": "VRT",
+          "source": "wf67_owner_card",
+          "source_path": "tmp/alpaca-paper-readiness/main-session-cards/VRT.owner-card.json",
+          "detail_path": "risk_check",
+          "source_generated_at_utc": "2026-06-06T17:52:47Z",
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03
+        },
+        {
+          "ticker": "VRT",
+          "source": "wf67_request_risk_check",
+          "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-vrt.json",
+          "detail_path": "risk_check",
+          "source_generated_at_utc": "2026-06-06T17:52:48Z",
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03
+        },
+        {
+          "ticker": "VRT",
+          "source": "wf67_request_embedded_promotion_gate",
+          "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-vrt.json",
+          "detail_path": "source.chief_intelligence_promotion_gate.entry_band",
+          "source_generated_at_utc": "2026-06-06T02:52:17Z",
+          "entry_band_low": 276.69,
+          "entry_band_high": 330.75,
+          "stop_or_invalidation": 252.12
+        }
+      ]
+    },
+    {
+      "ticker": "XLB",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "XLB",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[15].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 49.84,
+          "entry_band_high": 51.68,
+          "stop_or_invalidation": 48.81
+        }
+      ]
+    },
+    {
+      "ticker": "XOM",
+      "source_count": 1,
+      "active_source_count": 1,
+      "core_approval_source_count": 0,
+      "distinct_band_count": 1,
+      "distinct_active_band_count": 1,
+      "distinct_core_band_count": 0,
+      "distinct_band_stop_count": 1,
+      "distinct_active_band_stop_count": 1,
+      "distinct_core_band_stop_count": 0,
+      "current_core_band": null,
+      "records": [
+        {
+          "ticker": "XOM",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[16].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 150.65,
+          "entry_band_high": 159.09,
+          "stop_or_invalidation": 145.78
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "severity": "warning",
+      "code": "review_context_entry_band_drift",
+      "ticker": "NVDA",
+      "current_core_band": [
+        198.47,
+        216.66
+      ],
+      "distinct_active_bands": [
+        [
+          198.47,
+          216.66
+        ],
+        [
+          202.15,
+          217.11
+        ]
+      ],
+      "records": [
+        {
+          "ticker": "NVDA",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[11].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 202.15,
+          "entry_band_high": 217.11,
+          "stop_or_invalidation": 193.84
+        },
+        {
+          "ticker": "NVDA",
+          "source": "wf67_owner_card",
+          "source_path": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.owner-card.json",
+          "detail_path": "risk_check",
+          "source_generated_at_utc": "2026-06-06T17:52:47Z",
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9
+        }
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "review_context_entry_band_drift",
+      "ticker": "VRT",
+      "current_core_band": [
+        284.01,
+        334.59
+      ],
+      "distinct_active_bands": [
+        [
+          234.82,
+          275.17
+        ],
+        [
+          276.69,
+          330.75
+        ],
+        [
+          284.01,
+          334.59
+        ]
+      ],
+      "records": [
+        {
+          "ticker": "VRT",
+          "source": "capital_recommendation_proposal",
+          "source_path": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+          "detail_path": "proposals[14].technical_gate",
+          "source_generated_at_utc": "2026-08-28T13:24:42Z",
+          "entry_band_low": 234.82,
+          "entry_band_high": 275.17,
+          "stop_or_invalidation": 216.49
+        },
+        {
+          "ticker": "VRT",
+          "source": "wf67_owner_card",
+          "source_path": "tmp/alpaca-paper-readiness/main-session-cards/VRT.owner-card.json",
+          "detail_path": "risk_check",
+          "source_generated_at_utc": "2026-06-06T17:52:47Z",
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03
+        },
+        {
+          "ticker": "VRT",
+          "source": "wf67_request_risk_check",
+          "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-vrt.json",
+          "detail_path": "risk_check",
+          "source_generated_at_utc": "2026-06-06T17:52:48Z",
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03
+        },
+        {
+          "ticker": "VRT",
+          "source": "wf67_request_embedded_promotion_gate",
+          "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-vrt.json",
+          "detail_path": "source.chief_intelligence_promotion_gate.entry_band",
+          "source_generated_at_utc": "2026-06-06T02:52:17Z",
+          "entry_band_low": 276.69,
+          "entry_band_high": 330.75,
+          "stop_or_invalidation": 252.12
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "domain_status": "warning",
+    "errors": [],
+    "warnings": [
+      "review_context_entry_band_drift",
+      "review_context_entry_band_drift"
+    ]
+  },
+  "stop_lines": [
+    "A matching band does not approve capital deployment or execution.",
+    "A core approval-surface band mismatch blocks owner-card use until the owning generator/source is repaired.",
+    "Active review-packet band drift is warning-only when WF78 queue, decision factory, and WF67 owner cards agree.",
+    "Superseded review-packet drift is retained as audit history and ignored for live domain status.",
+    "This validator never mutates cards, requests, canon, portfolio, account, or cash/sizing state."
+  ]
+}

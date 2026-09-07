@@ -1,0 +1,47 @@
+{
+  "schema": "veritas.interactive_training_module_manifest.v1",
+  "generated_at_utc": "2026-09-07T04:48:28Z",
+  "status": "ok",
+  "module_id": "openclaw-day1-gateway-control-ui",
+  "outputs": {
+    "module_json": "training/interactive-training-builder/openclaw-day1-gateway-module.json",
+    "module_html": "training/interactive-training-builder/openclaw-day1-gateway-module.html",
+    "xapi_seed": "training/interactive-training-builder/openclaw-day1-gateway-module.xapi.json",
+    "scorm_manifest": "training/interactive-training-builder/scorm-openclaw-day1-gateway-module/imsmanifest.xml",
+    "scorm_zip": "training/interactive-training-builder/openclaw-day1-gateway-module-scorm.zip",
+    "module_manifest": "training/interactive-training-builder/openclaw-day1-gateway-module-manifest.json"
+  },
+  "capabilities": {
+    "schema_backed_module": true,
+    "static_html_runtime": true,
+    "local_scoring": true,
+    "local_progress_storage": true,
+    "xapi_style_events": true,
+    "local_xapi_ledger_optional": true,
+    "scorm_package_scaffold": true,
+    "scorm_runtime_api_adapter": true,
+    "external_lms_lrs_configured": false,
+    "customer_data_allowed": false
+  },
+  "counts": {
+    "lessons": 2,
+    "interactions": 5,
+    "xapi_seed_statements": 2,
+    "standards_reviewed": 0
+  },
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "authority_boundary": {
+    "internal_training_only": true,
+    "external_delivery_approved": false,
+    "customer_data_allowed": false,
+    "credential_access_allowed": false,
+    "owner_approval_inferred": false,
+    "runtime_config_mutation_approved": false,
+    "channel_expansion_approved": false,
+    "gateway_update_approved": false,
+    "pairing_or_allowlist_mutation_approved": false
+  }
+}

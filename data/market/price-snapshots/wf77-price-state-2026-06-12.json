@@ -1,0 +1,2198 @@
+{
+  "schema_version": "wf77_price_freshness_bridge.v1",
+  "generated_at_utc": "2026-06-15T14:17:20Z",
+  "status": "ok",
+  "phase": "B",
+  "phase_name": "WF77 freshness leap through price-state bridge",
+  "source_policy": {
+    "price_source": "tmp/technical-refresh.json plus review-only WF77 supplemental public price evidence when a production ticker is outside technical_refresh entitlement",
+    "consumer_posture": "review_only_freshness_context_not_recommendation_or_order_authority",
+    "source_open_required_for_material_finance_claims": true,
+    "does_not_mutate_ticker_cards": true,
+    "does_not_mutate_canon_or_portfolio": true,
+    "does_not_expand_technical_refresh_lane": true
+  },
+  "authority_boundary": {
+    "posture": "review_only_price_freshness_bridge_not_canon_not_approval_not_execution",
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "deployment_state_mutation_allowed": false,
+    "customer_data_use_allowed": false,
+    "customer_output_allowed": false,
+    "external_delivery_allowed": false,
+    "owner_approval_granted": false,
+    "owner_approval_inferred": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "live_trade_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false
+  },
+  "inputs": {
+    "universe": "data/finance/universe-v1.json",
+    "portfolio_config": "tmp/portfolio-config.json",
+    "technical_refresh": "tmp/technical-refresh.json",
+    "supplemental_price_evidence": "tmp/wf77-supplemental-price-evidence.json",
+    "ticker_cards": "tmp/ticker-intelligence-cards"
+  },
+  "outputs": {
+    "bridge": "tmp/wf77-price-freshness-bridge.json",
+    "current_snapshot": "data/market/price-snapshots/wf77-price-state-current.json",
+    "dated_snapshot": "data/market/price-snapshots/wf77-price-state-2026-06-12.json"
+  },
+  "source_freshness": {
+    "status": "ok",
+    "technical_generated_at_utc": "2026-06-15T13:13:54.009960+00:00",
+    "technical_age_hours": 1.06,
+    "supplemental": {
+      "status": "ok",
+      "generated_at_utc": "2026-06-15T03:50:32Z",
+      "latest_market_data_date": "2026-06-12",
+      "problem_tickers": []
+    },
+    "latest_market_data_date": "2026-06-12",
+    "source_blockers": []
+  },
+  "summary": {
+    "production_ticker_count": 42,
+    "row_count": 42,
+    "valid_price_row_count": 42,
+    "invalid_price_row_count": 0,
+    "price_rows": 42,
+    "price_rows_definition": "valid production-universe rows with current technical-refresh or WF77 supplemental public price evidence close/date context",
+    "missing_price_rows": [],
+    "excluded_price_rows": [],
+    "supplemental_public_price_rows": [
+      "SMCI",
+      "SLV",
+      "TLT",
+      "KTOS"
+    ],
+    "supplemental_public_price_row_count": 4,
+    "price_unavailable_rows": [],
+    "price_unavailable_details": [],
+    "stale_price_rows": [],
+    "fresh_quote_required_count": 37,
+    "fresh_quote_required_tickers": [
+      "GOOG",
+      "LIN",
+      "MSFT",
+      "NVDA",
+      "PH",
+      "VRT",
+      "XOM",
+      "GS",
+      "JPM",
+      "ETN",
+      "BKNG",
+      "XLB",
+      "CVX",
+      "ITA",
+      "VAW",
+      "BRK.B",
+      "LLY",
+      "CAT",
+      "GE",
+      "AMD",
+      "RTX",
+      "AMZN",
+      "VXUS",
+      "XLE",
+      "WMB",
+      "SMCI",
+      "META",
+      "PAVE",
+      "CME",
+      "LNG",
+      "PLTR",
+      "ECL",
+      "LMT",
+      "NFLX",
+      "TMUS",
+      "VMC",
+      "KTOS"
+    ],
+    "fresh_in_band_count": 11,
+    "fresh_in_band_tickers": [
+      "GOOG",
+      "MSFT",
+      "NVDA",
+      "PH",
+      "VRT",
+      "ETN",
+      "BKNG",
+      "CVX",
+      "RTX",
+      "XLE",
+      "SMCI"
+    ],
+    "fresh_below_stop_count": 10,
+    "fresh_below_stop_tickers": [
+      "AMZN",
+      "META",
+      "CME",
+      "TLT",
+      "LNG",
+      "PLTR",
+      "NFLX",
+      "TMUS",
+      "XLC",
+      "KTOS"
+    ]
+  },
+  "rows": [
+    {
+      "ticker": "GOOG",
+      "name": "Alphabet Inc.",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "execution",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 358.16,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 373.05,
+        "ma50": 359.29,
+        "ma200": 307.13,
+        "ma_posture": "above 200d, below 20d and 50d",
+        "in_entry_band_from_technical_refresh": true,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "execution",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/GOOG.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 366.6,
+        "card_band_status": "IN_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 350.28,
+        "entry_band_high": 372.67,
+        "stop_or_invalidation": 337.84,
+        "fresh_price_band_status": "IN_BAND",
+        "fresh_minus_card_price": -8.44
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "LIN",
+      "name": "Linde plc",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 523.57,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 507.27,
+        "ma50": 503.12,
+        "ma200": 463.72,
+        "ma_posture": "above all MAs -- bullish 20>50>200 stack",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/LIN.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 520.89,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 497.11,
+        "entry_band_high": 506.11,
+        "stop_or_invalidation": 487.17,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": 2.68
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft Corporation",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "execution",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 390.74,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 419.57,
+        "ma50": 411.2,
+        "ma200": 451.87,
+        "ma_posture": "below all MAs",
+        "in_entry_band_from_technical_refresh": true,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "execution",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/MSFT.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 398.4497,
+        "card_band_status": "IN_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 389.64,
+        "entry_band_high": 412.56,
+        "stop_or_invalidation": 378.18,
+        "fresh_price_band_status": "IN_BAND",
+        "fresh_minus_card_price": -7.7097
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "execution",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 205.19,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 214.46,
+        "ma50": 206.7,
+        "ma200": 189.04,
+        "ma_posture": "above 200d, below 20d and 50d",
+        "in_entry_band_from_technical_refresh": true,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "execution",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/NVDA.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 208.8511,
+        "card_band_status": "IN_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 198.47,
+        "entry_band_high": 216.66,
+        "stop_or_invalidation": 187.9,
+        "fresh_price_band_status": "IN_BAND",
+        "fresh_minus_card_price": -3.6611
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "PH",
+      "name": "Parker-Hannifin Corporation",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 903.48,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 866.1,
+        "ma50": 905.88,
+        "ma200": 869.68,
+        "ma_posture": "above 20d and 200d, below 50d",
+        "in_entry_band_from_technical_refresh": true,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/PH.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 903.48,
+        "card_band_status": "IN_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 851.36,
+        "entry_band_high": 908.98,
+        "stop_or_invalidation": 819.35,
+        "fresh_price_band_status": "IN_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "VRT",
+      "name": "Vertiv Holdings Co",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "execution",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 302.87,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 317.95,
+        "ma50": 317.56,
+        "ma200": 220.16,
+        "ma_posture": "above 200d, below 20d and 50d",
+        "in_entry_band_from_technical_refresh": true,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "execution",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/VRT.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 314.03,
+        "card_band_status": "IN_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 265.44,
+        "entry_band_high": 318.38,
+        "stop_or_invalidation": 241.38,
+        "fresh_price_band_status": "IN_BAND",
+        "fresh_minus_card_price": -11.16
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "XOM",
+      "name": "Exxon Mobil Corporation",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "execution",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 147.01,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 151.78,
+        "ma50": 151.29,
+        "ma200": 132.45,
+        "ma_posture": "above 200d, below 20d and 50d",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "execution",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/XOM.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 139.64,
+        "card_band_status": "BELOW_STOP",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 150.24,
+        "entry_band_high": 158.44,
+        "stop_or_invalidation": 146.14,
+        "fresh_price_band_status": "BELOW_BAND",
+        "fresh_minus_card_price": 7.37
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "GS",
+      "name": "The Goldman Sachs Group, Inc.",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "execution",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 1062.75,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 1011.73,
+        "ma50": 953.32,
+        "ma200": 862.02,
+        "ma_posture": "above all MAs -- bullish 20>50>200 stack",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "execution",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/GS.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 1077.655,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 948.4,
+        "entry_band_high": 1022.76,
+        "stop_or_invalidation": 905.15,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": -14.905
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "JPM",
+      "name": "JPMorgan Chase & Co.",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "execution",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 320.72,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 304.82,
+        "ma50": 306.56,
+        "ma200": 304.56,
+        "ma_posture": "above all MAs",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "execution",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/JPM.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 321.6199,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 301.5,
+        "entry_band_high": 307.78,
+        "stop_or_invalidation": 293.93,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": -0.8999
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "ETN",
+      "name": "Eaton Corporation plc",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "execution",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 391.39,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 396.83,
+        "ma50": 401.21,
+        "ma200": 365.72,
+        "ma_posture": "above 200d, below 20d and 50d",
+        "in_entry_band_from_technical_refresh": true,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "execution",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/ETN.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 403.605,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 361.19,
+        "entry_band_high": 402.25,
+        "stop_or_invalidation": 342.53,
+        "fresh_price_band_status": "IN_BAND",
+        "fresh_minus_card_price": -12.215
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "BKNG",
+      "name": "Booking Holdings Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 164.94,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 162.73,
+        "ma50": 169.19,
+        "ma200": 190.8,
+        "ma_posture": "above 20d, below 50d and 200d",
+        "in_entry_band_from_technical_refresh": true,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/BKNG.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 164.94,
+        "card_band_status": "IN_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 164.05,
+        "entry_band_high": 170.91,
+        "stop_or_invalidation": 155.97,
+        "fresh_price_band_status": "IN_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "XLB",
+      "name": "XLB",
+      "tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 52.18,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 50.72,
+        "ma50": 51.24,
+        "ma200": 47.69,
+        "ma_posture": "above all MAs",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/XLB.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 52.18,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 49.84,
+        "entry_band_high": 51.68,
+        "stop_or_invalidation": 48.81,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "CVX",
+      "name": "Chevron Corporation",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 187.22,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 188.25,
+        "ma50": 187.51,
+        "ma200": 168.65,
+        "ma_posture": "above 200d, below 20d and 50d",
+        "in_entry_band_from_technical_refresh": true,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/CVX.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 187.22,
+        "card_band_status": "IN_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 186.91,
+        "entry_band_high": 196.41,
+        "stop_or_invalidation": 182.16,
+        "fresh_price_band_status": "IN_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "ITA",
+      "name": "ITA",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 233.79,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 227.76,
+        "ma50": 225.44,
+        "ma200": 219.83,
+        "ma_posture": "above all MAs -- bullish 20>50>200 stack",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/ITA.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 233.79,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 212.15,
+        "entry_band_high": 223.44,
+        "stop_or_invalidation": 205.88,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "VAW",
+      "name": "VAW",
+      "tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 235.13,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 229.49,
+        "ma50": 231.95,
+        "ma200": 217.22,
+        "ma_posture": "above all MAs",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/VAW.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 235.13,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 225.44,
+        "entry_band_high": 233.7,
+        "stop_or_invalidation": 220.85,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "BRK.B",
+      "name": "Berkshire Hathaway Inc.",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "execution",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 489.25,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 481.58,
+        "ma50": 477.95,
+        "ma200": 490.39,
+        "ma_posture": "above 20d and 50d, below 200d",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "execution",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/BRK.B.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 491.13,
+        "card_band_status": "IN_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 489.78,
+        "entry_band_high": 498.19,
+        "stop_or_invalidation": 483.05,
+        "fresh_price_band_status": "BELOW_BAND",
+        "fresh_minus_card_price": -1.88
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "LLY",
+      "name": "Eli Lilly and Company",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 1133.0,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 1086.27,
+        "ma50": 995.82,
+        "ma200": 955.74,
+        "ma_posture": "above all MAs -- bullish 20>50>200 stack",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/LLY.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 1133.0,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 907.64,
+        "entry_band_high": 969.88,
+        "stop_or_invalidation": 876.52,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "CAT",
+      "name": "Caterpillar Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 910.57,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 892.68,
+        "ma50": 854.89,
+        "ma200": 657.96,
+        "ma_posture": "above all MAs -- bullish 20>50>200 stack",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/CAT.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 910.57,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 811.65,
+        "entry_band_high": 866.48,
+        "stop_or_invalidation": 784.25,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "GE",
+      "name": "GE Aerospace",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 335.3,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 314.29,
+        "ma50": 302.89,
+        "ma200": 303.42,
+        "ma_posture": "above all MAs",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/GE.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 335.3,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 299.03,
+        "entry_band_high": 311.84,
+        "stop_or_invalidation": 288.78,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "AMD",
+      "name": "Advanced Micro Devices, Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 511.57,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 481.97,
+        "ma50": 386.78,
+        "ma200": 253.93,
+        "ma_posture": "above all MAs -- bullish 20>50>200 stack",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/AMD.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 511.57,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 295.33,
+        "entry_band_high": 342.53,
+        "stop_or_invalidation": 271.73,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "RTX",
+      "name": "RTX Corporation",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 183.53,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 177.35,
+        "ma50": 181.91,
+        "ma200": 180.63,
+        "ma_posture": "above all MAs",
+        "in_entry_band_from_technical_refresh": true,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/RTX.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 183.53,
+        "card_band_status": "IN_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 183.01,
+        "entry_band_high": 193.23,
+        "stop_or_invalidation": 177.91,
+        "fresh_price_band_status": "IN_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "AMZN",
+      "name": "Amazon.com, Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 238.55,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 257.25,
+        "ma50": 254.77,
+        "ma200": 232.51,
+        "ma_posture": "above 200d, below 20d and 50d",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": true,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/AMZN.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 238.55,
+        "card_band_status": "BELOW_STOP",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 252.27,
+        "entry_band_high": 267.19,
+        "stop_or_invalidation": 244.81,
+        "fresh_price_band_status": "BELOW_STOP",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "VXUS",
+      "name": "VXUS",
+      "tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 85.68,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 84.82,
+        "ma50": 83.43,
+        "ma200": 77.45,
+        "ma_posture": "above all MAs -- bullish 20>50>200 stack",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/VXUS.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 85.68,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 80.88,
+        "entry_band_high": 83.36,
+        "stop_or_invalidation": 78.15,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "XLE",
+      "name": "XLE",
+      "tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 57.55,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 58.34,
+        "ma50": 57.8,
+        "ma200": 50.31,
+        "ma_posture": "above 200d, below 20d and 50d",
+        "in_entry_band_from_technical_refresh": true,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/XLE.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 55.345,
+        "card_band_status": "BELOW_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 56.35,
+        "entry_band_high": 58.04,
+        "stop_or_invalidation": 54.83,
+        "fresh_price_band_status": "IN_BAND",
+        "fresh_minus_card_price": 2.205
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "XLF",
+      "name": "XLF",
+      "tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 53.34,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 51.81,
+        "ma50": 51.63,
+        "ma200": 52.27,
+        "ma_posture": "above all MAs",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/XLF.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 53.34,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": false,
+        "entry_band_low": 52.26,
+        "entry_band_high": 53.07,
+        "stop_or_invalidation": 51.61,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "WMB",
+      "name": "The Williams Companies, Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 72.08,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 73.51,
+        "ma50": 72.91,
+        "ma200": 65.33,
+        "ma_posture": "above 200d, below 20d and 50d",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/WMB.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 72.08,
+        "card_band_status": "BELOW_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 73.25,
+        "entry_band_high": 75.5,
+        "stop_or_invalidation": 70.32,
+        "fresh_price_band_status": "BELOW_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "SMCI",
+      "name": "Super Micro Computer, Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "speculative",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 30.46,
+        "data_date": "2026-06-12",
+        "source": "tmp/wf77-supplemental-price-evidence.json",
+        "source_family": "supplemental_public_price_evidence",
+        "source_label": "wf77_supplemental_price_evidence",
+        "ma20": 38.35,
+        "ma50": 32.26,
+        "ma200": 35.81,
+        "ma_posture": "below all MAs",
+        "in_entry_band_from_technical_refresh": null,
+        "below_stop_from_technical_refresh": null,
+        "supplemental_public_price_used": true
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": false,
+        "coverage_lane": "speculative",
+        "exclusion_reason": "coverage_lane=speculative is not entitled to technical_refresh"
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/SMCI.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 30.97,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 24.92,
+        "entry_band_high": 30.93,
+        "stop_or_invalidation": 22.19,
+        "fresh_price_band_status": "IN_BAND",
+        "fresh_minus_card_price": -0.51
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "META",
+      "name": "Meta Platforms, Inc.",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 566.98,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 604.21,
+        "ma50": 621.83,
+        "ma200": 657.43,
+        "ma_posture": "below all MAs",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": true,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/META.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 566.98,
+        "card_band_status": "BELOW_STOP",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 672.6,
+        "entry_band_high": 693.91,
+        "stop_or_invalidation": 655.55,
+        "fresh_price_band_status": "BELOW_STOP",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "PAVE",
+      "name": "PAVE",
+      "tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 57.76,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 56.1,
+        "ma50": 55.67,
+        "ma200": 50.87,
+        "ma_posture": "above all MAs -- bullish 20>50>200 stack",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/PAVE.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 57.76,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 53.94,
+        "entry_band_high": 56.28,
+        "stop_or_invalidation": 52.64,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "XLI",
+      "name": "XLI",
+      "tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 176.18,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 173.03,
+        "ma50": 172.35,
+        "ma200": 162.0,
+        "ma_posture": "above all MAs -- bullish 20>50>200 stack",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/XLI.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 176.18,
+        "card_band_status": "ABOVE_BAND",
+        "card_fresh_quote_required": false,
+        "entry_band_low": 166.78,
+        "entry_band_high": 173.4,
+        "stop_or_invalidation": 163.1,
+        "fresh_price_band_status": "ABOVE_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "CME",
+      "name": "CME Group Inc.",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 269.53,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 272.23,
+        "ma50": 283.1,
+        "ma200": 275.67,
+        "ma_posture": "below all MAs",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": true,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/CME.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 269.53,
+        "card_band_status": "BELOW_STOP",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 287.74,
+        "entry_band_high": 298.86,
+        "stop_or_invalidation": 276.68,
+        "fresh_price_band_status": "BELOW_STOP",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "SLV",
+      "name": "SLV",
+      "tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "coverage_lane": "macro",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 61.29,
+        "data_date": "2026-06-12",
+        "source": "tmp/wf77-supplemental-price-evidence.json",
+        "source_family": "supplemental_public_price_evidence",
+        "source_label": "wf77_supplemental_price_evidence",
+        "ma20": 65.86,
+        "ma50": 68.35,
+        "ma200": 61.24,
+        "ma_posture": "above 200d, below 20d and 50d",
+        "in_entry_band_from_technical_refresh": null,
+        "below_stop_from_technical_refresh": null,
+        "supplemental_public_price_used": true
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": false,
+        "coverage_lane": "macro",
+        "exclusion_reason": "coverage_lane=macro is not entitled to technical_refresh"
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/SLV.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": null,
+        "card_band_status": null,
+        "card_fresh_quote_required": false,
+        "entry_band_low": 64.07,
+        "entry_band_high": 72.34,
+        "stop_or_invalidation": 60.31,
+        "fresh_price_band_status": "BELOW_BAND",
+        "fresh_minus_card_price": null
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "TLT",
+      "name": "TLT",
+      "tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "coverage_lane": "macro",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 85.77,
+        "data_date": "2026-06-12",
+        "source": "tmp/wf77-supplemental-price-evidence.json",
+        "source_family": "supplemental_public_price_evidence",
+        "source_label": "wf77_supplemental_price_evidence",
+        "ma20": 84.75,
+        "ma50": 85.29,
+        "ma200": 86.35,
+        "ma_posture": "above 20d and 50d, below 200d",
+        "in_entry_band_from_technical_refresh": null,
+        "below_stop_from_technical_refresh": null,
+        "supplemental_public_price_used": true
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": false,
+        "coverage_lane": "macro",
+        "exclusion_reason": "coverage_lane=macro is not entitled to technical_refresh"
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/TLT.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": null,
+        "card_band_status": null,
+        "card_fresh_quote_required": false,
+        "entry_band_low": 86.6,
+        "entry_band_high": 87.41,
+        "stop_or_invalidation": 85.96,
+        "fresh_price_band_status": "BELOW_STOP",
+        "fresh_minus_card_price": null
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "LNG",
+      "name": "Cheniere Energy, Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 241.28,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 237.96,
+        "ma50": 251.42,
+        "ma200": 229.37,
+        "ma_posture": "above 20d and 200d, below 50d",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": true,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/LNG.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 241.28,
+        "card_band_status": "BELOW_STOP",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 260.82,
+        "entry_band_high": 275.56,
+        "stop_or_invalidation": 253.45,
+        "fresh_price_band_status": "BELOW_STOP",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "PLTR",
+      "name": "Palantir Technologies Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 127.99,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 138.74,
+        "ma50": 139.64,
+        "ma200": 160.42,
+        "ma_posture": "below all MAs",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": true,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/PLTR.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 127.99,
+        "card_band_status": "BELOW_STOP",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 137.37,
+        "entry_band_high": 149.53,
+        "stop_or_invalidation": 131.29,
+        "fresh_price_band_status": "BELOW_STOP",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "ECL",
+      "name": "Ecolab Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 265.41,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 255.52,
+        "ma50": 260.85,
+        "ma200": 269.58,
+        "ma_posture": "above 20d and 50d, below 200d",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/ECL.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 265.41,
+        "card_band_status": "BELOW_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 271.22,
+        "entry_band_high": 278.98,
+        "stop_or_invalidation": 265.01,
+        "fresh_price_band_status": "BELOW_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "LMT",
+      "name": "Lockheed Martin Corporation",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "coverage_lane": "execution",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 540.33,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 524.8,
+        "ma50": 542.71,
+        "ma200": 530.73,
+        "ma_posture": "above 20d and 200d, below 50d",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "execution",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/LMT.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 531.12,
+        "card_band_status": "BELOW_STOP",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 548.51,
+        "entry_band_high": 582.27,
+        "stop_or_invalidation": 531.63,
+        "fresh_price_band_status": "BELOW_BAND",
+        "fresh_minus_card_price": 9.21
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "NFLX",
+      "name": "Netflix, Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 80.34,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 85.07,
+        "ma50": 90.85,
+        "ma200": 99.21,
+        "ma_posture": "below all MAs",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": true,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/NFLX.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 80.34,
+        "card_band_status": "BELOW_STOP",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 102.56,
+        "entry_band_high": 105.46,
+        "stop_or_invalidation": 100.24,
+        "fresh_price_band_status": "BELOW_STOP",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "TMUS",
+      "name": "T-Mobile US, Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 189.1,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 186.08,
+        "ma50": 190.14,
+        "ma200": 206.36,
+        "ma_posture": "above 20d, below 50d and 200d",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": true,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/TMUS.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 189.1,
+        "card_band_status": "BELOW_STOP",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 213.01,
+        "entry_band_high": 220.38,
+        "stop_or_invalidation": 207.11,
+        "fresh_price_band_status": "BELOW_STOP",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "VMC",
+      "name": "Vulcan Materials Company",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 286.47,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 274.14,
+        "ma50": 282.92,
+        "ma200": 290.27,
+        "ma_posture": "above 20d and 50d, below 200d",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": false,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/VMC.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 286.47,
+        "card_band_status": "BELOW_BAND",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 291.87,
+        "entry_band_high": 300.98,
+        "stop_or_invalidation": 284.58,
+        "fresh_price_band_status": "BELOW_BAND",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "XLC",
+      "name": "XLC",
+      "tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "coverage_lane": "watch",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 111.65,
+        "data_date": "2026-06-12",
+        "source": "tmp/technical-refresh.json",
+        "source_family": "technical_refresh",
+        "source_label": "technical_refresh",
+        "ma20": 114.21,
+        "ma50": 115.27,
+        "ma200": 115.0,
+        "ma_posture": "below all MAs",
+        "in_entry_band_from_technical_refresh": false,
+        "below_stop_from_technical_refresh": true,
+        "supplemental_public_price_used": false
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": true,
+        "coverage_lane": "watch",
+        "exclusion_reason": null
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/XLC.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:18Z",
+        "card_latest_known_price": 111.65,
+        "card_band_status": "BELOW_STOP",
+        "card_fresh_quote_required": false,
+        "entry_band_low": 114.31,
+        "entry_band_high": 116.55,
+        "stop_or_invalidation": 112.71,
+        "fresh_price_band_status": "BELOW_STOP",
+        "fresh_minus_card_price": 0.0
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    },
+    {
+      "ticker": "KTOS",
+      "name": "Kratos Defense & Security Solutions, Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "coverage_lane": "speculative",
+      "price_state": {
+        "status": "ok",
+        "latest_close": 57.75,
+        "data_date": "2026-06-12",
+        "source": "tmp/wf77-supplemental-price-evidence.json",
+        "source_family": "supplemental_public_price_evidence",
+        "source_label": "wf77_supplemental_price_evidence",
+        "ma20": 58.11,
+        "ma50": 62.37,
+        "ma200": 80.24,
+        "ma_posture": "below all MAs",
+        "in_entry_band_from_technical_refresh": null,
+        "below_stop_from_technical_refresh": null,
+        "supplemental_public_price_used": true
+      },
+      "technical_refresh_entitlement": {
+        "portfolio_config_present": true,
+        "technical_refresh_entitled": false,
+        "coverage_lane": "speculative",
+        "exclusion_reason": "coverage_lane=speculative is not entitled to technical_refresh"
+      },
+      "card_price_context": {
+        "card_path": "tmp/ticker-intelligence-cards/KTOS.current.json",
+        "card_exists": true,
+        "card_generated_at_utc": "2026-06-15T14:17:17Z",
+        "card_latest_known_price": 57.63,
+        "card_band_status": "BELOW_STOP",
+        "card_fresh_quote_required": true,
+        "entry_band_low": 80.79,
+        "entry_band_high": 85.2,
+        "stop_or_invalidation": 77.27,
+        "fresh_price_band_status": "BELOW_STOP",
+        "fresh_minus_card_price": 0.12
+      },
+      "actionability_boundary": {
+        "review_ready_price_context": true,
+        "source_open_required_before_material_claim": true,
+        "recommendation_or_order_authority": false,
+        "fresh_price_can_clear_staleness_context_only": true
+      },
+      "blockers": []
+    }
+  ],
+  "heartbeat_pickup": {
+    "may_refresh_this_artifact": true,
+    "refresh_command": "python scripts\\wf77_price_freshness_bridge.py --write --validate",
+    "may_queue_main_session_review": true,
+    "may_execute_phase": false,
+    "notify_if": [
+      "validation.status != ok",
+      "source_freshness.status != ok",
+      "summary.missing_price_rows is non-empty",
+      "summary.excluded_price_rows is non-empty",
+      "summary.stale_price_rows is non-empty",
+      "source_freshness.supplemental.status not in ok/warning when supplemental rows are needed",
+      "summary.fresh_below_stop_tickers is non-empty"
+    ],
+    "must_not": [
+      "make recommendations from heartbeat alone",
+      "mutate canon or portfolio",
+      "write ticker cards",
+      "submit paper/live/account actions",
+      "infer owner approval"
+    ]
+  },
+  "main_session_pickup": {
+    "next_phase_if_ok": "Phase C service-state layer v0",
+    "next_action": "Use this bridge to source-open any price-sensitive WF75/WF77 answer path, then build service-state v0 without customer/account authority.",
+    "residue": [
+      "Ticker cards still carry their original price context until an explicit card refresh path consumes this bridge.",
+      "Supplemental public price evidence clears WF77 production-universe freshness only; it does not widen technical_refresh or portfolio/deployment authority.",
+      "This artifact clears freshness context only; it does not clear source-open, recommendation, or execution gates."
+    ]
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

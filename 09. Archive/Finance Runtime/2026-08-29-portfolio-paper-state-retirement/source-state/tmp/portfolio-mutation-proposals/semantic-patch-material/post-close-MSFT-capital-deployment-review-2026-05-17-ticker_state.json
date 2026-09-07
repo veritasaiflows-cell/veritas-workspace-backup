@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-17T05:50:12Z",
+  "proposal_id": "post-close:MSFT:capital-deployment-review:2026-05-17",
+  "mutation_type": "ticker_lane_change",
+  "ticker_or_scope": "MSFT",
+  "current_state": {
+    "source_window": "post-close",
+    "daily_review_state": "ALMOST DEPLOYABLE",
+    "deployment_state": "ALMOST DEPLOYABLE",
+    "band_status": "BELOW_STOP"
+  },
+  "proposed_state": {
+    "recommendation_posture": "wait_for_band",
+    "state_change_requested": false,
+    "review_packet_only": true
+  },
+  "why_now": "MSFT surfaced from ranked daily review because current state is ALMOST DEPLOYABLE and recommendation class is wait_for_band.",
+  "why_stack": {
+    "setup_reason": "MSFT surfaced from ranked daily review because current state is ALMOST DEPLOYABLE and recommendation class is wait_for_band.",
+    "entry_reason": "Entry context is BELOW_STOP against configured band 389.64-412.56; this is setup context, not approval.",
+    "fundamental_reason": "WF65 fundamental context status is available_review_only; thesis context: intact; owner-gated action promotion to deployable-now on 2026-05-12 after MSFT/GOOG/NVDA growth review",
+    "official_earnings_reason": "Official earnings bridge status is available_review_only; adjusted EPS=manual_required, guidance=manual_required; unresolved fields remain manual-required.",
+    "sector_macro_reason": "Sector/macro context is missing_or_stale_manual_fallback_required; macro gate is CLEAN.",
+    "risk_blocker_reason": "Risk/catalyst blocker context: Next earnings 2026-07-29 (74d out); band proposal remains review-only / non-applyable; dashboard validation has 1 warning(s); blockers: Next earnings 2026-07-29 (74d out); band proposal remains review-only / non-applyable; dashboard validation has 1 warning(s)",
+    "missing_evidence_reason": "sector/correlation check artifact is missing or stale; treat as manual fallback before position-impact judgment; state-history / owner-outcome retention is not wired; no predictive outcome score is available; official earnings bridge remains manual-required; adjusted EPS, guidance, growth bridge, margin bridge, and management explanation need official-source review",
+    "authority_boundary": "Review-only rationale; no owner approval, note/model apply, external financial, account, cash, or execution authority is granted."
+  },
+  "decision_rationale": {
+    "setup_reason": "MSFT surfaced from ranked daily review because current state is ALMOST DEPLOYABLE and recommendation class is wait_for_band.",
+    "entry_reason": "Entry context is BELOW_STOP against configured band 389.64-412.56; this is setup context, not approval.",
+    "fundamental_reason": "WF65 fundamental context status is available_review_only; thesis context: intact; owner-gated action promotion to deployable-now on 2026-05-12 after MSFT/GOOG/NVDA growth review",
+    "official_earnings_reason": "Official earnings bridge status is available_review_only; adjusted EPS=manual_required, guidance=manual_required; unresolved fields remain manual-required.",
+    "sector_macro_reason": "Sector/macro context is missing_or_stale_manual_fallback_required; macro gate is CLEAN.",
+    "risk_blocker_reason": "Risk/catalyst blocker context: Next earnings 2026-07-29 (74d out); band proposal remains review-only / non-applyable; dashboard validation has 1 warning(s); blockers: Next earnings 2026-07-29 (74d out); band proposal remains review-only / non-applyable; dashboard validation has 1 warning(s)",
+    "missing_evidence_reason": "sector/correlation check artifact is missing or stale; treat as manual fallback before position-impact judgment; state-history / owner-outcome retention is not wired; no predictive outcome score is available; official earnings bridge remains manual-required; adjusted EPS, guidance, growth bridge, margin bridge, and management explanation need official-source review",
+    "authority_boundary": "Review-only rationale; no owner approval, note/model apply, external financial, account, cash, or execution authority is granted."
+  },
+  "evidence": [
+    "Daily review object action family: wait",
+    "Entry-band status: BELOW_STOP",
+    "Deployment state: ALMOST DEPLOYABLE",
+    "Band proposal status: BELOW_STOP",
+    "Official earnings bridge: available_review_only; SEC reconciliation: matched; adjusted EPS/guidance remain manual where unresolved."
+  ],
+  "source_freshness": {
+    "overall_classification": "stale",
+    "trust_level": "review_required",
+    "owner_review_required": true,
+    "explicit_blocker": true,
+    "capital_action_allowed": false
+  },
+  "base_case": "Base case: MSFT remains review-worthy only if thesis, macro fit, written entry band, stop/invalidation, and catalyst gates are manually confirmed.",
+  "bear_case": "Bear case: defer or reject MSFT if price violates stop/invalidation, catalyst risk worsens, macro fit deteriorates, or evidence remains incomplete.",
+  "risk_rule_check": {
+    "status": "review_required",
+    "references": [
+      "25% sector cap",
+      "15% normal single-name ceiling",
+      "speculative sleeve cap",
+      "catalyst-window exception"
+    ],
+    "review_boundary": "Risk context only; no size, cash, sleeve, or account action is authorized by this packet."
+  },
+  "concentration_check": {
+    "status": "review_required",
+    "ticker": "MSFT",
+    "single_name_after_pct": null,
+    "max_single_name_after_pct": null,
+    "sector_after_pct": null,
+    "normal_single_name_ceiling_pct": 15,
+    "sector_cap_pct": 25,
+    "written_exception": false,
+    "note": "No pro-forma exposure change is proposed; owner must review concentration before any action."
+  },
+  "technical_gate": {
+    "status": "review_required",
+    "entry_band_status": "BELOW_STOP",
+    "band_status": "BELOW_STOP",
+    "distance_to_band_pct": null,
+    "close": 421.92,
+    "in_entry_band": false,
+    "below_stop": false,
+    "stop_line": "Do not treat in-band status as approval, sizing, or account-action authority."
+  },
+  "catalyst_gate": {
+    "status": "review_required",
+    "days_to_earnings": 75,
+    "earnings_state": "CLEAR",
+    "blockers": [
+      "Next earnings 2026-07-29 (74d out)",
+      "band proposal remains review-only / non-applyable",
+      "dashboard validation has 1 warning(s)",
+      "1 event-risk band freeze remains: NVDA. This is intentionally review-only / non-applyable through the catalyst window; keep manual review or wait-state active: NVDA.",
+      "sector/correlation check artifact is missing or stale; treat as manual fallback before position-impact judgment"
+    ]
+  },
+  "official_earnings_gate": {
+    "status": "available_review_only",
+    "manual_review_required": true,
+    "capital_action_allowed": false,
+    "deployment_authority_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "summary": "Official earnings bridge is present as review-only context; adjusted EPS, guidance, growth bridge, segment margin, and management explanation remain manual-required until official capture."
+  },
+  "official_earnings_bridge": {
+    "status": "available_review_only",
+    "source_artifact": "tmp/fundamental-ir-reconciliation-packets.json",
+    "period_end": "2026-03-31",
+    "source_urls": {
+      "ir_home_url": "https://www.microsoft.com/en-us/Investor/",
+      "earnings_url": "https://www.microsoft.com/en-us/Investor/earnings",
+      "guidance_url": "https://www.microsoft.com/en-us/Investor/earnings"
+    },
+    "sec_reconciliation_status": "matched",
+    "adjusted_eps_status": "manual_required",
+    "guidance_status": "manual_required",
+    "manual_review_required": true,
+    "blockers": [],
+    "summary": "Official earnings bridge is present as review-only context; adjusted EPS, guidance, growth bridge, segment margin, and management explanation remain manual-required until official capture.",
+    "capital_action_allowed": false,
+    "deployment_authority_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "proposed_files_to_edit": [
+    "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "03. Portfolio/Execution Board.md"
+  ],
+  "rollback_or_reversal_note": "Delete or ignore this generated packet; it has no apply path and changes no canonical state. Semantic exact patch material remains preview-only until a valid standing/scoped approval artifact exists.",
+  "stop_lines_triggered": [
+    "Owner decision required before any portfolio state changes.",
+    "No canonical note, portfolio, size, sleeve, cash, or account-action mutation is authorized.",
+    "Recommendation has unresolved blockers or missing evidence."
+  ],
+  "owner_decision_required": true,
+  "owner_approval_granted": false,
+  "apply_allowed": false,
+  "canonical_mutation_allowed": false,
+  "portfolio_mutation_allowed": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "ticker": "MSFT",
+  "current_lane_status_tuple": {
+    "ticker": "MSFT",
+    "workflow_state": "DEPLOYED",
+    "coverage_lane": "owner-gated action",
+    "entry_policy": "band_defined",
+    "recommendation_action": "wait",
+    "review_state": "owner_review_required"
+  },
+  "proposed_lane_status_tuple": {
+    "ticker": "MSFT",
+    "workflow_state": "DEPLOYED",
+    "coverage_lane": "owner-gated action",
+    "entry_policy": "band_defined",
+    "recommendation_action": "wait",
+    "review_state": "review_packet_only_no_state_change",
+    "recommendation_posture": "wait_for_band"
+  },
+  "thesis_gate": {
+    "status": "manual_review_required",
+    "summary": "intact; owner-gated action promotion to deployable-now on 2026-05-12 after MSFT/GOOG/NVDA growth review"
+  },
+  "macro_regime_gate": {
+    "status": "review_required",
+    "summary": "CLEAN"
+  },
+  "risk_sizing_gate": {
+    "status": "review_required",
+    "summary": "Owner-gated risk envelope only; no dollar/share amount, portfolio mutation, deployment-state mutation, or owner-gated action owner-gated action authority."
+  },
+  "sector_correlation_artifact": {
+    "status": "missing_or_stale_manual_fallback_required",
+    "fresh_artifacts": [],
+    "summary": "Sector/correlation context is review-only and does not grant authority."
+  },
+  "owner_conflict_check": {
+    "status": "review_required",
+    "summary": "Check owner notes before any state change."
+  },
+  "promotion_review_queue": {
+    "status": "review_only",
+    "recommended_action": "wait_for_band"
+  },
+  "current_portfolio_model": "unchanged",
+  "proposed_portfolio_model": "unchanged",
+  "current_cash_target_pct": 10,
+  "proposed_cash_target_pct": 10,
+  "sleeve_deltas": [],
+  "sector_exposure_before_after": [],
+  "correlated_sleeve_exposure_before_after": [],
+  "semantic_patch_generator": {
+    "script": "portfolio_mutation_semantic_patch_generator.py",
+    "category": "ticker_state",
+    "generated_at_utc": "2026-05-17T05:50:51Z",
+    "source_artifacts": [
+      "tmp/portfolio-config.json"
+    ],
+    "source_gate": {
+      "classification": "stale",
+      "explicit_blocker_or_review_required": true,
+      "manual_review_required_before_apply": true,
+      "category_preview_only": false,
+      "low_risk_apply_candidate_category": true,
+      "apply_trial_eligible_from_generator": false,
+      "reason": "source freshness is stale; main-session review required before any apply trial."
+    }
+  },
+  "exact_patch_preview": {
+    "schema_version": 1,
+    "generated_at_utc": "2026-05-17T05:50:51Z",
+    "generator": "portfolio_mutation_semantic_patch_generator.py",
+    "generation_target": "ticker_state",
+    "adjustment_category": "ticker_state",
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "trade_or_account_action_allowed": false,
+    "main_session_final_action_required": true,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "writes_performed": false,
+    "source_gate": {
+      "classification": "stale",
+      "explicit_blocker_or_review_required": true,
+      "manual_review_required_before_apply": true,
+      "category_preview_only": false,
+      "low_risk_apply_candidate_category": true,
+      "apply_trial_eligible_from_generator": false,
+      "reason": "source freshness is stale; main-session review required before any apply trial."
+    },
+    "apply_trial_eligible_from_generator": false,
+    "category_preview_only": false,
+    "changes": [
+      {
+        "target_file": "03. Portfolio/Execution Board.md",
+        "operation": "exact_text_replace",
+        "old_text": "- Close: **409.43** *(technical refresh; 2026-05-14 close; current artifact layer)*",
+        "new_text": "- Close: **409.43** *(technical refresh; 2026-05-14 close; current artifact layer)*\n- WF64 ticker-state semantic sync: workflow_state=`DEPLOYED`, coverage_lane=`execution`, thesis_status=`intact; owner-recorded promotion to deployable-now on 2026-05-12 after MSFT/GOOG/NVDA growth review`; source `tmp/portfolio-config.json`; proposal `post-close:MSFT:capital-deployment-review:2026-05-17`; no external action entitlement.",
+        "mutation_class": "ticker_state_semantic_sync",
+        "adjustment_category": "ticker_state",
+        "owner_surface": "execution_board",
+        "rationale": "Synchronize ticker_state semantic context from current portfolio artifacts without widening external-action authority."
+      }
+    ],
+    "stop_lines": [
+      "Semantic patch material is exact-diff workspace maintenance only.",
+      "Proposal packets remain non-self-applying; write authority requires a valid standing/scoped approval artifact.",
+      "Freshness/manual-dependency and category-risk gates may keep this preview-only even when exact text validates.",
+      "No external financial action or entitlement is authorized."
+    ]
+  }
+}

@@ -40,6 +40,12 @@ H1_RE = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$", re.MULTILINE)
 NAME_RE = re.compile(r'^name:\s*["\']?([^\r\n"\']+)["\']?\s*$', re.MULTILINE)
 PRESERVE_RE = re.compile(r"\b(preserve|keep existing|existing behavior|existing doctrine)\b", re.IGNORECASE)
+MOJIBAKE_MARKERS = (
+    "\u00e2\u20ac\u201d",  # common UTF-8 em dash decoded as Windows-1252 characters
+    "\u00e2\u20ac\u201c",
+    "\u00e2\u20ac\u2122",
+    "\ufffd",
+)
 
 
 def utc_now() -> str:
@@ -98,6 +104,10 @@ def word_count(text: str) -> int:
     return len(re.findall(r"\b\w+\b", strip_frontmatter(text)))
 
 
+def mojibake_hits(text: str) -> list[str]:
+    return sorted(marker.encode("unicode_escape").decode("ascii") for marker in MOJIBAKE_MARKERS if marker in text)
+
+
 def add_finding(findings: list[dict[str, Any]], severity: str, code: str, message: str, **detail: Any) -> None:
     finding: dict[str, Any] = {"severity": severity, "code": code, "message": message}
     if detail:
@@ -118,6 +128,9 @@ def analyze_live_skill(path: Path) -> dict[str, Any]:
         add_finding(findings, "warning", "h1_missing", "Skill body is missing an H1 title.")
     if title.lower().startswith("proposed update") or PROPOSED_UPDATE_RE.search(text):
         add_finding(findings, "critical", "live_proposed_update_wrapper", "Live skill still contains a Proposed Update wrapper.")
+    residue = mojibake_hits(text)
+    if residue:
+        add_finding(findings, "critical", "live_mojibake_residue", "Live skill contains encoding residue.", markers=residue)
     if words < 60:
         add_finding(findings, "warning", "live_skill_body_short", "Live skill body is short enough to deserve manual review.", words=words)
 
@@ -156,6 +169,9 @@ def analyze_pair(
         add_finding(findings, "critical", "proposal_h1_missing", "Proposal body is missing an H1 title.")
     if proposal_title.lower().startswith("proposed update") or PROPOSED_UPDATE_RE.search(proposal_text):
         add_finding(findings, "critical", "proposal_proposed_update_wrapper", "Proposal appears to be a thin Proposed Update wrapper.")
+    residue = mojibake_hits(proposal_text)
+    if residue:
+        add_finding(findings, "critical", "proposal_mojibake_residue", "Proposal contains encoding residue.", markers=residue)
     if live_title and proposal_title and live_title != proposal_title and not allow_replacement:
         add_finding(
             findings,

@@ -1,0 +1,69 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "36b1623b-a06b-4494-846d-cd538a6fd59d",
+  "name": "Macro - Energy and Geopolitical Inputs Refresh",
+  "required": true,
+  "owner_workflow": "WF84 market and macro evidence",
+  "contract_reason": "Daily review-only macro evidence refresh feeding market context without portfolio-state or execution authority.",
+  "description": "Daily isolated Mini review-only macro input refresh via deterministic wrapper. Refreshes macro calendar, macro metrics, signal spine, energy supply, official-source geopolitical sweep, macro judgment, artifact action scoring, and cron control. No delivery/action authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "35 5 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none"
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts\\macro_inputs_refresh_cron_runner.py",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 900
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/macro-inputs-refresh-cron-runner.json",
+    "tmp/macro-event-calendar.json",
+    "tmp/macro-metrics-current.json",
+    "tmp/macro-signal-spine.json",
+    "tmp/macro-energy-supply.json",
+    "tmp/macro-geopolitical-sweep.json",
+    "tmp/macro-judgment-draft.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "macro_evidence_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "finance_alert_canon_mutation_allowed": false,
+    "portfolio_state_maintenance_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-09-06T22:26:09Z",
+  "contract_update_reason": "Pin command argv to CPython 3.13 after Gateway python ENOENT."
+}

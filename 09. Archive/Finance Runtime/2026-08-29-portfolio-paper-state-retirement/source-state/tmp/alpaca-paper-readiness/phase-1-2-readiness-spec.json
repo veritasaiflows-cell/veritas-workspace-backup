@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "workflow": "WF63 - Alpaca Paper Trading Readiness",
+  "phase_scope": "phase_1_read_only_connection_and_phase_2_isolation_validation",
+  "status": "scaffolded_blocked_until_owner_approval_and_connection_proof",
+  "credential_handling_procedure": "06. Playbooks/Operating Procedures/Alpaca Paper Credential Handling Procedure.md",
+  "read_only_connection_proof_schema": "tmp/alpaca-paper-readiness/read-only-connection-proof.schema.json",
+  "required_connection_proof": "tmp/alpaca-paper-readiness/read-only-connection-proof.json",
+  "required_endpoint": "https://paper-api.alpaca.markets",
+  "forbidden_endpoint": "https://api.alpaca.markets",
+  "allowed_http_methods": ["GET"],
+  "blocked_http_methods": ["POST", "PATCH", "PUT", "DELETE"],
+  "required_proof_fields": {
+    "status": "ok|blocked",
+    "base_url": "https://paper-api.alpaca.markets",
+    "account_mode": "paper",
+    "live_endpoint_detected": false,
+    "write_methods_available": false,
+    "orders_and_positions_read_only_checks_complete": true,
+    "secrets_redacted": true,
+    "trade_or_account_action_allowed": false
+  },
+  "blocked_until": [
+    "explicit Randall approval for Phase 1 read-only paper connection testing",
+    "valid kill-switch artifact enabling read-only paper access only",
+    "redacted read-only connection proof exists and validates",
+    "paper/live isolation validator passes with no critical findings"
+  ],
+  "hard_boundaries": [
+    "no credential inspection in this scaffolding pass",
+    "no Alpaca or brokerage API calls in this scaffolding pass",
+    "no OpenClaw config/auth/runtime mutation",
+    "no order submission path",
+    "no live endpoint or live credentials",
+    "no POST/PATCH/PUT/DELETE"
+  ]
+}

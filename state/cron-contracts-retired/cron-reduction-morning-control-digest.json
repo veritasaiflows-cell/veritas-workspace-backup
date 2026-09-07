@@ -1,0 +1,13 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "59f0b198-5067-48b7-9d71-cfc1d13803fb",
+  "name": "Retired — Cron Reduction - Morning Control Digest",
+  "required": false,
+  "enabled": false,
+  "owner_workflow": "CRON phase1 morning control reduction",
+  "original_schedule": {"kind": "cron", "expr": "13 7 * * 1-5", "tz": "America/Phoenix"},
+  "original_payload": ["python", "scripts\\cron_control_digest_runner.py", "--window", "morning", "--write", "--write-md", "--validate"],
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired during the alerts-and-recommendations OS cutover because its digest transitively consumed legacy finance window, allocation, and WF68 state. The active alerts chain and cron control packet supersede it.",
+  "rollback_requires_owner_gate": true
+}

@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Build the WF88 OS 2.0 control packet.
 
-WF88 is the measured learning, cleanup, and route-contraction layer. This
-packet consumes WF87's narrow runtime-governor output instead of duplicating
-paper-autonomy authority. It is a thin control surface, not a new canonical
-owner or cleanup apply tool.
+WF88 is the measured learning, cleanup, and route-contraction layer. Finance
+inputs are limited to the active guarded alert-and-recommendation proof chain.
+It is a thin control surface, not a new canonical owner or cleanup apply tool.
 """
 from __future__ import annotations
 
@@ -20,16 +19,16 @@ from market_data_utils import atomic_write_json, atomic_write_text, load_json_ar
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 
-WF87_GOVERNOR = TMP / "wf87-paper-autonomy-runtime-governor.json"
-WF67_MANAGER = TMP / "alpaca-paper-readiness" / "wf67-autonomous-paper-manager-current.json"
 WF88_CLEANUP_PLAN = TMP / "wf88-retired-surface-cleanup-plan.json"
 WF88_ROUTE_CONTRACTION = TMP / "wf88-route-contraction-packet.json"
-WF88_SOURCE_OPEN_CLASSIFIER = TMP / "wf88-source-open-residue-classifier.json"
 WF88_DELETE_READINESS = TMP / "wf88-delete-readiness-packet.json"
 RECOMMENDATION_LEDGER = TMP / "recommendation-outcome-ledger-current.json"
-WF55_LEDGER = TMP / "wf55-autonomy-outcome-ledger.json"
 FINANCE_DIGEST = TMP / "finance-decision-performance-digest.json"
-WF85_PACKET = TMP / "wf85-decision-os-review-packet.json"
+FINANCE_SQL_VALIDATION = TMP / "finance-sql-canon-access-validation.json"
+QUOTE_SNAPSHOT = TMP / "intraday-alerts" / "quote-snapshot-proof.json"
+ALERT_CONTROLLER = TMP / "alert-level-freshness-controller.json"
+ALERT_DIGEST = TMP / "finance-alert-os-digest.json"
+ALERTS_OS_PIVOT_VALIDATOR = TMP / "alerts-os-pivot-validator.json"
 WF74_DOCKET = TMP / "wf74-decision-docket.json"
 WF74_WF88_LOOP_TRACE = TMP / "wf74-wf88-loop-trace.json"
 LONG_WORK_JOB_STATUS = TMP / "long-work-job-status-packet.json"
@@ -39,9 +38,6 @@ CRON_CONTROL = TMP / "cron-control-packet.json"
 OTEL_CONTROL = TMP / "otel-ops-control.json"
 WF88_WIKI_SYNTHESIS = TMP / "wf88-wiki-synthesis-packet.json"
 SKILL_WORKSHOP_BODY_GUARD = TMP / "skill-workshop-body-guard.json"
-WF88_FINANCE_QUERY_FRICTION_GUARD = TMP / "wf88-finance-query-friction-guard.json"
-FINANCE_CACHE_FRONTDOOR = TMP / "finance-cache-frontdoor.json"
-WF78_ROUTE_READINESS_P3 = TMP / "wf78-route-readiness-p3-market-ranking.json"
 OUT = TMP / "wf88-os2-control-packet.json"
 MD_OUT = TMP / "wf88-os2-control-packet.md"
 
@@ -139,40 +135,33 @@ def source_descriptor(path: Path, required: bool = True, max_age_hours: float | 
     }
 
 
-def summarize_wf87(governor: dict[str, Any]) -> dict[str, Any]:
-    summary = as_dict(governor.get("summary"))
+def summarize_alerts_os(
+    sql_validation: dict[str, Any],
+    quote_snapshot: dict[str, Any],
+    controller: dict[str, Any],
+    digest: dict[str, Any],
+    pivot: dict[str, Any],
+) -> dict[str, Any]:
+    controller_summary = as_dict(controller.get("summary"))
+    digest_summary = as_dict(digest.get("summary"))
+    quote_freshness = as_dict(quote_snapshot.get("freshness_summary"))
     return {
-        "source_status": governor.get("status"),
-        "runtime_status": summary.get("runtime_status"),
-        "shadow_threshold_met": summary.get("shadow_threshold_met"),
-        "reconciliation_maturity_met": summary.get("reconciliation_maturity_met"),
-        "shadow_scoreable_decision_count": summary.get("shadow_scoreable_decision_count"),
-        "assisted_filled_round_trips_all_time": summary.get("assisted_filled_round_trips_all_time"),
-        "required_assisted_filled_round_trips_for_phase_c_proposal": summary.get("required_assisted_filled_round_trips_for_phase_c_proposal"),
-        "phase_c_owner_review_eligible_now": summary.get("phase_c_owner_review_eligible_now"),
-        "phase_c_autonomous_paper_buy_ready": summary.get("phase_c_autonomous_paper_buy_ready"),
-        "execution_allowed": summary.get("execution_allowed"),
-        "next_safe_action": summary.get("next_safe_action"),
-    }
-
-
-def summarize_wf67(manager: dict[str, Any]) -> dict[str, Any]:
-    summary = as_dict(manager.get("summary"))
-    validation = as_dict(manager.get("validation"))
-    authority = as_dict(manager.get("authority"))
-    return {
-        "source_status": manager.get("status"),
-        "validation_status": validation.get("status"),
-        "candidate_card_count": summary.get("candidate_card_count"),
-        "blocked_candidate_count": summary.get("blocked_candidate_count"),
-        "conditional_ready_after_fresh_monday_quote_count": summary.get("conditional_ready_after_fresh_monday_quote_count"),
-        "ready_tickers": summary.get("ready_tickers"),
-        "blocked_tickers": summary.get("blocked_tickers"),
-        "repair_review_tickers": summary.get("repair_review_tickers"),
-        "paper_order_execution_allowed": authority.get("paper_order_execution_allowed"),
-        "live_trade_or_account_action_allowed": authority.get("live_trade_or_account_action_allowed"),
-        "owner_approval_inferred": authority.get("owner_approval_inferred"),
-        "operator_next_action": manager.get("operator_next_action"),
+        "guarded_sql_status": sql_validation.get("status"),
+        "guarded_sql_validation_status": as_dict(sql_validation.get("validation")).get("status"),
+        "quote_status": quote_snapshot.get("status"),
+        "quote_symbol_count": len(as_list(quote_snapshot.get("symbols_observed"))),
+        "quote_calendar_freshness_counts": as_dict(quote_freshness.get("calendar_freshness_counts")),
+        "controller_status": controller.get("status"),
+        "controller_validation_status": as_dict(controller.get("validation")).get("status"),
+        "controller_ticker_count": controller_summary.get("ticker_count"),
+        "recommendation_digest_status": digest.get("status"),
+        "recommendation_digest_validation_status": as_dict(digest.get("validation")).get("status"),
+        "recommendation_ticker_count": digest_summary.get("ticker_count"),
+        "alert_state_counts": as_dict(digest_summary.get("alert_state_counts")),
+        "freshness_review_tickers": as_list(digest_summary.get("freshness_review_tickers")),
+        "pivot_status": pivot.get("status"),
+        "pivot_validation_status": as_dict(pivot.get("validation")).get("status"),
+        "next_safe_action": "Use alert state, evidence freshness, and non-executing recommendation context for review.",
     }
 
 
@@ -203,23 +192,6 @@ def summarize_route_contraction(route_packet: dict[str, Any]) -> dict[str, Any]:
         "script_deletion_ready_now_count": summary.get("script_deletion_ready_now_count"),
         "delete_allowed_now_count": summary.get("delete_allowed_now_count"),
         "archive_allowed_now_count": summary.get("archive_allowed_now_count"),
-        "next_safe_action": summary.get("next_safe_action"),
-    }
-
-
-def summarize_source_open_classifier(classifier: dict[str, Any]) -> dict[str, Any]:
-    summary = as_dict(classifier.get("summary"))
-    return {
-        "source_status": classifier.get("status"),
-        "validation_status": as_dict(classifier.get("validation")).get("status"),
-        "source_open_blocked_count": summary.get("source_open_blocked_count"),
-        "default_runtime_blocker_count": summary.get("default_runtime_blocker_count"),
-        "implementation_blocker_count": summary.get("implementation_blocker_count"),
-        "active_sql_json_tier_repair_count": summary.get("active_sql_json_tier_repair_count"),
-        "below_stop_or_invalidation_review_only_count": summary.get("below_stop_or_invalidation_review_only_count"),
-        "monitor_only_context_count": summary.get("monitor_only_context_count"),
-        "legacy_42_deprecated_residue_count": summary.get("legacy_42_deprecated_residue_count"),
-        "unknown_needs_source_open_count": summary.get("unknown_needs_source_open_count"),
         "next_safe_action": summary.get("next_safe_action"),
     }
 
@@ -275,7 +247,6 @@ def summarize_recommendation_ledger(ledger: dict[str, Any]) -> dict[str, Any]:
         "validation_status": as_dict(ledger.get("validation")).get("status"),
         "tracked_row_count": summary.get("tracking_row_count", len(rows)),
         "pending_owner_decision_rows": summary.get("pending_owner_decision_rows"),
-        "pending_paper_card_rows": summary.get("pending_paper_card_rows"),
         "later_outcome_graded_rows": later_outcome_graded,
         "later_outcome_metric_scope": "durable_recommendation_outcome_ledger_max_of_preview_durable_and_grade_history",
         "current_preview_later_outcome_graded_rows": current_preview_later_outcome_graded,
@@ -286,50 +257,21 @@ def summarize_recommendation_ledger(ledger: dict[str, Any]) -> dict[str, Any]:
         "tracked_tickers": summary.get("tracked_tickers"),
         "event_subtype_counts": subtype_counts,
         "predictive_or_model_claims_allowed": summary.get("predictive_or_model_claims_allowed") is True,
-        "paper_or_live_execution_allowed": summary.get("paper_or_live_execution_allowed") is True,
     }
 
 
-def summarize_learning(wf55: dict[str, Any], finance_digest: dict[str, Any]) -> dict[str, Any]:
-    wf55_summary = as_dict(wf55.get("summary"))
+def summarize_learning(finance_digest: dict[str, Any]) -> dict[str, Any]:
+    outcomes = as_dict(finance_digest.get("recommendation_outcomes"))
+    grade_history = as_dict(outcomes.get("grade_history"))
     performance_claim = as_dict(finance_digest.get("performance_claim_status"))
-    decision_quality_claim = (
-        performance_claim.get("decision_quality_claim_allowed_now")
-        if "decision_quality_claim_allowed_now" in performance_claim
-        else wf55_summary.get("decision_quality_claim_allowed_now")
-    )
-    model_performance_claim = (
-        performance_claim.get("model_performance_claim_allowed_now")
-        if "model_performance_claim_allowed_now" in performance_claim
-        else performance_claim.get("predictive_skill_claim_allowed_now")
-    )
     return {
-        "wf55_status": wf55.get("status"),
-        "finance_digest_status": finance_digest.get("status"),
-        "decision_event_count": wf55_summary.get("decision_event_count"),
-        "measurement_grade_count": wf55_summary.get("measurement_grade_count"),
-        "clean_shadow_decision_count": wf55_summary.get("clean_shadow_decision_count"),
-        "shadow_threshold_met": wf55_summary.get("shadow_threshold_met"),
-        "scoreable_decision_count": wf55_summary.get("scoreable_decision_count"),
-        "pending_regular_session_followup_count": wf55_summary.get("pending_regular_session_followup_count"),
-        "decision_quality_claim_allowed_now": decision_quality_claim is True,
-        "model_performance_claim_allowed_now": model_performance_claim is True,
-        "claim_state": wf55_summary.get("claim_state"),
-    }
-
-
-def summarize_decision_os(wf85: dict[str, Any]) -> dict[str, Any]:
-    summary = as_dict(wf85.get("summary"))
-    return {
-        "source_status": wf85.get("status"),
-        "card_count": summary.get("card_count"),
-        "approval_card_draft_count": summary.get("approval_card_draft_count"),
-        "approval_gate_review_ready_count": summary.get("approval_gate_review_ready_count"),
-        "capital_review_ready_count": summary.get("capital_review_ready_count"),
-        "implementation_blocker_count": summary.get("implementation_blocker_count"),
-        "source_open_status_counts": summary.get("source_open_status_counts"),
-        "trade_grade_data_readiness_status": summary.get("trade_grade_data_readiness_status"),
-        "next_safe_action": summary.get("next_safe_action"),
+        "recommendation_digest_status": finance_digest.get("status"),
+        "recommendation_row_count": outcomes.get("recommendation_tracking_rows"),
+        "graded_recommendation_count": outcomes.get("outcome_grade_assigned_count"),
+        "grade_event_count": grade_history.get("assigned_grade_event_count"),
+        "tracked_ticker_count": outcomes.get("tracked_ticker_count"),
+        "predictive_skill_claim_allowed_now": performance_claim.get("predictive_skill_claim_allowed_now") is True,
+        "model_performance_claim_allowed_now": performance_claim.get("model_performance_claim_allowed_now") is True,
     }
 
 
@@ -486,73 +428,6 @@ def summarize_skill_workshop_guard(guard: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def summarize_finance_query_friction_guard(guard: dict[str, Any]) -> dict[str, Any]:
-    summary = as_dict(guard.get("summary"))
-    return {
-        "source_status": guard.get("status"),
-        "validation_status": as_dict(guard.get("validation")).get("status"),
-        "validation_warning_count": summary.get("validation_warning_count"),
-        "live_routing_tier_a_count": summary.get("live_routing_tier_a_count"),
-        "live_routing_tier_b_count": summary.get("live_routing_tier_b_count"),
-        "live_routing_tier_c_count": summary.get("live_routing_tier_c_count"),
-        "membership_scope_tier_a_count": summary.get("membership_scope_tier_a_count"),
-        "membership_scope_tier_b_count": summary.get("membership_scope_tier_b_count"),
-        "membership_scope_tier_c_count": summary.get("membership_scope_tier_c_count"),
-        "tier_b_delta_live_minus_membership": summary.get("tier_b_delta_live_minus_membership"),
-        "promotion_candidate_count": summary.get("promotion_candidate_count"),
-        "promotion_tier_c_attention_count": summary.get("promotion_tier_c_attention_count"),
-        "promotion_c_to_b_evidence_complete_count": summary.get("promotion_c_to_b_evidence_complete_count"),
-        "promotion_evidence_repair_count": summary.get("promotion_evidence_repair_count"),
-        "jsonl_valid_event_count": summary.get("jsonl_valid_event_count"),
-        "latest_source_day": summary.get("latest_source_day"),
-        "latest_source_day_event_count": summary.get("latest_source_day_event_count"),
-        "latest_source_day_single_sweep": summary.get("latest_source_day_single_sweep"),
-        "tier_a_b_band_numeric_collision_risk": summary.get("tier_a_b_band_numeric_collision_risk"),
-        "recommended_query_mode": summary.get("recommended_query_mode"),
-        "next_safe_action": summary.get("next_safe_action") or "Run the guard before WF78/WF88 tier-routing answers.",
-    }
-
-
-def summarize_finance_cache_frontdoor(frontdoor: dict[str, Any]) -> dict[str, Any]:
-    summary = as_dict(frontdoor.get("summary"))
-    boundary = as_dict(frontdoor.get("authority_boundary"))
-    return {
-        "source_status": frontdoor.get("status"),
-        "validation_status": as_dict(frontdoor.get("validation")).get("status"),
-        "ticker_count": summary.get("ticker_count"),
-        "safe_cached_review_answer_count": summary.get("safe_cached_review_answer_count"),
-        "safe_material_claim_from_cache_count": summary.get("safe_material_claim_from_cache_count"),
-        "material_claim_source_open_required_count": summary.get("material_claim_source_open_required_count"),
-        "refresh_or_source_open_needed_count": summary.get("refresh_or_source_open_needed_count"),
-        "source_open_status_counts": summary.get("source_open_status_counts"),
-        "decision_state_counts": summary.get("decision_state_counts"),
-        "timing_state_counts": summary.get("timing_state_counts"),
-        "trade_readiness_state_counts": summary.get("trade_readiness_state_counts"),
-        "authority_state_counts": summary.get("authority_state_counts"),
-        "sql_first_truth_production_retained": boundary.get("sql_first_truth_production_retained"),
-        "cache_first_chat_consumption": boundary.get("cache_first_chat_consumption"),
-        "source_open_required_for_material_claims": boundary.get("source_open_required_for_material_claims"),
-        "next_safe_action": summary.get("next_safe_action") or "Use finance-cache-frontdoor for lightweight chat answers before deeper WF84/WF85 drills.",
-    }
-
-
-def summarize_route_readiness_p3(packet: dict[str, Any]) -> dict[str, Any]:
-    summary = as_dict(packet.get("summary"))
-    validation = as_dict(packet.get("validation"))
-    return {
-        "source_status": packet.get("status"),
-        "validation_status": validation.get("status"),
-        "market_window_state": summary.get("market_window_state"),
-        "market_holiday": summary.get("market_holiday"),
-        "market_window_refresh_required_count": summary.get("market_window_refresh_required_count"),
-        "category_counts": summary.get("category_counts"),
-        "top_review_queue_tickers": summary.get("top_review_queue_tickers"),
-        "approval_card_candidate_owner_gated_tickers": summary.get("approval_card_candidate_owner_gated_tickers"),
-        "in_band_review_monitor_tickers": summary.get("in_band_review_monitor_tickers"),
-        "next_safe_action": summary.get("next_safe_action") or "Use P3 ranking for review-only route triage; market-window refresh and owner gates remain required.",
-    }
-
-
 def _blocked_component_status(value: Any) -> bool:
     normalized = str(value or "").strip().lower()
     return not normalized or normalized == "error" or "blocked" in normalized
@@ -645,23 +520,17 @@ def _advanced_pilot_component_state(wiki: dict[str, Any]) -> str:
 
 
 def canonical_action_state(packet: dict[str, Any]) -> list[dict[str, Any]]:
-    wf87 = as_dict(packet.get("wf87_runtime_governor"))
-    wf67 = as_dict(packet.get("wf67_paper_guardrail"))
+    alerts_os = as_dict(packet.get("finance_alerts_os"))
     cleanup = as_dict(packet.get("retired_surface_cleanup"))
     contraction = as_dict(packet.get("route_contraction"))
-    classifier = as_dict(packet.get("source_open_residue_classifier"))
     readiness = as_dict(packet.get("delete_readiness"))
     recommendation_ledger = as_dict(packet.get("recommendation_outcome_ledger"))
-    learning = as_dict(packet.get("finance_learning_loop"))
-    decision_os = as_dict(packet.get("wf85_decision_os"))
+    learning = as_dict(packet.get("recommendation_learning_loop"))
     ops = as_dict(packet.get("ops_control"))
     wiki = as_dict(packet.get("wiki_synthesis"))
     loop_trace = as_dict(packet.get("wf74_wf88_loop_trace"))
     long_work = as_dict(packet.get("long_work_job_status"))
     skill_guard = as_dict(packet.get("skill_workshop_body_guard"))
-    finance_query_guard = as_dict(packet.get("finance_query_friction_guard"))
-    finance_cache = as_dict(packet.get("finance_cache_frontdoor"))
-    route_readiness_p3 = as_dict(packet.get("wf78_route_readiness_p3"))
     tmp_ready = int(readiness.get("tmp_delete_ready_after_owner_approval_count") or 0)
     tmp_applied = int(readiness.get("tmp_delete_already_applied_count") or 0)
     delete_state = "approved_tmp_microbatch_applied" if tmp_ready == 0 and tmp_applied else "owner_ready_no_apply"
@@ -673,24 +542,17 @@ def canonical_action_state(packet: dict[str, Any]) -> list[dict[str, Any]]:
     )
     rows = [
         {
-            "id": "wf87-runtime-governor-fail-closed",
-            "owner_workflow": "WF87",
-            "state": "blocked_owner_gated",
-            "summary": "WF87 maturity improved but execution-time proof is fail-closed and Phase B round trips are not mature.",
-            "next_action": wf87.get("next_safe_action"),
-            "authority": "review_only_no_execution",
-        },
-        {
-            "id": "wf67-paper-guardrail-blocked-cards",
-            "owner_workflow": "WF67",
-            "state": "blocked_owner_gated" if int(wf67.get("blocked_candidate_count") or 0) else "guardrail_visible",
+            "id": "finance-alerts-os-evidence-chain",
+            "owner_workflow": "WF84-WF85",
+            "state": "clean" if alerts_os.get("pivot_validation_status") == "ok" else "followup_required",
             "summary": (
-                f"WF67 manager cards: {wf67.get('candidate_card_count')}; "
-                f"blocked candidates: {wf67.get('blocked_candidate_count')}; "
-                f"ready tickers: {wf67.get('ready_tickers') or []}."
+                f"Guarded SQL: {alerts_os.get('guarded_sql_validation_status')}; "
+                f"quotes: {alerts_os.get('quote_symbol_count')}; "
+                f"alert controller: {alerts_os.get('controller_validation_status')}; "
+                f"recommendation digest: {alerts_os.get('recommendation_digest_validation_status')}."
             ),
-            "next_action": wf67.get("operator_next_action") or "Refresh WF67 guard proof only when an exact paper action is being prepared.",
-            "authority": "paper_guardrail_only_exact_owner_approval_required",
+            "next_action": alerts_os.get("next_safe_action"),
+            "authority": "review_only_alerts_and_nonexecuting_recommendations",
         },
         {
             "id": "wf88-cleanup-route-contraction",
@@ -699,14 +561,6 @@ def canonical_action_state(packet: dict[str, Any]) -> list[dict[str, Any]]:
             "summary": f"{cleanup.get('script_route_contraction_exact_file_count')} exact route-contraction files identified; {contraction.get('contracted_or_already_narrowed_count')} are contracted or already narrowed; script deletion ready now is {contraction.get('script_deletion_ready_now_count')}.",
             "next_action": contraction.get("next_safe_action") or "Lease exact route-contraction files; keep deletion/archive/apply behind separate owner approval.",
             "authority": "review_only_no_delete_archive_apply",
-        },
-        {
-            "id": "wf88-source-open-residue-classification",
-            "owner_workflow": "WF88",
-            "state": "default_runtime_drag_removed",
-            "summary": f"Source-open blocked rows: {classifier.get('source_open_blocked_count')}; default runtime blockers: {classifier.get('default_runtime_blocker_count')}; active SQL/JSON repair rows: {classifier.get('active_sql_json_tier_repair_count')}.",
-            "next_action": classifier.get("next_safe_action"),
-            "authority": "review_only_finance_domain_classification_no_delete",
         },
         {
             "id": "wf88-delete-readiness-owner-packets",
@@ -720,7 +574,7 @@ def canonical_action_state(packet: dict[str, Any]) -> list[dict[str, Any]]:
             "id": "wf88-learning-loop-measurement",
             "owner_workflow": "WF88",
             "state": "measure_not_claim",
-            "summary": f"{learning.get('scoreable_decision_count')} scoreable decisions; model/performance claims remain disabled unless explicit packet allows them.",
+            "summary": f"{learning.get('graded_recommendation_count')} graded recommendations; predictive/model claims remain disabled unless a separate evidence gate allows them.",
             "next_action": "Keep grading outcomes and connect finance-call intake before making quality claims.",
             "authority": "learning_signal_only",
         },
@@ -819,46 +673,12 @@ def canonical_action_state(packet: dict[str, Any]) -> list[dict[str, Any]]:
             "authority": "review_only_guard_route_no_duplicate_script",
         },
         {
-            "id": "wf88-finance-query-friction-guard",
-            "owner_workflow": "WF88",
-            "state": "guard_active_review_only" if finance_query_guard.get("validation_status") == "ok" else "blocked",
-            "summary": (
-                f"Live routing B count: {finance_query_guard.get('live_routing_tier_b_count')}; "
-                f"membership-scope B count: {finance_query_guard.get('membership_scope_tier_b_count')}; "
-                f"valid JSONL events: {finance_query_guard.get('jsonl_valid_event_count')}; "
-                f"latest source-day single sweep: {finance_query_guard.get('latest_source_day_single_sweep')}."
-            ),
-            "next_action": finance_query_guard.get("next_safe_action"),
-            "authority": "review_only_query_guard_no_sql_or_routing_mutation",
-        },
-        {
-            "id": "finance-cache-frontdoor-chat-route",
-            "owner_workflow": "WF88",
-            "state": "cache_first_chat_ready" if finance_cache.get("validation_status") == "ok" else "blocked",
-            "summary": (
-                f"Cache front door tickers: {finance_cache.get('ticker_count')}; "
-                f"safe cached review answers: {finance_cache.get('safe_cached_review_answer_count')}; "
-                f"safe material-claim cache rows: {finance_cache.get('safe_material_claim_from_cache_count')}; "
-                f"material source-open required: {finance_cache.get('material_claim_source_open_required_count')}."
-            ),
-            "next_action": finance_cache.get("next_safe_action"),
-            "authority": "review_only_chat_facade_sql_first_truth_source_open_material_claims",
-        },
-        {
             "id": "recommendation-outcome-backlog",
             "owner_workflow": "WF88",
             "state": "ungraded_backlog",
             "summary": f"Recommendation tracked rows: {recommendation_ledger.get('tracked_row_count')}; pending owner decisions: {recommendation_ledger.get('pending_owner_decision_rows')}; later-outcome graded rows: {recommendation_ledger.get('later_outcome_graded_rows')}.",
             "next_action": "Refresh and grade outcomes before making performance claims.",
             "authority": "review_only_measurement_no_model_claim",
-        },
-        {
-            "id": "wf85-source-open-repair-queue",
-            "owner_workflow": "WF85",
-            "state": "repair_queue",
-            "summary": f"WF85 source-open blocked rows: {classifier.get('source_open_blocked_count')}; default runtime blockers: {classifier.get('default_runtime_blocker_count')}; active SQL/JSON repair rows: {classifier.get('active_sql_json_tier_repair_count')}; Decision OS status is {decision_os.get('source_status')}.",
-            "next_action": decision_os.get("next_safe_action"),
-            "authority": "review_only_decision_packet",
         },
         {
             "id": "improvement-ledger-open-followups",
@@ -873,16 +693,16 @@ def canonical_action_state(packet: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def build_packet() -> dict[str, Any]:
-    governor = load_optional_json(WF87_GOVERNOR)
-    wf67_manager = load_optional_json(WF67_MANAGER)
     cleanup = load_optional_json(WF88_CLEANUP_PLAN)
     route_contraction = load_optional_json(WF88_ROUTE_CONTRACTION)
-    source_open_classifier = load_optional_json(WF88_SOURCE_OPEN_CLASSIFIER)
     delete_readiness = load_optional_json(WF88_DELETE_READINESS)
     recommendation_ledger = load_optional_json(RECOMMENDATION_LEDGER)
-    wf55 = load_optional_json(WF55_LEDGER)
     finance_digest = load_optional_json(FINANCE_DIGEST)
-    wf85 = load_optional_json(WF85_PACKET)
+    finance_sql_validation = load_optional_json(FINANCE_SQL_VALIDATION)
+    quote_snapshot = load_optional_json(QUOTE_SNAPSHOT)
+    alert_controller = load_optional_json(ALERT_CONTROLLER)
+    alert_digest = load_optional_json(ALERT_DIGEST)
+    alerts_os_pivot = load_optional_json(ALERTS_OS_PIVOT_VALIDATOR)
     wf74 = load_optional_json(WF74_DOCKET)
     loop_trace = load_optional_json(WF74_WF88_LOOP_TRACE)
     long_work = load_optional_json(LONG_WORK_JOB_STATUS)
@@ -892,9 +712,6 @@ def build_packet() -> dict[str, Any]:
     otel = load_optional_json(OTEL_CONTROL)
     wiki_synthesis = load_optional_json(WF88_WIKI_SYNTHESIS)
     skill_workshop_guard = load_optional_json(SKILL_WORKSHOP_BODY_GUARD)
-    finance_query_guard = load_optional_json(WF88_FINANCE_QUERY_FRICTION_GUARD)
-    finance_cache_frontdoor = load_optional_json(FINANCE_CACHE_FRONTDOOR)
-    route_readiness_p3 = load_optional_json(WF78_ROUTE_READINESS_P3)
     packet = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -903,16 +720,16 @@ def build_packet() -> dict[str, Any]:
         "purpose": "Thin WF88 into the measured OS 2.0 routing, learning, cleanup-planning, and action-state control layer.",
         "authority_boundary": AUTHORITY_BOUNDARY,
         "inputs": {
-            "wf87_runtime_governor": source_descriptor(WF87_GOVERNOR, max_age_hours=24),
-            "wf67_paper_guardrail_manager": source_descriptor(WF67_MANAGER, max_age_hours=24),
+            "guarded_sql_validation": source_descriptor(FINANCE_SQL_VALIDATION, max_age_hours=24),
+            "quote_snapshot": source_descriptor(QUOTE_SNAPSHOT, max_age_hours=24),
+            "alert_controller": source_descriptor(ALERT_CONTROLLER, max_age_hours=24),
+            "recommendation_digest": source_descriptor(ALERT_DIGEST, max_age_hours=24),
+            "alerts_os_pivot_validator": source_descriptor(ALERTS_OS_PIVOT_VALIDATOR, max_age_hours=24),
             "wf88_retired_surface_cleanup_plan": source_descriptor(WF88_CLEANUP_PLAN, max_age_hours=24),
             "wf88_route_contraction_packet": source_descriptor(WF88_ROUTE_CONTRACTION, required=False, max_age_hours=24),
-            "wf88_source_open_residue_classifier": source_descriptor(WF88_SOURCE_OPEN_CLASSIFIER, max_age_hours=24),
             "wf88_delete_readiness_packet": source_descriptor(WF88_DELETE_READINESS, max_age_hours=24),
             "recommendation_outcome_ledger_current": source_descriptor(RECOMMENDATION_LEDGER, max_age_hours=168),
-            "wf55_autonomy_outcome_ledger": source_descriptor(WF55_LEDGER, max_age_hours=72),
             "finance_decision_performance_digest": source_descriptor(FINANCE_DIGEST, max_age_hours=72),
-            "wf85_decision_os_review_packet": source_descriptor(WF85_PACKET, max_age_hours=24),
             "wf74_decision_docket": source_descriptor(WF74_DOCKET, max_age_hours=24),
             "wf74_wf88_loop_trace": source_descriptor(WF74_WF88_LOOP_TRACE, max_age_hours=24),
             "long_work_job_status": source_descriptor(LONG_WORK_JOB_STATUS, max_age_hours=24),
@@ -922,49 +739,40 @@ def build_packet() -> dict[str, Any]:
             "otel_ops_control": source_descriptor(OTEL_CONTROL, max_age_hours=4),
             "wf88_wiki_synthesis_packet": source_descriptor(WF88_WIKI_SYNTHESIS, max_age_hours=24),
             "skill_workshop_body_guard": source_descriptor(SKILL_WORKSHOP_BODY_GUARD, max_age_hours=24),
-            "wf88_finance_query_friction_guard": source_descriptor(WF88_FINANCE_QUERY_FRICTION_GUARD, max_age_hours=24),
-            "finance_cache_frontdoor": source_descriptor(FINANCE_CACHE_FRONTDOOR, max_age_hours=12),
-            "wf78_route_readiness_p3_market_ranking": source_descriptor(WF78_ROUTE_READINESS_P3, max_age_hours=12),
         },
         "unified_routing_contract": {
-            "wf67_to_wf87": "WF67 remains the paper-only execution guardrail; WF87 may consume its readiness only as fail-closed runtime proof, not as approval.",
-            "wf85_to_wf87": "WF85 emits review-only decision candidates; WF87 may consume them only for paper-autonomy runtime eligibility proof.",
-            "wf87_to_wf88": "WF87 exports runtime eligibility, blockers, and outcome signals; WF88 owns grading, experiments, cleanup, and OS-wide action state.",
+            "finance_to_wf88": "Guarded SQL, explicit quote proof, alert evaluation, and the non-executing recommendation digest provide WF88's only active finance inputs.",
             "wf74_to_wf88": "WF74 turns repeated failures and measured lessons into proposal-only improvement work; WF88 summarizes those actions and keeps them routed through PM or owner-gated packets.",
             "wf74_wf88_loop_trace": "The loop trace stitches each current WF74 opportunity through router, docket, PM job, lane, closeout proof, memory refs, and WF88 consumer freshness.",
             "long_work_job_status": "Long-running local jobs must publish checkpoint/status rows with bounded resume commands so future sessions can resume or close them without waiting on one foreground tool call.",
-            "wf88_to_wf67": "WF88 may surface WF67-ready or blocked card state, but it must never approve, submit, cancel, sell, refresh a kill switch, or infer paper execution authority.",
             "wf88_to_work_queue": "WF88 produces canonical action-state rows and route-contraction proposals; apply/delete/archive/cron mutation require separate approval packets.",
             "wf88_to_wiki": "WF88 wiki synthesis turns control/eval/proposal state into durable source-linked pages for new sessions, without canon or apply authority.",
             "do_not_duplicate": [
-                "WF87 must not own OS-wide learning, cleanup, coding outcomes, behavior portability, or dashboards.",
-                "WF67 must remain the only paper execution guardrail; WF88 and WF87 may only consume WF67 status as review-only proof.",
-                "WF88 must not approve or execute paper/live brokerage actions.",
+                "Retired finance workflow packets must not re-enter WF88 inputs, summaries, or action rows.",
                 "WF74 must not create self-modification authority; WF88 may route WF74 lessons only as proposal, validator, PM, Skill Workshop, owner-packet, or monitor-only rows.",
                 "Long-work status packets may recommend bounded resume commands; they must not mutate cron schedules, runtime config, finance canon, portfolio state, execution surfaces, or owner approvals.",
                 "The wiki layer must not become a second canon, approval, portfolio, execution, or model-training source.",
                 "Skill Workshop body-replacement prevention must use scripts/skill_workshop_body_guard.py, not a duplicate guard or parallel procedure.",
-                "WF88 finance-query guard must label live routing, membership scope, band completeness, and scheduled-sweep event counts instead of collapsing them into one number.",
-                "Finance cache front door is a chat facade only: SQL-first for truth production, cache-first for chat consumption, source-open for material claims.",
+                "Finance evidence must retain guarded SQL lineage, explicit quote scope, freshness, alert state, and non-executing recommendation boundaries.",
             ],
         },
-        "wf87_runtime_governor": summarize_wf87(governor),
-        "wf67_paper_guardrail": summarize_wf67(wf67_manager),
+        "finance_alerts_os": summarize_alerts_os(
+            finance_sql_validation,
+            quote_snapshot,
+            alert_controller,
+            alert_digest,
+            alerts_os_pivot,
+        ),
         "retired_surface_cleanup": summarize_cleanup(cleanup),
         "route_contraction": summarize_route_contraction(route_contraction),
-        "source_open_residue_classifier": summarize_source_open_classifier(source_open_classifier),
         "delete_readiness": summarize_delete_readiness(delete_readiness),
         "recommendation_outcome_ledger": summarize_recommendation_ledger(recommendation_ledger),
-        "finance_learning_loop": summarize_learning(wf55, finance_digest),
-        "wf85_decision_os": summarize_decision_os(wf85),
+        "recommendation_learning_loop": summarize_learning(finance_digest),
         "ops_control": summarize_ops(pm, cron, otel, improvement, wf74),
         "wiki_synthesis": summarize_wiki_synthesis(wiki_synthesis),
         "wf74_wf88_loop_trace": summarize_loop_trace(loop_trace),
         "long_work_job_status": summarize_long_work_jobs(long_work),
         "skill_workshop_body_guard": summarize_skill_workshop_guard(skill_workshop_guard),
-        "finance_query_friction_guard": summarize_finance_query_friction_guard(finance_query_guard),
-        "finance_cache_frontdoor": summarize_finance_cache_frontdoor(finance_cache_frontdoor),
-        "wf78_route_readiness_p3": summarize_route_readiness_p3(route_readiness_p3),
         "route_contraction_policy": {
             "default": "reduce default runtime surfaces before deleting files",
             "first_targets": [
@@ -994,22 +802,17 @@ def build_packet() -> dict[str, Any]:
 
 
 def summarize_packet(packet: dict[str, Any]) -> dict[str, Any]:
-    wf87 = as_dict(packet.get("wf87_runtime_governor"))
-    wf67 = as_dict(packet.get("wf67_paper_guardrail"))
+    alerts_os = as_dict(packet.get("finance_alerts_os"))
     cleanup = as_dict(packet.get("retired_surface_cleanup"))
     contraction = as_dict(packet.get("route_contraction"))
-    classifier = as_dict(packet.get("source_open_residue_classifier"))
     readiness = as_dict(packet.get("delete_readiness"))
     recommendation = as_dict(packet.get("recommendation_outcome_ledger"))
-    learning = as_dict(packet.get("finance_learning_loop"))
+    learning = as_dict(packet.get("recommendation_learning_loop"))
     ops = as_dict(packet.get("ops_control"))
     wiki = as_dict(packet.get("wiki_synthesis"))
     loop_trace = as_dict(packet.get("wf74_wf88_loop_trace"))
     long_work = as_dict(packet.get("long_work_job_status"))
     skill_guard = as_dict(packet.get("skill_workshop_body_guard"))
-    finance_query_guard = as_dict(packet.get("finance_query_friction_guard"))
-    finance_cache = as_dict(packet.get("finance_cache_frontdoor"))
-    route_readiness_p3 = as_dict(packet.get("wf78_route_readiness_p3"))
     actions = as_list(packet.get("canonical_action_state"))
     blocked = [row for row in actions if as_dict(row).get("state") in {"blocked", "blocked_owner_gated", "followup_required", "repair_queue"}]
     input_rows = as_dict(packet.get("inputs"))
@@ -1022,23 +825,20 @@ def summarize_packet(packet: dict[str, Any]) -> dict[str, Any]:
         "stale_input_count": len(stale_inputs),
         "stale_inputs": stale_inputs,
         "missing_required_input_count": len(missing_required),
-        "wf87_runtime_status": wf87.get("runtime_status"),
-        "wf87_phase_c_owner_review_eligible_now": wf87.get("phase_c_owner_review_eligible_now"),
-        "wf87_execution_allowed": wf87.get("execution_allowed"),
-        "wf67_manager_status": wf67.get("source_status"),
-        "wf67_manager_validation_status": wf67.get("validation_status"),
-        "wf67_candidate_card_count": wf67.get("candidate_card_count"),
-        "wf67_blocked_candidate_count": wf67.get("blocked_candidate_count"),
-        "wf67_ready_tickers": wf67.get("ready_tickers"),
+        "finance_guarded_sql_validation_status": alerts_os.get("guarded_sql_validation_status"),
+        "finance_quote_status": alerts_os.get("quote_status"),
+        "finance_quote_symbol_count": alerts_os.get("quote_symbol_count"),
+        "finance_alert_controller_validation_status": alerts_os.get("controller_validation_status"),
+        "finance_recommendation_digest_validation_status": alerts_os.get("recommendation_digest_validation_status"),
+        "finance_recommendation_ticker_count": alerts_os.get("recommendation_ticker_count"),
+        "finance_alert_state_counts": alerts_os.get("alert_state_counts"),
+        "finance_pivot_validation_status": alerts_os.get("pivot_validation_status"),
         "cleanup_first_tmp_microbatch_candidate_count": cleanup.get("first_tmp_microbatch_candidate_count"),
         "cleanup_route_contraction_exact_file_count": cleanup.get("script_route_contraction_exact_file_count"),
         "route_contraction_validation_status": contraction.get("validation_status"),
         "route_contraction_contracted_or_narrowed_count": contraction.get("contracted_or_already_narrowed_count"),
         "route_contraction_needs_contraction_count": contraction.get("needs_route_contraction_count"),
         "script_deletion_ready_now_count": contraction.get("script_deletion_ready_now_count"),
-        "source_open_blocked_count": classifier.get("source_open_blocked_count"),
-        "source_open_default_runtime_blocker_count": classifier.get("default_runtime_blocker_count"),
-        "active_sql_json_tier_repair_count": classifier.get("active_sql_json_tier_repair_count"),
         "tmp_delete_ready_after_owner_approval_count": readiness.get("tmp_delete_ready_after_owner_approval_count"),
         "tmp_delete_already_applied_count": readiness.get("tmp_delete_already_applied_count"),
         "db_archive_ready_after_owner_approval_count": readiness.get("db_archive_ready_after_owner_approval_count"),
@@ -1049,7 +849,7 @@ def summarize_packet(packet: dict[str, Any]) -> dict[str, Any]:
         "recommendation_current_preview_later_outcome_graded_rows": recommendation.get("current_preview_later_outcome_graded_rows"),
         "recommendation_durable_later_outcome_graded_rows": recommendation.get("durable_later_outcome_graded_rows"),
         "recommendation_grade_history_graded_ledger_event_count": recommendation.get("grade_history_graded_ledger_event_count"),
-        "scoreable_decision_count": learning.get("scoreable_decision_count"),
+        "graded_recommendation_count": learning.get("graded_recommendation_count"),
         "model_performance_claim_allowed_now": learning.get("model_performance_claim_allowed_now"),
         "pm_status": ops.get("pm_status"),
         "cron_status": ops.get("cron_status"),
@@ -1143,37 +943,7 @@ def summarize_packet(packet: dict[str, Any]) -> dict[str, Any]:
         "skill_workshop_body_guard_validation_status": skill_guard.get("validation_status"),
         "skill_workshop_body_guard_critical_count": skill_guard.get("critical_count"),
         "skill_workshop_body_guard_live_error_count": skill_guard.get("live_error_count"),
-        "finance_query_guard_status": finance_query_guard.get("source_status"),
-        "finance_query_guard_validation_status": finance_query_guard.get("validation_status"),
-        "finance_query_guard_live_tier_b_count": finance_query_guard.get("live_routing_tier_b_count"),
-        "finance_query_guard_membership_tier_b_count": finance_query_guard.get("membership_scope_tier_b_count"),
-        "finance_query_guard_tier_b_delta_live_minus_membership": finance_query_guard.get("tier_b_delta_live_minus_membership"),
-        "finance_query_guard_valid_event_count": finance_query_guard.get("jsonl_valid_event_count"),
-        "finance_query_guard_latest_source_day_single_sweep": finance_query_guard.get("latest_source_day_single_sweep"),
-        "finance_query_guard_band_collision_risk": finance_query_guard.get("tier_a_b_band_numeric_collision_risk"),
-        "finance_cache_frontdoor_status": finance_cache.get("source_status"),
-        "finance_cache_frontdoor_validation_status": finance_cache.get("validation_status"),
-        "finance_cache_frontdoor_ticker_count": finance_cache.get("ticker_count"),
-        "finance_cache_frontdoor_safe_cached_review_answer_count": finance_cache.get("safe_cached_review_answer_count"),
-        "finance_cache_frontdoor_safe_material_claim_from_cache_count": finance_cache.get("safe_material_claim_from_cache_count"),
-        "finance_cache_frontdoor_material_source_open_required_count": finance_cache.get("material_claim_source_open_required_count"),
-        "finance_cache_frontdoor_refresh_or_source_open_needed_count": finance_cache.get("refresh_or_source_open_needed_count"),
-        "finance_cache_frontdoor_timing_state_counts": finance_cache.get("timing_state_counts"),
-        "finance_cache_frontdoor_trade_readiness_state_counts": finance_cache.get("trade_readiness_state_counts"),
-        "finance_cache_frontdoor_authority_state_counts": finance_cache.get("authority_state_counts"),
-        "wf78_route_readiness_p3_status": route_readiness_p3.get("source_status"),
-        "wf78_route_readiness_p3_validation_status": route_readiness_p3.get("validation_status"),
-        "wf78_route_readiness_p3_market_window": route_readiness_p3.get("market_window_state"),
-        "wf78_route_readiness_p3_market_holiday": route_readiness_p3.get("market_holiday"),
-        "wf78_route_readiness_p3_market_refresh_required_count": route_readiness_p3.get("market_window_refresh_required_count"),
-        "wf78_route_readiness_p3_category_counts": route_readiness_p3.get("category_counts"),
-        "wf78_route_readiness_p3_top_review_queue_tickers": route_readiness_p3.get("top_review_queue_tickers"),
-        "wf78_route_readiness_p3_approval_card_candidate_owner_gated_tickers": route_readiness_p3.get("approval_card_candidate_owner_gated_tickers"),
-        "wf78_route_readiness_p3_in_band_review_monitor_tickers": route_readiness_p3.get("in_band_review_monitor_tickers"),
-        "finance_cache_frontdoor_sql_first_retained": finance_cache.get("sql_first_truth_production_retained"),
-        "finance_cache_frontdoor_cache_first_chat": finance_cache.get("cache_first_chat_consumption"),
-        "finance_cache_frontdoor_source_open_material_claims": finance_cache.get("source_open_required_for_material_claims"),
-        "next_safe_action": "Use WF87's runtime packet for paper-autonomy proof and WF88's cleanup/action rows for route contraction. No delete/archive/apply/execution.",
+        "next_safe_action": "Use active alert evidence and WF88's non-finance cleanup/action rows. No delete/archive/apply/execution.",
     }
 
 
@@ -1211,16 +981,17 @@ def validate_packet(packet: dict[str, Any]) -> dict[str, Any]:
             warnings.append(f"stale_input:{name}:age_hours={desc.get('age_hours')}:max_age_hours={desc.get('max_age_hours')}")
         if desc.get("freshness_status") == "unknown_generated_at" and desc.get("required"):
             warnings.append(f"unknown_generated_at:{name}")
-    if as_dict(packet.get("wf87_runtime_governor")).get("execution_allowed") is not False:
-        errors.append("wf87_execution_allowed_must_be_false")
-    wf67 = as_dict(packet.get("wf67_paper_guardrail"))
-    if wf67:
-        if wf67.get("paper_order_execution_allowed") is not False:
-            errors.append("wf67_paper_order_execution_allowed_must_be_false")
-        if wf67.get("live_trade_or_account_action_allowed") is not False:
-            errors.append("wf67_live_trade_or_account_action_allowed_must_be_false")
-        if wf67.get("owner_approval_inferred") is not False:
-            errors.append("wf67_owner_approval_inferred_must_be_false")
+    alerts_os = as_dict(packet.get("finance_alerts_os"))
+    for key in (
+        "guarded_sql_validation_status",
+        "controller_validation_status",
+        "recommendation_digest_validation_status",
+        "pivot_validation_status",
+    ):
+        if alerts_os.get(key) != "ok":
+            errors.append(f"finance_alerts_os_{key}_must_be_ok")
+    if alerts_os.get("quote_status") != "ok":
+        errors.append("finance_alerts_os_quote_status_must_be_ok")
     cleanup = as_dict(packet.get("retired_surface_cleanup"))
     contraction = as_dict(packet.get("route_contraction"))
     if cleanup.get("delete_allowed_now_count") not in (0, None):
@@ -1229,7 +1000,7 @@ def validate_packet(packet: dict[str, Any]) -> dict[str, Any]:
         errors.append("cleanup_archive_allowed_now_count_must_be_zero")
     if len(as_list(packet.get("canonical_action_state"))) == 0:
         errors.append("canonical_action_state_empty")
-    if as_dict(packet.get("finance_learning_loop")).get("model_performance_claim_allowed_now") is True:
+    if as_dict(packet.get("recommendation_learning_loop")).get("model_performance_claim_allowed_now") is True:
         warnings.append("model_performance_claim_allowed_now_true_review_required")
     if cleanup.get("script_route_contraction_exact_file_count") in (None, 0):
         warnings.append("no_route_contraction_files_available")
@@ -1239,9 +1010,6 @@ def validate_packet(packet: dict[str, Any]) -> dict[str, Any]:
         errors.append("route_contraction_archive_allowed_now_count_must_be_zero")
     if contraction and contraction.get("script_deletion_ready_now_count") not in (0, None):
         errors.append("route_contraction_script_deletion_ready_now_count_must_be_zero")
-    classifier = as_dict(packet.get("source_open_residue_classifier"))
-    if classifier and classifier.get("default_runtime_blocker_count") not in (0, None):
-        errors.append("source_open_default_runtime_blocker_count_must_be_zero")
     readiness = as_dict(packet.get("delete_readiness"))
     if readiness and readiness.get("delete_or_archive_performed") is True:
         errors.append("delete_readiness_must_not_perform_delete_or_archive")
@@ -1290,26 +1058,6 @@ def validate_packet(packet: dict[str, Any]) -> dict[str, Any]:
             errors.append("skill_workshop_body_guard_critical_count_must_be_zero")
         if int(skill_guard.get("live_error_count") or 0):
             errors.append("skill_workshop_body_guard_live_error_count_must_be_zero")
-    finance_query_guard = as_dict(packet.get("finance_query_friction_guard"))
-    if finance_query_guard:
-        if finance_query_guard.get("validation_status") != "ok":
-            errors.append("finance_query_friction_guard_validation_must_be_ok")
-    finance_cache = as_dict(packet.get("finance_cache_frontdoor"))
-    if finance_cache:
-        if finance_cache.get("validation_status") != "ok":
-            errors.append("finance_cache_frontdoor_validation_must_be_ok")
-        if finance_cache.get("sql_first_truth_production_retained") is not True:
-            errors.append("finance_cache_frontdoor_sql_first_truth_must_be_retained")
-        if finance_cache.get("cache_first_chat_consumption") is not True:
-            errors.append("finance_cache_frontdoor_cache_first_chat_must_be_true")
-        if finance_cache.get("source_open_required_for_material_claims") is not True:
-            errors.append("finance_cache_frontdoor_source_open_material_claims_must_be_true")
-    route_readiness_p3 = as_dict(packet.get("wf78_route_readiness_p3"))
-    if route_readiness_p3:
-        if route_readiness_p3.get("source_status") != "ok":
-            errors.append("wf78_route_readiness_p3_status_must_be_ok")
-        if route_readiness_p3.get("validation_status") == "error":
-            errors.append("wf78_route_readiness_p3_validation_error")
     return {
         "status": "blocked" if errors else ("warning" if warnings else "ok"),
         "errors": errors,
@@ -1319,31 +1067,27 @@ def validate_packet(packet: dict[str, Any]) -> dict[str, Any]:
 
 def render_markdown(packet: dict[str, Any]) -> str:
     summary = as_dict(packet.get("summary"))
-    wf87 = as_dict(packet.get("wf87_runtime_governor"))
-    wf67 = as_dict(packet.get("wf67_paper_guardrail"))
+    alerts_os = as_dict(packet.get("finance_alerts_os"))
     cleanup = as_dict(packet.get("retired_surface_cleanup"))
     contraction = as_dict(packet.get("route_contraction"))
-    finance_query_guard = as_dict(packet.get("finance_query_friction_guard"))
-    finance_cache = as_dict(packet.get("finance_cache_frontdoor"))
-    route_readiness_p3 = as_dict(packet.get("wf78_route_readiness_p3"))
     long_work = as_dict(packet.get("long_work_job_status"))
     lines = [
         "# WF88 OS 2.0 Control Packet",
         "",
         "## Verdict",
         "",
-        "WF88 is the broad learning, cleanup-planning, and action-state layer. WF87 is now a narrower paper-autonomy runtime governor underneath it.",
+        "WF88 is the broad learning, cleanup-planning, and action-state layer. Finance enters only through active alert and non-executing recommendation proofs.",
         "",
         "## Summary",
         "",
         f"- Status: `{summary.get('status')}`",
         f"- Canonical action rows: `{summary.get('canonical_action_count')}`",
         f"- Blocked/follow-up rows: `{summary.get('blocked_or_followup_action_count')}`",
-        f"- WF87 runtime status: `{summary.get('wf87_runtime_status')}`",
-        f"- WF87 Phase C owner-review eligible now: `{summary.get('wf87_phase_c_owner_review_eligible_now')}`",
-        f"- WF87 execution allowed: `{summary.get('wf87_execution_allowed')}`",
-        f"- WF67 manager status: `{summary.get('wf67_manager_status')}`",
-        f"- WF67 candidate/blocked cards: `{summary.get('wf67_candidate_card_count')}/{summary.get('wf67_blocked_candidate_count')}`",
+        f"- Guarded SQL validation: `{summary.get('finance_guarded_sql_validation_status')}`",
+        f"- Quote symbols: `{summary.get('finance_quote_symbol_count')}`",
+        f"- Alert controller validation: `{summary.get('finance_alert_controller_validation_status')}`",
+        f"- Recommendation digest validation: `{summary.get('finance_recommendation_digest_validation_status')}`",
+        f"- Pivot validation: `{summary.get('finance_pivot_validation_status')}`",
         f"- Route-contraction exact files: `{summary.get('cleanup_route_contraction_exact_file_count')}`",
         f"- Route-contraction validation: `{summary.get('route_contraction_validation_status')}`",
         f"- Contracted/already narrowed files: `{summary.get('route_contraction_contracted_or_narrowed_count')}`",
@@ -1351,15 +1095,12 @@ def render_markdown(packet: dict[str, Any]) -> str:
         f"- First tmp proposal candidates: `{summary.get('cleanup_first_tmp_microbatch_candidate_count')}`",
         f"- Tmp delete ready after owner approval: `{summary.get('tmp_delete_ready_after_owner_approval_count')}`",
         f"- DB archive ready after owner approval: `{summary.get('db_archive_ready_after_owner_approval_count')}`",
-        f"- Source-open blocked rows: `{summary.get('source_open_blocked_count')}`",
-        f"- Source-open default runtime blockers: `{summary.get('source_open_default_runtime_blocker_count')}`",
-        f"- Active SQL/JSON repair rows: `{summary.get('active_sql_json_tier_repair_count')}`",
         f"- Recommendation tracked rows: `{summary.get('recommendation_tracked_row_count')}`",
         f"- Recommendation later-outcome graded rows: `{summary.get('recommendation_later_outcome_graded_rows')}`",
         f"- Recommendation later-outcome metric scope: `{summary.get('recommendation_later_outcome_metric_scope')}`",
         f"- Recommendation preview/durable/grade-history graded rows: `{summary.get('recommendation_current_preview_later_outcome_graded_rows')}` / `{summary.get('recommendation_durable_later_outcome_graded_rows')}` / `{summary.get('recommendation_grade_history_graded_ledger_event_count')}`",
         f"- Stale inputs: `{summary.get('stale_input_count')}`",
-        f"- Scoreable decisions: `{summary.get('scoreable_decision_count')}`",
+        f"- Graded recommendations: `{summary.get('graded_recommendation_count')}`",
         f"- Model performance claim allowed now: `{summary.get('model_performance_claim_allowed_now')}`",
         f"- Wiki synthesis status: `{summary.get('wiki_synthesis_status')}`",
         f"- Wiki synthesis validation: `{summary.get('wiki_synthesis_validation_status')}`",
@@ -1374,34 +1115,21 @@ def render_markdown(packet: dict[str, Any]) -> str:
         f"- Loop trace stale consumers: `{summary.get('loop_trace_downstream_stale_after_router_count')}`",
         f"- Long-work jobs: `{summary.get('long_work_job_count')}` / active `{summary.get('long_work_active_job_count')}` / resumable `{summary.get('long_work_resumable_job_count')}` / blocked `{summary.get('long_work_blocked_job_count')}`",
         f"- Skill Workshop body guard: `{summary.get('skill_workshop_body_guard_status')}` / critical `{summary.get('skill_workshop_body_guard_critical_count')}` / live errors `{summary.get('skill_workshop_body_guard_live_error_count')}`",
-        f"- Finance query guard validation: `{summary.get('finance_query_guard_validation_status')}`",
-        f"- Finance query guard live/member Tier B: `{summary.get('finance_query_guard_live_tier_b_count')}/{summary.get('finance_query_guard_membership_tier_b_count')}`",
-        f"- Finance query guard latest-day single sweep: `{summary.get('finance_query_guard_latest_source_day_single_sweep')}`",
-        f"- Finance cache front door: `{summary.get('finance_cache_frontdoor_validation_status')}` / tickers `{summary.get('finance_cache_frontdoor_ticker_count')}` / safe review `{summary.get('finance_cache_frontdoor_safe_cached_review_answer_count')}` / safe material `{summary.get('finance_cache_frontdoor_safe_material_claim_from_cache_count')}`",
-        f"- Finance cache route readiness: timing `{summary.get('finance_cache_frontdoor_timing_state_counts')}` / trade `{summary.get('finance_cache_frontdoor_trade_readiness_state_counts')}` / authority `{summary.get('finance_cache_frontdoor_authority_state_counts')}`",
-        f"- WF78 P3 market/ranking queue: `{route_readiness_p3.get('validation_status')}` / window `{route_readiness_p3.get('market_window_state')}` / refresh-required `{route_readiness_p3.get('market_window_refresh_required_count')}` / top review `{route_readiness_p3.get('top_review_queue_tickers')}`",
         "",
         "## Unified Routing",
         "",
-        "- WF85 -> WF87: review-only candidates become runtime eligibility proof.",
-        "- WF87 -> WF88: runtime blockers and outcomes feed learning/control.",
+        "- Guarded SQL -> explicit quote proof -> alert controller -> recommendation digest -> WF88 review state.",
         "- WF88 -> queue: one canonical action-state row per real next move.",
         "- WF88 -> wiki: durable source-linked synthesis pages for new sessions.",
         "- Long-work -> WF88: resumable local jobs publish checkpoint/status rows so sessions resume bounded slices instead of waiting on one foreground tool call.",
         "",
-        "## WF87 Runtime",
+        "## Finance Alerts OS",
         "",
-        f"- Runtime status: `{wf87.get('runtime_status')}`",
-        f"- Assisted filled round trips: `{wf87.get('assisted_filled_round_trips_all_time')}/{wf87.get('required_assisted_filled_round_trips_for_phase_c_proposal')}`",
-        f"- Phase C owner-review eligible: `{wf87.get('phase_c_owner_review_eligible_now')}`",
-        "",
-        "## WF67 Guardrail",
-        "",
-        f"- Manager status: `{wf67.get('source_status')}`",
-        f"- Validation: `{wf67.get('validation_status')}`",
-        f"- Candidate cards: `{wf67.get('candidate_card_count')}`",
-        f"- Blocked candidates: `{wf67.get('blocked_candidate_count')}`",
-        f"- Ready tickers: `{wf67.get('ready_tickers')}`",
+        f"- Guarded SQL: `{alerts_os.get('guarded_sql_validation_status')}`",
+        f"- Quote status/count: `{alerts_os.get('quote_status')}` / `{alerts_os.get('quote_symbol_count')}`",
+        f"- Alert states: `{alerts_os.get('alert_state_counts')}`",
+        f"- Recommendation tickers: `{alerts_os.get('recommendation_ticker_count')}`",
+        f"- Pivot validation: `{alerts_os.get('pivot_validation_status')}`",
         "",
         "## Cleanup",
         "",
@@ -1410,26 +1138,6 @@ def render_markdown(packet: dict[str, Any]) -> str:
         f"- Route-contraction candidates: `{cleanup.get('script_route_contraction_candidate_count')}`",
         f"- Route-contraction dry-run status: `{contraction.get('source_status')}`",
         "- Delete/archive/apply allowed now: `False`",
-        "",
-        "## Finance Query Guard",
-        "",
-        f"- Validation: `{finance_query_guard.get('validation_status')}`",
-        f"- Live routing Tier B: `{finance_query_guard.get('live_routing_tier_b_count')}`",
-        f"- Membership-scope Tier B: `{finance_query_guard.get('membership_scope_tier_b_count')}`",
-        f"- Valid JSONL events: `{finance_query_guard.get('jsonl_valid_event_count')}`",
-        f"- Latest source-day single sweep: `{finance_query_guard.get('latest_source_day_single_sweep')}`",
-        f"- Band-completeness numeric collision risk: `{finance_query_guard.get('tier_a_b_band_numeric_collision_risk')}`",
-        "",
-        "## Finance Cache Front Door",
-        "",
-        f"- Validation: `{finance_cache.get('validation_status')}`",
-        f"- Tickers: `{finance_cache.get('ticker_count')}`",
-        f"- Safe cached review answers: `{finance_cache.get('safe_cached_review_answer_count')}`",
-        f"- Safe material-claim cache rows: `{finance_cache.get('safe_material_claim_from_cache_count')}`",
-        f"- Material source-open required: `{finance_cache.get('material_claim_source_open_required_count')}`",
-        f"- SQL-first truth retained: `{finance_cache.get('sql_first_truth_production_retained')}`",
-        f"- Cache-first chat consumption: `{finance_cache.get('cache_first_chat_consumption')}`",
-        f"- Source-open required for material claims: `{finance_cache.get('source_open_required_for_material_claims')}`",
         "",
         "## Long Work Runtime",
         "",

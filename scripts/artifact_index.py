@@ -29,134 +29,58 @@ FORBIDDEN_TRUE_AUTHORITY_FLAGS = {
     "paper_trade_submit_cancel_allowed_by_today_card",
 }
 
-MARKET_EVENT_GLOBS = ["market-intelligence-events-*.json"]
-DAILY_REVIEW_GLOBS = ["daily-review-objects-*.json"]
+# Alerts-OS cutover: the derived index may discover only current evidence and
+# control proofs.  Portfolio/deployment/paper-era artifact families are
+# intentionally absent; their immutable copies live in the finance runtime
+# archive and must not be reintroduced through a broad tmp/ glob.
+MARKET_EVENT_GLOBS: list[str] = []
+DAILY_REVIEW_GLOBS: list[str] = []
 TRUTH_SPINE_FILES = [
-    "today-card.json",
-    "today-card-validation.json",
-    "today-card-published-validation.json",
     "current-window-artifacts.json",
-    "dashboard-validation.json",
-    "dashboard-data.json",
-    "dashboard-presentation-dto.json",
-    "dashboard-presentation-dto-design.json",
-    "dashboard-presentation-compatibility-proof.json",
-    "dashboard-presentation-adapter.json",
-    "dashboard-presentation-view-model.json",
-    "dashboard-presentation-renderer-validation.json",
-    "dashboard-presentation-acceptance.json",
-    "dashboard-data-thin-preview.json",
-    "dashboard-data-thin-preview-validation.json",
-    "dashboard-v2-reader-migration.json",
-    "dashboard-compact-shell-validation.json",
-    "dashboard-compact-shell-acceptance.json",
-    "dashboard-shrink-readiness-score.json",
-    "dashboard-compatibility-payload.json",
-    "dashboard-compatibility-payload-validation.json",
-    "presentation-artifact-flattening-inventory.json",
-    "presentation-render-default-compatibility.json",
-    "presentation-retrieval-route-map.json",
-    "presentation-retrieval-enforcement.json",
+    "finance-sql-canon-access-validation.json",
+    "intraday-alerts/quote-snapshot-proof.json",
+    "intraday-alerts/quote-snapshot-proof-validation.json",
+    "alert-level-freshness-controller.json",
+    "finance-alert-os-digest.json",
+    "finance-alert-os-morning-digest.json",
+    "finance-alert-os-midday-digest.json",
+    "finance-alert-os-post-close-digest.json",
+    "finance-alert-os-weekly-digest.json",
+    "alerts-recommendations-chain-morning.json",
+    "alerts-recommendations-chain-midday.json",
+    "alerts-recommendations-chain-post-close.json",
+    "alerts-recommendations-chain-weekly.json",
+    "alerts-os-pivot-validator.json",
+    "cron-operator-ledger.json",
+    "cron-contract-validation.json",
+    "cron-freshness-spine.json",
+    "cron-control-packet.json",
+    "cron-efficiency-review.json",
+    "pm-control-packet.json",
+    "startup-brief-packet.json",
+    "future-session-enhancement-packet.json",
+    "veritas-status-card.json",
+    "veritas-status-card-frontdoor.json",
     "workflow-routing-index.json",
     "workflow-routing-index-validation.json",
     "concurrent-lane-register.json",
-    "parallel-lane-recommendation.json",
-    "truth-surface-inventory.json",
-    "route-efficiency-scorecard.json",
-    "fast-path-qa.json",
-    "parallel-repeatable-work-orchestration.json",
-    "macro-event-guard-loop.json",
+    "macro-signal-spine.json",
+    "macro-metrics.json",
     "macro-energy-supply.json",
     "macro-geopolitical-sweep.json",
-    "wf78-owner-card-prep-loop.json",
-    "wf78-tier-a-evidence-repair-batch.json",
-    "repeatable-work-closeout.json",
-    "finance-decision-factory.json",
-    "post-close-final-quote-ledger.json",
-    "wf78-evidence-repair-batch.json",
-    "wf78-evidence-family-repair.json",
-    "wf78-source-open-repair-execution.json",
-    "wf78-source-open-work-packets.json",
-    "wf78-position-sizing-surface-review.json",
-    "wf78-deployment-readiness-review.json",
-    "wf78-source-artifact-capture-review.json",
-    "wf78-position-sizing-integration-proposal.json",
-    "wf78-tier-a-owner-readiness-proposals.json",
-    "wf78-missing-band-context-repair.json",
-    "wf78-source-capture-requirements-queue.json",
-    "wf78-official-source-discovery.json",
-    "wf78-official-registry-proposal.json",
-    "wf78-official-registry-apply-preview.json",
-    "wf78-official-registry-proposed.preview.json",
-    "wf78-promotion-owner-lineage-queue.json",
-    "wf78-contract-state-guard.json",
-    "wf78-owner-lineage-discovery.json",
-    "wf78-owner-lineage-proposal.json",
-    "wf78-repair-debt-scoreboard.json",
-    "wf78-scaleout-policy-dry-run.json",
-    "wf78-ph-owner-review-candidate-packet.json",
-    "wf78-tier-a-invalidation-review-queue.json",
-    "wf78-official-source-capture-packet.json",
-    "wf78-next-owner-review-and-source-capture-integration.json",
-    "wf78-ticker-freshness-ledger.json",
-    "tier-c-band-status.json",
-    "wf78-tier-weighted-freshness-resolution.json",
-    "wf78-daily-freshness-loop.json",
-    "canonical-finance-data-plane-contract.json",
-    "canonical-finance-data-plane.json",
-    "canonical-finance-data-plane-validation.json",
-    "canonical-finance-data-plane-phase6-10.json",
-    "canonical-finance-data-plane-retirement-readiness.json",
-    "full-answer-parity-rollup.json",
-    "trade-grade-decision-os-contract.json",
-    "trade-grade-source-freshness-gate.json",
-    "trade-grade-decision-cards.json",
-    "trade-grade-decision-card-authority-validation.json",
-    "trade-grade-approval-card-gate.json",
-    "trade-grade-risk-sizing-overlay.json",
-    "trade-grade-full-answer-assembler.json",
-    "ticker-answer-packet-retirement-approval-plan-20260609.json",
-    "trade-grade-repair-conveyor.json",
-    "trade-grade-os-freshness-cron-runner.json",
-    "weekday-morning-review-cron-runner.json",
-    "retail-automation-control-plane-cron-runner.json",
-    "control-closeout-bundle.json",
-    "pm-execution-loop.json",
-    "artifact-intelligence-action-scorer.json",
-    "wf78-tier-a-confidence-gate.json",
-    "wf78-auto-tier-routing.json",
-    "wf78-legacy-42-tier-migration-planner.json",
-    "wf78-routing-delta.json",
-    "wf78-capital-review-queue.json",
-    "wf78-event-triggered-rerouting.json",
-    "wf78-evidence-drag-reduction.json",
-    "market-execution-readiness-cron-hardening.json",
-    "wf78-packet-summary-consolidation.json",
-    "wf78-packet-shared-header.json",
-    "deployment-readiness-surface.json",
-    "research-freshness-opportunity-review.json",
-    "capital-deployment-recommendation-validation.json",
     "otel-ops-control.json",
     "otel-ops-window-summary.json",
     "otel/control-loop.json",
     "model-run-ledger-current.json",
-    "finance-recommendation-correctness-ledger-current.json",
     "model-quality-scorecard.json",
     "earnings-calendar.json",
     "earnings-date-source-confidence.json",
     "post-earnings-prep.json",
     "post-earnings-note-targets.json",
     "event-calendar-rollforward.json",
-    "finance-intelligence-state-paper-positions.json",
-    "finance-intelligence-state-live-pilot.json",
-    "wf78-live-25-pilot-import-gate.json",
-    "wf72-finance-canon-cleanup-proposals.json",
-    "wf72-phase2-canon-sync-apply.json",
 ]
 FILE_STATE_ONLY_FILES = [
     "workflow-routing-index.sqlite",
-    "wf78-legacy-42-tier-state-shadow.sqlite",
-    "canonical-finance-data-plane.sqlite",
 ]
 INDEXED_TABLES = [
     "artifact_runs", "market_events", "daily_review_objects", "capital_recommendations",
@@ -904,6 +828,12 @@ def artifact_type_for(path: Path) -> str:
         return "dashboard_validation"
     if name == "dashboard-data.json":
         return "dashboard_data"
+    if name == "alert-level-freshness-controller.json":
+        return "alert_level_freshness_controller"
+    if name == "finance-alert-os-digest.json":
+        return "finance_alert_os_digest"
+    if name == "alerts-recommendations-chain-midday.json":
+        return "alerts_recommendations_chain"
     if name == "deployment-readiness-surface.json":
         return "deployment_readiness_surface"
     if name == "canonical-finance-data-plane-contract.json":
@@ -1824,9 +1754,9 @@ def validate_index(db_path: Path) -> dict[str, Any]:
         ).fetchone()[0]
         add("official_ir_fields_have_lineage", int(official_without_lineage) == 0, f"missing={official_without_lineage}")
         cockpit_rows = conn.execute("SELECT COUNT(*) FROM v_cockpit_action_queue").fetchone()[0]
-        add("cockpit_action_queue_has_rows", int(cockpit_rows) > 0, f"rows={cockpit_rows}")
+        add("retired_action_queue_empty", int(cockpit_rows) == 0, f"rows={cockpit_rows}")
         cockpit_deduped_rows = conn.execute("SELECT COUNT(*) FROM v_cockpit_action_queue_deduped").fetchone()[0]
-        add("cockpit_action_queue_deduped_has_rows", int(cockpit_deduped_rows) > 0, f"rows={cockpit_deduped_rows}")
+        add("retired_action_queue_deduped_empty", int(cockpit_deduped_rows) == 0, f"rows={cockpit_deduped_rows}")
         add(
             "cockpit_action_queue_deduped_not_larger_than_raw",
             int(cockpit_deduped_rows) <= int(cockpit_rows),
@@ -1860,13 +1790,75 @@ def validate_index(db_path: Path) -> dict[str, Any]:
             """
         ).fetchone()[0]
         add("earnings_lifecycle_review_only_no_action", int(unsafe_lifecycle) == 0, f"rows={unsafe_lifecycle}")
-        deployment_etn = conn.execute("SELECT COUNT(*) FROM v_cockpit_deployment_readiness WHERE upper(ticker)='ETN'").fetchone()[0]
-        etn_buckets = [str(row[0]) for row in conn.execute("SELECT DISTINCT bucket FROM v_cockpit_deployment_readiness WHERE upper(ticker)='ETN' ORDER BY bucket")]
-        add("deployment_readiness_etn_indexed", int(deployment_etn) > 0, f"rows={deployment_etn} buckets={etn_buckets}")
+        alert_controller_runs = conn.execute(
+            "SELECT COUNT(*) FROM artifact_runs WHERE artifact_type='alert_level_freshness_controller'"
+        ).fetchone()[0]
+        alert_controller_forbidden_authority = conn.execute(
+            """
+            SELECT COUNT(*)
+            FROM authority_flags af
+            JOIN artifact_runs ar ON ar.id=af.artifact_run_id
+            WHERE ar.artifact_type='alert_level_freshness_controller'
+              AND af.flag_value != 0
+              AND af.flag_name IN (
+                'capital_or_order_authority', 'maintains_portfolio_state',
+                'maintains_simulated_account_state', 'owner_approval_inferred',
+                'paper_or_live_execution_allowed', 'writes_finance_canon'
+              )
+            """
+        ).fetchone()[0]
+        add(
+            "alert_level_freshness_controller_indexed_review_only",
+            int(alert_controller_runs) > 0 and int(alert_controller_forbidden_authority) == 0,
+            f"runs={alert_controller_runs} forbidden_true_authority={alert_controller_forbidden_authority}",
+        )
         freshness_rows = conn.execute("SELECT COUNT(*) FROM v_cockpit_source_freshness").fetchone()[0]
-        add("source_freshness_rows_indexed", int(freshness_rows) > 0, f"rows={freshness_rows}")
+        add("retired_source_freshness_surface_empty", int(freshness_rows) == 0, f"rows={freshness_rows}")
         dashboard_findings = conn.execute("SELECT COUNT(*) FROM v_cockpit_dashboard_findings").fetchone()[0]
-        add("dashboard_findings_indexed", int(dashboard_findings) > 0, f"rows={dashboard_findings}")
+        add("retired_dashboard_findings_surface_empty", int(dashboard_findings) == 0, f"rows={dashboard_findings}")
+        required_alert_proofs = [
+            "tmp/finance-sql-canon-access-validation.json",
+            "tmp/intraday-alerts/quote-snapshot-proof.json",
+            "tmp/intraday-alerts/quote-snapshot-proof-validation.json",
+            "tmp/alert-level-freshness-controller.json",
+            "tmp/finance-alert-os-morning-digest.json",
+            "tmp/finance-alert-os-midday-digest.json",
+            "tmp/finance-alert-os-post-close-digest.json",
+            "tmp/finance-alert-os-weekly-digest.json",
+            "tmp/alerts-recommendations-chain-morning.json",
+            "tmp/alerts-recommendations-chain-midday.json",
+            "tmp/alerts-recommendations-chain-post-close.json",
+            "tmp/alerts-recommendations-chain-weekly.json",
+            "tmp/alerts-os-pivot-validator.json",
+        ]
+        missing_alert_proofs = [
+            source_file
+            for source_file in required_alert_proofs
+            if conn.execute(
+                "SELECT COUNT(*) FROM artifact_file_state WHERE source_file=?",
+                (source_file,),
+            ).fetchone()[0] != 1
+        ]
+        add(
+            "alerts_os_core_proofs_indexed",
+            not missing_alert_proofs,
+            "missing=" + ",".join(missing_alert_proofs),
+        )
+        retired_source_count = conn.execute(
+            """
+            SELECT COUNT(*) FROM artifact_file_state
+            WHERE lower(source_file) LIKE '%trade-grade%'
+               OR lower(source_file) LIKE '%deployment-readiness%'
+               OR lower(source_file) LIKE '%paper-position%'
+               OR lower(source_file) LIKE '%canonical-finance-data-plane%'
+               OR lower(source_file) LIKE '%position-sizing%'
+               OR lower(source_file) LIKE '%wf67%'
+               OR lower(source_file) LIKE '%wf78%'
+               OR lower(source_file) LIKE '%wf86%'
+               OR lower(source_file) LIKE '%wf87%'
+            """
+        ).fetchone()[0]
+        add("retired_finance_sources_absent", int(retired_source_count) == 0, f"rows={retired_source_count}")
         plan_text = "\n".join(clean_text(tuple(row)) for row in conn.execute("EXPLAIN QUERY PLAN SELECT * FROM daily_review_objects WHERE upper(ticker)=? ORDER BY generated_at_utc DESC LIMIT 5", ("ETN",)))
         add("ticker_expression_index_query_plan", "idx_daily_review_ticker_upper_time" in plan_text, plan_text)
         counts = count_tables(conn)
@@ -2571,6 +2563,27 @@ def query_missing_data(family: str | None = None, ticker: str | None = None, jso
 
 
 def query_ticker_card(ticker: str, json_output: bool = False) -> None:
+    """Show the current guarded alert row for a ticker.
+
+    The command name is retained for CLI compatibility; retired generated card
+    families are not read or rebuilt.
+    """
+    import finance_cache_frontdoor
+
+    payload = finance_cache_frontdoor.build_payload()
+    row = finance_cache_frontdoor.row_by_ticker(payload, ticker)
+    if not row:
+        raise FileNotFoundError(f"Ticker is not present in the active alert scope: {ticker.upper()}")
+    if json_output:
+        print(json.dumps(row, indent=2, sort_keys=True))
+        return
+    print_table([row], [
+        "ticker", "alert_state", "level_relationship_state", "latest_price",
+        "reference_low", "reference_high", "invalidation_threshold",
+        "quote_data_date", "freshness_status", "confidence", "alert_fire_eligible",
+    ])
+    return
+
     path = TMP / "ticker-intelligence-cards" / f"{ticker.upper()}.current.json"
     if not path.exists():
         raise FileNotFoundError(f"Ticker intelligence card not found: {path.relative_to(WORKSPACE)}")
@@ -2602,7 +2615,28 @@ def query_answer_packet(ticker: str, json_output: bool = False) -> None:
     The command name is retained for backwards CLI compatibility, but the static
     packet directory is no longer treated as an input truth surface.
     """
+    import finance_cache_frontdoor
+
     ticker = ticker.upper()
+    cache_payload = finance_cache_frontdoor.build_payload()
+    row = finance_cache_frontdoor.row_by_ticker(cache_payload, ticker)
+    descriptor = {
+        "ticker": ticker,
+        "availability": "active_alert_scope" if row else "missing",
+        "preferred_source": "alerts_os_cache_frontdoor",
+        "source_path": "tmp/alert-level-freshness-controller.json",
+        "review_only": True,
+        "alert_context": row or None,
+        "reason": (
+            "Current guarded alert and non-executing recommendation context."
+            if row else "Ticker is not present in the active alert scope."
+        ),
+    }
+    if json_output:
+        print(json.dumps(descriptor, indent=2, sort_keys=True))
+        return
+    print_table([descriptor], ["ticker", "availability", "preferred_source", "source_path", "review_only"])
+    return
 
     def answer_age_hours(value: Any) -> float | None:
         if not isinstance(value, str) or not value:
@@ -5692,35 +5726,22 @@ def parse_args() -> argparse.Namespace:
     fingerprints.add_argument("--json", action="store_true", help="Emit fingerprint report as JSON.")
     latest = sub.add_parser("latest", help="Show latest escalations across indexed artifacts.")
     latest.add_argument("--limit", type=int, default=10)
-    ticker = sub.add_parser("ticker", help="Show indexed events/review objects/capital recommendations for a ticker or macro sleeve.")
+    ticker = sub.add_parser("ticker", help="Show indexed evidence and review objects for a ticker or market theme.")
     ticker.add_argument("ticker")
     ticker.add_argument("--limit", type=int, default=20)
     window = sub.add_parser("window", help="Show indexed artifact runs for a window.")
     window.add_argument("window")
     window.add_argument("--limit", type=int, default=20)
-    capital = sub.add_parser("capital", help="Show indexed capital deployment recommendations.")
-    capital.add_argument("--limit", type=int, default=20)
     trust = sub.add_parser("trust", help="Show artifact trust/freshness boundary summary.")
     trust.add_argument("--limit", type=int, default=20)
-    today = sub.add_parser("today", help="Show SQL-indexed Today-card decision items.")
-    today.add_argument("--limit", type=int, default=20)
     validators = sub.add_parser("validators", help="Show SQL-indexed validator runs.")
     validators.add_argument("--limit", type=int, default=20)
-    canon = sub.add_parser("canon", help="Show SQL-indexed canon proposal/apply staging rows.")
-    canon.add_argument("--limit", type=int, default=20)
     authority = sub.add_parser("authority", help="Show any indexed true authority flags for review.")
     authority.add_argument("--limit", type=int, default=20)
     official_ir = sub.add_parser("official-ir", help="Show SQL-indexed official IR capture runs and field-status counts.")
     official_ir.add_argument("--limit", type=int, default=20)
     lineage = sub.add_parser("lineage", help="Show explicit SQL-indexed source field lineage rows.")
     lineage.add_argument("--limit", type=int, default=20)
-    canon_stage = sub.add_parser("canon-stage", help="Show exact SQL-staged canon proposal rows and apply stop lines.")
-    canon_stage.add_argument("--limit", type=int, default=20)
-    canon_stage_readiness = sub.add_parser("canon-stage-readiness", help="Classify canon proposal staging rows as historical applied, pending review-only, incomplete review-only, or unsafe apply-ready.")
-    canon_stage_readiness.add_argument("--limit", type=int, default=200)
-    canon_stage_readiness.add_argument("--json", action="store_true", help="Emit readiness report as JSON.")
-    canon_stage_readiness.add_argument("--output", default=None, help="Optional JSON output path.")
-    canon_stage_readiness.add_argument("--md-output", default=None, help="Optional Markdown output path.")
     cockpit = sub.add_parser("cockpit", help="Show fast operating cockpit action queue.")
     cockpit.add_argument("--limit", type=int, default=20)
     ticker_cockpit = sub.add_parser("ticker-cockpit", help="Show fast ticker cockpit timeline.")
@@ -5740,27 +5761,15 @@ def parse_args() -> argparse.Namespace:
     missing_data.add_argument("--family", default=None, help="Optional data family id.")
     missing_data.add_argument("--ticker", default=None, help="Optional ticker.")
     missing_data.add_argument("--json", action="store_true", help="Emit JSON for the selected missing-data scope.")
-    ticker_card = sub.add_parser("ticker-card", help="Show WF77 ticker-card feeder/source summary.")
+    ticker_card = sub.add_parser("ticker-card", help="Show the active guarded alert row for a ticker.")
     ticker_card.add_argument("ticker")
     ticker_card.add_argument("--json", action="store_true", help="Emit full ticker card JSON.")
-    answer_packet = sub.add_parser("answer-packet", help="Route a ticker to the WF85 full-answer assembler with legacy compatibility/card fallback.")
+    answer_packet = sub.add_parser("answer-packet", help="Route a ticker to active alert and non-executing recommendation context.")
     answer_packet.add_argument("ticker")
     answer_packet.add_argument("--json", action="store_true", help="Emit the full answer-packet route descriptor JSON.")
-    answer_contract = sub.add_parser("answer-contract", help="Build a read-only WF77 SQL/JSON-first answer contract for a finance question.")
-    answer_contract.add_argument("question", nargs="+", help="Question text to route and contract-check.")
-    answer_contract.add_argument("--json", action="store_true", help="Emit JSON answer-contract wrapper.")
-    answer_contract.add_argument("--output", default=None, help="Optional JSON output path.")
-    validate_answer_contract = sub.add_parser("validate-answer-contract", help="Validate a read-only WF77 answer contract artifact.")
-    validate_answer_contract.add_argument("--input", required=True, help="Answer contract JSON path.")
-    validate_answer_contract.add_argument("--json", action="store_true", help="Emit JSON validation report.")
-    stoplines = sub.add_parser("stoplines", help="Show SQL-staged canon proposal stop lines.")
-    stoplines.add_argument("--limit", type=int, default=50)
     lifecycle = sub.add_parser("earnings-lifecycle", help="Show SQL-indexed earnings lifecycle closeouts/holds.")
     lifecycle.add_argument("ticker", nargs="?", default=None)
     lifecycle.add_argument("--limit", type=int, default=20)
-    deployment = sub.add_parser("deployment-readiness", help="Show SQL-indexed deployment readiness rows.")
-    deployment.add_argument("ticker", nargs="?", default=None)
-    deployment.add_argument("--limit", type=int, default=30)
     dashboard_findings = sub.add_parser("dashboard-findings", help="Show SQL-indexed dashboard validation findings.")
     dashboard_findings.add_argument("--limit", type=int, default=30)
     source_freshness = sub.add_parser("source-freshness", help="Show SQL-indexed source freshness rows.")
@@ -5769,67 +5778,6 @@ def parse_args() -> argparse.Namespace:
     handoff.add_argument("--workflow", default=None, help="Optional workflow token such as WF72. SQL filters on indexed artifact/source text and falls back to latest rows if no exact token match.")
     handoff.add_argument("--limit", type=int, default=20)
     handoff.add_argument("--json", action="store_true", help="Emit the handoff packet as JSON.")
-    note_drift = sub.add_parser("note-drift", help="Report SQL-routed canon/note drift candidates without applying changes.")
-    note_drift.add_argument("--limit", type=int, default=100)
-    note_drift.add_argument("--json", action="store_true", help="Emit the drift candidate report as JSON.")
-    note_drift.add_argument("--output", default=None, help="Optional JSON output path.")
-    note_drift.add_argument("--md-output", default=None, help="Optional Markdown output path.")
-    reconcile = sub.add_parser("reconcile-sql-markdown", help="Generate Phase 2A SQL/Markdown reconciliation reports without applying changes.")
-    reconcile.add_argument("--limit", type=int, default=200)
-    reconcile.add_argument("--json", action="store_true", help="Emit reconciliation report as JSON.")
-    reconcile.add_argument("--output", default=None, help="Optional JSON output path; defaults to tmp/sql-markdown-reconciliation.json.")
-    reconcile.add_argument("--md-output", default=None, help="Optional Markdown output path; defaults beside the JSON output when --write-md is used.")
-    reconcile.add_argument("--write-md", action="store_true", help="Also write legacy Markdown proof output; JSON remains the default proof contract.")
-    reconcile.add_argument("--validation-output", default=None, help="Optional validation JSON path; defaults to tmp/sql-reconciliation-validation.json.")
-    reconcile.add_argument("--registry-output", default=None, help="Optional field-registry JSON path; defaults to tmp/sql-canon-field-registry.json.")
-    phase3a = sub.add_parser("phase3a-dry-run", help="Generate Phase 3A SQL canon/cache architecture and dry-run promotion artifacts without writes.")
-    phase3a.add_argument("--limit", type=int, default=200)
-    phase3a.add_argument("--json", action="store_true", help="Emit dry-run promotion report as JSON.")
-    phase3a.add_argument("--architecture-output", default=None, help="Optional architecture JSON output path; defaults to tmp/sql-canon-phase3a-architecture.json.")
-    phase3a.add_argument("--architecture-md-output", default=None, help="Optional architecture Markdown output path; defaults beside the JSON output when --write-md is used.")
-    phase3a.add_argument("--promotion-output", default=None, help="Optional promotion JSON output path; defaults to tmp/sql-canon-phase3a-dry-run-promotion.json.")
-    phase3a.add_argument("--promotion-md-output", default=None, help="Optional promotion Markdown output path; defaults beside the JSON output when --write-md is used.")
-    phase3a.add_argument("--write-md", action="store_true", help="Also write legacy Markdown proof output; JSON remains the default proof contract.")
-    phase3a.add_argument("--validation-output", default=None, help="Optional validation JSON path; defaults to tmp/sql-canon-phase3a-validation.json.")
-    phase3b = sub.add_parser("phase3b-writepath-preflight", help="Generate Phase 3B future write-path preflight artifacts without creating a durable cache DB or writing SQL canon/cache rows.")
-    phase3b.add_argument("--limit", type=int, default=200)
-    phase3b.add_argument("--json", action="store_true", help="Emit preflight report as JSON.")
-    phase3b.add_argument("--output", default=None, help="Optional JSON output path; defaults to tmp/sql-canon-phase3b-writepath-preflight.json.")
-    phase3b.add_argument("--md-output", default=None, help="Optional Markdown output path; defaults to tmp/sql-canon-phase3b-writepath-preflight.md.")
-    phase3b.add_argument("--write-md", action="store_true", help="Also write legacy Markdown proof output; JSON remains the default proof contract.")
-    phase3b.add_argument("--validation-output", default=None, help="Optional validation JSON path; defaults to tmp/sql-canon-phase3b-validation.json.")
-    phase3c = sub.add_parser("phase3c-cache-write", help="Execute the approved one-time Phase 3C SQL structured cache write for exactly two NVDA earnings lifecycle rows.")
-    phase3c.add_argument("--limit", type=int, default=200)
-    phase3c.add_argument("--json", action="store_true", help="Emit write result as JSON.")
-    phase3d = sub.add_parser("phase3d-consumer-parity", help="Generate read-only Phase 3D parity plan/test artifacts without migrating consumers or changing behavior.")
-    phase3d.add_argument("--limit", type=int, default=200)
-    phase3d.add_argument("--json", action="store_true", help="Emit consumer parity report as JSON.")
-    phase3d.add_argument("--output", default=None, help="Optional JSON output path; defaults to tmp/sql-canon-phase3d-consumer-parity.json.")
-    phase3d.add_argument("--md-output", default=None, help="Optional Markdown output path; defaults to tmp/sql-canon-phase3d-consumer-parity.md.")
-    phase3d.add_argument("--write-md", action="store_true", help="Also write legacy Markdown proof output; JSON remains the default proof contract.")
-    phase3d.add_argument("--validation-output", default=None, help="Optional validation JSON path; defaults to tmp/sql-canon-phase3d-validation.json.")
-    phase3e = sub.add_parser("phase3e-dashboard-proof-pilot", help="Generate a read-only Phase 3E dashboard proof-metadata pilot artifact using optional SQL cache reads with fallback.")
-    phase3e.add_argument("--limit", type=int, default=200)
-    phase3e.add_argument("--json", action="store_true", help="Emit dashboard proof-metadata pilot report as JSON.")
-    phase3e.add_argument("--output", default=None, help="Optional JSON output path; defaults to tmp/sql-canon-phase3e-dashboard-proof-pilot.json.")
-    phase3e.add_argument("--md-output", default=None, help="Optional Markdown output path; defaults to tmp/sql-canon-phase3e-dashboard-proof-pilot.md.")
-    phase3e.add_argument("--write-md", action="store_true", help="Also write legacy Markdown proof output; JSON remains the default proof contract.")
-    phase3e.add_argument("--validation-output", default=None, help="Optional validation JSON path; defaults to tmp/sql-canon-phase3e-validation.json.")
-    phase3f = sub.add_parser("phase3f-preflight", help="Run Phase 3F implementation preflight: authority guard, executable rollback proof, and cross-DB stale-check without migration or write expansion.")
-    phase3f.add_argument("--threshold-hours", type=int, default=24, help="Age threshold metadata for stale-check reporting; target cache checks use exact modified-after-reconcile gates.")
-    phase3f.add_argument("--json", action="store_true", help="Emit Phase 3F preflight report as JSON.")
-    phase3f.add_argument("--output", default=None, help="Optional JSON output path; defaults to tmp/sql-canon-phase3f-implementation-preflight.json.")
-    phase3f.add_argument("--md-output", default=None, help="Optional Markdown output path; defaults beside the JSON output when --write-md is used.")
-    phase3f.add_argument("--write-md", action="store_true", help="Also write legacy Markdown proof output; JSON remains the default proof contract.")
-    phase3f.add_argument("--validation-output", default=None, help="Optional validation JSON path; defaults to tmp/sql-canon-phase3f-validation.json.")
-    phase4a = sub.add_parser("phase4a-activate", help="Legacy mutating Phase 4A SQL canon activation path. Guarded; prefer dedicated WF72 activators.")
-    phase4a.add_argument("--threshold-hours", type=int, default=24, help="Age threshold metadata for stale-check reporting; target cache checks use exact modified-after-reconcile gates.")
-    phase4a.add_argument("--json", action="store_true", help="Emit Phase 4A activation report as JSON.")
-    phase4a.add_argument("--output", default=None, help="Optional JSON output path; defaults to tmp/sql-canon-phase4a-activation.json.")
-    phase4a.add_argument("--md-output", default=None, help="Optional Markdown output path; defaults beside the JSON output when --write-md is used.")
-    phase4a.add_argument("--write-md", action="store_true", help="Also write legacy Markdown proof output; JSON remains the default proof contract.")
-    phase4a.add_argument("--validation-output", default=None, help="Optional validation JSON path; defaults to tmp/sql-canon-phase4a-validation.json.")
-    phase4a.add_argument("--allow-legacy-mutation", action="store_true", help="Required explicit guard for this legacy mutating command. Use only with a fresh approval packet.")
     return parser.parse_args()
 
 
@@ -5862,26 +5810,16 @@ def main() -> int:
             query_ticker(conn, args.ticker, args.limit)
         elif args.command == "window":
             query_window(conn, args.window, args.limit)
-        elif args.command == "capital":
-            query_capital(conn, args.limit)
         elif args.command == "trust":
             query_trust(conn, args.limit)
-        elif args.command == "today":
-            query_today(conn, args.limit)
         elif args.command == "validators":
             query_validators(conn, args.limit)
-        elif args.command == "canon":
-            query_canon(conn, args.limit)
         elif args.command == "authority":
             query_authority(conn, args.limit)
         elif args.command == "official-ir":
             query_official_ir(conn, args.limit)
         elif args.command == "lineage":
             query_lineage(conn, args.limit)
-        elif args.command == "canon-stage":
-            query_canon_stage(conn, args.limit)
-        elif args.command == "canon-stage-readiness":
-            query_canon_stage_readiness(conn, args.limit, args.json, args.output, args.md_output)
         elif args.command == "cockpit":
             query_cockpit(conn, args.limit)
         elif args.command == "ticker-cockpit":
@@ -5898,16 +5836,8 @@ def main() -> int:
             query_ticker_card(args.ticker, args.json)
         elif args.command == "answer-packet":
             query_answer_packet(args.ticker, args.json)
-        elif args.command == "answer-contract":
-            query_answer_contract(" ".join(args.question), args.json, args.output)
-        elif args.command == "validate-answer-contract":
-            return query_validate_answer_contract(args.input, args.json)
-        elif args.command == "stoplines":
-            query_stoplines(conn, args.limit)
         elif args.command == "earnings-lifecycle":
             query_earnings_lifecycle(conn, args.ticker, args.limit)
-        elif args.command == "deployment-readiness":
-            query_deployment_readiness(conn, args.ticker, args.limit)
         elif args.command == "dashboard-findings":
             query_dashboard_findings(conn, args.limit)
         elif args.command == "source-freshness":
@@ -5916,29 +5846,6 @@ def main() -> int:
             query_fingerprints(conn, args.json)
         elif args.command == "handoff":
             query_handoff(conn, db_path, args.workflow, args.limit, args.json)
-        elif args.command == "note-drift":
-            query_note_drift(conn, args.limit, args.json, args.output, args.md_output)
-        elif args.command == "reconcile-sql-markdown":
-            query_sql_markdown_reconciliation(conn, args.limit, args.output, args.md_output, args.validation_output, args.registry_output, args.json, args.write_md)
-        elif args.command == "phase3a-dry-run":
-            query_phase3a_dry_run(conn, args.limit, args.architecture_output, args.architecture_md_output, args.promotion_output, args.promotion_md_output, args.validation_output, args.json, args.write_md)
-        elif args.command == "phase3b-writepath-preflight":
-            query_phase3b_writepath_preflight(conn, args.limit, args.output, args.md_output, args.validation_output, args.json, args.write_md)
-        elif args.command == "phase3c-cache-write":
-            execute_phase3c_cache_write(conn, args.limit, args.json)
-        elif args.command == "phase3d-consumer-parity":
-            query_phase3d_consumer_parity(conn, args.limit, args.output, args.md_output, args.validation_output, args.json, args.write_md)
-        elif args.command == "phase3e-dashboard-proof-pilot":
-            query_phase3e_dashboard_proof_pilot(conn, args.limit, args.output, args.md_output, args.validation_output, args.json, args.write_md)
-        elif args.command == "phase3f-preflight":
-            query_phase3f_preflight(conn, args.threshold_hours, args.output, args.md_output, args.validation_output, args.json, args.write_md)
-        elif args.command == "phase4a-activate":
-            if not args.allow_legacy_mutation:
-                raise SystemExit(
-                    "phase4a-activate is a legacy mutating SQL-canon/cache command. "
-                    "Use dedicated WF72 activators, or rerun with --allow-legacy-mutation only after a fresh approval packet."
-                )
-            query_phase4a_activate(conn, args.threshold_hours, args.output, args.md_output, args.validation_output, args.json, args.write_md)
         else:
             raise ValueError(args.command)
     return 0

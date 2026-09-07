@@ -13,16 +13,17 @@ This dashboard is a human orientation pointer. It does not hand-maintain finance
 Use generated/read-only routes for live operating context:
 
 - Startup brief: `python scripts\startup_brief_packet.py --write --validate`
-- Workflow routing: `python scripts\workflow_router.py WF78 --answer all`
+- Workflow routing: `python scripts\workflow_router.py WF85 --answer all`
 - SQL-generated/read-only finance guard: `python scripts\finance_sql_canon_access.py --write --validate`
-- SQL-generated/read-only trade-grade readiness: `python scripts\trade_grade_os_freshness_cron_runner.py --write --validate`
+- Alerts and recommendations refresh: `python scripts\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate`
 - Cron control: `python scripts\cron_control_packet.py --write --validate`
 - Lane status: `python scripts\concurrent_lane_manager.py --status --write --validate`
 
 Generated/read-only dashboard files:
 
 - `tmp/startup-brief-packet.json`
-- `tmp/trade-grade-os-freshness-cron-runner.json`
+- `tmp/alert-level-freshness-controller.json`
+- `tmp/finance-alert-os-digest.json`
 - `tmp/cron-control-packet.json`
 - `tmp/concurrent-lane-status.json`
 

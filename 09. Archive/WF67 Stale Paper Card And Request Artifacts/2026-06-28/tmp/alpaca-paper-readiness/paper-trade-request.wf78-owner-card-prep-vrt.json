@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "wf78-owner-card-prep-VRT-20260617T151746Z",
+  "created_at_utc": "2026-06-17T15:17:46Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_submit_allowed_after_exact_approval_and_guard": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true,
+    "currently_executable": false,
+    "paper_submit_requires_exact_owner_approval": true,
+    "paper_submit_requires_fresh_guard": true,
+    "paper_submit_requires_fresh_kill_switch": true
+  },
+  "execution_readiness": {
+    "currently_executable": false,
+    "reason": "pending_exact_randall_approval_and_fresh_wf67_execution_window",
+    "exact_order_owner_approval_status": "pending_exact_randall_approval",
+    "requires_exact_owner_approval": true,
+    "requires_fresh_wf67_guard": true,
+    "requires_fresh_short_lived_kill_switch": true,
+    "execution_by_this_artifact_allowed": false,
+    "paper_submit_allowed_field_semantics": "schema capability only; not current execution approval"
+  },
+  "order": {
+    "symbol": "VRT",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 313.26,
+    "qty": null,
+    "notional": 313.26
+  },
+  "risk_check": {
+    "status": "superseded_current_wf78_gate",
+    "estimated_notional_usd": 313.26,
+    "max_loss_usd": 35.81,
+    "max_notional_usd": 500.0,
+    "position_size_reviewed": false,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "entry_band_low": 299.33,
+    "entry_band_high": 316.5,
+    "observed_price": 313.26,
+    "observed_entry_status": "IN_BAND",
+    "stop": 277.45,
+    "sizing_rationale": "Paper-only starter request sized at or below WF67 $500 pilot cap; exact execution remains blocked pending Randall approval and fresh guard proof.",
+    "full_scope_artifact": null,
+    "blockers": [
+      "superseded_by_current_wf78_gate",
+      "superseded_prior_owner_card_request"
+    ],
+    "superseded_at_utc": "2026-06-24T03:30:36Z",
+    "superseded_reason": "current_wf78_gate:IN_BAND",
+    "current_wf78_gate": {
+      "ticker": "VRT",
+      "queue_state": "A-DEPLOY-CANDIDATE-REVIEW-READY",
+      "current_price": 318.32,
+      "current_band_status": "IN_BAND",
+      "entry_band_low": 300.02,
+      "entry_band_high": 319.13,
+      "stop_or_invalidation": 276.97,
+      "blockers": [],
+      "source_artifact": "tmp/wf78-capital-review-queue.json",
+      "source_generated_at_utc": "2026-06-23T20:30:45Z"
+    }
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "Superseded VRT WF78 paper-request artifact; current gate is A-DEPLOY-CANDIDATE-REVIEW-READY / IN_BAND. Audit-only, not approval-card or paper-order context.",
+    "recommendation_source": "main_session_order_decision_card",
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/main-session-cards/VRT.owner-card.json",
+    "capital_recommendation_source": "wf78_non_executing_owner_card_prep",
+    "source_artifact": "tmp/wf78-capital-review-queue.json",
+    "market_order_owner_approved": false,
+    "exact_order_owner_approval_status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "exact_order_owner_approval_text": null,
+    "main_session_capital_package_notification_required": true,
+    "approval_artifact": null,
+    "chief_intelligence_promotion_gate": {
+      "gate_artifact": "tmp/chief-intelligence-promotion-gate.json",
+      "gate_schema_version": "chief_intelligence_promotion_gate.v1",
+      "gate_generated_at_utc": "2026-06-17T14:07:53Z",
+      "ticker": "VRT",
+      "rank": 1,
+      "chief_intelligence_score": 81.72,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "band_status": "IN_BAND",
+      "entry_band": {
+        "low": 268.54,
+        "high": 315.92,
+        "stop": 247.0,
+        "label": "268.54–315.92",
+        "band_last_set": "2026-06-17"
+      }
+    },
+    "superseded_by_current_gate": true,
+    "current_gate_checked_at_utc": "2026-06-24T03:30:36Z"
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_forbidden": "https://api.alpaca.markets"
+  },
+  "superseded_by_current_gate": true
+}

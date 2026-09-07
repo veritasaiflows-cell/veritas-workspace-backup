@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "wf67-vrt-monday-band-gated-2026-06-01",
+  "created_at_utc": "2026-06-02T13:42:31Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true
+  },
+  "order": {
+    "symbol": "VRT",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 333.07,
+    "qty": null,
+    "notional": 200.0
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 200.0,
+    "max_loss_usd": 200.0,
+    "max_notional_usd": 200.0,
+    "position_size_reviewed": true,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "entry_band_low": 284.18,
+    "entry_band_high": 333.07,
+    "observed_price": 315.71,
+    "observed_entry_status": "IN_BAND",
+    "stop": 261.95,
+    "sizing_rationale": "Rank 3 challenger starter. VRT has strong AI-power/data-center upside and is in band, but overlaps ETN and carries wider downside to stop; starter size is smaller and conditional on concentration review."
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "VRT Monday 2026-06-01 band-gated paper-only tactical challenger packet; executable only if fresh Monday quote remains inside 284.18-333.07, concentration review remains acceptable, and Randall approves exact terms.",
+    "recommendation_source": "main_session_order_decision_card",
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/order-card.vrt-monday-band-gated-2026-06-01.json",
+    "capital_recommendation_source": "manual_main_session_rerank_2026-05-30_after_fresh_market_data",
+    "source_artifact": "08. Audits/Promoted Ticker Audit and Promotion Change Proposal - 2026-05-29.md",
+    "market_order_owner_approved": false,
+    "exact_order_owner_approval_status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "exact_order_owner_approval_text": null,
+    "main_session_capital_package_notification_required": true,
+    "approval_artifact": null,
+    "chief_intelligence_promotion_gate": {
+      "gate_artifact": "tmp/chief-intelligence-promotion-gate.json",
+      "gate_schema_version": "chief_intelligence_promotion_gate.v1",
+      "gate_generated_at_utc": "2026-06-02T13:42:27Z",
+      "ticker": "VRT",
+      "rank": 5,
+      "chief_intelligence_score": 69.0,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "band_status": "IN_BAND",
+      "entry_band": {
+        "low": 282.73,
+        "high": 332.67,
+        "stop": 260.03,
+        "label": "282.73–332.67",
+        "band_last_set": "2026-06-01"
+      }
+    }
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_forbidden": "https://api.alpaca.markets"
+  }
+}

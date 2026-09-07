@@ -1,0 +1,1972 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-08-28T12:58:00Z",
+  "status": "ok",
+  "question": "Which sectors or sleeves should be prioritized across the active universe, and should we favor growth or value?",
+  "source_artifacts": {
+    "portfolio_config": "tmp/portfolio-config.json",
+    "deployment_check": "tmp/deployment-check.json",
+    "trigger_sheet": "tmp/trigger-sheet.json",
+    "technical_refresh": "tmp/technical-refresh.json",
+    "fundamental_metrics": "tmp/fundamental-metrics-current.json",
+    "sector_expansion_board": "tmp/sector-expansion-board.json",
+    "capital_recommendations": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "probability_readiness": "tmp/probability-readiness-report.json",
+    "advisor_trust_gate": "tmp/advisor-packet-trust-coherence-gate.json"
+  },
+  "trust_state": {
+    "sector_expansion_status": "degraded",
+    "sector_expansion_consumer_posture": "review_only",
+    "probability_readiness": "SAFE_WITH_GAPS",
+    "advisor_trust_gate_status": "critical",
+    "advisor_presentation_posture": "degraded_artifact_display_with_red_trust_banner",
+    "downgrade": "Heuristic review-only ranking; no probability/win-rate language; degraded advisor artifacts require red trust banner when displayed."
+  },
+  "authority": {
+    "canonical_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "deployment_state_mutation_allowed": false,
+    "watchlist_promotion_allowed": false,
+    "sizing_allocation_recommendation_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "trade_execution_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "paper_order_execution_allowed": false,
+    "owner_approval_granted": false,
+    "owner_approval_inferred": false,
+    "probability_or_modeling_authority": false,
+    "model_driven_deployment_allowed": false,
+    "capital_action_allowed": false,
+    "review_packet_generation_allowed": true,
+    "report_only": true
+  },
+  "sector_rankings": [
+    {
+      "sector": "Technology / AI",
+      "broad_sector": "Technology",
+      "sector_score": 536.39,
+      "rank": 1,
+      "posture": "cap_limited_monitor",
+      "why": "Best candidates: NVDA, PLTR, MU. Flags: improving leadership, portfolio exposure at_cap.",
+      "candidate_count": 22,
+      "entry_ready_count": 1,
+      "promotion_review_count": 2,
+      "below_stop_count": 1,
+      "leadership_improving": true,
+      "underexposed": false,
+      "portfolio_exposure": {
+        "draft_weight_pct": 25.0,
+        "tickers": [
+          "MSFT",
+          "GOOG",
+          "NVDA"
+        ],
+        "status": "at_cap",
+        "risk_cap_pct": 25,
+        "distance_to_cap_pct": 0.0
+      },
+      "sector_timing_warning": {
+        "ticker": "XLK",
+        "close": 188.61,
+        "sma_5": 183.31,
+        "sma_20": 185.039,
+        "price_vs_5dma_pct": 2.8913,
+        "price_vs_20dma_pct": 1.9299,
+        "sma_5_vs_20_pct": -0.9344,
+        "signal": "short_term_repair_needed",
+        "warning": "5DMA is below 20DMA; short-term trend needs repair before aggressive deployment."
+      },
+      "concentration_warnings": [
+        "Direct Technology is at cap at 25% vs 25% cap; AI-power correlated sleeve is 32% including ETN."
+      ],
+      "growth_value_mix": {
+        "quality growth": 14,
+        "quality compounder": 3,
+        "growth / high volatility": 3,
+        "balanced / monitor": 2
+      },
+      "best_candidates": [
+        {
+          "ticker": "NVDA",
+          "sector": "Technology / AI",
+          "candidate_score": 82.0,
+          "state": "PROMOTION REVIEW",
+          "close": 209.66,
+          "band": "202.81-212.23",
+          "stop": 192.95,
+          "entry_band_status": "IN_BAND",
+          "growth_value_profile": "growth / high volatility",
+          "next_action": "promotion-review packet candidate; no execution entitlement"
+        },
+        {
+          "ticker": "PLTR",
+          "sector": "Technology / AI",
+          "candidate_score": 47.65,
+          "state": "WATCH / RESEARCH NEEDED",
+          "close": 177.5,
+          "band": "137.37-149.53",
+          "stop": 131.29,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "growth / high volatility",
+          "next_action": "wait for band or explicit band-review; no chase"
+        },
+        {
+          "ticker": "MU",
+          "sector": "Technology / AI",
+          "candidate_score": 46.0,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality growth",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "TSM",
+          "sector": "Technology / AI",
+          "candidate_score": 42.08,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality growth",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "AVGO",
+          "sector": "Technology / AI",
+          "candidate_score": 41.38,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality growth",
+          "next_action": "monitor"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Information Technology",
+      "broad_sector": "Information Technology",
+      "sector_score": 241.6,
+      "rank": 2,
+      "posture": "prioritize",
+      "why": "Best candidates: APP, ADI, CDNS.",
+      "candidate_count": 9,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 0,
+      "leadership_improving": false,
+      "underexposed": false,
+      "portfolio_exposure": {},
+      "sector_timing_warning": {},
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "quality compounder": 2,
+        "quality growth": 6,
+        "balanced / monitor": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "APP",
+          "sector": "Information Technology",
+          "candidate_score": 41.14,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality growth",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "ADI",
+          "sector": "Information Technology",
+          "candidate_score": 39.06,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality growth",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "CDNS",
+          "sector": "Information Technology",
+          "candidate_score": 33.89,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality growth",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "ADSK",
+          "sector": "Information Technology",
+          "candidate_score": 33.16,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality growth",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "ANET",
+          "sector": "Information Technology",
+          "candidate_score": 32.34,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality growth",
+          "next_action": "monitor"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Financials",
+      "broad_sector": "Financials",
+      "sector_score": 192.62,
+      "rank": 3,
+      "posture": "prioritize",
+      "why": "Best candidates: GS, JPM, V. Flags: improving leadership, portfolio exposure near_cap.",
+      "candidate_count": 8,
+      "entry_ready_count": 1,
+      "promotion_review_count": 2,
+      "below_stop_count": 0,
+      "leadership_improving": true,
+      "underexposed": false,
+      "portfolio_exposure": {
+        "draft_weight_pct": 21.0,
+        "tickers": [
+          "JPM",
+          "GS"
+        ],
+        "status": "near_cap",
+        "risk_cap_pct": 25,
+        "distance_to_cap_pct": 4.0
+      },
+      "sector_timing_warning": {
+        "ticker": "XLF",
+        "close": 57.88,
+        "sma_5": 58.03,
+        "sma_20": 57.778,
+        "price_vs_5dma_pct": -0.2585,
+        "price_vs_20dma_pct": 0.1765,
+        "sma_5_vs_20_pct": 0.4362,
+        "signal": "constructive_pullback",
+        "warning": "Normal pullback inside short-term uptrend; watch for reclaim rather than chase."
+      },
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "quality/value/cyclical": 8
+      },
+      "best_candidates": [
+        {
+          "ticker": "GS",
+          "sector": "Financials",
+          "candidate_score": 50.3,
+          "state": "PROMOTION REVIEW",
+          "close": 1040.46,
+          "band": "971.53-1048.14",
+          "stop": 928.97,
+          "entry_band_status": "IN_BAND",
+          "growth_value_profile": "quality/value/cyclical",
+          "next_action": "promotion-review packet candidate; no execution entitlement"
+        },
+        {
+          "ticker": "JPM",
+          "sector": "Financials",
+          "candidate_score": 35.28,
+          "state": "ALMOST DEPLOYABLE",
+          "close": 356.5,
+          "band": "304.96-315.95",
+          "stop": 296.21,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "quality/value/cyclical",
+          "next_action": "wait for band or explicit band-review; no chase"
+        },
+        {
+          "ticker": "V",
+          "sector": "Financials",
+          "candidate_score": 24.47,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality/value/cyclical",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "MA",
+          "sector": "Financials",
+          "candidate_score": 23.97,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality/value/cyclical",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "CME",
+          "sector": "Financials",
+          "candidate_score": 22.0,
+          "state": "PROMOTION REVIEW",
+          "close": 280.98,
+          "band": "287.74-298.86",
+          "stop": 276.68,
+          "entry_band_status": "BELOW_BAND_WAIT",
+          "growth_value_profile": "quality/value/cyclical",
+          "next_action": "monitor"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Industrials / AI-Power",
+      "broad_sector": "Industrials",
+      "sector_score": 125.19,
+      "rank": 4,
+      "posture": "prioritize",
+      "why": "Best candidates: ETN, AME, ALLE. Flags: portfolio exposure within_limit.",
+      "candidate_count": 8,
+      "entry_ready_count": 1,
+      "promotion_review_count": 1,
+      "below_stop_count": 1,
+      "leadership_improving": false,
+      "underexposed": false,
+      "portfolio_exposure": {
+        "draft_weight_pct": 7.0,
+        "tickers": [
+          "ETN",
+          "VRT"
+        ],
+        "status": "within_limit",
+        "risk_cap_pct": 25,
+        "distance_to_cap_pct": 18.0
+      },
+      "sector_timing_warning": {
+        "ticker": "XLI",
+        "close": 178.8,
+        "sma_5": 179.358,
+        "sma_20": 183.1285,
+        "price_vs_5dma_pct": -0.3111,
+        "price_vs_20dma_pct": -2.3636,
+        "sma_5_vs_20_pct": -2.0589,
+        "signal": "short_term_repair_needed",
+        "warning": "5DMA is below 20DMA; short-term trend needs repair before aggressive deployment."
+      },
+      "concentration_warnings": [
+        "Direct Technology is at cap at 25% vs 25% cap; AI-power correlated sleeve is 32% including ETN."
+      ],
+      "growth_value_mix": {
+        "quality compounder": 5,
+        "quality growth": 2,
+        "growth / high volatility": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "ETN",
+          "sector": "Industrials / AI-Power",
+          "candidate_score": 45.31,
+          "state": "DEPLOYABLE NOW",
+          "close": 419.44,
+          "band": "387.67-404.02",
+          "stop": 367.6,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "quality growth",
+          "next_action": "wait for band or explicit band-review; no chase"
+        },
+        {
+          "ticker": "AME",
+          "sector": "Industrials / AI-Power",
+          "candidate_score": 18.05,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality compounder",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "ALLE",
+          "sector": "Industrials / AI-Power",
+          "candidate_score": 16.97,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality compounder",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "ADP",
+          "sector": "Industrials / AI-Power",
+          "candidate_score": 14.73,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality compounder",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "EMR",
+          "sector": "Industrials / AI-Power",
+          "candidate_score": 13.37,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality compounder",
+          "next_action": "monitor"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Materials",
+      "broad_sector": "Materials",
+      "sector_score": 119.06,
+      "rank": 5,
+      "posture": "prioritize",
+      "why": "Best candidates: SCCO, ALB, AMCR. Flags: improving leadership, underexposed, portfolio exposure within_limit.",
+      "candidate_count": 5,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 0,
+      "leadership_improving": true,
+      "underexposed": true,
+      "portfolio_exposure": {
+        "draft_weight_pct": 0.0,
+        "tickers": [
+          "XLB"
+        ],
+        "status": "within_limit",
+        "risk_cap_pct": 25,
+        "distance_to_cap_pct": 25.0
+      },
+      "sector_timing_warning": {
+        "ticker": "XLB",
+        "close": 53.23,
+        "sma_5": 53.52,
+        "sma_20": 52.576,
+        "price_vs_5dma_pct": -0.5419,
+        "price_vs_20dma_pct": 1.2439,
+        "sma_5_vs_20_pct": 1.7955,
+        "signal": "constructive_pullback",
+        "warning": "Normal pullback inside short-term uptrend; watch for reclaim rather than chase."
+      },
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "quality growth": 3,
+        "quality compounder": 2
+      },
+      "best_candidates": [
+        {
+          "ticker": "SCCO",
+          "sector": "Materials",
+          "candidate_score": 40.4,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality growth",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "ALB",
+          "sector": "Materials",
+          "candidate_score": 35.48,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality growth",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "AMCR",
+          "sector": "Materials",
+          "candidate_score": 17.84,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality growth",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "FCX",
+          "sector": "Materials",
+          "candidate_score": 16.05,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality compounder",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "APD",
+          "sector": "Materials",
+          "candidate_score": -10.71,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality compounder",
+          "next_action": "monitor"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Energy Security",
+      "broad_sector": "Energy",
+      "sector_score": 97.12,
+      "rank": 6,
+      "posture": "prioritize",
+      "why": "Best candidates: CVX, WMB, XOM. Flags: portfolio exposure within_limit.",
+      "candidate_count": 5,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 0,
+      "leadership_improving": false,
+      "underexposed": false,
+      "portfolio_exposure": {
+        "draft_weight_pct": 10.0,
+        "tickers": [
+          "XOM"
+        ],
+        "status": "within_limit",
+        "risk_cap_pct": 25,
+        "distance_to_cap_pct": 15.0
+      },
+      "sector_timing_warning": {
+        "ticker": "XLE",
+        "close": 62.29,
+        "sma_5": 62.706,
+        "sma_20": 61.103,
+        "price_vs_5dma_pct": -0.6634,
+        "price_vs_20dma_pct": 1.9426,
+        "sma_5_vs_20_pct": 2.6234,
+        "signal": "constructive_pullback",
+        "warning": "Normal pullback inside short-term uptrend; watch for reclaim rather than chase."
+      },
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "value/income/macro hedge": 5
+      },
+      "best_candidates": [
+        {
+          "ticker": "CVX",
+          "sector": "Energy Security",
+          "candidate_score": 39.12,
+          "state": "WATCH / RESEARCH NEEDED",
+          "close": 200.21,
+          "band": "186.91-196.41",
+          "stop": 182.16,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "value/income/macro hedge",
+          "next_action": "wait for band or explicit band-review; no chase"
+        },
+        {
+          "ticker": "WMB",
+          "sector": "Energy Security",
+          "candidate_score": 26.0,
+          "state": "WATCH / RESEARCH NEEDED",
+          "close": 74.41,
+          "band": "73.25-75.5",
+          "stop": 70.32,
+          "entry_band_status": "IN_BAND",
+          "growth_value_profile": "value/income/macro hedge",
+          "next_action": "deeper review packet if fresh evidence and entry discipline clear"
+        },
+        {
+          "ticker": "XOM",
+          "sector": "Energy Security",
+          "candidate_score": 12.0,
+          "state": "BENCH",
+          "close": 158.19,
+          "band": "150.24-158.44",
+          "stop": 146.14,
+          "entry_band_status": "IN_BAND",
+          "growth_value_profile": "value/income/macro hedge",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "LNG",
+          "sector": "Energy Security",
+          "candidate_score": 10.0,
+          "state": "WATCH / RESEARCH NEEDED",
+          "close": 284.08,
+          "band": "260.82-275.56",
+          "stop": 253.45,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "value/income/macro hedge",
+          "next_action": "wait for band or explicit band-review; no chase"
+        },
+        {
+          "ticker": "XLE",
+          "sector": "Energy Security",
+          "candidate_score": 10.0,
+          "state": "WATCH / RESEARCH NEEDED",
+          "close": 62.43,
+          "band": "56.35-58.04",
+          "stop": 54.83,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "value/income/macro hedge",
+          "next_action": "wait for band or explicit band-review; no chase"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Industrials / Infrastructure",
+      "broad_sector": "Industrials",
+      "sector_score": 76.0,
+      "rank": 7,
+      "posture": "review_next",
+      "why": "Best candidates: PH, CAT, PAVE. Flags: portfolio exposure within_limit.",
+      "candidate_count": 4,
+      "entry_ready_count": 0,
+      "promotion_review_count": 1,
+      "below_stop_count": 0,
+      "leadership_improving": false,
+      "underexposed": false,
+      "portfolio_exposure": {
+        "draft_weight_pct": 7.0,
+        "tickers": [
+          "ETN",
+          "VRT"
+        ],
+        "status": "within_limit",
+        "risk_cap_pct": 25,
+        "distance_to_cap_pct": 18.0
+      },
+      "sector_timing_warning": {
+        "ticker": "XLI",
+        "close": 178.8,
+        "sma_5": 179.358,
+        "sma_20": 183.1285,
+        "price_vs_5dma_pct": -0.3111,
+        "price_vs_20dma_pct": -2.3636,
+        "sma_5_vs_20_pct": -2.0589,
+        "signal": "short_term_repair_needed",
+        "warning": "5DMA is below 20DMA; short-term trend needs repair before aggressive deployment."
+      },
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "balanced / monitor": 4
+      },
+      "best_candidates": [
+        {
+          "ticker": "PH",
+          "sector": "Industrials / Infrastructure",
+          "candidate_score": 26.0,
+          "state": "PROMOTION REVIEW",
+          "close": 1039.49,
+          "band": "851.36-908.98",
+          "stop": 819.35,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "wait for band or explicit band-review; no chase"
+        },
+        {
+          "ticker": "CAT",
+          "sector": "Industrials / Infrastructure",
+          "candidate_score": 20.0,
+          "state": "ENTRY POLICY REVIEW",
+          "close": 821.93,
+          "band": "811.65-866.48",
+          "stop": 784.25,
+          "entry_band_status": "IN_BAND",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "PAVE",
+          "sector": "Industrials / Infrastructure",
+          "candidate_score": 20.0,
+          "state": "ENTRY POLICY REVIEW",
+          "close": 56.21,
+          "band": "53.94-56.28",
+          "stop": 52.64,
+          "entry_band_status": "IN_BAND",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "XLI",
+          "sector": "Industrials / Infrastructure",
+          "candidate_score": 10.0,
+          "state": "WATCH / RESEARCH NEEDED",
+          "close": 180.34,
+          "band": "166.78-173.4",
+          "stop": 163.1,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "wait for band or explicit band-review; no chase"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Materials / Infrastructure",
+      "broad_sector": "Materials",
+      "sector_score": 73.54,
+      "rank": 8,
+      "posture": "review_next",
+      "why": "Best candidates: LIN, XLB, ECL. Flags: improving leadership, underexposed, portfolio exposure within_limit.",
+      "candidate_count": 5,
+      "entry_ready_count": 0,
+      "promotion_review_count": 2,
+      "below_stop_count": 1,
+      "leadership_improving": true,
+      "underexposed": true,
+      "portfolio_exposure": {
+        "draft_weight_pct": 0.0,
+        "tickers": [
+          "XLB"
+        ],
+        "status": "within_limit",
+        "risk_cap_pct": 25,
+        "distance_to_cap_pct": 25.0
+      },
+      "sector_timing_warning": {
+        "ticker": "XLB",
+        "close": 53.23,
+        "sma_5": 53.52,
+        "sma_20": 52.576,
+        "price_vs_5dma_pct": -0.5419,
+        "price_vs_20dma_pct": 1.2439,
+        "sma_5_vs_20_pct": 1.7955,
+        "signal": "constructive_pullback",
+        "warning": "Normal pullback inside short-term uptrend; watch for reclaim rather than chase."
+      },
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "balanced / monitor": 4,
+        "quality compounder": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "LIN",
+          "sector": "Materials / Infrastructure",
+          "candidate_score": 32.54,
+          "state": "PROMOTION REVIEW",
+          "close": 490.33,
+          "band": "497.11-506.11",
+          "stop": 487.17,
+          "entry_band_status": "BELOW_BAND_WAIT",
+          "growth_value_profile": "quality compounder",
+          "next_action": "deeper review packet if fresh evidence and entry discipline clear"
+        },
+        {
+          "ticker": "XLB",
+          "sector": "Materials / Infrastructure",
+          "candidate_score": 26.0,
+          "state": "PROMOTION REVIEW",
+          "close": 53.67,
+          "band": "49.84-51.68",
+          "stop": 48.81,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "wait for band or explicit band-review; no chase"
+        },
+        {
+          "ticker": "ECL",
+          "sector": "Materials / Infrastructure",
+          "candidate_score": 10.0,
+          "state": "WATCH / RESEARCH NEEDED",
+          "close": 290.6,
+          "band": "271.22-278.98",
+          "stop": 265.01,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "wait for band or explicit band-review; no chase"
+        },
+        {
+          "ticker": "VAW",
+          "sector": "Materials / Infrastructure",
+          "candidate_score": 10.0,
+          "state": "WATCH / RESEARCH NEEDED",
+          "close": 240.53,
+          "band": "225.44-233.7",
+          "stop": 220.85,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "wait for band or explicit band-review; no chase"
+        },
+        {
+          "ticker": "VMC",
+          "sector": "Materials / Infrastructure",
+          "candidate_score": -30.0,
+          "state": "BELOW STOP",
+          "close": 273.74,
+          "band": "291.87-300.98",
+          "stop": 284.58,
+          "entry_band_status": "BELOW_STOP",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "repair/reclaim watch only; no promotion or paper package"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Consumer Discretionary",
+      "broad_sector": "Consumer Discretionary",
+      "sector_score": 57.45,
+      "rank": 9,
+      "posture": "review_next",
+      "why": "Best candidates: BKNG, DECK, CCL. Flags: underexposed, portfolio exposure unrepresented.",
+      "candidate_count": 4,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 0,
+      "leadership_improving": false,
+      "underexposed": true,
+      "portfolio_exposure": {
+        "draft_weight_pct": 0,
+        "tickers": [],
+        "status": "unrepresented"
+      },
+      "sector_timing_warning": {
+        "ticker": "XLY",
+        "close": 115.88,
+        "sma_5": 117.462,
+        "sma_20": 117.9165,
+        "price_vs_5dma_pct": -1.3468,
+        "price_vs_20dma_pct": -1.7271,
+        "sma_5_vs_20_pct": -0.3854,
+        "signal": "short_term_repair_needed",
+        "warning": "5DMA is below 20DMA; short-term trend needs repair before aggressive deployment."
+      },
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "quality compounder": 2,
+        "balanced / monitor": 1,
+        "quality growth": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "BKNG",
+          "sector": "Consumer Discretionary",
+          "candidate_score": 21.91,
+          "state": "BENCH",
+          "close": 208.89,
+          "band": "164.05-170.91",
+          "stop": 155.97,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "quality compounder",
+          "next_action": "wait for band or explicit band-review; no chase"
+        },
+        {
+          "ticker": "DECK",
+          "sector": "Consumer Discretionary",
+          "candidate_score": 10.55,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality compounder",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "CCL",
+          "sector": "Consumer Discretionary",
+          "candidate_score": 8.69,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "DASH",
+          "sector": "Consumer Discretionary",
+          "candidate_score": 8.3,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality growth",
+          "next_action": "monitor"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Health Care",
+      "broad_sector": "Health Care",
+      "sector_score": 40.52,
+      "rank": 10,
+      "posture": "monitor_selectively",
+      "why": "Best candidates: ABBV. Flags: underexposed, portfolio exposure unrepresented.",
+      "candidate_count": 1,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 0,
+      "leadership_improving": false,
+      "underexposed": true,
+      "portfolio_exposure": {
+        "draft_weight_pct": 0,
+        "tickers": [],
+        "status": "unrepresented"
+      },
+      "sector_timing_warning": {
+        "ticker": "XLV",
+        "close": 171.58,
+        "sma_5": 173.946,
+        "sma_20": 168.82,
+        "price_vs_5dma_pct": -1.3602,
+        "price_vs_20dma_pct": 1.6349,
+        "sma_5_vs_20_pct": 3.0364,
+        "signal": "constructive_pullback",
+        "warning": "Normal pullback inside short-term uptrend; watch for reclaim rather than chase."
+      },
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "quality compounder": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "ABBV",
+          "sector": "Health Care",
+          "candidate_score": 32.52,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "quality compounder",
+          "next_action": "monitor"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Healthcare",
+      "broad_sector": "Health Care",
+      "sector_score": 36.88,
+      "rank": 11,
+      "posture": "monitor_selectively",
+      "why": "Best candidates: LLY. Flags: underexposed, portfolio exposure unrepresented.",
+      "candidate_count": 1,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 0,
+      "leadership_improving": false,
+      "underexposed": true,
+      "portfolio_exposure": {
+        "draft_weight_pct": 0,
+        "tickers": [],
+        "status": "unrepresented"
+      },
+      "sector_timing_warning": {
+        "ticker": "XLV",
+        "close": 171.58,
+        "sma_5": 173.946,
+        "sma_20": 168.82,
+        "price_vs_5dma_pct": -1.3602,
+        "price_vs_20dma_pct": 1.6349,
+        "sma_5_vs_20_pct": 3.0364,
+        "signal": "constructive_pullback",
+        "warning": "Normal pullback inside short-term uptrend; watch for reclaim rather than chase."
+      },
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "quality growth": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "LLY",
+          "sector": "Healthcare",
+          "candidate_score": 28.88,
+          "state": "ENTRY POLICY REVIEW",
+          "close": 1189.41,
+          "band": "907.64-969.88",
+          "stop": 876.52,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "quality growth",
+          "next_action": "wait for band or explicit band-review; no chase"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Defense / Aerospace",
+      "broad_sector": "Industrials",
+      "sector_score": 34.0,
+      "rank": 12,
+      "posture": "monitor_selectively",
+      "why": "Best candidates: ITA, LMT, GE. Flags: portfolio exposure within_limit.",
+      "candidate_count": 5,
+      "entry_ready_count": 0,
+      "promotion_review_count": 1,
+      "below_stop_count": 0,
+      "leadership_improving": false,
+      "underexposed": false,
+      "portfolio_exposure": {
+        "draft_weight_pct": 7.0,
+        "tickers": [
+          "ETN",
+          "VRT"
+        ],
+        "status": "within_limit",
+        "risk_cap_pct": 25,
+        "distance_to_cap_pct": 18.0
+      },
+      "sector_timing_warning": {
+        "ticker": "XLI",
+        "close": 178.8,
+        "sma_5": 179.358,
+        "sma_20": 183.1285,
+        "price_vs_5dma_pct": -0.3111,
+        "price_vs_20dma_pct": -2.3636,
+        "sma_5_vs_20_pct": -2.0589,
+        "signal": "short_term_repair_needed",
+        "warning": "5DMA is below 20DMA; short-term trend needs repair before aggressive deployment."
+      },
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "balanced / monitor": 4,
+        "growth / high volatility": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "ITA",
+          "sector": "Defense / Aerospace",
+          "candidate_score": 26.0,
+          "state": "PROMOTION REVIEW",
+          "close": 236.38,
+          "band": "212.15-223.44",
+          "stop": 205.88,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "wait for band or explicit band-review; no chase"
+        },
+        {
+          "ticker": "LMT",
+          "sector": "Defense / Aerospace",
+          "candidate_score": 6.0,
+          "state": "BENCH",
+          "close": 565.62,
+          "band": "548.51-582.27",
+          "stop": 531.63,
+          "entry_band_status": "IN_BAND",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "GE",
+          "sector": "Defense / Aerospace",
+          "candidate_score": 4.0,
+          "state": "ENTRY POLICY REVIEW",
+          "close": 354.39,
+          "band": "299.03-311.84",
+          "stop": 288.78,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "wait for band or explicit band-review; no chase"
+        },
+        {
+          "ticker": "KTOS",
+          "sector": "Defense / Aerospace",
+          "candidate_score": 0.0,
+          "state": "WATCH",
+          "close": null,
+          "band": "80.79-85.2",
+          "stop": 77.27,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "growth / high volatility",
+          "next_action": "monitor"
+        },
+        {
+          "ticker": "RTX",
+          "sector": "Defense / Aerospace",
+          "candidate_score": -2.0,
+          "state": "ENTRY POLICY REVIEW",
+          "close": 211.99,
+          "band": "183.01-193.23",
+          "stop": 177.91,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "wait for band or explicit band-review; no chase"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Consumer Staples",
+      "broad_sector": "Consumer Staples",
+      "sector_score": 31.28,
+      "rank": 13,
+      "posture": "monitor_selectively",
+      "why": "Best candidates: CASY. Flags: underexposed, portfolio exposure unrepresented.",
+      "candidate_count": 1,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 0,
+      "leadership_improving": false,
+      "underexposed": true,
+      "portfolio_exposure": {
+        "draft_weight_pct": 0,
+        "tickers": [],
+        "status": "unrepresented"
+      },
+      "sector_timing_warning": {
+        "ticker": "XLP",
+        "close": 85.08,
+        "sma_5": 86.262,
+        "sma_20": 85.554,
+        "price_vs_5dma_pct": -1.3702,
+        "price_vs_20dma_pct": -0.554,
+        "sma_5_vs_20_pct": 0.8275,
+        "signal": "momentum_cooling",
+        "warning": "Price is below 20DMA while 5DMA remains above 20DMA; stage smaller or wait for reclaim."
+      },
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "balanced / monitor": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "CASY",
+          "sector": "Consumer Staples",
+          "candidate_score": 23.28,
+          "state": "WATCH",
+          "close": null,
+          "band": null,
+          "stop": null,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "monitor"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Diversified Quality",
+      "broad_sector": "Diversified Quality",
+      "sector_score": 11.03,
+      "rank": 14,
+      "posture": "repair_or_watch",
+      "why": "Best candidates: BRK.B.",
+      "candidate_count": 1,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 0,
+      "leadership_improving": false,
+      "underexposed": false,
+      "portfolio_exposure": {},
+      "sector_timing_warning": {},
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "quality/value/cyclical": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "BRK.B",
+          "sector": "Diversified Quality",
+          "candidate_score": 11.03,
+          "state": "BENCH",
+          "close": 504.91,
+          "band": "489.78-498.19",
+          "stop": 483.05,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "quality/value/cyclical",
+          "next_action": "wait for band or explicit band-review; no chase"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "International Equity",
+      "broad_sector": "International Equity",
+      "sector_score": 10.0,
+      "rank": 15,
+      "posture": "repair_or_watch",
+      "why": "Best candidates: VXUS.",
+      "candidate_count": 1,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 0,
+      "leadership_improving": false,
+      "underexposed": false,
+      "portfolio_exposure": {},
+      "sector_timing_warning": {},
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "balanced / monitor": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "VXUS",
+          "sector": "International Equity",
+          "candidate_score": 10.0,
+          "state": "WATCH / RESEARCH NEEDED",
+          "close": 87.82,
+          "band": "80.88-83.36",
+          "stop": 78.15,
+          "entry_band_status": "ABOVE_BAND_WAIT",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "wait for band or explicit band-review; no chase"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Commodities",
+      "broad_sector": "Commodities",
+      "sector_score": -6.0,
+      "rank": 16,
+      "posture": "repair_or_watch",
+      "why": "Best candidates: SLV.",
+      "candidate_count": 1,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 0,
+      "leadership_improving": false,
+      "underexposed": false,
+      "portfolio_exposure": {},
+      "sector_timing_warning": {},
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "balanced / monitor": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "SLV",
+          "sector": "Commodities",
+          "candidate_score": -6.0,
+          "state": "MACRO",
+          "close": null,
+          "band": "64.07-72.34",
+          "stop": 60.31,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "monitor"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Fixed Income",
+      "broad_sector": "Fixed Income",
+      "sector_score": -6.0,
+      "rank": 17,
+      "posture": "repair_or_watch",
+      "why": "Best candidates: TLT.",
+      "candidate_count": 1,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 0,
+      "leadership_improving": false,
+      "underexposed": false,
+      "portfolio_exposure": {},
+      "sector_timing_warning": {},
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "balanced / monitor": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "TLT",
+          "sector": "Fixed Income",
+          "candidate_score": -6.0,
+          "state": "MACRO",
+          "close": null,
+          "band": "86.6-87.41",
+          "stop": 85.96,
+          "entry_band_status": "UNKNOWN",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "monitor"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Communication Services / Telecom",
+      "broad_sector": "Communication Services / Telecom",
+      "sector_score": -25.0,
+      "rank": 18,
+      "posture": "repair_or_watch",
+      "why": "Best candidates: TMUS.",
+      "candidate_count": 1,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 1,
+      "leadership_improving": false,
+      "underexposed": false,
+      "portfolio_exposure": {},
+      "sector_timing_warning": {},
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "balanced / monitor": 1
+      },
+      "best_candidates": [
+        {
+          "ticker": "TMUS",
+          "sector": "Communication Services / Telecom",
+          "candidate_score": -30.0,
+          "state": "BELOW STOP",
+          "close": 179.61,
+          "band": "213.01-220.38",
+          "stop": 207.11,
+          "entry_band_status": "BELOW_STOP",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "repair/reclaim watch only; no promotion or paper package"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    },
+    {
+      "sector": "Communication Services",
+      "broad_sector": "Communication Services",
+      "sector_score": -67.0,
+      "rank": 19,
+      "posture": "repair_or_watch",
+      "why": "Best candidates: META, NFLX, XLC. Flags: underexposed, portfolio exposure unrepresented.",
+      "candidate_count": 3,
+      "entry_ready_count": 0,
+      "promotion_review_count": 0,
+      "below_stop_count": 3,
+      "leadership_improving": false,
+      "underexposed": true,
+      "portfolio_exposure": {
+        "draft_weight_pct": 0,
+        "tickers": [],
+        "status": "unrepresented"
+      },
+      "sector_timing_warning": {
+        "ticker": "XLC",
+        "close": 111.41,
+        "sma_5": 112.184,
+        "sma_20": 111.4005,
+        "price_vs_5dma_pct": -0.6899,
+        "price_vs_20dma_pct": 0.0085,
+        "sma_5_vs_20_pct": 0.7033,
+        "signal": "constructive_pullback",
+        "warning": "Normal pullback inside short-term uptrend; watch for reclaim rather than chase."
+      },
+      "concentration_warnings": [],
+      "growth_value_mix": {
+        "balanced / monitor": 3
+      },
+      "best_candidates": [
+        {
+          "ticker": "META",
+          "sector": "Communication Services",
+          "candidate_score": -30.0,
+          "state": "BELOW STOP",
+          "close": 576.14,
+          "band": "672.6-693.91",
+          "stop": 655.55,
+          "entry_band_status": "BELOW_STOP",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "repair/reclaim watch only; no promotion or paper package"
+        },
+        {
+          "ticker": "NFLX",
+          "sector": "Communication Services",
+          "candidate_score": -30.0,
+          "state": "BELOW STOP",
+          "close": 81.46,
+          "band": "102.56-105.46",
+          "stop": 100.24,
+          "entry_band_status": "BELOW_STOP",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "repair/reclaim watch only; no promotion or paper package"
+        },
+        {
+          "ticker": "XLC",
+          "sector": "Communication Services",
+          "candidate_score": -30.0,
+          "state": "BELOW STOP",
+          "close": 112.61,
+          "band": "114.31-116.55",
+          "stop": 112.71,
+          "entry_band_status": "BELOW_STOP",
+          "growth_value_profile": "balanced / monitor",
+          "next_action": "repair/reclaim watch only; no promotion or paper package"
+        }
+      ],
+      "authority": {
+        "canonical_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "deployment_state_mutation_allowed": false,
+        "watchlist_promotion_allowed": false,
+        "sizing_allocation_recommendation_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "trade_execution_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_order_execution_allowed": false,
+        "owner_approval_granted": false,
+        "owner_approval_inferred": false,
+        "probability_or_modeling_authority": false,
+        "model_driven_deployment_allowed": false,
+        "capital_action_allowed": false
+      }
+    }
+  ],
+  "top_candidate_watch_order": [
+    {
+      "ticker": "NVDA",
+      "sector": "Technology / AI",
+      "candidate_score": 82.0,
+      "state": "PROMOTION REVIEW",
+      "close": 209.66,
+      "band": "202.81-212.23",
+      "stop": 192.95,
+      "entry_band_status": "IN_BAND",
+      "growth_value_profile": "growth / high volatility",
+      "next_action": "promotion-review packet candidate; no execution entitlement"
+    },
+    {
+      "ticker": "GS",
+      "sector": "Financials",
+      "candidate_score": 50.3,
+      "state": "PROMOTION REVIEW",
+      "close": 1040.46,
+      "band": "971.53-1048.14",
+      "stop": 928.97,
+      "entry_band_status": "IN_BAND",
+      "growth_value_profile": "quality/value/cyclical",
+      "next_action": "promotion-review packet candidate; no execution entitlement"
+    },
+    {
+      "ticker": "PLTR",
+      "sector": "Technology / AI",
+      "candidate_score": 47.65,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close": 177.5,
+      "band": "137.37-149.53",
+      "stop": 131.29,
+      "entry_band_status": "ABOVE_BAND_WAIT",
+      "growth_value_profile": "growth / high volatility",
+      "next_action": "wait for band or explicit band-review; no chase"
+    },
+    {
+      "ticker": "MU",
+      "sector": "Technology / AI",
+      "candidate_score": 46.0,
+      "state": "WATCH",
+      "close": null,
+      "band": null,
+      "stop": null,
+      "entry_band_status": "UNKNOWN",
+      "growth_value_profile": "quality growth",
+      "next_action": "monitor"
+    },
+    {
+      "ticker": "ETN",
+      "sector": "Industrials / AI-Power",
+      "candidate_score": 45.31,
+      "state": "DEPLOYABLE NOW",
+      "close": 419.44,
+      "band": "387.67-404.02",
+      "stop": 367.6,
+      "entry_band_status": "ABOVE_BAND_WAIT",
+      "growth_value_profile": "quality growth",
+      "next_action": "wait for band or explicit band-review; no chase"
+    },
+    {
+      "ticker": "TSM",
+      "sector": "Technology / AI",
+      "candidate_score": 42.08,
+      "state": "WATCH",
+      "close": null,
+      "band": null,
+      "stop": null,
+      "entry_band_status": "UNKNOWN",
+      "growth_value_profile": "quality growth",
+      "next_action": "monitor"
+    },
+    {
+      "ticker": "AVGO",
+      "sector": "Technology / AI",
+      "candidate_score": 41.38,
+      "state": "WATCH",
+      "close": null,
+      "band": null,
+      "stop": null,
+      "entry_band_status": "UNKNOWN",
+      "growth_value_profile": "quality growth",
+      "next_action": "monitor"
+    },
+    {
+      "ticker": "APP",
+      "sector": "Information Technology",
+      "candidate_score": 41.14,
+      "state": "WATCH",
+      "close": null,
+      "band": null,
+      "stop": null,
+      "entry_band_status": "UNKNOWN",
+      "growth_value_profile": "quality growth",
+      "next_action": "monitor"
+    },
+    {
+      "ticker": "SCCO",
+      "sector": "Materials",
+      "candidate_score": 40.4,
+      "state": "WATCH",
+      "close": null,
+      "band": null,
+      "stop": null,
+      "entry_band_status": "UNKNOWN",
+      "growth_value_profile": "quality growth",
+      "next_action": "monitor"
+    },
+    {
+      "ticker": "MSFT",
+      "sector": "Technology / AI",
+      "candidate_score": 39.41,
+      "state": "ALMOST DEPLOYABLE",
+      "close": 496.37,
+      "band": "389.64-412.56",
+      "stop": 378.18,
+      "entry_band_status": "ABOVE_BAND_WAIT",
+      "growth_value_profile": "quality growth",
+      "next_action": "wait for band or explicit band-review; no chase"
+    },
+    {
+      "ticker": "CVX",
+      "sector": "Energy Security",
+      "candidate_score": 39.12,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close": 200.21,
+      "band": "186.91-196.41",
+      "stop": 182.16,
+      "entry_band_status": "ABOVE_BAND_WAIT",
+      "growth_value_profile": "value/income/macro hedge",
+      "next_action": "wait for band or explicit band-review; no chase"
+    },
+    {
+      "ticker": "ADI",
+      "sector": "Information Technology",
+      "candidate_score": 39.06,
+      "state": "WATCH",
+      "close": null,
+      "band": null,
+      "stop": null,
+      "entry_band_status": "UNKNOWN",
+      "growth_value_profile": "quality growth",
+      "next_action": "monitor"
+    },
+    {
+      "ticker": "ALB",
+      "sector": "Materials",
+      "candidate_score": 35.48,
+      "state": "WATCH",
+      "close": null,
+      "band": null,
+      "stop": null,
+      "entry_band_status": "UNKNOWN",
+      "growth_value_profile": "quality growth",
+      "next_action": "monitor"
+    },
+    {
+      "ticker": "JPM",
+      "sector": "Financials",
+      "candidate_score": 35.28,
+      "state": "ALMOST DEPLOYABLE",
+      "close": 356.5,
+      "band": "304.96-315.95",
+      "stop": 296.21,
+      "entry_band_status": "ABOVE_BAND_WAIT",
+      "growth_value_profile": "quality/value/cyclical",
+      "next_action": "wait for band or explicit band-review; no chase"
+    },
+    {
+      "ticker": "CDNS",
+      "sector": "Information Technology",
+      "candidate_score": 33.89,
+      "state": "WATCH",
+      "close": null,
+      "band": null,
+      "stop": null,
+      "entry_band_status": "UNKNOWN",
+      "growth_value_profile": "quality growth",
+      "next_action": "monitor"
+    },
+    {
+      "ticker": "SHOP",
+      "sector": "Technology / AI",
+      "candidate_score": 33.66,
+      "state": "WATCH",
+      "close": null,
+      "band": null,
+      "stop": null,
+      "entry_band_status": "UNKNOWN",
+      "growth_value_profile": "quality growth",
+      "next_action": "monitor"
+    },
+    {
+      "ticker": "ADSK",
+      "sector": "Information Technology",
+      "candidate_score": 33.16,
+      "state": "WATCH",
+      "close": null,
+      "band": null,
+      "stop": null,
+      "entry_band_status": "UNKNOWN",
+      "growth_value_profile": "quality growth",
+      "next_action": "monitor"
+    },
+    {
+      "ticker": "LIN",
+      "sector": "Materials / Infrastructure",
+      "candidate_score": 32.54,
+      "state": "PROMOTION REVIEW",
+      "close": 490.33,
+      "band": "497.11-506.11",
+      "stop": 487.17,
+      "entry_band_status": "BELOW_BAND_WAIT",
+      "growth_value_profile": "quality compounder",
+      "next_action": "deeper review packet if fresh evidence and entry discipline clear"
+    },
+    {
+      "ticker": "ABBV",
+      "sector": "Health Care",
+      "candidate_score": 32.52,
+      "state": "WATCH",
+      "close": null,
+      "band": null,
+      "stop": null,
+      "entry_band_status": "UNKNOWN",
+      "growth_value_profile": "quality compounder",
+      "next_action": "monitor"
+    },
+    {
+      "ticker": "ANET",
+      "sector": "Information Technology",
+      "candidate_score": 32.34,
+      "state": "WATCH",
+      "close": null,
+      "band": null,
+      "stop": null,
+      "entry_band_status": "UNKNOWN",
+      "growth_value_profile": "quality growth",
+      "next_action": "monitor"
+    }
+  ],
+  "growth_vs_value_verdict": "Favor quality growth and capex/backlog-linked compounders at disciplined entries, not a broad value rotation. Value/income sectors remain useful hedges only when entry/repair gates clear. Current top sector/sleeve ranks: Technology / AI, Information Technology, Financials, Industrials / AI-Power.",
+  "limits": [
+    "Report-only sector allocation support; not a canon, portfolio, sizing, cash, risk-rule, approval, paper/live order, brokerage, account, or trade authority surface.",
+    "Scores are heuristic routing aids only; WF55 probability readiness is not ready, so no win-rate/probability/expected-return claims are allowed.",
+    "Fresh quote, band, stop, source-freshness, concentration, and WF67 guard checks are still required before any paper package can execute.",
+    "Sector 5DMA/20DMA timing warnings are thin caution flags only; they do not override written entry bands, stops, thesis, source freshness, concentration limits, or owner approval gates."
+  ],
+  "validation": {
+    "status": "ok",
+    "critical": 0,
+    "warning": 1,
+    "findings": [
+      {
+        "severity": "warning",
+        "field": "trust_state.probability_readiness",
+        "issue": "unexpected probability readiness value; verify no probability language"
+      }
+    ]
+  }
+}

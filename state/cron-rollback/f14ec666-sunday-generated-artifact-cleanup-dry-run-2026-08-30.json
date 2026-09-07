@@ -1,0 +1,58 @@
+{
+  "captured_at_utc": "2026-08-30T17:40:00Z",
+  "job_id": "f14ec666-a9a9-4dd7-ad98-ac210800c544",
+  "previous_job": {
+    "delivery": {
+      "mode": "none"
+    },
+    "description": "Dry-run-only generated artifact retention/cleanup review. This is runtime hygiene, not finance-domain work. No file moves/deletes; any apply remains owner-gated.",
+    "name": "Runtime - Sunday Generated Artifact Cleanup Dry Run",
+    "payload": {
+      "kind": "agentTurn",
+      "lightContext": false,
+      "message": "QUIET CRON OUTPUT RULE (hard): delivery.mode=none; on clean success/no-action reply exactly NO_REPLY and nothing else; if blocked, report only proof path, failed command, validation errors, and next repair owner. Work in C:\\Users\\Veritas\\.openclaw\\workspace. Objective: run Sunday generated-artifact cleanup/retention check in dry-run mode only. Execute exactly these commands in order: 1. python scripts\\tmp_cleanup.py --dry-run --days 7; 2. python scripts\\cron_operator_ledger.py --write --write-md --validate. Do not delete, move, archive, compress, or rewrite files. No portfolio/canon, config/auth/runtime, cron schedule, paper/live/account, external delivery, or approval mutation.",
+      "model": "openai/gpt-5.6-luna",
+      "thinking": "low",
+      "timeoutSeconds": 900,
+      "toolsAllow": [
+        "read",
+        "edit",
+        "write",
+        "apply_patch",
+        "exec",
+        "process",
+        "cron",
+        "image_generate",
+        "music_generate",
+        "video_generate",
+        "get_goal",
+        "create_goal",
+        "update_goal",
+        "skill_workshop",
+        "update_plan",
+        "sessions_list",
+        "sessions_history",
+        "sessions_send",
+        "sessions_spawn",
+        "sessions_yield",
+        "subagents",
+        "session_status",
+        "web_search",
+        "web_fetch",
+        "image",
+        "memory_search",
+        "memory_get"
+      ]
+    },
+    "schedule": {
+      "expr": "15 9 * * 0",
+      "kind": "cron",
+      "tz": "America/Phoenix"
+    },
+    "sessionTarget": "isolated",
+    "wakeMode": "now"
+  },
+  "reason": "Converted a weekly agentTurn job whose entire instruction was an ordered command list into a model-free command job run by scripts/deterministic_cron_sequence_runner.py. This also removes the unattended 27-tool allowlist (including exec, write, cron, sessions_spawn, and media generation) that the agentTurn payload carried.",
+  "rollback_instruction": "Restore the previous_job fields below via cron update (payload, sessionTarget, wakeMode, description, delivery). No config, auth, or schedule change is involved in either direction.",
+  "schema": "veritas.cron_job_rollback_record.v1"
+}

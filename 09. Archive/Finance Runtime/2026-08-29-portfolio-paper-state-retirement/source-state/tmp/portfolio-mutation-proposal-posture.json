@@ -1,0 +1,38 @@
+{
+  "status": "initialized",
+  "workflow": "portfolio_mutation_proposal_lane",
+  "current_phase": "review_only_proposal_generation",
+  "recommended_next_phase": "gated_apply_helpers_after_repeated_clean_proof_and_explicit_owner_scope",
+  "safe_automation_boundary": "Veritas may detect and prepare portfolio mutation proposals, but may not apply portfolio mutations without explicit Randall approval.",
+  "owner_layer": [
+    "03. Portfolio/Portfolio Snapshot.md",
+    "03. Portfolio/Deployment Trigger Sheet.md",
+    "07. Risk/Risk Rules.md",
+    "tmp/portfolio-config.json when lane/weight/execution semantics change"
+  ],
+  "apply_allowed_by_default": false,
+  "portfolio_mutation_includes": [
+    "draft model weight or cash target changes",
+    "ticker promotion/demotion affecting portfolio posture or execution entitlement",
+    "owner approval record changes",
+    "sizing tier, risk cap, stop/invalidation policy, or allocation framework changes",
+    "real portfolio/position/account actions"
+  ],
+  "allowed_without_extra_approval": [
+    "detect mutation candidates",
+    "prepare review-only proposal packets",
+    "draft proposed edits without applying",
+    "run risk/concentration/source/technical checks",
+    "present recommendation and required owner decision"
+  ],
+  "validators": [
+    "python scripts\\validate_dashboard_state.py --write",
+    "python scripts\\validate_canonical_ownership.py"
+  ],
+  "authority": {
+    "portfolio_mutation_allowed": false,
+    "deployment_state_mutation_allowed": false,
+    "trade_execution_allowed": false,
+    "owner_approval_granted": false
+  }
+}

@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-08-27T13:15:43.792576+00:00",
+  "generated_at_utc": "2026-08-28T20:30:11.023923+00:00",
   "status": "ok",
   "stale_after_hours": 24,
   "expected_update_window": "Refresh after the close and on FOMC decision days. Re-run whenever any upstream data artifact is updated.",
-  "last_trading_day": "2026-08-27",
+  "last_trading_day": "2026-08-28",
   "warnings": [],
   "freshness_contract": {
     "schema_version": 1,
@@ -60,14 +60,14 @@
     }
   },
   "regime": {
-    "key": "restrictive_pause_benign_broad",
-    "label": "Restrictive pause, resilient growth, selective risk-on — large-cap quality bias",
-    "adjustment_key": "restrictive_pause__benign__broad_recovering"
+    "key": "tightening",
+    "label": "Tightening risk — rate-sensitivity elevated, risk-off posture warranted",
+    "adjustment_key": "tightening"
   },
   "pillars": {
     "policy": {
-      "key": "restrictive_pause",
-      "label": "Restrictive pause — hold dominant (82%, target 3.50–3.75%)",
+      "key": "tightening",
+      "label": "Tightening bias (28% hike probability)",
       "source_status": "ok",
       "freshness_status": "fresh",
       "freshness_category": "ok",
@@ -83,62 +83,62 @@
         ],
         "action": "No action required; policy artifact is current enough for dashboard and macro-regime use."
       },
-      "implied_rate": 3.67,
-      "hold_probability": 82.0,
+      "implied_rate": 3.695,
+      "hold_probability": 72.0,
       "cut_probability": 0.0,
-      "hike_probability": 18.0,
+      "hike_probability": 28.0,
       "target_range": {
         "low": 3.5,
         "high": 3.75
       },
       "next_fomc_date": "2026-09-16",
-      "days_until_fomc": 20
+      "days_until_fomc": 19
     },
     "credit": {
       "key": "benign",
-      "label": "Benign credit — HY 2.70%, IG 0.81%, HY tightening",
+      "label": "Benign credit — HY 2.63%, IG 0.79%, HY tightening",
       "source_status": "ok",
       "stress_regime": "benign",
-      "hy_oas": 2.7,
-      "ig_oas": 0.81,
-      "hy_minus_ig": 1.89,
+      "hy_oas": 2.63,
+      "ig_oas": 0.79,
+      "hy_minus_ig": 1.84,
       "hy_direction_5d": "tightening",
       "hy_direction_20d": "tightening"
     },
     "breadth": {
       "key": "broad_recovering",
-      "label": "Breadth broad — 9/11 sectors above 50DMA, RSP/SPY +0.41% 5d",
+      "label": "Breadth recovering — 8/11 sectors above 50DMA, RSP/SPY -0.91% 5d",
       "source_status": "ok",
-      "breadth_regime": "broad",
-      "composite_score": 0.7533,
-      "sectors_above_50dma": 9,
+      "breadth_regime": "recovering",
+      "composite_score": 0.5907,
+      "sectors_above_50dma": 8,
       "sectors_total": 11,
-      "participation_pct": 81.8,
-      "rsp_spy_ratio": 0.289931,
-      "rsp_spy_direction": "improving",
-      "rsp_spy_5d_change_pct": 0.4073
+      "participation_pct": 72.7,
+      "rsp_spy_ratio": 0.286853,
+      "rsp_spy_direction": "deteriorating",
+      "rsp_spy_5d_change_pct": -0.9116
     }
   },
   "sector_fit": {
     "Tech": {
       "base": 5,
-      "adjustment": 0,
-      "final": 5
+      "adjustment": -2,
+      "final": 3
     },
     "Technology": {
       "base": 5,
-      "adjustment": 0,
-      "final": 5
+      "adjustment": -2,
+      "final": 3
     },
     "Tech / AI Infrastructure": {
       "base": 5,
-      "adjustment": 0,
-      "final": 5
+      "adjustment": -2,
+      "final": 3
     },
     "Tech / Defense": {
       "base": 5,
-      "adjustment": 0,
-      "final": 5
+      "adjustment": -1,
+      "final": 4
     },
     "Defense": {
       "base": 5,
@@ -152,18 +152,18 @@
     },
     "Industrials": {
       "base": 5,
-      "adjustment": 0,
-      "final": 5
+      "adjustment": -1,
+      "final": 4
     },
     "Financials": {
       "base": 4,
-      "adjustment": 0,
-      "final": 4
+      "adjustment": 1,
+      "final": 5
     },
     "Energy": {
       "base": 4,
-      "adjustment": 0,
-      "final": 4
+      "adjustment": 1,
+      "final": 5
     },
     "Diversified Quality": {
       "base": 4,
@@ -177,17 +177,17 @@
     },
     "Commodities": {
       "base": 3,
-      "adjustment": -1,
-      "final": 2
+      "adjustment": 1,
+      "final": 4
     },
     "Macro": {
       "base": 3,
-      "adjustment": -1,
-      "final": 2
+      "adjustment": 1,
+      "final": 4
     },
     "Speculative": {
       "base": 2,
-      "adjustment": -1,
+      "adjustment": -3,
       "final": 1
     }
   },

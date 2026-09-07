@@ -666,19 +666,31 @@ def lane_telemetry_eligibility(
             "reasons": ["model_path_missing"],
         }
     if telemetry_enforcement_applies(lane, runtime):
-        # Runtime booleans are merely producer claims.  Re-open the
-        # register-adjacent receipt and its authoritative source each time so
-        # a coherent writable lane/receipt pair cannot grant itself credit.
+        # Negative or absent producer claims can only deny telemetry credit;
+        # they can never grant it.  Short-circuit those lanes before reopening
+        # receipts and authoritative sources.  Affirmative claims still need
+        # the full source-verification path below every time.
+        reasons = [
+            str(value)
+            for value in as_list(runtime.get("usage_credit_block_reasons"))
+            if value
+        ]
+        if runtime.get("usage_creditable") is not True:
+            reasons.append("usage_creditable_not_true")
+        if runtime.get("source_reverification_status") != "verified":
+            reasons.append("source_reverification_not_verified")
+        if reasons:
+            return {
+                "required": True,
+                "eligible": False,
+                "status": "blocked_unverified_usage_source",
+                "reasons": sorted(set(reasons)),
+            }
         reasons = verify_usage_source_receipt(
             lane,
             runtime,
             usage_receipt_store_path(register_path),
         )
-        reasons.extend(str(value) for value in as_list(runtime.get("usage_credit_block_reasons")) if value)
-        if runtime.get("usage_creditable") is not True:
-            reasons.append("usage_creditable_not_true")
-        if runtime.get("source_reverification_status") != "verified":
-            reasons.append("source_reverification_not_verified")
         if reasons:
             return {
                 "required": True,

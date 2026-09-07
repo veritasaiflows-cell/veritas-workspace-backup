@@ -1,0 +1,4545 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-08-29T21:39:55Z",
+  "status": "critical",
+  "market_day_target": "current review window",
+  "purpose": "Owner-gated sizing readiness and paper-order preparation checklist for the current review window; no order execution authority.",
+  "capital_framework": {
+    "capital_base_usd": 10000,
+    "cash_reserve_target_usd": 1000,
+    "investable_capital_usd": 9000,
+    "fractional_shares_default": true,
+    "two_tranche_default": true,
+    "risk_rules": "Tier 1 8-12%; Tier 2 4-7%; Tier 3 1-3%; 15% normal single-name ceiling; 25% sector cap."
+  },
+  "source_artifacts": [
+    "tmp/tuesday-entry-opportunity-watchlist-2026-05-26.json",
+    "tmp/sector-allocation-decision-matrix.json",
+    "tmp/deployment-readiness-surface.json",
+    "tmp/technical-refresh.json",
+    "tmp/wf78-auto-tier-routing.json",
+    "tmp/capital-deployment-recommendation-validation.json",
+    "tmp/probability-readiness-report.json",
+    "tmp/finance-intelligence-state-paper-positions.json",
+    "tmp/wf67-paper-position-state.sqlite",
+    "tmp/alpaca-paper-readiness/current-paper-holdings-readonly.json",
+    "tmp/portfolio-config.json",
+    "state/finance/finance-canon.sqlite"
+  ],
+  "trust_state": {
+    "capital_deployment_validator": "blocked",
+    "capital_deployment_validator_classification": "standard",
+    "probability_readiness": "SAFE_WITH_GAPS",
+    "paper_account_read_mode": null,
+    "paper_positions_seen": [
+      "AMZN",
+      "BKNG",
+      "ETN",
+      "GOOG",
+      "MSFT",
+      "NVDA",
+      "PH",
+      "VRT",
+      "XLB",
+      "XOM"
+    ],
+    "downgrade": "Review-only readiness surface; fresh quote/guard proof remains required before any exact paper request or capital decision."
+  },
+  "authority": {
+    "live_trade_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed_by_this_packet": false,
+    "paper_order_cancel_allowed_by_this_packet": false,
+    "owner_approval_inferred": false,
+    "owner_approval_granted_for_orders": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "sizing_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "probability_or_win_rate_claim_allowed": false,
+    "sizing_recommendation_review_allowed": true,
+    "paper_request_preparation_allowed_after_exact_owner_terms": true
+  },
+  "candidates": [
+    {
+      "ticker": "AAPL",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 311.3,
+      "band_low": 286.37,
+      "band_high": 300.76,
+      "stop": 277.63,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 286.37,
+        "reference_price_high": 300.76,
+        "reference_invalidation_level": 277.63,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "ABBV",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH",
+      "close_reference": null,
+      "band_low": 212.97,
+      "band_high": 220.95,
+      "stop": 206.18,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 212.97,
+        "reference_price_high": 220.95,
+        "reference_invalidation_level": 206.18,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "UNKNOWN",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "ACN",
+      "readiness": "blocked_below_stop",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "DO NOT TOUCH",
+      "close_reference": 181.35,
+      "band_low": 203.81,
+      "band_high": 213.9,
+      "stop": 195.74,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 203.81,
+        "reference_price_high": 213.9,
+        "reference_invalidation_level": 195.74,
+        "reference_confidence": null,
+        "reference_band_status": "BELOW_STOP",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_STOP",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Blocked until reclaim/fresh review.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "ADBE",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": null,
+      "close_reference": null,
+      "band_low": 296.85,
+      "band_high": 310.73,
+      "stop": 282.98,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 296.85,
+        "reference_price_high": 310.73,
+        "reference_invalidation_level": 282.98,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "UNKNOWN",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "ADI",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 370.24,
+      "band_low": 356.65,
+      "band_high": 385.25,
+      "stop": 340.76,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 356.65,
+        "reference_price_high": 385.25,
+        "reference_invalidation_level": 340.76,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier B in-band candidate; promotion/capital judgment remains main-session and owner-gated.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "ADP",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 279.21,
+      "band_low": 248.3,
+      "band_high": 266.8,
+      "stop": 237.69,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 248.3,
+        "reference_price_high": 266.8,
+        "reference_invalidation_level": 237.69,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "ADSK",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 251.02,
+      "band_low": 250.46,
+      "band_high": 262.87,
+      "stop": 240.53,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 250.46,
+        "reference_price_high": 262.87,
+        "reference_invalidation_level": 240.53,
+        "reference_confidence": null,
+        "reference_band_status": "RECLAIM_ONLY",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier B in-band candidate; promotion/capital judgment remains main-session and owner-gated.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "AJG",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 259.61,
+      "band_low": 244.09,
+      "band_high": 251.35,
+      "stop": 236.83,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 244.09,
+        "reference_price_high": 251.35,
+        "reference_invalidation_level": 236.83,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "AKAM",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 110.09,
+      "band_low": 104.91,
+      "band_high": 121.46,
+      "stop": 97.38,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 104.91,
+        "reference_price_high": 121.46,
+        "reference_invalidation_level": 97.38,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier B in-band candidate; promotion/capital judgment remains main-session and owner-gated.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "ALB",
+      "readiness": "blocked_below_stop",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "DO NOT TOUCH",
+      "close_reference": 134.19,
+      "band_low": 153.69,
+      "band_high": 160.04,
+      "stop": 148.61,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 153.69,
+        "reference_price_high": 160.04,
+        "reference_invalidation_level": 148.61,
+        "reference_confidence": null,
+        "reference_band_status": "BELOW_STOP",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_STOP",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Blocked until reclaim/fresh review.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "ALLE",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 161.72,
+      "band_low": 149.3,
+      "band_high": 160.17,
+      "stop": 143.26,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 149.3,
+        "reference_price_high": 160.17,
+        "reference_invalidation_level": 143.26,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "AMAT",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 496.21,
+      "band_low": 511.64,
+      "band_high": 541.1,
+      "stop": 468.3,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 511.64,
+        "reference_price_high": 541.1,
+        "reference_invalidation_level": 468.3,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "AMCR",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 47.81,
+      "band_low": 43.28,
+      "band_high": 46.09,
+      "stop": 41.72,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 43.28,
+        "reference_price_high": 46.09,
+        "reference_invalidation_level": 41.72,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "AME",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 239.08,
+      "band_low": 238.74,
+      "band_high": 250.17,
+      "stop": 232.14,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 238.74,
+        "reference_price_high": 250.17,
+        "reference_invalidation_level": 232.14,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier B in-band candidate; promotion/capital judgment remains main-session and owner-gated.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "ANET",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 183.75,
+      "band_low": 172.32,
+      "band_high": 191.55,
+      "stop": 159.61,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 172.32,
+        "reference_price_high": 191.55,
+        "reference_invalidation_level": 159.61,
+        "reference_confidence": null,
+        "reference_band_status": "ABOVE_BAND_WAIT",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier B in-band candidate; promotion/capital judgment remains main-session and owner-gated.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "AON",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 351.93,
+      "band_low": 338.36,
+      "band_high": 347.95,
+      "stop": 328.77,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 338.36,
+        "reference_price_high": 347.95,
+        "reference_invalidation_level": 328.77,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "AOS",
+      "readiness": "blocked_below_stop",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "DO NOT TOUCH",
+      "close_reference": 62.43,
+      "band_low": 64.79,
+      "band_high": 67.0,
+      "stop": 63.02,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 64.79,
+        "reference_price_high": 67.0,
+        "reference_invalidation_level": 63.02,
+        "reference_confidence": null,
+        "reference_band_status": "BELOW_STOP",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_STOP",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Blocked until reclaim/fresh review.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "APD",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 300.33,
+      "band_low": 284.35,
+      "band_high": 285.6,
+      "stop": 276.63,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 284.35,
+        "reference_price_high": 285.6,
+        "reference_invalidation_level": 276.63,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "APH",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 153.11,
+      "band_low": 155.18,
+      "band_high": 166.14,
+      "stop": 146.43,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 155.18,
+        "reference_price_high": 166.14,
+        "reference_invalidation_level": 146.43,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "APP",
+      "readiness": "blocked_below_stop",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "DO NOT TOUCH",
+      "close_reference": 308.77,
+      "band_low": 506.62,
+      "band_high": 534.35,
+      "stop": 484.44,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 506.62,
+        "reference_price_high": 534.35,
+        "reference_invalidation_level": 484.44,
+        "reference_confidence": null,
+        "reference_band_status": "BELOW_STOP",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_STOP",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Blocked until reclaim/fresh review.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "AVGO",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 364.03,
+      "band_low": 362.73,
+      "band_high": 406.04,
+      "stop": 343.04,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 362.73,
+        "reference_price_high": 406.04,
+        "reference_invalidation_level": 343.04,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier B in-band candidate; promotion/capital judgment remains main-session and owner-gated.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "AXON",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 614.26,
+      "band_low": 547.71,
+      "band_high": 582.56,
+      "stop": 512.86,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 547.71,
+        "reference_price_high": 582.56,
+        "reference_invalidation_level": 512.86,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "BKNG",
+      "readiness": "monitor",
+      "tier": "tier1",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 209.87,
+      "band_low": 188.28,
+      "band_high": 205.72,
+      "stop": 178.75,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 188.28,
+        "reference_price_high": 205.72,
+        "reference_invalidation_level": 178.75,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 164.05,
+        "band_high": 170.91,
+        "stop": 155.97,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier A",
+      "wf78_auto_state": "A-WATCH",
+      "paper_current_qty": 1.0,
+      "paper_current_market_value_usd": 205.63,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "BRK.B",
+      "readiness": "ready_if_fresh_quote_confirms",
+      "tier": "tier1",
+      "recommended_starter_notional": {
+        "low_usd": 400,
+        "high_usd": 600,
+        "mid_usd": 500
+      },
+      "recommended_target_notional": {
+        "low_usd": 800,
+        "high_usd": 1200,
+        "mid_usd": 1000
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 500,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 496.86,
+      "band_low": 488.39,
+      "band_high": 506.98,
+      "stop": 478.07,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 488.39,
+        "reference_price_high": 506.98,
+        "reference_invalidation_level": 478.07,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 489.78,
+        "band_high": 498.19,
+        "stop": 483.05,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier A",
+      "wf78_auto_state": "A-CHALLENGED",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier A in-band candidate; exact paper/deployment terms still require owner approval and fresh guard proof.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "CASY",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 828.38,
+      "band_low": 822.41,
+      "band_high": 855.09,
+      "stop": 791.06,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 822.41,
+        "reference_price_high": 855.09,
+        "reference_invalidation_level": 791.06,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier B in-band candidate; promotion/capital judgment remains main-session and owner-gated.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "CCL",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 25.37,
+      "band_low": 25.96,
+      "band_high": 28.1,
+      "stop": 24.77,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 25.96,
+        "reference_price_high": 28.1,
+        "reference_invalidation_level": 24.77,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "CDNS",
+      "readiness": "blocked_below_stop",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "DO NOT TOUCH",
+      "close_reference": 313.59,
+      "band_low": 347.23,
+      "band_high": 362.59,
+      "stop": 334.94,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 347.23,
+        "reference_price_high": 362.59,
+        "reference_invalidation_level": 334.94,
+        "reference_confidence": null,
+        "reference_band_status": "BELOW_STOP",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_STOP",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Blocked until reclaim/fresh review.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "CME",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": null,
+      "close_reference": 285.8,
+      "band_low": 252.31,
+      "band_high": 265.88,
+      "stop": 244.77,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 252.31,
+        "reference_price_high": 265.88,
+        "reference_invalidation_level": 244.77,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 287.74,
+        "band_high": 298.86,
+        "stop": 276.68,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier C",
+      "wf78_auto_state": "C-MONITOR",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "CRM",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": null,
+      "close_reference": null,
+      "band_low": 217.38,
+      "band_high": 228.68,
+      "stop": 206.08,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 217.38,
+        "reference_price_high": 228.68,
+        "reference_invalidation_level": 206.08,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "UNKNOWN",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "CRWD",
+      "readiness": "blocked_below_stop",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "DO NOT TOUCH",
+      "close_reference": 190.34,
+      "band_low": 568.77,
+      "band_high": 672.12,
+      "stop": 521.36,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 568.77,
+        "reference_price_high": 672.12,
+        "reference_invalidation_level": 521.36,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_STOP",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Blocked until reclaim/fresh review.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "CVX",
+      "readiness": "monitor",
+      "tier": "tier1",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 205.77,
+      "band_low": 186.9,
+      "band_high": 196.84,
+      "stop": 181.26,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 186.9,
+        "reference_price_high": 196.84,
+        "reference_invalidation_level": 181.26,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 186.91,
+        "band_high": 196.41,
+        "stop": 182.16,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier A",
+      "wf78_auto_state": "A-WATCH",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "DASH",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 222.36,
+      "band_low": 203.15,
+      "band_high": 213.68,
+      "stop": 192.62,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 203.15,
+        "reference_price_high": 213.68,
+        "reference_invalidation_level": 192.62,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "DDOG",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 232.55,
+      "band_low": 192.69,
+      "band_high": 229.65,
+      "stop": 175.89,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 192.69,
+        "reference_price_high": 229.65,
+        "reference_invalidation_level": 175.89,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "DECK",
+      "readiness": "blocked_below_stop",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "DO NOT TOUCH",
+      "close_reference": 88.86,
+      "band_low": 102.11,
+      "band_high": 106.58,
+      "stop": 98.53,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 102.11,
+        "reference_price_high": 106.58,
+        "reference_invalidation_level": 98.53,
+        "reference_confidence": null,
+        "reference_band_status": "BELOW_STOP",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_STOP",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Blocked until reclaim/fresh review.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "EMR",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 154.72,
+      "band_low": 145.98,
+      "band_high": 156.35,
+      "stop": 140.08,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 145.98,
+        "reference_price_high": 156.35,
+        "reference_invalidation_level": 140.08,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier B in-band candidate; promotion/capital judgment remains main-session and owner-gated.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "ETN",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier1",
+      "recommended_starter_notional": {
+        "low_usd": 400,
+        "high_usd": 600,
+        "mid_usd": 500
+      },
+      "recommended_target_notional": {
+        "low_usd": 800,
+        "high_usd": 1200,
+        "mid_usd": 1000
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 500,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 415.29,
+      "band_low": 385.98,
+      "band_high": 434.4,
+      "stop": 363.96,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 385.98,
+        "reference_price_high": 434.4,
+        "reference_invalidation_level": 363.96,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 356.99,
+        "band_high": 400.66,
+        "stop": 337.14,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CHALLENGED",
+      "paper_current_qty": 1.0,
+      "paper_current_market_value_usd": 403.74,
+      "decision_note": "Current Tier B in-band candidate; promotion/capital judgment remains main-session and owner-gated.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "FCX",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 71.22,
+      "band_low": 63.09,
+      "band_high": 66.76,
+      "stop": 59.69,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 63.09,
+        "reference_price_high": 66.76,
+        "reference_invalidation_level": 59.69,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "GE",
+      "readiness": "review_only_not_promoted",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": null,
+      "close_reference": 342.58,
+      "band_low": 341.38,
+      "band_high": 363.52,
+      "stop": 329.08,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 341.38,
+        "reference_price_high": 363.52,
+        "reference_invalidation_level": 329.08,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 299.03,
+        "band_high": 311.84,
+        "stop": 288.78,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier C",
+      "wf78_auto_state": "C-MONITOR",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Good Defense/aerospace review candidate, but still watch-lane; requires promotion/sizing decision before any paper package.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "GOOG",
+      "readiness": "ready_if_fresh_quote_confirms",
+      "tier": "tier1",
+      "recommended_starter_notional": {
+        "low_usd": 400,
+        "high_usd": 600,
+        "mid_usd": 500
+      },
+      "recommended_target_notional": {
+        "low_usd": 800,
+        "high_usd": 1200,
+        "mid_usd": 1000
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 338.2,
+      "band_low": 326.46,
+      "band_high": 348.13,
+      "stop": 314.42,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 326.46,
+        "reference_price_high": 348.13,
+        "reference_invalidation_level": 314.42,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 355.35,
+        "band_high": 378.98,
+        "stop": 334.58,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier A",
+      "wf78_auto_state": "A-CHALLENGED",
+      "paper_current_qty": 1.999983424,
+      "paper_current_market_value_usd": 685.29432,
+      "decision_note": "Current Tier A in-band candidate; exact paper/deployment terms still require owner approval and fresh guard proof.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "GS",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 1001.95,
+      "band_low": 1019.26,
+      "band_high": 1045.58,
+      "stop": 981.53,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 1019.26,
+        "reference_price_high": 1045.58,
+        "reference_invalidation_level": 981.53,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 894.64,
+        "band_high": 935.77,
+        "stop": 866.76,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CHALLENGED",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "ITA",
+      "readiness": "wait_for_band_no_chase",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 237.56,
+      "band_low": 212.15,
+      "band_high": 223.44,
+      "stop": 205.88,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 212.15,
+        "reference_price_high": 223.44,
+        "reference_invalidation_level": 205.88,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": null,
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier A",
+      "wf78_auto_state": "A-CHALLENGED",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Do not chase above the written band; prepare alert/order terms only if Tuesday pullback re-enters band or owner approves a new band review.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "JPM",
+      "readiness": "ready_if_fresh_quote_confirms",
+      "tier": "tier1",
+      "recommended_starter_notional": {
+        "low_usd": 400,
+        "high_usd": 600,
+        "mid_usd": 500
+      },
+      "recommended_target_notional": {
+        "low_usd": 800,
+        "high_usd": 1200,
+        "mid_usd": 1000
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 500,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 351.55,
+      "band_low": 342.95,
+      "band_high": 356.74,
+      "stop": 335.29,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 342.95,
+        "reference_price_high": 356.74,
+        "reference_invalidation_level": 335.29,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 300.47,
+        "band_high": 305.27,
+        "stop": 293.02,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier A",
+      "wf78_auto_state": "A-CHALLENGED",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier A in-band candidate; exact paper/deployment terms still require owner approval and fresh guard proof.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "LIN",
+      "readiness": "ready_if_fresh_quote_confirms",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 481.29,
+      "band_low": 468.3,
+      "band_high": 492.08,
+      "stop": 455.09,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 468.3,
+        "reference_price_high": 492.08,
+        "reference_invalidation_level": 455.09,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 497.11,
+        "band_high": 506.11,
+        "stop": 487.17,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier A",
+      "wf78_auto_state": "A-CHALLENGED",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier A in-band candidate; exact paper/deployment terms still require owner approval and fresh guard proof.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "LLY",
+      "readiness": "monitor",
+      "tier": "tier1",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 1244.4,
+      "band_low": 1146.8,
+      "band_high": 1217.12,
+      "stop": 1093.23,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 1146.8,
+        "reference_price_high": 1217.12,
+        "reference_invalidation_level": 1093.23,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 907.64,
+        "band_high": 969.88,
+        "stop": 876.52,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier A",
+      "wf78_auto_state": "A-WATCH",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "LMT",
+      "readiness": "monitor",
+      "tier": "tier3",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 571.48,
+      "band_low": 550.09,
+      "band_high": 583.84,
+      "stop": 531.34,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 550.09,
+        "reference_price_high": 583.84,
+        "reference_invalidation_level": 531.34,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 548.51,
+        "band_high": 582.27,
+        "stop": 531.63,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier C",
+      "wf78_auto_state": "C-REPAIR",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "MA",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 573.85,
+      "band_low": 535.82,
+      "band_high": 548.9,
+      "stop": 522.75,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 535.82,
+        "reference_price_high": 548.9,
+        "reference_invalidation_level": 522.75,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "MDB",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 420.37,
+      "band_low": 305.3,
+      "band_high": 348.03,
+      "stop": 272.35,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 305.3,
+        "reference_price_high": 348.03,
+        "reference_invalidation_level": 272.35,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "MSFT",
+      "readiness": "wait_for_band_no_chase",
+      "tier": "tier1",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 481.15,
+      "band_low": 439.68,
+      "band_high": 472.96,
+      "stop": 417.51,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 439.68,
+        "reference_price_high": 472.96,
+        "reference_invalidation_level": 417.51,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 389.64,
+        "band_high": 412.56,
+        "stop": 378.18,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CHALLENGED",
+      "paper_current_qty": 1.0,
+      "paper_current_market_value_usd": 512.55,
+      "decision_note": "Do not chase above the written band; prepare alert/order terms only if Tuesday pullback re-enters band or owner approves a new band review.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "MU",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 974.33,
+      "band_low": 861.4,
+      "band_high": 933.74,
+      "stop": 767.79,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 861.4,
+        "reference_price_high": 933.74,
+        "reference_invalidation_level": 767.79,
+        "reference_confidence": null,
+        "reference_band_status": "ABOVE_BAND_WAIT",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "NOW",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 129.75,
+      "band_low": 137.65,
+      "band_high": 147.3,
+      "stop": 128.0,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 137.65,
+        "reference_price_high": 147.3,
+        "reference_invalidation_level": 128.0,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "NVDA",
+      "readiness": "cap_limited_conditional",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 216.85,
+      "band_low": 202.15,
+      "band_high": 217.11,
+      "stop": 193.84,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 202.15,
+        "reference_price_high": 217.11,
+        "reference_invalidation_level": 193.84,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 198.47,
+        "band_high": 216.66,
+        "stop": 187.9,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier A",
+      "wf78_auto_state": "A-CHALLENGED",
+      "paper_current_qty": 1.483208256,
+      "paper_current_market_value_usd": 322.820277,
+      "decision_note": "In band, but direct Tech is already at cap; only use if Randall explicitly accepts substitution/exception.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "PANW",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 349.56,
+      "band_low": 229.65,
+      "band_high": 267.74,
+      "stop": 212.34,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 229.65,
+        "reference_price_high": 267.74,
+        "reference_invalidation_level": 212.34,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "PH",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 1000.13,
+      "band_low": 965.41,
+      "band_high": 1026.18,
+      "stop": 931.65,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 965.41,
+        "reference_price_high": 1026.18,
+        "reference_invalidation_level": 931.65,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 851.36,
+        "band_high": 908.98,
+        "stop": 819.35,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CHALLENGED",
+      "paper_current_qty": 0.3,
+      "paper_current_market_value_usd": 298.506,
+      "decision_note": "Promotion-review candidate; prepare exact paper request only after owner chooses it and fresh quote remains in band.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "PLTR",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 173.96,
+      "band_low": 139.89,
+      "band_high": 163.76,
+      "stop": 129.04,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 139.89,
+        "reference_price_high": 163.76,
+        "reference_invalidation_level": 129.04,
+        "reference_confidence": null,
+        "reference_band_status": "ABOVE_BAND_WAIT",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 137.37,
+        "band_high": 149.53,
+        "stop": 131.29,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "QCOM",
+      "readiness": "blocked_below_stop",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "DO NOT TOUCH",
+      "close_reference": 160.74,
+      "band_low": 175.01,
+      "band_high": 183.56,
+      "stop": 168.17,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 175.01,
+        "reference_price_high": 183.56,
+        "reference_invalidation_level": 168.17,
+        "reference_confidence": null,
+        "reference_band_status": "BELOW_STOP",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "BELOW_STOP",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Blocked until reclaim/fresh review.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "SCCO",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 198.73,
+      "band_low": 179.34,
+      "band_high": 189.03,
+      "stop": 169.19,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 179.34,
+        "reference_price_high": 189.03,
+        "reference_invalidation_level": 169.19,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "SHOP",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 147.18,
+      "band_low": 137.91,
+      "band_high": 145.03,
+      "stop": 130.78,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 137.91,
+        "reference_price_high": 145.03,
+        "reference_invalidation_level": 130.78,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "SNOW",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 321.29,
+      "band_low": 187.42,
+      "band_high": 226.33,
+      "stop": 166.93,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 187.42,
+        "reference_price_high": 226.33,
+        "reference_invalidation_level": 166.93,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "TSM",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 416.0,
+      "band_low": 410.14,
+      "band_high": 422.78,
+      "stop": 392.48,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 410.14,
+        "reference_price_high": 422.78,
+        "reference_invalidation_level": 392.48,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier B in-band candidate; promotion/capital judgment remains main-session and owner-gated.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "TXN",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 265.6,
+      "band_low": 254.72,
+      "band_high": 284.2,
+      "stop": 241.32,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 254.72,
+        "reference_price_high": 284.2,
+        "reference_invalidation_level": 241.32,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Current Tier B in-band candidate; promotion/capital judgment remains main-session and owner-gated.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "V",
+      "readiness": "monitor",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 365.73,
+      "band_low": 317.48,
+      "band_high": 324.99,
+      "stop": 308.53,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 317.48,
+        "reference_price_high": 324.99,
+        "reference_invalidation_level": 308.53,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": null,
+        "band_high": null,
+        "stop": null,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "paper_current_qty": null,
+      "paper_current_market_value_usd": null,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "VRT",
+      "readiness": "conditional_ready_after_owner_promotion",
+      "tier": "tier2",
+      "recommended_starter_notional": {
+        "low_usd": 200,
+        "high_usd": 350,
+        "mid_usd": 275
+      },
+      "recommended_target_notional": {
+        "low_usd": 400,
+        "high_usd": 700,
+        "mid_usd": 550
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 275,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 264.63,
+      "band_low": 230.66,
+      "band_high": 280.95,
+      "stop": 207.79,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 230.66,
+        "reference_price_high": 280.95,
+        "reference_invalidation_level": 207.79,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 286.6,
+        "band_high": 338.58,
+        "stop": 262.98,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "IN_BAND",
+      "wf78_auto_tier": "Tier A",
+      "wf78_auto_state": "A-CHALLENGED",
+      "paper_current_qty": 1.642703849,
+      "paper_current_market_value_usd": 425.985962,
+      "decision_note": "Promotion-review candidate; prepare exact paper request only after owner chooses it and fresh quote remains in band.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "XLB",
+      "readiness": "monitor",
+      "tier": "tier1",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 52.42,
+      "band_low": 49.84,
+      "band_high": 51.68,
+      "stop": 48.81,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 49.84,
+        "reference_price_high": 51.68,
+        "reference_invalidation_level": 48.81,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "superseded_legacy_band_context": null,
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier A",
+      "wf78_auto_state": "A-CHALLENGED",
+      "paper_current_qty": 4.888345717,
+      "paper_current_market_value_usd": 260.304409,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    },
+    {
+      "ticker": "XOM",
+      "readiness": "monitor",
+      "tier": "tier1",
+      "recommended_starter_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "recommended_target_notional": {
+        "low_usd": 0,
+        "high_usd": 0,
+        "mid_usd": 0
+      },
+      "suggested_tuesday_incremental_paper_notional_usd": 0,
+      "suggested_order_style_if_approved": "limit/day preferred; market/day only with exact owner approval and WF67 guard validation",
+      "fresh_quote_required": true,
+      "state": "WATCH / RESEARCH NEEDED",
+      "close_reference": 166.15,
+      "band_low": 150.65,
+      "band_high": 159.09,
+      "stop": 145.78,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "sql_canon_reference": {
+        "reference_price_low": 150.65,
+        "reference_price_high": 159.09,
+        "reference_invalidation_level": 145.78,
+        "reference_confidence": null,
+        "reference_band_status": "NEAR_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "superseded_legacy_band_context": {
+        "status": "superseded_by_sql_canon_reference",
+        "band_low": 150.24,
+        "band_high": 158.44,
+        "stop": 146.14,
+        "source": "legacy Tuesday watchlist/deployment row or portfolio-config fallback"
+      },
+      "band_status": "ABOVE_BAND",
+      "wf78_auto_tier": "Tier A",
+      "wf78_auto_state": "A-CHALLENGED",
+      "paper_current_qty": 1.0,
+      "paper_current_market_value_usd": 156.68,
+      "decision_note": "Monitor only.",
+      "must_have_before_any_order": [
+        "fresh quote confirms band/stop state",
+        "Randall gives exact paper order terms or explicitly approves generated exact request artifact",
+        "WF67 request artifact generated",
+        "WF67 dry run passes",
+        "paper/live isolation guard validation passes",
+        "fresh short-lived kill switch exists for the execution window",
+        "main-session capital-package notification is prepared"
+      ],
+      "authority": {
+        "live_trade_allowed": false,
+        "live_brokerage_or_account_action_allowed": false,
+        "money_movement_allowed": false,
+        "paper_order_execution_allowed": false,
+        "paper_order_submit_allowed_by_this_packet": false,
+        "paper_order_cancel_allowed_by_this_packet": false,
+        "owner_approval_inferred": false,
+        "owner_approval_granted_for_orders": false,
+        "portfolio_or_canon_apply_allowed": false,
+        "sizing_apply_allowed": false,
+        "cash_or_risk_rule_mutation_allowed": false,
+        "probability_or_win_rate_claim_allowed": false,
+        "sizing_recommendation_review_allowed": true
+      }
+    }
+  ],
+  "critical_findings": [
+    "capital deployment validator is not ok"
+  ],
+  "warning_findings": [],
+  "owner_decisions_needed_before_tuesday_orders": [
+    "Choose which candidates, if any, should become exact WF67 paper request artifacts.",
+    "Confirm paper-only versus live. Live remains blocked here; paper can proceed only through WF67 guards.",
+    "Confirm order style: limit/day preferred; market/day requires exact owner approval.",
+    "Confirm whether any existing paper position counts as starter or whether to add incremental notional.",
+    "Confirm whether NVDA/GOOG/MSFT tech-cap exposure should be avoided, substituted, or explicitly exception-reviewed."
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "artifact_type": "wf50_tmp_python_helper_archive_manifest",
+  "generated_at_utc": "2026-05-19T19:05:42.872986Z",
+  "approval": "Randall approved continuing active-ref helper disposition on 2026-05-19 12:04 MST; WF50 already authorized archiving these six after owner approval.",
+  "authority": {
+    "archive_only": true,
+    "delete_allowed": false,
+    "promote_to_scripts": false,
+    "runtime_config_touched": false,
+    "finance_artifacts_touched": false,
+    "trade_or_account_action_allowed": false
+  },
+  "moved_count": 6,
+  "errors": [],
+  "files": [
+    {
+      "original_path": "tmp/dump_bands.py",
+      "archive_path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/tmp/dump_bands.py",
+      "sha256": "021507619a69c45a3174302e1404b82a0a58513fa87436dc34019bb2cef0cf77",
+      "size_bytes": 230,
+      "disposition": "archived_not_promoted",
+      "rationale": "WF50 determined helper was one-off/tmp residue; durable ideas were folded into scripts/workspace_governance_truth_check.py where relevant."
+    },
+    {
+      "original_path": "tmp/find_band_refs.py",
+      "archive_path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/tmp/find_band_refs.py",
+      "sha256": "f2acf1de1705d2ce65f1b07f30bc318f86128709ab0980700a319704801028da",
+      "size_bytes": 376,
+      "disposition": "archived_not_promoted",
+      "rationale": "WF50 determined helper was one-off/tmp residue; durable ideas were folded into scripts/workspace_governance_truth_check.py where relevant."
+    },
+    {
+      "original_path": "tmp/find_disallowed_model_refs.py",
+      "archive_path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/tmp/find_disallowed_model_refs.py",
+      "sha256": "7243c3956d49a19c579a1d67cb2344653d678353d9fc822bc9841355bf313189",
+      "size_bytes": 1290,
+      "disposition": "archived_not_promoted",
+      "rationale": "WF50 determined helper was one-off/tmp residue; durable ideas were folded into scripts/workspace_governance_truth_check.py where relevant."
+    },
+    {
+      "original_path": "tmp/find_disallowed_openclaw_refs.py",
+      "archive_path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/tmp/find_disallowed_openclaw_refs.py",
+      "sha256": "dd6a589cf74b1744fe7057260d6f56812713487e4d01e92e8d05d4c7302f96de",
+      "size_bytes": 1199,
+      "disposition": "archived_not_promoted",
+      "rationale": "WF50 determined helper was one-off/tmp residue; durable ideas were folded into scripts/workspace_governance_truth_check.py where relevant."
+    },
+    {
+      "original_path": "tmp/find_model_refs.py",
+      "archive_path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/tmp/find_model_refs.py",
+      "sha256": "7ce6a88e7a3a39980077521d91dc2d594f961673d8c3233589dd2284c5711546",
+      "size_bytes": 1273,
+      "disposition": "archived_not_promoted",
+      "rationale": "WF50 determined helper was one-off/tmp residue; durable ideas were folded into scripts/workspace_governance_truth_check.py where relevant."
+    },
+    {
+      "original_path": "tmp/market_close_quick.py",
+      "archive_path": "09. Archive/tmp-python-helpers - Archived/2026-05-19-wf50-owner-approved/tmp/market_close_quick.py",
+      "sha256": "cfe3ee7da72e44cea41498256976390c79e91ec6015a3e6c91bd881b94359590",
+      "size_bytes": 1805,
+      "disposition": "archived_not_promoted",
+      "rationale": "WF50 determined helper was one-off/tmp residue; durable ideas were folded into scripts/workspace_governance_truth_check.py where relevant."
+    }
+  ]
+}

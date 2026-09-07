@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "artifact_type": "main_session_wf67_order_decision_card",
+  "request_id": "wf78-owner-card-prep-XLB-20260701T143618Z",
+  "created_at_utc": "2026-07-01T14:36:18Z",
+  "authority": {
+    "main_session_recommendation_allowed": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "paper_only": true,
+    "paper_order_execution_allowed_by_card": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "order": {
+    "symbol": "XLB",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 51.17,
+    "qty": null,
+    "notional": 250.0
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 250.0,
+    "max_notional_usd": 500.0,
+    "max_loss_usd": 11.53,
+    "entry_band_low": 49.84,
+    "entry_band_high": 51.68,
+    "observed_price": 51.17,
+    "observed_entry_status": "IN_BAND",
+    "stop": 48.81,
+    "sizing_rationale": "Best first candidate because it is a diversified Materials ETF exposure and inside the written band; use modest starter sizing only. Paper-only request; execution remains blocked pending exact Randall approval, fresh WF67 guard, and fresh short-lived kill switch."
+  },
+  "source": {
+    "source_artifact": "tmp/chief-intelligence-promotion-gate.json",
+    "capital_recommendation_source": "main_session_telegram_5739_deployment_card_prep_refreshed_sql_first_band",
+    "owner_or_pilot_scope": "Main-session prepared WF67 paper-only deployment card; pending exact Randall approval; no execution authority.",
+    "approval_artifact": null,
+    "superseded_by_current_gate": false
+  },
+  "owner_approval": {
+    "status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "approval_text": null,
+    "market_order_owner_approved": false
+  },
+  "decision_context": {
+    "ticker": "XLB",
+    "recommendation_rank": 1,
+    "recommendation_rationale": "Best first candidate because it is a diversified Materials ETF exposure and inside the written band; use modest starter sizing only.",
+    "promotion_gate_generated_at_utc": "2026-07-01T14:32:38Z",
+    "promotion_gate_rank": 2,
+    "promotion_gate_score": null,
+    "promotion_gate_verdict": "promote_for_owner_review",
+    "technical_refresh_generated_at_utc": "2026-07-01T14:23:46.019343+00:00",
+    "technical_refresh_last_trading_day": "2026-07-01",
+    "technical_close": 51.3,
+    "technical_ma20": 51.21,
+    "technical_ma50": 51.1,
+    "technical_ma200": 47.91,
+    "technical_ma_posture": "above all MAs -- bullish 20>50>200 stack",
+    "quote_snapshot_generated_at_utc": "2026-07-01T14:14:00.841794Z",
+    "quote_snapshot_price": 51.17,
+    "quote_snapshot_bid": 51.16,
+    "quote_snapshot_ask": 51.17,
+    "quote_snapshot_freshness_status": "fresh",
+    "written_band": {
+      "entry_band_low": 49.84,
+      "entry_band_high": 51.68,
+      "stop_or_invalidation": 48.81,
+      "source_artifact": "tmp/band-proposals.json",
+      "source_priority": "band_proposal_current_legacy",
+      "source_generated_at_utc": "2026-07-01T14:30:06.685478+00:00",
+      "canonical_apply_eligible": false,
+      "needs_review": true,
+      "legacy_current_band": {
+        "low": 49.84,
+        "high": 51.68,
+        "stop": 48.81
+      }
+    },
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

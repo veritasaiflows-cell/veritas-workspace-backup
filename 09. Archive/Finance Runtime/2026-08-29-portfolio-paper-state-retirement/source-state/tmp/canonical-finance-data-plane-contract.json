@@ -1,0 +1,1462 @@
+{
+  "schema": "veritas.canonical_finance_data_plane_contract.v1",
+  "generated_at_utc": "2026-08-29T21:44:03Z",
+  "status": "ok",
+  "workflow_id": "WF84",
+  "purpose": "Internal trade-grade personal finance OS canonical data-plane contract. Review-only starter contract; no customer/account/PII/retail-launch scope.",
+  "authority_boundary": {
+    "review_only": true,
+    "internal_personal_finance_infrastructure": true,
+    "schema_contract_only": true,
+    "writes_database": false,
+    "imports_or_promotes_tickers": false,
+    "customer_or_public_output_allowed": false,
+    "real_customer_data_allowed": false,
+    "account_or_brokerage_data_required": false,
+    "pii_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "design_principles": [
+    "WF78 remains the research/routing engine; this contract becomes the stable internal finance truth interface.",
+    "JSON artifacts and exact source notes remain proof/owner surfaces until a future validated read-only writer exists.",
+    "Every material decision field must carry source, freshness, and authority context.",
+    "Capital deployment, execution, paper/live/account action, customer/public output, and owner approval remain separate gated decisions."
+  ],
+  "mvp_tables": [
+    {
+      "name": "schema_run",
+      "purpose": "One row per canonical data-plane build/validation run.",
+      "primary_key": [
+        "run_id"
+      ],
+      "fields": [
+        [
+          "run_id",
+          "TEXT",
+          false,
+          "unique run id"
+        ],
+        [
+          "schema_version",
+          "TEXT",
+          false,
+          "data-plane schema version"
+        ],
+        [
+          "generated_at_utc",
+          "TEXT",
+          false,
+          "run timestamp"
+        ],
+        [
+          "local_market_date",
+          "TEXT",
+          true,
+          "America/Phoenix or market-date context when available"
+        ],
+        [
+          "status",
+          "TEXT",
+          false,
+          "ok, warning, or blocked"
+        ],
+        [
+          "builder_version",
+          "TEXT",
+          true,
+          "writer version when implemented"
+        ],
+        [
+          "authority_boundary_json",
+          "TEXT",
+          false,
+          "serialized authority boundary"
+        ],
+        [
+          "validation_status",
+          "TEXT",
+          false,
+          "validation summary status"
+        ]
+      ]
+    },
+    {
+      "name": "source_artifact",
+      "purpose": "Provenance table for every source artifact feeding material fields.",
+      "primary_key": [
+        "artifact_id"
+      ],
+      "fields": [
+        [
+          "artifact_id",
+          "TEXT",
+          false,
+          "stable artifact id"
+        ],
+        [
+          "path",
+          "TEXT",
+          false,
+          "workspace-relative artifact path"
+        ],
+        [
+          "role",
+          "TEXT",
+          false,
+          "feeder role"
+        ],
+        [
+          "exists_on_disk",
+          "BOOLEAN",
+          false,
+          "source exists at build time"
+        ],
+        [
+          "generated_at_utc",
+          "TEXT",
+          true,
+          "artifact generated timestamp"
+        ],
+        [
+          "mtime_utc",
+          "TEXT",
+          true,
+          "filesystem modified timestamp"
+        ],
+        [
+          "sha256",
+          "TEXT",
+          true,
+          "future source hash"
+        ],
+        [
+          "schema",
+          "TEXT",
+          true,
+          "artifact schema"
+        ],
+        [
+          "status",
+          "TEXT",
+          true,
+          "artifact status"
+        ],
+        [
+          "validation_status",
+          "TEXT",
+          true,
+          "artifact validation status"
+        ],
+        [
+          "source_rank",
+          "INTEGER",
+          true,
+          "feeder priority"
+        ],
+        [
+          "raw_summary_json",
+          "TEXT",
+          true,
+          "compact source summary"
+        ]
+      ]
+    },
+    {
+      "name": "security_master",
+      "purpose": "One row per internal tracked security, ETF, or approved instrument.",
+      "primary_key": [
+        "ticker"
+      ],
+      "fields": [
+        [
+          "ticker",
+          "TEXT",
+          false,
+          "canonical uppercase ticker or provider symbol"
+        ],
+        [
+          "name",
+          "TEXT",
+          true,
+          "security or company display name"
+        ],
+        [
+          "instrument_type",
+          "TEXT",
+          true,
+          "equity, ETF, commodity proxy, bond proxy, etc."
+        ],
+        [
+          "sector",
+          "TEXT",
+          true,
+          "sector context"
+        ],
+        [
+          "industry",
+          "TEXT",
+          true,
+          "industry context"
+        ],
+        [
+          "yfinance_symbol",
+          "TEXT",
+          true,
+          "provider symbol"
+        ],
+        [
+          "sec_cik",
+          "TEXT",
+          true,
+          "SEC CIK when available"
+        ],
+        [
+          "company_ir_url",
+          "TEXT",
+          true,
+          "official investor relations URL when registered"
+        ],
+        [
+          "active",
+          "BOOLEAN",
+          false,
+          "active in current internal finance universe"
+        ]
+      ]
+    },
+    {
+      "name": "universe_membership",
+      "purpose": "Internal universe scope and production/review-monitor membership.",
+      "primary_key": [
+        "ticker"
+      ],
+      "fields": [
+        [
+          "ticker",
+          "TEXT",
+          false,
+          "security_master.ticker"
+        ],
+        [
+          "universe_scope",
+          "TEXT",
+          false,
+          "production, review monitor, pilot fixture, etc."
+        ],
+        [
+          "legacy_monitoring_role",
+          "TEXT",
+          true,
+          "legacy monitoring role when present"
+        ],
+        [
+          "production_answer_path_member",
+          "BOOLEAN",
+          false,
+          "member of current production answer path"
+        ],
+        [
+          "thin_monitor_row",
+          "BOOLEAN",
+          false,
+          "thin-monitor row with lighter evidence expectations"
+        ],
+        [
+          "decision_grade_eligible",
+          "BOOLEAN",
+          false,
+          "eligible for decision-grade review after gates"
+        ],
+        [
+          "promotion_required_before_action",
+          "BOOLEAN",
+          false,
+          "true when promotion is required before actionability"
+        ],
+        [
+          "source_open_required",
+          "BOOLEAN",
+          false,
+          "material finance claim requires source-open evidence"
+        ],
+        [
+          "owner_note_path",
+          "TEXT",
+          true,
+          "owner note path when available"
+        ],
+        [
+          "raw_json",
+          "TEXT",
+          true,
+          "source row snapshot"
+        ]
+      ]
+    },
+    {
+      "name": "routing_state_current",
+      "purpose": "Current non-capital WF78 Tier A/B/C routing state.",
+      "primary_key": [
+        "ticker"
+      ],
+      "fields": [
+        [
+          "ticker",
+          "TEXT",
+          false,
+          "security_master.ticker"
+        ],
+        [
+          "auto_tier",
+          "TEXT",
+          false,
+          "Tier A, Tier B, Tier C, or future Tier D"
+        ],
+        [
+          "auto_state",
+          "TEXT",
+          false,
+          "workflow state such as A-READY, B-CANDIDATE, B-VALIDATED, C-MONITOR"
+        ],
+        [
+          "route_priority",
+          "INTEGER",
+          true,
+          "routing priority if supplied"
+        ],
+        [
+          "route_reason",
+          "TEXT",
+          true,
+          "route explanation"
+        ],
+        [
+          "data_confidence_rating",
+          "TEXT",
+          true,
+          "confidence label"
+        ],
+        [
+          "fundamentals_confidence",
+          "TEXT",
+          true,
+          "fundamental confidence label"
+        ],
+        [
+          "tier_a_confidence_status",
+          "TEXT",
+          true,
+          "Tier A confidence gate state"
+        ],
+        [
+          "tier_a_confidence_promotion_effect",
+          "TEXT",
+          true,
+          "confidence-gate effect"
+        ],
+        [
+          "critical_data_conflict_count",
+          "INTEGER",
+          true,
+          "critical conflict count"
+        ],
+        [
+          "requires_separate_capital_or_execution_approval",
+          "BOOLEAN",
+          false,
+          "always true for action"
+        ],
+        [
+          "capital_deployment_approved",
+          "BOOLEAN",
+          false,
+          "must remain false"
+        ],
+        [
+          "trade_or_execution_approved",
+          "BOOLEAN",
+          false,
+          "must remain false"
+        ],
+        [
+          "would_mutate_universe",
+          "BOOLEAN",
+          false,
+          "must remain false for this workflow"
+        ],
+        [
+          "source_artifact_id",
+          "TEXT",
+          false,
+          "source_artifact reference"
+        ]
+      ]
+    },
+    {
+      "name": "evidence_family_status",
+      "purpose": "Per-ticker evidence-family freshness, missingness, and repair status.",
+      "primary_key": [
+        "ticker",
+        "family_id"
+      ],
+      "fields": [
+        [
+          "ticker",
+          "TEXT",
+          false,
+          "security_master.ticker"
+        ],
+        [
+          "family_id",
+          "TEXT",
+          false,
+          "evidence family id"
+        ],
+        [
+          "status",
+          "TEXT",
+          false,
+          "fresh, stale, missing, blocked, resolved"
+        ],
+        [
+          "missing_count",
+          "INTEGER",
+          false,
+          "missing evidence count"
+        ],
+        [
+          "stale_count",
+          "INTEGER",
+          false,
+          "stale evidence count"
+        ],
+        [
+          "source_required",
+          "BOOLEAN",
+          false,
+          "source required before material claim"
+        ],
+        [
+          "required_depth",
+          "TEXT",
+          false,
+          "thin, research, decision, owner-card"
+        ],
+        [
+          "resolution_state",
+          "TEXT",
+          true,
+          "tier-weighted resolution state"
+        ],
+        [
+          "tier_weighted_resolved",
+          "BOOLEAN",
+          false,
+          "resolved under tier policy"
+        ],
+        [
+          "source_paths_json",
+          "TEXT",
+          true,
+          "source artifact paths"
+        ]
+      ]
+    },
+    {
+      "name": "price_technical_current",
+      "purpose": "Latest review-grade price, quote, technical, and band-position state.",
+      "primary_key": [
+        "ticker"
+      ],
+      "fields": [
+        [
+          "ticker",
+          "TEXT",
+          false,
+          "security_master.ticker"
+        ],
+        [
+          "latest_known_price",
+          "REAL",
+          true,
+          "latest available review-grade price"
+        ],
+        [
+          "price_source",
+          "TEXT",
+          true,
+          "price source"
+        ],
+        [
+          "quote_time_utc",
+          "TEXT",
+          true,
+          "quote timestamp"
+        ],
+        [
+          "market_date",
+          "TEXT",
+          true,
+          "market date"
+        ],
+        [
+          "band_status",
+          "TEXT",
+          true,
+          "IN_BAND, ABOVE_BAND, BELOW_BAND, BELOW_STOP, etc."
+        ],
+        [
+          "technical_status",
+          "TEXT",
+          true,
+          "technical state"
+        ],
+        [
+          "technical_summary",
+          "TEXT",
+          true,
+          "brief technical summary"
+        ],
+        [
+          "fresh_quote_required",
+          "BOOLEAN",
+          false,
+          "true when execution/owner-card would need fresh quote"
+        ],
+        [
+          "quote_freshness_status",
+          "TEXT",
+          false,
+          "fresh, stale, missing, warning"
+        ],
+        [
+          "source_artifact_id",
+          "TEXT",
+          false,
+          "source_artifact reference"
+        ],
+        [
+          "raw_json",
+          "TEXT",
+          true,
+          "source row snapshot"
+        ]
+      ]
+    },
+    {
+      "name": "entry_stop_reference",
+      "purpose": "Entry band and stop/invalidation reference state.",
+      "primary_key": [
+        "ticker"
+      ],
+      "fields": [
+        [
+          "ticker",
+          "TEXT",
+          false,
+          "security_master.ticker"
+        ],
+        [
+          "entry_band_low",
+          "REAL",
+          true,
+          "lower written/reference band"
+        ],
+        [
+          "entry_band_high",
+          "REAL",
+          true,
+          "upper written/reference band"
+        ],
+        [
+          "stop_or_invalidation",
+          "REAL",
+          true,
+          "stop or invalidation reference"
+        ],
+        [
+          "band_source",
+          "TEXT",
+          false,
+          "canonical note, approved cache, or generated proposal source"
+        ],
+        [
+          "stop_source",
+          "TEXT",
+          true,
+          "stop source"
+        ],
+        [
+          "freshness_status",
+          "TEXT",
+          false,
+          "fresh, stale, missing, generated_review_only"
+        ],
+        [
+          "validation_status",
+          "TEXT",
+          false,
+          "validation state"
+        ],
+        [
+          "owner_note_path",
+          "TEXT",
+          true,
+          "owner note path when available"
+        ],
+        [
+          "source_artifact_path",
+          "TEXT",
+          true,
+          "source artifact path"
+        ],
+        [
+          "source_artifact_hash",
+          "TEXT",
+          true,
+          "future source hash"
+        ],
+        [
+          "source_timestamp",
+          "TEXT",
+          true,
+          "source timestamp"
+        ],
+        [
+          "authority_boundary",
+          "TEXT",
+          false,
+          "authority boundary for reference"
+        ],
+        [
+          "raw_json",
+          "TEXT",
+          true,
+          "source row snapshot"
+        ]
+      ]
+    },
+    {
+      "name": "fundamental_snapshot",
+      "purpose": "Review-grade fundamental, valuation, earnings, and reconciliation state.",
+      "primary_key": [
+        "ticker"
+      ],
+      "fields": [
+        [
+          "ticker",
+          "TEXT",
+          false,
+          "security_master.ticker"
+        ],
+        [
+          "period_end",
+          "TEXT",
+          true,
+          "latest fundamental period end"
+        ],
+        [
+          "period_age_days",
+          "INTEGER",
+          true,
+          "period age"
+        ],
+        [
+          "data_quality",
+          "TEXT",
+          false,
+          "quality status"
+        ],
+        [
+          "valuation_status",
+          "TEXT",
+          true,
+          "valuation status"
+        ],
+        [
+          "key_metrics_status",
+          "TEXT",
+          true,
+          "key metrics status"
+        ],
+        [
+          "latest_earnings_status",
+          "TEXT",
+          true,
+          "latest earnings state"
+        ],
+        [
+          "sec_reconciliation_status",
+          "TEXT",
+          true,
+          "SEC reconciliation state"
+        ],
+        [
+          "sec_conflicts_json",
+          "TEXT",
+          true,
+          "SEC conflicts"
+        ],
+        [
+          "company_ir_reconciliation_status",
+          "TEXT",
+          true,
+          "company IR reconciliation state"
+        ],
+        [
+          "capital_allocation_quality",
+          "TEXT",
+          true,
+          "capital allocation quality"
+        ],
+        [
+          "source_path",
+          "TEXT",
+          false,
+          "source artifact path"
+        ],
+        [
+          "raw_json",
+          "TEXT",
+          true,
+          "source row snapshot"
+        ]
+      ]
+    },
+    {
+      "name": "analyst_snapshot",
+      "purpose": "Analyst/consensus snapshot when source-available.",
+      "primary_key": [
+        "ticker",
+        "provider"
+      ],
+      "fields": [
+        [
+          "ticker",
+          "TEXT",
+          false,
+          "security_master.ticker"
+        ],
+        [
+          "provider",
+          "TEXT",
+          false,
+          "data provider"
+        ],
+        [
+          "status",
+          "TEXT",
+          false,
+          "available, stale, missing, manual_review"
+        ],
+        [
+          "accessed_at_utc",
+          "TEXT",
+          true,
+          "access timestamp"
+        ],
+        [
+          "consensus_rating",
+          "TEXT",
+          true,
+          "consensus label"
+        ],
+        [
+          "rating_summary",
+          "TEXT",
+          true,
+          "summary"
+        ],
+        [
+          "average_target",
+          "REAL",
+          true,
+          "average target price"
+        ],
+        [
+          "median_target",
+          "REAL",
+          true,
+          "median target price"
+        ],
+        [
+          "implied_upside_downside_pct",
+          "REAL",
+          true,
+          "implied upside/downside"
+        ],
+        [
+          "confidence",
+          "TEXT",
+          true,
+          "confidence label"
+        ],
+        [
+          "manual_review_required",
+          "BOOLEAN",
+          false,
+          "true when source needs manual review"
+        ],
+        [
+          "source_url",
+          "TEXT",
+          true,
+          "source URL"
+        ],
+        [
+          "raw_json",
+          "TEXT",
+          true,
+          "source row snapshot"
+        ]
+      ]
+    },
+    {
+      "name": "earnings_catalyst",
+      "purpose": "Earnings and catalyst state for review routing.",
+      "primary_key": [
+        "ticker"
+      ],
+      "fields": [
+        [
+          "ticker",
+          "TEXT",
+          false,
+          "security_master.ticker"
+        ],
+        [
+          "latest_earnings_status",
+          "TEXT",
+          true,
+          "latest earnings state"
+        ],
+        [
+          "latest_period_end",
+          "TEXT",
+          true,
+          "latest reported period"
+        ],
+        [
+          "next_earnings_date",
+          "TEXT",
+          true,
+          "next earnings date"
+        ],
+        [
+          "days_to_earnings",
+          "INTEGER",
+          true,
+          "days until next earnings"
+        ],
+        [
+          "earnings_date_confirmed",
+          "BOOLEAN",
+          false,
+          "confirmed date flag"
+        ],
+        [
+          "post_earnings_review_confirmed",
+          "BOOLEAN",
+          false,
+          "post-earnings review flag"
+        ],
+        [
+          "catalyst_status",
+          "TEXT",
+          true,
+          "catalyst state"
+        ],
+        [
+          "source_path",
+          "TEXT",
+          false,
+          "source artifact path"
+        ],
+        [
+          "raw_json",
+          "TEXT",
+          true,
+          "source row snapshot"
+        ]
+      ]
+    },
+    {
+      "name": "official_evidence",
+      "purpose": "Official/source-open evidence pointers and capture state.",
+      "primary_key": [
+        "evidence_id"
+      ],
+      "fields": [
+        [
+          "evidence_id",
+          "TEXT",
+          false,
+          "unique evidence id"
+        ],
+        [
+          "ticker",
+          "TEXT",
+          false,
+          "security_master.ticker"
+        ],
+        [
+          "evidence_family",
+          "TEXT",
+          false,
+          "evidence family"
+        ],
+        [
+          "status",
+          "TEXT",
+          false,
+          "registered, proposed, missing, blocked"
+        ],
+        [
+          "source_url",
+          "TEXT",
+          true,
+          "official/source URL"
+        ],
+        [
+          "source_section",
+          "TEXT",
+          true,
+          "source section"
+        ],
+        [
+          "period",
+          "TEXT",
+          true,
+          "evidence period"
+        ],
+        [
+          "manual_capture_required",
+          "BOOLEAN",
+          false,
+          "manual capture needed"
+        ],
+        [
+          "inferred",
+          "BOOLEAN",
+          false,
+          "true if inferred; must not be treated as source-open"
+        ],
+        [
+          "source_open_required",
+          "BOOLEAN",
+          false,
+          "source-open requirement flag"
+        ],
+        [
+          "source_path",
+          "TEXT",
+          true,
+          "source artifact path"
+        ],
+        [
+          "raw_json",
+          "TEXT",
+          true,
+          "source row snapshot"
+        ]
+      ]
+    },
+    {
+      "name": "decision_queue_state",
+      "purpose": "Decision-card queue state separated from authority/order state.",
+      "primary_key": [
+        "ticker"
+      ],
+      "fields": [
+        [
+          "ticker",
+          "TEXT",
+          false,
+          "security_master.ticker"
+        ],
+        [
+          "primary_state",
+          "TEXT",
+          false,
+          "monitor, repair, owner_review_candidate, no_chase, invalidation_review"
+        ],
+        [
+          "states_json",
+          "TEXT",
+          true,
+          "all observed states"
+        ],
+        [
+          "recommendation_posture_key",
+          "TEXT",
+          true,
+          "recommendation posture"
+        ],
+        [
+          "actionability",
+          "TEXT",
+          false,
+          "review-only actionability classification"
+        ],
+        [
+          "queue_state",
+          "TEXT",
+          false,
+          "queue state"
+        ],
+        [
+          "rank_score",
+          "REAL",
+          true,
+          "rank score when present"
+        ],
+        [
+          "gate_verdict",
+          "TEXT",
+          true,
+          "gate verdict"
+        ],
+        [
+          "gate_vetoes_json",
+          "TEXT",
+          true,
+          "gate vetoes"
+        ],
+        [
+          "owner_card_path",
+          "TEXT",
+          true,
+          "owner-card path"
+        ],
+        [
+          "wf67_request_path",
+          "TEXT",
+          true,
+          "WF67 request artifact path"
+        ],
+        [
+          "wf67_request_generation_status",
+          "TEXT",
+          true,
+          "request generation status"
+        ],
+        [
+          "blockers_json",
+          "TEXT",
+          true,
+          "blockers"
+        ],
+        [
+          "warnings_json",
+          "TEXT",
+          true,
+          "warnings"
+        ],
+        [
+          "owner_action_required",
+          "BOOLEAN",
+          false,
+          "true only when Randall decision is needed"
+        ],
+        [
+          "capital_deployment_approved",
+          "BOOLEAN",
+          false,
+          "must remain false"
+        ],
+        [
+          "trade_or_execution_approved",
+          "BOOLEAN",
+          false,
+          "must remain false"
+        ],
+        [
+          "paper_or_live_execution_allowed",
+          "BOOLEAN",
+          false,
+          "must remain false"
+        ],
+        [
+          "owner_approval_inferred",
+          "BOOLEAN",
+          false,
+          "must remain false"
+        ]
+      ]
+    },
+    {
+      "name": "validation_result",
+      "purpose": "Detailed validation findings for future data-plane writer runs.",
+      "primary_key": [
+        "run_id",
+        "check_name"
+      ],
+      "fields": [
+        [
+          "run_id",
+          "TEXT",
+          false,
+          "validation_run.run_id"
+        ],
+        [
+          "check_name",
+          "TEXT",
+          false,
+          "check name"
+        ],
+        [
+          "status",
+          "TEXT",
+          false,
+          "ok, warning, blocked"
+        ],
+        [
+          "severity",
+          "TEXT",
+          false,
+          "info, warning, critical"
+        ],
+        [
+          "detail_json",
+          "TEXT",
+          true,
+          "finding detail"
+        ],
+        [
+          "source_artifact_id",
+          "TEXT",
+          true,
+          "source artifact reference"
+        ]
+      ]
+    }
+  ],
+  "feeder_sources": [
+    {
+      "path": "data/finance/universe-v1.json",
+      "role": "universe/security base feed",
+      "source_type": "json",
+      "required_for_mvp": true,
+      "exists": true,
+      "mtime_utc": "2026-08-29T15:01:49Z",
+      "size_bytes": 1078713,
+      "schema": 1,
+      "status": "wf78_tier_c_scaleout_monitor_ready",
+      "generated_at_utc": "2026-08-22T15:33:19Z"
+    },
+    {
+      "path": "tmp/wf78-auto-tier-routing.json",
+      "role": "primary non-capital tier/routing feed",
+      "source_type": "json",
+      "required_for_mvp": true,
+      "exists": true,
+      "mtime_utc": "2026-08-29T21:43:51Z",
+      "size_bytes": 506162,
+      "schema": "veritas.wf78_auto_tier_router.v1",
+      "status": "ok",
+      "generated_at_utc": "2026-08-29T21:43:51Z",
+      "validation_status": "ok"
+    },
+    {
+      "path": "tmp/finance-intelligence-state.sqlite",
+      "role": "current-state SQL feeder",
+      "source_type": "sqlite",
+      "required_for_mvp": true,
+      "exists": true,
+      "mtime_utc": "2026-08-29T21:43:21Z",
+      "size_bytes": 26886144,
+      "sqlite_integrity_check": "ok",
+      "sqlite_integrity_observed": true
+    },
+    {
+      "path": "tmp/finance-data-coverage-current.json",
+      "role": "coverage/family status feed",
+      "source_type": "json",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-08-29T21:43:19Z",
+      "size_bytes": 5662078,
+      "schema": 1,
+      "status": "ok_with_explicit_gaps",
+      "generated_at_utc": "2026-08-29T21:43:19Z"
+    },
+    {
+      "path": "tmp/wf78-ticker-freshness-ledger.json",
+      "role": "ticker freshness ledger feed",
+      "source_type": "json",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-08-29T21:44:00Z",
+      "size_bytes": 450841,
+      "schema": "veritas.wf78_ticker_freshness_ledger.v1",
+      "status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:00Z",
+      "validation_status": "ok"
+    },
+    {
+      "path": "tmp/wf78-tier-weighted-freshness-resolution.json",
+      "role": "tier-weighted evidence/freshness feed",
+      "source_type": "json",
+      "required_for_mvp": true,
+      "exists": true,
+      "mtime_utc": "2026-08-29T21:44:01Z",
+      "size_bytes": 704109,
+      "schema": "veritas.wf78_tier_weighted_freshness_resolution.v1",
+      "status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:01Z",
+      "validation_status": "ok"
+    },
+    {
+      "path": "tmp/finance-decision-sync-spine.json",
+      "role": "decision-readiness spine feed",
+      "source_type": "json",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-08-28T13:25:27Z",
+      "size_bytes": 987066,
+      "schema": "veritas.finance_decision_sync_spine.v1",
+      "status": "ok",
+      "generated_at_utc": "2026-08-28T13:25:27Z",
+      "validation_status": "ok"
+    },
+    {
+      "path": "tmp/finance-ticker-card-refresh-gate.json",
+      "role": "ticker-card repair/staleness feed",
+      "source_type": "json",
+      "required_for_mvp": true,
+      "exists": true,
+      "mtime_utc": "2026-08-29T21:43:16Z",
+      "size_bytes": 565204,
+      "schema": 1,
+      "status": "ok_with_expected_context",
+      "generated_at_utc": "2026-08-29T21:43:16.686994+00:00",
+      "validation_status": "ok"
+    },
+    {
+      "path": "tmp/wf78-tier-a-confidence-gate.json",
+      "role": "Tier A confidence/fundamentals gate feed",
+      "source_type": "json",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-08-29T21:43:49Z",
+      "size_bytes": 100672,
+      "schema": "veritas.wf78_tier_a_confidence_gate.v1",
+      "status": "ok",
+      "generated_at_utc": "2026-08-29T21:43:49Z",
+      "validation_status": "ok"
+    },
+    {
+      "path": "tmp/veritas-canon-cache.sqlite",
+      "role": "entry/stop reference cache feed",
+      "source_type": "sqlite",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-06-19T13:20:38Z",
+      "size_bytes": 21667840,
+      "sqlite_integrity_check": "ok",
+      "sqlite_integrity_observed": true
+    },
+    {
+      "path": "tmp/fundamental-metrics-current.json",
+      "role": "fundamental metrics feed",
+      "source_type": "json",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-08-28T20:28:30Z",
+      "size_bytes": 3005005,
+      "schema": 1,
+      "status": null,
+      "generated_at_utc": "2026-08-28T20:20:09Z"
+    },
+    {
+      "path": "tmp/fundamental-ir-reconciliation-packets.json",
+      "role": "fundamental IR reconciliation feed",
+      "source_type": "json",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-08-28T20:28:47Z",
+      "size_bytes": 305635,
+      "schema": 1,
+      "status": "ok",
+      "generated_at_utc": "2026-08-28T20:28:47Z"
+    },
+    {
+      "path": "tmp/wf78-sec-reconciliation-scaler-current.json",
+      "role": "SEC reconciliation scaler feed",
+      "source_type": "json",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-08-15T19:52:50Z",
+      "size_bytes": 17844,
+      "schema": "wf78.sec_reconciliation_scaler.v1",
+      "status": "ok",
+      "generated_at_utc": "2026-08-15T19:52:50Z",
+      "validation_status": "ok"
+    },
+    {
+      "path": "tmp/finance-decision-factory.json",
+      "role": "finance decision factory feed",
+      "source_type": "json",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-08-29T15:05:11Z",
+      "size_bytes": 4545,
+      "schema": "veritas.finance_decision_factory.v1",
+      "status": "ok",
+      "generated_at_utc": "2026-08-29T15:05:11Z",
+      "validation_status": "ok"
+    },
+    {
+      "path": "tmp/wf78-capital-review-queue.json",
+      "role": "non-executing owner-review queue feed",
+      "source_type": "json",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-08-28T13:24:42Z",
+      "size_bytes": 8795,
+      "schema": "veritas.wf78_capital_review_queue.v1",
+      "status": "ok",
+      "generated_at_utc": "2026-08-28T13:24:42Z",
+      "validation_status": "ok"
+    },
+    {
+      "path": "tmp/wf78-event-triggered-rerouting.json",
+      "role": "event-triggered repair/reroute feed",
+      "source_type": "json",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-08-29T21:43:59Z",
+      "size_bytes": 220510,
+      "schema": "veritas.wf78_event_triggered_rerouting.v1",
+      "status": "ok",
+      "generated_at_utc": "2026-08-29T21:43:59Z",
+      "validation_status": "ok"
+    },
+    {
+      "path": "tmp/tier-c-band-status.json",
+      "role": "Tier C monitor-grade band status feed",
+      "source_type": "json",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-08-29T15:05:10Z",
+      "size_bytes": 226338,
+      "schema": "veritas.tier_c_band_status.v1",
+      "status": "ok",
+      "generated_at_utc": "2026-08-29T15:05:10Z",
+      "validation_status": "ok"
+    },
+    {
+      "path": "tmp/finance-intelligence-state-paper-positions.json",
+      "role": "paper visibility feed; separate read-only boundary only",
+      "source_type": "json",
+      "required_for_mvp": false,
+      "exists": true,
+      "mtime_utc": "2026-08-28T21:40:01Z",
+      "size_bytes": 12107,
+      "schema": 2,
+      "status": "ok",
+      "generated_at_utc": "2026-08-28T21:40:01Z",
+      "validation_status": "ok"
+    }
+  ],
+  "future_artifacts": {
+    "contract": "tmp/canonical-finance-data-plane-contract.json",
+    "planned_read_only_packet": "tmp/canonical-finance-data-plane.json",
+    "planned_sqlite_companion": "tmp/canonical-finance-data-plane.sqlite",
+    "planned_validation_packet": "tmp/canonical-finance-data-plane-validation.json"
+  },
+  "next_phases": [
+    "Build read-only packet writer from WF78 auto-router and finance-intelligence-state.",
+    "Add SQLite companion only after JSON packet validator is clean.",
+    "Migrate one consumer, likely finance_intelligence_state ticker answer or PM cockpit read path, behind fallback.",
+    "Lifecycle-classify derived companions after consumer parity proof, not before."
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [],
+    "observed_counts": {
+      "expected_active_tickers": 300,
+      "router_active_tickers": 300,
+      "router_row_count": 300,
+      "finance_state_universe_rows": 300,
+      "finance_state_ticker_tier_rows": 300,
+      "finance_state_scope_compatibility_allowed": false,
+      "finance_state_router_only_count": 0,
+      "finance_state_finance_only_count": 0,
+      "canonical_table_count": 14,
+      "feeder_source_count": 18
+    },
+    "finance_state_scope_profile": {
+      "scope_compatibility_allowed": false,
+      "router_count": 300,
+      "finance_state_universe_count": 300,
+      "finance_state_ticker_tier_count": 300,
+      "router_only_count": 0,
+      "finance_only_count": 0,
+      "tier_universe_mismatch_count": 0,
+      "invalid_scope_row_count": 42,
+      "router_only_authority_risk_count": 0,
+      "router_only": [],
+      "finance_only": [],
+      "tier_universe_mismatch": [],
+      "invalid_scope_rows": [
+        "AMD",
+        "AMZN",
+        "BKNG",
+        "BRK.B",
+        "CAT",
+        "CME",
+        "CVX",
+        "ECL",
+        "ETN",
+        "GE",
+        "GOOG",
+        "GS",
+        "ITA",
+        "JPM",
+        "KTOS",
+        "LIN",
+        "LLY",
+        "LMT",
+        "LNG",
+        "META",
+        "MSFT",
+        "NFLX",
+        "NVDA",
+        "PAVE",
+        "PH",
+        "PLTR",
+        "RTX",
+        "SLV",
+        "SMCI",
+        "TLT",
+        "TMUS",
+        "VAW",
+        "VMC",
+        "VRT",
+        "VXUS",
+        "WMB",
+        "XLB",
+        "XLC",
+        "XLE",
+        "XLF",
+        "XLI",
+        "XOM"
+      ],
+      "router_only_authority_risk": []
+    }
+  },
+  "stop_lines": [
+    "No database writer exists in this contract.",
+    "No customer, account, brokerage, suitability, tax, retirement, income, net-worth, or PII schema is authorized.",
+    "No canon/portfolio/cash/risk-rule mutation, no capital approval, no paper/live/order/account action, no owner approval inference."
+  ]
+}

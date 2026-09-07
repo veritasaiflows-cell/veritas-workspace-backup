@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "wf67-nvda-monday-band-gated-2026-06-01",
+  "created_at_utc": "2026-06-01T13:35:45Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true
+  },
+  "order": {
+    "symbol": "NVDA",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 216.66,
+    "qty": null,
+    "notional": 150.0
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 150.0,
+    "max_loss_usd": 150.0,
+    "max_notional_usd": 150.0,
+    "position_size_reviewed": true,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "entry_band_low": 198.47,
+    "entry_band_high": 216.66,
+    "observed_price": 211.14,
+    "observed_entry_status": "IN_BAND",
+    "stop": 187.9,
+    "sizing_rationale": "Rank 5 lowest-priority starter. NVDA thesis remains excellent and price is in band, but Tech/AI concentration and crowding make it the least attractive incremental paper add; notional is intentionally smallest and limit is capped at written band high."
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "NVDA Monday 2026-06-01 band-gated paper-only smallest starter packet; executable only if fresh Monday quote remains inside 198.47-216.66, concentration check remains acceptable, and Randall approves exact terms.",
+    "recommendation_source": "main_session_order_decision_card",
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/order-card.nvda-monday-band-gated-2026-06-01.json",
+    "capital_recommendation_source": "manual_main_session_rerank_2026-05-30_after_fresh_market_data",
+    "source_artifact": "08. Audits/Promoted Ticker Audit and Promotion Change Proposal - 2026-05-29.md",
+    "market_order_owner_approved": false,
+    "exact_order_owner_approval_status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "exact_order_owner_approval_text": null,
+    "main_session_capital_package_notification_required": true,
+    "approval_artifact": null,
+    "chief_intelligence_promotion_gate": {
+      "gate_artifact": "tmp/chief-intelligence-promotion-gate.json",
+      "gate_schema_version": "chief_intelligence_promotion_gate.v1",
+      "gate_generated_at_utc": "2026-06-01T13:35:43Z",
+      "ticker": "NVDA",
+      "rank": 3,
+      "chief_intelligence_score": 84.0,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "band_status": "IN_BAND",
+      "entry_band": {
+        "low": 198.47,
+        "high": 216.66,
+        "stop": 187.9,
+        "label": "198.47–216.66",
+        "band_last_set": "2026-05-21"
+      }
+    }
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_forbidden": "https://api.alpaca.markets"
+  }
+}

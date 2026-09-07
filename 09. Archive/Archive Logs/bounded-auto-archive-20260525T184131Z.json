@@ -1,0 +1,271 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T18:41:31Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-adjacent-json-md-archive-microbatch-2026-05-25.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 28,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/real-capital-active-deployment-universe-2026-05-18.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/real-capital-active-deployment-universe-2026-05-18.md",
+      "sha256_before": "191e2579a70516dda363839f31cce64d51f6931134019f2435bda822a9752de0",
+      "sha256_after": "191e2579a70516dda363839f31cce64d51f6931134019f2435bda822a9752de0"
+    },
+    {
+      "path": "tmp/script-first-batch-static-inspection-2026-05-19.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/script-first-batch-static-inspection-2026-05-19.md",
+      "sha256_before": "67a6b0334ce07c43b716845d5cd5e78d740d4d45763a66da6c829327dc35ce41",
+      "sha256_after": "67a6b0334ce07c43b716845d5cd5e78d740d4d45763a66da6c829327dc35ce41"
+    },
+    {
+      "path": "tmp/script-guardrail-evidence-doc-smoke-2026-05-19.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/script-guardrail-evidence-doc-smoke-2026-05-19.md",
+      "sha256_before": "6b389cac15e677841647ac8df6f8dfcde1350c70f344078062a4ec142211848f",
+      "sha256_after": "6b389cac15e677841647ac8df6f8dfcde1350c70f344078062a4ec142211848f"
+    },
+    {
+      "path": "tmp/script-guardrail-evidence-inspection-2026-05-19.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/script-guardrail-evidence-inspection-2026-05-19.md",
+      "sha256_before": "7df2dcb6ccd2ca961a11e7e7d600766847b5c3a039907de873c15cfe4018ea63",
+      "sha256_after": "7df2dcb6ccd2ca961a11e7e7d600766847b5c3a039907de873c15cfe4018ea63"
+    },
+    {
+      "path": "tmp/script-orchestration-plan-2026-05-18.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/script-orchestration-plan-2026-05-18.md",
+      "sha256_before": "9aa65d259e64310f2cb5c24ff7c38cc68954d51931432d60f78506efcb24ff6e",
+      "sha256_after": "9aa65d259e64310f2cb5c24ff7c38cc68954d51931432d60f78506efcb24ff6e"
+    },
+    {
+      "path": "tmp/script-ownership-manifest-v2-2026-05-19.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/script-ownership-manifest-v2-2026-05-19.md",
+      "sha256_before": "d88a65880e33e644e7f7858aa98d12b72042aff5232622b5e86c12870477e6b2",
+      "sha256_after": "d88a65880e33e644e7f7858aa98d12b72042aff5232622b5e86c12870477e6b2"
+    },
+    {
+      "path": "tmp/sector-diversification-integrated-recommendation-2026-05-14.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/sector-diversification-integrated-recommendation-2026-05-14.md",
+      "sha256_before": "998a386840e51ba659d13d4d91a47ce7a22683aa5da0556a21ddee97b2a77007",
+      "sha256_after": "998a386840e51ba659d13d4d91a47ce7a22683aa5da0556a21ddee97b2a77007"
+    },
+    {
+      "path": "tmp/telemetry-audit-window-closeout.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/telemetry-audit-window-closeout.md",
+      "sha256_before": "7e013bc555d5517f9ef35d009f896b9ca2236ceaa2dffd4f434fba547812b35b",
+      "sha256_after": "7e013bc555d5517f9ef35d009f896b9ca2236ceaa2dffd4f434fba547812b35b"
+    },
+    {
+      "path": "tmp/wf68-delivery-channel-approval-packet.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf68-delivery-channel-approval-packet.md",
+      "sha256_before": "1b83c0db700a92ef2cb358175ace0a0900d81cd79f2fafb86525737bc5091f02",
+      "sha256_after": "1b83c0db700a92ef2cb358175ace0a0900d81cd79f2fafb86525737bc5091f02"
+    },
+    {
+      "path": "tmp/wf70-current-window-index-registry-migration.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf70-current-window-index-registry-migration.md",
+      "sha256_before": "d7b4b8cc029757d6dd0d5ee195c83534e0a1e9032e509cf06276545c4fd512e6",
+      "sha256_after": "d7b4b8cc029757d6dd0d5ee195c83534e0a1e9032e509cf06276545c4fd512e6"
+    },
+    {
+      "path": "tmp/wf72-broad-archive-execution-contract.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-broad-archive-execution-contract.md",
+      "sha256_before": "e3d4f82a6cdd92f5ba3618c3a786b6339766f6c4f74c6216074d7fc62811c0d4",
+      "sha256_after": "e3d4f82a6cdd92f5ba3618c3a786b6339766f6c4f74c6216074d7fc62811c0d4"
+    },
+    {
+      "path": "tmp/wf72-consumer-authority-guard-implementation.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-consumer-authority-guard-implementation.md",
+      "sha256_before": "16b2b7c261330ab974cb02bc91cc0906c223ae9b83fdc3208267c2bd51b80652",
+      "sha256_after": "16b2b7c261330ab974cb02bc91cc0906c223ae9b83fdc3208267c2bd51b80652"
+    },
+    {
+      "path": "tmp/wf72-financial-truth-map.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-financial-truth-map.md",
+      "sha256_before": "391ea5fd6ae09a93503f656d133654d37eeb9d1fea13577ad0521e426c75b63e",
+      "sha256_after": "391ea5fd6ae09a93503f656d133654d37eeb9d1fea13577ad0521e426c75b63e"
+    },
+    {
+      "path": "tmp/wf72-gate12-closeout.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate12-closeout.md",
+      "sha256_before": "5fd5ce75a090b15abdfc2bae2f35857a2593049c29f8c496348bb79c87d7ac07",
+      "sha256_after": "5fd5ce75a090b15abdfc2bae2f35857a2593049c29f8c496348bb79c87d7ac07"
+    },
+    {
+      "path": "tmp/wf72-gate12-proposal-staging-hardening-worker.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate12-proposal-staging-hardening-worker.md",
+      "sha256_before": "5092b910166ed978e485a00be0c3af601b98f5bce99d0ab7f3da7a6eb2b450b4",
+      "sha256_after": "5092b910166ed978e485a00be0c3af601b98f5bce99d0ab7f3da7a6eb2b450b4"
+    },
+    {
+      "path": "tmp/wf72-gate12-proposal-staging-qa.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate12-proposal-staging-qa.md",
+      "sha256_before": "408029edc96bea018bc451a41da7b112840f3597438e61f47afa97cc93abfe12",
+      "sha256_after": "408029edc96bea018bc451a41da7b112840f3597438e61f47afa97cc93abfe12"
+    },
+    {
+      "path": "tmp/wf72-gate13-portfolio-source-freshness-closeout.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate13-portfolio-source-freshness-closeout.md",
+      "sha256_before": "e84dd4f592cabd8ffbdd575e54c1f4ca912375f8d11f2f3ae21c11df0bbc8759",
+      "sha256_after": "e84dd4f592cabd8ffbdd575e54c1f4ca912375f8d11f2f3ae21c11df0bbc8759"
+    },
+    {
+      "path": "tmp/wf72-gate13-portfolio-source-freshness-qa.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate13-portfolio-source-freshness-qa.md",
+      "sha256_before": "cdd0b44a0bc29d2c89c342d2a16760f16044030ad5fae2639966cfd336f255fe",
+      "sha256_after": "cdd0b44a0bc29d2c89c342d2a16760f16044030ad5fae2639966cfd336f255fe"
+    },
+    {
+      "path": "tmp/wf72-gate14-neutral-deployment-display-qa.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate14-neutral-deployment-display-qa.md",
+      "sha256_before": "524b6c21158796402e53d46288dd859ae450b1b29498f62620ff37a8ffca676b",
+      "sha256_after": "524b6c21158796402e53d46288dd859ae450b1b29498f62620ff37a8ffca676b"
+    },
+    {
+      "path": "tmp/wf72-gate14-neutral-deployment-display-worker.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate14-neutral-deployment-display-worker.md",
+      "sha256_before": "0e5d7709e352dd677fb21ef8e589e90c7751ab87aad96bd8deb985b8ce6d5fa5",
+      "sha256_after": "0e5d7709e352dd677fb21ef8e589e90c7751ab87aad96bd8deb985b8ce6d5fa5"
+    },
+    {
+      "path": "tmp/wf72-gate15-higher-risk-family-qa.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate15-higher-risk-family-qa.md",
+      "sha256_before": "84b7702dbb7d55c3d2fe87f507e8103f3ceb2c82023905ac8c378512199e60ba",
+      "sha256_after": "84b7702dbb7d55c3d2fe87f507e8103f3ceb2c82023905ac8c378512199e60ba"
+    },
+    {
+      "path": "tmp/wf72-gate15-higher-risk-family-worker.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate15-higher-risk-family-worker.md",
+      "sha256_before": "4db587cb95ebf1ff15f8a4ae93c44679b6193c8cb2c72013dc5a8fcf9a05c639",
+      "sha256_after": "4db587cb95ebf1ff15f8a4ae93c44679b6193c8cb2c72013dc5a8fcf9a05c639"
+    },
+    {
+      "path": "tmp/wf72-gate16-final-os-revamp-closeout-worker.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gate16-final-os-revamp-closeout-worker.md",
+      "sha256_before": "b578847d48f00f6d64e262b1449a542de49319500130ec01baea8a1836d02e1e",
+      "sha256_after": "b578847d48f00f6d64e262b1449a542de49319500130ec01baea8a1836d02e1e"
+    },
+    {
+      "path": "tmp/wf72-gates13-16-phase-approach.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-gates13-16-phase-approach.md",
+      "sha256_before": "fcf077aa6b55f435ede7d3f430fb9295a2e58fb681c363638ed4a38a8f0146f1",
+      "sha256_after": "fcf077aa6b55f435ede7d3f430fb9295a2e58fb681c363638ed4a38a8f0146f1"
+    },
+    {
+      "path": "tmp/wf72-phase9-deployment-status-qa.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-phase9-deployment-status-qa.md",
+      "sha256_before": "62418d25171cf55ddf2d62ad7cecd6d6c597816a8af2e030c2a4e6336ced6725",
+      "sha256_after": "62418d25171cf55ddf2d62ad7cecd6d6c597816a8af2e030c2a4e6336ced6725"
+    },
+    {
+      "path": "tmp/wf72-producer-contract-cleanup-closeout-2026-05-25.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-producer-contract-cleanup-closeout-2026-05-25.md",
+      "sha256_before": "e204d51b5983e9bbb7608c757cf3676c582c38ada7b6175bcd52376cda961a7b",
+      "sha256_after": "e204d51b5983e9bbb7608c757cf3676c582c38ada7b6175bcd52376cda961a7b"
+    },
+    {
+      "path": "tmp/wf72-today-card-contract.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf72-today-card-contract.md",
+      "sha256_before": "79ce9d72e27d0c6972a6de3087ddeba96f8654eb88a47d94baeeba9c7881be56",
+      "sha256_after": "79ce9d72e27d0c6972a6de3087ddeba96f8654eb88a47d94baeeba9c7881be56"
+    },
+    {
+      "path": "tmp/wf73-active-workflows-compression-apply.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Adjacent JSON Markdown Sidecars/wf73-active-workflows-compression-apply.md",
+      "sha256_before": "0b55e179c58258959a58050ea045e50c19ca4ee810d50a5d63cecf4b44b6fdc3",
+      "sha256_after": "0b55e179c58258959a58050ea045e50c19ca4ee810d50a5d63cecf4b44b6fdc3"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; explicit apply_allowed suggestions can move only with zero references or the WF72 adjacent-JSON historical-reference-only exception"
+}

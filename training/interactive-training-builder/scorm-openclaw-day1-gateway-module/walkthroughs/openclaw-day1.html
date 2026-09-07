@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenClaw Day 1 teaching walkthrough</title>
+  <style>
+    :root { color-scheme: dark; --ink:#e8eef6; --muted:#9aa7b8; --line:#2a3646; --panel:#121a24; --accent:#3dd6c6; --blue:#7db4ff; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: #0b1220; color: var(--ink); font-family: Segoe UI, Arial, sans-serif; }
+    .stage { height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
+    header, footer { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+    footer { border-bottom: 0; border-top: 1px solid var(--line); display: flex; gap: 8px; align-items: center; }
+    header { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+    h1 { margin: 0; font-size: 0.95rem; }
+    .kicker { color: var(--accent); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+    .slide { padding: 16px 18px; display: none; }
+    .slide.on { display: block; }
+    h2 { margin: 0 0 8px; font-size: 1.35rem; }
+    p { margin: 0 0 10px; color: var(--muted); line-height: 1.45; }
+    .map { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px; min-height: 92px; }
+    .card strong { display: block; color: var(--blue); margin-bottom: 4px; }
+    .card span { color: var(--muted); font-size: 0.85rem; }
+    .card.active { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+    .flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 12px; }
+    .pill { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; font-size: 0.85rem; }
+    .arrow { color: var(--accent); font-weight: 700; }
+    .bar { flex: 1; height: 8px; background: #1c2734; border-radius: 999px; overflow: hidden; }
+    .bar span { display: block; height: 100%; width: 0; background: var(--accent); }
+    button { min-height: 34px; border-radius: 8px; border: 1px solid var(--line); background: #182230; color: var(--ink); font-weight: 700; cursor: pointer; padding: 6px 10px; }
+    @media (max-width: 720px) { .map { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <header>
+      <div>
+        <div class="kicker">Watch only</div>
+        <h1>Day 1: Gateway, Control UI, agent, session</h1>
+      </div>
+      <span id="count">1 / 6</span>
+    </header>
+    <main>
+      <section class="slide on" data-i="0">
+        <h2>You watch this. You do not record it.</h2>
+        <p>This is a local teaching walkthrough for OpenClaw Day 1. It is a map, not a screenshot of Settings, and not approval to change anything.</p>
+      </section>
+      <section class="slide" data-i="1">
+        <h2>Four names, one machine</h2>
+        <div class="map">
+          <div class="card active"><strong>Gateway</strong><span>Local daemon. Owns chats and the WebSocket.</span></div>
+          <div class="card"><strong>Control UI</strong><span>Browser dashboard the Gateway serves.</span></div>
+          <div class="card"><strong>Agent</strong><span>Who answers: Veritas Main plus tools.</span></div>
+          <div class="card"><strong>Session</strong><span>This conversation thread.</span></div>
+        </div>
+      </section>
+      <section class="slide" data-i="2">
+        <h2>Control UI is this kind of screen</h2>
+        <p>WebChat is Control UI talking to the Gateway, usually at 127.0.0.1:18789. It is not a second product and not the model vendor.</p>
+        <div class="map">
+          <div class="card"><strong>Sidebar</strong><span>Sessions you can reopen.</span></div>
+          <div class="card active"><strong>Chat</strong><span>Where you type and get a reply.</span></div>
+          <div class="card"><strong>Status</strong><span>What the current run is doing.</span></div>
+          <div class="card"><strong>Do not open</strong><span>Settings, pairing, or update controls in this lab.</span></div>
+        </div>
+      </section>
+      <section class="slide" data-i="3">
+        <h2>The path of one message</h2>
+        <div class="flow">
+          <span class="pill">You type</span><span class="arrow">-></span>
+          <span class="pill">Gateway accepts a run</span><span class="arrow">-></span>
+          <span class="pill">Agent works in this session</span><span class="arrow">-></span>
+          <span class="pill">Reply shows in Control UI</span>
+        </div>
+        <p>That is the whole Day 1 loop.</p>
+      </section>
+      <section class="slide" data-i="4">
+        <h2>What stays blocked</h2>
+        <p>Finishing this walkthrough does not authorize <code>openclaw update</code>, config edits, new channels, pairing, or plugin changes. Randall runs those himself when he chooses.</p>
+      </section>
+      <section class="slide" data-i="5">
+        <h2>What to do next</h2>
+        <p>Mark this walkthrough reviewed in the lab, then explain Gateway vs Control UI vs agent vs session in the chat. Keep the lab inspect-only.</p>
+      </section>
+    </main>
+    <footer>
+      <button type="button" id="prev">Back</button>
+      <button type="button" id="toggle">Pause</button>
+      <button type="button" id="next">Next</button>
+      <div class="bar" aria-hidden="true"><span id="bar"></span></div>
+    </footer>
+  </div>
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const count = document.getElementById("count");
+    const bar = document.getElementById("bar");
+    const toggle = document.getElementById("toggle");
+    let i = 0;
+    let playing = true;
+    let timer = 0;
+    const dwell = 8000;
+    function show(n) {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((slide, idx) => slide.classList.toggle("on", idx === i));
+      count.textContent = (i + 1) + " / " + slides.length;
+      bar.style.width = ((i + 1) / slides.length * 100) + "%";
+    }
+    function tick() {
+      if (!playing) return;
+      show(i + 1);
+      if (i === slides.length - 1) playing = false;
+      toggle.textContent = playing ? "Pause" : "Play";
+    }
+    function arm() {
+      clearInterval(timer);
+      if (playing) timer = setInterval(tick, dwell);
+    }
+    document.getElementById("prev").onclick = () => { show(i - 1); arm(); };
+    document.getElementById("next").onclick = () => { show(i + 1); arm(); };
+    toggle.onclick = () => { playing = !playing; toggle.textContent = playing ? "Pause" : "Play"; arm(); };
+    show(0);
+    arm();
+  </script>
+</body>
+</html>

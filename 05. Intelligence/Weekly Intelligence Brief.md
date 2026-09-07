@@ -1,3 +1,20 @@
+# Retired — Weekly Intelligence Brief
+
+Status: retired on 2026-08-29 during the alerts-and-recommendations OS pivot.
+
+This path is a compatibility tombstone. It is not current finance canon or a valid weekly workflow entry point.
+
+## Active replacement
+
+- Run: `python scripts\run_alerts_recommendations_chain.py weekly --timeout-seconds 120 --write --validate`
+- Interpret results against `03. Alerts and Recommendations/`
+- Publish only evidence-dated alerts and non-executing recommendations with truthful freshness and confidence
+
+<details>
+<summary>Retired historical source — non-operative</summary>
+
+The preserved body below is dated legacy/audit material. Its scripts, artifacts, owners, states, permissions, and “current” labels are retired and must not be used operationally.
+
 # Weekly Intelligence Brief
 
 ## Purpose
@@ -433,3 +450,5 @@ Script-backed prep path:
 - **Bank manual-review queue:** JPM, GS require CET1/ROTCE/NIM/deposit/credit-quality review; industrial FCF/debt gates are suppressed.
 - **Structured anomaly queue:** ETN, JPM, GOOG, MSFT, LMT, XOM, AMZN, BKNG, CAT, GS, CVX, KTOS.
 - **Boundary:** buybacks, share-count improvements, FCF/share growth, ROIC proxy, and valuation context are evidence only; they do not create deployability, owner approval, sizing, sleeve, account, or trade authority.
+
+</details>

@@ -15,18 +15,18 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `tmp/wf88-os2-control-packet.json`
 ## Current debt
 
-- Improvement open count: `15`.
-- Follow-up-required open count: `1`.
+- Improvement open count: `11`.
+- Follow-up-required open count: `2`.
 - High-priority overdue open count: `2`.
 - Pending skill proposal count: `1`.
-- Actionable queue items: `15`.
+- Actionable queue items: `11`.
 - Actionable queue orphans: `0`.
-- No-orphan validation: `warning`.
+- No-orphan validation: `ok`.
 - Top actionable destination: `wf74_decision_docket`.
 - Top actionable next action: Treat this as a current cron regression against the completed migration plan: inspect the blocked cron artifacts, repair the failing proof surface, then refresh cron control.
 
 ## Claim evidence
 
-- `followup-no-orphan-health`: `{"actionable_missing_contract_count":0,"actionable_orphan_count":0,"followup_required_open_count":1,"no_orphan_validation":"warning"}`; authority `review_only`; source refs `improvement_ledger#/summary/followup_required_open_count`, `actionable_improvement_queue#/summary/orphan_count`, `actionable_improvement_queue#/summary/missing_contract_count`, `no_orphan_validator#/validation/status`.
+- `followup-no-orphan-health`: `{"actionable_missing_contract_count":0,"actionable_orphan_count":0,"followup_required_open_count":2,"no_orphan_validation":"ok"}`; authority `review_only`; source refs `improvement_ledger#/summary/followup_required_open_count`, `actionable_improvement_queue#/summary/orphan_count`, `actionable_improvement_queue#/summary/missing_contract_count`, `no_orphan_validator#/validation/status`.
 
 Follow-up debt is real until closed as a verified fix, owner packet, applied skill proposal, pending skill proposal, monitor-only row, or superseded open improvement.

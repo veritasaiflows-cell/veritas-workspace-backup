@@ -1,212 +1,71 @@
 ---
-name: veritas-weekly-brief
-description: Orchestrate the Sunday weekly rebuild and weekly intelligence workflow. Use this to run the Sunday refresh chain, reconcile machine-generated weekly artifacts with the live note layer, and produce a decision-grade Weekly Intelligence Brief and Weekly Macro Snapshot that fit the current vault structure and trust rules.
+name: "veritas-weekly-brief"
+description: "Build the weekly alerts-and-recommendations intelligence brief."
 ---
 
-# Veritas Weekly Brief
+# Veritas Weekly Alerts Brief
 
-This skill owns the Sunday transition from **last week's state** to **next week's operating map**.
+## Purpose
 
-It is a workflow skill, not a replacement for the analysis spine.
-Use:
-- `veritas-macro-pass` for regime judgment
-- `veritas-technical-pass` for actionability and extension discipline
-- `veritas-positioning-pass` when the weekly board needs explicit capital-priority ranking
-- `veritas-financial-planning-pass` when the weekly output becomes holistic advisor/planner guidance across goals, liquidity, drawdown tolerance, concentration, cash, or sleeve constraints
+Turn the current guarded evidence set into a concise weekly market-intelligence and recommendations map. Scripts stage evidence; the brief integrates judgment without creating account or execution state.
 
-Core rule:
-- scripts stage the weekly evidence set
-- notes own final judgment
-- weekly notes should reconcile machine output with live board truth, not simply restate JSON
+## Refresh
 
-## When to use this skill
+```powershell
+python scripts\run_alerts_recommendations_chain.py weekly --timeout-seconds 120 --write --validate
+```
 
-Use when:
-- Randall asks for the weekly review, Sunday refresh, weekly brief, or weekly sweep
-- the Sunday operating window should be rebuilt for the coming week
-- the machine-generated weekly artifacts exist but the judgment layer has not been completed
-- a major weekend regime shift or catalyst reset requires a new weekly operating map
+Inspect:
 
-Do not use this for routine weekday refreshes.
+- guarded SQL validation
+- explicit quote snapshot and validation
+- alert-level freshness controller
+- weekly chain proof
+- weekly digest
+- current macro signal/judgment artifacts
+- catalyst and earnings evidence
+- `03. Alerts and Recommendations` canon
 
-## Primary inputs
+If any source is partial or stale, show that near the conclusion.
 
-Run first:
-- `python scripts/run_finance_refresh_chain.py sunday`
+## Weekly Questions
 
-Then inspect:
-- `tmp/weekly-intelligence-brief.json`
-- `tmp/weekly-macro-snapshot.json`
-- `tmp/macro-regime.json`
-- `tmp/deployment-readiness-surface.json`
-- `tmp/dashboard-validation.json`
-- `tmp/trigger-sheet.json`
-- `tmp/technical-refresh.json`
-- `tmp/earnings-calendar.json`
-- `tmp/post-earnings-prep.json` when the prior week included material tracked reports
+Answer:
 
-If the weekly chain is partial, stale, or warning-heavy, keep that uncertainty visible in the final weekly notes.
+- What changed from the prior week?
+- Which alerts are new, escalated, resolved, stale, or suppressed?
+- Which names merit Recommendation review and why?
+- Which names are No chase or Invalidation alert?
+- What macro or catalyst risks matter next week?
+- What evidence must be refreshed?
+- What decision, if any, belongs to Randall?
 
-## Required note stack
+## Output
 
-Before writing or syncing, read the live weekly note layer:
-- `05. Intelligence/Weekly Intelligence Brief.md`
-- `02. Markets/Macro Regime Dashboard.md`
-- `05. Intelligence/Weekly Positioning Review.md`
-- `01. Dashboards/This Week.md` only as a retired pointer/stub, not as a weekly outcome owner
-- `01. Dashboards/Executive Brief.md`
-- `04. Research/Coverage and Watchlist.md`
-- `03. Portfolio/Portfolio Snapshot.md`
-- `07. Risk/Risk Rules.md`
+1. weekly verdict and trust state
+2. major macro/market changes
+3. ranked non-executing recommendations
+4. alert-state table
+5. catalysts and event risk
+6. thesis changes and invalidations
+7. freshness/conflict queue
+8. next safe automation and Randall decision points
 
-This is the starting truth set.
-Do not act like the weekly process starts from a blank slate.
+Each recommendation includes timeframe, evidence date, freshness, confidence, thesis, base/bull/bear, risks, band/invalidation context, and uncertainty.
 
-## Canonical weekly outputs
+## Sync Rule
 
-Primary weekly outputs:
-- `05. Intelligence/Weekly Intelligence Brief.md`
-- `02. Markets/Weekly Macro Snapshot/<ISO-week>.md` via the script layer
-- `05. Intelligence/Weekly Positioning Review.md`
+Update only active alerts/recommendations or intelligence notes whose owned truth materially changed. Old positioning, portfolio snapshot, execution board, and deployment artifacts are retired historical surfaces and must not be repopulated.
 
-Pointer/orientation outputs when materially needed:
-- `01. Dashboards/Executive Brief.md`
-- `01. Dashboards/This Week.md` remains a retired pointer/stub and should not be repopulated as an independent weekly outcome map
+## Boundary
 
-Important vault rule:
-- do **not** update `01. Dashboards/Monday Game Plan.md`
-- that file does not exist in the current vault and should not be invented as a dependency
+No holdings, positions, sleeves, allocations, weights, sizing, tranches, cash posture, rebalancing, simulated positions, order packages, account reads, or execution routes. A recommendation never implies approval.
 
-## Required workflow
+## Verification
 
-### 1. Rebuild the weekly evidence spine
+```powershell
+python scripts\alerts_os_pivot_validator.py --write --validate
+python scripts\run_alerts_recommendations_chain.py weekly --timeout-seconds 120 --write --validate
+```
 
-Run the Sunday chain and verify it completed cleanly enough to use.
-
-At minimum, confirm:
-- `tmp/weekly-intelligence-brief.json` exists
-- `tmp/weekly-macro-snapshot.json` exists
-- `tmp/macro-regime.json` exists
-- `tmp/dashboard-validation.json` exists
-
-Then classify the machine layer as one of:
-- fresh
-- usable with caution
-- partial
-- stale
-
-Do not hide that classification in the final weekly work.
-
-### 2. Reconcile machine evidence with live notes
-
-Compare the staged weekly outputs against:
-- current macro dashboard
-- current weekly positioning review
-- current portfolio posture
-- current watchlist and deployment board
-
-If the note layer and machine layer disagree, say so plainly.
-The weekly process should resolve the disagreement or document why it remains.
-
-### 3. Complete the Weekly Intelligence Brief
-
-The machine brief is a scaffold, not the final product.
-
-Your job is to:
-- fill judgment slots
-- tighten macro interpretation
-- identify the coming week's real catalyst density
-- distinguish good assets from good entries
-- convert summary into operating implications
-
-Rules:
-- preserve the existing note's real section structure unless a structural change is clearly justified
-- do not force ISO-week heading logic if the note is already using `Week of ...` style and that remains the live convention
-- if the script already appended the week's section, refine it; do not duplicate it
-- if the section already exists and no rewrite is justified, provide a delta-style update rather than duplicate content
-
-### 4. Complete the Weekly Macro Snapshot and macro layer
-
-Use `tmp/weekly-macro-snapshot.json` and `tmp/macro-regime.json` as evidence, then reconcile the judgment with:
-- `02. Markets/Macro Regime Dashboard.md`
-- the macro section of `05. Intelligence/Weekly Intelligence Brief.md`
-
-If the weekend regime read materially changes the macro dashboard, update the dashboard.
-If not, do not churn the note just because a weekly run happened.
-
-### 5. Sync the weekly operating board
-
-Use this order:
-
-1. `05. Intelligence/Weekly Intelligence Brief.md`
-2. `05. Intelligence/Weekly Positioning Review.md`
-3. `02. Markets/Macro Regime Dashboard.md` — only if regime framing materially changed
-4. `01. Dashboards/Executive Brief.md` — only if what matters now or trust posture materially changed
-5. `01. Dashboards/This Week.md` — keep as a pointer/stub only; do not restore independent weekly outcomes
-6. `04. Research/Coverage and Watchlist.md` — only if active-universe membership, coverage tier, or high-level state labels changed materially
-
-Important vault rule:
-- `04. Research/Coverage and Watchlist.md` remains a consolidated research/index surface, not a full weekly commentary board
-- do not dump weekly commentary or duplicate Execution Board trigger detail into it
-
-### 6. Weekly judgment standards
-
-A production-grade weekly brief must answer:
-- what changed from last week?
-- what matters most this coming week?
-- which names are actionable, blocked, extended, or broken?
-- where is trust degraded by stale/manual/partial inputs?
-- what is the capital-priority order if opportunities appear?
-
-Every major weekly section should end with a practical implication for:
-- portfolio posture
-- deployment patience or offense
-- catalyst risk
-- watchlist triage
-
-Advisor boundary: weekly implications are recommendations and review priorities only. They do not grant owner approval, trade/account action, sizing execution, tax/legal advice, or ungated workspace portfolio/canon mutation.
-
-## Trust and contradiction rules
-
-- If policy, credit, breadth, or macro artifacts are warning-heavy, keep that visible.
-- If machine output says risk-on but the board is broadly extended, say selective risk-on or mixed rather than repeating a simplistic label.
-- If the weekly board remains blocked by earnings density or timing uncertainty, that is part of the weekly conclusion.
-- If a machine-generated weekly statement conflicts with note-layer truth, resolve the conflict explicitly.
-
-## Verification gate
-
-After meaningful weekly note updates, run:
-- `python scripts/validate_dashboard_state.py --write`
-
-If warnings remain, include them in the final confidence framing.
-Do not present the weekly output as clean if the trust layer is not clean.
-
-## Execution procedure
-
-When Randall asks for the weekly review or Sunday refresh:
-
-1. **Research**
-   - run `python scripts/run_finance_refresh_chain.py sunday`
-   - read the weekly artifacts and current note stack
-2. **Analysis**
-   - apply macro, technical, and positioning judgment where needed
-3. **Drafting**
-   - complete the Weekly Intelligence Brief and weekly operating notes
-4. **Sync**
-   - update only the weekly notes whose owned truth materially changed
-5. **Validate**
-   - run `python scripts/validate_dashboard_state.py --write`
-6. **Report**
-   - summarize the weekly posture, main catalysts, priority names, and trust limitations
-
-## Quality standard
-
-A production-grade weekly refresh should leave behind:
-- one coherent weekly intelligence brief
-- a synchronized lean weekly positioning map
-- retired dashboard stubs that continue pointing to the weekly and daily owners without becoming fresh truth layers again
-- no invented surfaces that do not exist in the vault
-- explicit trust language when the machine layer is degraded
-
-The goal is not just to generate a weekly write-up.
-The goal is to open the coming week with a trustworthy operating map.
+Report truthful freshness degradation instead of laundering it into a green narrative.

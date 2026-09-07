@@ -1,0 +1,504 @@
+{
+  "schema": "veritas.wf67_stale_paper_artifact_archive_apply.v1",
+  "generated_at_utc": "2026-06-28T07:17:19Z",
+  "status": "archived",
+  "mode": "apply",
+  "owner_approval_reference": "Randall WebChat approval 2026-06-28: \"Approve to archive after patch. Proceed until fully implemented.\"",
+  "authority_boundary": {
+    "owner_approved_archive": true,
+    "archive_only": true,
+    "delete_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_sleeve_risk_rule_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_guard_report": "tmp/stale-paper-card-reference-guard.json",
+  "reference_review_artifact": "tmp/wf67-stale-paper-artifact-reference-review.json",
+  "archive_root": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28",
+  "summary": {
+    "archive_ready_count": 0,
+    "archived_count": 24,
+    "retained_or_blocked_count": 29,
+    "blocked_active_reference_count": 29,
+    "framework_fixture_count": 0,
+    "archive_manifest": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/archive-manifest.json",
+    "rollback_command": "python scripts\\wf67_stale_paper_artifact_archive_apply.py --rollback --manifest \"09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/archive-manifest.json\" --apply --write --validate",
+    "new_archived_count": 0
+  },
+  "operations": [
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/order-card.etn-monday-band-gated-2026-06-01.json",
+      "rolled_back": false,
+      "sha256_after": "2553dc303b68119104166afb1dc845940105070429608ff9d3f83e8e36e78b90",
+      "sha256_before": "2553dc303b68119104166afb1dc845940105070429608ff9d3f83e8e36e78b90",
+      "size_bytes_before": 2762,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/order-card.etn-monday-band-gated-2026-06-01.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/order-card.ph-starter-pending-2026-05-26.json",
+      "rolled_back": false,
+      "sha256_after": "89c5aa2958b13f50503ed6180a690008c1b3e314daf93fc8222088e280d6300c",
+      "sha256_before": "89c5aa2958b13f50503ed6180a690008c1b3e314daf93fc8222088e280d6300c",
+      "size_bytes_before": 2744,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/order-card.ph-starter-pending-2026-05-26.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/order-card.xlb-materials-etf-starter-2026-05-30.json",
+      "rolled_back": false,
+      "sha256_after": "cf44b8aaa9fd22396266e04e08662a41cfd23f0e2189afe4074fb27520ed7964",
+      "sha256_before": "cf44b8aaa9fd22396266e04e08662a41cfd23f0e2189afe4074fb27520ed7964",
+      "size_bytes_before": 1890,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/order-card.xlb-materials-etf-starter-2026-05-30.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.cme-starter-pending-2026-05-26.json",
+      "rolled_back": false,
+      "sha256_after": "b4641dc786354319747fb752ae9c6fc4367e14627ce00b03e0038a166d8ce736",
+      "sha256_before": "b4641dc786354319747fb752ae9c6fc4367e14627ce00b03e0038a166d8ce736",
+      "size_bytes_before": 2815,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.cme-starter-pending-2026-05-26.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.etn-2026-05-19-conditional.json",
+      "rolled_back": false,
+      "sha256_after": "6b4f24fc44852e0dc8befde1da24bde0f3b0d86570ff6423294237ef0a9bce03",
+      "sha256_before": "6b4f24fc44852e0dc8befde1da24bde0f3b0d86570ff6423294237ef0a9bce03",
+      "size_bytes_before": 3055,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.etn-2026-05-19-conditional.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.etn-monday-band-gated-2026-06-01.json",
+      "rolled_back": false,
+      "sha256_after": "35897dc68a11270579d4cb513b0ff6130e2f110be69b508aac63856d8970c1b7",
+      "sha256_before": "35897dc68a11270579d4cb513b0ff6130e2f110be69b508aac63856d8970c1b7",
+      "size_bytes_before": 3253,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.etn-monday-band-gated-2026-06-01.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.etn-staggered-starter-pending-2026-05-24.json",
+      "rolled_back": false,
+      "sha256_after": "73fb802455bdd6747e2c5de9c3676d8c02f72b00bdc9e40d3e3cc1b0a034f07c",
+      "sha256_before": "73fb802455bdd6747e2c5de9c3676d8c02f72b00bdc9e40d3e3cc1b0a034f07c",
+      "size_bytes_before": 2859,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.etn-staggered-starter-pending-2026-05-24.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.goog-owner-card-20260613T1601Z.json",
+      "rolled_back": false,
+      "sha256_after": "4079d04708a31c90ee65bd24c336f16ceb32c5126225d70972b73807c2ff158e",
+      "sha256_before": "4079d04708a31c90ee65bd24c336f16ceb32c5126225d70972b73807c2ff158e",
+      "size_bytes_before": 3297,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.goog-owner-card-20260613T1601Z.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.lin-monday-band-gated-2026-06-01.json",
+      "rolled_back": false,
+      "sha256_after": "e910f8829ef418d009a9e578e473ba68d98a0721ed39a25c07ebff5b68e5e5b5",
+      "sha256_before": "e910f8829ef418d009a9e578e473ba68d98a0721ed39a25c07ebff5b68e5e5b5",
+      "size_bytes_before": 3238,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.lin-monday-band-gated-2026-06-01.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.nvda-monday-band-gated-2026-06-01.json",
+      "rolled_back": false,
+      "sha256_after": "82eddb726e7467192b46fd522982d27da1c0bb3f4a8b0c4575e3be9fafc51544",
+      "sha256_before": "82eddb726e7467192b46fd522982d27da1c0bb3f4a8b0c4575e3be9fafc51544",
+      "size_bytes_before": 3303,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-monday-band-gated-2026-06-01.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.nvda-small-starter-review-2026-06-22.approved.json",
+      "rolled_back": false,
+      "sha256_after": "beb614fe1f5358584b49dbd3a53e3c3fcc2f5bca9a7dfe48bb186cbfff700a63",
+      "sha256_before": "beb614fe1f5358584b49dbd3a53e3c3fcc2f5bca9a7dfe48bb186cbfff700a63",
+      "size_bytes_before": 5156,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-small-starter-review-2026-06-22.approved.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.ph-starter-pending-2026-05-26.json",
+      "rolled_back": false,
+      "sha256_after": "67a895fac059bae6cec86db0cbae9cc65e424b07a3cae2be69c7be636fcd78af",
+      "sha256_before": "67a895fac059bae6cec86db0cbae9cc65e424b07a3cae2be69c7be636fcd78af",
+      "size_bytes_before": 2822,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.ph-starter-pending-2026-05-26.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.vrt-monday-band-gated-2026-06-01.json",
+      "rolled_back": false,
+      "sha256_after": "dc30f8da0317eb7200c6af1de9324f9f1881ae3128ca5d5a9148cb5d28695e6d",
+      "sha256_before": "dc30f8da0317eb7200c6af1de9324f9f1881ae3128ca5d5a9148cb5d28695e6d",
+      "size_bytes_before": 4068,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-monday-band-gated-2026-06-01.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-goog.json",
+      "rolled_back": false,
+      "sha256_after": "9a240abc74078c059fb1ca08e4de4ae2f9c2e4597a0768461f376a968e8ed27e",
+      "sha256_before": "9a240abc74078c059fb1ca08e4de4ae2f9c2e4597a0768461f376a968e8ed27e",
+      "size_bytes_before": 5505,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-goog.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-vrt.json",
+      "rolled_back": false,
+      "sha256_after": "29b319deb93f15fa286206d134000e077a3f000d29e48cf7e965f3cd5cabf181",
+      "sha256_before": "29b319deb93f15fa286206d134000e077a3f000d29e48cf7e965f3cd5cabf181",
+      "size_bytes_before": 4701,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-vrt.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.xlb-materials-etf-starter-2026-05-30.json",
+      "rolled_back": false,
+      "sha256_after": "8be83b054108e82a7900711cb95513887b5e7aa4a0360fbda8136956f2c993fe",
+      "sha256_before": "8be83b054108e82a7900711cb95513887b5e7aa4a0360fbda8136956f2c993fe",
+      "size_bytes_before": 2512,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.xlb-materials-etf-starter-2026-05-30.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.xlb-monday-band-gated-2026-06-01.json",
+      "rolled_back": false,
+      "sha256_after": "6f2f2bdfa310d92c0040b48dd6a8a2d9bd5cbfa7ed1f6347dd166fe83b485dd2",
+      "sha256_before": "6f2f2bdfa310d92c0040b48dd6a8a2d9bd5cbfa7ed1f6347dd166fe83b485dd2",
+      "size_bytes_before": 4047,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.xlb-monday-band-gated-2026-06-01.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/main-session-cards/GOOG.owner-card-20260613T1601Z.json",
+      "rolled_back": false,
+      "sha256_after": "a8ffff5b25415331236d508975228eb0c45909cffe66def340d7e10db80d12f6",
+      "sha256_before": "a8ffff5b25415331236d508975228eb0c45909cffe66def340d7e10db80d12f6",
+      "size_bytes_before": 3889,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/main-session-cards/GOOG.owner-card-20260613T1601Z.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/main-session-cards/NVDA.owner-card.json",
+      "rolled_back": false,
+      "sha256_after": "aaa54b600006660d4014516bc790abaf145011195f9ee17c6586a51cd6bdbdc1",
+      "sha256_before": "aaa54b600006660d4014516bc790abaf145011195f9ee17c6586a51cd6bdbdc1",
+      "size_bytes_before": 3379,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.owner-card.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/main-session-cards/NVDA.owner-card.small-2026-06-18.json",
+      "rolled_back": false,
+      "sha256_after": "f4204ff61e6b146e6570428ac3c56dfe386f6c90afeec10bf48bc3fc2330bdf0",
+      "sha256_before": "f4204ff61e6b146e6570428ac3c56dfe386f6c90afeec10bf48bc3fc2330bdf0",
+      "size_bytes_before": 2755,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.owner-card.small-2026-06-18.json"
+    },
+    {
+      "applied": true,
+      "archive_exists_after": true,
+      "archive_exists_before": false,
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/main-session-cards/VRT.owner-card.json",
+      "rolled_back": false,
+      "sha256_after": "3c3c21075f39545fb5d0e8e7da5971baef5e7fa030f85c27e76ade030f6334c5",
+      "sha256_before": "3c3c21075f39545fb5d0e8e7da5971baef5e7fa030f85c27e76ade030f6334c5",
+      "size_bytes_before": 3755,
+      "source_exists_after": false,
+      "source_exists_before": true,
+      "source_path": "tmp/alpaca-paper-readiness/main-session-cards/VRT.owner-card.json"
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.etn-2026-05-19-market.json",
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.etn-2026-05-19-market.json",
+      "source_exists_before": true,
+      "archive_exists_before": false,
+      "sha256_before": "edd52d32c6e2e7ad7dc94aa8f8ab86611ce9fa0ccfb8dd48b647ab09eb42c380",
+      "size_bytes_before": 2523,
+      "applied": true,
+      "rolled_back": false,
+      "source_exists_after": false,
+      "archive_exists_after": true,
+      "sha256_after": "edd52d32c6e2e7ad7dc94aa8f8ab86611ce9fa0ccfb8dd48b647ab09eb42c380"
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-small-starter-review-2026-06-22.json",
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.nvda-small-starter-review-2026-06-22.json",
+      "source_exists_before": true,
+      "archive_exists_before": false,
+      "sha256_before": "dd430570dedcd2adb7fb1bd364c613c37818c8be3501177e0d6c34231f249c0e",
+      "size_bytes_before": 3667,
+      "applied": true,
+      "rolled_back": false,
+      "source_exists_after": false,
+      "archive_exists_after": true,
+      "sha256_after": "dd430570dedcd2adb7fb1bd364c613c37818c8be3501177e0d6c34231f249c0e"
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-trade-request.wf67-advisor-etn-sell-smoke-2026-05-19.json",
+      "archive_path": "09. Archive/WF67 Stale Paper Card And Request Artifacts/2026-06-28/tmp/alpaca-paper-readiness/paper-trade-request.wf67-advisor-etn-sell-smoke-2026-05-19.json",
+      "source_exists_before": true,
+      "archive_exists_before": false,
+      "sha256_before": "947d95a6e8799a5761902cc88e3c59c12126ce5ec851e4d476fadb3051950d6a",
+      "size_bytes_before": 2284,
+      "applied": true,
+      "rolled_back": false,
+      "source_exists_after": false,
+      "archive_exists_after": true,
+      "sha256_after": "947d95a6e8799a5761902cc88e3c59c12126ce5ec851e4d476fadb3051950d6a"
+    }
+  ],
+  "retained_or_blocked": [
+    {
+      "path": "tmp/alpaca-paper-readiness/order-card.cme-starter-pending-2026-05-26.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 2
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/order-card.etn-staggered-starter-pending-2026-05-24.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 2
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/order-card.lin-monday-band-gated-2026-06-01.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 2
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/order-card.nvda-monday-band-gated-2026-06-01.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 2
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/order-card.ph-tight-limit-2026-05-26T0659.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 2
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/order-card.vrt-monday-band-gated-2026-06-01.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 2
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/order-card.xlb-monday-band-gated-2026-06-01.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 3
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.goog-paper-readiness-2026-06-22.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 1
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-paper-readiness-2026-06-22.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 1
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-small-paper-proposal-2026-06-18.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 1
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.ph-tight-limit-2026-05-26T0659.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 2
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-market-20260612.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 2
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-wf86-assisted-20260612T174732Z.approved.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 1
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf67-advisor-amzn-buy-limit-20260520T0718MST.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 2
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf67-advisor-etn-smoke-2026-05-19.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 2
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf67-filled-position-001.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 3
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf67-pilot-001.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 4
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf67-reviewed-packet-001.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 2
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-amzn-20260602T133533Z.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 4
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-bkng-20260602T133533Z.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 4
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-goog-20260602T133533Z.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 2
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-xom-20260602T163530Z.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 4
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf85-goog-draft-20260609.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 6
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf86-assisted-vrt.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 3
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/main-session-cards/GOOG.owner-card.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 1
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/main-session-cards/GOOG.paper-readiness-2026-06-22.owner-card.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 1
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.paper-readiness-2026-06-22.owner-card.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 1
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.small-starter-review-2026-06-22.owner-card.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 1
+    },
+    {
+      "path": "tmp/alpaca-paper-readiness/main-session-cards/VRT.wf86-assisted-card.json",
+      "classification": "blocked_active_reference",
+      "blocking_reference_count": 1
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "retained_or_blocked_candidates_present"
+    ]
+  }
+}

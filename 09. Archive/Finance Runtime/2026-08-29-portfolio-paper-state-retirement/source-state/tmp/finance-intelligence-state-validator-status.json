@@ -1,0 +1,236 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-08-28T02:49:07Z",
+  "artifact_type": "finance_intelligence_state_validator_status_packet",
+  "db_path": "tmp/finance-intelligence-state.sqlite",
+  "authority_boundary": {
+    "review_only": true,
+    "database_path": "tmp/finance-intelligence-state.sqlite",
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_sql_canon_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_sql_canon_current_state_field_families": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "tmp_database_is_compatibility_cache": true,
+    "database_path_migration_performed": false,
+    "tmp_database_promotion_performed": false,
+    "full_sql_canon_migration_allowed": false,
+    "sql_canon_authority_expanded": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_trade_execution_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "source_open_required_before_finance_claims": true
+  },
+  "answer_contract": {
+    "sql_is_routing_and_current_state_only": true,
+    "material_finance_claim_requires_source_open": true,
+    "canonical_markdown_remains_owner_truth": true,
+    "must_not_infer_approval_or_execution_authority": true,
+    "must_disclose_stale_or_conflicting_rows": true
+  },
+  "sql_canon_migration": {
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_current_state_field_families_promoted": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "this_tmp_db_is_compatibility_cache": true,
+    "sql_canon_authority_expanded": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "status": "ok",
+  "error_failures": 0,
+  "validator_status": [
+    {
+      "check_name": "preopen_action_queue_has_rows",
+      "status": "ok",
+      "severity": "warning",
+      "detail": {
+        "rows": 14
+      }
+    },
+    {
+      "check_name": "active_sql_rows_supported_scaleout_count",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "actual": 300,
+        "supported": [
+          58,
+          100,
+          158,
+          200,
+          258,
+          300,
+          358,
+          400,
+          458,
+          500
+        ]
+      }
+    },
+    {
+      "check_name": "analyst_rows_for_all_tickers",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "actual": 300,
+        "expected": 300
+      }
+    },
+    {
+      "check_name": "cards_exist_for_dynamic_production_scope",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "missing": 0
+      }
+    },
+    {
+      "check_name": "current_ticker_cards_match_production_scope",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "actual": 14,
+        "dynamic_scope_source": "sql_first_universe_production_answer_path_member",
+        "empty_production_scope_is_wait_state": false,
+        "expected_production_scope": 14,
+        "expected_strict_production_scope": 0
+      }
+    },
+    {
+      "check_name": "entry_stop_rows_for_all_tickers",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "actual": 300,
+        "expected": 300
+      }
+    },
+    {
+      "check_name": "foreign_key_check_ok",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "rows": 0
+      }
+    },
+    {
+      "check_name": "fundamental_rows_for_all_tickers",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "actual": 300,
+        "expected": 300
+      }
+    },
+    {
+      "check_name": "integrity_check_ok",
+      "status": "ok",
+      "severity": "error",
+      "detail": "ok"
+    },
+    {
+      "check_name": "latest_valid_entry_stop_refs_cover_dynamic_production_scope",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "dynamic_scope_source": "sql_first_universe_production_answer_path_member",
+        "empty_production_scope_is_wait_state": false,
+        "expected_strict_production_scope": 0,
+        "strict_production_scope_rows": 14,
+        "valid_reference_rows": 42
+      }
+    },
+    {
+      "check_name": "no_forbidden_authority_in_cards",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "rows": 0
+      }
+    },
+    {
+      "check_name": "pilot_fixtures_excluded_from_production_cards",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "rows": 0
+      }
+    },
+    {
+      "check_name": "pilot_fixtures_thin_on_demand_only",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "rows": 0
+      }
+    },
+    {
+      "check_name": "review_monitor_thin_rows_supported_scaleout_count",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "actual": 258,
+        "supported": [
+          58,
+          158,
+          258,
+          358,
+          458
+        ]
+      }
+    },
+    {
+      "check_name": "router_qa_pass",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "checks_failed_error": 0,
+        "checks_failed_warning": 0,
+        "checks_total": 480,
+        "phase1_coverage_registry_exists": true,
+        "phase2_ticker_cards_found": 42,
+        "router_examples_checked": 5
+      }
+    },
+    {
+      "check_name": "source_open_required_all_cards",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "rows": 0
+      }
+    },
+    {
+      "check_name": "universe_count_matches_expected",
+      "status": "ok",
+      "severity": "error",
+      "detail": {
+        "actual": 300,
+        "expected": 300
+      }
+    }
+  ]
+}

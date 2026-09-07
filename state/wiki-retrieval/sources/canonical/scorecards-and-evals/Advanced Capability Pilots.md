@@ -3,7 +3,7 @@
 
 Canonical page: `wiki/scorecards-and-evals/Advanced Capability Pilots.md`
 Canonical rendered SHA-256: `fe44632a15867af67c27a840e694d08d901d6824b893339417b3eac248511c62`.
-Source snapshot SHA-256: `a1233468c72b1cab176cded8e6fe0893cfd2a490d0ea3a9f33f15a2fa81b8e54`.
+Source snapshot SHA-256: `f6ee80a8d183635520f429f34c7ca23360ebdb6d238c1622f6dffae691bee7f1`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases

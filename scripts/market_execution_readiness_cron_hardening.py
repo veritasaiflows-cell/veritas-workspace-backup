@@ -18,7 +18,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from market_data_utils import atomic_write_json, load_json_artifact
-from finance_market_deployment_operating_loop import NYSE_EARLY_CLOSES_2026, NYSE_FULL_HOLIDAYS_2026
+from market_calendar_freshness import NYSE_EARLY_CLOSES_2026, NYSE_FULL_HOLIDAYS_2026
 from market_calendar_freshness import classify_quote_freshness, market_session as calendar_market_session
 
 

@@ -1,0 +1,68 @@
+{
+  "account_lane": "alpaca_paper_only",
+  "artifact_type": "wf67_main_session_capital_package_notification",
+  "authority_boundary": {
+    "account_settings_mutation_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "live_endpoint_allowed": false,
+    "live_trade_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_only": true,
+    "paper_to_live_promotion_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false
+  },
+  "broker_redacted_result": {
+    "http_status": 200,
+    "paper_order_id_present": true,
+    "paper_order_status": "filled",
+    "side": "buy",
+    "symbol": "GOOG"
+  },
+  "created_at_utc": "2026-06-09T18:15:30Z",
+  "guard_status": {
+    "critical": 0,
+    "kill_switch_expires_at_utc": "2026-06-09T18:44:48Z",
+    "post_submit": "ok",
+    "pre_submit": "ok",
+    "warning": 0
+  },
+  "next_safe_action": "GET-only monitoring of the filled GOOG paper position; no live action.",
+  "order": {
+    "limit_price": 361.98,
+    "notional": 361.98,
+    "qty": null,
+    "time_in_force": "day",
+    "type": "limit"
+  },
+  "owner_approval": {
+    "approval_artifact": "tmp/alpaca-paper-readiness/owner-approval.goog-wf85-20260609T181227Z.json",
+    "approved_by": "Randall",
+    "status": "approved_exact_order"
+  },
+  "read_only_reconciliation": {
+    "goog_position_avg_entry_price": 359.937983,
+    "goog_position_current_price": 362.93,
+    "goog_position_qty": 1.999983424,
+    "note": "Read-only order reconciliation found the approved 2026-06-09 GOOG paper order filled; latest position refresh shows combined GOOG paper quantity.",
+    "open_orders_count": 0,
+    "order_reconciliation": "tmp/alpaca-paper-readiness/paper-order-reconciliation.goog-approved-20260609.json",
+    "status": "fresh"
+  },
+  "schema_version": 1,
+  "side": "buy",
+  "source_artifacts": {
+    "dry_run": "tmp/alpaca-paper-readiness/paper-execution-dry-run-result.goog-approved-20260609.json",
+    "execution_result": "tmp/alpaca-paper-readiness/paper-execution-result.goog-approved-20260609.json",
+    "order_card": "tmp/alpaca-paper-readiness/main-session-cards/GOOG.owner-card.json",
+    "position_refresh": "tmp/alpaca-paper-readiness/current-paper-holdings-readonly.json",
+    "post_submit_guard": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.post-submit.goog-approved-20260609.json",
+    "pre_submit_guard": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
+    "quote_snapshot": "tmp/intraday-alerts/quote-snapshot-proof.goog-execution-20260609.json",
+    "request": "tmp/alpaca-paper-readiness/paper-trade-request.wf85-goog-draft-20260609.json"
+  },
+  "status": "paper_order_filled",
+  "ticker": "GOOG",
+  "updated_at_utc": "2026-06-09T18:24:30Z",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

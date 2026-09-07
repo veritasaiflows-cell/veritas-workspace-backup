@@ -1,0 +1,64 @@
+{
+  "schema": "veritas.finance_runtime_retirement_supplement.v1",
+  "generated_at_utc": "2026-08-30T06:03:19Z",
+  "status": "ok",
+  "reason": "Seven portfolio, sizing, deployment, paper-request, and trade-grade current-state artifacts were recreated after the primary alerts-OS retirement archive. They are retired compatibility evidence and must not remain on active tmp paths.",
+  "authority": {
+    "owner_authorized_by_active_goal": true,
+    "archive_only": true,
+    "delete_allowed": false,
+    "rollback_requires_owner_gate": true,
+    "capital_or_order_authority": false,
+    "paper_or_live_execution_allowed": false
+  },
+  "files": [
+    {
+      "source": "tmp/trade-grade-approval-card-gate.json",
+      "destination": "09. Archive/Finance Runtime/2026-08-30-recreated-retired-state-supplement/files/tmp/trade-grade-approval-card-gate.json",
+      "bytes": 1693,
+      "sha256": "3351627fcee07f6c9447858995b4032b5dd2c0b7c0f713fe7d9bc27edf4d2c37"
+    },
+    {
+      "source": "tmp/trade-grade-decision-card-authority-validation.json",
+      "destination": "09. Archive/Finance Runtime/2026-08-30-recreated-retired-state-supplement/files/tmp/trade-grade-decision-card-authority-validation.json",
+      "bytes": 465,
+      "sha256": "9db676f07b3b72e05ada582450f02f204b30d7a53604f38c7fd85a3ca86b227f"
+    },
+    {
+      "source": "tmp/trade-grade-decision-cards.json",
+      "destination": "09. Archive/Finance Runtime/2026-08-30-recreated-retired-state-supplement/files/tmp/trade-grade-decision-cards.json",
+      "bytes": 4901,
+      "sha256": "12ff3751b6019dac01fc25b3db8228aa01f8d6b65ad8a31f23adbb6cc0cb6749"
+    },
+    {
+      "source": "tmp/trade-grade-repair-conveyor.json",
+      "destination": "09. Archive/Finance Runtime/2026-08-30-recreated-retired-state-supplement/files/tmp/trade-grade-repair-conveyor.json",
+      "bytes": 75453,
+      "sha256": "c4c004665164e0827b7f06f10511b0db435ec517bfae71a82ca45bcf301d5ca2"
+    },
+    {
+      "source": "tmp/trade-grade-risk-sizing-overlay.json",
+      "destination": "09. Archive/Finance Runtime/2026-08-30-recreated-retired-state-supplement/files/tmp/trade-grade-risk-sizing-overlay.json",
+      "bytes": 528,
+      "sha256": "faeeafc9c8114fd7be3eb63d4fa6575274d79fee7259a27e77a0e20475712669"
+    },
+    {
+      "source": "tmp/trade-grade-source-freshness-gate.json",
+      "destination": "09. Archive/Finance Runtime/2026-08-30-recreated-retired-state-supplement/files/tmp/trade-grade-source-freshness-gate.json",
+      "bytes": 4573,
+      "sha256": "31ca49c39369521711356e4088899d7452c7548199381de7bac459c08080b39d"
+    },
+    {
+      "source": "tmp/wf78-deployment-readiness-review.json",
+      "destination": "09. Archive/Finance Runtime/2026-08-30-recreated-retired-state-supplement/files/tmp/wf78-deployment-readiness-review.json",
+      "bytes": 1844,
+      "sha256": "b6300ed104f9326ceedf39f9ba729059dab48e36450ecde55499bce43785ec8e"
+    }
+  ],
+  "verification": {
+    "applied_at_utc": "2026-08-30T06:20:40Z",
+    "source_absent_count": 7,
+    "destination_hash_match_count": 7,
+    "status": "ok"
+  }
+}

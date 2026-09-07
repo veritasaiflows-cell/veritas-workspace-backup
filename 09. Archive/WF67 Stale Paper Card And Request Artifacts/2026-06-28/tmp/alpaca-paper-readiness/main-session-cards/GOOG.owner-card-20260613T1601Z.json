@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "artifact_type": "main_session_wf67_order_decision_card",
+  "request_id": "goog-owner-card-20260613T1601Z",
+  "created_at_utc": "2026-06-13T16:01:00Z",
+  "authority": {
+    "main_session_recommendation_allowed": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "paper_only": true,
+    "paper_order_execution_allowed_by_card": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "order": {
+    "symbol": "GOOG",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 358.16,
+    "qty": 0.5,
+    "notional": null
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 179.08,
+    "max_notional_usd": 179.08,
+    "max_loss_usd": 10.16,
+    "entry_band_low": 350.28,
+    "entry_band_high": 372.67,
+    "observed_price": 358.16,
+    "observed_entry_status": "IN_BAND",
+    "stop": 337.84,
+    "sizing_rationale": "Paper-only incremental GOOG add sized at 0.5 share because the paper account already holds about 2 GOOG shares; limit is no higher than the 2026-06-12 close and remains inside the written band. Execution remains blocked pending Randall exact approval, fresh market-window quote, short-lived kill switch, and clean WF67 guard proof.",
+    "full_scope_artifact": null
+  },
+  "source": {
+    "source_artifact": "tmp/wf78-capital-review-queue.json",
+    "capital_recommendation_source": "wf78_non_executing_owner_card_prep",
+    "owner_or_pilot_scope": "GOOG first capital-review candidate, paper-only incremental approval-card draft for next market window; pending exact Randall approval and fresh WF67 guard proof.",
+    "approval_artifact": null
+  },
+  "owner_approval": {
+    "status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "approval_text": null,
+    "market_order_owner_approved": false
+  },
+  "decision_context": {
+    "name": "Alphabet Inc.",
+    "sector": "Tech",
+    "queue_state": "A-DEPLOY-CANDIDATE-REVIEW-READY",
+    "recommendation_support": "approval-ready paper starter if fresh in band",
+    "existing_paper_position": {
+      "snapshot_id": "wf67-paper-pos-20260613T160120Z",
+      "quantity": 1.999983424,
+      "average_entry_price": 359.937983,
+      "current_price": 358.16,
+      "market_value": 716.314063,
+      "unrealized_pl": -3.555937,
+      "unrealized_pl_percent": -0.00494,
+      "open_orders_count": 0,
+      "source": "tmp/finance-intelligence-state-paper-positions.json"
+    },
+    "quote_context": {
+      "market_date": "2026-06-12",
+      "retrieved_at_utc": "2026-06-13T15:24:33Z",
+      "source": "tmp/post-close-final-quote-ledger.json",
+      "execution_freshness_approved": false,
+      "note": "Closed-market quote is suitable for non-executing review only; execution requires fresh market-window quote proof."
+    },
+    "cautions": [
+      "Execution freshness is false because this is a Saturday closed-market review card.",
+      "GOOG already has paper exposure of about 2 shares, so this card is intentionally incremental.",
+      "Tech short-term repair and concentration pressure remain cautions.",
+      "WF85 full-answer path reports an entry/stop cache guard blocker; source-open values are consistent, but final execution still requires fresh guard proof.",
+      "This card grants no paper/live execution authority and infers no owner approval."
+    ],
+    "source_artifacts": [
+      "tmp/wf78-capital-review-queue.json",
+      "tmp/post-close-final-quote-ledger.json",
+      "tmp/ticker-intelligence-cards/GOOG.current.json",
+      "tmp/finance-intelligence-state-paper-positions.json",
+      "tmp/chief-intelligence-promotion-gate.json"
+    ],
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false
+  }
+}

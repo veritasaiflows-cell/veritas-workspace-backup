@@ -1,0 +1,413 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-06-07T15:08:27Z",
+  "proposal_id": "sunday:JPM:capital-deployment-review:2026-06-07",
+  "mutation_type": "ticker_lane_change",
+  "ticker_or_scope": "JPM",
+  "current_state": {
+    "source_window": "sunday",
+    "daily_review_state": "ALMOST DEPLOYABLE",
+    "deployment_state": "ALMOST DEPLOYABLE",
+    "band_status": "ABOVE_BAND_WAIT",
+    "proposal_band_status": "NEAR_BAND",
+    "raw_band_status": "NEAR_BAND",
+    "band_status_note": "Live written-band status is ABOVE_BAND_WAIT; proposed-band/reclaim status is NEAR_BAND."
+  },
+  "proposed_state": {
+    "recommendation_posture": "wait_for_band",
+    "state_change_requested": false,
+    "review_packet_only": true
+  },
+  "why_now": "JPM surfaced from ranked daily review because current state is ALMOST DEPLOYABLE and recommendation class is wait_for_band.",
+  "why_stack": {
+    "setup_reason": "JPM surfaced from ranked daily review because current state is ALMOST DEPLOYABLE and recommendation class is wait_for_band.",
+    "entry_reason": "Entry context is ABOVE_BAND_WAIT against configured band 291.13\u2013305.17; this is setup context, not approval.",
+    "fundamental_reason": "WF65 fundamental context status is available_review_only; thesis context: intact; prior owner approval recorded on 2026-05-07, but current trigger is not live. Fresh 2026-05-22 artifact layer places JPM above the 291.13 to 305.17 reference band, so current posture is wait/no-chase pending fres",
+    "official_earnings_reason": "Official earnings bridge status is available_review_only; official evidence=manual_confirmed/review_only; adjusted EPS=not_disclosed_in_release, guidance=not_disclosed_in_release; unresolved official fields remain manual-required: .",
+    "sector_macro_reason": "Sector/macro context is available_review_only; macro gate is CLEAN.",
+    "risk_blocker_reason": "Risk/catalyst blocker context: Next earnings 2026-07-14 (37d out); dashboard validation has 1 warning(s); Active portfolio weights plus cash sum to 90.0%; 10% is explicitly suspended legacy model weight and not active exposure.; blockers: Next earnings 2026-07-14 (37d out); dashboard validation has 1 warning(s); Active portfolio weights plus cash sum to 90.0%; 10% is explicitly suspended legacy model weight and not active exposure.",
+    "missing_evidence_reason": "state-history / owner-outcome retention is not wired; no predictive outcome score is available; official earnings bridge remains manual-required; adjusted EPS, guidance, growth bridge, margin bridge, and management explanation need official-source review",
+    "authority_boundary": "Review-only packet rationale; standing main-session workspace canon/portfolio maintenance authority is recognized, but this individual packet does not self-apply and grants no external financial, account, cash, live-order, or unguarded paper-submit authority."
+  },
+  "decision_rationale": {
+    "setup_reason": "JPM surfaced from ranked daily review because current state is ALMOST DEPLOYABLE and recommendation class is wait_for_band.",
+    "entry_reason": "Entry context is ABOVE_BAND_WAIT against configured band 291.13\u2013305.17; this is setup context, not approval.",
+    "fundamental_reason": "WF65 fundamental context status is available_review_only; thesis context: intact; prior owner approval recorded on 2026-05-07, but current trigger is not live. Fresh 2026-05-22 artifact layer places JPM above the 291.13 to 305.17 reference band, so current posture is wait/no-chase pending fres",
+    "official_earnings_reason": "Official earnings bridge status is available_review_only; official evidence=manual_confirmed/review_only; adjusted EPS=not_disclosed_in_release, guidance=not_disclosed_in_release; unresolved official fields remain manual-required: .",
+    "sector_macro_reason": "Sector/macro context is available_review_only; macro gate is CLEAN.",
+    "risk_blocker_reason": "Risk/catalyst blocker context: Next earnings 2026-07-14 (37d out); dashboard validation has 1 warning(s); Active portfolio weights plus cash sum to 90.0%; 10% is explicitly suspended legacy model weight and not active exposure.; blockers: Next earnings 2026-07-14 (37d out); dashboard validation has 1 warning(s); Active portfolio weights plus cash sum to 90.0%; 10% is explicitly suspended legacy model weight and not active exposure.",
+    "missing_evidence_reason": "state-history / owner-outcome retention is not wired; no predictive outcome score is available; official earnings bridge remains manual-required; adjusted EPS, guidance, growth bridge, margin bridge, and management explanation need official-source review",
+    "authority_boundary": "Review-only packet rationale; standing main-session workspace canon/portfolio maintenance authority is recognized, but this individual packet does not self-apply and grants no external financial, account, cash, live-order, or unguarded paper-submit authority."
+  },
+  "evidence": [
+    "Daily review object action family: wait",
+    "Entry-band status: ABOVE_BAND_WAIT",
+    "Deployment state: ALMOST DEPLOYABLE",
+    "Band proposal status: NEAR_BAND",
+    "Official earnings bridge: available_review_only; SEC reconciliation: conflict; adjusted EPS/guidance remain manual where unresolved."
+  ],
+  "source_freshness": {
+    "overall_classification": "stale",
+    "trust_level": "review_required",
+    "owner_review_required": true,
+    "explicit_blocker": true,
+    "capital_action_allowed": false
+  },
+  "base_case": "Base case: JPM remains review-worthy only if thesis, macro fit, written entry band, stop/invalidation, and catalyst gates are manually confirmed.",
+  "bear_case": "Bear case: defer or reject JPM if price violates stop/invalidation, catalyst risk worsens, macro fit deteriorates, or evidence remains incomplete.",
+  "risk_rule_check": {
+    "status": "review_required",
+    "references": [
+      "25% sector cap",
+      "15% normal single-name ceiling",
+      "speculative sleeve cap",
+      "catalyst-window exception"
+    ],
+    "review_boundary": "Risk context only; no size, cash, sleeve, or account action is authorized by this packet."
+  },
+  "concentration_check": {
+    "status": "review_required",
+    "ticker": "JPM",
+    "single_name_after_pct": null,
+    "max_single_name_after_pct": null,
+    "sector_after_pct": null,
+    "normal_single_name_ceiling_pct": 15,
+    "sector_cap_pct": 25,
+    "written_exception": false,
+    "note": "No pro-forma exposure change is proposed; owner must review concentration before any action."
+  },
+  "technical_gate": {
+    "status": "review_required",
+    "entry_band_status": "ABOVE_BAND_WAIT",
+    "band_status": "ABOVE_BAND_WAIT",
+    "proposal_band_status": "NEAR_BAND",
+    "raw_band_status": "NEAR_BAND",
+    "band_status_note": "Live written-band status is ABOVE_BAND_WAIT; proposed-band/reclaim status is NEAR_BAND.",
+    "distance_to_band_pct": 2.36,
+    "close": 312.37,
+    "current_band_low": 291.13,
+    "current_band_high": 305.17,
+    "in_entry_band": false,
+    "below_stop": false,
+    "stop_line": "Do not treat in-band status as approval, sizing, or account-action authority."
+  },
+  "catalyst_gate": {
+    "status": "review_required",
+    "days_to_earnings": 37,
+    "earnings_state": "CLEAR",
+    "blockers": [
+      "Next earnings 2026-07-14 (37d out)",
+      "dashboard validation has 1 warning(s)",
+      "Active portfolio weights plus cash sum to 90.0%; 10% is explicitly suspended legacy model weight and not active exposure.",
+      "state-history / owner-outcome retention is not wired; no predictive outcome score is available",
+      "official earnings bridge remains manual-required; adjusted EPS, guidance, growth bridge, margin bridge, and management explanation need official-source review"
+    ]
+  },
+  "official_earnings_gate": {
+    "status": "available_review_only",
+    "manual_review_required": true,
+    "capital_action_allowed": false,
+    "deployment_authority_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "summary": "Official earnings bridge is present as review-only context; adjusted EPS, guidance, growth bridge, segment margin, and management explanation remain manual-required until official capture."
+  },
+  "official_earnings_bridge": {
+    "status": "available_review_only",
+    "source_artifact": "tmp/fundamental-ir-reconciliation-packets.json",
+    "period_end": "2026-03-31",
+    "source_urls": {
+      "ir_home_url": "https://www.jpmorganchase.com/ir",
+      "earnings_url": "https://www.jpmorganchase.com/ir/quarterly-earnings",
+      "guidance_url": "https://www.jpmorganchase.com/ir"
+    },
+    "official_evidence_status": "manual_confirmed",
+    "official_evidence_posture": "review_only",
+    "source_authority_level": "manual_confirmed_official_source",
+    "source_freshness": {
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026024990/a1q26erfexhibit991narrative.htm",
+      "source_type": "sec_8k_exhibit_99_1",
+      "retrieval_status": "manual_confirmed",
+      "manual_capture_date": "2026-06-07T15:05:29Z",
+      "as_of_period": "2026-03-31",
+      "freshness_status": "current"
+    },
+    "evidence_claims": [
+      {
+        "claim_type": "official_capture_acquisition_debt_notes",
+        "claim_text": "Official capture field acquisition_debt_notes is partial from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026024990/a1q26erfexhibit991narrative.htm",
+        "source_section": "Capital metrics and CIB discussion",
+        "value": {
+          "cet1_advanced_pct": 14.1,
+          "cet1_standardized_pct": 14.3,
+          "debt_underwriting_fees_context": "Investment Banking fees rose despite lower debt underwriting fees.",
+          "standardized_rwa_trillion": 2.0,
+          "tlac_billion": 572
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-07T15:05:29Z",
+        "capture_status": "partial",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_adjusted_eps",
+        "claim_text": "Official capture field adjusted_eps is not_disclosed_in_release from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026024990/a1q26erfexhibit991narrative.htm",
+        "source_section": "Q1 2026 earnings narrative EPS table",
+        "value": {
+          "gaap_diluted_eps": 5.94
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-07T15:05:29Z",
+        "capture_status": "not_disclosed_in_release",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_growth_bridge",
+        "claim_text": "Official capture field growth_bridge is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026024990/a1q26erfexhibit991narrative.htm",
+        "source_section": "Firmwide metrics and discussion of results",
+        "value": {
+          "managed_revenue_billion": 50.5,
+          "managed_revenue_growth_pct": 10,
+          "markets_revenue_growth_pct": 20,
+          "net_interest_income_growth_pct": 9,
+          "noninterest_revenue_growth_pct": 11,
+          "reported_revenue_billion": 49.8
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-07T15:05:29Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_guidance",
+        "claim_text": "Official capture field guidance is not_disclosed_in_release from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026024990/a1q26erfexhibit991narrative.htm",
+        "source_section": "Q1 2026 earnings narrative scan",
+        "value": null,
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-07T15:05:29Z",
+        "capture_status": "not_disclosed_in_release",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_management_explanation",
+        "claim_text": "Official capture field management_explanation is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026024990/a1q26erfexhibit991narrative.htm",
+        "source_section": "CEO quote and business-line bullets",
+        "value": {
+          "summary": "Management cited strong results, client activity, loans/deposits, CIB markets and investment banking strength, and uncertainty/risk discipline."
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-07T15:05:29Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_orders_backlog",
+        "claim_text": "Official capture field orders_backlog is not_applicable from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026024990/a1q26erfexhibit991narrative.htm",
+        "source_section": "Q1 2026 earnings narrative bank-native KPI scope",
+        "value": {
+          "rationale": "Banking issuer; order/backlog/book-to-bill is not a standard operating KPI in the seven-field dictionary."
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-07T15:05:29Z",
+        "capture_status": "not_applicable",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_segment_margins",
+        "claim_text": "Official capture field segment_margins is partial from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026024990/a1q26erfexhibit991narrative.htm",
+        "source_section": "Firmwide Metrics",
+        "value": {
+          "managed_overhead_ratio_pct": 53,
+          "note": "Bank profitability/cost ratios captured; operating-company segment margins are not forced.",
+          "reported_overhead_ratio_pct": 54,
+          "roe_pct": 19,
+          "rotce_pct": 23
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-07T15:05:29Z",
+        "capture_status": "partial",
+        "reconciled": false,
+        "inferred": false
+      }
+    ],
+    "unresolved_official_fields": [],
+    "bank_native_metrics": {
+      "rotce": null,
+      "roe": null,
+      "nim": null,
+      "deposits": null,
+      "funding_liquidity": null,
+      "provisions": null,
+      "net_charge_offs": null,
+      "allowance_reserves": null,
+      "efficiency_ratio": null,
+      "status": "manual_required",
+      "review_only": true,
+      "manual_review_required": true,
+      "source_required": "official_company_ir_or_sec"
+    },
+    "sec_reconciliation_status": "conflict",
+    "adjusted_eps_status": "not_disclosed_in_release",
+    "guidance_status": "not_disclosed_in_release",
+    "manual_review_required": true,
+    "blockers": [
+      "SEC companyfacts conflicts with aggregator value; resolve before decision use."
+    ],
+    "summary": "Official earnings bridge is present as review-only context; adjusted EPS, guidance, growth bridge, segment margin, and management explanation remain manual-required until official capture.",
+    "capital_action_allowed": false,
+    "deployment_authority_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "proposed_files_to_edit": [
+    "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "03. Portfolio/Portfolio Snapshot.md"
+  ],
+  "rollback_or_reversal_note": "Delete or ignore this generated packet; it has no apply path and changes no canonical state. Semantic exact patch material remains preview-only until a valid standing/scoped approval artifact exists.",
+  "stop_lines_triggered": [
+    "Owner decision required before any portfolio state changes.",
+    "No canonical note, portfolio, size, sleeve, cash, or account-action mutation is authorized.",
+    "Recommendation has unresolved blockers or missing evidence."
+  ],
+  "owner_decision_required": true,
+  "owner_approval_granted": false,
+  "apply_allowed": false,
+  "canonical_mutation_allowed": false,
+  "portfolio_mutation_allowed": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "ticker": "JPM",
+  "current_lane_status_tuple": {
+    "ticker": "JPM",
+    "workflow_state": "ALMOST",
+    "coverage_lane": "owner-gated action",
+    "entry_policy": "band_defined",
+    "recommendation_action": "wait",
+    "review_state": "owner_review_required"
+  },
+  "proposed_lane_status_tuple": {
+    "ticker": "JPM",
+    "workflow_state": "ALMOST",
+    "coverage_lane": "owner-gated action",
+    "entry_policy": "band_defined",
+    "recommendation_action": "wait",
+    "review_state": "review_packet_only_no_state_change",
+    "recommendation_posture": "wait_for_band"
+  },
+  "thesis_gate": {
+    "status": "manual_review_required",
+    "summary": "intact; prior owner approval recorded on 2026-05-07, but current trigger is not live. Fresh 2026-05-22 artifact layer places JPM above the 291.13 to 305.17 reference band, so current posture is wait/no-chase pending fresh review."
+  },
+  "macro_regime_gate": {
+    "status": "review_required",
+    "summary": "CLEAN"
+  },
+  "risk_sizing_gate": {
+    "status": "review_required",
+    "summary": "Owner-gated risk envelope only; no dollar/share amount, portfolio mutation, deployment-state mutation, or owner-gated action owner-gated action authority."
+  },
+  "sector_correlation_artifact": {
+    "status": "available_review_only",
+    "fresh_artifacts": [
+      "tmp/sector-expansion-board.json",
+      "tmp/sector-correlation-check.json"
+    ],
+    "summary": "Sector/correlation context is review-only and does not grant authority."
+  },
+  "owner_conflict_check": {
+    "status": "review_required",
+    "summary": "Check owner notes before any state change."
+  },
+  "promotion_review_queue": {
+    "status": "review_only",
+    "recommended_action": "wait_for_band"
+  },
+  "current_portfolio_model": "unchanged",
+  "proposed_portfolio_model": "unchanged",
+  "current_cash_target_pct": 10,
+  "proposed_cash_target_pct": 10,
+  "sleeve_deltas": [],
+  "sector_exposure_before_after": [],
+  "correlated_sleeve_exposure_before_after": [],
+  "semantic_patch_generator": {
+    "script": "portfolio_mutation_semantic_patch_generator.py",
+    "category": "sizing",
+    "generated_at_utc": "2026-06-08T05:28:12Z",
+    "source_artifacts": [
+      "tmp/portfolio-config.json"
+    ],
+    "source_gate": {
+      "classification": "stale",
+      "explicit_blocker_or_review_required": true,
+      "manual_review_required_before_apply": true,
+      "category_preview_only": true,
+      "low_risk_apply_candidate_category": false,
+      "apply_trial_eligible_from_generator": false,
+      "reason": "sizing affects portfolio construction/risk semantics and remains preview-only until stronger owner-surface coherence proof exists."
+    }
+  },
+  "exact_patch_preview": {
+    "schema_version": 1,
+    "generated_at_utc": "2026-06-08T05:28:12Z",
+    "generator": "portfolio_mutation_semantic_patch_generator.py",
+    "generation_target": "sizing",
+    "adjustment_category": "sizing",
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "trade_or_account_action_allowed": false,
+    "main_session_final_action_required": true,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "writes_performed": false,
+    "source_gate": {
+      "classification": "stale",
+      "explicit_blocker_or_review_required": true,
+      "manual_review_required_before_apply": true,
+      "category_preview_only": true,
+      "low_risk_apply_candidate_category": false,
+      "apply_trial_eligible_from_generator": false,
+      "reason": "sizing affects portfolio construction/risk semantics and remains preview-only until stronger owner-surface coherence proof exists."
+    },
+    "apply_trial_eligible_from_generator": false,
+    "category_preview_only": true,
+    "changes": [
+      {
+        "target_file": "03. Portfolio/Portfolio Snapshot.md",
+        "operation": "exact_text_replace",
+        "old_text": "## Freshness and refresh policy",
+        "new_text": "## WF64 semantic sync notes\n\n- WF64 sizing semantic sync (JPM): draft_weight=`14%`, sizing_tier=`Tier 1`; source `tmp/portfolio-config.json`; proposal `sunday:JPM:capital-deployment-review:2026-06-07`; draft model only, no external-action sizing authority.\n\n## Freshness and refresh policy",
+        "mutation_class": "sizing_semantic_sync",
+        "adjustment_category": "sizing",
+        "owner_surface": "portfolio_snapshot",
+        "rationale": "Synchronize sizing semantic context from current portfolio artifacts without widening external-action authority."
+      }
+    ],
+    "stop_lines": [
+      "Semantic patch material is exact-diff workspace maintenance only.",
+      "Proposal packets remain non-self-applying; write authority requires a valid standing/scoped approval artifact.",
+      "Freshness/manual-dependency and category-risk gates may keep this preview-only even when exact text validates.",
+      "No external financial action or entitlement is authorized."
+    ]
+  }
+}

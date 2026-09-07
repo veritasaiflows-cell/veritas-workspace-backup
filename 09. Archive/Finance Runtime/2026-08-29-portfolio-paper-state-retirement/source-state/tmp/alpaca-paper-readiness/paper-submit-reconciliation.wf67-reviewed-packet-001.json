@@ -1,0 +1,45 @@
+{
+  "artifact_type": "wf67_paper_submit_reconciliation",
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "live_endpoint_allowed": false,
+    "live_trading_allowed": false,
+    "money_movement_allowed": false,
+    "no_inferred_approval": true,
+    "paper_only": true
+  },
+  "generated_at_utc": "2026-05-18T03:03:52Z",
+  "observed_redacted": [
+    {
+      "created_at": "2026-05-18T03:02:43.282419598Z",
+      "expires_at": "2026-05-18T20:00:00Z",
+      "filled_qty": "0",
+      "limit_price": "364.49",
+      "paper_order_id_present": true,
+      "qty": "1",
+      "side": "buy",
+      "status": "accepted",
+      "submitted_at": "2026-05-18T03:02:43.282419598Z",
+      "symbol": "ETN",
+      "time_in_force": "day",
+      "type": "limit"
+    }
+  ],
+  "pilot_id": "wf67-reviewed-packet-001",
+  "redaction": {
+    "headers_persisted": false,
+    "order_id_value_persisted": false,
+    "raw_response_bodies_persisted": false,
+    "secrets_persisted": false
+  },
+  "schema_version": 1,
+  "source_artifacts": [
+    "tmp/alpaca-paper-readiness/paper-trade-request.wf67-reviewed-packet-001.json",
+    "tmp/alpaca-paper-readiness/paper-execution-result.json"
+  ],
+  "status": "ok",
+  "summary": {
+    "matching_open_orders": 1
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

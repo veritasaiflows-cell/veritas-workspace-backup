@@ -1,0 +1,91 @@
+{
+  "snapshot_status": "ok",
+  "freshness_grade": "usable_with_caution",
+  "deployable_now": [],
+  "promotion_review": [
+    "VRT",
+    "CME",
+    "PH",
+    "GOOG",
+    "LIN",
+    "XLB"
+  ],
+  "no_chase_or_above_band": [
+    "ETN",
+    "VRT",
+    "NVDA",
+    "GOOG",
+    "JPM",
+    "MSFT",
+    "GS",
+    "LIN",
+    "AMD",
+    "LLY",
+    "PLTR"
+  ],
+  "runtime_handoff_status": "EXECUTION_PACKET_READY",
+  "runtime_action_needed": true,
+  "advisor_validation_status": "error",
+  "advisor_validation_summary": {
+    "alerts_checked": 8,
+    "critical": 1,
+    "warning": 0
+  },
+  "focus_tickers": {
+    "ETN": {
+      "readiness": "ALMOST DEPLOYABLE",
+      "band_status": "4.1% above band top",
+      "close_reference": 417.62,
+      "next_action": "fresh quote check; if still in band, prepare approval-ready WF67 paper card for Randall review"
+    },
+    "VRT": {
+      "readiness": "PROMOTION REVIEW",
+      "band_status": "0.3% above band top",
+      "close_reference": 334.49,
+      "next_action": "promotion-review comparison; only prepare order card after owner promotion and fresh in-band quote"
+    },
+    "CME": {
+      "readiness": "conditional_ready_after_owner_promotion",
+      "band_status": "IN_BAND",
+      "close_reference": 291.23,
+      "next_action": "promotion-review comparison; only prepare order card after owner promotion and fresh in-band quote"
+    },
+    "PH": {
+      "readiness": "conditional_ready_after_owner_promotion",
+      "band_status": "IN_BAND",
+      "close_reference": 866.96,
+      "next_action": "promotion-review comparison; only prepare order card after owner promotion and fresh in-band quote"
+    },
+    "NVDA": {
+      "readiness": "ALMOST DEPLOYABLE",
+      "band_status": "2.8% above band top",
+      "close_reference": 222.82,
+      "next_action": "concentration exception/substitution decision required before any paper-prep action"
+    },
+    "GOOG": {
+      "readiness": "PROMOTION REVIEW",
+      "band_status": "IN BAND",
+      "close_reference": 358.39,
+      "next_action": "wait/no chase; alert only if price re-enters written band or owner approves band review"
+    },
+    "JPM": {
+      "readiness": "ALMOST DEPLOYABLE",
+      "band_status": "IN BAND",
+      "close_reference": 300.96,
+      "next_action": "wait/no chase; alert only if price re-enters written band or owner approves band review"
+    },
+    "MSFT": {
+      "readiness": "ALMOST DEPLOYABLE",
+      "band_status": "7.0% above band top",
+      "close_reference": 441.31,
+      "next_action": "wait/no chase; alert only if price re-enters written band or owner approves band review"
+    },
+    "GS": {
+      "readiness": "ALMOST DEPLOYABLE",
+      "band_status": "10.1% above band top",
+      "close_reference": 1064.58,
+      "next_action": "wait/no chase; alert only if price re-enters written band or owner approves band review"
+    }
+  },
+  "generated_at_utc": "2026-06-03T19:55:27Z"
+}

@@ -1,0 +1,55 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T17:26:56Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-producer-contract-archive-microbatch-2026-05-25.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 4,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/wf72-producer-contract-baseline-2026-05-25.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Producer Contract Cleanup/wf72-producer-contract-baseline-2026-05-25.md",
+      "sha256_before": "8e28584c54f45dcbae0922fc4edfdd70d3d1ec68e4d48ccf3c3730e0be1f2acc",
+      "sha256_after": "8e28584c54f45dcbae0922fc4edfdd70d3d1ec68e4d48ccf3c3730e0be1f2acc"
+    },
+    {
+      "path": "tmp/wf72-producer-contract-classification-2026-05-25.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Producer Contract Cleanup/wf72-producer-contract-classification-2026-05-25.md",
+      "sha256_before": "27c73979ea15aec6d541fa983912c1e2d620b51bffbb4af03562e465a6802de1",
+      "sha256_after": "27c73979ea15aec6d541fa983912c1e2d620b51bffbb4af03562e465a6802de1"
+    },
+    {
+      "path": "tmp/wf72-script-owned-report-inspection-2026-05-25.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Producer Contract Cleanup/wf72-script-owned-report-inspection-2026-05-25.md",
+      "sha256_before": "0d4c86675212f83c19a10bee669fa1235718034c8f5d25f3e37e953802655dda",
+      "sha256_after": "0d4c86675212f83c19a10bee669fa1235718034c8f5d25f3e37e953802655dda"
+    },
+    {
+      "path": "tmp/wf72-producer-contract-promotion-adjudication-2026-05-25.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Producer Contract Cleanup/wf72-producer-contract-promotion-adjudication-2026-05-25.md",
+      "sha256_before": "ea8b0432a677ca449ebfde6df16fbded19cb8f0b4664ff205690714341bdc0c9",
+      "sha256_after": "ea8b0432a677ca449ebfde6df16fbded19cb8f0b4664ff205690714341bdc0c9"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; only explicit apply_allowed true suggestions with zero references and approved destination roots can move"
+}

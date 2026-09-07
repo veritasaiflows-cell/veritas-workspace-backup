@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-15T01:38:41Z",
+  "status": "ready_for_scoped_main_session_review",
+  "window": "post-close",
+  "input_bundle": "tmp/portfolio-mutation-proposals/exact-patch-material/post-close-ETN-capital-deployment-review-2026-05-14-etn_execution_board_review_note.json",
+  "proposal_id": "post-close:ETN:capital-deployment-review:2026-05-14",
+  "authority": {
+    "phase": "WF56 Phase 3 dry-run scoped patch helper",
+    "dry_run_patch_preview_allowed": true,
+    "write_owner_files_allowed": false,
+    "apply_allowed_by_this_helper": false,
+    "portfolio_mutation_allowed_by_this_helper": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "validation": {
+    "schema_validator_ok": true,
+    "schema_errors": [],
+    "schema_blockers": [],
+    "patch_scope_findings": [],
+    "patch_scope_critical": 0,
+    "build_errors": []
+  },
+  "summary": {
+    "requested_changes": 1,
+    "previewed_file_changes": 1,
+    "writes_performed": false,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "ready_for_main_session_portfolio_mutation_review": true
+  },
+  "file_previews": [
+    {
+      "path": "03. Portfolio/Execution Board.md",
+      "change_type": "exact_text_replace",
+      "old_text_sha256_hint": null,
+      "old_text_match_count": 1,
+      "writes_performed": false,
+      "diff": "--- a/03. Portfolio/Execution Board.md\n+++ b/03. Portfolio/Execution Board.md\n@@ -68,6 +68,7 @@\n - Invalidation logic: loses the preferred band / 50-day support zone and ultimately fails the explicit 349.99 stop.\n - Stance: **Deployable now / owner-approved Tier 1 explicit add, with manual-only execution discipline**. Randall approved Tier 1 explicit-add status on 2026-05-10; the current artifact close remains inside the approved band at 406.32, still below the no-chase ceiling. Manual-only deployment authority: no automatic execution, no chase above 410.67\u2013412.84, and sizing stays governed by broader AI-power/correlation warnings.\n - Entry-distance context: **inside the preferred band, near the upper/no-chase zone**.\n+- WF56 capital packet: review-only packet `post-close:ETN:capital-deployment-review:2026-05-14` is linked for manual review; it does not authorize any sizing, sleeve, cash, or automated owner-surface change.\n - **POST-EARNINGS FOLLOW-UP.** The pre-print blocker has passed and owner promotion has landed. ETN is still the first capital-deployment priority in the review stack, but execution remains manual-only: no automatic execution and no chase above the written band.\n - **Automated band maintenance:** 2026-05-14 eligible proposal applied: prior **368.93\u2013410.64 / stop 349.96** \u2192 new **384.61\u2013410.76 / stop 365.64**. This updates technical maintenance levels only; it does not create trade, sizing, sleeve, approval, or execution authority.\n - **Consolidation resolution:** latest applied execution band is 368.95-410.67 with 349.99 stop.\n",
+      "rationale": "Link the validated WF56 ETN capital-review packet into the ETN canonical execution section without changing sizing, sleeve, cash, or authority state."
+    }
+  ],
+  "stop_lines": [
+    "This artifact is an exact patch preview only; it does not mutate owner notes or portfolio config.",
+    "Main-session portfolio mutation still requires explicit scoped Randall approval for the proposal id and exact diff.",
+    "A clean preview does not grant owner approval, sizing, sleeve, cash, risk-rule, execution-entitlement, trade, or account authority.",
+    "Phase 4 apply mode must be a separate approval-gated path and must run the post-apply validation chain."
+  ]
+}

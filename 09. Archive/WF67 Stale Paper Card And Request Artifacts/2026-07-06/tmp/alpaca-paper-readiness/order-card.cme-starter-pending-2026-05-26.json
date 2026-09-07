@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "artifact_type": "main_session_wf67_order_decision_card",
+  "request_id": "wf67-main-card-cme-diversifier-starter-pending-20260526",
+  "created_at_utc": "2026-05-26T03:25:00Z",
+  "status": "pending_fresh_tuesday_quote_and_exact_randall_approval",
+  "purpose": "Pre-stage an approval-ready CME paper-order card for Tuesday diversification if fresh price stays in band.",
+  "authority": {
+    "main_session_recommendation_allowed": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "paper_only": true,
+    "paper_order_execution_allowed_by_card": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "order": {
+    "symbol": "CME",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 298.86,
+    "qty": 0.92,
+    "notional": null
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 274.95,
+    "max_loss_usd": 274.95,
+    "max_notional_usd": 300.0,
+    "entry_band_low": 287.74,
+    "entry_band_high": 298.86,
+    "observed_price": 291.23,
+    "observed_entry_status": "IN_BAND_REFERENCE_FROM_PRE_HOLIDAY_CLOSE_REQUIRES_TUESDAY_REFRESH",
+    "stop": 276.68,
+    "sizing_rationale": "CME is the preferred diversification candidate versus VRT/PH because it adds Financial Infrastructure exposure, has low leverage, high margins, strong FCF, and less AI-power/industrial concentration overlap. Starter is intentionally small (~$275) under WF67 pilot caps; do not use if fresh Tuesday price exits the written band or violates stop discipline."
+  },
+  "source": {
+    "source_artifact": "tmp/tuesday-position-sizing-readiness-2026-05-26.json",
+    "capital_recommendation_source": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "approval_artifact": "tmp/alpaca-paper-readiness/phase-7-advisor-paper-execution-approval-2026-05-19.json",
+    "owner_or_pilot_scope": "CME diversification starter pending fresh Tuesday quote and exact Randall approval"
+  },
+  "owner_approval": {
+    "status": "pending_exact_randall_approval",
+    "required_approval_text": "Approve exact CME paper order: buy 0.92 CME, limit day, limit 298.86 or better, max notional 300, source tmp/alpaca-paper-readiness/order-card.cme-starter-pending-2026-05-26.json, after fresh Tuesday quote remains in band and WF67 guards pass."
+  },
+  "freshness_stop_line": "This is Monday-night preparation using latest pre-holiday/reference price and band. Main session must refresh Tuesday quote/band/stop before asking for execution approval or executing any paper order."
+}

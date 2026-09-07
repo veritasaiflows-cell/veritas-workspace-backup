@@ -39,13 +39,18 @@ REQUIRED_BOOTSTRAP_PHRASES = [
     "main final qc",
     "main sole acceptance authority",
     "isolated output is unaccepted until main verifies and accepts it",
+    "display name",
+    "specialist automatic fallbacks",
+    "recovery candidates",
+    "non-executing",
+    "veritas main model",
 ]
 
 CORE_BOOT_REQUIRED_PHRASES = {
-    "AGENTS.md": ["veritas main", "final qc", "sole acceptance", "factory-managed"],
+    "AGENTS.md": ["veritas main", "final qc", "sole acceptance", "factory-managed", "## tools", "does not control which tools exist"],
     "SOUL.md": ["veritas main", "final qc owner", "sole acceptance owner"],
     "IDENTITY.md": ["veritas main", "unaccepted until main verifies"],
-    "TOOLS.md": ["access class", "exec allowed", "process allowed", "main-supplied context required"],
+    "TOOLS.md": ["retired", "not a runtime bootstrap", "## tools"],
     "USER.md": ["veritas main", "raw prompts/responses"],
     "HEARTBEAT.md": ["no autonomous heartbeat work", "do not create cron schedules"],
 }
@@ -108,14 +113,7 @@ def find_openclaw() -> str:
 
 
 def select_agents(agents: list[dict[str, Any]], selector: str) -> list[dict[str, Any]]:
-    if selector.strip().lower() == "all":
-        return [agent for agent in agents if not agent.get("isDefault")]
-    wanted = {part.strip() for part in selector.split(",") if part.strip()}
-    selected = [agent for agent in agents if str(agent.get("id")) in wanted]
-    missing = sorted(wanted - {str(agent.get("id")) for agent in selected})
-    if missing:
-        raise ValueError(f"agents not found: {', '.join(missing)}")
-    return selected
+    return generator.select_agents(agents, selector)
 
 
 def load_json(path: Path) -> tuple[dict[str, Any] | None, str | None]:
@@ -181,11 +179,32 @@ def lint_known_profile(agent_id: str, manifest: dict[str, Any], agent: dict[str,
     default_model = (manifest.get("model_route") or {}).get("default_model")
     if default_model != profile.get("default_model"):
         errors.append("known profile default model mismatch")
+    if default_model != generator.fleet_primary_for(agent_id):
+        errors.append("known profile primary mismatch with shared fleet policy")
     model_route = as_dict(manifest.get("model_route"))
-    if model_route.get("upgrade_model") != "openai/gpt-5.6-terra":
-        errors.append("persistent helper upgrade model must remain Terra")
+    if model_route.get("upgrade_model") != profile.get("upgrade_model"):
+        errors.append("known profile upgrade model mismatch")
+    if model_route.get("automatic_fallbacks") != generator.fleet_automatic_for(agent_id):
+        errors.append("specialist automatic fallbacks must be empty; recovery is Main-selected only")
+    if model_route.get("recovery_candidates") != generator.fleet_recovery_for(agent_id):
+        errors.append("manifest recovery candidates mismatch; must equal the shared fleet policy list")
+    for candidate in model_route.get("recovery_candidates") or []:
+        if "opus" in str(candidate).lower():
+            errors.append(f"recovery candidate must never be Opus: {candidate}")
+    if model_route.get("recovery_is_non_executing_option") is not True:
+        errors.append("manifest must mark recovery candidates as non-executing options")
+    if model_route.get("main_model") != generator.MAIN_MODEL:
+        errors.append("manifest main model mismatch; Veritas Main remains Astra")
+    if manifest.get("display_name") != generator.fleet_display_for(agent_id):
+        errors.append("manifest display name mismatch with shared fleet policy")
+    if manifest.get("stable_id") != agent_id:
+        errors.append("manifest stable id mismatch")
+    if model_route.get("current_configured_model") != agent.get("model"):
+        errors.append("manifest current configured model does not match live agent registry")
+    if agent.get("model") != profile.get("default_model"):
+        errors.append("live configured model does not match the role profile")
     if model_route.get("sol_helper_upgrade_allowed") is not False:
-        errors.append("persistent helper Sol upgrade must be disabled")
+        errors.append("cross-role helper model upgrade must be disabled")
     if manifest.get("runtime_tool_posture") != generator.runtime_tool_posture_for(profile, agent):
         errors.append("known profile runtime_tool_posture mismatch")
     kb_template = profile.get("kb_template")
@@ -361,6 +380,8 @@ def lint_agent(agent: dict[str, Any]) -> dict[str, Any]:
         for legacy in LEGACY_GENERAL_CONTEXT_TERMS:
             if legacy in manifest_text:
                 errors.append(f"manifest contains legacy general context: {legacy}")
+        if "opus" in manifest_text:
+            errors.append("manifest must not reference Opus in persistent specialist routing")
         kb = manifest.get("agent_knowledge_base")
         if not isinstance(kb, dict):
             errors.append("manifest missing agent_knowledge_base")
@@ -431,6 +452,8 @@ def lint_agent(agent: dict[str, Any]) -> dict[str, Any]:
     for forbidden in FORBIDDEN_AUTHORITY_TRUE:
         if forbidden in bootstrap_lower:
             errors.append(f"BOOTSTRAP.md contains forbidden authority true: {forbidden}")
+    if "opus" in bootstrap_lower:
+        errors.append("BOOTSTRAP.md must not reference Opus in persistent specialist routing")
 
     return {
         "agent_id": agent_id,
@@ -451,7 +474,7 @@ def write_json(path: Path, data: Any) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--agents", default="all", help="Comma-separated agent ids or 'all' for non-default agents.")
+    parser.add_argument("--agents", default="all", help="Comma-separated isolated-agent ids or 'all' for the configured governed specialist fleet.")
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--validate", action="store_true")
     args = parser.parse_args()

@@ -1,0 +1,73 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T19:42:35Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-sql-artifact-md-archive-microbatch-2026-05-25.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 6,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/sql-canon-low-risk-phase3-activation.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 SQL Artifact Markdown Sidecars/sql-canon-low-risk-phase3-activation.md",
+      "sha256_before": "90b07a011ed9368916e52ab6e2e4f5858e0f68e47aaf439401464dd41ba5ba81",
+      "sha256_after": "90b07a011ed9368916e52ab6e2e4f5858e0f68e47aaf439401464dd41ba5ba81"
+    },
+    {
+      "path": "tmp/sql-canon-low-risk-phase3-post-activation-no-drift.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 SQL Artifact Markdown Sidecars/sql-canon-low-risk-phase3-post-activation-no-drift.md",
+      "sha256_before": "22d40af3cb137e2865e9179aa370ce4c81dd1a2b2ad40231205ff1105874d143",
+      "sha256_after": "22d40af3cb137e2865e9179aa370ce4c81dd1a2b2ad40231205ff1105874d143"
+    },
+    {
+      "path": "tmp/wf72-entry-stop-sql-activation-packet.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 SQL Artifact Markdown Sidecars/wf72-entry-stop-sql-activation-packet.md",
+      "sha256_before": "67a5fa71c9362aaf75b19c9259424123337321d6b888e69ba9986133148a0627",
+      "sha256_after": "67a5fa71c9362aaf75b19c9259424123337321d6b888e69ba9986133148a0627"
+    },
+    {
+      "path": "tmp/wf72-entry-stop-sql-activation-pilot-worker.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 SQL Artifact Markdown Sidecars/wf72-entry-stop-sql-activation-pilot-worker.md",
+      "sha256_before": "411e1a6f091968830e110749dfc9360d2c0bd6d1ba62fad7ddf99c62cb8d7c50",
+      "sha256_after": "411e1a6f091968830e110749dfc9360d2c0bd6d1ba62fad7ddf99c62cb8d7c50"
+    },
+    {
+      "path": "tmp/wf72-entry-stop-sql-activation-state.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 SQL Artifact Markdown Sidecars/wf72-entry-stop-sql-activation-state.md",
+      "sha256_before": "193ce74c7d8ac91609b254016be6b5a59b406b0b0734604faae6e19819bfc0e1",
+      "sha256_after": "193ce74c7d8ac91609b254016be6b5a59b406b0b0734604faae6e19819bfc0e1"
+    },
+    {
+      "path": "tmp/wf72-sql-truth-expansion-phase-approach.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 SQL Artifact Markdown Sidecars/wf72-sql-truth-expansion-phase-approach.md",
+      "sha256_before": "6ba6445bca6de0321cad5a88467ff69a44b4b04128c1b18d49d51ac0335dc482",
+      "sha256_after": "6ba6445bca6de0321cad5a88467ff69a44b4b04128c1b18d49d51ac0335dc482"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; explicit apply_allowed suggestions can move only with zero references, the WF72 adjacent-JSON historical-reference-only exception, or the WF72 adjacent-JSON script-output-constant exception"
+}

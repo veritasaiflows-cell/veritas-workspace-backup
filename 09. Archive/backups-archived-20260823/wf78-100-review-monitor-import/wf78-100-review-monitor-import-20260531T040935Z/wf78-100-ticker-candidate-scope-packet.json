@@ -1,0 +1,615 @@
+{
+  "authority_boundary": {
+    "customer_or_external_delivery_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_or_live_execution_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "posture": "candidate_scope_packet_only_no_import_no_sql_writes_no_customer_or_execution_authority",
+    "production_answer_path_change_allowed": false,
+    "sql_canon_expansion_allowed": false,
+    "sql_writes_allowed_by_this_packet": false,
+    "ticker_import_performed": false,
+    "ticker_universe_write_allowed_by_this_packet": false
+  },
+  "blockers": [],
+  "checks": {
+    "all_review_only_tier_c": true,
+    "candidate_new_count_is_58": true,
+    "no_duplicates": true,
+    "no_production_overlap": true,
+    "production_base_is_42": true,
+    "target_total_is_100": true
+  },
+  "customer_or_external_delivery_allowed": false,
+  "excluded_from_scope": [
+    "recommendation/deployment/action-state fields",
+    "entry bands/stops for new names until source-open proof exists",
+    "portfolio/canon note mutation",
+    "customer/retail answer output",
+    "paper/live/account/trade authority",
+    "ticker import/write execution"
+  ],
+  "generated_at_utc": "2026-05-30T03:48:37Z",
+  "owner_approval_inferred": false,
+  "paper_or_live_execution_allowed": false,
+  "portfolio_mutation_allowed": false,
+  "production_answer_path_change_allowed": false,
+  "proposed_new_candidates": [
+    {
+      "decision_grade_eligible": false,
+      "name": "Apple Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Mega-cap technology benchmark and consumer hardware/software breadth.",
+      "ticker": "AAPL"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Adobe Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Existing WF78 fixture; software breadth and provider/runtime proof already exercised.",
+      "ticker": "ADBE"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "ASML Holding N.V.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Existing WF78 fixture; semiconductor equipment / AI supply-chain monitor.",
+      "ticker": "ASML"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Broadcom Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Existing WF78 fixture; semiconductor and infrastructure software breadth.",
+      "ticker": "AVGO"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "American Express Company",
+      "proposed_tier": "C",
+      "sector": "Financials",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Consumer credit and affluent spending monitor.",
+      "ticker": "AXP"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Costco Wholesale Corporation",
+      "proposed_tier": "C",
+      "sector": "Consumer Staples",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Defensive consumer/staples quality monitor.",
+      "ticker": "COST"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Salesforce, Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Existing WF78 fixture; enterprise software monitor.",
+      "ticker": "CRM"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "CrowdStrike Holdings, Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Cybersecurity growth monitor.",
+      "ticker": "CRWD"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Datadog, Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Cloud observability / software demand monitor.",
+      "ticker": "DDOG"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Intuit Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Existing WF78 fixture; durable application software monitor.",
+      "ticker": "INTU"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Intuitive Surgical, Inc.",
+      "proposed_tier": "C",
+      "sector": "Health Care",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Medical technology / health-care quality monitor.",
+      "ticker": "ISRG"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Mastercard Incorporated",
+      "proposed_tier": "C",
+      "sector": "Financials",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Payments network monitor and financials breadth.",
+      "ticker": "MA"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "MongoDB, Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Developer data infrastructure / high-beta software monitor.",
+      "ticker": "MDB"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Micron Technology, Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Memory cycle and AI infrastructure supply-chain monitor.",
+      "ticker": "MU"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "ServiceNow, Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Existing WF78 fixture; workflow automation / enterprise software monitor.",
+      "ticker": "NOW"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Oracle Corporation",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Existing WF78 fixture; cloud/database infrastructure monitor.",
+      "ticker": "ORCL"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Palo Alto Networks, Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Cybersecurity leadership monitor.",
+      "ticker": "PANW"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "QUALCOMM Incorporated",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Mobile/edge semiconductor monitor.",
+      "ticker": "QCOM"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "SAP SE",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Existing WF78 fixture; non-US enterprise software breadth.",
+      "ticker": "SAP"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Shopify Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Existing WF78 fixture; commerce platform monitor.",
+      "ticker": "SHOP"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Snowflake Inc.",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Cloud data platform / high-beta software monitor.",
+      "ticker": "SNOW"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Taiwan Semiconductor Manufacturing Company Limited",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Existing WF78 fixture; semiconductor manufacturing / geopolitical supply-chain monitor.",
+      "ticker": "TSM"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Texas Instruments Incorporated",
+      "proposed_tier": "C",
+      "sector": "Technology",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Analog semiconductor cycle monitor.",
+      "ticker": "TXN"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Uber Technologies, Inc.",
+      "proposed_tier": "C",
+      "sector": "Industrials",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Existing WF78 fixture; platform economy / mobility monitor.",
+      "ticker": "UBER"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Visa Inc.",
+      "proposed_tier": "C",
+      "sector": "Financials",
+      "source": "wf78_live_25_pilot_preflight",
+      "theme": "Payments network monitor and consumer/financial activity proxy.",
+      "ticker": "V"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Deere & Company",
+      "proposed_tier": "C",
+      "sector": "Industrials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "automation/agriculture capex",
+      "ticker": "DE"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Honeywell International Inc.",
+      "proposed_tier": "C",
+      "sector": "Industrials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "industrial automation/aerospace",
+      "ticker": "HON"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Union Pacific Corporation",
+      "proposed_tier": "C",
+      "sector": "Industrials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "rail/freight cycle",
+      "ticker": "UNP"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "United Rentals, Inc.",
+      "proposed_tier": "C",
+      "sector": "Industrials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "construction/industrial capex",
+      "ticker": "URI"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Emerson Electric Co.",
+      "proposed_tier": "C",
+      "sector": "Industrials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "automation/instrumentation",
+      "ticker": "EMR"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Northrop Grumman Corporation",
+      "proposed_tier": "C",
+      "sector": "Industrials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "defense prime",
+      "ticker": "NOC"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "General Dynamics Corporation",
+      "proposed_tier": "C",
+      "sector": "Industrials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "defense/aerospace",
+      "ticker": "GD"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "TransDigm Group Incorporated",
+      "proposed_tier": "C",
+      "sector": "Industrials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "aerospace components",
+      "ticker": "TDG"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "The Boeing Company",
+      "proposed_tier": "C",
+      "sector": "Industrials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "aerospace turnaround/high-risk monitor",
+      "ticker": "BA"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Southern Copper Corporation",
+      "proposed_tier": "C",
+      "sector": "Materials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "copper/electrification",
+      "ticker": "SCCO"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Freeport-McMoRan Inc.",
+      "proposed_tier": "C",
+      "sector": "Materials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "copper/gold cycle",
+      "ticker": "FCX"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Nucor Corporation",
+      "proposed_tier": "C",
+      "sector": "Materials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "steel/industrial cycle",
+      "ticker": "NUE"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "The Sherwin-Williams Company",
+      "proposed_tier": "C",
+      "sector": "Materials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "housing/industrial coatings",
+      "ticker": "SHW"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Air Products and Chemicals, Inc.",
+      "proposed_tier": "C",
+      "sector": "Materials",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "industrial gases/hydrogen",
+      "ticker": "APD"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "NextEra Energy, Inc.",
+      "proposed_tier": "C",
+      "sector": "Utilities",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "renewables/grid/utility rates",
+      "ticker": "NEE"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Constellation Energy Corporation",
+      "proposed_tier": "C",
+      "sector": "Utilities",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "nuclear/data-center power",
+      "ticker": "CEG"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "The Southern Company",
+      "proposed_tier": "C",
+      "sector": "Utilities",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "regulated utility/power demand",
+      "ticker": "SO"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Duke Energy Corporation",
+      "proposed_tier": "C",
+      "sector": "Utilities",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "regulated utility/grid capex",
+      "ticker": "DUK"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Marathon Petroleum Corporation",
+      "proposed_tier": "C",
+      "sector": "Energy",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "refining/downstream",
+      "ticker": "MPC"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "EOG Resources, Inc.",
+      "proposed_tier": "C",
+      "sector": "Energy",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "E&P quality",
+      "ticker": "EOG"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "SLB",
+      "proposed_tier": "C",
+      "sector": "Energy",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "oilfield services/global capex",
+      "ticker": "SLB"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "ConocoPhillips",
+      "proposed_tier": "C",
+      "sector": "Energy",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "large-cap E&P",
+      "ticker": "COP"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Amgen Inc.",
+      "proposed_tier": "C",
+      "sector": "Health Care",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "large-cap biotech",
+      "ticker": "AMGN"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "UnitedHealth Group Incorporated",
+      "proposed_tier": "C",
+      "sector": "Health Care",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "managed care/risk monitor",
+      "ticker": "UNH"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Thermo Fisher Scientific Inc.",
+      "proposed_tier": "C",
+      "sector": "Health Care",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "life-science tools",
+      "ticker": "TMO"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Stryker Corporation",
+      "proposed_tier": "C",
+      "sector": "Health Care",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "medtech quality",
+      "ticker": "SYK"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "McKesson Corporation",
+      "proposed_tier": "C",
+      "sector": "Health Care",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "health-care distribution",
+      "ticker": "MCK"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Walmart Inc.",
+      "proposed_tier": "C",
+      "sector": "Consumer Staples",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "defensive retail/consumer health",
+      "ticker": "WMT"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "Procter & Gamble Company",
+      "proposed_tier": "C",
+      "sector": "Consumer Staples",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "consumer staples quality",
+      "ticker": "PG"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "PepsiCo, Inc.",
+      "proposed_tier": "C",
+      "sector": "Consumer Staples",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "staples/snacks/beverages",
+      "ticker": "PEP"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "McDonald's Corporation",
+      "proposed_tier": "C",
+      "sector": "Consumer Discretionary",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "global consumer/value",
+      "ticker": "MCD"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "The Home Depot, Inc.",
+      "proposed_tier": "C",
+      "sector": "Consumer Discretionary",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "housing/renovation cycle",
+      "ticker": "HD"
+    },
+    {
+      "decision_grade_eligible": false,
+      "name": "O'Reilly Automotive, Inc.",
+      "proposed_tier": "C",
+      "sector": "Consumer Discretionary",
+      "source": "sector_leadership_gap_backlog",
+      "theme": "auto aftermarket quality",
+      "ticker": "ORLY"
+    }
+  ],
+  "required_next_packet_before_import": {
+    "must_include": [
+      "exact candidate list hash",
+      "provider/runtime budget proof",
+      "backup manifest",
+      "rollback route",
+      "SQL row shape",
+      "A/B production-42 no-regression proof",
+      "post-import validators",
+      "owner approval reference"
+    ],
+    "name": "WF78 100-name import packet"
+  },
+  "research_needed_before_import": [
+    "fresh provider/runtime proof for all 58 proposed new tickers",
+    "source/licensing check for provider redistribution and customer-facing use",
+    "sector/industry classification review",
+    "official IR/SEC source route for any future material claims",
+    "thin-row metadata only: ticker, name, sector, theme, provider status, source-open requirement",
+    "production-42 A/B no-regression proof before and after any import",
+    "backup/rollback packet for universe registry and finance SQL state"
+  ],
+  "schema_version": "wf78_100_ticker_candidate_scope_packet.v1",
+  "sector_leadership_rationale": {
+    "new_candidate_sector_counts": {
+      "Consumer Discretionary": 3,
+      "Consumer Staples": 4,
+      "Energy": 4,
+      "Financials": 3,
+      "Health Care": 6,
+      "Industrials": 10,
+      "Materials": 5,
+      "Technology": 19,
+      "Utilities": 4
+    },
+    "summary": "Broaden from AI/industrial/portfolio-heavy coverage into payments, health care, utilities/power, consumer quality, defense, energy, materials, real estate, and alternatives."
+  },
+  "sql_canon_expansion_allowed": false,
+  "sql_writes_allowed_by_this_packet": false,
+  "status": "ready_for_100_candidate_scope_review",
+  "target_scope": {
+    "candidate_policy": "Tier C thin monitor rows first; no production answer path and no decision-grade promotion from this packet.",
+    "current_production_count": 42,
+    "new_candidate_count": 58,
+    "target_total_monitored_count": 100
+  },
+  "ticker_import_performed": false,
+  "ticker_universe_write_allowed_by_this_packet": false,
+  "validator_commands": [
+    "python scripts\\wf78_100_ticker_candidate_scope_packet.py --write --validate",
+    "python scripts\\sql_500_ticker_expansion_design_gate.py --write --validate",
+    "python scripts\\sql_retail_expansion_phase_gate.py --write --validate",
+    "python scripts\\artifact_index.py validate"
+  ]
+}

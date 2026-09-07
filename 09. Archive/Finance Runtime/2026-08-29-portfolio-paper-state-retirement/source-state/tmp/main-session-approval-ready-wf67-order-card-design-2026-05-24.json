@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-25T02:58:28Z",
+  "status": "design_ready",
+  "capability": "main_session_approval_ready_wf67_order_card",
+  "purpose": "Let main-session Veritas decide/recommend exact paper-order terms from capital alerts, then ask Randall for final approval on a fully specified WF67 package without inferring approval or executing automatically.",
+  "core_answer": "Main session should be allowed to choose and prepare proposed paper-order terms as advice, but final paper execution remains blocked until Randall approves the exact request artifact/order card after dry-run and guard proof.",
+  "authority_model": {
+    "main_session_may_recommend_ticker": true,
+    "main_session_may_recommend_side": true,
+    "main_session_may_recommend_notional_or_qty": true,
+    "main_session_may_recommend_order_type_tif_and_limit": true,
+    "main_session_may_generate_wf67_request_artifact": true,
+    "main_session_may_run_dry_run_before_final_approval": true,
+    "main_session_may_run_guard_validation_before_final_approval": true,
+    "main_session_may_create_kill_switch_without_execution_instruction": false,
+    "paper_order_execution_allowed_without_exact_randall_approval": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed_from_order_card": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "recommended_workflow": [
+    {
+      "step": 1,
+      "name": "capital_alert",
+      "output": "VRT/CME/PH/etc. proposal-ready alert with fresh quote, band, stop, starter/target sizing, blocker, and risk note.",
+      "authority": "review/proposal only"
+    },
+    {
+      "step": 2,
+      "name": "main_session_order_decision_card",
+      "output": "Main session selects proposed ticker/side/notional-or-qty/order-type/TIF/limit based on sizing/risk rules and writes an approval-ready order card.",
+      "authority": "recommended terms only; not approval"
+    },
+    {
+      "step": 3,
+      "name": "wf67_request_artifact",
+      "output": "Generate exact WF67 paper request artifact from the order card.",
+      "authority": "artifact generation only"
+    },
+    {
+      "step": 4,
+      "name": "preapproval_dry_run_and_guard",
+      "output": "Run dry run and paper/live isolation guard validation. If guard requires kill switch, expected status is approval_pending_or_kill_switch_missing, not executable.",
+      "authority": "proof only"
+    },
+    {
+      "step": 5,
+      "name": "randall_final_approval_card",
+      "output": "Ask Randall to approve the exact package: ticker, side, qty/notional, type, TIF, limit if any, max notional/loss, source artifacts, guard status, and kill-switch requirement.",
+      "authority": "human decision point"
+    },
+    {
+      "step": 6,
+      "name": "execution_window_only_after_approval",
+      "output": "After exact approval, create fresh short-lived kill switch, rerun guard validation, then execute through WF67 wrapper only if clean.",
+      "authority": "paper-only execution under WF67; live still blocked"
+    }
+  ],
+  "order_card_required_fields": [
+    "ticker",
+    "side",
+    "qty_or_notional",
+    "order_type",
+    "time_in_force",
+    "limit_price_when_limit",
+    "max_notional_usd",
+    "max_loss_usd",
+    "source_alert_or_capital_packet",
+    "fresh_quote",
+    "entry_band_low",
+    "entry_band_high",
+    "stop",
+    "band_status",
+    "sizing_rationale",
+    "risk_blockers",
+    "approval_text_required_from_randall"
+  ],
+  "tuesday_application": {
+    "primary": "ETN remains separate primary ready-if-fresh candidate.",
+    "focus_names": [
+      "VRT",
+      "CME",
+      "PH",
+      "ITA",
+      "GE",
+      "NVDA"
+    ],
+    "likely_order_card_candidates": "VRT/CME/PH if fresh Tuesday quotes remain in band; NVDA only if Randall explicitly accepts Tech-cap exception/substitution; GE needs promotion decision; ITA no-chase until band clears."
+  },
+  "implementation_gap": "Current wf67_advisor_paper_request_generator.py builds from WF68 advisor packets. To make main session fully capable, add or extend a request generator that accepts a main-session order decision card/capital recommendation artifact directly, then emits the WF67 request artifact for dry-run/guard proof.",
+  "acceptance_criteria": [
+    "Given a proposal-ready candidate, main session can produce an approval card with exact order terms and sizing rationale.",
+    "Generator writes WF67 request artifact without contacting Alpaca or creating kill switch.",
+    "Dry-run and guard validation can run pre-approval and clearly stop before execution.",
+    "Final assistant message asks Randall to approve one exact package, not a vague recommendation.",
+    "No live endpoint/account/money path exists; no owner approval inference; no automatic execution."
+  ]
+}

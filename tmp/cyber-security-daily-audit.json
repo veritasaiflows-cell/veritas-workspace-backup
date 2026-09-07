@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-08-27T00:15:44Z",
+  "generated_at_utc": "2026-09-07T00:12:03Z",
   "status": "critical",
   "stop_line": true,
   "operator_action_required": true,
@@ -14,15 +14,15 @@
   },
   "summary": {
     "critical": 1,
-    "warning": 11,
-    "info": 8
+    "warning": 13,
+    "info": 9
   },
   "checks": [
     {
       "id": "config_posture",
-      "status": "info",
+      "status": "warning",
       "details": {
-        "model_primary": "openai/gpt-5.6-terra",
+        "model_primary": "openai/gpt-6-astra",
         "agent_runtime_id": null,
         "plugins_allow": [],
         "channels_enabled": [
@@ -40,7 +40,7 @@
       "id": "exec_approvals_posture",
       "status": "info",
       "details": {
-        "exists": true,
+        "exists": false,
         "allowlist_count": 0,
         "risky_patterns": []
       }
@@ -49,23 +49,27 @@
       "id": "openclaw_security_audit_basic",
       "status": "warning",
       "details": {
-        "returncode": null,
-        "timed_out": true,
-        "summary": null,
+        "returncode": 0,
+        "timed_out": false,
+        "summary": {
+          "critical": 0,
+          "warn": 5,
+          "info": 1
+        },
         "deep": null,
-        "stdout_excerpt": "",
-        "stderr_excerpt": ""
+        "stdout_excerpt": "{\n  \"ts\": 1788739821822,\n  \"summary\": {\n    \"critical\": 0,\n    \"warn\": 5,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"checkId\": \"summary.attack_surface\",\n      \"severity\": \"info\",\n      \"title\": \"Attack surface summary\",\n      \"detail\": \"groups: open=0, allowlist=1\\ntools.elevated: enabled\\nhooks.webhooks: disabled\\nhooks.internal: enabled\\nbrowser control: enabled\\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway. For multiple users or organizations, run one isolated Gateway cell per tenant: https://docs.openclaw.ai/gateway/multi-tenant-hosting\"\n    },\n    {\n      \"checkId\": \"gateway.trusted_proxies_missing\",\n      \"severity\": \"warn\",\n      \"title\": \"Reverse proxy headers are not trusted\",\n      \"detail\": \"gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed.\",\n      \"remediation\": \"Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.\"\n    },\n    {\n      \"checkId\": \"tools.exec.security_full_configured\",\n      \"severity\": \"warn\",\n      \"title\": \"Exec security=full is configured\",\n      \"detail\": \"Full exec trust is enabled for: implementation-builder, oxalpha-lab, oxalpha-functional-lab.\",\n      \"remediation\": \"Prefer tools.exec.mode=\\\"ask\\\" or \\\"allowlist\\\", and reserve \\\"full\\\" for tightly scoped break-glass agents only.\"\n    },\n    {\n      \"checkId\": \"models.weak_tier\",\n      \"severity\": \"warn\",\n      \"title\": \"Some configured models are below recommended tiers\",\n      \"detail\": \"Smaller/older models are generally more susceptible to prompt injection and tool misuse.\\n- openai/gpt-6-astra (Below GPT-5 family) @ agents.defaults.model.primary\\n- openai/gpt-6-astra (Below GPT-5 family) @ agents.entries.main.model.primary\",\n      \"remediation\": \"Use the latest, top-tier model for any bot with tools or untrusted inboxes. Avoid Haiku tiers; prefer GPT-5+ and Claude 4.5+.\"\n    },\n    {\n      \"checkId\": \"security.trust_model.multi_user_heuristic\",\n      \"severity\": \"warn\",\n      \"title\": \"Potential multi-user setup detected (personal-assistant model warning)\",\n      \"detail\": \"Heuristic signals indicate this gateway may be reachable by multiple users:\\n- channels.telegram.groupPolicy=\\\"allowlist\\\" with configured group targets\\nRuntime/process tools are exposed without full sandboxing in at least one context.\\nPotential high-impact tool exposure contexts:\\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\\n- agents.entries.main (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway. For multiple users or organizations, run one isolated Gateway cell per tenant: https://docs.ope",
+        "stderr_excerpt": "[config] warnings: plugins.entries.openrouter: plugin disabled (disabled in config) but config is present\n[sqlite/transaction] slow SQLite transaction hold\n"
       }
     },
     {
       "id": "openclaw_security_audit_deep",
       "status": "warning",
       "details": {
-        "returncode": null,
-        "timed_out": true,
+        "returncode": 0,
+        "timed_out": false,
         "summary": {
           "critical": 0,
-          "warn": 3,
+          "warn": 5,
           "info": 1
         },
         "deep": {
@@ -77,8 +81,8 @@
             "close": null
           }
         },
-        "stdout_excerpt": "{\n  \"ts\": 1787789562432,\n  \"summary\": {\n    \"critical\": 0,\n    \"warn\": 3,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"checkId\": \"summary.attack_surface\",\n      \"severity\": \"info\",\n      \"title\": \"Attack surface summary\",\n      \"detail\": \"groups: open=0, allowlist=1\\ntools.elevated: enabled\\nhooks.webhooks: disabled\\nhooks.internal: enabled\\nbrowser control: enabled\\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway\"\n    },\n    {\n      \"checkId\": \"gateway.trusted_proxies_missing\",\n      \"severity\": \"warn\",\n      \"title\": \"Reverse proxy headers are not trusted\",\n      \"detail\": \"gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed.\",\n      \"remediation\": \"Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.\"\n    },\n    {\n      \"checkId\": \"security.trust_model.multi_user_heuristic\",\n      \"severity\": \"warn\",\n      \"title\": \"Potential multi-user setup detected (personal-assistant model warning)\",\n      \"detail\": \"Heuristic signals indicate this gateway may be reachable by multiple users:\\n- channels.telegram.groupPolicy=\\\"allowlist\\\" with configured group targets\\nRuntime/process tools are exposed without full sandboxing in at least one context.\\nPotential high-impact tool exposure contexts:\\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\\n- agents.list.main (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway.\",\n      \"remediation\": \"If users may be mutually untrusted, split trust boundaries (separate gateways + credentials, ideally separate OS users/hosts). If you intentionally run shared-user access, set agents.defaults.sandbox.mode=\\\"all\\\", keep tools.fs.workspaceOnly=true, deny runtime/fs/web tools unless required, and keep personal/private identities + credentials off that runtime.\"\n    },\n    {\n      \"checkId\": \"plugins.installs_unpinned_npm_specs\",\n      \"severity\": \"warn\",\n      \"title\": \"Plugin index includes unpinned npm specs\",\n      \"detail\": \"Unpinned plugin index install records:\\n- codex (@openclaw/codex)\\n- kimi (@openclaw/kimi-provider)\",\n      \"remediation\": \"Pin install specs to exact versions (for example, `@scope/pkg@1.2.3`) for higher supply-chain stability.\"\n    }\n  ],\n  \"deep\": {\n    \"gateway\": {\n      \"attempted\": true,\n      \"url\": \"ws://127.0.0.1:18789\",\n      \"ok\": true,\n      \"error\": null,\n      \"close\": null\n    }\n  },\n  \"secretDiagnostics\": []\n}\n",
-        "stderr_excerpt": ""
+        "stdout_excerpt": "{\n  \"ts\": 1788739842298,\n  \"summary\": {\n    \"critical\": 0,\n    \"warn\": 5,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"checkId\": \"summary.attack_surface\",\n      \"severity\": \"info\",\n      \"title\": \"Attack surface summary\",\n      \"detail\": \"groups: open=0, allowlist=1\\ntools.elevated: enabled\\nhooks.webhooks: disabled\\nhooks.internal: enabled\\nbrowser control: enabled\\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway. For multiple users or organizations, run one isolated Gateway cell per tenant: https://docs.openclaw.ai/gateway/multi-tenant-hosting\"\n    },\n    {\n      \"checkId\": \"gateway.trusted_proxies_missing\",\n      \"severity\": \"warn\",\n      \"title\": \"Reverse proxy headers are not trusted\",\n      \"detail\": \"gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed.\",\n      \"remediation\": \"Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.\"\n    },\n    {\n      \"checkId\": \"tools.exec.security_full_configured\",\n      \"severity\": \"warn\",\n      \"title\": \"Exec security=full is configured\",\n      \"detail\": \"Full exec trust is enabled for: implementation-builder, oxalpha-lab, oxalpha-functional-lab.\",\n      \"remediation\": \"Prefer tools.exec.mode=\\\"ask\\\" or \\\"allowlist\\\", and reserve \\\"full\\\" for tightly scoped break-glass agents only.\"\n    },\n    {\n      \"checkId\": \"models.weak_tier\",\n      \"severity\": \"warn\",\n      \"title\": \"Some configured models are below recommended tiers\",\n      \"detail\": \"Smaller/older models are generally more susceptible to prompt injection and tool misuse.\\n- openai/gpt-6-astra (Below GPT-5 family) @ agents.defaults.model.primary\\n- openai/gpt-6-astra (Below GPT-5 family) @ agents.entries.main.model.primary\",\n      \"remediation\": \"Use the latest, top-tier model for any bot with tools or untrusted inboxes. Avoid Haiku tiers; prefer GPT-5+ and Claude 4.5+.\"\n    },\n    {\n      \"checkId\": \"security.trust_model.multi_user_heuristic\",\n      \"severity\": \"warn\",\n      \"title\": \"Potential multi-user setup detected (personal-assistant model warning)\",\n      \"detail\": \"Heuristic signals indicate this gateway may be reachable by multiple users:\\n- channels.telegram.groupPolicy=\\\"allowlist\\\" with configured group targets\\nRuntime/process tools are exposed without full sandboxing in at least one context.\\nPotential high-impact tool exposure contexts:\\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\\n- agents.entries.main (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway. For multiple users or organizations, run one isolated Gateway cell per tenant: https://docs.ope",
+        "stderr_excerpt": "[config] warnings: plugins.entries.openrouter: plugin disabled (disabled in config) but config is present\n[sqlite/transaction] slow SQLite transaction hold\n[skills] Skill precedence collision: skill=\"obsidian\" winner=openclaw-workspace:~/.opencl\u00e2\u20ac\u00a6KILL.md loser=openclaw-bundled:~/AppData/Roaming/npm/node_modules/openclaw/skills/obsidian/SKILL.md\n"
       }
     },
     {
@@ -87,17 +91,18 @@
       "details": {
         "returncode": 0,
         "summary": {
-          "total": 106,
-          "eligible": 69,
-          "modelVisible": 69,
-          "commandVisible": 68,
-          "disabled": 37,
+          "total": 110,
+          "eligible": 74,
+          "modelVisible": 74,
+          "commandVisible": 73,
+          "disabled": 36,
           "blocked": 0,
           "agentFiltered": 0,
           "notInjected": 0,
           "missingRequirements": 0
         },
         "eligible": [
+          "add-model-provider",
           "agi-harness-readiness-operator",
           "ai-drop-service-os-contract",
           "automation-hardening-manager",
@@ -105,8 +110,12 @@
           "browser-automation",
           "canvas",
           "clawhub",
+          "cloud-image-bake",
           "code-review-auditor",
+          "configure-channel",
+          "control-ui",
           "cron-automation-manager",
+          "diagnose-gateway",
           "diagram-maker",
           "disciplined-implementation",
           "github",
@@ -180,10 +189,10 @@
           "orphan_transcripts": null,
           "codex_runtime_warning": false,
           "session_lock_stale": false,
-          "raw_excerpt": "\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\n                       OPENCLAW                       \n \nT  OpenClaw doctor\n|\no  Update ---------------------------------------------------------------+\n|                                                                        |\n|  This install is not a git checkout.                                   |\n|  Run `openclaw update` to update via your package manager (npm/pnpm),  |\n|  then rerun doctor.                                                    |\n|                                                                        |\n+------------------------------------------------------------------------+\n|\no  Doctor changes preview ------------------------------------------------+\n|                                                                         |\n|  Set models.providers.ollama-cloud.models[0].params.num_ctx to 262144   |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[1].params.num_ctx to 524288   |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[2].params.num_ctx to 999424   |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[3].params.num_ctx to 1048576  |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[4].params.num_ctx to 1048576  |\n|  for native Ollama compatibility.                                       |\n|                                                                         |\n+-------------------------------------------------------------------------+\n|\no  Doctor changes preview -----------------------------------+\n|                                                            |\n|  openrouter/auto model configured, enabled automatically.  |\n|                                                            |\n+------------------------------------------------------------+\n|\no  Doctor info ------------------------------------------------------------+\n|                                                                          |\n|  - Personal Codex CLI assets were found, but native Codex-mode OpenClaw  |\n|    agents use isolated per-agent Codex homes.                            |\n|  - Sources: C:\\Users\\Veritas\\.codex and C:\\Users\\Veritas\\.agents\\skills  |\n|    (0 skills, 14 plugins, 1 config file, 0 hook files).                  |\n|  - These assets will not be loaded by the Codex app-server child unless  |\n|    you intentionally promote them.                                       |\n|  - If the Codex plugin is not installed, run `openclaw plugins install   |\n|    npm:@openclaw/codex` first. Then run `openclaw migrate plan codex`    |\n|    to inventory them. Applying that migration copies skills into the     |\n|    current OpenClaw agent workspace; Codex plugins, hooks, and config    |\n|    stay manual-review only.                                              |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Doctor warnings ---------------------------------------------------"
+          "raw_excerpt": "T  OpenClaw doctor\n|\no  Legacy config keys detected --------------------------------------+\n|                                                                    |\n|  - models.providers: models.providers.codex and                    |\n|    models.providers.openai-codex are legacy; run \"openclaw doctor  |\n|    --fix\" to move them to models.providers.openai.                 |\n|                                                                    |\n+--------------------------------------------------------------------+\n|\no  Doctor changes preview -------------------------------------------------+\n|                                                                          |\n|  Removed models.providers.codex because models.providers.openai already  |\n|  exists.                                                                 |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Doctor info ------------------------------------------------------------+\n|                                                                          |\n|  - Personal Codex CLI assets found (0 skills, 15 plugins, 1 config       |\n|    file, 0 hook files) in C:\\Users\\Veritas\\.codex and                    |\n|    C:\\Users\\Veritas\\.agents\\skills; native Codex-mode agents use         |\n|    isolated per-agent homes and will not load them.                      |\n|  - To review or promote them: install the Codex plugin (openclaw         |\n|    plugins install npm:@openclaw/codex), then run openclaw migrate plan  |\n|    codex.                                                                |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Doctor warnings -------------------------------------------------------+\n|                                                                         |\n|  - messages.groupChat.visibleReplies is set to \"message_tool\", but the  |\n|    message tool is unavailable for agent \"research-scout\", agent        |\n|    \"qa-redteam\", and 6 more; OpenClaw falls back to automatic visible   |\n|    replies, so normal replies may post to the source chat. Enable the   |\n|    message tool or set messages.groupChat.visibleReplies to             |\n|    \"automatic\".                                                         |\n|                                                                         |\n+-------------------------------------------------------------------------+\n|\no  Doctor warnings ------------------------------------------------------+\n|                                                                        |\n|  - Custom Codex app-server command bypasses OpenClaw's managed         |\n|    exact-version binary.                                               |\n|  - plugins.entries.codex.config.appServer.command: Doctor did not      |\n|    execute, inspect, or rewrite this command.                          |\n|  - Remove the override to use managed Codex startup, or verify the     |\n|    custom binary matches the Codex version bundled with this OpenClaw  |\n|    release.                                                            |\n|                                                                        |\n+------------------------------------------------------------------------+\n|\no  Doctor -----------------------------------------------------+\n|                                                              |\n|  Run \"openclaw doctor --fix\" to migrate legacy config keys.  |\n|                                                              |\n+--------------------------------------------------------------+\n|\no  Model auth -------------------------------------------------------------+\n|                                                                          |\n|  - google-gemini-cli:randallquezada@gmail.com: expired (0m) \u00e2\u20ac\u201d `openclaw  |\n|    configure`. ("
         },
-        "stdout_excerpt": "\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u2018\u00e2\u2013\u02c6\u00e2\u2013\u02c6\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u20ac\u00e2\u2013\u201e\u00e2\u2013\u02c6\u00e2\u2013\u02c6\n\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\u00e2\u2013\u20ac\n                       OPENCLAW                       \n \nT  OpenClaw doctor\n|\no  Update ---------------------------------------------------------------+\n|                                                                        |\n|  This install is not a git checkout.                                   |\n|  Run `openclaw update` to update via your package manager (npm/pnpm),  |\n|  then rerun doctor.                                                    |\n|                                                                        |\n+------------------------------------------------------------------------+\n|\no  Doctor changes preview ------------------------------------------------+\n|                                                                         |\n|  Set models.providers.ollama-cloud.models[0].params.num_ctx to 262144   |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[1].params.num_ctx to 524288   |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[2].params.num_ctx to 999424   |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[3].params.num_ctx to 1048576  |\n|  for native Ollama compatibility.                                       |\n|  Set models.providers.ollama-cloud.models[4].params.num_ctx to 1048576  |\n|  for native Ollama compatibility.                                       |\n|                                                                         |\n+-------------------------------------------------------------------------+\n|\no  Doctor changes preview -----------------------------------+\n|                                                            |\n|  openrouter/auto model configured, enabled automatically.  |\n|                                                            |\n+------------------------------------------------------------+\n|\no  Doctor info ------------------------------------------------------------+\n|                                                                          |\n|  - Personal Codex CLI assets were found, but native Codex-mode OpenClaw  |\n|    agents use isolated per-agent Codex homes.                            |\n|  - Sources: C:\\Users\\Veritas\\.codex and C:\\Users\\Veritas\\.agents\\skills  |\n|    (0 skills, 14 plugins, 1 config file, 0 hook files).                  |\n|  - These assets will not be loaded by the Codex app-server child unless  |\n|    you intentionally promote them.                                       |\n|  - If the Codex plugin is not installed, run `openclaw plugins install   |\n|    npm:@openclaw/codex` first. Then run `openclaw migrate plan codex`    |\n|    to inventory them. Applying that migration copies skills into the     |\n|    current OpenClaw agent workspace; Codex plugins, hooks, and config    |\n|    stay manual-review only.                                              |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Doctor warnings ---------------------------------------------------",
-        "stderr_excerpt": ""
+        "stdout_excerpt": "T  OpenClaw doctor\n|\no  Legacy config keys detected --------------------------------------+\n|                                                                    |\n|  - models.providers: models.providers.codex and                    |\n|    models.providers.openai-codex are legacy; run \"openclaw doctor  |\n|    --fix\" to move them to models.providers.openai.                 |\n|                                                                    |\n+--------------------------------------------------------------------+\n|\no  Doctor changes preview -------------------------------------------------+\n|                                                                          |\n|  Removed models.providers.codex because models.providers.openai already  |\n|  exists.                                                                 |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Doctor info ------------------------------------------------------------+\n|                                                                          |\n|  - Personal Codex CLI assets found (0 skills, 15 plugins, 1 config       |\n|    file, 0 hook files) in C:\\Users\\Veritas\\.codex and                    |\n|    C:\\Users\\Veritas\\.agents\\skills; native Codex-mode agents use         |\n|    isolated per-agent homes and will not load them.                      |\n|  - To review or promote them: install the Codex plugin (openclaw         |\n|    plugins install npm:@openclaw/codex), then run openclaw migrate plan  |\n|    codex.                                                                |\n|                                                                          |\n+--------------------------------------------------------------------------+\n|\no  Doctor warnings -------------------------------------------------------+\n|                                                                         |\n|  - messages.groupChat.visibleReplies is set to \"message_tool\", but the  |\n|    message tool is unavailable for agent \"research-scout\", agent        |\n|    \"qa-redteam\", and 6 more; OpenClaw falls back to automatic visible   |\n|    replies, so normal replies may post to the source chat. Enable the   |\n|    message tool or set messages.groupChat.visibleReplies to             |\n|    \"automatic\".                                                         |\n|                                                                         |\n+-------------------------------------------------------------------------+\n|\no  Doctor warnings ------------------------------------------------------+\n|                                                                        |\n|  - Custom Codex app-server command bypasses OpenClaw's managed         |\n|    exact-version binary.                                               |\n|  - plugins.entries.codex.config.appServer.command: Doctor did not      |\n|    execute, inspect, or rewrite this command.                          |\n|  - Remove the override to use managed Codex startup, or verify the     |\n|    custom binary matches the Codex version bundled with this OpenClaw  |\n|    release.                                                            |\n|                                                                        |\n+------------------------------------------------------------------------+\n|\no  Doctor -----------------------------------------------------+\n|                                                              |\n|  Run \"openclaw doctor --fix\" to migrate legacy config keys.  |\n|                                                              |\n+--------------------------------------------------------------+\n|\no  Model auth -------------------------------------------------------------+\n|                                                                          |\n|  - google-gemini-cli:randallquezada@gmail.com: expired (0m) \u00e2\u20ac\u201d `openclaw  |\n|    configure`. (",
+        "stderr_excerpt": "[config] warnings: plugins.entries.openrouter: plugin disabled (disabled in config) but config is present\n#< CLIXML\n<Objs Version=\"1.1.0.1\" xmlns=\"http://schemas.microsoft.com/powershell/2004/04\"><Obj S=\"progress\" RefId=\"0\"><TN RefId=\"0\"><T>System.Management.Automation.PSCustomObject</T><T>System.Object</T></TN><MS><I64 N=\"SourceId\">1</I64><PR N=\"Record\"><AV>Preparing modules for first use.</AV><AI>0</AI><Nil /><PI>-1</PI><PC>-1</PC><T>Completed</T><SR>-1</SR><SD> </SD></PR></MS></Obj></Objs>[sqlite/transaction] slow SQLite transaction hold\n[skills] Skill precedence collision: skill=\"obsidian\" winner=openclaw-workspace:~/.opencl\u00e2\u20ac\u00a6KILL.md loser=openclaw-bundled:~/AppData/Roaming/npm/node_modules/openclaw/skills/obsidian/SKILL.md\n"
       }
     },
     {
@@ -193,14 +202,38 @@
         "returncode": 1,
         "payload": {
           "status": "warning",
-          "generated_at_utc": "2026-08-27T00:14:02Z",
+          "generated_at_utc": "2026-09-07T00:11:48Z",
           "canonical_truth_note": "This report is a boundary-audit aid only. Source files and governance notes remain authoritative.",
           "counts": {
-            "findings": 76,
-            "warnings": 71,
+            "findings": 92,
+            "warnings": 87,
             "info": 5
           },
           "findings": [
+            {
+              "path": ".pytest_cache/",
+              "severity": "warning",
+              "issue": "root directory has no documented active entitlement",
+              "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+            },
+            {
+              "path": "03. Alerts and Recommendations/",
+              "severity": "warning",
+              "issue": "root directory has no documented active entitlement",
+              "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+            },
+            {
+              "path": "agent.capabilities.json",
+              "severity": "warning",
+              "issue": "root file has no active-root entitlement in the allowlist",
+              "recommended_action": "reference-check; move to audit/archive or document exception"
+            },
+            {
+              "path": "BOOTSTRAP.md",
+              "severity": "warning",
+              "issue": "root file has no active-root entitlement in the allowlist",
+              "recommended_action": "reference-check; move to audit/archive or document exception"
+            },
             {
               "path": "derived/",
               "severity": "warning",
@@ -232,6 +265,12 @@
               "recommended_action": "verify runtime ownership; document, archive, or remove-later"
             },
             {
+              "path": "openclaw-workspace-state.json.migrated.811afbaa7dd29dc500828ceb194013dfe7ebfc24b75c5843f5b3a785128c3bee.ec49d437-6aa4-44c1-82b2-65567f810add",
+              "severity": "warning",
+              "issue": "root file has no active-root entitlement in the allowlist",
+              "recommended_action": "reference-check; move to audit/archive or document exception"
+            },
+            {
               "path": "raw/",
               "severity": "warning",
               "issue": "root directory has no documented active entitlement",
@@ -250,13 +289,31 @@
               "recommended_action": "reference-check; move to audit/archive or document exception"
             },
             {
+              "path": "\uf03aTEMPpmq.txt",
+              "severity": "warning",
+              "issue": "root file has no active-root entitlement in the allowlist",
+              "recommended_action": "reference-check; move to audit/archive or document exception"
+            },
+            {
               "path": "data/evals/",
               "severity": "warning",
               "issue": "data/ contains an undocumented durable-derived surface",
               "recommended_action": "document authority/README or archive after reference check"
             },
             {
+              "path": "tmp/alignment-focused-qa-20260904-2252.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
               "path": "tmp/apply_oxalpha_config_20260822.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/astra_autonomy_route_timings_20260904.py",
               "severity": "warning",
               "issue": "executable Python helper lives in generated-artifact tmp/ surface",
               "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
@@ -281,6 +338,24 @@
             },
             {
               "path": "tmp/build_provenance_map.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/check_blocked_now.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/check_coherence.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/check_qa_status.py",
               "severity": "warning",
               "issue": "executable Python helper lives in generated-artifact tmp/ surface",
               "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
@@ -376,6 +451,12 @@
               "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
             },
             {
+              "path": "tmp/dump_qa_failed.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
               "path": "tmp/extract_blocked_cron_jobs.py",
               "severity": "warning",
               "issue": "executable Python helper lives in generated-artifact tmp/ surface",
@@ -418,6 +499,18 @@
               "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
             },
             {
+              "path": "tmp/fix_evidence_status.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/fix_production_scope.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
               "path": "tmp/graphify_benchmark.py",
               "severity": "warning",
               "issue": "executable Python helper lives in generated-artifact tmp/ surface",
@@ -437,6 +530,12 @@
             },
             {
               "path": "tmp/graphify_spot_check_extract.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
+              "path": "tmp/hammer_mint_race.py",
               "severity": "warning",
               "issue": "executable Python helper lives in generated-artifact tmp/ surface",
               "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
@@ -622,6 +721,12 @@
               "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
             },
             {
+              "path": "tmp/vec-table-probe.py",
+              "severity": "warning",
+              "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+              "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+            },
+            {
               "path": "tmp/wf74_probe_sqlite.py",
               "severity": "warning",
               "issue": "executable Python helper lives in generated-artifact tmp/ surface",
@@ -659,7 +764,7 @@
             }
           ]
         },
-        "stdout_excerpt": "{\n  \"status\": \"warning\",\n  \"generated_at_utc\": \"2026-08-27T00:14:02Z\",\n  \"canonical_truth_note\": \"This report is a boundary-audit aid only. Source files and governance notes remain authoritative.\",\n  \"counts\": {\n    \"findings\": 76,\n    \"warnings\": 71,\n    \"info\": 5\n  },\n  \"findings\": [\n    {\n      \"path\": \"derived/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"err.txt\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"graphify-out/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"lanes\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"media/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"raw/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"wf73-postgres-shadow-pilot-metrics.json\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"wf73-postgres-shadow-pilot.json\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"data/evals/\",\n      \"severity\": \"warning\",\n      \"issue\": \"data/ contains an undocumented durable-derived surface\",\n      \"recommended_action\": \"document authority/README or archive after reference check\"\n    },\n    {\n      \"path\": \"tmp/apply_oxalpha_config_20260822.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/backfill_band_context.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/band_state_conflict_scan.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/build_graphify_graph.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/build_provenance_map.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if durable; otherwise archive out of active tmp/\"\n    },\n    {\n      \"path\": \"tmp/clean_graphify_document_nodes.py\",\n      \"severity\": \"warning\",\n      \"issue\": \"executable Python helper lives in generated-artifact tmp/ surface\",\n      \"recommended_action\": \"move to scripts/ if dura",
+        "stdout_excerpt": "{\n  \"status\": \"warning\",\n  \"generated_at_utc\": \"2026-09-07T00:11:48Z\",\n  \"canonical_truth_note\": \"This report is a boundary-audit aid only. Source files and governance notes remain authoritative.\",\n  \"counts\": {\n    \"findings\": 92,\n    \"warnings\": 87,\n    \"info\": 5\n  },\n  \"findings\": [\n    {\n      \"path\": \".pytest_cache/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"03. Alerts and Recommendations/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"agent.capabilities.json\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"BOOTSTRAP.md\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"derived/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"err.txt\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"graphify-out/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"lanes\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"media/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"openclaw-workspace-state.json.migrated.811afbaa7dd29dc500828ceb194013dfe7ebfc24b75c5843f5b3a785128c3bee.ec49d437-6aa4-44c1-82b2-65567f810add\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"raw/\",\n      \"severity\": \"warning\",\n      \"issue\": \"root directory has no documented active entitlement\",\n      \"recommended_action\": \"verify runtime ownership; document, archive, or remove-later\"\n    },\n    {\n      \"path\": \"wf73-postgres-shadow-pilot-metrics.json\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"wf73-postgres-shadow-pilot.json\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"\\uf03aTEMPpmq.txt\",\n      \"severity\": \"warning\",\n      \"issue\": \"root file has no active-root entitlement in the allowlist\",\n      \"recommended_action\": \"reference-check; move to audit/archive or document exception\"\n    },\n    {\n      \"path\": \"data/evals/\",\n      \"severity\": \"warning\",\n      \"issue\": \"data/ contains an undocumented durable-derived surface\",\n      \"recommended_action\": \"document authority/README or archive after reference ch",
         "stderr_excerpt": ""
       }
     },
@@ -670,7 +775,7 @@
         "returncode": 0,
         "payload": {
           "status": "ok",
-          "generated_at_utc": "2026-08-27T00:14:06Z",
+          "generated_at_utc": "2026-09-07T00:11:48Z",
           "canonical_truth_note": "Dashboards summarize and route; canonical investment state remains in owner notes.",
           "canonical_owners": {
             "deployment_state": "03. Portfolio/Execution Board.md",
@@ -694,7 +799,7 @@
             }
           ]
         },
-        "stdout_excerpt": "{\n  \"status\": \"ok\",\n  \"generated_at_utc\": \"2026-08-27T00:14:06Z\",\n  \"canonical_truth_note\": \"Dashboards summarize and route; canonical investment state remains in owner notes.\",\n  \"canonical_owners\": {\n    \"deployment_state\": \"03. Portfolio/Execution Board.md\",\n    \"portfolio_posture\": \"03. Portfolio/Portfolio Snapshot.md\",\n    \"technical_discipline\": \"03. Portfolio/Execution Board.md\",\n    \"macro_regime\": \"02. Markets/Macro Regime Dashboard.md\",\n    \"weekly_operating_stance\": \"05. Intelligence/Weekly Positioning Review.md\",\n    \"risk_doctrine\": \"07. Risk/Risk Rules.md\"\n  },\n  \"counts\": {\n    \"findings\": 1,\n    \"warnings\": 0,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"path\": \"05. Intelligence/Weekly Positioning Review.md\",\n      \"severity\": \"info\",\n      \"issue\": \"weekly canonical surface may contain old template/placeholder residue\",\n      \"recommendation\": \"inspect and remove old lower-section template residue if it weakens current truth clarity\"\n    }\n  ]\n}\n",
+        "stdout_excerpt": "{\n  \"status\": \"ok\",\n  \"generated_at_utc\": \"2026-09-07T00:11:48Z\",\n  \"canonical_truth_note\": \"Dashboards summarize and route; canonical investment state remains in owner notes.\",\n  \"canonical_owners\": {\n    \"deployment_state\": \"03. Portfolio/Execution Board.md\",\n    \"portfolio_posture\": \"03. Portfolio/Portfolio Snapshot.md\",\n    \"technical_discipline\": \"03. Portfolio/Execution Board.md\",\n    \"macro_regime\": \"02. Markets/Macro Regime Dashboard.md\",\n    \"weekly_operating_stance\": \"05. Intelligence/Weekly Positioning Review.md\",\n    \"risk_doctrine\": \"07. Risk/Risk Rules.md\"\n  },\n  \"counts\": {\n    \"findings\": 1,\n    \"warnings\": 0,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"path\": \"05. Intelligence/Weekly Positioning Review.md\",\n      \"severity\": \"info\",\n      \"issue\": \"weekly canonical surface may contain old template/placeholder residue\",\n      \"recommendation\": \"inspect and remove old lower-section template residue if it weakens current truth clarity\"\n    }\n  ]\n}\n",
         "stderr_excerpt": ""
       }
     },
@@ -705,47 +810,113 @@
         "returncode": 1,
         "payload": {
           "status": "critical",
-          "generated_at_utc": "2026-08-27T00:14:27Z",
+          "generated_at_utc": "2026-09-07T00:11:58Z",
           "workspace_root": "C:\\Users\\Veritas\\.openclaw\\workspace",
           "canonical_truth_note": "This validator detects governance drift only. Source notes and approved config remain authoritative.",
           "counts": {
-            "findings": 4,
-            "critical": 2,
-            "warnings": 1,
-            "info": 1
+            "findings": 14,
+            "critical": 8,
+            "warnings": 6,
+            "info": 0
           },
           "findings": [
             {
-              "check_id": "wf40_residual_proof_exception_active",
-              "severity": "info",
-              "issue": "WF40 is intentionally left as residual scheduled-proof watch while another approved workflow remains active",
-              "recommendation": "Keep this confirmation watch documented until one ordinary scheduled WF40 proof is clean, then record the confirmation explicitly.",
-              "evidence": {
-                "active_workflow_found": "64",
-                "wf40_registry_row_found": true
-              }
-            },
-            {
-              "check_id": "db_lifecycle_manifest_validation_error",
+              "check_id": "approval_gating_tools.md",
               "severity": "critical",
-              "issue": "DB lifecycle manifest reports validation errors",
-              "recommendation": "Fix manifest classification/integrity errors before archive or cleanup decisions.",
+              "issue": "TOOLS.md does not clearly preserve approval gating for sensitive edits outside the workspace",
+              "recommendation": "Restore explicit approval-gated wording for config/credential/startup/service/plugin/runtime edits outside the workspace path.",
               "evidence": {
-                "validation_errors": [
-                  "tmp/test-vector-memory.sqlite is unclassified"
+                "missing_terms": [
+                  "credential"
                 ],
-                "truncated": false
+                "approval_language_present": false,
+                "outside_workspace_path_present": false,
+                "unqualified_sensitive_gate_present": false
               }
             },
             {
-              "check_id": "db_lifecycle_manifest_bad_counts",
+              "check_id": "wf40_active_queue_status",
               "severity": "critical",
-              "issue": "DB lifecycle manifest reports unknown, integrity-error, or delete-ready databases",
-              "recommendation": "Stop cleanup automation and inspect the manifest before making archive/delete decisions.",
+              "issue": "Queue active-workflow section does not identify WF40 as the active workflow",
+              "recommendation": "Reconcile OpenClaw Parallel Pilot Queue before using it as the live control surface, or document the WF40 residual-proof exception while another workflow is active.",
               "evidence": {
-                "unknown_count": 1,
-                "integrity_error_count": 0,
-                "delete_ready_count": 0
+                "active_workflow_found": null
+              }
+            },
+            {
+              "check_id": "wf40_queue_next_pass",
+              "severity": "critical",
+              "issue": "Queue next approved item does not match the WF40 cron-proof / repeated-stability residue recorded in the registry",
+              "recommendation": "Reconcile the queue next-approved item and registry next-pass text before spawning the next lane, or document the WF40 residual-proof exception while another workflow is active.",
+              "evidence": {
+                "coarse_terms_expected": [
+                  "wf40",
+                  "cron",
+                  "stable"
+                ]
+              }
+            },
+            {
+              "check_id": "wf37_queue_paused_followup",
+              "severity": "critical",
+              "issue": "Queue paused-follow-up section does not preserve WF37 review-only/delivery/fail-closed scheduler posture",
+              "recommendation": "Restore WF37 as paused follow-up, not active or scheduler-promoted.",
+              "evidence": {
+                "coarse_terms_expected": [
+                  "workflow 37",
+                  "review-only",
+                  "delivery",
+                  "cron promotion"
+                ]
+              }
+            },
+            {
+              "check_id": "wf39_queue_closed_handoff",
+              "severity": "critical",
+              "issue": "Queue does not clearly preserve WF39 as closed with handoff back to WF38",
+              "recommendation": "Restore WF39 closeout/handoff text or update both queue and registry if the workflow was intentionally reopened.",
+              "evidence": {
+                "coarse_terms_expected": [
+                  "Workflow 39",
+                  "closed",
+                  "WF38"
+                ]
+              }
+            },
+            {
+              "check_id": "workspace_structure_root_exceptions",
+              "severity": "warning",
+              "issue": "Workspace Structure Protocol no longer clearly documents the approved root exceptions",
+              "recommendation": "Keep root exceptions explicit so root-drift validators do not become folklore.",
+              "evidence": {
+                "missing_exceptions": [
+                  "migration-backups/",
+                  "attachments/",
+                  "migration-review.md"
+                ],
+                "exception_heading_present": false
+              }
+            },
+            {
+              "check_id": "workspace_structure_no_00_layer",
+              "severity": "warning",
+              "issue": "Workspace Structure Protocol no longer states that a root 00/ layer is disallowed",
+              "recommendation": "Restore the no-root-00 rule or document the approved structural change."
+            },
+            {
+              "check_id": "db_lifecycle_tools_route_missing",
+              "severity": "warning",
+              "issue": "TOOLS.md does not make the DB lifecycle manifest discoverable enough for weekly hygiene",
+              "recommendation": "Add a DB lifecycle route that points at db_lifecycle_manifest.py --write --validate and preserves owner approval before archive/delete.",
+              "evidence": {
+                "missing_terms": [
+                  "db lifecycle route",
+                  "db_lifecycle_manifest.py",
+                  "tmp/db-lifecycle-manifest.json",
+                  "db_lifecycle_archive_apply.py",
+                  "explicit owner approval",
+                  "delete"
+                ]
               }
             },
             {
@@ -754,21 +925,73 @@
               "issue": "DB lifecycle manifest has archive-ready candidates awaiting owner decision",
               "recommendation": "Review the manifest and use db_lifecycle_archive_apply.py only after explicit owner approval.",
               "evidence": {
-                "archive_ready_count": 3
+                "archive_ready_count": 2
               }
+            },
+            {
+              "check_id": "db_lifecycle_finance_snapshot_missing",
+              "severity": "warning",
+              "issue": "finance-stack-snapshot.sqlite is not represented in the DB lifecycle manifest",
+              "recommendation": "Regenerate the manifest or update lifecycle rules if the snapshot was intentionally archived."
+            },
+            {
+              "check_id": "tools_channel_hardening_claim",
+              "severity": "warning",
+              "issue": "TOOLS.md no longer states the current channel hardening posture clearly enough to verify",
+              "recommendation": "Keep the no-channel posture or the approved Telegram exception explicit before trusting channel expansion."
+            },
+            {
+              "check_id": "chat_channel_enabled",
+              "severity": "critical",
+              "issue": "An enabled chat channel appears in config without a matching approved exception",
+              "recommendation": "Disable the channel again or update TOOLS.md only after intentional operator approval.",
+              "evidence": {
+                "channel": "telegram"
+              }
+            },
+            {
+              "check_id": "telegram_plugin_enabled",
+              "severity": "critical",
+              "issue": "Telegram plugin appears enabled without a matching approved exception",
+              "recommendation": "Disable Telegram plugin again or update TOOLS.md only after intentional operator approval."
+            },
+            {
+              "check_id": "telegram_owner_allow_present",
+              "severity": "critical",
+              "issue": "Telegram owner allow entries appear without a matching approved exception",
+              "recommendation": "Remove stale Telegram owner authority or document the approved policy change."
             }
           ]
         },
-        "stdout_excerpt": "{\n  \"status\": \"critical\",\n  \"generated_at_utc\": \"2026-08-27T00:14:27Z\",\n  \"workspace_root\": \"C:\\\\Users\\\\Veritas\\\\.openclaw\\\\workspace\",\n  \"canonical_truth_note\": \"This validator detects governance drift only. Source notes and approved config remain authoritative.\",\n  \"counts\": {\n    \"findings\": 4,\n    \"critical\": 2,\n    \"warnings\": 1,\n    \"info\": 1\n  },\n  \"findings\": [\n    {\n      \"check_id\": \"wf40_residual_proof_exception_active\",\n      \"severity\": \"info\",\n      \"issue\": \"WF40 is intentionally left as residual scheduled-proof watch while another approved workflow remains active\",\n      \"recommendation\": \"Keep this confirmation watch documented until one ordinary scheduled WF40 proof is clean, then record the confirmation explicitly.\",\n      \"evidence\": {\n        \"active_workflow_found\": \"64\",\n        \"wf40_registry_row_found\": true\n      }\n    },\n    {\n      \"check_id\": \"db_lifecycle_manifest_validation_error\",\n      \"severity\": \"critical\",\n      \"issue\": \"DB lifecycle manifest reports validation errors\",\n      \"recommendation\": \"Fix manifest classification/integrity errors before archive or cleanup decisions.\",\n      \"evidence\": {\n        \"validation_errors\": [\n          \"tmp/test-vector-memory.sqlite is unclassified\"\n        ],\n        \"truncated\": false\n      }\n    },\n    {\n      \"check_id\": \"db_lifecycle_manifest_bad_counts\",\n      \"severity\": \"critical\",\n      \"issue\": \"DB lifecycle manifest reports unknown, integrity-error, or delete-ready databases\",\n      \"recommendation\": \"Stop cleanup automation and inspect the manifest before making archive/delete decisions.\",\n      \"evidence\": {\n        \"unknown_count\": 1,\n        \"integrity_error_count\": 0,\n        \"delete_ready_count\": 0\n      }\n    },\n    {\n      \"check_id\": \"db_lifecycle_archive_ready_owner_decision\",\n      \"severity\": \"warning\",\n      \"issue\": \"DB lifecycle manifest has archive-ready candidates awaiting owner decision\",\n      \"recommendation\": \"Review the manifest and use db_lifecycle_archive_apply.py only after explicit owner approval.\",\n      \"evidence\": {\n        \"archive_ready_count\": 3\n      }\n    }\n  ]\n}\n",
+        "stdout_excerpt": "{\n  \"status\": \"critical\",\n  \"generated_at_utc\": \"2026-09-07T00:11:58Z\",\n  \"workspace_root\": \"C:\\\\Users\\\\Veritas\\\\.openclaw\\\\workspace\",\n  \"canonical_truth_note\": \"This validator detects governance drift only. Source notes and approved config remain authoritative.\",\n  \"counts\": {\n    \"findings\": 14,\n    \"critical\": 8,\n    \"warnings\": 6,\n    \"info\": 0\n  },\n  \"findings\": [\n    {\n      \"check_id\": \"approval_gating_tools.md\",\n      \"severity\": \"critical\",\n      \"issue\": \"TOOLS.md does not clearly preserve approval gating for sensitive edits outside the workspace\",\n      \"recommendation\": \"Restore explicit approval-gated wording for config/credential/startup/service/plugin/runtime edits outside the workspace path.\",\n      \"evidence\": {\n        \"missing_terms\": [\n          \"credential\"\n        ],\n        \"approval_language_present\": false,\n        \"outside_workspace_path_present\": false,\n        \"unqualified_sensitive_gate_present\": false\n      }\n    },\n    {\n      \"check_id\": \"wf40_active_queue_status\",\n      \"severity\": \"critical\",\n      \"issue\": \"Queue active-workflow section does not identify WF40 as the active workflow\",\n      \"recommendation\": \"Reconcile OpenClaw Parallel Pilot Queue before using it as the live control surface, or document the WF40 residual-proof exception while another workflow is active.\",\n      \"evidence\": {\n        \"active_workflow_found\": null\n      }\n    },\n    {\n      \"check_id\": \"wf40_queue_next_pass\",\n      \"severity\": \"critical\",\n      \"issue\": \"Queue next approved item does not match the WF40 cron-proof / repeated-stability residue recorded in the registry\",\n      \"recommendation\": \"Reconcile the queue next-approved item and registry next-pass text before spawning the next lane, or document the WF40 residual-proof exception while another workflow is active.\",\n      \"evidence\": {\n        \"coarse_terms_expected\": [\n          \"wf40\",\n          \"cron\",\n          \"stable\"\n        ]\n      }\n    },\n    {\n      \"check_id\": \"wf37_queue_paused_followup\",\n      \"severity\": \"critical\",\n      \"issue\": \"Queue paused-follow-up section does not preserve WF37 review-only/delivery/fail-closed scheduler posture\",\n      \"recommendation\": \"Restore WF37 as paused follow-up, not active or scheduler-promoted.\",\n      \"evidence\": {\n        \"coarse_terms_expected\": [\n          \"workflow 37\",\n          \"review-only\",\n          \"delivery\",\n          \"cron promotion\"\n        ]\n      }\n    },\n    {\n      \"check_id\": \"wf39_queue_closed_handoff\",\n      \"severity\": \"critical\",\n      \"issue\": \"Queue does not clearly preserve WF39 as closed with handoff back to WF38\",\n      \"recommendation\": \"Restore WF39 closeout/handoff text or update both queue and registry if the workflow was intentionally reopened.\",\n      \"evidence\": {\n        \"coarse_terms_expected\": [\n          \"Workflow 39\",\n          \"closed\",\n          \"WF38\"\n        ]\n      }\n    },\n    {\n      \"check_id\": \"workspace_structure_root_exceptions\",\n      \"severity\": \"warning\",\n      \"issue\": \"Workspace Structure Protocol no longer clearly documents the approved root exceptions\",\n      \"recommendation\": \"Keep root exceptions explicit so root-drift validators do not become folklore.\",\n      \"evidence\": {\n        \"missing_exceptions\": [\n          \"migration-backups/\",\n          \"attachments/\",\n          \"migration-review.md\"\n        ],\n        \"exception_heading_present\": false\n      }\n    },\n    {\n      \"check_id\": \"workspace_structure_no_00_layer\",\n      \"severity\": \"warning\",\n      \"issue\": \"Workspace Structure Protocol no longer states that a root 00/ layer is disallowed\",\n      \"recommendation\": \"Restore the no-root-00 rule or document the approved structural change.\"\n    },\n    {\n      \"check_id\": \"db_lifecycle_tools_route_missing\",\n      \"severity\": \"warning\",\n      \"issue\": \"TOOLS.md does not make the DB lifecycle manifest discoverable enough for weekly hygiene\",\n      \"recommendation\": \"Add a DB lifecycle route that points at db_lifecycle_manifest.py --write --validate a",
         "stderr_excerpt": ""
       }
     },
     {
       "id": "windows_firewall",
-      "status": "warning",
+      "status": "info",
       "details": {
-        "profiles": [],
-        "returncode": null,
+        "profiles": [
+          {
+            "Name": "Domain",
+            "Enabled": 1,
+            "DefaultInboundAction": 0,
+            "DefaultOutboundAction": 0
+          },
+          {
+            "Name": "Private",
+            "Enabled": 1,
+            "DefaultInboundAction": 0,
+            "DefaultOutboundAction": 0
+          },
+          {
+            "Name": "Public",
+            "Enabled": 1,
+            "DefaultInboundAction": 0,
+            "DefaultOutboundAction": 0
+          }
+        ],
+        "returncode": 0,
         "stderr_excerpt": ""
       }
     },
@@ -798,7 +1021,7 @@
             "displayName": "McAfee",
             "pathToSignedProductExe": "\\\\?\\C:\\Program Files\\McAfee\\wps\\1.40.161.1\\mc-fw-host.exe",
             "productState": 266240,
-            "timestamp": "Sun, 23 Aug 2026 05:49:21 GMT"
+            "timestamp": "Sun, 06 Sep 2026 19:42:46 GMT"
           }
         ],
         "defender_stderr_excerpt": "",
@@ -816,9 +1039,14 @@
       ]
     },
     {
-      "severity": "info",
+      "severity": "warning",
       "source": "config.browser",
-      "message": "Browser plugin is disabled and excluded from the allowlist."
+      "message": "Browser surface is enabled or allowlisted.",
+      "remediation": "Keep browser disabled and off the allowlist unless interactive automation is intentionally needed.",
+      "evidence": {
+        "enabled": true,
+        "allowlisted": false
+      }
     },
     {
       "severity": "info",
@@ -837,34 +1065,51 @@
       }
     },
     {
-      "severity": "warning",
+      "severity": "info",
       "source": "openclaw_security_audit_basic",
-      "message": "Command error: timeout after 60s",
-      "remediation": "Verify CLI/runtime health and rerun the audit."
+      "message": "Attack surface summary",
+      "evidence": "groups: open=0, allowlist=1\ntools.elevated: enabled\nhooks.webhooks: disabled\nhooks.internal: enabled\nbrowser control: enabled\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway. For multiple users or organizations, run one isolated Gateway cell per tenant: https://docs.openclaw.ai/gateway/multi-tenant-hosting"
     },
     {
       "severity": "warning",
       "source": "openclaw_security_audit_basic",
-      "message": "Audit output was not usable JSON: no stdout",
-      "remediation": "Inspect the raw stdout/stderr and rerun the audit."
+      "message": "Reverse proxy headers are not trusted",
+      "remediation": "Set gateway.trustedProxies to your proxy IPs or keep the Control UI local-only.",
+      "evidence": "gateway.bind is loopback and gateway.trustedProxies is empty. If you expose the Control UI through a reverse proxy, configure trusted proxies so local-client checks cannot be spoofed."
     },
     {
       "severity": "warning",
       "source": "openclaw_security_audit_basic",
-      "message": "Audit timed out.",
-      "remediation": "Rerun the audit manually and inspect Gateway health."
+      "message": "Exec security=full is configured",
+      "remediation": "Prefer tools.exec.mode=\"ask\" or \"allowlist\", and reserve \"full\" for tightly scoped break-glass agents only.",
+      "evidence": "Full exec trust is enabled for: implementation-builder, oxalpha-lab, oxalpha-functional-lab."
     },
     {
       "severity": "warning",
-      "source": "openclaw_security_audit_deep",
-      "message": "Command error: timeout after 90s",
-      "remediation": "Verify CLI/runtime health and rerun the audit."
+      "source": "openclaw_security_audit_basic",
+      "message": "Some configured models are below recommended tiers",
+      "remediation": "Use the latest, top-tier model for any bot with tools or untrusted inboxes. Avoid Haiku tiers; prefer GPT-5+ and Claude 4.5+.",
+      "evidence": "Smaller/older models are generally more susceptible to prompt injection and tool misuse.\n- openai/gpt-6-astra (Below GPT-5 family) @ agents.defaults.model.primary\n- openai/gpt-6-astra (Below GPT-5 family) @ agents.entries.main.model.primary"
+    },
+    {
+      "severity": "warning",
+      "source": "openclaw_security_audit_basic",
+      "message": "Potential multi-user setup detected (personal-assistant model warning)",
+      "remediation": "If users may be mutually untrusted, split trust boundaries (separate gateways + credentials, ideally separate OS users/hosts). If you intentionally run shared-user access, set agents.defaults.sandbox.mode=\"all\", keep tools.fs.workspaceOnly=true, deny runtime/fs/web tools unless required, and keep personal/private identities + credentials off that runtime.",
+      "evidence": "Heuristic signals indicate this gateway may be reachable by multiple users:\n- channels.telegram.groupPolicy=\"allowlist\" with configured group targets\nRuntime/process tools are exposed without full sandboxing in at least one context.\nPotential high-impact tool exposure contexts:\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\n- agents.entries.main (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway. For multiple users or organizations, run one isolated Gateway cell per tenant: https://docs.openclaw.ai/gateway/multi-tenant-hosting"
+    },
+    {
+      "severity": "warning",
+      "source": "openclaw_security_audit_basic",
+      "message": "Plugin index includes unpinned npm specs",
+      "remediation": "Pin install specs to exact versions (for example, `@scope/pkg@1.2.3`) for higher supply-chain stability.",
+      "evidence": "Unpinned plugin index install records:\n- codex (@openclaw/codex)\n- kimi (@openclaw/kimi-provider)\n- meta (@openclaw/meta-provider)\n- opencode (@openclaw/opencode-provider)"
     },
     {
       "severity": "info",
       "source": "openclaw_security_audit_deep",
       "message": "Attack surface summary",
-      "evidence": "groups: open=0, allowlist=1\ntools.elevated: enabled\nhooks.webhooks: disabled\nhooks.internal: enabled\nbrowser control: enabled\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway"
+      "evidence": "groups: open=0, allowlist=1\ntools.elevated: enabled\nhooks.webhooks: disabled\nhooks.internal: enabled\nbrowser control: enabled\ntrust model: personal assistant (one trusted operator boundary), not hostile multi-tenant on one shared gateway. For multiple users or organizations, run one isolated Gateway cell per tenant: https://docs.openclaw.ai/gateway/multi-tenant-hosting"
     },
     {
       "severity": "warning",
@@ -876,33 +1121,41 @@
     {
       "severity": "warning",
       "source": "openclaw_security_audit_deep",
+      "message": "Exec security=full is configured",
+      "remediation": "Prefer tools.exec.mode=\"ask\" or \"allowlist\", and reserve \"full\" for tightly scoped break-glass agents only.",
+      "evidence": "Full exec trust is enabled for: implementation-builder, oxalpha-lab, oxalpha-functional-lab."
+    },
+    {
+      "severity": "warning",
+      "source": "openclaw_security_audit_deep",
+      "message": "Some configured models are below recommended tiers",
+      "remediation": "Use the latest, top-tier model for any bot with tools or untrusted inboxes. Avoid Haiku tiers; prefer GPT-5+ and Claude 4.5+.",
+      "evidence": "Smaller/older models are generally more susceptible to prompt injection and tool misuse.\n- openai/gpt-6-astra (Below GPT-5 family) @ agents.defaults.model.primary\n- openai/gpt-6-astra (Below GPT-5 family) @ agents.entries.main.model.primary"
+    },
+    {
+      "severity": "warning",
+      "source": "openclaw_security_audit_deep",
       "message": "Potential multi-user setup detected (personal-assistant model warning)",
       "remediation": "If users may be mutually untrusted, split trust boundaries (separate gateways + credentials, ideally separate OS users/hosts). If you intentionally run shared-user access, set agents.defaults.sandbox.mode=\"all\", keep tools.fs.workspaceOnly=true, deny runtime/fs/web tools unless required, and keep personal/private identities + credentials off that runtime.",
-      "evidence": "Heuristic signals indicate this gateway may be reachable by multiple users:\n- channels.telegram.groupPolicy=\"allowlist\" with configured group targets\nRuntime/process tools are exposed without full sandboxing in at least one context.\nPotential high-impact tool exposure contexts:\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\n- agents.list.main (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway."
+      "evidence": "Heuristic signals indicate this gateway may be reachable by multiple users:\n- channels.telegram.groupPolicy=\"allowlist\" with configured group targets\nRuntime/process tools are exposed without full sandboxing in at least one context.\nPotential high-impact tool exposure contexts:\n- agents.defaults (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\n- agents.entries.main (sandbox=off; runtime=[exec, process]; fs=[read, write, edit, apply_patch]; fs.workspaceOnly=false)\nOpenClaw's default security model is personal-assistant (one trusted operator boundary), not hostile multi-tenant isolation on one shared gateway. For multiple users or organizations, run one isolated Gateway cell per tenant: https://docs.openclaw.ai/gateway/multi-tenant-hosting"
     },
     {
       "severity": "warning",
       "source": "openclaw_security_audit_deep",
       "message": "Plugin index includes unpinned npm specs",
       "remediation": "Pin install specs to exact versions (for example, `@scope/pkg@1.2.3`) for higher supply-chain stability.",
-      "evidence": "Unpinned plugin index install records:\n- codex (@openclaw/codex)\n- kimi (@openclaw/kimi-provider)"
-    },
-    {
-      "severity": "warning",
-      "source": "openclaw_security_audit_deep",
-      "message": "Audit timed out.",
-      "remediation": "Rerun the audit manually and inspect Gateway health."
+      "evidence": "Unpinned plugin index install records:\n- codex (@openclaw/codex)\n- kimi (@openclaw/kimi-provider)\n- meta (@openclaw/meta-provider)\n- opencode (@openclaw/opencode-provider)"
     },
     {
       "severity": "info",
       "source": "skills_check",
       "message": "Skill inventory check completed.",
       "evidence": {
-        "total": 106,
-        "eligible": 69,
-        "modelVisible": 69,
-        "commandVisible": 68,
-        "disabled": 37,
+        "total": 110,
+        "eligible": 74,
+        "modelVisible": 74,
+        "commandVisible": 73,
+        "disabled": 36,
         "blocked": 0,
         "agentFiltered": 0,
         "notInjected": 0,
@@ -921,6 +1174,30 @@
       "message": "workspace_boundary_check returned warning-grade output.",
       "remediation": "Review the listed findings and decide whether cleanup or documentation is needed.",
       "evidence": [
+        {
+          "path": ".pytest_cache/",
+          "severity": "warning",
+          "issue": "root directory has no documented active entitlement",
+          "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+        },
+        {
+          "path": "03. Alerts and Recommendations/",
+          "severity": "warning",
+          "issue": "root directory has no documented active entitlement",
+          "recommended_action": "verify runtime ownership; document, archive, or remove-later"
+        },
+        {
+          "path": "agent.capabilities.json",
+          "severity": "warning",
+          "issue": "root file has no active-root entitlement in the allowlist",
+          "recommended_action": "reference-check; move to audit/archive or document exception"
+        },
+        {
+          "path": "BOOTSTRAP.md",
+          "severity": "warning",
+          "issue": "root file has no active-root entitlement in the allowlist",
+          "recommended_action": "reference-check; move to audit/archive or document exception"
+        },
         {
           "path": "derived/",
           "severity": "warning",
@@ -952,6 +1229,12 @@
           "recommended_action": "verify runtime ownership; document, archive, or remove-later"
         },
         {
+          "path": "openclaw-workspace-state.json.migrated.811afbaa7dd29dc500828ceb194013dfe7ebfc24b75c5843f5b3a785128c3bee.ec49d437-6aa4-44c1-82b2-65567f810add",
+          "severity": "warning",
+          "issue": "root file has no active-root entitlement in the allowlist",
+          "recommended_action": "reference-check; move to audit/archive or document exception"
+        },
+        {
           "path": "raw/",
           "severity": "warning",
           "issue": "root directory has no documented active entitlement",
@@ -970,13 +1253,31 @@
           "recommended_action": "reference-check; move to audit/archive or document exception"
         },
         {
+          "path": "\uf03aTEMPpmq.txt",
+          "severity": "warning",
+          "issue": "root file has no active-root entitlement in the allowlist",
+          "recommended_action": "reference-check; move to audit/archive or document exception"
+        },
+        {
           "path": "data/evals/",
           "severity": "warning",
           "issue": "data/ contains an undocumented durable-derived surface",
           "recommended_action": "document authority/README or archive after reference check"
         },
         {
+          "path": "tmp/alignment-focused-qa-20260904-2252.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
           "path": "tmp/apply_oxalpha_config_20260822.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/astra_autonomy_route_timings_20260904.py",
           "severity": "warning",
           "issue": "executable Python helper lives in generated-artifact tmp/ surface",
           "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
@@ -1001,6 +1302,24 @@
         },
         {
           "path": "tmp/build_provenance_map.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/check_blocked_now.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/check_coherence.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/check_qa_status.py",
           "severity": "warning",
           "issue": "executable Python helper lives in generated-artifact tmp/ surface",
           "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
@@ -1096,6 +1415,12 @@
           "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
         },
         {
+          "path": "tmp/dump_qa_failed.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
           "path": "tmp/extract_blocked_cron_jobs.py",
           "severity": "warning",
           "issue": "executable Python helper lives in generated-artifact tmp/ surface",
@@ -1138,6 +1463,18 @@
           "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
         },
         {
+          "path": "tmp/fix_evidence_status.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/fix_production_scope.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
           "path": "tmp/graphify_benchmark.py",
           "severity": "warning",
           "issue": "executable Python helper lives in generated-artifact tmp/ surface",
@@ -1157,6 +1494,12 @@
         },
         {
           "path": "tmp/graphify_spot_check_extract.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
+          "path": "tmp/hammer_mint_race.py",
           "severity": "warning",
           "issue": "executable Python helper lives in generated-artifact tmp/ surface",
           "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
@@ -1342,6 +1685,12 @@
           "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
         },
         {
+          "path": "tmp/vec-table-probe.py",
+          "severity": "warning",
+          "issue": "executable Python helper lives in generated-artifact tmp/ surface",
+          "recommended_action": "move to scripts/ if durable; otherwise archive out of active tmp/"
+        },
+        {
           "path": "tmp/wf74_probe_sqlite.py",
           "severity": "warning",
           "issue": "executable Python helper lives in generated-artifact tmp/ surface",
@@ -1396,36 +1745,102 @@
       "remediation": "Inspect the attached findings before trusting the workspace posture.",
       "evidence": [
         {
-          "check_id": "wf40_residual_proof_exception_active",
-          "severity": "info",
-          "issue": "WF40 is intentionally left as residual scheduled-proof watch while another approved workflow remains active",
-          "recommendation": "Keep this confirmation watch documented until one ordinary scheduled WF40 proof is clean, then record the confirmation explicitly.",
-          "evidence": {
-            "active_workflow_found": "64",
-            "wf40_registry_row_found": true
-          }
-        },
-        {
-          "check_id": "db_lifecycle_manifest_validation_error",
+          "check_id": "approval_gating_tools.md",
           "severity": "critical",
-          "issue": "DB lifecycle manifest reports validation errors",
-          "recommendation": "Fix manifest classification/integrity errors before archive or cleanup decisions.",
+          "issue": "TOOLS.md does not clearly preserve approval gating for sensitive edits outside the workspace",
+          "recommendation": "Restore explicit approval-gated wording for config/credential/startup/service/plugin/runtime edits outside the workspace path.",
           "evidence": {
-            "validation_errors": [
-              "tmp/test-vector-memory.sqlite is unclassified"
+            "missing_terms": [
+              "credential"
             ],
-            "truncated": false
+            "approval_language_present": false,
+            "outside_workspace_path_present": false,
+            "unqualified_sensitive_gate_present": false
           }
         },
         {
-          "check_id": "db_lifecycle_manifest_bad_counts",
+          "check_id": "wf40_active_queue_status",
           "severity": "critical",
-          "issue": "DB lifecycle manifest reports unknown, integrity-error, or delete-ready databases",
-          "recommendation": "Stop cleanup automation and inspect the manifest before making archive/delete decisions.",
+          "issue": "Queue active-workflow section does not identify WF40 as the active workflow",
+          "recommendation": "Reconcile OpenClaw Parallel Pilot Queue before using it as the live control surface, or document the WF40 residual-proof exception while another workflow is active.",
           "evidence": {
-            "unknown_count": 1,
-            "integrity_error_count": 0,
-            "delete_ready_count": 0
+            "active_workflow_found": null
+          }
+        },
+        {
+          "check_id": "wf40_queue_next_pass",
+          "severity": "critical",
+          "issue": "Queue next approved item does not match the WF40 cron-proof / repeated-stability residue recorded in the registry",
+          "recommendation": "Reconcile the queue next-approved item and registry next-pass text before spawning the next lane, or document the WF40 residual-proof exception while another workflow is active.",
+          "evidence": {
+            "coarse_terms_expected": [
+              "wf40",
+              "cron",
+              "stable"
+            ]
+          }
+        },
+        {
+          "check_id": "wf37_queue_paused_followup",
+          "severity": "critical",
+          "issue": "Queue paused-follow-up section does not preserve WF37 review-only/delivery/fail-closed scheduler posture",
+          "recommendation": "Restore WF37 as paused follow-up, not active or scheduler-promoted.",
+          "evidence": {
+            "coarse_terms_expected": [
+              "workflow 37",
+              "review-only",
+              "delivery",
+              "cron promotion"
+            ]
+          }
+        },
+        {
+          "check_id": "wf39_queue_closed_handoff",
+          "severity": "critical",
+          "issue": "Queue does not clearly preserve WF39 as closed with handoff back to WF38",
+          "recommendation": "Restore WF39 closeout/handoff text or update both queue and registry if the workflow was intentionally reopened.",
+          "evidence": {
+            "coarse_terms_expected": [
+              "Workflow 39",
+              "closed",
+              "WF38"
+            ]
+          }
+        },
+        {
+          "check_id": "workspace_structure_root_exceptions",
+          "severity": "warning",
+          "issue": "Workspace Structure Protocol no longer clearly documents the approved root exceptions",
+          "recommendation": "Keep root exceptions explicit so root-drift validators do not become folklore.",
+          "evidence": {
+            "missing_exceptions": [
+              "migration-backups/",
+              "attachments/",
+              "migration-review.md"
+            ],
+            "exception_heading_present": false
+          }
+        },
+        {
+          "check_id": "workspace_structure_no_00_layer",
+          "severity": "warning",
+          "issue": "Workspace Structure Protocol no longer states that a root 00/ layer is disallowed",
+          "recommendation": "Restore the no-root-00 rule or document the approved structural change."
+        },
+        {
+          "check_id": "db_lifecycle_tools_route_missing",
+          "severity": "warning",
+          "issue": "TOOLS.md does not make the DB lifecycle manifest discoverable enough for weekly hygiene",
+          "recommendation": "Add a DB lifecycle route that points at db_lifecycle_manifest.py --write --validate and preserves owner approval before archive/delete.",
+          "evidence": {
+            "missing_terms": [
+              "db lifecycle route",
+              "db_lifecycle_manifest.py",
+              "tmp/db-lifecycle-manifest.json",
+              "db_lifecycle_archive_apply.py",
+              "explicit owner approval",
+              "delete"
+            ]
           }
         },
         {
@@ -1434,20 +1849,68 @@
           "issue": "DB lifecycle manifest has archive-ready candidates awaiting owner decision",
           "recommendation": "Review the manifest and use db_lifecycle_archive_apply.py only after explicit owner approval.",
           "evidence": {
-            "archive_ready_count": 3
+            "archive_ready_count": 2
           }
+        },
+        {
+          "check_id": "db_lifecycle_finance_snapshot_missing",
+          "severity": "warning",
+          "issue": "finance-stack-snapshot.sqlite is not represented in the DB lifecycle manifest",
+          "recommendation": "Regenerate the manifest or update lifecycle rules if the snapshot was intentionally archived."
+        },
+        {
+          "check_id": "tools_channel_hardening_claim",
+          "severity": "warning",
+          "issue": "TOOLS.md no longer states the current channel hardening posture clearly enough to verify",
+          "recommendation": "Keep the no-channel posture or the approved Telegram exception explicit before trusting channel expansion."
+        },
+        {
+          "check_id": "chat_channel_enabled",
+          "severity": "critical",
+          "issue": "An enabled chat channel appears in config without a matching approved exception",
+          "recommendation": "Disable the channel again or update TOOLS.md only after intentional operator approval.",
+          "evidence": {
+            "channel": "telegram"
+          }
+        },
+        {
+          "check_id": "telegram_plugin_enabled",
+          "severity": "critical",
+          "issue": "Telegram plugin appears enabled without a matching approved exception",
+          "recommendation": "Disable Telegram plugin again or update TOOLS.md only after intentional operator approval."
+        },
+        {
+          "check_id": "telegram_owner_allow_present",
+          "severity": "critical",
+          "issue": "Telegram owner allow entries appear without a matching approved exception",
+          "recommendation": "Remove stale Telegram owner authority or document the approved policy change."
         }
       ]
     },
     {
-      "severity": "warning",
+      "severity": "info",
       "source": "windows_firewall",
-      "message": "Could not read firewall profile state.",
-      "remediation": "Inspect Windows Firewall manually.",
-      "evidence": {
-        "error": "timeout after 30s",
-        "parse_error": "no stdout"
-      }
+      "message": "All Windows Firewall profiles are enabled.",
+      "evidence": [
+        {
+          "Name": "Domain",
+          "Enabled": 1,
+          "DefaultInboundAction": 0,
+          "DefaultOutboundAction": 0
+        },
+        {
+          "Name": "Private",
+          "Enabled": 1,
+          "DefaultInboundAction": 0,
+          "DefaultOutboundAction": 0
+        },
+        {
+          "Name": "Public",
+          "Enabled": 1,
+          "DefaultInboundAction": 0,
+          "DefaultOutboundAction": 0
+        }
+      ]
     },
     {
       "severity": "info",

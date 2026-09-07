@@ -1,0 +1,14 @@
+{
+  "generated_at_utc": "2026-08-13T23:33:50Z",
+  "status": "ok",
+  "authority": {
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false
+  },
+  "summary": {
+    "packets_checked": 17,
+    "critical": 0,
+    "warning": 0
+  },
+  "findings": []
+}

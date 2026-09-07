@@ -1,23 +1,23 @@
 {
   "schema": "veritas.workflow_capsule.v1",
   "workflow_id": "WF-FINANCE-CHAINS",
-  "display_name": "Finance Chains Monitor",
+  "display_name": "Alerts and Recommendations Chain Monitor",
   "tier": "P2",
   "priority": "P2",
   "lifecycle": "monitor",
   "readiness": "monitor_only",
   "effective_status": "monitor_only",
-  "current_state": "Monitor: chain/run/current-window/digest artifacts + cron ledger.",
-  "next_action": "Escalate on missing/failed run, stale current-window index, validator warning/critical, or digest escalation.",
-  "authoritative_next_action": "Escalate on missing/failed run, stale current-window index, validator warning/critical, or digest escalation.",
+  "current_state": "Monitor morning, midday, post-close, weekly, and cron control proof.",
+  "next_action": "Escalate on a failed chain, missing source proof, freshness decay, contract drift, scheduler error, or digest validation failure.",
+  "authoritative_next_action": "Escalate on a failed chain, missing source proof, freshness decay, contract drift, scheduler error, or digest validation failure.",
   "helper_safe": false,
   "owner_action_required": false,
-  "authority_boundary": "monitor-only",
+  "authority_boundary": "monitor-only alerts chain control",
   "authority_class": "monitor_only",
   "primary_owner_lane": "main-session-veritas",
   "secondary_consumers": [],
   "human_approval_owner": "Randall",
-  "proof_artifact": "tmp/current-window-artifacts.json",
+  "proof_artifact": "tmp/alerts-recommendations-chain-midday.json",
   "freshness_sla": {
     "primary_artifact_max_age_hours": 72.0,
     "owner_context_max_age_hours": 72.0,
@@ -25,14 +25,21 @@
   },
   "blockers": [],
   "stop_lines": [
-    "Review/proof only; no mutation/action/approval authority."
+    "Monitor only. A successful packet write is not proof of source freshness, fleet health, approval, account action, or execution authority."
   ],
   "continuity_note": null,
-  "primary_route_artifact": "tmp/current-window-artifacts.json",
+  "primary_route_artifact": "tmp/alerts-recommendations-chain-midday.json",
   "secondary_artifacts": [
-    "tmp/cron-freshness-spine.json"
+    "tmp/alerts-recommendations-chain-morning.json",
+    "tmp/alerts-recommendations-chain-post-close.json",
+    "tmp/alerts-recommendations-chain-weekly.json",
+    "tmp/cron-freshness-spine.json",
+    "tmp/cron-control-packet.json"
   ],
-  "validator_commands": [],
+  "validator_commands": [
+    "python scripts\\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate",
+    "python scripts\\cron_control_packet.py --write --validate"
+  ],
   "default_resume_command": null,
   "control_override": null,
   "pm_action": null,

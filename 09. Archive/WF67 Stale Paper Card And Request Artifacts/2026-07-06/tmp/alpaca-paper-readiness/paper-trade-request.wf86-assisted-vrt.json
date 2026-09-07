@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "wf86-assisted-VRT-buy-limit-20260616T213657Z",
+  "created_at_utc": "2026-06-16T21:36:57Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_submit_allowed_after_exact_approval_and_guard": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true,
+    "currently_executable": false,
+    "paper_submit_requires_exact_owner_approval": true,
+    "paper_submit_requires_fresh_guard": true,
+    "paper_submit_requires_fresh_kill_switch": true
+  },
+  "execution_readiness": {
+    "currently_executable": false,
+    "reason": "pending_exact_randall_approval_and_fresh_wf67_execution_window",
+    "exact_order_owner_approval_status": "pending_exact_randall_approval",
+    "requires_exact_owner_approval": true,
+    "requires_fresh_wf67_guard": true,
+    "requires_fresh_short_lived_kill_switch": true,
+    "execution_by_this_artifact_allowed": false,
+    "paper_submit_allowed_field_semantics": "schema capability only; not current execution approval"
+  },
+  "order": {
+    "symbol": "VRT",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 306.2,
+    "qty": null,
+    "notional": 1500.0
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 1500.0,
+    "max_loss_usd": 301.08,
+    "max_notional_usd": 1500.0,
+    "position_size_reviewed": true,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 5000.0,
+    "entry_band_low": 267.18,
+    "entry_band_high": 316.54,
+    "observed_price": 306.2,
+    "observed_entry_status": "IN_BAND",
+    "stop": 244.74,
+    "sizing_rationale": "WF86 tactical dip/reclaim paper draft capped at $1,500; the $5,000 policy number is an absolute order ceiling, not the default size. Price is below the 20D/50D MA zone but above the 200D MA, so reclaim confirmation is required. Limit/day and notional sizing are paper-only; execution remains blocked until fresh exact Randall order approval and clean WF67 guard proof.",
+    "full_scope_artifact": "tmp/paper-autotrader/policy.json"
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "WF86 assisted paper-order draft, pending exact Randall approval; no execution authority.",
+    "recommendation_source": "main_session_order_decision_card",
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/main-session-cards/VRT.wf86-assisted-card.json",
+    "capital_recommendation_source": "wf86_shadow_decision_ledger",
+    "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+    "market_order_owner_approved": false,
+    "exact_order_owner_approval_status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "exact_order_owner_approval_text": null,
+    "main_session_capital_package_notification_required": true,
+    "approval_artifact": "tmp/alpaca-paper-readiness/owner-approval.vrt-wf86-assisted-20260611.json",
+    "chief_intelligence_promotion_gate": null
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_forbidden": "https://api.alpaca.markets"
+  }
+}

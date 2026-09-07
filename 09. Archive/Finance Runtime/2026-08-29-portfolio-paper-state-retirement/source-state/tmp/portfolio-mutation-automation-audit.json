@@ -1,0 +1,347 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-11T04:02:55Z",
+  "conservative_conclusion": "The workspace is ready to automate review-only portfolio-mutation proposals, not portfolio mutations. Use existing WF38/WF42/WF51/WF53/WF55 evidence layers as inputs, but open a new bounded workflow only for typed proposal schemas and a dry-run gated apply helper. Do not reopen WF38 or grant apply authority without explicit Randall approval.",
+  "existing_workflows": [
+    {
+      "surface": "Portfolio Mutation Proposal Protocol",
+      "role": "Governs portfolio-mutation definition and proposal-first / owner-gated apply boundary.",
+      "current_phase": "Policy exists; no typed proposal schemas or apply-helper contract yet.",
+      "authority": "Veritas may draft proposals; applying mutations requires explicit Randall approval."
+    },
+    {
+      "surface": "Ticker Add Canonical Ownership Checklist + Ticker Lane Templates",
+      "role": "Defines note ownership map: Watchlist index, Coverage thesis, Technical levels, Trigger deployment state, Snapshot weights/sleeves.",
+      "current_phase": "Useful for add/refresh flows; needs explicit canonical-status-move proposal template.",
+      "authority": "No deployment, owner approval, model weight, promotion, or trade authority."
+    },
+    {
+      "surface": "Promotion Review Queue + Watchlist Promotion Candidate Packet Contract",
+      "role": "Review-only queue and candidate packet between watchlist and human promotion review.",
+      "current_phase": "Packet contract and queue exist; production generator remains deferred by WF51.",
+      "authority": "Queue row and candidate packet do not grant deployment or canonical promotion."
+    },
+    {
+      "surface": "WF38 - Sector Expansion and Promotion Review Hardening",
+      "role": "Closed standing sector-expansion / promotion-review governance and weekly review process.",
+      "current_phase": "Closed; use as standing review surface, not an active implementation lane.",
+      "authority": "No watchlist auto-promotion, no automatic owner-note mutation, no trade execution."
+    },
+    {
+      "surface": "WF42 - Capital Deployment Recommendation Object",
+      "role": "Reviewable deploy/wait/reject/review recommendation packet with owner approval explicit.",
+      "current_phase": "Continuity note says bounded v1 hardening completed; registry/queue still contain older queued wording that should be reconciled.",
+      "authority": "Recommendation only; no execution, sizing, portfolio mutation, trigger mutation, or inferred approval."
+    },
+    {
+      "surface": "WF51 - Daily Fresh Intelligence and Price Trend Promotion Branch",
+      "role": "Daily trend/fresh-intelligence evidence branch for promotion readiness.",
+      "current_phase": "Phase 2 trend artifact complete; Phase 3 production promotion-candidate generation deferred.",
+      "authority": "Review-only; no production candidate generator until trust context, sector/correlation, owner-conflict, and history gates improve."
+    },
+    {
+      "surface": "WF53 - Sector Expansion Coverage and Correlation Proof Layer",
+      "role": "Review-only sector/correlation diagnostic for concentration, underexposure, and promotion-impact context.",
+      "current_phase": "v1 implemented and QA-accepted; current status degraded due partial trust and band review debt.",
+      "authority": "No watchlist promotion, portfolio mutation, sizing/allocation recommendation, probability/modeling, or owner-approval inference."
+    },
+    {
+      "surface": "WF55 - Probability Readiness and Outcome Retention Gate",
+      "role": "Active methodology gate blocking fake precision before outcome history exists.",
+      "current_phase": "Active readiness gate only.",
+      "authority": "No win/deploy probabilities, expected return, calibrated readiness scores, model-ranked candidates, or portfolio action."
+    }
+  ],
+  "recommendation": {
+    "update_existing_workflows_first": true,
+    "open_new_workflow_for_apply_helper": true,
+    "suggested_new_workflow": "WF56 - Portfolio Mutation Proposal Object and Gated Apply Helper",
+    "do_not_reopen": [
+      "WF38 unless the standing sector-expansion process fails or authority widening is intentionally requested"
+    ],
+    "near_term_safe_phase": "review-only artifact generation and review packet production",
+    "blocked_until_validated": [
+      "write-capable apply helper",
+      "scheduled maintenance apply",
+      "probability/model-ranked promotion decisions"
+    ]
+  },
+  "required_contracts": {
+    "sleeve_proposals": {
+      "artifact": "tmp/portfolio-mutation-proposals/sleeve-change-<scope>-<timestamp>.json",
+      "minimum_fields": [
+        "schema_version",
+        "generated_at_utc",
+        "proposal_id",
+        "mutation_type=sleeve_change|rebalance|cash_target_change",
+        "current_portfolio_model",
+        "proposed_portfolio_model",
+        "current_cash_target_pct",
+        "proposed_cash_target_pct",
+        "current_sleeves",
+        "proposed_sleeves",
+        "current_sector_exposure",
+        "pro_forma_sector_exposure",
+        "current_correlated_sleeves",
+        "pro_forma_correlated_sleeves",
+        "risk_rule_check",
+        "concentration_check",
+        "source_artifacts",
+        "source_freshness",
+        "owner_decision_required",
+        "owner_approval_granted=false",
+        "apply_allowed=false",
+        "proposed_files_to_edit",
+        "exact_patch_preview",
+        "rollback_or_reversal_note",
+        "stop_lines_triggered"
+      ],
+      "consumer_posture": "review_only until explicit Randall approval; apply helper may only dry-run before approval"
+    },
+    "promotion_demotion_proposals": {
+      "artifact": "tmp/portfolio-mutation-proposals/ticker-lane-change-<ticker>-<timestamp>.json",
+      "minimum_fields": [
+        "schema_version",
+        "generated_at_utc",
+        "proposal_id",
+        "ticker",
+        "mutation_type=promotion|demotion|removal|lane_change",
+        "current_lane_tuple",
+        "proposed_lane_tuple",
+        "current_watch_state",
+        "current_trigger_state",
+        "current_portfolio_status",
+        "thesis_evidence_source",
+        "technical_gate",
+        "catalyst_gate",
+        "macro_regime_gate",
+        "risk_sizing_gate",
+        "sector_correlation_check",
+        "portfolio_competition_assessed",
+        "owner_conflict_check",
+        "promotion_review_queue_status",
+        "source_freshness",
+        "owner_decision_required",
+        "owner_approval_granted=false",
+        "apply_allowed=false",
+        "proposed_files_to_edit",
+        "exact_patch_preview"
+      ],
+      "existing_base": "Watchlist Promotion Candidate Packet Contract + candidate_packet_validator.py; production generation remains deferred in WF51."
+    },
+    "canonical_status_moves": {
+      "artifact": "tmp/portfolio-mutation-proposals/canonical-status-move-<ticker>-<timestamp>.json",
+      "minimum_fields": [
+        "schema_version",
+        "generated_at_utc",
+        "proposal_id",
+        "ticker",
+        "mutation_type=canonical_status_move",
+        "current_status_tuple",
+        "proposed_status_tuple",
+        "affected_owner_surfaces",
+        "portfolio_config_delta",
+        "watchlist_delta",
+        "deployment_trigger_delta",
+        "technical_sheet_delta",
+        "portfolio_snapshot_delta",
+        "coverage_universe_delta",
+        "risk_rule_impact",
+        "source_freshness",
+        "invariant_checks",
+        "owner_decision_required",
+        "owner_approval_granted=false",
+        "apply_allowed=false",
+        "exact_patch_preview",
+        "rollback_or_reversal_note"
+      ],
+      "status_tuple_shape": {
+        "watchlist_state": "index label only",
+        "trigger_action_state": "canonical deployment/action state",
+        "technical_stance": "technical shorthand subordinate to trigger sheet",
+        "snapshot_portfolio_status": "weight/sleeve/portfolio implication",
+        "portfolio_config": [
+          "coverage_lane",
+          "workflow_state",
+          "portfolio_role",
+          "daily_technical_priority",
+          "entry_policy",
+          "sizing_tier"
+        ]
+      }
+    }
+  },
+  "phases": [
+    {
+      "phase": "artifact_generation",
+      "safe_now": true,
+      "description": "Generate review-only JSON/MD proposal artifacts from current notes and tmp artifacts.",
+      "allowed_outputs": [
+        "sector/correlation context",
+        "pro-forma exposure math",
+        "candidate/status proposal drafts",
+        "exact patch previews"
+      ],
+      "blocked_outputs": [
+        "canonical mutation",
+        "owner approval",
+        "trade/account action"
+      ]
+    },
+    {
+      "phase": "review_packet",
+      "safe_now": true,
+      "description": "Present owner decision packet with why-now, evidence, risks, exact affected fields, and stop lines.",
+      "gate": "packet validates cleanly and all authority flags remain false"
+    },
+    {
+      "phase": "gated_apply_helper",
+      "safe_now": "not yet",
+      "description": "Build a dry-run-only helper that consumes one approved-shaped proposal and emits scoped patch/diff; before approval it must refuse writes.",
+      "prerequisites": [
+        "typed schemas",
+        "patch-scope validator",
+        "cross-note invariant validator",
+        "authority vocabulary consistency check"
+      ]
+    },
+    {
+      "phase": "post_approval_apply",
+      "safe_now": "only after explicit scoped Randall approval",
+      "description": "Apply exactly the approved diff, then rerun validators and log the decision/outcome.",
+      "required_after_apply": [
+        "validate_canonical_ownership.py",
+        "validate_dashboard_state.py --write",
+        "proposal-specific validator",
+        "daily memory / decision log"
+      ]
+    },
+    {
+      "phase": "scheduled_maintenance",
+      "safe_now": "artifact generation only",
+      "description": "Cron may refresh review-only proposal candidates, stale warnings, and queue reminders; it must never apply mutations or infer approval.",
+      "blocked": [
+        "scheduled portfolio mutation",
+        "scheduled deployment-state mutation",
+        "scheduled owner-approval record changes"
+      ]
+    }
+  ],
+  "stop_lines": [
+    "Any proposed edit changes weight, cash, sleeve, sizing, sector cap, correlated-sleeve limit, or risk-rule threshold.",
+    "Any proposed edit promotes/demotes a ticker, changes execution-lane entitlement, or changes canonical deployment/action state.",
+    "Owner notes conflict with generated artifacts, especially Portfolio Snapshot vs Deployment Trigger Sheet vs portfolio-config.",
+    "Source freshness is partial, stale, contradictory, manual-dependent, or provider-estimated for a decision-critical field.",
+    "Technical evidence, thesis evidence, catalyst state, or risk/concentration checks materially disagree.",
+    "A clean validator, ranking, score, probability, or generated packet could be read as approval or execution authority.",
+    "The proposal affects real brokerage/account activity or could be interpreted as trade execution."
+  ],
+  "owner_gated_fields": [
+    "model weights and draft weights",
+    "cash target",
+    "sleeve roles, sleeve weights, sleeve structure, sector allocation, and correlated-sleeve interpretation",
+    "ticker promotion, demotion, addition to execution lane, or removal from execution lane",
+    "canonical deployment/action state: deployable now, almost deployable, blocked, do-not-touch, watch-only, repair, or similar capital-action meaning",
+    "owner approval state and any approval record",
+    "sizing tier, risk cap, risk-rule threshold, stop/invalidation policy, or exception handling",
+    "execution entitlement, trade readiness, buy/sell/add/trim language, account action, or real trade/fund movement",
+    "tmp/portfolio-config.json fields that alter tracked universe lane, workflow state, weight, entry-band authority, or execution entitlement"
+  ],
+  "validators_needed": [
+    {
+      "name": "portfolio_mutation_proposal_schema_validator",
+      "purpose": "Validate typed proposal packets for sleeve_change, ticker_lane_change, and canonical_status_move.",
+      "must_check": [
+        "authority flags false before approval",
+        "owner_decision_required true",
+        "apply_allowed false unless approved mode is explicitly passed",
+        "required fields by mutation type"
+      ]
+    },
+    {
+      "name": "portfolio_pro_forma_risk_validator",
+      "purpose": "Compute pre/post weights, cash, sector exposure, correlated sleeve exposure, single-name max, speculative sleeve, and catalyst-window exceptions.",
+      "must_check": [
+        "Risk Rules 25% sector cap",
+        "15% normal single-name ceiling",
+        "Tech + AI-power sleeve warning",
+        "cash target",
+        "speculative sleeve cap"
+      ]
+    },
+    {
+      "name": "canonical_status_invariant_validator",
+      "purpose": "Validate Watchlist / Trigger Sheet / Technical Sheet / Snapshot / Coverage / portfolio-config status tuple alignment.",
+      "must_check": [
+        "one owner per fact",
+        "no Watchlist technical/weight detail",
+        "Trigger owns action state",
+        "Snapshot owns weight/sleeve",
+        "Technical shorthand subordinate to Trigger"
+      ]
+    },
+    {
+      "name": "proposal_patch_scope_validator",
+      "purpose": "Confirm a proposed apply patch touches only the files and fields listed in the approved proposal.",
+      "must_check": [
+        "no unlisted files",
+        "no config/auth/runtime files",
+        "no trade/account language",
+        "no field outside proposal scope"
+      ]
+    },
+    {
+      "name": "authority_vocabulary_consistency_check",
+      "purpose": "Block generated text from implying buy/sell/add/trim/execute/deployable-now/approval/probability authority where not approved.",
+      "must_check": [
+        "candidate_packet_validator forbidden vocabulary",
+        "WF47 shared authority vocabulary when implemented",
+        "all proposal artifacts and review notes"
+      ]
+    },
+    {
+      "name": "post_apply_validation_chain",
+      "purpose": "After explicit approved apply, re-run note ownership and dashboard/state validators before closeout.",
+      "must_check": [
+        "validate_canonical_ownership.py",
+        "validate_dashboard_state.py --write",
+        "daily review / dashboard regeneration if relevant",
+        "decision/outcome log append"
+      ]
+    }
+  ],
+  "suggested_updates": [
+    {
+      "file": "06. Playbooks/Portfolio Mutation Proposal Protocol.md",
+      "change": "Add explicit subtypes: sleeve_change, ticker_lane_change, canonical_status_move; require proposal artifacts under tmp/portfolio-mutation-proposals/ with owner_decision_required=true, owner_approval_granted=false, apply_allowed=false by default."
+    },
+    {
+      "file": "06. Playbooks/Ticker Add Canonical Ownership Checklist.md",
+      "change": "Add a Canonical Status Move section that defines the status tuple across Watchlist, Trigger Sheet, Technical Sheet, Portfolio Snapshot, Coverage Universe, and tmp/portfolio-config.json."
+    },
+    {
+      "file": "06. Playbooks/Ticker Lane Templates.md",
+      "change": "Add a review-only status-move proposal template and sleeve/rebalance proposal template; keep exact patches in tmp artifacts, not in canonical notes before approval."
+    },
+    {
+      "file": "06. Playbooks/Watchlist Promotion Candidate Packet Contract.md",
+      "change": "Add fields for owner_conflict_check, sector_correlation_artifact, current_canonical_status_tuple, proposed_canonical_status_tuple, and canonical_status_move_required."
+    },
+    {
+      "file": "06. Playbooks/Promotion Review Queue.md",
+      "change": "Add guidance that DEPLOYABLE / DEPLOYABLE NOW / execution-lane proposals need a linked proposal artifact path before any apply, while ALMOST remains visible but not automatically queued unless escalation is requested."
+    },
+    {
+      "file": "06. Playbooks/OpenClaw Parallel Pilot Queue.md",
+      "change": "Do not reopen WF38. Add a queued bounded workflow, suggested title ?WF56 - Portfolio Mutation Proposal Object and Gated Apply Helper?, after WF55/WF51 trust-context work and WF47 authority vocabulary unless Randall explicitly prioritizes it sooner."
+    },
+    {
+      "file": "06. Playbooks/IC Project Registry.md",
+      "change": "Reconcile WF42 status wording: the WF42 continuity note says v1 completed on 2026-05-09, while the registry still says queued behind WF41. Choose one live truth and update the registry/queue accordingly."
+    },
+    {
+      "file": "scripts/",
+      "change": "Before any apply helper, add tests/validators for proposal schema, pro-forma risk, canonical status invariants, patch-scope limits, and authority vocabulary. Do not wire scheduled apply behavior."
+    }
+  ]
+}

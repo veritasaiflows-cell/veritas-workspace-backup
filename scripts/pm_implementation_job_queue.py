@@ -777,7 +777,7 @@ DEPARTMENT_OWNER_BY_DEPARTMENT = {
     "finance_wf78_wf84_wf85": "main-session-veritas-finance",
     "product_wf75_wf79": "smb-workflow-automation-operator",
     "qa": "workspace-qa-pass",
-    "skills_procedure": "operating-procedure-repository-manager",
+    "skills_procedure": "workspace-governor",
     "memory_continuity": "memory-continuity-manager",
     "main_session_veritas": "main-session-veritas",
 }
@@ -1103,7 +1103,7 @@ def build_cron_decision_job(candidate: dict[str, Any], rank: int) -> dict[str, A
         "source_cron_job_id": candidate.get("job_id"),
         "lane_id": "cron_operating_leverage",
         "lane_status": "candidate",
-        "title": f"Cron thinning decision: {name}",
+        "title": f"{'Cron repair' if candidate_type.startswith('repair') else 'Cron thinning decision'}: {name}",
         "objective": candidate.get("recommendation") or "Review cron retire/merge candidate.",
         "implementation_class": candidate_type,
         "owner_surface": "WF73/WF76 cron operating leverage",

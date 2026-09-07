@@ -1,0 +1,46 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T18:53:59Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-json-first-legacy-md-archive-microbatch-2026-05-25.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 3,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/bounded-auto-archive-last-report.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 JSON First Legacy Markdown/bounded-auto-archive-last-report.md",
+      "sha256_before": "1bc44dc92b09195d5adddde7f905a775852a8f29434d4b1afca921f9abf51690",
+      "sha256_after": "1bc44dc92b09195d5adddde7f905a775852a8f29434d4b1afca921f9abf51690"
+    },
+    {
+      "path": "tmp/redacted-tool-result-telemetry.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 JSON First Legacy Markdown/redacted-tool-result-telemetry.md",
+      "sha256_before": "00f8d9ece230ea2b5736a1d2cc2af2ecf05ce5fb9cbd8335458828d174f2821c",
+      "sha256_after": "00f8d9ece230ea2b5736a1d2cc2af2ecf05ce5fb9cbd8335458828d174f2821c"
+    },
+    {
+      "path": "tmp/tool-bloat-reduction-guard.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 JSON First Legacy Markdown/tool-bloat-reduction-guard.md",
+      "sha256_before": "e581258f9e421fc4b99aaa757a27770b9be7cf0850df8aa8cf6adc6f1e068324",
+      "sha256_after": "e581258f9e421fc4b99aaa757a27770b9be7cf0850df8aa8cf6adc6f1e068324"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; explicit apply_allowed suggestions can move only with zero references or the WF72 adjacent-JSON historical-reference-only exception"
+}

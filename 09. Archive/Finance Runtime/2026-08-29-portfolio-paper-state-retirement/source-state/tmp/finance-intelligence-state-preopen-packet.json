@@ -1,0 +1,526 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-08-28T02:49:07Z",
+  "artifact_type": "finance_intelligence_state_preopen_packet",
+  "status": "ok",
+  "db_path": "tmp/finance-intelligence-state.sqlite",
+  "queue": [
+    {
+      "ticker": "GOOG",
+      "name": "Alphabet Inc.",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "sector": "Tech",
+      "instrument_type": "operating_company",
+      "universe_scope": "active_internal_universe",
+      "production_answer_path_member": 1,
+      "thin_monitor_row": 0,
+      "latest_known_price": 339.1,
+      "band_status": "IN_BAND",
+      "entry_band_low": 326.46,
+      "entry_band_high": 348.13,
+      "stop_or_invalidation": 314.42,
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "recommendation_posture_key": "approval_ready_if_fresh",
+      "actionability": "review_only_owner_gated",
+      "card_path": "tmp/ticker-intelligence-cards/GOOG.current.json",
+      "card_generated_at_utc": "2026-08-27T20:55:43Z",
+      "source_open_required": 1,
+      "authority_forbidden_true_json": "[]"
+    },
+    {
+      "ticker": "JPM",
+      "name": "JPMorgan Chase & Co.",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "sector": "Financials",
+      "instrument_type": "operating_company",
+      "universe_scope": "active_internal_universe",
+      "production_answer_path_member": 1,
+      "thin_monitor_row": 0,
+      "latest_known_price": 356.5,
+      "band_status": "IN_BAND",
+      "entry_band_low": 342.95,
+      "entry_band_high": 356.74,
+      "stop_or_invalidation": 335.29,
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "recommendation_posture_key": "approval_ready_if_fresh",
+      "actionability": "review_only_owner_gated",
+      "card_path": "tmp/ticker-intelligence-cards/JPM.current.json",
+      "card_generated_at_utc": "2026-08-27T20:55:43Z",
+      "source_open_required": 1,
+      "authority_forbidden_true_json": "[]"
+    },
+    {
+      "ticker": "LIN",
+      "name": "Linde plc",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "sector": "Materials",
+      "instrument_type": "operating_company",
+      "universe_scope": "active_internal_universe",
+      "production_answer_path_member": 1,
+      "thin_monitor_row": 0,
+      "latest_known_price": 490.33,
+      "band_status": "IN_BAND",
+      "entry_band_low": 468.3,
+      "entry_band_high": 492.08,
+      "stop_or_invalidation": 455.09,
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "recommendation_posture_key": "approval_ready_if_fresh",
+      "actionability": "review_only_owner_gated",
+      "card_path": "tmp/ticker-intelligence-cards/LIN.current.json",
+      "card_generated_at_utc": "2026-08-27T20:55:43Z",
+      "source_open_required": 1,
+      "authority_forbidden_true_json": "[]"
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "sector": "Tech",
+      "instrument_type": "operating_company",
+      "universe_scope": "active_internal_universe",
+      "production_answer_path_member": 1,
+      "thin_monitor_row": 0,
+      "latest_known_price": 209.66,
+      "band_status": "IN_BAND",
+      "entry_band_low": 202.15,
+      "entry_band_high": 217.11,
+      "stop_or_invalidation": 193.84,
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "recommendation_posture_key": "approval_ready_if_fresh",
+      "actionability": "review_only_owner_gated",
+      "card_path": "tmp/ticker-intelligence-cards/NVDA.current.json",
+      "card_generated_at_utc": "2026-08-27T20:55:43Z",
+      "source_open_required": 1,
+      "authority_forbidden_true_json": "[]"
+    },
+    {
+      "ticker": "VRT",
+      "name": "Vertiv Holdings Co",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "sector": "Industrials",
+      "instrument_type": "operating_company",
+      "universe_scope": "active_internal_universe",
+      "production_answer_path_member": 1,
+      "thin_monitor_row": 0,
+      "latest_known_price": 263.81,
+      "band_status": "IN_BAND",
+      "entry_band_low": 230.66,
+      "entry_band_high": 280.95,
+      "stop_or_invalidation": 207.79,
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "recommendation_posture_key": "approval_ready_if_fresh",
+      "actionability": "review_only_owner_gated",
+      "card_path": "tmp/ticker-intelligence-cards/VRT.current.json",
+      "card_generated_at_utc": "2026-08-27T20:55:43Z",
+      "source_open_required": 1,
+      "authority_forbidden_true_json": "[]"
+    },
+    {
+      "ticker": "XOM",
+      "name": "Exxon Mobil Corporation",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "sector": "Energy",
+      "instrument_type": "operating_company",
+      "universe_scope": "active_internal_universe",
+      "production_answer_path_member": 1,
+      "thin_monitor_row": 0,
+      "latest_known_price": 158.19,
+      "band_status": "IN_BAND",
+      "entry_band_low": 150.65,
+      "entry_band_high": 159.09,
+      "stop_or_invalidation": 145.78,
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "recommendation_posture_key": "approval_ready_if_fresh",
+      "actionability": "review_only_owner_gated",
+      "card_path": "tmp/ticker-intelligence-cards/XOM.current.json",
+      "card_generated_at_utc": "2026-08-27T20:55:43Z",
+      "source_open_required": 1,
+      "authority_forbidden_true_json": "[]"
+    },
+    {
+      "ticker": "CME",
+      "name": "CME Group Inc.",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "sector": "Financial Infrastructure",
+      "instrument_type": "operating_company",
+      "universe_scope": "active_internal_universe",
+      "production_answer_path_member": 1,
+      "thin_monitor_row": 0,
+      "latest_known_price": 280.98,
+      "band_status": "ABOVE_BAND",
+      "entry_band_low": 252.31,
+      "entry_band_high": 265.88,
+      "stop_or_invalidation": 244.77,
+      "recommendation_posture": "no chase",
+      "recommendation_posture_key": "no_chase",
+      "actionability": "review_only_owner_gated",
+      "card_path": "tmp/ticker-intelligence-cards/CME.current.json",
+      "card_generated_at_utc": "2026-08-27T20:55:42Z",
+      "source_open_required": 1,
+      "authority_forbidden_true_json": "[]"
+    },
+    {
+      "ticker": "META",
+      "name": "Meta Platforms, Inc.",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "sector": "Communication Services",
+      "instrument_type": "operating_company",
+      "universe_scope": "active_internal_universe",
+      "production_answer_path_member": 1,
+      "thin_monitor_row": 0,
+      "latest_known_price": 576.14,
+      "band_status": "BELOW_STOP",
+      "entry_band_low": 623.36,
+      "entry_band_high": 648.95,
+      "stop_or_invalidation": 602.89,
+      "recommendation_posture": "no chase",
+      "recommendation_posture_key": "no_chase",
+      "actionability": "review_only_owner_gated",
+      "card_path": "tmp/ticker-intelligence-cards/META.current.json",
+      "card_generated_at_utc": "2026-08-27T20:55:43Z",
+      "source_open_required": 1,
+      "authority_forbidden_true_json": "[]"
+    },
+    {
+      "ticker": "BKNG",
+      "name": "Booking Holdings Inc.",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "sector": "Consumer Discretionary",
+      "instrument_type": "operating_company",
+      "universe_scope": "active_internal_universe",
+      "production_answer_path_member": 1,
+      "thin_monitor_row": 0,
+      "latest_known_price": 208.89,
+      "band_status": "ABOVE_BAND",
+      "entry_band_low": 188.28,
+      "entry_band_high": 205.72,
+      "stop_or_invalidation": 178.75,
+      "recommendation_posture": "no chase",
+      "recommendation_posture_key": "no_chase",
+      "actionability": "review_only_owner_gated",
+      "card_path": "tmp/ticker-intelligence-cards/BKNG.current.json",
+      "card_generated_at_utc": "2026-08-27T20:55:42Z",
+      "source_open_required": 1,
+      "authority_forbidden_true_json": "[]"
+    },
+    {
+      "ticker": "CVX",
+      "name": "Chevron Corporation",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "sector": "Energy",
+      "instrument_type": "operating_company",
+      "universe_scope": "active_internal_universe",
+      "production_answer_path_member": 1,
+      "thin_monitor_row": 0,
+      "latest_known_price": 200.21,
+      "band_status": "ABOVE_BAND",
+      "entry_band_low": 186.9,
+      "entry_band_high": 196.84,
+      "stop_or_invalidation": 181.26,
+      "recommendation_posture": "no chase",
+      "recommendation_posture_key": "no_chase",
+      "actionability": "review_only_owner_gated",
+      "card_path": "tmp/ticker-intelligence-cards/CVX.current.json",
+      "card_generated_at_utc": "2026-08-27T20:55:42Z",
+      "source_open_required": 1,
+      "authority_forbidden_true_json": "[]"
+    }
+  ],
+  "stale_ticker_cards": [
+    {
+      "ticker": "A",
+      "card_path": "tmp/ticker-intelligence-cards/A.current.json",
+      "missing_or_stale_json": "[\"stale:catalyst_earnings_state\",\"stale:deployment_readiness\",\"stale:price_band_stop\",\"stale:recommendation_support\",\"stale:technical_posture\"]",
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\",\"current price is outside the written band; wait for re-entry/reclaim or explicit owner-approved band review\",\"fresh_price_band_stop_required\",\"official_fundamentals_required_if_promoted\",\"risk_register_required_if_promoted\",\"technical_posture_required\",\"thin_monitor_sql_row_only\"]"
+    },
+    {
+      "ticker": "AAPL",
+      "card_path": "tmp/ticker-intelligence-cards/AAPL.current.json",
+      "missing_or_stale_json": "[\"stale:catalyst_earnings_state\",\"stale:deployment_readiness\",\"stale:price_band_stop\",\"stale:recommendation_support\",\"stale:technical_posture\"]",
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\",\"current price is outside the written band; wait for re-entry/reclaim or explicit owner-approved band review\",\"fresh_price_band_stop_required\",\"official_fundamentals_required_if_promoted\",\"risk_register_required_if_promoted\",\"technical_posture_required\",\"thin_monitor_sql_row_only\"]"
+    },
+    {
+      "ticker": "ABBV",
+      "card_path": "tmp/ticker-intelligence-cards/ABBV.current.json",
+      "missing_or_stale_json": "[\"stale:catalyst_earnings_state\",\"stale:deployment_readiness\",\"stale:price_band_stop\",\"stale:recommendation_support\",\"stale:technical_posture\"]",
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\",\"current price is outside the written band; wait for re-entry/reclaim or explicit owner-approved band review\",\"fresh_price_band_stop_required\",\"official_fundamentals_required_if_promoted\",\"risk_register_required_if_promoted\",\"technical_posture_required\",\"thin_monitor_sql_row_only\"]"
+    },
+    {
+      "ticker": "ABNB",
+      "card_path": "tmp/ticker-intelligence-cards/ABNB.current.json",
+      "missing_or_stale_json": "[\"stale:catalyst_earnings_state\",\"stale:deployment_readiness\",\"stale:price_band_stop\",\"stale:recommendation_support\",\"stale:technical_posture\"]",
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\",\"current price is outside the written band; wait for re-entry/reclaim or explicit owner-approved band review\",\"fresh_price_band_stop_required\",\"official_fundamentals_required_if_promoted\",\"risk_register_required_if_promoted\",\"technical_posture_required\",\"thin_monitor_sql_row_only\"]"
+    },
+    {
+      "ticker": "ABT",
+      "card_path": "tmp/ticker-intelligence-cards/ABT.current.json",
+      "missing_or_stale_json": "[\"stale:catalyst_earnings_state\",\"stale:deployment_readiness\",\"stale:price_band_stop\",\"stale:recommendation_support\",\"stale:technical_posture\"]",
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\",\"fresh_price_band_stop_required\",\"official_fundamentals_required_if_promoted\",\"risk_register_required_if_promoted\",\"technical_posture_required\",\"thin_monitor_sql_row_only\"]"
+    },
+    {
+      "ticker": "ACGL",
+      "card_path": "tmp/ticker-intelligence-cards/ACGL.current.json",
+      "missing_or_stale_json": "[\"stale:catalyst_earnings_state\",\"stale:deployment_readiness\",\"stale:price_band_stop\",\"stale:recommendation_support\",\"stale:technical_posture\"]",
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\",\"fresh_price_band_stop_required\",\"official_fundamentals_required_if_promoted\",\"risk_register_required_if_promoted\",\"technical_posture_required\",\"thin_monitor_sql_row_only\"]"
+    },
+    {
+      "ticker": "ACN",
+      "card_path": "tmp/ticker-intelligence-cards/ACN.current.json",
+      "missing_or_stale_json": "[\"stale:catalyst_earnings_state\",\"stale:deployment_readiness\",\"stale:price_band_stop\",\"stale:recommendation_support\",\"stale:technical_posture\"]",
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\",\"current price is outside the written band; wait for re-entry/reclaim or explicit owner-approved band review\",\"fresh_price_band_stop_required\",\"official_fundamentals_required_if_promoted\",\"risk_register_required_if_promoted\",\"technical_posture_required\",\"thin_monitor_sql_row_only\"]"
+    },
+    {
+      "ticker": "ADBE",
+      "card_path": "tmp/ticker-intelligence-cards/ADBE.current.json",
+      "missing_or_stale_json": "[\"stale:catalyst_earnings_state\",\"stale:deployment_readiness\",\"stale:price_band_stop\",\"stale:recommendation_support\",\"stale:technical_posture\"]",
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\",\"current price is outside the written band; wait for re-entry/reclaim or explicit owner-approved band review\",\"fresh_price_band_stop_required\",\"official_fundamentals_required_if_promoted\",\"risk_register_required_if_promoted\",\"technical_posture_required\",\"thin_monitor_sql_row_only\"]"
+    },
+    {
+      "ticker": "ADI",
+      "card_path": "tmp/ticker-intelligence-cards/ADI.current.json",
+      "missing_or_stale_json": "[\"stale:catalyst_earnings_state\",\"stale:deployment_readiness\",\"stale:price_band_stop\",\"stale:recommendation_support\",\"stale:technical_posture\"]",
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\",\"fresh_price_band_stop_required\",\"official_fundamentals_required_if_promoted\",\"owner promotion/selection still required before treating as deployed\",\"risk_register_required_if_promoted\",\"technical_posture_required\",\"thin_monitor_sql_row_only\"]"
+    },
+    {
+      "ticker": "ADM",
+      "card_path": "tmp/ticker-intelligence-cards/ADM.current.json",
+      "missing_or_stale_json": "[\"stale:catalyst_earnings_state\",\"stale:deployment_readiness\",\"stale:price_band_stop\",\"stale:recommendation_support\",\"stale:technical_posture\"]",
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\",\"fresh_price_band_stop_required\",\"official_fundamentals_required_if_promoted\",\"risk_register_required_if_promoted\",\"technical_posture_required\",\"thin_monitor_sql_row_only\"]"
+    }
+  ],
+  "pending_approval_queue": [
+    {
+      "ticker": "ETN",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers_json": "[\"owner promotion/selection still required before treating as deployed\",\"card itself grants no paper/live execution authority and infers no approval\"]"
+    },
+    {
+      "ticker": "GOOG",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\"]"
+    },
+    {
+      "ticker": "GS",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\"]"
+    },
+    {
+      "ticker": "JPM",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\"]"
+    },
+    {
+      "ticker": "LIN",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\"]"
+    },
+    {
+      "ticker": "NVDA",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\"]"
+    },
+    {
+      "ticker": "VRT",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers_json": "[\"owner promotion/selection still required before treating as deployed\",\"card itself grants no paper/live execution authority and infers no approval\"]"
+    },
+    {
+      "ticker": "XOM",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\"]"
+    },
+    {
+      "ticker": "AMZN",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\"]"
+    },
+    {
+      "ticker": "CAT",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers_json": "[\"card itself grants no paper/live execution authority and infers no approval\"]"
+    }
+  ],
+  "validator_status": [
+    {
+      "check_name": "preopen_action_queue_has_rows",
+      "status": "ok",
+      "severity": "warning",
+      "detail_json": "{\"rows\":14}"
+    },
+    {
+      "check_name": "active_sql_rows_supported_scaleout_count",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"actual\":300,\"supported\":[58,100,158,200,258,300,358,400,458,500]}"
+    },
+    {
+      "check_name": "analyst_rows_for_all_tickers",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"actual\":300,\"expected\":300}"
+    },
+    {
+      "check_name": "cards_exist_for_dynamic_production_scope",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"missing\":0}"
+    },
+    {
+      "check_name": "current_ticker_cards_match_production_scope",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"actual\":14,\"dynamic_scope_source\":\"sql_first_universe_production_answer_path_member\",\"empty_production_scope_is_wait_state\":false,\"expected_production_scope\":14,\"expected_strict_production_scope\":0}"
+    },
+    {
+      "check_name": "entry_stop_rows_for_all_tickers",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"actual\":300,\"expected\":300}"
+    },
+    {
+      "check_name": "foreign_key_check_ok",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"rows\":0}"
+    },
+    {
+      "check_name": "fundamental_rows_for_all_tickers",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"actual\":300,\"expected\":300}"
+    },
+    {
+      "check_name": "integrity_check_ok",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "\"ok\""
+    },
+    {
+      "check_name": "latest_valid_entry_stop_refs_cover_dynamic_production_scope",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"dynamic_scope_source\":\"sql_first_universe_production_answer_path_member\",\"empty_production_scope_is_wait_state\":false,\"expected_strict_production_scope\":0,\"strict_production_scope_rows\":14,\"valid_reference_rows\":42}"
+    },
+    {
+      "check_name": "no_forbidden_authority_in_cards",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"rows\":0}"
+    },
+    {
+      "check_name": "pilot_fixtures_excluded_from_production_cards",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"rows\":0}"
+    },
+    {
+      "check_name": "pilot_fixtures_thin_on_demand_only",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"rows\":0}"
+    },
+    {
+      "check_name": "review_monitor_thin_rows_supported_scaleout_count",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"actual\":258,\"supported\":[58,158,258,358,458]}"
+    },
+    {
+      "check_name": "router_qa_pass",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"checks_failed_error\":0,\"checks_failed_warning\":0,\"checks_total\":480,\"phase1_coverage_registry_exists\":true,\"phase2_ticker_cards_found\":42,\"router_examples_checked\":5}"
+    },
+    {
+      "check_name": "source_open_required_all_cards",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"rows\":0}"
+    },
+    {
+      "check_name": "universe_count_matches_expected",
+      "status": "ok",
+      "severity": "error",
+      "detail_json": "{\"actual\":300,\"expected\":300}"
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "database_path": "tmp/finance-intelligence-state.sqlite",
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_sql_canon_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_sql_canon_current_state_field_families": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "tmp_database_is_compatibility_cache": true,
+    "database_path_migration_performed": false,
+    "tmp_database_promotion_performed": false,
+    "full_sql_canon_migration_allowed": false,
+    "sql_canon_authority_expanded": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_trade_execution_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "source_open_required_before_finance_claims": true
+  },
+  "source_open_rule": "Use this compact SQL packet for routing/current-state triage only; open listed source artifacts and canonical owner notes before material finance claims."
+}

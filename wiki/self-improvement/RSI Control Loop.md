@@ -29,8 +29,8 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - Rubric dimensions: `9`.
 - Primary first-hop eval: `tmp/wf74-learning-loop-eval-harness.json`.
 - Legacy RSI first-hop truth: `False`.
-- Decision docket rows: `35`.
-- Decision docket active actions: `14`.
+- Decision docket rows: `25`.
+- Decision docket active actions: `10`.
 - Decision docket hard stops: `0`.
 - Live RSI trace rows / stable closures: `7` / `0`.
 - RSI correlation IDs unique/duplicate/missing/noncanonical: `7` / `0` / `0` / `0`; integrity gate `True`.

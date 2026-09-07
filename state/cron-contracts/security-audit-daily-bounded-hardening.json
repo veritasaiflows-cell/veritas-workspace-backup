@@ -1,0 +1,60 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "d2cbac10-f1fb-4060-8445-cb13f3dfc6be",
+  "name": "Security Audit - Daily Bounded Hardening",
+  "required": true,
+  "owner_workflow": "WF40 bounded security audit",
+  "contract_reason": "The daily read-only security proof needs a complete file-backed contract so scheduler drift and required artifacts fail closed.",
+  "description": "WF40 scheduled read-only security audit proof. Updated 2026-06-05 late to remove redundant cron_operator_ledger refresh from this isolated producer; cron scorecard and escalation own wake decisions. No config/auth/network/plugin/browser/canonical finance/trade/account mutation authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "10 17 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts\\cyber_security_daily_audit_cron_runner.py"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 1800
+  },
+  "delivery": {
+    "mode": "none"
+  },
+  "compare_fields": [
+    "name",
+    "description",
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds",
+    "delivery.mode"
+  ],
+  "expected_artifacts": [
+    "tmp/cyber-security-daily-audit-cron-proof.json",
+    "tmp/cyber-security-daily-audit.json"
+  ],
+  "authority_boundary": {
+    "read_only_security_audit": true,
+    "cron_contract_only": true,
+    "config_auth_network_plugin_browser_mutation_allowed": false,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-09-06T22:13:50Z",
+  "contract_update_reason": "Pin command argv to CPython 3.13 so Gateway can spawn the job after python ENOENT auto-failures."
+}

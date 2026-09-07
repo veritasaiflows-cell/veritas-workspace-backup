@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "wf85-goog-approval-card-draft-20260609T1807Z",
+  "created_at_utc": "2026-06-09T18:14:47Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true
+  },
+  "order": {
+    "symbol": "GOOG",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 361.98,
+    "qty": null,
+    "notional": 361.98
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 361.98,
+    "max_loss_usd": 19.49,
+    "max_notional_usd": 500.0,
+    "position_size_reviewed": true,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "entry_band_low": 354.63,
+    "entry_band_high": 376.48,
+    "observed_price": 361.98,
+    "observed_entry_status": "IN_BAND",
+    "stop": 342.49,
+    "sizing_rationale": "Paper-only starter request sized at or below WF67 $500 pilot cap; exact execution remains blocked pending Randall approval and fresh guard proof."
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "WF85 GOOG review-ready pilot, paper-only starter approval-card draft, exact Randall approval received for this paper-only request",
+    "recommendation_source": "main_session_order_decision_card",
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/main-session-cards/GOOG.owner-card.json",
+    "capital_recommendation_source": "wf85_trade_grade_review_ready_pilot",
+    "source_artifact": "tmp/trade-grade-decision-cards.json",
+    "market_order_owner_approved": false,
+    "exact_order_owner_approval_status": "approved_exact_order",
+    "approved_by": "Randall",
+    "exact_order_owner_approval_text": "I approve the exact GOOG paper-only buy order: limit/day, notional $361.98, limit $361.98, using WF67 paper-only guardrails",
+    "main_session_capital_package_notification_required": true,
+    "approval_artifact": "tmp/alpaca-paper-readiness/owner-approval.goog-wf85-20260609T181227Z.json",
+    "chief_intelligence_promotion_gate": {
+      "gate_artifact": "tmp/chief-intelligence-promotion-gate.json",
+      "gate_schema_version": "chief_intelligence_promotion_gate.v1",
+      "gate_generated_at_utc": "2026-06-07T02:49:46Z",
+      "ticker": "GOOG",
+      "rank": 4,
+      "chief_intelligence_score": 64.96,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "band_status": "IN_BAND",
+      "entry_band": {
+        "low": 354.63,
+        "high": 376.48,
+        "stop": 342.49,
+        "label": "354.63–376.48",
+        "band_last_set": "2026-06-04"
+      }
+    }
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_forbidden": "https://api.alpaca.markets"
+  }
+}

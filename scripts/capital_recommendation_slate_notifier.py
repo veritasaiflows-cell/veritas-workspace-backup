@@ -232,17 +232,17 @@ def render_lines(summary: dict[str, Any]) -> list[str]:
     reviewed = summary.get("reviewed_count") or 0
     new_adds = summary.get("new_add_count") or 0
     lines = [
-        f"CAPITAL RECOMMENDATION REVIEW ({window})",
-        f"Reviewed: {reviewed} | New adds recommended: {new_adds}"
-        + (" | Posture: all review-only (no_new_approval)" if summary.get("all_no_new_approval") else ""),
+        f"BAND ALERT REVIEW ({window})",
+        f"Watched: {reviewed} | At alert level: {new_adds}"
+        + (" | All names review-only" if summary.get("all_no_new_approval") else ""),
         "",
     ]
     if summary.get("all_no_new_approval"):
-        lines.append("Verdict: no new capital deployment recommended. All names are setup/watch, not approval.")
+        lines.append("Verdict: nothing at an actionable alert level. All names are setup/watch.")
     else:
         lines.append("Verdict: at least one name carries a non-default posture — see below.")
     lines.append("")
-    lines.append("Reviewed slate (closest-to-band first):")
+    lines.append("Watchlist (closest-to-band first):")
     for r in summary.get("rows", []):
         close = f"{r['close']:.2f}" if isinstance(r.get("close"), float) else "n/a"
         band = (
@@ -261,9 +261,6 @@ def render_lines(summary: dict[str, Any]) -> list[str]:
             f"- {r['ticker']}: {r.get('review_state') or 'n/a'}, {r.get('band_status') or 'n/a'} "
             f"(close {close} {pos_txt}; band {band}), {stop} [{posture}]"
         )
-        note = r.get("band_status_note")
-        if isinstance(note, str) and "proposed" in note.lower():
-            line += " (note: reclaim/proposed band differs from written band)"
         lines.append(line)
     lines.append("")
     lines.append(BOUNDARY)

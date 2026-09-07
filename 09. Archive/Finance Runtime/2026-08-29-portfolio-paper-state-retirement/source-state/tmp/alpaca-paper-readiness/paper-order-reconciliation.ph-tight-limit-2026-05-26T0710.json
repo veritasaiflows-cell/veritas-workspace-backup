@@ -1,0 +1,44 @@
+{
+  "artifact_type": "wf67_paper_order_reconciliation",
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "live_trading_allowed": false,
+    "money_movement_allowed": false,
+    "paper_only": true
+  },
+  "base_url": "https://paper-api.alpaca.markets",
+  "generated_at_utc": "2026-05-26T14:10:04Z",
+  "live_endpoint_used": false,
+  "ph_orders": [
+    {
+      "canceled_at": null,
+      "created_at": "2026-05-26T14:09:30.892097722Z",
+      "expired_at": null,
+      "filled_at": "2026-05-26T14:09:30.899768127Z",
+      "filled_qty": "0.3",
+      "limit_price": "876",
+      "qty": "0.3",
+      "side": "buy",
+      "status": "filled",
+      "submitted_at": "2026-05-26T14:09:30.892097722Z",
+      "symbol": "PH",
+      "time_in_force": "day",
+      "type": "limit"
+    }
+  ],
+  "ph_positions": [
+    {
+      "cost_basis": "262.452",
+      "current_price": "872.9662",
+      "market_value": "261.88986",
+      "qty": "0.3",
+      "symbol": "PH",
+      "unrealized_pl": "-0.56214",
+      "unrealized_plpc": "-0.00214"
+    }
+  ],
+  "raw_response_persisted": false,
+  "schema_version": 1,
+  "secrets_redacted": true,
+  "status": "ok"
+}

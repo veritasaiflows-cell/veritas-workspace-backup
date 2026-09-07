@@ -31,7 +31,7 @@ def test_rendered_html_has_launcher_controls() -> None:
     html_text = catalog_builder.render_catalog_html(catalog)
     errors = catalog_builder.validate_catalog(catalog, html_text)
     assert_true(errors == [], f"catalog HTML should validate, got {errors}")
-    for marker in ["Veritas Local Training Catalog", "Enable ledger", "Authoring checklist", "Component library", "Launch", "Download SCORM"]:
+    for marker in ["Veritas Local Training Catalog", "Enable ledger", "Authoring checklist", "Component library", "Launch", "Download SCORM", "Teaching walkthroughs", "Local screen recordings"]:
         assert_true(marker in html_text, f"missing marker {marker}")
 
 

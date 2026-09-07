@@ -1,0 +1,574 @@
+{
+  "schema_version": 1,
+  "artifact_type": "wf78_live_25_pilot_preflight",
+  "generated_at_utc": "2026-05-29T04:31:00Z",
+  "workflow": "WF78 - 500 Ticker Finance Intelligence Scaleout",
+  "status": "ready_for_review",
+  "review_only": true,
+  "authority_boundary": {
+    "posture": "review_only_live_pilot_preflight_not_import_not_approval",
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "deployment_state_mutation_allowed": false,
+    "sizing_sleeve_cash_risk_rule_authority": false,
+    "owner_approval_granted": false,
+    "owner_approval_inferred": false,
+    "trade_execution_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "sql_canon_migration_allowed": false,
+    "db_path_migration_allowed": false,
+    "tmp_artifact_promotion_allowed": false,
+    "broad_ticker_import_allowed": false,
+    "production_answer_path_overwrite_allowed": false,
+    "live_pilot_import_performed": false
+  },
+  "preflight_decision": {
+    "proposal_only": true,
+    "live_pilot_import_performed": false,
+    "requires_next_gate_before_import": true,
+    "requires_clean_provider_runtime_probe_before_import": true,
+    "requires_production_42_regression_after_any_import": true
+  },
+  "candidate_policy": {
+    "target_count": 25,
+    "production_overlap_allowed": false,
+    "default_tier": "C",
+    "decision_grade_eligible": false,
+    "thin_sql_or_on_demand_card_only": true,
+    "material_finance_claim_requires_source_open": true,
+    "promotion_required_before_action": true
+  },
+  "candidate_symbols": [
+    {
+      "ticker": "ADBE",
+      "name": "Adobe Inc.",
+      "sector": "Technology",
+      "role": "fixture_seed",
+      "tier": "C",
+      "rationale": "Existing WF78 fixture; software breadth and provider/runtime proof already exercised."
+    },
+    {
+      "ticker": "ASML",
+      "name": "ASML Holding N.V.",
+      "sector": "Technology",
+      "role": "fixture_seed",
+      "tier": "C",
+      "rationale": "Existing WF78 fixture; semiconductor equipment / AI supply-chain monitor."
+    },
+    {
+      "ticker": "AVGO",
+      "name": "Broadcom Inc.",
+      "sector": "Technology",
+      "role": "fixture_seed",
+      "tier": "C",
+      "rationale": "Existing WF78 fixture; semiconductor and infrastructure software breadth."
+    },
+    {
+      "ticker": "CRM",
+      "name": "Salesforce, Inc.",
+      "sector": "Technology",
+      "role": "fixture_seed",
+      "tier": "C",
+      "rationale": "Existing WF78 fixture; enterprise software monitor."
+    },
+    {
+      "ticker": "INTU",
+      "name": "Intuit Inc.",
+      "sector": "Technology",
+      "role": "fixture_seed",
+      "tier": "C",
+      "rationale": "Existing WF78 fixture; durable application software monitor."
+    },
+    {
+      "ticker": "NOW",
+      "name": "ServiceNow, Inc.",
+      "sector": "Technology",
+      "role": "fixture_seed",
+      "tier": "C",
+      "rationale": "Existing WF78 fixture; workflow automation / enterprise software monitor."
+    },
+    {
+      "ticker": "ORCL",
+      "name": "Oracle Corporation",
+      "sector": "Technology",
+      "role": "fixture_seed",
+      "tier": "C",
+      "rationale": "Existing WF78 fixture; cloud/database infrastructure monitor."
+    },
+    {
+      "ticker": "SAP",
+      "name": "SAP SE",
+      "sector": "Technology",
+      "role": "fixture_seed",
+      "tier": "C",
+      "rationale": "Existing WF78 fixture; non-US enterprise software breadth."
+    },
+    {
+      "ticker": "SHOP",
+      "name": "Shopify Inc.",
+      "sector": "Technology",
+      "role": "fixture_seed",
+      "tier": "C",
+      "rationale": "Existing WF78 fixture; commerce platform monitor."
+    },
+    {
+      "ticker": "TSM",
+      "name": "Taiwan Semiconductor Manufacturing Company Limited",
+      "sector": "Technology",
+      "role": "fixture_seed",
+      "tier": "C",
+      "rationale": "Existing WF78 fixture; semiconductor manufacturing / geopolitical supply-chain monitor."
+    },
+    {
+      "ticker": "UBER",
+      "name": "Uber Technologies, Inc.",
+      "sector": "Industrials",
+      "role": "fixture_seed",
+      "tier": "C",
+      "rationale": "Existing WF78 fixture; platform economy / mobility monitor."
+    },
+    {
+      "ticker": "AAPL",
+      "name": "Apple Inc.",
+      "sector": "Technology",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Mega-cap technology benchmark and consumer hardware/software breadth."
+    },
+    {
+      "ticker": "COST",
+      "name": "Costco Wholesale Corporation",
+      "sector": "Consumer Staples",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Defensive consumer/staples quality monitor."
+    },
+    {
+      "ticker": "MA",
+      "name": "Mastercard Incorporated",
+      "sector": "Financials",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Payments network monitor and financials breadth."
+    },
+    {
+      "ticker": "V",
+      "name": "Visa Inc.",
+      "sector": "Financials",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Payments network monitor and consumer/financial activity proxy."
+    },
+    {
+      "ticker": "AXP",
+      "name": "American Express Company",
+      "sector": "Financials",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Consumer credit and affluent spending monitor."
+    },
+    {
+      "ticker": "ISRG",
+      "name": "Intuitive Surgical, Inc.",
+      "sector": "Health Care",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Medical technology / health-care quality monitor."
+    },
+    {
+      "ticker": "TXN",
+      "name": "Texas Instruments Incorporated",
+      "sector": "Technology",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Analog semiconductor cycle monitor."
+    },
+    {
+      "ticker": "QCOM",
+      "name": "QUALCOMM Incorporated",
+      "sector": "Technology",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Mobile/edge semiconductor monitor."
+    },
+    {
+      "ticker": "MU",
+      "name": "Micron Technology, Inc.",
+      "sector": "Technology",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Memory cycle and AI infrastructure supply-chain monitor."
+    },
+    {
+      "ticker": "PANW",
+      "name": "Palo Alto Networks, Inc.",
+      "sector": "Technology",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Cybersecurity leadership monitor."
+    },
+    {
+      "ticker": "SNOW",
+      "name": "Snowflake Inc.",
+      "sector": "Technology",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Cloud data platform / high-beta software monitor."
+    },
+    {
+      "ticker": "CRWD",
+      "name": "CrowdStrike Holdings, Inc.",
+      "sector": "Technology",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Cybersecurity growth monitor."
+    },
+    {
+      "ticker": "DDOG",
+      "name": "Datadog, Inc.",
+      "sector": "Technology",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Cloud observability / software demand monitor."
+    },
+    {
+      "ticker": "MDB",
+      "name": "MongoDB, Inc.",
+      "sector": "Technology",
+      "role": "additional_live_candidate",
+      "tier": "C",
+      "rationale": "Developer data infrastructure / high-beta software monitor."
+    }
+  ],
+  "runtime_budget": {
+    "provider": "yahoo_chart_or_existing_provider_wrapper",
+    "max_total_runtime_seconds": 180,
+    "max_per_symbol_latency_seconds": 15,
+    "retry_attempts_after_first_failure": 1,
+    "backoff_seconds_base": 0.75,
+    "circuit_breaker_consecutive_errors": 4,
+    "minimum_success_rate_before_import": 0.92,
+    "failure_policy": "C/D pilot failures are labeled stale_or_blocked and must not block current 42 A/B answers."
+  },
+  "sql_row_shape": {
+    "target_surface": "tmp/finance-intelligence-state.sqlite",
+    "candidate_table": "live_pilot_candidate_registry",
+    "status_table": "live_pilot_provider_status",
+    "view": "current_live_pilot_candidates",
+    "required_columns": [
+      "ticker",
+      "name",
+      "sector",
+      "pilot_tier",
+      "pilot_status",
+      "production_answer_path_member",
+      "decision_grade_eligible",
+      "source_open_required",
+      "provider_status",
+      "last_successful_probe_at_utc",
+      "stale_but_known_disclosure_required",
+      "authority_flags_json"
+    ],
+    "not_allowed": [
+      "writing to production current_ticker_cards",
+      "changing canon-cache",
+      "marking any pilot ticker decision-grade",
+      "changing portfolio/cash/sizing/risk state"
+    ]
+  },
+  "card_behavior": {
+    "tier_a_b_production": "unchanged full materialized cards",
+    "live_pilot_tier_c_d": "thin SQL row first; on-demand card only when explicitly requested or promoted",
+    "on_demand_output_dir": "tmp/wf78-live-pilot-on-demand-cards",
+    "production_card_dir_must_not_be_written": "tmp/ticker-intelligence-cards"
+  },
+  "regression_gates": [
+    "python scripts/finance_universe_validator.py --validate",
+    "python scripts/finance_intelligence_state.py validate",
+    "python scripts/finance_intelligence_state.py phase3-qc",
+    "python scripts/wf78_sql_phase2_readiness.py",
+    "python scripts/ticker_intelligence_card.py --all-from-coverage --summary-output tmp/ticker-card-wf78-live-pilot-regression-summary.json",
+    "python scripts/finance_intelligence_router_qa.py --out tmp/finance-intelligence-router-qa-wf78-live-pilot.json",
+    "python scripts/artifact_index.py incremental",
+    "python scripts/artifact_index.py validate",
+    "python scripts/workspace_index.py"
+  ],
+  "rollback_and_no_overwrite": {
+    "before_import_required": [
+      "copy data/finance/universe-v1.json to a timestamped backup",
+      "copy tmp/finance-intelligence-state.sqlite to a timestamped backup",
+      "record production 42 ticker list and card hashes",
+      "record pilot candidate list and hash"
+    ],
+    "rollback_route": [
+      "restore universe registry backup",
+      "restore finance-intelligence-state.sqlite backup or rebuild from production registry",
+      "delete only newly generated live-pilot artifacts after reference check",
+      "rerun production 42 validations"
+    ],
+    "no_overwrite_assertions": [
+      "production active ticker count remains 42",
+      "tmp/ticker-intelligence-cards remains coverage-registry-only",
+      "live pilot card output stays in separate directory",
+      "no canon-cache write",
+      "no portfolio/canon note write"
+    ]
+  },
+  "source_artifacts": {
+    "universe": {
+      "path": "data/finance/universe-v1.json",
+      "exists": true,
+      "status": "phase1_pilot_fixture_ready",
+      "generated_at_utc": "2026-05-29T01:56:31Z"
+    },
+    "provider_runtime_proof": {
+      "path": "tmp/wf78-pilot-provider-runtime-proof.json",
+      "exists": true,
+      "status": "ok",
+      "generated_at_utc": "2026-05-29T04:21:20Z"
+    },
+    "on_demand_card_proof": {
+      "path": "tmp/wf78-pilot-on-demand-card-proof.json",
+      "exists": true,
+      "status": "ok",
+      "generated_at_utc": "2026-05-29T04:21:20Z"
+    },
+    "phase1_contract_validation": {
+      "path": "tmp/wf78-phase1-pilot-contract-validation.json",
+      "exists": true,
+      "status": "ok",
+      "generated_at_utc": "2026-05-29T02:03:00Z"
+    },
+    "phase3_qc": {
+      "path": "tmp/finance-intelligence-state-phase3-qc.json",
+      "exists": true,
+      "status": "ok",
+      "generated_at_utc": "2026-05-29T04:21:35Z"
+    },
+    "sql_phase2_readiness": {
+      "path": "tmp/wf78-sql-phase2-readiness.json",
+      "exists": true,
+      "status": "ready",
+      "generated_at_utc": "2026-05-29T04:31:00Z"
+    }
+  },
+  "validation": {
+    "checks": [
+      {
+        "name": "candidate_count_25",
+        "ok": true,
+        "detail": {
+          "actual": 25,
+          "expected": 25
+        },
+        "severity": "error"
+      },
+      {
+        "name": "candidate_symbols_unique",
+        "ok": true,
+        "detail": {
+          "duplicates": []
+        },
+        "severity": "error"
+      },
+      {
+        "name": "production_overlap_zero",
+        "ok": true,
+        "detail": {
+          "overlap": []
+        },
+        "severity": "error"
+      },
+      {
+        "name": "production_count_locked_42",
+        "ok": true,
+        "detail": {
+          "actual": 42,
+          "expected": 42
+        },
+        "severity": "error"
+      },
+      {
+        "name": "fixture_count_locked_11",
+        "ok": true,
+        "detail": {
+          "actual": 11,
+          "expected": 11
+        },
+        "severity": "error"
+      },
+      {
+        "name": "fixture_seed_count_11",
+        "ok": true,
+        "detail": {
+          "actual": 11,
+          "expected": 11,
+          "fixture_seed": [
+            "ADBE",
+            "ASML",
+            "AVGO",
+            "CRM",
+            "INTU",
+            "NOW",
+            "ORCL",
+            "SAP",
+            "SHOP",
+            "TSM",
+            "UBER"
+          ]
+        },
+        "severity": "error"
+      },
+      {
+        "name": "additional_candidate_count_14",
+        "ok": true,
+        "detail": {
+          "actual": 14,
+          "expected": 14,
+          "additional": [
+            "AAPL",
+            "AXP",
+            "COST",
+            "CRWD",
+            "DDOG",
+            "ISRG",
+            "MA",
+            "MDB",
+            "MU",
+            "PANW",
+            "QCOM",
+            "SNOW",
+            "TXN",
+            "V"
+          ]
+        },
+        "severity": "error"
+      },
+      {
+        "name": "candidate_tiers_are_lower_tier",
+        "ok": true,
+        "detail": {
+          "tiers": [
+            "C"
+          ]
+        },
+        "severity": "error"
+      },
+      {
+        "name": "all_authority_flags_false",
+        "ok": true,
+        "detail": {
+          "posture": "review_only_live_pilot_preflight_not_import_not_approval",
+          "canonical_note_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "deployment_state_mutation_allowed": false,
+          "sizing_sleeve_cash_risk_rule_authority": false,
+          "owner_approval_granted": false,
+          "owner_approval_inferred": false,
+          "trade_execution_allowed": false,
+          "trade_or_account_action_allowed": false,
+          "live_brokerage_or_account_action_allowed": false,
+          "paper_order_execution_allowed": false,
+          "paper_order_submit_allowed": false,
+          "paper_order_cancel_allowed": false,
+          "sql_canon_migration_allowed": false,
+          "db_path_migration_allowed": false,
+          "tmp_artifact_promotion_allowed": false,
+          "broad_ticker_import_allowed": false,
+          "production_answer_path_overwrite_allowed": false,
+          "live_pilot_import_performed": false
+        },
+        "severity": "error"
+      },
+      {
+        "name": "validator_commands_ok",
+        "ok": true,
+        "detail": [
+          {
+            "label": "finance_universe_validate",
+            "ok": true,
+            "returncode": 0
+          },
+          {
+            "label": "finance_intelligence_state_validate",
+            "ok": true,
+            "returncode": 0
+          },
+          {
+            "label": "finance_intelligence_state_pilot_fixtures",
+            "ok": true,
+            "returncode": 0
+          },
+          {
+            "label": "wf78_sql_phase2_readiness",
+            "ok": true,
+            "returncode": 0
+          },
+          {
+            "label": "artifact_index_validate",
+            "ok": true,
+            "returncode": 0
+          }
+        ],
+        "severity": "error"
+      }
+    ],
+    "failed_checks": [],
+    "command_results": [
+      {
+        "label": "finance_universe_validate",
+        "command": "python scripts/finance_universe_validator.py --validate",
+        "returncode": 0,
+        "ok": true,
+        "stdout_tail": "{\n  \"status\": \"ok\",\n  \"checks\": 22,\n  \"failed\": 0,\n  \"validation_output\": \"tmp/wf78-finance-universe-validation.json\"\n}",
+        "stderr_tail": ""
+      },
+      {
+        "label": "finance_intelligence_state_validate",
+        "command": "python scripts/finance_intelligence_state.py validate",
+        "returncode": 0,
+        "ok": true,
+        "stdout_tail": "red_before_finance_claims\": true, \"sql_canon_authority_expanded\": false, \"tmp_database_promotion_performed\": false}, \"checks\": [{\"detail\": \"ok\", \"name\": \"integrity_check_ok\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 0}, \"name\": \"foreign_key_check_ok\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"actual\": 42, \"expected\": 42}, \"name\": \"universe_count_matches_expected\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"actual\": 42}, \"name\": \"current_42_present\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"missing\": 0}, \"name\": \"cards_exist_for_all_universe_rows\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"actual\": 42}, \"name\": \"entry_stop_rows_for_all_tickers\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"actual\": 42}, \"name\": \"latest_valid_entry_stop_refs_42\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 0}, \"name\": \"pilot_fixtures_excluded_from_production_cards\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 0}, \"name\": \"pilot_fixtures_thin_on_demand_only\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 0}, \"name\": \"no_forbidden_authority_in_cards\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"checks_failed_error\": 0, \"checks_failed_warning\": 0, \"checks_total\": 479, \"phase1_coverage_registry_exists\": true, \"phase2_ticker_cards_found\": 42, \"router_examples_checked\": 5}, \"name\": \"router_qa_pass\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 0}, \"name\": \"source_open_required_all_cards\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 32}, \"name\": \"preopen_action_queue_has_rows\", \"ok\": true, \"severity\": \"warning\"}], \"db_path\": \"tmp/finance-intelligence-state.sqlite\", \"generated_at_utc\": \"2026-05-29T04:31:00Z\", \"schema_version\": 1, \"status\": \"ok\", \"summary\": {\"canon_conflict_candidates\": 0, \"current_pilot_fixtures\": 11, \"current_ticker_cards\": 42, \"latest_valid_entry_stop_refs\": 42, \"pending_approval_queue\": 4, \"pilot_fixture_rows\": 11, \"preopen_action_queue\": 32, \"stale_ticker_cards\": 42, \"universe_rows\": 42}}",
+        "stderr_tail": ""
+      },
+      {
+        "label": "finance_intelligence_state_pilot_fixtures",
+        "command": "python scripts/finance_intelligence_state.py pilot-fixtures",
+        "returncode": 0,
+        "ok": true,
+        "stdout_tail": "path\", \"provider_telemetry_required\": true, \"sector\": \"Technology\", \"stale_but_known_disclosure_required\": true, \"thin_row_only\": true, \"ticker\": \"ORCL\", \"tier\": \"C\"}, {\"industry\": \"Application Software\", \"instrument_type\": \"operating_company\", \"monitoring_role\": \"pilot_fixture_thin_sql_or_on_demand_card\", \"name\": \"SAP SE\", \"on_demand_card_required_before_claim\": true, \"pilot_status\": \"fixture_only_not_in_production_answer_path\", \"provider_telemetry_required\": true, \"sector\": \"Technology\", \"stale_but_known_disclosure_required\": true, \"thin_row_only\": true, \"ticker\": \"SAP\", \"tier\": \"C\"}, {\"industry\": \"E-Commerce Software\", \"instrument_type\": \"operating_company\", \"monitoring_role\": \"pilot_fixture_thin_sql_or_on_demand_card\", \"name\": \"Shopify Inc.\", \"on_demand_card_required_before_claim\": true, \"pilot_status\": \"fixture_only_not_in_production_answer_path\", \"provider_telemetry_required\": true, \"sector\": \"Technology\", \"stale_but_known_disclosure_required\": true, \"thin_row_only\": true, \"ticker\": \"SHOP\", \"tier\": \"C\"}, {\"industry\": \"Semiconductors\", \"instrument_type\": \"operating_company\", \"monitoring_role\": \"pilot_fixture_thin_sql_or_on_demand_card\", \"name\": \"Taiwan Semiconductor Manufacturing Company Limited\", \"on_demand_card_required_before_claim\": true, \"pilot_status\": \"fixture_only_not_in_production_answer_path\", \"provider_telemetry_required\": true, \"sector\": \"Technology\", \"stale_but_known_disclosure_required\": true, \"thin_row_only\": true, \"ticker\": \"TSM\", \"tier\": \"C\"}, {\"industry\": \"Mobility Platform\", \"instrument_type\": \"operating_company\", \"monitoring_role\": \"pilot_fixture_thin_sql_or_on_demand_card\", \"name\": \"Uber Technologies, Inc.\", \"on_demand_card_required_before_claim\": true, \"pilot_status\": \"fixture_only_not_in_production_answer_path\", \"provider_telemetry_required\": true, \"sector\": \"Industrials\", \"stale_but_known_disclosure_required\": true, \"thin_row_only\": true, \"ticker\": \"UBER\", \"tier\": \"C\"}], \"production_overlap_count\": 0, \"schema_version\": 1, \"status\": \"ok\"}",
+        "stderr_tail": ""
+      },
+      {
+        "label": "wf78_sql_phase2_readiness",
+        "command": "python scripts/wf78_sql_phase2_readiness.py",
+        "returncode": 0,
+        "ok": true,
+        "stdout_tail": "ontract\", \"ok\": true}, {\"detail\": {\"active_ticker_count\": 53, \"checks\": 22, \"failed\": 0, \"pilot_fixture_count\": 11, \"production_active_ticker_count\": 42}, \"name\": \"universe_validation_ok\", \"ok\": true}, {\"detail\": {\"checks_failed_error\": 0, \"checks_failed_warning\": 0, \"checks_total\": 479, \"phase1_coverage_registry_exists\": true, \"phase2_ticker_cards_found\": 42, \"router_examples_checked\": 5}, \"name\": \"router_qa_pass\", \"ok\": true}, {\"detail\": {\"files\": 42}, \"name\": \"ticker_cards_present_42\", \"ok\": true}, {\"detail\": [], \"name\": \"universe_authority_flags_false\", \"ok\": true}], \"forbidden_true_authority_flags\": [], \"pilot_fixture_count\": 11, \"production_ticker_count\": 42, \"router_qa_status\": \"pass\", \"status\": \"ok\", \"ticker_card_file_count\": 42, \"universe_path\": \"data/finance/universe-v1.json\", \"universe_ticker_count\": 53, \"universe_validation_status\": \"ok\"}, \"workspace_index\": {\"checks\": [{\"detail\": \"tmp/workspace-index.sqlite\", \"name\": \"db_exists\", \"ok\": true}, {\"detail\": \"ok\", \"name\": \"integrity_check_ok\", \"ok\": true}, {\"detail\": {\"rows\": 0}, \"name\": \"foreign_key_check_ok\", \"ok\": true}, {\"detail\": [\"aliases\", \"artifact_metadata\", \"artifacts\", \"documents\", \"documents_fts\", \"freshness\", \"headings\", \"links\", \"owners\", \"runs\"], \"name\": \"required_tables_present\", \"ok\": true}, {\"detail\": [], \"name\": \"required_views_present\", \"ok\": true}, {\"detail\": {\"rows\": 1}, \"name\": \"wf78_continuity_indexed\", \"ok\": true}, {\"detail\": {\"rows\": 1}, \"name\": \"wf78_universe_registry_indexed\", \"ok\": true}], \"exists\": true, \"foreign_key_check_rows\": [], \"integrity_check\": \"ok\", \"path\": \"tmp/workspace-index.sqlite\", \"row_counts\": {\"artifacts\": 654, \"documents\": 985, \"headings\": 11984, \"links\": 381}, \"status\": \"ok\", \"tables\": [\"aliases\", \"artifact_metadata\", \"artifacts\", \"documents\", \"documents_fts\", \"documents_fts_config\", \"documents_fts_data\", \"documents_fts_docsize\", \"documents_fts_idx\", \"freshness\", \"headings\", \"links\", \"meta\", \"owners\", \"runs\", \"sqlite_stat1\"], \"views\": []}}, \"workflow\": \"WF78\"}",
+        "stderr_tail": ""
+      },
+      {
+        "label": "artifact_index_validate",
+        "command": "python scripts/artifact_index.py validate",
+        "returncode": 0,
+        "ok": true,
+        "stdout_tail": "status=ok checks=28 failed=0\nok | integrity_check | ok\nok | foreign_key_check | rows=0\nok | view_exists:v_cockpit_action_queue | \nok | view_exists:v_cockpit_ticker_timeline | \nok | view_exists:v_cockpit_trust_boundary | \nok | view_exists:v_cockpit_official_source_fields | \nok | view_exists:v_cockpit_canon_staging | \nok | view_exists:v_cockpit_earnings_lifecycle | \nok | view_exists:v_cockpit_dashboard_findings | \nok | view_exists:v_cockpit_source_freshness | \nok | view_exists:v_cockpit_deployment_readiness | \nok | forbidden_true_authority_flags_zero | count=0\nok | canon_stage_apply_allowed_zero | count=0\nok | canon_stage_activation_or_apply_ready_rows_zero | count=0\nok | official_ir_fields_have_lineage | missing=0\nok | cockpit_action_queue_has_rows | rows=62\nok | official_field_proof_amd_adjusted_eps | rows=1\nok | ticker_timeline_etn_has_rows | rows=30\nok | earnings_lifecycle_nvda_review_only | rows=1\nok | deployment_readiness_etn_indexed | rows=1 buckets=['ALMOST DEPLOYABLE']\nok | source_freshness_rows_indexed | rows=20\nok | dashboard_findings_indexed | rows=1\nok | ticker_expression_index_query_plan | (5, 0, 52, 'SEARCH daily_review_objects USING INDEX idx_daily_review_ticker_upper_time (<expr>=?)')\nok | drift_fingerprint_row_counts_match | \nok | freshness_live_files_all_indexed | not_indexed=0\nok | freshness_no_orphaned_rows | orphaned=0\nok | freshness_no_stale_content | stale=0\nok | freshness_index_has_been_built | last_rebuilt=2026-05-25T20:11:33Z last_incremental=2026-05-29T04:27:02Z",
+        "stderr_tail": ""
+      }
+    ]
+  },
+  "stop_lines": [
+    "No import from this preflight packet alone.",
+    "No broad 100/200/350/500 ticker import.",
+    "No production answer-path overwrite.",
+    "No SQL-canon expansion or canon-cache write.",
+    "No database path migration or tmp promotion.",
+    "No canon/portfolio/sizing/cash/risk-rule mutation.",
+    "No owner-approval inference.",
+    "No paper submit/cancel/sell, live endpoint, brokerage/account action, or money movement."
+  ]
+}

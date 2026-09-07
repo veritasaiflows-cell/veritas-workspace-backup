@@ -4,19 +4,19 @@
 
 This dashboard has been **retired as an independent weekly outcome map**.
 
-Reason: it duplicated [[05. Intelligence/Weekly Positioning Review]] and drifted behind the Command Center, Daily Executive Summary, and pre-market/post-close update cycle.
+Reason: it duplicated older finance strategy surfaces and drifted behind the active alerts-and-recommendations chain.
 
 ## What to use instead
 
-- **Weekly posture and risk lens:** [[05. Intelligence/Weekly Positioning Review]]
-- **Daily operating read:** Daily Executive Summary / pre-market / post-close packets
-- **Live dashboard/status:** Command Center and `tmp/full-portfolio-view.*`
+- **Weekly finance review:** `tmp/finance-alert-os-weekly-digest.json`
+- **Current alert state:** `tmp/alert-level-freshness-controller.json`
+- **Active finance canon:** [[03. Alerts and Recommendations/README]]
 - **Workflow truth:** [[06. Playbooks/Active Workflows]]
-- **Portfolio truth:** [[03. Portfolio/Execution Board]], [[03. Portfolio/Portfolio Snapshot]], [[04. Research/Coverage and Watchlist]], [[07. Risk/Risk Rules]]
+- **Risk and coverage context:** [[04. Research/Coverage and Watchlist]], [[07. Risk/Risk Rules]]
 
 ## Boundary
 
-This file no longer owns weekly outcomes, catalyst state, ticker posture, action priorities, or portfolio state.
+This file no longer owns weekly outcomes, catalyst state, ticker posture, recommendation priorities, or finance state.
 
 No trade, portfolio mutation, deployment, sizing, cash, sleeve, execution-entitlement, account action, or owner approval is inferred here.
 

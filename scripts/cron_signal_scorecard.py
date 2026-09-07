@@ -331,6 +331,7 @@ def freshness_spine_signals(freshness_spine: dict[str, Any]) -> list[dict[str, A
             "age_hours": signal_dict.get("age_hours"),
             "reason": signal_dict.get("reason"),
             "next_action": signal_dict.get("next_action") or "",
+            "live_scheduler_last_error": signal_dict.get("live_scheduler_last_error"),
         })
     return signals
 

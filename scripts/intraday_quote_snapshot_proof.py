@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""WF68 Phase 1 read-only intraday quote/snapshot proof.
+"""Alerts OS read-only quote/snapshot proof.
 
 This runner proves, or fails closed on, a sanitized read-only market-data path
-for the intraday alert engine. It performs no brokerage/account/order actions,
+for the alerts-and-recommendations OS. It performs no brokerage/account/order actions,
 uses only GET requests, never uses the live brokerage endpoint, and persists no
 secrets, raw headers, or raw response bodies.
 """
@@ -12,6 +12,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -21,19 +22,13 @@ import requests
 from market_calendar_freshness import classify_quote_freshness, market_session
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_PORTFOLIO_CONFIG = ROOT / "tmp" / "portfolio-config.json"
-DEFAULT_WF78_AUTO_ROUTER = ROOT / "tmp" / "wf78-auto-tier-routing.json"
-DEFAULT_WF78_CAPITAL_REVIEW_QUEUE = ROOT / "tmp" / "wf78-capital-review-queue.json"
-DEFAULT_WF85_NOTIFICATION_DIGEST = ROOT / "tmp" / "wf85-paper-deployment-notification-digest.json"
-DEFAULT_FINANCE_DECISION_SYNC = ROOT / "tmp" / "finance-decision-sync-spine.json"
-DEFAULT_BAND_HYGIENE_CONTROLLER = ROOT / "tmp" / "band-hygiene-freshness-controller.json"
 OUT_DIR = ROOT / "tmp" / "intraday-alerts"
 DEFAULT_JSON_OUTPUT = OUT_DIR / "quote-snapshot-proof.json"
 DEFAULT_MD_OUTPUT = OUT_DIR / "quote-snapshot-proof.md"
 DEFAULT_VALIDATION_OUTPUT = OUT_DIR / "quote-snapshot-proof-validation.json"
 
-WORKFLOW = "WF68 - Intraday Alert Engine and Advisor Surface"
-PHASE = "phase_1_intraday_data_proof"
+WORKFLOW = "Alerts and Recommendations OS"
+PHASE = "read_only_quote_evidence"
 PROVIDER = "alpaca_market_data"
 DATA_BASE_URL = "https://data.alpaca.markets"
 SNAPSHOT_PATH = "/v2/stocks/snapshots"
@@ -51,17 +46,9 @@ AMBIGUOUS_OR_LIVE_NAMES = {
     "APCA_LIVE_API_KEY_ID",
     "APCA_LIVE_API_SECRET_KEY",
 }
-DEFAULT_SYMBOL_COUNT = 10
-DEFAULT_EXTRA_SYMBOLS = ["ETN"]
-DECISION_SYNC_QUOTE_STATES = {
-    "blocked_missing_freshness",
-    "entry_policy_review_required",
-    "in_band_not_clean",
-    "paper_position_monitor",
-    "promotion_vetoed",
-}
 FRESH_SECONDS = 15 * 60
 CURRENT_SECONDS = 24 * 60 * 60
+RETRYABLE_STATUS_CODES = frozenset({408, 425, 429, 500, 502, 503, 504})
 
 
 class BlockedRun(Exception):
@@ -72,7 +59,7 @@ def utc_now_dt() -> datetime:
     # Preserve sub-second precision. Alpaca snapshot timestamps can include
     # nanosecond precision; truncating our receive time to whole seconds can
     # make a legitimately received quote look as if its source timestamp is in
-    # the future, causing the downstream WF68 packet validator to fail closed.
+    # the future, causing the downstream alerts packet validator to fail closed.
     return datetime.now(timezone.utc)
 
 
@@ -104,121 +91,10 @@ def parse_utc(value: Any) -> datetime | None:
     return parsed.astimezone(timezone.utc)
 
 
-def load_json(path: Path) -> dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {}
-    return payload if isinstance(payload, dict) else {}
-
-
-def symbols_from_wf78_auto_router(path: Path) -> list[str]:
-    payload = load_json(path)
-    summary = payload.get("summary") if isinstance(payload.get("summary"), dict) else {}
-    symbols = summary.get("auto_tier_a_tickers")
-    if isinstance(symbols, list):
-        return [str(symbol) for symbol in symbols if isinstance(symbol, str)]
-    rows = payload.get("rows") if isinstance(payload.get("rows"), list) else []
-    return [
-        str(row.get("ticker"))
-        for row in rows
-        if isinstance(row, dict) and row.get("auto_tier") == "Tier A" and isinstance(row.get("ticker"), str)
-    ]
-
-
-def symbols_from_capital_review_queue(path: Path) -> list[str]:
-    payload = load_json(path)
-    rows = payload.get("rows") if isinstance(payload.get("rows"), list) else []
-    return [str(row.get("ticker")) for row in rows if isinstance(row, dict) and isinstance(row.get("ticker"), str)]
-
-
-def symbols_from_wf85_notification_digest(path: Path) -> list[str]:
-    payload = load_json(path)
-    categories = payload.get("categories") if isinstance(payload.get("categories"), dict) else {}
-    symbols: list[str] = []
-    for rows in (categories.get("deployment_ready"), categories.get("near_deployment")):
-        if not isinstance(rows, list):
-            continue
-        for row in rows:
-            if isinstance(row, dict) and isinstance(row.get("ticker"), str):
-                symbols.append(str(row["ticker"]))
-    summary = payload.get("summary") if isinstance(payload.get("summary"), dict) else {}
-    for key in ("deployment_ready_tickers", "near_deployment_tickers"):
-        value = summary.get(key)
-        if isinstance(value, list):
-            symbols.extend(str(symbol) for symbol in value if isinstance(symbol, str))
-    return symbols
-
-
-def symbols_from_finance_decision_sync(path: Path) -> list[str]:
-    payload = load_json(path)
-    summary = payload.get("summary") if isinstance(payload.get("summary"), dict) else {}
-    symbols: list[str] = []
-    for key, value in summary.items():
-        if key.endswith("_tickers") and isinstance(value, list):
-            symbols.extend(str(symbol) for symbol in value if isinstance(symbol, str))
-    rows = payload.get("rows") if isinstance(payload.get("rows"), list) else []
-    for row in rows:
-        if not isinstance(row, dict) or not isinstance(row.get("ticker"), str):
-            continue
-        states = row.get("states") if isinstance(row.get("states"), list) else []
-        state_set = {str(state) for state in states}
-        if (
-            row.get("clean_for_paper_deployment_review") is True
-            or row.get("owner_action_required") is True
-            or bool(DECISION_SYNC_QUOTE_STATES.intersection(state_set))
-        ):
-            symbols.append(str(row["ticker"]))
-    return symbols
-
-
-def symbols_from_band_hygiene(path: Path) -> list[str]:
-    payload = load_json(path)
-    rows = payload.get("rows") if isinstance(payload.get("rows"), list) else []
-    symbols: list[str] = []
-    for row in rows:
-        if not isinstance(row, dict) or not isinstance(row.get("ticker"), str):
-            continue
-        state = str(row.get("state") or "")
-        entry_policy_review = row.get("entry_policy_review") if isinstance(row.get("entry_policy_review"), dict) else {}
-        if (state and state != "clean_and_fresh") or entry_policy_review.get("candidate") is True:
-            symbols.append(str(row["ticker"]))
-    return symbols
-
-
-def append_unique(symbols: list[str], additions: list[str]) -> list[str]:
-    result = list(symbols)
-    for symbol in additions:
-        normalized = str(symbol or "").strip().upper()
-        if normalized and normalized not in result:
-            result.append(normalized)
-    return result
-
-
-def load_symbols(config_path: Path, explicit_symbols: list[str] | None, wf78_auto_router: Path, wf78_capital_review_queue: Path) -> tuple[list[str], dict[str, Any]]:
-    if explicit_symbols:
-        symbols = explicit_symbols
-        policy = "explicit_symbols_only"
-    else:
-        data = json.loads(config_path.read_text(encoding="utf-8"))
-        universe = data.get("tracked_universe") or {}
-        if not isinstance(universe, dict):
-            raise BlockedRun("tracked_universe_missing_or_invalid")
-        symbols = list(universe.keys())[:DEFAULT_SYMBOL_COUNT]
-        symbols = append_unique(symbols, DEFAULT_EXTRA_SYMBOLS)
-        tier_a_symbols = symbols_from_wf78_auto_router(wf78_auto_router)
-        capital_review_symbols = symbols_from_capital_review_queue(wf78_capital_review_queue)
-        wf85_digest_symbols = symbols_from_wf85_notification_digest(DEFAULT_WF85_NOTIFICATION_DIGEST)
-        decision_sync_symbols = symbols_from_finance_decision_sync(DEFAULT_FINANCE_DECISION_SYNC)
-        band_hygiene_symbols = symbols_from_band_hygiene(DEFAULT_BAND_HYGIENE_CONTROLLER)
-        symbols = append_unique(symbols, tier_a_symbols)
-        symbols = append_unique(symbols, capital_review_symbols)
-        symbols = append_unique(symbols, wf85_digest_symbols)
-        symbols = append_unique(symbols, decision_sync_symbols)
-        symbols = append_unique(symbols, band_hygiene_symbols)
-        policy = "portfolio_first_10_plus_etn_plus_wf78_wf85_finance_sync_band_hygiene_candidates"
+def load_symbols(explicit_symbols: list[str] | None) -> tuple[list[str], dict[str, Any]]:
+    if not explicit_symbols:
+        raise BlockedRun("explicit_active_alert_symbols_required")
+    symbols = explicit_symbols
     cleaned: list[str] = []
     for symbol in symbols:
         if not isinstance(symbol, str):
@@ -229,14 +105,8 @@ def load_symbols(config_path: Path, explicit_symbols: list[str] | None, wf78_aut
     if not cleaned:
         raise BlockedRun("no_symbols_selected")
     return cleaned, {
-        "policy": policy,
-        "default_symbol_count": DEFAULT_SYMBOL_COUNT,
-        "extra_symbols": DEFAULT_EXTRA_SYMBOLS,
-        "wf78_auto_router": rel(wf78_auto_router),
-        "wf78_capital_review_queue": rel(wf78_capital_review_queue),
-        "wf85_notification_digest": rel(DEFAULT_WF85_NOTIFICATION_DIGEST),
-        "finance_decision_sync": rel(DEFAULT_FINANCE_DECISION_SYNC),
-        "band_hygiene_controller": rel(DEFAULT_BAND_HYGIENE_CONTROLLER),
+        "policy": "explicit_active_alert_symbols_only",
+        "source_contract": "caller_supplied_active_alert_scope",
         "requested_symbol_count": len(cleaned),
     }
 
@@ -361,6 +231,97 @@ def fetch_snapshots(symbols: list[str], timeout_seconds: int, feed: str | None) 
     return status_code, payload
 
 
+def fetch_snapshots_with_retry(
+    symbols: list[str],
+    timeout_seconds: int,
+    feed: str | None,
+    *,
+    attempts: int,
+    backoff_seconds: float,
+    log: list[dict[str, Any]],
+) -> tuple[int, dict[str, Any]]:
+    """Retry transport failures and transient provider status codes only.
+
+    A local network outage previously looked identical to a real provider gap and
+    blocked the whole morning chain. The caller owns `log` so the attempt history
+    survives into the proof even when every attempt fails.
+    """
+    last_exc: requests.RequestException | None = None
+    last_result: tuple[int, dict[str, Any]] | None = None
+    total = max(1, attempts)
+    for attempt in range(1, total + 1):
+        try:
+            status_code, snapshots = fetch_snapshots(symbols, timeout_seconds, feed)
+        except requests.RequestException as exc:
+            last_exc = exc
+            log.append({"attempt": attempt, "outcome": "transport_error", "error_type": type(exc).__name__})
+        else:
+            retryable = status_code in RETRYABLE_STATUS_CODES
+            log.append({
+                "attempt": attempt,
+                "outcome": "retryable_provider_status" if retryable else "completed",
+                "status_code": status_code,
+            })
+            if not retryable:
+                return status_code, snapshots
+            last_exc = None
+            last_result = (status_code, snapshots)
+        if attempt < total:
+            time.sleep(backoff_seconds * (2 ** (attempt - 1)))
+    if last_exc is not None:
+        raise last_exc
+    if last_result is None:
+        raise BlockedRun("provider_retry_exhausted_without_result")
+    return last_result
+
+
+def authorize_policy_quote_get(policy: Any, *, provider_id: str = PROVIDER) -> int:
+    """Authorize this script's read-only GET shape against the standing policy.
+
+    No network, no secrets, no raw bodies. Returns the policy-permitted
+    maximum HTTP attempts so the caller can reserve before the first GET.
+    Raises BlockedRun (fail closed, zero provider calls) on any denial.
+    """
+    try:
+        from dynamic_entitlement_provider_policy import (
+            authorize_market_data_get,
+            max_quote_http_attempts,
+        )
+    except Exception as exc:
+        raise BlockedRun("provider_policy_unavailable") from exc
+    try:
+        authorize_market_data_get(
+            policy,
+            provider_id=provider_id,
+            method="GET",
+            url=DATA_BASE_URL + SNAPSHOT_PATH,
+        )
+        return max_quote_http_attempts(policy)
+    except Exception as exc:
+        raise BlockedRun("provider_policy_denied_quote_intake") from exc
+
+
+def normalize_quote_contract_or_raise(item: dict[str, Any]) -> dict[str, Any]:
+    """Validate one sanitized snapshot's contract shape.
+
+    Malformed provider data is a named fail-closed Phase3FApprovalError,
+    never a silent drop or an invented value.
+    """
+    try:
+        from phase3f_external_canary_approval import Phase3FApprovalError
+    except Exception as exc:
+        raise BlockedRun("quote_contract_validator_unavailable") from exc
+    if not isinstance(item, dict) or not isinstance(item.get("symbol"), str) or not item["symbol"]:
+        raise Phase3FApprovalError("quote_contract_malformed")
+    for key in ("price", "bid", "ask"):
+        value = item.get(key)
+        if value is not None and (isinstance(value, bool) or not isinstance(value, (int, float))):
+            raise Phase3FApprovalError("quote_contract_malformed")
+    if item.get("source_timestamp_utc") is not None and not isinstance(item["source_timestamp_utc"], str):
+        raise Phase3FApprovalError("quote_contract_malformed")
+    return item
+
+
 def validate_proof(payload: dict[str, Any]) -> dict[str, Any]:
     findings: list[dict[str, Any]] = []
     authority = payload.get("authority") or {}
@@ -412,7 +373,7 @@ def validate_proof(payload: dict[str, Any]) -> dict[str, Any]:
 
 def write_markdown(path: Path, payload: dict[str, Any]) -> None:
     lines = [
-        "# WF68 Phase 1 Quote Snapshot Proof",
+        "# Alerts OS Quote Snapshot Proof",
         "",
         f"- Status: `{payload.get('status')}`",
         f"- Provider: `{payload.get('provider')}`",
@@ -449,16 +410,25 @@ def write_markdown(path: Path, payload: dict[str, Any]) -> None:
 
 def run(args: argparse.Namespace) -> int:
     generated_at = utc_now()
-    symbols, symbol_selection = load_symbols(
-        Path(args.portfolio_config),
-        args.symbols,
-        Path(args.wf78_auto_router),
-        Path(args.wf78_capital_review_queue),
-    )
+    symbols, symbol_selection = load_symbols(args.symbols)
     proof = proof_skeleton("blocked", symbols, generated_at)
     proof["symbol_selection"] = symbol_selection
     proof["market_session"] = market_session(utc_now_dt())
+    attempt_log: list[dict[str, Any]] = []
+    proof["provider_attempt_log"] = attempt_log
     try:
+        from phase3f_external_canary_approval import Phase3FApprovalError
+    except Exception:
+        Phase3FApprovalError = None  # type: ignore[assignment, no-redef]
+    try:
+        budget = getattr(args, "attempt_budget", None)
+        if budget is not None and (
+            isinstance(budget, bool)
+            or not isinstance(args.retry_attempts, int)
+            or isinstance(args.retry_attempts, bool)
+            or args.retry_attempts > budget
+        ):
+            raise BlockedRun("quote_attempt_budget_exceeded")
         selected_present, ambiguous_names = credential_status()
         proof["credential_source"]["ambiguous_or_live_names_detected"] = bool(ambiguous_names)
         if ambiguous_names:
@@ -466,13 +436,21 @@ def run(args: argparse.Namespace) -> int:
         if not selected_present:
             raise BlockedRun("paper_named_market_data_credentials_absent")
 
-        status_code, snapshots = fetch_snapshots(symbols, args.timeout_seconds, args.feed)
+        status_code, snapshots = fetch_snapshots_with_retry(
+            symbols,
+            args.timeout_seconds,
+            args.feed,
+            attempts=args.retry_attempts,
+            backoff_seconds=args.retry_backoff_seconds,
+            log=attempt_log,
+        )
         proof["provider_status_code_class"] = f"{status_code // 100}xx" if status_code else None
         proof["provider_feed"] = args.feed or "provider_default"
         if not 200 <= status_code < 300:
             raise BlockedRun(f"provider_http_{status_code}")
         received_at = utc_now_dt()
         sanitized = [sanitize_snapshot(symbol, snapshots.get(symbol) or {}, received_at) for symbol in symbols]
+        sanitized = [normalize_quote_contract_or_raise(item) for item in sanitized]
         proof["snapshots"] = sanitized
         calendar_counts: dict[str, int] = {}
         for item in sanitized:
@@ -513,9 +491,14 @@ def run(args: argparse.Namespace) -> int:
         proof["error_type"] = type(exc).__name__
     except Exception as exc:  # noqa: BLE001
         proof["status"] = "blocked"
-        proof["blocked_reason"] = "unexpected_runner_error"
         proof["provider_gap_report"] = True
-        proof["error_type"] = type(exc).__name__
+        if Phase3FApprovalError is not None and isinstance(exc, Phase3FApprovalError):
+            # Named fail-closed quote-contract failure; preserve the exact code.
+            proof["blocked_reason"] = str(exc) or "quote_contract_malformed"
+            proof["error_type"] = type(exc).__name__
+        else:
+            proof["blocked_reason"] = "unexpected_runner_error"
+            proof["error_type"] = type(exc).__name__
 
     json_output = Path(args.output)
     md_output = Path(args.markdown_output)
@@ -532,6 +515,7 @@ def run(args: argparse.Namespace) -> int:
         "markdown_output": rel(md_output),
         "validation_output": rel(validation_output),
         "secrets_redacted": True,
+        "provider_attempt_log": attempt_log,
     }
     print(json.dumps(summary, indent=2, sort_keys=True))
     return 0 if proof.get("status") == "ok" and validation.get("status") == "ok" else 2
@@ -539,14 +523,15 @@ def run(args: argparse.Namespace) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--portfolio-config", default=str(DEFAULT_PORTFOLIO_CONFIG))
     parser.add_argument("--output", default=str(DEFAULT_JSON_OUTPUT))
     parser.add_argument("--markdown-output", default=str(DEFAULT_MD_OUTPUT))
     parser.add_argument("--validation-output", default=str(DEFAULT_VALIDATION_OUTPUT))
-    parser.add_argument("--symbols", nargs="*", help="Optional explicit symbol list; defaults to first 10 tracked-universe symbols plus ETN if absent.")
-    parser.add_argument("--wf78-auto-router", default=str(DEFAULT_WF78_AUTO_ROUTER))
-    parser.add_argument("--wf78-capital-review-queue", default=str(DEFAULT_WF78_CAPITAL_REVIEW_QUEUE))
+    parser.add_argument("--symbols", nargs="+", required=True, help="Explicit active alert symbols supplied by the alerts OS chain.")
     parser.add_argument("--timeout-seconds", type=int, default=15)
+    parser.add_argument("--retry-attempts", type=int, default=3, help="Total attempts for transport failures and transient provider status codes.")
+    parser.add_argument("--retry-backoff-seconds", type=float, default=2.0, help="Base seconds for exponential backoff between retry attempts.")
+    parser.add_argument("--attempt-budget", type=int, default=None, help="Policy-permitted maximum HTTP attempts for this intake; a larger --retry-attempts fails closed before any network call.")
+    parser.add_argument("--provider-id", default="alpaca_market_data", help="Provider id this intake is authorized under; must be admitted by the standing provider policy.")
     parser.add_argument("--feed", default="iex", help="Alpaca stock market-data feed hint; default keeps free/basic data paths from false provider gaps.")
     return run(parser.parse_args())
 

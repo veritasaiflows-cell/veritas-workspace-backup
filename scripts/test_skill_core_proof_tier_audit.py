@@ -58,8 +58,23 @@ def test_current_workspace_core_audit_ok(errors: list[str]) -> None:
     module = load_module()
     payload = module.build_payload(ROOT / "skills")
     expect(payload["status"] == "ok", f"workspace core audit should pass: {payload['validation']['errors'][:3]}", errors)
-    expect(payload["summary"]["audited_core_skill_count"] == 13, "expected 13 P3 core skills", errors)
-    expect(payload["summary"]["tier2_local_proof_count"] == 13, "expected all P3 core skills to qualify", errors)
+    expect(payload["summary"]["audited_core_skill_count"] == 13, "expected 13 active core skills", errors)
+    expect(payload["summary"]["tier2_local_proof_count"] == 13, "expected all active core skills to qualify", errors)
+
+    candidates = set(module.CORE_CONTRACTS)
+    retired = set(module.RETIRED_FORMER_CORE_CANDIDATES)
+    expected_alerts_os_owners = {
+        "veritas-entry-policy-opportunity-surface",
+        "veritas-macro-pass",
+        "veritas-post-earnings-sync",
+    }
+    expect(not candidates.intersection(retired), "retired compatibility tombstones must not be promotion candidates", errors)
+    expect(expected_alerts_os_owners.issubset(candidates), "expected current alerts-OS owners in the core audit", errors)
+    expect(
+        set(payload["parameters"]["retired_former_core_candidates_excluded"]) == retired,
+        "proof metadata should name the excluded former core candidates",
+        errors,
+    )
 
 
 def test_missing_required_term_blocks(errors: list[str]) -> None:
@@ -72,6 +87,17 @@ def test_missing_required_term_blocks(errors: list[str]) -> None:
         codes = {finding["code"] for finding in result["findings"]}
         expect(result["status"] == "blocked", "missing required term should block promotion", errors)
         expect("required_term_missing" in codes, "expected missing required term finding", errors)
+
+
+def test_retired_candidate_overlap_blocks(errors: list[str]) -> None:
+    module = load_module()
+    retired_skill = "wf67-paper-trading-operator"
+    module.CORE_CONTRACTS[retired_skill] = module.CORE_CONTRACTS["veritas-macro-pass"]
+    payload = module.build_payload(ROOT / "skills")
+    codes = {finding["code"] for finding in payload["scope_findings"]}
+    expect(payload["status"] == "blocked", "retired promotion-candidate overlap should block the audit", errors)
+    expect("retired_tombstone_is_promotion_candidate" in codes, "expected retired tombstone scope finding", errors)
+    expect(retired_skill not in payload["tier2_promoted_skills"], "retired tombstone must never be promoted", errors)
 
 
 def test_shell_wrapper_residue_blocks(errors: list[str]) -> None:
@@ -103,6 +129,7 @@ def main() -> int:
     for test in (
         test_current_workspace_core_audit_ok,
         test_missing_required_term_blocks,
+        test_retired_candidate_overlap_blocks,
         test_shell_wrapper_residue_blocks,
         test_mojibake_residue_blocks,
     ):

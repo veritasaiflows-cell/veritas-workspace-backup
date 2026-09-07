@@ -1,0 +1,672 @@
+[
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1783235306837273900,
+    "size_bytes": 81001,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-04.md",
+    "source_sha256": "dcad7b76f37d60b6020c9351384bc881e665268d4ea3746d283f10b34efe82b1"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 25,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787634736287396200,
+    "size_bytes": 35116,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-auto-patch-proposer.json",
+    "source_sha256": "ad617e32daf7830671cb7d918a5a034ca03b2302a72d9105cabf14ddf5634fcd"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781300587088472300,
+    "size_bytes": 7179,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-autonomous-improvement-loop-closeout.json",
+    "source_sha256": "ffa36ed35ab974596a2b52645ded8e15bea39ed6f71526e7ff40a716b13b4ff2"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 129,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787634736718953500,
+    "size_bytes": 200457,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-autonomy-work-router.json",
+    "source_sha256": "09bf527f44eee837f0bc3478bec5d45a129c48112a13d511d4a0a2c6cd655c91"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1782087394710020000,
+    "size_bytes": 2030,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-boundary-lint-report.json",
+    "source_sha256": "562b4d9670fa80b11460f119f1e234915e2af42a9e846b803c12940bc68fc8b8"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1779602005513162000,
+    "size_bytes": 9880,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-clawhub-inspection-results.json",
+    "source_sha256": "4e7cfeee3161a780e6edd51f7a35a0bd1653d3da2a75cfe9a2c1d2b02773ce45"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781934804249138100,
+    "size_bytes": 4045,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-clawhub-rsi-inspection-queue.json",
+    "source_sha256": "b8e16cc50a748beea7e2ebe457f93c969c6faddf7e112cb9982625ee0136cc10"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786336970496643800,
+    "size_bytes": 1984,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-cron-duplication-audit.json",
+    "source_sha256": "645047d6777b049bf61b4859e666a42a5e7911b954c4ff81f1fa2d6882c1f81f"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 49,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787634737719036200,
+    "size_bytes": 77602,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-decision-docket.json",
+    "source_sha256": "320ee5d75209c492368629a789fca4d7a43bc28433aea588b1923b8e3cd8a4c4"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786336979822274300,
+    "size_bytes": 6277,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-feedback-ingest.json",
+    "source_sha256": "a55e87091cfffef151c4228118b45b6b5284554f3b02ea1e8df42b5d9ea0636e"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 33,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787634735314948300,
+    "size_bytes": 52413,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-improvement-opportunity-queue.json",
+    "source_sha256": "ea79b339dbf1faaa854a9b8e91a57a72d6a12eed255aeadc2ed078361829e11c"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786202399122193000,
+    "size_bytes": 21149,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-learning-loop-eval-harness.json",
+    "source_sha256": "c7d52891a35e76d22ea2e77dc0c843b770e7bb473f12db30166b6315048c65dc"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781302302870559100,
+    "size_bytes": 4750,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-learning-loop-telegram-closeout.json",
+    "source_sha256": "c7092301403b963dd8b33e0adc7db405affc3b99285ede33cbf5fb896981df18"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787620728803920100,
+    "size_bytes": 13980,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-learning-loop-telegram-cron-runner.json",
+    "source_sha256": "9ea588e47a3b85de1cf48eccdd1da4d3f220f6efbbea1c2b207fdc2953b5e974"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 42,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787534170238061900,
+    "size_bytes": 68340,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-learning-loop-telegram-digest.json",
+    "source_sha256": "d9da84f04f7253aa327d7a858474d878b7a32e64e49317f4bddc5749c672ef0d"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 35,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787534170226649800,
+    "size_bytes": 44338,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-learning-loop-telegram-state.json",
+    "source_sha256": "2af1cb605b5a6ed270cf8499d3a9f30d60031a3ae137474a181d11a423c26b2d"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781302680379187900,
+    "size_bytes": 5380,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-model-path-runtime-stamping-closeout.json",
+    "source_sha256": "71f5d13b996dd595c9e91fffcf7ad058c7c6094a04b813a47d3337394fff71e7"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 33,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787632987445337800,
+    "size_bytes": 43747,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-model-quality-collection-cron-runner.json",
+    "source_sha256": "634863bde69c9a9729b9970e133830efea24a4559326f77bcd7d8ce5923fd462"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1779596386015494800,
+    "size_bytes": 9004,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-node-go-os-upgrade-chain.json",
+    "source_sha256": "850ab0c98b3ba6ee3c1f9dea31b28b47a4ddaa7d439b6f30878b2b127cdc5f72"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1782015690670187400,
+    "size_bytes": 9457,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-operating-control-loop.json",
+    "source_sha256": "d1bd52e9825da77d81a68b0d9a364b1061da3ebbccbd286b1cdf89a066704cd8"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781319556478353300,
+    "size_bytes": 8851,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-operating-loop-integration-2554.json",
+    "source_sha256": "8dfc54defaefa18cf59bf6951401f413fd97e1469a8e04c924d6dd06b9db5547"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781298158058023200,
+    "size_bytes": 7835,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-otel-collection-implementation-closeout.json",
+    "source_sha256": "f3d0f549a562ff4002abb3847f41911c755768e6646ca2fd10a78b46e1d3c10d"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 27,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786202424196764200,
+    "size_bytes": 32194,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-outcome-eval-suite-v2.json",
+    "source_sha256": "ac1b9514caf07a307b1ff6b7e0207549adde58d7699122a34b5d07bc73b37b92"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781313355265918500,
+    "size_bytes": 7939,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-parallel-drift-review-2505.json",
+    "source_sha256": "ad758a1209b3eb79299f76b9e4d88aa7c77f9a3bd1f841148eff6054ac501e19"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786336978921722500,
+    "size_bytes": 6852,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-prompt-variant-ledger.json",
+    "source_sha256": "f3729e305df8fc5a54836856994a8cbf7045966f1b2c1cf2845f255a1fb49431"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 74,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786336986220821400,
+    "size_bytes": 110175,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-proposal-dispatcher.json",
+    "source_sha256": "f9a590308e614b33c2a04bb57a1f72fd91fb094d45454aa35f171d6ae103d5b5"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 19,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787634735692781400,
+    "size_bytes": 29801,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-reflection-to-proposal-autopilot.json",
+    "source_sha256": "cc3c07a1ed4746a299dd45c2b76d93926988d9a4c0f19141ae8a1f289b3d1ca1"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781934804249138100,
+    "size_bytes": 2635,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-reflection-to-proposal-pipeline.json",
+    "source_sha256": "22cc22531b7fa7f90d57a29131f0e0085421cb2c5e6fe87ff27aabdb115e2409"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1783222763287613100,
+    "size_bytes": 5668,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-response-self-review-sampler.json",
+    "source_sha256": "0e390a427e7f3ab331f2f92994efdca38cec31b1125b6708c64483922d4f8099"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781934804338390200,
+    "size_bytes": 17364,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-rsi-evaluation-harness.json",
+    "source_sha256": "279e42878473768c11e5d3f5047048e2ab9fd643b42fbeaa15cdbb79d802d1fc"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781934804340133100,
+    "size_bytes": 8778,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-rsi-phase-plan.json",
+    "source_sha256": "4f4017ca1dcb94d82749d95fbe50a6c12cb476aade77955ab4ac1be919e16f48"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781934804249138100,
+    "size_bytes": 5075,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-rsi-research-brief.json",
+    "source_sha256": "59318a3228a57d9c96f07d12ec1a7897cd8664dbcdd17bb52c96a4330f173499"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 25,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781934804338390200,
+    "size_bytes": 38678,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-rsi-trend-report.json",
+    "source_sha256": "f99587f4de1ac815ba9a2338c35e6430be989bec6a7fce7a8634c279ff68d1de"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1781934804348772100,
+    "size_bytes": 3434,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-rsi-validation.json",
+    "source_sha256": "7ac84d49f62d3d54b90ef2994e8b756c4b29f9a1a72a84d5a50fde6835826ee1"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1783129101004568500,
+    "size_bytes": 9149,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-self-audit-cadence-packet.json",
+    "source_sha256": "4a6066df02569f524aaaf59181415d4401057a05a527dc58acda1f3c97b54b49"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786336978254698000,
+    "size_bytes": 7823,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-self-prompt-review-packet.json",
+    "source_sha256": "c949019ace177cc6523ac4ce3c9ac1e41f5023b980d6182ffecb4dbf8fb66624"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786336977418425600,
+    "size_bytes": 6429,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-telemetry-critique.json",
+    "source_sha256": "63ee03a24478f99496cbe0955080a854c3df64beb2b41d7826281668f0cbb905"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1783207920997943100,
+    "size_bytes": 8100,
+    "source_family": "workflow_checkpoint_packet",
+    "source_path": "tmp/wf74-wf88-checkpointed-execution.json",
+    "source_sha256": "340e729b18e6ff8ec23ccdb39b1e8ef9bf840b01f853b1f00630808372507d83"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1783211403093924100,
+    "size_bytes": 8452,
+    "source_family": "workflow_checkpoint_packet",
+    "source_path": "tmp/wf74-wf88-generic-checkpointed-execution.json",
+    "source_sha256": "e7903113a8c44fd40ab234ef177e7ab1e6d3fa4320f253d1de9204b8221144f1"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 20,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786890158631529500,
+    "size_bytes": 25034,
+    "source_family": "wf74_wf88_loop_trace_packet",
+    "source_path": "tmp/wf74-wf88-loop-trace.json",
+    "source_sha256": "a93a59bc635fde17488c4af5d98f94bbf82287c47b67ab0373f04bb244bc4388"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1782579177484936300,
+    "size_bytes": 2314,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-cleanup-common-parity.json",
+    "source_sha256": "a51e6516e8110ce0626f2549419e88a3477db9a84201bc3a4019f82302370ec1"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 45,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786686123184626300,
+    "size_bytes": 58446,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-cron-disabled-job-reference-review.json",
+    "source_sha256": "4991ef99956c616119fda616d651af9aab064e5a7aba2c3c23bfa86e6de19cef"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786686058321117700,
+    "size_bytes": 6265,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-cron-retired-job-inventory.json",
+    "source_sha256": "70cf524bfb8d5c40ccd22d52807d915ab93ce5f8391a0f08e7184ed975922150"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787634742575237300,
+    "size_bytes": 30962,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-daily-actionability-refresh.json",
+    "source_sha256": "52e412c9b67cf3a46bd50324df0c2040db38c25c9aed77bf88e9edc27e52ce13"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1782579162722419800,
+    "size_bytes": 5304,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-db-deletion-prep-packet.json",
+    "source_sha256": "ec1a3dbbcb8ddf04a794be255f6c96b8d06a30937b016f3210196b8752e9a525"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1782576778936460000,
+    "size_bytes": 3121,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-db-duplicate-source-delete-apply-report.json",
+    "source_sha256": "a56ec197f0bdb414b81d76b2ac22fc51875e8e1e0c3dd34e5b39d4205bb55734"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1782626319651410500,
+    "size_bytes": 4648,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-db-duplicate-source-delete-packet.json",
+    "source_sha256": "a70d39c5ea1a529a0bd78ca57bd394991f774b736d1c48228c5a97c83ab04343"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 21,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786684460619015200,
+    "size_bytes": 25181,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-db-lifecycle-refresh-hang-route.json",
+    "source_sha256": "f9bdb1e133d7987bdf2733120983eea4608f024c4bd4bea69abd3582135583b6"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1782577917498076100,
+    "size_bytes": 9175,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-db-script-duplication-audit.json",
+    "source_sha256": "a7f0fa2993d68c757e58daee5b45f73aa84a3847d56e912874745fdd0c895ebe"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 53,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786213744513264600,
+    "size_bytes": 83844,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-decision-compiler.json",
+    "source_sha256": "3739c2240b7d196ddd2c8c32c805121f92ddfb047b28b255a1ee02cc8b3d7b88"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1782661339998438500,
+    "size_bytes": 8106,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-delete-microbatch-apply-report.json",
+    "source_sha256": "e3173842478948efcab59936280c412db1e7954c816d695ec09f14625cff00bd"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 36,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786686370208926700,
+    "size_bytes": 67174,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-delete-readiness-packet.json",
+    "source_sha256": "16ba9845a5c8586800a1f7d2a758376c73b4f29839a9189923d9d01dd3bf17e7"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786686370543483800,
+    "size_bytes": 7080,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-deletion-approval-prep-packet.json",
+    "source_sha256": "e1a9fafa8343424a296d93a7559d013155c99fee92976237371eb98f7a8e6232"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 17,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1782711201456230900,
+    "size_bytes": 30065,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-disabled-cron-delete-apply-report.json",
+    "source_sha256": "e76047e9cd6150843d7e74f72c8222c93f3f75b30cc3a5c7848c9e50e557e502"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786686167343251500,
+    "size_bytes": 9907,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-finance-query-friction-guard.json",
+    "source_sha256": "2c16f21a9cd1d87e8c68f90233d0499e8872469b3099704d4a8047e8c7251f88"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 14,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787634737008941200,
+    "size_bytes": 19262,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-followup-debt-triage-packet.json",
+    "source_sha256": "1fefe5699ff51a5236481f7c3b9fa0e4632c90706b6cdb805962a004a433a702"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 38,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787634740819028000,
+    "size_bytes": 50961,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-os2-control-packet.json",
+    "source_sha256": "aa1c5bcad059c7d6c08a5cad4cb2a9761511a1583049ce93ef0c7169eb1b2326"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 149,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786686369827009200,
+    "size_bytes": 258954,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-retired-surface-cleanup-plan.json",
+    "source_sha256": "6d3678ba95d79ea7f6822d88eac48f29ba902dd0ee0eb73e0e2bb0e90dfccbd1"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 28,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786686032275514900,
+    "size_bytes": 39530,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-route-contraction-packet.json",
+    "source_sha256": "26f50c8d124a116f0a4a18d223c7c241cd37468d1689cde766ae09350f36d553"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 15,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786685958456586500,
+    "size_bytes": 20565,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-script-cleanup-inventory.json",
+    "source_sha256": "e25dd8b6d322508df6c10f33172f3c823ddee4480f7f9380a875e40b8227d114"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786686047241315800,
+    "size_bytes": 5168,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-source-open-residue-classifier.json",
+    "source_sha256": "9f743daf1933efc9e178a2f65dbd54af5f8a06ff6d5f4243870dee7f801e67a3"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 262,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1786686367558601000,
+    "size_bytes": 357758,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-typed-script-reference-graph.json",
+    "source_sha256": "c4b1831a8fd27b8d27a8e81fa32351e95a9d1a59b704d9d016430a81f73b49e9"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787634741235176300,
+    "size_bytes": 2204,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-wiki-refresh-cron-gate.json",
+    "source_sha256": "7990a2393d521a9eb0a3fb59a7a4f9994098bd6b96b3b5fa4a337d3b980af92d"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 86,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787634740244942400,
+    "size_bytes": 119391,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-wiki-synthesis-packet.json",
+    "source_sha256": "8d0eef34f15c7722444f270e2ccc515e2c4e6d9f2d840e949eab9768f9dba61f"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 128,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787634738646597900,
+    "size_bytes": 186489,
+    "source_family": "workspace_reference",
+    "source_path": "tmp/pm-implementation-job-queue.json",
+    "source_sha256": "0be732d739497fa9a33fe65883bb35d695fa7823e23971820e7bdb4dda4f7eed"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 80,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787705744601735100,
+    "size_bytes": 111111,
+    "source_family": "wf88_token_metadata_packet",
+    "source_path": "tmp/token-efficiency-scorecard.json",
+    "source_sha256": "d70254d05a716971059b61ce25235eb67e8d5892818fb55b65626ea59a278966"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 47,
+    "indexed_at_utc": "2026-08-26T00:59:31Z",
+    "mtime_ns": 1787534290288558000,
+    "size_bytes": 58917,
+    "source_family": "wf88_token_metadata_packet",
+    "source_path": "tmp/implementation-token-attribution-bridge.json",
+    "source_sha256": "6641a03072a9df38499f8483bb4fa0045b0d0978cd45d6de1a393406ab2b79aa"
+  }
+]

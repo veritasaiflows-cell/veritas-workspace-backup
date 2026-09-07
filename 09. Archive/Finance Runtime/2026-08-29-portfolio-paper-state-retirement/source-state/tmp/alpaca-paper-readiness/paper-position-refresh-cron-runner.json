@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-08-28T21:40:08Z",
+  "status": "ok",
+  "authority_boundary": {
+    "review_only": true,
+    "paper_position_sql_state_only": true,
+    "allowed_methods": [
+      "GET"
+    ],
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "paper_order_execution_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "account_or_credential_action_allowed": false,
+    "money_movement_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "sql_canon_context": {
+    "schema_version": "finance_sql_canon_guard_context.v1",
+    "generated_at_utc": "2026-08-28T21:40:08Z",
+    "consumer": "scripts/wf67_paper_position_refresh_cron_runner.py",
+    "status": "ok",
+    "db_path": "state/finance/finance-canon.sqlite",
+    "typed_access_layer": "scripts/finance_sql_canon_access.py",
+    "access_validation_status": "ok",
+    "production_answer_count": 14,
+    "legacy_production_answer_count": 0,
+    "migration_registry_summary": {
+      "priority_counts": {
+        "P0": 21,
+        "P1": 459,
+        "P2": 204
+      },
+      "lane_counts": {
+        "answer_path_parity_lane": 21,
+        "cron_pm_governance_lane": 14,
+        "pm_cockpit_lane": 2,
+        "source_loader_lane": 436,
+        "test_parity_lane": 203,
+        "typed_access_guard_lane": 3,
+        "wf78_wf77_routing_lane": 5
+      },
+      "cutover_state_counts": {
+        "not_cut_over": 116,
+        "source_producer": 389,
+        "sql_primary_guarded": 179
+      },
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": [],
+      "p0_answer_path_lane_status": {
+        "ok": true,
+        "errors": [],
+        "p0_count": 21,
+        "answer_path_lane_count": 21,
+        "p0_answer_path_lane_count": 21,
+        "p0_non_answer_path_count": 0,
+        "answer_path_non_p0_count": 0,
+        "p0_non_answer_path_consumers": [],
+        "answer_path_non_p0_consumers": []
+      }
+    },
+    "validation": {
+      "status": "ok",
+      "errors": [],
+      "warnings": []
+    },
+    "authority_boundary": {
+      "read_only_access_layer": true,
+      "db_mutation_allowed": false,
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "customer_or_external_delivery_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "commands": [
+    {
+      "args": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\alpaca_paper_position_sql_refresh.py",
+        "refresh",
+        "--create-kill-switch",
+        "--expires-minutes",
+        "90"
+      ],
+      "returncode": 0,
+      "stdout_tail": "\":\\\"259.32\\\",\\\"market_value\\\":\\\"425.985962\\\",\\\"qty\\\":\\\"1.642703849\\\",\\\"side\\\":\\\"long\\\",\\\"symbol\\\":\\\"VRT\\\",\\\"unrealized_pl\\\":\\\"-73.994038\\\",\\\"unrealized_plpc\\\":\\\"-0.14799\\\"}\", \"side\": \"long\", \"snapshot_id\": \"wf67-paper-pos-20260828T214001Z\", \"source\": \"alpaca_paper_get_only\", \"symbol\": \"VRT\", \"unrealized_pl\": -73.994038, \"unrealized_pl_percent\": -0.14799}, {\"average_entry_price\": 51.14, \"change_today\": 0.00038, \"current_price\": 53.25, \"market_value\": 260.304409, \"quantity\": 4.888345717, \"raw_json\": \"{\\\"avg_entry_price\\\":\\\"51.14\\\",\\\"change_today\\\":\\\"0.00038\\\",\\\"current_price\\\":\\\"53.25\\\",\\\"market_value\\\":\\\"260.304409\\\",\\\"qty\\\":\\\"4.888345717\\\",\\\"side\\\":\\\"long\\\",\\\"symbol\\\":\\\"XLB\\\",\\\"unrealized_pl\\\":\\\"10.314409\\\",\\\"unrealized_plpc\\\":\\\"0.04126\\\"}\", \"side\": \"long\", \"snapshot_id\": \"wf67-paper-pos-20260828T214001Z\", \"source\": \"alpaca_paper_get_only\", \"symbol\": \"XLB\", \"unrealized_pl\": 10.314409, \"unrealized_pl_percent\": 0.04126}, {\"average_entry_price\": 149.97, \"change_today\": 0.00153, \"current_price\": 156.68, \"market_value\": 156.68, \"quantity\": 1.0, \"raw_json\": \"{\\\"avg_entry_price\\\":\\\"149.97\\\",\\\"change_today\\\":\\\"0.00153\\\",\\\"current_price\\\":\\\"156.68\\\",\\\"market_value\\\":\\\"156.68\\\",\\\"qty\\\":\\\"1\\\",\\\"side\\\":\\\"long\\\",\\\"symbol\\\":\\\"XOM\\\",\\\"unrealized_pl\\\":\\\"6.71\\\",\\\"unrealized_plpc\\\":\\\"0.04474\\\"}\", \"side\": \"long\", \"snapshot_id\": \"wf67-paper-pos-20260828T214001Z\", \"source\": \"alpaca_paper_get_only\", \"symbol\": \"XOM\", \"unrealized_pl\": 6.71, \"unrealized_pl_percent\": 0.04474}], \"readiness_classification\": {\"blocks_live_execution\": true, \"blocks_paper_execution\": true, \"blocks_research_shadow_or_planning\": false, \"latest_successful_snapshot_age_seconds\": 0, \"latest_successful_snapshot_at_utc\": \"2026-08-28T21:40:01Z\", \"live_execution_state\": \"blocked_always_no_live_authority\", \"notes\": [\"Read-only position visibility is not paper order approval.\", \"Stale-but-known positions may support review only when disclosed.\", \"Any paper submit/cancel/sell still requires exact owner approval, fresh WF67 guard proof, and execution kill switch.\"], \"open_orders_count\": 0, \"operator_action\": \"NO_REPLY\", \"owner_approval_inferred\": false, \"paper_execution_state\": \"blocked_until_fresh_positions_exact_owner_approval_clean_wf67_guard_and_execution_kill_switch\", \"paper_or_live_execution_allowed\": false, \"paper_position_visibility_state\": \"fresh\", \"planning_state\": \"fresh_positions_available\", \"positions_count\": 10, \"refresh_blocker_codes\": [], \"refresh_blocker_scope\": \"none\"}, \"schema_version\": 1, \"status\": \"ok\", \"validation\": {\"checks\": [{\"detail\": \"ok\", \"name\": \"integrity_check_ok\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 0}, \"name\": \"foreign_key_check_ok\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 170}, \"name\": \"account_snapshot_present\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 170}, \"name\": \"freshness_row_present\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 152}, \"name\": \"ok_snapshot_available_for_current_positions\", \"ok\": true, \"severity\": \"warning\"}, {\"detail\": {\"rows\": 0}, \"name\": \"forbidden_authority_flags_false\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"account_mode\": \"paper\", \"account_settings_mutation_allowed\": 0, \"buying_power\": 396027.13, \"cash\": 96343.89, \"endpoint\": \"https://paper-api.alpaca.markets\", \"equity\": 100148.02, \"freshness_status\": \"fresh\", \"generated_at_utc\": \"2026-08-28T21:40:01Z\", \"live_endpoint_detected\": 0, \"live_trade_or_account_action_allowed\": 0, \"method\": \"GET_only\", \"money_movement_allowed\": 0, \"open_orders_count\": 0, \"orders_count\": 18, \"owner_approval_inferred\": 0, \"paper_cancel_allowed\": 0, \"paper_submit_allowed\": 0, \"portfolio_value\": 100148.02, \"positions_count\": 10, \"raw_response_bodies_persisted\": 0, \"secrets_redacted\": 1, \"snapshot_id\": \"wf67-paper-pos-20260828T214001Z\", \"stale_threshold_seconds\": 28800, \"status\": \"ok\", \"trade_or_account_action_allowed\": 0, \"validation_findings_json\": \"[]\"}, \"name\": \"latest_snapshot_fresh\", \"ok\": true, \"severity\": \"warning\"}], \"status\": \"ok\"}}\n",
+      "stderr_tail": ""
+    },
+    {
+      "args": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\finance_intelligence_state.py",
+        "paper-positions"
+      ],
+      "returncode": 0,
+      "stdout_tail": "60828T214001Z\", \"source\": \"alpaca_paper_get_only\", \"symbol\": \"NVDA\", \"unrealized_pl\": 22.840277, \"unrealized_pl_percent\": 0.07614}, {\"average_entry_price\": 874.84, \"change_today\": -0.016, \"current_price\": 995.02, \"market_value\": 298.506, \"quantity\": 0.3, \"raw_json\": \"{\\\"avg_entry_price\\\":\\\"874.84\\\",\\\"change_today\\\":\\\"-0.016\\\",\\\"current_price\\\":\\\"995.02\\\",\\\"market_value\\\":\\\"298.506\\\",\\\"qty\\\":\\\"0.3\\\",\\\"side\\\":\\\"long\\\",\\\"symbol\\\":\\\"PH\\\",\\\"unrealized_pl\\\":\\\"36.054\\\",\\\"unrealized_plpc\\\":\\\"0.13737\\\"}\", \"side\": \"long\", \"snapshot_id\": \"wf67-paper-pos-20260828T214001Z\", \"source\": \"alpaca_paper_get_only\", \"symbol\": \"PH\", \"unrealized_pl\": 36.054, \"unrealized_pl_percent\": 0.13737}, {\"average_entry_price\": 304.364052, \"change_today\": -0.03699, \"current_price\": 259.32, \"market_value\": 425.985962, \"quantity\": 1.642703849, \"raw_json\": \"{\\\"avg_entry_price\\\":\\\"304.364052\\\",\\\"change_today\\\":\\\"-0.03699\\\",\\\"current_price\\\":\\\"259.32\\\",\\\"market_value\\\":\\\"425.985962\\\",\\\"qty\\\":\\\"1.642703849\\\",\\\"side\\\":\\\"long\\\",\\\"symbol\\\":\\\"VRT\\\",\\\"unrealized_pl\\\":\\\"-73.994038\\\",\\\"unrealized_plpc\\\":\\\"-0.14799\\\"}\", \"side\": \"long\", \"snapshot_id\": \"wf67-paper-pos-20260828T214001Z\", \"source\": \"alpaca_paper_get_only\", \"symbol\": \"VRT\", \"unrealized_pl\": -73.994038, \"unrealized_pl_percent\": -0.14799}, {\"average_entry_price\": 51.14, \"change_today\": 0.00038, \"current_price\": 53.25, \"market_value\": 260.304409, \"quantity\": 4.888345717, \"raw_json\": \"{\\\"avg_entry_price\\\":\\\"51.14\\\",\\\"change_today\\\":\\\"0.00038\\\",\\\"current_price\\\":\\\"53.25\\\",\\\"market_value\\\":\\\"260.304409\\\",\\\"qty\\\":\\\"4.888345717\\\",\\\"side\\\":\\\"long\\\",\\\"symbol\\\":\\\"XLB\\\",\\\"unrealized_pl\\\":\\\"10.314409\\\",\\\"unrealized_plpc\\\":\\\"0.04126\\\"}\", \"side\": \"long\", \"snapshot_id\": \"wf67-paper-pos-20260828T214001Z\", \"source\": \"alpaca_paper_get_only\", \"symbol\": \"XLB\", \"unrealized_pl\": 10.314409, \"unrealized_pl_percent\": 0.04126}, {\"average_entry_price\": 149.97, \"change_today\": 0.00153, \"current_price\": 156.68, \"market_value\": 156.68, \"quantity\": 1.0, \"raw_json\": \"{\\\"avg_entry_price\\\":\\\"149.97\\\",\\\"change_today\\\":\\\"0.00153\\\",\\\"current_price\\\":\\\"156.68\\\",\\\"market_value\\\":\\\"156.68\\\",\\\"qty\\\":\\\"1\\\",\\\"side\\\":\\\"long\\\",\\\"symbol\\\":\\\"XOM\\\",\\\"unrealized_pl\\\":\\\"6.71\\\",\\\"unrealized_plpc\\\":\\\"0.04474\\\"}\", \"side\": \"long\", \"snapshot_id\": \"wf67-paper-pos-20260828T214001Z\", \"source\": \"alpaca_paper_get_only\", \"symbol\": \"XOM\", \"unrealized_pl\": 6.71, \"unrealized_pl_percent\": 0.04474}], \"schema_version\": 2, \"source_open_rule\": \"Use this packet for paper-position routing/current-state only. Stale, missing, or blocked freshness must be disclosed before paper-advisor context.\", \"sql_canon_migration\": {\"brokerage_or_account_action_allowed\": false, \"capital_deployment_allowed\": false, \"durable_sql_canon_db\": \"state/finance/finance-canon.sqlite\", \"internal_current_state_field_families_promoted\": [\"answer_path_scope\", \"evidence_freshness\", \"reference_levels\", \"source_lineage\", \"tier_routing_state\", \"universe_membership\"], \"internal_sql_canon_primary_guarded\": true, \"owner_approval_inferred\": false, \"paper_or_live_execution_allowed\": false, \"retail_or_customer_sql_first_allowed\": false, \"sql_canon_authority_expanded\": false, \"standing_local_sql_canon_migration_approved\": true, \"this_tmp_db_is_compatibility_cache\": true, \"typed_access_layer\": \"scripts/finance_sql_canon_access.py\"}, \"status\": \"ok\", \"validation\": {\"checks\": [{\"detail\": \"ok\", \"name\": \"integrity_check_ok\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 0}, \"name\": \"foreign_key_check_ok\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 1}, \"name\": \"paper_snapshot_present\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"rows\": 152}, \"name\": \"ok_snapshot_available_for_current_positions\", \"ok\": true, \"severity\": \"warning\"}, {\"detail\": {\"rows\": 0}, \"name\": \"forbidden_authority_flags_false\", \"ok\": true, \"severity\": \"error\"}, {\"detail\": {\"freshness_status\": \"fresh\", \"generated_at_utc\": \"2026-08-28T21:40:01Z\"}, \"name\": \"paper_position_freshness_fresh\", \"ok\": true, \"severity\": \"warning\"}], \"status\": \"ok\"}}\n",
+      "stderr_tail": ""
+    },
+    {
+      "args": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\finance_stack_snapshot.py",
+        "--write",
+        "--validate"
+      ],
+      "returncode": 0,
+      "stdout_tail": "{\n  \"findings\": [\n    {\n      \"code\": \"capital_validator_not_ok\",\n      \"message\": \"capital deployment validator is not ok\",\n      \"severity\": \"warning\"\n    },\n    {\n      \"code\": \"probability_verdict_changed\",\n      \"message\": \"probability readiness verdict is not NOT_READY; inspect before using modeling language\",\n      \"severity\": \"warning\"\n    },\n    {\n      \"code\": \"handoff_action_needed\",\n      \"message\": \"intraday handoff says action_needed\",\n      \"severity\": \"warning\"\n    }\n  ],\n  \"sqlite\": {\n    \"deployable_now\": [],\n    \"foreign_key_check_rows\": [],\n    \"freshness_grade\": \"usable_with_caution\",\n    \"integrity_check\": \"ok\",\n    \"latest_run_id\": 100,\n    \"latest_status\": \"ok\",\n    \"latest_ticker_count\": 64,\n    \"required_tables_present\": [\n      \"snapshot_runs\",\n      \"ticker_rows\",\n      \"web_evidence_rows\"\n    ],\n    \"required_views_present\": [\n      \"latest_snapshot\",\n      \"latest_ticker_rows\"\n    ],\n    \"schema_ready\": true\n  },\n  \"status\": \"ok\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "args": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\artifact_index.py",
+        "incremental"
+      ],
+      "returncode": 0,
+      "stdout_tail": "incremental_rebuilt tmp/veritas-artifact-index.sqlite\nsource_files=189 changed_or_new=36 unchanged=153 removed=0\n",
+      "stderr_tail": ""
+    },
+    {
+      "args": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\artifact_index.py",
+        "validate"
+      ],
+      "returncode": 0,
+      "stdout_tail": "status=ok checks=33 failed=0\nok | integrity_check | ok\nok | foreign_key_check | rows=0\nok | view_exists:v_cockpit_action_queue | \nok | view_exists:v_cockpit_action_queue_deduped | \nok | view_exists:v_cockpit_ticker_timeline | \nok | view_exists:v_cockpit_trust_boundary | \nok | view_exists:v_cockpit_official_source_fields | \nok | view_exists:v_cockpit_canon_staging | \nok | view_exists:v_cockpit_earnings_lifecycle | \nok | view_exists:v_cockpit_dashboard_findings | \nok | view_exists:v_cockpit_source_freshness | \nok | view_exists:v_cockpit_deployment_readiness | \nok | forbidden_true_authority_flags_zero | count=0\nok | canon_stage_apply_allowed_zero | count=0\nok | canon_stage_activation_or_apply_ready_rows_zero | count=0\nok | official_ir_fields_have_lineage | missing=0\nok | cockpit_action_queue_has_rows | rows=85\nok | cockpit_action_queue_deduped_has_rows | rows=69\nok | cockpit_action_queue_deduped_not_larger_than_raw | raw=85 deduped=69\nok | cockpit_action_queue_deduped_unique_keys | duplicates=0\nok | official_field_proof_amd_adjusted_eps | rows=2\nok | ticker_timeline_etn_has_rows | rows=35\nok | earnings_lifecycle_nvda_review_only | rows=1\nok | earnings_lifecycle_review_only_no_action | rows=0\nok | deployment_readiness_etn_indexed | rows=1 buckets=['WATCH / RESEARCH NEEDED']\nok | source_freshness_rows_indexed | rows=10\nok | dashboard_findings_indexed | rows=28\nok | ticker_expression_index_query_plan | (5, 0, 52, 'SEARCH daily_review_objects USING INDEX idx_daily_review_ticker_upper_time (<expr>=?)')\nok | drift_fingerprint_row_counts_match | \nok | freshness_live_files_all_indexed | not_indexed=0\nok | freshness_no_orphaned_rows | orphaned=0\nok | freshness_no_stale_content | stale=0\nok | freshness_index_has_been_built | last_rebuilt=2026-08-08T15:38:45Z last_incremental=2026-08-28T21:40:01Z\n",
+      "stderr_tail": ""
+    },
+    {
+      "args": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf67_paper_position_refresh_cron_check.py",
+        "--write",
+        "--validate"
+      ],
+      "returncode": 0,
+      "stdout_tail": "{\n  \"status\": \"ok\",\n  \"output\": \"tmp/alpaca-paper-readiness/paper-position-refresh-cron-check.json\",\n  \"summary\": {\n    \"critical\": 0,\n    \"warning\": 0,\n    \"findings\": 0\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "args": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\cron_operator_ledger.py",
+        "--write",
+        "--write-md",
+        "--validate"
+      ],
+      "returncode": 0,
+      "stdout_tail": "{\n  \"status\": \"ok\",\n  \"out\": \"tmp/cron-operator-ledger.json\",\n  \"md\": \"tmp/cron-operator-ledger.md\",\n  \"errors\": []\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "summary": {
+    "commands": 7,
+    "failed": 0
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

@@ -38,9 +38,16 @@ def test_wf78_legacy_coverage_allows_retired_zero_scope() -> None:
     assert not qa.wf78_legacy_coverage_scope_ok(["AAPL"], [], ["AAPL"])
 
 
+def test_wf78_coverage_scope_is_size_independent() -> None:
+    fourteen = [f"T{index}" for index in range(14)]
+    assert qa.wf78_legacy_coverage_scope_ok(fourteen, fourteen, [])
+    assert not qa.wf78_legacy_coverage_scope_ok(fourteen, fourteen[:13], ["T13"])
+
+
 if __name__ == "__main__":
     test_sql_first_retired_production_scope_is_clean()
     test_sql_first_review_monitor_tier_a_state_is_clean()
     test_sql_first_review_monitor_fails_if_authority_widens()
     test_wf78_legacy_coverage_allows_retired_zero_scope()
+    test_wf78_coverage_scope_is_size_independent()
     print("ok")

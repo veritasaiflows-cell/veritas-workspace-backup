@@ -8,12 +8,6 @@ from pathlib import Path
 import finance_decision_performance_digest as digest
 
 
-def write_json(path: Path, payload: dict) -> Path:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload), encoding="utf-8")
-    return path
-
-
 def write_jsonl(path: Path, rows: list[dict]) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
@@ -39,23 +33,16 @@ def outcome_row(ticker: str = "VRT") -> dict:
     }
 
 
-def journal_row(ticker: str = "VRT") -> dict:
-    return {
-        "decision": {"ticker": ticker},
-        "outcome": {"tracked": True, "terminal": True, "status": "expired"},
-    }
-
-
-def test_summarize_wf55_counts_due_unobserved_checkpoint() -> None:
+def test_summarize_recommendations_counts_due_unobserved_checkpoint() -> None:
     now = datetime(2026, 6, 14, tzinfo=timezone.utc)
-    summary = digest.summarize_wf55([outcome_row()], now, [])
+    summary = digest.summarize_recommendation_outcomes([outcome_row()], now, [])
     assert summary["recommendation_tracking_rows"] == 1
     assert summary["due_unobserved_checkpoint_count"] == 1
     assert summary["tracked_tickers"] == ["VRT"]
     assert summary["outcome_grade_assigned_count"] == 0
 
 
-def test_summarize_wf55_counts_grade_history() -> None:
+def test_summarize_recommendations_counts_grade_history() -> None:
     now = datetime(2026, 6, 14, tzinfo=timezone.utc)
     grade_rows = [{
         "grade_event_id": "grade-1",
@@ -63,7 +50,7 @@ def test_summarize_wf55_counts_grade_history() -> None:
         "grade_status": "assigned",
         "assigned_grade": "band_reclaim_held",
     }]
-    summary = digest.summarize_wf55([outcome_row()], now, grade_rows)
+    summary = digest.summarize_recommendation_outcomes([outcome_row()], now, grade_rows)
     assert summary["outcome_grade_assigned_count"] == 1
     assert summary["grade_history"]["assigned_grade_event_count"] == 1
 
@@ -72,52 +59,21 @@ def test_build_payload_preserves_no_performance_claim_when_pending() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         base = Path(tmp)
         paths = {
-            "wf55_ledger": write_jsonl(base / "wf55.jsonl", [outcome_row()]),
-            "wf55_grade_history": write_jsonl(base / "grades.jsonl", []),
-            "wf87_journal": write_jsonl(base / "journal.jsonl", [journal_row()]),
-            "wf87_shadow_scorecard": write_json(
-                base / "shadow.json",
-                {
-                    "status": "pending_regular_session_followup",
-                    "summary": {
-                        "decision_count": 1,
-                        "scoreable_decision_count": 0,
-                        "pending_regular_session_followup_count": 1,
-                        "decision_quality_claim_allowed_now": False,
-                        "model_performance_claim_allowed_now": False,
-                    },
-                },
-            ),
-            "wf87_readiness": write_json(
-                base / "readiness.json",
-                {
-                    "status": "phase_a_hardening_implemented_runtime_blocked",
-                    "phase_readiness": {
-                        "phase_a_hardening_components_installed": True,
-                        "phase_a_runtime_gates_clean": False,
-                        "phase_b_assisted_round_trip_ready": False,
-                        "phase_c_autonomous_paper_buy_ready": False,
-                    },
-                },
-            ),
+            "recommendation_ledger": write_jsonl(base / "recommendations.jsonl", [outcome_row()]),
+            "recommendation_grade_history": write_jsonl(base / "grades.jsonl", []),
         }
         payload = digest.build_payload(paths, now=datetime(2026, 6, 14, tzinfo=timezone.utc))
         assert payload["status"] == "pending_mature_observations"
         assert payload["performance_claim_status"]["predictive_skill_claim_allowed_now"] is False
         assert payload["validation"]["status"] == "warning"
-
-
-def test_journal_summary_counts_terminal_outcomes() -> None:
-    summary = digest.summarize_journal([journal_row("GOOG"), {"_parse_error": "bad"}])
-    assert summary["record_count"] == 1
-    assert summary["parse_error_count"] == 1
-    assert summary["terminal_order_outcome_count"] == 1
-    assert summary["tickers"] == ["GOOG"]
+        assert set(payload["source_artifacts"]) == {"recommendation_ledger", "recommendation_grade_history"}
+        serialized = json.dumps(payload).lower()
+        for retired_marker in ("wf67", "wf87", "paper-autotrader", "trade-decision-journal", "would_buy", "autonomous_paper_buy"):
+            assert retired_marker not in serialized
 
 
 if __name__ == "__main__":
-    test_summarize_wf55_counts_due_unobserved_checkpoint()
-    test_summarize_wf55_counts_grade_history()
+    test_summarize_recommendations_counts_due_unobserved_checkpoint()
+    test_summarize_recommendations_counts_grade_history()
     test_build_payload_preserves_no_performance_claim_when_pending()
-    test_journal_summary_counts_terminal_outcomes()
     print("finance_decision_performance_digest_tests_passed")

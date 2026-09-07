@@ -1,0 +1,31 @@
+{
+  "artifact_type": "wf67_paper_cancel_request",
+  "audit": {
+    "raw_response_persistence_allowed": false,
+    "secret_material_present": false
+  },
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "live_submit_allowed": false,
+    "money_movement_allowed": false,
+    "no_inferred_approval": true,
+    "paper_cancel_allowed": true,
+    "paper_only": true,
+    "paper_submit_allowed": false
+  },
+  "cancel": {
+    "paper_order_id": "sample-order-id",
+    "reason": "sample only - do not execute",
+    "symbol": "MSFT"
+  },
+  "created_at_utc": "2026-05-18T02:17:34Z",
+  "request_id": "sample-cancel-not-executable",
+  "schema_version": 1,
+  "source": {
+    "owner_or_pilot_scope": "sample only - do not execute",
+    "scoped_paper_trade_or_pilot": true
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

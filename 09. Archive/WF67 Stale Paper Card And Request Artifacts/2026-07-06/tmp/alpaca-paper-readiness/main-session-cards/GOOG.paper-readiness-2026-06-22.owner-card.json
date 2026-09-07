@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "artifact_type": "main_session_wf67_order_decision_card",
+  "request_id": "wf86-assisted-GOOG-buy-limit-20260622T001317Z",
+  "created_at_utc": "2026-06-22T00:13:17Z",
+  "authority": {
+    "main_session_recommendation_allowed": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "paper_only": true,
+    "paper_order_execution_allowed_by_card": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "order": {
+    "symbol": "GOOG",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 367.46,
+    "qty": null,
+    "notional": 1500.0
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 1500.0,
+    "max_loss_usd": 107.73,
+    "max_notional_usd": 1500.0,
+    "policy_max_notional_usd": 5000.0,
+    "setup_notional_cap_usd": 1500.0,
+    "technical_notional_multiplier": 0.3,
+    "technical_setup_label": "TACTICAL_DIP_RECLAIM",
+    "entry_band_low": 354.25,
+    "entry_band_high": 369.69,
+    "observed_price": 367.46,
+    "observed_entry_status": "IN_BAND",
+    "stop": 341.07,
+    "sizing_rationale": "WF86 tactical dip/reclaim paper draft capped at $1,500; the $5,000 policy number is an absolute order ceiling, not the default size. Price is below the 20D/50D MA zone but above the 200D MA, so reclaim confirmation is required. Limit/day and notional sizing are paper-only; execution remains blocked until fresh exact Randall order approval and clean WF67 guard proof.",
+    "full_scope_artifact": "tmp/paper-autotrader/policy.json"
+  },
+  "source": {
+    "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+    "capital_recommendation_source": "wf86_shadow_decision_ledger",
+    "owner_or_pilot_scope": "WF86 assisted paper-order draft, pending exact Randall approval; no execution authority.",
+    "approval_artifact": "tmp/alpaca-paper-readiness/owner-approval.vrt-wf86-assisted-20260611.json",
+    "external_order_support_sources": [
+      "https://docs.alpaca.markets/us/docs/fractional-trading",
+      "https://alpaca.markets/blog/fractional-shares-trading-supports-limit-orders-and-extended-hours/"
+    ]
+  },
+  "owner_approval": {
+    "status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "approval_text": null,
+    "market_order_owner_approved": false,
+    "stale_or_mismatched_prior_approval": "approval_order_mismatch:symbol"
+  },
+  "decision_context": {
+    "ticker": "GOOG",
+    "shadow_decision": "would_buy_shadow",
+    "shadow_eligible": true,
+    "assisted_review_ready": false,
+    "assisted_review_blockers": [
+      "decision_factory_disposition=not_card_preparable",
+      "stale_or_mismatched_owner_approval:approval_order_mismatch:symbol",
+      "tactical_dip_reclaim_requires_fresh_exact_owner_review"
+    ],
+    "execution_ready": false,
+    "execution_blockers": [
+      "wf67_guard_not_clean",
+      "fresh_kill_switch_not_proven",
+      "redacted_audit_and_reconciliation_not_proven",
+      "separate_scoped_randall_pilot_approval_missing"
+    ],
+    "technical_setup": {
+      "setup_label": "TACTICAL_DIP_RECLAIM",
+      "clean_add_allowed": false,
+      "tactical_dip_reclaim_allowed": true,
+      "notional_multiplier": 0.3,
+      "reclaim_trigger": "Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 368.68; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+      "blocker": null,
+      "latest_close": 367.46,
+      "ma20": 368.68,
+      "ma50": 364.44,
+      "ma200": 310.25,
+      "above_ma20": false,
+      "above_ma50": true,
+      "above_ma200": true,
+      "ma_posture": "above 50d and 200d, below 20d",
+      "data_date": "2026-06-18",
+      "technical_posture": {
+        "band_status": "IN_BAND",
+        "latest_close": 367.46,
+        "ma20": 368.68,
+        "ma50": 364.44,
+        "ma200": 310.25,
+        "ma_posture": "above 50d and 200d, below 20d",
+        "above_ma20": false,
+        "above_ma50": true,
+        "above_ma200": true,
+        "data_date": "2026-06-18",
+        "deployment_surface_state": "SYSTEM HOLD",
+        "macro_gate": "CLEAN",
+        "near_earnings_caution": false,
+        "why": "in band at 367.46 -- explicit owner promotion review required before deployable-now status"
+      }
+    },
+    "opportunity_review": {
+      "label": "thesis_supported_but_risk_control_required",
+      "positive_signals": [
+        "eps_yoy_pct=81.85",
+        "official_guidance_available",
+        "revenue_yoy_pct=21.79"
+      ],
+      "risk_flags": [],
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "portfolio_role": "core",
+      "source_open_required": true
+    },
+    "wf84_canonical_data_plane": {
+      "status": "ok",
+      "ticker": "GOOG",
+      "auto_tier": "Tier A",
+      "auto_state": "A-READY",
+      "primary_state": "blocked_missing_freshness",
+      "queue_state": "blocked_missing_freshness",
+      "actionability": "review_only_owner_gated",
+      "latest_known_price": 367.46,
+      "band_status": "IN_BAND",
+      "entry_band_low": 354.25,
+      "entry_band_high": 369.69,
+      "stop_or_invalidation": 341.07,
+      "authority_flags_false": true
+    },
+    "written_band": {
+      "entry_band_low": 354.25,
+      "entry_band_high": 369.69,
+      "stop_or_invalidation": 341.07,
+      "card_reference_price": 369.27,
+      "card_band_status": "IN_BAND",
+      "current_band_status": "IN_BAND",
+      "source": "wf84_canonical_overlay",
+      "decision_factory_band_snapshot": {
+        "entry_band_low": 354.63,
+        "entry_band_high": 376.48,
+        "stop_or_invalidation": 342.49,
+        "current_band_status": "IN_BAND"
+      }
+    },
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

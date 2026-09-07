@@ -144,6 +144,13 @@ def test_wiki_bootstrap_validator_runs_after_wiki_synthesis() -> None:
     assert "--validate" in bootstrap_command
 
 
+def test_command_plan_has_no_retired_finance_route() -> None:
+    module = load_module()
+    serialized = json.dumps(module.COMMANDS).lower()
+    for marker in ("wf67", "wf87", "paper-autotrader", "trade-grade", "deployment-readiness", "capital-deployment"):
+        assert marker not in serialized
+
+
 def main() -> int:
     test_runner_completes_successful_sequence()
     test_runner_stops_on_first_failure()
@@ -152,6 +159,7 @@ def main() -> int:
     test_stale_wf74_artifact_does_not_skip_command()
     test_no_reuse_mode_runs_even_with_fresh_artifact()
     test_wiki_bootstrap_validator_runs_after_wiki_synthesis()
+    test_command_plan_has_no_retired_finance_route()
     print("wf88 daily actionability refresh tests passed")
     return 0
 

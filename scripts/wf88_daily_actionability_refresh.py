@@ -27,7 +27,6 @@ SCHEMA = "veritas.wf88_daily_actionability_refresh.v1"
 WF74_REUSE_WINDOW_MINUTES = 120
 
 COMMANDS: list[dict[str, Any]] = [
-    {"id": "wf55_outcome_record", "command": [sys.executable, "scripts\\wf55_outcome_ledger_v2.py", "record"]},
     {"id": "recommendation_outcome_grading", "command": [sys.executable, "scripts\\recommendation_outcome_grading_cadence.py", "--write", "--write-md", "--validate"]},
     {"id": "finance_decision_performance", "command": [sys.executable, "scripts\\finance_decision_performance_digest.py", "--write", "--write-md", "--validate"]},
     {

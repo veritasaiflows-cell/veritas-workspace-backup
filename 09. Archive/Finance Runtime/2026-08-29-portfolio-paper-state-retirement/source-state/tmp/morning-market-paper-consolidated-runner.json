@@ -1,0 +1,277 @@
+{
+  "schema": "veritas.cron_consolidated_runner.v1",
+  "runner": "morning_market_paper_consolidated_runner",
+  "phase": "phase2",
+  "generated_at_utc": "2026-08-28T13:55:21Z",
+  "status": "ok",
+  "operator_action": "NO_REPLY",
+  "model_posture": "Command-job digest path; producer refresh stays in earlier silent proof jobs.",
+  "target_seconds": 120,
+  "hard_timeout_seconds": 240,
+  "elapsed_seconds": 21.249,
+  "slow": false,
+  "source_jobs_replaced_or_shadowed": [
+    "Finance - Silent Tier A Intraday Market Readiness Probe",
+    "Finance - Silent Tier A Confirmation Market Readiness Probe",
+    "Finance - WF85 Paper Deployment Telegram Radar",
+    "Finance - Morning Paper Deployment Recommendation Cards",
+    "Finance - WF87 Market-Hours Fresh Gate Probe",
+    "Finance - WF87 Autonomy Command Center Refresh"
+  ],
+  "steps": [
+    {
+      "name": "market_execution_readiness",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\market_execution_readiness_cron_hardening.py",
+        "--write",
+        "--validate"
+      ],
+      "required": true,
+      "started_at_utc": "2026-08-28T13:55:00Z",
+      "completed_at_utc": "2026-08-28T13:55:04Z",
+      "duration_ms": 4418.197,
+      "timeout_seconds": 45,
+      "returncode": 0,
+      "ok": true,
+      "stdout_tail": "ted_session\": 1,\n      \"fresh_intraday\": 71,\n      \"stale_unexpected\": 2\n    },\n    \"composite_quote_refresh_times_local\": [\n      \"06:42\",\n      \"07:14\",\n      \"08:05\",\n      \"12:07\",\n      \"13:05\"\n    ],\n    \"critical_count\": 0,\n    \"deployment_intraday_required_symbol_count\": 0,\n    \"last_completed_market_date\": \"2026-08-27\",\n    \"market_close_time_az\": \"13:00\",\n    \"market_holiday_today\": false,\n    \"market_session_window\": \"market_hours_fresh\",\n    \"max_quote_age_seconds\": 80893,\n    \"missing_intraday_required_symbols\": [],\n    \"missing_required_symbols\": [],\n    \"next_safe_action\": \"If blocked, refresh WF68 quote snapshot and P0 hardening proof; if ok, use WF78 queue for review-only owner-card preparation only.\",\n    \"nonfresh_snapshot_count\": 3,\n    \"not_requested_required_symbols\": [],\n    \"p0_guard_times_local\": [],\n    \"quote_local_date\": \"2026-08-28\",\n    \"quote_observed_symbol_count\": 74,\n    \"quote_retry_attempt_count\": 2,\n    \"quote_retry_attempted\": true,\n    \"quote_retry_cleared\": false,\n    \"quote_retry_final_reasons\": [\n      \"EMR:calendar_freshness:stale_unexpected\",\n      \"EMR:freshness:current_but_not_intraday_fresh\",\n      \"SCCO:calendar_freshness:stale_unexpected\",\n      \"SCCO:freshness:current_but_not_intraday_fresh\",\n      \"VAW:freshness:current_but_not_intraday_fresh\"\n    ],\n    \"required_market_date\": \"2026-08-28\",\n    \"required_tier_one_symbol_count\": 12,\n    \"stale_or_missing_snapshot_count\": 0,\n    \"stale_unexpected_snapshot_count\": 2,\n    \"tier_a_probe_times_local\": [\n      \"06:42\",\n      \"07:14\",\n      \"12:07\"\n    ],\n    \"warning_count\": 1,\n    \"wf68_times_local\": [\n      \"08:05\",\n      \"13:05\"\n    ]\n  },\n  \"validation\": {\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": [\n      \"wf78_event_queue_keeps_fresh_quote_first\"\n    ]\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf85_paper_deployment_radar",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf85_paper_deployment_telegram_cron_runner.py",
+        "--write",
+        "--validate",
+        "--max-age-minutes",
+        "240",
+        "--alert-window",
+        "morning",
+        "--send",
+        "--skip-builder"
+      ],
+      "required": true,
+      "started_at_utc": "2026-08-28T13:55:04Z",
+      "completed_at_utc": "2026-08-28T13:55:18Z",
+      "duration_ms": 14168.792,
+      "timeout_seconds": 90,
+      "returncode": 0,
+      "ok": true,
+      "stdout_tail": "{\n  \"mode\": \"send\",\n  \"output\": \"tmp/wf85-paper-deployment-telegram-cron-runner.json\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"band_integrity_age_minutes\": 0,\n    \"band_integrity_mismatch_tickers\": [],\n    \"band_integrity_status\": \"warning\",\n    \"band_integrity_warning_tickers\": [\n      \"NVDA\",\n      \"VRT\"\n    ],\n    \"deployment_ready_count\": 0,\n    \"digest_operator_action\": \"TELEGRAM_NOTIFY\",\n    \"digest_status\": \"ok\",\n    \"execution_ready_count\": 0,\n    \"failed_step_count\": 0,\n    \"morning_cards_age_minutes\": 29,\n    \"morning_cards_status\": \"warning\",\n    \"morning_cards_validation\": \"ok\",\n    \"near_deployment_count\": 0,\n    \"notifier_alert_window\": \"morning\",\n    \"notifier_blockers\": [],\n    \"notifier_duplicate\": false,\n    \"notifier_sent_count\": 1,\n    \"notifier_status\": \"SENT\",\n    \"quote_snapshot_proof_age_minutes\": 0,\n    \"quote_snapshot_proof_status\": \"ok\",\n    \"skip_builder\": true,\n    \"sql_canon_production_answer_count\": 14,\n    \"sql_canon_status\": \"ok\",\n    \"step_count\": 8,\n    \"wf67_guard_status\": \"blocked\"\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf87_market_hours_gate_probe",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf87_market_hours_gate_probe.py",
+        "--write",
+        "--validate"
+      ],
+      "required": true,
+      "started_at_utc": "2026-08-28T13:55:18Z",
+      "completed_at_utc": "2026-08-28T13:55:19Z",
+      "duration_ms": 851.19,
+      "timeout_seconds": 90,
+      "returncode": 0,
+      "ok": true,
+      "stdout_tail": "status=daylight_gates_blocked validation=warning operator_action=MAIN_HANDOFF_REQUIRED daylight=True result=blocked out=tmp/wf87-market-hours-gate-probe.json\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf87_autonomy_command_center",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf87_autonomy_command_center.py",
+        "--write",
+        "--validate"
+      ],
+      "required": true,
+      "started_at_utc": "2026-08-28T13:55:19Z",
+      "completed_at_utc": "2026-08-28T13:55:19Z",
+      "duration_ms": 227.698,
+      "timeout_seconds": 60,
+      "returncode": 0,
+      "ok": true,
+      "stdout_tail": "status=runtime_blocked validation=ok operator_action=MAIN_HANDOFF_REQUIRED state=runtime_blocked shadow=21/20 sessions=7/5 out=tmp/wf87-autonomy-command-center.json\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "cron_control_packet",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\cron_control_packet.py",
+        "--write",
+        "--validate"
+      ],
+      "required": false,
+      "started_at_utc": "2026-08-28T13:55:19Z",
+      "completed_at_utc": "2026-08-28T13:55:21Z",
+      "duration_ms": 1583.114,
+      "timeout_seconds": 45,
+      "returncode": 0,
+      "ok": true,
+      "stdout_tail": "wrote tmp/cron-control-packet.json status=ok escalation=25\n",
+      "stderr_tail": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "market_execution_readiness",
+      "path": "tmp/market-execution-readiness-cron-hardening.json",
+      "required": true,
+      "exists": true,
+      "parseable_json": true,
+      "status": "warning",
+      "allowed_statuses": [
+        "blocked",
+        "ok",
+        "warning"
+      ],
+      "generated_at_utc": "2026-08-28T13:55:00Z",
+      "age_hours": 0.006,
+      "max_age_hours": 12,
+      "stale": false,
+      "authority_drift_paths": [],
+      "ok": true
+    },
+    {
+      "name": "morning_paper_cards",
+      "path": "tmp/morning-paper-deployment-recommendation-cards.json",
+      "required": true,
+      "exists": true,
+      "parseable_json": true,
+      "status": "warning",
+      "allowed_statuses": [
+        "blocked",
+        "ok",
+        "warning"
+      ],
+      "generated_at_utc": "2026-08-28T13:25:26Z",
+      "age_hours": 0.499,
+      "max_age_hours": 12,
+      "stale": false,
+      "authority_drift_paths": [],
+      "ok": true
+    },
+    {
+      "name": "band_integrity",
+      "path": "tmp/capital-deployment-band-integrity-validator.json",
+      "required": true,
+      "exists": true,
+      "parseable_json": true,
+      "status": "warning",
+      "allowed_statuses": [
+        "blocked",
+        "ok",
+        "warning"
+      ],
+      "generated_at_utc": "2026-08-28T13:55:04Z",
+      "age_hours": 0.005,
+      "max_age_hours": 12,
+      "stale": false,
+      "authority_drift_paths": [],
+      "ok": true
+    },
+    {
+      "name": "wf85_telegram_runner",
+      "path": "tmp/wf85-paper-deployment-telegram-cron-runner.json",
+      "required": true,
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "allowed_statuses": [
+        "blocked",
+        "ok",
+        "warning"
+      ],
+      "generated_at_utc": "2026-08-28T13:55:18Z",
+      "age_hours": 0.001,
+      "max_age_hours": 12,
+      "stale": false,
+      "authority_drift_paths": [],
+      "ok": true
+    },
+    {
+      "name": "wf87_market_gate",
+      "path": "tmp/wf87-market-hours-gate-probe.json",
+      "required": true,
+      "exists": true,
+      "parseable_json": true,
+      "status": "daylight_gates_blocked",
+      "allowed_statuses": [
+        "blocked",
+        "daylight_gates_blocked",
+        "daylight_probe_ok",
+        "ok",
+        "outside_market_hours_sample_only",
+        "warning"
+      ],
+      "generated_at_utc": "2026-08-28T13:55:19Z",
+      "age_hours": 0.001,
+      "max_age_hours": 12,
+      "stale": false,
+      "authority_drift_paths": [],
+      "ok": true
+    },
+    {
+      "name": "wf87_command_center",
+      "path": "tmp/wf87-autonomy-command-center.json",
+      "required": true,
+      "exists": true,
+      "parseable_json": true,
+      "status": "runtime_blocked",
+      "allowed_statuses": [
+        "blocked",
+        "blocked_collecting_data",
+        "ok",
+        "runtime_blocked",
+        "warning"
+      ],
+      "generated_at_utc": "2026-08-28T13:55:19Z",
+      "age_hours": 0.001,
+      "max_age_hours": 12,
+      "stale": false,
+      "authority_drift_paths": [],
+      "ok": true
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_or_risk_rule_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [],
+    "failed_steps": [],
+    "bad_artifacts": [],
+    "authority_drift": {}
+  },
+  "stop_lines": [
+    "Consolidated cron runner proof only.",
+    "No capital deployment, paper/live execution, brokerage/account action, money movement, canon/portfolio mutation, runtime config mutation, or owner approval inference."
+  ],
+  "send": true,
+  "full_builder_refresh": false,
+  "skip_builder": true,
+  "skip_market_refresh": false,
+  "phase2_gate": "Do not disable source market/paper jobs until one clean regular-market shadow run confirms parity and no duplicate Telegram delivery.",
+  "runner_status_path": "tmp/morning-market-paper-consolidated-runner.json",
+  "main_session_blocker_packet": null
+}

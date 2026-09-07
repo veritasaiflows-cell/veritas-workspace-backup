@@ -1,0 +1,3217 @@
+{
+  "authority": {
+    "capital_or_order_authority": false,
+    "execution_allowed": false,
+    "numeric_values_changed": false,
+    "original_provenance_invented": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_account_state_maintained": false,
+    "review_only": true
+  },
+  "numeric_projection_sha256": "4b30ac2db897512d661767b5ea55842c7c41916ac48375b7244a76b3ab750996",
+  "purpose": "immutable migration baseline for guarded alert levels; not original market provenance",
+  "row_count": 200,
+  "rows": [
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 124.43,
+      "reference_price_high": 136.45,
+      "reference_price_low": 130.44,
+      "ticker": "A"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 277.63,
+      "reference_price_high": 300.76,
+      "reference_price_low": 286.37,
+      "ticker": "AAPL"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 206.18,
+      "reference_price_high": 220.95,
+      "reference_price_low": 212.97,
+      "ticker": "ABBV"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 126.45,
+      "reference_price_high": 135.76,
+      "reference_price_low": 132.13,
+      "ticker": "ABNB"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 111.63,
+      "reference_price_high": 116.51,
+      "reference_price_low": 114.07,
+      "ticker": "ABT"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 91.03,
+      "reference_price_high": 95.75,
+      "reference_price_low": 93.39,
+      "ticker": "ACGL"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 195.74,
+      "reference_price_high": 213.9,
+      "reference_price_low": 203.81,
+      "ticker": "ACN"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 282.98,
+      "reference_price_high": 310.73,
+      "reference_price_low": 296.85,
+      "ticker": "ADBE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 340.76,
+      "reference_price_high": 385.25,
+      "reference_price_low": 356.65,
+      "ticker": "ADI"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 73.06,
+      "reference_price_high": 80.26,
+      "reference_price_low": 75.92,
+      "ticker": "ADM"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 237.69,
+      "reference_price_high": 266.8,
+      "reference_price_low": 248.3,
+      "ticker": "ADP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "RECLAIM_ONLY",
+      "reference_confidence": null,
+      "reference_invalidation_level": 240.53,
+      "reference_price_high": 262.87,
+      "reference_price_low": 250.46,
+      "ticker": "ADSK"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 105.55,
+      "reference_price_high": 109.32,
+      "reference_price_low": 108.16,
+      "ticker": "AEE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 125.69,
+      "reference_price_high": 129.39,
+      "reference_price_low": 128.5,
+      "ticker": "AEP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 14.48,
+      "reference_price_high": 14.66,
+      "reference_price_low": 14.55,
+      "ticker": "AES"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 110.78,
+      "reference_price_high": 116.56,
+      "reference_price_low": 113.63,
+      "ticker": "AFL"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 75.73,
+      "reference_price_high": 79.75,
+      "reference_price_low": 77.74,
+      "ticker": "AIG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 237.22,
+      "reference_price_high": 254.55,
+      "reference_price_low": 243.41,
+      "ticker": "AIZ"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 236.83,
+      "reference_price_high": 251.35,
+      "reference_price_low": 244.09,
+      "ticker": "AJG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 97.38,
+      "reference_price_high": 121.46,
+      "reference_price_low": 104.91,
+      "ticker": "AKAM"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 148.61,
+      "reference_price_high": 160.04,
+      "reference_price_low": 153.69,
+      "ticker": "ALB"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 160.2,
+      "reference_price_high": 173.59,
+      "reference_price_low": 168.61,
+      "ticker": "ALGN"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 205.08,
+      "reference_price_high": 218.49,
+      "reference_price_low": 212.0,
+      "ticker": "ALL"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 143.26,
+      "reference_price_high": 160.17,
+      "reference_price_low": 149.3,
+      "ticker": "ALLE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 468.3,
+      "reference_price_high": 541.1,
+      "reference_price_low": 511.64,
+      "ticker": "AMAT"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 41.72,
+      "reference_price_high": 46.09,
+      "reference_price_low": 43.28,
+      "ticker": "AMCR"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 373.76,
+      "reference_price_high": 495.52,
+      "reference_price_low": 411.81,
+      "ticker": "AMD"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 232.14,
+      "reference_price_high": 250.17,
+      "reference_price_low": 238.74,
+      "ticker": "AME"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 327.24,
+      "reference_price_high": 345.15,
+      "reference_price_low": 338.21,
+      "ticker": "AMGN"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 461.25,
+      "reference_price_high": 488.23,
+      "reference_price_low": 474.74,
+      "ticker": "AMP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 174.98,
+      "reference_price_high": 187.35,
+      "reference_price_low": 180.81,
+      "ticker": "AMT"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 232.73,
+      "reference_price_high": 262.94,
+      "reference_price_low": 243.52,
+      "ticker": "AMZN"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "ABOVE_BAND_WAIT",
+      "reference_confidence": null,
+      "reference_invalidation_level": 159.61,
+      "reference_price_high": 191.55,
+      "reference_price_low": 172.32,
+      "ticker": "ANET"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 328.77,
+      "reference_price_high": 347.95,
+      "reference_price_low": 338.36,
+      "ticker": "AON"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 63.02,
+      "reference_price_high": 67.0,
+      "reference_price_low": 64.79,
+      "ticker": "AOS"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 34.37,
+      "reference_price_high": 37.43,
+      "reference_price_low": 36.34,
+      "ticker": "APA"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 276.63,
+      "reference_price_high": 285.6,
+      "reference_price_low": 284.35,
+      "ticker": "APD"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 146.43,
+      "reference_price_high": 166.14,
+      "reference_price_low": 155.18,
+      "ticker": "APH"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 120.43,
+      "reference_price_high": 131.69,
+      "reference_price_low": 125.34,
+      "ticker": "APO"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 484.44,
+      "reference_price_high": 534.35,
+      "reference_price_low": 506.62,
+      "ticker": "APP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 70.61,
+      "reference_price_high": 78.59,
+      "reference_price_low": 74.6,
+      "ticker": "APTV"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.19,
+      "reference_price_high": 59.21,
+      "reference_price_low": 56.7,
+      "ticker": "ARE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 135.54,
+      "reference_price_high": 147.66,
+      "reference_price_low": 141.6,
+      "ticker": "ARES"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 1453.11,
+      "reference_price_high": 1738.36,
+      "reference_price_low": 1553.38,
+      "ticker": "ASML"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 172.79,
+      "reference_price_high": 180.07,
+      "reference_price_low": 176.43,
+      "ticker": "ATO"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 176.34,
+      "reference_price_high": 185.94,
+      "reference_price_low": 180.34,
+      "ticker": "AVB"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 343.04,
+      "reference_price_high": 406.04,
+      "reference_price_low": 362.73,
+      "ticker": "AVGO"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 167.98,
+      "reference_price_high": 177.46,
+      "reference_price_low": 172.72,
+      "ticker": "AVY"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 128.92,
+      "reference_price_high": 135.9,
+      "reference_price_low": 132.41,
+      "ticker": "AWK"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 512.86,
+      "reference_price_high": 582.56,
+      "reference_price_low": 547.71,
+      "ticker": "AXON"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 304.48,
+      "reference_price_high": 320.76,
+      "reference_price_low": 313.88,
+      "ticker": "AXP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 3532.06,
+      "reference_price_high": 3795.64,
+      "reference_price_low": 3663.85,
+      "ticker": "AZO"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 209.03,
+      "reference_price_high": 223.21,
+      "reference_price_low": 218.21,
+      "ticker": "BA"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 55.11,
+      "reference_price_high": 57.38,
+      "reference_price_low": 56.73,
+      "ticker": "BALL"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 17.59,
+      "reference_price_high": 19.68,
+      "reference_price_low": 18.46,
+      "ticker": "BAX"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 62.17,
+      "reference_price_high": 72.44,
+      "reference_price_low": 65.87,
+      "ticker": "BBY"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 149.61,
+      "reference_price_high": 158.66,
+      "reference_price_low": 154.14,
+      "ticker": "BDX"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 26.38,
+      "reference_price_high": 28.36,
+      "reference_price_low": 27.37,
+      "ticker": "BF-B"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 117.03,
+      "reference_price_high": 126.21,
+      "reference_price_low": 122.15,
+      "ticker": "BG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 181.6,
+      "reference_price_high": 196.42,
+      "reference_price_low": 188.55,
+      "ticker": "BIIB"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 178.75,
+      "reference_price_high": 205.72,
+      "reference_price_low": 188.28,
+      "ticker": "BKNG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 60.1,
+      "reference_price_high": 64.37,
+      "reference_price_low": 62.61,
+      "ticker": "BKR"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 99.51,
+      "reference_price_high": 108.73,
+      "reference_price_low": 104.12,
+      "ticker": "BLDR"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.77,
+      "reference_price_high": 56.98,
+      "reference_price_low": 56.54,
+      "ticker": "BMY"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 193.07,
+      "reference_price_high": 204.15,
+      "reference_price_low": 198.61,
+      "ticker": "BR"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 478.07,
+      "reference_price_high": 506.98,
+      "reference_price_low": 488.39,
+      "ticker": "BRK.B"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 79.64,
+      "reference_price_high": 83.98,
+      "reference_price_low": 81.81,
+      "ticker": "BSX"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 58.05,
+      "reference_price_high": 63.4,
+      "reference_price_low": 59.96,
+      "ticker": "BXP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 16.34,
+      "reference_price_high": 17.38,
+      "reference_price_low": 16.86,
+      "ticker": "CAG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 60.61,
+      "reference_price_high": 68.26,
+      "reference_price_low": 63.76,
+      "ticker": "CARR"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 791.06,
+      "reference_price_high": 855.09,
+      "reference_price_low": 822.41,
+      "ticker": "CASY"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 712.19,
+      "reference_price_high": 860.43,
+      "reference_price_low": 758.52,
+      "ticker": "CAT"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 146.31,
+      "reference_price_high": 156.03,
+      "reference_price_low": 151.17,
+      "ticker": "CBRE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 86.75,
+      "reference_price_high": 92.65,
+      "reference_price_low": 89.7,
+      "ticker": "CCI"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 24.77,
+      "reference_price_high": 28.1,
+      "reference_price_low": 25.96,
+      "ticker": "CCL"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 334.94,
+      "reference_price_high": 362.59,
+      "reference_price_low": 347.23,
+      "ticker": "CDNS"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 305.79,
+      "reference_price_high": 333.54,
+      "reference_price_low": 319.66,
+      "ticker": "CEG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 108.17,
+      "reference_price_high": 114.3,
+      "reference_price_low": 113.9,
+      "ticker": "CF"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 92.04,
+      "reference_price_high": 96.85,
+      "reference_price_low": 94.71,
+      "ticker": "CHD"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 168.65,
+      "reference_price_high": 185.1,
+      "reference_price_low": 176.02,
+      "ticker": "CHRW"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 205.68,
+      "reference_price_high": 221.48,
+      "reference_price_low": 213.58,
+      "ticker": "CHTR"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 84.19,
+      "reference_price_high": 89.4,
+      "reference_price_low": 86.95,
+      "ticker": "CL"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 104.77,
+      "reference_price_high": 111.95,
+      "reference_price_low": 108.36,
+      "ticker": "CLX"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 27.25,
+      "reference_price_high": 28.77,
+      "reference_price_low": 28.01,
+      "ticker": "CMCSA"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 244.77,
+      "reference_price_high": 265.88,
+      "reference_price_low": 252.31,
+      "ticker": "CME"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 34.48,
+      "reference_price_high": 37.36,
+      "reference_price_low": 35.92,
+      "ticker": "CMG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 71.36,
+      "reference_price_high": 73.33,
+      "reference_price_low": 73.14,
+      "ticker": "CMS"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 41.07,
+      "reference_price_high": 42.72,
+      "reference_price_low": 42.07,
+      "ticker": "CNP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 112.26,
+      "reference_price_high": 117.77,
+      "reference_price_low": 116.56,
+      "ticker": "COP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 955.11,
+      "reference_price_high": 993.6,
+      "reference_price_low": 983.91,
+      "ticker": "COST"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 25.73,
+      "reference_price_high": 27.55,
+      "reference_price_low": 26.64,
+      "ticker": "CPB"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 103.62,
+      "reference_price_high": 111.14,
+      "reference_price_low": 106.37,
+      "ticker": "CPT"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 110.86,
+      "reference_price_high": 120.11,
+      "reference_price_low": 115.49,
+      "ticker": "CRH"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 206.08,
+      "reference_price_high": 228.68,
+      "reference_price_low": 217.38,
+      "ticker": "CRM"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 521.36,
+      "reference_price_high": 672.12,
+      "reference_price_low": 568.77,
+      "ticker": "CRWD"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 55.54,
+      "reference_price_high": 59.34,
+      "reference_price_low": 57.44,
+      "ticker": "CSGP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 75.73,
+      "reference_price_high": 77.86,
+      "reference_price_low": 77.82,
+      "ticker": "CTVA"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 68.39,
+      "reference_price_high": 78.83,
+      "reference_price_low": 73.61,
+      "ticker": "CVNA"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 181.26,
+      "reference_price_high": 196.84,
+      "reference_price_low": 186.9,
+      "ticker": "CVX"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 62.65,
+      "reference_price_high": 66.86,
+      "reference_price_low": 64.35,
+      "ticker": "D"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 192.62,
+      "reference_price_high": 213.68,
+      "reference_price_low": 203.15,
+      "ticker": "DASH"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 44.8,
+      "reference_price_high": 48.06,
+      "reference_price_low": 46.68,
+      "ticker": "DD"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 175.89,
+      "reference_price_high": 229.65,
+      "reference_price_low": 192.69,
+      "ticker": "DDOG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 539.06,
+      "reference_price_high": 574.45,
+      "reference_price_low": 561.35,
+      "ticker": "DE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 98.53,
+      "reference_price_high": 106.58,
+      "reference_price_low": 102.11,
+      "ticker": "DECK"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 104.75,
+      "reference_price_high": 109.83,
+      "reference_price_low": 107.29,
+      "ticker": "DIS"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 180.68,
+      "reference_price_high": 188.39,
+      "reference_price_low": 185.9,
+      "ticker": "DLR"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 33.37,
+      "reference_price_high": 35.8,
+      "reference_price_low": 35.1,
+      "ticker": "DOW"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 139.97,
+      "reference_price_high": 145.76,
+      "reference_price_low": 143.3,
+      "ticker": "DTE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 121.38,
+      "reference_price_high": 124.7,
+      "reference_price_low": 124.08,
+      "ticker": "DUK"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 43.23,
+      "reference_price_high": 45.81,
+      "reference_price_low": 45.3,
+      "ticker": "DVN"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 200.34,
+      "reference_price_high": 202.65,
+      "reference_price_low": 201.57,
+      "ticker": "EA"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 264.78,
+      "reference_price_high": 281.0,
+      "reference_price_low": 272.36,
+      "ticker": "ECL"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 140.08,
+      "reference_price_high": 156.35,
+      "reference_price_low": 145.98,
+      "ticker": "EMR"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 128.81,
+      "reference_price_high": 137.79,
+      "reference_price_low": 133.86,
+      "ticker": "EOG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.88,
+      "reference_price_high": 58.28,
+      "reference_price_low": 56.58,
+      "ticker": "EQT"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 363.96,
+      "reference_price_high": 434.4,
+      "reference_price_low": 385.98,
+      "ticker": "ETN"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 101.7,
+      "reference_price_high": 107.1,
+      "reference_price_low": 104.4,
+      "ticker": "EXE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 181.67,
+      "reference_price_high": 197.46,
+      "reference_price_low": 190.67,
+      "ticker": "FANG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 59.69,
+      "reference_price_high": 66.76,
+      "reference_price_low": 63.09,
+      "ticker": "FCX"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.63,
+      "reference_price_high": 60.29,
+      "reference_price_low": 57.46,
+      "ticker": "FOX"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 60.64,
+      "reference_price_high": 67.14,
+      "reference_price_low": 63.89,
+      "ticker": "FOXA"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 333.0,
+      "reference_price_high": 349.9,
+      "reference_price_low": 341.56,
+      "ticker": "GD"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 329.08,
+      "reference_price_high": 363.52,
+      "reference_price_low": 341.38,
+      "ticker": "GE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 314.42,
+      "reference_price_high": 348.13,
+      "reference_price_low": 326.46,
+      "ticker": "GOOG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 343.37,
+      "reference_price_high": 372.76,
+      "reference_price_low": 356.49,
+      "ticker": "GOOGL"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 981.53,
+      "reference_price_high": 1045.58,
+      "reference_price_low": 1019.26,
+      "ticker": "GS"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 37.24,
+      "reference_price_high": 40.05,
+      "reference_price_low": 38.79,
+      "ticker": "HAL"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 349.04,
+      "reference_price_high": 369.86,
+      "reference_price_low": 359.45,
+      "ticker": "HD"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 209.89,
+      "reference_price_high": 223.82,
+      "reference_price_low": 218.94,
+      "ticker": "HON"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 501.38,
+      "reference_price_high": 553.16,
+      "reference_price_low": 527.27,
+      "ticker": "INTU"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 476.26,
+      "reference_price_high": 506.46,
+      "reference_price_low": 491.36,
+      "ticker": "ISRG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-06-16",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-06-16",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 205.88,
+      "reference_price_high": 223.44,
+      "reference_price_low": 212.15,
+      "ticker": "ITA"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 335.29,
+      "reference_price_high": 356.74,
+      "reference_price_low": 342.95,
+      "ticker": "JPM"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 30.88,
+      "reference_price_high": 32.05,
+      "reference_price_low": 31.75,
+      "ticker": "KMI"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 69.86,
+      "reference_price_high": 78.09,
+      "reference_price_low": 73.52,
+      "ticker": "KTOS"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 455.09,
+      "reference_price_high": 492.08,
+      "reference_price_low": 468.3,
+      "ticker": "LIN"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 1093.23,
+      "reference_price_high": 1217.12,
+      "reference_price_low": 1146.8,
+      "ticker": "LLY"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 531.34,
+      "reference_price_high": 583.84,
+      "reference_price_low": 550.09,
+      "ticker": "LMT"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 245.31,
+      "reference_price_high": 268.8,
+      "reference_price_low": 255.11,
+      "ticker": "LNG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 155.5,
+      "reference_price_high": 168.46,
+      "reference_price_low": 161.24,
+      "ticker": "LYV"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 522.75,
+      "reference_price_high": 548.9,
+      "reference_price_low": 535.82,
+      "ticker": "MA"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 299.55,
+      "reference_price_high": 311.69,
+      "reference_price_low": 305.62,
+      "ticker": "MCD"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 802.19,
+      "reference_price_high": 844.67,
+      "reference_price_low": 823.43,
+      "ticker": "MCK"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 272.35,
+      "reference_price_high": 348.03,
+      "reference_price_low": 305.3,
+      "ticker": "MDB"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 602.89,
+      "reference_price_high": 648.95,
+      "reference_price_low": 623.36,
+      "ticker": "META"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 229.92,
+      "reference_price_high": 259.24,
+      "reference_price_low": 241.94,
+      "ticker": "MPC"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 417.51,
+      "reference_price_high": 472.96,
+      "reference_price_low": 439.68,
+      "ticker": "MSFT"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "ABOVE_BAND_WAIT",
+      "reference_confidence": null,
+      "reference_invalidation_level": 767.79,
+      "reference_price_high": 933.74,
+      "reference_price_low": 861.4,
+      "ticker": "MU"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 86.08,
+      "reference_price_high": 89.19,
+      "reference_price_low": 88.3,
+      "ticker": "NEE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 86.14,
+      "reference_price_high": 91.27,
+      "reference_price_low": 88.42,
+      "ticker": "NFLX"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 601.8,
+      "reference_price_high": 631.18,
+      "reference_price_low": 616.49,
+      "ticker": "NOC"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 128.0,
+      "reference_price_high": 147.3,
+      "reference_price_low": 137.65,
+      "ticker": "NOW"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 224.7,
+      "reference_price_high": 252.0,
+      "reference_price_low": 234.45,
+      "ticker": "NUE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 193.84,
+      "reference_price_high": 217.11,
+      "reference_price_low": 202.15,
+      "ticker": "NVDA"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 28.85,
+      "reference_price_high": 30.83,
+      "reference_price_low": 29.84,
+      "ticker": "NWS"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 341.01,
+      "reference_price_high": 404.94,
+      "reference_price_low": 360.99,
+      "ticker": "OKE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 188.55,
+      "reference_price_high": 222.19,
+      "reference_price_low": 205.37,
+      "ticker": "ORCL"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 93.0,
+      "reference_price_high": 98.5,
+      "reference_price_low": 95.75,
+      "ticker": "ORLY"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 212.34,
+      "reference_price_high": 267.74,
+      "reference_price_low": 229.65,
+      "ticker": "PANW"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-06-16",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-06-16",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 52.64,
+      "reference_price_high": 56.28,
+      "reference_price_low": 53.94,
+      "ticker": "PAVE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 146.57,
+      "reference_price_high": 154.05,
+      "reference_price_low": 150.31,
+      "ticker": "PEP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 140.65,
+      "reference_price_high": 147.24,
+      "reference_price_low": 144.5,
+      "ticker": "PG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 931.65,
+      "reference_price_high": 1026.18,
+      "reference_price_low": 965.41,
+      "ticker": "PH"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "ABOVE_BAND_WAIT",
+      "reference_confidence": null,
+      "reference_invalidation_level": 129.04,
+      "reference_price_high": 163.76,
+      "reference_price_low": 139.89,
+      "ticker": "PLTR"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 168.17,
+      "reference_price_high": 183.56,
+      "reference_price_low": 175.01,
+      "ticker": "QCOM"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 200.29,
+      "reference_price_high": 216.92,
+      "reference_price_low": 206.23,
+      "ticker": "RTX"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 210.69,
+      "reference_price_high": 228.49,
+      "reference_price_low": 219.59,
+      "ticker": "SAP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 169.19,
+      "reference_price_high": 189.03,
+      "reference_price_low": 179.34,
+      "ticker": "SCCO"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 130.78,
+      "reference_price_high": 145.03,
+      "reference_price_low": 137.91,
+      "ticker": "SHOP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 324.89,
+      "reference_price_high": 345.57,
+      "reference_price_low": 335.23,
+      "ticker": "SHW"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 51.34,
+      "reference_price_high": 55.95,
+      "reference_price_low": 53.56,
+      "ticker": "SLB"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 62.47,
+      "reference_price_high": 66.41,
+      "reference_price_low": 64.22,
+      "ticker": "SLV"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "ABOVE_BAND_WAIT",
+      "reference_confidence": null,
+      "reference_invalidation_level": 22.46,
+      "reference_price_high": 33.3,
+      "reference_price_low": 25.84,
+      "ticker": "SMCI"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 166.93,
+      "reference_price_high": 226.33,
+      "reference_price_low": 187.42,
+      "ticker": "SNOW"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 90.51,
+      "reference_price_high": 93.52,
+      "reference_price_low": 92.63,
+      "ticker": "SO"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 341.32,
+      "reference_price_high": 361.74,
+      "reference_price_low": 351.53,
+      "ticker": "SYK"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 1167.8,
+      "reference_price_high": 1248.02,
+      "reference_price_low": 1210.68,
+      "ticker": "TDG"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 84.59,
+      "reference_price_high": 85.96,
+      "reference_price_low": 85.2,
+      "ticker": "TLT"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 508.32,
+      "reference_price_high": 543.9,
+      "reference_price_low": 526.11,
+      "ticker": "TMO"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 189.41,
+      "reference_price_high": 201.38,
+      "reference_price_low": 194.73,
+      "ticker": "TMUS"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 392.48,
+      "reference_price_high": 422.78,
+      "reference_price_low": 410.14,
+      "ticker": "TSM"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/band-proposals.json",
+        "artifact_sha256": "a55552da51c5cf0f3fe8945b8ac5f4ec3d9a7210d4a017376b6bdeb9ecdb5119",
+        "generated_at_utc": "2026-08-17T19:48:23.483024+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-17T19:48:23.483024+00:00",
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 241.32,
+      "reference_price_high": 284.2,
+      "reference_price_low": 254.72,
+      "ticker": "TXN"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 79.47,
+      "reference_price_high": 85.12,
+      "reference_price_low": 82.3,
+      "ticker": "UBER"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 363.15,
+      "reference_price_high": 395.94,
+      "reference_price_low": 374.86,
+      "ticker": "UNH"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 251.7,
+      "reference_price_high": 269.16,
+      "reference_price_low": 259.94,
+      "ticker": "UNP"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 930.93,
+      "reference_price_high": 1038.8,
+      "reference_price_low": 969.46,
+      "ticker": "URI"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 308.53,
+      "reference_price_high": 324.99,
+      "reference_price_low": 317.48,
+      "ticker": "V"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-06-16",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-06-16",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 220.85,
+      "reference_price_high": 233.7,
+      "reference_price_low": 225.44,
+      "ticker": "VAW"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "BELOW_STOP",
+      "reference_confidence": null,
+      "reference_invalidation_level": 280.34,
+      "reference_price_high": 297.98,
+      "reference_price_low": 288.18,
+      "ticker": "VMC"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 207.79,
+      "reference_price_high": 280.95,
+      "reference_price_low": 230.66,
+      "ticker": "VRT"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-06-16",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-06-16",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 78.15,
+      "reference_price_high": 83.36,
+      "reference_price_low": 80.88,
+      "ticker": "VXUS"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "IN_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 65.92,
+      "reference_price_high": 73.17,
+      "reference_price_low": 68.51,
+      "ticker": "WMB"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "tmp/finance-intelligence-state.sqlite",
+        "artifact_sha256": "7e2711e845b058ffa00add50a5d047697351fa2b1feb314a39422e586ccc71a4",
+        "generated_at_utc": null,
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": null,
+      "provenance_class": "preserved_numeric_value_prior_source_retired_not_revalidated",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 117.69,
+      "reference_price_high": 121.92,
+      "reference_price_low": 121.7,
+      "ticker": "WMT"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-06-16",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-06-16",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 48.81,
+      "reference_price_high": 51.68,
+      "reference_price_low": 49.84,
+      "ticker": "XLB"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-06-16",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-06-16",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 112.71,
+      "reference_price_high": 116.55,
+      "reference_price_low": 114.31,
+      "ticker": "XLC"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-06-16",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-06-16",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.83,
+      "reference_price_high": 58.04,
+      "reference_price_low": 56.35,
+      "ticker": "XLE"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-06-16",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-06-16",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 51.61,
+      "reference_price_high": 53.07,
+      "reference_price_low": 52.26,
+      "ticker": "XLF"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-06-16",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-06-16",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": null,
+      "reference_confidence": null,
+      "reference_invalidation_level": 163.1,
+      "reference_price_high": 173.4,
+      "reference_price_low": 166.78,
+      "ticker": "XLI"
+    },
+    {
+      "historical_prior_provenance": {
+        "artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+        "artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+        "generated_at_utc": "2026-08-21T20:31:52.979543+00:00",
+        "standing": "historical_context_only_not_reasserted_by_migration"
+      },
+      "level_as_of_utc": "2026-08-21T20:31:52.979543+00:00",
+      "provenance_class": "verified_active_alert_register",
+      "reference_band_status": "NEAR_BAND",
+      "reference_confidence": null,
+      "reference_invalidation_level": 145.78,
+      "reference_price_high": 159.09,
+      "reference_price_low": 150.65,
+      "ticker": "XOM"
+    }
+  ],
+  "schema": "veritas.alert_reference_numeric_baseline.v1"
+}

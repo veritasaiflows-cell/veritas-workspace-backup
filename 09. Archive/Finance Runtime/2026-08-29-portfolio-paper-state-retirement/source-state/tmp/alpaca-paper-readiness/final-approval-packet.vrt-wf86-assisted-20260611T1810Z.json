@@ -1,0 +1,94 @@
+{
+  "schema": "veritas.wf67_final_execution_approval_packet.v1",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "workflow_bridge": "WF86 assisted paper mode",
+  "created_at_utc": "2026-06-11T18:10:57Z",
+  "created_at_mst": "2026-06-11 11:10:57 MST",
+  "status": "prepared_for_final_owner_approval",
+  "submit_executed": false,
+  "order": {
+    "symbol": "VRT",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 288.03,
+    "notional": 5000.0,
+    "qty": null,
+    "paper_only": true
+  },
+  "approval_state": {
+    "exact_order_owner_approval_status": "approved_exact_order",
+    "approved_by": "Randall",
+    "exact_order_approval_artifact": "tmp/alpaca-paper-readiness/owner-approval.vrt-wf86-assisted-20260611.json",
+    "final_submit_approval_required": true,
+    "final_submit_approval_received": false,
+    "required_final_approval_text": "Approve final WF67 paper submit for VRT buy, limit/day, $5,000 notional, limit $288.03, paper only, before kill switch expiry."
+  },
+  "guard_state": {
+    "wf67_guard_status": "ok",
+    "wf67_ready_for_paper_submit_cancel": true,
+    "critical_findings": 0,
+    "warnings": 0,
+    "guard_validation_artifact": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.vrt-wf86-assisted-approved.json",
+    "dry_run_artifact": "tmp/alpaca-paper-readiness/paper-execution-dry-run-result.vrt-wf86-assisted-approved.json",
+    "dry_run_status": "validated_dry_run",
+    "dry_run_execute_requested": false
+  },
+  "kill_switch": {
+    "artifact": "tmp/alpaca-paper-readiness/kill-switch.json",
+    "paper_submit_enabled": true,
+    "paper_cancel_enabled": true,
+    "paper_only": true,
+    "endpoint": "https://paper-api.alpaca.markets",
+    "live_submit_enabled": false,
+    "live_cancel_enabled": false,
+    "live_endpoint_forbidden": true,
+    "expires_at_utc": "2026-06-11T18:28:32Z",
+    "expires_at_mst": "2026-06-11 11:28:32 MST"
+  },
+  "risk_context": {
+    "entry_band_low": 265.9,
+    "entry_band_high": 318.35,
+    "observed_price": 288.03,
+    "observed_entry_status": "IN_BAND",
+    "stop_or_reference_invalidation": 242.07,
+    "estimated_max_loss_to_stop_usd": 797.83,
+    "wf86_policy_cap_usd": 5000.0
+  },
+  "wf86_state": {
+    "shadow_mode_ready": true,
+    "assisted_paper_mode_ready": true,
+    "autonomous_paper_buy_ready": false,
+    "autonomous_paper_sell_ready": false,
+    "live_trading_ready": false,
+    "autonomous_blockers": [
+      "shadow_threshold_not_met",
+      "post_trade_reconciliation_not_proven_for_autonomy"
+    ],
+    "readiness_artifact": "tmp/paper-autotrader/autotrader-readiness.json"
+  },
+  "execution_channel_requirements": {
+    "wf67_wrapper_required": true,
+    "request_artifact": "tmp/alpaca-paper-readiness/paper-trade-request.wf86-assisted-vrt.json",
+    "execute_command_template": "python scripts\\alpaca_paper_trade_executor.py --trade-request tmp\\alpaca-paper-readiness\\paper-trade-request.wf86-assisted-vrt.json --execute --output tmp\\alpaca-paper-readiness\\paper-execution-result.vrt-wf86-assisted-approved.json",
+    "rerun_guard_if_after_kill_switch_expiry": true,
+    "post_submit_reconciliation_required": true
+  },
+  "authority_boundary": {
+    "paper_only": true,
+    "live_trade_allowed": false,
+    "live_endpoint_allowed": false,
+    "brokerage_or_account_action_allowed_beyond_scoped_paper_order": false,
+    "money_movement_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "final_packet_itself_submits_order": false
+  },
+  "stop_lines": [
+    "Do not submit if current time is after 2026-06-11T18:28:32Z without refreshing kill switch and guard validation.",
+    "Do not submit if any WF67 guard warning or critical finding appears.",
+    "Do not submit to any live endpoint or with any live credential.",
+    "Do not mutate portfolio/canon/cash/risk-rule state from this paper packet.",
+    "Do not treat WF86 autonomous pilot approval as live trading or account authority."
+  ]
+}

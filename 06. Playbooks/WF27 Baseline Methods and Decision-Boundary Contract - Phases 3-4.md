@@ -1,4 +1,6 @@
-# WF27 Baseline Methods and Decision-Boundary Contract - Phases 3-4
+# Retired Historical — WF27 Baseline Methods and Decision-Boundary Contract - Phases 3-4
+
+Lifecycle: Retired on 2026-08-29. The content below is dated methodology history and is not an active finance-state model, route, or authority surface.
 
 Date: 2026-05-06  
 Owner: Veritas  

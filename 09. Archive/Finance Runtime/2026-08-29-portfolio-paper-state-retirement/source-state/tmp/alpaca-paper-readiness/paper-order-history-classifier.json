@@ -1,0 +1,994 @@
+{
+  "schema": "veritas.alpaca_paper_order_history_classifier.v1",
+  "generated_at_utc": "2026-08-27T21:42:03Z",
+  "status": "ok",
+  "blocked_reason": null,
+  "endpoint": "https://paper-api.alpaca.markets",
+  "method": "GET_only",
+  "authority_boundary": {
+    "review_only": true,
+    "paper_only": true,
+    "endpoint": "https://paper-api.alpaca.markets",
+    "allowed_methods": [
+      "GET"
+    ],
+    "blocked_methods": [
+      "POST",
+      "PATCH",
+      "PUT",
+      "DELETE"
+    ],
+    "get_only_order_history_allowed": true,
+    "get_only_positions_allowed": true,
+    "paper_submit_allowed": false,
+    "paper_cancel_allowed": false,
+    "paper_sell_allowed": false,
+    "paper_replace_allowed": false,
+    "close_position_or_liquidation_allowed": false,
+    "live_endpoint_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "raw_response_bodies_persisted": false,
+    "broker_order_ids_redacted": true
+  },
+  "submitted_sources": [
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.amzn-buy-20260520T0718MST.json",
+      "generated_at_utc": "2026-05-20T14:28:46Z",
+      "symbol": "AMZN",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf67-advisor-amzn-buy-limit-20260520T0718MST.json",
+        "request_id": "wf67-advisor-AMZN-buy-limit-20260520T0718MST",
+        "created_at_utc": "2026-05-20T14:28:20Z",
+        "order": {
+          "symbol": "AMZN",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 262.04,
+          "qty": 1.0,
+          "notional": null
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.etn-2026-05-19-market.json",
+      "generated_at_utc": "2026-05-19T15:34:55Z",
+      "symbol": "ETN",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.etn-2026-05-19-market.json",
+        "request_id": "wf67-etn-20260519-market-1share-owner-request-0831mst",
+        "created_at_utc": "2026-05-19T15:34:26Z",
+        "order": {
+          "symbol": "ETN",
+          "side": "buy",
+          "type": "market",
+          "time_in_force": "day",
+          "limit_price": null,
+          "qty": 1.0,
+          "notional": null
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.goog-approved-20260609.json",
+      "generated_at_utc": "2026-06-09T18:15:01Z",
+      "symbol": "GOOG",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-goog-20260602T133533Z.json",
+        "request_id": "wf68-goog-20260602T133533Z",
+        "created_at_utc": "2026-06-02T13:45:18Z",
+        "order": {
+          "symbol": "GOOG",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 357.91,
+          "qty": 1.0,
+          "notional": null
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.json",
+      "generated_at_utc": "2026-06-18T15:27:48Z",
+      "symbol": "NVDA",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-monday-band-gated-2026-06-01.json",
+        "request_id": "wf67-nvda-monday-band-gated-2026-06-01",
+        "created_at_utc": "2026-06-01T13:35:45Z",
+        "order": {
+          "symbol": "NVDA",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 216.66,
+          "qty": null,
+          "notional": 150.0
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.ph-tight-limit-2026-05-26T0709.json",
+      "generated_at_utc": "2026-05-26T14:09:30Z",
+      "symbol": "PH",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.ph-tight-limit-2026-05-26T0659.json",
+        "request_id": "wf67-main-card-ph-tight-limit-starter-pending-20260526T0659MST",
+        "created_at_utc": "2026-05-26T14:00:16Z",
+        "order": {
+          "symbol": "PH",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 876.0,
+          "qty": 0.3,
+          "notional": null
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.vrt-market-20260612.json",
+      "generated_at_utc": "2026-06-12T15:43:08Z",
+      "symbol": "VRT",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-monday-band-gated-2026-06-01.json",
+        "request_id": "wf67-vrt-monday-band-gated-2026-06-01",
+        "created_at_utc": "2026-06-02T13:42:31Z",
+        "order": {
+          "symbol": "VRT",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 333.07,
+          "qty": null,
+          "notional": 200.0
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.vrt-wf86-assisted-20260612.json",
+      "generated_at_utc": "2026-06-12T19:08:43Z",
+      "symbol": "VRT",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-monday-band-gated-2026-06-01.json",
+        "request_id": "wf67-vrt-monday-band-gated-2026-06-01",
+        "created_at_utc": "2026-06-02T13:42:31Z",
+        "order": {
+          "symbol": "VRT",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 333.07,
+          "qty": null,
+          "notional": 200.0
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.vrt-wf86-assisted-approved.json",
+      "generated_at_utc": "2026-06-11T18:17:32Z",
+      "symbol": "VRT",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-monday-band-gated-2026-06-01.json",
+        "request_id": "wf67-vrt-monday-band-gated-2026-06-01",
+        "created_at_utc": "2026-06-02T13:42:31Z",
+        "order": {
+          "symbol": "VRT",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 333.07,
+          "qty": null,
+          "notional": 200.0
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf68-amzn-20260602T133533Z.json",
+      "generated_at_utc": "2026-06-02T13:50:43Z",
+      "symbol": "AMZN",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-amzn-20260602T133533Z.json",
+        "request_id": "wf68-amzn-20260602T133533Z",
+        "created_at_utc": "2026-06-02T13:45:18Z",
+        "order": {
+          "symbol": "AMZN",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 255.76,
+          "qty": 1.0,
+          "notional": null
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf68-bkng-20260602T133533Z.json",
+      "generated_at_utc": "2026-06-02T13:50:50Z",
+      "symbol": "BKNG",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-bkng-20260602T133533Z.json",
+        "request_id": "wf68-bkng-20260602T133533Z",
+        "created_at_utc": "2026-06-02T13:45:18Z",
+        "order": {
+          "symbol": "BKNG",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 164.9,
+          "qty": 1.0,
+          "notional": null
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf68-goog-20260602T133533Z.json",
+      "generated_at_utc": "2026-06-02T13:50:36Z",
+      "symbol": "GOOG",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-goog-20260602T133533Z.json",
+        "request_id": "wf68-goog-20260602T133533Z",
+        "created_at_utc": "2026-06-02T13:45:18Z",
+        "order": {
+          "symbol": "GOOG",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 357.91,
+          "qty": 1.0,
+          "notional": null
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf68-xom-20260602T163530Z.json",
+      "generated_at_utc": "2026-06-02T17:10:49Z",
+      "symbol": "XOM",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-xom-20260602T163530Z.json",
+        "request_id": "wf68-xom-20260602T163530Z",
+        "created_at_utc": "2026-06-02T17:05:04Z",
+        "order": {
+          "symbol": "XOM",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 150.26,
+          "qty": 1.0,
+          "notional": null
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf78-owner-card-prep-nvda.approved-20260701T1450Z.json",
+      "generated_at_utc": "2026-07-01T15:07:14Z",
+      "symbol": "NVDA",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-monday-band-gated-2026-06-01.json",
+        "request_id": "wf67-nvda-monday-band-gated-2026-06-01",
+        "created_at_utc": "2026-06-01T13:35:45Z",
+        "order": {
+          "symbol": "NVDA",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 216.66,
+          "qty": null,
+          "notional": 150.0
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf78-owner-card-prep-vrt.approved-20260701T1450Z.json",
+      "generated_at_utc": "2026-07-01T15:07:22Z",
+      "symbol": "VRT",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-monday-band-gated-2026-06-01.json",
+        "request_id": "wf67-vrt-monday-band-gated-2026-06-01",
+        "created_at_utc": "2026-06-02T13:42:31Z",
+        "order": {
+          "symbol": "VRT",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 333.07,
+          "qty": null,
+          "notional": 200.0
+        }
+      }
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf78-owner-card-prep-xlb.approved-20260701T1450Z.json",
+      "generated_at_utc": "2026-07-01T15:07:06Z",
+      "symbol": "XLB",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "paper_order_id_present": true,
+      "paper_order_id_hash": null,
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.xlb-materials-etf-starter-2026-05-30.json",
+        "request_id": "wf67-xlb-materials-etf-starter-2026-05-30",
+        "created_at_utc": "2026-05-30T07:09:26Z",
+        "order": {
+          "symbol": "XLB",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 51.17,
+          "qty": null,
+          "notional": 250.0
+        }
+      }
+    }
+  ],
+  "classifications": [
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.amzn-buy-20260520T0718MST.json",
+      "submitted_at_utc": "2026-05-20T14:28:46Z",
+      "symbol": "AMZN",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf67-advisor-amzn-buy-limit-20260520T0718MST.json",
+        "request_id": "wf67-advisor-AMZN-buy-limit-20260520T0718MST",
+        "created_at_utc": "2026-05-20T14:28:20Z",
+        "order": {
+          "symbol": "AMZN",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 262.04,
+          "qty": 1.0,
+          "notional": null
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 2.0,
+        "avg_entry_price": 258.605
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.etn-2026-05-19-market.json",
+      "submitted_at_utc": "2026-05-19T15:34:55Z",
+      "symbol": "ETN",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.etn-2026-05-19-market.json",
+        "request_id": "wf67-etn-20260519-market-1share-owner-request-0831mst",
+        "created_at_utc": "2026-05-19T15:34:26Z",
+        "order": {
+          "symbol": "ETN",
+          "side": "buy",
+          "type": "market",
+          "time_in_force": "day",
+          "limit_price": null,
+          "qty": 1.0,
+          "notional": null
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 1.0,
+        "avg_entry_price": 372.76
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.goog-approved-20260609.json",
+      "submitted_at_utc": "2026-06-09T18:15:01Z",
+      "symbol": "GOOG",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-goog-20260602T133533Z.json",
+        "request_id": "wf68-goog-20260602T133533Z",
+        "created_at_utc": "2026-06-02T13:45:18Z",
+        "order": {
+          "symbol": "GOOG",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 357.91,
+          "qty": 1.0,
+          "notional": null
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 1.999983424,
+        "avg_entry_price": 359.937983
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.json",
+      "submitted_at_utc": "2026-06-18T15:27:48Z",
+      "symbol": "NVDA",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-monday-band-gated-2026-06-01.json",
+        "request_id": "wf67-nvda-monday-band-gated-2026-06-01",
+        "created_at_utc": "2026-06-01T13:35:45Z",
+        "order": {
+          "symbol": "NVDA",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 216.66,
+          "qty": null,
+          "notional": 150.0
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 1.483208256,
+        "avg_entry_price": 202.250762
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.ph-tight-limit-2026-05-26T0709.json",
+      "submitted_at_utc": "2026-05-26T14:09:30Z",
+      "symbol": "PH",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.ph-tight-limit-2026-05-26T0659.json",
+        "request_id": "wf67-main-card-ph-tight-limit-starter-pending-20260526T0659MST",
+        "created_at_utc": "2026-05-26T14:00:16Z",
+        "order": {
+          "symbol": "PH",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 876.0,
+          "qty": 0.3,
+          "notional": null
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 0.3,
+        "avg_entry_price": 874.84
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.vrt-market-20260612.json",
+      "submitted_at_utc": "2026-06-12T15:43:08Z",
+      "symbol": "VRT",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-monday-band-gated-2026-06-01.json",
+        "request_id": "wf67-vrt-monday-band-gated-2026-06-01",
+        "created_at_utc": "2026-06-02T13:42:31Z",
+        "order": {
+          "symbol": "VRT",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 333.07,
+          "qty": null,
+          "notional": 200.0
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 1.642703849,
+        "avg_entry_price": 304.364052
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.vrt-wf86-assisted-20260612.json",
+      "submitted_at_utc": "2026-06-12T19:08:43Z",
+      "symbol": "VRT",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-monday-band-gated-2026-06-01.json",
+        "request_id": "wf67-vrt-monday-band-gated-2026-06-01",
+        "created_at_utc": "2026-06-02T13:42:31Z",
+        "order": {
+          "symbol": "VRT",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 333.07,
+          "qty": null,
+          "notional": 200.0
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 1.642703849,
+        "avg_entry_price": 304.364052
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.vrt-wf86-assisted-approved.json",
+      "submitted_at_utc": "2026-06-11T18:17:32Z",
+      "symbol": "VRT",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-monday-band-gated-2026-06-01.json",
+        "request_id": "wf67-vrt-monday-band-gated-2026-06-01",
+        "created_at_utc": "2026-06-02T13:42:31Z",
+        "order": {
+          "symbol": "VRT",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 333.07,
+          "qty": null,
+          "notional": 200.0
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 1.642703849,
+        "avg_entry_price": 304.364052
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf68-amzn-20260602T133533Z.json",
+      "submitted_at_utc": "2026-06-02T13:50:43Z",
+      "symbol": "AMZN",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-amzn-20260602T133533Z.json",
+        "request_id": "wf68-amzn-20260602T133533Z",
+        "created_at_utc": "2026-06-02T13:45:18Z",
+        "order": {
+          "symbol": "AMZN",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 255.76,
+          "qty": 1.0,
+          "notional": null
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 2.0,
+        "avg_entry_price": 258.605
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf68-bkng-20260602T133533Z.json",
+      "submitted_at_utc": "2026-06-02T13:50:50Z",
+      "symbol": "BKNG",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-bkng-20260602T133533Z.json",
+        "request_id": "wf68-bkng-20260602T133533Z",
+        "created_at_utc": "2026-06-02T13:45:18Z",
+        "order": {
+          "symbol": "BKNG",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 164.9,
+          "qty": 1.0,
+          "notional": null
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 1.0,
+        "avg_entry_price": 163.6
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf68-goog-20260602T133533Z.json",
+      "submitted_at_utc": "2026-06-02T13:50:36Z",
+      "symbol": "GOOG",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-goog-20260602T133533Z.json",
+        "request_id": "wf68-goog-20260602T133533Z",
+        "created_at_utc": "2026-06-02T13:45:18Z",
+        "order": {
+          "symbol": "GOOG",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 357.91,
+          "qty": 1.0,
+          "notional": null
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 1.999983424,
+        "avg_entry_price": 359.937983
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf68-xom-20260602T163530Z.json",
+      "submitted_at_utc": "2026-06-02T17:10:49Z",
+      "symbol": "XOM",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.wf68-xom-20260602T163530Z.json",
+        "request_id": "wf68-xom-20260602T163530Z",
+        "created_at_utc": "2026-06-02T17:05:04Z",
+        "order": {
+          "symbol": "XOM",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 150.26,
+          "qty": 1.0,
+          "notional": null
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 1.0,
+        "avg_entry_price": 149.97
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf78-owner-card-prep-nvda.approved-20260701T1450Z.json",
+      "submitted_at_utc": "2026-07-01T15:07:14Z",
+      "symbol": "NVDA",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-monday-band-gated-2026-06-01.json",
+        "request_id": "wf67-nvda-monday-band-gated-2026-06-01",
+        "created_at_utc": "2026-06-01T13:35:45Z",
+        "order": {
+          "symbol": "NVDA",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 216.66,
+          "qty": null,
+          "notional": 150.0
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 1.483208256,
+        "avg_entry_price": 202.250762
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf78-owner-card-prep-vrt.approved-20260701T1450Z.json",
+      "submitted_at_utc": "2026-07-01T15:07:22Z",
+      "symbol": "VRT",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-monday-band-gated-2026-06-01.json",
+        "request_id": "wf67-vrt-monday-band-gated-2026-06-01",
+        "created_at_utc": "2026-06-02T13:42:31Z",
+        "order": {
+          "symbol": "VRT",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 333.07,
+          "qty": null,
+          "notional": 200.0
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 1.642703849,
+        "avg_entry_price": 304.364052
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    },
+    {
+      "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf78-owner-card-prep-xlb.approved-20260701T1450Z.json",
+      "submitted_at_utc": "2026-07-01T15:07:06Z",
+      "symbol": "XLB",
+      "side": "buy",
+      "paper_order_status_at_submit": "pending_new",
+      "request": {
+        "path": "tmp/alpaca-paper-readiness/paper-trade-request.xlb-materials-etf-starter-2026-05-30.json",
+        "request_id": "wf67-xlb-materials-etf-starter-2026-05-30",
+        "created_at_utc": "2026-05-30T07:09:26Z",
+        "order": {
+          "symbol": "XLB",
+          "side": "buy",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 51.17,
+          "qty": null,
+          "notional": 250.0
+        }
+      },
+      "classification": "filled_position_observed_unmatched_order_history",
+      "match_status": "unmatched",
+      "match_score": 0,
+      "evidence": "current_position_observed_without_order_history_match",
+      "order_history": {},
+      "position_cross_check": {
+        "position_observed": true,
+        "qty": 4.888345717,
+        "avg_entry_price": 51.14
+      },
+      "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+    }
+  ],
+  "summary": {
+    "submitted_order_count": 15,
+    "classification_counts": {
+      "filled_position_observed_unmatched_order_history": 15
+    },
+    "symbol_counts": {
+      "AMZN": {
+        "filled_position_observed_unmatched_order_history": 2
+      },
+      "BKNG": {
+        "filled_position_observed_unmatched_order_history": 1
+      },
+      "ETN": {
+        "filled_position_observed_unmatched_order_history": 1
+      },
+      "GOOG": {
+        "filled_position_observed_unmatched_order_history": 2
+      },
+      "NVDA": {
+        "filled_position_observed_unmatched_order_history": 2
+      },
+      "PH": {
+        "filled_position_observed_unmatched_order_history": 1
+      },
+      "VRT": {
+        "filled_position_observed_unmatched_order_history": 4
+      },
+      "XLB": {
+        "filled_position_observed_unmatched_order_history": 1
+      },
+      "XOM": {
+        "filled_position_observed_unmatched_order_history": 1
+      }
+    },
+    "material_change_count": 15,
+    "material_changes": [
+      {
+        "symbol": "AMZN",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.amzn-buy-20260520T0718MST.json"
+      },
+      {
+        "symbol": "ETN",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.etn-2026-05-19-market.json"
+      },
+      {
+        "symbol": "GOOG",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.goog-approved-20260609.json"
+      },
+      {
+        "symbol": "NVDA",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.json"
+      },
+      {
+        "symbol": "PH",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.ph-tight-limit-2026-05-26T0709.json"
+      },
+      {
+        "symbol": "VRT",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.vrt-market-20260612.json"
+      },
+      {
+        "symbol": "VRT",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.vrt-wf86-assisted-20260612.json"
+      },
+      {
+        "symbol": "VRT",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.vrt-wf86-assisted-approved.json"
+      },
+      {
+        "symbol": "AMZN",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf68-amzn-20260602T133533Z.json"
+      },
+      {
+        "symbol": "BKNG",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf68-bkng-20260602T133533Z.json"
+      },
+      {
+        "symbol": "GOOG",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf68-goog-20260602T133533Z.json"
+      },
+      {
+        "symbol": "XOM",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf68-xom-20260602T163530Z.json"
+      },
+      {
+        "symbol": "NVDA",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf78-owner-card-prep-nvda.approved-20260701T1450Z.json"
+      },
+      {
+        "symbol": "VRT",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf78-owner-card-prep-vrt.approved-20260701T1450Z.json"
+      },
+      {
+        "symbol": "XLB",
+        "classification": "filled_position_observed_unmatched_order_history",
+        "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.wf78-owner-card-prep-xlb.approved-20260701T1450Z.json"
+      }
+    ],
+    "open_or_pending_count": 0,
+    "filled_count": 15,
+    "partially_filled_count": 0,
+    "terminal_non_fill_count": 0,
+    "unresolved_count": 0
+  },
+  "source_artifacts": {
+    "submitted_execution_results_glob": "tmp/alpaca-paper-readiness/paper-execution-result*.json",
+    "paper_trade_requests_glob": "tmp/alpaca-paper-readiness/paper-trade-request*.json",
+    "audit_log": "tmp/alpaca-paper-readiness/audit-log.jsonl"
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

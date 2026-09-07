@@ -1,8 +1,8 @@
 {
   "schema": "veritas.cron_contract.v1",
   "job_id": "6ab3d7e6-424a-418b-9c40-9cdba230c5e6",
-  "name": "Operating Leverage - Escalation Trigger Check",
-  "required": true,
+  "name": "Retired \u2014 Operating Leverage - Escalation Trigger Check",
+  "required": false,
   "owner_workflow": "WF73 operating leverage escalation",
   "contract_reason": "Disabled in Phase 1 cron reduction after Cron Reduction - Control Fail-Closed Dispatcher was added as the consolidated replacement.",
   "description": "Weekday isolated Mini operating-leverage escalation proof gate. Refreshes cron/operator, operating leverage, handoff first-proof, scorecard, escalation, cron-control, and escalation-consumer classification proof; reports only material escalation in run history/failure path. Review-only; no mutation or approval authority.",
@@ -71,5 +71,8 @@
     "owner_approval_inferred": false
   },
   "updated_at_utc": "2026-06-29T02:58:53Z",
-  "contract_update_reason": "Randall approved forced MiniMaxM3 migration for GPT-5.4/GPT-5.4-mini cron jobs and hard quiet-output prompt tightening; metadata-only sync to match live scheduler readback."
+  "contract_update_reason": "Randall approved forced MiniMaxM3 migration for GPT-5.4/GPT-5.4-mini cron jobs and hard quiet-output prompt tightening; metadata-only sync to match live scheduler readback.",
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired from the active scheduler contract set. Historical proof only; no automatic resume.",
+  "rollback_requires_owner_gate": true
 }

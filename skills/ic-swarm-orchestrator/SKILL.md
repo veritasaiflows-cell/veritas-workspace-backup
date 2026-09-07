@@ -1,48 +1,37 @@
 ---
 name: "ic-swarm-orchestrator"
-description: "Require verified Opus challenger routing for serious finance gates."
+description: "Route verified challenger review for serious alerts-OS finance gates."
 ---
 
-# IC Swarm Orchestrator Update - Verified Opus Challenger Gates
+# IC Swarm Orchestrator
 
-## Serious Finance Workflow Opus Gate
+## Purpose
 
-For serious finance workflow contracts, trade-grade OS promotion gates, authority-sensitive decision-card systems, and WF84/WF85-class work, the challenger lane should use the verified model path `claude-cli/claude-opus-4-8` when available.
+For material finance-chain, guarded-SQL, freshness, recommendation-contract, or authority-boundary changes, use a bounded independent challenger when risk warrants it.
 
-This is a challenger/reviewer requirement, not a routine implementation default. Use Opus for false-ready detection, authority-drift review, state-precedence critique, source/freshness gate critique, and schema/contract stress testing before promotion or card-generation gates.
+When the verified model path `claude-cli/claude-opus-4-8` is available, it may serve as the preferred challenger. Verify the actual session registry path; a label is not proof. If unavailable or mismatched, classify the result as standard challenger evidence and record the fallback.
 
-## Required Verification
+## Challenger Contract
 
-After spawning or routing the challenger lane, verify the actual subagent/session registry model path. A label containing `Opus` is not sufficient proof.
+Ask the challenger to test:
 
-Acceptance rule:
-- If the registry model is exactly `claude-cli/claude-opus-4-8`, the lane may count as Opus challenger proof.
-- If the registry model differs, the lane may still be useful, but classify it as standard challenger evidence and do not count it as Opus acceptance proof.
-- If Opus is unavailable, record the fallback reason and keep the same bounded challenger contract.
+- false-green and stale-evidence risk
+- source lineage and state precedence
+- freshness, confidence, and suppression logic
+- schema and contract robustness
+- reintroduction of portfolio, paper, account, order, or execution routes
+- rollback and validation completeness
 
-## Handoff Packet Requirement
+The challenger is read-only unless Main grants an exact file lease.
 
-For WF84/WF85-class spawns, include these fields in the handoff:
+## Handoff
 
-```text
-Required model: claude-cli/claude-opus-4-8
-Role: read-only challenger / authority-drift reviewer
-Verification: after spawn, confirm actual registry model path equals required model
-Fallback: if mismatched/unavailable, classify as standard challenger output, not Opus proof
-Stop lines: no capital/trade/paper/live/account action, no canon/portfolio mutation, no owner approval inference
-```
+Include required model, actual model verification, bounded task, exact inputs, allowed writes if any, stop lines, proof expected, and fallback classification.
 
-## Closeout Requirement
+## Closeout
 
-The final synthesis should state:
-- expected challenger model
-- actual verified model path
-- whether the lane counts as Opus proof
-- key accepted/rejected challenger findings
-- any remaining downgraded trust state
-
-This complements the existing lane-register handshake. It does not replace lane leasing, exact allowed-write declarations, runtime metadata stamping, proof artifacts, or main-session verification.
+Main reports the expected and actual model, accepted/rejected findings, validator results, and remaining trust downgrade. Challenger output never outranks source truth or Main acceptance.
 
 ## Boundary
 
-Challenger/review routing only. This does not authorize capital deployment, trade/order execution, paper/live/account action, portfolio/canon mutation, config/runtime mutation, autonomous spawning, or owner approval inference.
+No maintained account or portfolio state, capital action, orders, paper/live/account access, canon mutation, runtime/config mutation, autonomous authority expansion, or owner-approval inference.

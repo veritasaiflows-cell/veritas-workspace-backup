@@ -1,0 +1,209 @@
+{
+  "schema": "veritas.cron_consolidated_runner.v1",
+  "runner": "postclose_paper_reconciliation_runner",
+  "phase": "phase2",
+  "generated_at_utc": "2026-08-28T21:40:50Z",
+  "status": "blocked",
+  "operator_action": "MAIN_SESSION_BLOCKER_PACKET",
+  "model_posture": "Mini-safe command wrapper over existing GET-only paper/shadow runners.",
+  "target_seconds": 300,
+  "hard_timeout_seconds": 1500,
+  "elapsed_seconds": 50.19,
+  "slow": false,
+  "source_jobs_replaced_or_shadowed": [
+    "Finance - WF63/WF67 Paper Position Read-Only Refresh",
+    "Finance - WF86 Daily Shadow and Paper Reconciliation"
+  ],
+  "steps": [
+    {
+      "name": "wf67_paper_position_refresh",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf67_paper_position_refresh_cron_runner.py",
+        "--write",
+        "--validate"
+      ],
+      "required": true,
+      "started_at_utc": "2026-08-28T21:40:00Z",
+      "completed_at_utc": "2026-08-28T21:40:09Z",
+      "duration_ms": 8788.216,
+      "timeout_seconds": 600,
+      "returncode": 0,
+      "ok": true,
+      "stdout_tail": "{\n  \"status\": \"ok\",\n  \"output\": \"C:\\\\Users\\\\Veritas\\\\.openclaw\\\\workspace\\\\tmp\\\\alpaca-paper-readiness\\\\paper-position-refresh-cron-runner.json\",\n  \"summary\": {\n    \"commands\": 7,\n    \"failed\": 0\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf86_daily_shadow_reconciliation",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf86_daily_shadow_reconciliation_cron_runner.py",
+        "--write",
+        "--write-md",
+        "--validate"
+      ],
+      "required": true,
+      "started_at_utc": "2026-08-28T21:40:09Z",
+      "completed_at_utc": "2026-08-28T21:40:48Z",
+      "duration_ms": 39551.164,
+      "timeout_seconds": 1500,
+      "returncode": 1,
+      "ok": false,
+      "stdout_tail": "status=blocked validation=error operator_action=BLOCKED clean_shadow=21/20 sessions=7/5 paper_reconciliation=ok autonomous_ready=False\n  [error] failed_steps:wf84_wf85_freshness_repair\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "cron_control_packet",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\cron_control_packet.py",
+        "--write",
+        "--validate"
+      ],
+      "required": false,
+      "started_at_utc": "2026-08-28T21:40:48Z",
+      "completed_at_utc": "2026-08-28T21:40:50Z",
+      "duration_ms": 1850.811,
+      "timeout_seconds": 180,
+      "returncode": 0,
+      "ok": true,
+      "stdout_tail": "wrote tmp/cron-control-packet.json status=ok escalation=20\n",
+      "stderr_tail": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "wf67_paper_position_refresh_runner",
+      "path": "tmp/alpaca-paper-readiness/paper-position-refresh-cron-runner.json",
+      "required": true,
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "allowed_statuses": [
+        "blocked",
+        "ok",
+        "warning"
+      ],
+      "generated_at_utc": "2026-08-28T21:40:08Z",
+      "age_hours": 0.012,
+      "max_age_hours": 36,
+      "stale": false,
+      "authority_drift_paths": [],
+      "ok": true
+    },
+    {
+      "name": "wf67_paper_position_state",
+      "path": "tmp/wf67-paper-position-state.json",
+      "required": false,
+      "exists": false,
+      "parseable_json": false,
+      "status": "missing",
+      "allowed_statuses": [
+        "blocked",
+        "ok",
+        "warning"
+      ],
+      "generated_at_utc": null,
+      "age_hours": null,
+      "max_age_hours": 36,
+      "stale": true,
+      "authority_drift_paths": [],
+      "ok": true
+    },
+    {
+      "name": "wf86_daily_shadow_reconciliation_runner",
+      "path": "tmp/paper-autotrader/wf86-daily-shadow-reconciliation-cron-runner.json",
+      "required": true,
+      "exists": true,
+      "parseable_json": true,
+      "status": "blocked",
+      "allowed_statuses": [
+        "blocked",
+        "ok",
+        "warning"
+      ],
+      "generated_at_utc": "2026-08-28T21:40:48Z",
+      "age_hours": 0.001,
+      "max_age_hours": 36,
+      "stale": false,
+      "authority_drift_paths": [],
+      "ok": true
+    },
+    {
+      "name": "paper_order_history_classifier",
+      "path": "tmp/alpaca-paper-readiness/paper-order-history-classifier.json",
+      "required": false,
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "allowed_statuses": [
+        "blocked",
+        "ok",
+        "warning"
+      ],
+      "generated_at_utc": "2026-08-27T21:42:03Z",
+      "age_hours": 23.98,
+      "max_age_hours": 36,
+      "stale": false,
+      "authority_drift_paths": [],
+      "ok": true
+    },
+    {
+      "name": "wf87_v2_readiness_rollup",
+      "path": "tmp/wf87-v2-readiness-rollup.json",
+      "required": false,
+      "exists": true,
+      "parseable_json": true,
+      "status": "phase_a_hardening_implemented_runtime_blocked",
+      "allowed_statuses": [
+        "blocked",
+        "ok",
+        "warning"
+      ],
+      "generated_at_utc": "2026-08-28T18:05:22Z",
+      "age_hours": 3.591,
+      "max_age_hours": 36,
+      "stale": false,
+      "authority_drift_paths": [],
+      "ok": true
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_or_risk_rule_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "validation": {
+    "status": "blocked",
+    "errors": [
+      "failed_steps:wf86_daily_shadow_reconciliation"
+    ],
+    "warnings": [],
+    "failed_steps": [
+      "wf86_daily_shadow_reconciliation"
+    ],
+    "bad_artifacts": [],
+    "authority_drift": {}
+  },
+  "stop_lines": [
+    "Consolidated cron runner proof only.",
+    "No capital deployment, paper/live execution, brokerage/account action, money movement, canon/portfolio mutation, runtime config mutation, or owner approval inference."
+  ],
+  "skip_paper_reconciliation": false,
+  "phase2_gate": "Can replace WF63/WF67 and WF86 jobs only when GET-only paper artifacts and shadow reconciliation remain fresh.",
+  "runner_status_path": "tmp/postclose-paper-reconciliation-runner.json",
+  "main_session_blocker_packet": "tmp/main-session-blockers/20260828T214050Z-postclose_paper_reconciliation_runner.json"
+}

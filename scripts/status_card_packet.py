@@ -34,11 +34,11 @@ TOKEN_BUDGET_PACKET = TMP / "token-budget-status.json"
 TMP_ARTIFACT_SPIRE_PACKET = TMP / "tmp-artifact-spire.json"
 SECURITY_WARNING_LEDGER_PACKET = TMP / "security-warning-ledger.json"
 CRON_FRESHNESS_SPINE_PACKET = TMP / "cron-freshness-spine.json"
-WF78_PROMOTION_VISIBILITY_PACKET = TMP / "wf78-promotion-visibility-top10.json"
-WF78_LEGACY_LABEL_GUARD_PACKET = TMP / "wf78-legacy-label-retirement-guard.json"
-WF67_MANAGER_PACKET = TMP / "alpaca-paper-readiness" / "wf67-autonomous-paper-manager-current.json"
-WF67_PAPER_GUARD_PACKET = TMP / "alpaca-paper-readiness" / "paper-execution-guard-validation.json"
-SHADOW_ELIGIBILITY_PACKET = TMP / "paper-autotrader" / "shadow-eligibility.json"
+FINANCE_SQL_CANON_VALIDATION_PACKET = TMP / "finance-sql-canon-access-validation.json"
+QUOTE_SNAPSHOT_PROOF_PACKET = TMP / "intraday-alerts" / "quote-snapshot-proof.json"
+ALERT_FRESHNESS_CONTROLLER_PACKET = TMP / "alert-level-freshness-controller.json"
+FINANCE_ALERT_DIGEST_PACKET = TMP / "finance-alert-os-digest.json"
+ALERTS_OS_PIVOT_VALIDATOR_PACKET = TMP / "alerts-os-pivot-validator.json"
 ARTIFACT_INDEX_DB = TMP / "veritas-artifact-index.sqlite"
 OWNER_GATED_PACKET = TMP / "owner-gated-action-review-queue.json"
 IMPROVEMENT_PACKET = TMP / "improvement-ledger-current.json"
@@ -71,6 +71,27 @@ FRONTDOOR_SCHEMA = "veritas.status_frontdoor.v1"
 LOCAL_TZ = ZoneInfo("America/Phoenix")
 CRON_MIGRATION_REPAIR_TITLE = "Route blocked cron signals into a migration-ready repair plan"
 WORKFLOW_BLOCKER_FOLLOWUP_TITLE = "Convert workflow advancement blockers into implementation follow-ups"
+
+ALERTS_OS_SOURCE_ARTIFACTS = {
+    "guarded_sql_validation": "tmp/finance-sql-canon-access-validation.json",
+    "quote_snapshot_proof": "tmp/intraday-alerts/quote-snapshot-proof.json",
+    "alert_freshness_controller": "tmp/alert-level-freshness-controller.json",
+    "finance_alert_digest": "tmp/finance-alert-os-digest.json",
+    "pivot_validation": "tmp/alerts-os-pivot-validator.json",
+}
+LEGACY_FINANCE_INPUT_KEYS = {
+    "wf78_promotion_visibility_packet",
+    "wf78_legacy_label_guard_packet",
+    "wf67_manager_packet",
+    "wf67_paper_guard_packet",
+    "shadow_eligibility_packet",
+}
+LEGACY_FINANCE_OPERATION_RE = re.compile(
+    r"(?:\bWF(?:67|68|76|78|86|87)(?![A-Za-z0-9])|paper(?:[-_ ](?:trade|trading|manager|position|execution|autotrader))?"
+    r"|trade[-_ ]grade|deployment|portfolio[-_ ]config|position[-_ ]sizing|execution board|band[-_ ]proposal"
+    r"|500[-_ ]ticker|tier[-_ ]promotion|auto[-_ ]tier)",
+    re.IGNORECASE,
+)
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -495,13 +516,11 @@ def artifact_index_health(spire: dict[str, Any], now: datetime) -> dict[str, Any
         "tmp_json_count": spire_summary.get("tmp_json_count"),
         "tmp_total_mb": spire_summary.get("tmp_total_mb"),
         "stale_json_count": spire_summary.get("stale_json_count"),
-        "wf78_json_count": spire_summary.get("wf78_json_count"),
         "cleanup_preview_eligible_count": spire_summary.get("cleanup_preview_eligible_count"),
         "truth_pointers": {
             "cron": "tmp/cron-control-packet.json",
             "pm": "tmp/pm-control-packet.json",
-            "finance": "state/finance/finance-canon.sqlite plus tmp/trade-grade-os-freshness-cron-runner.json",
-            "paper": "tmp/alpaca-paper-readiness/wf67-autonomous-paper-manager-current.json",
+            "finance_alerts": list(ALERTS_OS_SOURCE_ARTIFACTS.values()),
         },
         "next_safe_action": spire.get("next_safe_action"),
     }
@@ -531,64 +550,6 @@ def cron_fleet_health(cron: dict[str, Any], spine: dict[str, Any]) -> dict[str, 
         "blocked_count": value_or_fallback(spine_summary.get("blocked_count"), cron_summary.get("blocked_count")),
         "escalation_signal_count": cron_summary.get("escalation_signal_count"),
         "top_attention_jobs": attention_jobs[:3],
-    }
-
-
-def wf78_visibility_summary(packet: dict[str, Any]) -> dict[str, Any]:
-    summary = as_dict(packet.get("summary"))
-    lanes = as_dict(packet.get("lanes"))
-    return {
-        "status": packet.get("status"),
-        "candidate_count": summary.get("candidate_count"),
-        "owner_review_ready_count": summary.get("owner_review_ready_count"),
-        "market_refresh_pending_count": summary.get("market_refresh_pending_count"),
-        "actionable_now_count": summary.get("actionable_now_count"),
-        "actionable_top10_count": summary.get("actionable_top10_count"),
-        "production_visible_count": summary.get("production_visible_count") or as_dict(lanes.get("production_visible")).get("count"),
-        "tier_c_attention_count": summary.get("tier_c_attention_count"),
-        "c_to_b_actionable_count": summary.get("c_to_b_actionable_count") or as_dict(lanes.get("c_to_b_actionable")).get("actionable_count"),
-        "evidence_repair_count": summary.get("evidence_repair_count"),
-        "canonical_top_of_funnel": "owner_review_ready_count",
-        "next_safe_action": summary.get("next_safe_action"),
-    }
-
-
-def wf78_legacy_label_guard_summary(guard: dict[str, Any]) -> dict[str, Any]:
-    summary = as_dict(guard.get("summary"))
-    return {
-        "status": guard.get("status"),
-        "current_tier_authority": summary.get("current_tier_authority"),
-        "active_legacy_label_refs": summary.get("active_legacy_label_refs"),
-        "legacy_seeded_tier_count": summary.get("legacy_seeded_tier_count"),
-        "legacy_seeded_tickers": summary.get("legacy_seeded_tickers"),
-        "router_ahead_of_owner_approved_label_count": summary.get("router_ahead_of_owner_approved_label_count"),
-        "router_ahead_of_owner_approved_label_tickers": summary.get("router_ahead_of_owner_approved_label_tickers"),
-        "owner_review_only": True,
-    }
-
-
-def paper_top_blocker_summary(manager: dict[str, Any], guard: dict[str, Any], shadow: dict[str, Any]) -> dict[str, Any]:
-    manager_summary = as_dict(manager.get("summary"))
-    guard_findings = [as_dict(row) for row in as_list(guard.get("findings"))]
-    critical_findings = [row for row in guard_findings if str(row.get("severity")).lower() in {"critical", "blocked", "error"}]
-    guard_status = "blocked" if critical_findings or guard.get("ready_for_paper_submit_cancel") is False else guard.get("status")
-    top_finding = critical_findings[0] if critical_findings else (guard_findings[0] if guard_findings else {})
-    shadow_summary = as_dict(shadow.get("summary"))
-    wf67_snapshot = as_dict(shadow.get("wf67_snapshot"))
-    return {
-        "status": "blocked" if guard_status == "blocked" else "ok",
-        "manager_status": manager.get("status"),
-        "consumer_posture": manager.get("consumer_posture"),
-        "guard_status": guard_status or wf67_snapshot.get("guard_status"),
-        "top_blocker_code": top_finding.get("code") or ("guard_not_clean" if guard_status == "blocked" else None),
-        "top_blocker_severity": top_finding.get("severity"),
-        "top_blocker_value": top_finding.get("value"),
-        "position_count": manager_summary.get("position_count"),
-        "ready_tickers": manager_summary.get("ready_tickers") or [],
-        "blocked_tickers": manager_summary.get("blocked_tickers") or [],
-        "would_buy_shadow_tickers": shadow_summary.get("would_buy_shadow_tickers") or [],
-        "execution_ready_count": shadow_summary.get("execution_ready_count"),
-        "next_safe_action": shadow_summary.get("next_safe_action") or "Keep paper execution blocked until WF67 guard and exact owner approval are clean.",
     }
 
 
@@ -849,10 +810,11 @@ def input_states(now: datetime) -> dict[str, dict[str, Any]]:
         "tmp_artifact_spire_packet": path_state(TMP_ARTIFACT_SPIRE_PACKET, now),
         "security_warning_ledger_packet": path_state(SECURITY_WARNING_LEDGER_PACKET, now),
         "cron_freshness_spine_packet": path_state(CRON_FRESHNESS_SPINE_PACKET, now),
-        "wf78_promotion_visibility_packet": path_state(WF78_PROMOTION_VISIBILITY_PACKET, now),
-        "wf67_manager_packet": path_state(WF67_MANAGER_PACKET, now),
-        "wf67_paper_guard_packet": path_state(WF67_PAPER_GUARD_PACKET, now),
-        "shadow_eligibility_packet": path_state(SHADOW_ELIGIBILITY_PACKET, now),
+        "guarded_sql_validation": path_state(FINANCE_SQL_CANON_VALIDATION_PACKET, now),
+        "quote_snapshot_proof": path_state(QUOTE_SNAPSHOT_PROOF_PACKET, now),
+        "alert_freshness_controller": path_state(ALERT_FRESHNESS_CONTROLLER_PACKET, now),
+        "finance_alert_digest": path_state(FINANCE_ALERT_DIGEST_PACKET, now),
+        "pivot_validation": path_state(ALERTS_OS_PIVOT_VALIDATOR_PACKET, now),
         "owner_gated_packet": path_state(OWNER_GATED_PACKET, now),
         "improvement_packet": path_state(IMPROVEMENT_PACKET, now),
         "wf74_opportunity_packet": path_state(wf74_opportunity_packet(), now),
@@ -908,9 +870,6 @@ def workflow_routing_summary(index: dict[str, Any], parity: dict[str, Any]) -> d
         "active_build_queue_count": summary.get("active_build_queue_count"),
         "paused_count": lifecycle_counts.get("paused", 0),
         "refresh_required_count": readiness_counts.get("refresh_required", 0),
-        "paper_fail_closed_count": sum(
-            1 for route in routes if route.get("authority_class") == "paper_guard_fail_closed"
-        ),
         "parity": {
             "status": parity_status,
             "routes_checked": parity_summary.get("routes_checked"),
@@ -953,6 +912,188 @@ def continuity_retrieval_summary(vector_index: dict[str, Any], vector_query: dic
     }
 
 
+def packet_validation_status(packet: dict[str, Any]) -> str | None:
+    return as_dict(packet.get("validation")).get("status") or packet.get("status")
+
+
+def finance_alerts_os_summary() -> dict[str, Any]:
+    """Project only the five active, non-executing finance proof surfaces."""
+    sql = load(FINANCE_SQL_CANON_VALIDATION_PACKET)
+    quote = load(QUOTE_SNAPSHOT_PROOF_PACKET)
+    controller = load(ALERT_FRESHNESS_CONTROLLER_PACKET)
+    digest = load(FINANCE_ALERT_DIGEST_PACKET)
+    pivot = load(ALERTS_OS_PIVOT_VALIDATOR_PACKET)
+
+    sql_counts = as_dict(sql.get("counts"))
+    sql_validation = as_dict(sql.get("validation"))
+    quote_freshness = as_dict(quote.get("freshness_summary"))
+    market_session = as_dict(quote.get("market_session"))
+    controller_summary = as_dict(controller.get("summary"))
+    controller_validation = as_dict(controller.get("validation"))
+    digest_summary = as_dict(digest.get("summary"))
+    digest_validation = as_dict(digest.get("validation"))
+    pivot_validation = as_dict(pivot.get("validation"))
+
+    component_statuses = [
+        sql.get("status"),
+        packet_validation_status(sql),
+        quote.get("status"),
+        controller.get("status"),
+        packet_validation_status(controller),
+        digest.get("status"),
+        packet_validation_status(digest),
+        pivot.get("status"),
+        packet_validation_status(pivot),
+    ]
+    normalized = {str(status).lower() for status in component_statuses if status is not None}
+    if not all((sql, quote, controller, digest, pivot)):
+        status = "missing"
+    elif normalized & {"blocked", "critical", "error", "missing"}:
+        status = "error"
+    elif normalized - {"ok"}:
+        status = "warning"
+    else:
+        status = "ok"
+
+    return {
+        "schema": "veritas.finance_alerts_os_status.v1",
+        "status": status,
+        "authority": {
+            "alerts_and_non_executing_recommendations_only": True,
+            "review_only": True,
+            "capital_or_order_authority": False,
+            "writes_finance_canon": False,
+            "owner_approval_inferred": False,
+        },
+        "source_artifacts": ALERTS_OS_SOURCE_ARTIFACTS.copy(),
+        "guarded_sql": {
+            "status": sql.get("status") or "missing",
+            "validation": sql_validation.get("status"),
+            "generated_at_utc": sql.get("generated_at_utc"),
+            "securities": sql_counts.get("securities"),
+            "reference_levels": sql_counts.get("reference_levels"),
+            "answer_scopes": sql_counts.get("answer_path_scope"),
+            "error_count": len(as_list(sql_validation.get("errors"))),
+            "warning_count": len(as_list(sql_validation.get("warnings"))),
+        },
+        "quote_snapshot": {
+            "status": quote.get("status") or "missing",
+            "generated_at_utc": quote.get("generated_at_utc"),
+            "provider": quote.get("provider"),
+            "requested_count": len(as_list(quote.get("symbols_requested"))),
+            "observed_count": len(as_list(quote.get("symbols_observed"))),
+            "missing_count": len(as_list(quote.get("symbols_missing"))),
+            "freshness_counts": {
+                "fresh_intraday": quote_freshness.get("fresh_intraday"),
+                "current_last_completed_session": quote_freshness.get("current_last_completed_session"),
+                "stale_unexpected": quote_freshness.get("stale_unexpected"),
+                "provider_missing": quote_freshness.get("provider_missing"),
+            },
+            "market_session_window": market_session.get("market_session_window"),
+            "latest_market_date": market_session.get("latest_market_date"),
+        },
+        "alert_freshness_controller": {
+            "status": controller.get("status") or "missing",
+            "validation": controller_validation.get("status"),
+            "generated_at_utc": controller.get("generated_at_utc"),
+            "ticker_count": controller_summary.get("ticker_count"),
+            "alert_state_counts": as_dict(controller_summary.get("alert_state_counts")),
+            "freshness_review_count": len(as_list(controller_summary.get("freshness_review_tickers"))),
+            "invalidation_alert_count": len(as_list(controller_summary.get("invalidation_signal_tickers"))),
+        },
+        "digest": {
+            "status": digest.get("status") or "missing",
+            "validation": digest_validation.get("status"),
+            "generated_at_utc": digest.get("generated_at_utc"),
+            "mode": digest.get("mode"),
+            "ticker_count": digest_summary.get("ticker_count"),
+            "alert_state_counts": as_dict(digest_summary.get("alert_state_counts")),
+        },
+        "pivot_validation": {
+            "status": pivot.get("status") or "missing",
+            "validation": pivot_validation.get("status"),
+            "generated_at_utc": pivot.get("generated_at_utc"),
+            "error_count": len(as_list(pivot_validation.get("errors"))),
+            "warning_count": len(as_list(pivot_validation.get("warnings"))),
+        },
+    }
+
+
+def contains_legacy_finance_operation(value: Any) -> bool:
+    if value is None:
+        return False
+    if isinstance(value, str):
+        text = value
+    else:
+        text = json.dumps(value, sort_keys=True, ensure_ascii=False)
+    return LEGACY_FINANCE_OPERATION_RE.search(text) is not None
+
+
+def apply_alerts_os_pivot_projection(payload: dict[str, Any]) -> dict[str, Any]:
+    """Strip obsolete operational finance state at the shallow-status boundary."""
+    projected = json.loads(json.dumps(payload, ensure_ascii=False))
+    for key in ("finance_os", "wf78_visibility", "wf78_legacy_label_guard", "paper_top_blocker_summary"):
+        projected.pop(key, None)
+    projected["finance_alerts_os"] = finance_alerts_os_summary()
+
+    inputs = as_dict(projected.get("input_artifacts"))
+    for key in LEGACY_FINANCE_INPUT_KEYS:
+        inputs.pop(key, None)
+    projected["input_artifacts"] = inputs
+
+    artifact_health = as_dict(projected.get("artifact_index_health"))
+    artifact_health.pop("wf78_json_count", None)
+    truth_pointers = as_dict(artifact_health.get("truth_pointers"))
+    truth_pointers.pop("paper", None)
+    truth_pointers["finance_alerts"] = list(ALERTS_OS_SOURCE_ARTIFACTS.values())
+    artifact_health["truth_pointers"] = truth_pointers
+    if contains_legacy_finance_operation(artifact_health.get("next_safe_action")):
+        artifact_health["next_safe_action"] = "Use the artifact lifecycle owner for bounded, validated generated-output cleanup."
+    projected["artifact_index_health"] = artifact_health
+
+    pm = as_dict(projected.get("pm_queue"))
+    projected["pm_queue"] = {
+        key: pm.get(key)
+        for key in (
+            "pm_readiness_band",
+            "pm_readiness_score",
+            "ready_jobs",
+            "blocked_jobs",
+            "stale_cockpit_sources",
+            "cron_escalation_signals",
+            "cron_blocked",
+        )
+    }
+
+    projected["active_items"] = [
+        item for item in as_list(projected.get("active_items"))
+        if not contains_legacy_finance_operation(item)
+    ]
+    projected["next_actions"] = [
+        item for item in as_list(projected.get("next_actions"))
+        if item and not contains_legacy_finance_operation(item)
+    ]
+    projected["stale_inputs"] = [
+        item for item in as_list(projected.get("stale_inputs"))
+        if str(item) not in LEGACY_FINANCE_INPUT_KEYS and not contains_legacy_finance_operation(item)
+    ]
+    projected["input_validation_warnings"] = [
+        item for item in as_list(projected.get("input_validation_warnings"))
+        if not contains_legacy_finance_operation(item)
+    ]
+
+    finance_status = as_dict(projected.get("finance_alerts_os")).get("status")
+    if finance_status != "ok":
+        warning = f"finance_alerts_os.{finance_status or 'missing'}"
+        warnings = as_list(projected.get("input_validation_warnings"))
+        if warning not in warnings:
+            warnings.append(warning)
+        projected["input_validation_warnings"] = warnings
+        if projected.get("status") == "ok":
+            projected["status"] = "warning"
+    return projected
+
+
 def build_payload(max_age_minutes: int = 90) -> dict[str, Any]:
     now = datetime.now(timezone.utc)
     startup = load(STARTUP_PACKET)
@@ -973,11 +1114,6 @@ def build_payload(max_age_minutes: int = 90) -> dict[str, Any]:
     tmp_spire = load(TMP_ARTIFACT_SPIRE_PACKET)
     security_ledger = load(SECURITY_WARNING_LEDGER_PACKET)
     cron_freshness = load(CRON_FRESHNESS_SPINE_PACKET)
-    wf78_visibility = load(WF78_PROMOTION_VISIBILITY_PACKET)
-    wf78_legacy_label_guard = load(WF78_LEGACY_LABEL_GUARD_PACKET)
-    wf67_manager = load(WF67_MANAGER_PACKET)
-    wf67_guard = load(WF67_PAPER_GUARD_PACKET)
-    shadow_eligibility = load(SHADOW_ELIGIBILITY_PACKET)
     owner = load(OWNER_GATED_PACKET)
     owner_summary = as_dict(owner.get("summary"))
     improvement = load(IMPROVEMENT_PACKET)
@@ -1013,15 +1149,10 @@ def build_payload(max_age_minutes: int = 90) -> dict[str, Any]:
     pm_readiness = as_dict(pm_summary.get("pm_readiness"))
     implementation_queue = as_dict(pm_summary.get("implementation_queue"))
     cockpit_health = as_dict(pm_summary.get("pm_cockpit_source_health"))
-    finance_digest = as_dict(pm_summary.get("finance_domain_repair_digest"))
-    sql_health = as_dict(pm_summary.get("sql_canon_health")) or as_dict(cron.get("sql_canon_health"))
-    sql_counts = as_dict(sql_health.get("counts"))
     stale_lane_digest = as_dict(pm_summary.get("stale_lane_digest"))
     stale_lanes = as_list(stale_lane_digest.get("lanes"))
     top_stale_lane = as_dict(stale_lanes[0]) if stale_lanes else {}
     top_next_action = as_dict(pm_summary.get("top_next_action"))
-    wf85 = first_workflow(future, "WF85")
-    wf84 = first_workflow(future, "WF84")
     workflow_routing = workflow_routing_summary(workflow_routing_index, workflow_routing_parity)
     lane_register_view = lane_register_summary(lane_register)
     continuity_retrieval = continuity_retrieval_summary(vector_memory_index, vector_memory_query)
@@ -1062,9 +1193,6 @@ def build_payload(max_age_minutes: int = 90) -> dict[str, Any]:
         ("token_budget_packet", token_budget),
         ("tmp_artifact_spire_packet", tmp_spire),
         ("security_warning_ledger_packet", security_ledger),
-        ("wf78_promotion_visibility_packet", wf78_visibility),
-        ("wf67_paper_guard_packet", wf67_guard),
-        ("shadow_eligibility_packet", shadow_eligibility),
     ]:
         validation_warnings.extend(packet_warning_reasons(name, packet))
         validation_warnings.extend(packet_status_reasons(name, packet))
@@ -1233,9 +1361,6 @@ def build_payload(max_age_minutes: int = 90) -> dict[str, Any]:
     runtime_posture = build_runtime_posture(token_summary, token_budget)
     artifact_health = artifact_index_health(tmp_spire, now)
     cron_fleet = cron_fleet_health(cron, cron_freshness)
-    wf78_summary = wf78_visibility_summary(wf78_visibility)
-    wf78_legacy_label_guard_view = wf78_legacy_label_guard_summary(wf78_legacy_label_guard)
-    paper_blocker = paper_top_blocker_summary(wf67_manager, wf67_guard, shadow_eligibility)
     security_summary = security_warning_summary(security_ledger)
     otel_summary = otel_learning_summary(otel_learning)
 
@@ -1267,30 +1392,7 @@ def build_payload(max_age_minutes: int = 90) -> dict[str, Any]:
         "workflow_routing": workflow_routing,
         "lane_register": lane_register_view,
         "continuity_retrieval": continuity_retrieval,
-        "wf78_visibility": wf78_summary,
-        "wf78_legacy_label_guard": wf78_legacy_label_guard_view,
-        "paper_top_blocker_summary": paper_blocker,
         "security_warnings": security_summary,
-        "finance_os": {
-            "wf84_data_plane": startup_summary.get("wf84_status") or wf84.get("effective_status"),
-            "wf85_decision_os": startup_summary.get("wf85_status") or wf85.get("effective_status"),
-            "sql_canon": {
-                "status": sql_health.get("status"),
-                "securities": sql_counts.get("securities"),
-                "production_answers": sql_health.get("production_answer_count") or cron_summary.get("sql_canon_production_answer_count"),
-                "authority_false_flags": as_dict(next((row for row in as_list(sql_health.get("checks")) if isinstance(row, dict) and row.get("name") == "authority_false_flags_clean"), {})).get("detail"),
-            },
-            "tier_a_b_bands": {
-                "complete_current": finance_digest.get("tier_a_b_complete_and_current_band_count"),
-                "missing_decision_grade": finance_digest.get("tier_a_b_missing_decision_grade_band_count"),
-                "missing_tickers": finance_digest.get("tier_a_b_missing_decision_grade_band_tickers") or [],
-            },
-            "trade_grade_repair": {
-                "rows": finance_digest.get("total_repair_conveyor_row_count") or finance_digest.get("finance_domain_repair_item_count"),
-                "implementation_blockers": finance_digest.get("implementation_blocker_count"),
-                "scope": finance_digest.get("pm_blocker_scope"),
-            },
-        },
         "pm_queue": {
             "pm_readiness_band": pm_readiness.get("readiness_band") or startup_summary.get("pm_readiness_band"),
             "pm_readiness_score": pm_readiness.get("average_score"),
@@ -1341,6 +1443,7 @@ def build_payload(max_age_minutes: int = 90) -> dict[str, Any]:
         "read_only_status_question_rule": "Read tmp/veritas-status-card-frontdoor.json or run the compact read-only renderer. Use hashed drilldown only for material or critical detail.",
         "validation": {"status": "pending", "errors": []},
     }
+    payload = apply_alerts_os_pivot_projection(payload)
     payload["validation"] = validate_payload(payload)
     if payload["validation"]["status"] != "ok":
         payload["status"] = "critical"
@@ -1467,12 +1570,46 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
         and cron_fleet.get("requires_attention_count") is None
     ):
         errors.append("cron_fleet_health.requires_attention_count_missing")
-    wf78 = as_dict(payload.get("wf78_visibility"))
-    if wf78 and wf78.get("canonical_top_of_funnel") != "owner_review_ready_count":
-        errors.append("wf78_visibility.canonical_top_of_funnel_drift")
-    paper = as_dict(payload.get("paper_top_blocker_summary"))
-    if paper and int(paper.get("execution_ready_count") or 0) == 0 and paper.get("would_buy_shadow_tickers") and not paper.get("top_blocker_code"):
-        errors.append("paper_top_blocker_summary.missing_top_blocker")
+    finance_alerts = as_dict(payload.get("finance_alerts_os"))
+    if finance_alerts.get("schema") != "veritas.finance_alerts_os_status.v1":
+        errors.append("finance_alerts_os.schema_invalid")
+    if as_dict(finance_alerts.get("source_artifacts")) != ALERTS_OS_SOURCE_ARTIFACTS:
+        errors.append("finance_alerts_os.source_artifacts_drift")
+    finance_authority = as_dict(finance_alerts.get("authority"))
+    if finance_authority.get("alerts_and_non_executing_recommendations_only") is not True:
+        errors.append("finance_alerts_os.alerts_only_boundary_missing")
+    for key in ("capital_or_order_authority", "writes_finance_canon", "owner_approval_inferred"):
+        if finance_authority.get(key) is not False:
+            errors.append(f"finance_alerts_os.authority.{key}")
+    for old_key in ("finance_os", "wf78_visibility", "wf78_legacy_label_guard", "paper_top_blocker_summary"):
+        if old_key in payload:
+            errors.append(f"alerts_os_projection.legacy_top_level.{old_key}")
+    inputs = as_dict(payload.get("input_artifacts"))
+    for old_key in sorted(LEGACY_FINANCE_INPUT_KEYS):
+        if old_key in inputs:
+            errors.append(f"alerts_os_projection.legacy_input.{old_key}")
+    for item in as_list(payload.get("active_items")) + as_list(payload.get("next_actions")):
+        if contains_legacy_finance_operation(item):
+            errors.append("alerts_os_projection.legacy_active_action")
+            break
+    projected_without_history = {
+        key: value
+        for key, value in payload.items()
+        if key not in {"authority_boundary", "recent_work", "workflow_routing"}
+    }
+    if contains_legacy_finance_operation(projected_without_history):
+        errors.append("alerts_os_projection.legacy_operation_outside_retired_history")
+    for route in as_list(as_dict(payload.get("workflow_routing")).get("routes")):
+        row = as_dict(route)
+        if not contains_legacy_finance_operation(row):
+            continue
+        lifecycle = str(row.get("lifecycle") or "").lower()
+        retirement_text = " ".join(
+            str(row.get(key) or "")
+            for key in ("current_state", "next_action", "authority_class")
+        ).lower()
+        if lifecycle != "paused" or not any(marker in retirement_text for marker in ("retired", "superseded", "deny-only", "deny only")):
+            errors.append(f"alerts_os_projection.active_legacy_workflow.{row.get('workflow_id') or 'unknown'}")
     cron_blocked_or_escalated = int(pm.get("cron_blocked") or 0) + int(pm.get("cron_escalation_signals") or 0)
     if cron_blocked_or_escalated and not wf74.get("cron_migration_repair_visible"):
         errors.append("wf74_pickup.missing_cron_migration_repair")
@@ -1593,7 +1730,7 @@ def build_payload_from_startup_fallback() -> dict[str, Any]:
         "total_tokens": summary.get("token_usage_total_tokens"),
         "pricing_status": summary.get("token_usage_pricing_status"),
     }
-    return {
+    payload = {
         "schema": SCHEMA,
         "generated_at_utc": startup.get("generated_at_utc") or utc_now(),
         "status": "fallback_startup_brief",
@@ -1609,29 +1746,12 @@ def build_payload_from_startup_fallback() -> dict[str, Any]:
             "status": fallback_fleet_posture.get("status") or "unavailable",
         },
         "fleet_posture": fallback_fleet_posture,
-        "finance_os": {
-            "wf84_data_plane": summary.get("wf84_status"),
-            "wf85_decision_os": summary.get("wf85_status"),
-            "tier_a_b_bands": {
-                "missing_decision_grade": summary.get("tier_a_b_missing_decision_grade_band_count"),
-                "missing_tickers": summary.get("tier_a_b_missing_decision_grade_band_tickers") or [],
-            },
-            "trade_grade_repair": {
-                "rows": summary.get("finance_domain_repair_item_count"),
-                "implementation_blockers": summary.get("implementation_blocker_count"),
-            },
-        },
         "pm_queue": {
             "pm_readiness_band": summary.get("pm_readiness_band"),
             "ready_jobs": summary.get("pm_ready_job_count"),
             "blocked_jobs": summary.get("pm_blocked_job_count"),
             "cron_escalation_signals": summary.get("cron_escalation_signal_count"),
             "cron_blocked": summary.get("cron_blocked_count"),
-            "action_executor": {
-                "status": summary.get("main_session_action_executor_status"),
-                "selected": summary.get("main_session_action_executor_selected_job") or summary.get("main_session_action_executor_parallel_workstream"),
-                "executed": summary.get("main_session_action_executor_executed"),
-            },
         },
         "wf74_pickup": {
             "opportunity_count": summary.get("wf74_opportunity_count"),
@@ -1746,6 +1866,7 @@ def build_payload_from_startup_fallback() -> dict[str, Any]:
         "read_only_status_question_rule": "Fallback only: refresh the status card later, but do not rebuild PM/cron for shallow status.",
         "validation": {"status": "ok", "errors": []},
     }
+    return apply_alerts_os_pivot_projection(payload)
 
 
 def fmt(value: Any) -> str:
@@ -1802,9 +1923,12 @@ def compact_item(item: Any) -> dict[str, Any]:
 def compact_frontdoor_projection(payload: dict[str, Any], full_status_path: Path = OUT) -> dict[str, Any]:
     """Project shallow startup/status truth and defer full proof to hashed drilldowns."""
     operating = as_dict(payload.get("operating_posture"))
-    finance = as_dict(payload.get("finance_os"))
-    sql = as_dict(finance.get("sql_canon"))
-    bands = as_dict(finance.get("tier_a_b_bands"))
+    finance = as_dict(payload.get("finance_alerts_os"))
+    sql = as_dict(finance.get("guarded_sql"))
+    quotes = as_dict(finance.get("quote_snapshot"))
+    controller = as_dict(finance.get("alert_freshness_controller"))
+    digest = as_dict(finance.get("digest"))
+    pivot = as_dict(finance.get("pivot_validation"))
     pm = as_dict(payload.get("pm_queue"))
     wf74 = as_dict(payload.get("wf74_pickup"))
     wiki = as_dict(payload.get("wiki_bootstrap_proof"))
@@ -1813,7 +1937,6 @@ def compact_frontdoor_projection(payload: dict[str, Any], full_status_path: Path
     retrieval = as_dict(payload.get("continuity_retrieval"))
     fleet = as_dict(payload.get("isolated_agent_fleet"))
     fleet_summary = as_dict(fleet.get("summary"))
-    wf78_tier = as_dict(payload.get("wf78_legacy_label_guard"))
     policy = as_dict(payload.get("execution_efficiency_policy"))
     quality = as_dict(policy.get("quality_weighted_efficiency"))
     validation = as_dict(payload.get("validation"))
@@ -1859,13 +1982,21 @@ def compact_frontdoor_projection(payload: dict[str, Any], full_status_path: Path
             "minimum_comparable_main_accepted_jobs": quality.get("minimum_comparable_main_accepted_jobs"),
             "automatic_route_promotion_allowed": quality.get("automatic_route_promotion_allowed"),
         },
-        "finance": {
-            "wf84_data_plane": finance.get("wf84_data_plane"),
-            "wf85_decision_os": finance.get("wf85_decision_os"),
-            "sql_status": sql.get("status"),
+        "finance_alerts_os": {
+            "status": finance.get("status"),
+            "guarded_sql_status": sql.get("status"),
             "securities": sql.get("securities"),
-            "complete_current_bands": bands.get("complete_current"),
-            "missing_decision_grade_bands": bands.get("missing_decision_grade"),
+            "reference_levels": sql.get("reference_levels"),
+            "quote_status": quotes.get("status"),
+            "quote_observed_count": quotes.get("observed_count"),
+            "quote_missing_count": quotes.get("missing_count"),
+            "controller_status": controller.get("status"),
+            "ticker_count": controller.get("ticker_count"),
+            "alert_state_counts": as_dict(controller.get("alert_state_counts")),
+            "freshness_review_count": controller.get("freshness_review_count"),
+            "digest_status": digest.get("status"),
+            "pivot_status": pivot.get("status"),
+            "pivot_error_count": pivot.get("error_count"),
         },
         "pm_queue": {
             "readiness_band": pm.get("pm_readiness_band"),
@@ -1880,7 +2011,6 @@ def compact_frontdoor_projection(payload: dict[str, Any], full_status_path: Path
             "active_build_queue_count": routing.get("active_build_queue_count"),
             "paused_count": routing.get("paused_count"),
             "refresh_required_count": routing.get("refresh_required_count"),
-            "paper_fail_closed_count": routing.get("paper_fail_closed_count"),
             "parity": as_dict(routing.get("parity")),
         },
         "lane_register": {
@@ -1904,14 +2034,6 @@ def compact_frontdoor_projection(payload: dict[str, Any], full_status_path: Path
             "gate": wiki.get("bootstrap_gate"),
             "semantic_render_hash_match": wiki.get("semantic_render_hash_match"),
             "next_safe_action": wiki.get("next_safe_action"),
-        },
-        "wf78_legacy_label_guard": {
-            "status": wf78_tier.get("status"),
-            "active_legacy_label_refs": wf78_tier.get("active_legacy_label_refs"),
-            "legacy_seeded_tier_count": wf78_tier.get("legacy_seeded_tier_count"),
-            "legacy_seeded_tickers": wf78_tier.get("legacy_seeded_tickers"),
-            "router_ahead_of_owner_approved_label_count": wf78_tier.get("router_ahead_of_owner_approved_label_count"),
-            "router_ahead_of_owner_approved_label_tickers": wf78_tier.get("router_ahead_of_owner_approved_label_tickers"),
         },
         "fleet": {
             "status": fleet.get("status"),
@@ -1981,9 +2103,8 @@ def render_frontdoor_markdown(payload: dict[str, Any], source: str) -> str:
     expected = as_dict(operating.get("expected_route"))
     actual = as_dict(operating.get("actual_route"))
     pm = as_dict(payload.get("pm_queue"))
-    finance = as_dict(payload.get("finance"))
+    finance = as_dict(payload.get("finance_alerts_os"))
     wiki = as_dict(payload.get("wiki_bootstrap"))
-    wf78_tier = as_dict(payload.get("wf78_legacy_label_guard"))
     efficiency = as_dict(payload.get("efficiency_guard"))
     lines = [
         f"## Status - {generated_label(payload)}",
@@ -1997,10 +2118,9 @@ def render_frontdoor_markdown(payload: dict[str, Any], source: str) -> str:
             ("Actual route", f"{actual.get('status')} / conformance={operating.get('route_conformance')}"),
             ("Context", operating.get("context")),
             ("Tokens", as_dict(operating.get("tokens")).get("workspace_total_tokens")),
-            ("WF84/WF85", f"{finance.get('wf84_data_plane')} / {finance.get('wf85_decision_os')}"),
+            ("Alerts OS", f"{finance.get('status')} / SQL={finance.get('guarded_sql_status')} / quotes={finance.get('quote_status')} / controller={finance.get('controller_status')} / digest={finance.get('digest_status')} / pivot={finance.get('pivot_status')}"),
             ("PM queue", f"{pm.get('ready_jobs')} ready / {pm.get('blocked_jobs')} blocked"),
             ("Wiki bootstrap", f"{wiki.get('status')} / validation={wiki.get('validation')}"),
-            ("WF78 legacy-label guard", f"legacy-label refs={wf78_tier.get('active_legacy_label_refs')} (target 0) / legacy-seeded tiers={wf78_tier.get('legacy_seeded_tier_count')} (target 0, owner-gated) / router-ahead-of-label={wf78_tier.get('router_ahead_of_owner_approved_label_count')} {wf78_tier.get('router_ahead_of_owner_approved_label_tickers')}"),
             ("Route evidence gate", f"{efficiency.get('minimum_comparable_main_accepted_jobs')} comparable Main-accepted jobs; auto-promotion={fmt(efficiency.get('automatic_route_promotion_allowed'))}"),
         ]),
     ]
@@ -2028,18 +2148,15 @@ def render_markdown(payload: dict[str, Any], source: str = "status_card") -> str
     if payload.get("schema") == FRONTDOOR_SCHEMA:
         return render_frontdoor_markdown(payload, source)
     operating = as_dict(payload.get("operating_posture"))
-    finance = as_dict(payload.get("finance_os"))
-    sql = as_dict(finance.get("sql_canon"))
-    bands = as_dict(finance.get("tier_a_b_bands"))
-    repair = as_dict(finance.get("trade_grade_repair"))
+    finance = as_dict(payload.get("finance_alerts_os"))
+    sql = as_dict(finance.get("guarded_sql"))
+    quotes = as_dict(finance.get("quote_snapshot"))
+    controller = as_dict(finance.get("alert_freshness_controller"))
+    digest = as_dict(finance.get("digest"))
+    pivot = as_dict(finance.get("pivot_validation"))
     pm = as_dict(payload.get("pm_queue"))
-    executor = as_dict(pm.get("action_executor"))
-    autonomy = as_dict(pm.get("autonomy"))
     cron_fleet = as_dict(payload.get("cron_fleet_health"))
     artifacts = as_dict(payload.get("artifact_index_health"))
-    wf78 = as_dict(payload.get("wf78_visibility"))
-    wf78_tier = as_dict(payload.get("wf78_legacy_label_guard"))
-    paper = as_dict(payload.get("paper_top_blocker_summary"))
     security = as_dict(payload.get("security_warnings"))
     wf74 = as_dict(payload.get("wf74_pickup"))
     otel = as_dict(payload.get("otel_learning_loop"))
@@ -2081,7 +2198,7 @@ def render_markdown(payload: dict[str, Any], source: str = "status_card") -> str
             ("OTEL carry-forward", f"{otel.get('status')} / drift={otel.get('drift_status')} / recs={otel.get('recommendation_count')} / auto-route={otel.get('auto_implementation_status')} / auto-apply={fmt(otel.get('auto_apply_allowed'))}"),
             ("WF88 wiki synthesis", f"{wf88_wiki.get('status')} / validation={wf88_wiki.get('validation')} / pages={wf88_wiki.get('page_count')} / prompts={wf88_wiki.get('self_prompt_count')} / leak_guard={fmt(wf88_wiki.get('recommendation_leak_guard_pass'))}"),
             ("Wiki bootstrap proof", f"{wiki_bootstrap.get('status')} / validation={wiki_bootstrap.get('validation')} / gate={wiki_bootstrap.get('bootstrap_gate')} / files={wiki_bootstrap.get('validated_file_count')}/{wiki_bootstrap.get('required_file_count')} / semantic-missing={wiki_bootstrap.get('missing_semantic_marker_count')} / semantic-hash={fmt(wiki_bootstrap.get('semantic_render_hash_match'))} / auto-apply={wiki_bootstrap.get('auto_apply_count')}"),
-            ("Artifact index", f"{fmt(artifacts.get('artifact_index_exists'))}, {artifacts.get('tmp_json_count')} tmp json, {artifacts.get('wf78_json_count')} WF78 json"),
+            ("Artifact index", f"{fmt(artifacts.get('artifact_index_exists'))}, {artifacts.get('tmp_json_count')} tmp json"),
         ]),
         "",
         "### Fleet Posture",
@@ -2097,14 +2214,15 @@ def render_markdown(payload: dict[str, Any], source: str = "status_card") -> str
             ("Containment", f"{fleet_containment.get('status')} (hard sandbox proven={fmt(fleet_containment.get('hard_sandbox_proven'))}; workspace isolation is not a hard sandbox)"),
         ]),
         "",
-        "### Finance OS",
+        "### Alerts and Recommendations OS",
         "",
         *table([
-            ("WF84 data plane", finance.get("wf84_data_plane")),
-            ("WF85 decision OS", finance.get("wf85_decision_os")),
-            ("SQL canon", f"{sql.get('status')} - {sql.get('securities')} tickers, {sql.get('production_answers')} production answers"),
-            ("Tier A/B bands", f"{bands.get('complete_current')} complete/current, {bands.get('missing_decision_grade')} missing decision-grade bands"),
-            ("Trade-grade repair", f"{repair.get('rows')} rows, {repair.get('implementation_blockers')} implementation blockers"),
+            ("Overall", finance.get("status")),
+            ("Guarded SQL", f"{sql.get('status')} / validation={sql.get('validation')} / {sql.get('securities')} securities / {sql.get('reference_levels')} alert levels"),
+            ("Quote proof", f"{quotes.get('status')} / observed={quotes.get('observed_count')} / missing={quotes.get('missing_count')} / session={quotes.get('market_session_window')}"),
+            ("Alert freshness", f"{controller.get('status')} / validation={controller.get('validation')} / tickers={controller.get('ticker_count')} / review={controller.get('freshness_review_count')}"),
+            ("Digest", f"{digest.get('status')} / validation={digest.get('validation')} / mode={digest.get('mode')} / tickers={digest.get('ticker_count')}"),
+            ("Pivot validation", f"{pivot.get('status')} / validation={pivot.get('validation')} / errors={pivot.get('error_count')} / warnings={pivot.get('warning_count')}"),
         ]),
         "",
         "### PM & Queue",
@@ -2116,12 +2234,6 @@ def render_markdown(payload: dict[str, Any], source: str = "status_card") -> str
             ("Stale cockpit sources", pm.get("stale_cockpit_sources")),
             ("Cron", f"{pm.get('cron_escalation_signals')} escalation, {pm.get('cron_blocked')} blocked"),
             ("Cron fleet", f"{cron_fleet.get('fresh_count')} fresh, {cron_fleet.get('requires_attention_count')} attention, {cron_fleet.get('monitor_only_or_stale_count')} monitor/stale, {cron_fleet.get('quiet_success_count')} quiet"),
-            ("Action executor", f"{executor.get('selected')} / executed={fmt(executor.get('executed'))}"),
-            ("PM autonomy", f"dispatch={autonomy.get('dispatcher_action')}:{autonomy.get('dispatcher_selected_job')} worker={autonomy.get('worker_action')}:{autonomy.get('worker_selected_job')} executed={fmt(autonomy.get('worker_executed'))}"),
-            ("Current PM action", f"{autonomy.get('inbox_action')}:{autonomy.get('inbox_top_job')}" if autonomy.get("current_handoff_valid") else "none - autonomy handoff stale/not ready"),
-            ("WF78 lanes", f"owner={wf78.get('owner_review_ready_count')} market_pending={wf78.get('market_refresh_pending_count')} c_to_b={wf78.get('c_to_b_actionable_count')} tier_c_attention={wf78.get('tier_c_attention_count')}"),
-            ("WF78 legacy-label guard", f"legacy-label refs={wf78_tier.get('active_legacy_label_refs')} (target 0) / legacy-seeded tiers={wf78_tier.get('legacy_seeded_tier_count')} (target 0, owner-gated) / router-ahead-of-label={wf78_tier.get('router_ahead_of_owner_approved_label_count')} {wf78_tier.get('router_ahead_of_owner_approved_label_tickers')}"),
-            ("Paper blocker", f"{paper.get('guard_status')} / {paper.get('top_blocker_code')}"),
             ("Security warnings", f"{security.get('open_warning_count')} open"),
         ]),
         "",

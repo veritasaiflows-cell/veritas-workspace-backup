@@ -1,0 +1,91 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T16:26:06Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-archive-microbatch-2026-05-25-1.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 8,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/active-entry-monitor-list-2026-05-24.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/active-entry-monitor-list-2026-05-24.md",
+      "sha256_before": "7b89645e10903c4a5d9a5898ba214352ca1359b5fdfcf7ea65e474cc949f2803",
+      "sha256_after": "7b89645e10903c4a5d9a5898ba214352ca1359b5fdfcf7ea65e474cc949f2803"
+    },
+    {
+      "path": "tmp/advisor-packet-trust-coherence-gate-design.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/advisor-packet-trust-coherence-gate-design.md",
+      "sha256_before": "da545c4036fc4a81732f8fff960f11084af70b0cca4e57afaeb9883156abcf53",
+      "sha256_after": "da545c4036fc4a81732f8fff960f11084af70b0cca4e57afaeb9883156abcf53"
+    },
+    {
+      "path": "tmp/archive-phase2-tmp-executable-classification.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/archive-phase2-tmp-executable-classification.md",
+      "sha256_before": "153c31af349e578551eaf6d019a294c03ff59260076d922fd38aff49b5b49ca2",
+      "sha256_after": "153c31af349e578551eaf6d019a294c03ff59260076d922fd38aff49b5b49ca2"
+    },
+    {
+      "path": "tmp/defense-stack-promotion-review-2026-05-24.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/defense-stack-promotion-review-2026-05-24.md",
+      "sha256_before": "096a5ffbda14fe85045b59b48fcde4bbcc2d4fa862e020720fc5b46c391f088b",
+      "sha256_after": "096a5ffbda14fe85045b59b48fcde4bbcc2d4fa862e020720fc5b46c391f088b"
+    },
+    {
+      "path": "tmp/main-session-approval-ready-wf67-order-card-design-2026-05-24.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/main-session-approval-ready-wf67-order-card-design-2026-05-24.md",
+      "sha256_before": "3883c7ce95b6db148443e66f9529cab94a172714976caf69945fde058df82b0d",
+      "sha256_after": "3883c7ce95b6db148443e66f9529cab94a172714976caf69945fde058df82b0d"
+    },
+    {
+      "path": "tmp/next-level-phases-1-3-integration.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/next-level-phases-1-3-integration.md",
+      "sha256_before": "33b020fb439c5524d5de8788091c847859de5d46b7152e103de90e90f3e83040",
+      "sha256_after": "33b020fb439c5524d5de8788091c847859de5d46b7152e103de90e90f3e83040"
+    },
+    {
+      "path": "tmp/next-level-workspace-intelligence-execution-contract.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/next-level-workspace-intelligence-execution-contract.md",
+      "sha256_before": "2ead538e071a476679b9f1e3a58fb52efedfe24df787bfce887011cc9a2ed0c3",
+      "sha256_after": "2ead538e071a476679b9f1e3a58fb52efedfe24df787bfce887011cc9a2ed0c3"
+    },
+    {
+      "path": "tmp/official-source-period-mapping-reconciliation.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/official-source-period-mapping-reconciliation.md",
+      "sha256_before": "dddf5e38a33cd5ce6000661b042104c4fd9590833737a3eb364d309dcafe627d",
+      "sha256_after": "dddf5e38a33cd5ce6000661b042104c4fd9590833737a3eb364d309dcafe627d"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; only explicit apply_allowed true suggestions with zero references and approved destination roots can move"
+}

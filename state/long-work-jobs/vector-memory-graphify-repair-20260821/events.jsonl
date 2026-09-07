@@ -1,0 +1,4 @@
+{"at_utc": "2026-08-21T23:04:03Z", "detail": {}, "event": "started", "job_id": "vector-memory-graphify-repair-20260821", "status": "resumable"}
+{"at_utc": "2026-08-21T23:04:11Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-graphify-repair-20260821", "status": "running"}
+{"at_utc": "2026-08-21T23:04:36Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-graphify-repair-20260821", "status": "complete"}
+{"at_utc": "2026-08-21T23:31:09Z", "detail": {}, "event": "validated", "job_id": "vector-memory-graphify-repair-20260821", "status": "complete"}

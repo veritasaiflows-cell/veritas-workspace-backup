@@ -1,0 +1,111 @@
+{
+  "approval_applied_at_utc": "2026-07-01T14:54:47Z",
+  "artifact_type": "wf67_paper_trade_request",
+  "audit": {
+    "live_endpoint_forbidden": "https://api.alpaca.markets",
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "secret_material_present": false
+  },
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "currently_executable": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "live_submit_allowed": false,
+    "money_movement_allowed": false,
+    "no_inferred_approval": true,
+    "paper_cancel_allowed": true,
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_submit_allowed_after_exact_approval_and_guard": true,
+    "paper_submit_requires_exact_owner_approval": true,
+    "paper_submit_requires_fresh_guard": true,
+    "paper_submit_requires_fresh_kill_switch": true
+  },
+  "created_at_utc": "2026-07-01T14:36:34Z",
+  "execution_readiness": {
+    "currently_executable": false,
+    "exact_order_owner_approval_status": "approved_exact_order",
+    "execution_by_this_artifact_allowed": false,
+    "paper_submit_allowed_field_semantics": "schema capability plus exact owner approval recorded; execution still requires fresh WF67 guard and kill switch",
+    "reason": "exact_randall_approval_recorded_fresh_wf67_execution_window_required",
+    "requires_exact_owner_approval": true,
+    "requires_fresh_short_lived_kill_switch": true,
+    "requires_fresh_wf67_guard": true
+  },
+  "order": {
+    "limit_price": 320.11,
+    "notional": 200.0,
+    "qty": null,
+    "side": "buy",
+    "symbol": "VRT",
+    "time_in_force": "day",
+    "type": "limit"
+  },
+  "request_id": "wf78-owner-card-prep-VRT-20260701T143618Z-approved-20260701T1450Z",
+  "risk_check": {
+    "entry_band_high": 324.0,
+    "entry_band_low": 301.67,
+    "estimated_notional_usd": 200.0,
+    "full_scope_artifact": null,
+    "max_loss_usd": 28.93,
+    "max_notional_usd": 500.0,
+    "observed_entry_status": "IN_BAND",
+    "observed_price": 320.11,
+    "pilot_notional_cap_usd": 500.0,
+    "pilot_qty_cap": 1,
+    "position_size_reviewed": true,
+    "sizing_rationale": "Conditional AI-power challenger card; refreshed SQL-first band clears the stale veto conflict, but sizing stays modest because beta and spread risk are higher. Paper-only request; execution remains blocked pending exact Randall approval, fresh WF67 guard, and fresh short-lived kill switch.",
+    "status": "ok",
+    "stop": 273.8
+  },
+  "schema_version": 1,
+  "source": {
+    "approval_artifact": "tmp/alpaca-paper-readiness/owner-approval.xlb-nvda-vrt-20260701T1450Z.json",
+    "approval_id": "xlb-nvda-vrt-paper-buy-20260701T1450Z",
+    "approval_message_id": "5742",
+    "approval_received_at_local": "2026-07-01 07:48:19 MST",
+    "approved_by": "Randall",
+    "capital_recommendation_source": "main_session_telegram_5739_deployment_card_prep_refreshed_sql_first_band",
+    "chief_intelligence_promotion_gate": {
+      "band_status": "IN_BAND",
+      "chief_intelligence_score": 88.0,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "entry_band": {
+        "band_last_set": "2026-07-01T14:30:06.685478+00:00",
+        "canonical_apply_eligible": true,
+        "high": 324.0,
+        "label": "sql-first current reference band",
+        "legacy_current_band": {
+          "high": 319.13,
+          "low": 300.02,
+          "stop": 276.97
+        },
+        "low": 301.67,
+        "needs_review": true,
+        "source_artifact": "tmp/band-proposals.json",
+        "source_generated_at_utc": "2026-07-01T14:30:06.685478+00:00",
+        "source_priority": "sql_first_band_proposal",
+        "stop": 273.8,
+        "supersedes_portfolio_config_band": true
+      },
+      "gate_artifact": "tmp/chief-intelligence-promotion-gate.json",
+      "gate_generated_at_utc": "2026-07-01T14:32:38Z",
+      "gate_schema_version": "chief_intelligence_promotion_gate.v1",
+      "rank": 1,
+      "ticker": "VRT"
+    },
+    "exact_order_owner_approval_status": "approved_exact_order",
+    "exact_order_owner_approval_text": "Randall approved exact WF67 paper-only buy orders in Telegram message 5742: XLB buy limit/day notional $250 at limit $51.17; NVDA buy limit/day notional $150 at limit $196.38; VRT buy limit/day notional $200 at limit $320.11. Paper only; WF67 wrapper and fresh guard/kill switch required; no live trading approved.",
+    "main_session_capital_package_notification_required": true,
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/main-session-cards/VRT.owner-card.json",
+    "market_order_owner_approved": false,
+    "owner_or_pilot_scope": "Main-session WF67 paper-only VRT buy limit/day order approved exactly by Randall in Telegram message 5742; no live trading approved.",
+    "recommendation_source": "main_session_order_decision_card",
+    "scoped_paper_trade_or_pilot": true,
+    "source_artifact": "tmp/chief-intelligence-promotion-gate.json"
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

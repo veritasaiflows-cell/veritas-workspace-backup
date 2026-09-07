@@ -319,6 +319,8 @@ WORKFLOWS: dict[str, dict[str, Any]] = {
     },
     "wf67-paper": {
         "workflow_name": "WF67 paper trading operator",
+        "retired": True,
+        "retired_note": "Retired 2026-08-29 finance pivot; deny-only historical safety evidence (wf67-paper-trading-operator). No live proof required.",
         "owner_surface": "06. Playbooks/Project Continuity/WF67 Paper Trading Operator.md",
         "current_phase": "paper-only request/guard surface with execution blocked until exact order approval",
         "recommended_next_phase": "standardize exact approval-card and guard-proof packet before any paper submit",
@@ -367,6 +369,8 @@ WORKFLOWS: dict[str, dict[str, Any]] = {
     },
     "wf64-wf56-bounded-portfolio-canon": {
         "workflow_name": "bounded portfolio and canon maintenance",
+        "retired": True,
+        "retired_note": "Retired 2026-08-29 portfolio-management retirement; active canon is 03. Alerts and Recommendations. No live proof required.",
         "owner_surface": "06. Playbooks/Project Continuity/WF64 Portfolio Maintenance.md; 06. Playbooks/Project Continuity/WF56 Canon Maintenance.md",
         "current_phase": "review/proposal and bounded validator-backed maintenance only",
         "recommended_next_phase": "standardize proposal/apply packet split for standing-approved categories",
@@ -599,6 +603,17 @@ def build_packet(workflow_id: str, config: dict[str, Any]) -> dict[str, Any]:
     }
     packet["validation"] = validate_packet(packet)
     packet["packet_status"] = "structurally_valid" if packet["validation"]["status"] == "ok" else "blocked_invalid_packet"
+    if config.get("retired"):
+        packet["retired"] = True
+        packet["retired_note"] = config.get("retired_note", "Retired workflow; history only.")
+        packet["validation"] = {
+            "status": "ok",
+            "error_count": 0,
+            "warning_count": 1,
+            "errors": [],
+            "warnings": ["retired_workflow_history_only_no_live_proof_required"],
+        }
+        packet["packet_status"] = "retired_history_only"
     return packet
 
 
@@ -620,7 +635,11 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    workflow_ids = list(WORKFLOWS) if args.workflow == "all" else [args.workflow]
+    workflow_ids = (
+        [w for w in WORKFLOWS if not WORKFLOWS[w].get("retired")]
+        if args.workflow == "all"
+        else [args.workflow]
+    )
     packets = {workflow_id: build_packet(workflow_id, WORKFLOWS[workflow_id]) for workflow_id in workflow_ids}
     output_dir = resolve_workspace_path(args.output_dir)
 

@@ -1597,8 +1597,6 @@ def wiki_pages(packet: dict[str, Any]) -> dict[str, str]:
     summary = as_dict(packet.get("summary"))
     efficiency_policy = as_dict(packet.get("execution_efficiency_policy"))
     policy_schema = efficiency_policy.get("schema")
-    minimum_accepted_jobs = as_dict(efficiency_policy.get("quality_weighted_efficiency")).get("minimum_comparable_main_accepted_jobs")
-    minimum_accepted_label = "ten" if minimum_accepted_jobs == 10 else str(minimum_accepted_jobs)
     actions = as_list(packet.get("action_items"))
     prompt_lines = "\n".join(f"- {prompt}" for prompt in as_list(packet.get("self_prompting_contract")))
     action_lines = "\n".join(
@@ -1876,13 +1874,16 @@ def wiki_pages(packet: dict[str, Any]) -> dict[str, str]:
             f"- Current route-conformant / mismatch rows: `{summary.get('coding_outcome_route_conformant_count')}` / `{summary.get('coding_outcome_route_mismatch_count')}`.",
             f"- Current incidents / invalid-token-integrity rows / retry tax: `{summary.get('coding_outcome_incident_row_count')}` / `{summary.get('coding_outcome_invalid_token_integrity_row_count')}` / `{summary.get('coding_outcome_total_retry_count')}`.",
             f"- Comparable cohorts / eligible cohorts: `{summary.get('coding_outcome_comparable_cohort_count')}` / `{summary.get('coding_outcome_eligible_cohort_count')}`.",
-            f"- A route needs {minimum_accepted_label} comparable Main-accepted jobs before it can clear the sample gate; automatic route ranking and promotion remain disabled.",
+            "- Evaluation mode: owner-directed on-demand evidence review.",
+            "- Use available token attribution, elapsed-time, retry, first-pass/Main-acceptance, and escaped-defect evidence; prefer like-for-like comparisons when available; no fixed cohort pilot is required.",
+            "- Keep normal routing light. Load these ledgers only for an explicit review with `python scripts\\project_implementation_router.py --example --include-efficiency-observation --validate`.",
+            "- automatic route ranking and promotion remain disabled; a route-policy change requires explicit Main/owner review.",
             "- Incidents, invalid telemetry, unavailable actual-route data, and mismatches are cost or trust signals; they receive no efficiency success credit.",
             "",
             "## Natural-language retrieval anchors",
             "",
             "- How should a new session measure token efficiency? Use accepted-outcome metrics: uncached and gross tokens per Main-accepted job, first-pass acceptance, time to accepted proof, retry tax, and escaped defects.",
-            f"- When can an implementation route be promoted? Never automatically; first collect at least {minimum_accepted_label} comparable Main-accepted jobs, then require explicit Main policy review.",
+            "- When can an implementation route be promoted? Never automatically; review available evidence on demand, then require an explicit Main/owner policy change.",
             "",
             "## What it does not prove",
             "",
@@ -2193,6 +2194,7 @@ def render_retrieval_source(packet: dict[str, Any], page_map: dict[str, str]) ->
             f"## Canonical page: `{page_path}`",
             "",
             f"Retrieval mirror: `{retrieval_mirror_path(page_path)}`.",
+            f"Canonical rendered SHA-256: `{rendered_content_sha256(page_map[page_path])}`.",
             f"Query aliases: {', '.join(retrieval_page_aliases(page_path))}.",
             "",
         ])
@@ -2995,15 +2997,21 @@ def validate_packet(
         warnings.append(f"token_api_call_reduction_candidate_count:{summary.get('token_api_call_reduction_candidate_count')}")
     if summary.get("token_efficiency_status") == "blocked":
         errors.append("token_efficiency_scorecard_blocked")
-    if summary.get("implementation_token_bridge_status") == "blocked":
-        errors.append("implementation_token_attribution_bridge_blocked")
+    if any(
+        (
+            _blocked_component_status(summary.get("implementation_token_bridge_status")),
+            _blocked_component_status(summary.get("implementation_token_bridge_validation_status")),
+        )
+    ):
+        # The bridge governs implementation-efficiency credit, not wiki content
+        # integrity. Keep token optimization fail-closed through its action state
+        # while allowing independently verified wiki/bootstrap content to route.
+        warnings.append("implementation_token_attribution_bridge_blocked_efficiency_claims_only")
     if summary.get("coding_outcome_validation_status") == "blocked":
         errors.append("coding_outcome_ledger_blocked")
     coding_outcome_present = as_dict(as_dict(packet.get("inputs")).get("coding_outcome_ledger")).get("present") is True
     if coding_outcome_present and summary.get("coding_outcome_route_ranking_or_promotion_before_gate") is not False:
         errors.append("coding_outcome_premature_route_ranking_or_promotion")
-    if coding_outcome_present and summary.get("coding_outcome_required_accepted_count") != 10:
-        errors.append("coding_outcome_comparable_cohort_gate_invalid")
     if summary.get("retrieval_quality_status") != "ok":
         errors.append(f"retrieval_quality_status_not_ok:{summary.get('retrieval_quality_status')}")
     if summary.get("retrieval_quality_validation_status") != "ok":

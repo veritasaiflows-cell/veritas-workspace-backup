@@ -1,0 +1,30 @@
+{
+  "approval_status": "approved_exact_order",
+  "approval_text": "Approve WF86 assisted paper-only buy order for VRT, request_id wf86-assisted-VRT-buy-limit-20260612T174732Z: buy VRT as a day limit order with $1,500 notional at limit price $298.87. I understand this is a tactical dip/reclaim setup, not a clean add, and I approve this exact paper order only. No live trading is approved.",
+  "approved_at_local": "2026-06-12T12:06:00-07:00",
+  "approved_at_utc_from_message": "2026-06-12T19:06:00Z",
+  "approved_by": "Randall",
+  "artifact_type": "wf86_assisted_exact_order_owner_approval",
+  "authority_boundary": {
+    "account_settings_mutation_allowed": false,
+    "applies_only_to_exact_request_id": true,
+    "live_trade_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inference_allowed": false,
+    "paper_only": true
+  },
+  "created_at_utc": "2026-06-12T19:08:26Z",
+  "order": {
+    "limit_price": 298.87,
+    "notional": 1500.0,
+    "qty": null,
+    "side": "buy",
+    "symbol": "VRT",
+    "time_in_force": "day",
+    "type": "limit"
+  },
+  "schema_version": 1,
+  "source_message_timestamp": "Fri 2026-06-12 12:06 MST",
+  "wf86_request_id": "wf86-assisted-VRT-buy-limit-20260612T174732Z",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

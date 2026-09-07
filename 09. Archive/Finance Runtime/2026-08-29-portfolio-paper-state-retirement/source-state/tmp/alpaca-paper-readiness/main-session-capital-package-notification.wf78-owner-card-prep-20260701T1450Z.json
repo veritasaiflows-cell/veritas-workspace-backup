@@ -1,0 +1,249 @@
+{
+  "schema": "veritas.main_session_capital_package_notification.v1",
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "account_lane": "alpaca_paper_only",
+  "created_at_utc": "2026-07-01T15:10:07Z",
+  "status": "paper_orders_submitted_and_reconciled_filled",
+  "tickers": [
+    "XLB",
+    "NVDA",
+    "VRT"
+  ],
+  "side": "buy",
+  "orders": [
+    {
+      "ticker": "XLB",
+      "action": "paper_buy",
+      "status": "filled",
+      "order": {
+        "limit_price": 51.17,
+        "notional": 250.0,
+        "qty": null,
+        "side": "buy",
+        "symbol": "XLB",
+        "time_in_force": "day",
+        "type": "limit"
+      },
+      "execution_result": {
+        "status": "submitted",
+        "generated_at_utc": "2026-07-01T15:07:06Z",
+        "broker_redacted_result": {
+          "http_status": 200,
+          "paper_order_id_present": true,
+          "paper_order_status": "pending_new",
+          "paper_order_symbol": "XLB",
+          "side": "buy",
+          "symbol": "XLB"
+        },
+        "endpoint": "https://paper-api.alpaca.markets",
+        "live_endpoint_detected": false
+      },
+      "guard_status": {
+        "pre_submit": "ok",
+        "post_submit": "ok",
+        "critical": 0,
+        "warning": 0
+      },
+      "reconciliation": {
+        "classification": "filled",
+        "match_status": "matched",
+        "evidence": "alpaca_order_history_match",
+        "submitted_at_utc": "2026-07-01T15:07:06Z",
+        "order_history": {
+          "status": "filled",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 51.17,
+          "filled_qty": 4.888345717,
+          "filled_avg_price": 51.14,
+          "submitted_at": "2026-07-01T15:07:07.066335Z",
+          "filled_at": "2026-07-01T15:07:08.111621Z"
+        },
+        "position_cross_check": {
+          "position_observed": true,
+          "qty": 4.888345717,
+          "avg_entry_price": 51.14
+        },
+        "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+      },
+      "artifacts": {
+        "trade_request": "tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-xlb.approved-20260701T1450Z.json",
+        "dry_run": "tmp/alpaca-paper-readiness/paper-execution-dry-run-result.wf78-owner-card-prep-xlb.approved-20260701T1450Z.json",
+        "pre_submit_guard": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.wf78-owner-card-prep-xlb.pre-submit-20260701T1450Z.json",
+        "execution_result": "tmp/alpaca-paper-readiness/paper-execution-result.wf78-owner-card-prep-xlb.approved-20260701T1450Z.json",
+        "post_submit_guard": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.wf78-owner-card-prep-xlb.post-submit-20260701T1450Z.json"
+      }
+    },
+    {
+      "ticker": "NVDA",
+      "action": "paper_buy",
+      "status": "filled",
+      "order": {
+        "limit_price": 196.38,
+        "notional": 150.0,
+        "qty": null,
+        "side": "buy",
+        "symbol": "NVDA",
+        "time_in_force": "day",
+        "type": "limit"
+      },
+      "execution_result": {
+        "status": "submitted",
+        "generated_at_utc": "2026-07-01T15:07:14Z",
+        "broker_redacted_result": {
+          "http_status": 200,
+          "paper_order_id_present": true,
+          "paper_order_status": "pending_new",
+          "paper_order_symbol": "NVDA",
+          "side": "buy",
+          "symbol": "NVDA"
+        },
+        "endpoint": "https://paper-api.alpaca.markets",
+        "live_endpoint_detected": false
+      },
+      "guard_status": {
+        "pre_submit": "ok",
+        "post_submit": "ok",
+        "critical": 0,
+        "warning": 0
+      },
+      "reconciliation": {
+        "classification": "filled",
+        "match_status": "matched",
+        "evidence": "alpaca_order_history_match",
+        "submitted_at_utc": "2026-07-01T15:07:14Z",
+        "order_history": {
+          "status": "filled",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 196.38,
+          "filled_qty": 0.764693286,
+          "filled_avg_price": 196.144,
+          "submitted_at": "2026-07-01T15:07:14.738004Z",
+          "filled_at": "2026-07-01T15:07:14.744168Z"
+        },
+        "position_cross_check": {
+          "position_observed": true,
+          "qty": 1.483208256,
+          "avg_entry_price": 202.250762
+        },
+        "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+      },
+      "artifacts": {
+        "trade_request": "tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-nvda.approved-20260701T1450Z.json",
+        "dry_run": "tmp/alpaca-paper-readiness/paper-execution-dry-run-result.wf78-owner-card-prep-nvda.approved-20260701T1450Z.json",
+        "pre_submit_guard": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.wf78-owner-card-prep-nvda.pre-submit-20260701T1450Z.json",
+        "execution_result": "tmp/alpaca-paper-readiness/paper-execution-result.wf78-owner-card-prep-nvda.approved-20260701T1450Z.json",
+        "post_submit_guard": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.wf78-owner-card-prep-nvda.post-submit-20260701T1450Z.json"
+      }
+    },
+    {
+      "ticker": "VRT",
+      "action": "paper_buy",
+      "status": "filled",
+      "order": {
+        "limit_price": 320.11,
+        "notional": 200.0,
+        "qty": null,
+        "side": "buy",
+        "symbol": "VRT",
+        "time_in_force": "day",
+        "type": "limit"
+      },
+      "execution_result": {
+        "status": "submitted",
+        "generated_at_utc": "2026-07-01T15:07:22Z",
+        "broker_redacted_result": {
+          "http_status": 200,
+          "paper_order_id_present": true,
+          "paper_order_status": "pending_new",
+          "paper_order_symbol": "VRT",
+          "side": "buy",
+          "symbol": "VRT"
+        },
+        "endpoint": "https://paper-api.alpaca.markets",
+        "live_endpoint_detected": false
+      },
+      "guard_status": {
+        "pre_submit": "ok",
+        "post_submit": "ok",
+        "critical": 0,
+        "warning": 0
+      },
+      "reconciliation": {
+        "classification": "filled",
+        "match_status": "matched",
+        "evidence": "alpaca_order_history_match",
+        "submitted_at_utc": "2026-07-01T15:07:22Z",
+        "order_history": {
+          "status": "filled",
+          "type": "limit",
+          "time_in_force": "day",
+          "limit_price": 320.11,
+          "filled_qty": 0.634639062,
+          "filled_avg_price": 315.124,
+          "submitted_at": "2026-07-01T15:07:23.285125504Z",
+          "filled_at": "2026-07-01T15:07:23.294918763Z"
+        },
+        "position_cross_check": {
+          "position_observed": true,
+          "qty": 1.642703849,
+          "avg_entry_price": 304.364052
+        },
+        "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+      },
+      "artifacts": {
+        "trade_request": "tmp/alpaca-paper-readiness/paper-trade-request.wf78-owner-card-prep-vrt.approved-20260701T1450Z.json",
+        "dry_run": "tmp/alpaca-paper-readiness/paper-execution-dry-run-result.wf78-owner-card-prep-vrt.approved-20260701T1450Z.json",
+        "pre_submit_guard": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.wf78-owner-card-prep-vrt.pre-submit-20260701T1450Z.json",
+        "execution_result": "tmp/alpaca-paper-readiness/paper-execution-result.wf78-owner-card-prep-vrt.approved-20260701T1450Z.json",
+        "post_submit_guard": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.wf78-owner-card-prep-vrt.post-submit-20260701T1450Z.json"
+      }
+    }
+  ],
+  "owner_approval": {
+    "approval_artifact": "tmp/alpaca-paper-readiness/owner-approval.xlb-nvda-vrt-20260701T1450Z.json",
+    "approved_by": "Randall",
+    "status": "approved_exact_order"
+  },
+  "guard_status": {
+    "pre_submit": "ok",
+    "post_submit": "ok",
+    "critical": 0,
+    "warning": 0,
+    "kill_switch": "tmp/alpaca-paper-readiness/execution-kill-switch.wf78-owner-card-prep-20260701T1450Z.json"
+  },
+  "read_only_reconciliation": {
+    "status": "ok",
+    "order_history_classifier": "tmp/alpaca-paper-readiness/paper-order-history-classifier.json",
+    "position_refresh": "tmp/wf67-paper-position-state.sqlite",
+    "open_orders_count": 0,
+    "unresolved_count": 0,
+    "open_or_pending_count": 0,
+    "terminal_non_fill_count": 0
+  },
+  "authority_boundary": {
+    "paper_only": true,
+    "live_trade_allowed": false,
+    "live_endpoint_allowed": false,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "paper_sell_allowed_without_new_exact_approval": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": {
+    "owner_approval": "tmp/alpaca-paper-readiness/owner-approval.xlb-nvda-vrt-20260701T1450Z.json",
+    "quote_snapshot": "tmp/intraday-alerts/quote-snapshot-proof.json",
+    "wf63_readiness": "tmp/alpaca-paper-readiness/wf63-readiness-report.json",
+    "kill_switch": "tmp/alpaca-paper-readiness/execution-kill-switch.wf78-owner-card-prep-20260701T1450Z.json",
+    "order_history_classifier": "tmp/alpaca-paper-readiness/paper-order-history-classifier.json",
+    "position_refresh_db": "tmp/wf67-paper-position-state.sqlite"
+  },
+  "notes": [
+    "Broker/order IDs are not persisted in this notification; execution artifacts keep only redacted broker fields.",
+    "GET-only order history classifier matched all three orders as filled and observed position cross-checks.",
+    "Paper-only simulation; no live order, live endpoint, money movement, account setting change, or portfolio/canon mutation was performed."
+  ]
+}

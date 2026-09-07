@@ -41,6 +41,7 @@ HVAC_STACK = ROOT / "training" / "wf75-academy" / "hvac-prospect-outreach-traini
 HVAC_MODULE_PREFIX = "wf75-hvac-outreach-module"
 SEC_MODULE_PREFIX = "sec-evidence-review-module"
 OTEL_MODULE_PREFIX = "otel-proof-validator-module"
+OPENCLAW_DAY1_PREFIX = "openclaw-day1-gateway-module"
 AUTHORING_CHECKLIST = TRAINING / "authoring-checklist.md"
 COMPONENT_LIBRARY_JSON = TRAINING / "component-library.json"
 COMPONENT_LIBRARY_MD = TRAINING / "component-library.md"
@@ -61,9 +62,49 @@ REQUIRED_XAPI_VERBS = {
     "reviewed_boundary",
 }
 
+VIDEO_SRC_RE = re.compile(r"^recordings/[a-z0-9][a-z0-9._-]{1,80}\.(webm|mp4)$")
+POSTER_SRC_RE = re.compile(r"^recordings/[a-z0-9][a-z0-9._-]{1,80}\.(png|jpg|svg)$")
+WALKTHROUGH_SRC_RE = re.compile(r"^walkthroughs/[a-z0-9][a-z0-9._-]{1,80}\.html$")
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def is_safe_media_src(value: Any, kind: str) -> bool:
+    if not isinstance(value, str) or not value:
+        return False
+    if "://" in value or ".." in value or "\\" in value:
+        return False
+    if value.startswith("/") or re.match(r"^[A-Za-z]:", value):
+        return False
+    if kind == "video":
+        pattern = VIDEO_SRC_RE
+    elif kind == "walkthrough":
+        pattern = WALKTHROUGH_SRC_RE
+    else:
+        pattern = POSTER_SRC_RE
+    return pattern.match(value) is not None
+
+
+def screen_recording_warnings(module: dict[str, Any]) -> list[str]:
+    warnings: list[str] = []
+    for item in module.get("interactions", []):
+        if item.get("type") != "screen_recording":
+            continue
+        walkthrough_src = item.get("walkthrough_src")
+        if walkthrough_src and is_safe_media_src(walkthrough_src, "walkthrough"):
+            if not (TRAINING / walkthrough_src).exists():
+                warnings.append(f"screen_recording_walkthrough_missing:{item.get('id')}")
+            continue
+        video_src = item.get("video_src")
+        if not video_src:
+            warnings.append(f"screen_recording_placeholder_no_clip:{item.get('id')}")
+        elif is_safe_media_src(video_src, "video"):
+            clip_path = TRAINING / video_src
+            if not clip_path.exists():
+                warnings.append(f"screen_recording_clip_missing_placeholder:{item.get('id')}")
+    return warnings
 
 
 def rel(path: Path) -> str:
@@ -240,6 +281,19 @@ def build_sample_module() -> dict[str, Any]:
                     "Keeps customer data, credentials, and production access blocked.",
                 ],
                 "xapi_object": "activity/reflection-next-step",
+            },
+            {
+                "id": "boundary-walkthrough-clip",
+                "type": "screen_recording",
+                "title": "Boundary Walkthrough Clip",
+                "prompt": "Watch the short local screen recording that walks through the approval-card minimums, then mark the clip reviewed.",
+                "capture_hint": (
+                    "No clip recorded yet. Capture one with Windows Snipping Tool screen recording "
+                    "(Win+Shift+R), save the file under training/interactive-training-builder/recordings/ "
+                    "as a .webm or .mp4, then rerun the builder so the player picks it up."
+                ),
+                "caption": "Walkthrough of the approval-card minimums inside the local training runtime.",
+                "xapi_object": "activity/boundary-walkthrough-clip",
             },
         ],
         "xapi": {
@@ -954,6 +1008,162 @@ def build_otel_proof_validator_module() -> dict[str, Any]:
     }
 
 
+def build_openclaw_day1_module() -> dict[str, Any]:
+    return {
+        "schema": "veritas.interactive_training_module.v1",
+        "module_id": "openclaw-day1-gateway-control-ui",
+        "title": "OpenClaw Day 1: Gateway, Session, and Control UI",
+        "audience": "Randall internal OpenClaw operator training",
+        "summary": (
+            "Fifteen-minute practice for naming Gateway, agent, session, and Control UI correctly, "
+            "inspecting this WebChat without changing settings, and keeping updates/config owner-gated."
+        ),
+        "authority_boundary": {
+            "internal_training_only": True,
+            "external_delivery_approved": False,
+            "customer_data_allowed": False,
+            "credential_access_allowed": False,
+            "owner_approval_inferred": False,
+            "runtime_config_mutation_approved": False,
+            "channel_expansion_approved": False,
+            "gateway_update_approved": False,
+            "pairing_or_allowlist_mutation_approved": False,
+        },
+        "learning_objectives": [
+            "Name Gateway, agent, session, and Control UI without mixing them up.",
+            "Describe the path from a WebChat message to an agent reply.",
+            "Keep install/update, config, and channel changes owner-run and out of this lab.",
+        ],
+        "lessons": [
+            {
+                "id": "four-parts",
+                "title": "Four Parts, One Box",
+                "body": (
+                    "OpenClaw is a local Gateway that owns chat surfaces. The Control UI is the browser app "
+                    "the Gateway serves, usually on 127.0.0.1:18789. An agent is the model-plus-tools persona "
+                    "(here, Veritas Main). A session is one conversation's memory and tool loop. This WebChat "
+                    "is Control UI talking to the Gateway, which starts an agent run in this session."
+                ),
+                "key_points": [
+                    "Gateway: long-lived daemon; one per host; owns channels and the WebSocket API.",
+                    "Control UI: browser dashboard served by that Gateway, not a second product.",
+                    "Agent: who answers. Session: which thread they are answering in.",
+                    "A clean training score does not approve config, updates, or new channels.",
+                ],
+            },
+            {
+                "id": "inspect-only-day1",
+                "title": "Day 1 Is Inspect-Only",
+                "body": (
+                    "Day 1 practice is look, name, and stop. You may open Control UI, read a session, and "
+                    "run read-only status. You do not patch openclaw.json, pair a new channel, or run "
+                    "openclaw update from this lab. Randall runs updates in a terminal or Control UI when "
+                    "he chooses. Completing this module is not that approval."
+                ),
+                "key_points": [
+                    "Live inspect: this chat, the session list, and `openclaw status` if needed.",
+                    "Blocked here: config, auth, channels, pairing, plugins, runtime, and updates.",
+                    "Message in, Gateway accepts a run, agent replies. That is the whole loop.",
+                ],
+            },
+        ],
+        "interactions": [
+            {
+                "id": "what-is-gateway",
+                "type": "multiple_choice",
+                "title": "What Is The Gateway?",
+                "prompt": "Which statement is accurate?",
+                "choices": [
+                    {
+                        "id": "daemon",
+                        "text": "The Gateway is the local long-lived process that owns channels, WebChat, and the Control UI WebSocket.",
+                        "correct": True,
+                        "feedback": "Correct. One Gateway per host; Control UI and chats connect to it.",
+                    },
+                    {
+                        "id": "model",
+                        "text": "The Gateway is the LLM vendor, such as xAI or OpenAI.",
+                        "correct": False,
+                        "feedback": "Vendors supply models. The Gateway is the local OpenClaw daemon.",
+                    },
+                    {
+                        "id": "session",
+                        "text": "The Gateway is this single chat thread and its transcript.",
+                        "correct": False,
+                        "feedback": "That is a session. Many sessions can share one Gateway.",
+                    },
+                ],
+                "xapi_object": "activity/what-is-gateway",
+            },
+            {
+                "id": "who-runs-update",
+                "type": "multiple_choice",
+                "title": "Who Runs Updates?",
+                "prompt": "This training lab finishes with a passing score. What is still true?",
+                "choices": [
+                    {
+                        "id": "randall-update",
+                        "text": "Randall still has to run `openclaw update` himself if he wants an update; the lab does not authorize it.",
+                        "correct": True,
+                        "feedback": "Correct. Updates and config stay owner-gated.",
+                    },
+                    {
+                        "id": "agent-update",
+                        "text": "The agent should now run npm install -g openclaw and restart the Gateway.",
+                        "correct": False,
+                        "feedback": "Agents must not install or restart the Gateway from training completion.",
+                    },
+                    {
+                        "id": "auto-channel",
+                        "text": "A passing score lets the agent pair Telegram or Discord next.",
+                        "correct": False,
+                        "feedback": "Channel pairing stays owner-gated and is not Day 1 work.",
+                    },
+                ],
+                "xapi_object": "activity/who-runs-update",
+            },
+            {
+                "id": "inspect-only-checklist",
+                "type": "checklist",
+                "title": "Day 1 Inspect-Only Minimums",
+                "prompt": "Check every item that stays true for this lab.",
+                "checklist_items": [
+                    "I can name Gateway, Control UI, agent, and session.",
+                    "This WebChat is Control UI talking to the local Gateway.",
+                    "I will not change config, pairing, channels, or plugins from this lab.",
+                    "I will not treat a training score as approval to update OpenClaw.",
+                ],
+                "xapi_object": "activity/inspect-only-checklist",
+            },
+            {
+                "id": "control-ui-walkthrough-clip",
+                "type": "screen_recording",
+                "title": "Day 1 Teaching Walkthrough",
+                "prompt": "Watch the local teaching walkthrough, then mark it reviewed. You do not record anything.",
+                "walkthrough_src": "walkthroughs/openclaw-day1.html",
+                "capture_hint": "Teaching walkthrough is embedded. You watch it; you do not record a clip.",
+                "caption": "Watch-only map of Gateway, Control UI, agent, and session.",
+                "xapi_object": "activity/control-ui-walkthrough-clip",
+            },
+            {
+                "id": "day1-boundary-ack",
+                "type": "boundary_ack",
+                "title": "Day 1 Boundary Acknowledgement",
+                "prompt": (
+                    "Confirm this module is internal OpenClaw literacy only and does not approve Gateway "
+                    "updates, config edits, channel pairing, allowlist changes, or runtime mutation."
+                ),
+                "expected": "I confirm this is internal OpenClaw Day 1 training only.",
+                "xapi_object": "activity/day1-boundary-ack",
+            },
+        ],
+        "xapi": {
+            "activity_id": "https://veritas.local/training/openclaw-day1-gateway-control-ui",
+            "verbs": sorted(REQUIRED_XAPI_VERBS),
+        },
+    }
+
+
 def validate_module(module: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     if module.get("schema") != "veritas.interactive_training_module.v1":
@@ -991,6 +1201,20 @@ def validate_module(module: dict[str, Any]) -> list[str]:
             errors.append(f"checklist_missing_items:{item.get('id')}")
         if item_type in {"scenario", "boundary_ack"} and not item.get("expected"):
             errors.append(f"expected_answer_missing:{item.get('id')}")
+        if item_type == "screen_recording":
+            hint = item.get("capture_hint")
+            if not isinstance(hint, str) or len(hint.strip()) < 10:
+                errors.append(f"screen_recording_capture_hint_missing:{item.get('id')}")
+            for field, kind in (("video_src", "video"), ("poster_src", "poster"), ("walkthrough_src", "walkthrough")):
+                value = item.get(field)
+                if value is None:
+                    continue
+                if not isinstance(value, str) or "://" in value or ".." in value or "\\" in value:
+                    errors.append(f"screen_recording_unsafe_src:{item.get('id')}:{field}")
+                elif value.startswith("/") or re.match(r"^[A-Za-z]:", value):
+                    errors.append(f"screen_recording_unsafe_src:{item.get('id')}:{field}")
+                elif not is_safe_media_src(value, kind):
+                    errors.append(f"screen_recording_invalid_src:{item.get('id')}:{field}")
     return errors
 
 
@@ -1022,7 +1246,7 @@ def render_html(module: dict[str, Any]) -> str:
   <title>{esc(module['title'])}</title>
   <style>
     :root {{
-      color-scheme: light;
+      color-scheme: light dark;
       --ink: #15202b;
       --muted: #596574;
       --paper: #f7f8fa;
@@ -1053,10 +1277,18 @@ def render_html(module: dict[str, Any]) -> str:
     }}
     .skip:focus {{ left: 8px; }}
     header {{
-      background: #101820;
+      background: linear-gradient(135deg, #101820 0%, #16324a 55%, #0f766e 130%);
+      background-color: #101820;
       color: white;
-      padding: 22px clamp(16px, 4vw, 46px);
+      padding: 26px clamp(16px, 4vw, 46px);
       border-bottom: 4px solid var(--accent);
+      display: grid;
+      gap: 8px;
+    }}
+    .visual-rail {{
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
     }}
     header h1 {{
       margin: 0 0 6px;
@@ -1114,9 +1346,70 @@ def render_html(module: dict[str, Any]) -> str:
     .lesson, .interaction, .review-panel {{
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-left: 6px solid var(--accent-2);
+      border-radius: 12px;
       padding: clamp(14px, 3vw, 22px);
       margin-bottom: 16px;
+    }}
+    .lesson:nth-of-type(even) {{ border-left-color: var(--accent); }}
+    :focus-visible {{
+      outline: 3px solid var(--accent-2);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }}
+    .media-card {{
+      border-left-color: var(--accent);
+    }}
+    .media-card video {{
+      width: 100%;
+      max-height: 480px;
+      border-radius: 14px;
+      background: #000;
+      border: 1px solid var(--line);
+    }}
+    .media-card figcaption {{
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 8px;
+    }}
+    .capture-card {{
+      border: 1px dashed var(--accent-2);
+      border-left: 6px solid var(--accent-2);
+      border-radius: 12px;
+      background: #f2f6fc;
+      padding: 14px;
+      margin: 12px 0;
+    }}
+    .capture-card ol {{
+      margin: 8px 0 0;
+      padding-left: 20px;
+    }}
+    .capture-card code {{
+      background: #e4eaf4;
+    }}
+    @media (prefers-color-scheme: dark) {{
+      :root {{
+        --ink: #e8edf3;
+        --muted: #aab6c4;
+        --paper: #0e141b;
+        --panel: #17202b;
+        --line: #2c3a4a;
+        --accent: #2dd4bf;
+        --accent-2: #7aa7f0;
+        --warn: #e0a63c;
+        --bad: #e08a8a;
+        --good: #5ec596;
+      }}
+      nav {{ background: #111a24; }}
+      .nav-button {{ background: #1c2836; color: var(--ink); }}
+      .choice, .check-row {{ background: #1c2836; }}
+      .result {{ background: #16211c; }}
+      .boundary {{ background: #2a2313; color: #f0dfb8; }}
+      .capture-card {{ background: #14202f; }}
+      .capture-card code, code {{ background: #243242; color: var(--ink); }}
+      .progress {{ background: #2c3a4a; }}
+      textarea, input {{ background: #101820; color: var(--ink); border-color: var(--line); }}
+      button.secondary {{ background: #1c2836; color: var(--ink); }}
     }}
     .interaction h3 {{ margin-top: 0; }}
     .choice, .check-row {{
@@ -1189,6 +1482,7 @@ def render_html(module: dict[str, Any]) -> str:
 <body>
   <a class="skip" href="#workspace">Skip to training workspace</a>
   <header>
+    <div class="visual-rail" aria-hidden="true"></div>
     <h1>{esc(module['title'])}</h1>
     <p>{esc(module['summary'])}</p>
   </header>
@@ -1392,6 +1686,7 @@ def render_html(module: dict[str, Any]) -> str:
 
     function renderInteraction(item, index) {{
       const answer = state.answers[item.id] || {{}};
+      if (item.type === "screen_recording") return renderScreenRecording(item, index);
       if (item.type === "multiple_choice") {{
         const choices = item.choices.map(choice => `
           <label class="choice">
@@ -1417,6 +1712,37 @@ def render_html(module: dict[str, Any]) -> str:
         <textarea id="text-${{item.id}}" aria-label="${{item.title}} response">${{text}}</textarea>
         <h4>Rubric</h4><ul>${{rubric}}</ul>`,
         `<button class="primary" type="button" onclick="saveText('${{item.id}}')">Save response</button>`);
+    }}
+
+    function renderScreenRecording(item, index) {{
+      const answer = state.answers[item.id] || {{}};
+      const result = answer.completed ? `<div class="result good">${{answer.message || "Clip reviewed."}}</div>` : "";
+      const safeWalk = (typeof item.walkthrough_src === "string" && /^walkthroughs\\/[a-z0-9][a-z0-9._-]{1,80}\\.html$/.test(item.walkthrough_src)) ? item.walkthrough_src : "";
+      const safeSrc = (typeof item.video_src === "string" && /^recordings\\/[a-z0-9][a-z0-9._-]{1,80}\\.(webm|mp4)$/.test(item.video_src)) ? item.video_src : "";
+      const safePoster = (typeof item.poster_src === "string" && /^recordings\\/[a-z0-9][a-z0-9._-]{1,80}\\.(png|jpg|svg)$/.test(item.poster_src)) ? item.poster_src : "";
+      const caption = item.caption ? `<figcaption>${{item.caption}}</figcaption>` : "";
+      let player = `<div class="capture-card" role="note"><strong>No teaching walkthrough is wired yet.</strong><p>${{item.capture_hint || "A local watch-only walkthrough will appear here."}}</p></div>`;
+      if (safeWalk) {{
+        player = `<figure style="margin:0"><iframe class="walkthrough-frame" title="${{item.title}}" src="${{safeWalk}}" style="width:100%;min-height:360px;border:1px solid var(--line);border-radius:12px;background:#0b1220"></iframe>${{caption}}</figure>`;
+      }} else if (safeSrc) {{
+        player = `<figure style="margin:0"><video class="media-card" controls preload="metadata" src="${{safeSrc}}"${{safePoster ? ` poster="${{safePoster}}"` : ""}}></video>${{caption}}</figure>`;
+      }}
+      return `<article class="interaction media-card" id="${{item.id}}">
+        <h3>${{index + 1}}. ${{item.title}}</h3>
+        <p>${{item.prompt}}</p>
+        ${{player}}
+        <div class="toolbar"><button class="primary" type="button" onclick="markClipReviewed('${{item.id}}')">Mark clip reviewed</button><button class="secondary" type="button" onclick="showExpected('${{item.id}}')">Show guide</button></div>
+        ${{result}}
+      </article>`;
+    }}
+
+    function markClipReviewed(id) {{
+      const item = findItem(id);
+      state.answers[id] = {{ completed: true, passed: true, message: "Clip reviewed." }};
+      record("answered", item.xapi_object || id, {{ completion: true }});
+      record("completed", item.xapi_object || id, {{ completion: true }});
+      announce("Clip marked reviewed.");
+      render();
     }}
 
     function interactionShell(item, index, body, action) {{
@@ -1496,7 +1822,7 @@ def render_html(module: dict[str, Any]) -> str:
 
     function showExpected(id) {{
       const item = findItem(id);
-      alert(item.expected || (item.rubric || []).join("\\n"));
+      alert(item.expected || item.capture_hint || (item.rubric || []).join("\\n"));
     }}
 
     function completeModule() {{
@@ -1771,6 +2097,23 @@ def component_library() -> dict[str, Any]:
                 "validation": ["severe axe violations 0", "console errors 0", "overflow 0"],
                 "reuse_notes": "Run after each new module or runtime change.",
             },
+            {
+                "id": "screen_recording",
+                "label": "Screen Recording",
+                "purpose": "Play a local screen-capture clip inside the module, or show $0 capture steps when no clip exists yet.",
+                "required_fields": ["id", "type", "title", "prompt", "capture_hint", "xapi_object"],
+                "validation": ["capture_hint at least 10 chars", "video_src stays under recordings/ when present", "missing clip is a placeholder warning, not an error"],
+                "reuse_notes": "Use for walkthroughs. Capture with Snipping Tool (Win+Shift+R) into training/interactive-training-builder/recordings/.",
+                "xapi_verbs": ["answered", "completed"],
+            },
+            {
+                "id": "local_capture_helper",
+                "label": "Local Capture Helper",
+                "purpose": "Inventory local recordings and print $0 Windows capture steps without any upload or LMS.",
+                "required_fields": ["recordings manifest", "recordings README"],
+                "validation": ["external_upload_allowed false", "lms_configured false"],
+                "reuse_notes": "Run scripts/interactive_training_screen_capture.py --write --validate before catalog builds.",
+            },
         ],
         "authority_boundary": {
             "local_files_only": True,
@@ -1833,8 +2176,9 @@ Use this checklist before adding or revising a local interactive training module
 - Set `authority_boundary.internal_training_only=true`.
 - Keep `external_delivery_approved`, `customer_data_allowed`, `credential_access_allowed`, and `owner_approval_inferred` false.
 - Add any domain-specific blocked flags such as collector/runtime/config, finance/canon, outreach, account, paper/live, or capital authority.
-- Use only supported interaction types: scenario, multiple_choice, checklist, reflection, and boundary_ack.
+- Use only supported interaction types: scenario, multiple_choice, checklist, reflection, screen_recording, and boundary_ack.
 - Include at least one boundary acknowledgement when the module touches action authority.
+- For screen_recording items, write a capture_hint (10+ chars) naming Snipping Tool and the recordings folder; a missing clip renders a placeholder.
 
 ## Component Choices
 
@@ -1846,6 +2190,7 @@ Use this checklist before adding or revising a local interactive training module
 
 ## Proof And Packaging
 
+- Run `python scripts\\interactive_training_screen_capture.py --write --validate` when a module uses screen_recording.
 - Run `python scripts\\interactive_training_builder.py --write --validate`.
 - Run `python scripts\\test_interactive_training_builder.py`.
 - Run `python scripts\\interactive_training_qa_validator.py --write --validate`.
@@ -1965,8 +2310,18 @@ def write_scorm_package(
     atomic_write_json(scorm_dir / "module.json", module)
     atomic_write_json(scorm_dir / "xapi-seed.json", xapi_seed)
     atomic_write_text(scorm_manifest, render_scorm_manifest(module))
+    extra_paths = []
+    for item in module.get("interactions", []):
+        walkthrough_src = item.get("walkthrough_src")
+        if walkthrough_src and is_safe_media_src(walkthrough_src, "walkthrough"):
+            source = TRAINING / walkthrough_src
+            if source.exists():
+                dest = scorm_dir / walkthrough_src
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                dest.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+                extra_paths.append(dest)
     with zipfile.ZipFile(scorm_zip, "w", compression=zipfile.ZIP_DEFLATED) as package:
-        for path in [scorm_dir / "index.html", scorm_dir / "module.json", scorm_dir / "xapi-seed.json", scorm_manifest]:
+        for path in [scorm_dir / "index.html", scorm_dir / "module.json", scorm_dir / "xapi-seed.json", scorm_manifest, *extra_paths]:
             package.write(path, arcname=path.relative_to(scorm_dir).as_posix())
 
 
@@ -2006,6 +2361,7 @@ def build_module_artifacts(module: dict[str, Any], prefix: str, write: bool = Fa
     html_text = render_html(module)
     xapi_seed = seed_xapi_statements(module)
     validation_errors = validate_outputs(html_text, module)
+    validation_warnings = screen_recording_warnings(module)
     manifest = {
         "schema": "veritas.interactive_training_module_manifest.v1",
         "generated_at_utc": utc_now(),
@@ -2039,7 +2395,7 @@ def build_module_artifacts(module: dict[str, Any], prefix: str, write: bool = Fa
         },
         "validation": {
             "errors": validation_errors,
-            "warnings": [],
+            "warnings": validation_warnings,
         },
         "authority_boundary": module["authority_boundary"],
     }
@@ -2059,6 +2415,7 @@ def build(write: bool = False) -> dict[str, Any]:
         build_module_artifacts(build_hvac_module(), HVAC_MODULE_PREFIX, write=write),
         build_module_artifacts(build_sec_evidence_module(), SEC_MODULE_PREFIX, write=write),
         build_module_artifacts(build_otel_proof_validator_module(), OTEL_MODULE_PREFIX, write=write),
+        build_module_artifacts(build_openclaw_day1_module(), OPENCLAW_DAY1_PREFIX, write=write),
     ]
     evaluation = standards_evaluation()
     library = component_library()
@@ -2090,6 +2447,8 @@ def build(write: bool = False) -> dict[str, Any]:
             "playwright_axe_local_qa": True,
             "authoring_checklist": True,
             "component_library": True,
+            "screen_recording_player": True,
+            "local_screen_capture_helper": True,
             "external_lms_lrs_configured": False,
             "customer_data_allowed": False,
         },

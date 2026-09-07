@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-15T05:55:25Z",
+  "artifact_type": "wf63_shadow_mode_report",
+  "status": "blocked_preview_inputs_required",
+  "source_artifact": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+  "preview_count": 3,
+  "invalid_or_blocked_preview_count": 3,
+  "preview_artifacts": [
+    "tmp/alpaca-paper-readiness/order-previews/wf63-preview-post-close-ETN-capital-deployment-review-2026-05-14.json",
+    "tmp/alpaca-paper-readiness/order-previews/wf63-preview-post-close-GOOG-capital-deployment-review-2026-05-14.json",
+    "tmp/alpaca-paper-readiness/order-previews/wf63-preview-post-close-GS-capital-deployment-review-2026-05-14.json"
+  ],
+  "would_submit": false,
+  "alpaca_endpoint_calls_made": false,
+  "brokerage_endpoint_calls_made": false,
+  "brokerage_write_methods_used": [],
+  "paper_account_state_read": false,
+  "paper_account_state_mutated": false,
+  "portfolio_canon_mutated": false,
+  "owner_decision_required": true,
+  "owner_approval_granted": false,
+  "paper_submit_allowed": false,
+  "live_submit_allowed": false,
+  "trade_or_account_action_allowed": false,
+  "shadow_checks": {
+    "missed_previews": [],
+    "invalid_previews": [
+      "wf63-preview:post-close-ETN-capital-deployment-review-2026-05-14",
+      "wf63-preview:post-close-GOOG-capital-deployment-review-2026-05-14",
+      "wf63-preview:post-close-GS-capital-deployment-review-2026-05-14"
+    ],
+    "stale_previews": [],
+    "contradictory_previews": [],
+    "next_day_manual_reconciliation": "not_run_no_connection_or_manual_pilot"
+  },
+  "stop_lines": [
+    "Shadow mode records preview intent only; it does not submit brokerage orders.",
+    "Clean shadow mode is not owner approval.",
+    "No Alpaca endpoint was called by this scaffold."
+  ]
+}

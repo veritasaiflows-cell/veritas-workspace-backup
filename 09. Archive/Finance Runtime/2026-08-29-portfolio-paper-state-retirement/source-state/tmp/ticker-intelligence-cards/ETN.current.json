@@ -1,0 +1,1249 @@
+{
+  "schema_version": 2,
+  "artifact_type": "wf77_ticker_intelligence_card",
+  "generated_at_utc": "2026-08-29T21:40:51Z",
+  "ticker": "ETN",
+  "review_only": true,
+  "instrument_type": "equity",
+  "universe_metadata": {
+    "ticker": "ETN",
+    "name": "Eaton Corporation plc",
+    "instrument_type": "operating_company",
+    "source_symbols": {
+      "yfinance": "ETN",
+      "sec_cik": "0001551182",
+      "company_ir": "https://www.eaton.com/us/en-us/company/investor-relations.html"
+    },
+    "active": true,
+    "tier": "A",
+    "monitoring_role": "decision_queue_or_near_action",
+    "sector": "Industrials",
+    "industry": null,
+    "coverage_reason": {
+      "wf77_current_coverage": true,
+      "fundamental_row_present": true,
+      "deployment_surface_group": "ALMOST DEPLOYABLE",
+      "workflow_state": "DEPLOYED",
+      "coverage_lane": "execution",
+      "portfolio_role": "tactical",
+      "retired_legacy_42": true,
+      "production_answer_path_member": false,
+      "dynamic_sql_first_production_required": true
+    },
+    "decision_grade_eligible": true,
+    "promotion_required_before_action": true,
+    "monitoring_cadence": {
+      "price_technical": "daily_and_intraday_when_market_open",
+      "fundamentals": "weekly_or_event_driven",
+      "analyst": "weekly",
+      "official_evidence": "event_driven_source_open"
+    },
+    "data_requirements": {
+      "price_band_stop": "daily_required",
+      "technical_posture": "daily_required",
+      "fundamentals": "weekly_required",
+      "analyst_consensus": "weekly_required",
+      "official_evidence": "source_open_required",
+      "risk_register": "required",
+      "authority_guardrails": "required"
+    },
+    "promotion_triggers": [
+      "enters_or_reclaims_written_entry_band",
+      "fresh_official_or_fundamental_catalyst_improves_thesis",
+      "technical_relative_strength_or_sector_leadership_improves",
+      "owner_promotes_from_monitor_to_decision_queue"
+    ],
+    "demotion_triggers": [
+      "breaks_stop_or_invalidation",
+      "source_freshness_or_validator_status_blocks_claims",
+      "thesis_evidence_deteriorates_or_conflicts_with_canon",
+      "owner_demotes_or_removes_from_active_monitoring"
+    ],
+    "source_open_required": true,
+    "authority_boundary": {
+      "posture": "durable_review_only_universe_registry_not_canon_not_approval_not_apply_authority",
+      "canonical_note_mutation_allowed": false,
+      "portfolio_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "sizing_sleeve_cash_risk_rule_authority": false,
+      "owner_approval_granted": false,
+      "owner_approval_inferred": false,
+      "trade_execution_allowed": false,
+      "trade_or_account_action_allowed": false,
+      "live_brokerage_or_account_action_allowed": false,
+      "paper_order_execution_allowed": false,
+      "paper_order_submit_allowed_by_this_registry": false,
+      "paper_order_cancel_allowed_by_this_registry": false,
+      "sql_canon_migration_allowed": false,
+      "db_path_migration_allowed": false,
+      "tmp_artifact_promotion_allowed": false
+    },
+    "universe_scope": "active_internal_universe",
+    "production_scope": false,
+    "pilot_scope": false,
+    "retired_legacy_42_scope": true,
+    "sql_first_production_scope": "derived_from_finance_sql_canon_access",
+    "production_scope_source": "retired_legacy_42_no_current_answer_authority"
+  },
+  "durable_sql_canon_state": {
+    "ticker": "ETN",
+    "name": "Eaton Corporation plc",
+    "instrument_type": "operating_company",
+    "sector": "Industrials",
+    "industry": null,
+    "universe_scope": "active_internal_universe",
+    "legacy_tier": "A",
+    "legacy_production_42": false,
+    "production_scope_member": false,
+    "production_scope_source": "critical_data_conflict_or_unknown",
+    "tier_ab_decision_scope": null,
+    "compatibility_reason": null,
+    "sql_tier": "Tier A",
+    "sql_tier_state": "sql_first_wait_for_routing",
+    "tier_decision_scope": "tier_a_sql_first_review_scope",
+    "auto_tier": "Tier B",
+    "auto_state": "B-CHALLENGED",
+    "answer_scope": "sql_first_review_monitor",
+    "production_card_generation_allowed": false,
+    "has_production_card": false,
+    "provider_status": null
+  },
+  "wf78_auto_tier_routing": {
+    "ticker": "ETN",
+    "name": "Eaton Corporation plc",
+    "sector": "Industrials",
+    "instrument_type": "operating_company",
+    "asset_class": "equity",
+    "instrument_class": "operating_company",
+    "exposure_type": "single_company_equity",
+    "review_lane": "equity_depth",
+    "deployment_role": "company_specific_growth_quality_income_or_turnaround",
+    "opportunity_tier": "Tier B",
+    "lane_tier": "Tier B Equity",
+    "lane_tier_label": "Tier B Equity",
+    "tier_seeded_from_legacy_label": false,
+    "legacy_monitoring_role": "decision_queue_or_near_action",
+    "auto_tier": "Tier B",
+    "auto_state": "B-CHALLENGED",
+    "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate; auto_demoted_a_to_b_by_tier_a_confidence_gate_force_a_challenged",
+    "route_priority": 40,
+    "data_confidence_rating": "conflicted",
+    "fundamentals_confidence": "conflicted",
+    "tier_a_confidence_status": "challenged",
+    "tier_a_confidence_promotion_effect": "force_a_challenged",
+    "tier_a_confidence_source": "artifact",
+    "critical_data_conflict_count": 1,
+    "tier_a_packet_freshness_status": null,
+    "tier_a_packet_stale_reasons": [],
+    "tier_a_packet_age_hours": null,
+    "tier_a_packet_quote_age_hours": null,
+    "tier_a_packet_ttl_hours": null,
+    "tier_a_packet_quote_ttl_hours": null,
+    "phase2_validated_tier_b": false,
+    "tier_c_attention_score": null,
+    "tier_c_attention_next_action": null,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "requires_separate_capital_or_execution_approval": true,
+    "would_mutate_universe": false
+  },
+  "latest_known_price": 402.78,
+  "price_band_stop": {
+    "latest_known_price": 402.78,
+    "price_source": "tmp/post-close-final-quote-ledger.json",
+    "entry_band_low": 385.98,
+    "entry_band_high": 434.4,
+    "stop_or_invalidation": 363.96,
+    "band_status": "IN_BAND",
+    "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+    "stop_source": "state/finance/finance-canon.sqlite:reference_levels",
+    "fresh_quote_required": false,
+    "staleness_note": null,
+    "reference_band_refresh_required": false,
+    "sql_canon_reference": {
+      "ticker": "ETN",
+      "reference_price_low": 385.98,
+      "reference_price_high": 434.4,
+      "reference_invalidation_level": 363.96,
+      "reference_confidence": null,
+      "reference_band_status": "IN_BAND",
+      "authority_class": "reference_metadata_review_only_no_deployment_authority",
+      "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+    },
+    "post_close_final_quote": {
+      "market_date": "2026-08-28",
+      "retrieved_at_utc": "2026-08-29T16:23:15Z",
+      "source": "yfinance",
+      "review_only": true,
+      "execution_freshness_approved": false
+    }
+  },
+  "entry_stop_reference_metadata": {
+    "schema_version": "wf72_entry_stop_reference_metadata.v1",
+    "status": "available",
+    "ticker": "ETN",
+    "authority_boundary": "wf72_entry_stop_reference_metadata_exact_key_gated_no_execution_authority",
+    "sql_cache_path": "tmp/veritas-canon-cache.sqlite",
+    "sql_read_mode": "sqlite_uri_mode_ro",
+    "approved_row_family": "exact_252_wf72_entry_stop_reference_metadata_rows",
+    "approved_fields": [
+      "reference_price_low",
+      "reference_price_high",
+      "reference_invalidation_level",
+      "reference_level_source_timestamp",
+      "reference_level_source_sha256",
+      "reference_level_owner_source_path"
+    ],
+    "row_keys": [
+      "ETN:reference_price_low",
+      "ETN:reference_price_high",
+      "ETN:reference_invalidation_level",
+      "ETN:reference_level_source_timestamp",
+      "ETN:reference_level_source_sha256",
+      "ETN:reference_level_owner_source_path"
+    ],
+    "values": {
+      "reference_price_low": 387.67,
+      "reference_price_high": 404.02,
+      "reference_invalidation_level": 367.6,
+      "reference_level_source_timestamp": "2026-06-18",
+      "reference_level_source_sha256": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+      "reference_level_owner_source_path": "03. Portfolio/Execution Board.md"
+    },
+    "source_lineage": {
+      "owner_source_path": "03. Portfolio/Execution Board.md",
+      "source_timestamp": "2026-06-18",
+      "source_sha256": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9"
+    },
+    "source_rows": [
+      {
+        "key": "ETN:reference_invalidation_level",
+        "source_artifact_path": "03. Portfolio/Execution Board.md",
+        "source_artifact_hash": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+        "freshness_status": "fresh",
+        "last_reconciled_at_utc": "2026-06-19T13:20:38Z",
+        "updated_at_utc": "2026-06-19T13:20:38Z"
+      },
+      {
+        "key": "ETN:reference_level_owner_source_path",
+        "source_artifact_path": "03. Portfolio/Execution Board.md",
+        "source_artifact_hash": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+        "freshness_status": "fresh",
+        "last_reconciled_at_utc": "2026-06-19T13:20:38Z",
+        "updated_at_utc": "2026-06-19T13:20:38Z"
+      },
+      {
+        "key": "ETN:reference_level_source_sha256",
+        "source_artifact_path": "03. Portfolio/Execution Board.md",
+        "source_artifact_hash": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+        "freshness_status": "fresh",
+        "last_reconciled_at_utc": "2026-06-19T13:20:38Z",
+        "updated_at_utc": "2026-06-19T13:20:38Z"
+      },
+      {
+        "key": "ETN:reference_level_source_timestamp",
+        "source_artifact_path": "03. Portfolio/Execution Board.md",
+        "source_artifact_hash": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+        "freshness_status": "fresh",
+        "last_reconciled_at_utc": "2026-06-19T13:20:38Z",
+        "updated_at_utc": "2026-06-19T13:20:38Z"
+      },
+      {
+        "key": "ETN:reference_price_high",
+        "source_artifact_path": "03. Portfolio/Execution Board.md",
+        "source_artifact_hash": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+        "freshness_status": "fresh",
+        "last_reconciled_at_utc": "2026-06-19T13:20:38Z",
+        "updated_at_utc": "2026-06-19T13:20:38Z"
+      },
+      {
+        "key": "ETN:reference_price_low",
+        "source_artifact_path": "03. Portfolio/Execution Board.md",
+        "source_artifact_hash": "cf3d912e2e417bf5fcecb240e3f1fd80288f6e0acb6b489dd4860d3347d8b2e9",
+        "freshness_status": "fresh",
+        "last_reconciled_at_utc": "2026-06-19T13:20:38Z",
+        "updated_at_utc": "2026-06-19T13:20:38Z"
+      }
+    ],
+    "missing_fields": [],
+    "issues": [],
+    "notes": [
+      "Reference metadata only; does not replace price_band_stop fallback values.",
+      "No recommendation, deployment/action state, approval, portfolio mutation, or execution authority."
+    ],
+    "display_reference_only": true,
+    "fallback_required": true,
+    "recommendation_allowed": false,
+    "deployment_or_action_state_change_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "markdown_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "proposal_apply_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "paper_trade_authority_allowed": false,
+    "live_trade_authority_allowed": false,
+    "money_movement_allowed": false
+  },
+  "thesis_bull_bear_entry_context": {
+    "status": "synthesized_review_only_source_backed",
+    "thesis": "Eaton Corporation plc has a review-only synthesized Tier A thesis from local sourced artifacts: revenue YoY 21.39%, EPS YoY -15.94%, FCF YoY 22.00%. Entry posture is IN_BAND; 0 evidence/freshness gaps still require review before decision-grade use.",
+    "bull_case_inputs": [
+      "latest_earnings_performance",
+      "key_financial_metrics",
+      "official_capture_developments_orders_backlog",
+      "current_sector_performance",
+      "technical_posture"
+    ],
+    "bear_case_inputs": [
+      "risk_register",
+      "missing_or_stale_evidence",
+      "valuation",
+      "price_band_stop"
+    ],
+    "entry_context": {
+      "latest_known_price": 402.78,
+      "price_source": "tmp/post-close-final-quote-ledger.json",
+      "entry_band_low": 385.98,
+      "entry_band_high": 434.4,
+      "stop_or_invalidation": 363.96,
+      "band_status": "IN_BAND",
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "stop_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "fresh_quote_required": false,
+      "staleness_note": null,
+      "reference_band_refresh_required": false,
+      "sql_canon_reference": {
+        "ticker": "ETN",
+        "reference_price_low": 385.98,
+        "reference_price_high": 434.4,
+        "reference_invalidation_level": 363.96,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_band_proposals_or_owner_notes"
+      },
+      "post_close_final_quote": {
+        "market_date": "2026-08-28",
+        "retrieved_at_utc": "2026-08-29T16:23:15Z",
+        "source": "yfinance",
+        "review_only": true,
+        "execution_freshness_approved": false
+      }
+    },
+    "synthesis_evidence": [
+      {
+        "label": "fundamental_snapshot",
+        "summary": "revenue YoY 21.39%, EPS YoY -15.94%, FCF YoY 22.00%",
+        "source_artifact": "tmp\\fundamental-metrics-current.json",
+        "period_end": "2026-06-30",
+        "source_tier": "official_primary_review_only"
+      },
+      {
+        "label": "management_explanation",
+        "summary": "of 14% growth in organic sales and 7% growth from acquisitions. Segment margins were 23.1%, 10 basis points above the high end of the guidance range and down 80 basis points from the second quarter of 2025. Operating cash flow was $1.1 billion, and free cash flow was $874 million, up 23% and 22%, respectively, over the same period in 2025. Paulo Ruiz, Eaton chief executive officer, said, \u201cEaton accelerated its momentum in the second quarter and delivered record sales and solid earnings from strong organic growth. Our focus on disciplined execution led to sequential margin expansion, especially in Electrical Americas. While data centers remain a key growth driver, we are benefiting from robust demand across our end markets. Reflecting this strong performance and sustained demand, we are raising our full-year organic growth guidance and remain well-positioned to deliver on our commitments.\u201d In the quarter, the company also announced an agreement to separate its Mobility business through a Reverse Morris Trust transaction. This action represents the next step in Eaton\u2019s ongoing portfolio transformation\u2014further focusing the company on higher\u2011growth, higher\u2011margin Electrical and Aerospace businesses while positioning the company to drive long\u2011term value creation. Guidance For the full year 2026, the company anticipates: \u2022 Organic growth of 11-13% \u2022 Segment margins of 24.1-24.5% \u2022 Earnings per share between $10.36 and $10.56 \u2022 A",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+        "source_section": "Q2 2026 CEO commentary",
+        "period": "2026-06-30",
+        "status": "official_captured",
+        "source_artifact": "tmp\\official-earnings-bridge.json"
+      },
+      {
+        "label": "growth_bridge",
+        "summary": "Captured official fields: acquisition_growth_pct, fx_growth_pct, organic_sales_growth_pct, reported_sales_growth_pct",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+        "source_section": "Q2 2026 sales bridge",
+        "period": "2026-06-30",
+        "status": "official_captured",
+        "source_artifact": "tmp\\official-earnings-bridge.json"
+      },
+      {
+        "label": "orders_backlog_or_activity",
+        "summary": "Captured official fields: aerospace_backlog_growth_pct, aerospace_book_to_bill, aerospace_orders_growth_pct, electrical_americas_backlog_growth_pct, electrical_americas_orders_growth_pct",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+        "source_section": "Q2 2026 orders and backlog commentary",
+        "period": "2026-06-30",
+        "status": "official_captured",
+        "source_artifact": "tmp\\official-earnings-bridge.json"
+      },
+      {
+        "label": "sector_proxy_context",
+        "summary": "Industrials via XLI versus SPY; leadership=deteriorating",
+        "source_artifact": "tmp\\sector-expansion-board.json",
+        "as_of": "2026-08-28",
+        "match_basis": "exact"
+      }
+    ],
+    "source_open_required": true,
+    "limits": [
+      "Review-only synthesis generated from existing local sourced artifacts.",
+      "This does not clear owner approval, capital deployment, paper/live execution, or final recommendation authority."
+    ]
+  },
+  "latest_earnings_performance": {
+    "status": "available",
+    "period_type": "quarterly",
+    "period_end": "2026-06-30",
+    "comparison_period_end": "2025-06-30",
+    "revenue": 8531000000.0,
+    "revenue_yoy_pct": 21.3859,
+    "net_income": 821000000.0,
+    "net_income_yoy_pct": -16.3951,
+    "diluted_eps": 2.11,
+    "eps_yoy_pct": -15.9363,
+    "free_cash_flow": 874000000.0,
+    "free_cash_flow_yoy_pct": 22.0,
+    "official_adjusted_eps": {
+      "status": "official_captured",
+      "value": {
+        "adjusted_eps": 3.15,
+        "adjustments_per_share": {
+          "acquisitions_and_divestitures": 0.49,
+          "intangible_amortization": 0.5,
+          "multi_year_restructuring_program": 0.05
+        },
+        "gaap_eps": 2.11
+      },
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+      "source_section": "Q2 2026 earnings per share paragraph",
+      "period": "2026-06-30",
+      "manual_capture_required": false,
+      "inferred": false,
+      "claim_text": "Official ETN capture field adjusted_eps is official_captured from validated SEC/IR evidence."
+    },
+    "official_growth_bridge": {
+      "status": "official_captured",
+      "value": {
+        "acquisition_growth_pct": 7.0,
+        "fx_growth_pct": null,
+        "organic_sales_growth_pct": 14.0,
+        "reported_sales_growth_pct": 21.0
+      },
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+      "source_section": "Q2 2026 sales bridge",
+      "period": "2026-06-30",
+      "manual_capture_required": false,
+      "inferred": false,
+      "claim_text": "Official ETN capture field growth_bridge is official_captured from validated SEC/IR evidence."
+    },
+    "official_guidance": {
+      "status": "official_captured",
+      "value": {
+        "adjusted_eps_midpoint_growth_pct": 12.0,
+        "adjusted_eps_range": {
+          "high": 13.6,
+          "low": 13.4
+        },
+        "eps_range": {
+          "high": 10.56,
+          "low": 10.36
+        },
+        "organic_growth_guidance_range_pct": {
+          "high": 13.0,
+          "low": 11.0
+        }
+      },
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+      "source_section": "Q2 2026 full-year guidance",
+      "period": "2026-06-30",
+      "manual_capture_required": false,
+      "inferred": false,
+      "claim_text": "Official ETN capture field guidance is official_captured from validated SEC/IR evidence."
+    },
+    "management_explanation": {
+      "status": "official_captured",
+      "value": {
+        "summary": "of 14% growth in organic sales and 7% growth from acquisitions. Segment margins were 23.1%, 10 basis points above the high end of the guidance range and down 80 basis points from the second quarter of 2025. Operating cash flow was $1.1 billion, and free cash flow was $874 million, up 23% and 22%, respectively, over the same period in 2025. Paulo Ruiz, Eaton chief executive officer, said, \u201cEaton accelerated its momentum in the second quarter and delivered record sales and solid earnings from strong organic growth. Our focus on disciplined execution led to sequential margin expansion, especially in Electrical Americas. While data centers remain a key growth driver, we are benefiting from robust demand across our end markets. Reflecting this strong performance and sustained demand, we are raising our full-year organic growth guidance and remain well-positioned to deliver on our commitments.\u201d In the quarter, the company also announced an agreement to separate its Mobility business through a Reverse Morris Trust transaction. This action represents the next step in Eaton\u2019s ongoing portfolio transformation\u2014further focusing the company on higher\u2011growth, higher\u2011margin Electrical and Aerospace businesses while positioning the company to drive long\u2011term value creation. Guidance For the full year 2026, the company anticipates: \u2022 Organic growth of 11-13% \u2022 Segment margins of 24.1-24.5% \u2022 Earnings per share between $10.36 and $10.56 \u2022 A"
+      },
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+      "source_section": "Q2 2026 CEO commentary",
+      "period": "2026-06-30",
+      "manual_capture_required": false,
+      "inferred": false,
+      "claim_text": "Official ETN capture field management_explanation is official_captured from validated SEC/IR evidence."
+    },
+    "period_alignment": {
+      "status": "official_period_bridge_verified",
+      "latest_official_period_end": "2026-06-30",
+      "normalized_metrics_period_end": "2026-03-31",
+      "normalized_metrics_stale": false,
+      "normalized_provider_refresh_pending": true,
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000030/etn-20260630.htm",
+      "withheld_fields": [
+        "gross_profit",
+        "gross_margin_pct",
+        "operating_income",
+        "operating_margin_pct",
+        "net_margin_pct",
+        "ebitda",
+        "capital_expenditure",
+        "free_cash_flow_prior",
+        "fcf_per_share",
+        "fcf_per_share_prior",
+        "fcf_per_share_yoy_pct",
+        "cash_and_equivalents",
+        "total_debt",
+        "net_debt",
+        "debt_to_annualized_ebitda",
+        "total_assets",
+        "total_equity",
+        "invested_capital_proxy",
+        "roic_proxy_pct",
+        "debt_issued",
+        "debt_repaid",
+        "net_debt_issued",
+        "dividends_paid",
+        "share_repurchases",
+        "net_share_repurchases",
+        "buyback_yield_pct",
+        "dividend_yield_pct",
+        "shareholder_yield_pct",
+        "stock_based_compensation",
+        "sbc_pct_of_revenue",
+        "sbc_pct_of_fcf",
+        "capital_return_to_fcf_pct",
+        "capital_allocation_anomalies",
+        "capital_allocation_anomaly_count",
+        "capital_allocation_quality",
+        "capital_allocation_notes",
+        "enterprise_value",
+        "trailing_pe",
+        "forward_pe",
+        "fcf_yield_pct",
+        "earnings_yield_pct",
+        "price_to_sales",
+        "price_to_book",
+        "ev_to_ebitda_proxy",
+        "ev_to_fcf_proxy"
+      ],
+      "prior_normalized_metrics_retained": true,
+      "bridge_required_fields": [
+        "revenue",
+        "revenue_prior",
+        "net_income",
+        "net_income_prior",
+        "diluted_eps",
+        "diluted_eps_prior"
+      ],
+      "bridge_source_type": "sec_10q_official_report"
+    },
+    "source_open_required": true
+  },
+  "key_financial_metrics": {
+    "status": "available",
+    "period_end": "2026-06-30",
+    "growth": {
+      "revenue_yoy_pct": 21.3859,
+      "net_income_yoy_pct": -16.3951,
+      "eps_yoy_pct": -15.9363,
+      "free_cash_flow_yoy_pct": 22.0
+    },
+    "profitability": {
+      "gross_margin_pct": null,
+      "operating_margin_pct": null,
+      "net_margin_pct": null,
+      "roic_proxy_pct": null
+    },
+    "cash_flow": {
+      "operating_cash_flow": 1100000000.0,
+      "free_cash_flow": 874000000.0,
+      "fcf_per_share": null,
+      "fcf_yield_pct": null
+    },
+    "balance_sheet": {
+      "cash_and_equivalents": null,
+      "total_debt": null,
+      "net_debt": null,
+      "debt_to_annualized_ebitda": null
+    },
+    "valuation": {
+      "market_cap": 156399473526.0,
+      "enterprise_value": null,
+      "trailing_pe": null,
+      "forward_pe": null,
+      "price_to_sales": null,
+      "price_to_book": null,
+      "ev_to_ebitda_proxy": null,
+      "ev_to_fcf_proxy": null,
+      "earnings_yield_pct": null
+    },
+    "capital_returns": {
+      "buyback_yield_pct": null,
+      "dividend_yield_pct": null,
+      "shareholder_yield_pct": null,
+      "capital_return_to_fcf_pct": null
+    },
+    "data_quality": "partial_official_period_bridge",
+    "period_alignment": {
+      "status": "official_period_bridge_verified",
+      "latest_official_period_end": "2026-06-30",
+      "normalized_metrics_period_end": "2026-03-31",
+      "normalized_metrics_stale": false,
+      "normalized_provider_refresh_pending": true,
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000030/etn-20260630.htm",
+      "withheld_fields": [
+        "gross_profit",
+        "gross_margin_pct",
+        "operating_income",
+        "operating_margin_pct",
+        "net_margin_pct",
+        "ebitda",
+        "capital_expenditure",
+        "free_cash_flow_prior",
+        "fcf_per_share",
+        "fcf_per_share_prior",
+        "fcf_per_share_yoy_pct",
+        "cash_and_equivalents",
+        "total_debt",
+        "net_debt",
+        "debt_to_annualized_ebitda",
+        "total_assets",
+        "total_equity",
+        "invested_capital_proxy",
+        "roic_proxy_pct",
+        "debt_issued",
+        "debt_repaid",
+        "net_debt_issued",
+        "dividends_paid",
+        "share_repurchases",
+        "net_share_repurchases",
+        "buyback_yield_pct",
+        "dividend_yield_pct",
+        "shareholder_yield_pct",
+        "stock_based_compensation",
+        "sbc_pct_of_revenue",
+        "sbc_pct_of_fcf",
+        "capital_return_to_fcf_pct",
+        "capital_allocation_anomalies",
+        "capital_allocation_anomaly_count",
+        "capital_allocation_quality",
+        "capital_allocation_notes",
+        "enterprise_value",
+        "trailing_pe",
+        "forward_pe",
+        "fcf_yield_pct",
+        "earnings_yield_pct",
+        "price_to_sales",
+        "price_to_book",
+        "ev_to_ebitda_proxy",
+        "ev_to_fcf_proxy"
+      ],
+      "prior_normalized_metrics_retained": true,
+      "bridge_required_fields": [
+        "revenue",
+        "revenue_prior",
+        "net_income",
+        "net_income_prior",
+        "diluted_eps",
+        "diluted_eps_prior"
+      ],
+      "bridge_source_type": "sec_10q_official_report"
+    },
+    "source_open_required": true
+  },
+  "valuation": {
+    "valuation_context": "partial_current_period_10q_bridge",
+    "market_cap": 156399473526.0,
+    "enterprise_value": null,
+    "trailing_pe": null,
+    "forward_pe": null,
+    "fcf_yield_pct": null,
+    "earnings_yield_pct": null,
+    "price_to_sales": null,
+    "price_to_book": null,
+    "ev_to_ebitda_proxy": null,
+    "ev_to_fcf_proxy": null
+  },
+  "official_fundamentals": {
+    "source": "official_sec_10q_period_bridge",
+    "source_tier": "official_primary_review_only",
+    "period_type": "quarterly",
+    "period_end": "2026-06-30",
+    "comparison_period_end": "2025-06-30",
+    "revenue": 8531000000.0,
+    "revenue_yoy_pct": 21.3859,
+    "net_income": 821000000.0,
+    "net_income_yoy_pct": -16.3951,
+    "diluted_eps": 2.11,
+    "eps_yoy_pct": -15.9363,
+    "gross_margin_pct": null,
+    "operating_margin_pct": null,
+    "net_margin_pct": null,
+    "operating_cash_flow": 1100000000.0,
+    "free_cash_flow": 874000000.0,
+    "free_cash_flow_yoy_pct": 22.0,
+    "fcf_per_share": null,
+    "fcf_per_share_yoy_pct": null,
+    "cash_and_equivalents": null,
+    "total_debt": null,
+    "net_debt": null,
+    "debt_to_annualized_ebitda": null,
+    "roic_proxy_pct": null,
+    "data_quality": "partial_official_period_bridge"
+  },
+  "fundamental_period_alignment": {
+    "status": "official_period_bridge_verified",
+    "latest_official_period_end": "2026-06-30",
+    "normalized_metrics_period_end": "2026-03-31",
+    "normalized_metrics_stale": false,
+    "normalized_provider_refresh_pending": true,
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000030/etn-20260630.htm",
+    "withheld_fields": [
+      "gross_profit",
+      "gross_margin_pct",
+      "operating_income",
+      "operating_margin_pct",
+      "net_margin_pct",
+      "ebitda",
+      "capital_expenditure",
+      "free_cash_flow_prior",
+      "fcf_per_share",
+      "fcf_per_share_prior",
+      "fcf_per_share_yoy_pct",
+      "cash_and_equivalents",
+      "total_debt",
+      "net_debt",
+      "debt_to_annualized_ebitda",
+      "total_assets",
+      "total_equity",
+      "invested_capital_proxy",
+      "roic_proxy_pct",
+      "debt_issued",
+      "debt_repaid",
+      "net_debt_issued",
+      "dividends_paid",
+      "share_repurchases",
+      "net_share_repurchases",
+      "buyback_yield_pct",
+      "dividend_yield_pct",
+      "shareholder_yield_pct",
+      "stock_based_compensation",
+      "sbc_pct_of_revenue",
+      "sbc_pct_of_fcf",
+      "capital_return_to_fcf_pct",
+      "capital_allocation_anomalies",
+      "capital_allocation_anomaly_count",
+      "capital_allocation_quality",
+      "capital_allocation_notes",
+      "enterprise_value",
+      "trailing_pe",
+      "forward_pe",
+      "fcf_yield_pct",
+      "earnings_yield_pct",
+      "price_to_sales",
+      "price_to_book",
+      "ev_to_ebitda_proxy",
+      "ev_to_fcf_proxy"
+    ],
+    "prior_normalized_metrics_retained": true,
+    "bridge_required_fields": [
+      "revenue",
+      "revenue_prior",
+      "net_income",
+      "net_income_prior",
+      "diluted_eps",
+      "diluted_eps_prior"
+    ],
+    "bridge_source_type": "sec_10q_official_report"
+  },
+  "fundamental_reconciliation": {
+    "sec_status": "matched",
+    "sec_source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001551182.json",
+    "company_ir_status": "configured_manual_review_required",
+    "company_ir_source_url": "https://www.eaton.com/us/en-us/company/investor-relations.html",
+    "quality_notes": [
+      "A matching-period official 10-Q bridge verified revenue, net income, and diluted EPS against the newer earnings period.",
+      "The normalized provider refresh is still pending for non-bridged period-sensitive fields; no values were inferred."
+    ],
+    "period_alignment": {
+      "status": "official_period_bridge_verified",
+      "latest_official_period_end": "2026-06-30",
+      "normalized_metrics_period_end": "2026-03-31",
+      "normalized_metrics_stale": false,
+      "normalized_provider_refresh_pending": true,
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000030/etn-20260630.htm",
+      "withheld_fields": [
+        "gross_profit",
+        "gross_margin_pct",
+        "operating_income",
+        "operating_margin_pct",
+        "net_margin_pct",
+        "ebitda",
+        "capital_expenditure",
+        "free_cash_flow_prior",
+        "fcf_per_share",
+        "fcf_per_share_prior",
+        "fcf_per_share_yoy_pct",
+        "cash_and_equivalents",
+        "total_debt",
+        "net_debt",
+        "debt_to_annualized_ebitda",
+        "total_assets",
+        "total_equity",
+        "invested_capital_proxy",
+        "roic_proxy_pct",
+        "debt_issued",
+        "debt_repaid",
+        "net_debt_issued",
+        "dividends_paid",
+        "share_repurchases",
+        "net_share_repurchases",
+        "buyback_yield_pct",
+        "dividend_yield_pct",
+        "shareholder_yield_pct",
+        "stock_based_compensation",
+        "sbc_pct_of_revenue",
+        "sbc_pct_of_fcf",
+        "capital_return_to_fcf_pct",
+        "capital_allocation_anomalies",
+        "capital_allocation_anomaly_count",
+        "capital_allocation_quality",
+        "capital_allocation_notes",
+        "enterprise_value",
+        "trailing_pe",
+        "forward_pe",
+        "fcf_yield_pct",
+        "earnings_yield_pct",
+        "price_to_sales",
+        "price_to_book",
+        "ev_to_ebitda_proxy",
+        "ev_to_fcf_proxy"
+      ],
+      "prior_normalized_metrics_retained": true,
+      "bridge_required_fields": [
+        "revenue",
+        "revenue_prior",
+        "net_income",
+        "net_income_prior",
+        "diluted_eps",
+        "diluted_eps_prior"
+      ],
+      "bridge_source_type": "sec_10q_official_report"
+    }
+  },
+  "analyst_consensus_ratings_targets": {
+    "ticker": "ETN",
+    "accessed_at_utc": "2026-08-29T16:48:05Z",
+    "as_of_date": null,
+    "average_target": 477.3708,
+    "buy_count": 17,
+    "confidence": "medium",
+    "consensus_rating": "Buy skew",
+    "consensus_score_derived": 4.0,
+    "current_price": 402.78,
+    "errors": [],
+    "high_target": 534.0,
+    "hold_count": 3,
+    "implied_upside_downside_pct": 18.52,
+    "low_target": 333.0,
+    "manual_review_reason": "Tier A/B weekly review requires source-open or manual cross-check before high-consequence use.",
+    "manual_review_required": true,
+    "median_target": 487.0,
+    "provider": "yfinance",
+    "provider_symbol": "ETN",
+    "rating_change_notes": [],
+    "recommendation_period": "0m",
+    "sell_count": 0,
+    "source_open_required": true,
+    "source_url": "https://finance.yahoo.com/quote/ETN/analysis",
+    "stale": false,
+    "stale_after_days": 7,
+    "status": "auto_sourced_yfinance",
+    "strong_buy_count": 6,
+    "strong_sell_count": 1,
+    "tier": "A"
+  },
+  "competitive_moat": {
+    "status": "partially_structured_source_backed_review_required",
+    "summary": "Eaton Corporation plc has preliminary moat evidence from profitability, official operating commentary, demand/activity signals, or sector proxy context; this is not a final competitive-position conclusion.",
+    "evidence": [
+      {
+        "label": "management_explanation",
+        "summary": "of 14% growth in organic sales and 7% growth from acquisitions. Segment margins were 23.1%, 10 basis points above the high end of the guidance range and down 80 basis points from the second quarter of 2025. Operating cash flow was $1.1 billion, and free cash flow was $874 million, up 23% and 22%, respectively, over the same period in 2025. Paulo Ruiz, Eaton chief executive officer, said, \u201cEaton accelerated its momentum in the second quarter and delivered record sales and solid earnings from strong organic growth. Our focus on disciplined execution led to sequential margin expansion, especially in Electrical Americas. While data centers remain a key growth driver, we are benefiting from robust demand across our end markets. Reflecting this strong performance and sustained demand, we are raising our full-year organic growth guidance and remain well-positioned to deliver on our commitments.\u201d In the quarter, the company also announced an agreement to separate its Mobility business through a Reverse Morris Trust transaction. This action represents the next step in Eaton\u2019s ongoing portfolio transformation\u2014further focusing the company on higher\u2011growth, higher\u2011margin Electrical and Aerospace businesses while positioning the company to drive long\u2011term value creation. Guidance For the full year 2026, the company anticipates: \u2022 Organic growth of 11-13% \u2022 Segment margins of 24.1-24.5% \u2022 Earnings per share between $10.36 and $10.56 \u2022 A",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+        "source_section": "Q2 2026 CEO commentary",
+        "period": "2026-06-30",
+        "status": "official_captured",
+        "source_artifact": "tmp\\official-earnings-bridge.json"
+      },
+      {
+        "label": "demand_or_backlog_activity",
+        "summary": "Captured official fields: aerospace_backlog_growth_pct, aerospace_book_to_bill, aerospace_orders_growth_pct, electrical_americas_backlog_growth_pct, electrical_americas_orders_growth_pct",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+        "source_section": "Q2 2026 orders and backlog commentary",
+        "period": "2026-06-30",
+        "status": "official_captured",
+        "source_artifact": "tmp\\official-earnings-bridge.json"
+      },
+      {
+        "label": "sector_proxy_position",
+        "summary": "Industrials proxy XLI leadership=deteriorating",
+        "source_artifact": "tmp\\sector-expansion-board.json",
+        "as_of": "2026-08-28",
+        "match_basis": "exact"
+      }
+    ],
+    "source_open_required": true,
+    "limits": [
+      "Evidence supports structured review coverage, not a final moat grade.",
+      "Peer comparison and source-open competitive research remain required before decision-grade use."
+    ]
+  },
+  "recent_developments": {
+    "status": "partial",
+    "value": {
+      "debt_or_leverage_commentary": null,
+      "integration_or_synergy_commentary": "Americas, with Electrical Global up 33% and Aerospace up 17%, driven by broad end-market strength \u2022 Strong year-over-year total backlog growth of 43% in Electrical sector and 28% in Aerospace segment \u2022 Second quarter segment margins of 23.1%, above the high end of guidance, with Electrical Americas margins improving 190 basis points sequentially \u2022 Announced agreement to separate Mobility business through a Reverse Morris Trust transaction, expected to close in the first quarter of 2027 and be accretive to organic growth and margins upon closing \u2022 Guidance for full year 2026 earnings per share expected to be between $10.36 and $10.56, up 0.1% at the midpoint over 2025, and raised adjusted earnings per share expected to be between $13.40 and $13.60, up 12% at the midpoint over 2025 DUBLIN \u2014 July 31, 2026 \u2014 Intelligent power management company Eaton Corporation plc (NYSE:ETN) today announced that second quarter 2026 earnings per share were $2.11. Excluding charges of $0.50 per share related to intangible amortization, $0.49 per share related to acquisitions and divestitures, and $0.05 per share related to a multi-year restructuring program, adjusted earnings per share were $3.15, a second quarter record. Sales in the quarter were $8.5 billion, a record and up 21% from the second quarter of 2025. The sales increase consisted of 14% growth in organic sales and 7% growth from acquisitions. Segment margins were 23.1%, 10 basis points a",
+      "mobility_separation_announced": true
+    },
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+    "source_section": "Q2 2026 portfolio and acquisition commentary",
+    "period": "2026-06-30",
+    "manual_capture_required": false,
+    "inferred": false,
+    "claim_text": "Official ETN capture field acquisition_debt_notes is partial from validated SEC/IR evidence."
+  },
+  "orders_backlog_book_to_bill": {
+    "status": "official_captured",
+    "value": {
+      "aerospace_backlog_growth_pct": 28.0,
+      "aerospace_book_to_bill": 1.2,
+      "aerospace_orders_growth_pct": 17.0,
+      "electrical_americas_backlog_growth_pct": 33.0,
+      "electrical_americas_orders_growth_pct": 41.0,
+      "electrical_businesses_book_to_bill": 1.2,
+      "electrical_global_backlog_growth_pct": 103.0,
+      "electrical_global_orders_growth_pct": 33.0
+    },
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+    "source_section": "Q2 2026 orders and backlog commentary",
+    "period": "2026-06-30",
+    "manual_capture_required": false,
+    "inferred": false,
+    "claim_text": "Official ETN capture field orders_backlog is official_captured from validated SEC/IR evidence."
+  },
+  "official_capture_developments_orders_backlog": {
+    "management_explanation": {
+      "status": "official_captured",
+      "value": {
+        "summary": "of 14% growth in organic sales and 7% growth from acquisitions. Segment margins were 23.1%, 10 basis points above the high end of the guidance range and down 80 basis points from the second quarter of 2025. Operating cash flow was $1.1 billion, and free cash flow was $874 million, up 23% and 22%, respectively, over the same period in 2025. Paulo Ruiz, Eaton chief executive officer, said, \u201cEaton accelerated its momentum in the second quarter and delivered record sales and solid earnings from strong organic growth. Our focus on disciplined execution led to sequential margin expansion, especially in Electrical Americas. While data centers remain a key growth driver, we are benefiting from robust demand across our end markets. Reflecting this strong performance and sustained demand, we are raising our full-year organic growth guidance and remain well-positioned to deliver on our commitments.\u201d In the quarter, the company also announced an agreement to separate its Mobility business through a Reverse Morris Trust transaction. This action represents the next step in Eaton\u2019s ongoing portfolio transformation\u2014further focusing the company on higher\u2011growth, higher\u2011margin Electrical and Aerospace businesses while positioning the company to drive long\u2011term value creation. Guidance For the full year 2026, the company anticipates: \u2022 Organic growth of 11-13% \u2022 Segment margins of 24.1-24.5% \u2022 Earnings per share between $10.36 and $10.56 \u2022 A"
+      },
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+      "source_section": "Q2 2026 CEO commentary",
+      "period": "2026-06-30",
+      "manual_capture_required": false,
+      "inferred": false,
+      "claim_text": "Official ETN capture field management_explanation is official_captured from validated SEC/IR evidence."
+    },
+    "acquisition_debt_notes": {
+      "status": "partial",
+      "value": {
+        "debt_or_leverage_commentary": null,
+        "integration_or_synergy_commentary": "Americas, with Electrical Global up 33% and Aerospace up 17%, driven by broad end-market strength \u2022 Strong year-over-year total backlog growth of 43% in Electrical sector and 28% in Aerospace segment \u2022 Second quarter segment margins of 23.1%, above the high end of guidance, with Electrical Americas margins improving 190 basis points sequentially \u2022 Announced agreement to separate Mobility business through a Reverse Morris Trust transaction, expected to close in the first quarter of 2027 and be accretive to organic growth and margins upon closing \u2022 Guidance for full year 2026 earnings per share expected to be between $10.36 and $10.56, up 0.1% at the midpoint over 2025, and raised adjusted earnings per share expected to be between $13.40 and $13.60, up 12% at the midpoint over 2025 DUBLIN \u2014 July 31, 2026 \u2014 Intelligent power management company Eaton Corporation plc (NYSE:ETN) today announced that second quarter 2026 earnings per share were $2.11. Excluding charges of $0.50 per share related to intangible amortization, $0.49 per share related to acquisitions and divestitures, and $0.05 per share related to a multi-year restructuring program, adjusted earnings per share were $3.15, a second quarter record. Sales in the quarter were $8.5 billion, a record and up 21% from the second quarter of 2025. The sales increase consisted of 14% growth in organic sales and 7% growth from acquisitions. Segment margins were 23.1%, 10 basis points a",
+        "mobility_separation_announced": true
+      },
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+      "source_section": "Q2 2026 portfolio and acquisition commentary",
+      "period": "2026-06-30",
+      "manual_capture_required": false,
+      "inferred": false,
+      "claim_text": "Official ETN capture field acquisition_debt_notes is partial from validated SEC/IR evidence."
+    },
+    "orders_backlog": {
+      "status": "official_captured",
+      "value": {
+        "aerospace_backlog_growth_pct": 28.0,
+        "aerospace_book_to_bill": 1.2,
+        "aerospace_orders_growth_pct": 17.0,
+        "electrical_americas_backlog_growth_pct": 33.0,
+        "electrical_americas_orders_growth_pct": 41.0,
+        "electrical_businesses_book_to_bill": 1.2,
+        "electrical_global_backlog_growth_pct": 103.0,
+        "electrical_global_orders_growth_pct": 33.0
+      },
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000027/etn06302026exhibit99.htm",
+      "source_section": "Q2 2026 orders and backlog commentary",
+      "period": "2026-06-30",
+      "manual_capture_required": false,
+      "inferred": false,
+      "claim_text": "Official ETN capture field orders_backlog is official_captured from validated SEC/IR evidence."
+    },
+    "source_open_required": true
+  },
+  "current_sector_performance": {
+    "status": "available",
+    "sector": "Industrials",
+    "sector_query": "Industrials",
+    "sector_match_basis": "exact",
+    "sector_proxy_ticker": "XLI",
+    "as_of": "2026-08-28",
+    "relative_strength_vs_spy": {
+      "1d": -0.7015,
+      "5d": -2.1995,
+      "20d": -4.4891
+    },
+    "sector_returns_pct": {
+      "1d": -0.9284,
+      "5d": -1.7254,
+      "20d": -1.5013
+    },
+    "spy_returns_pct": {
+      "1d": -0.2269,
+      "5d": 0.4741,
+      "20d": 2.9878
+    },
+    "relative_labels": {
+      "1d": "underperforming",
+      "5d": "underperforming",
+      "20d": "underperforming"
+    },
+    "leadership_status": "deteriorating",
+    "portfolio_exposure": {
+      "draft_weight_pct": 7.0,
+      "tickers": [
+        "ETN",
+        "VRT"
+      ],
+      "status": "within_limit",
+      "risk_cap_pct": 25,
+      "distance_to_cap_pct": 18.0
+    },
+    "underexposed": false,
+    "owner_gated_next_review_action": "Existing exposure with queued candidates: keep promotion review owner-gated and check risk/sizing before any change."
+  },
+  "etf_or_macro_proxy_profile": null,
+  "catalyst_earnings_state": {
+    "workflow_state": "DEPLOYED",
+    "surface_state": "WATCH / RESEARCH NEEDED",
+    "days_to_earnings": 74,
+    "earnings_date_confirmed": "UNCONFIRMED",
+    "last_earnings_date": "2026-05-05",
+    "post_earnings_review_confirmed": true
+  },
+  "technical_posture": {
+    "band_status": "IN_BAND",
+    "latest_close": 402.78,
+    "ma20": 434.69,
+    "ma50": 416.56,
+    "ma200": 378.13,
+    "ma_posture": "above 200d, below 20d and 50d",
+    "above_ma20": false,
+    "above_ma50": false,
+    "above_ma200": true,
+    "data_date": "2026-08-28",
+    "deployment_surface_state": "WATCH / RESEARCH NEEDED",
+    "macro_gate": "DEGRADED",
+    "near_earnings_caution": false,
+    "why": "owner-approved setup remains in entry band at 419.2"
+  },
+  "portfolio_fit_concentration": {
+    "sector": "Industrials",
+    "wf78_tier": "A",
+    "sql_canon_legacy_tier": "A",
+    "sql_canon_universe_scope": "active_internal_universe",
+    "sql_canon_production_answer_path_member": false,
+    "wf78_auto_tier": "Tier B",
+    "wf78_auto_state": "B-CHALLENGED",
+    "wf78_monitoring_role": "decision_queue_or_near_action",
+    "wf78_decision_grade_eligible": true,
+    "wf78_promotion_required_before_action": true,
+    "coverage_tier": "daily",
+    "portfolio_role": "tactical",
+    "coverage_lane": "execution",
+    "readiness_tier": "tier1",
+    "recommended_starter_notional": {
+      "low_usd": 400,
+      "high_usd": 600,
+      "mid_usd": 500
+    },
+    "recommended_target_notional": {
+      "low_usd": 800,
+      "high_usd": 1200,
+      "mid_usd": 1000
+    },
+    "decision_note": "Current Tier B in-band candidate; promotion/capital judgment remains main-session and owner-gated.",
+    "prepared_order_card_path": "tmp\\alpaca-paper-readiness\\order-card.etn-staggered-starter-pending-2026-05-24.json"
+  },
+  "capital_allocation_quality": {
+    "quality": "caution",
+    "anomalies": [
+      {
+        "code": "capital_return_exceeds_fcf",
+        "severity": "warning",
+        "message": "Buybacks plus dividends exceeded free cash flow for the latest cash-flow period."
+      },
+      {
+        "code": "debt_funded_capital_return_risk",
+        "severity": "warning",
+        "message": "Net debt issuance coincided with capital returns and weak/strained FCF coverage."
+      },
+      {
+        "code": "leverage_elevated",
+        "severity": "warning",
+        "message": "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context."
+      }
+    ],
+    "notes": [
+      "Buybacks plus dividends exceeded free cash flow for the latest cash-flow period.",
+      "Net debt issuance coincided with capital returns and weak/strained FCF coverage.",
+      "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context."
+    ]
+  },
+  "risk_register": [
+    {
+      "category": "source_open",
+      "severity": "context",
+      "detail": "No card-level risk flags found; open source artifacts before making a final recommendation."
+    }
+  ],
+  "recommendation_support": {
+    "posture": "approval-ready paper starter if fresh in band",
+    "posture_key": "approval_ready_if_fresh",
+    "deployment_contract": {
+      "deployment_status": "WATCH",
+      "status_reason": "watch_research_needed",
+      "display_label": "watch / research needed",
+      "raw_context": {
+        "workflow_state": "DEPLOYED",
+        "machine_state": "DEPLOYABLE NOW",
+        "action_state": "DEPLOYABLE NOW",
+        "surface_state": "WATCH / RESEARCH NEEDED",
+        "base_surface_state": "WATCH / RESEARCH NEEDED",
+        "band_status": "IN_BAND",
+        "below_stop": false
+      },
+      "authority": {
+        "review_only": true,
+        "paper_order_execution_allowed": false,
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false
+      }
+    },
+    "support_level": "prepared_order_card_present",
+    "state_source": "WATCH / RESEARCH NEEDED",
+    "readiness_state_source": "WATCH / RESEARCH NEEDED",
+    "deployment_surface_state_source": "WATCH / RESEARCH NEEDED",
+    "band_status": "IN_BAND",
+    "fresh_quote_required": false,
+    "prepared_order_card_present": true,
+    "actionability": "review_only_owner_gated",
+    "blockers_or_gates": [
+      "owner promotion/selection still required before treating as deployed",
+      "card itself grants no paper/live execution authority and infers no approval"
+    ],
+    "notes": [
+      "This is recommendation support, not a black-box buy/sell engine.",
+      "Open source artifacts before final readiness, recommendation, approval, or action claims."
+    ]
+  },
+  "missing_or_stale_evidence": [],
+  "source_artifacts": [
+    {
+      "path": "tmp\\fundamental-metrics-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T20:20:09Z",
+      "status": null
+    },
+    {
+      "path": "tmp\\deployment-readiness-surface.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-21T20:32:55.183959+00:00",
+      "status": null
+    },
+    {
+      "path": "tmp\\position-sizing-readiness-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T21:39:55Z",
+      "status": "critical"
+    },
+    {
+      "path": "tmp\\analyst-consensus-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T16:48:34Z",
+      "status": "sourced_current"
+    },
+    {
+      "path": "tmp\\official-earnings-bridge.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T20:28:47Z",
+      "status": "manual_confirmed_partial"
+    },
+    {
+      "path": "tmp\\sector-expansion-board.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T21:05:19Z",
+      "status": "degraded"
+    },
+    {
+      "path": "tmp\\technical-refresh.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T16:23:33.592368+00:00",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\portfolio-config.json",
+      "exists": true,
+      "generated_at_utc": "2026-05-23T19:50:12Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\post-close-final-quote-ledger.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T16:23:25Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\finance-decision-sync-spine.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T13:25:27Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\wf78-capital-review-queue.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T13:24:42Z",
+      "status": "ok"
+    },
+    {
+      "path": "data\\finance\\universe-v1.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-22T15:33:19Z",
+      "status": "wf78_tier_c_scaleout_monitor_ready"
+    },
+    {
+      "path": "tmp\\wf78-auto-tier-routing.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T16:23:27Z",
+      "status": "ok"
+    },
+    {
+      "path": "state\\finance\\finance-canon.sqlite",
+      "exists": true,
+      "generated_at_utc": null,
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\alpaca-paper-readiness\\order-card.etn-staggered-starter-pending-2026-05-24.json",
+      "exists": true,
+      "created_at_utc": "2026-05-25T03:12:00Z",
+      "status": "pending_fresh_tuesday_quote_and_exact_randall_approval"
+    }
+  ],
+  "authority_boundary": {
+    "artifact_role": "derived_review_and_question_routing_surface_only",
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "sizing_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed_by_card": false,
+    "paper_order_cancel_allowed_by_card": false,
+    "durable_sql_canon_current_state_allowed": true,
+    "sql_canon_mutation_allowed": false,
+    "live_trade_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "source_open_required_before_final_recommendation_or_action_claim": true
+  }
+}

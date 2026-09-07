@@ -1,0 +1,187 @@
+{
+  "status": "review_required",
+  "generated_at_utc": "2026-05-25T18:41:03Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-adjacent-json-md-archive-microbatch-2026-05-25.json",
+  "moves_performed": false,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 0,
+    "skipped": 0,
+    "blocked": 28
+  },
+  "moved": [],
+  "skipped": [],
+  "blocked": [
+    {
+      "path": "tmp/real-capital-active-deployment-universe-2026-05-18.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/script-first-batch-static-inspection-2026-05-19.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/script-guardrail-evidence-doc-smoke-2026-05-19.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/script-guardrail-evidence-inspection-2026-05-19.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/script-orchestration-plan-2026-05-18.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/script-ownership-manifest-v2-2026-05-19.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/sector-diversification-integrated-recommendation-2026-05-14.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/telemetry-audit-window-closeout.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf68-delivery-channel-approval-packet.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf70-current-window-index-registry-migration.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-broad-archive-execution-contract.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-consumer-authority-guard-implementation.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-financial-truth-map.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-gate12-closeout.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-gate12-proposal-staging-hardening-worker.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-gate12-proposal-staging-qa.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-gate13-portfolio-source-freshness-closeout.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-gate13-portfolio-source-freshness-qa.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-gate14-neutral-deployment-display-qa.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-gate14-neutral-deployment-display-worker.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-gate15-higher-risk-family-qa.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-gate15-higher-risk-family-worker.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-gate16-final-os-revamp-closeout-worker.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-gates13-16-phase-approach.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-phase9-deployment-status-qa.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf72-producer-contract-cleanup-closeout-2026-05-25.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "kind tmp_markdown_historical_sidecar_with_json is not in auto-archive allowlist"
+    },
+    {
+      "path": "tmp/wf72-today-card-contract.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    },
+    {
+      "path": "tmp/wf73-active-workflows-compression-apply.md",
+      "kind": "tmp_markdown_historical_sidecar_with_json",
+      "status": "blocked",
+      "reason": "inbound references present"
+    }
+  ],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; only explicit apply_allowed true suggestions with zero references and approved destination roots can move"
+}

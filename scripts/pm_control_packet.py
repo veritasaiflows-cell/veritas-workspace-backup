@@ -7,8 +7,8 @@ then writes one combined packet for routine lookup. Legacy sidecars are
 explicit compatibility/debug outputs only.
 
 Review-only: no helper spawning, workflow execution, customer/external
-delivery, SQL import, canon/portfolio mutation, paper/live/account action, or
-owner approval inference.
+delivery, SQL import, finance-state mutation, capital/execution/account action,
+or owner approval inference.
 """
 from __future__ import annotations
 
@@ -24,7 +24,6 @@ import heartbeat_continuation_candidates as heartbeat
 import pm_implementation_job_queue as job_queue
 import pm_main_session_handoff as handoff
 import pm_program_state
-from finance_sql_canon_access import access as finance_sql_canon_access
 from pm_main_session_handoff import build_handoff_from_payloads
 from market_data_utils import atomic_write_json
 
@@ -38,14 +37,16 @@ CODING_RUNTIME_KPI = TMP / "coding-runtime-kpi-probe.json"
 MODEL_LEARNING_LEDGER = TMP / "model-learning-metadata-ledger.json"
 MODEL_QUALITY_SCORECARD = TMP / "model-quality-scorecard.json"
 WF74_RUNNER = TMP / "wf74-model-quality-collection-cron-runner.json"
-FINANCE_RESPONSE_QUALITY = TMP / "finance-response-quality-slice.json"
 OTEL_OPS = TMP / "otel-ops-control.json"
 OTEL_FIELD_DEPTH_PACKET = TMP / "otel-field-depth-limited-owner-packet.json"
 WF74_OPPORTUNITY_QUEUE = TMP / "wf74-improvement-opportunity-queue.json"
 WF74_PROPOSAL_AUTOPILOT = TMP / "wf74-reflection-to-proposal-autopilot.json"
 WF74_AUTO_PATCH_PROPOSER = TMP / "wf74-auto-patch-proposer.json"
-TRADE_GRADE_REPAIR_CONVEYOR = TMP / "trade-grade-repair-conveyor.json"
-TIER_AB_BAND_CRON_GUARD = TMP / "tier-ab-band-freshness-cron-guard.json"
+FINANCE_SQL_GUARD = TMP / "finance-sql-canon-access-validation.json"
+ALERT_QUOTE_PROOF = TMP / "intraday-alerts" / "quote-snapshot-proof.json"
+ALERT_FRESHNESS_CONTROLLER = TMP / "alert-level-freshness-controller.json"
+ALERT_RECOMMENDATIONS_DIGEST = TMP / "finance-alert-os-digest.json"
+ALERTS_OS_PIVOT_VALIDATOR = TMP / "alerts-os-pivot-validator.json"
 PM_COCKPIT_SOURCE_REGISTRY = ROOT / "state" / "pm-cockpit-source-registry.json"
 GREENKEEPER = TMP / "main-session-greenkeeper-controller.json"
 ESCALATION_CONSUMER = TMP / "main-session-escalation-consumer.json"
@@ -76,13 +77,104 @@ AUTHORITY_BOUNDARY = {
     "heartbeat_spawns_helpers": False,
     "customer_or_external_delivery_allowed": False,
     "sql_or_ticker_import_allowed": False,
-    "canon_or_portfolio_mutation_allowed": False,
+    "finance_state_mutation_allowed": False,
     "cleanup_move_delete_archive_allowed": False,
     "paper_or_live_execution_allowed": False,
     "brokerage_or_account_action_allowed": False,
     "config_auth_runtime_mutation_allowed": False,
     "owner_approval_inferred": False,
 }
+
+RETIRED_FINANCE_ROUTE_MARKERS = (
+    "wf67",
+    "wf68",
+    "wf78",
+    "wf86",
+    "wf87",
+    "trade-grade",
+    "trade_grade",
+    "deployment-readiness",
+    "deployment_readiness",
+    "capital-deployment",
+    "capital_deployment",
+    "position-sizing",
+    "position_sizing",
+    "approval-card",
+    "approval_card",
+    "repair-conveyor",
+    "repair_conveyor",
+    "paper-position",
+    "paper_position",
+    "paper-state",
+    "paper_state",
+    "paper-autotrader",
+    "paper_autotrader",
+    "portfolio-config",
+    "portfolio_config",
+    "model-portfolio",
+    "model_portfolio",
+)
+
+ROUTE_IDENTITY_KEYS = {
+    "action_id",
+    "command",
+    "commands",
+    "id",
+    "job_id",
+    "key",
+    "lane_id",
+    "name",
+    "path",
+    "role",
+    "schema",
+    "script",
+    "source",
+    "title",
+    "workflow",
+    "workflow_id",
+    "workstream",
+}
+
+
+def retired_finance_route_text(value: Any) -> bool:
+    text = str(value or "").lower()
+    return any(marker in text for marker in RETIRED_FINANCE_ROUTE_MARKERS)
+
+
+def _negative_boundary_field(key: str, value: Any) -> bool:
+    return isinstance(value, bool) and (
+        key.endswith("_allowed")
+        or key.endswith("_approved")
+        or key.endswith("_inferred")
+    )
+
+
+def strip_retired_finance_routes(value: Any, *, parent_key: str = "") -> Any:
+    """Remove active legacy route records while retaining explicit false guards."""
+    if isinstance(value, dict):
+        for key in ROUTE_IDENTITY_KEYS:
+            if key in value and retired_finance_route_text(value.get(key)):
+                return None
+        cleaned: dict[str, Any] = {}
+        for key, item in value.items():
+            if _negative_boundary_field(str(key), item):
+                cleaned[key] = item
+                continue
+            if retired_finance_route_text(key):
+                continue
+            projected = strip_retired_finance_routes(item, parent_key=str(key))
+            if projected is not None:
+                cleaned[key] = projected
+        return cleaned
+    if isinstance(value, list):
+        return [
+            projected
+            for item in value
+            if (projected := strip_retired_finance_routes(item, parent_key=parent_key)) is not None
+        ]
+    if isinstance(value, str) and retired_finance_route_text(value):
+        return None
+    return value
 
 
 def utc_now() -> str:
@@ -119,45 +211,29 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def sql_canon_health() -> dict[str, Any]:
-    try:
-        client = finance_sql_canon_access()
-        validation = client.validate()
-        sample: dict[str, Any] = {}
-        if validation.get("status") == "ok":
-            sample = {
-                "production_answer_count": len(client.production_answer_tickers()),
-                "migration_registry_summary": client.migration_registry_summary(),
-            }
-    except Exception as exc:  # pragma: no cover - defensive fail-closed surface
-        validation = {
-            "status": "blocked",
-            "errors": [{"name": "exception", "detail": str(exc)}],
-            "checks": [],
-            "counts": {},
-        }
-        sample = {}
+    validation = load_json(FINANCE_SQL_GUARD)
+    status = validation.get("status") if validation else "blocked"
     return {
-        "status": validation.get("status"),
-        "source": "scripts/finance_sql_canon_access.py",
+        "status": status,
+        "source": str(FINANCE_SQL_GUARD.relative_to(ROOT)).replace("\\", "/"),
         "db_path": validation.get("db_path"),
         "counts": validation.get("counts"),
         "errors": validation.get("errors", []),
         "checks": validation.get("checks", []),
-        **sample,
         "authority_boundary": {
             "read_only_access_layer": True,
             "db_mutation_allowed": False,
             "sql_canon_cutover_allowed": False,
-            "capital_deployment_allowed": False,
-            "paper_or_live_execution_allowed": False,
+            "finance_state_mutation_allowed": False,
+            "capital_or_execution_action_allowed": False,
             "brokerage_or_account_action_allowed": False,
             "customer_or_external_delivery_allowed": False,
             "owner_approval_inferred": False,
         },
         "next_safe_action": (
-            "SQL-canon guard is clean for internal PM readiness context."
-            if validation.get("status") == "ok"
-            else "Treat PM readiness as blocked until finance_sql_canon_access.py validates cleanly."
+            "Guarded SQL proof is clean for internal PM readiness context."
+            if status == "ok"
+            else "Treat PM readiness as blocked until the guarded SQL proof validates cleanly."
         ),
     }
 
@@ -300,7 +376,6 @@ def wf74_learning_kpis() -> dict[str, Any]:
     ledger = load_json(MODEL_LEARNING_LEDGER)
     scorecard = load_json(MODEL_QUALITY_SCORECARD)
     runner = load_json(WF74_RUNNER)
-    finance_response = load_json(FINANCE_RESPONSE_QUALITY)
     otel_ops = load_json(OTEL_OPS)
     field_depth = load_json(OTEL_FIELD_DEPTH_PACKET)
     opportunity_queue = load_json(WF74_OPPORTUNITY_QUEUE)
@@ -309,7 +384,6 @@ def wf74_learning_kpis() -> dict[str, Any]:
     coding_kpis = as_dict(coding.get("kpis"))
     ledger_summary = as_dict(ledger.get("summary"))
     runner_summary = as_dict(runner.get("summary"))
-    finance_response_summary = as_dict(finance_response.get("summary"))
     otel_drift = as_dict(otel_ops.get("drift"))
     opportunity_summary = as_dict(opportunity_queue.get("summary"))
     proposal_summary = as_dict(proposal_autopilot.get("summary"))
@@ -326,9 +400,6 @@ def wf74_learning_kpis() -> dict[str, Any]:
     if runner_summary.get("steps_blocked") not in {None, 0}:
         status = "blocked"
         warnings.append("wf74_runner_steps_blocked")
-    if finance_response.get("status") not in {None, "ok"}:
-        status = "blocked"
-        warnings.append("finance_response_quality_not_ok")
     if opportunity_queue.get("status") not in {None, "ok", "warning"}:
         status = "blocked"
         warnings.append("wf74_improvement_opportunity_queue_not_ok")
@@ -352,7 +423,6 @@ def wf74_learning_kpis() -> dict[str, Any]:
             "model_learning_metadata_ledger": rel(MODEL_LEARNING_LEDGER),
             "model_quality_scorecard": rel(MODEL_QUALITY_SCORECARD),
             "wf74_runner": rel(WF74_RUNNER),
-            "finance_response_quality_slice": rel(FINANCE_RESPONSE_QUALITY),
             "otel_ops_control": rel(OTEL_OPS),
             "otel_field_depth_packet": rel(OTEL_FIELD_DEPTH_PACKET),
             "wf74_improvement_opportunity_queue": rel(WF74_OPPORTUNITY_QUEUE),
@@ -401,61 +471,64 @@ def wf74_learning_kpis() -> dict[str, Any]:
             "auto_patch_auto_apply_candidate_count": auto_patch_summary.get("auto_apply_candidate_count"),
             "auto_patch_auto_apply_count": auto_patch_summary.get("auto_apply_count"),
             "model_quality_validation": score_validation.get("status"),
-            "finance_response_quality_status": finance_response.get("status"),
-            "finance_response_quality_average_score": finance_response_summary.get("average_quality_score"),
-            "finance_response_quality_blocked_archetypes": finance_response_summary.get("blocked_archetype_count"),
-            "finance_response_quality_wf72_support_only": finance_response_summary.get("wf72_support_only_confirmed"),
-            "finance_response_quality_sector_timing_warning": finance_response_summary.get("sector_timing_warning_available"),
-            "finance_response_quality_section_coverage_status": finance_response_summary.get("section_coverage_status"),
-            "finance_response_quality_technical_gap_count": finance_response_summary.get("technical_posture_missing_both_count"),
-            "finance_response_quality_source_freshness_blocked_count": finance_response_summary.get("source_freshness_blocked_count"),
-            "finance_response_quality_source_open_blocked_count": finance_response_summary.get("source_open_blocked_count"),
-            "finance_response_quality_negative_canary_pass_count": finance_response_summary.get("negative_canary_pass_count"),
-            "finance_response_quality_remediation_tracks_needing_repair": finance_response_summary.get("remediation_tracks_needing_repair"),
         },
         "authority_boundary": "PM monitoring only; no execution, model ranking, finance correctness, raw content capture, or owner approval inference.",
     }
 
 
-def finance_domain_repair_digest() -> dict[str, Any]:
-    conveyor = load_json(TRADE_GRADE_REPAIR_CONVEYOR)
-    tier_ab_guard = load_json(TIER_AB_BAND_CRON_GUARD)
-    summary = as_dict(conveyor.get("summary"))
-    tier_ab_summary = as_dict(tier_ab_guard.get("summary"))
-    validation = as_dict(conveyor.get("validation"))
-    implementation_blockers = int(summary.get("implementation_blocker_count") or 0)
-    control_plane_blockers = int(summary.get("control_plane_blocker_count") or 0)
-    status = "ok" if conveyor.get("status") in {None, "ready_for_repair_execution"} and implementation_blockers == 0 else "needs_attention"
+def alerts_os_health(now: datetime | None = None) -> dict[str, Any]:
+    """Summarize only the active alerts-and-recommendations finance proofs."""
+    now = now or datetime.now(timezone.utc)
+    sources = {
+        "sql_guard": FINANCE_SQL_GUARD,
+        "quote_snapshot": ALERT_QUOTE_PROOF,
+        "freshness_controller": ALERT_FRESHNESS_CONTROLLER,
+        "recommendations_digest": ALERT_RECOMMENDATIONS_DIGEST,
+        "pivot_validator": ALERTS_OS_PIVOT_VALIDATOR,
+    }
+    proofs: dict[str, dict[str, Any]] = {}
+    blocked: list[str] = []
+    for name, path in sources.items():
+        payload = load_json(path)
+        validation = as_dict(payload.get("validation"))
+        status = payload.get("status")
+        validation_status = validation.get("status")
+        proof_ok = bool(payload) and status == "ok" and validation_status in {None, "ok"}
+        if not proof_ok:
+            blocked.append(name)
+        summary = as_dict(payload.get("summary"))
+        proofs[name] = {
+            "path": rel(path),
+            "present": bool(payload),
+            "status": status,
+            "validation_status": validation_status,
+            "generated_at_utc": payload.get("generated_at_utc"),
+            "age_hours": hours_since_mtime(path, now) if path.exists() else None,
+            "ticker_count": summary.get("ticker_count"),
+            "alert_state_counts": summary.get("alert_state_counts"),
+        }
+    controller_summary = as_dict(load_json(ALERT_FRESHNESS_CONTROLLER).get("summary"))
+    digest_summary = as_dict(load_json(ALERT_RECOMMENDATIONS_DIGEST).get("summary"))
     return {
-        "status": status,
-        "source": rel(TRADE_GRADE_REPAIR_CONVEYOR),
-        "pm_blocker_scope": summary.get("pm_blocker_scope"),
-        "implementation_queue_posture": summary.get("implementation_queue_posture"),
-        "total_repair_conveyor_row_count": summary.get("total_repair_conveyor_row_count"),
-        "finance_domain_repair_item_count": summary.get("finance_domain_repair_item_count"),
-        "finance_or_owner_gate_repair_item_count": summary.get("finance_or_owner_gate_repair_item_count"),
-        "finance_domain_blocker_count": summary.get("finance_domain_blocker_count"),
-        "owner_finance_gate_count": summary.get("owner_finance_gate_count"),
-        "tier_a_b_daily_decision_grade_band_policy": summary.get("tier_a_b_daily_decision_grade_band_policy"),
-        "tier_a_b_missing_decision_grade_band_count": summary.get("tier_a_b_missing_decision_grade_band_count"),
-        "tier_a_b_missing_decision_grade_band_tickers": summary.get("tier_a_b_missing_decision_grade_band_tickers"),
-        "tier_b_missing_decision_grade_band_count": summary.get("tier_b_missing_decision_grade_band_count"),
-        "tier_b_missing_decision_grade_band_tickers": summary.get("tier_b_missing_decision_grade_band_tickers"),
-        "tier_a_b_band_cron_guard_status": tier_ab_guard.get("status"),
-        "tier_a_b_band_cron_guard_validation": as_dict(tier_ab_guard.get("validation")).get("status"),
-        "tier_a_b_complete_and_current_band_count": tier_ab_summary.get("complete_and_current_count"),
-        "tier_a_b_stale_complete_band_context_count": tier_ab_summary.get("stale_complete_band_context_count"),
-        "tier_a_b_band_context_expected_market_date": tier_ab_summary.get("expected_market_date"),
-        "tier_a_b_cron_contracts_ok": tier_ab_summary.get("cron_contracts_ok"),
-        "implementation_blocker_count": implementation_blockers,
-        "control_plane_blocker_count": control_plane_blockers,
-        "normal_finance_repair_rows_create_pm_implementation_jobs": summary.get("normal_finance_repair_rows_create_pm_implementation_jobs"),
-        "repair_lane_counts": summary.get("repair_lane_counts"),
-        "validation_status": validation.get("status"),
+        "status": "ok" if not blocked else "blocked",
+        "blocked_proofs": blocked,
+        "proofs": proofs,
+        "ticker_count": digest_summary.get("ticker_count") or controller_summary.get("ticker_count"),
+        "alert_state_counts": digest_summary.get("alert_state_counts") or controller_summary.get("alert_state_counts"),
+        "freshness_review_tickers": digest_summary.get("freshness_review_tickers") or controller_summary.get("freshness_review_tickers") or [],
         "next_safe_action": (
-            "Treat repair-conveyor rows as finance-domain debt only; open implementation work only if implementation_blocker_count or control_plane_blocker_count becomes nonzero."
+            "Use current alert and recommendation proof; no finance repair route is open."
+            if not blocked
+            else "Repair the named alerts-OS proof owners; do not route through retired finance workflows."
         ),
-        "authority_boundary": "PM digest only; no finance repair, implementation execution, capital approval, or account action authority.",
+        "authority_boundary": {
+            "review_only": True,
+            "writes_finance_canon": False,
+            "maintains_portfolio_state": False,
+            "capital_or_order_authority": False,
+            "paper_or_live_execution_allowed": False,
+            "owner_approval_inferred": False,
+        },
     }
 
 
@@ -683,7 +756,7 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
     out_path = workspace_path(args.out, DEFAULT_OUT)
     control_db_path = workspace_path(args.db, DEFAULT_DB)
 
-    program = pm_program_state.build_program_state()
+    program = as_dict(strip_retired_finance_routes(pm_program_state.build_program_state()))
     pm_db_result = write_pm_legacy(program, args.write_legacy_db, pm_db_path) if args.write_compat else None
 
     actions_payload = {
@@ -695,12 +768,14 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
     q_args = queue_args(args)
     q_args.pm_state_payload = program
     q_args.pm_actions_payload = actions_payload
-    queue_payload = job_queue.build_payload(q_args)
+    queue_payload = as_dict(strip_retired_finance_routes(job_queue.build_payload(q_args)))
     queue_db_result = write_queue_legacy(queue_payload, args.write_legacy_db, queue_db_path) if args.write_compat else None
 
     review_path = workspace_path(args.review, heartbeat.DEFAULT_REVIEW)
     index_path = workspace_path(args.index, heartbeat.DEFAULT_INDEX)
-    heartbeat_payload = heartbeat.build_payload(review_path, index_path, pm_program_state.PROGRAM_STATE_JSON)
+    heartbeat_payload = as_dict(strip_retired_finance_routes(
+        heartbeat.build_payload(review_path, index_path, pm_program_state.PROGRAM_STATE_JSON)
+    ))
     heartbeat_payload["pm_program_state"] = {
         "available": bool(program),
         "status": program.get("status"),
@@ -715,14 +790,14 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
     if args.write_compat:
         write_heartbeat_legacy(heartbeat_payload)
 
-    handoff_payload = build_handoff_from_payloads(
+    handoff_payload = as_dict(strip_retired_finance_routes(build_handoff_from_payloads(
         actions_payload,
         program,
         heartbeat_payload,
         queue_payload,
         ledger_path,
         args.cooldown_hours,
-    )
+    )))
     ledger = write_handoff_legacy(handoff_payload, ledger_path) if args.write_compat else handoff.read_ledger(ledger_path)
 
     validations = {
@@ -741,6 +816,7 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
         as_dict(greenkeeper.get("signal_freshness")),
     )
     sql_health = sql_canon_health()
+    finance_alerts_os = alerts_os_health()
     control_db_result = rebuild_sqlite_stub(
         control_db_path,
         program,
@@ -751,18 +827,18 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
         escalation_consumer,
         greenkeeper,
         sql_health,
+        finance_alerts_os,
     ) if args.write_db else None
     if control_db_result:
         validations["pm_control_packet_sqlite"] = control_db_result.get("status")
     stale_digest = stale_lane_digest(program, queue_payload)
     learning_kpis = wf74_learning_kpis()
-    finance_repair_digest = finance_domain_repair_digest()
 
     packet = {
         "schema": SCHEMA,
         "generated_at_utc": generated_at,
         "status": "draft",
-        "purpose": "Single PM operating packet combining PM state, PM implementation queue, heartbeat candidates, and main-session handoff.",
+        "purpose": "Single PM operating packet combining active PM state, implementation queue, heartbeat candidates, main-session handoff, and alerts-OS proof health.",
         "primary_output": rel(out_path),
         "compatibility_sidecars": {
             "written": bool(args.write_compat),
@@ -795,7 +871,7 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
             "main_session_greenkeeper": greenkeeper,
             "sql_canon_health": sql_health,
             "wf74_learning_kpis": learning_kpis,
-            "finance_domain_repair_digest": finance_repair_digest,
+            "finance_alerts_os": finance_alerts_os,
             "implementation_queue": queue_payload.get("summary"),
             "heartbeat": {
                 "status": heartbeat_payload.get("status"),
@@ -817,21 +893,22 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
             "heartbeat_continuation_candidates": heartbeat_payload,
             "pm_main_session_handoff": handoff_payload,
         },
-        "dispatch_ledger_latest": as_dict(ledger).get("latest"),
+        "dispatch_ledger_latest": strip_retired_finance_routes(as_dict(ledger).get("latest")),
         "recommended_use": {
             "first_read": rel(out_path),
             "regenerate": "python scripts\\pm_control_packet.py --write --write-db --validate",
             "legacy_rule": "Legacy PM/heartbeat JSONs are opt-in compatibility sidecars; routine PM lookup must start from this packet.",
             "stale_lane_digest": "Use summary.stale_lane_digest before drilling into the full PM program-state section.",
-            "finance_domain_repair_digest": "Finance repair-conveyor rows are domain debt, not implementation blockers, unless the digest reports implementation/control-plane blockers.",
+            "finance_alerts_os": "Finance visibility is limited to guarded SQL, explicit quote evidence, alert freshness, the recommendation digest, and the pivot boundary validator.",
             "pm_cockpit_source_health": "Use summary.pm_cockpit_source_health to catch cockpit registry freshness drift that cron/PM queues may not otherwise surface.",
             "main_session_escalation_consumer": "Use summary.main_session_escalation_consumer to verify cron escalation signals were consumed before raw handoff residue reaches Randall.",
             "main_session_greenkeeper": "Use summary.main_session_greenkeeper to ensure cron warnings, PM handoff, sidecar drift, and delivery-lint follow-ups stay visible.",
             "sql_canon_health": "Use summary.sql_canon_health as the durable SQL-canon scope/guard context before treating finance PM readiness as clean.",
         },
         "authority_boundary": AUTHORITY_BOUNDARY,
-        "validation": validate_packet(validations, program, queue_payload, heartbeat_payload, handoff_payload, cockpit_source_health, escalation_consumer, greenkeeper, sql_health, control_signal_freshness),
+        "validation": validate_packet(validations, program, queue_payload, heartbeat_payload, handoff_payload, cockpit_source_health, escalation_consumer, greenkeeper, sql_health, finance_alerts_os, control_signal_freshness),
     }
+    packet = as_dict(strip_retired_finance_routes(packet))
     packet["status"] = "ok" if packet["validation"]["status"] == "ok" else "blocked"
     return packet
 
@@ -846,6 +923,7 @@ def validate_packet(
     escalation_consumer: dict[str, Any],
     greenkeeper: dict[str, Any],
     sql_health: dict[str, Any],
+    finance_alerts_os: dict[str, Any],
     control_signal_freshness: dict[str, Any],
 ) -> dict[str, Any]:
     errors: list[str] = []
@@ -891,12 +969,14 @@ def validate_packet(
         warnings.append("control_plane_sub_signal_stale")
     if sql_health.get("status") != "ok":
         errors.append(f"sql_canon_guard_blocked:{sql_health.get('status')}")
+    if finance_alerts_os.get("status") != "ok":
+        errors.append("finance_alerts_os_proof_blocked")
     sql_boundary = as_dict(sql_health.get("authority_boundary"))
     for key in (
         "db_mutation_allowed",
         "sql_canon_cutover_allowed",
-        "capital_deployment_allowed",
-        "paper_or_live_execution_allowed",
+        "finance_state_mutation_allowed",
+        "capital_or_execution_action_allowed",
         "brokerage_or_account_action_allowed",
         "customer_or_external_delivery_allowed",
         "owner_approval_inferred",
@@ -921,6 +1001,7 @@ def rebuild_sqlite_stub(
     escalation_consumer: dict[str, Any],
     greenkeeper: dict[str, Any],
     sql_health: dict[str, Any],
+    finance_alerts_os: dict[str, Any],
 ) -> dict[str, Any]:
     db_path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(db_path, timeout=30)
@@ -981,6 +1062,9 @@ def rebuild_sqlite_stub(
             "greenkeeper_cron_should_wake_main_session": greenkeeper.get("cron_should_wake_main_session"),
             "sql_canon_status": sql_health.get("status"),
             "sql_canon_production_answer_count": sql_health.get("production_answer_count"),
+            "finance_alerts_os_status": finance_alerts_os.get("status"),
+            "finance_alerts_os_ticker_count": finance_alerts_os.get("ticker_count"),
+            "finance_alerts_os_blocked_proofs": finance_alerts_os.get("blocked_proofs"),
         }
         for key, value in summary.items():
             conn.execute("INSERT INTO pm_control_summary VALUES (?, ?)", (key, json.dumps(value)))

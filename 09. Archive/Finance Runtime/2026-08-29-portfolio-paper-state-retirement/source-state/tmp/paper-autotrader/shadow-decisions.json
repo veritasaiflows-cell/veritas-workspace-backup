@@ -1,0 +1,3492 @@
+{
+  "schema": "veritas.wf86_shadow_decision_ledger.v1",
+  "generated_at_utc": "2026-08-28T18:05:22Z",
+  "status": "ok",
+  "workflow_id": "WF86",
+  "purpose": "Append-only proof surface for shadow paper-autotrader decisions before assisted or autonomous paper execution.",
+  "authority_boundary": {
+    "review_only": true,
+    "shadow_mode_only": true,
+    "paper_only_design": true,
+    "autonomous_paper_execution_allowed_now": false,
+    "paper_submit_allowed": false,
+    "paper_cancel_allowed": false,
+    "paper_sell_allowed": false,
+    "live_trade_allowed": false,
+    "live_endpoint_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "summary": {
+    "decision_count": 51,
+    "current_session_decision_count": 0,
+    "clean_shadow_decision_count": 21,
+    "non_accrual_clean_shadow_decision_count": 30,
+    "unique_clean_market_sessions": 7,
+    "required_clean_market_sessions": 5,
+    "required_clean_decisions": 20,
+    "would_buy_shadow_count": 22,
+    "would_buy_shadow_tickers": [
+      "VRT",
+      "GOOG",
+      "VRT",
+      "GOOG",
+      "VRT",
+      "GOOG",
+      "VRT",
+      "GOOG",
+      "VRT",
+      "GOOG",
+      "VRT",
+      "VRT",
+      "GOOG",
+      "GOOG",
+      "GOOG",
+      "GOOG",
+      "GOOG",
+      "GOOG",
+      "NVDA",
+      "GOOG",
+      "NVDA",
+      "NVDA"
+    ],
+    "shadow_threshold_met": true,
+    "execution_ready_count": 0,
+    "next_safe_action": "Continue shadow logging and build assisted-mode request proof; do not execute orders."
+  },
+  "decisions": [
+    {
+      "decision_id": "wf86-shadow-2026-06-11:main-session-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-11:main-session-shadow",
+      "generated_at_utc": "2026-06-11T21:51:53Z",
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 204.87,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 198.47,
+        "entry_band_high": 216.66,
+        "stop_or_invalidation": 187.9,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "band_review_required",
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-11:main-session-shadow-vrt-would-buy-shadow",
+      "session_key": "2026-06-11:main-session-shadow",
+      "generated_at_utc": "2026-06-11T21:51:53Z",
+      "ticker": "VRT",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": true,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 297.88,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 266.0,
+        "entry_band_high": 319.57,
+        "stop_or_invalidation": 241.65,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "owner_card_and_wf67_request_ready",
+      "wf67_request_generation_status": "ok",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-11:main-session-shadow-goog-would-buy-shadow",
+      "session_key": "2026-06-11:main-session-shadow",
+      "generated_at_utc": "2026-06-11T21:51:53Z",
+      "ticker": "GOOG",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 356.56,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 350.28,
+        "entry_band_high": 372.67,
+        "stop_or_invalidation": 337.84,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "pending",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=pending"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-12:main-session-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-12:main-session-shadow",
+      "generated_at_utc": "2026-06-12T19:09:28Z",
+      "source_generated_at_utc": "2026-06-12T19:09:28Z",
+      "market_session": {
+        "market_date": "2026-06-12",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 205.165,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 198.47,
+        "entry_band_high": 216.66,
+        "stop_or_invalidation": 187.9,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "band_review_required",
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-12:main-session-shadow-vrt-would-buy-shadow",
+      "session_key": "2026-06-12:main-session-shadow",
+      "generated_at_utc": "2026-06-12T19:09:28Z",
+      "source_generated_at_utc": "2026-06-12T19:09:28Z",
+      "market_session": {
+        "market_date": "2026-06-12",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "VRT",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": true,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 298.87,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 265.07,
+        "entry_band_high": 318.01,
+        "stop_or_invalidation": 241.01,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "owner_card_and_wf67_request_ready",
+      "wf67_request_generation_status": "ok",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-12:main-session-shadow-goog-would-buy-shadow",
+      "session_key": "2026-06-12:main-session-shadow",
+      "generated_at_utc": "2026-06-12T19:09:28Z",
+      "source_generated_at_utc": "2026-06-12T19:09:28Z",
+      "market_session": {
+        "market_date": "2026-06-12",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "GOOG",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": true,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 361.06,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 350.28,
+        "entry_band_high": 372.67,
+        "stop_or_invalidation": 337.84,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "owner_card_and_wf67_request_ready",
+      "wf67_request_generation_status": "ok",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-12:outside-regular-market-hours-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-12:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-12T21:36:55Z",
+      "source_generated_at_utc": "2026-06-12T21:36:54Z",
+      "market_session": {
+        "market_date": "2026-06-12",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 204.1,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 198.47,
+        "entry_band_high": 216.66,
+        "stop_or_invalidation": 187.9,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "band_review_required",
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-12:outside-regular-market-hours-shadow-vrt-would-buy-shadow",
+      "session_key": "2026-06-12:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-12T21:36:55Z",
+      "source_generated_at_utc": "2026-06-12T21:36:54Z",
+      "market_session": {
+        "market_date": "2026-06-12",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "VRT",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": true,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 301.205,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 265.44,
+        "entry_band_high": 318.38,
+        "stop_or_invalidation": 241.38,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "owner_card_and_wf67_request_ready",
+      "wf67_request_generation_status": "ok",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-12:outside-regular-market-hours-shadow-goog-would-buy-shadow",
+      "session_key": "2026-06-12:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-12T21:36:55Z",
+      "source_generated_at_utc": "2026-06-12T21:36:54Z",
+      "market_session": {
+        "market_date": "2026-06-12",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "GOOG",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": true,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 358.25,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 350.28,
+        "entry_band_high": 372.67,
+        "stop_or_invalidation": 337.84,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "owner_card_and_wf67_request_ready",
+      "wf67_request_generation_status": "ok",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-13:outside-regular-market-hours-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-13:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-13T17:08:22Z",
+      "source_generated_at_utc": "2026-06-13T17:08:22Z",
+      "market_session": {
+        "market_date": "2026-06-13",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 205.19,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 198.47,
+        "entry_band_high": 216.66,
+        "stop_or_invalidation": 187.9,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "band_review_required",
+        "decision_factory_disposition=gate_deferred",
+        "fresh_execution_quote_needed",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-13:outside-regular-market-hours-shadow-vrt-would-buy-shadow",
+      "session_key": "2026-06-13:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-13T17:08:22Z",
+      "source_generated_at_utc": "2026-06-13T17:08:22Z",
+      "market_session": {
+        "market_date": "2026-06-13",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "VRT",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 302.87,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 265.44,
+        "entry_band_high": 318.38,
+        "stop_or_invalidation": 241.38,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "owner_card_and_wf67_request_ready",
+      "wf67_request_generation_status": "ok",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "fresh_execution_quote_needed"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-13:outside-regular-market-hours-shadow-goog-would-buy-shadow",
+      "session_key": "2026-06-13:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-13T17:08:22Z",
+      "source_generated_at_utc": "2026-06-13T17:08:22Z",
+      "market_session": {
+        "market_date": "2026-06-13",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "GOOG",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 358.16,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 350.28,
+        "entry_band_high": 372.67,
+        "stop_or_invalidation": 337.84,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "owner_card_and_wf67_request_ready",
+      "wf67_request_generation_status": "ok",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "fresh_execution_quote_needed"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-15:outside-regular-market-hours-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-15:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-15T21:37:00Z",
+      "source_generated_at_utc": "2026-06-15T21:37:00Z",
+      "market_session": {
+        "market_date": "2026-06-15",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 211.81,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 198.47,
+        "entry_band_high": 216.66,
+        "stop_or_invalidation": 187.9,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "band_review_required",
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-15:outside-regular-market-hours-shadow-vrt-would-buy-shadow",
+      "session_key": "2026-06-15:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-15T21:37:00Z",
+      "source_generated_at_utc": "2026-06-15T21:37:00Z",
+      "market_session": {
+        "market_date": "2026-06-15",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "VRT",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": true,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 313.14,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 265.67,
+        "entry_band_high": 318.19,
+        "stop_or_invalidation": 241.8,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "owner_card_and_wf67_request_ready",
+      "wf67_request_generation_status": "ok",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-15:outside-regular-market-hours-shadow-goog-would-buy-shadow",
+      "session_key": "2026-06-15:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-15T21:37:00Z",
+      "source_generated_at_utc": "2026-06-15T21:37:00Z",
+      "market_session": {
+        "market_date": "2026-06-15",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "GOOG",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": true,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 365.985,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 345.7,
+        "entry_band_high": 369.82,
+        "stop_or_invalidation": 332.3,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "owner_card_and_wf67_request_ready",
+      "wf67_request_generation_status": "ok",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-16:outside-regular-market-hours-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-16:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-16T21:36:58Z",
+      "source_generated_at_utc": "2026-06-16T21:36:57Z",
+      "market_session": {
+        "market_date": "2026-06-16",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 209.275,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 191.15,
+        "entry_band_high": 212.77,
+        "stop_or_invalidation": 181.33,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-16:outside-regular-market-hours-shadow-vrt-would-buy-shadow",
+      "session_key": "2026-06-16:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-16T21:36:58Z",
+      "source_generated_at_utc": "2026-06-16T21:36:57Z",
+      "market_session": {
+        "market_date": "2026-06-16",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "VRT",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": true,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 306.2,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 267.18,
+        "entry_band_high": 316.54,
+        "stop_or_invalidation": 244.74,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "owner_card_and_wf67_request_ready",
+      "wf67_request_generation_status": "ok",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-16:outside-regular-market-hours-shadow-goog-no-action-wait-for-band",
+      "session_key": "2026-06-16:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-16T21:36:58Z",
+      "source_generated_at_utc": "2026-06-16T21:36:57Z",
+      "market_session": {
+        "market_date": "2026-06-16",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "GOOG",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 371.01,
+      "current_band_status": "ABOVE_BAND",
+      "written_band": {
+        "entry_band_low": 353.94,
+        "entry_band_high": 370.31,
+        "stop_or_invalidation": 340.87,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "ABOVE_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "not_card_preparable",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=not_card_preparable"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-17:main-session-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-17:main-session-shadow",
+      "generated_at_utc": "2026-06-17T18:45:21Z",
+      "source_generated_at_utc": "2026-06-17T18:45:21Z",
+      "market_session": {
+        "market_date": "2026-06-17",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 206.4,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 191.16,
+        "entry_band_high": 212.3,
+        "stop_or_invalidation": 181.54,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-17:main-session-shadow-vrt-would-buy-shadow",
+      "session_key": "2026-06-17:main-session-shadow",
+      "generated_at_utc": "2026-06-17T18:45:21Z",
+      "source_generated_at_utc": "2026-06-17T18:45:21Z",
+      "market_session": {
+        "market_date": "2026-06-17",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "VRT",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": true,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 313.26,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 299.33,
+        "entry_band_high": 316.5,
+        "stop_or_invalidation": 277.45,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "owner_card_and_wf67_request_ready",
+      "wf67_request_generation_status": "ok",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-17:main-session-shadow-goog-would-buy-shadow",
+      "session_key": "2026-06-17:main-session-shadow",
+      "generated_at_utc": "2026-06-17T18:45:21Z",
+      "source_generated_at_utc": "2026-06-17T18:45:21Z",
+      "market_session": {
+        "market_date": "2026-06-17",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "GOOG",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 361.31,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 346.66,
+        "entry_band_high": 369.83,
+        "stop_or_invalidation": 333.78,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "ABOVE_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-17:outside-regular-market-hours-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-17:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-18T02:18:41Z",
+      "source_generated_at_utc": "2026-06-18T02:18:41Z",
+      "market_session": {
+        "market_date": "2026-06-17",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 205.94,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 190.67,
+        "entry_band_high": 212.18,
+        "stop_or_invalidation": 180.89,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "fresh_execution_quote_needed",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-17:outside-regular-market-hours-shadow-vrt-no-action-wait-for-band",
+      "session_key": "2026-06-17:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-18T02:18:41Z",
+      "source_generated_at_utc": "2026-06-18T02:18:41Z",
+      "market_session": {
+        "market_date": "2026-06-17",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "VRT",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 326.84,
+      "current_band_status": "ABOVE_BAND",
+      "written_band": {
+        "entry_band_low": 299.33,
+        "entry_band_high": 316.5,
+        "stop_or_invalidation": 277.45,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "ABOVE_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "not_card_preparable",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=not_card_preparable",
+        "fresh_execution_quote_needed"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-17:outside-regular-market-hours-shadow-goog-would-buy-shadow",
+      "session_key": "2026-06-17:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-18T02:18:41Z",
+      "source_generated_at_utc": "2026-06-18T02:18:41Z",
+      "market_session": {
+        "market_date": "2026-06-17",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "GOOG",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 362.71,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 346.66,
+        "entry_band_high": 369.83,
+        "stop_or_invalidation": 333.78,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "fresh_execution_quote_needed"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-18:main-session-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-18:main-session-shadow",
+      "generated_at_utc": "2026-06-18T18:45:21Z",
+      "source_generated_at_utc": "2026-06-18T18:45:21Z",
+      "market_session": {
+        "market_date": "2026-06-18",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 204.65,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 190.65,
+        "entry_band_high": 212.18,
+        "stop_or_invalidation": 180.86,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "ai_technology_crowding_review",
+        "band_calibration_review",
+        "entry_band_review",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "NVDA was in band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: band calibration / AI-power crowding / starter sizing; blocked reasons: band_review_debt; monitoring flags: band_review_required. Next: Post-earnings timing residue is cleared; keep out of deployable-now until fresh band calibration, crowding, and starter-sizing review clears the gate. Treat this as an AI/Technology concentration caution before any starter sizing is considered. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-18T05:39:44Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-18T13:20:48.836341+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-18T13:20:50Z), tmp/technical-refresh.json (2026-06-18T17:45:12.648386+00:00), tmp/deployment-readiness-surface.json (2026-06-18T17:45:24.661752+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "NVDA is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 212.31; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "NVDA is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "NVDA has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-18:main-session-shadow-goog-would-buy-shadow",
+      "session_key": "2026-06-18:main-session-shadow",
+      "generated_at_utc": "2026-06-18T18:45:21Z",
+      "source_generated_at_utc": "2026-06-18T18:45:21Z",
+      "market_session": {
+        "market_date": "2026-06-18",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "GOOG",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 362.1,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 346.66,
+        "entry_band_high": 369.83,
+        "stop_or_invalidation": 333.78,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "promotion_gate_stale_relative_to_inputs",
+        "promotion_gate_watch_for_reclaim_or_pullback"
+      ],
+      "plain_english_blockers": [
+        "GOOG is not promotion-ready yet; the promotion gate says to watch for a reclaim or pullback before owner-review promotion. Cautions: AI-power / Technology correlation crowded; WF55 probability layer NOT_READY; no win-rate/model claim allowed.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-18T05:39:44Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-18T13:20:48.836341+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-18T13:20:50Z), tmp/technical-refresh.json (2026-06-18T17:45:12.648386+00:00), tmp/deployment-readiness-surface.json (2026-06-18T17:45:24.661752+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "GOOG is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 369.54; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "GOOG is deferred by the decision factory; an upstream gate still needs repair before assisted review."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-18:main-session-shadow-vrt-no-action-wait-for-band",
+      "session_key": "2026-06-18:main-session-shadow",
+      "generated_at_utc": "2026-06-18T18:45:21Z",
+      "source_generated_at_utc": "2026-06-18T18:45:21Z",
+      "market_session": {
+        "market_date": "2026-06-18",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "VRT",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 317.58,
+      "current_band_status": "ABOVE_BAND",
+      "written_band": {
+        "entry_band_low": 299.33,
+        "entry_band_high": 316.5,
+        "stop_or_invalidation": 277.45,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "ABOVE_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "entry_band_review",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "VRT was above the entry band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: separate owner-gated model/sleeve/deployment decision required; blocked reasons: band_review_debt, explicit promotion and sizing review required, watch-lane or secondary review only; monitoring flags: band_review_required. Next: Build or refresh portfolio-review packet; verify valuation, technical setup, concentration, and risk before any owner decision. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-18T05:39:44Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-18T13:20:48.836341+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-18T13:20:50Z), tmp/technical-refresh.json (2026-06-18T17:45:12.648386+00:00), tmp/deployment-readiness-surface.json (2026-06-18T17:45:24.661752+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "VRT is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 320.43; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "VRT is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "VRT has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-18:outside-regular-market-hours-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-18:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-18T21:37:08Z",
+      "source_generated_at_utc": "2026-06-18T21:37:07Z",
+      "market_session": {
+        "market_date": "2026-06-18",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 210.69,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 202.81,
+        "entry_band_high": 212.23,
+        "stop_or_invalidation": 192.95,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "ai_technology_crowding_review",
+        "band_calibration_review",
+        "entry_band_review",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "NVDA was in band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: band calibration / AI-power crowding / starter sizing; blocked reasons: band_review_debt; monitoring flags: band_review_required. Next: Post-earnings timing residue is cleared; keep out of deployable-now until fresh band calibration, crowding, and starter-sizing review clears the gate. Treat this as an AI/Technology concentration caution before any starter sizing is considered. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-18T05:39:44Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-18T20:28:31.523324+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-18T13:20:50Z), tmp/technical-refresh.json (2026-06-18T20:28:23.678364+00:00), tmp/deployment-readiness-surface.json (2026-06-18T20:29:15.300492+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "NVDA is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 211.68; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "NVDA is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "NVDA has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-18:outside-regular-market-hours-shadow-goog-would-buy-shadow",
+      "session_key": "2026-06-18:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-18T21:37:08Z",
+      "source_generated_at_utc": "2026-06-18T21:37:07Z",
+      "market_session": {
+        "market_date": "2026-06-18",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "GOOG",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 367.46,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 354.25,
+        "entry_band_high": 369.69,
+        "stop_or_invalidation": 341.07,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "promotion_gate_stale_relative_to_inputs",
+        "promotion_gate_watch_for_reclaim_or_pullback"
+      ],
+      "plain_english_blockers": [
+        "GOOG is not promotion-ready yet; the promotion gate says to watch for a reclaim or pullback before owner-review promotion. Cautions: AI-power / Technology correlation crowded; WF55 probability layer NOT_READY; no win-rate/model claim allowed.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-18T05:39:44Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-18T20:28:31.523324+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-18T13:20:50Z), tmp/technical-refresh.json (2026-06-18T20:28:23.678364+00:00), tmp/deployment-readiness-surface.json (2026-06-18T20:29:15.300492+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "GOOG is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 368.68; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "GOOG is deferred by the decision factory; an upstream gate still needs repair before assisted review."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-18:outside-regular-market-hours-shadow-vrt-no-action-wait-for-band",
+      "session_key": "2026-06-18:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-18T21:37:08Z",
+      "source_generated_at_utc": "2026-06-18T21:37:07Z",
+      "market_session": {
+        "market_date": "2026-06-18",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "VRT",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 333.05,
+      "current_band_status": "ABOVE_BAND",
+      "written_band": {
+        "entry_band_low": 300.02,
+        "entry_band_high": 319.13,
+        "stop_or_invalidation": 276.97,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "entry_band_review",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "VRT was above the entry band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: separate owner-gated model/sleeve/deployment decision required; blocked reasons: band_review_debt, explicit promotion and sizing review required, watch-lane or secondary review only; monitoring flags: band_review_required. Next: Build or refresh portfolio-review packet; verify valuation, technical setup, concentration, and risk before any owner decision. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-18T05:39:44Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-18T20:28:31.523324+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-18T13:20:50Z), tmp/technical-refresh.json (2026-06-18T20:28:23.678364+00:00), tmp/deployment-readiness-surface.json (2026-06-18T20:29:15.300492+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "VRT has a clean-add technical label from the current moving-average posture.",
+        "VRT is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "VRT has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-19:main-session-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-19:main-session-shadow",
+      "generated_at_utc": "2026-06-19T18:45:20Z",
+      "source_generated_at_utc": "2026-06-19T18:45:20Z",
+      "market_session": {
+        "market_date": "2026-06-19",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 210.69,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 202.81,
+        "entry_band_high": 212.23,
+        "stop_or_invalidation": 192.95,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "ai_technology_crowding_review",
+        "band_calibration_review",
+        "entry_band_review",
+        "fresh_execution_quote",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "NVDA was in band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: band calibration / AI-power crowding / starter sizing; blocked reasons: band_review_debt; monitoring flags: band_review_required. Next: Post-earnings timing residue is cleared; keep out of deployable-now until fresh band calibration, crowding, and starter-sizing review clears the gate. Treat this as an AI/Technology concentration caution before any starter sizing is considered. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-18T05:39:44Z, but newer input artifacts exist (tmp/research-freshness-opportunity-review.json (2026-06-18T21:05:49Z), tmp/band-proposals.json (2026-06-19T13:20:51.783944+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-19T13:20:53Z), tmp/technical-refresh.json (2026-06-19T17:13:04.392719+00:00), tmp/deployment-readiness-surface.json (2026-06-19T13:13:57.705723+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "NVDA is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 211.68; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "NVDA is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "NVDA needs a fresh execution-grade quote before any assisted paper-order packet.",
+        "NVDA has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "fresh_execution_quote_needed",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-19:main-session-shadow-goog-would-buy-shadow",
+      "session_key": "2026-06-19:main-session-shadow",
+      "generated_at_utc": "2026-06-19T18:45:20Z",
+      "source_generated_at_utc": "2026-06-19T18:45:20Z",
+      "market_session": {
+        "market_date": "2026-06-19",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "GOOG",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 367.46,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 354.25,
+        "entry_band_high": 369.69,
+        "stop_or_invalidation": 341.07,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "fresh_execution_quote",
+        "promotion_gate_stale_relative_to_inputs",
+        "promotion_gate_watch_for_reclaim_or_pullback"
+      ],
+      "plain_english_blockers": [
+        "GOOG is not promotion-ready yet; the promotion gate says to watch for a reclaim or pullback before owner-review promotion. Cautions: AI-power / Technology correlation crowded; WF55 probability layer NOT_READY; no win-rate/model claim allowed.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-18T05:39:44Z, but newer input artifacts exist (tmp/research-freshness-opportunity-review.json (2026-06-18T21:05:49Z), tmp/band-proposals.json (2026-06-19T13:20:51.783944+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-19T13:20:53Z), tmp/technical-refresh.json (2026-06-19T17:13:04.392719+00:00), tmp/deployment-readiness-surface.json (2026-06-19T13:13:57.705723+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "GOOG is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 368.68; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "GOOG is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "GOOG needs a fresh execution-grade quote before any assisted paper-order packet."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "fresh_execution_quote_needed"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-19:main-session-shadow-vrt-no-action-wait-for-band",
+      "session_key": "2026-06-19:main-session-shadow",
+      "generated_at_utc": "2026-06-19T18:45:20Z",
+      "source_generated_at_utc": "2026-06-19T18:45:20Z",
+      "market_session": {
+        "market_date": "2026-06-19",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "VRT",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 333.05,
+      "current_band_status": "ABOVE_BAND",
+      "written_band": {
+        "entry_band_low": 300.02,
+        "entry_band_high": 319.13,
+        "stop_or_invalidation": 276.97,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "ABOVE_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "entry_band_review",
+        "fresh_execution_quote",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "VRT was above the entry band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: separate owner-gated model/sleeve/deployment decision required; blocked reasons: band_review_debt, explicit promotion and sizing review required, watch-lane or secondary review only; monitoring flags: band_review_required. Next: Build or refresh portfolio-review packet; verify valuation, technical setup, concentration, and risk before any owner decision. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-18T05:39:44Z, but newer input artifacts exist (tmp/research-freshness-opportunity-review.json (2026-06-18T21:05:49Z), tmp/band-proposals.json (2026-06-19T13:20:51.783944+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-19T13:20:53Z), tmp/technical-refresh.json (2026-06-19T17:13:04.392719+00:00), tmp/deployment-readiness-surface.json (2026-06-19T13:13:57.705723+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "VRT has a clean-add technical label from the current moving-average posture.",
+        "VRT is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "VRT needs a fresh execution-grade quote before any assisted paper-order packet.",
+        "VRT has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "fresh_execution_quote_needed",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-20:outside-regular-market-hours-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-20:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-21T06:43:23Z",
+      "source_generated_at_utc": "2026-06-20T22:40:25Z",
+      "market_session": {
+        "market_date": "2026-06-20",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 210.69,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 202.81,
+        "entry_band_high": 212.23,
+        "stop_or_invalidation": 192.95,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "ai_technology_crowding_review",
+        "band_calibration_review",
+        "entry_band_review",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "NVDA was in band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: band calibration / AI-power crowding / starter sizing; blocked reasons: band_review_debt; monitoring flags: band_review_required. Next: Post-earnings timing residue is cleared; keep out of deployable-now until fresh band calibration, crowding, and starter-sizing review clears the gate. Treat this as an AI/Technology concentration caution before any starter sizing is considered. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-18T05:39:44Z, but newer input artifacts exist (tmp/research-freshness-opportunity-review.json (2026-06-19T21:05:45Z), tmp/band-proposals.json (2026-06-20T05:20:20.318272+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-19T18:46:20Z), tmp/technical-refresh.json (2026-06-20T16:45:50.781427+00:00), tmp/deployment-readiness-surface.json (2026-06-20T05:21:02.174426+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "NVDA is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 211.68; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "NVDA is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "NVDA has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-20:outside-regular-market-hours-shadow-goog-would-buy-shadow",
+      "session_key": "2026-06-20:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-21T06:43:23Z",
+      "source_generated_at_utc": "2026-06-20T22:40:25Z",
+      "market_session": {
+        "market_date": "2026-06-20",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "GOOG",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 367.46,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 354.25,
+        "entry_band_high": 369.69,
+        "stop_or_invalidation": 341.07,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": "blocked",
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "promotion_gate_stale_relative_to_inputs",
+        "promotion_gate_watch_for_reclaim_or_pullback"
+      ],
+      "plain_english_blockers": [
+        "GOOG is not promotion-ready yet; the promotion gate says to watch for a reclaim or pullback before owner-review promotion. Cautions: AI-power / Technology correlation crowded; WF55 probability layer NOT_READY; no win-rate/model claim allowed.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-18T05:39:44Z, but newer input artifacts exist (tmp/research-freshness-opportunity-review.json (2026-06-19T21:05:45Z), tmp/band-proposals.json (2026-06-20T05:20:20.318272+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-19T18:46:20Z), tmp/technical-refresh.json (2026-06-20T16:45:50.781427+00:00), tmp/deployment-readiness-surface.json (2026-06-20T05:21:02.174426+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "GOOG is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 368.68; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "GOOG is deferred by the decision factory; an upstream gate still needs repair before assisted review."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-20:outside-regular-market-hours-shadow-vrt-no-action-wait-for-band",
+      "session_key": "2026-06-20:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-21T06:43:23Z",
+      "source_generated_at_utc": "2026-06-20T22:40:25Z",
+      "market_session": {
+        "market_date": "2026-06-20",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "VRT",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 333.05,
+      "current_band_status": "ABOVE_BAND",
+      "written_band": {
+        "entry_band_low": 300.02,
+        "entry_band_high": 319.13,
+        "stop_or_invalidation": 276.97,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "ABOVE_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "entry_band_review",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "VRT was above the entry band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: separate owner-gated model/sleeve/deployment decision required; blocked reasons: band_review_debt, explicit promotion and sizing review required, watch-lane or secondary review only; monitoring flags: band_review_required. Next: Build or refresh portfolio-review packet; verify valuation, technical setup, concentration, and risk before any owner decision. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-18T05:39:44Z, but newer input artifacts exist (tmp/research-freshness-opportunity-review.json (2026-06-19T21:05:45Z), tmp/band-proposals.json (2026-06-20T05:20:20.318272+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-19T18:46:20Z), tmp/technical-refresh.json (2026-06-20T16:45:50.781427+00:00), tmp/deployment-readiness-surface.json (2026-06-20T05:21:02.174426+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "VRT has a clean-add technical label from the current moving-average posture.",
+        "VRT is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "VRT has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-21:outside-regular-market-hours-shadow-nvda-would-buy-shadow",
+      "session_key": "2026-06-21:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-21T23:50:14Z",
+      "source_generated_at_utc": "2026-06-21T23:50:14Z",
+      "market_session": {
+        "market_date": "2026-06-21",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "NVDA",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 210.69,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 202.81,
+        "entry_band_high": 212.23,
+        "stop_or_invalidation": 192.95,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "not_card_preparable",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "promotion_gate_stale_relative_to_inputs"
+      ],
+      "plain_english_blockers": [
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-21T21:45:35Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-21T22:19:56.945540+00:00), tmp/technical-refresh.json (2026-06-21T22:42:10.271261+00:00), tmp/deployment-readiness-surface.json (2026-06-21T22:20:49.600632+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "NVDA is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 211.68; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "NVDA blocker: decision_factory_disposition=not_card_preparable"
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=not_card_preparable"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-21:outside-regular-market-hours-shadow-goog-would-buy-shadow",
+      "session_key": "2026-06-21:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-21T23:50:14Z",
+      "source_generated_at_utc": "2026-06-21T23:50:14Z",
+      "market_session": {
+        "market_date": "2026-06-21",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "GOOG",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 367.46,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 354.25,
+        "entry_band_high": 369.69,
+        "stop_or_invalidation": 341.07,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "not_card_preparable",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "promotion_gate_stale_relative_to_inputs"
+      ],
+      "plain_english_blockers": [
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-21T21:45:35Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-21T22:19:56.945540+00:00), tmp/technical-refresh.json (2026-06-21T22:42:10.271261+00:00), tmp/deployment-readiness-surface.json (2026-06-21T22:20:49.600632+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "GOOG is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 368.68; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "GOOG blocker: decision_factory_disposition=not_card_preparable"
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=not_card_preparable"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-21:outside-regular-market-hours-shadow-vrt-no-action-wait-for-band",
+      "session_key": "2026-06-21:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-21T23:50:14Z",
+      "source_generated_at_utc": "2026-06-21T23:50:14Z",
+      "market_session": {
+        "market_date": "2026-06-21",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "VRT",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 333.05,
+      "current_band_status": "ABOVE_BAND",
+      "written_band": {
+        "entry_band_low": 300.02,
+        "entry_band_high": 319.13,
+        "stop_or_invalidation": 276.97,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "ABOVE_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "entry_band_review",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "VRT was above the entry band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: separate owner-gated model/sleeve/deployment decision required; blocked reasons: band_review_debt, explicit promotion and sizing review required, watch-lane or secondary review only; monitoring flags: band_review_required. Next: Build or refresh portfolio-review packet; verify valuation, technical setup, concentration, and risk before any owner decision. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-21T21:45:35Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-21T22:19:56.945540+00:00), tmp/technical-refresh.json (2026-06-21T22:42:10.271261+00:00), tmp/deployment-readiness-surface.json (2026-06-21T22:20:49.600632+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "VRT has a clean-add technical label from the current moving-average posture.",
+        "VRT is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "VRT has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-22:main-session-shadow-nvda-would-buy-shadow",
+      "session_key": "2026-06-22:main-session-shadow",
+      "generated_at_utc": "2026-06-22T18:45:19Z",
+      "source_generated_at_utc": "2026-06-22T18:45:18Z",
+      "market_session": {
+        "market_date": "2026-06-22",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "NVDA",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 209.46,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 202.81,
+        "entry_band_high": 212.23,
+        "stop_or_invalidation": 192.95,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "not_card_preparable",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "promotion_gate_stale_relative_to_inputs"
+      ],
+      "plain_english_blockers": [
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-22T13:25:20Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-22T16:08:23.579197+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-22T14:46:36Z), tmp/technical-refresh.json (2026-06-22T16:08:14.957677+00:00), tmp/deployment-readiness-surface.json (2026-06-22T16:45:06.789119+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "NVDA is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 211.20; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "NVDA blocker: decision_factory_disposition=not_card_preparable"
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=not_card_preparable"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-22:main-session-shadow-vrt-no-action-wait-for-band",
+      "session_key": "2026-06-22:main-session-shadow",
+      "generated_at_utc": "2026-06-22T18:45:19Z",
+      "source_generated_at_utc": "2026-06-22T18:45:18Z",
+      "market_session": {
+        "market_date": "2026-06-22",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "VRT",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 343.29,
+      "current_band_status": "ABOVE_BAND",
+      "written_band": {
+        "entry_band_low": 300.02,
+        "entry_band_high": 319.13,
+        "stop_or_invalidation": 276.97,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "ABOVE_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "entry_band_review",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "VRT was above the entry band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: separate owner-gated model/sleeve/deployment decision required; blocked reasons: band_review_debt, explicit promotion and sizing review required, watch-lane or secondary review only; monitoring flags: band_review_required. Next: Build or refresh portfolio-review packet; verify valuation, technical setup, concentration, and risk before any owner decision. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-22T13:25:20Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-22T16:08:23.579197+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-22T14:46:36Z), tmp/technical-refresh.json (2026-06-22T16:08:14.957677+00:00), tmp/deployment-readiness-surface.json (2026-06-22T16:45:06.789119+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "VRT has a clean-add technical label from the current moving-average posture.",
+        "VRT is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "VRT has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-22:main-session-shadow-goog-no-action-wait-for-band",
+      "session_key": "2026-06-22:main-session-shadow",
+      "generated_at_utc": "2026-06-22T18:45:19Z",
+      "source_generated_at_utc": "2026-06-22T18:45:18Z",
+      "market_session": {
+        "market_date": "2026-06-22",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "GOOG",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 346.4,
+      "current_band_status": "BELOW_BAND",
+      "written_band": {
+        "entry_band_low": 354.25,
+        "entry_band_high": 369.69,
+        "stop_or_invalidation": 341.07,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "BELOW_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "not_card_preparable",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "promotion_gate_stale_relative_to_inputs"
+      ],
+      "plain_english_blockers": [
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-22T13:25:20Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-22T16:08:23.579197+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-22T14:46:36Z), tmp/technical-refresh.json (2026-06-22T16:08:14.957677+00:00), tmp/deployment-readiness-surface.json (2026-06-22T16:45:06.789119+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "GOOG is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 366.85; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "GOOG blocker: decision_factory_disposition=not_card_preparable"
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=not_card_preparable"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-22:outside-regular-market-hours-shadow-nvda-would-buy-shadow",
+      "session_key": "2026-06-22:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-23T00:28:53Z",
+      "source_generated_at_utc": "2026-06-23T00:28:53Z",
+      "market_session": {
+        "market_date": "2026-06-22",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "NVDA",
+      "shadow_decision": "would_buy_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 208.505,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 202.81,
+        "entry_band_high": 212.23,
+        "stop_or_invalidation": 192.95,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "not_card_preparable",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "promotion_gate_stale_relative_to_inputs"
+      ],
+      "plain_english_blockers": [
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-22T13:25:20Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-22T20:29:40.484704+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-22T14:46:36Z), tmp/technical-refresh.json (2026-06-22T20:29:33.163087+00:00), tmp/deployment-readiness-surface.json (2026-06-22T20:30:34.645319+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "NVDA is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 211.15; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "NVDA blocker: decision_factory_disposition=not_card_preparable"
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=not_card_preparable"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-22:outside-regular-market-hours-shadow-vrt-no-action-wait-for-band",
+      "session_key": "2026-06-22:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-23T00:28:53Z",
+      "source_generated_at_utc": "2026-06-23T00:28:53Z",
+      "market_session": {
+        "market_date": "2026-06-22",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "VRT",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 353.145,
+      "current_band_status": "ABOVE_BAND",
+      "written_band": {
+        "entry_band_low": 300.02,
+        "entry_band_high": 319.13,
+        "stop_or_invalidation": 276.97,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "ABOVE_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "entry_band_review",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "VRT was above the entry band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: separate owner-gated model/sleeve/deployment decision required; blocked reasons: band_review_debt, explicit promotion and sizing review required, watch-lane or secondary review only; monitoring flags: band_review_required. Next: Build or refresh portfolio-review packet; verify valuation, technical setup, concentration, and risk before any owner decision. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-22T13:25:20Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-22T20:29:40.484704+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-22T14:46:36Z), tmp/technical-refresh.json (2026-06-22T20:29:33.163087+00:00), tmp/deployment-readiness-surface.json (2026-06-22T20:30:34.645319+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "VRT has a clean-add technical label from the current moving-average posture.",
+        "VRT is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "VRT has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-22:outside-regular-market-hours-shadow-goog-no-action-wait-for-band",
+      "session_key": "2026-06-22:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-23T00:28:53Z",
+      "source_generated_at_utc": "2026-06-23T00:28:53Z",
+      "market_session": {
+        "market_date": "2026-06-22",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "GOOG",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 347.07,
+      "current_band_status": "BELOW_BAND",
+      "written_band": {
+        "entry_band_low": 354.25,
+        "entry_band_high": 369.69,
+        "stop_or_invalidation": 341.07,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "BELOW_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "not_card_preparable",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "promotion_gate_stale_relative_to_inputs"
+      ],
+      "plain_english_blockers": [
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-22T13:25:20Z, but newer input artifacts exist (tmp/band-proposals.json (2026-06-22T20:29:40.484704+00:00), tmp/band-hygiene-freshness-controller.json (2026-06-22T14:46:36Z), tmp/technical-refresh.json (2026-06-22T20:29:33.163087+00:00), tmp/deployment-readiness-surface.json (2026-06-22T20:30:34.645319+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "GOOG is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 366.95; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "GOOG blocker: decision_factory_disposition=not_card_preparable"
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=not_card_preparable"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-23:main-session-shadow-nvda-repair-only-shadow",
+      "session_key": "2026-06-23:main-session-shadow",
+      "generated_at_utc": "2026-06-23T18:45:25Z",
+      "source_generated_at_utc": "2026-06-23T18:45:25Z",
+      "market_session": {
+        "market_date": "2026-06-23",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "NVDA",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 208.65,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 202.81,
+        "entry_band_high": 212.23,
+        "stop_or_invalidation": 192.95,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "ai_technology_crowding_review",
+        "band_calibration_review",
+        "entry_band_review",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "NVDA was in band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: band calibration / AI-power crowding / starter sizing; blocked reasons: band_review_debt; monitoring flags: band_review_required. Next: Post-earnings timing residue is cleared; keep out of deployable-now until fresh band calibration, crowding, and starter-sizing review clears the gate. Treat this as an AI/Technology concentration caution before any starter sizing is considered. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "NVDA is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 211.15; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "NVDA is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "NVDA has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-23:main-session-shadow-vrt-no-action-wait-for-band",
+      "session_key": "2026-06-23:main-session-shadow",
+      "generated_at_utc": "2026-06-23T18:45:25Z",
+      "source_generated_at_utc": "2026-06-23T18:45:25Z",
+      "market_session": {
+        "market_date": "2026-06-23",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "VRT",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 357.96,
+      "current_band_status": "ABOVE_BAND",
+      "written_band": {
+        "entry_band_low": 300.02,
+        "entry_band_high": 319.13,
+        "stop_or_invalidation": 276.97,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "ABOVE_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "entry_band_review",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "VRT was above the entry band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: separate owner-gated model/sleeve/deployment decision required; blocked reasons: band_review_debt, explicit promotion and sizing review required, watch-lane or secondary review only; monitoring flags: band_review_required. Next: Build or refresh portfolio-review packet; verify valuation, technical setup, concentration, and risk before any owner decision. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "VRT has a clean-add technical label from the current moving-average posture.",
+        "VRT is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "VRT has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-23:main-session-shadow-goog-no-action-wait-for-band",
+      "session_key": "2026-06-23:main-session-shadow",
+      "generated_at_utc": "2026-06-23T18:45:25Z",
+      "source_generated_at_utc": "2026-06-23T18:45:25Z",
+      "market_session": {
+        "market_date": "2026-06-23",
+        "regular_market_hours": true,
+        "session_state": "regular_market_hours"
+      },
+      "threshold_accrual_eligible": true,
+      "ticker": "GOOG",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 348.78,
+      "current_band_status": "BELOW_BAND",
+      "written_band": {
+        "entry_band_low": 354.25,
+        "entry_band_high": 369.69,
+        "stop_or_invalidation": 341.07,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "BELOW_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "promotion_gate_monitor_only"
+      ],
+      "plain_english_blockers": [
+        "GOOG is monitor-only; it is not clean enough for owner-review promotion. Cautions: AI-power / Technology correlation crowded; WF55 probability layer NOT_READY; no win-rate/model claim allowed; below band / wait for reclaim.",
+        "GOOG is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 366.95; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "GOOG is deferred by the decision factory; an upstream gate still needs repair before assisted review."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-23:outside-regular-market-hours-shadow-vrt-repair-only-shadow",
+      "session_key": "2026-06-23:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-23T21:41:06Z",
+      "source_generated_at_utc": "2026-06-23T21:41:05Z",
+      "market_session": {
+        "market_date": "2026-06-23",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "VRT",
+      "shadow_decision": "repair_only_shadow",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 318.32,
+      "current_band_status": "IN_BAND",
+      "written_band": {
+        "entry_band_low": 300.02,
+        "entry_band_high": 319.13,
+        "stop_or_invalidation": 276.97,
+        "card_reference_price": 314.18,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "ABOVE_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 284.01,
+          "entry_band_high": 334.59,
+          "stop_or_invalidation": 261.03,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "entry_band_review",
+        "fresh_execution_quote",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "VRT was above the entry band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: separate owner-gated model/sleeve/deployment decision required; blocked reasons: band_review_debt, explicit promotion and sizing review required, watch-lane or secondary review only; monitoring flags: band_review_required. Next: Build or refresh portfolio-review packet; verify valuation, technical setup, concentration, and risk before any owner decision. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-23T13:25:21Z, but newer input artifacts exist (tmp/research-freshness-opportunity-review.json (2026-06-23T21:05:50Z), tmp/band-proposals.json (2026-06-23T20:29:01.688580+00:00), tmp/technical-refresh.json (2026-06-23T20:28:53.938684+00:00), tmp/deployment-readiness-surface.json (2026-06-23T20:29:56.959058+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "VRT is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 323.35; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "VRT is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "VRT needs a fresh execution-grade quote before any assisted paper-order packet.",
+        "VRT has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "fresh_execution_quote_needed",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-23:outside-regular-market-hours-shadow-nvda-no-action-wait-for-band",
+      "session_key": "2026-06-23:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-23T21:41:06Z",
+      "source_generated_at_utc": "2026-06-23T21:41:05Z",
+      "market_session": {
+        "market_date": "2026-06-23",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "NVDA",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 200.04,
+      "current_band_status": "BELOW_BAND",
+      "written_band": {
+        "entry_band_low": 202.81,
+        "entry_band_high": 212.23,
+        "stop_or_invalidation": 192.95,
+        "card_reference_price": 214.25,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "IN_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 198.47,
+          "entry_band_high": 216.66,
+          "stop_or_invalidation": 187.9,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "ai_technology_crowding_review",
+        "band_calibration_review",
+        "entry_band_review",
+        "fresh_execution_quote",
+        "promotion_gate_stale_relative_to_inputs",
+        "starter_sizing_review"
+      ],
+      "plain_english_blockers": [
+        "NVDA was in band, but could not be promoted because the opportunity-review layer still carried unresolved promotion-review debt: band calibration / AI-power crowding / starter sizing; blocked reasons: band_review_debt; monitoring flags: band_review_required. Next: Post-earnings timing residue is cleared; keep out of deployable-now until fresh band calibration, crowding, and starter-sizing review clears the gate. Treat this as an AI/Technology concentration caution before any starter sizing is considered. Cron or the main session should clear the band review or refresh the entry-band contract before promotion.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-23T13:25:21Z, but newer input artifacts exist (tmp/research-freshness-opportunity-review.json (2026-06-23T21:05:50Z), tmp/band-proposals.json (2026-06-23T20:29:01.688580+00:00), tmp/technical-refresh.json (2026-06-23T20:28:53.938684+00:00), tmp/deployment-readiness-surface.json (2026-06-23T20:29:56.959058+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "NVDA is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 210.40; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "NVDA is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "NVDA needs a fresh execution-grade quote before any assisted paper-order packet.",
+        "NVDA has a promotion-gate veto; inspect the promotion gate root cause before treating it as assisted-paper ready."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "fresh_execution_quote_needed",
+        "promotion_gate_vetoes_present"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    {
+      "decision_id": "wf86-shadow-2026-06-23:outside-regular-market-hours-shadow-goog-no-action-wait-for-band",
+      "session_key": "2026-06-23:outside-regular-market-hours-shadow",
+      "generated_at_utc": "2026-06-23T21:41:06Z",
+      "source_generated_at_utc": "2026-06-23T21:41:05Z",
+      "market_session": {
+        "market_date": "2026-06-23",
+        "regular_market_hours": false,
+        "session_state": "outside_regular_market_hours"
+      },
+      "threshold_accrual_eligible": false,
+      "ticker": "GOOG",
+      "shadow_decision": "no_action_wait_for_band",
+      "shadow_eligible": true,
+      "execution_ready": false,
+      "assisted_review_ready": false,
+      "max_shadow_notional_usd": 5000,
+      "current_price": 346.08,
+      "current_band_status": "BELOW_BAND",
+      "written_band": {
+        "entry_band_low": 354.25,
+        "entry_band_high": 369.69,
+        "stop_or_invalidation": 341.07,
+        "card_reference_price": 369.27,
+        "card_band_status": "IN_BAND",
+        "current_band_status": "BELOW_BAND",
+        "source": "wf84_canonical_overlay",
+        "decision_factory_band_snapshot": {
+          "entry_band_low": 354.63,
+          "entry_band_high": 376.48,
+          "stop_or_invalidation": 342.49,
+          "current_band_status": "IN_BAND"
+        }
+      },
+      "factory_disposition": "gate_deferred",
+      "wf67_request_generation_status": null,
+      "shadow_blockers": [],
+      "root_cause_blockers": [
+        "fresh_execution_quote",
+        "promotion_gate_monitor_only",
+        "promotion_gate_stale_relative_to_inputs"
+      ],
+      "plain_english_blockers": [
+        "GOOG is monitor-only; it is not clean enough for owner-review promotion. Cautions: AI-power / Technology correlation crowded; WF55 probability layer NOT_READY; no win-rate/model claim allowed; below band / wait for reclaim.",
+        "Promotion gate verdict may be stale: the gate was generated at 2026-06-23T13:25:21Z, but newer input artifacts exist (tmp/research-freshness-opportunity-review.json (2026-06-23T21:05:50Z), tmp/band-proposals.json (2026-06-23T20:29:01.688580+00:00), tmp/technical-refresh.json (2026-06-23T20:28:53.938684+00:00), tmp/deployment-readiness-surface.json (2026-06-23T20:29:56.959058+00:00)). Refresh the promotion gate/factory before final blocker interpretation.",
+        "GOOG is above the 200D moving average but below the 20D/50D area; the setup may be valid, but momentum has not been fully repaired. Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 365.71; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+        "GOOG is deferred by the decision factory; an upstream gate still needs repair before assisted review.",
+        "GOOG needs a fresh execution-grade quote before any assisted paper-order packet."
+      ],
+      "assisted_review_blockers": [
+        "decision_factory_disposition=gate_deferred",
+        "fresh_execution_quote_needed"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing"
+      ],
+      "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+      "outcome": {
+        "tracked": false,
+        "status": "pending_future_session",
+        "fill_or_order_id": null,
+        "paper_position_after": null,
+        "notes": "Shadow ledger only. No order submitted."
+      },
+      "authority": {
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false,
+        "paper_or_live_execution_allowed": false,
+        "owner_approval_inferred": false
+      }
+    }
+  ],
+  "source_artifacts": [
+    "tmp/paper-autotrader/shadow-eligibility.json"
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "no_current_shadow_decisions"
+    ]
+  },
+  "stop_lines": [
+    "Shadow decision ledger is not approval.",
+    "No paper submit/cancel/sell from this script.",
+    "No live endpoint, account action, money movement, or owner approval inference."
+  ]
+}

@@ -95,6 +95,19 @@ def agi_harness_fixture() -> dict:
     }
 
 
+def agi_harness_not_ready_fixture(*, technical: bool = False) -> dict:
+    return {
+        "status": "blocked",
+        "readiness_state": "not_ready_blocked",
+        "summary": {"warning_count": 1},
+        "validation": {
+            "status": "blocked",
+            "errors": ["missing_source_artifact" if technical else "implementation_token_attribution_gate"],
+            "warnings": ["helper_auditability_gate"],
+        },
+    }
+
+
 def contract_fixture(prompt_errors: int = 0) -> dict:
     return {
         "summary": {
@@ -155,8 +168,6 @@ def test_review_payload_warns_without_blocking_efficiency_debt() -> None:
         scorecard=scorecard_fixture(),
         predispatch=predispatch_fixture(),
         token_review_packet=token_review_fixture(),
-        pm_prefilter_packet=pm_prefilter_fixture(),
-        ticker_prefilter_packet=ticker_prefilter_fixture(),
         agi_eval_packet=agi_eval_fixture(),
         agi_harness_packet=agi_harness_fixture(),
         contract=contract_fixture(),
@@ -168,7 +179,6 @@ def test_review_payload_warns_without_blocking_efficiency_debt() -> None:
     assert payload["validation"]["status"] == "ok"
     assert payload["summary"]["next_changed_only_candidate"] == "PM - Autonomous Implementation Proof Worker"
     assert payload["summary"]["next_prompt_compression_candidate"] == "Finance - Ticker Card Freshness Owner Runner"
-    assert payload["summary"]["ticker_card_prefilter_status"] == "skipped_unchanged"
     assert payload["automation_queues"]["later_outcome_guard"]["state"] == "enforced_by_agi_os_eval_gate"
     assert payload["summary"]["prompt_book_lint_status"] == "ok"
     assert payload["summary"]["prompt_book_eval_gap_count"] == 0
@@ -179,8 +189,6 @@ def test_review_payload_blocks_prompt_integrity_errors() -> None:
         scorecard=scorecard_fixture(),
         predispatch=predispatch_fixture(),
         token_review_packet=token_review_fixture(),
-        pm_prefilter_packet=pm_prefilter_fixture(),
-        ticker_prefilter_packet=ticker_prefilter_fixture(),
         agi_eval_packet=agi_eval_fixture(),
         agi_harness_packet=agi_harness_fixture(),
         contract=contract_fixture(prompt_errors=2),
@@ -192,6 +200,41 @@ def test_review_payload_blocks_prompt_integrity_errors() -> None:
     assert payload["validation"]["status"] == "error"
 
 
+def test_review_payload_preserves_not_ready_harness_as_domain_warning() -> None:
+    payload = runner.build_review_payload(
+        scorecard=scorecard_fixture(),
+        predispatch=predispatch_fixture(),
+        token_review_packet=token_review_fixture(),
+        agi_eval_packet=agi_eval_fixture(),
+        agi_harness_packet=agi_harness_not_ready_fixture(),
+        contract=contract_fixture(),
+        prompt_book=prompt_book_fixture(),
+    )
+    assert payload["status"] == "ok"
+    assert payload["review_status"] == "warning"
+    assert payload["validation"]["status"] == "ok"
+    assert payload["summary"]["agi_harness_readiness_blocked"] is True
+    assert payload["summary"]["agi_harness_readiness_gate_errors"] == ["implementation_token_attribution_gate"]
+    assert "agi_harness_readiness:not_ready_blocked" in payload["warnings"]
+    assert "agi_harness_readiness_gate:implementation_token_attribution_gate" in payload["warnings"]
+    assert "Keep AGI harness readiness blocked" in payload["summary"]["next_safe_action"]
+
+
+def test_review_payload_still_blocks_technical_harness_failure() -> None:
+    payload = runner.build_review_payload(
+        scorecard=scorecard_fixture(),
+        predispatch=predispatch_fixture(),
+        token_review_packet=token_review_fixture(),
+        agi_eval_packet=agi_eval_fixture(),
+        agi_harness_packet=agi_harness_not_ready_fixture(technical=True),
+        contract=contract_fixture(),
+        prompt_book=prompt_book_fixture(),
+    )
+    assert payload["status"] == "blocked"
+    assert payload["validation"]["status"] == "error"
+    assert "agi_harness_blocked" in payload["errors"]
+
+
 def test_review_payload_blocks_scorecard_detail_mismatch() -> None:
     scorecard = scorecard_fixture()
     scorecard["api_call_reduction_candidates"] = []
@@ -199,8 +242,6 @@ def test_review_payload_blocks_scorecard_detail_mismatch() -> None:
         scorecard=scorecard,
         predispatch=predispatch_fixture(),
         token_review_packet=token_review_fixture(),
-        pm_prefilter_packet=pm_prefilter_fixture(),
-        ticker_prefilter_packet=ticker_prefilter_fixture(),
         agi_eval_packet=agi_eval_fixture(),
         agi_harness_packet=agi_harness_fixture(),
         contract=contract_fixture(),
@@ -215,8 +256,6 @@ def test_review_payload_blocks_prompt_book_lint_errors() -> None:
         scorecard=scorecard_fixture(),
         predispatch=predispatch_fixture(),
         token_review_packet=token_review_fixture(),
-        pm_prefilter_packet=pm_prefilter_fixture(),
-        ticker_prefilter_packet=ticker_prefilter_fixture(),
         agi_eval_packet=agi_eval_fixture(),
         agi_harness_packet=agi_harness_fixture(),
         contract=contract_fixture(),
@@ -307,6 +346,8 @@ def test_reporting_order_rejects_consumer_before_producer() -> None:
 def main() -> int:
     test_review_payload_warns_without_blocking_efficiency_debt()
     test_review_payload_blocks_prompt_integrity_errors()
+    test_review_payload_preserves_not_ready_harness_as_domain_warning()
+    test_review_payload_still_blocks_technical_harness_failure()
     test_review_payload_blocks_scorecard_detail_mismatch()
     test_review_payload_blocks_prompt_book_lint_errors()
     test_reporting_producers_use_mocked_gateway_and_preserve_order()

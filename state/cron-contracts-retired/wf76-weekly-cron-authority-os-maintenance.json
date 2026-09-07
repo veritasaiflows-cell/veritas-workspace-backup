@@ -1,0 +1,12 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "bd1c1f4d-b2e1-4307-9130-36f635f2a56c",
+  "name": "Retired — WF76 - Weekly Cron Authority and OS Maintenance",
+  "required": false,
+  "enabled": false,
+  "owner_workflow": "WF76",
+  "original_schedule": {"kind": "cron", "expr": "5 18 * * 0", "tz": "America/Phoenix"},
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired during the alerts-and-recommendations OS cutover because its authority validator and maintenance route still required legacy WF67, sizing, and Execution Board semantics.",
+  "rollback_requires_owner_gate": true
+}

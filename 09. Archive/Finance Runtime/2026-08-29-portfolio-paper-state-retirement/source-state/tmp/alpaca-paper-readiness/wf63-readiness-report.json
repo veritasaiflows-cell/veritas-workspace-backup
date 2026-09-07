@@ -1,0 +1,89 @@
+{
+  "generated_at_utc": "2026-07-02T02:12:35Z",
+  "status": "ok",
+  "phase": "phase_0_policy_and_architecture_lock",
+  "policy_path": "tmp/alpaca-paper-readiness/phase-0-policy.json",
+  "authority": {
+    "config_or_auth_mutation_allowed": false,
+    "credential_handling_approved": false,
+    "live_submit_allowed": false,
+    "manual_paper_pilot_reconciliation_allowed": false,
+    "money_movement_allowed": false,
+    "openclaw_paper_submit_allowed": false,
+    "order_preview_generation_allowed": true,
+    "paper_submit_cancel_approved_in_principle": true,
+    "read_only_connection_allowed": true,
+    "readiness_design_allowed": true,
+    "shadow_mode_allowed": true,
+    "trade_or_account_action_allowed": false
+  },
+  "phase_gates": {
+    "phase_1_read_only_connection_blocked": false,
+    "phase_3_order_preview_non_executable_available": true,
+    "phase_4_shadow_mode_non_executable_available": true,
+    "phase_5_manual_pilot_blocked": true,
+    "phase_6_openclaw_paper_submit_blocked": true,
+    "live_submit_blocked": true,
+    "trade_or_account_action_blocked": true
+  },
+  "summary": {
+    "critical": 0,
+    "warning": 0
+  },
+  "findings": [],
+  "read_only_connection_validation": {
+    "status": "ok",
+    "proof_path": "tmp/alpaca-paper-readiness/read-only-connection-proof.json",
+    "summary": {
+      "critical": 0,
+      "warning": 0,
+      "info": 0
+    },
+    "findings": []
+  },
+  "no_submit_guard_report": {
+    "schema_version": 1,
+    "generated_at_utc": "2026-07-02T02:12:35Z",
+    "artifact_type": "wf63_no_submit_guard_report",
+    "status": "ok",
+    "scope": {
+      "scan_dirs": [
+        "scripts",
+        "skills",
+        "06. Playbooks",
+        "07. Risk"
+      ],
+      "excluded_parts": [
+        ".git",
+        "09. Archive",
+        "node_modules",
+        "tmp"
+      ],
+      "allowed_reference_files": [
+        "06. Playbooks/Project Continuity/Workflow 63 - Alpaca Paper Trading Readiness.md",
+        "06. Playbooks/Project Continuity/Workflow 67 - Alpaca Paper Execution Guardrail.md",
+        "07. Risk/Alpaca Paper Trading Guardrails.md",
+        "scripts/alpaca_paper_execution_guard_validator.py",
+        "scripts/alpaca_paper_readiness_validator.py",
+        "scripts/alpaca_paper_trade_executor.py",
+        "scripts/test_alpaca_paper_readiness_validator.py",
+        "scripts/test_alpaca_paper_trade_executor.py"
+      ]
+    },
+    "authority": {
+      "read_only_static_scan": true,
+      "openclaw_paper_submit_allowed": false,
+      "live_submit_allowed": false,
+      "trade_or_account_action_allowed": false,
+      "brokerage_write_path_allowed": false
+    },
+    "summary": {
+      "critical": 0,
+      "warning": 0
+    },
+    "findings": []
+  },
+  "order_preview_validation": null,
+  "shadow_mode_validation": null,
+  "verdict": "WF63 read-only proof is valid; paper submit/cancel remains blocked here and moves to WF67 guardrails."
+}

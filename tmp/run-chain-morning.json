@@ -1,8 +1,8 @@
 {
   "window": "morning",
   "owner": "scripts/run_finance_refresh_chain.py",
-  "started_at_utc": "2026-08-27T13:05:08Z",
-  "completed_at_utc": "2026-08-27T13:16:22Z",
+  "started_at_utc": "2026-08-28T13:05:02Z",
+  "completed_at_utc": "2026-08-28T13:14:31Z",
   "status": "completed_with_recovery",
   "exit_code": 1,
   "strict": false,
@@ -127,10 +127,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:05:08Z",
-      "completed_at_utc": "2026-08-27T13:05:09Z",
+      "started_at_utc": "2026-08-28T13:05:02Z",
+      "completed_at_utc": "2026-08-28T13:05:02Z",
       "exit_code": 0,
-      "duration_seconds": 0.955,
+      "duration_seconds": 0.076,
       "timed_out": false
     },
     {
@@ -145,10 +145,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:05:09Z",
-      "completed_at_utc": "2026-08-27T13:05:11Z",
+      "started_at_utc": "2026-08-28T13:05:02Z",
+      "completed_at_utc": "2026-08-28T13:05:04Z",
       "exit_code": 0,
-      "duration_seconds": 2.215,
+      "duration_seconds": 1.386,
       "timed_out": false
     },
     {
@@ -161,10 +161,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:05:11Z",
-      "completed_at_utc": "2026-08-27T13:13:40Z",
+      "started_at_utc": "2026-08-28T13:05:04Z",
+      "completed_at_utc": "2026-08-28T13:12:34Z",
       "exit_code": 0,
-      "duration_seconds": 508.979,
+      "duration_seconds": 450.267,
       "timed_out": false
     },
     {
@@ -179,10 +179,10 @@
       "recovery_posture": "ticker_data_quality",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:13:40Z",
-      "completed_at_utc": "2026-08-27T13:13:41Z",
+      "started_at_utc": "2026-08-28T13:12:34Z",
+      "completed_at_utc": "2026-08-28T13:12:34Z",
       "exit_code": 0,
-      "duration_seconds": 0.926,
+      "duration_seconds": 0.16,
       "timed_out": false
     },
     {
@@ -200,10 +200,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:13:41Z",
-      "completed_at_utc": "2026-08-27T13:13:44Z",
+      "started_at_utc": "2026-08-28T13:12:34Z",
+      "completed_at_utc": "2026-08-28T13:12:37Z",
       "exit_code": 0,
-      "duration_seconds": 3.227,
+      "duration_seconds": 2.562,
       "timed_out": false
     },
     {
@@ -216,10 +216,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:13:44Z",
-      "completed_at_utc": "2026-08-27T13:13:46Z",
+      "started_at_utc": "2026-08-28T13:12:37Z",
+      "completed_at_utc": "2026-08-28T13:12:37Z",
       "exit_code": 0,
-      "duration_seconds": 1.166,
+      "duration_seconds": 0.435,
       "timed_out": false
     },
     {
@@ -232,10 +232,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:13:46Z",
-      "completed_at_utc": "2026-08-27T13:13:47Z",
+      "started_at_utc": "2026-08-28T13:12:37Z",
+      "completed_at_utc": "2026-08-28T13:12:38Z",
       "exit_code": 0,
-      "duration_seconds": 1.492,
+      "duration_seconds": 0.708,
       "timed_out": false
     },
     {
@@ -248,10 +248,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:13:47Z",
-      "completed_at_utc": "2026-08-27T13:13:49Z",
+      "started_at_utc": "2026-08-28T13:12:38Z",
+      "completed_at_utc": "2026-08-28T13:12:39Z",
       "exit_code": 0,
-      "duration_seconds": 1.793,
+      "duration_seconds": 1.028,
       "timed_out": false
     },
     {
@@ -264,10 +264,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:13:49Z",
-      "completed_at_utc": "2026-08-27T13:13:52Z",
+      "started_at_utc": "2026-08-28T13:12:39Z",
+      "completed_at_utc": "2026-08-28T13:12:41Z",
       "exit_code": 0,
-      "duration_seconds": 2.98,
+      "duration_seconds": 1.874,
       "timed_out": false
     },
     {
@@ -280,10 +280,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:13:52Z",
-      "completed_at_utc": "2026-08-27T13:13:54Z",
+      "started_at_utc": "2026-08-28T13:12:41Z",
+      "completed_at_utc": "2026-08-28T13:12:42Z",
       "exit_code": 0,
-      "duration_seconds": 1.787,
+      "duration_seconds": 1.256,
       "timed_out": false
     },
     {
@@ -296,10 +296,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:13:54Z",
-      "completed_at_utc": "2026-08-27T13:13:55Z",
+      "started_at_utc": "2026-08-28T13:12:42Z",
+      "completed_at_utc": "2026-08-28T13:12:43Z",
       "exit_code": 0,
-      "duration_seconds": 1.715,
+      "duration_seconds": 1.119,
       "timed_out": false
     },
     {
@@ -312,10 +312,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:13:55Z",
-      "completed_at_utc": "2026-08-27T13:14:00Z",
+      "started_at_utc": "2026-08-28T13:12:43Z",
+      "completed_at_utc": "2026-08-28T13:12:46Z",
       "exit_code": 0,
-      "duration_seconds": 4.41,
+      "duration_seconds": 3.344,
       "timed_out": false
     },
     {
@@ -331,10 +331,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:00Z",
-      "completed_at_utc": "2026-08-27T13:14:00Z",
+      "started_at_utc": "2026-08-28T13:12:46Z",
+      "completed_at_utc": "2026-08-28T13:12:47Z",
       "exit_code": 0,
-      "duration_seconds": 0.581,
+      "duration_seconds": 0.088,
       "timed_out": false
     },
     {
@@ -349,10 +349,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:00Z",
-      "completed_at_utc": "2026-08-27T13:14:01Z",
+      "started_at_utc": "2026-08-28T13:12:47Z",
+      "completed_at_utc": "2026-08-28T13:12:47Z",
       "exit_code": 0,
-      "duration_seconds": 0.563,
+      "duration_seconds": 0.144,
       "timed_out": false
     },
     {
@@ -365,10 +365,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:01Z",
-      "completed_at_utc": "2026-08-27T13:14:02Z",
+      "started_at_utc": "2026-08-28T13:12:47Z",
+      "completed_at_utc": "2026-08-28T13:12:47Z",
       "exit_code": 0,
-      "duration_seconds": 0.909,
+      "duration_seconds": 0.075,
       "timed_out": false
     },
     {
@@ -383,10 +383,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:02Z",
-      "completed_at_utc": "2026-08-27T13:14:03Z",
+      "started_at_utc": "2026-08-28T13:12:47Z",
+      "completed_at_utc": "2026-08-28T13:12:47Z",
       "exit_code": 0,
-      "duration_seconds": 0.582,
+      "duration_seconds": 0.062,
       "timed_out": false
     },
     {
@@ -401,10 +401,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:03Z",
-      "completed_at_utc": "2026-08-27T13:14:03Z",
+      "started_at_utc": "2026-08-28T13:12:47Z",
+      "completed_at_utc": "2026-08-28T13:12:47Z",
       "exit_code": 0,
-      "duration_seconds": 0.586,
+      "duration_seconds": 0.092,
       "timed_out": false
     },
     {
@@ -419,10 +419,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:03Z",
-      "completed_at_utc": "2026-08-27T13:14:04Z",
+      "started_at_utc": "2026-08-28T13:12:47Z",
+      "completed_at_utc": "2026-08-28T13:12:47Z",
       "exit_code": 0,
-      "duration_seconds": 0.588,
+      "duration_seconds": 0.132,
       "timed_out": false
     },
     {
@@ -437,10 +437,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:04Z",
-      "completed_at_utc": "2026-08-27T13:14:05Z",
+      "started_at_utc": "2026-08-28T13:12:47Z",
+      "completed_at_utc": "2026-08-28T13:12:47Z",
       "exit_code": 0,
-      "duration_seconds": 0.928,
+      "duration_seconds": 0.084,
       "timed_out": false
     },
     {
@@ -453,10 +453,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:05Z",
-      "completed_at_utc": "2026-08-27T13:14:10Z",
+      "started_at_utc": "2026-08-28T13:12:47Z",
+      "completed_at_utc": "2026-08-28T13:12:52Z",
       "exit_code": 0,
-      "duration_seconds": 5.585,
+      "duration_seconds": 4.997,
       "timed_out": false
     },
     {
@@ -469,10 +469,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:10Z",
-      "completed_at_utc": "2026-08-27T13:14:11Z",
+      "started_at_utc": "2026-08-28T13:12:52Z",
+      "completed_at_utc": "2026-08-28T13:12:52Z",
       "exit_code": 0,
-      "duration_seconds": 0.923,
+      "duration_seconds": 0.078,
       "timed_out": false
     },
     {
@@ -485,10 +485,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:11Z",
-      "completed_at_utc": "2026-08-27T13:14:12Z",
+      "started_at_utc": "2026-08-28T13:12:52Z",
+      "completed_at_utc": "2026-08-28T13:12:52Z",
       "exit_code": 0,
-      "duration_seconds": 0.882,
+      "duration_seconds": 0.052,
       "timed_out": false
     },
     {
@@ -503,10 +503,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:12Z",
-      "completed_at_utc": "2026-08-27T13:14:13Z",
+      "started_at_utc": "2026-08-28T13:12:52Z",
+      "completed_at_utc": "2026-08-28T13:12:52Z",
       "exit_code": 0,
-      "duration_seconds": 0.898,
+      "duration_seconds": 0.05,
       "timed_out": false
     },
     {
@@ -519,10 +519,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:13Z",
-      "completed_at_utc": "2026-08-27T13:14:15Z",
+      "started_at_utc": "2026-08-28T13:12:52Z",
+      "completed_at_utc": "2026-08-28T13:12:54Z",
       "exit_code": 0,
-      "duration_seconds": 2.399,
+      "duration_seconds": 1.37,
       "timed_out": false
     },
     {
@@ -535,10 +535,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:15Z",
-      "completed_at_utc": "2026-08-27T13:14:17Z",
+      "started_at_utc": "2026-08-28T13:12:54Z",
+      "completed_at_utc": "2026-08-28T13:12:54Z",
       "exit_code": 0,
-      "duration_seconds": 1.188,
+      "duration_seconds": 0.676,
       "timed_out": false
     },
     {
@@ -551,10 +551,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:17Z",
-      "completed_at_utc": "2026-08-27T13:14:20Z",
+      "started_at_utc": "2026-08-28T13:12:54Z",
+      "completed_at_utc": "2026-08-28T13:12:57Z",
       "exit_code": 0,
-      "duration_seconds": 3.726,
+      "duration_seconds": 2.335,
       "timed_out": false
     },
     {
@@ -567,10 +567,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:20Z",
-      "completed_at_utc": "2026-08-27T13:14:53Z",
+      "started_at_utc": "2026-08-28T13:12:57Z",
+      "completed_at_utc": "2026-08-28T13:13:24Z",
       "exit_code": 0,
-      "duration_seconds": 32.842,
+      "duration_seconds": 26.783,
       "timed_out": false
     },
     {
@@ -586,10 +586,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:53Z",
-      "completed_at_utc": "2026-08-27T13:14:54Z",
+      "started_at_utc": "2026-08-28T13:13:24Z",
+      "completed_at_utc": "2026-08-28T13:13:24Z",
       "exit_code": 0,
-      "duration_seconds": 0.48,
+      "duration_seconds": 0.096,
       "timed_out": false
     },
     {
@@ -605,10 +605,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:54Z",
-      "completed_at_utc": "2026-08-27T13:14:56Z",
+      "started_at_utc": "2026-08-28T13:13:24Z",
+      "completed_at_utc": "2026-08-28T13:13:25Z",
       "exit_code": 0,
-      "duration_seconds": 2.175,
+      "duration_seconds": 1.312,
       "timed_out": false
     },
     {
@@ -624,10 +624,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:14:56Z",
-      "completed_at_utc": "2026-08-27T13:15:12Z",
+      "started_at_utc": "2026-08-28T13:13:25Z",
+      "completed_at_utc": "2026-08-28T13:13:39Z",
       "exit_code": 0,
-      "duration_seconds": 15.702,
+      "duration_seconds": 14.267,
       "timed_out": false
     },
     {
@@ -643,10 +643,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:15:12Z",
-      "completed_at_utc": "2026-08-27T13:15:26Z",
+      "started_at_utc": "2026-08-28T13:13:39Z",
+      "completed_at_utc": "2026-08-28T13:13:54Z",
       "exit_code": 0,
-      "duration_seconds": 14.762,
+      "duration_seconds": 14.315,
       "timed_out": false
     },
     {
@@ -662,10 +662,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:15:26Z",
-      "completed_at_utc": "2026-08-27T13:15:43Z",
+      "started_at_utc": "2026-08-28T13:13:54Z",
+      "completed_at_utc": "2026-08-28T13:14:10Z",
       "exit_code": 0,
-      "duration_seconds": 16.544,
+      "duration_seconds": 16.27,
       "timed_out": false
     },
     {
@@ -678,10 +678,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:15:43Z",
-      "completed_at_utc": "2026-08-27T13:15:44Z",
+      "started_at_utc": "2026-08-28T13:14:10Z",
+      "completed_at_utc": "2026-08-28T13:14:10Z",
       "exit_code": 0,
-      "duration_seconds": 0.826,
+      "duration_seconds": 0.073,
       "timed_out": false
     },
     {
@@ -697,10 +697,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:15:44Z",
-      "completed_at_utc": "2026-08-27T13:15:49Z",
+      "started_at_utc": "2026-08-28T13:14:10Z",
+      "completed_at_utc": "2026-08-28T13:14:13Z",
       "exit_code": 0,
-      "duration_seconds": 5.34,
+      "duration_seconds": 3.112,
       "timed_out": false
     },
     {
@@ -716,10 +716,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:15:49Z",
-      "completed_at_utc": "2026-08-27T13:15:53Z",
+      "started_at_utc": "2026-08-28T13:14:13Z",
+      "completed_at_utc": "2026-08-28T13:14:16Z",
       "exit_code": 0,
-      "duration_seconds": 4.042,
+      "duration_seconds": 2.842,
       "timed_out": false
     },
     {
@@ -735,10 +735,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:15:53Z",
-      "completed_at_utc": "2026-08-27T13:15:54Z",
+      "started_at_utc": "2026-08-28T13:14:16Z",
+      "completed_at_utc": "2026-08-28T13:14:16Z",
       "exit_code": 0,
-      "duration_seconds": 0.543,
+      "duration_seconds": 0.078,
       "timed_out": false
     },
     {
@@ -754,10 +754,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:15:54Z",
-      "completed_at_utc": "2026-08-27T13:15:54Z",
+      "started_at_utc": "2026-08-28T13:14:16Z",
+      "completed_at_utc": "2026-08-28T13:14:16Z",
       "exit_code": 0,
-      "duration_seconds": 0.564,
+      "duration_seconds": 0.088,
       "timed_out": false
     },
     {
@@ -773,10 +773,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:15:54Z",
-      "completed_at_utc": "2026-08-27T13:15:55Z",
+      "started_at_utc": "2026-08-28T13:14:16Z",
+      "completed_at_utc": "2026-08-28T13:14:16Z",
       "exit_code": 0,
-      "duration_seconds": 0.821,
+      "duration_seconds": 0.113,
       "timed_out": false
     },
     {
@@ -789,10 +789,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:15:55Z",
-      "completed_at_utc": "2026-08-27T13:16:04Z",
+      "started_at_utc": "2026-08-28T13:14:16Z",
+      "completed_at_utc": "2026-08-28T13:14:22Z",
       "exit_code": 0,
-      "duration_seconds": 8.318,
+      "duration_seconds": 5.3,
       "timed_out": false
     },
     {
@@ -805,10 +805,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:16:04Z",
-      "completed_at_utc": "2026-08-27T13:16:12Z",
+      "started_at_utc": "2026-08-28T13:14:22Z",
+      "completed_at_utc": "2026-08-28T13:14:27Z",
       "exit_code": 0,
-      "duration_seconds": 8.342,
+      "duration_seconds": 5.432,
       "timed_out": false
     },
     {
@@ -823,10 +823,10 @@
       "recovery_posture": "fail_chain",
       "parallel_safe": null,
       "status": "failed",
-      "started_at_utc": "2026-08-27T13:16:12Z",
-      "completed_at_utc": "2026-08-27T13:16:13Z",
+      "started_at_utc": "2026-08-28T13:14:27Z",
+      "completed_at_utc": "2026-08-28T13:14:27Z",
       "exit_code": 1,
-      "duration_seconds": 1.069,
+      "duration_seconds": 0.34,
       "timed_out": false
     },
     {
@@ -842,7 +842,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -861,7 +861,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -877,7 +877,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -893,7 +893,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -909,7 +909,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -928,7 +928,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -946,7 +946,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -966,7 +966,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -985,7 +985,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1001,7 +1001,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1017,7 +1017,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1033,7 +1033,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1049,7 +1049,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1065,7 +1065,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1081,7 +1081,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1097,7 +1097,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1115,7 +1115,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1131,7 +1131,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1147,7 +1147,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1166,7 +1166,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1185,7 +1185,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1204,7 +1204,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1223,7 +1223,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:17Z",
+      "completed_at_utc": "2026-08-28T13:14:29Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1241,10 +1241,10 @@
       "recovery_posture": "recovery_finalizer",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:16:17Z",
-      "completed_at_utc": "2026-08-27T13:16:19Z",
+      "started_at_utc": "2026-08-28T13:14:29Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": 0,
-      "duration_seconds": 1.621,
+      "duration_seconds": 0.925,
       "timed_out": false
     },
     {
@@ -1260,10 +1260,10 @@
       "recovery_posture": "recovery_finalizer",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:16:19Z",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "started_at_utc": "2026-08-28T13:14:30Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": 0,
-      "duration_seconds": 1.186,
+      "duration_seconds": 0.183,
       "timed_out": false
     },
     {
@@ -1280,7 +1280,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1299,7 +1299,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1318,7 +1318,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1337,7 +1337,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1356,7 +1356,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1374,7 +1374,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1393,7 +1393,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1413,7 +1413,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1431,7 +1431,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1449,7 +1449,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1469,7 +1469,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1487,7 +1487,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1505,7 +1505,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1523,7 +1523,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1541,7 +1541,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1559,7 +1559,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1579,7 +1579,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1599,7 +1599,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1617,7 +1617,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1635,7 +1635,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1655,7 +1655,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1673,7 +1673,7 @@
       "parallel_safe": null,
       "status": "skipped_after_failure",
       "started_at_utc": "",
-      "completed_at_utc": "2026-08-27T13:16:20Z",
+      "completed_at_utc": "2026-08-28T13:14:30Z",
       "exit_code": null,
       "duration_seconds": null,
       "skip_reason": "Skipped after earlier step failure so final trust snapshot could still be emitted."
@@ -1691,10 +1691,10 @@
       "recovery_posture": "recovery_finalizer",
       "parallel_safe": null,
       "status": "ok",
-      "started_at_utc": "2026-08-27T13:16:20Z",
-      "completed_at_utc": "2026-08-27T13:16:22Z",
+      "started_at_utc": "2026-08-28T13:14:30Z",
+      "completed_at_utc": "2026-08-28T13:14:31Z",
       "exit_code": 0,
-      "duration_seconds": 1.622,
+      "duration_seconds": 0.921,
       "timed_out": false
     }
   ]

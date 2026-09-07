@@ -1,0 +1,40 @@
+{
+  "artifact_type": "wf67_paper_basket_request",
+  "audit": {
+    "raw_response_bodies_persisted": false,
+    "secret_material_present": false
+  },
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "dry_run_only": true,
+    "execute_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "live_submit_allowed": false,
+    "money_movement_allowed": false,
+    "no_inferred_approval": true,
+    "owner_approval_granted": false,
+    "paper_only": true
+  },
+  "created_at_utc": "2026-05-18T05:41:41Z",
+  "execution_mode": "dry_run_only",
+  "orders": [],
+  "portfolio_scope_id": "wf67-full-portfolio-20260517-v1",
+  "request_id": "wf67-basket-tranche0-dry-run-20260517-v1",
+  "risk_check": {
+    "basket_estimated_notional_usd": 0.0,
+    "status": "ok",
+    "tranche_remaining_notional_usd": 0.0
+  },
+  "schema_version": 1,
+  "source": {
+    "final_packet": "03. Portfolio/Deployment Build Executive Packet - 2026-05-17.md",
+    "scope_contract": "tmp/wf67-full-portfolio-scope-contract-draft.md"
+  },
+  "tranche": {
+    "max_new_submitted_notional_usd": 0.0,
+    "purpose": "validator_and_scope_review_only",
+    "tranche_number": 0
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

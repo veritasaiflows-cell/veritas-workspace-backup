@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "nvda-small-paper-proposal-2026-06-18",
+  "created_at_utc": "2026-06-18T15:21:27Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_submit_allowed_after_exact_approval_and_guard": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true,
+    "currently_executable": false,
+    "paper_submit_requires_exact_owner_approval": true,
+    "paper_submit_requires_fresh_guard": true,
+    "paper_submit_requires_fresh_kill_switch": true
+  },
+  "execution_readiness": {
+    "currently_executable": false,
+    "reason": "exact_randall_approval_present_pending_fresh_wf67_guard_and_kill_switch",
+    "exact_order_owner_approval_status": "approved_exact_order",
+    "requires_exact_owner_approval": true,
+    "requires_fresh_wf67_guard": true,
+    "requires_fresh_short_lived_kill_switch": true,
+    "execution_by_this_artifact_allowed": false,
+    "paper_submit_allowed_field_semantics": "schema capability only; not current execution approval"
+  },
+  "order": {
+    "symbol": "NVDA",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 208.75,
+    "qty": null,
+    "notional": 150.0
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 150.0,
+    "max_loss_usd": 19.7,
+    "max_notional_usd": 150.0,
+    "position_size_reviewed": true,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "entry_band_low": 191.15,
+    "entry_band_high": 212.77,
+    "observed_price": 209.25,
+    "observed_entry_status": "IN_BAND",
+    "stop": 181.33,
+    "sizing_rationale": "Owner-requested small paper-only starter proposal; deliberately below $500 WF67 pilot cap and below the prior $200-$350 starter range because direct Tech exposure is at cap/crowded.",
+    "full_scope_artifact": null,
+    "pre_submit_quote_check": {
+      "status": "ok",
+      "price": 209.15,
+      "source": "yfinance_fast_info",
+      "checked_at_utc": "2026-06-18T15:27:30Z",
+      "band_status": "IN_BAND",
+      "entry_band_low": 191.15,
+      "entry_band_high": 212.77,
+      "stop": 181.33
+    }
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "WF67 paper-only NVDA small starter proposal requested by Randall; pending exact approval before any execution.",
+    "recommendation_source": "main_session_order_decision_card",
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.owner-card.small-2026-06-18.json",
+    "capital_recommendation_source": "owner_requested_nvda_small_paper_proposal",
+    "source_artifact": "tmp/wf78-capital-review-queue.json",
+    "market_order_owner_approved": false,
+    "exact_order_owner_approval_status": "approved_exact_order",
+    "approved_by": "Randall",
+    "exact_order_owner_approval_text": "Randall Telegram 2026-06-18 08:26 MST: Approve to place paper order: Ticker NVDA; Side BUY; Type/TIF limit/day; Notional $150; Limit $208.75.",
+    "main_session_capital_package_notification_required": true,
+    "approval_artifact": null,
+    "chief_intelligence_promotion_gate": null,
+    "owner_exact_approval_message_id": "telegram:8650152206:3639",
+    "owner_exact_approval_received_at_utc": "2026-06-18T15:27:30Z"
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_forbidden": "https://api.alpaca.markets"
+  }
+}

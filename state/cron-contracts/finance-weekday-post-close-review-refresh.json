@@ -1,10 +1,11 @@
 {
   "schema": "veritas.cron_contract.v1",
   "job_id": "58fc5f27-4cc1-470f-8af5-eba29327a0d5",
-  "name": "Finance - Weekday Post-Close Review Refresh",
+  "name": "Finance - Weekday Post-Close Alerts and Recommendations Refresh",
   "required": true,
   "owner_workflow": "WF84/WF85",
-  "contract_reason": "High-consequence post-close finance chain with approved bounded note-maintenance rails.",
+  "contract_reason": "Post-close guarded refresh for alert state, freshness decay, and non-executing recommendation proof.",
+  "description": "Deterministic weekday post-close alerts-and-recommendations chain over guarded SQL, explicit quote proof, the alert-level controller, and a non-delivery digest. No portfolio state, paper/live execution, accounts, capital, or approval authority.",
   "enabled": true,
   "deleteAfterRun": false,
   "schedule": {
@@ -26,14 +27,19 @@
     "kind": "command",
     "argv": [
       "python",
-      "scripts\\post_close_review_cron_launcher.py",
+      "scripts\\run_alerts_recommendations_chain.py",
+      "post-close",
+      "--timeout-seconds",
+      "120",
       "--write",
       "--validate"
     ],
     "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
-    "timeoutSeconds": 900
+    "timeoutSeconds": 600
   },
   "compare_fields": [
+    "name",
+    "description",
     "enabled",
     "deleteAfterRun",
     "schedule",
@@ -48,19 +54,12 @@
     "payload.timeoutSeconds"
   ],
   "expected_artifacts": [
-    "tmp/post-close-review-cron-launcher.json",
-    "tmp/post-close-review-cron-runner.json",
-    "tmp/run-chain-post-close.json",
-    "tmp/run-summary-post-close.json",
-    "tmp/earnings-calendar.json",
-    "tmp/earnings-date-source-confidence.json",
-    "tmp/event-calendar-rollforward.json",
-    "tmp/post-close-final-quote-ledger.json",
-    "tmp/ticker-card-freshness-owner-runner.json",
-    "tmp/trade-grade-os-freshness-cron-runner.json",
-    "tmp/wf85-deployment-timing-gate.json",
-    "tmp/trade-grade-os-readiness-rollup.json",
-    "tmp/cron-control-packet.json"
+    "tmp/alerts-recommendations-chain-post-close.json",
+    "tmp/alert-level-freshness-controller.json",
+    "tmp/finance-alert-os-post-close-digest.json",
+    "tmp/intraday-alerts/quote-snapshot-proof.json",
+    "tmp/intraday-alerts/quote-snapshot-proof-validation.json",
+    "tmp/finance-sql-canon-access-validation.json"
   ],
   "authority_boundary": {
     "review_only": true,
@@ -73,6 +72,6 @@
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-06-29T23:57:22Z",
-  "contract_update_reason": "Cron prompt-integrity repair: converted deterministic single-command wrapper from quiet-only agentTurn to direct command payload; schedule/delivery/enablement unchanged."
+  "updated_at_utc": "2026-08-30T02:07:00Z",
+  "contract_update_reason": "Replaced the legacy deployment/trade-grade post-close launcher with the bounded alerts-and-recommendations chain; schedule and failure alert remain unchanged."
 }

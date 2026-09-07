@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "wf67-xlb-monday-band-gated-2026-06-01",
+  "created_at_utc": "2026-06-02T13:42:31Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true
+  },
+  "order": {
+    "symbol": "XLB",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 51.68,
+    "qty": null,
+    "notional": 250.0
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 250.0,
+    "max_loss_usd": 250.0,
+    "max_notional_usd": 250.0,
+    "position_size_reviewed": true,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "entry_band_low": 49.84,
+    "entry_band_high": 51.68,
+    "observed_price": 51.15,
+    "observed_entry_status": "IN_BAND",
+    "stop": 48.81,
+    "sizing_rationale": "Rank 1 starter-sized Materials ETF paper simulation. Best incremental paper-money add because it improves Materials diversification and avoids adding more AI-power concentration; limit is capped at the written band high and stays below WF67 pilot cap."
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "XLB Monday 2026-06-01 band-gated paper-only starter packet; executable only if fresh Monday quote remains inside 49.84-51.68 and Randall approves exact terms.",
+    "recommendation_source": "main_session_order_decision_card",
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/order-card.xlb-monday-band-gated-2026-06-01.json",
+    "capital_recommendation_source": "manual_main_session_rerank_2026-05-30_after_fresh_market_data",
+    "source_artifact": "08. Audits/Promoted Ticker Audit and Promotion Change Proposal - 2026-05-29.md",
+    "market_order_owner_approved": false,
+    "exact_order_owner_approval_status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "exact_order_owner_approval_text": null,
+    "main_session_capital_package_notification_required": true,
+    "approval_artifact": null,
+    "chief_intelligence_promotion_gate": {
+      "gate_artifact": "tmp/chief-intelligence-promotion-gate.json",
+      "gate_schema_version": "chief_intelligence_promotion_gate.v1",
+      "gate_generated_at_utc": "2026-06-02T13:42:27Z",
+      "ticker": "XLB",
+      "rank": 2,
+      "chief_intelligence_score": 77.0,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "band_status": "IN_BAND",
+      "entry_band": {
+        "low": 49.84,
+        "high": 51.68,
+        "stop": 48.81,
+        "label": "49.84-51.68",
+        "band_last_set": "2026-05-15"
+      }
+    }
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_forbidden": "https://api.alpaca.markets"
+  }
+}

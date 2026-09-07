@@ -1,0 +1,32 @@
+{
+  "approval_reference": "Randall 2026-09-04 14:44 MST approved removing tmp/finance-intelligence-state-entry-stop-refs.json and tmp/finance-intelligence-state.sqlite",
+  "authority_boundary": {
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_or_account_action_allowed": false,
+    "config_auth_channel_runtime_mutation_allowed": false,
+    "delete_limited_to_tmp": true,
+    "paper_or_live_execution_allowed": false,
+    "requires_exact_owner_approval_reference": true,
+    "reversible_via_rollback_copy": true
+  },
+  "deleted_files": [
+    {
+      "bytes": 16661,
+      "recreated_at_utc": "2026-09-03T00:54:02Z",
+      "rollback_copy": "09. Archive/Finance Runtime/2026-08-29-portfolio-paper-state-retirement/post-retirement-residue/finance-intelligence-state-entry-stop-refs.json",
+      "sha256": "975561ee42be3f561286edcafdf669f157e4e9386fc7a3ba2cf653591f4a0b99",
+      "source": "tmp/finance-intelligence-state-entry-stop-refs.json"
+    },
+    {
+      "bytes": 0,
+      "recreated_at_utc": "2026-09-01T02:42:01Z",
+      "rollback_copy": "09. Archive/Finance Runtime/2026-08-29-portfolio-paper-state-retirement/post-retirement-residue/finance-intelligence-state.sqlite",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "tmp/finance-intelligence-state.sqlite"
+    }
+  ],
+  "generated_at_utc": "2026-09-04T21:48:11Z",
+  "reason": "Retired portfolio/paper runtime paths were recreated by manual script runs on 2026-09-02, after the 2026-08-29 retirement. Content differs from the original archive, so each file was preserved before deletion rather than treated as a redundant duplicate.",
+  "rollback_root": "09. Archive/Finance Runtime/2026-08-29-portfolio-paper-state-retirement/post-retirement-residue",
+  "schema_version": "post_retirement_residue_deletion_tombstone.v1"
+}

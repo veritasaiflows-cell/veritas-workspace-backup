@@ -47,6 +47,7 @@ python scripts\test_interactive_training_builder.py
 python scripts\interactive_training_qa_validator.py --write --validate
 python scripts\interactive_training_scorm_smoke_validator.py --write --validate
 python scripts\interactive_training_xapi_ledger.py --write --validate
+python scripts\interactive_training_screen_capture.py --write --validate
 python scripts\interactive_training_catalog_builder.py --write --validate
 ```
 
@@ -64,6 +65,8 @@ Current outputs:
 - `sec-evidence-review-module-scorm.zip` - SCORM 1.2 package for the SEC evidence review module
 - `otel-proof-validator-module.json/html/xapi.json` - OTEL proof and validator practice module
 - `otel-proof-validator-module-scorm.zip` - SCORM 1.2 package for the OTEL proof/validator module
+- `openclaw-day1-gateway-module.json/html/xapi.json` - OpenClaw Day 1 Gateway/Control UI practice module
+- `openclaw-day1-gateway-module-scorm.zip` - SCORM 1.2 package for the OpenClaw Day 1 module
 - `authoring-checklist.md` - module authoring checklist and proof sequence
 - `component-library.json/.md` - reusable component contract for lessons, quizzes, scenarios, checklists, boundary acknowledgements, xAPI, SCORM, and QA
 - `qa-screenshots/` - Playwright desktop/mobile screenshots from the local QA pass
@@ -80,6 +83,15 @@ Use this builder for reusable interactive modules before promoting training work
 The catalog launcher is the operator front door. Open `training\index.html` in Microsoft Edge to launch modules, resume browser-local progress, download SCORM zips, inspect manifests, open xAPI seed files, and jump to QA/SCORM screenshot proof.
 
 The catalog also links the local authoring resources. Use `authoring-checklist.md` before adding the next module, and use `component-library.md` / `component-library.json` to reuse the established interaction patterns instead of inventing a new module shape.
+
+## Teaching walkthroughs ($0)
+
+Watch-only lessons live in `training/interactive-training-builder/walkthroughs/`.
+Day 1 is `walkthroughs/openclaw-day1.html`. Open it from the catalog or from the Day 1 module player.
+You watch these. You do not record them.
+
+Optional later `.webm`/`.mp4` files can still live in `training/interactive-training-builder/recordings/`.
+That path is not required for Day 1. No LMS, no YouTube, no upload, no external media URLs.
 
 The optional xAPI ledger is local loopback only. Start it only when you want module events written to a local JSONL ledger:
 

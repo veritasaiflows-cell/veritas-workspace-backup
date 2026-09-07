@@ -1,0 +1,3872 @@
+{
+  "schema": "veritas.full_intelligence_answer_parity.v1",
+  "generated_at_utc": "2026-08-08T08:19:41Z",
+  "status": "ok",
+  "workflow_ids": [
+    "WF84",
+    "WF85"
+  ],
+  "purpose": "Full intelligence answer parity proof for migrating rich ticker answers under WF84/WF85 before duplicate surface retirement.",
+  "authority_boundary": {
+    "review_only": true,
+    "report_only": true,
+    "source_open_required_before_material_finance_claims": true,
+    "wf84_wf85_route_validation_only": true,
+    "archive_allowed": false,
+    "delete_allowed": false,
+    "apply_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "full_answer_contract": [
+    {
+      "section_id": "identity",
+      "assembler_section_id": null,
+      "card_key": "universe_metadata",
+      "material": true
+    },
+    {
+      "section_id": "thesis",
+      "assembler_section_id": "thesis",
+      "card_key": "thesis_bull_bear_entry_context",
+      "material": true
+    },
+    {
+      "section_id": "bull_case",
+      "assembler_section_id": "bull_case",
+      "card_key": "thesis_bull_bear_entry_context",
+      "material": true
+    },
+    {
+      "section_id": "bear_case",
+      "assembler_section_id": "bear_case",
+      "card_key": "thesis_bull_bear_entry_context",
+      "material": true
+    },
+    {
+      "section_id": "latest_earnings",
+      "assembler_section_id": "earnings_guidance",
+      "card_key": "latest_earnings_performance",
+      "material": true
+    },
+    {
+      "section_id": "key_financial_metrics",
+      "assembler_section_id": "financial_metrics",
+      "card_key": "key_financial_metrics",
+      "material": true
+    },
+    {
+      "section_id": "valuation",
+      "assembler_section_id": "valuation",
+      "card_key": "valuation",
+      "material": true
+    },
+    {
+      "section_id": "competitive_moat",
+      "assembler_section_id": "business_quality_moat",
+      "card_key": "competitive_moat",
+      "material": true
+    },
+    {
+      "section_id": "recent_developments_catalysts",
+      "assembler_section_id": "catalyst_news_macro",
+      "card_key": "recent_developments",
+      "material": true
+    },
+    {
+      "section_id": "analyst_consensus",
+      "assembler_section_id": null,
+      "card_key": "analyst_consensus_ratings_targets",
+      "material": true
+    },
+    {
+      "section_id": "technical_posture",
+      "assembler_section_id": "technical_setup",
+      "card_key": "technical_posture",
+      "material": true
+    },
+    {
+      "section_id": "sector_macro_context",
+      "assembler_section_id": "catalyst_news_macro",
+      "card_key": "current_sector_performance",
+      "material": true
+    },
+    {
+      "section_id": "risks_counterarguments",
+      "assembler_section_id": "risk_invalidation",
+      "card_key": "risk_register",
+      "material": true
+    },
+    {
+      "section_id": "entry_band_stop",
+      "assembler_section_id": "entry_stop_sizing",
+      "card_key": "price_band_stop",
+      "material": true
+    },
+    {
+      "section_id": "portfolio_fit",
+      "assembler_section_id": "portfolio_fit",
+      "card_key": "portfolio_fit_concentration",
+      "material": true
+    },
+    {
+      "section_id": "recommendation_posture",
+      "assembler_section_id": "decision_state",
+      "card_key": "recommendation_support",
+      "material": true
+    },
+    {
+      "section_id": "authority_boundary",
+      "assembler_section_id": "authority_approval_status",
+      "card_key": "authority_boundary",
+      "material": true
+    }
+  ],
+  "coverage": {
+    "mode": "all_wf84_population",
+    "evaluated_ticker_count": 300,
+    "wf84_population_ticker_count": 300,
+    "full_population_covered": true,
+    "population_coverage_ratio": 1.0
+  },
+  "section_coverage_quality": {
+    "status": "ok",
+    "meaning": "Parity can be ok while both routes are missing the same material section. Use this block as completeness evidence separate from parity readiness.",
+    "section_status_counts": {
+      "ok": 5100
+    },
+    "section_reason_counts": {
+      "mapped": 5100
+    },
+    "missing_both_count": 0,
+    "material_missing_both_count": 0,
+    "technical_posture_missing_both_count": 0
+  },
+  "evaluated_tickers": [
+    "A",
+    "AAPL",
+    "ABBV",
+    "ABNB",
+    "ABT",
+    "ACGL",
+    "ACN",
+    "ADBE",
+    "ADI",
+    "ADM",
+    "ADP",
+    "ADSK",
+    "AEE",
+    "AEP",
+    "AES",
+    "AFL",
+    "AIG",
+    "AIZ",
+    "AJG",
+    "AKAM",
+    "ALB",
+    "ALGN",
+    "ALL",
+    "ALLE",
+    "AMAT",
+    "AMCR",
+    "AMD",
+    "AME",
+    "AMGN",
+    "AMP",
+    "AMT",
+    "AMZN",
+    "ANET",
+    "AON",
+    "AOS",
+    "APA",
+    "APD",
+    "APH",
+    "APO",
+    "APP",
+    "APTV",
+    "ARE",
+    "ARES",
+    "ASML",
+    "ATO",
+    "AVB",
+    "AVGO",
+    "AVY",
+    "AWK",
+    "AXON",
+    "AXP",
+    "AZO",
+    "BA",
+    "BAC",
+    "BALL",
+    "BAX",
+    "BBY",
+    "BDX",
+    "BEN",
+    "BF-B",
+    "BG",
+    "BIIB",
+    "BKNG",
+    "BKR",
+    "BLDR",
+    "BLK",
+    "BMY",
+    "BNY",
+    "BR",
+    "BRK.B",
+    "BRO",
+    "BSX",
+    "BX",
+    "BXP",
+    "C",
+    "CAG",
+    "CAH",
+    "CARR",
+    "CASY",
+    "CAT",
+    "CB",
+    "CBOE",
+    "CBRE",
+    "CCI",
+    "CCL",
+    "CDNS",
+    "CDW",
+    "CEG",
+    "CF",
+    "CFG",
+    "CHD",
+    "CHRW",
+    "CHTR",
+    "CI",
+    "CIEN",
+    "CINF",
+    "CL",
+    "CLX",
+    "CMCSA",
+    "CME",
+    "CMG",
+    "CMI",
+    "CMS",
+    "CNC",
+    "CNP",
+    "COHR",
+    "COO",
+    "COP",
+    "COR",
+    "COST",
+    "CPB",
+    "CPRT",
+    "CPT",
+    "CRH",
+    "CRL",
+    "CRM",
+    "CRWD",
+    "CSCO",
+    "CSGP",
+    "CSX",
+    "CTAS",
+    "CTSH",
+    "CTVA",
+    "CVNA",
+    "CVS",
+    "CVX",
+    "D",
+    "DAL",
+    "DASH",
+    "DD",
+    "DDOG",
+    "DE",
+    "DECK",
+    "DELL",
+    "DG",
+    "DGX",
+    "DHI",
+    "DHR",
+    "DIS",
+    "DLR",
+    "DLTR",
+    "DOC",
+    "DOV",
+    "DOW",
+    "DPZ",
+    "DRI",
+    "DTE",
+    "DUK",
+    "DVA",
+    "DVN",
+    "EA",
+    "EBAY",
+    "ECL",
+    "ED",
+    "EFX",
+    "EIX",
+    "EL",
+    "EME",
+    "EMR",
+    "EOG",
+    "EQIX",
+    "EQR",
+    "EQT",
+    "ES",
+    "ESS",
+    "ETN",
+    "ETR",
+    "EVRG",
+    "EXC",
+    "EXE",
+    "EXPD",
+    "EXPE",
+    "EXR",
+    "F",
+    "FANG",
+    "FAST",
+    "FCX",
+    "FE",
+    "FFIV",
+    "FICO",
+    "FLEX",
+    "FOX",
+    "FOXA",
+    "FRT",
+    "FSLR",
+    "GD",
+    "GE",
+    "GIS",
+    "GM",
+    "GOOG",
+    "GOOGL",
+    "GPC",
+    "GRMN",
+    "GS",
+    "HAL",
+    "HAS",
+    "HD",
+    "HON",
+    "HRL",
+    "HST",
+    "HSY",
+    "IFF",
+    "INTU",
+    "INVH",
+    "IP",
+    "IRM",
+    "ISRG",
+    "ITA",
+    "JPM",
+    "KDP",
+    "KHC",
+    "KMB",
+    "KMI",
+    "KTOS",
+    "LIN",
+    "LLY",
+    "LMT",
+    "LNG",
+    "LNT",
+    "LYB",
+    "LYV",
+    "MA",
+    "MCD",
+    "MCK",
+    "MDB",
+    "META",
+    "MLM",
+    "MOS",
+    "MPC",
+    "MSFT",
+    "MU",
+    "NEE",
+    "NEM",
+    "NFLX",
+    "NI",
+    "NOC",
+    "NOW",
+    "NUE",
+    "NVDA",
+    "NWS",
+    "NWSA",
+    "OKE",
+    "OMC",
+    "ORCL",
+    "ORLY",
+    "OXY",
+    "PANW",
+    "PAVE",
+    "PEP",
+    "PG",
+    "PH",
+    "PKG",
+    "PLTR",
+    "PPG",
+    "PSKY",
+    "PSX",
+    "QCOM",
+    "RTX",
+    "SAP",
+    "SCCO",
+    "SHOP",
+    "SHW",
+    "SLB",
+    "SLV",
+    "SMCI",
+    "SNOW",
+    "SO",
+    "STLD",
+    "SYK",
+    "T",
+    "TDG",
+    "TKO",
+    "TLT",
+    "TMO",
+    "TMUS",
+    "TPL",
+    "TRGP",
+    "TSM",
+    "TTD",
+    "TTWO",
+    "TXN",
+    "UBER",
+    "UNH",
+    "UNP",
+    "URI",
+    "V",
+    "VAW",
+    "VLO",
+    "VMC",
+    "VRT",
+    "VXUS",
+    "VZ",
+    "WMB",
+    "WMT",
+    "XLB",
+    "XLC",
+    "XLE",
+    "XLF",
+    "XLI",
+    "XOM"
+  ],
+  "pilot_tickers": [
+    "GOOG",
+    "NVDA",
+    "VRT"
+  ],
+  "summary": {
+    "ticker_count": 300,
+    "ticker_pass_count": 300,
+    "critical_ticker_count": 0,
+    "strategic_production_critical_ticker_count": 0,
+    "retirement_blocker_ticker_count": 0,
+    "warning_ticker_count": 0,
+    "section_count": 5100,
+    "section_ok_count": 5100,
+    "section_ok_ratio": 1.0,
+    "section_status_counts": {
+      "ok": 5100
+    },
+    "section_reason_counts": {
+      "mapped": 5100
+    },
+    "section_coverage_status": "ok",
+    "section_missing_both_count": 0,
+    "material_section_missing_both_count": 0,
+    "technical_posture_missing_both_count": 0,
+    "wf84_population_ticker_count": 300,
+    "full_population_covered": true,
+    "production_answer_path_count": 0,
+    "sql_canon_scope_status": "ok",
+    "sql_canon_production_answer_count": 0,
+    "sql_canon_production_scope_diff": {
+      "missing_from_sql": [],
+      "extra_in_sql": []
+    },
+    "thin_monitor_count": 258,
+    "production_critical_ticker_count": 0,
+    "thin_monitor_critical_ticker_count": 0,
+    "production_answer_packet_retirement_planning_ready": true,
+    "ready_to_start_duplicate_surface_retirement_planning": true,
+    "archive_delete_apply_allowed": false
+  },
+  "phases_implemented": [
+    {
+      "phase": 1,
+      "name": "full_answer_contract",
+      "status": "implemented"
+    },
+    {
+      "phase": 2,
+      "name": "old_stack_extraction",
+      "status": "implemented"
+    },
+    {
+      "phase": 3,
+      "name": "wf84_evidence_mapping",
+      "status": "implemented_via_full_answer_section_context"
+    },
+    {
+      "phase": 4,
+      "name": "wf84_wf85_answer_assembly",
+      "status": "implemented"
+    },
+    {
+      "phase": 5,
+      "name": "parity_harness",
+      "status": "implemented"
+    },
+    {
+      "phase": 6,
+      "name": "consumer_parity_gate",
+      "status": "implemented_for_validator_and_ready_for_consumer_wiring"
+    },
+    {
+      "phase": 7,
+      "name": "repair_targeting_inputs",
+      "status": "implemented_via_section_level_failures"
+    },
+    {
+      "phase": 8,
+      "name": "retirement_readiness_v2_inputs",
+      "status": "implemented_as_planning_signal_no_apply"
+    }
+  ],
+  "sql_canon_scope": {
+    "schema": "veritas.full_intelligence_answer_parity.sql_canon_scope.v1",
+    "status": "ok",
+    "sql_canon_db": "state/finance/finance-canon.sqlite",
+    "coverage_mode": "all_wf84_population",
+    "access_validation": {
+      "schema_version": "finance_sql_canon_access_validation.v1",
+      "generated_at_utc": "2026-08-08T08:19:41Z",
+      "status": "ok",
+      "db_path": "state/finance/finance-canon.sqlite",
+      "counts": {
+        "answer_path_scope": 300,
+        "authority_events": 3,
+        "consumer_migration_registry": 684,
+        "evidence_freshness": 200,
+        "evidence_status": 300,
+        "migration_validation_runs": 35,
+        "reference_levels": 200,
+        "securities": 300,
+        "source_lineage": 3521,
+        "tier_routing_state": 300,
+        "universe_membership": 300
+      },
+      "field_family_summary": {
+        "review_only_internal_sql_primary": true,
+        "review_only_sql_json_canon_owner": true,
+        "canon_owner_metadata": {
+          "schema_version": "finance_sql_canon_owner_field_families.v1",
+          "promoted_at_utc": "2026-06-19T19:30:27Z",
+          "structured_truth_owner": "state/finance/finance-canon.sqlite plus generated JSON proof packets",
+          "markdown_owner_scope": "policy, narrative, owner decisions, weekly reasoning, and audit context",
+          "fallback_retained": true,
+          "archive_delete_apply_allowed": false,
+          "promoted_field_families": [
+            "answer_path_scope",
+            "evidence_freshness",
+            "reference_levels",
+            "source_lineage",
+            "ticker_state",
+            "tier_routing_state",
+            "universe_membership"
+          ]
+        },
+        "source_open_required_before_material_claims": true,
+        "field_families": {
+          "ticker_state": {
+            "sql_primary_current_state": true,
+            "row_count": 300,
+            "active_rows": 300,
+            "authority_scope": "review_only_ticker_identity_and_route_state",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "universe_membership": {
+            "sql_primary_current_state": true,
+            "row_count": 300,
+            "legacy_production_rows": 0,
+            "production_scope_rows": 0,
+            "review_monitor_rows": 258,
+            "decision_grade_rows": 32,
+            "sql_tier_counts": {
+              "Tier A": 15,
+              "Tier B": 17,
+              "Tier C": 268
+            },
+            "legacy_42_role": "hard_retired_from_active_runtime_schema",
+            "authority_scope": "review_only_universe_membership_and_monitoring_role",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "reference_levels": {
+            "sql_primary_current_state": true,
+            "row_count": 200,
+            "complete_reference_rows": 200,
+            "authority_scope": "review_only_entry_band_stop_metadata",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "evidence_freshness": {
+            "sql_primary_current_state": true,
+            "row_count": 200,
+            "authority_scope": "review_only_freshness_and_source_confidence_metadata",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "source_lineage": {
+            "sql_primary_current_state": true,
+            "row_count": 3521,
+            "scope_key_count": 734,
+            "rows_by_field_family": {
+              "consumer_migration_registry": 434,
+              "evidence_freshness": 800,
+              "reference_levels": 1087,
+              "tier_routing_state": 1200
+            },
+            "authority_scope": "review_only_source_traceability_metadata",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "answer_path_scope": {
+            "sql_primary_current_state": true,
+            "row_count": 300,
+            "production_answer_rows": 0,
+            "authority_scope": "review_only_answer_routing_scope",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "production_grade_policy": {
+            "sql_primary_current_state": true,
+            "row_count": 300,
+            "legacy_tier_a_ready_compatibility_rows": 0,
+            "dynamic_production_review_rows": 59,
+            "dynamic_production_review_definition": "current SQL-first Tier A/B routing surface for review-only production attention",
+            "production_grade_rows": 0,
+            "production_grade_definition": "validated proof-joined Tier A/A-READY with current router, coverage, confidence, and authority gates",
+            "legacy_42_role": "compatibility_only_not_strategic_authority",
+            "authority_scope": "review_only_production_grade_answer_eligibility_no_execution_authority",
+            "canon_owner": false,
+            "canon_owner_source": null
+          },
+          "tier_routing_state": {
+            "sql_primary_current_state": true,
+            "row_count": 300,
+            "authority_scope": "review_only_non_capital_tier_routing",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "consumer_registry": {
+            "sql_primary_current_state": true,
+            "cutover_state_counts": {
+              "not_cut_over": 116,
+              "source_producer": 389,
+              "sql_primary_guarded": 179
+            },
+            "authority_scope": "review_only_consumer_guard_and_migration_registry",
+            "canon_owner": false,
+            "canon_owner_source": null
+          }
+        },
+        "authority_boundary": {
+          "capital_deployment_allowed": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "owner_approval_inferred": false
+        }
+      },
+      "checks": [
+        {
+          "name": "integrity_ok",
+          "ok": true,
+          "detail": "ok"
+        },
+        {
+          "name": "foreign_keys_ok",
+          "ok": true,
+          "detail": 0
+        },
+        {
+          "name": "required_tables_present",
+          "ok": true,
+          "detail": []
+        },
+        {
+          "name": "routing_view_present",
+          "ok": true,
+          "detail": [
+            "current_active_universe",
+            "current_answer_path",
+            "current_sql_canon_routing",
+            "review_monitor_universe"
+          ]
+        },
+        {
+          "name": "sql_first_production_scope_columns_present",
+          "ok": true,
+          "detail": []
+        },
+        {
+          "name": "routing_view_sql_first_columns_present",
+          "ok": true,
+          "detail": []
+        },
+        {
+          "name": "production_scope_member_fail_closed",
+          "ok": true,
+          "detail": {
+            "production_scope_member_count": 0
+          }
+        },
+        {
+          "name": "core_universe_counts_supported_dynamic",
+          "ok": true,
+          "detail": {
+            "active_count": 300,
+            "supported": [
+              100,
+              200,
+              300,
+              400,
+              500
+            ],
+            "counts": {
+              "answer_path_scope": 300,
+              "authority_events": 3,
+              "consumer_migration_registry": 684,
+              "evidence_freshness": 200,
+              "evidence_status": 300,
+              "migration_validation_runs": 35,
+              "reference_levels": 200,
+              "securities": 300,
+              "source_lineage": 3521,
+              "tier_routing_state": 300,
+              "universe_membership": 300
+            }
+          }
+        },
+        {
+          "name": "routing_reference_families_not_ahead_of_universe",
+          "ok": true,
+          "detail": {
+            "active_count": 300,
+            "tier_routing_state": 300,
+            "reference_levels": 200,
+            "evidence_freshness": 200
+          }
+        },
+        {
+          "name": "consumer_registry_loaded",
+          "ok": true,
+          "detail": 684
+        },
+        {
+          "name": "source_lineage_loaded",
+          "ok": true,
+          "detail": {
+            "count": 3521,
+            "nulls": 0
+          }
+        },
+        {
+          "name": "production_reference_levels_complete",
+          "ok": true,
+          "detail": {
+            "null_production_references": 0
+          }
+        },
+        {
+          "name": "authority_false_flags_clean",
+          "ok": true,
+          "detail": {
+            "tier_routing_state": 0,
+            "evidence_status": 0
+          }
+        }
+      ],
+      "errors": [],
+      "validation": {
+        "status": "ok",
+        "errors": [],
+        "warnings": []
+      },
+      "authority_boundary": {
+        "read_only_access_layer": true,
+        "db_mutation_allowed": false,
+        "capital_deployment_allowed": false,
+        "paper_or_live_execution_allowed": false,
+        "brokerage_or_account_action_allowed": false,
+        "customer_or_external_delivery_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    "wf84_legacy_answer_path_tickers": [],
+    "wf84_legacy_answer_path_count": 0,
+    "wf84_evaluated_production_answer_tickers": [],
+    "sql_canon_production_answer_tickers": [],
+    "sql_canon_production_answer_count": 0,
+    "sql_canon_production_answer_definition": "validated proof-joined production-grade set",
+    "sql_canon_legacy_production_answer_tickers": [],
+    "sql_canon_legacy_production_answer_count": 0,
+    "legacy_42_retired_from_blocking": true,
+    "legacy_42_count_advisory_only": true,
+    "legacy_42_role": "historical_compatibility_only_not_readiness_or_repair_authority",
+    "evaluated_state_tickers": [
+      "A",
+      "AAPL",
+      "ABBV",
+      "ABNB",
+      "ABT",
+      "ACGL",
+      "ACN",
+      "ADBE",
+      "ADI",
+      "ADM",
+      "ADP",
+      "ADSK",
+      "AEE",
+      "AEP",
+      "AES",
+      "AFL",
+      "AIG",
+      "AIZ",
+      "AJG",
+      "AKAM",
+      "ALB",
+      "ALGN",
+      "ALL",
+      "ALLE",
+      "AMAT",
+      "AMCR",
+      "AMD",
+      "AME",
+      "AMGN",
+      "AMP",
+      "AMT",
+      "AMZN",
+      "ANET",
+      "AON",
+      "AOS",
+      "APA",
+      "APD",
+      "APH",
+      "APO",
+      "APP",
+      "APTV",
+      "ARE",
+      "ARES",
+      "ASML",
+      "ATO",
+      "AVB",
+      "AVGO",
+      "AVY",
+      "AWK",
+      "AXON",
+      "AXP",
+      "AZO",
+      "BA",
+      "BAC",
+      "BALL",
+      "BAX",
+      "BBY",
+      "BDX",
+      "BEN",
+      "BF-B",
+      "BG",
+      "BIIB",
+      "BKNG",
+      "BKR",
+      "BLDR",
+      "BLK",
+      "BMY",
+      "BNY",
+      "BR",
+      "BRK.B",
+      "BRO",
+      "BSX",
+      "BX",
+      "BXP",
+      "C",
+      "CAG",
+      "CAH",
+      "CARR",
+      "CASY",
+      "CAT",
+      "CB",
+      "CBOE",
+      "CBRE",
+      "CCI",
+      "CCL",
+      "CDNS",
+      "CDW",
+      "CEG",
+      "CF",
+      "CFG",
+      "CHD",
+      "CHRW",
+      "CHTR",
+      "CI",
+      "CIEN",
+      "CINF",
+      "CL",
+      "CLX",
+      "CMCSA",
+      "CME",
+      "CMG",
+      "CMI",
+      "CMS",
+      "CNC",
+      "CNP",
+      "COHR",
+      "COO",
+      "COP",
+      "COR",
+      "COST",
+      "CPB",
+      "CPRT",
+      "CPT",
+      "CRH",
+      "CRL",
+      "CRM",
+      "CRWD",
+      "CSCO",
+      "CSGP",
+      "CSX",
+      "CTAS",
+      "CTSH",
+      "CTVA",
+      "CVNA",
+      "CVS",
+      "CVX",
+      "D",
+      "DAL",
+      "DASH",
+      "DD",
+      "DDOG",
+      "DE",
+      "DECK",
+      "DELL",
+      "DG",
+      "DGX",
+      "DHI",
+      "DHR",
+      "DIS",
+      "DLR",
+      "DLTR",
+      "DOC",
+      "DOV",
+      "DOW",
+      "DPZ",
+      "DRI",
+      "DTE",
+      "DUK",
+      "DVA",
+      "DVN",
+      "EA",
+      "EBAY",
+      "ECL",
+      "ED",
+      "EFX",
+      "EIX",
+      "EL",
+      "EME",
+      "EMR",
+      "EOG",
+      "EQIX",
+      "EQR",
+      "EQT",
+      "ES",
+      "ESS",
+      "ETN",
+      "ETR",
+      "EVRG",
+      "EXC",
+      "EXE",
+      "EXPD",
+      "EXPE",
+      "EXR",
+      "F",
+      "FANG",
+      "FAST",
+      "FCX",
+      "FE",
+      "FFIV",
+      "FICO",
+      "FLEX",
+      "FOX",
+      "FOXA",
+      "FRT",
+      "FSLR",
+      "GD",
+      "GE",
+      "GIS",
+      "GM",
+      "GOOG",
+      "GOOGL",
+      "GPC",
+      "GRMN",
+      "GS",
+      "HAL",
+      "HAS",
+      "HD",
+      "HON",
+      "HRL",
+      "HST",
+      "HSY",
+      "IFF",
+      "INTU",
+      "INVH",
+      "IP",
+      "IRM",
+      "ISRG",
+      "ITA",
+      "JPM",
+      "KDP",
+      "KHC",
+      "KMB",
+      "KMI",
+      "KTOS",
+      "LIN",
+      "LLY",
+      "LMT",
+      "LNG",
+      "LNT",
+      "LYB",
+      "LYV",
+      "MA",
+      "MCD",
+      "MCK",
+      "MDB",
+      "META",
+      "MLM",
+      "MOS",
+      "MPC",
+      "MSFT",
+      "MU",
+      "NEE",
+      "NEM",
+      "NFLX",
+      "NI",
+      "NOC",
+      "NOW",
+      "NUE",
+      "NVDA",
+      "NWS",
+      "NWSA",
+      "OKE",
+      "OMC",
+      "ORCL",
+      "ORLY",
+      "OXY",
+      "PANW",
+      "PAVE",
+      "PEP",
+      "PG",
+      "PH",
+      "PKG",
+      "PLTR",
+      "PPG",
+      "PSKY",
+      "PSX",
+      "QCOM",
+      "RTX",
+      "SAP",
+      "SCCO",
+      "SHOP",
+      "SHW",
+      "SLB",
+      "SLV",
+      "SMCI",
+      "SNOW",
+      "SO",
+      "STLD",
+      "SYK",
+      "T",
+      "TDG",
+      "TKO",
+      "TLT",
+      "TMO",
+      "TMUS",
+      "TPL",
+      "TRGP",
+      "TSM",
+      "TTD",
+      "TTWO",
+      "TXN",
+      "UBER",
+      "UNH",
+      "UNP",
+      "URI",
+      "V",
+      "VAW",
+      "VLO",
+      "VMC",
+      "VRT",
+      "VXUS",
+      "VZ",
+      "WMB",
+      "WMT",
+      "XLB",
+      "XLC",
+      "XLE",
+      "XLF",
+      "XLI",
+      "XOM"
+    ],
+    "missing_state_tickers": [],
+    "production_scope_diff": {
+      "missing_from_sql": [],
+      "extra_in_sql": []
+    },
+    "evaluated_scope_mismatches": [],
+    "migration_registry_summary": {
+      "priority_counts": {
+        "P0": 21,
+        "P1": 459,
+        "P2": 204
+      },
+      "lane_counts": {
+        "answer_path_parity_lane": 21,
+        "cron_pm_governance_lane": 14,
+        "pm_cockpit_lane": 2,
+        "source_loader_lane": 436,
+        "test_parity_lane": 203,
+        "typed_access_guard_lane": 3,
+        "wf78_wf77_routing_lane": 5
+      },
+      "cutover_state_counts": {
+        "not_cut_over": 116,
+        "source_producer": 389,
+        "sql_primary_guarded": 179
+      },
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": [],
+      "p0_answer_path_lane_status": {
+        "ok": true,
+        "errors": [],
+        "p0_count": 21,
+        "answer_path_lane_count": 21,
+        "p0_answer_path_lane_count": 21,
+        "p0_non_answer_path_count": 0,
+        "answer_path_non_p0_count": 0,
+        "p0_non_answer_path_consumers": [],
+        "answer_path_non_p0_consumers": []
+      }
+    },
+    "p0_registry_lane_status": {
+      "ok": true,
+      "errors": [],
+      "p0_count": 21,
+      "answer_path_lane_count": 21,
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": []
+    },
+    "sample_states": {
+      "A": {
+        "ticker": "A",
+        "name": "Agilent Technologies",
+        "instrument_type": "operating_company",
+        "sector": "Health Care",
+        "industry": "Life Sciences Tools & Services",
+        "universe_scope": "review_100_monitor",
+        "legacy_tier": "C",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "not_current_proof_joined_production_scope",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier C",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_c_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-MONITOR",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "AAPL": {
+        "ticker": "AAPL",
+        "name": "Apple Inc.",
+        "instrument_type": "operating_company",
+        "sector": "Technology",
+        "industry": "Software",
+        "universe_scope": "review_100_monitor",
+        "legacy_tier": "C",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "not_current_proof_joined_production_scope",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier C",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_c_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-MONITOR",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "ABBV": {
+        "ticker": "ABBV",
+        "name": "AbbVie",
+        "instrument_type": "operating_company",
+        "sector": "Health Care",
+        "industry": "Biotechnology",
+        "universe_scope": "review_100_monitor",
+        "legacy_tier": "C",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "not_current_proof_joined_production_scope",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier C",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_c_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-CANDIDATE",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "ABNB": {
+        "ticker": "ABNB",
+        "name": "Airbnb",
+        "instrument_type": "operating_company",
+        "sector": "Consumer Discretionary",
+        "industry": "Hotels, Resorts & Cruise Lines",
+        "universe_scope": "review_100_monitor",
+        "legacy_tier": "C",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "not_current_proof_joined_production_scope",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier C",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_c_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-MONITOR",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "ABT": {
+        "ticker": "ABT",
+        "name": "Abbott Laboratories",
+        "instrument_type": "operating_company",
+        "sector": "Health Care",
+        "industry": "Health Care Equipment",
+        "universe_scope": "review_100_monitor",
+        "legacy_tier": "C",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "not_current_proof_joined_production_scope",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier C",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_c_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-MONITOR",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "ACGL": {
+        "ticker": "ACGL",
+        "name": "Arch Capital Group",
+        "instrument_type": "operating_company",
+        "sector": "Financials",
+        "industry": "Property & Casualty Insurance",
+        "universe_scope": "review_100_monitor",
+        "legacy_tier": "C",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "not_current_proof_joined_production_scope",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier C",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_c_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-MONITOR",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "ACN": {
+        "ticker": "ACN",
+        "name": "Accenture",
+        "instrument_type": "operating_company",
+        "sector": "Information Technology",
+        "industry": "IT Consulting & Other Services",
+        "universe_scope": "review_100_monitor",
+        "legacy_tier": "C",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "not_current_proof_joined_production_scope",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier C",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_c_sql_first_review_scope",
+        "auto_tier": "Tier A",
+        "auto_state": "A-WATCH",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "ADBE": {
+        "ticker": "ADBE",
+        "name": "Adobe Inc.",
+        "instrument_type": "operating_company",
+        "sector": "Technology",
+        "industry": "Software",
+        "universe_scope": "review_100_monitor",
+        "legacy_tier": "C",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "not_current_proof_joined_production_scope",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier C",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_c_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-CANDIDATE",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "ADI": {
+        "ticker": "ADI",
+        "name": "Analog Devices",
+        "instrument_type": "operating_company",
+        "sector": "Information Technology",
+        "industry": "Semiconductors",
+        "universe_scope": "review_100_monitor",
+        "legacy_tier": "C",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "not_current_proof_joined_production_scope",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier C",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_c_sql_first_review_scope",
+        "auto_tier": "Tier B",
+        "auto_state": "B-CHALLENGED",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "ADM": {
+        "ticker": "ADM",
+        "name": "Archer Daniels Midland",
+        "instrument_type": "operating_company",
+        "sector": "Consumer Staples",
+        "industry": "Agricultural Products & Services",
+        "universe_scope": "review_100_monitor",
+        "legacy_tier": "C",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "not_current_proof_joined_production_scope",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier C",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_c_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-MONITOR",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      }
+    },
+    "validation": {
+      "status": "ok",
+      "critical_errors": [],
+      "warnings": [
+        "production_grade_set_empty_wait_for_decision_grade_gates"
+      ]
+    },
+    "authority_boundary": {
+      "sql_canon_scope_validation_only": true,
+      "read_only_access_layer_required": true,
+      "consumer_cutover_allowed_by_this_packet": false,
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "duplicate_surface_retirement_plan": {
+    "status": "planning_ready",
+    "recommended_decision_now": "resolve parity blockers and run full-population proof before any duplicate-surface archive packet",
+    "scope_note": "Production answer-path tickers require old answer-packet parity. Thin monitor rows are card/WF84 monitor surfaces and are not full-answer packet retirement candidates.",
+    "production_answer_packet_retirement_planning_ready": true,
+    "full_rich_surface_retirement_planning_ready": true,
+    "candidate_surface_classes": [
+      "duplicate generated ticker-answer packets after broad parity and consumer migration",
+      "obsolete generated sidecars with no unique source lineage after DB lifecycle approval"
+    ],
+    "retain_surface_classes": [
+      "owner notes",
+      "source-open evidence roots",
+      "ticker intelligence cards until WF84/WF85 full-answer consumers prove broader live history",
+      "WF78 feeders until active reference and lifecycle gates clear"
+    ],
+    "archive_delete_apply_allowed": false
+  },
+  "per_ticker": [
+    {
+      "ticker": "A",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/A.json"
+    },
+    {
+      "ticker": "AAPL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AAPL.json"
+    },
+    {
+      "ticker": "ABBV",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ABBV.json"
+    },
+    {
+      "ticker": "ABNB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ABNB.json"
+    },
+    {
+      "ticker": "ABT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ABT.json"
+    },
+    {
+      "ticker": "ACGL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ACGL.json"
+    },
+    {
+      "ticker": "ACN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ACN.json"
+    },
+    {
+      "ticker": "ADBE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ADBE.json"
+    },
+    {
+      "ticker": "ADI",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ADI.json"
+    },
+    {
+      "ticker": "ADM",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ADM.json"
+    },
+    {
+      "ticker": "ADP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ADP.json"
+    },
+    {
+      "ticker": "ADSK",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ADSK.json"
+    },
+    {
+      "ticker": "AEE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AEE.json"
+    },
+    {
+      "ticker": "AEP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AEP.json"
+    },
+    {
+      "ticker": "AES",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AES.json"
+    },
+    {
+      "ticker": "AFL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AFL.json"
+    },
+    {
+      "ticker": "AIG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AIG.json"
+    },
+    {
+      "ticker": "AIZ",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AIZ.json"
+    },
+    {
+      "ticker": "AJG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AJG.json"
+    },
+    {
+      "ticker": "AKAM",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AKAM.json"
+    },
+    {
+      "ticker": "ALB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ALB.json"
+    },
+    {
+      "ticker": "ALGN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ALGN.json"
+    },
+    {
+      "ticker": "ALL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ALL.json"
+    },
+    {
+      "ticker": "ALLE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ALLE.json"
+    },
+    {
+      "ticker": "AMAT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AMAT.json"
+    },
+    {
+      "ticker": "AMCR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AMCR.json"
+    },
+    {
+      "ticker": "AMD",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AMD.json"
+    },
+    {
+      "ticker": "AME",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AME.json"
+    },
+    {
+      "ticker": "AMGN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AMGN.json"
+    },
+    {
+      "ticker": "AMP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AMP.json"
+    },
+    {
+      "ticker": "AMT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AMT.json"
+    },
+    {
+      "ticker": "AMZN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AMZN.json"
+    },
+    {
+      "ticker": "ANET",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ANET.json"
+    },
+    {
+      "ticker": "AON",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AON.json"
+    },
+    {
+      "ticker": "AOS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AOS.json"
+    },
+    {
+      "ticker": "APA",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/APA.json"
+    },
+    {
+      "ticker": "APD",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/APD.json"
+    },
+    {
+      "ticker": "APH",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/APH.json"
+    },
+    {
+      "ticker": "APO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/APO.json"
+    },
+    {
+      "ticker": "APP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/APP.json"
+    },
+    {
+      "ticker": "APTV",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/APTV.json"
+    },
+    {
+      "ticker": "ARE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ARE.json"
+    },
+    {
+      "ticker": "ARES",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ARES.json"
+    },
+    {
+      "ticker": "ASML",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ASML.json"
+    },
+    {
+      "ticker": "ATO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ATO.json"
+    },
+    {
+      "ticker": "AVB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AVB.json"
+    },
+    {
+      "ticker": "AVGO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AVGO.json"
+    },
+    {
+      "ticker": "AVY",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AVY.json"
+    },
+    {
+      "ticker": "AWK",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AWK.json"
+    },
+    {
+      "ticker": "AXON",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AXON.json"
+    },
+    {
+      "ticker": "AXP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AXP.json"
+    },
+    {
+      "ticker": "AZO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AZO.json"
+    },
+    {
+      "ticker": "BA",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BA.json"
+    },
+    {
+      "ticker": "BAC",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BAC.json"
+    },
+    {
+      "ticker": "BALL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BALL.json"
+    },
+    {
+      "ticker": "BAX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BAX.json"
+    },
+    {
+      "ticker": "BBY",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BBY.json"
+    },
+    {
+      "ticker": "BDX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BDX.json"
+    },
+    {
+      "ticker": "BEN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BEN.json"
+    },
+    {
+      "ticker": "BF-B",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BF-B.json"
+    },
+    {
+      "ticker": "BG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BG.json"
+    },
+    {
+      "ticker": "BIIB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BIIB.json"
+    },
+    {
+      "ticker": "BKNG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BKNG.json"
+    },
+    {
+      "ticker": "BKR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BKR.json"
+    },
+    {
+      "ticker": "BLDR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BLDR.json"
+    },
+    {
+      "ticker": "BLK",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BLK.json"
+    },
+    {
+      "ticker": "BMY",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BMY.json"
+    },
+    {
+      "ticker": "BNY",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BNY.json"
+    },
+    {
+      "ticker": "BR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BR.json"
+    },
+    {
+      "ticker": "BRK.B",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BRK.B.json"
+    },
+    {
+      "ticker": "BRO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BRO.json"
+    },
+    {
+      "ticker": "BSX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BSX.json"
+    },
+    {
+      "ticker": "BX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BX.json"
+    },
+    {
+      "ticker": "BXP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BXP.json"
+    },
+    {
+      "ticker": "C",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/C.json"
+    },
+    {
+      "ticker": "CAG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CAG.json"
+    },
+    {
+      "ticker": "CAH",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CAH.json"
+    },
+    {
+      "ticker": "CARR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CARR.json"
+    },
+    {
+      "ticker": "CASY",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CASY.json"
+    },
+    {
+      "ticker": "CAT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CAT.json"
+    },
+    {
+      "ticker": "CB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CB.json"
+    },
+    {
+      "ticker": "CBOE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CBOE.json"
+    },
+    {
+      "ticker": "CBRE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CBRE.json"
+    },
+    {
+      "ticker": "CCI",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CCI.json"
+    },
+    {
+      "ticker": "CCL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CCL.json"
+    },
+    {
+      "ticker": "CDNS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CDNS.json"
+    },
+    {
+      "ticker": "CDW",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CDW.json"
+    },
+    {
+      "ticker": "CEG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CEG.json"
+    },
+    {
+      "ticker": "CF",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CF.json"
+    },
+    {
+      "ticker": "CFG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CFG.json"
+    },
+    {
+      "ticker": "CHD",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CHD.json"
+    },
+    {
+      "ticker": "CHRW",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CHRW.json"
+    },
+    {
+      "ticker": "CHTR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CHTR.json"
+    },
+    {
+      "ticker": "CI",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CI.json"
+    },
+    {
+      "ticker": "CIEN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CIEN.json"
+    },
+    {
+      "ticker": "CINF",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CINF.json"
+    },
+    {
+      "ticker": "CL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CL.json"
+    },
+    {
+      "ticker": "CLX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CLX.json"
+    },
+    {
+      "ticker": "CMCSA",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CMCSA.json"
+    },
+    {
+      "ticker": "CME",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CME.json"
+    },
+    {
+      "ticker": "CMG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CMG.json"
+    },
+    {
+      "ticker": "CMI",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CMI.json"
+    },
+    {
+      "ticker": "CMS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CMS.json"
+    },
+    {
+      "ticker": "CNC",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CNC.json"
+    },
+    {
+      "ticker": "CNP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CNP.json"
+    },
+    {
+      "ticker": "COHR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/COHR.json"
+    },
+    {
+      "ticker": "COO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/COO.json"
+    },
+    {
+      "ticker": "COP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/COP.json"
+    },
+    {
+      "ticker": "COR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/COR.json"
+    },
+    {
+      "ticker": "COST",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/COST.json"
+    },
+    {
+      "ticker": "CPB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CPB.json"
+    },
+    {
+      "ticker": "CPRT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CPRT.json"
+    },
+    {
+      "ticker": "CPT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CPT.json"
+    },
+    {
+      "ticker": "CRH",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CRH.json"
+    },
+    {
+      "ticker": "CRL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CRL.json"
+    },
+    {
+      "ticker": "CRM",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CRM.json"
+    },
+    {
+      "ticker": "CRWD",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CRWD.json"
+    },
+    {
+      "ticker": "CSCO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CSCO.json"
+    },
+    {
+      "ticker": "CSGP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CSGP.json"
+    },
+    {
+      "ticker": "CSX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CSX.json"
+    },
+    {
+      "ticker": "CTAS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CTAS.json"
+    },
+    {
+      "ticker": "CTSH",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CTSH.json"
+    },
+    {
+      "ticker": "CTVA",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CTVA.json"
+    },
+    {
+      "ticker": "CVNA",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CVNA.json"
+    },
+    {
+      "ticker": "CVS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CVS.json"
+    },
+    {
+      "ticker": "CVX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CVX.json"
+    },
+    {
+      "ticker": "D",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/D.json"
+    },
+    {
+      "ticker": "DAL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DAL.json"
+    },
+    {
+      "ticker": "DASH",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DASH.json"
+    },
+    {
+      "ticker": "DD",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DD.json"
+    },
+    {
+      "ticker": "DDOG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DDOG.json"
+    },
+    {
+      "ticker": "DE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DE.json"
+    },
+    {
+      "ticker": "DECK",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DECK.json"
+    },
+    {
+      "ticker": "DELL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DELL.json"
+    },
+    {
+      "ticker": "DG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DG.json"
+    },
+    {
+      "ticker": "DGX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DGX.json"
+    },
+    {
+      "ticker": "DHI",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DHI.json"
+    },
+    {
+      "ticker": "DHR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DHR.json"
+    },
+    {
+      "ticker": "DIS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DIS.json"
+    },
+    {
+      "ticker": "DLR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DLR.json"
+    },
+    {
+      "ticker": "DLTR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DLTR.json"
+    },
+    {
+      "ticker": "DOC",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DOC.json"
+    },
+    {
+      "ticker": "DOV",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DOV.json"
+    },
+    {
+      "ticker": "DOW",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DOW.json"
+    },
+    {
+      "ticker": "DPZ",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DPZ.json"
+    },
+    {
+      "ticker": "DRI",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DRI.json"
+    },
+    {
+      "ticker": "DTE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DTE.json"
+    },
+    {
+      "ticker": "DUK",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DUK.json"
+    },
+    {
+      "ticker": "DVA",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DVA.json"
+    },
+    {
+      "ticker": "DVN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/DVN.json"
+    },
+    {
+      "ticker": "EA",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EA.json"
+    },
+    {
+      "ticker": "EBAY",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EBAY.json"
+    },
+    {
+      "ticker": "ECL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ECL.json"
+    },
+    {
+      "ticker": "ED",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ED.json"
+    },
+    {
+      "ticker": "EFX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EFX.json"
+    },
+    {
+      "ticker": "EIX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EIX.json"
+    },
+    {
+      "ticker": "EL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EL.json"
+    },
+    {
+      "ticker": "EME",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EME.json"
+    },
+    {
+      "ticker": "EMR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EMR.json"
+    },
+    {
+      "ticker": "EOG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EOG.json"
+    },
+    {
+      "ticker": "EQIX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EQIX.json"
+    },
+    {
+      "ticker": "EQR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EQR.json"
+    },
+    {
+      "ticker": "EQT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EQT.json"
+    },
+    {
+      "ticker": "ES",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ES.json"
+    },
+    {
+      "ticker": "ESS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ESS.json"
+    },
+    {
+      "ticker": "ETN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ETN.json"
+    },
+    {
+      "ticker": "ETR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ETR.json"
+    },
+    {
+      "ticker": "EVRG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EVRG.json"
+    },
+    {
+      "ticker": "EXC",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EXC.json"
+    },
+    {
+      "ticker": "EXE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EXE.json"
+    },
+    {
+      "ticker": "EXPD",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EXPD.json"
+    },
+    {
+      "ticker": "EXPE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EXPE.json"
+    },
+    {
+      "ticker": "EXR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/EXR.json"
+    },
+    {
+      "ticker": "F",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/F.json"
+    },
+    {
+      "ticker": "FANG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/FANG.json"
+    },
+    {
+      "ticker": "FAST",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/FAST.json"
+    },
+    {
+      "ticker": "FCX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/FCX.json"
+    },
+    {
+      "ticker": "FE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/FE.json"
+    },
+    {
+      "ticker": "FFIV",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/FFIV.json"
+    },
+    {
+      "ticker": "FICO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/FICO.json"
+    },
+    {
+      "ticker": "FLEX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/FLEX.json"
+    },
+    {
+      "ticker": "FOX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/FOX.json"
+    },
+    {
+      "ticker": "FOXA",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/FOXA.json"
+    },
+    {
+      "ticker": "FRT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/FRT.json"
+    },
+    {
+      "ticker": "FSLR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/FSLR.json"
+    },
+    {
+      "ticker": "GD",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/GD.json"
+    },
+    {
+      "ticker": "GE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/GE.json"
+    },
+    {
+      "ticker": "GIS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/GIS.json"
+    },
+    {
+      "ticker": "GM",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/GM.json"
+    },
+    {
+      "ticker": "GOOG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/GOOG.json"
+    },
+    {
+      "ticker": "GOOGL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/GOOGL.json"
+    },
+    {
+      "ticker": "GPC",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/GPC.json"
+    },
+    {
+      "ticker": "GRMN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/GRMN.json"
+    },
+    {
+      "ticker": "GS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/GS.json"
+    },
+    {
+      "ticker": "HAL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/HAL.json"
+    },
+    {
+      "ticker": "HAS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/HAS.json"
+    },
+    {
+      "ticker": "HD",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/HD.json"
+    },
+    {
+      "ticker": "HON",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/HON.json"
+    },
+    {
+      "ticker": "HRL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/HRL.json"
+    },
+    {
+      "ticker": "HST",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/HST.json"
+    },
+    {
+      "ticker": "HSY",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/HSY.json"
+    },
+    {
+      "ticker": "IFF",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/IFF.json"
+    },
+    {
+      "ticker": "INTU",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/INTU.json"
+    },
+    {
+      "ticker": "INVH",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/INVH.json"
+    },
+    {
+      "ticker": "IP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/IP.json"
+    },
+    {
+      "ticker": "IRM",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/IRM.json"
+    },
+    {
+      "ticker": "ISRG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ISRG.json"
+    },
+    {
+      "ticker": "ITA",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ITA.json"
+    },
+    {
+      "ticker": "JPM",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/JPM.json"
+    },
+    {
+      "ticker": "KDP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/KDP.json"
+    },
+    {
+      "ticker": "KHC",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/KHC.json"
+    },
+    {
+      "ticker": "KMB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/KMB.json"
+    },
+    {
+      "ticker": "KMI",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/KMI.json"
+    },
+    {
+      "ticker": "KTOS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/KTOS.json"
+    },
+    {
+      "ticker": "LIN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/LIN.json"
+    },
+    {
+      "ticker": "LLY",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/LLY.json"
+    },
+    {
+      "ticker": "LMT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/LMT.json"
+    },
+    {
+      "ticker": "LNG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/LNG.json"
+    },
+    {
+      "ticker": "LNT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/LNT.json"
+    },
+    {
+      "ticker": "LYB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/LYB.json"
+    },
+    {
+      "ticker": "LYV",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/LYV.json"
+    },
+    {
+      "ticker": "MA",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/MA.json"
+    },
+    {
+      "ticker": "MCD",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/MCD.json"
+    },
+    {
+      "ticker": "MCK",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/MCK.json"
+    },
+    {
+      "ticker": "MDB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/MDB.json"
+    },
+    {
+      "ticker": "META",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/META.json"
+    },
+    {
+      "ticker": "MLM",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/MLM.json"
+    },
+    {
+      "ticker": "MOS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/MOS.json"
+    },
+    {
+      "ticker": "MPC",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/MPC.json"
+    },
+    {
+      "ticker": "MSFT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/MSFT.json"
+    },
+    {
+      "ticker": "MU",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/MU.json"
+    },
+    {
+      "ticker": "NEE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/NEE.json"
+    },
+    {
+      "ticker": "NEM",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/NEM.json"
+    },
+    {
+      "ticker": "NFLX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/NFLX.json"
+    },
+    {
+      "ticker": "NI",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/NI.json"
+    },
+    {
+      "ticker": "NOC",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/NOC.json"
+    },
+    {
+      "ticker": "NOW",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/NOW.json"
+    },
+    {
+      "ticker": "NUE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/NUE.json"
+    },
+    {
+      "ticker": "NVDA",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/NVDA.json"
+    },
+    {
+      "ticker": "NWS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/NWS.json"
+    },
+    {
+      "ticker": "NWSA",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/NWSA.json"
+    },
+    {
+      "ticker": "OKE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/OKE.json"
+    },
+    {
+      "ticker": "OMC",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/OMC.json"
+    },
+    {
+      "ticker": "ORCL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ORCL.json"
+    },
+    {
+      "ticker": "ORLY",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ORLY.json"
+    },
+    {
+      "ticker": "OXY",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/OXY.json"
+    },
+    {
+      "ticker": "PANW",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/PANW.json"
+    },
+    {
+      "ticker": "PAVE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/PAVE.json"
+    },
+    {
+      "ticker": "PEP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/PEP.json"
+    },
+    {
+      "ticker": "PG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/PG.json"
+    },
+    {
+      "ticker": "PH",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/PH.json"
+    },
+    {
+      "ticker": "PKG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/PKG.json"
+    },
+    {
+      "ticker": "PLTR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/PLTR.json"
+    },
+    {
+      "ticker": "PPG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/PPG.json"
+    },
+    {
+      "ticker": "PSKY",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/PSKY.json"
+    },
+    {
+      "ticker": "PSX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/PSX.json"
+    },
+    {
+      "ticker": "QCOM",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/QCOM.json"
+    },
+    {
+      "ticker": "RTX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/RTX.json"
+    },
+    {
+      "ticker": "SAP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/SAP.json"
+    },
+    {
+      "ticker": "SCCO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/SCCO.json"
+    },
+    {
+      "ticker": "SHOP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/SHOP.json"
+    },
+    {
+      "ticker": "SHW",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/SHW.json"
+    },
+    {
+      "ticker": "SLB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/SLB.json"
+    },
+    {
+      "ticker": "SLV",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/SLV.json"
+    },
+    {
+      "ticker": "SMCI",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/SMCI.json"
+    },
+    {
+      "ticker": "SNOW",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/SNOW.json"
+    },
+    {
+      "ticker": "SO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/SO.json"
+    },
+    {
+      "ticker": "STLD",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/STLD.json"
+    },
+    {
+      "ticker": "SYK",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/SYK.json"
+    },
+    {
+      "ticker": "T",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/T.json"
+    },
+    {
+      "ticker": "TDG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/TDG.json"
+    },
+    {
+      "ticker": "TKO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/TKO.json"
+    },
+    {
+      "ticker": "TLT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/TLT.json"
+    },
+    {
+      "ticker": "TMO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/TMO.json"
+    },
+    {
+      "ticker": "TMUS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/TMUS.json"
+    },
+    {
+      "ticker": "TPL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/TPL.json"
+    },
+    {
+      "ticker": "TRGP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/TRGP.json"
+    },
+    {
+      "ticker": "TSM",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/TSM.json"
+    },
+    {
+      "ticker": "TTD",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/TTD.json"
+    },
+    {
+      "ticker": "TTWO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/TTWO.json"
+    },
+    {
+      "ticker": "TXN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/TXN.json"
+    },
+    {
+      "ticker": "UBER",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/UBER.json"
+    },
+    {
+      "ticker": "UNH",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/UNH.json"
+    },
+    {
+      "ticker": "UNP",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/UNP.json"
+    },
+    {
+      "ticker": "URI",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/URI.json"
+    },
+    {
+      "ticker": "V",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/V.json"
+    },
+    {
+      "ticker": "VAW",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/VAW.json"
+    },
+    {
+      "ticker": "VLO",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/VLO.json"
+    },
+    {
+      "ticker": "VMC",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/VMC.json"
+    },
+    {
+      "ticker": "VRT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/VRT.json"
+    },
+    {
+      "ticker": "VXUS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/VXUS.json"
+    },
+    {
+      "ticker": "VZ",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/VZ.json"
+    },
+    {
+      "ticker": "WMB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/WMB.json"
+    },
+    {
+      "ticker": "WMT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/WMT.json"
+    },
+    {
+      "ticker": "XLB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/XLB.json"
+    },
+    {
+      "ticker": "XLC",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/XLC.json"
+    },
+    {
+      "ticker": "XLE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/XLE.json"
+    },
+    {
+      "ticker": "XLF",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/XLF.json"
+    },
+    {
+      "ticker": "XLI",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/XLI.json"
+    },
+    {
+      "ticker": "XOM",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/XOM.json"
+    }
+  ],
+  "critical_errors": [],
+  "duplicate_retirement_blockers": [],
+  "warnings": [
+    {
+      "ticker": "SQL_CANON",
+      "warnings": [
+        "production_grade_set_empty_wait_for_decision_grade_gates"
+      ]
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "critical_errors": [],
+    "warnings": [
+      {
+        "ticker": "SQL_CANON",
+        "warnings": [
+          "production_grade_set_empty_wait_for_decision_grade_gates"
+        ]
+      }
+    ]
+  },
+  "stop_lines": [
+    "No archive/delete/apply authority.",
+    "No canon/portfolio/cash/sizing/risk-rule mutation.",
+    "No capital deployment, paper/live order, brokerage/account action, money movement, or owner approval inference.",
+    "Source artifacts remain required until broad value-level parity and DB lifecycle approval clear."
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "schema": "wf88.frontier_capability_eval_request_renderer.v1",
+  "renderer_id": "frontier-capability-eval-request-renderer-v1",
+  "version": 1,
+  "status": "frozen_plumbing_pilot",
+  "fixture_set_id": "frontier-capability-eval-p0-sol-terra-luna-20260808",
+  "purpose": "Deterministically materialize one synthetic or public frozen case into an in-memory evaluation request.",
+  "input_fields": [
+    "fixture_set_id",
+    "fixture_version",
+    "task_class",
+    "fixture_instruction_template",
+    "validator_profile",
+    "case.case_id",
+    "case.scenario_id",
+    "case.difficulty",
+    "case.source_kind",
+    "case.variant"
+  ],
+  "canonicalization": "utf8-json-sort-keys-compact-v1",
+  "request_envelope": {
+    "system_posture": "review_only_bounded_evaluation_no_external_action",
+    "instruction_source": "fixture_instruction_template",
+    "case_source": "frozen_case_object",
+    "response_contract": "metadata_attested_result_plus_ephemeral_candidate_output",
+    "max_input_tokens": 50000,
+    "max_output_tokens": 12000,
+    "service_tier": "standard",
+    "fallback_allowed": false,
+    "billable_tools_allowed": false,
+    "cache_write_allowed": false,
+    "tool_allowlist": []
+  },
+  "candidate_reasoning_effort": {
+    "openai/gpt-5.6-sol": "high",
+    "openai/gpt-5.6-terra": "high",
+    "openai/gpt-5.6-luna": "low"
+  },
+  "privacy": {
+    "allowed_source_kinds": [
+      "synthetic",
+      "public"
+    ],
+    "rendered_request_persisted": false,
+    "raw_prompt_persisted": false,
+    "raw_response_persisted": false,
+    "tool_payload_persisted": false,
+    "provider_payload_persisted": false,
+    "secrets_or_headers_persisted": false,
+    "ephemeral_output_destroyed_after_grading": true,
+    "later_raw_output_regrading_supported": false
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "external_action_allowed": false,
+    "route_or_runtime_mutation_allowed": false,
+    "promotion_allowed": false,
+    "finance_or_execution_action_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

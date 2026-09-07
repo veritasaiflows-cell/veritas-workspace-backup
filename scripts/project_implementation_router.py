@@ -22,9 +22,14 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+import agent_fleet_policy as fleet_policy
 import long_work_packet_linter
 import measurement_cohort_transport_binding as measurement_binding
 from market_data_utils import atomic_write_json, load_json_artifact
+try:
+    import task_scoped_model_role_contract as task_role_contract
+except ImportError:  # Contract module absent: default routes unchanged.
+    task_role_contract = None  # type: ignore[assignment]
 from lib.terminal_outcome import contract_block as terminal_outcome_contract_block
 
 
@@ -66,7 +71,19 @@ WRITE_MODES = {"read_only", "leased", "distinct_output"}
 EXECUTION_BACKENDS = {"model_free_command", "persistent_isolated_agent", "codex_native_subagent", "main"}
 THINKING_LEVELS = {"none", "low", "medium", "high"}
 TERRA_MODEL = "openai/gpt-5.6-terra"
+MAIN_MODEL = "openai/gpt-6-astra"
 SOL_MODEL = "openai/gpt-5.6-sol"
+LUNA_MODEL = "openai/gpt-5.6-luna"
+BUILDER_MODEL = "meta/muse-spark-1.3-contributor"
+QA_MODEL = "ollama-cloud/glm-5.3:cloud"
+GROK_MODEL = fleet_policy.GROK_MODEL
+DOCS_MODEL = fleet_policy.LUNA_MODEL
+PERSISTENT_AGENT_MODELS = dict(fleet_policy.SPECIALIST_PRIMARY)
+# Approved FLEET-ALIGNMENT-20260905: six-role primaries are owned by
+# agent_fleet_policy (required import; missing module fails closed).
+# Specialist automatic fallbacks are [] (no blind fallback); recovery
+# candidates are Main-selected in a new explicitly scoped task-child
+# route. Opus is Main-spawn on-demand only.
 MAIN_SOL_USE_CASES = {"escalation", "challenger", "qa"}
 PERSISTENT_TRANSPORT_PROOF_SCHEMA = "veritas.persistent_transport_proof.v1"
 PERSISTENT_TRANSPORT_PROOF_V2_SCHEMA = "veritas.persistent_transport_proof.v2"
@@ -104,7 +121,7 @@ EFFICIENCY_POLICY = {
         },
         {
             "execution_backend": "codex_native_subagent",
-            "when": "explicitly opted in, narrowly eligible, and backed by a fresh capability proof for model, thinking, backend, and fork controls",
+            "when": "explicitly opted in, narrowly eligible bounded non-QA read-only review, and backed by a fresh capability proof for model, thinking, backend, and fork controls",
             "expected_model_path": TERRA_MODEL,
             "expected_thinking": "low_or_medium",
             "fresh_dispatch_capability_proof_required": True,
@@ -112,18 +129,20 @@ EFFICIENCY_POLICY = {
         },
         {
             "execution_backend": "main",
-            "when": "explicit quick fix, final integration, or authority-sensitive judgment exception",
-            "expected_model_path": TERRA_MODEL,
+            "when": "final integration or authority-sensitive judgment",
+            "expected_model_path": MAIN_MODEL,
             "expected_thinking": "high",
-            "sol_exception_requires": ["use_case", "reason"],
             "implicit_fallback_allowed": False,
         },
         {
             "execution_backend": "persistent_isolated_agent",
             "when": "remaining bounded helper work with a fresh strict context-transport proof",
-            "expected_model_path": TERRA_MODEL,
+            "expected_model_path": None,
+            "role_model_paths": copy.deepcopy(PERSISTENT_AGENT_MODELS),
+            "model_selection": "exact_selected_agent_model",
             "expected_thinking": "low_medium_or_high_by_scope",
             "fresh_transport_proof_required": True,
+            "cross_role_model_substitution_allowed": False,
             "silent_main_fallback_allowed": False,
         },
     ],
@@ -141,6 +160,9 @@ EFFICIENCY_POLICY = {
         "incident_update_sla_seconds": 90,
     },
     "quality_weighted_efficiency": {
+        "evaluation_mode": "owner_directed_on_demand_evidence_review",
+        "cohort_pilot_required": False,
+        "minimum_jobs_for_on_demand_review": 0,
         "metrics": [
             "uncached_input_tokens_per_main_accepted_job",
             "gross_tokens_per_main_accepted_job",
@@ -149,15 +171,20 @@ EFFICIENCY_POLICY = {
             "retry_tax",
             "escaped_defects",
         ],
-        "compare_like_for_like_cohorts_only": True,
-        "minimum_comparable_main_accepted_jobs": 10,
+        "compare_like_for_like_when_available": True,
+        "evidence_sources": [
+            "tmp/token-usage-ledger-current.json",
+            "tmp/implementation-token-attribution-bridge.json",
+            "tmp/model-run-ledger-current.json",
+            "tmp/coding-outcome-ledger-current.json",
+        ],
         "incidents_and_invalid_telemetry_receive_success_credit": False,
         "automatic_route_ranking_allowed": False,
         "automatic_route_promotion_allowed": False,
     },
     "effort_controls": {
         "ordinary_write_thinking": "medium_or_high_by_scope",
-        "low_effort_write_exception": "only an exact short-lived frozen Wave 2 admission binding with a current retained Terra-low v3 calibration; no fallback",
+        "low_effort_write_exception": "none for the current Muse Builder; historical Terra-low Wave 2 bindings are ineligible and fail closed",
         "bounded_read_only_qa_thinking": "low",
         "independent_material_privacy_or_security_qa_thinking": "high",
     },
@@ -179,7 +206,8 @@ EFFICIENCY_SEMANTIC_MARKERS = {
     "wiki/scorecards-and-evals/Token Efficiency Map.md": [
         "uncached input tokens per Main-accepted job",
         "retry tax",
-        "ten comparable Main-accepted jobs",
+        "owner-directed on-demand evidence review",
+        "no fixed cohort pilot is required",
         "automatic route ranking and promotion remain disabled",
         "How should a new session measure token efficiency?",
     ],
@@ -229,8 +257,175 @@ def execution_efficiency_semantic_contract() -> dict[str, Any]:
     }
 
 
+EFFICIENCY_EVIDENCE_SOURCES = {
+    "token_usage": {
+        "path": "tmp/token-usage-ledger-current.json",
+        "refresh_command": "python scripts\\token_usage_ledger.py --write --validate",
+    },
+    "token_attribution": {
+        "path": "tmp/implementation-token-attribution-bridge.json",
+        "refresh_command": "python scripts\\implementation_token_attribution_bridge.py --write --validate",
+    },
+    "run_elapsed": {
+        "path": "tmp/model-run-ledger-current.json",
+        "refresh_command": "python scripts\\model_run_ledger.py --write --validate",
+    },
+    "acceptance_retry_defects": {
+        "path": "tmp/coding-outcome-ledger-current.json",
+        "refresh_command": "python scripts\\coding_outcome_ledger.py --write --validate",
+    },
+}
+
+
+def _efficiency_source_observation(source_key: str, payload: dict[str, Any]) -> dict[str, Any]:
+    """Return a compact, bounded projection of one review-only evidence source."""
+    observation: dict[str, Any] = {
+        "status": str(payload.get("status") or "unknown"),
+        "generated_at_utc": payload.get("generated_at_utc"),
+        "metrics": {},
+    }
+    if source_key == "token_usage":
+        summary = as_dict(payload.get("summary"))
+        measurement = as_dict(payload.get("efficiency_measurement"))
+        observation["metrics"] = {
+            "token_event_count": summary.get("token_event_count"),
+            "gross_tokens_observed": summary.get("total_tokens"),
+            "uncached_input_tokens_observed": summary.get("uncached_input_tokens"),
+            "output_tokens_observed": summary.get("output_tokens"),
+            "api_equivalent_cost_usd_total": summary.get("api_equivalent_cost_usd_total"),
+            "actual_billed_cost_known": summary.get("actual_billed_cost_known"),
+            "attributable_main_accepted_parent_job_count": measurement.get("eligible_main_accepted_parent_job_count"),
+        }
+    elif source_key == "token_attribution":
+        summary = as_dict(payload.get("summary"))
+        observation["metrics"] = {
+            "completed_model_lane_count": summary.get("completed_model_lane_count"),
+            "token_stamped_completed_model_lane_count": summary.get("token_stamped_completed_model_lane_count"),
+            "attribution_grade_completed_model_lane_count": summary.get("attribution_grade_completed_model_lane_count"),
+            "attribution_incomplete_lane_count": summary.get("attribution_incomplete_lane_count"),
+            "implementation_token_event_count": summary.get("implementation_token_event_count"),
+        }
+    elif source_key == "run_elapsed":
+        summary = as_dict(payload.get("summary"))
+        durations = [
+            value
+            for row in as_list(payload.get("rows"))
+            if isinstance(row, dict)
+            for value in [row.get("duration_ms")]
+            if isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0
+        ]
+        observation["metrics"] = {
+            "run_row_count": summary.get("row_count"),
+            "ok_run_count": summary.get("ok_rows"),
+            "blocked_or_error_run_count": summary.get("blocked_or_error_rows"),
+            "elapsed_observation_count": len(durations),
+            "total_elapsed_ms_observed": sum(durations) if durations else None,
+            "maximum_elapsed_ms_observed": max(durations) if durations else None,
+            "model_attribution_recent_coverage": summary.get("model_attribution_recent_coverage"),
+        }
+    elif source_key == "acceptance_retry_defects":
+        summary = as_dict(payload.get("ledger_summary"))
+        escaped_defects = summary.get("escaped_defect_count")
+        observation["metrics"] = {
+            "main_accepted_count": summary.get("main_accepted_count"),
+            "first_pass_clean_count": summary.get("first_pass_clean_count"),
+            "first_pass_clean_rate": summary.get("first_pass_clean_rate"),
+            "total_retry_count": summary.get("total_retry_count"),
+            "rework_required_count": summary.get("rework_required_count"),
+            "regression_observed_count": summary.get("regression_observed_count"),
+            "escaped_defect_count": escaped_defects,
+            "escaped_defect_evidence_status": "observed" if escaped_defects is not None else "unavailable_do_not_infer",
+            "undocumented_later_retouch_count": summary.get("undocumented_later_retouch_count"),
+        }
+    return observation
+
+
+def efficiency_observation(
+    ledger_path: Path = COHORT_LEDGER,
+    *,
+    evidence_paths: dict[str, Path] | None = None,
+    load_evidence: bool = True,
+) -> dict[str, Any]:
+    """Project on-demand efficiency evidence without changing route selection."""
+    configured_paths = {
+        key: ROOT / Path(str(as_dict(source).get("path") or ""))
+        for key, source in EFFICIENCY_EVIDENCE_SOURCES.items()
+    }
+    if evidence_paths:
+        configured_paths.update({key: Path(path) for key, path in evidence_paths.items()})
+    block: dict[str, Any] = {
+        "schema": "veritas.router_efficiency_observation.v2",
+        "report_only": True,
+        "route_order_influenced": False,
+        "evaluation_mode": "owner_directed_on_demand_evidence_review",
+        "cohort_pilot_required": False,
+        "minimum_jobs_for_on_demand_review": 0,
+        "automatic_route_promotion_allowed": False,
+        "evidence_sources": [],
+        "evidence": {},
+        "available_evidence_source_count": 0,
+        "legacy_cohort_evidence": {
+            "source_path": "tmp/efficiency-cohort-ledger.json",
+            "refresh_command": "python scripts\\efficiency_cohort_ledger.py --write --validate",
+            "optional": True,
+        },
+        "status": "unavailable",
+    }
+    if not load_evidence:
+        block["status"] = "not_requested"
+        block["evidence_sources"] = [
+            {
+                "key": key,
+                "path": str(as_dict(source).get("path") or ""),
+                "refresh_command": source.get("refresh_command"),
+                "status": "not_requested",
+            }
+            for key, source in EFFICIENCY_EVIDENCE_SOURCES.items()
+        ]
+        return block
+    for key, source in EFFICIENCY_EVIDENCE_SOURCES.items():
+        source_path = configured_paths[key]
+        source_entry = {
+            "key": key,
+            "path": str(as_dict(source).get("path") or ""),
+            "refresh_command": source.get("refresh_command"),
+        }
+        try:
+            payload = json.loads(source_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            source_entry["status"] = "unavailable"
+            block["evidence_sources"].append(source_entry)
+            continue
+        if not isinstance(payload, dict):
+            source_entry["status"] = "unavailable"
+            block["evidence_sources"].append(source_entry)
+            continue
+        source_entry["status"] = "available"
+        block["evidence_sources"].append(source_entry)
+        block["evidence"][key] = _efficiency_source_observation(key, payload)
+    available = len(block["evidence"])
+    block["available_evidence_source_count"] = available
+    source_statuses = {
+        str(observation.get("status") or "unknown").lower()
+        for observation in block["evidence"].values()
+        if isinstance(observation, dict)
+    }
+    if available == 0:
+        block["status"] = "unavailable"
+    elif available < len(EFFICIENCY_EVIDENCE_SOURCES):
+        block["status"] = "partial"
+    elif source_statuses & {"blocked", "error", "invalid"}:
+        block["status"] = "attention"
+    else:
+        block["status"] = "available"
+    legacy = cohort_observation(ledger_path)
+    block["legacy_cohort_evidence"]["status"] = legacy.get("status")
+    block["legacy_cohort_evidence"]["source_generated_at_utc"] = legacy.get("source_generated_at_utc")
+    return block
+
+
 def cohort_observation(ledger_path: Path = COHORT_LEDGER) -> dict[str, Any]:
-    """Report-only view of the efficiency cohort ledger; never changes route order."""
+    """Shape-compatible legacy report-only cohort projection."""
     block: dict[str, Any] = {
         "schema": "veritas.router_cohort_observation.v1",
         "report_only": True,
@@ -252,8 +447,6 @@ def cohort_observation(ledger_path: Path = COHORT_LEDGER) -> dict[str, Any]:
         return block
     block["status"] = str(ledger.get("status") or "unknown")
     block["source_generated_at_utc"] = ledger.get("generated_at_utc")
-    # promotion_allowed is pinned False here regardless of ledger content so a
-    # tampered or drifted ledger can never widen routing authority via this block.
     block["observation_gate"] = {
         "minimum_comparable_main_accepted_jobs": gate.get("minimum_comparable_main_accepted_jobs"),
         "comparable_main_accepted_job_total": gate.get("comparable_main_accepted_job_total"),
@@ -286,14 +479,7 @@ def cohort_observation(ledger_path: Path = COHORT_LEDGER) -> dict[str, Any]:
 # always the intake owner, routing owner, final QC owner, sole acceptance
 # owner, final judgment owner, and truth integrator. Main execution is never an
 # implicit fallback; it requires an explicit allowed Main exception.
-CONFIGURED_ISOLATED_AGENT_IDS = (
-    "research-scout",
-    "qa-redteam",
-    "finance-source-scout",
-    "finance-redteam",
-    "implementation-builder",
-    "docs-continuity-editor",
-)
+CONFIGURED_ISOLATED_AGENT_IDS = tuple(PERSISTENT_AGENT_MODELS)
 
 MAIN_FLEET_AUTHORITY = {
     "main_is_final_integrator": True,
@@ -422,6 +608,29 @@ def normalize_path(value: str) -> str:
     return normalized
 
 
+def is_safe_tmp_output_path(value: str) -> bool:
+    """Return true only for an exact workspace-contained path under tmp/."""
+    normalized = normalize_path(value)
+    parts = normalized.split("/")
+    if (
+        not normalized
+        or normalized != str(value or "").strip().replace("\\", "/")
+        or normalized.startswith("/")
+        or re.match(r"^[A-Za-z]:", normalized)
+        or any(char in normalized for char in "*?[]")
+        or ".." in parts
+        or "." in parts
+        or normalized.endswith("/")
+    ):
+        return False
+    try:
+        resolved = (ROOT / normalized).resolve()
+        relative = resolved.relative_to((ROOT / "tmp").resolve()).as_posix()
+    except (OSError, ValueError):
+        return False
+    return bool(relative and relative != ".")
+
+
 def normalize_dispatch_text(value: str) -> str:
     return " ".join(re.sub(r"[^a-z0-9]+", " ", str(value or "").lower()).split())
 
@@ -453,8 +662,8 @@ def exact_builder_lease_gate(leased_paths: list[str], write_mode: str, descripti
     reasons: list[str] = []
     if write_mode != "leased":
         reasons.append("write_mode_must_be_leased")
-    if not 2 <= len(normalized_paths) <= 12:
-        reasons.append("scoped_multi_file_lease_requires_2_to_12_paths")
+    if not 1 <= len(normalized_paths) <= 12:
+        reasons.append("scoped_multi_file_lease_requires_1_to_12_paths")
     if len(normalized_paths) != len(set(normalized_paths)):
         reasons.append("leased_paths_must_be_unique")
     for path in normalized_paths:
@@ -599,6 +808,36 @@ def text_list(value: Any) -> list[str]:
     return [str(item).strip() for item in as_list(value) if str(item).strip()]
 
 
+def live_configured_agent_model(agent_id: str) -> str | None:
+    """Live keyed primary model for one agent. A present `agents.entries` key is authoritative: a non-dict entries value, or a missing/malformed agent/model entry, fails closed with no fleet-default fallback, so a matching default never proves Main ownership. Legacy defaults apply only when the entries key is absent."""
+    def _primary(value: Any) -> str | None:
+        if isinstance(value, str):
+            return value.strip() or None
+        if isinstance(value, dict):
+            primary = value.get("primary")
+            return primary.strip() if isinstance(primary, str) and primary.strip() else None
+        return None
+    try:
+        payload = json.loads(PERSISTENT_TRANSPORT_CONFIG_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, UnicodeDecodeError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    agents = payload.get("agents")
+    if not isinstance(agents, dict):
+        return None
+    if "entries" in agents:
+        entries = agents.get("entries")
+        if not isinstance(entries, dict):
+            return None
+        return _primary(as_dict(entries.get(agent_id)).get("model"))
+    entry = as_dict(as_dict(agents.get("entries")).get(agent_id))
+    configured = _primary(entry.get("model"))
+    if configured or agent_id in PERSISTENT_AGENT_MODELS:
+        return configured
+    return _primary(as_dict(agents.get("defaults")).get("model"))
+
+
 def rel(path: Path) -> str:
     try:
         return path.relative_to(ROOT).as_posix()
@@ -675,7 +914,7 @@ def infer_validator_budget(task_shape: str, write_scope: str) -> str:
 
 def main_only_reason_is_allowed(reason: str | None) -> bool:
     normalized = normalize_dispatch_text(reason or "")
-    return any(term in normalized for term in ("quick fix", "final integration", "authority sensitive"))
+    return any(term in normalized for term in ("final integration", "authority sensitive"))
 
 
 def main_sol_reason_is_valid(value: str | None) -> bool:
@@ -1305,13 +1544,12 @@ def validate_persistent_transport_proof_payload(
         return result
     required_capability = result["required_capability"]
     if mode == "patch_draft":
-        required_fields = {"schema", "status", "observed_at_utc", "capabilities"}
-        allowed_fields = required_fields | {"agent_id"}
-        if not required_fields <= set(payload) or not set(payload) <= allowed_fields:
+        required_fields = {"schema", "status", "observed_at_utc", "agent_id", "capabilities"}
+        if set(payload) != required_fields:
             return result
         if payload.get("schema") != PERSISTENT_TRANSPORT_PROOF_SCHEMA or payload.get("status") != "ok":
             return result
-        if "agent_id" in payload and payload.get("agent_id") != agent_id:
+        if payload.get("agent_id") != agent_id:
             return _persistent_proof_result("persistent_transport_proof_agent_mismatch", mode)
         capabilities = payload.get("capabilities")
         allowed_capabilities = {"attachment_context_transport", "shared_main_workspace_access"}
@@ -1362,14 +1600,18 @@ def validate_persistent_transport_proof_payload(
         return result
     if payload.get("agent_id") != agent_id:
         return _persistent_proof_result("persistent_transport_proof_agent_mismatch", mode)
+    expected_model = PERSISTENT_AGENT_MODELS.get(agent_id)
+    if expected_model is None:
+        return _persistent_proof_result("persistent_transport_agent_unconfigured", mode)
+    expected_provider = expected_model.split("/", 1)[0]
     runtime = payload.get("runtime")
     required_runtime = {"execution_backend", "provider", "model", "thinking", "openclaw_version", "config_sha256"}
     if not isinstance(runtime, dict) or set(runtime) != required_runtime:
         return result
     if (
         runtime.get("execution_backend") != "persistent_isolated_agent"
-        or runtime.get("provider") != "openai"
-        or runtime.get("model") != TERRA_MODEL
+        or runtime.get("provider") != expected_provider
+        or runtime.get("model") != expected_model
         or runtime.get("thinking") not in {"low", "medium", "high"}
         or not isinstance(runtime.get("openclaw_version"), str)
         or not runtime["openclaw_version"].strip()
@@ -2045,9 +2287,10 @@ def select_execution_route(
 
     The ordering is deliberate: a fully explicit deterministic command/proof
     contract is model-free; a deliberately requested cheap native contract is
-    narrowly eligible; Main normally integrates on Terra; all remaining helper
-    work uses a configured persistent specialist on Terra.  Sol is never
-    inherited by a helper route and requires a named Main-only exception.
+    narrowly eligible; Main uses its configured Astra route; all remaining
+    helper work uses the selected persistent agent's exact role-bound model.
+    A blocked helper never becomes Main and no route may silently substitute
+    another role's model.
     """
     model_free_complete = bool(model_free_commands and model_free_proofs)
     model_free_partial = bool(model_free_commands or model_free_proofs) and not model_free_complete
@@ -2067,6 +2310,7 @@ def select_execution_route(
     # work is read-only.
     high_effort = (
         write_scope in {"shared_contract", "broad_multi_surface"}
+        or validation_budget in {"shared", "major"}
         or authority_class not in {"review_only", "owner_gated"}
         or (
             task_shape == "qa"
@@ -2082,25 +2326,10 @@ def select_execution_route(
         and helper_fit == "one_bounded_helper"
         and write_mode == "read_only"
         and authority_class == "review_only"
+        and task_shape != "qa"
         and not qa_high_effort
     )
-    non_forbidden_paths = [path for path in leased_paths if path and not forbidden_write_match(path)]
-    exact_one_file_path = bool(
-        len(non_forbidden_paths) == 1
-        and len(leased_paths) == 1
-        and not any(char in non_forbidden_paths[0] for char in "*?[]")
-        and not non_forbidden_paths[0].startswith("/")
-        and ".." not in non_forbidden_paths[0].split("/")
-    )
-    native_one_file_eligible = bool(
-        allow_codex_native
-        and task_shape == "implementation"
-        and helper_fit == "one_bounded_helper"
-        and write_scope == "single_surface"
-        and write_mode in {"leased", "distinct_output"}
-        and authority_class in {"runtime_sensitive", "owner_gated"}
-        and exact_one_file_path
-    )
+    native_one_file_eligible = False
     native_eligible = native_read_only_eligible or native_one_file_eligible
     native_dispatch_check = inspect_native_dispatch_proof(native_dispatch_proof) if native_eligible else {
         "status": "not_applicable",
@@ -2142,28 +2371,18 @@ def select_execution_route(
             **nonpersistent_binding_metadata,
         }
     if main_reason_ok:
-        sol_use_case = str(main_sol_use_case or "").strip().lower()
-        sol_reason = str(main_sol_reason or "").strip()
-        sol_exception_requested = bool(sol_use_case or sol_reason)
-        sol_main_exception = sol_use_case in MAIN_SOL_USE_CASES and main_sol_reason_is_valid(sol_reason)
         return {
             "execution_backend": "main",
-            "expected_model_path": SOL_MODEL if sol_main_exception else TERRA_MODEL,
+            "expected_model_path": MAIN_MODEL,
             "expected_thinking": "high",
             "context_budget": "main_owned",
-            "route_reason": f"main_only_exception:{normalize_dispatch_text(main_only_reason)}",
+            "route_reason": f"main_owned_route:{normalize_dispatch_text(main_only_reason)}",
             "persistent_agent_id": None,
             "model_free_complete": False,
             "model_free_partial": model_free_partial,
             "native_eligible": False,
             "main_only_reason_valid": True,
-            "main_model_exception": {
-                "model_path": SOL_MODEL if sol_main_exception else TERRA_MODEL,
-                "use_case": sol_use_case or None,
-                "reason": sol_reason or None,
-                "approved": sol_main_exception,
-                "requested": sol_exception_requested,
-            },
+            "main_model_exception": None,
             **nonpersistent_binding_metadata,
         }
 
@@ -2177,6 +2396,7 @@ def select_execution_route(
         else {"status": "not_requested", "code": "not_requested"}
     )
     binding_paths = text_list(binding_check.get("allowed_write_paths"))
+    binding_route = as_dict(binding_check.get("route"))
     measurement_candidate = bool(
         binding_requested
         and task_shape == "implementation"
@@ -2196,6 +2416,13 @@ def select_execution_route(
         and binding_check.get("status") == "ok"
         and sorted(leased_paths) == sorted(binding_paths)
         and len(binding_paths) == 2
+        and binding_route.get("model_path") == PERSISTENT_AGENT_MODELS["implementation-builder"]
+    )
+    bounded_low_review = bool(
+        not high_effort
+        and write_mode == "read_only"
+        and authority_class == "review_only"
+        and task_shape in {"audit", "qa", "continuity", "routing"}
     )
     if measurement_candidate:
         # Keep an invalid requested low cohort visibly blocked at low.  Do not
@@ -2203,28 +2430,35 @@ def select_execution_route(
         thinking = "low"
     elif qa_high_effort:
         thinking = "high"
-    elif write_mode == "read_only":
+    elif bounded_low_review:
         thinking = "low"
     elif high_effort:
         thinking = "high"
     else:
         thinking = "medium"
+    persistent_model = PERSISTENT_AGENT_MODELS.get(persistent_agent_id)
+    if persistent_model is None:
+        dispatch_blocked = True
     persistent_transport_check = inspect_persistent_transport_proof(
         persistent_transport_proof, persistent_agent_id, persistent_lane_mode, thinking
     )
     persistent_dispatch_ready = persistent_transport_check["status"] == "ok"
     return {
         "execution_backend": "persistent_isolated_agent",
-        "expected_model_path": TERRA_MODEL,
+        "expected_model_path": persistent_model,
         "expected_thinking": thinking,
         "context_budget": "light" if thinking == "low" else "isolated",
         "route_reason": (
             "frozen_measurement_cohort_low_exception"
             if measurement_candidate
             else (
-                "configured_persistent_specialist_default"
-                if dispatch_agents
-                else "configured_persistent_specialist_by_task_shape"
+                "bounded_role_model_extraction_review_or_proof"
+                if bounded_low_review
+                else (
+                    "configured_persistent_specialist_default"
+                    if dispatch_agents
+                    else "configured_persistent_specialist_by_task_shape"
+                )
             )
         ),
         "persistent_agent_id": persistent_agent_id,
@@ -2252,7 +2486,7 @@ def select_execution_route(
 def default_model_route(execution_route: dict[str, Any]) -> dict[str, Any]:
     backend = execution_route["execution_backend"]
     expected_model_path = execution_route["expected_model_path"]
-    sol_main_exception = backend == "main" and expected_model_path == SOL_MODEL
+    persistent_agent_id = execution_route["persistent_agent_id"]
     return {
         # Keep model as a compatibility alias while new consumers use the
         # explicit expected_* fields.  Model-free commands intentionally have
@@ -2263,30 +2497,149 @@ def default_model_route(execution_route: dict[str, Any]) -> dict[str, Any]:
         "execution_backend": backend,
         "context_budget": execution_route["context_budget"],
         "route_reason": execution_route["route_reason"],
-        "persistent_agent_id": execution_route["persistent_agent_id"],
+        "persistent_agent_id": persistent_agent_id,
+        "specialist_dispatch_blocked": execution_route.get("specialist_dispatch_blocked", False),
+        "specialist_dispatch_block_reason": execution_route.get("specialist_dispatch_block_reason"),
         "persistent_transport_ready": execution_route.get("persistent_transport_ready"),
         "persistent_lane_mode": execution_route.get("persistent_lane_mode"),
         "required_capability": execution_route.get("required_capability"),
         "persistent_transport_proof": execution_route.get("persistent_transport_proof"),
+        "persistent_transport_proof_check": execution_route.get("persistent_transport_proof_check"),
         "persistent_dispatch_ready": execution_route.get("persistent_dispatch_ready", backend != "persistent_isolated_agent"),
         "measurement_cohort_binding_requested": execution_route.get("measurement_cohort_binding_requested", False),
         "measurement_cohort_binding": execution_route.get("measurement_cohort_binding"),
         "measurement_cohort_binding_applicable": execution_route.get("measurement_cohort_binding_applicable", False),
         "measurement_cohort_contract_shape": execution_route.get("measurement_cohort_contract_shape", False),
         "measurement_cohort_low_eligible": execution_route.get("measurement_cohort_low_eligible", False),
-        "expected_role": "main_integration_final_judgment" if backend == "main" else "bounded_implementation_helper",
-        "trust_label": "route metadata only; Veritas Main verifies and accepts; no authority is granted",
+        "expected_role": (
+            "main_integration_final_judgment"
+            if backend == "main"
+            else f"{persistent_agent_id}_specialist"
+            if backend == "persistent_isolated_agent" and persistent_agent_id
+            else "bounded_native_helper"
+        ),
+        "trust_label": (
+            "Main-owned integration route; final acceptance still requires explicit proof."
+            if backend == "main"
+            else "Untrusted specialist draft or advisory output; Veritas Main verifies and accepts."
+        ),
         "smoke_proof": "explicit_deterministic_proof_required" if backend == "model_free_command" else "native_tool_loop_available",
         "resource_reason": (
-            "Terra is the configured default for Main, persistent, and native routes; Sol is Main-exception-only."
-            if backend != "main"
+            f"{persistent_agent_id} uses its exact configured role model; cross-role model substitution is blocked."
+            if backend == "persistent_isolated_agent"
             else (
-                "Sol is the recorded Main escalation/challenger/QA exception for this bounded route."
-                if sol_main_exception
-                else "Terra is the default Main integrator; Sol requires a named escalation, challenger, or QA exception."
+                "Terra is the configured native route."
+                if backend == "codex_native_subagent"
+                else "Deterministic work uses no model."
             )
+            if backend != "main"
+            else "Astra is the configured Main route for bounded fixes, final integration, and authority-sensitive judgment."
         ),
         "main_model_exception": execution_route.get("main_model_exception"),
+    }
+
+
+def sessions_spawn_dispatch_contract(
+    model_route: dict[str, Any],
+    *,
+    agent_id: str,
+    task_name: str,
+    label: str,
+    task: str,
+    cwd: str | Path = ROOT,
+) -> dict[str, Any]:
+    """Build exact OpenClaw spawn arguments or fail closed with no arguments.
+
+    This formatter never spawns. It only makes an already-selected persistent
+    route executable by requiring explicit agent, model, thinking, backend,
+    and isolated-context values. Missing or mismatched route proof produces an
+    empty ``spawn_args`` object so consumers cannot inherit a runtime default.
+    """
+    route = as_dict(model_route)
+    normalized_agent = str(agent_id or "").strip()
+    normalized_task_name = str(task_name or "").strip().lower()
+    normalized_label = str(label or "").strip()
+    normalized_task = str(task or "").strip()
+    normalized_cwd = str(cwd or "").strip()
+    expected_model = str(route.get("expected_model_path") or "").strip()
+    expected_thinking = str(route.get("expected_thinking") or "").strip()
+    proof_check = as_dict(route.get("persistent_transport_proof_check"))
+    blockers: list[str] = []
+
+    if route.get("execution_backend") != "persistent_isolated_agent":
+        blockers.append("persistent_execution_backend_required")
+    if route.get("persistent_dispatch_ready") is not True:
+        blockers.append("persistent_route_proof_not_ready")
+    if proof_check.get("status") != "ok":
+        blockers.append("persistent_transport_proof_check_not_ok")
+    if proof_check.get("agent_id") != normalized_agent:
+        blockers.append("persistent_transport_proof_agent_mismatch")
+    if route.get("specialist_dispatch_blocked") is True:
+        blockers.append("specialist_dispatch_blocked")
+    if route.get("persistent_agent_id") != normalized_agent:
+        blockers.append("persistent_agent_id_mismatch")
+    if normalized_agent not in CONFIGURED_ISOLATED_AGENT_IDS:
+        blockers.append("persistent_agent_id_unconfigured")
+    if expected_model != PERSISTENT_AGENT_MODELS.get(normalized_agent):
+        blockers.append("persistent_agent_model_mismatch")
+    if expected_thinking not in {"low", "medium", "high"}:
+        blockers.append("explicit_helper_thinking_missing_or_invalid")
+    if re.fullmatch(r"[a-z][a-z0-9_-]{0,95}", normalized_task_name) is None:
+        blockers.append("task_name_invalid")
+    if not normalized_label:
+        blockers.append("label_missing")
+    if not normalized_task:
+        blockers.append("task_missing")
+    if not normalized_cwd:
+        blockers.append("cwd_missing")
+    else:
+        try:
+            if Path(normalized_cwd).resolve() != ROOT.resolve():
+                blockers.append("cwd_not_workspace_root")
+        except OSError:
+            blockers.append("cwd_invalid")
+
+    expected_route = {
+        "execution_backend": "persistent_isolated_agent",
+        "agent_id": normalized_agent or None,
+        "model_path": expected_model or None,
+        "thinking": expected_thinking or None,
+        "context": "isolated",
+        "light_context": True,
+    }
+    ready = not blockers
+    spawn_args: dict[str, Any] = {}
+    if ready:
+        spawn_args = {
+            "runtime": "subagent",
+            "agentId": normalized_agent,
+            "model": expected_model,
+            "thinking": expected_thinking,
+            "mode": "run",
+            "context": "isolated",
+            "lightContext": True,
+            "cwd": normalized_cwd,
+            "taskName": normalized_task_name,
+            "label": normalized_label,
+            "task": normalized_task,
+        }
+    return {
+        "schema": "veritas.sessions_spawn_dispatch_contract.v1",
+        "status": "ready" if ready else "blocked",
+        "dispatch_executes_agent": False,
+        "implicit_model_fallback_allowed": False,
+        "same_inference_model_switching": False,
+        "expected_route": expected_route,
+        "transport_proof": route.get("persistent_transport_proof"),
+        "transport_proof_check": proof_check,
+        "blockers": sorted(set(blockers)),
+        "spawn_args": spawn_args,
+        "closeout_required": {
+            "actual_backend_model_thinking": True,
+            "usage_or_unavailable_classification": True,
+            "elapsed_time_and_retry_identity": True,
+            "main_verification_and_acceptance": True,
+        },
     }
 
 
@@ -2309,10 +2662,23 @@ def default_stop_lines(authority_class: str) -> list[str]:
 
 def forbidden_write_match(path: str) -> str | None:
     normalized = normalize_path(path)
+    parts = normalized.split("/")
+    if not normalized:
+        return "empty_write_path"
     if normalized.startswith("/"):
         return "absolute_posix_path"
-    if re.match(r"^[A-Za-z]:/", normalized):
-        return "absolute_windows_path"
+    if re.match(r"^[A-Za-z]:", normalized):
+        return "absolute_or_drive_relative_windows_path"
+    if ".." in parts or "." in parts:
+        return "write_path_traversal"
+    if any(char in normalized for char in "*?[]"):
+        return "write_path_glob_not_allowed"
+    if normalized.endswith("/"):
+        return "exact_file_path_required"
+    try:
+        (ROOT / normalized).resolve().relative_to(ROOT.resolve())
+    except (OSError, ValueError):
+        return "workspace_path_escape"
     for pattern in FORBIDDEN_WRITE_PATTERNS:
         if re.search(pattern, normalized, flags=re.IGNORECASE):
             return pattern
@@ -2441,10 +2807,22 @@ def validate_project(project: dict[str, Any], *, stage: str = "preflight") -> di
             finding("critical", "model_free_route_invalid", "Model-free routes must not declare a model or model effort.")
     elif not isinstance(expected_model_path, str) or not expected_model_path.strip():
         finding("critical", "expected_model_path_missing", "Model-backed routes require an expected model path.")
-    if execution_backend != "main" and expected_model_path == SOL_MODEL:
-        finding("critical", "implicit_sol_helper_route", "Sol may be used only by an explicit Main route.")
-    if execution_backend == "main" and expected_model_path not in {SOL_MODEL, TERRA_MODEL}:
-        finding("critical", "main_model_invalid", "Main routes must use Terra by default or an explicitly approved Sol exception.")
+    if execution_backend != "main" and expected_model_path in (MAIN_MODEL, SOL_MODEL):
+        finding("critical", "implicit_sol_helper_route", "Astra/Sol may be used only by an explicit Main route.")
+    if execution_backend == "main" and expected_model_path != MAIN_MODEL:
+        finding("critical", "main_model_invalid", "Main routes must use the configured Astra model.")
+    if execution_backend == "main":
+        live_main_model = live_configured_agent_model("main")
+        if live_main_model is None:
+            finding("critical", "main_live_model_unreadable", "The live Main model could not be read from OpenClaw configuration.")
+        elif expected_model_path != live_main_model:
+            finding(
+                "critical",
+                "main_live_model_mismatch",
+                "The routed Main model must equal the live configured Main model.",
+                expected_model_path=expected_model_path,
+                live_model_path=live_main_model,
+            )
 
     policy = as_dict(project.get("execution_route_policy"))
     binding_reference_any_route = str(policy.get("measurement_cohort_binding") or "").strip()
@@ -2464,8 +2842,10 @@ def validate_project(project: dict[str, Any], *, stage: str = "preflight") -> di
     if policy.get("model_free_partial") is True:
         finding("critical", "model_free_contract_incomplete", "Model-free routing requires both explicit command and proof.")
     if execution_backend == "codex_native_subagent" and policy.get("native_eligible") is not True:
-        finding("critical", "codex_native_not_narrow_eligible", "Codex-native routing needs an explicit read-only review or one-file implementation contract.")
+        finding("critical", "codex_native_not_narrow_eligible", "Codex-native routing needs an explicit bounded non-QA read-only review contract.")
     if execution_backend == "codex_native_subagent":
+        if project.get("write_mode") != "read_only" or classification.get("task_shape") == "qa":
+            finding("critical", "codex_native_scope_invalid", "Codex-native routing allows only bounded non-QA read-only review.")
         proof_check = inspect_native_dispatch_proof(policy.get("native_dispatch_proof"))
         if policy.get("native_dispatch_ready") is not True:
             finding("critical", "native_dispatch_not_ready", "Codex-native routing requires proof that the spawn surface enforces model, thinking, backend, and fork policy.")
@@ -2476,21 +2856,42 @@ def validate_project(project: dict[str, Any], *, stage: str = "preflight") -> di
         if policy.get("required_fork_policy") != "none":
             finding("critical", "native_dispatch_fork_policy_invalid", "Codex-native work must use fork_turns=none with a frozen bounded handoff.")
     if execution_backend == "main" and policy.get("main_only_reason_valid") is not True:
-        finding("critical", "main_only_reason_invalid", "Main-only routing requires quick-fix, final-integration, or authority-sensitive reason.")
+        finding("critical", "main_only_reason_invalid", "Main-only routing requires final-integration or authority-sensitive reason.")
     main_exception = as_dict(policy.get("main_model_exception"))
-    sol_use_case = str(main_exception.get("use_case") or "").strip().lower()
-    sol_reason = str(main_exception.get("reason") or "").strip()
-    sol_requested = main_exception.get("requested") is True or bool(sol_use_case or sol_reason)
-    if execution_backend == "main" and expected_model_path == SOL_MODEL:
-        if main_exception.get("approved") is not True or sol_use_case not in MAIN_SOL_USE_CASES or not main_sol_reason_is_valid(sol_reason):
-            finding("critical", "main_sol_exception_missing", "Sol Main routing requires an exact escalation, challenger, or QA use case plus a short reason.")
-        if main_exception.get("model_path") != SOL_MODEL or main_exception.get("requested") is not True:
-            finding("critical", "main_sol_exception_projection_invalid", "Sol Main exception metadata must be complete and exact.")
-    elif sol_requested:
-        finding("critical", "main_sol_exception_unconsumed", "Sol exception metadata may appear only on a validated Sol Main route.")
+    if main_exception:
+        finding("critical", "deprecated_main_sol_exception", "Astra is the configured Main default; exception metadata is no longer accepted.")
     if str(model_route.get("deprecated_main_terra_approval_ref") or "").strip():
-        finding("critical", "deprecated_main_terra_approval_ref", "The Terra approval-reference flag is deprecated; use default Main/Terra or an explicit Sol exception.")
+        finding("critical", "deprecated_main_terra_approval_ref", "The Terra approval-reference flag is deprecated; Main uses Astra.")
     if execution_backend == "persistent_isolated_agent":
+        if classification.get("task_shape") == "qa" and expected_model_path != QA_MODEL:
+            finding("critical", "qa_route_requires_glm", "Declared QA routes require the independent GLM QA model.")
+        persistent_agent_id = str(policy.get("persistent_agent_id") or "")
+        live_persistent_model = live_configured_agent_model(persistent_agent_id)
+        if expected_model_path != PERSISTENT_AGENT_MODELS.get(persistent_agent_id):
+            finding(
+                "critical",
+                "persistent_agent_model_mismatch",
+                "Persistent routes must use the selected agent's exact configured role model.",
+                agent_id=persistent_agent_id,
+                expected_model_path=PERSISTENT_AGENT_MODELS.get(persistent_agent_id),
+                actual_model_path=expected_model_path,
+            )
+        if live_persistent_model is None:
+            finding(
+                "critical",
+                "persistent_live_model_unreadable",
+                "The selected persistent agent's live configured model could not be read.",
+                agent_id=persistent_agent_id,
+            )
+        elif expected_model_path != live_persistent_model:
+            finding(
+                "critical",
+                "persistent_live_model_mismatch",
+                "The routed persistent model must equal the selected agent's live configured model.",
+                agent_id=persistent_agent_id,
+                expected_model_path=expected_model_path,
+                live_model_path=live_persistent_model,
+            )
         if policy.get("specialist_dispatch_blocked") is True:
             finding(
                 "critical",
@@ -2728,6 +3129,10 @@ def validate_project(project: dict[str, Any], *, stage: str = "preflight") -> di
             finding("critical", "actual_route_verification_missing", "Closeout requires Main verification of the actual route.")
         elif actual != expected_values:
             finding("critical", "actual_route_mismatch", "Actual model, effort, or backend mismatched the planned route; closeout fails closed.", expected=expected_values, actual=actual)
+        task_fragment = as_dict(as_dict(project.get("model_route")).get("task_role_contract"))
+        if task_role_contract is not None and task_fragment:
+            for item in task_role_contract.closeout_task_child_evidence(task_fragment):
+                finding(item.get("severity", "critical"), item.get("code", "task_child_actual_invalid"), item.get("message", "Task-child closeout evidence invalid."), **item.get("detail", {}))
 
     dispatch = as_dict(project.get("agent_dispatch"))
     if dispatch:  # Older v1 project artifacts remain valid compatibility inputs.
@@ -2765,12 +3170,15 @@ def validate_project(project: dict[str, Any], *, stage: str = "preflight") -> di
         ):
             finding("critical", "docs_acceptance_gate_missing", "Docs continuity routing requires Main acceptance, Main verification, and an accepted-proof reference.")
         if "implementation-builder" in dispatch_agents and as_dict(dispatch.get("builder_gate")).get("eligible") is not True:
-            finding("critical", "builder_lease_gate_missing", "Implementation Builder requires an exact leased scoped multi-file patch.")
+            finding("critical", "builder_lease_gate_missing", "Implementation Builder requires an exact leased scoped patch (1 to 12 paths).")
         if dispatch_schema == "veritas.isolated_agent_dispatch.v2":
             for key, expected in MAIN_FLEET_AUTHORITY.items():
                 if dispatch.get(key) != expected:
                     finding("critical", "agent_dispatch_main_authority_missing", "Generated v2 dispatch must preserve Main routing/QC/acceptance/judgment authority.", field=key)
 
+    task_role_failure = validate_task_role_fragment(project, stage=stage)
+    if task_role_failure is not None:
+        finding("critical", task_role_failure["code"], task_role_failure["message"], **task_role_failure.get("detail", {}))
     register = load_dict(LANE_REGISTER)
     linter_payload = long_work_packet_linter.validate_packet(packet_subset(project), stage=stage, register=register)
     if linter_payload["status"] == "error":
@@ -2786,6 +3194,125 @@ def validate_project(project: dict[str, Any], *, stage: str = "preflight") -> di
         "warnings": warnings,
         "packet_linter": linter_payload,
     }
+
+
+def _task_role_invalid(code, message, **detail):
+    row = {"severity": "critical", "code": code, "message": message}
+    if detail:
+        row["detail"] = detail
+    return {
+        "schema": "veritas.task_scoped_model_role_contract.v1",
+        "status": "invalid",
+        "errors": [row],
+    }
+
+
+def build_task_role_fragment(args):
+    """Build the bounded task-role fragment, or None when no contract is given.
+
+    Default routes are unchanged when ``--task-role-contract`` is absent. A
+    supplied contract is verified against the ACTUAL frozen owner approval
+    bytes (workspace-contained resolve, hash must equal claimed and trusted
+    hashes, root/task/slice/role/expiry/scope cross-check) and the REAL
+    requested writes are bound to the approval scope. Invalid input yields an
+    ``invalid`` fragment that validators fail closed. Non-executing: never
+    spawns, mutates config, leases lanes, or accepts code.
+    """
+    raw_cli = getattr(args, "task_role_contract", None)
+    if raw_cli is None or not str(raw_cli).strip():
+        return None
+    if task_role_contract is None:
+        return _task_role_invalid("task_role_module_absent", "Task-role contract module unavailable; cannot honor a supplied contract.")
+    hit = task_role_contract.traversal_syntax_rejected(raw_cli)
+    if hit is not None:
+        return _task_role_invalid("task_role_ref_traversal", "Task-role contract ref uses forbidden path syntax; rejected before normalization.", code_detail=hit)
+    ref = str(raw_cli).strip()
+    if not ref.endswith(".json"):
+        return _task_role_invalid("task_role_ref_invalid", "Task-role contract ref must be a workspace-relative .json path.", ref=ref[:160])
+    try:
+        resolved_root = ROOT.resolve()
+        resolved = (resolved_root / ref).resolve()
+    except Exception:
+        return _task_role_invalid("task_role_contract_unreadable", "Task-role contract file could not be resolved.", ref=ref[:160])
+    try:
+        within = resolved.is_relative_to(resolved_root)
+    except AttributeError:
+        within = str(resolved).startswith(str(resolved_root))
+    if not within or not resolved.is_file():
+        return _task_role_invalid("task_role_contract_unreadable", "Task-role contract file is outside the workspace or absent.", ref=ref[:160])
+    try:
+        payload = json.loads(resolved.read_bytes().decode("utf-8"))
+    except Exception:
+        return _task_role_invalid("task_role_contract_not_dict", "Task-role contract must be a readable JSON object.", ref=ref[:160])
+    if not isinstance(payload, dict):
+        return _task_role_invalid("task_role_contract_not_dict", "Task-role contract must be a JSON object.", ref=ref[:160])
+    gate = task_role_contract.verify_contract_against_approval(payload, resolved_root)
+    if gate.get("status") != "ok":
+        bad = _task_role_invalid("task_role_approval_unverified", "Owner approval bytes could not be verified for this contract.", ref=ref[:160])
+        bad["errors"].extend(gate.get("errors", []))
+        return bad
+    leased = [normalize_path(path) for path in (getattr(args, "leased_path", None) or [])]
+    mode = getattr(args, "write_mode", None) or ("leased" if leased else "read_only")
+    scope = task_role_contract.bind_scope(leased_paths=leased, write_mode=mode, operations=payload.get("allowed_operations"), approval=gate.get("approval"))
+    if scope.get("status") != "ok":
+        bad = _task_role_invalid("task_role_scope_unbound", "Requested writes are outside the owner-approved scope.", ref=ref[:160])
+        bad["errors"].extend(scope.get("errors", []))
+        return bad
+    fragment = task_role_contract.projection_fragment(payload, child_role=getattr(args, "task_child_role", None))
+    if not isinstance(fragment, dict):
+        return _task_role_invalid("task_role_fragment_failed", "Task-role fragment could not be built.")
+    if fragment.get("status") != "ok":
+        return fragment
+    fragment["task_child_actual"] = {
+        "model": getattr(args, "task_actual_model", None),
+        "thinking": getattr(args, "task_actual_thinking", None),
+        "execution_backend": getattr(args, "task_actual_backend", None),
+    }
+    fragment["approval_bytes_sha256"] = gate.get("approval_sha256")
+    return fragment
+
+
+def validate_task_role_fragment(project, *, stage):
+    """Return None when clean, else a critical finding for validate_project.
+
+    Structural contract checks, ACTUAL approval-bytes re-verification, real
+    scope binding, Main-acceptance/persistent-masquerade guards, and typed
+    task-child route projection checks run at every stage. Closeout actual
+    evidence is handled by the production closeout block, not here.
+    """
+    fragment = as_dict(as_dict(project.get("model_route")).get("task_role_contract"))
+    if not fragment:
+        return None
+    if task_role_contract is None or fragment.get("status") != "ok" or not isinstance(fragment.get("contract"), dict):
+        nested = [e for e in (fragment.get("errors") or []) if isinstance(e, dict) and e.get("code") in ("child_claims_main_acceptance", "unknown_role")]
+        if nested:
+            return {"code": nested[0].get("code"), "message": nested[0].get("message"), "detail": {"stage": stage}}
+        return {"code": "task_role_contract_invalid", "message": "Task-role fragment is absent or invalid; default route preserved, task route blocked.", "detail": {"errors": fragment.get("errors"), "stage": stage}}
+    contract = fragment["contract"]
+    check = task_role_contract.validate_task_role_contract(contract)
+    if check.get("status") != "ok":
+        return {"code": "task_role_contract_invalid", "message": "Task-role contract failed re-validation.", "detail": {"errors": check.get("errors"), "stage": stage}}
+    gate = task_role_contract.verify_contract_against_approval(contract, ROOT)
+    if gate.get("status") != "ok":
+        return {"code": "task_role_approval_unverified", "message": "Owner approval bytes failed re-verification.", "detail": {"errors": gate.get("errors"), "stage": stage}}
+    scope = task_role_contract.bind_scope(leased_paths=project.get("leased_paths"), write_mode=project.get("write_mode"), operations=contract.get("allowed_operations"), approval=gate.get("approval"))
+    if scope.get("status") != "ok":
+        return {"code": "task_role_scope_unbound", "message": "Project writes exceed the owner-approved scope.", "detail": {"errors": scope.get("errors"), "stage": stage}}
+    hit = task_role_contract.child_claims_main_acceptance(child_role=fragment.get("child_role"), model_route=as_dict(project.get("model_route")))
+    if hit is not None:
+        return {"code": hit["code"], "message": hit["message"], "detail": dict(hit.get("detail", {}), stage=stage)}
+    mask = task_role_contract.persistent_masquerade(child_role=fragment.get("child_role"), model_route=as_dict(project.get("model_route")))
+    if mask is not None:
+        return {"code": mask["code"], "message": mask["message"], "detail": dict(mask.get("detail", {}), stage=stage)}
+    typed = fragment.get("task_child_route")
+    if fragment.get("child_role"):
+        if not isinstance(typed, dict):
+            return {"code": "task_child_route_projection_invalid", "message": "Valid fragment must carry the typed task-child route block.", "detail": {"stage": stage}}
+        want = task_role_contract.task_child_route_block(child_role=str(fragment.get("child_role")), contract=contract, approval_sha256=task_role_contract.APPROVAL_SHA256)
+        for key in ("model", "thinking", "execution_backend", "review_sequence"):
+            if typed.get(key) != want.get(key):
+                return {"code": "task_child_route_projection_invalid", "message": "Typed task-child route drifted from the verified contract.", "detail": {"field": key, "stage": stage}}
+    return None
 
 
 def build_project(args: argparse.Namespace) -> dict[str, Any]:
@@ -2838,6 +3365,12 @@ def build_project(args: argparse.Namespace) -> dict[str, Any]:
         "thinking": getattr(args, "expected_thinking", None),
         "execution_backend": getattr(args, "expected_execution_backend", None),
     }
+    task_role_fragment = build_task_role_fragment(args)
+    if task_role_fragment is not None:
+        model_route["task_role_contract"] = task_role_fragment
+        task_child_block = task_role_fragment.get("task_child_route")
+        if isinstance(task_child_block, dict) and task_role_fragment.get("status") == "ok":
+            model_route["task_child_route"] = task_child_block
     if getattr(args, "main_terra_approval_ref", None):
         model_route["deprecated_main_terra_approval_ref"] = str(args.main_terra_approval_ref).strip()
     for key, value in {
@@ -2923,6 +3456,9 @@ def build_project(args: argparse.Namespace) -> dict[str, Any]:
         },
         "model_route": model_route,
         "execution_route_policy": execution_route,
+        "efficiency_observation": efficiency_observation(
+            load_evidence=bool(getattr(args, "include_efficiency_observation", False))
+        ),
         "cohort_observation": cohort_observation(),
         "terminal_outcome_contract": terminal_outcome_contract_block(),
         "agent_dispatch": agent_dispatch,
@@ -2997,11 +3533,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--allow-codex-native", action="store_true")
     parser.add_argument("--native-dispatch-proof", help="Fresh strict proof that native spawn exposes explicit model, thinking, backend, and fork controls.")
     parser.add_argument("--main-only-reason")
-    parser.add_argument("--main-sol-use-case", choices=sorted(MAIN_SOL_USE_CASES), help="Main-only Sol purpose: escalation, challenger, or QA.")
-    parser.add_argument("--main-sol-reason", help="Short bounded reason for the explicit Main/Sol exception.")
+    parser.add_argument("--main-sol-use-case", choices=sorted(MAIN_SOL_USE_CASES), help="Deprecated compatibility flag. Main now uses Astra by default.")
+    parser.add_argument("--main-sol-reason", help="Deprecated compatibility flag. Main now uses Astra by default.")
     parser.add_argument(
         "--main-terra-approval-ref",
-        help="Deprecated compatibility flag. Main now defaults to Terra; use --main-sol-use-case and --main-sol-reason only for an explicit Sol exception.",
+        help="Deprecated compatibility flag. Main now uses Astra; model changes require a separately approved configuration update.",
     )
     parser.add_argument("--persistent-transport-ready", action="store_true", help="Caller expectation that a persistent specialist transport is ready; a verified proof is still required.")
     parser.add_argument("--persistent-transport-proof", help="Workspace-relative JSON capability proof for the selected persistent specialist.")
@@ -3014,15 +3550,24 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--measurement-cohort-binding",
         help=(
-            "Short-lived workspace-local Wave 2 admission binding. It is the only "
-            "permitted low-effort write exception and must bind the frozen cohort, "
-            "current Terra-low calibration, and explicit owner authorization."
+            "Historical workspace-local Wave 2 admission binding. Terra-era bindings "
+            "are incompatible with the current Muse Builder and remain fail-closed."
         ),
+    )
+    parser.add_argument(
+        "--include-efficiency-observation",
+        action="store_true",
+        help="Load current token, attribution, elapsed, retry, acceptance, and defect evidence for an explicit on-demand review.",
     )
     parser.add_argument("--actual-model-path")
     parser.add_argument("--actual-thinking", choices=sorted(THINKING_LEVELS))
     parser.add_argument("--actual-execution-backend", choices=sorted(EXECUTION_BACKENDS))
     parser.add_argument("--actual-route-verified", action="store_true")
+    parser.add_argument("--task-role-contract", default=None, help="Workspace-relative JSON task-role contract; absent preserves default routes.")
+    parser.add_argument("--task-child-role", default=None, help="Task child role label; never a Main acceptance role.")
+    parser.add_argument("--task-actual-model", default=None, help="Task-child actual runtime model evidence (closeout only).")
+    parser.add_argument("--task-actual-thinking", choices=sorted(THINKING_LEVELS), default=None, help="Task-child actual effort evidence (closeout only).")
+    parser.add_argument("--task-actual-backend", default=None, help="Task-child actual backend evidence (closeout only).")
     parser.add_argument("--status", choices=("proposed", "planned", "leased", "running", "validating", "complete", "blocked", "cancelled"))
     parser.add_argument("--proof-artifact", action="append", default=[])
     parser.add_argument("--helper-outputs-reviewed", action="store_true")
@@ -3043,7 +3588,9 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     if args.main_terra_approval_ref:
-        raise SystemExit("--main-terra-approval-ref is deprecated; Main now defaults to Terra. Use --main-sol-use-case plus --main-sol-reason only for an explicit Sol exception.")
+        raise SystemExit("--main-terra-approval-ref is deprecated; Main now uses Astra.")
+    if args.main_sol_use_case or args.main_sol_reason:
+        raise SystemExit("--main-sol-use-case and --main-sol-reason are deprecated because Main now uses Astra by default.")
     if args.example:
         args.title = args.title or DEFAULT_TITLE
         args.description = args.description or DEFAULT_DESCRIPTION

@@ -27,7 +27,7 @@ These should **not** keep appearing as if still active:
 - `tmp/market-state.json` -> macro machine summary and source caveats
 - `05. Intelligence/Event Calendar.md` -> canonical timing-risk note layer
 - `02. Markets/Macro Regime Dashboard.md` -> human macro interpretation
-- `05. Intelligence/Weekly Positioning Review.md` -> weekly portfolio implications
+- `03. Alerts and Recommendations/Alert Operations Board.md` -> weekly alert and recommendation implications
 - `01. Dashboards/Executive Brief.md` / `01. Dashboards/Next Actions.md` -> compact downstream orientation only
 
 ## Update rules

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_execution_guard_report",
+  "generated_at_utc": "2026-05-18T01:55:00Z",
+  "status": "ok",
+  "reason": "wrapper_dry_run_and_contract_validation_ready",
+  "authority": {
+    "paper_submit_approved_in_principle": true,
+    "paper_cancel_approved_in_principle": true,
+    "paper_submit_currently_callable": true,
+    "paper_cancel_currently_callable": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true
+  },
+  "allowed_wrapper": "scripts/alpaca_paper_trade_executor.py",
+  "allowed_endpoint": "https://paper-api.alpaca.markets",
+  "allowed_methods": [
+    "POST /v2/orders through wrapper only",
+    "DELETE /v2/orders/{paper_order_id} through wrapper only"
+  ],
+  "required_before_execute": [
+    "--execute flag",
+    "unexpired WF67 kill switch",
+    "validated scoped paper-trade or paper-cancel request artifact",
+    "paper-specific credentials only",
+    "append-only redacted audit event",
+    "main-session final scope check"
+  ],
+  "blocked_paths": [
+    "live endpoint",
+    "live credentials",
+    "money movement",
+    "account settings mutation",
+    "replace orders",
+    "close-position/liquidation endpoints",
+    "market/short/margin/leverage/options/crypto/complex orders unless separately approved",
+    "inferred approval"
+  ],
+  "findings": []
+}

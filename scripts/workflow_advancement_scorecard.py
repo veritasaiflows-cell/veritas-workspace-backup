@@ -18,8 +18,6 @@ FOLLOWUP_SCHEMA_VERSION = "workflow-blocker-followups-v1"
 
 SOURCES = {
     "cron_freshness": TMP / "cron-freshness-spine.json",
-    "layered_pilot": TMP / "layered-finance-cron-pilot-runner.json",
-    "layered_timing": TMP / "layered-finance-refresh-timing-probe.json",
     "wf87_command": TMP / "wf87-autonomy-command-center.json",
     "autonomous_card_audit": TMP / "autonomous-card-authority-audit.json",
     "wf55_outcome_ledger": TMP / "wf55-autonomy-outcome-ledger.json",
@@ -54,7 +52,6 @@ FOLLOWUP_AUTHORITY_BOUNDARY = {
 
 SOURCE_BY_WORKFLOW = {
     "CRON": ["cron_freshness"],
-    "WF73": ["layered_pilot", "layered_timing"],
     "WF87": ["wf87_command", "autonomous_card_audit"],
     "WF55": ["wf55_outcome_ledger"],
     "AUTONOMY-SPINE": ["autonomy_spine_rollup", "autonomy_spine_contract"],
@@ -157,31 +154,6 @@ def cron_signal(cron: dict[str, Any]) -> dict[str, Any]:
         "blockers": blockers,
         "attention": attention,
         "next_action": "Keep scheduled proof running; escalate only on stale/blocked/authority drift.",
-    }
-
-
-def layered_signal(pilot: dict[str, Any], timing: dict[str, Any]) -> dict[str, Any]:
-    summary = as_dict(pilot.get("summary"))
-    timing_summary = as_dict(timing.get("summary"))
-    blockers = []
-    if pilot.get("status") != "ok":
-        blockers.append(f"pilot_status={pilot.get('status')}")
-    if validation_status(pilot) not in {"ok", None}:
-        blockers.append(f"pilot_validation={validation_status(pilot)}")
-    if int(summary.get("mutating_step_count") or 0):
-        blockers.append("read_only_profile_mutating_steps_present")
-    signal = "advanced" if not blockers and int(summary.get("ok_window_count") or 0) else "blocked"
-    return {
-        "workflow_id": "WF73",
-        "signal": signal,
-        "status": pilot.get("status"),
-        "validation_status": validation_status(pilot),
-        "ok_window_count": summary.get("ok_window_count"),
-        "read_only_window_count": summary.get("window_count"),
-        "timing_probe_window_count": timing_summary.get("window_count"),
-        "cron_update_recommended": bool(summary.get("cron_update_recommended") or timing_summary.get("cron_update_recommended")),
-        "blockers": blockers,
-        "next_action": "Promote only after repeated clean read-only pilot runs; keep mutating steps excluded.",
     }
 
 
@@ -391,7 +363,6 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
     records = [source_record(name, path, payloads[name]) for name, path in paths.items()]
     signals = [
         cron_signal(payloads["cron_freshness"]),
-        layered_signal(payloads["layered_pilot"], payloads["layered_timing"]),
         wf87_signal(payloads["wf87_command"], payloads["autonomous_card_audit"]),
         wf55_signal(payloads["wf55_outcome_ledger"]),
         autonomy_spine_signal(payloads["autonomy_spine_rollup"], payloads["autonomy_spine_contract"]),

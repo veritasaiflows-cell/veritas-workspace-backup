@@ -35,21 +35,21 @@ OPTIONAL_PROOF_FILES = [
 ]
 
 PM_REQUIRED_PHRASES = [
-    "weekly project updates",
-    "upcoming enhancement roadmaps",
-    "WF75 readiness timelines",
-    "Presentation/PDF Handoff Brief",
-    "55-65% internal/service-led SaaS readiness",
-    "owner approval inferred from clean validation",
+    "Weekly PM Update",
+    "Enhancement Roadmap",
+    "WF75 Readiness Timeline",
+    "Presentation/PDF Handoff",
+    "internal/service-led SaaS readiness",
+    "Do not use it to run broad workflow phases or infer approval",
 ]
 
 PDF_REQUIRED_PHRASES = [
-    "PM / Product Readiness PDF or Presentation Packet",
-    "weekly PM department updates",
-    "WF75 readiness and 6-10 week timeline packaging",
-    "Read first through `veritas-pm-department`",
-    "Useful PM visuals",
-    "Do not turn this into a launch announcement or customer-facing claim.",
+    "remain separately governed by `veritas-pm-department`",
+    "Weekly Alerts and Recommendations PDF",
+    "executive conclusion",
+    "Notes and guarded sources own judgment",
+    "one useful visual per page",
+    "never implies approval",
 ]
 
 FORBIDDEN_PM_SECTION_PHRASES = [

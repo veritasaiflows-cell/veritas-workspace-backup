@@ -251,6 +251,44 @@ def test_main_writes_post_refresh_input_signature() -> None:
     assert payload["input_signature"]["hash"] == "post-refresh"
 
 
+def test_verifier_closeout_failure_after_successful_plan_is_warning() -> None:
+    report = {
+        "status": "warning",
+        "validation": {
+            "status": "ok",
+            "errors": [],
+            "warnings": ["implementation_plan_prepared_no_code_patch"],
+        },
+    }
+    result = worker.apply_verifier_step_result(report, {"ok": False, "returncode": 1}, worker_errors=[])
+    assert result["status"] == "warning"
+    assert result["validation"]["status"] == "ok"
+    assert result["validation"]["errors"] == []
+    assert "verifier_closeout_failed" in result["validation"]["warnings"]
+
+
+def test_verifier_closeout_failure_after_worker_errors_stays_blocked() -> None:
+    report = {
+        "status": "blocked",
+        "validation": {"status": "blocked", "errors": ["execution_failed:proof"], "warnings": []},
+    }
+    result = worker.apply_verifier_step_result(
+        report, {"ok": False, "returncode": 1}, worker_errors=["execution_failed:proof"]
+    )
+    assert result["status"] == "blocked"
+    assert result["validation"]["status"] == "blocked"
+    assert "verifier_failed" in result["validation"]["errors"]
+    assert "verifier_closeout_failed" not in result["validation"]["warnings"]
+
+
+def test_verifier_closeout_success_keeps_report_unchanged() -> None:
+    report = {"status": "ok", "validation": {"status": "ok", "errors": [], "warnings": []}}
+    result = worker.apply_verifier_step_result(report, {"ok": True, "returncode": 0}, worker_errors=[])
+    assert result["status"] == "ok"
+    assert result["validation"]["errors"] == []
+    assert result["validation"]["warnings"] == []
+
+
 def main() -> int:
     test_implementation_plan_payload_never_authorizes_patch()
     test_worker_authority_boundary_blocks_mutation()
@@ -260,6 +298,9 @@ def main() -> int:
     test_lane_register_signature_tracks_only_active_collision_groups()
     test_prefilter_refreshes_when_prior_packet_selected_work_or_is_stale()
     test_main_writes_post_refresh_input_signature()
+    test_verifier_closeout_failure_after_successful_plan_is_warning()
+    test_verifier_closeout_failure_after_worker_errors_stays_blocked()
+    test_verifier_closeout_success_keeps_report_unchanged()
     print("pm_job_worker_runner_tests_passed")
     return 0
 

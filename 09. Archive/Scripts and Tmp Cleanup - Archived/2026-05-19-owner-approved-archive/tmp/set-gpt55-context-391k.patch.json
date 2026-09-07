@@ -1,0 +1,13 @@
+{
+  "agents": {
+    "defaults": {
+      "contextTokens": 391000,
+      "models": {
+        "openai-codex/gpt-5.5": {
+          "contextWindow": 391000,
+          "contextTokens": 391000
+        }
+      }
+    }
+  }
+}

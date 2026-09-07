@@ -1,0 +1,76 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "declarationKey": "veritas.graphify-scripts-freshness-gate.v1",
+  "job_id": "74ae81d7-71e1-4afd-adbd-6a77141684a9",
+  "name": "Runtime - Graphify Scripts Freshness Gate",
+  "agentId": "main",
+  "required": true,
+  "owner_workflow": "RUNTIME",
+  "contract_reason": "Detect code-source drift in the bounded operational scripts graph every day without rebuilding the broad workspace graph or treating Graphify's zero-node JSON fixtures as a false failure.",
+  "description": "Daily local-only Graphify freshness gate for the existing scripts code graph. It records code-source freshness in tmp/operational-graph-maintenance.json, ignores non-code fixtures that produce no nodes, and never rebuilds the graph, changes configuration, alters canon, or delivers externally.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "10 23 * * *",
+    "tz": "America/Phoenix",
+    "staggerMs": 0
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "python",
+      "scripts/memory_graph_maintenance.py",
+      "--mode",
+      "gate",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 180
+  },
+  "compare_fields": [
+    "declarationKey",
+    "name",
+    "agentId",
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/operational-graph-maintenance.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "derived_graph_freshness_gate_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "stop_lines": [
+    "The daily gate only writes its local proof packet; it does not rebuild a graph.",
+    "No broad workspace graph, configuration, auth, runtime, canon, portfolio, capital, account, execution, or external-delivery action.",
+    "No cron schedule mutation from this contract artifact."
+  ],
+  "created_at_utc": "2026-08-31T18:08:00Z",
+  "contract_update_reason": "Initial approved bounded scripts-graph freshness gate."
+}

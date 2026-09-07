@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-08-27T13:14:15.274377+00:00",
+  "generated_at_utc": "2026-08-28T20:28:49.484908+00:00",
   "status": "ok",
   "policy_status": "current",
   "freshness_status": "fresh",
@@ -39,7 +39,7 @@
       "action": "No action required; policy artifact is current enough for dashboard and macro-regime use."
     },
     "source": {
-      "target_range_as_of": "2026-08-27",
+      "target_range_as_of": "2026-08-28",
       "target_range_source": "FRED DFEDTARL/DFEDTARU",
       "next_fomc_date": "2026-09-16",
       "next_fomc_zq_ticker": "ZQU26",
@@ -55,10 +55,10 @@
   },
   "stale_after_hours": 24,
   "expected_update_window": "Refresh daily during active market sessions and before macro-sensitive weekly outputs. Refresh again on scheduled FOMC decision days after the announcement.",
-  "last_trading_day": "2026-08-27",
+  "last_trading_day": "2026-08-28",
   "source_last_trading_day": {
-    "policy_expectations": "2026-08-27",
-    "current_target_range": "2026-08-27"
+    "policy_expectations": "2026-08-28",
+    "current_target_range": "2026-08-28"
   },
   "freshness_notes": [
     "fred_target_range",
@@ -73,21 +73,21 @@
     "current_target_range": {
       "low": 3.5,
       "high": 3.75,
-      "as_of": "2026-08-27",
+      "as_of": "2026-08-28",
       "confirmed": true,
       "source": "FRED DFEDTARL/DFEDTARU",
       "invalid_reason": null
     },
     "next_fomc": {
       "meeting_date": "2026-09-16",
-      "days_until": 20,
+      "days_until": 19,
       "zq_ticker": "ZQU26",
       "contract_source": "derived from resolved next FOMC date",
       "date_source": "official Fed calendar",
       "distribution": [
         {
           "outcome": "hold",
-          "probability": 82.0
+          "probability": 72.0
         },
         {
           "outcome": "cut_25bp",
@@ -95,12 +95,12 @@
         },
         {
           "outcome": "hike_25bp",
-          "probability": 18.0
+          "probability": 28.0
         }
       ],
       "most_likely_outcome": "hold",
-      "implied_rate": 3.67,
-      "delta_bps_vs_target_mid": -4.5,
+      "implied_rate": 3.695,
+      "delta_bps_vs_target_mid": -7.0,
       "method_note": "Single-step 25bp approximation from one 30-day Fed Funds futures contract; not a full multi-outcome meeting-distribution model.",
       "implied_rate_source_mode": "primary",
       "fetch_note": null
@@ -111,8 +111,8 @@
         "date_source": "official Fed calendar",
         "most_likely_outcome": "hold",
         "cut_probability": 0.0,
-        "hold_probability": 82.0,
-        "hike_probability": 18.0
+        "hold_probability": 72.0,
+        "hike_probability": 28.0
       }
     ],
     "manual_dependencies": [],

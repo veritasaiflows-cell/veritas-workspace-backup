@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "vrt-market-20260612T154050Z",
+  "created_at_utc": "2026-06-12T15:42:46Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true
+  },
+  "order": {
+    "symbol": "VRT",
+    "side": "buy",
+    "type": "market",
+    "time_in_force": "day",
+    "limit_price": null,
+    "qty": null,
+    "notional": 300.0
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 300.0,
+    "max_loss_usd": 57.3,
+    "max_notional_usd": 500.0,
+    "position_size_reviewed": true,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "entry_band_low": 265.45,
+    "entry_band_high": 318.09,
+    "observed_price": 298.54,
+    "observed_entry_status": "IN_BAND",
+    "stop": 241.52,
+    "sizing_rationale": "Paper-only starter market order approved exactly by Randall; notional is below WF67 $500 pilot cap. Market-order slippage accepted by owner approval text.",
+    "full_scope_artifact": null
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "Randall-approved VRT paper-only starter buy, market/day, $300 notional, 2026-06-12 Telegram approval.",
+    "recommendation_source": "main_session_vrt_market_price_capital_deployment_proposal",
+    "main_session_order_card_path": "tmp/vrt-market-price-capital-deployment-proposal.json",
+    "capital_recommendation_source": "wf85_clean_approval_review_vrt_market_price_proposal",
+    "source_artifact": "tmp/morning-paper-deployment-recommendation-cards.json",
+    "market_order_owner_approved": true,
+    "market_order_slippage_risk_accepted": true,
+    "exact_order_owner_approval_status": "approved_exact_order",
+    "approved_by": "Randall",
+    "exact_order_owner_approval_text": "Approve paper buy VRT market day order for $300 notional at current market price; I accept market-order slippage risk.",
+    "main_session_capital_package_notification_required": true,
+    "approval_artifact": "tmp/alpaca-paper-readiness/owner-approval.vrt-market-20260612.json",
+    "fresh_quote_snapshot": {
+      "age_seconds": 8,
+      "ask": 298.78,
+      "bid": 285.7,
+      "freshness_status": "fresh",
+      "price": 298.54,
+      "received_at_utc": "2026-06-12T15:42:09.508121Z",
+      "source_timestamp_utc": "2026-06-12T15:42:01.351869338Z",
+      "symbol": "VRT"
+    }
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_forbidden": "https://api.alpaca.markets"
+  }
+}

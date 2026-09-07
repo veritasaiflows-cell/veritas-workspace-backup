@@ -1,0 +1,1223 @@
+{
+  "schema": "veritas.full_intelligence_answer_parity.v1",
+  "generated_at_utc": "2026-08-21T20:32:04Z",
+  "status": "ok",
+  "workflow_ids": [
+    "WF84",
+    "WF85"
+  ],
+  "purpose": "Full intelligence answer parity proof for migrating rich ticker answers under WF84/WF85 before duplicate surface retirement.",
+  "authority_boundary": {
+    "review_only": true,
+    "report_only": true,
+    "source_open_required_before_material_finance_claims": true,
+    "wf84_wf85_route_validation_only": true,
+    "archive_allowed": false,
+    "delete_allowed": false,
+    "apply_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "full_answer_contract": [
+    {
+      "section_id": "identity",
+      "assembler_section_id": null,
+      "card_key": "universe_metadata",
+      "material": true
+    },
+    {
+      "section_id": "thesis",
+      "assembler_section_id": "thesis",
+      "card_key": "thesis_bull_bear_entry_context",
+      "material": true
+    },
+    {
+      "section_id": "bull_case",
+      "assembler_section_id": "bull_case",
+      "card_key": "thesis_bull_bear_entry_context",
+      "material": true
+    },
+    {
+      "section_id": "bear_case",
+      "assembler_section_id": "bear_case",
+      "card_key": "thesis_bull_bear_entry_context",
+      "material": true
+    },
+    {
+      "section_id": "latest_earnings",
+      "assembler_section_id": "earnings_guidance",
+      "card_key": "latest_earnings_performance",
+      "material": true
+    },
+    {
+      "section_id": "key_financial_metrics",
+      "assembler_section_id": "financial_metrics",
+      "card_key": "key_financial_metrics",
+      "material": true
+    },
+    {
+      "section_id": "valuation",
+      "assembler_section_id": "valuation",
+      "card_key": "valuation",
+      "material": true
+    },
+    {
+      "section_id": "competitive_moat",
+      "assembler_section_id": "business_quality_moat",
+      "card_key": "competitive_moat",
+      "material": true
+    },
+    {
+      "section_id": "recent_developments_catalysts",
+      "assembler_section_id": "catalyst_news_macro",
+      "card_key": "recent_developments",
+      "material": true
+    },
+    {
+      "section_id": "analyst_consensus",
+      "assembler_section_id": null,
+      "card_key": "analyst_consensus_ratings_targets",
+      "material": true
+    },
+    {
+      "section_id": "technical_posture",
+      "assembler_section_id": "technical_setup",
+      "card_key": "technical_posture",
+      "material": true
+    },
+    {
+      "section_id": "sector_macro_context",
+      "assembler_section_id": "catalyst_news_macro",
+      "card_key": "current_sector_performance",
+      "material": true
+    },
+    {
+      "section_id": "risks_counterarguments",
+      "assembler_section_id": "risk_invalidation",
+      "card_key": "risk_register",
+      "material": true
+    },
+    {
+      "section_id": "entry_band_stop",
+      "assembler_section_id": "entry_stop_sizing",
+      "card_key": "price_band_stop",
+      "material": true
+    },
+    {
+      "section_id": "portfolio_fit",
+      "assembler_section_id": "portfolio_fit",
+      "card_key": "portfolio_fit_concentration",
+      "material": true
+    },
+    {
+      "section_id": "recommendation_posture",
+      "assembler_section_id": "decision_state",
+      "card_key": "recommendation_support",
+      "material": true
+    },
+    {
+      "section_id": "authority_boundary",
+      "assembler_section_id": "authority_approval_status",
+      "card_key": "authority_boundary",
+      "material": true
+    }
+  ],
+  "coverage": {
+    "mode": "custom",
+    "evaluated_ticker_count": 29,
+    "wf84_population_ticker_count": 300,
+    "full_population_covered": false,
+    "population_coverage_ratio": 0.0967
+  },
+  "section_coverage_quality": {
+    "status": "ok",
+    "meaning": "Parity can be ok while both routes are missing the same material section. Use this block as completeness evidence separate from parity readiness.",
+    "section_status_counts": {
+      "ok": 493
+    },
+    "section_reason_counts": {
+      "mapped": 493
+    },
+    "missing_both_count": 0,
+    "material_missing_both_count": 0,
+    "technical_posture_missing_both_count": 0
+  },
+  "evaluated_tickers": [
+    "AMD",
+    "AMZN",
+    "BKNG",
+    "BRK.B",
+    "CAT",
+    "CME",
+    "CVX",
+    "ECL",
+    "ETN",
+    "GE",
+    "GOOG",
+    "GS",
+    "JPM",
+    "LIN",
+    "LLY",
+    "LMT",
+    "LNG",
+    "META",
+    "MSFT",
+    "NFLX",
+    "NVDA",
+    "PH",
+    "PLTR",
+    "RTX",
+    "TMUS",
+    "VMC",
+    "VRT",
+    "WMB",
+    "XOM"
+  ],
+  "pilot_tickers": [
+    "GOOG",
+    "NVDA",
+    "VRT"
+  ],
+  "summary": {
+    "ticker_count": 29,
+    "ticker_pass_count": 29,
+    "critical_ticker_count": 0,
+    "strategic_production_critical_ticker_count": 0,
+    "retirement_blocker_ticker_count": 0,
+    "warning_ticker_count": 0,
+    "section_count": 493,
+    "section_ok_count": 493,
+    "section_ok_ratio": 1.0,
+    "section_status_counts": {
+      "ok": 493
+    },
+    "section_reason_counts": {
+      "mapped": 493
+    },
+    "section_coverage_status": "ok",
+    "section_missing_both_count": 0,
+    "material_section_missing_both_count": 0,
+    "technical_posture_missing_both_count": 0,
+    "wf84_population_ticker_count": 300,
+    "full_population_covered": false,
+    "production_answer_path_count": 10,
+    "sql_canon_scope_status": "ok",
+    "sql_canon_production_answer_count": 10,
+    "sql_canon_production_scope_diff": {
+      "missing_from_sql": [],
+      "extra_in_sql": []
+    },
+    "thin_monitor_count": 0,
+    "production_critical_ticker_count": 0,
+    "thin_monitor_critical_ticker_count": 0,
+    "production_answer_packet_retirement_planning_ready": false,
+    "ready_to_start_duplicate_surface_retirement_planning": false,
+    "archive_delete_apply_allowed": false
+  },
+  "phases_implemented": [
+    {
+      "phase": 1,
+      "name": "full_answer_contract",
+      "status": "implemented"
+    },
+    {
+      "phase": 2,
+      "name": "old_stack_extraction",
+      "status": "implemented"
+    },
+    {
+      "phase": 3,
+      "name": "wf84_evidence_mapping",
+      "status": "implemented_via_full_answer_section_context"
+    },
+    {
+      "phase": 4,
+      "name": "wf84_wf85_answer_assembly",
+      "status": "implemented"
+    },
+    {
+      "phase": 5,
+      "name": "parity_harness",
+      "status": "implemented"
+    },
+    {
+      "phase": 6,
+      "name": "consumer_parity_gate",
+      "status": "implemented_for_validator_and_ready_for_consumer_wiring"
+    },
+    {
+      "phase": 7,
+      "name": "repair_targeting_inputs",
+      "status": "implemented_via_section_level_failures"
+    },
+    {
+      "phase": 8,
+      "name": "retirement_readiness_v2_inputs",
+      "status": "implemented_as_planning_signal_no_apply"
+    }
+  ],
+  "sql_canon_scope": {
+    "schema": "veritas.full_intelligence_answer_parity.sql_canon_scope.v1",
+    "status": "ok",
+    "sql_canon_db": "state/finance/finance-canon.sqlite",
+    "coverage_mode": "custom",
+    "access_validation": {
+      "schema_version": "finance_sql_canon_access_validation.v1",
+      "generated_at_utc": "2026-08-21T20:32:04Z",
+      "status": "ok",
+      "db_path": "state/finance/finance-canon.sqlite",
+      "counts": {
+        "answer_path_scope": 300,
+        "authority_events": 3,
+        "consumer_migration_registry": 684,
+        "evidence_freshness": 200,
+        "evidence_status": 300,
+        "migration_validation_runs": 35,
+        "reference_levels": 200,
+        "securities": 300,
+        "source_lineage": 3521,
+        "tier_routing_state": 300,
+        "universe_membership": 300
+      },
+      "field_family_summary": {
+        "review_only_internal_sql_primary": true,
+        "review_only_sql_json_canon_owner": true,
+        "canon_owner_metadata": {
+          "schema_version": "finance_sql_canon_owner_field_families.v1",
+          "promoted_at_utc": "2026-06-19T19:30:27Z",
+          "structured_truth_owner": "state/finance/finance-canon.sqlite plus generated JSON proof packets",
+          "markdown_owner_scope": "policy, narrative, owner decisions, weekly reasoning, and audit context",
+          "fallback_retained": true,
+          "archive_delete_apply_allowed": false,
+          "promoted_field_families": [
+            "answer_path_scope",
+            "evidence_freshness",
+            "reference_levels",
+            "source_lineage",
+            "ticker_state",
+            "tier_routing_state",
+            "universe_membership"
+          ]
+        },
+        "source_open_required_before_material_claims": true,
+        "field_families": {
+          "ticker_state": {
+            "sql_primary_current_state": true,
+            "row_count": 300,
+            "active_rows": 300,
+            "authority_scope": "review_only_ticker_identity_and_route_state",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "universe_membership": {
+            "sql_primary_current_state": true,
+            "row_count": 300,
+            "legacy_production_rows": 0,
+            "production_scope_rows": 10,
+            "review_monitor_rows": 258,
+            "decision_grade_rows": 32,
+            "sql_tier_counts": {
+              "Tier A": 15,
+              "Tier B": 17,
+              "Tier C": 268
+            },
+            "legacy_42_role": "hard_retired_from_active_runtime_schema",
+            "authority_scope": "review_only_universe_membership_and_monitoring_role",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "reference_levels": {
+            "sql_primary_current_state": true,
+            "row_count": 200,
+            "complete_reference_rows": 200,
+            "authority_scope": "review_only_entry_band_stop_metadata",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "evidence_freshness": {
+            "sql_primary_current_state": true,
+            "row_count": 200,
+            "authority_scope": "review_only_freshness_and_source_confidence_metadata",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "source_lineage": {
+            "sql_primary_current_state": true,
+            "row_count": 3521,
+            "scope_key_count": 734,
+            "rows_by_field_family": {
+              "consumer_migration_registry": 434,
+              "evidence_freshness": 800,
+              "reference_levels": 1087,
+              "tier_routing_state": 1200
+            },
+            "authority_scope": "review_only_source_traceability_metadata",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "answer_path_scope": {
+            "sql_primary_current_state": true,
+            "row_count": 300,
+            "production_answer_rows": 10,
+            "authority_scope": "review_only_answer_routing_scope",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "production_grade_policy": {
+            "sql_primary_current_state": true,
+            "row_count": 300,
+            "legacy_tier_a_ready_compatibility_rows": 0,
+            "dynamic_production_review_rows": 58,
+            "dynamic_production_review_definition": "current SQL-first Tier A/B routing surface for review-only production attention",
+            "production_grade_rows": 10,
+            "production_grade_definition": "proof-joined routing Tier A/B, decision-grade fresh, zero critical data conflicts, confidence ready, in coverage, card on disk, with router authority flags still closed",
+            "legacy_42_role": "compatibility_only_not_strategic_authority",
+            "authority_scope": "review_only_production_grade_answer_eligibility_no_execution_authority",
+            "canon_owner": false,
+            "canon_owner_source": null
+          },
+          "tier_routing_state": {
+            "sql_primary_current_state": true,
+            "row_count": 300,
+            "authority_scope": "review_only_non_capital_tier_routing",
+            "canon_owner": true,
+            "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+          },
+          "consumer_registry": {
+            "sql_primary_current_state": true,
+            "cutover_state_counts": {
+              "not_cut_over": 116,
+              "source_producer": 389,
+              "sql_primary_guarded": 179
+            },
+            "authority_scope": "review_only_consumer_guard_and_migration_registry",
+            "canon_owner": false,
+            "canon_owner_source": null
+          }
+        },
+        "authority_boundary": {
+          "capital_deployment_allowed": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "owner_approval_inferred": false
+        }
+      },
+      "checks": [
+        {
+          "name": "integrity_ok",
+          "ok": true,
+          "detail": "ok",
+          "severity": "error"
+        },
+        {
+          "name": "foreign_keys_ok",
+          "ok": true,
+          "detail": 0,
+          "severity": "error"
+        },
+        {
+          "name": "required_tables_present",
+          "ok": true,
+          "detail": [],
+          "severity": "error"
+        },
+        {
+          "name": "routing_view_present",
+          "ok": true,
+          "detail": [
+            "current_active_universe",
+            "current_answer_path",
+            "current_sql_canon_routing",
+            "review_monitor_universe"
+          ],
+          "severity": "error"
+        },
+        {
+          "name": "sql_first_production_scope_columns_present",
+          "ok": true,
+          "detail": [],
+          "severity": "error"
+        },
+        {
+          "name": "routing_view_sql_first_columns_present",
+          "ok": true,
+          "detail": [],
+          "severity": "error"
+        },
+        {
+          "name": "production_scope_member_proof_backed",
+          "ok": true,
+          "detail": {
+            "production_scope_member_count": 10,
+            "rows_without_proof_join_source": 0,
+            "required_source": "proof_joined_routing_tier_ab_fresh_confident_card_coverage"
+          },
+          "severity": "error"
+        },
+        {
+          "name": "production_scope_downstream_flags_coherent",
+          "ok": true,
+          "detail": {
+            "production_scope_member": 10,
+            "answer_scope_production_grade": 10,
+            "production_card_generation_allowed": 10,
+            "recommendation_fields_allowed": 10
+          },
+          "severity": "error"
+        },
+        {
+          "name": "core_universe_counts_supported_dynamic",
+          "ok": true,
+          "detail": {
+            "active_count": 300,
+            "supported": [
+              100,
+              200,
+              300,
+              400,
+              500
+            ],
+            "counts": {
+              "answer_path_scope": 300,
+              "authority_events": 3,
+              "consumer_migration_registry": 684,
+              "evidence_freshness": 200,
+              "evidence_status": 300,
+              "migration_validation_runs": 35,
+              "reference_levels": 200,
+              "securities": 300,
+              "source_lineage": 3521,
+              "tier_routing_state": 300,
+              "universe_membership": 300
+            }
+          },
+          "severity": "error"
+        },
+        {
+          "name": "routing_reference_families_not_ahead_of_universe",
+          "ok": true,
+          "detail": {
+            "active_count": 300,
+            "tier_routing_state": 300,
+            "reference_levels": 200,
+            "evidence_freshness": 200
+          },
+          "severity": "error"
+        },
+        {
+          "name": "consumer_registry_loaded",
+          "ok": true,
+          "detail": 684,
+          "severity": "error"
+        },
+        {
+          "name": "source_lineage_loaded",
+          "ok": true,
+          "detail": {
+            "count": 3521,
+            "nulls": 0
+          },
+          "severity": "error"
+        },
+        {
+          "name": "production_reference_levels_complete",
+          "ok": true,
+          "detail": {
+            "null_production_references": 0
+          },
+          "severity": "error"
+        },
+        {
+          "name": "authority_false_flags_clean",
+          "ok": true,
+          "detail": {
+            "tier_routing_state": 0,
+            "evidence_status": 0
+          },
+          "severity": "error"
+        },
+        {
+          "name": "tier_routing_state_mirrors_current_router_artifact",
+          "ok": true,
+          "detail": {
+            "router_artifact": "tmp/wf78-auto-tier-routing.json",
+            "mirror_generations": [
+              "2026-08-21T13:30:34Z"
+            ],
+            "authority_scope": "report_only_mirror_freshness; no canon mutation implied",
+            "live_router_sha256": "856686d05c3e25109c849a6b5d6308b7d1c0c2dffd919d4408aca1222830c67a",
+            "live_router_generated_at_utc": "2026-08-21T13:30:34Z",
+            "mirror_sha256": [
+              "856686d05c3e25109c849a6b5d6308b7d1c0c2dffd919d4408aca1222830c67a"
+            ]
+          },
+          "severity": "warning"
+        }
+      ],
+      "errors": [],
+      "warnings": [],
+      "validation": {
+        "status": "ok",
+        "errors": [],
+        "warnings": []
+      },
+      "authority_boundary": {
+        "read_only_access_layer": true,
+        "db_mutation_allowed": false,
+        "capital_deployment_allowed": false,
+        "paper_or_live_execution_allowed": false,
+        "brokerage_or_account_action_allowed": false,
+        "customer_or_external_delivery_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    "wf84_legacy_answer_path_tickers": [
+      "BKNG",
+      "BRK.B",
+      "CVX",
+      "GOOG",
+      "JPM",
+      "LIN",
+      "LLY",
+      "NVDA",
+      "VRT",
+      "XOM"
+    ],
+    "wf84_legacy_answer_path_count": 10,
+    "wf84_evaluated_production_answer_tickers": [
+      "BKNG",
+      "BRK.B",
+      "CVX",
+      "GOOG",
+      "JPM",
+      "LIN",
+      "LLY",
+      "NVDA",
+      "VRT",
+      "XOM"
+    ],
+    "sql_canon_production_answer_tickers": [
+      "BKNG",
+      "BRK.B",
+      "CVX",
+      "GOOG",
+      "JPM",
+      "LIN",
+      "LLY",
+      "NVDA",
+      "VRT",
+      "XOM"
+    ],
+    "sql_canon_production_answer_count": 10,
+    "sql_canon_production_answer_definition": "validated proof-joined production-grade set",
+    "sql_canon_legacy_production_answer_tickers": [],
+    "sql_canon_legacy_production_answer_count": 0,
+    "legacy_42_retired_from_blocking": true,
+    "legacy_42_count_advisory_only": true,
+    "legacy_42_role": "historical_compatibility_only_not_readiness_or_repair_authority",
+    "evaluated_state_tickers": [
+      "AMD",
+      "AMZN",
+      "BKNG",
+      "BRK.B",
+      "CAT",
+      "CME",
+      "CVX",
+      "ECL",
+      "ETN",
+      "GE",
+      "GOOG",
+      "GS",
+      "JPM",
+      "LIN",
+      "LLY",
+      "LMT",
+      "LNG",
+      "META",
+      "MSFT",
+      "NFLX",
+      "NVDA",
+      "PH",
+      "PLTR",
+      "RTX",
+      "TMUS",
+      "VMC",
+      "VRT",
+      "WMB",
+      "XOM"
+    ],
+    "missing_state_tickers": [],
+    "production_scope_diff": {
+      "missing_from_sql": [],
+      "extra_in_sql": []
+    },
+    "evaluated_scope_mismatches": [],
+    "migration_registry_summary": {
+      "priority_counts": {
+        "P0": 21,
+        "P1": 459,
+        "P2": 204
+      },
+      "lane_counts": {
+        "answer_path_parity_lane": 21,
+        "cron_pm_governance_lane": 14,
+        "pm_cockpit_lane": 2,
+        "source_loader_lane": 436,
+        "test_parity_lane": 203,
+        "typed_access_guard_lane": 3,
+        "wf78_wf77_routing_lane": 5
+      },
+      "cutover_state_counts": {
+        "not_cut_over": 116,
+        "source_producer": 389,
+        "sql_primary_guarded": 179
+      },
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": [],
+      "p0_answer_path_lane_status": {
+        "ok": true,
+        "errors": [],
+        "p0_count": 21,
+        "answer_path_lane_count": 21,
+        "p0_answer_path_lane_count": 21,
+        "p0_non_answer_path_count": 0,
+        "answer_path_non_p0_count": 0,
+        "p0_non_answer_path_consumers": [],
+        "answer_path_non_p0_consumers": []
+      }
+    },
+    "p0_registry_lane_status": {
+      "ok": true,
+      "errors": [],
+      "p0_count": 21,
+      "answer_path_lane_count": 21,
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": []
+    },
+    "sample_states": {
+      "AMD": {
+        "ticker": "AMD",
+        "name": "Advanced Micro Devices, Inc.",
+        "instrument_type": "operating_company",
+        "sector": "Tech",
+        "industry": null,
+        "universe_scope": "active_internal_universe",
+        "legacy_tier": "B",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "routing_tier_below_ab",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier B",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_b_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-MONITOR",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "AMZN": {
+        "ticker": "AMZN",
+        "name": "Amazon.com, Inc.",
+        "instrument_type": "operating_company",
+        "sector": "Tech",
+        "industry": null,
+        "universe_scope": "active_internal_universe",
+        "legacy_tier": "B",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "routing_tier_below_ab",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier B",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_b_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-MONITOR",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "BKNG": {
+        "ticker": "BKNG",
+        "name": "Booking Holdings Inc.",
+        "instrument_type": "operating_company",
+        "sector": "Consumer Discretionary",
+        "industry": null,
+        "universe_scope": "active_internal_universe",
+        "legacy_tier": "B",
+        "legacy_production_42": false,
+        "production_scope_member": true,
+        "production_scope_source": "proof_joined_routing_tier_ab_fresh_confident_card_coverage",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier B",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_b_sql_first_review_scope",
+        "auto_tier": "Tier A",
+        "auto_state": "A-WATCH",
+        "answer_scope": "sql_first_production_grade",
+        "production_card_generation_allowed": true,
+        "has_production_card": true,
+        "provider_status": null
+      },
+      "BRK.B": {
+        "ticker": "BRK.B",
+        "name": "Berkshire Hathaway Inc.",
+        "instrument_type": "operating_company",
+        "sector": "Diversified Quality",
+        "industry": null,
+        "universe_scope": "active_internal_universe",
+        "legacy_tier": "A",
+        "legacy_production_42": false,
+        "production_scope_member": true,
+        "production_scope_source": "proof_joined_routing_tier_ab_fresh_confident_card_coverage",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier A",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_a_sql_first_review_scope",
+        "auto_tier": "Tier A",
+        "auto_state": "A-CHALLENGED",
+        "answer_scope": "sql_first_production_grade",
+        "production_card_generation_allowed": true,
+        "has_production_card": true,
+        "provider_status": null
+      },
+      "CAT": {
+        "ticker": "CAT",
+        "name": "Caterpillar Inc.",
+        "instrument_type": "operating_company",
+        "sector": "Industrials",
+        "industry": null,
+        "universe_scope": "active_internal_universe",
+        "legacy_tier": "B",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "routing_tier_below_ab",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier B",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_b_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-MONITOR",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "CME": {
+        "ticker": "CME",
+        "name": "CME Group Inc.",
+        "instrument_type": "operating_company",
+        "sector": "Financial Infrastructure",
+        "industry": null,
+        "universe_scope": "active_internal_universe",
+        "legacy_tier": "A",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "routing_tier_below_ab",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier A",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_a_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-MONITOR",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "CVX": {
+        "ticker": "CVX",
+        "name": "Chevron Corporation",
+        "instrument_type": "operating_company",
+        "sector": "Energy",
+        "industry": null,
+        "universe_scope": "active_internal_universe",
+        "legacy_tier": "B",
+        "legacy_production_42": false,
+        "production_scope_member": true,
+        "production_scope_source": "proof_joined_routing_tier_ab_fresh_confident_card_coverage",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier B",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_b_sql_first_review_scope",
+        "auto_tier": "Tier A",
+        "auto_state": "A-WATCH",
+        "answer_scope": "sql_first_production_grade",
+        "production_card_generation_allowed": true,
+        "has_production_card": true,
+        "provider_status": null
+      },
+      "ECL": {
+        "ticker": "ECL",
+        "name": "Ecolab Inc.",
+        "instrument_type": "operating_company",
+        "sector": "Materials / Services",
+        "industry": null,
+        "universe_scope": "active_internal_universe",
+        "legacy_tier": "B",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "routing_tier_below_ab",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier B",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_b_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-MONITOR",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "ETN": {
+        "ticker": "ETN",
+        "name": "Eaton Corporation plc",
+        "instrument_type": "operating_company",
+        "sector": "Industrials",
+        "industry": null,
+        "universe_scope": "active_internal_universe",
+        "legacy_tier": "A",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "critical_data_conflict_or_unknown",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier A",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_a_sql_first_review_scope",
+        "auto_tier": "Tier B",
+        "auto_state": "B-CHALLENGED",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      },
+      "GE": {
+        "ticker": "GE",
+        "name": "GE Aerospace",
+        "instrument_type": "operating_company",
+        "sector": "Aerospace",
+        "industry": null,
+        "universe_scope": "active_internal_universe",
+        "legacy_tier": "B",
+        "legacy_production_42": false,
+        "production_scope_member": false,
+        "production_scope_source": "routing_tier_below_ab",
+        "tier_ab_decision_scope": null,
+        "compatibility_reason": null,
+        "sql_tier": "Tier B",
+        "sql_tier_state": "sql_first_wait_for_routing",
+        "tier_decision_scope": "tier_b_sql_first_review_scope",
+        "auto_tier": "Tier C",
+        "auto_state": "C-MONITOR",
+        "answer_scope": "sql_first_review_monitor",
+        "production_card_generation_allowed": false,
+        "has_production_card": false,
+        "provider_status": null
+      }
+    },
+    "validation": {
+      "status": "ok",
+      "critical_errors": [],
+      "warnings": []
+    },
+    "authority_boundary": {
+      "sql_canon_scope_validation_only": true,
+      "read_only_access_layer_required": true,
+      "consumer_cutover_allowed_by_this_packet": false,
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "duplicate_surface_retirement_plan": {
+    "status": "blocked_on_population_coverage",
+    "recommended_decision_now": "resolve parity blockers and run full-population proof before any duplicate-surface archive packet",
+    "scope_note": "Production answer-path tickers require old answer-packet parity. Thin monitor rows are card/WF84 monitor surfaces and are not full-answer packet retirement candidates.",
+    "production_answer_packet_retirement_planning_ready": false,
+    "full_rich_surface_retirement_planning_ready": false,
+    "candidate_surface_classes": [
+      "duplicate generated ticker-answer packets after broad parity and consumer migration",
+      "obsolete generated sidecars with no unique source lineage after DB lifecycle approval"
+    ],
+    "retain_surface_classes": [
+      "owner notes",
+      "source-open evidence roots",
+      "ticker intelligence cards until WF84/WF85 full-answer consumers prove broader live history",
+      "WF78 feeders until active reference and lifecycle gates clear"
+    ],
+    "archive_delete_apply_allowed": false
+  },
+  "per_ticker": [
+    {
+      "ticker": "AMD",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AMD.json"
+    },
+    {
+      "ticker": "AMZN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/AMZN.json"
+    },
+    {
+      "ticker": "BKNG",
+      "status": "ok",
+      "parity_scope": "production_full_answer_path",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BKNG.json"
+    },
+    {
+      "ticker": "BRK.B",
+      "status": "ok",
+      "parity_scope": "production_full_answer_path",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/BRK.B.json"
+    },
+    {
+      "ticker": "CAT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CAT.json"
+    },
+    {
+      "ticker": "CME",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CME.json"
+    },
+    {
+      "ticker": "CVX",
+      "status": "ok",
+      "parity_scope": "production_full_answer_path",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/CVX.json"
+    },
+    {
+      "ticker": "ECL",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ECL.json"
+    },
+    {
+      "ticker": "ETN",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/ETN.json"
+    },
+    {
+      "ticker": "GE",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/GE.json"
+    },
+    {
+      "ticker": "GOOG",
+      "status": "ok",
+      "parity_scope": "production_full_answer_path",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/GOOG.json"
+    },
+    {
+      "ticker": "GS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/GS.json"
+    },
+    {
+      "ticker": "JPM",
+      "status": "ok",
+      "parity_scope": "production_full_answer_path",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/JPM.json"
+    },
+    {
+      "ticker": "LIN",
+      "status": "ok",
+      "parity_scope": "production_full_answer_path",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/LIN.json"
+    },
+    {
+      "ticker": "LLY",
+      "status": "ok",
+      "parity_scope": "production_full_answer_path",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/LLY.json"
+    },
+    {
+      "ticker": "LMT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/LMT.json"
+    },
+    {
+      "ticker": "LNG",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/LNG.json"
+    },
+    {
+      "ticker": "META",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/META.json"
+    },
+    {
+      "ticker": "MSFT",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/MSFT.json"
+    },
+    {
+      "ticker": "NFLX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/NFLX.json"
+    },
+    {
+      "ticker": "NVDA",
+      "status": "ok",
+      "parity_scope": "production_full_answer_path",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/NVDA.json"
+    },
+    {
+      "ticker": "PH",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/PH.json"
+    },
+    {
+      "ticker": "PLTR",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/PLTR.json"
+    },
+    {
+      "ticker": "RTX",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/RTX.json"
+    },
+    {
+      "ticker": "TMUS",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/TMUS.json"
+    },
+    {
+      "ticker": "VMC",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/VMC.json"
+    },
+    {
+      "ticker": "VRT",
+      "status": "ok",
+      "parity_scope": "production_full_answer_path",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/VRT.json"
+    },
+    {
+      "ticker": "WMB",
+      "status": "ok",
+      "parity_scope": "thin_monitor_card_wf84_surface",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/WMB.json"
+    },
+    {
+      "ticker": "XOM",
+      "status": "ok",
+      "parity_scope": "production_full_answer_path",
+      "critical_errors": [],
+      "warnings": [],
+      "artifact": "tmp/full-answer-parity/XOM.json"
+    }
+  ],
+  "critical_errors": [],
+  "duplicate_retirement_blockers": [],
+  "warnings": [],
+  "validation": {
+    "status": "ok",
+    "critical_errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "No archive/delete/apply authority.",
+    "No canon/portfolio/cash/sizing/risk-rule mutation.",
+    "No capital deployment, paper/live order, brokerage/account action, money movement, or owner approval inference.",
+    "Source artifacts remain required until broad value-level parity and DB lifecycle approval clear."
+  ]
+}

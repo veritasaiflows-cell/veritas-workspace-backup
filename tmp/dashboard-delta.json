@@ -1,48 +1,18 @@
 {
-  "generated_at": "2026-08-27 13:25 UTC",
-  "compared_to": "2026-08-26 13:25 UTC",
+  "generated_at": "2026-08-28 13:24 UTC",
+  "compared_to": "2026-08-27 13:25 UTC",
   "first_run": false,
   "changes": [
     {
-      "type": "entered_band",
-      "ticker": "XOM"
+      "type": "action_state_change",
+      "ticker": "NVDA",
+      "from": "PROMOTION REVIEW",
+      "to": "ALMOST DEPLOYABLE"
     },
     {
-      "type": "entered_band",
+      "type": "exited_band",
       "ticker": "NVDA"
-    },
-    {
-      "type": "action_state_change",
-      "ticker": "GS",
-      "from": "ALMOST DEPLOYABLE",
-      "to": "PROMOTION REVIEW"
-    },
-    {
-      "type": "entered_band",
-      "ticker": "GS"
-    },
-    {
-      "type": "action_state_change",
-      "ticker": "LLY",
-      "from": "WATCH / RESEARCH NEEDED",
-      "to": "ENTRY POLICY REVIEW"
-    },
-    {
-      "type": "action_state_change",
-      "ticker": "WMB",
-      "from": "ENTRY POLICY REVIEW",
-      "to": "WATCH / RESEARCH NEEDED"
-    },
-    {
-      "type": "action_state_change",
-      "ticker": "XLC",
-      "from": "WATCH / RESEARCH NEEDED",
-      "to": "BELOW STOP"
-    },
-    {
-      "type": "below_stop_entered",
-      "ticker": "XLC"
     }
   ],
-  "summary": "4 action state change(s); 1 below-stop entry(ies); 3 band entry(ies)"
+  "summary": "1 action state change(s); 1 band exit(s)"
 }

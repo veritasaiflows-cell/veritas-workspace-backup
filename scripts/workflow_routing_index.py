@@ -90,7 +90,7 @@ REQUIRED_FIELDS = (
 )
 
 EXPECTED_ROUTE_COUNT = 43
-EXPECTED_TIER_COUNTS = {"P0": 4, "P1": 17, "P2": 10, "P3": 5, "P4": 7}
+EXPECTED_TIER_COUNTS = {"P0": 2, "P1": 11, "P2": 8, "P3": 15, "P4": 7}
 FRESHNESS_SCORES = {"fresh", "aging", "stale", "missing", "n/a"}
 HANDOFF_MODES = {"Spawn read-only", "Main-session only"}
 LIFECYCLES = {"active", "paused", "monitor", "gated"}
@@ -102,7 +102,20 @@ AUTHORITY_CLASSES = {
     "paused_review_only",
     "paper_guard_fail_closed",
 }
-PAPER_FAIL_CLOSED_WORKFLOWS = {"WF67", "WF86", "WF87"}
+PAPER_FAIL_CLOSED_WORKFLOWS: set[str] = set()
+ALERT_OS_RETIRED_WORKFLOWS = {
+    "WF56",
+    "WF58",
+    "WF64",
+    "WF64-WF56",
+    "WF68",
+    "WF76",
+    "WF78",
+    "WF79",
+    "WF86",
+    "WF87",
+}
+ALERT_OS_DENY_ONLY_WORKFLOWS = {"WF63", "WF67"}
 FRESHNESS_SLA_HOURS = 72.0
 
 # These are interface consumers, not owners.  The main session remains the
@@ -110,9 +123,7 @@ FRESHNESS_SLA_HOURS = 72.0
 SECONDARY_CONSUMERS: dict[str, list[str]] = {
     "WF78": ["WF84", "WF85"],
     "WF84": ["WF85"],
-    "WF85": ["WF87", "WF67", "Randall"],
-    "WF87": ["WF67", "Randall"],
-    "WF67": ["Randall"],
+    "WF85": ["Randall"],
 }
 
 # Review-only authority clamp. Mirrors the Active Workflows global authority
@@ -397,7 +408,7 @@ def build_routes() -> list[dict[str, Any]]:
         ),
         route(
             "WF72",
-            "Financial OS SQL Support / SQL-Primary Migration",
+            "Guarded Finance SQL Canon",
             "P1",
             "265-row cache boundary and A2 fallback read guard remain support-only. "
             "WF72 now owns the SQL-first migration finish-line proof after Randall's "
@@ -414,7 +425,7 @@ def build_routes() -> list[dict[str, Any]]:
             "source-feeder retirement gates clear, and require a separate exact gate before "
             "schema change, cron schedule change, Python fallback retirement, source-feeder "
             "retirement, archive/delete apply, or finance answer-path ownership change.",
-            f"{CONTINUITY}/Workflow 72 - Financial OS Efficiency Restructure and Priority Compression.md",
+            f"{CONTINUITY}/Workflow 72 - Guarded Finance SQL Canon.md",
             "tmp/finance-sql-primary-migration-plan.json",
             [
                 "state/finance/finance-canon.sqlite",
@@ -790,7 +801,7 @@ def build_routes() -> list[dict[str, Any]]:
         ),
         route(
             "WF84",
-            "Trade-Grade Personal Finance OS Canonical Data Model",
+            "Guarded Alert Evidence Plane",
             "P0",
             "Internal finance infrastructure lane opened for a formal canonical "
             "data-plane contract, read-only packet, and derived SQLite companion. "
@@ -799,7 +810,7 @@ def build_routes() -> list[dict[str, Any]]:
             "Use the validated JSON packet, SQLite companion, and phase 6-10 "
             "proof for internal read-only consumer expansion; use full-answer "
             "parity before duplicate-surface retirement.",
-            f"{CONTINUITY}/Workflow 84 - Trade-Grade Personal Finance OS Canonical Data Model.md",
+            f"{CONTINUITY}/Workflow 84 - Guarded Alert Evidence Plane.md",
             "tmp/canonical-finance-data-plane.json",
             [
                 "scripts/canonical_finance_data_plane_contract.py",
@@ -841,7 +852,7 @@ def build_routes() -> list[dict[str, Any]]:
         ),
         route(
             "WF85",
-            "Personal Trade-Grade Decision OS",
+            "Alerts and Recommendations OS",
             "P0",
             "Contract and Phase 1 builder are active above WF84. The builder "
             "emits fail-closed review-only decision cards, source/freshness "
@@ -875,7 +886,7 @@ def build_routes() -> list[dict[str, Any]]:
             "packets are compatibility snapshots generated from the assembler. "
             "Retirement planning may continue, but archive/delete/apply and "
             "source-feeder retirement remain false until exact owner approval.",
-            f"{CONTINUITY}/Workflow 85 - Trade-Grade Decision and Approval Card OS.md",
+            f"{CONTINUITY}/Workflow 85 - Alerts and Recommendations OS.md",
             "tmp/trade-grade-decision-cards.json",
             [
                 "scripts/trade_grade_decision_os_contract.py",
@@ -2530,10 +2541,409 @@ def build_handoff(rt: dict[str, Any]) -> dict[str, Any]:
     return packet
 
 
+def apply_alert_os_pivot_contract(route_row: dict[str, Any]) -> dict[str, Any]:
+    """Fail closed around the 2026-08-29 alerts-and-recommendations pivot.
+
+    Historical route definitions remain readable for audit continuity, but this
+    projection removes their operational artifacts and commands before live
+    workflow reconciliation/capsule generation.  It grants no new authority.
+    """
+    row = dict(route_row)
+    workflow_id = str(row.get("workflow_id") or "")
+
+    if workflow_id in ALERT_OS_RETIRED_WORKFLOWS:
+        aliases = list(row.get("aliases") or [])
+        if workflow_id == "WF64-WF56":
+            for alias in ("WF64", "WF56", "WF64/WF56"):
+                if alias not in aliases:
+                    aliases.append(alias)
+        row.update({
+            "aliases": aliases,
+            "tier": "P3",
+            "current_state": (
+                "Retired 2026-08-29 by Randall's alerts-and-recommendations OS pivot; "
+                "historical evidence is retained but no operational route remains."
+            ),
+            "next_action": (
+                "Do not advance or schedule this workflow. Preserve historical proof "
+                "and route current evidence/freshness needs to WF84/WF85."
+            ),
+            "primary_route_artifact": None,
+            "primary_pending": False,
+            "secondary_artifacts": [],
+            "validator_commands": [],
+            "blockers": ["Retired by explicit owner architecture decision"],
+            "stop_lines": [
+                "No portfolio construction/state maintenance, canon apply, simulated account "
+                "state, order generation, brokerage/account action, or paper/live execution."
+            ],
+            "authority_boundary": "retired history only; no operational or action authority",
+            "owner_action_required": True,
+            "safe_for_helper_lane": False,
+            "default_resume_command": None,
+        })
+        return row
+
+    if workflow_id in ALERT_OS_DENY_ONLY_WORKFLOWS:
+        row.update({
+            "tier": "P3",
+            "current_state": (
+                "Superseded as deny-only safety history by the 2026-08-29 "
+                "alerts-and-recommendations OS pivot."
+            ),
+            "next_action": (
+                "Preserve endpoint isolation, redaction, stale-artifact rejection, and "
+                "fail-closed audit evidence only; do not run broker/account/order paths."
+            ),
+            "primary_route_artifact": None,
+            "primary_pending": False,
+            "secondary_artifacts": [],
+            "validator_commands": [],
+            "blockers": ["Operational paper/account route retired"],
+            "stop_lines": [
+                "Deny-only safety evidence. No broker GET, account, position, order, manager, "
+                "submit, cancel, sell, simulated-state maintenance, or paper/live execution."
+            ],
+            "authority_boundary": "deny-only historical safety proof; no operational authority",
+            "owner_action_required": True,
+            "safe_for_helper_lane": False,
+            "default_resume_command": None,
+        })
+        return row
+
+    if workflow_id == "WF85":
+        row.update({
+            "display_name": "WF85 - Alerts and Recommendations OS",
+            "current_state": (
+                "Primary review-only alerts-and-recommendations lane over guarded WF84 evidence; "
+                "freshness and uncertainty fail closed and generated output is never approval."
+            ),
+            "next_action": (
+                "Refresh guarded evidence, alert levels, and the current recommendation digest; "
+                "surface stale or conflicted inputs explicitly."
+            ),
+            "primary_route_artifact": "tmp/finance-alert-os-digest.json",
+            "secondary_artifacts": [
+                "tmp/alert-level-freshness-controller.json",
+                "tmp/alerts-recommendations-chain-morning.json",
+                "tmp/alerts-os-pivot-validator.json",
+            ],
+            "validator_commands": [
+                "python scripts\\finance_sql_canon_access.py --write --validate",
+                "python scripts\\alert_level_freshness_controller.py --write --validate",
+                "python scripts\\run_alerts_recommendations_chain.py morning --write --validate",
+                "python scripts\\alerts_os_pivot_validator.py --write --validate",
+                "python scripts\\workflow_router.py WF85 --answer all --write-capsules --validate",
+            ],
+            "blockers": [],
+            "stop_lines": [
+                "Alerts and recommendations only. No portfolio construction/state, capital, "
+                "order, account, money-movement, or paper/live execution authority."
+            ],
+            "authority_boundary": "review-only alerts and non-executing recommendations",
+            "owner_action_required": False,
+            "safe_for_helper_lane": True,
+            "default_resume_command": (
+                "python scripts\\run_alerts_recommendations_chain.py morning --write --validate"
+            ),
+        })
+        return row
+
+    if workflow_id == "WF84":
+        row.update({
+            "display_name": "WF84 - Guarded Alert Evidence Plane",
+            "current_state": (
+                "Read-only alert evidence over guarded SQL, active alert canon, explicit "
+                "quote proof, and current freshness state. The former canonical-finance-"
+                "data-plane runtime is retired."
+            ),
+            "next_action": (
+                "Validate guarded SQL and refresh the bounded alerts chain; preserve "
+                "provenance and surface stale or conflicted evidence."
+            ),
+            "primary_route_artifact": "tmp/finance-sql-canon-access-validation.json",
+            "secondary_artifacts": [
+                "tmp/intraday-alerts/quote-snapshot-proof.json",
+                "tmp/intraday-alerts/quote-snapshot-proof-validation.json",
+                "tmp/alert-level-freshness-controller.json",
+                "tmp/alerts-recommendations-chain-midday.json",
+            ],
+            "validator_commands": [
+                "python scripts\\finance_sql_canon_access.py --write --validate",
+                "python scripts\\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate",
+                "python scripts\\workflow_router.py WF84 --answer all --write-capsules --validate",
+            ],
+            "blockers": [],
+            "stop_lines": [
+                "Evidence and freshness only. No maintained portfolio or simulated-account "
+                "state, finance-canon write, capital, order, account, or execution authority."
+            ],
+            "authority_boundary": "read-only guarded alert evidence",
+            "owner_action_required": False,
+            "safe_for_helper_lane": True,
+            "default_resume_command": (
+                "python scripts\\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate"
+            ),
+        })
+        return row
+
+    if workflow_id == "WF77":
+        row.update({
+            "display_name": "WF77 - Alert Evidence and Question Router",
+            "current_state": (
+                "Guarded SQL and the current alert controller are the ticker front door; "
+                "legacy finance-state, full-answer, and card databases are retired."
+            ),
+            "next_action": (
+                "Repair source-open evidence or freshness gaps needed for a bounded alert "
+                "or non-executing recommendation."
+            ),
+            "primary_route_artifact": "tmp/alert-level-freshness-controller.json",
+            "secondary_artifacts": [
+                "tmp/finance-sql-canon-access-validation.json",
+                "tmp/intraday-alerts/quote-snapshot-proof.json",
+                "tmp/finance-alert-os-digest.json",
+            ],
+            "validator_commands": [
+                "python scripts\\finance_sql_canon_access.py --write --validate",
+                "python scripts\\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate",
+                "python scripts\\workflow_router.py WF77 --answer all --write-capsules --validate",
+            ],
+            "stop_lines": [
+                "Research and freshness only. No maintained portfolio or simulated-account "
+                "state, capital, order, account, execution, import, or apply authority."
+            ],
+            "authority_boundary": "review-only alert evidence and question routing",
+            "owner_action_required": False,
+            "safe_for_helper_lane": True,
+            "default_resume_command": (
+                "python scripts\\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate"
+            ),
+        })
+        return row
+
+    if workflow_id == "WF72":
+        row.update({
+            "display_name": "WF72 - Guarded Finance SQL Support",
+            "primary_route_artifact": "tmp/finance-sql-canon-access-validation.json",
+            "secondary_artifacts": [
+                "state/finance/finance-canon.sqlite",
+                "tmp/alerts-os-pivot-validator.json",
+            ],
+            "validator_commands": [
+                "python scripts\\finance_sql_canon_access.py --write --validate",
+                "python scripts\\alerts_os_pivot_validator.py --write --validate",
+                "python scripts\\workflow_router.py WF72 --answer all --write-capsules --validate",
+            ],
+            "blockers": [],
+            "stop_lines": [
+                "Guarded alert evidence only. No tier-routing mirror, legacy consumer, "
+                "portfolio or simulated-account state, canon write, capital, order, account, "
+                "or execution authority."
+            ],
+            "authority_boundary": "read-only guarded SQL support for alert evidence",
+            "owner_action_required": False,
+            "safe_for_helper_lane": True,
+            "default_resume_command": (
+                "python scripts\\finance_sql_canon_access.py --write --validate"
+            ),
+        })
+        return row
+
+    if workflow_id == "WF79":
+        row.update({
+            "primary_route_artifact": "tmp/veritas-command-center-compact-reader.json",
+            "secondary_artifacts": [
+                "tmp/veritas-command-center-compact.html",
+                "tmp/dashboard-presentation-view-model.json",
+                "tmp/presentation-retrieval-route-map.json",
+            ],
+            "validator_commands": [
+                "python scripts\\dashboard_compact_shell_acceptance.py --write --validate",
+                "python scripts\\presentation_retrieval_route_map.py --write --validate",
+                "python scripts\\presentation_retrieval_enforcement.py --write --validate",
+            ],
+            "blockers": [],
+            "stop_lines": [
+                "Local read-only presentation. No finance-state maintenance, canon apply, "
+                "account, order, execution, external delivery, or approval inference."
+            ],
+            "authority_boundary": "review-only local presentation",
+            "owner_action_required": False,
+            "safe_for_helper_lane": True,
+            "default_resume_command": (
+                "python scripts\\dashboard_compact_shell_acceptance.py --write --validate"
+            ),
+        })
+        return row
+
+    if workflow_id == "WF88":
+        row.update({
+            "secondary_artifacts": [
+                "tmp/wf88-os2-control-packet.md",
+                "tmp/wf88-wiki-synthesis-packet.json",
+                "tmp/skill-workshop-body-guard.json",
+                "wiki/index.md",
+                "tmp/token-efficiency-scorecard.json",
+                "tmp/retrieval-quality-scorecard.json",
+                "tmp/wf88-decision-compiler.json",
+                "tmp/rsi-outcome-scorecard.json",
+                "tmp/cron-control-packet.json",
+            ],
+            "validator_commands": [
+                "python scripts\\wf88_wiki_synthesis_packet.py --write --write-md --write-wiki --validate",
+                "python scripts\\skill_workshop_body_guard.py --write --validate",
+                "python scripts\\token_efficiency_scorecard.py --write --write-md --validate",
+                "python scripts\\retrieval_quality_scorecard.py --write --write-md --validate",
+                "python scripts\\wf88_decision_compiler.py --write --write-md --validate",
+                "python scripts\\rsi_outcome_scorecard.py --write --write-md --validate",
+                "python scripts\\wf88_os2_control_packet.py --write --write-md --validate",
+                "python scripts\\workflow_router.py WF88 --answer all --write-capsules --validate",
+            ],
+            "stop_lines": [
+                "Learning, evaluation, routing, and proposal output only. No retired finance "
+                "producer, canon apply, schedule/runtime mutation, account, order, execution, "
+                "external delivery, or owner-approval inference."
+            ],
+            "authority_boundary": "review-only OS learning, evaluation, and routing",
+            "owner_action_required": True,
+            "safe_for_helper_lane": False,
+            "default_resume_command": None,
+        })
+        return row
+
+    if workflow_id in {"WF51", "WF53"}:
+        row.update({
+            "current_state": (
+                "Closed historical evidence route; no current finance producer or state owner."
+            ),
+            "next_action": (
+                "Use guarded SQL, explicit quote proof, the alert controller, WF84, and WF85 "
+                "for current finance evidence and recommendations."
+            ),
+            "secondary_artifacts": [],
+            "validator_commands": [],
+            "blockers": [],
+            "stop_lines": [
+                "Historical review evidence only; no current finance state, canon, account, "
+                "order, execution, or approval authority."
+            ],
+            "authority_boundary": "historical review-only evidence route",
+            "owner_action_required": True,
+            "safe_for_helper_lane": False,
+            "default_resume_command": None,
+        })
+        return row
+
+    if workflow_id == "WF-CHIEF-GATE":
+        row.update({
+            "display_name": "Alert Recommendation Guardrail Monitor",
+            "current_state": "Monitor guarded alert evidence, freshness, and recommendation boundaries.",
+            "next_action": (
+                "Escalate on missing lineage, freshness decay, contradictory thesis/band state, "
+                "or any output that implies approval or action authority."
+            ),
+            "continuity_note": None,
+            "primary_route_artifact": "tmp/alerts-os-pivot-validator.json",
+            "primary_pending": False,
+            "secondary_artifacts": [
+                "tmp/alert-level-freshness-controller.json",
+                "tmp/finance-alert-os-digest.json",
+            ],
+            "validator_commands": [
+                "python scripts\\alerts_os_pivot_validator.py --write --validate",
+            ],
+            "blockers": [],
+            "stop_lines": [
+                "Monitor and escalate only. No canon, schedule, account, order, execution, "
+                "or approval authority."
+            ],
+            "authority_boundary": "monitor-only alert and recommendation guardrail",
+            "owner_action_required": False,
+            "safe_for_helper_lane": False,
+            "default_resume_command": None,
+        })
+        return row
+
+    if workflow_id == "WF-FINANCE-CHAINS":
+        row.update({
+            "display_name": "Alerts and Recommendations Chain Monitor",
+            "current_state": "Monitor morning, midday, post-close, weekly, and cron control proof.",
+            "next_action": (
+                "Escalate on a failed chain, missing source proof, freshness decay, contract "
+                "drift, scheduler error, or digest validation failure."
+            ),
+            "primary_route_artifact": "tmp/alerts-recommendations-chain-midday.json",
+            "secondary_artifacts": [
+                "tmp/alerts-recommendations-chain-morning.json",
+                "tmp/alerts-recommendations-chain-post-close.json",
+                "tmp/alerts-recommendations-chain-weekly.json",
+                "tmp/cron-freshness-spine.json",
+                "tmp/cron-control-packet.json",
+            ],
+            "validator_commands": [
+                "python scripts\\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate",
+                "python scripts\\cron_control_packet.py --write --validate",
+            ],
+            "blockers": [],
+            "stop_lines": [
+                "Monitor only. A successful packet write is not proof of source freshness, "
+                "fleet health, approval, account action, or execution authority."
+            ],
+            "authority_boundary": "monitor-only alerts chain control",
+            "owner_action_required": False,
+            "safe_for_helper_lane": False,
+            "default_resume_command": None,
+        })
+        return row
+
+    if workflow_id == "WF60-WF61":
+        row.update({
+            "display_name": "Research and Macro Evidence Monitor",
+            "current_state": "Monitor macro, company, sector, and market-theme evidence freshness.",
+            "next_action": (
+                "Escalate on material source conflict, freshness decay, thesis change, catalyst "
+                "change, or evidence that requires alert review."
+            ),
+            "secondary_artifacts": [],
+            "validator_commands": [],
+            "blockers": [],
+            "stop_lines": [
+                "Evidence monitor only; no canon apply, maintained finance action-state, "
+                "account, order, execution, or approval authority."
+            ],
+            "authority_boundary": "monitor-only research and macro evidence",
+            "owner_action_required": False,
+            "safe_for_helper_lane": False,
+            "default_resume_command": None,
+        })
+        return row
+
+    blocked_tokens = (
+        "wf67", "wf68", "wf76", "wf78", "wf86", "wf87", "paper", "portfolio_mutation", "position_sizing",
+        "auto_apply", "deployment", "order_", "full_portfolio", "execution_board",
+        "canonical-finance-data-plane", "finance-intelligence-state", "canon-cache",
+        "trade-grade", "full-answer", "band-proposals",
+    )
+    if workflow_id in {"WF68", "WF72", "WF78", "WF88"}:
+        row["secondary_artifacts"] = [
+            value for value in (row.get("secondary_artifacts") or [])
+            if not any(token in str(value).lower() for token in blocked_tokens)
+        ]
+        row["validator_commands"] = [
+            value for value in (row.get("validator_commands") or [])
+            if not any(token in str(value).lower() for token in blocked_tokens)
+        ]
+    return row
+
+
 def build_index() -> dict[str, Any]:
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     registry = load_registry()
-    override_routes = [apply_route_override(route, registry) for route in build_routes()]
+    override_routes = [
+        apply_alert_os_pivot_contract(apply_route_override(route, registry))
+        for route in build_routes()
+    ]
     routes, state_reconciliation = reconcile_active_workflow_state(override_routes, registry)
     for r in routes:
         r["last_validated_at"] = now

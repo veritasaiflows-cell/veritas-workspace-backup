@@ -1,6 +1,7 @@
 from pathlib import Path
 import sys
 
+
 SCRIPTS = Path(__file__).resolve().parent
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
@@ -8,135 +9,115 @@ if str(SCRIPTS) not in sys.path:
 import weekday_morning_review_cron_runner as runner
 
 
-def _clean_recovered_payload() -> dict:
+CHAIN_AUTHORITY = {
+    "writes_finance_canon": False,
+    "maintains_portfolio_state": False,
+    "maintains_simulated_account_state": False,
+    "capital_or_order_authority": False,
+    "paper_or_live_execution_allowed": False,
+    "owner_approval_inferred": False,
+}
+
+
+def _clean_summary() -> dict:
     return {
-        "authority_boundary": dict(runner.AUTHORITY_BOUNDARY),
-        "steps": [],
-        "summary": {
-            "run_chain_status": "completed_with_recovery",
-            "run_summary_status": "ok",
-            "run_summary_stop_line": False,
-            "run_summary_blockers_count": 0,
-            "run_summary_operator_action_required_count": 0,
-            "auto_band_status": "ok",
-            "reference_band_sync_status": "ok",
-            "position_sizing_semantic_sync_status": "ok_no_changes",
-            "post_apply_failed_steps": 0,
-            "dashboard_critical": 0,
-            "dashboard_warning": 0,
-            "capital_validator_status": "ok",
-            "capital_validator_critical": 0,
-            "sql_canon_health": {
-                "status": "ok",
-                "authority_boundary": {
-                    "db_mutation_allowed": False,
-                    "sql_canon_cutover_allowed": False,
-                    "capital_deployment_allowed": False,
-                    "paper_or_live_execution_allowed": False,
-                    "brokerage_or_account_action_allowed": False,
-                    "customer_or_external_delivery_allowed": False,
-                    "owner_approval_inferred": False,
-                },
+        "run_chain_status": "ok",
+        "run_chain_validation_status": "ok",
+        "run_chain_generated_at_utc": "2026-08-31T13:05:04Z",
+        "run_chain_critical_errors": [],
+        "run_chain_warnings": [],
+        "run_chain_retired_stage_hits": [],
+        "run_chain_authority": dict(CHAIN_AUTHORITY),
+        "alert_level_status": "ok",
+        "alert_level_validation_status": "ok",
+        "digest_status": "ok",
+        "digest_validation_status": "ok",
+        "sql_canon_health": {
+            "status": "ok",
+            "authority_boundary": {
+                "db_mutation_allowed": False,
+                "sql_canon_cutover_allowed": False,
+                "capital_deployment_allowed": False,
+                "paper_or_live_execution_allowed": False,
+                "brokerage_or_account_action_allowed": False,
+                "customer_or_external_delivery_allowed": False,
+                "owner_approval_inferred": False,
             },
         },
     }
 
 
-def _fake_artifact(path: str) -> dict:
-    authorities = {
-        "tmp/auto-band-apply.json": {
-            "capital_action_allowed": False,
-            "owner_approval_inferred": False,
-        },
-        "tmp/reference-band-note-sync.json": {
-            "capital_action_allowed": False,
-            "owner_approval_inferred": False,
-        },
-        "tmp/auto-position-sizing-semantic-sync.json": {
-            "portfolio_config_weight_mutation_allowed": False,
-            "cash_risk_rule_sleeve_execution_mutation_allowed": False,
-            "trade_or_account_action_allowed": False,
-            "owner_approval_inferred": False,
-        },
-        "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json": {
-            "proposal_apply_allowed": False,
-            "per_packet_owner_approval_inferred": False,
-            "trade_or_account_action_allowed": False,
-            "trade_execution_allowed": False,
-        },
+def _payload(summary: dict | None = None, steps: list[dict] | None = None) -> dict:
+    return {
+        "authority_boundary": dict(runner.AUTHORITY_BOUNDARY),
+        "steps": steps or [],
+        "summary": summary or _clean_summary(),
     }
-    return {"authority": authorities.get(path, {})}
 
 
-def test_recovered_morning_chain_is_ok_when_downstream_proof_is_clean(monkeypatch) -> None:
-    monkeypatch.setattr(runner, "artifact", _fake_artifact)
-
-    validation = runner.validate(_clean_recovered_payload())
-
-    assert validation == {"status": "ok", "errors": [], "warnings": []}
+def test_clean_current_chain_is_ok() -> None:
+    assert runner.validate(_payload()) == {"status": "ok", "errors": [], "warnings": []}
 
 
-def test_recovered_morning_chain_still_blocks_on_stop_line(monkeypatch) -> None:
-    monkeypatch.setattr(runner, "artifact", _fake_artifact)
-    payload = _clean_recovered_payload()
-    payload["summary"]["run_summary_stop_line"] = True
+def test_terminal_compatibility_aliases_are_derived(monkeypatch) -> None:
+    monkeypatch.setattr(runner, "build_summary", _clean_summary)
 
-    validation = runner.validate(payload)
+    payload = runner.build_payload([], skip_chain=False, launch_id="morning-launch-1")
+    terminal = payload["terminal_completion"]
+
+    assert terminal["run_summary_status"] == "ok"
+    assert terminal["run_summary_run_id"] == "alerts-recommendations:morning:2026-08-31T13:05:04Z"
+    assert terminal["run_summary_generated_at_utc"] == terminal["run_chain_generated_at_utc"]
+
+
+def test_alert_freshness_error_is_not_masked(monkeypatch) -> None:
+    summary = _clean_summary()
+    summary.update({
+        "run_chain_status": "error",
+        "run_chain_validation_status": "error",
+        "run_chain_critical_errors": ["alert_level_freshness"],
+        "alert_level_status": "error",
+        "alert_level_validation_status": "error",
+    })
+    validation = runner.validate(_payload(summary))
+    monkeypatch.setattr(runner, "build_summary", lambda: summary)
+    result = runner.build_payload([], skip_chain=True)
 
     assert validation["status"] == "error"
-    assert validation["errors"] == ["run_chain_status:completed_with_recovery"]
+    assert "run_chain_status:error" in validation["errors"]
+    assert "run_chain_critical_errors:alert_level_freshness" in validation["errors"]
+    assert "alert_level_freshness_not_ok" in validation["errors"]
+    assert result["status"] == "blocked"
+    assert result["operator_action"] == "BLOCKED"
 
 
-def test_ticker_scoped_data_quality_chain_is_completed_with_visible_repair(monkeypatch) -> None:
-    monkeypatch.setattr(runner, "artifact", _fake_artifact)
-    payload = _clean_recovered_payload()
-    summary = payload["summary"]
-    summary.update({
-        "run_chain_status": "completed_with_ticker_repairs",
-        "run_summary_status": "warning",
-        "run_summary_stop_line": False,
-        "run_summary_blockers_count": 0,
-        "run_summary_operator_action_required_count": 1,
-        "run_summary_data_quality_classification": "ticker_scoped_repair",
-        "run_summary_data_quality_only": True,
-        "run_summary_data_quality_ticker_count": 1,
-        "run_summary_data_quality_tickers": ["JPM"],
-    })
-    validation = runner.validate(payload)
-    monkeypatch.setattr(runner, "build_summary", lambda: summary)
-    result = runner.build_payload([], skip_chain=False, launch_id="morning-launch-1")
+def test_retired_stage_hit_blocks_fail_closed() -> None:
+    summary = _clean_summary()
+    summary["run_chain_retired_stage_hits"] = ["retired-stage.py"]
 
-    assert validation["errors"] == []
-    assert "ticker_scoped_data_quality_repair_present_for_main_visibility" in validation["warnings"]
-    assert result["status"] == "completed_with_ticker_repairs"
-    assert result["operator_action"] == "MAIN_SESSION_REQUIRED"
-    assert result["terminal_completion"]["runner_executed_chain"] is True
-    assert result["terminal_completion"]["launch_id"] == "morning-launch-1"
+    validation = runner.validate(_payload(summary))
+
+    assert "run_chain_retired_stage_hits:retired-stage.py" in validation["errors"]
 
 
-def test_systemic_data_quality_chain_is_completed_but_decision_degraded(monkeypatch) -> None:
-    monkeypatch.setattr(runner, "artifact", _fake_artifact)
-    payload = _clean_recovered_payload()
-    summary = payload["summary"]
-    summary.update({
-        "run_chain_status": "completed_with_systemic_data_quality",
-        "run_summary_status": "blocked",
-        "run_summary_stop_line": True,
-        "run_summary_blockers_count": 1,
-        "run_summary_operator_action_required_count": 1,
-        "run_summary_data_quality_classification": "systemic_data_quality",
-        "run_summary_data_quality_only": True,
-        "run_summary_data_quality_ticker_count": 2,
-        "run_summary_data_quality_tickers": ["GS", "JPM"],
-    })
-    validation = runner.validate(payload)
-    monkeypatch.setattr(runner, "build_summary", lambda: summary)
-    result = runner.build_payload([], skip_chain=False)
+def test_chain_authority_widening_blocks() -> None:
+    summary = _clean_summary()
+    summary["run_chain_authority"]["capital_or_order_authority"] = True
 
-    assert validation["errors"] == []
-    assert "systemic_data_quality_repair_present_for_main_visibility" in validation["warnings"]
-    assert result["status"] == "completed_with_systemic_data_quality"
-    assert result["operator_action"] == "MAIN_SESSION_REQUIRED"
+    validation = runner.validate(_payload(summary))
+
+    assert "run_chain_authority_capital_or_order_authority_not_false" in validation["errors"]
+
+
+def test_build_steps_uses_current_bounded_chain() -> None:
+    steps = runner.build_steps(False)
+
+    assert steps[0] == (
+        "morning_alerts_recommendations_chain",
+        [sys.executable, "scripts\\run_alerts_recommendations_chain.py", "morning", "--write", "--validate"],
+        2700,
+    )
+    assert runner.build_steps(True) == []
 
 
 def test_skip_chain_default_output_is_observer_only() -> None:
@@ -146,24 +127,29 @@ def test_skip_chain_default_output_is_observer_only() -> None:
     assert runner.resolve_output_path(None, False) == runner.DEFAULT_OUT
 
 
-def test_background_launcher_does_not_duplicate_recent_running_chain(tmp_path, monkeypatch) -> None:
+def test_recent_chain_check_uses_current_artifact(tmp_path, monkeypatch) -> None:
+    monkeypatch.setattr(runner, "TMP", tmp_path)
+    (tmp_path / "alerts-recommendations-chain-morning.json").write_text('{"status":"running"}', encoding="utf-8")
+
+    assert runner.chain_recently_running() is True
+
+
+def test_background_launcher_does_not_duplicate_current_chain(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(runner, "TMP", tmp_path)
     monkeypatch.setattr(
         runner,
         "active_morning_processes",
-        lambda: [{"ProcessId": 123, "CommandLine": "python scripts\\run_finance_refresh_chain.py morning"}],
+        lambda: [{"ProcessId": 123, "CommandLine": "python scripts\\run_alerts_recommendations_chain.py morning"}],
     )
-    (tmp_path / "run-chain-morning.json").write_text('{"status":"running"}', encoding="utf-8")
-
     out = tmp_path / "weekday-morning-review-cron-runner.json"
     launch_out = tmp_path / "weekday-morning-review-cron-launcher.json"
+
     payload = runner.launch_background(False, out, launch_out)
 
     assert payload["status"] == "already_running"
     assert payload["operator_action"] == "MAIN_SESSION_REQUIRED"
     assert payload["child_pid"] is None
     assert payload["active_processes"]
-    assert payload["stale_running_artifact"] is False
     assert launch_out.exists()
 
 
@@ -172,9 +158,9 @@ def test_background_launcher_payload_shape_without_running_chain(tmp_path, monke
     monkeypatch.setattr(runner, "active_morning_processes", lambda: [])
     monkeypatch.setattr(runner, "start_detached_process", lambda command, stdout_path, stderr_path: 12345)
     monkeypatch.setattr(runner, "TMP", tmp_path)
-
     out = tmp_path / "weekday-morning-review-cron-runner.json"
     launch_out = tmp_path / "weekday-morning-review-cron-launcher.json"
+
     payload = runner.launch_background(False, out, launch_out)
 
     assert payload["status"] == "launched"
@@ -201,9 +187,9 @@ def test_start_detached_process_uses_native_detached_popen(tmp_path, monkeypatch
     monkeypatch.setattr(runner.subprocess, "Popen", fake_popen)
     monkeypatch.setattr(runner.subprocess, "DETACHED_PROCESS", 0x00000008, raising=False)
     monkeypatch.setattr(runner.subprocess, "CREATE_NEW_PROCESS_GROUP", 0x00000200, raising=False)
-
     stdout_path = tmp_path / "background.out.txt"
     stderr_path = tmp_path / "background.err.txt"
+
     pid = runner.start_detached_process(["python.exe", "runner.py", "--write"], stdout_path, stderr_path)
 
     assert pid == 45678
@@ -223,14 +209,13 @@ def test_background_launcher_relaunches_stale_running_artifact(tmp_path, monkeyp
     monkeypatch.setattr(runner, "active_morning_processes", lambda: [])
     monkeypatch.setattr(runner, "start_detached_process", lambda command, stdout_path, stderr_path: 12345)
     monkeypatch.setattr(runner, "TMP", tmp_path)
-
     out = tmp_path / "weekday-morning-review-cron-runner.json"
     launch_out = tmp_path / "weekday-morning-review-cron-launcher.json"
+
     payload = runner.launch_background(False, out, launch_out)
 
     assert payload["status"] == "launched_after_stale_running_artifact"
     assert payload["operator_action"] == "MAIN_SESSION_REQUIRED"
     assert payload["child_pid"] == 12345
     assert payload["stale_running_artifact"] is True
-    assert payload["expected_result_artifact"].endswith("weekday-morning-review-cron-runner.json")
     assert launch_out.exists()

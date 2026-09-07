@@ -233,3 +233,97 @@ Post-update boundary:
 - Active core playbooks and routing producers were updated. Four governed skill updates were created as pending Skill Workshop proposals and were not applied.
 - Durable audit: `08. Audits/GPT-5.6 Model Family Migration Audit - 2026-08-07.md`.
 - Honest residue: three pre-existing bootstrap-generator structural tests remain red; current cron/PM/status surfaces still show domain/workflow attention unrelated to model installation.
+
+## Custom 2026.7.1 Runtime Fork - Updated 2026-08-31
+
+This section closes a real documentation gap. The first two local runtime patches were installed on
+2026-08-20 and 2026-08-23/24 but were never recorded here; the third was installed on 2026-08-31.
+`TOOLS.md` names this file as the authoritative migration/security review surface.
+
+### What is installed
+
+- The build reports `2026.7.1` while stock reports `2026.7.1-2`, at the same upstream commit
+  `0790d9f593ad30c940ed93b5872a8cf6d6f3cf8c`. The version-label difference is cosmetic drift in the
+  service launcher, not a different upstream base.
+- Three stacked local runtime overlays ride on that base:
+  1. **Semantic-memory runtime hotfix (2026-08-20).** Preserves core-memory results on the
+     `corpus=all` path when the optional wiki supplement is slow, and adds per-phase partial
+     diagnostics. Rollback copies:
+     `C:\Users\Veritas\.openclaw\backups\semantic-memory-runtime-20260820\`; preserved chunk
+     `tools-DXHLX8MK.js.active-hotfix-rollback`, SHA-256
+     `46dbfcb2f063d0b635a2c10f3c965f2bbb9b34d7e5cb5cecaa57611d50c07d66`.
+  2. **Protected dispatch-binding producer (R3 -> R4, 2026-08-23/24).** Emits a dispatch-time
+     identity binding (`openclaw_isolated_session_store_v2`) that the stock dispatcher does not
+     produce. R3 shipped without carrying the approved memory hotfix forward; R4 restored both.
+  3. **Memory-only non-session visibility fast path (2026-08-31).** Before the overlay,
+     `memory_search` always created a session-visibility guard and loaded the scoped session store
+     before examining hits. With this gateway's `tools.sessions.visibility=all`, that guard makes a
+     local `sessions.list` gateway call; the session-store loader then reads and canonicalizes the
+     current agent's session entries. Ordinary durable-memory hits were returned unchanged only
+     after that needless work. The overlay returns early only when no hit has `source ===
+     "sessions"`; transcript hits retain the original guard and store lookup. Rollback copy:
+     `C:\Users\Veritas\.openclaw\backups\semantic-memory-runtime-20260831\tools-C_UMYlhe.js.pre-non-session-fast-path`.
+- Pre-overlay verification 2026-08-31: `dist\tools-C_UMYlhe.js` hashed to
+  `E59BE8598DE64350692C44B73909B45258D3454C1A1D807AE8B51B3379F89FF4` (36,616 bytes), matching the
+  approved R4 overlay recorded in the Harness V2 owner plan. The rollback copy matches that hash.
+- Post-overlay verification 2026-08-31: the active chunk hashes to
+  `F58822CE50D023BB650510F90C939792F1377B6076B03F60F3C9C307E9C6F55E` (36,921 bytes), and the
+  upgrade-survival detector reports all three memory-search behavior markers present and confirms
+  that the non-session early return occurs before session-visibility setup.
+- Post-reload validation 2026-08-31: `node --check` passed for the active chunk,
+  `openclaw config validate` passed, and the focused detector suite passed 10/10. The live main
+  index is clean (`dirty=false`, 476 files / 10,278 chunks, Ollama `nomic-embed-text`, semantic
+  vectors available). Two live `corpus=memory` searches returned relevant results in 1,036 ms and
+  430 ms. Direct `corpus=wiki` search succeeded; `corpus=all` completed in 3,975 ms with its
+  explicit, expected warning that transcript hits are still excluded from the combined route.
+- Owner record:
+  `06. Playbooks/Project Continuity/Veritas Harness V2 - Governance and Efficiency Upgrade Plan - 2026-08-22.md`.
+
+### Why the fork is retained
+
+The WAVE2 measurement cohort that motivated the dispatch-binding work was retired on 2026-08-26, but
+the binding is still load-bearing: `scripts/concurrent_lane_manager.py` trusts only
+`openclaw_isolated_session_store_v2` and fails closed on v1 because v1 cannot prove which
+caller/attempt dispatched a lane, and `scripts/token_usage_ledger.py` treats v2 as a trusted lane
+token source. Removing the fork would break isolated-lane token attribution. Only
+`scripts/wave2_measurement_cohort_controller.py` is genuinely orphaned; it has not been retired.
+
+### Known defect carried by this fork
+
+`runMemorySearchOptionalPhase` in `dist\tools-C_UMYlhe.js` races each phase against a `setTimeout`
+but never cancels the underlying work - there is no `AbortController`, unlike
+`runMemorySearchToolWithDeadline` in the same chunk. The declared phase budgets are therefore
+advisory. Observed on 2026-08-30: the wiki phase reported "timed out after 5s" while its own
+`elapsed_ms` was 17,151, and `corpus=all` measured `toolMs=25154` against a 15s tool deadline. The
+declared budgets (5s memory init + 8s memory phase + 5s wiki supplement + overhead) exceed a 15s
+deadline even when healthy, and the sessions corpus is hardcoded off.
+
+This was **not** repaired. Fixing it means editing compiled JS and deepening fork debt for a path
+with a safe workaround: prefer `corpus=memory` for routine recall and reserve `corpus=all` for cases
+that genuinely need wiki content.
+
+### Related runtime change made 2026-08-30
+
+Ollama unloads the embedding model after roughly 5 minutes idle, and a cold `nomic-embed-text` load
+measured 4,055-7,295 ms, so the first `memory_search` of a session paid that against the deadline.
+No OpenClaw config knob exists for this; confirmed against the full config schema (the only
+`keepAlive` field belongs to WhatsApp). Fixed outside the runtime by
+`scripts/embedding_keepalive_guard.py`, which pins the model with `keep_alive: -1`, scheduled hourly
+as cron job `3c3b13b7-6520-464b-91ee-d5fc6f2a086c` and governed by
+`state/cron-contracts/runtime-embedding-keepalive-guard.json`. Cost: roughly 323 MB VRAM pinned.
+Post-change proof: contract validator `status=ok contracts=28 drift=0 missing=0`; freshness spine
+28 enabled, 0 unregistered, 0 missing expected-artifact contracts.
+
+### Honest residue
+
+- The prior transient `memory_index_chunks_vec` warning is a vector-table race, not a current
+  `memory_search` failure. The existing maintenance detector checks every agent store for a missing
+  vector table or vector-row drift; the current main store is healthy.
+- Locked npm residue `C:\Users\Veritas\AppData\Roaming\npm\node_modules\.openclaw-gfkeVokI` from
+  2026-08-24 is still present.
+- The active main memory index has grown to 10,278 chunks from the 8,724 the 2026-08-20 hotfix was
+  tuned against.
+- Any future OpenClaw update will overwrite all three overlays.
+  `scripts/semantic_memory_maintenance.py` detects loss of both memory-search overlays by behavior
+  marker and deliberately does not auto-reapply them to an unfamiliar build; the dispatch-binding
+  overlay has no equivalent automatic detector.

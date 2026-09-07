@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "artifact_type": "main_session_wf67_order_decision_card",
+  "request_id": "wf67-xlb-monday-band-gated-2026-06-01",
+  "created_at_utc": "2026-05-30T07:29:26Z",
+  "monday_execution_gate": {
+    "target_session_date": "2026-06-01",
+    "requires_fresh_quote_on_or_after_market_open": true,
+    "requires_observed_price_inside_written_band": true,
+    "requires_limit_price_not_above_band_high": true,
+    "requires_fresh_wf67_guard_validation": true,
+    "requires_fresh_short_lived_kill_switch": true,
+    "requires_exact_randall_order_approval": true,
+    "execute_if_out_of_band": false,
+    "execute_if_approval_inferred": false
+  },
+  "authority": {
+    "main_session_recommendation_allowed": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "paper_only": true,
+    "paper_order_execution_allowed_by_card": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "order": {
+    "symbol": "XLB",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 51.68,
+    "notional": 250.0
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 250.0,
+    "max_notional_usd": 250.0,
+    "max_loss_usd": 250.0,
+    "entry_band_low": 49.84,
+    "entry_band_high": 51.68,
+    "observed_price": 51.15,
+    "observed_price_as_of": "2026-05-29 close",
+    "observed_entry_status": "IN_BAND",
+    "stop": 48.81,
+    "sizing_rationale": "Rank 1 starter-sized Materials ETF paper simulation. Best incremental paper-money add because it improves Materials diversification and avoids adding more AI-power concentration; limit is capped at the written band high and stays below WF67 pilot cap."
+  },
+  "source": {
+    "source_artifact": "08. Audits/Promoted Ticker Audit and Promotion Change Proposal - 2026-05-29.md",
+    "capital_recommendation_source": "manual_main_session_rerank_2026-05-30_after_fresh_market_data",
+    "owner_or_pilot_scope": "XLB Monday 2026-06-01 band-gated paper-only starter packet; executable only if fresh Monday quote remains inside 49.84-51.68 and Randall approves exact terms.",
+    "approval_artifact": null
+  },
+  "owner_approval": {
+    "status": "pending_exact_randall_approval"
+  },
+  "notes": [
+    "This card is not executable authority.",
+    "Monday readiness means prepared packets only; execution requires fresh in-band quote, exact Randall approval, fresh WF67 guard validation, and a fresh short-lived kill switch.",
+    "No live endpoint, live order, account change, money movement, portfolio/canon mutation, or inferred approval is allowed."
+  ]
+}

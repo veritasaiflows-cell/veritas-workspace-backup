@@ -1,0 +1,166 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-08-28T21:40:01Z",
+  "status": "ok",
+  "freshness": {
+    "status": "fresh",
+    "generated_at_utc": "2026-08-28T21:40:01Z",
+    "age_seconds": 0,
+    "stale_threshold_seconds": 28800,
+    "latest_successful_snapshot_at_utc": "2026-08-28T21:40:01Z",
+    "last_known_positions_status": "current"
+  },
+  "account_mode": "paper",
+  "endpoint": "https://paper-api.alpaca.markets",
+  "method": "GET_only",
+  "trade_or_account_action_allowed": false,
+  "paper_submit_allowed": false,
+  "paper_cancel_allowed": false,
+  "live_endpoint_detected": false,
+  "secrets_redacted": true,
+  "sql_state_owner": "tmp/wf67-paper-position-state.sqlite",
+  "summary": {
+    "equity": 100148.02,
+    "cash": 96343.89,
+    "buying_power": 396027.13,
+    "portfolio_value": 100148.02,
+    "positions_count": 10,
+    "orders_count": 18,
+    "open_orders_count": 0
+  },
+  "readiness_classification": {
+    "paper_position_visibility_state": "fresh",
+    "planning_state": "fresh_positions_available",
+    "refresh_blocker_scope": "none",
+    "refresh_blocker_codes": [],
+    "latest_successful_snapshot_at_utc": "2026-08-28T21:40:01Z",
+    "latest_successful_snapshot_age_seconds": 0,
+    "positions_count": 10,
+    "open_orders_count": 0,
+    "blocks_research_shadow_or_planning": false,
+    "blocks_paper_execution": true,
+    "paper_execution_state": "blocked_until_fresh_positions_exact_owner_approval_clean_wf67_guard_and_execution_kill_switch",
+    "blocks_live_execution": true,
+    "live_execution_state": "blocked_always_no_live_authority",
+    "owner_approval_inferred": false,
+    "paper_or_live_execution_allowed": false,
+    "operator_action": "NO_REPLY",
+    "notes": [
+      "Read-only position visibility is not paper order approval.",
+      "Stale-but-known positions may support review only when disclosed.",
+      "Any paper submit/cancel/sell still requires exact owner approval, fresh WF67 guard proof, and execution kill switch."
+    ]
+  },
+  "positions": [
+    {
+      "symbol": "AMZN",
+      "qty": 2.0,
+      "side": "long",
+      "market_value": 532.62,
+      "avg_entry_price": 258.605,
+      "current_price": 266.31,
+      "unrealized_pl": 15.41,
+      "unrealized_plpc": 0.02979,
+      "change_today": 0.03922
+    },
+    {
+      "symbol": "BKNG",
+      "qty": 1.0,
+      "side": "long",
+      "market_value": 205.63,
+      "avg_entry_price": 163.6,
+      "current_price": 205.63,
+      "unrealized_pl": 42.03,
+      "unrealized_plpc": 0.25691,
+      "change_today": 0.01516
+    },
+    {
+      "symbol": "ETN",
+      "qty": 1.0,
+      "side": "long",
+      "market_value": 403.74,
+      "avg_entry_price": 372.76,
+      "current_price": 403.74,
+      "unrealized_pl": 30.98,
+      "unrealized_plpc": 0.08311,
+      "change_today": -0.02956
+    },
+    {
+      "symbol": "GOOG",
+      "qty": 1.999983424,
+      "side": "long",
+      "market_value": 685.29432,
+      "avg_entry_price": 359.937983,
+      "current_price": 342.65,
+      "unrealized_pl": -34.57568,
+      "unrealized_plpc": -0.04803,
+      "change_today": 0.01463
+    },
+    {
+      "symbol": "MSFT",
+      "qty": 1.0,
+      "side": "long",
+      "market_value": 512.55,
+      "avg_entry_price": 420.26,
+      "current_price": 512.55,
+      "unrealized_pl": 92.29,
+      "unrealized_plpc": 0.2196,
+      "change_today": 0.01483
+    },
+    {
+      "symbol": "NVDA",
+      "qty": 1.483208256,
+      "side": "long",
+      "market_value": 322.820277,
+      "avg_entry_price": 202.250762,
+      "current_price": 217.65,
+      "unrealized_pl": 22.840277,
+      "unrealized_plpc": 0.07614,
+      "change_today": -0.04531
+    },
+    {
+      "symbol": "PH",
+      "qty": 0.3,
+      "side": "long",
+      "market_value": 298.506,
+      "avg_entry_price": 874.84,
+      "current_price": 995.02,
+      "unrealized_pl": 36.054,
+      "unrealized_plpc": 0.13737,
+      "change_today": -0.016
+    },
+    {
+      "symbol": "VRT",
+      "qty": 1.642703849,
+      "side": "long",
+      "market_value": 425.985962,
+      "avg_entry_price": 304.364052,
+      "current_price": 259.32,
+      "unrealized_pl": -73.994038,
+      "unrealized_plpc": -0.14799,
+      "change_today": -0.03699
+    },
+    {
+      "symbol": "XLB",
+      "qty": 4.888345717,
+      "side": "long",
+      "market_value": 260.304409,
+      "avg_entry_price": 51.14,
+      "current_price": 53.25,
+      "unrealized_pl": 10.314409,
+      "unrealized_plpc": 0.04126,
+      "change_today": 0.00038
+    },
+    {
+      "symbol": "XOM",
+      "qty": 1.0,
+      "side": "long",
+      "market_value": 156.68,
+      "avg_entry_price": 149.97,
+      "current_price": 156.68,
+      "unrealized_pl": 6.71,
+      "unrealized_plpc": 0.04474,
+      "change_today": 0.00153
+    }
+  ]
+}

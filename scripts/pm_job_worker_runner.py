@@ -266,6 +266,31 @@ def run_verifier() -> dict[str, Any]:
     )
 
 
+def apply_verifier_step_result(
+    report: dict[str, Any], verifier_step: dict[str, Any], worker_errors: list[str]
+) -> dict[str, Any]:
+    """Classify a closeout verifier step without masking worker failures.
+
+    The verifier re-reads the previous worker packet and refreshes status
+    packets; its exit code can fail while the worker's own deliverable
+    (prepared plan or executed proof) succeeded. A failed closeout after a
+    successful worker run stays a visible warning instead of cascading the
+    autonomy loop into a permanent blocked status keyed only on the verifier
+    exit code. Real worker failures keep the blocked status and record the
+    verifier failure as an additional error.
+    """
+    if verifier_step.get("ok") is True:
+        return report
+    if worker_errors:
+        report["status"] = "blocked"
+        report["validation"]["status"] = "blocked"
+        report["validation"]["errors"] = [*report["validation"]["errors"], "verifier_failed"]
+    else:
+        report["status"] = "warning"
+        report["validation"]["warnings"] = [*report["validation"]["warnings"], "verifier_closeout_failed"]
+    return report
+
+
 def implementation_plan_payload(selected_job: dict[str, Any]) -> dict[str, Any]:
     return {
         "schema": "veritas.pm_implementation_plan_handoff.v1",
@@ -426,10 +451,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             verifier_step=verifier_step,
         )
         report["summary"]["worker_state"] = report["worker_state"]
-        if not verifier_step.get("ok"):
-            report["status"] = "blocked"
-            report["validation"]["status"] = "blocked"
-            report["validation"]["errors"] = [*report["validation"]["errors"], "verifier_failed"]
+        report = apply_verifier_step_result(report, verifier_step, worker_errors)
     return report
 
 

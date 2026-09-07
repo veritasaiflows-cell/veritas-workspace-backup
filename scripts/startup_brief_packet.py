@@ -44,16 +44,48 @@ WF88_WIKI_SYNTHESIS_PACKET = TMP / "wf88-wiki-synthesis-packet.json"
 WIKI_BOOTSTRAP_PROOF_PACKET = TMP / "wiki-bootstrap-proof.json"
 ACTIONABLE_QUEUE_PACKET = TMP / "actionable-improvement-queue.json"
 NO_ORPHAN_VALIDATOR_PACKET = TMP / "no-orphan-validator.json"
+FINANCE_SQL_GUARD_PACKET = TMP / "finance-sql-canon-access-validation.json"
+ALERT_QUOTE_PACKET = TMP / "intraday-alerts" / "quote-snapshot-proof.json"
+ALERT_FRESHNESS_PACKET = TMP / "alert-level-freshness-controller.json"
+ALERT_RECOMMENDATIONS_PACKET = TMP / "finance-alert-os-digest.json"
+ALERTS_OS_PIVOT_PACKET = TMP / "alerts-os-pivot-validator.json"
 CRON_MIGRATION_REPAIR_TITLE = "Route blocked cron signals into a migration-ready repair plan"
 WORKFLOW_BLOCKER_FOLLOWUP_TITLE = "Convert workflow advancement blockers into implementation follow-ups"
+
+RETIRED_FINANCE_ROUTE_MARKERS = (
+    "wf67",
+    "wf68",
+    "wf78",
+    "wf86",
+    "wf87",
+    "trade-grade",
+    "trade_grade",
+    "deployment-readiness",
+    "deployment_readiness",
+    "capital-deployment",
+    "capital_deployment",
+    "position-sizing",
+    "position_sizing",
+    "approval-card",
+    "approval_card",
+    "repair-conveyor",
+    "repair_conveyor",
+    "paper-position",
+    "paper_position",
+    "paper-state",
+    "paper_state",
+    "paper-autotrader",
+    "paper_autotrader",
+    "portfolio-config",
+    "portfolio_config",
+)
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
     "routes_existing_packets_only": True,
     "regenerates_control_packets": False,
-    "canon_or_portfolio_mutation_allowed": False,
-    "capital_deployment_approved": False,
-    "paper_or_live_execution_allowed": False,
+    "finance_state_mutation_allowed": False,
+    "capital_or_execution_action_allowed": False,
     "brokerage_or_account_action_allowed": False,
     "config_auth_runtime_mutation_allowed": False,
     "customer_or_external_delivery_allowed": False,
@@ -126,6 +158,28 @@ def as_dict(value: Any) -> dict[str, Any]:
 
 def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
+
+
+def strip_retired_finance_routes(value: Any) -> Any:
+    """Project startup state without carrying obsolete finance routes forward."""
+    if isinstance(value, dict):
+        cleaned: dict[str, Any] = {}
+        for key, item in value.items():
+            if any(marker in str(key).lower() for marker in RETIRED_FINANCE_ROUTE_MARKERS):
+                continue
+            projected = strip_retired_finance_routes(item)
+            if projected is not None:
+                cleaned[key] = projected
+        return cleaned
+    if isinstance(value, list):
+        return [
+            projected
+            for item in value
+            if (projected := strip_retired_finance_routes(item)) is not None
+        ]
+    if isinstance(value, str) and any(marker in value.lower() for marker in RETIRED_FINANCE_ROUTE_MARKERS):
+        return None
+    return value
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -368,6 +422,43 @@ def wiki_bootstrap_proof_summary(packet: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def alerts_os_summary() -> dict[str, Any]:
+    sources = {
+        "sql_guard": FINANCE_SQL_GUARD_PACKET,
+        "quote_snapshot": ALERT_QUOTE_PACKET,
+        "freshness_controller": ALERT_FRESHNESS_PACKET,
+        "recommendations_digest": ALERT_RECOMMENDATIONS_PACKET,
+        "pivot_validator": ALERTS_OS_PIVOT_PACKET,
+    }
+    proofs: dict[str, dict[str, Any]] = {}
+    blocked: list[str] = []
+    ticker_count = None
+    alert_state_counts = None
+    for name, path in sources.items():
+        packet = load(path)
+        validation_status = as_dict(packet.get("validation")).get("status")
+        proof_ok = bool(packet) and packet.get("status") == "ok" and validation_status in {None, "ok"}
+        if not proof_ok:
+            blocked.append(name)
+        summary = as_dict(packet.get("summary"))
+        ticker_count = summary.get("ticker_count") or ticker_count
+        alert_state_counts = summary.get("alert_state_counts") or alert_state_counts
+        proofs[name] = {
+            "path": path.relative_to(ROOT).as_posix(),
+            "present": bool(packet),
+            "status": packet.get("status"),
+            "validation_status": validation_status,
+            "generated_at_utc": packet.get("generated_at_utc"),
+        }
+    return {
+        "status": "ok" if not blocked else "blocked",
+        "blocked_proofs": blocked,
+        "ticker_count": ticker_count,
+        "alert_state_counts": alert_state_counts,
+        "proofs": proofs,
+    }
+
+
 def build_payload(max_age_minutes: int) -> dict[str, Any]:
     now = datetime.now(timezone.utc)
     future = load(FUTURE_PACKET)
@@ -401,11 +492,7 @@ def build_payload(max_age_minutes: int) -> dict[str, Any]:
     actionable_summary = as_dict(actionable_queue.get("summary"))
     no_orphan_summary = as_dict(no_orphan_validator.get("summary"))
     escalation_consumer_summary = as_dict(escalation_consumer.get("summary"))
-    action_executor_summary = as_dict(action_executor.get("summary"))
-    pm_autonomy_dispatcher_summary = as_dict(pm_autonomy_dispatcher.get("summary"))
-    pm_job_worker_summary = as_dict(pm_job_worker.get("summary"))
-    pm_autonomy_verifier_summary = as_dict(pm_autonomy_verifier.get("summary"))
-    finance_digest = as_dict(pm_summary.get("finance_domain_repair_digest"))
+    finance_alerts = alerts_os_summary()
     implementation_queue = as_dict(pm_summary.get("implementation_queue"))
     pm_readiness = as_dict(pm_summary.get("pm_readiness"))
     wf74_pickup = wf74_pickup_summary(wf74_queue, wf74_auto_patch, wf74_docket, workflow_followups, cron_migration_repair_plan)
@@ -417,7 +504,6 @@ def build_payload(max_age_minutes: int) -> dict[str, Any]:
     future_efficiency_policy_matches_owner = future_execution_efficiency_policy == execution_efficiency_policy
     coding_outcome_efficiency = as_dict(future.get("coding_outcome_efficiency"))
     wf85 = first_workflow(future, "WF85")
-    wf84 = first_workflow(future, "WF84")
     artifacts = {
         "future_session_packet": path_state(FUTURE_PACKET, now),
         "pm_control_packet": path_state(PM_PACKET, now),
@@ -442,6 +528,11 @@ def build_payload(max_age_minutes: int) -> dict[str, Any]:
         "pm_job_worker_runner": path_state(PM_JOB_WORKER_PACKET, now),
         "pm_autonomy_verifier": path_state(PM_AUTONOMY_VERIFIER_PACKET, now),
         "pm_main_session_action_inbox": path_state(PM_MAIN_ACTION_INBOX_PACKET, now),
+        "finance_sql_guard": path_state(FINANCE_SQL_GUARD_PACKET, now),
+        "alert_quote_snapshot": path_state(ALERT_QUOTE_PACKET, now),
+        "alert_freshness_controller": path_state(ALERT_FRESHNESS_PACKET, now),
+        "alert_recommendations_digest": path_state(ALERT_RECOMMENDATIONS_PACKET, now),
+        "alerts_os_pivot_validator": path_state(ALERTS_OS_PIVOT_PACKET, now),
     }
     optional_inputs = {
         "wf74_opportunity_packet",
@@ -500,9 +591,8 @@ def build_payload(max_age_minutes: int) -> dict[str, Any]:
         "coding_outcome_efficiency": coding_outcome_efficiency,
         "summary": {
             "identity": "Veritas, Randall's finance-first market-intelligence chief of staff and workflow/decision-support operator.",
-            "primary_goal": "WF85 Personal Trade-Grade Decision OS",
+            "primary_goal": "Alerts and Recommendations OS",
             "wf85_status": wf85.get("effective_status"),
-            "wf84_status": wf84.get("effective_status"),
             "pm_status": pm.get("status"),
             "pm_readiness_band": pm_readiness.get("readiness_band"),
             "pm_ready_job_count": implementation_queue.get("ready_job_count"),
@@ -637,32 +727,16 @@ def build_payload(max_age_minutes: int) -> dict[str, Any]:
             "main_session_escalation_consumer_repeated_blocker_count": escalation_consumer_summary.get("repeated_blocker_count"),
             "main_session_escalation_consumer_next_safe_action": escalation_consumer_summary.get("next_safe_action"),
             "main_session_action_executor_status": action_executor.get("status"),
-            "main_session_action_executor_action": action_executor_summary.get("action_type"),
-            "main_session_action_executor_classification": action_executor_summary.get("classification"),
-            "main_session_action_executor_selected_job": as_dict(action_executor_summary.get("selected_pm_job")).get("job_id"),
-            "main_session_action_executor_parallel_workstream": action_executor_summary.get("parallel_helper_workstream"),
-            "main_session_action_executor_parallel_title": action_executor_summary.get("parallel_helper_title"),
-            "main_session_action_executor_executed": action_executor_summary.get("executed"),
-            "main_session_action_executor_next_safe_action": action_executor_summary.get("next_safe_action"),
             "pm_autonomy_dispatcher_status": pm_autonomy_dispatcher.get("status"),
-            "pm_autonomy_dispatcher_action": pm_autonomy_dispatcher_summary.get("selected_action_type"),
-            "pm_autonomy_dispatcher_selected_job": pm_autonomy_dispatcher_summary.get("selected_job_id"),
-            "pm_autonomy_dispatcher_selected_priority_score": pm_autonomy_dispatcher_summary.get("selected_priority_score"),
             "pm_job_worker_status": pm_job_worker.get("status"),
-            "pm_job_worker_action": pm_job_worker_summary.get("action_type"),
-            "pm_job_worker_selected_job": pm_job_worker_summary.get("selected_job_id"),
-            "pm_job_worker_executed": pm_job_worker_summary.get("executed"),
             "pm_autonomy_verifier_status": pm_autonomy_verifier.get("status"),
-            "pm_autonomy_verifier_action": pm_autonomy_verifier_summary.get("action_type"),
-            "pm_main_action_inbox_action": pm_action_inbox.get("action_type"),
-            "pm_main_action_inbox_top_job": pm_action_inbox.get("top_pending_job_id"),
-            "pm_main_action_inbox_next_action": pm_action_inbox.get("main_next_action"),
-            "implementation_blocker_count": finance_digest.get("implementation_blocker_count"),
-            "control_plane_blocker_count": finance_digest.get("control_plane_blocker_count"),
-            "finance_domain_repair_item_count": finance_digest.get("finance_domain_repair_item_count"),
-            "tier_a_b_missing_decision_grade_band_count": finance_digest.get("tier_a_b_missing_decision_grade_band_count"),
-            "tier_a_b_missing_decision_grade_band_tickers": finance_digest.get("tier_a_b_missing_decision_grade_band_tickers"),
+            "pm_main_action_inbox_status": pm_action_inbox.get("status"),
+            "finance_alerts_os_status": finance_alerts.get("status"),
+            "finance_alerts_os_blocked_proofs": finance_alerts.get("blocked_proofs"),
+            "finance_alerts_os_ticker_count": finance_alerts.get("ticker_count"),
+            "finance_alerts_os_state_counts": finance_alerts.get("alert_state_counts"),
         },
+        "finance_alerts_os": finance_alerts,
         "recommended_next_action": (
             "For simple greetings or shallow status checks, answer from this packet and stop. "
             "Refresh PM/cron/future-session packets only when the user asks for material workflow action/detail, "
@@ -672,6 +746,8 @@ def build_payload(max_age_minutes: int) -> dict[str, Any]:
         "input_validation_warnings": validation_warnings,
         "validation": {"status": "pending", "errors": []},
     }
+    for key in ("summary", "coding_outcome_efficiency", "fleet_posture", "input_validation_warnings"):
+        payload[key] = strip_retired_finance_routes(payload.get(key))
     payload["validation"] = validate_payload(payload)
     if payload["validation"]["status"] != "ok":
         payload["status"] = "critical"
@@ -707,8 +783,13 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
     if efficiency_policy != implementation_router.execution_efficiency_policy():
         errors.append("execution_efficiency_policy.owner_mismatch")
     quality_efficiency = as_dict(efficiency_policy.get("quality_weighted_efficiency"))
-    if quality_efficiency.get("minimum_comparable_main_accepted_jobs") != 10:
-        errors.append("execution_efficiency_policy.cohort_gate_invalid")
+    if (
+        quality_efficiency.get("evaluation_mode")
+        != "owner_directed_on_demand_evidence_review"
+        or quality_efficiency.get("cohort_pilot_required") is not False
+        or quality_efficiency.get("minimum_jobs_for_on_demand_review") != 0
+    ):
+        errors.append("execution_efficiency_policy.on_demand_review_contract_invalid")
     if quality_efficiency.get("automatic_route_promotion_allowed") is not False:
         errors.append("execution_efficiency_policy.auto_promotion_not_disabled")
     fleet = as_dict(payload.get("fleet_posture"))
@@ -782,17 +863,18 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
         errors.append("actionable_queue.missing_contract_count_nonzero")
     if summary.get("no_orphan_validator_validation") == "blocked":
         errors.append("no_orphan_validator.validation_blocked")
+    if summary.get("finance_alerts_os_status") != "ok":
+        errors.append("finance_alerts_os.proof_blocked")
     return {"status": "critical" if errors else "ok", "errors": errors}
 
 
 def render_text(payload: dict[str, Any]) -> str:
     summary = as_dict(payload.get("summary"))
     route = as_dict(payload.get("status_route_contract"))
-    missing = summary.get("tier_a_b_missing_decision_grade_band_tickers") or []
     return "\n".join([
         f"status={payload.get('status')} validation={as_dict(payload.get('validation')).get('status')}",
         f"route={route.get('route_name')} command=\"{route.get('default_command')}\" max_tool_calls={route.get('max_tool_calls')} stop_after_packet={route.get('stop_after_packet')}",
-        f"primary={summary.get('primary_goal')} wf85={summary.get('wf85_status')} wf84={summary.get('wf84_status')}",
+        f"primary={summary.get('primary_goal')} wf85={summary.get('wf85_status')}",
         f"pm={summary.get('pm_status')} readiness={summary.get('pm_readiness_band')} ready_jobs={summary.get('pm_ready_job_count')} blocked_jobs={summary.get('pm_blocked_job_count')}",
         f"cron={summary.get('cron_status')} escalation={summary.get('cron_escalation_signal_count')} blocked={summary.get('cron_blocked_count')}",
         f"improvements={summary.get('improvement_ledger_status')} open={summary.get('improvement_open_count')} high={summary.get('improvement_high_priority_open_count')} overdue={summary.get('improvement_overdue_open_count')} escalation={summary.get('improvement_escalation_level')} top={summary.get('improvement_top_title')}",
@@ -806,10 +888,8 @@ def render_text(payload: dict[str, Any]) -> str:
         f"fleet=status:{summary.get('fleet_status')} utilized={summary.get('fleet_utilized_agent_count')}/{summary.get('fleet_configured_agent_count')} pricing_grade={summary.get('fleet_pricing_grade_attribution_coverage_percent')}% Main_accepted={summary.get('fleet_main_accepted_count')} QA={summary.get('fleet_qa_pass_count')}/{summary.get('fleet_qa_review_completed_count')} rework={summary.get('fleet_rework_count')} gaps={summary.get('fleet_attribution_gap_count')} oauth={summary.get('fleet_oauth_capacity_status')}:{summary.get('fleet_oauth_remaining_percent')}% sandbox={summary.get('fleet_sandbox_status')}",
         f"owner_gated={summary.get('owner_gated_review_status')} decisions={summary.get('owner_gated_decision_required_count')} top={summary.get('owner_gated_top_gate')}:{summary.get('owner_gated_top_title')}",
         f"escalation_consumer={summary.get('main_session_escalation_consumer_status')} safe_actions={summary.get('main_session_escalation_consumer_executed_safe_action_count')} unresolved={summary.get('main_session_escalation_consumer_unresolved_count')} owner_decisions={summary.get('main_session_escalation_consumer_owner_decision_count')} repeated={summary.get('main_session_escalation_consumer_repeated_blocker_count')}",
-        f"action_executor={summary.get('main_session_action_executor_status')} action={summary.get('main_session_action_executor_action')} selected={summary.get('main_session_action_executor_selected_job') or summary.get('main_session_action_executor_parallel_workstream')} executed={summary.get('main_session_action_executor_executed')}",
-        f"pm_autonomy=dispatcher:{summary.get('pm_autonomy_dispatcher_status')} action={summary.get('pm_autonomy_dispatcher_action')} selected={summary.get('pm_autonomy_dispatcher_selected_job')} worker={summary.get('pm_job_worker_status')} executed={summary.get('pm_job_worker_executed')} inbox={summary.get('pm_main_action_inbox_action')}:{summary.get('pm_main_action_inbox_top_job')}",
-        f"finance_domain_repair_items={summary.get('finance_domain_repair_item_count')} implementation_blockers={summary.get('implementation_blocker_count')} control_blockers={summary.get('control_plane_blocker_count')}",
-        f"tier_a_b_missing_bands={summary.get('tier_a_b_missing_decision_grade_band_count')} tickers={','.join(missing)}",
+        f"orchestration=executor:{summary.get('main_session_action_executor_status')} dispatcher:{summary.get('pm_autonomy_dispatcher_status')} worker:{summary.get('pm_job_worker_status')} verifier:{summary.get('pm_autonomy_verifier_status')} inbox:{summary.get('pm_main_action_inbox_status')}",
+        f"finance_alerts_os={summary.get('finance_alerts_os_status')} tickers={summary.get('finance_alerts_os_ticker_count')} states={summary.get('finance_alerts_os_state_counts')} blocked_proofs={summary.get('finance_alerts_os_blocked_proofs')}",
         f"stale_inputs={','.join(payload.get('stale_inputs') or [])}",
         f"input_validation_warnings={','.join(payload.get('input_validation_warnings') or [])}",
     ])

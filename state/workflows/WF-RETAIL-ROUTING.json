@@ -68,7 +68,7 @@
     ],
     "lane_status": "refresh_required",
     "readiness_score": 15,
-    "rank": 2,
+    "rank": 6,
     "pm_packet_only": true,
     "source_lane_status": "blocked",
     "superseded_by_route_contract": true

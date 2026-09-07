@@ -2,41 +2,51 @@
   "schema": "veritas.workflow_capsule.v1",
   "workflow_id": "WF58",
   "display_name": "Dashboard / Capital Packets Monitor",
-  "tier": "P2",
-  "priority": "P2",
-  "lifecycle": "monitor",
-  "readiness": "monitor_only",
-  "effective_status": "monitor_only",
-  "current_state": "Monitor: dashboard/capital packet validation + deployment-state contract proof.",
-  "next_action": "Escalate on validator warning/critical, false-green dashboard, packet-vs-canon conflict, or duplicated legacy deployment-state fields reappearing in presentation artifacts.",
-  "authoritative_next_action": "Escalate on validator warning/critical, false-green dashboard, packet-vs-canon conflict, or duplicated legacy deployment-state fields reappearing in presentation artifacts.",
+  "tier": "P3",
+  "priority": "P3",
+  "lifecycle": "paused",
+  "readiness": "paused",
+  "effective_status": "on_hold",
+  "current_state": "Retired 2026-08-29 by Randall's alerts-and-recommendations OS pivot; historical evidence is retained but no operational route remains.",
+  "next_action": "Do not advance or schedule this workflow. Preserve historical proof and route current evidence/freshness needs to WF84/WF85.",
+  "authoritative_next_action": "Do not advance or schedule this workflow. Preserve historical proof and route current evidence/freshness needs to WF84/WF85.",
   "helper_safe": false,
-  "owner_action_required": false,
-  "authority_boundary": "monitor-only",
-  "authority_class": "monitor_only",
+  "owner_action_required": true,
+  "authority_boundary": "retired history only; no operational or action authority",
+  "authority_class": "paused_review_only",
   "primary_owner_lane": "main-session-veritas",
   "secondary_consumers": [],
   "human_approval_owner": "Randall",
-  "proof_artifact": "scripts/deployment_contract_migration_validation_bundle.py",
+  "proof_artifact": "06. Playbooks/Project Continuity/Deployment State Contract Migration.md",
   "freshness_sla": {
     "primary_artifact_max_age_hours": 72.0,
     "owner_context_max_age_hours": 72.0,
     "material_owner_context_required": false
   },
-  "blockers": [],
+  "blockers": [
+    "Retired by explicit owner architecture decision",
+    "Canonical Active Workflows hold: Retired 2026-08-29 by Randall's alerts-and-recommendations OS pivot; historical evidence is retained but no operational route remains."
+  ],
   "stop_lines": [
-    "No self-apply, trade/account authority, per-packet approval inference, or legacy/source-field deletion outside compatibility proof."
+    "No portfolio construction/state maintenance, canon apply, simulated account state, order generation, brokerage/account action, or paper/live execution."
   ],
   "continuity_note": "06. Playbooks/Project Continuity/Deployment State Contract Migration.md",
-  "primary_route_artifact": "scripts/deployment_contract_migration_validation_bundle.py",
-  "secondary_artifacts": [
-    "tmp/deployment-contract-agreement-validation.json"
-  ],
-  "validator_commands": [
-    "python scripts\\deployment_contract_migration_validation_bundle.py --write"
-  ],
+  "primary_route_artifact": null,
+  "secondary_artifacts": [],
+  "validator_commands": [],
   "default_resume_command": null,
-  "control_override": null,
+  "control_override": {
+    "status": "on_hold",
+    "set_by": "Randall",
+    "set_at_local": "2026-08-29 America/Phoenix",
+    "set_at_utc": "2026-08-30T01:20:00Z",
+    "reason": "Retired by Randall's alerts-and-recommendations OS pivot because WF58 owns capital/deployment dashboard state.",
+    "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
+    "aliases": [
+      "workflow_58"
+    ],
+    "next_action": "Preserve history only; route current alerts and recommendation health to WF84/WF85."
+  },
   "pm_action": null,
   "pm_job": null,
   "sources": {

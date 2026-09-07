@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-08-27T13:25:41.195512+00:00",
+  "generated_at_utc": "2026-08-28T13:24:41.834454+00:00",
   "stale_after_hours": 8,
   "source_freshness": {
     "overall_classification": "manual_dependency",
@@ -49,7 +49,7 @@
         "usable_for_presentation": true,
         "usable_for_canonical_mutation": false,
         "stop_line": false,
-        "generated_at_utc": "2026-08-27T13:14:53.047207+00:00",
+        "generated_at_utc": "2026-08-28T13:13:24.039686+00:00",
         "file_mtime_utc": null,
         "age_hours": 0.2,
         "stale_after_hours": 4.0,
@@ -75,7 +75,7 @@
         "usable_for_presentation": true,
         "usable_for_canonical_mutation": false,
         "stop_line": false,
-        "generated_at_utc": "2026-08-27T13:14:15.274377+00:00",
+        "generated_at_utc": "2026-08-28T13:12:54.200204+00:00",
         "file_mtime_utc": null,
         "age_hours": 0.2,
         "stale_after_hours": 24,
@@ -101,7 +101,7 @@
         "usable_for_presentation": true,
         "usable_for_canonical_mutation": false,
         "stop_line": false,
-        "generated_at_utc": "2026-08-27T13:14:16.634342+00:00",
+        "generated_at_utc": "2026-08-28T13:12:54.902133+00:00",
         "file_mtime_utc": null,
         "age_hours": 0.2,
         "stale_after_hours": 36,
@@ -123,7 +123,7 @@
         "usable_for_presentation": true,
         "usable_for_canonical_mutation": false,
         "stop_line": false,
-        "generated_at_utc": "2026-08-27T13:14:20.406616+00:00",
+        "generated_at_utc": "2026-08-28T13:12:57.235217+00:00",
         "file_mtime_utc": null,
         "age_hours": 0.2,
         "stale_after_hours": 24,
@@ -145,7 +145,7 @@
         "usable_for_presentation": true,
         "usable_for_canonical_mutation": false,
         "stop_line": false,
-        "generated_at_utc": "2026-08-27T13:25:16.478959+00:00",
+        "generated_at_utc": "2026-08-28T13:24:28.073599+00:00",
         "file_mtime_utc": null,
         "age_hours": 0.0,
         "stale_after_hours": 4.0,
@@ -167,7 +167,7 @@
         "usable_for_presentation": true,
         "usable_for_canonical_mutation": false,
         "stop_line": false,
-        "generated_at_utc": "2026-08-27T13:25:37.584925+00:00",
+        "generated_at_utc": "2026-08-28T13:24:40.259777+00:00",
         "file_mtime_utc": null,
         "age_hours": 0.0,
         "stale_after_hours": 4.0,
@@ -189,7 +189,7 @@
         "usable_for_presentation": true,
         "usable_for_canonical_mutation": false,
         "stop_line": false,
-        "generated_at_utc": "2026-08-27T13:14:10.064360+00:00",
+        "generated_at_utc": "2026-08-28T13:12:52.622218+00:00",
         "file_mtime_utc": null,
         "age_hours": 0.2,
         "stale_after_hours": 168,
@@ -213,13 +213,13 @@
         "stop_line": false,
         "generated_at_utc": "2026-05-23T19:50:12Z",
         "file_mtime_utc": null,
-        "age_hours": 2297.6,
+        "age_hours": 2321.6,
         "stale_after_hours": null,
         "required": true,
         "criticality": "critical",
         "owner_layer": "dashboard_source_assessment",
         "issues": [
-          "portfolio generated_at age 2297.6h exceeds 168h; manual review policy controls this source until portfolio/risk/universe inputs change",
+          "portfolio generated_at age 2321.6h exceeds 168h; manual review policy controls this source until portfolio/risk/universe inputs change",
           "human-maintained config, update when note-layer posture or risk rules change",
           "manual dependency: all"
         ],
@@ -240,7 +240,7 @@
         "usable_for_presentation": true,
         "usable_for_canonical_mutation": false,
         "stop_line": false,
-        "generated_at_utc": "2026-08-27T13:05:12Z",
+        "generated_at_utc": "2026-08-28T13:05:04Z",
         "file_mtime_utc": null,
         "age_hours": 0.3,
         "stale_after_hours": 48,
@@ -262,7 +262,7 @@
         "usable_for_presentation": true,
         "usable_for_canonical_mutation": false,
         "stop_line": false,
-        "generated_at_utc": "2026-08-27T13:14:01Z",
+        "generated_at_utc": "2026-08-28T13:12:47Z",
         "file_mtime_utc": null,
         "age_hours": 0.2,
         "stale_after_hours": 48,
@@ -284,7 +284,7 @@
   },
   "overall": "critical",
   "summary": {
-    "critical": 13,
+    "critical": 16,
     "warning": 11,
     "info": 1
   },
@@ -296,9 +296,22 @@
       "message": "AMD inBand flag disagrees with configured band math",
       "ticker": "AMD",
       "details": {
-        "close": 480.93,
+        "close": 476.67,
         "band_low": 295.33,
         "band_high": 342.53,
+        "inBand": true
+      }
+    },
+    {
+      "code": "entry_band_mismatch",
+      "severity": "critical",
+      "scope": "technical",
+      "message": "BKNG inBand flag disagrees with configured band math",
+      "ticker": "BKNG",
+      "details": {
+        "close": 202.56,
+        "band_low": 164.05,
+        "band_high": 170.91,
         "inBand": true
       }
     },
@@ -309,7 +322,7 @@
       "message": "BRK.B inBand flag disagrees with configured band math",
       "ticker": "BRK.B",
       "details": {
-        "close": 504.91,
+        "close": 503.7,
         "band_low": 489.78,
         "band_high": 498.19,
         "inBand": true
@@ -322,7 +335,7 @@
       "message": "ETN inBand flag disagrees with configured band math",
       "ticker": "ETN",
       "details": {
-        "close": 419.44,
+        "close": 416.04,
         "band_low": 387.67,
         "band_high": 404.02,
         "inBand": true
@@ -335,7 +348,7 @@
       "message": "GE inBand flag disagrees with configured band math",
       "ticker": "GE",
       "details": {
-        "close": 354.39,
+        "close": 342.73,
         "band_low": 299.03,
         "band_high": 311.84,
         "inBand": true
@@ -348,7 +361,7 @@
       "message": "GOOG belowStop flag disagrees with configured stop",
       "ticker": "GOOG",
       "details": {
-        "close": 339.1,
+        "close": 337.71,
         "stop": 341.07,
         "belowStop": false
       }
@@ -360,7 +373,7 @@
       "message": "GOOG inBand flag disagrees with configured band math",
       "ticker": "GOOG",
       "details": {
-        "close": 339.1,
+        "close": 337.71,
         "band_low": 354.25,
         "band_high": 369.69,
         "inBand": true
@@ -373,10 +386,22 @@
       "message": "JPM inBand flag disagrees with configured band math",
       "ticker": "JPM",
       "details": {
-        "close": 356.5,
+        "close": 354.22,
         "band_low": 304.96,
         "band_high": 315.95,
         "inBand": true
+      }
+    },
+    {
+      "code": "below_stop_mismatch",
+      "severity": "critical",
+      "scope": "technical",
+      "message": "LIN belowStop flag disagrees with configured stop",
+      "ticker": "LIN",
+      "details": {
+        "close": 485.35,
+        "stop": 487.17,
+        "belowStop": false
       }
     },
     {
@@ -386,7 +411,7 @@
       "message": "LIN inBand flag disagrees with configured band math",
       "ticker": "LIN",
       "details": {
-        "close": 490.33,
+        "close": 485.35,
         "band_low": 497.11,
         "band_high": 506.11,
         "inBand": true
@@ -399,9 +424,22 @@
       "message": "LLY inBand flag disagrees with configured band math",
       "ticker": "LLY",
       "details": {
-        "close": 1189.41,
+        "close": 1176.1,
         "band_low": 907.64,
         "band_high": 969.88,
+        "inBand": true
+      }
+    },
+    {
+      "code": "entry_band_mismatch",
+      "severity": "critical",
+      "scope": "technical",
+      "message": "PH inBand flag disagrees with configured band math",
+      "ticker": "PH",
+      "details": {
+        "close": 1011.2,
+        "band_low": 851.36,
+        "band_high": 908.98,
         "inBand": true
       }
     },
@@ -412,7 +450,7 @@
       "message": "RTX inBand flag disagrees with configured band math",
       "ticker": "RTX",
       "details": {
-        "close": 211.99,
+        "close": 212.08,
         "band_low": 183.01,
         "band_high": 193.23,
         "inBand": true
@@ -425,7 +463,7 @@
       "message": "VRT belowStop flag disagrees with configured stop",
       "ticker": "VRT",
       "details": {
-        "close": 263.81,
+        "close": 269.28,
         "stop": 276.97,
         "belowStop": false
       }
@@ -437,7 +475,7 @@
       "message": "VRT inBand flag disagrees with configured band math",
       "ticker": "VRT",
       "details": {
-        "close": 263.81,
+        "close": 269.28,
         "band_low": 300.02,
         "band_high": 319.13,
         "inBand": true
@@ -450,7 +488,7 @@
       "message": "WMB inBand flag disagrees with configured band math",
       "ticker": "WMB",
       "details": {
-        "close": 74.41,
+        "close": 74.19,
         "band_low": 73.25,
         "band_high": 75.5,
         "inBand": false
@@ -460,16 +498,14 @@
       "code": "band_staleness",
       "severity": "warning",
       "scope": "bands",
-      "message": "3 entry band(s) still have applyable review debt: ETN, MSFT, VRT. Run auto_apply_entry_band_maintenance.py --apply for eligible proposed levels: ETN, MSFT, VRT.",
+      "message": "2 entry band(s) still have applyable review debt: ETN, VRT. Run auto_apply_entry_band_maintenance.py --apply for eligible proposed levels: ETN, VRT.",
       "details": {
         "blocking_review_tickers": [
           "ETN",
-          "MSFT",
           "VRT"
         ],
         "pending_applyable_blockers": [
           "ETN",
-          "MSFT",
           "VRT"
         ],
         "non_applyable_blockers": [],

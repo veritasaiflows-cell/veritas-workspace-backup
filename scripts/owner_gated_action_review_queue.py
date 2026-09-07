@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
-"""Build a review-only queue for actions that require Randall approval.
+"""Build the review-only owner-gate queue for the active workspace OS.
 
-This packet is deliberately not an apply path. It normalizes owner-gated
-recommendations for skill approval, cron mutation, finance canon/portfolio
-mutation, capital deployment, and execution so new sessions can surface them
-without inferring approval.
+Finance entries are limited to alert/recommendation canon or policy repair.
+Capital, account, simulated-account, and execution workflows are outside this
+queue and outside the active finance operating system.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
-import json
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,7 +18,6 @@ from market_data_utils import atomic_write_json, atomic_write_text, load_json_ar
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
-STATE = ROOT / "state"
 DEFAULT_JSON = TMP / "owner-gated-action-review-queue.json"
 DEFAULT_MD = DEFAULT_JSON.with_suffix(".md")
 SCHEMA = "veritas.owner_gated_action_review_queue.v1"
@@ -28,20 +25,15 @@ SCHEMA = "veritas.owner_gated_action_review_queue.v1"
 GATES = [
     "skill_approval",
     "cron_schedule_mutation",
-    "finance_canon_portfolio_mutation",
-    "capital_deployment",
-    "execution",
+    "alert_canon_policy_mutation",
 ]
 
 SOURCES = {
     "improvement_ledger": TMP / "improvement-ledger-current.json",
     "wf74_auto_patch": TMP / "wf74-auto-patch-proposer.json",
-    "wf74_reflection": TMP / "wf74-reflection-to-proposal-autopilot.json",
     "cron_patch_manager": TMP / "cron-patch-manager.json",
-    "capital_review_queue": TMP / "wf78-capital-review-queue.json",
-    "owner_gated_decisions": STATE / "owner-gated-action-decisions.json",
-    "portfolio_mutation_posture": TMP / "portfolio-mutation-proposal-posture.json",
-    "wf87_circuit_breakers": TMP / "wf87-portfolio-circuit-breakers.json",
+    "finance_response_quality": TMP / "finance-response-quality-slice.json",
+    "alerts_chain": TMP / "alerts-recommendations-chain-midday.json",
 }
 
 AUTHORITY_BOUNDARY = {
@@ -53,12 +45,10 @@ AUTHORITY_BOUNDARY = {
     "cron_schedule_mutation_allowed": False,
     "cron_state_mutation_allowed": False,
     "runtime_config_mutation_allowed": False,
-    "finance_canon_or_portfolio_mutation_allowed": False,
-    "cash_sizing_sleeve_risk_rule_mutation_allowed": False,
-    "capital_deployment_allowed": False,
-    "capital_deployment_approved": False,
-    "trade_or_execution_allowed": False,
-    "trade_or_execution_approved": False,
+    "alert_canon_or_policy_mutation_allowed": False,
+    "capital_or_order_authority": False,
+    "maintains_portfolio_state": False,
+    "maintains_simulated_account_state": False,
     "paper_or_live_execution_allowed": False,
     "brokerage_or_account_action_allowed": False,
     "money_movement_allowed": False,
@@ -104,6 +94,15 @@ def source_status(label: str, path: Path) -> dict[str, Any]:
     }
 
 
+def blocked_actions_for_gate(gate: str) -> list[str]:
+    by_gate = {
+        "skill_approval": ["no skill apply, install, or update without explicit owner approval"],
+        "cron_schedule_mutation": ["no cron schedule, delivery, runtime, or job mutation without explicit owner approval"],
+        "alert_canon_policy_mutation": ["no alert canon, threshold, invalidation, or finance policy mutation without exact scoped proof"],
+    }
+    return by_gate.get(gate, []) + ["no owner approval inference", "no auto-apply from this queue"]
+
+
 def queue_item(
     gate: str,
     title: str,
@@ -116,9 +115,8 @@ def queue_item(
     required_before_apply: list[str] | None = None,
     risk: str = "owner_gated",
     decision_state: str = "owner_decision_required",
-    decision_reference: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    item = {
+    return {
         "schema": "veritas.owner_gated_action_review_item.v1",
         "item_id": stable_id(gate, title, source),
         "gate": gate,
@@ -134,43 +132,18 @@ def queue_item(
         "authority_boundary": AUTHORITY_BOUNDARY.copy(),
         "blocked_actions": blocked_actions_for_gate(gate),
     }
-    if decision_reference:
-        item["owner_decision_reference"] = decision_reference
-    return item
 
 
-def blocked_actions_for_gate(gate: str) -> list[str]:
-    common = ["no owner approval inference", "no auto-apply from this queue"]
-    by_gate = {
-        "skill_approval": ["no skill apply/install/update without explicit owner approval"],
-        "cron_schedule_mutation": ["no cron schedule, delivery, runtime, or job mutation without explicit owner approval"],
-        "finance_canon_portfolio_mutation": ["no canon, portfolio, cash, sizing, sleeve, or risk-rule mutation without exact gate proof"],
-        "capital_deployment": ["no buy, sell, add, trim, remove, allocation, or deployment approval inferred"],
-        "execution": ["no paper/live submit, cancel, replace, sell, brokerage/account action, or money movement"],
-    }
-    return by_gate.get(gate, []) + common
-
-
-def plain_status_for_item(item: dict[str, Any]) -> str:
-    decision_state = str(item.get("decision_state") or "")
-    if decision_state == "owner_review_advance_approved_execution_blocked":
-        return "review advance approved; buy/order not approved"
-    gate = str(item.get("gate") or "")
-    if gate == "capital_deployment":
-        return "capital review needed; no buy/order approved"
-    if gate == "execution":
-        return "execution blocked"
-    return gate or "owner gated"
-
-
-def plain_next_action_for_item(item: dict[str, Any]) -> str:
-    decision_state = str(item.get("decision_state") or "")
-    if decision_state == "owner_review_advance_approved_execution_blocked":
-        return (
-            "On Monday, refresh NVDA source/freshness and quote-vs-band first. "
-            "If still in band, prepare an exact non-executing order/approval card; do not submit any order."
-        )
-    return "Review top owner-gated item; approve/reject/defer/request deeper review explicitly. Do not apply from this packet."
+def monitor_item(gate: str, title: str, recommendation: str, source: str) -> dict[str, Any]:
+    return queue_item(
+        gate,
+        title,
+        recommendation,
+        priority=10,
+        source=source,
+        required_owner_decision="none_now",
+        decision_state="monitor_only",
+    )
 
 
 def skill_items(improvement: dict[str, Any]) -> list[dict[str, Any]]:
@@ -179,14 +152,11 @@ def skill_items(improvement: dict[str, Any]) -> list[dict[str, Any]]:
         if isinstance(row, dict) and row.get("category") == "skill_application"
     ]
     if not rows:
-        return [queue_item(
+        return [monitor_item(
             "skill_approval",
             "No current skill approval recommendation",
-            "Keep monitoring improvement ledger; create Skill Workshop proposals only after repeated procedure friction.",
-            priority=10,
-            source=rel(SOURCES["improvement_ledger"]),
-            decision_state="monitor_only",
-            required_owner_decision="none_now",
+            "Create a Skill Workshop proposal only after repeated procedure friction is evidenced.",
+            rel(SOURCES["improvement_ledger"]),
         )]
     return [
         queue_item(
@@ -198,8 +168,8 @@ def skill_items(improvement: dict[str, Any]) -> list[dict[str, Any]]:
             evidence=as_list(row.get("proof_artifacts")) or [rel(SOURCES["improvement_ledger"])],
             required_before_apply=[
                 "Skill Workshop proposal exists",
-                "Randall explicitly asks to apply or approve the specific proposal",
-                "openclaw skills check passes after apply",
+                "Randall explicitly approves the specific proposal",
+                "active-skill validation passes after apply",
             ],
         )
         for row in rows[:3]
@@ -209,273 +179,74 @@ def skill_items(improvement: dict[str, Any]) -> list[dict[str, Any]]:
 def cron_items(cron_patch: dict[str, Any], auto_patch: dict[str, Any]) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     impact = as_dict(cron_patch.get("impact"))
-    diff = as_list(cron_patch.get("diff"))
-    if diff:
-        mutation_type = "schedule" if impact.get("schedule_mutation") else "cron_runtime_or_payload"
+    if as_list(cron_patch.get("diff")):
         items.append(queue_item(
             "cron_schedule_mutation",
             f"Cron patch plan pending: {as_dict(cron_patch.get('job')).get('name') or 'unknown job'}",
-            "Review the cron patch diff, backup/rollback posture, and expected benefit before any apply.",
+            "Review the exact diff, rollback proof, and post-change validation before any apply.",
             priority=72 if impact.get("schedule_mutation") else 52,
             source=rel(SOURCES["cron_patch_manager"]),
-            evidence=[rel(SOURCES["cron_patch_manager"])],
             required_before_apply=[
-                "cron_patch_manager apply preview is exact",
-                "backup path exists",
-                "post-apply cron control validates",
-                "Randall approves the exact job mutation",
+                "exact cron diff is present",
+                "rollback path exists",
+                "post-change cron control validates",
+                "Randall approves the exact mutation",
             ],
-            risk=mutation_type,
+            risk="schedule" if impact.get("schedule_mutation") else "cron_runtime_or_payload",
         ))
     for row in as_list(auto_patch.get("owner_gated_reviews")):
         if isinstance(row, dict) and row.get("category") == "collector_config":
             items.append(queue_item(
                 "cron_schedule_mutation",
-                str(row.get("title") or "Owner-gated runtime/collector decision"),
-                str(row.get("next_safe_action") or row.get("expected_benefit") or "Review owner-gated runtime decision packet."),
+                str(row.get("title") or "Owner-gated collector decision"),
+                str(row.get("next_safe_action") or row.get("expected_benefit") or "Review the collector decision packet."),
                 priority=int(row.get("priority") or 50),
                 source=rel(SOURCES["wf74_auto_patch"]),
                 evidence=as_list(row.get("required_artifacts_before_any_change")) or [rel(SOURCES["wf74_auto_patch"])],
                 required_before_apply=as_list(row.get("required_artifacts_before_any_change")) + [
-                    "Randall explicitly approves collector/runtime mutation",
+                    "Randall explicitly approves the collector/runtime mutation",
                     "rollback and privacy proof are present",
                 ],
                 risk=str(row.get("route") or "owner_config_decision"),
             ))
-    return items or [queue_item(
+    return items or [monitor_item(
         "cron_schedule_mutation",
         "No current cron mutation recommendation",
-        "Cron may continue refreshing review packets; schedule/config changes remain owner-gated.",
-        priority=10,
-        source=rel(SOURCES["cron_patch_manager"]),
-        decision_state="monitor_only",
-        required_owner_decision="none_now",
+        "Scheduled review work may continue; schedule or runtime changes remain owner-gated.",
+        rel(SOURCES["cron_patch_manager"]),
     )]
 
 
-def finance_mutation_items(improvement: dict[str, Any], posture: dict[str, Any]) -> list[dict[str, Any]]:
+def alert_policy_items(improvement: dict[str, Any], quality: dict[str, Any], chain: dict[str, Any]) -> list[dict[str, Any]]:
     rows = [
         row for row in as_list(improvement.get("latest_open_improvements"))
         if isinstance(row, dict) and row.get("category") == "finance_mutation"
     ]
-    items = [
-        queue_item(
-            "finance_canon_portfolio_mutation",
-            str(row.get("title") or "Finance canon/portfolio mutation review"),
-            str(row.get("next_action") or "Prepare review-only finance repair or mutation proposal."),
-            priority=int(row.get("priority") or 80),
-            source=rel(SOURCES["improvement_ledger"]),
-            evidence=as_list(row.get("proof_artifacts")) or [rel(SOURCES["improvement_ledger"])],
-            required_before_apply=[
-                "scoped proposal and exact diff",
-                "standing/scoped authority gate",
-                "validator proof",
-                "backup/rollback",
-                "post-apply audit trail",
-            ],
-            risk="finance_canon_portfolio_mutation",
-        )
-        for row in rows[:3]
-    ]
-    if as_dict(posture.get("authority")).get("portfolio_mutation_allowed") is False:
-        items.append(queue_item(
-            "finance_canon_portfolio_mutation",
-            "Portfolio mutation lane is initialized but apply is disabled",
-            "Use this lane for proposals only until Randall gives exact scoped apply approval.",
-            priority=45,
-            source=rel(SOURCES["portfolio_mutation_posture"]),
-            evidence=[rel(SOURCES["portfolio_mutation_posture"])],
-            required_before_apply=as_list(posture.get("validators")) + [
-                "explicit owner scope",
-                "proposal diff and rollback",
-            ],
-            risk="portfolio_apply_disabled",
-        ))
-    return items or [queue_item(
-        "finance_canon_portfolio_mutation",
-        "No current finance canon/portfolio mutation recommendation",
-        "Keep generating proposals only; do not mutate canon or portfolio from review artifacts.",
-        priority=10,
-        source=rel(SOURCES["portfolio_mutation_posture"]),
-        decision_state="monitor_only",
-        required_owner_decision="none_now",
-    )]
-
-
-def decision_records_by_ticker(decisions: dict[str, Any]) -> dict[str, dict[str, Any]]:
-    records: dict[str, dict[str, Any]] = {}
-    for record in as_list(decisions.get("records")):
-        record_dict = as_dict(record)
-        ticker = str(record_dict.get("ticker") or "").strip().upper()
-        if ticker and record_dict.get("status") == "approved_review_advance_only":
-            records[ticker] = record_dict
-    return records
-
-
-def compact_decision_reference(record: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "decision_id": record.get("decision_id"),
-        "status": record.get("status"),
-        "approved_scope": record.get("approved_scope"),
-        "conditional_intent": record.get("conditional_intent"),
-        "capital_deployment_approved": False,
-        "trade_or_execution_approved": False,
-        "paper_or_live_execution_allowed": False,
-    }
-
-
-def capital_items(capital_queue: dict[str, Any], decisions: dict[str, Any]) -> list[dict[str, Any]]:
-    rows = [row for row in as_list(capital_queue.get("rows")) if isinstance(row, dict)]
-    if not rows:
-        return [queue_item(
-            "capital_deployment",
-            "No current capital deployment review candidate",
-            "Keep capital review blocked until a review-ready candidate queue exists.",
-            priority=10,
-            source=rel(SOURCES["capital_review_queue"]),
-            decision_state="monitor_only",
-            required_owner_decision="none_now",
+    quality_validation = as_dict(quality.get("validation")).get("status")
+    chain_validation = as_dict(chain.get("validation")).get("status")
+    if not rows and quality_validation == "ok" and chain_validation == "ok":
+        return [monitor_item(
+            "alert_canon_policy_mutation",
+            "No current alert-canon policy change recommended",
+            "Continue evidence, freshness, and recommendation monitoring without changing canonical levels or policy.",
+            rel(SOURCES["alerts_chain"]),
         )]
-    items: list[dict[str, Any]] = []
-    approved_review_advances = decision_records_by_ticker(decisions)
-    for row in rows[:5]:
-        ticker = str(row.get("ticker") or "UNKNOWN")
-        approved_review_advance = approved_review_advances.get(ticker.upper())
-        band = row.get("current_band_status") or as_dict(row.get("written_band")).get("current_band_status")
-        wf85_contract = as_dict(row.get("wf85_decision_contract"))
-        wf78_wf85_conflict = wf85_contract.get("wf78_review_ready_conflicts_with_wf85") is True
-        approval_language_allowed = (
-            wf85_contract.get("decision_grade_claim_allowed") is True
-            and wf85_contract.get("may_use_approval_ready_language") is True
-        )
-        if approved_review_advance:
-            title = f"{ticker} approved for review advance; buy/order still blocked"
-            recommendation = (
-                f"Randall approved {ticker} to stay/advance in the WF78 routing-to-review path. "
-                f"WF85 is {wf85_contract.get('decision_state') or 'not_decision_ready'}; "
-                "freshness and an exact order card are still required before any Monday buy/order."
-            )
-            required_owner_decision = "freshness_then_exact_order_card_required"
-            risk = "review_advance_approved_execution_blocked"
-            required_before_apply = [
-                "WF85 decision_state and decision-grade gate must clear",
-                "WF78/WF85 contradiction guard must be clean",
-                "fresh Monday quote/band/stop confirmation",
-                "source-open material claim review",
-                "sizing/staggering recommendation card",
-                "exact ticker/side/quantity-or-notional/order-type/TIF/limit owner approval",
-                "fresh WF67 paper-only guard proof before any paper action",
-            ]
-            decision_state = "owner_review_advance_approved_execution_blocked"
-            decision_reference = compact_decision_reference(approved_review_advance)
-        elif wf78_wf85_conflict:
-            title = f"Routing candidate needs WF85 decision reconciliation: {ticker}"
-            recommendation = (
-                f"Treat {ticker} as a WF78 routing/capital-review candidate only; WF85 is "
-                f"{wf85_contract.get('decision_state') or 'not_decision_ready'} and does not allow approval-ready language."
-            )
-            required_owner_decision = "defer_or_request_deeper_review"
-            risk = "wf78_wf85_decision_contract_conflict"
-            required_before_apply = [
-                "WF85 decision_state and decision-grade gate must clear",
-                "WF78/WF85 contradiction guard must be clean",
-                "fresh quote/band/stop confirmation",
-                "source-open material claim review",
-                "sizing/staggering recommendation card",
-                "explicit owner capital approval",
-            ]
-            decision_state = "owner_decision_required"
-            decision_reference = None
-        elif approval_language_allowed:
-            title = f"Capital review card ready: {ticker}"
-            recommendation = f"Prepare or review a non-executing owner capital-review card for {ticker}; current band status {band}."
-            required_owner_decision = "approve_reject_defer_or_request_deeper_review"
-            risk = "capital_review_only"
-            required_before_apply = [
-                "fresh quote/band/stop confirmation",
-                "owner selects ticker and deployment intent",
-                "sizing/staggering recommendation card",
-                "explicit owner capital approval",
-            ]
-            decision_state = "owner_decision_required"
-            decision_reference = None
-        else:
-            title = f"Capital review routing candidate: {ticker}"
-            recommendation = (
-                f"Keep {ticker} in review-only routing until WF85 permits decision-grade or approval-card language; "
-                f"current band status {band}."
-            )
-            required_owner_decision = "defer_or_request_deeper_review"
-            risk = "capital_review_routing_only"
-            required_before_apply = [
-                "WF85 decision-state review",
-                "fresh quote/band/stop confirmation",
-                "owner selects ticker and deployment intent",
-                "sizing/staggering recommendation card",
-                "explicit owner capital approval",
-            ]
-            decision_state = "owner_decision_required"
-            decision_reference = None
-        evidence = as_list(row.get("source_artifacts")) or [rel(SOURCES["capital_review_queue"])]
-        if wf85_contract.get("source"):
-            evidence = sorted(set(evidence + [str(wf85_contract.get("source"))]))
-        items.append(queue_item(
-            "capital_deployment",
-            title,
-            recommendation,
-            priority=max(30, 90 - int(row.get("queue_rank") or 9) * 5),
-            source=rel(SOURCES["capital_review_queue"]),
-            evidence=evidence,
-            required_owner_decision=required_owner_decision,
-            required_before_apply=required_before_apply,
-            risk=risk,
-            decision_state=decision_state,
-            decision_reference=decision_reference,
-        ))
-    return items
-
-
-def execution_items(auto_patch: dict[str, Any], circuit: dict[str, Any]) -> list[dict[str, Any]]:
-    items: list[dict[str, Any]] = []
-    for row in as_list(auto_patch.get("owner_gated_reviews")):
-        if isinstance(row, dict) and row.get("category") == "execution":
-            items.append(queue_item(
-                "execution",
-                str(row.get("title") or "Execution owner gate review"),
-                str(row.get("next_safe_action") or "Keep execution blocked unless exact approval and guard proof exist."),
-                priority=int(row.get("priority") or 40),
-                source=rel(SOURCES["wf74_auto_patch"]),
-                evidence=as_list(row.get("required_artifacts_before_any_action")) or [rel(SOURCES["wf74_auto_patch"])],
-                required_owner_decision="exact_order_approval_or_keep_blocked",
-                required_before_apply=as_list(row.get("required_artifacts_before_any_action")),
-                risk="execution_guardrail_review",
-            ))
-    if circuit.get("status") == "blocked":
-        items.append(queue_item(
-            "execution",
-            "Paper/live execution is blocked by circuit breaker proof",
-            str(as_dict(circuit.get("summary")).get("next_safe_action") or "Keep execution blocked."),
-            priority=65,
-            source=rel(SOURCES["wf87_circuit_breakers"]),
-            evidence=[rel(SOURCES["wf87_circuit_breakers"])],
-            required_owner_decision="keep_blocked_until_fresh_guard_proof",
-            required_before_apply=[
-                "fresh WF63/WF67 paper-only guard proof",
-                "fresh kill switch",
-                "exact owner-approved order/request artifact",
-                "paper/live isolation validation",
-            ],
-            risk="execution_blocked",
-            decision_state="blocked_until_owner_and_guard_proof",
-        ))
-    return items or [queue_item(
-        "execution",
-        "No current execution recommendation",
-        "Continue producing approval-ready cards only; execution remains exact-owner-gated.",
-        priority=10,
-        source=rel(SOURCES["wf74_auto_patch"]),
-        decision_state="monitor_only",
-        required_owner_decision="none_now",
+    return [queue_item(
+        "alert_canon_policy_mutation",
+        "Review alert and recommendation evidence-repair proposal",
+        "Prepare a scoped, review-only repair proposal for any verified alert-chain quality gap; do not alter canonical levels from generated output.",
+        priority=max([int(row.get("priority") or 70) for row in rows] or [70]),
+        source=rel(SOURCES["finance_response_quality"]),
+        evidence=[rel(SOURCES["finance_response_quality"]), rel(SOURCES["alerts_chain"])],
+        required_before_apply=[
+            "source-backed problem statement",
+            "exact scoped diff",
+            "freshness and lineage proof",
+            "backup and rollback proof",
+            "post-change alerts-OS validation",
+            "exact owner gate when policy or canonical levels change",
+        ],
+        risk="alert_canon_policy_change",
     )]
 
 
@@ -483,51 +254,49 @@ def build_payload() -> dict[str, Any]:
     improvement = as_dict(load_json_artifact(SOURCES["improvement_ledger"]))
     auto_patch = as_dict(load_json_artifact(SOURCES["wf74_auto_patch"]))
     cron_patch = as_dict(load_json_artifact(SOURCES["cron_patch_manager"]))
-    capital_queue = as_dict(load_json_artifact(SOURCES["capital_review_queue"]))
-    decisions = as_dict(load_json_artifact(SOURCES["owner_gated_decisions"]))
-    posture = as_dict(load_json_artifact(SOURCES["portfolio_mutation_posture"]))
-    circuit = as_dict(load_json_artifact(SOURCES["wf87_circuit_breakers"]))
-
-    items = (
+    quality = as_dict(load_json_artifact(SOURCES["finance_response_quality"]))
+    chain = as_dict(load_json_artifact(SOURCES["alerts_chain"]))
+    items = sorted(
         skill_items(improvement)
         + cron_items(cron_patch, auto_patch)
-        + finance_mutation_items(improvement, posture)
-        + capital_items(capital_queue, decisions)
-        + execution_items(auto_patch, circuit)
+        + alert_policy_items(improvement, quality, chain),
+        key=lambda row: (int(row.get("priority") or 0), str(row.get("gate") or "")),
+        reverse=True,
     )
-    items = sorted(items, key=lambda row: (int(row.get("priority") or 0), row.get("gate", "")), reverse=True)
-    category_counts = Counter(str(item.get("gate")) for item in items)
     owner_decisions = [
         item for item in items
-        if item.get("decision_state") not in {"monitor_only"} and item.get("required_owner_decision") != "none_now"
+        if item.get("decision_state") != "monitor_only" and item.get("required_owner_decision") != "none_now"
     ]
+    counts = Counter(str(item.get("gate")) for item in items)
     payload = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
         "status": "ok",
-        "purpose": "Automatically surface owner-gated recommendations without approving or applying them.",
+        "purpose": "Surface owner-gated workspace decisions without approving or applying them.",
+        "finance_scope": "alerts_and_non_executing_recommendations_only",
         "authority_boundary": AUTHORITY_BOUNDARY.copy(),
         "source_status": [source_status(label, path) for label, path in SOURCES.items()],
         "summary": {
             "item_count": len(items),
             "owner_decision_required_count": len(owner_decisions),
             "monitor_only_count": len(items) - len(owner_decisions),
-            "by_gate": dict(sorted(category_counts.items())),
-            "capital_review_candidate_count": as_dict(capital_queue.get("summary")).get("candidate_count"),
+            "by_gate": dict(sorted(counts.items())),
             "top_gate": items[0].get("gate") if items else None,
             "top_title": items[0].get("title") if items else None,
-            "top_plain_status": plain_status_for_item(items[0]) if items else None,
+            "top_plain_status": items[0].get("gate") if items else None,
             "top_required_owner_decision": items[0].get("required_owner_decision") if items else None,
-            "next_safe_action": plain_next_action_for_item(items[0]) if items else "No owner-gated action is currently surfaced.",
+            "next_safe_action": (
+                "Review the top owner-gated item; approve, reject, defer, or request deeper review."
+                if owner_decisions else "No owner decision is currently required."
+            ),
         },
         "review_items": items,
         "blocked_actions": [
-            "no skill apply/install/update",
-            "no cron schedule/config/runtime mutation",
-            "no finance canon/portfolio/cash/sizing/risk mutation",
-            "no capital deployment approval",
-            "no paper/live/brokerage/account execution",
-            "no money movement",
+            "no skill application",
+            "no cron schedule, delivery, configuration, or runtime mutation",
+            "no alert canon or policy mutation",
+            "no capital, order, account, or money action",
+            "no external delivery",
             "no owner approval inference",
             "no auto-apply",
         ],
@@ -553,9 +322,8 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
     for item in as_list(payload.get("review_items")):
         if not isinstance(item, dict):
             continue
-        item_boundary = as_dict(item.get("authority_boundary"))
         for key, expected in AUTHORITY_BOUNDARY.items():
-            if item_boundary.get(key) is not expected:
+            if as_dict(item.get("authority_boundary")).get(key) is not expected:
                 errors.append(f"item {item.get('item_id')} boundary mismatch: {key}")
         if item.get("decision_state") != "monitor_only" and not item.get("required_before_apply"):
             warnings.append(f"item {item.get('item_id')} missing required_before_apply")
@@ -572,6 +340,7 @@ def render_md(payload: dict[str, Any]) -> str:
         "",
         f"- Generated: {payload.get('generated_at_utc')}",
         f"- Status: {payload.get('status')} / validation {as_dict(payload.get('validation')).get('status')}",
+        f"- Finance scope: {payload.get('finance_scope')}",
         f"- Items: {summary.get('item_count')} / owner decisions {summary.get('owner_decision_required_count')}",
         f"- Top item: {summary.get('top_title')} [{summary.get('top_gate')}]",
         f"- Next action: {summary.get('next_safe_action')}",
@@ -579,16 +348,14 @@ def render_md(payload: dict[str, Any]) -> str:
         "## Review Items",
     ]
     for item in as_list(payload.get("review_items"))[:12]:
-        if not isinstance(item, dict):
-            continue
-        lines.extend([
-            f"- {item.get('title')} [{item.get('gate')}] priority={item.get('priority')} state={item.get('decision_state')}",
-            f"  - Recommendation: {item.get('recommendation')}",
-            f"  - Owner decision: {item.get('required_owner_decision')}",
-        ])
+        if isinstance(item, dict):
+            lines.extend([
+                f"- {item.get('title')} [{item.get('gate')}] priority={item.get('priority')} state={item.get('decision_state')}",
+                f"  - Recommendation: {item.get('recommendation')}",
+                f"  - Owner decision: {item.get('required_owner_decision')}",
+            ])
     lines.extend(["", "## Blocked Actions"])
-    for action in as_list(payload.get("blocked_actions")):
-        lines.append(f"- {action}")
+    lines.extend(f"- {action}" for action in as_list(payload.get("blocked_actions")))
     return "\n".join(lines) + "\n"
 
 

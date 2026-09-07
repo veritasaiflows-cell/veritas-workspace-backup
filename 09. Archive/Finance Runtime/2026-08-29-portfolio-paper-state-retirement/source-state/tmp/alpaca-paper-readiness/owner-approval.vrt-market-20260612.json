@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "artifact_type": "wf67_exact_order_owner_approval",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "created_at_utc": "2026-06-12T15:42:46Z",
+  "approved_by": "Randall",
+  "approval_status": "approved_exact_order",
+  "approval_text": "Approve paper buy VRT market day order for $300 notional at current market price; I accept market-order slippage risk.",
+  "approved_order": {
+    "symbol": "VRT",
+    "side": "buy",
+    "type": "market",
+    "time_in_force": "day",
+    "limit_price": null,
+    "notional": 300.0,
+    "qty": null
+  },
+  "market_order_slippage_risk_accepted": true,
+  "authority_boundary": {
+    "paper_only": true,
+    "wf67_wrapper_required": true,
+    "fresh_short_lived_kill_switch_required": true,
+    "pre_submit_guard_validation_required": true,
+    "post_submit_reconciliation_required": true,
+    "live_trade_allowed": false,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_context": {
+    "conversation": "Telegram direct conversation",
+    "message_id": "2329",
+    "approval_received_at_local": "2026-06-12 08:40:50 MST",
+    "proposal_artifact": "tmp/vrt-market-price-capital-deployment-proposal.json"
+  }
+}

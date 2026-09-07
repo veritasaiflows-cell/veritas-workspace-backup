@@ -1,3 +1,33 @@
+# Finance Alert Canon Surface Ownership Procedure
+
+Status: active replacement for the retired portfolio-truth procedure as of 2026-08-29.
+
+## Purpose
+
+Prevent alert, recommendation, evidence, freshness, and workflow truth from fragmenting across human canon, guarded SQL, generated proofs, dashboards, and continuity notes.
+
+## Active ownership
+
+| Surface | Owns |
+|---|---|
+| `03. Alerts and Recommendations/Investor Profile.md` | Owner objectives and alert/recommendation preferences |
+| `03. Alerts and Recommendations/Alert Trigger Policy.md` | Generic signal conditions and alert-state definitions |
+| `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md` | Ticker-level thesis, bands, invalidation, evidence date, freshness, and confidence |
+| `03. Alerts and Recommendations/Alert Operations Board.md` | Read-only routes, validation, and governance boundaries |
+| Guarded SQL and generated proofs | Structured evidence and derivation only; never human authority or approval |
+
+## Resolution rule
+
+1. Verify source lineage, evidence date, freshness, and exact owner.
+2. Regenerate only derived proof through its governed route when stale.
+3. Propose an alert-canon correction through the exact alert validation path when human canon is wrong.
+4. Stop on unresolved contradictions; never infer approval or create portfolio, account, order, or execution state.
+
+<details>
+<summary>Retired portfolio-era procedure — non-operative</summary>
+
+The preserved procedure below is historical only. Its portfolio owners, mutation gates, sizing/sleeve permissions, and apply routes were retired on 2026-08-29.
+
 # Portfolio Truth Surface Ownership Procedure
 
 ## Purpose
@@ -130,3 +160,5 @@ If the procedure identifies a real contradiction, either:
 1. refresh/regenerate the stale artifact and validate it, or
 2. prepare a bounded canonical-note sync proposal for Veritas main review, or
 3. route through the exact gated apply path or ask Randall for explicit approval if the fix would change portfolio mutation, owner approval, sizing, sleeve, sector posture, cash, risk-rule, or execution entitlement.
+
+</details>

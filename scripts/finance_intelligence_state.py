@@ -13,20 +13,22 @@ import json
 import sqlite3
 import subprocess
 import sys
+from contextlib import closing, contextmanager
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable, Iterator
 
 SCRIPTS = Path(__file__).resolve().parent
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from market_data_utils import atomic_write_json, load_json_artifact
-from finance_sql_canon_access import FinanceSqlCanonAccess, connect_readonly as connect_sql_canon_ro, strategic_answer_route_context
-from trade_grade_full_answer_assembler import build_full_answer
-from wf72_entry_stop_reference_helper import build_entry_stop_reference_metadata
-from finance_production_scope import production_tickers as production_scope_tickers
+from finance_sql_canon_access import (
+    FinanceSqlCanonAccess,
+    ReferenceLevelRecord,
+    strategic_answer_route_context,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -60,7 +62,6 @@ FULL_ANSWER_PARITY_DIR = TMP / "full-answer-parity"
 FULL_ANSWER_PARITY_ROLLUP = FULL_ANSWER_PARITY_DIR / "full-answer-parity-rollup.json"
 TRADE_GRADE_FULL_ANSWER_DIR = TMP / "trade-grade-full-answer"
 TRADE_GRADE_FULL_ANSWER_ROLLUP = TMP / "trade-grade-full-answer-assembler.json"
-CANON_CACHE_DB = TMP / "veritas-canon-cache.sqlite"
 ROUTER_QA_PATH = TMP / "finance-intelligence-router-qa-sql-canon-archive-apply.json"
 WF78_AUTO_TIER_ROUTING = TMP / "wf78-auto-tier-routing.json"
 TIER_A_COVERAGE_GATE = TMP / "tier-a-trade-grade-coverage-gate.json"
@@ -79,6 +80,32 @@ PRODUCTION_SCOPE = "strategic_production_grade"
 REVIEW_100_SCOPE = "review_100_monitor"
 SUPPORTED_UNIVERSE_SCOPES = {ACTIVE_INTERNAL_SCOPE, PRODUCTION_SCOPE, REVIEW_100_SCOPE}
 PILOT_SCOPE = "pilot_fixture"
+ENTRY_STOP_REFERENCE_METADATA_FIELDS = (
+    "reference_price_low",
+    "reference_price_high",
+    "reference_invalidation_level",
+    "reference_level_source_timestamp",
+    "reference_level_source_sha256",
+    "reference_level_owner_source_path",
+)
+ENTRY_STOP_REFERENCE_METADATA_AUTHORITY_BOUNDARY = (
+    "wf72_entry_stop_reference_metadata_exact_key_gated_no_execution_authority"
+)
+ENTRY_STOP_REFERENCE_METADATA_FALSE_FLAGS = {
+    "display_reference_only": True,
+    "fallback_required": True,
+    "recommendation_allowed": False,
+    "deployment_or_action_state_change_allowed": False,
+    "canonical_note_mutation_allowed": False,
+    "markdown_mutation_allowed": False,
+    "portfolio_mutation_allowed": False,
+    "owner_approval_inferred": False,
+    "proposal_apply_allowed": False,
+    "trade_or_account_action_allowed": False,
+    "paper_trade_authority_allowed": False,
+    "live_trade_authority_allowed": False,
+    "money_movement_allowed": False,
+}
 AUTHORITY_FALSE_KEYS = {
     "canonical_note_mutation_allowed",
     "canonical_mutation_allowed",
@@ -247,13 +274,17 @@ def connect(db_path: Path) -> sqlite3.Connection:
     return conn
 
 
-def connect_ro(db_path: Path) -> sqlite3.Connection:
+@contextmanager
+def connect_ro(db_path: Path) -> Iterator[sqlite3.Connection]:
     uri = db_path.resolve().as_uri() + "?mode=ro"
     conn = sqlite3.connect(uri, uri=True)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA busy_timeout=5000")
-    conn.execute("PRAGMA foreign_keys=ON")
-    return conn
+    try:
+        conn.row_factory = sqlite3.Row
+        conn.execute("PRAGMA busy_timeout=5000")
+        conn.execute("PRAGMA foreign_keys=ON")
+        yield conn
+    finally:
+        conn.close()
 
 
 def rows(conn: sqlite3.Connection, sql: str, params: tuple[Any, ...] = ()) -> list[dict[str, Any]]:
@@ -267,78 +298,6 @@ def scalar(conn: sqlite3.Connection, sql: str, params: tuple[Any, ...] = ()) -> 
 
 def sqlite_object_names(conn: sqlite3.Connection) -> set[str]:
     return {str(row["name"]) for row in rows(conn, "SELECT name FROM sqlite_master")}
-
-
-def reference_level_as_entry_stop_row(row: dict[str, Any]) -> dict[str, Any]:
-    complete = all(
-        row.get(field) is not None
-        for field in (
-            "reference_price_low",
-            "reference_price_high",
-            "reference_invalidation_level",
-        )
-    )
-    return {
-        "ticker": row.get("ticker"),
-        "entry_band_low": row.get("reference_price_low"),
-        "entry_band_high": row.get("reference_price_high"),
-        "stop_or_invalidation": row.get("reference_invalidation_level"),
-        "band_source": row.get("fallback_rule"),
-        "stop_source": row.get("fallback_rule"),
-        "freshness_status": "current" if complete else "missing_reference_level",
-        "validation_status": "ok" if complete else "blocked",
-        "owner_note_path": None,
-        "source_artifact_path": row.get("source_artifact_path"),
-        "source_artifact_hash": row.get("source_artifact_sha256"),
-        "source_timestamp": row.get("source_generated_at_utc"),
-        "raw_json": row.get("raw_json"),
-        "reference_source_surface": "state/finance/finance-canon.sqlite:reference_levels",
-        "authority_class": row.get("authority_class"),
-    }
-
-
-def entry_stop_reference_rows(
-    conn: sqlite3.Connection,
-    *,
-    ticker: str | None = None,
-    limit: int = 100,
-) -> list[dict[str, Any]]:
-    objects = sqlite_object_names(conn)
-    if "latest_valid_entry_stop_refs" in objects:
-        if ticker:
-            return rows(
-                conn,
-                "SELECT * FROM latest_valid_entry_stop_refs WHERE ticker=? ORDER BY ticker LIMIT ?",
-                (ticker.upper(), limit),
-            )
-        return rows(conn, "SELECT * FROM latest_valid_entry_stop_refs ORDER BY ticker LIMIT ?", (limit,))
-    if "reference_levels" in objects:
-        params: tuple[Any, ...]
-        if ticker:
-            params = (ticker.upper(), limit)
-            query = """
-                SELECT *
-                FROM reference_levels
-                WHERE ticker=?
-                  AND reference_price_low IS NOT NULL
-                  AND reference_price_high IS NOT NULL
-                  AND reference_invalidation_level IS NOT NULL
-                ORDER BY ticker
-                LIMIT ?
-            """
-        else:
-            params = (limit,)
-            query = """
-                SELECT *
-                FROM reference_levels
-                WHERE reference_price_low IS NOT NULL
-                  AND reference_price_high IS NOT NULL
-                  AND reference_invalidation_level IS NOT NULL
-                ORDER BY ticker
-                LIMIT ?
-            """
-        return [reference_level_as_entry_stop_row(row) for row in rows(conn, query, params)]
-    return []
 
 
 def disciplined_entry_band(ticker: str) -> dict[str, Any]:
@@ -406,7 +365,7 @@ def card_path(ticker: str) -> Path:
 def source_meta(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {"path": rel(path), "exists": False}
-    payload = load_json(path, {})
+    payload = load_json(path, {}) if path.suffix.lower() == ".json" else {}
     generated = payload.get("generated_at_utc") if isinstance(payload, dict) else None
     return {
         "path": rel(path),
@@ -478,12 +437,25 @@ def sql_canon_state_context(ticker: str | None = None) -> dict[str, Any]:
             field_family_summary = client.field_family_summary()
             if ticker:
                 state = client.ticker_state(ticker)
-                reference = client.reference_level(ticker)
+                reference = client.reference_level_record(ticker)
                 freshness = client.evidence_freshness(ticker)
                 ticker_state = asdict(state) if state else None
-                reference_level = asdict(reference) if reference else None
+                reference_level = (
+                    {
+                        "ticker": reference.ticker,
+                        "reference_price_low": reference.reference_price_low,
+                        "reference_price_high": reference.reference_price_high,
+                        "reference_invalidation_level": reference.reference_invalidation_level,
+                        "reference_confidence": reference.reference_confidence,
+                        "reference_band_status": reference.reference_band_status,
+                        "authority_class": reference.authority_class,
+                        "fallback_rule": reference.fallback_rule,
+                    }
+                    if reference
+                    else None
+                )
                 evidence_freshness = asdict(freshness) if freshness else None
-        except RuntimeError as exc:
+        except (RuntimeError, ValueError) as exc:
             critical.append("sql_canon_access_guard_blocked")
             warnings.append(str(exc))
         if ticker and ticker_state is None:
@@ -546,55 +518,82 @@ def sql_canon_reference_overlay(ticker: str) -> dict[str, Any]:
     }
 
 
-def canon_cache_rows() -> dict[tuple[str, str], dict[str, Any]]:
-    if not CANON_CACHE_DB.exists():
-        return {}
-    out: dict[tuple[str, str], dict[str, Any]] = {}
-    with connect_ro(CANON_CACHE_DB) as conn:
-        for row in rows(conn, "SELECT * FROM canon_cache_fields ORDER BY scope, field_name"):
-            out[(str(row["scope"]).upper(), str(row["field_name"]))] = row
-    return out
+def reference_level_record_as_entry_stop_row(record: ReferenceLevelRecord) -> dict[str, Any]:
+    return {
+        "ticker": record.ticker,
+        "entry_band_low": record.reference_price_low,
+        "entry_band_high": record.reference_price_high,
+        "stop_or_invalidation": record.reference_invalidation_level,
+        "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+        "stop_source": "state/finance/finance-canon.sqlite:reference_levels",
+        "freshness_status": "current",
+        "validation_status": "ok",
+        "owner_note_path": record.source_artifact_path,
+        "source_artifact_path": record.source_artifact_path,
+        "source_artifact_hash": record.source_artifact_sha256,
+        "source_timestamp": record.source_generated_at_utc,
+        "raw_json": record.raw_json,
+        "reference_source_surface": "state/finance/finance-canon.sqlite:reference_levels",
+        "authority_class": record.authority_class,
+    }
 
 
-def canon_value(cache: dict[tuple[str, str], dict[str, Any]], ticker: str, field: str) -> dict[str, Any]:
-    row = cache.get((ticker.upper(), field))
-    return row if row else {}
+def build_entry_stop_reference_metadata(
+    ticker: str,
+    record: ReferenceLevelRecord | None,
+) -> dict[str, Any]:
+    """Project durable SQL reference lineage into the frozen compatibility shape."""
 
-
-def sql_canon_reference_level_map(tickers: list[str] | None = None) -> dict[str, dict[str, Any]]:
-    """Return guarded SQL-canon reference levels keyed by ticker.
-
-    The tmp finance-state DB is a compatibility cache. When the durable SQL
-    canon guard is clean, reference_levels must be the current entry/stop
-    source and legacy cache rows stay lineage only.
-    """
-
-    client = FinanceSqlCanonAccess()
-    validation = client.validate()
-    if validation.get("status") != "ok":
-        return {}
-    wanted = sorted({str(symbol).upper() for symbol in (tickers or []) if str(symbol).strip()})
-    params: tuple[Any, ...] = ()
-    where = """
-        reference_price_low IS NOT NULL
-        AND reference_price_high IS NOT NULL
-        AND reference_invalidation_level IS NOT NULL
-    """
-    if wanted:
-        placeholders = ",".join("?" for _ in wanted)
-        where = f"ticker IN ({placeholders}) AND {where}"
-        params = tuple(wanted)
-    query = f"""
-        SELECT *
-        FROM reference_levels
-        WHERE {where}
-        ORDER BY ticker
-    """
-    with connect_sql_canon_ro(client.db_path) as conn:
-        return {
-            str(row["ticker"]).upper(): reference_level_as_entry_stop_row(dict(row))
-            for row in conn.execute(query, params)
+    ticker = ticker.upper()
+    values: dict[str, Any] = {}
+    source_rows: list[dict[str, Any]] = []
+    if record is not None:
+        values = {
+            "reference_price_low": record.reference_price_low,
+            "reference_price_high": record.reference_price_high,
+            "reference_invalidation_level": record.reference_invalidation_level,
+            "reference_level_source_timestamp": record.source_generated_at_utc,
+            "reference_level_source_sha256": record.source_artifact_sha256,
+            "reference_level_owner_source_path": record.source_artifact_path,
         }
+        source_rows = [
+            {
+                "key": f"{ticker}:{field}",
+                "source_artifact_path": record.source_artifact_path,
+                "source_artifact_hash": record.source_artifact_sha256,
+                "freshness_status": record.source_status,
+                "last_reconciled_at_utc": record.lineage_inserted_at_utc,
+                "updated_at_utc": record.lineage_inserted_at_utc,
+            }
+            for field in ENTRY_STOP_REFERENCE_METADATA_FIELDS
+        ]
+    missing_fields = [field for field in ENTRY_STOP_REFERENCE_METADATA_FIELDS if field not in values]
+    issues = ["durable_reference_record_missing"] if record is None else []
+    return {
+        "schema_version": "wf72_entry_stop_reference_metadata.v1",
+        "status": "available" if not issues else "fallback_required",
+        "ticker": ticker,
+        "authority_boundary": ENTRY_STOP_REFERENCE_METADATA_AUTHORITY_BOUNDARY,
+        "sql_cache_path": "state/finance/finance-canon.sqlite",
+        "sql_read_mode": "sqlite_uri_mode_ro",
+        "approved_row_family": "durable_finance_canon_reference_level_compatibility_projection",
+        "approved_fields": list(ENTRY_STOP_REFERENCE_METADATA_FIELDS),
+        "row_keys": [f"{ticker}:{field}" for field in ENTRY_STOP_REFERENCE_METADATA_FIELDS if field in values],
+        "values": values,
+        "source_lineage": {
+            "owner_source_path": values.get("reference_level_owner_source_path"),
+            "source_timestamp": values.get("reference_level_source_timestamp"),
+            "source_sha256": values.get("reference_level_source_sha256"),
+        },
+        "source_rows": source_rows,
+        "missing_fields": missing_fields,
+        "issues": issues,
+        "notes": [
+            "Reference metadata only; does not replace price_band_stop fallback values.",
+            "No recommendation, deployment/action state, approval, portfolio mutation, or execution authority.",
+        ],
+        **ENTRY_STOP_REFERENCE_METADATA_FALSE_FLAGS,
+    }
 
 
 def init_schema(conn: sqlite3.Connection) -> None:
@@ -918,7 +917,45 @@ def init_schema(conn: sqlite3.Connection) -> None:
 def build_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
     generated_at = utc_now()
     run_id = f"wf78-phase2-state-{generated_at.replace(':', '').replace('-', '')}"
-    universe = as_dict(load_json(UNIVERSE_PATH, {}))
+    sql_client = FinanceSqlCanonAccess()
+    memberships = sql_client.universe_memberships()
+    sql_reference_records = sql_client.reference_level_records(memberships)
+    unsupported_scopes = sorted({
+        record.universe_scope
+        for record in memberships.values()
+        if record.universe_scope not in SUPPORTED_UNIVERSE_SCOPES
+    })
+    if unsupported_scopes:
+        raise RuntimeError(f"unsupported guarded SQL universe scopes: {unsupported_scopes}")
+    entries: list[dict[str, Any]] = []
+    for record in memberships.values():
+        entry = dict(record.raw_json)
+        entry.update({
+            "ticker": record.ticker,
+            "name": record.name,
+            "active": record.active,
+            "instrument_type": record.instrument_type,
+            "sector": record.sector,
+            "industry": record.industry,
+            "yfinance_symbol": record.yfinance_symbol,
+            "sec_cik": record.sec_cik,
+            "company_ir": record.company_ir,
+            "universe_scope": record.universe_scope,
+            "tier": record.tier,
+            "coverage_obligation_tier": record.coverage_obligation_tier,
+            "monitoring_role": record.monitoring_role,
+            "production_scope_member": record.production_scope_member,
+            "production_scope_source": record.production_scope_source,
+            "sql_tier": record.sql_tier,
+            "sql_tier_state": record.sql_tier_state,
+            "tier_decision_scope": record.tier_decision_scope,
+            "review_100_monitor": record.review_100_monitor,
+            "decision_grade_eligible": record.decision_grade_eligible,
+            "source_open_required": record.source_open_required,
+            "promotion_required_before_action": record.promotion_required_before_action,
+        })
+        entries.append(entry)
+    pilot_entries = [entry for entry in entries if entry["universe_scope"] == PILOT_SCOPE]
     coverage = as_dict(load_json(COVERAGE_PATH, {}))
     coverage_by_ticker = as_dict(coverage.get("ticker_coverage"))
     router_qa = as_dict(load_json(ROUTER_QA_PATH, {}))
@@ -926,30 +963,15 @@ def build_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
     coverage_gate = as_dict(load_json(TIER_A_COVERAGE_GATE, {}))
     stale_packet_tickers = stale_tier_a_packet_tickers(auto_router)
     decision_grade_allowed_count = int(as_dict(coverage_gate.get("summary")).get("decision_grade_allowed_count") or 0)
-    canon_cache = canon_cache_rows()
-    production_scope_compat_tickers = set(production_scope_tickers())
-    entries = [
-        row for row in as_list(universe.get("entries"))
-        if isinstance(row, dict)
-        and row.get("ticker")
-        and row.get("active") is not False
-        and row.get("universe_scope", ACTIVE_INTERNAL_SCOPE) in SUPPORTED_UNIVERSE_SCOPES
-    ]
-    pilot_entries = [
-        row for row in as_list(universe.get("entries"))
-        if isinstance(row, dict)
-        and row.get("ticker")
-        and row.get("universe_scope") == PILOT_SCOPE
-    ]
-    sql_reference_rows = sql_canon_reference_level_map([str(row.get("ticker") or "") for row in entries])
 
-    with connect(db_path) as conn:
+    with closing(connect(db_path)) as conn, conn:
         init_schema(conn)
         conn.execute("INSERT INTO meta(key, value) VALUES ('schema_version', ?)", (str(SCHEMA_VERSION),))
         conn.execute("INSERT INTO meta(key, value) VALUES ('generated_at_utc', ?)", (generated_at,))
         conn.execute("INSERT INTO meta(key, value) VALUES ('authority_boundary', ?)", (json_text(authority_boundary()),))
         for source_name, path in [
-            ("universe", UNIVERSE_PATH),
+            ("durable_sql_canon", CANON_DB),
+            ("universe_evidence_enrichment", UNIVERSE_PATH),
             ("coverage", COVERAGE_PATH),
             ("router_qa", ROUTER_QA_PATH),
             ("legacy_42_tier_shadow", LEGACY_42_TIER_SHADOW_DB),
@@ -988,8 +1010,8 @@ def build_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
         for entry in entries:
             ticker = str(entry["ticker"]).upper()
             universe_scope = entry.get("universe_scope", ACTIVE_INTERNAL_SCOPE)
-            production_member = ticker in production_scope_compat_tickers if production_scope_compat_tickers else universe_scope == PRODUCTION_SCOPE
-            thin_monitor = universe_scope == REVIEW_100_SCOPE
+            production_member = bool(entry.get("production_scope_member"))
+            thin_monitor = bool(entry.get("review_100_monitor"))
             card = as_dict(load_json(card_path(ticker), {}))
             card_meta = source_meta(card_path(ticker))
             universe_auth = as_dict(entry.get("authority_boundary"))
@@ -1070,40 +1092,33 @@ def build_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
                 ),
             )
 
-            canon_low = canon_value(canon_cache, ticker, "reference_price_low")
-            canon_high = canon_value(canon_cache, ticker, "reference_price_high")
-            canon_stop = canon_value(canon_cache, ticker, "reference_invalidation_level")
-            canon_owner = canon_value(canon_cache, ticker, "reference_level_owner_source_path")
-            canon_hash = canon_value(canon_cache, ticker, "reference_level_source_sha256")
-            canon_ts = canon_value(canon_cache, ticker, "reference_level_source_timestamp")
-            sql_ref = sql_reference_rows.get(ticker, {})
-            if sql_ref:
-                entry_band_low = sql_ref.get("entry_band_low")
-                entry_band_high = sql_ref.get("entry_band_high")
-                stop_or_invalidation = sql_ref.get("stop_or_invalidation")
-                band_source = sql_ref.get("reference_source_surface")
-                stop_source = sql_ref.get("reference_source_surface")
-                freshness = sql_ref.get("freshness_status") or "current"
-                validator = sql_ref.get("validation_status") or "ok"
-                owner_path = canon_owner.get("field_value") or entry.get("owner_note_path") or "04. Research/Coverage and Watchlist.md"
-                source_path = sql_ref.get("source_artifact_path")
-                source_hash = sql_ref.get("source_artifact_hash")
-                source_ts = sql_ref.get("source_timestamp")
+            sql_record = sql_reference_records.get(ticker)
+            if sql_record is not None:
+                sql_ref = reference_level_record_as_entry_stop_row(sql_record)
+                entry_band_low = sql_record.reference_price_low
+                entry_band_high = sql_record.reference_price_high
+                stop_or_invalidation = sql_record.reference_invalidation_level
+                band_source = sql_ref["reference_source_surface"]
+                stop_source = sql_ref["reference_source_surface"]
+                freshness = sql_ref["freshness_status"]
+                validator = sql_ref["validation_status"]
+                owner_path = sql_record.source_artifact_path
+                source_path = sql_record.source_artifact_path
+                source_hash = sql_record.source_artifact_sha256
+                source_ts = sql_record.source_generated_at_utc
             else:
-                entry_band_low = canon_low.get("field_value") if canon_low else price.get("entry_band_low")
-                entry_band_high = canon_high.get("field_value") if canon_high else price.get("entry_band_high")
-                stop_or_invalidation = canon_stop.get("field_value") if canon_stop else price.get("stop_or_invalidation")
-                band_source = price.get("band_source") or canon_low.get("source_artifact_path")
-                stop_source = price.get("stop_source") or canon_stop.get("source_artifact_path")
-                freshness = canon_low.get("freshness_status") or "missing"
-                validator = canon_low.get("validator_status") or "missing"
-                owner_path = canon_owner.get("field_value") or canon_low.get("owner_mirror_note_path") or entry.get("owner_note_path") or "04. Research/Coverage and Watchlist.md"
-                source_path = canon_low.get("source_artifact_path")
-                source_hash = canon_hash.get("field_value") or canon_low.get("source_artifact_hash")
-                source_ts = canon_ts.get("field_value")
-            if thin_monitor:
-                freshness = "missing_required_refresh"
-                validator = "thin_monitor_missing_required_evidence"
+                sql_ref = {}
+                entry_band_low = None
+                entry_band_high = None
+                stop_or_invalidation = None
+                band_source = "state/finance/finance-canon.sqlite:reference_levels"
+                stop_source = "state/finance/finance-canon.sqlite:reference_levels"
+                freshness = "missing_reference_level"
+                validator = "blocked"
+                owner_path = entry.get("owner_note_path") or "04. Research/Coverage and Watchlist.md"
+                source_path = None
+                source_hash = None
+                source_ts = None
             conn.execute(
                 "INSERT INTO entry_stop_reference VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (
@@ -1119,9 +1134,11 @@ def build_state(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
                     source_path,
                     source_hash,
                     source_ts,
-                    json_text({"card_price_band_stop": price, "sql_canon_reference_level": sql_ref, "canon_cache_rows": {
-                        "low": canon_low, "high": canon_high, "stop": canon_stop,
-                    }, "thin_missing_context": thin_missing_context if thin_monitor else {}}),
+                    json_text({
+                        "sql_canon_reference_level": asdict(sql_record) if sql_record is not None else None,
+                        "missing_reason": None if sql_record is not None else "durable_sql_reference_level_absent",
+                        "thin_missing_context": thin_missing_context if thin_monitor else {},
+                    }),
                 ),
             )
             conn.execute(
@@ -1254,7 +1271,7 @@ def refresh_100_packet(db_path: Path = DEFAULT_DB) -> dict[str, Any]:
             "expected_strict_production_grade_rows": EXPECTED_STRICT_PRODUCTION_TICKERS,
             "review_monitor_thin_rows": summary.get("review_monitor_thin_rows"),
             "supported_active_ticker_counts": sorted(SUPPORTED_ACTIVE_TICKER_COUNTS),
-            "source": rel(UNIVERSE_PATH),
+            "source": rel(CANON_DB),
         },
         "coverage_refresh": {
             "command": "python scripts\\finance_data_coverage.py --validate",
@@ -1446,9 +1463,8 @@ def _parse_iso_hours_old(value: Any) -> float | None:
 def resolve_answer_packet(ticker: str) -> dict[str, Any]:
     """Compatibility descriptor for the old ticker_answer_packet_v1 route.
 
-    Runtime ticker answers now route through the WF85 full-answer assembler. This
-    descriptor keeps the legacy response field visible without reading the old
-    static packet directory as an input truth surface.
+    This descriptor can read an existing compatibility artifact, but it cannot
+    assemble, regenerate, or dispatch the retired full-answer route.
     """
     ticker = ticker.upper()
     full_answer_path = TRADE_GRADE_FULL_ANSWER_DIR / f"{ticker}.json"
@@ -1468,14 +1484,12 @@ def resolve_answer_packet(ticker: str) -> dict[str, Any]:
     }
     packet = load_json(full_answer_path, None) if full_answer_path.exists() else None
     if not isinstance(packet, dict):
-        packet, issues = build_full_answer(ticker)
-        if not isinstance(packet, dict):
-            return {
-                **base,
-                "availability": "missing",
-                "preferred_source": "ticker_card_and_sources",
-                "reason": f"WF85 full-answer assembler unavailable: {issues}",
-            }
+        return {
+            **base,
+            "availability": "missing",
+            "preferred_source": "ticker_card_and_sources",
+            "reason": "WF85 full-answer compatibility artifact missing; in-memory assembly is retired",
+        }
     validation = as_dict(packet.get("validation"))
     status = packet.get("status")
     card_payload = load_json(card, None) if card.exists() else None
@@ -1698,20 +1712,12 @@ def entry_stop_cache_freshness_guard(ticker: str, finance_entry_row: dict[str, A
             or as_dict(sql_reference_consistency.get("wf84_vs_sql_canon")).get("status") != "ok"
         )
     )
-    if sql_reference_available and legacy_decoupled_warning:
-        status = "ok_sql_canon_authoritative_legacy_decoupled"
-    elif sql_reference_available:
-        status = "ok_sql_canon_authoritative"
-    elif hash_only_legacy_warning:
-        status = "ok_legacy_cache_hash_warning"
-    elif "stale" in statuses:
-        status = "stale_cache_blocked"
-    elif "blocked" in statuses:
-        status = "blocked"
-    elif "fallback_required" in statuses:
+    if not sql_reference_available:
         status = "fallback_required"
-    elif value_consistency["status"] != "ok":
-        status = "cross_layer_value_mismatch_blocked"
+    elif legacy_decoupled_warning:
+        status = "ok_sql_canon_authoritative_legacy_decoupled"
+    else:
+        status = "ok_sql_canon_authoritative"
     return {
         "ticker": ticker,
         "status": status,
@@ -1754,8 +1760,8 @@ def entry_stop_cache_freshness_guard(ticker: str, finance_entry_row: dict[str, A
             "source_open_required_before_material_claims": True,
             "stale_entry_stop_cache_blocks_generated_answer": False
             if sql_reference_available
-            else status in {"stale_cache_blocked", "cross_layer_value_mismatch_blocked"},
-            "legacy_compatibility_blocks_front_door": False if sql_reference_available else None,
+            else True,
+            "legacy_compatibility_blocks_front_door": False if sql_reference_available else True,
         },
     }
 
@@ -1820,39 +1826,17 @@ def full_answer_parity_status(ticker: str) -> dict[str, Any]:
 
 
 def trade_grade_full_answer_status(ticker: str) -> dict[str, Any]:
-    """Return or assemble the WF85 full-answer route descriptor.
-
-    This is the preferred answer route once WF84/WF85 gates are clean. It does
-    not write artifacts during a ticker lookup; it only reports the existing
-    artifact or assembles an in-memory review-only answer.
-    """
+    """Return an existing full-answer compatibility descriptor, read-only."""
     ticker = ticker.upper()
     path = TRADE_GRADE_FULL_ANSWER_DIR / f"{ticker}.json"
     payload = load_json(path, None)
-    assembled_in_memory = False
-    issues: list[str] = []
-    if not isinstance(payload, dict):
-        try:
-            payload, issues = build_full_answer(ticker)
-            assembled_in_memory = True
-        except Exception as exc:  # defensive route descriptor, not a hidden pass
-            return {
-                "ticker": ticker,
-                "status": "blocked",
-                "artifact": rel(path),
-                "rollup_artifact": rel(TRADE_GRADE_FULL_ANSWER_ROLLUP),
-                "reason": f"assembler_failed:{type(exc).__name__}",
-                "review_only": True,
-                "source_open_required_before_material_claims": True,
-                "archive_delete_apply_allowed": False,
-            }
     if not isinstance(payload, dict):
         return {
             "ticker": ticker,
             "status": "missing",
             "artifact": rel(path),
             "rollup_artifact": rel(TRADE_GRADE_FULL_ANSWER_ROLLUP),
-            "reason": "assembler artifact missing and in-memory assembly returned no packet",
+            "reason": "full-answer compatibility artifact missing; in-memory assembly is retired",
             "review_only": True,
             "source_open_required_before_material_claims": True,
             "archive_delete_apply_allowed": False,
@@ -1866,8 +1850,8 @@ def trade_grade_full_answer_status(ticker: str) -> dict[str, Any]:
         "status": payload.get("status") or validation.get("status") or "unknown",
         "artifact": rel(path),
         "rollup_artifact": rel(TRADE_GRADE_FULL_ANSWER_ROLLUP),
-        "assembled_in_memory": assembled_in_memory,
-        "issues": issues,
+        "assembled_in_memory": False,
+        "issues": [],
         "schema": payload.get("schema"),
         "generated_at_utc": payload.get("generated_at_utc"),
         "section_count": len(sections),
@@ -2142,12 +2126,25 @@ def source_proof_packet(ticker: str, db_path: Path = DEFAULT_DB) -> dict[str, An
     return write_packet(DEFAULT_SOURCE_PROOF_PACKET, packet)
 
 
-def entry_stop_refs_packet(db_path: Path = DEFAULT_DB, ticker: str | None = None, limit: int = 100) -> dict[str, Any]:
-    canon_context = sql_canon_state_context(ticker)
-    with connect_ro(db_path) as conn:
-        ref_rows = entry_stop_reference_rows(conn, ticker=ticker, limit=limit)
+def entry_stop_refs_packet(
+    db_path: Path = DEFAULT_DB,
+    ticker: str | None = None,
+    limit: int = 100,
+    *,
+    write_output: bool = True,
+) -> dict[str, Any]:
+    client = FinanceSqlCanonAccess()
+    reference_records = client.reference_level_records([ticker] if ticker else None)
+    canonical_ticker = next(iter(reference_records), None) if ticker else None
+    selected_records = [
+        record
+        for record in reference_records.values()
+        if record is not None
+    ][:limit]
+    canon_context = sql_canon_state_context(canonical_ticker)
     trimmed = []
-    for row in ref_rows:
+    for record in selected_records:
+        row = reference_level_record_as_entry_stop_row(record)
         guard = entry_stop_cache_freshness_guard(row["ticker"], row)
         trimmed.append({
             "ticker": row["ticker"],
@@ -2155,7 +2152,7 @@ def entry_stop_refs_packet(db_path: Path = DEFAULT_DB, ticker: str | None = None
             "entry_band_high": row["entry_band_high"],
             "stop_or_invalidation": row["stop_or_invalidation"],
             "sql_canon_reference_overlay": sql_canon_reference_overlay(row["ticker"]),
-            "sql_first_reference_metadata": build_entry_stop_reference_metadata(row["ticker"]),
+            "sql_first_reference_metadata": build_entry_stop_reference_metadata(row["ticker"], record),
             "freshness_status": row["freshness_status"],
             "validation_status": row["validation_status"],
             "owner_note_path": row["owner_note_path"],
@@ -2174,10 +2171,12 @@ def entry_stop_refs_packet(db_path: Path = DEFAULT_DB, ticker: str | None = None
         for row in trimmed
         if as_dict(row.get("sql_canon_reference_overlay")).get("status") != "ok"
     ]
+    if ticker and canonical_ticker and reference_records.get(canonical_ticker) is None:
+        blocked_overlays.append(canonical_ticker)
     packet = {
         **packet_header("finance_intelligence_state_entry_stop_refs_packet", db_path),
         "status": "ok" if not blocked_overlays else "blocked",
-        "ticker": ticker.upper() if ticker else None,
+        "ticker": canonical_ticker,
         "count": len(trimmed),
         "sql_first_read_scope": "Durable SQL-canon reference_levels/evidence_freshness/source_lineage are the guarded internal current-state layer for the dynamic active universe. Legacy WF72/finance-intelligence compatibility caches are support-only lineage; stale whole-file source hashes do not block the front door when SQL-canon, WF84, and finance-state reference values match. Review-monitor rows still require source-open proof before material finance claims.",
         "sql_canon_field_family_summary": canon_context.get("field_family_summary"),
@@ -2187,7 +2186,7 @@ def entry_stop_refs_packet(db_path: Path = DEFAULT_DB, ticker: str | None = None
         "entry_stop_refs": trimmed,
         "cache_boundary": "Validated metadata/reference cache only; not recommendation, deployment, approval, or execution authority.",
     }
-    return write_packet(DEFAULT_ENTRY_STOP_PACKET, packet)
+    return write_packet(DEFAULT_ENTRY_STOP_PACKET, packet) if write_output else packet
 
 
 def action_queue_packet(db_path: Path = DEFAULT_DB, limit: int = 50) -> dict[str, Any]:
@@ -2207,13 +2206,11 @@ def pilot_fixtures_packet(db_path: Path = DEFAULT_DB, limit: int = 50) -> dict[s
     with connect_ro(db_path) as conn:
         fixtures = rows(conn, "SELECT * FROM current_pilot_fixtures LIMIT ?", (limit,))
         production_overlap = scalar(conn, "SELECT COUNT(*) FROM pilot_fixture_registry WHERE ticker IN (SELECT ticker FROM current_ticker_cards)")
-    universe = as_dict(load_json(UNIVERSE_PATH, {}))
-    review_100_count = len([
-        row for row in as_list(universe.get("entries"))
-        if isinstance(row, dict)
-        and row.get("active") is True
-        and row.get("universe_scope") == "review_100_monitor"
-    ])
+        review_100_count = int(scalar(
+            conn,
+            "SELECT COUNT(*) FROM universe WHERE universe_scope=? AND thin_monitor_row=1",
+            (REVIEW_100_SCOPE,),
+        ) or 0)
     trimmed = [
         {
             "ticker": row["ticker"],
@@ -2469,8 +2466,27 @@ def paper_positions_packet(paper_db_path: Path = PAPER_POSITION_DB) -> dict[str,
     return write_packet(DEFAULT_PAPER_POSITIONS_PACKET, packet)
 
 
+def phase3_qc_sample_tickers(
+    requested: Iterable[str] | None,
+    default_count: int = 4,
+) -> list[str]:
+    client = FinanceSqlCanonAccess()
+    if requested is None:
+        return list(client.universe_memberships())[:default_count]
+    requested_list = [str(item) for item in requested]
+    resolved = client.resolve_tickers(requested_list)
+    canonical: list[str] = []
+    seen: set[str] = set()
+    for item in requested_list:
+        ticker = resolved[str(item).strip().upper()]
+        if ticker not in seen:
+            seen.add(ticker)
+            canonical.append(ticker)
+    return canonical
+
+
 def phase3_qc_packet(db_path: Path = DEFAULT_DB, sample_tickers: list[str] | None = None) -> dict[str, Any]:
-    sample_tickers = [ticker.upper() for ticker in (sample_tickers or ["ETN", "VRT", "NVDA", "CME"])]
+    sample_tickers = phase3_qc_sample_tickers(sample_tickers)
     validation = validate_state(db_path)
     samples = {ticker: ticker_packet(ticker, db_path) for ticker in sample_tickers}
     preopen = preopen_packet(db_path, limit=10)
@@ -2554,7 +2570,7 @@ def main() -> int:
     parser.add_argument("ticker", nargs="?")
     parser.add_argument("--db", default=str(DEFAULT_DB))
     parser.add_argument("--limit", type=int, default=20)
-    parser.add_argument("--sample-tickers", default="ETN,VRT,NVDA,CME")
+    parser.add_argument("--sample-tickers")
     parser.add_argument("--pretty", action="store_true")
     args = parser.parse_args()
 
@@ -2592,7 +2608,11 @@ def main() -> int:
     elif args.command == "paper-positions":
         result = paper_positions_packet(PAPER_POSITION_DB)
     else:
-        sample_tickers = [item.strip().upper() for item in args.sample_tickers.split(",") if item.strip()]
+        sample_tickers = (
+            [item.strip() for item in args.sample_tickers.split(",") if item.strip()]
+            if args.sample_tickers
+            else None
+        )
         result = phase3_qc_packet(db_path, sample_tickers)
     print(json.dumps(result, indent=2 if args.pretty else None, sort_keys=True))
     return 0 if result.get("status") in {"ok", "ready"} else 1

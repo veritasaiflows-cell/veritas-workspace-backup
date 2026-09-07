@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -9,6 +11,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "wf88_route_contraction_packet.py"
+TICKER_ANSWER_SCRIPT = ROOT / "scripts" / "ticker_answer_packet.py"
+RETIREMENT_PLAN_SCRIPT = ROOT / "scripts" / "ticker_answer_packet_retirement_plan.py"
+LEGACY_PACKET_DIR = ROOT / "tmp" / "ticker-answer-packets"
+LEGACY_BUILD_SUMMARY = ROOT / "tmp" / "ticker-answer-packet-build-summary.json"
 
 
 def load_module():
@@ -28,6 +34,20 @@ def write_json(path: Path, payload: dict) -> None:
 def write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
+
+
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def legacy_output_snapshot() -> dict[str, tuple[int, int, str]]:
+    paths = sorted(path for path in LEGACY_PACKET_DIR.rglob("*") if path.is_file()) if LEGACY_PACKET_DIR.exists() else []
+    if LEGACY_BUILD_SUMMARY.is_file():
+        paths.append(LEGACY_BUILD_SUMMARY)
+    return {
+        path.relative_to(ROOT).as_posix(): (path.stat().st_size, path.stat().st_mtime_ns, file_sha256(path))
+        for path in sorted(paths)
+    }
 
 
 def seed_workspace(root: Path, module) -> None:
@@ -124,6 +144,76 @@ def test_route_contraction_packet_never_grants_destructive_authority() -> None:
         assert packet["retirement_readiness"]["ready_for_destructive_apply"] is False
 
 
+def test_ticker_answer_packet_is_deterministic_zero_write_tombstone() -> None:
+    before = legacy_output_snapshot()
+    cli_matrix = [
+        [],
+        ["--ticker", "NVDA", "--validate"],
+        ["--all-from-coverage", "--write", "--allow-legacy-write", "--validate", "--pretty"],
+        ["--unknown-legacy-shape", "value", "--another-flag"],
+    ]
+    results = [
+        subprocess.run(
+            [sys.executable, "-B", str(TICKER_ANSWER_SCRIPT), *args],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        for args in cli_matrix
+    ]
+    after = legacy_output_snapshot()
+
+    assert before == after
+    assert {result.returncode for result in results} == {2}
+    assert {result.stderr for result in results} == {""}
+    assert len({result.stdout for result in results}) == 1
+    payload = json.loads(results[0].stdout)
+    assert payload["schema"] == "veritas.ticker_answer_packet.retired_compatibility.v1"
+    assert payload["status"] == "blocked"
+    assert payload["reason"] == "retired_surface"
+    assert payload["compatibility_mode"] == "deny_only"
+    assert payload["legacy_read_allowed"] is False
+    assert payload["legacy_write_allowed"] is False
+    assert payload["filesystem_mutation_allowed"] is False
+    assert payload["exit_code"] == 2
+
+    source = TICKER_ANSWER_SCRIPT.read_text(encoding="utf-8")
+    for retired_import in (
+        "trade_grade_full_answer_assembler",
+        "finance_sql_canon_access",
+        "FinanceSqlCanonAccess",
+        "finance_production_scope",
+        "from pathlib import Path",
+        "import subprocess",
+        "import requests",
+        "import urllib",
+    ):
+        assert retired_import not in source
+
+
+def test_retirement_plan_cannot_treat_historical_snapshots_as_current_replacement() -> None:
+    result = subprocess.run(
+        [sys.executable, "-B", str(RETIREMENT_PLAN_SCRIPT), "--validate"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 1
+    assert result.stderr == ""
+    payload = json.loads(result.stdout)
+    assert payload["status"] == "blocked"
+    assert payload["summary"]["planning_ready"] is False
+    assert payload["summary"]["active_reference_count"] == 0
+    assert payload["summary"]["production_answer_packet_retirement_planning_ready"] is False
+    assert payload["summary"]["current_operational_replacement_ready"] is False
+    error_names = {row["check"] for row in payload["validation"]["errors"]}
+    assert "retired_answer_packet_family_has_no_active_writer_or_current_replacement" in error_names
+
+
 if __name__ == "__main__":
     test_route_contraction_packet_never_grants_destructive_authority()
+    test_ticker_answer_packet_is_deterministic_zero_write_tombstone()
+    test_retirement_plan_cannot_treat_historical_snapshots_as_current_replacement()
     print("wf88 route contraction packet tests passed")

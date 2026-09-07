@@ -1,0 +1,110 @@
+{
+  "authority_boundary": {
+    "account_action_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "live_endpoint_allowed": false,
+    "live_execution_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_execution_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "paper_order_sell_allowed": false,
+    "paper_order_submit_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "review_only": true,
+    "runtime_guard_only": true
+  },
+  "caps": {
+    "concentration_cap_pct": 0.1,
+    "daily_loss_cap_usd": 1500.0,
+    "gross_exposure_cap_pct": 0.25
+  },
+  "findings": [
+    {
+      "age_seconds": 6742147,
+      "code": "policy_expired",
+      "path": "tmp/paper-autotrader/policy.json",
+      "severity": "critical"
+    },
+    {
+      "age_seconds": 73400,
+      "code": "paper_positions_expired",
+      "path": "tmp/finance-intelligence-state-paper-positions.json",
+      "severity": "critical"
+    },
+    {
+      "age_seconds": 4560196,
+      "code": "wf67_guard_validation_expired",
+      "path": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
+      "severity": "critical"
+    },
+    {
+      "age_seconds": 73399,
+      "code": "order_history_classifier_expired",
+      "path": "tmp/alpaca-paper-readiness/paper-order-history-classifier.json",
+      "severity": "critical"
+    },
+    {
+      "code": "wf67_guard_not_ok",
+      "severity": "critical",
+      "status": "blocked"
+    },
+    {
+      "code": "anomaly_halt_status_not_clear",
+      "severity": "critical",
+      "status": "halt"
+    },
+    {
+      "code": "market_anomalies_present",
+      "count": 2,
+      "severity": "critical"
+    }
+  ],
+  "generated_at_utc": "2026-08-28T18:05:22Z",
+  "portfolio_snapshot": {
+    "anomaly_halt_status": {
+      "anomaly_count": 2,
+      "halt_count": 0,
+      "halted": false,
+      "source": "wf87_intraday_monitor",
+      "status": "halt"
+    },
+    "daily_loss_proxy_usd": 108.313482,
+    "equity": 100152.64,
+    "gross_exposure_pct": 0.038029471574588546,
+    "gross_exposure_usd": 3808.751976,
+    "largest_position": {
+      "concentration_pct": 0.00674616465427172,
+      "market_value": 675.6462,
+      "ticker": "GOOG"
+    },
+    "portfolio_value": 100152.64,
+    "positions_count": 10
+  },
+  "schema": "veritas.wf87_portfolio_circuit_breakers.v1",
+  "source_artifacts": [
+    "tmp/paper-autotrader/policy.json",
+    "tmp/finance-intelligence-state-paper-positions.json",
+    "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
+    "tmp/alpaca-paper-readiness/paper-order-history-classifier.json",
+    "tmp/paper-autotrader/market-anomaly-halt-status.json",
+    "tmp/wf87-intraday-monitor.json"
+  ],
+  "status": "blocked",
+  "stop_lines": [
+    "This validator grants no paper/live execution authority.",
+    "Missing paper data, cap breaches, anomalies, or halts block runtime execution.",
+    "No live endpoint, account action, money movement, owner approval inference, or canon/portfolio mutation."
+  ],
+  "summary": {
+    "critical_finding_count": 7,
+    "next_safe_action": "Keep paper execution blocked when this report status is blocked."
+  },
+  "validation": {
+    "errors": [],
+    "status": "ok",
+    "warnings": []
+  },
+  "workflow_id": "WF87"
+}

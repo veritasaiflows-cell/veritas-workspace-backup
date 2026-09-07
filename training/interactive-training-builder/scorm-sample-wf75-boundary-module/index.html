@@ -6,7 +6,7 @@
   <title>WF75 Boundary Practice Lab</title>
   <style>
     :root {
-      color-scheme: light;
+      color-scheme: light dark;
       --ink: #15202b;
       --muted: #596574;
       --paper: #f7f8fa;
@@ -37,10 +37,18 @@
     }
     .skip:focus { left: 8px; }
     header {
-      background: #101820;
+      background: linear-gradient(135deg, #101820 0%, #16324a 55%, #0f766e 130%);
+      background-color: #101820;
       color: white;
-      padding: 22px clamp(16px, 4vw, 46px);
+      padding: 26px clamp(16px, 4vw, 46px);
       border-bottom: 4px solid var(--accent);
+      display: grid;
+      gap: 8px;
+    }
+    .visual-rail {
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
     }
     header h1 {
       margin: 0 0 6px;
@@ -98,9 +106,70 @@
     .lesson, .interaction, .review-panel {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-left: 6px solid var(--accent-2);
+      border-radius: 12px;
       padding: clamp(14px, 3vw, 22px);
       margin-bottom: 16px;
+    }
+    .lesson:nth-of-type(even) { border-left-color: var(--accent); }
+    :focus-visible {
+      outline: 3px solid var(--accent-2);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+    .media-card {
+      border-left-color: var(--accent);
+    }
+    .media-card video {
+      width: 100%;
+      max-height: 480px;
+      border-radius: 14px;
+      background: #000;
+      border: 1px solid var(--line);
+    }
+    .media-card figcaption {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 8px;
+    }
+    .capture-card {
+      border: 1px dashed var(--accent-2);
+      border-left: 6px solid var(--accent-2);
+      border-radius: 12px;
+      background: #f2f6fc;
+      padding: 14px;
+      margin: 12px 0;
+    }
+    .capture-card ol {
+      margin: 8px 0 0;
+      padding-left: 20px;
+    }
+    .capture-card code {
+      background: #e4eaf4;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #e8edf3;
+        --muted: #aab6c4;
+        --paper: #0e141b;
+        --panel: #17202b;
+        --line: #2c3a4a;
+        --accent: #2dd4bf;
+        --accent-2: #7aa7f0;
+        --warn: #e0a63c;
+        --bad: #e08a8a;
+        --good: #5ec596;
+      }
+      nav { background: #111a24; }
+      .nav-button { background: #1c2836; color: var(--ink); }
+      .choice, .check-row { background: #1c2836; }
+      .result { background: #16211c; }
+      .boundary { background: #2a2313; color: #f0dfb8; }
+      .capture-card { background: #14202f; }
+      .capture-card code, code { background: #243242; color: var(--ink); }
+      .progress { background: #2c3a4a; }
+      textarea, input { background: #101820; color: var(--ink); border-color: var(--line); }
+      button.secondary { background: #1c2836; color: var(--ink); }
     }
     .interaction h3 { margin-top: 0; }
     .choice, .check-row {
@@ -173,6 +242,7 @@
 <body>
   <a class="skip" href="#workspace">Skip to training workspace</a>
   <header>
+    <div class="visual-rail" aria-hidden="true"></div>
     <h1>WF75 Boundary Practice Lab</h1>
     <p>Hands-on practice for explaining a service-led AI workflow review without overpromising, collecting customer data, or implying outreach approval.</p>
   </header>
@@ -187,7 +257,7 @@
     <section class="workspace" id="workspace" tabindex="-1">
       <div class="band" aria-label="Training status">
         <div class="metric"><strong id="scoreText">0%</strong><span>score</span></div>
-        <div class="metric"><strong id="doneText">0/5</strong><span>completed</span></div>
+        <div class="metric"><strong id="doneText">0/6</strong><span>completed</span></div>
         <div class="metric"><strong id="eventText">0</strong><span>xAPI events</span></div>
       </div>
       <div class="progress" id="progressShell" role="progressbar" aria-label="Completion progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progressBar"></span></div>
@@ -196,7 +266,7 @@
     </section>
   </main>
   <script>
-    const DATA = {"schema": "veritas.interactive_training_module.v1", "module_id": "wf75-boundary-practice", "title": "WF75 Boundary Practice Lab", "audience": "Randall internal operator training", "summary": "Hands-on practice for explaining a service-led AI workflow review without overpromising, collecting customer data, or implying outreach approval.", "authority_boundary": {"internal_training_only": true, "external_delivery_approved": false, "customer_data_allowed": false, "credential_access_allowed": false, "owner_approval_inferred": false}, "learning_objectives": ["Explain the offer in plain English without hype.", "Identify unsafe claims before they reach a prospect.", "Separate internal training readiness from external outreach approval.", "Export local xAPI-style practice events for review without sending data externally."], "lessons": [{"id": "offer-scope", "title": "Offer Scope", "body": "The AI Workflow Clarity Sprint is a narrow diagnostic review of one workflow. It creates a map and improvement checklist. It is not a live automation build, not a revenue guarantee, and not a request for credentials or customer data.", "key_points": ["Lead with the workflow problem, not the tool.", "Keep claims diagnostic and evidence-bound.", "Never imply outreach approval from a training score."]}, {"id": "boundary-discipline", "title": "Boundary Discipline", "body": "Training artifacts help Randall rehearse. They do not approve contact, public launch, CRM import, phone/SMS outreach, payment collection, customer-data intake, or production access.", "key_points": ["Owner approval must name batch, channel, and copy.", "Customer data and credentials stay blocked in first-scope training.", "High scores mean readiness for review, not permission to act."]}], "interactions": [{"id": "plain-english-offer", "type": "scenario", "title": "Explain The Offer", "prompt": "A business owner asks what Randall is offering. Write the 30-second version.", "expected": "A five-day review of one intake or callback workflow that returns a practical map and improvement checklist, without production access, customer data, or revenue promises.", "rubric": ["Names one workflow.", "Says diagnostic review or map/checklist.", "Avoids revenue and automation guarantees.", "Avoids requesting credentials or customer data."], "xapi_object": "activity/plain-english-offer"}, {"id": "unsafe-claim-check", "type": "multiple_choice", "title": "Spot The Unsafe Claim", "prompt": "Which sentence should be blocked before it reaches a prospect?", "choices": [{"id": "safe", "text": "I noticed your site emphasizes fast service, so intake and callback handoffs may be worth reviewing.", "correct": false, "feedback": "This is framed as a possible review angle from public evidence."}, {"id": "unsafe", "text": "Your company is losing calls and our AI can recover that revenue.", "correct": true, "feedback": "Correct. This asserts loss, promises AI recovery, and implies revenue lift."}, {"id": "neutral", "text": "The first step would be a narrow workflow map, not a system change.", "correct": false, "feedback": "This is a safe scope statement."}], "xapi_object": "activity/unsafe-claim-check"}, {"id": "approval-minimums", "type": "checklist", "title": "Approval Card Minimums", "prompt": "Check every field required before any first-batch outreach can be treated as approved.", "checklist_items": ["Named prospect batch", "Approved channel", "Approved copy", "Explicit not-approved list", "Owner approval is current and exact"], "xapi_object": "activity/approval-minimums"}, {"id": "boundary-review", "type": "boundary_ack", "title": "Boundary Review", "prompt": "Confirm that this training lab is internal only and does not approve outreach, customer data collection, CRM import, payment collection, credentials, or production access.", "expected": "I confirm this is internal readiness training only.", "xapi_object": "activity/boundary-review"}, {"id": "reflection-next-step", "type": "reflection", "title": "Operator Reflection", "prompt": "What should Randall do after passing this module, and what remains blocked?", "rubric": ["Names review or approval-card prep as next step.", "States outreach remains owner-gated.", "Keeps customer data, credentials, and production access blocked."], "xapi_object": "activity/reflection-next-step"}], "xapi": {"activity_id": "https://veritas.local/training/wf75-boundary-practice", "verbs": ["answered", "completed", "failed", "passed", "reviewed_boundary", "started"]}};
+    const DATA = {"schema": "veritas.interactive_training_module.v1", "module_id": "wf75-boundary-practice", "title": "WF75 Boundary Practice Lab", "audience": "Randall internal operator training", "summary": "Hands-on practice for explaining a service-led AI workflow review without overpromising, collecting customer data, or implying outreach approval.", "authority_boundary": {"internal_training_only": true, "external_delivery_approved": false, "customer_data_allowed": false, "credential_access_allowed": false, "owner_approval_inferred": false}, "learning_objectives": ["Explain the offer in plain English without hype.", "Identify unsafe claims before they reach a prospect.", "Separate internal training readiness from external outreach approval.", "Export local xAPI-style practice events for review without sending data externally."], "lessons": [{"id": "offer-scope", "title": "Offer Scope", "body": "The AI Workflow Clarity Sprint is a narrow diagnostic review of one workflow. It creates a map and improvement checklist. It is not a live automation build, not a revenue guarantee, and not a request for credentials or customer data.", "key_points": ["Lead with the workflow problem, not the tool.", "Keep claims diagnostic and evidence-bound.", "Never imply outreach approval from a training score."]}, {"id": "boundary-discipline", "title": "Boundary Discipline", "body": "Training artifacts help Randall rehearse. They do not approve contact, public launch, CRM import, phone/SMS outreach, payment collection, customer-data intake, or production access.", "key_points": ["Owner approval must name batch, channel, and copy.", "Customer data and credentials stay blocked in first-scope training.", "High scores mean readiness for review, not permission to act."]}], "interactions": [{"id": "plain-english-offer", "type": "scenario", "title": "Explain The Offer", "prompt": "A business owner asks what Randall is offering. Write the 30-second version.", "expected": "A five-day review of one intake or callback workflow that returns a practical map and improvement checklist, without production access, customer data, or revenue promises.", "rubric": ["Names one workflow.", "Says diagnostic review or map/checklist.", "Avoids revenue and automation guarantees.", "Avoids requesting credentials or customer data."], "xapi_object": "activity/plain-english-offer"}, {"id": "unsafe-claim-check", "type": "multiple_choice", "title": "Spot The Unsafe Claim", "prompt": "Which sentence should be blocked before it reaches a prospect?", "choices": [{"id": "safe", "text": "I noticed your site emphasizes fast service, so intake and callback handoffs may be worth reviewing.", "correct": false, "feedback": "This is framed as a possible review angle from public evidence."}, {"id": "unsafe", "text": "Your company is losing calls and our AI can recover that revenue.", "correct": true, "feedback": "Correct. This asserts loss, promises AI recovery, and implies revenue lift."}, {"id": "neutral", "text": "The first step would be a narrow workflow map, not a system change.", "correct": false, "feedback": "This is a safe scope statement."}], "xapi_object": "activity/unsafe-claim-check"}, {"id": "approval-minimums", "type": "checklist", "title": "Approval Card Minimums", "prompt": "Check every field required before any first-batch outreach can be treated as approved.", "checklist_items": ["Named prospect batch", "Approved channel", "Approved copy", "Explicit not-approved list", "Owner approval is current and exact"], "xapi_object": "activity/approval-minimums"}, {"id": "boundary-review", "type": "boundary_ack", "title": "Boundary Review", "prompt": "Confirm that this training lab is internal only and does not approve outreach, customer data collection, CRM import, payment collection, credentials, or production access.", "expected": "I confirm this is internal readiness training only.", "xapi_object": "activity/boundary-review"}, {"id": "reflection-next-step", "type": "reflection", "title": "Operator Reflection", "prompt": "What should Randall do after passing this module, and what remains blocked?", "rubric": ["Names review or approval-card prep as next step.", "States outreach remains owner-gated.", "Keeps customer data, credentials, and production access blocked."], "xapi_object": "activity/reflection-next-step"}, {"id": "boundary-walkthrough-clip", "type": "screen_recording", "title": "Boundary Walkthrough Clip", "prompt": "Watch the short local screen recording that walks through the approval-card minimums, then mark the clip reviewed.", "capture_hint": "No clip recorded yet. Capture one with Windows Snipping Tool screen recording (Win+Shift+R), save the file under training/interactive-training-builder/recordings/ as a .webm or .mp4, then rerun the builder so the player picks it up.", "caption": "Walkthrough of the approval-card minimums inside the local training runtime.", "xapi_object": "activity/boundary-walkthrough-clip"}], "xapi": {"activity_id": "https://veritas.local/training/wf75-boundary-practice", "verbs": ["answered", "completed", "failed", "passed", "reviewed_boundary", "started"]}};
     const STORE_KEY = "veritas.training." + DATA.module_id;
     const LEDGER_ENABLED_KEY = "veritas.training.xapiLedger.enabled";
     const LEDGER_ENDPOINT_KEY = "veritas.training.xapiLedger.endpoint";
@@ -387,6 +457,7 @@
 
     function renderInteraction(item, index) {
       const answer = state.answers[item.id] || {};
+      if (item.type === "screen_recording") return renderScreenRecording(item, index);
       if (item.type === "multiple_choice") {
         const choices = item.choices.map(choice => `
           <label class="choice">
@@ -412,6 +483,37 @@
         <textarea id="text-${item.id}" aria-label="${item.title} response">${text}</textarea>
         <h4>Rubric</h4><ul>${rubric}</ul>`,
         `<button class="primary" type="button" onclick="saveText('${item.id}')">Save response</button>`);
+    }
+
+    function renderScreenRecording(item, index) {
+      const answer = state.answers[item.id] || {};
+      const result = answer.completed ? `<div class="result good">${answer.message || "Clip reviewed."}</div>` : "";
+      const safeWalk = (typeof item.walkthrough_src === "string" && /^walkthroughs\/[a-z0-9][a-z0-9._-](1, 80)\.html$/.test(item.walkthrough_src)) ? item.walkthrough_src : "";
+      const safeSrc = (typeof item.video_src === "string" && /^recordings\/[a-z0-9][a-z0-9._-](1, 80)\.(webm|mp4)$/.test(item.video_src)) ? item.video_src : "";
+      const safePoster = (typeof item.poster_src === "string" && /^recordings\/[a-z0-9][a-z0-9._-](1, 80)\.(png|jpg|svg)$/.test(item.poster_src)) ? item.poster_src : "";
+      const caption = item.caption ? `<figcaption>${item.caption}</figcaption>` : "";
+      let player = `<div class="capture-card" role="note"><strong>No teaching walkthrough is wired yet.</strong><p>${item.capture_hint || "A local watch-only walkthrough will appear here."}</p></div>`;
+      if (safeWalk) {
+        player = `<figure style="margin:0"><iframe class="walkthrough-frame" title="${item.title}" src="${safeWalk}" style="width:100%;min-height:360px;border:1px solid var(--line);border-radius:12px;background:#0b1220"></iframe>${caption}</figure>`;
+      } else if (safeSrc) {
+        player = `<figure style="margin:0"><video class="media-card" controls preload="metadata" src="${safeSrc}"${safePoster ? ` poster="${safePoster}"` : ""}></video>${caption}</figure>`;
+      }
+      return `<article class="interaction media-card" id="${item.id}">
+        <h3>${index + 1}. ${item.title}</h3>
+        <p>${item.prompt}</p>
+        ${player}
+        <div class="toolbar"><button class="primary" type="button" onclick="markClipReviewed('${item.id}')">Mark clip reviewed</button><button class="secondary" type="button" onclick="showExpected('${item.id}')">Show guide</button></div>
+        ${result}
+      </article>`;
+    }
+
+    function markClipReviewed(id) {
+      const item = findItem(id);
+      state.answers[id] = { completed: true, passed: true, message: "Clip reviewed." };
+      record("answered", item.xapi_object || id, { completion: true });
+      record("completed", item.xapi_object || id, { completion: true });
+      announce("Clip marked reviewed.");
+      render();
     }
 
     function interactionShell(item, index, body, action) {
@@ -491,7 +593,7 @@
 
     function showExpected(id) {
       const item = findItem(id);
-      alert(item.expected || (item.rubric || []).join("\n"));
+      alert(item.expected || item.capture_hint || (item.rubric || []).join("\n"));
     }
 
     function completeModule() {

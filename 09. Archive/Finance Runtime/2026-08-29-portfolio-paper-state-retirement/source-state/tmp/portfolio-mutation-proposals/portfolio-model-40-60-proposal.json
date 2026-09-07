@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-18T03:29:00Z",
+  "status": "review_only_proposal",
+  "canonical_writes_applied": false,
+  "authority": {
+    "owner_approval_granted": false,
+    "apply_allowed": false,
+    "canonical_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "paper_trade_authority_granted_by_this_proposal": false,
+    "live_trade_authority_granted_by_this_proposal": false,
+    "main_session_final_action_required": true
+  },
+  "source_artifacts": [
+    "03. Portfolio/Portfolio Snapshot.md",
+    "03. Portfolio/Execution Board.md",
+    "07. Risk/Risk Rules.md",
+    "tmp/market-state.json",
+    "tmp/macro-regime.json",
+    "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "tmp/capital-deployment-recommendation-validation.json"
+  ],
+  "model_framing": {
+    "requested_model": "40% ETFs / 60% individual stocks",
+    "recommended_cash_treatment": "preserve_existing_10pct_cash_target_unless_owner_separately_approves_cash_change",
+    "risk_asset_model": {
+      "etfs_pct": 40,
+      "stocks_pct": 60
+    },
+    "account_level_if_cash_retained": {
+      "etfs_pct": 36,
+      "stocks_pct": 54,
+      "cash_pct": 10
+    }
+  },
+  "macro_context": {
+    "regime_key": "restrictive_pause_benign_broad",
+    "label": "Restrictive pause, resilient growth, selective risk-on — large-cap quality bias",
+    "credit": "benign",
+    "breadth": "broad_recovering",
+    "posture_implication": "supports selective risk-on and large-cap quality bias, not aggressive speculative expansion"
+  },
+  "risk_rules": {
+    "normal_single_name_ceiling_pct": 15,
+    "single_sector_cap_pct": 25,
+    "default_speculative_sleeve_target_pct": 5,
+    "speculative_sleeve_requires_exception_above_pct": 10
+  },
+  "etf_sleeve": [
+    {
+      "role": "Broad U.S. equity core",
+      "candidate_examples": ["S&P 500 ETF proxy", "Total-market ETF proxy"],
+      "candidate_evidence_status": "exact_ticker_not_evidenced_in_current_files",
+      "risk_asset_weight_pct": 12,
+      "account_weight_pct_if_10pct_cash": 10.8,
+      "deploy_state": "wait_validator_required",
+      "blockers": ["exact ticker selection", "expense/liquidity review", "sector look-through"]
+    },
+    {
+      "role": "Defense / aerospace gap filler",
+      "candidate_examples": ["ITA", "equivalent defense/aerospace ETF"],
+      "candidate_evidence_status": "watch_monitor_available",
+      "risk_asset_weight_pct": 7,
+      "account_weight_pct_if_10pct_cash": 6.3,
+      "deploy_state": "review_only_wait",
+      "blockers": ["holdings concentration", "LMT/RTX overlap", "technical promotion review"]
+    },
+    {
+      "role": "Industrials / capex / infrastructure",
+      "candidate_examples": ["XLI", "PAVE"],
+      "candidate_evidence_status": "watch_monitor_available",
+      "risk_asset_weight_pct": 6,
+      "account_weight_pct_if_10pct_cash": 5.4,
+      "deploy_state": "review_only_wait",
+      "blockers": ["AI-power/capex correlation with ETN", "technical promotion review"]
+    },
+    {
+      "role": "Financials diversified exposure",
+      "candidate_examples": ["XLF", "equivalent financials ETF"],
+      "candidate_evidence_status": "XLF_monitor_below_stop_repair_reference",
+      "risk_asset_weight_pct": 5,
+      "account_weight_pct_if_10pct_cash": 4.5,
+      "deploy_state": "repair_wait_for_reclaim",
+      "blockers": ["XLF below stop / repair reference", "JPM/GS/CME overlap", "bank review"]
+    },
+    {
+      "role": "Energy / inflation sensitivity",
+      "candidate_examples": ["XLE", "equivalent energy ETF"],
+      "candidate_evidence_status": "watch_monitor_available",
+      "risk_asset_weight_pct": 4,
+      "account_weight_pct_if_10pct_cash": 3.6,
+      "deploy_state": "review_only_wait",
+      "blockers": ["commodity regime review", "XOM/CVX overlap", "technical promotion review"]
+    },
+    {
+      "role": "Materials / quality cyclicals",
+      "candidate_examples": ["XLB", "VAW"],
+      "candidate_evidence_status": "watch_monitor_available",
+      "risk_asset_weight_pct": 3,
+      "account_weight_pct_if_10pct_cash": 2.7,
+      "deploy_state": "review_only_wait",
+      "blockers": ["LIN/PH overlap", "valuation/holdings review"]
+    },
+    {
+      "role": "Macro diversifier",
+      "candidate_examples": ["TLT", "SLV", "PDBC-style commodity role"],
+      "candidate_evidence_status": "TLT_and_SLV_watch_context_available; commodity cue review-only",
+      "risk_asset_weight_pct": 3,
+      "account_weight_pct_if_10pct_cash": 2.7,
+      "deploy_state": "watch_macro_confirmation_required",
+      "blockers": ["TLT below reclaim", "macro confirmation", "commodity/metal allocation review"]
+    }
+  ],
+  "stock_sleeve": [
+    {"ticker": "ETN", "risk_asset_weight_pct": 9, "account_weight_pct_if_10pct_cash": 8.1, "state": "deployable_now_manual_only", "condition": "first capital-deployment priority; in band but no chase and source freshness review-required"},
+    {"ticker": "MSFT", "risk_asset_weight_pct": 8, "account_weight_pct_if_10pct_cash": 7.2, "state": "staged_manual_or_wait_for_band", "condition": "owner-promoted but below 200-day / tech cap sequencing constrained; packet says wait_for_band"},
+    {"ticker": "GOOG", "risk_asset_weight_pct": 8, "account_weight_pct_if_10pct_cash": 7.2, "state": "almost_deployable_wait_for_band", "condition": "no chase above band; GOOG official IR capture must be consumed upstream before apply"},
+    {"ticker": "BRK.B", "risk_asset_weight_pct": 7, "account_weight_pct_if_10pct_cash": 6.3, "state": "repair_reclaim_watch", "condition": "reduced from existing placeholder until 200D/reclaim setup heals"},
+    {"ticker": "JPM", "risk_asset_weight_pct": 5, "account_weight_pct_if_10pct_cash": 4.5, "state": "do_not_touch_trigger_not_live", "condition": "reduced placeholder only; no deployment until authoritative trigger reclaim or explicit band review"},
+    {"ticker": "GS", "risk_asset_weight_pct": 4, "account_weight_pct_if_10pct_cash": 3.6, "state": "almost_deployable_wait_for_band", "condition": "secondary financials; broader bank review and entry need to clear"},
+    {"ticker": "XOM", "risk_asset_weight_pct": 4, "account_weight_pct_if_10pct_cash": 3.6, "state": "repair_do_not_touch", "condition": "reduced single-name energy exposure; pair with ETF role only after review"},
+    {"ticker": "NVDA", "risk_asset_weight_pct": 4, "account_weight_pct_if_10pct_cash": 3.6, "state": "wait_no_chase_event_sensitive", "condition": "keep small; do not escalate through event-risk/extension"},
+    {"ticker": "LMT", "risk_asset_weight_pct": 0, "account_weight_pct_if_10pct_cash": 0.0, "state": "below_stop_repair_suspended", "condition": "do not carry 10% active weight while repair state controls; use ETF role for defense gap pending review"},
+    {"ticker": "KTOS", "risk_asset_weight_pct": 1, "account_weight_pct_if_10pct_cash": 0.9, "state": "speculative_watch_repair_context", "condition": "optional placeholder only; current close below reclaim structure"},
+    {"ticker": "LIN", "risk_asset_weight_pct": 3, "account_weight_pct_if_10pct_cash": 2.7, "state": "portfolio_review_only_defined_setup", "condition": "requires fundamental/valuation packet and owner promotion"},
+    {"ticker": "CME", "risk_asset_weight_pct": 3, "account_weight_pct_if_10pct_cash": 2.7, "state": "portfolio_review_only_defined_setup", "condition": "financial infrastructure diversifier; avoid hidden third-bank exposure"},
+    {"ticker": "WMB", "risk_asset_weight_pct": 2, "account_weight_pct_if_10pct_cash": 1.8, "state": "watch_pullback_setup", "condition": "requires pullback plus income/rate review"},
+    {"ticker": "PH", "risk_asset_weight_pct": 2, "account_weight_pct_if_10pct_cash": 1.8, "state": "portfolio_review_only_underdefined_wait", "condition": "needs levels/valuation before active model role"}
+  ],
+  "totals": {
+    "etf_risk_asset_weight_pct": 40,
+    "stock_risk_asset_weight_pct": 60,
+    "risk_asset_total_pct": 100,
+    "etf_account_weight_pct_if_10pct_cash": 36,
+    "stock_account_weight_pct_if_10pct_cash": 54,
+    "cash_account_weight_pct_if_retained": 10,
+    "account_total_pct_if_cash_retained": 100
+  },
+  "deployment_buckets": {
+    "deploy_now_manual_only": ["ETN", "MSFT as staged/manual only per owner note"],
+    "wait_or_almost_deployable": ["GOOG", "GS", "LIN", "CME", "WMB", "PH", "most ETF roles"],
+    "repair_or_do_not_force": ["LMT", "XOM", "JPM", "BRK.B", "XLF", "TLT", "KTOS"],
+    "no_chase_or_event_sensitive": ["NVDA", "direct Tech/AI-power additions"]
+  },
+  "pre_apply_blockers": [
+    "No exact ETF ticker selection is validated yet.",
+    "Current capital-deployment packets are review-only with apply_allowed=false and owner_approval_granted=false.",
+    "Capital-deployment packet source freshness is stale/review-required even though validation summary is clean.",
+    "ETF holdings/sector look-through is unresolved, especially broad ETF technology overlap.",
+    "Cash target is already 10%; changing cash requires a separate owner decision.",
+    "Repair/watch names must not be rendered as deployable by model weights."
+  ],
+  "validators_needed_before_wf64_wf56_apply": [
+    "ETF holdings/sector look-through validator",
+    "pro-forma sector and correlated-sleeve exposure validator",
+    "single-name and sector-cap validator against Risk Rules",
+    "cash-treatment decision validator",
+    "execution-state language validator blocking repair/watch deployable wording",
+    "source freshness validator for capital recommendation packets",
+    "exact patch preview and semantic preview material for targeted canonical files",
+    "standing/scoped approval artifact matching proposal id, target files, diff hash, and category scope",
+    "backup/rollback and post-apply validation chain"
+  ],
+  "output_files": {
+    "markdown": "tmp/portfolio-mutation-proposals/portfolio-model-40-60-proposal.md",
+    "json": "tmp/portfolio-mutation-proposals/portfolio-model-40-60-proposal.json"
+  }
+}

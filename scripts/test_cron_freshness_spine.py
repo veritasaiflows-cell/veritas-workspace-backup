@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import json
 import tempfile
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from cron_freshness_spine import (
     JOB_CONTRACTS,
+    RETIRED_LEGACY_JOB_CONTRACTS,
     artifact_record,
     attention_bucket,
     attention_class,
@@ -697,19 +698,19 @@ def test_wf85_undelivered_blocker_stays_urgent() -> None:
     assert record["operator_action"] == "BLOCKED"
 
 
-def test_wf85_radar_treats_wf85_runner_as_nonblocking_source_context() -> None:
+def test_retired_wf85_radar_history_keeps_runner_as_nonblocking_source_context() -> None:
     for job_name in (
         "Finance - WF85 Paper Deployment Telegram Radar",
         "Finance - WF85 Open-Ready Telegram Radar",
         "Finance - WF85 Post-Refresh Paper Deployment Telegram Radar",
     ):
-        specs = JOB_CONTRACTS[job_name]["expected_artifacts"]
+        specs = RETIRED_LEGACY_JOB_CONTRACTS[job_name]["expected_artifacts"]
         runner_specs = [item for item in specs if item["role"] == "trade_grade_os_freshness_cron_runner"]
         assert runner_specs, job_name
         assert runner_specs[0]["blocking"] is False
 
 
-def test_veritas_finance_brief_follows_sync_spine_for_deployment_jobs() -> None:
+def test_retired_deployment_history_preserves_prior_artifact_order() -> None:
     for job_name in (
         "Finance - Morning Paper Deployment Recommendation Cards",
         "Finance - Midday Paper Deployment Recommendation Cards",
@@ -719,7 +720,7 @@ def test_veritas_finance_brief_follows_sync_spine_for_deployment_jobs() -> None:
         "Finance - WF85 Post-Refresh Paper Deployment Telegram Radar",
         "Finance - Weekday Post-Close Review Refresh",
     ):
-        specs = JOB_CONTRACTS[job_name]["expected_artifacts"]
+        specs = RETIRED_LEGACY_JOB_CONTRACTS[job_name]["expected_artifacts"]
         roles = [item["role"] for item in specs]
 
         assert "finance_decision_sync_spine" in roles, job_name
@@ -732,8 +733,9 @@ def test_veritas_finance_brief_follows_sync_spine_for_deployment_jobs() -> None:
         assert md_specs[0]["blocking"] is False
 
 
-def test_pm_autonomous_proof_worker_has_freshness_contract() -> None:
-    contract = JOB_CONTRACTS["PM - Autonomous Implementation Proof Worker"]
+def test_retired_pm_autonomous_proof_worker_is_not_active() -> None:
+    assert "PM - Autonomous Implementation Proof Worker" not in JOB_CONTRACTS
+    contract = RETIRED_LEGACY_JOB_CONTRACTS["PM - Autonomous Implementation Proof Worker"]
     roles = [item["role"] for item in contract["expected_artifacts"]]
 
     assert contract["freshness_hours"] == 24
@@ -745,39 +747,64 @@ def test_pm_autonomous_proof_worker_has_freshness_contract() -> None:
     assert inbox_specs[0]["blocking"] is False
 
 
-def test_file_backed_runtime_os_audit_contract_registers_expected_artifacts() -> None:
+def test_embedded_legacy_contracts_never_enter_active_merge() -> None:
+    assert RETIRED_LEGACY_JOB_CONTRACTS
+    assert not any(name.startswith("Finance -") for name in JOB_CONTRACTS)
+    assert not any(name.startswith("Finance Delivery Series -") for name in JOB_CONTRACTS)
+    assert not any(name.startswith("GPT54mini canary -") for name in JOB_CONTRACTS)
+
     contracts = merged_job_contracts()
-    contract = contracts["Runtime - OS Audit Companion Packets Refresh"]
+    for name in RETIRED_LEGACY_JOB_CONTRACTS:
+        assert name not in contracts
+    for name, contract in contracts.items():
+        if name.startswith("Finance -"):
+            assert str(contract.get("contract_source") or "").startswith("state/cron-contracts/"), name
+
+
+def test_new_file_backed_otel_and_security_contracts_are_active() -> None:
+    contracts = merged_job_contracts()
+    expected = {
+        "Runtime - OTEL Collector Log Retention": "state/cron-contracts/runtime-otel-collector-log-retention.json",
+        "Security Audit - Daily Bounded Hardening": "state/cron-contracts/security-audit-daily-bounded-hardening.json",
+    }
+    for name, source in expected.items():
+        assert contracts[name]["contract_source"] == source
+
+
+def test_file_backed_semantic_memory_contract_registers_active_artifact() -> None:
+    contracts = merged_job_contracts()
+    contract = contracts["Runtime - Semantic Memory Cache Maintenance"]
     roles = [item["role"] for item in contract["expected_artifacts"]]
 
-    assert contract["contract_source"] == "state/cron-contracts/runtime-os-audit-companion-packets-refresh.json"
-    assert "tmp_lifecycle_guard" in roles
-    assert "token_budget_status" in roles
-    assert "security_warning_ledger" in roles
-    assert "wf78_promotion_visibility_top10" in roles
-    assert "pm_autonomy_verifier" in roles
-    assert "veritas_status_card" in roles
+    assert contract["contract_source"] == "state/cron-contracts/runtime-semantic-memory-cache-maintenance.json"
+    assert roles == ["semantic_memory_maintenance"]
 
 
-def test_file_backed_finance_review_contracts_surface_nested_refresh_outputs() -> None:
+def test_file_backed_alert_chain_contracts_surface_active_proofs() -> None:
     contracts = merged_job_contracts()
-    morning = contracts["Finance - Weekday Morning Review Refresh"]
-    post_close = contracts["Finance - Weekday Post-Close Review Refresh"]
+    morning = contracts["Finance - Weekday Morning Alerts and Recommendations Refresh"]
+    post_close = contracts["Finance - Weekday Post-Close Alerts and Recommendations Refresh"]
     morning_roles = [item["role"] for item in morning["expected_artifacts"]]
     post_close_roles = [item["role"] for item in post_close["expected_artifacts"]]
 
-    for role in ("earnings_calendar", "earnings_date_source_confidence", "event_calendar_rollforward"):
-        assert role in morning_roles, role
-        assert role in post_close_roles, role
-
-    for role in (
-        "post_close_final_quote_ledger",
-        "ticker_card_freshness_owner_runner",
-        "trade_grade_os_freshness_cron_runner",
-        "wf85_deployment_timing_gate",
-        "trade_grade_os_readiness_rollup",
-    ):
-        assert role in post_close_roles, role
+    assert morning["contract_source"] == "state/cron-contracts/finance-weekday-morning-review-refresh.json"
+    assert post_close["contract_source"] == "state/cron-contracts/finance-weekday-post-close-review-refresh.json"
+    assert morning_roles == [
+        "alerts_recommendations_chain_morning",
+        "alert_level_freshness_controller",
+        "finance_alert_os_morning_digest",
+        "quote_snapshot_proof",
+        "quote_snapshot_proof_validation",
+        "finance_sql_canon_access_validation",
+    ]
+    assert post_close_roles == [
+        "alerts_recommendations_chain_post_close",
+        "alert_level_freshness_controller",
+        "finance_alert_os_post_close_digest",
+        "quote_snapshot_proof",
+        "quote_snapshot_proof_validation",
+        "finance_sql_canon_access_validation",
+    ]
 
 
 def test_weekly_os_radar_keeps_cron_control_packet_as_nonblocking_context() -> None:
@@ -896,6 +923,91 @@ def test_wf78_tier_semantic_lineage_mismatch_blocks_inside_generic_ttl() -> None
     assert classified["reason"] == "wf78_tier_semantic_lineage_missing_or_mismatched"
 
 
+def test_newer_clean_artifact_deescalates_failed_scheduler_until_natural_canary() -> None:
+    now = datetime.now(timezone.utc).replace(microsecond=0)
+    with tempfile.TemporaryDirectory() as raw:
+        artifact = Path(raw) / "proof.json"
+        artifact.write_text(
+            json.dumps(
+                {
+                    "status": "ok",
+                    "generated_at_utc": (now - timedelta(minutes=5)).isoformat().replace("+00:00", "Z"),
+                    "validation": {"status": "ok"},
+                }
+            ),
+            encoding="utf-8",
+        )
+        job = {
+            "name": "Recovered scheduler test",
+            "enabled": True,
+            "schedule": {"expr": "0 * * * *", "kind": "cron", "tz": "America/Phoenix"},
+            "last_status": "error",
+            "consecutive_errors": 3,
+            "last_run_utc": (now - timedelta(hours=1)).isoformat().replace("+00:00", "Z"),
+            "last_error": "command exited with code 1",
+        }
+        contract = {
+            "owner_workflow": "test",
+            "freshness_hours": 36,
+            "expected_artifacts": [
+                {"path": str(artifact), "role": "recovery_proof", "required": True, "blocking": True}
+            ],
+        }
+
+        recovered = classify_job(job, contract)
+        job["last_run_utc"] = now.isoformat().replace("+00:00", "Z")
+        not_recovered = classify_job(job, contract)
+
+    assert recovered["status"] == "recovered_waiting_scheduler_canary"
+    assert recovered["signal_class"] == "STALE_OR_NOISE"
+    assert recovered["reason"] == "fresh_artifacts_prove_recovery_after_last_scheduler_failure"
+    assert recovered["live_scheduler_last_status"] == "error"
+    assert recovered["live_scheduler_consecutive_errors"] == 3
+    assert recovered["live_scheduler_last_error"] == "command exited with code 1"
+    assert not_recovered["status"] == "scheduler_error"
+    assert not_recovered["signal_class"] == "BLOCKED"
+
+
+def test_newer_warning_artifact_keeps_review_signal_without_scheduler_escalation() -> None:
+    now = datetime.now(timezone.utc).replace(microsecond=0)
+    with tempfile.TemporaryDirectory() as raw:
+        artifact = Path(raw) / "proof.json"
+        artifact.write_text(
+            json.dumps(
+                {
+                    "status": "warning",
+                    "generated_at_utc": (now - timedelta(minutes=5)).isoformat().replace("+00:00", "Z"),
+                    "validation": {"status": "warning"},
+                }
+            ),
+            encoding="utf-8",
+        )
+        classified = classify_job(
+            {
+                "name": "Recovered warning scheduler test",
+                "enabled": True,
+                "schedule": {"expr": "0 * * * *", "kind": "cron", "tz": "America/Phoenix"},
+                "last_status": "error",
+                "consecutive_errors": 3,
+                "last_run_utc": (now - timedelta(hours=1)).isoformat().replace("+00:00", "Z"),
+            },
+            {
+                "owner_workflow": "test",
+                "freshness_hours": 36,
+                "expected_artifacts": [
+                    {"path": str(artifact), "role": "warning_recovery_proof", "required": True, "blocking": True}
+                ],
+            },
+        )
+
+    assert classified["status"] == "needs_review"
+    assert classified["signal_class"] == "MAIN_SESSION_REQUIRED"
+    assert classified["reason"] == "artifact_requests_or_warns_for_review"
+    assert classified["live_scheduler_reconciliation"] == (
+        "newer_nonblocking_artifacts_prove_execution_recovery_waiting_natural_canary"
+    )
+
+
 if __name__ == "__main__":
     test_quote_first_warning_is_quiet_with_nonfresh_backlog()
     test_quote_first_warning_does_not_quiet_stale_or_critical()
@@ -917,9 +1029,11 @@ if __name__ == "__main__":
     test_wf85_radar_treats_wf85_runner_as_nonblocking_source_context()
     test_veritas_finance_brief_follows_sync_spine_for_deployment_jobs()
     test_pm_autonomous_proof_worker_has_freshness_contract()
-    test_file_backed_runtime_os_audit_contract_registers_expected_artifacts()
-    test_file_backed_finance_review_contracts_surface_nested_refresh_outputs()
+    test_file_backed_semantic_memory_contract_registers_active_artifact()
+    test_file_backed_alert_chain_contracts_surface_active_proofs()
     test_weekly_os_radar_keeps_cron_control_packet_as_nonblocking_context()
     test_cron_control_packet_context_does_not_block_freshness_spine()
     test_wf78_tier_semantic_lineage_mismatch_blocks_inside_generic_ttl()
+    test_newer_clean_artifact_deescalates_failed_scheduler_until_natural_canary()
+    test_newer_warning_artifact_keeps_review_signal_without_scheduler_escalation()
     print("cron_freshness_spine_tests_passed")

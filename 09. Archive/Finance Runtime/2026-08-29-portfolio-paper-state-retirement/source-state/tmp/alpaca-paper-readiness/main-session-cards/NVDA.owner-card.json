@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "artifact_type": "main_session_wf67_order_decision_card",
+  "request_id": "wf78-owner-card-prep-NVDA-20260606T175247Z",
+  "created_at_utc": "2026-06-06T17:52:47Z",
+  "authority": {
+    "main_session_recommendation_allowed": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "paper_only": true,
+    "paper_order_execution_allowed_by_card": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "order": {
+    "symbol": "NVDA",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 207.4,
+    "qty": null,
+    "notional": 207.4
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 207.4,
+    "max_notional_usd": 500.0,
+    "max_loss_usd": 19.5,
+    "entry_band_low": 198.47,
+    "entry_band_high": 216.66,
+    "observed_price": 207.4,
+    "observed_entry_status": "IN_BAND",
+    "stop": 187.9,
+    "sizing_rationale": "Paper-only starter request sized at or below WF67 $500 pilot cap; exact execution remains blocked pending Randall approval and fresh guard proof."
+  },
+  "source": {
+    "source_artifact": "tmp/wf78-capital-review-queue.json",
+    "capital_recommendation_source": "wf78_non_executing_owner_card_prep",
+    "owner_or_pilot_scope": "WF78 capital-review candidate, paper-only starter card, pending exact Randall approval",
+    "approval_artifact": null
+  },
+  "owner_approval": {
+    "status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "approval_text": null,
+    "market_order_owner_approved": false
+  },
+  "decision_context": {
+    "name": "NVIDIA Corporation",
+    "sector": "Tech",
+    "queue_state": "A-DEPLOY-CANDIDATE-REVIEW-READY",
+    "recommendation_support": "promotion review",
+    "cautions": [
+      "card itself grants no paper/live execution authority and infers no approval",
+      "fresh quote/band/stop check required before any final recommendation or paper-order approval request (cleared for non-executing review by same-market-day quote proof)",
+      "owner promotion/selection still required before treating as deployed"
+    ],
+    "source_artifacts": [
+      "tmp/intraday-alerts/quote-snapshot-proof.json",
+      "tmp/market-execution-readiness-cron-hardening.json",
+      "tmp/ticker-intelligence-cards/NVDA.current.json",
+      "tmp/wf78-auto-tier-routing.json",
+      "tmp/wf78-production-tier-adjudication.json",
+      "tmp/wf78-routing-delta.json"
+    ],
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false
+  }
+}

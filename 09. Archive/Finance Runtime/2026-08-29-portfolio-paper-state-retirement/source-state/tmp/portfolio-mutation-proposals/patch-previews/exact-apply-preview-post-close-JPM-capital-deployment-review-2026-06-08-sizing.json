@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-06-08T20:30:52Z",
+  "status": "ready_for_scoped_main_session_review",
+  "window": "post-close",
+  "input_bundle": "tmp/portfolio-mutation-proposals/semantic-patch-material/post-close-JPM-capital-deployment-review-2026-06-08-sizing.json",
+  "proposal_id": "post-close:JPM:capital-deployment-review:2026-06-08",
+  "apply_allowed": false,
+  "owner_approval_granted": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "authority": {
+    "phase": "WF56 Phase 3 dry-run scoped patch helper",
+    "dry_run_patch_preview_allowed": true,
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "main_session_final_action_required": true,
+    "write_owner_files_allowed": false,
+    "apply_allowed_by_this_helper": false,
+    "portfolio_mutation_allowed_by_this_helper": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "validation": {
+    "schema_validator_ok": true,
+    "schema_errors": [],
+    "schema_blockers": [],
+    "patch_scope_findings": [],
+    "patch_scope_critical": 0,
+    "build_errors": []
+  },
+  "summary": {
+    "requested_changes": 1,
+    "previewed_file_changes": 1,
+    "writes_performed": false,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "ready_for_main_session_portfolio_mutation_review": true
+  },
+  "file_previews": [
+    {
+      "path": "03. Portfolio/Portfolio Snapshot.md",
+      "change_type": "exact_text_replace",
+      "old_text_sha256_hint": null,
+      "old_text_match_count": 1,
+      "writes_performed": false,
+      "diff": "--- a/03. Portfolio/Portfolio Snapshot.md\n+++ b/03. Portfolio/Portfolio Snapshot.md\n@@ -125,7 +125,7 @@\n - WF64 sizing semantic sync (VRT): draft_weight=`0%`, sizing_tier=`Formal AI-power tactical challenger planning: Tier 2 starter $200-$350 / 2%-3.5% account-level as conditional proposal context only; 0% active model weight and no execution authority.`; source `tmp/portfolio-config.json`; proposal `morning:VRT:capital-deployment-review:2026-06-08`; draft model only, no external-action sizing authority.\n - WF64 sizing semantic sync (ETN): draft_weight=`7%`, sizing_tier=`Tier 1`; source `tmp/portfolio-config.json`; proposal `post-close:ETN:capital-deployment-review:2026-06-08`; draft model only, no external-action sizing authority.\n - WF64 sizing semantic sync (GS): draft_weight=`7%`, sizing_tier=`Tier 2`; source `tmp/portfolio-config.json`; proposal `post-close:GS:capital-deployment-review:2026-06-08`; draft model only, no external-action sizing authority.\n-- WF64 sizing semantic sync (JPM): draft_weight=`14%`, sizing_tier=`Tier 1`; source `tmp/portfolio-config.json`; proposal `morning:JPM:capital-deployment-review:2026-06-08`; draft model only, no external-action sizing authority.\n+- WF64 sizing semantic sync (JPM): draft_weight=`14%`, sizing_tier=`Tier 1`; source `tmp/portfolio-config.json`; proposal `post-close:JPM:capital-deployment-review:2026-06-08`; draft model only, no external-action sizing authority.\n - WF64 sizing semantic sync (MSFT): draft_weight=`10%`, sizing_tier=`Tier 1`; source `tmp/portfolio-config.json`; proposal `morning:MSFT:capital-deployment-review:2026-06-08`; draft model only, no external-action sizing authority.\n \n ## Freshness and refresh policy\n",
+      "rationale": "Synchronize sizing semantic context from current portfolio artifacts without widening external-action authority."
+    }
+  ],
+  "stop_lines": [
+    "This artifact is an exact patch preview only; it does not mutate owner notes or portfolio config.",
+    "Main-session portfolio mutation still requires explicit scoped Randall approval for the proposal id and exact diff.",
+    "A clean preview does not grant owner approval, sizing, sleeve, cash, risk-rule, execution-entitlement, trade, or account authority.",
+    "Phase 4 apply mode must be a separate approval-gated path and must run the post-apply validation chain."
+  ]
+}

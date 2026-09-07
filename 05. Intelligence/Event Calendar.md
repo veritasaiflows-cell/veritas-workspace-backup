@@ -17,7 +17,7 @@ Color coding (text labels):
 
 ## Freshness and refresh policy
 
-- Last updated: 2026-08-27
+- Last updated: 2026-08-28
 - Data as of: daily chain-maintained earnings/calendar evidence plus bounded Event Calendar roll-forward automation
 - Refresh cadence: weekly, after major portfolio-company earnings, and whenever a dated catalyst elapses or a new confirmed event is added
 - Next refresh due: next scheduled finance refresh chain or immediately after a material catalyst/date discrepancy.
@@ -108,14 +108,24 @@ Minimum rule:
 <!-- VERITAS_AUTO_EVENT_CALENDAR_ROLLFORWARD_START -->
 ## Auto-maintained provider-estimated earnings roll-forward
 
-Generated: 2026-08-27T13:14:12Z
+Generated: 2026-08-28T20:20:07Z
 Approval: Randall approved bounded daily-chain Event Calendar maintenance on 2026-05-10.
 
 Boundary: this block keeps the Event Calendar fresh. It does not authorize portfolio mutation, deployment, sizing, promotion, trade execution, or owner-approval inference.
 
 | Date | Day | Event | Priority | Notes |
 |---|---|---|---|---|
-| — | — | No provider-estimated roll-forwards currently staged | — | — |
+| Oct 28 | Wed | **GOOG next expected earnings — provider estimate from yfinance; not primary-confirmed** | **[HIGH]** | Auto-maintained from `tmp/event-calendar-rollforward.json`. Confidence: provider estimate from yfinance; not primary-confirmed. Provider fetched: 2026-08-28T20:20:04.238281+00:00. Review support only; no deployment, promotion, sizing, or trade authority. |
+| Oct 28 | Wed | **META next expected earnings — provider estimate from yfinance; not primary-confirmed** | **[MONITOR]** | Auto-maintained from `tmp/event-calendar-rollforward.json`. Confidence: provider estimate from yfinance; not primary-confirmed. Provider fetched: 2026-08-28T20:20:06.232871+00:00. Review support only; no deployment, promotion, sizing, or trade authority. |
+| Oct 28 | Wed | **MSFT next expected earnings — provider estimate from yfinance; not primary-confirmed** | **[HIGH]** | Auto-maintained from `tmp/event-calendar-rollforward.json`. Confidence: provider estimate from yfinance; not primary-confirmed. Provider fetched: 2026-08-28T20:20:04.150343+00:00. Review support only; no deployment, promotion, sizing, or trade authority. |
+| Oct 29 | Thu | **AMZN next expected earnings — provider estimate from yfinance; not primary-confirmed** | **[MONITOR]** | Auto-maintained from `tmp/event-calendar-rollforward.json`. Confidence: provider estimate from yfinance; not primary-confirmed. Provider fetched: 2026-08-28T20:20:05.544043+00:00. Review support only; no deployment, promotion, sizing, or trade authority. |
+| Oct 30 | Fri | **CVX next expected earnings — provider estimate from yfinance; not primary-confirmed** | **[MONITOR]** | Auto-maintained from `tmp/event-calendar-rollforward.json`. Confidence: provider estimate from yfinance; not primary-confirmed. Provider fetched: 2026-08-28T20:20:02.906332+00:00. Review support only; no deployment, promotion, sizing, or trade authority. |
+| Oct 30 | Fri | **XOM next expected earnings — provider estimate from yfinance; not primary-confirmed** | **[HIGH]** | Auto-maintained from `tmp/event-calendar-rollforward.json`. Confidence: provider estimate from yfinance; not primary-confirmed. Provider fetched: 2026-08-28T20:20:02.499752+00:00. Review support only; no deployment, promotion, sizing, or trade authority. |
+| Nov 2 | Mon | **PLTR next expected earnings — provider estimate from yfinance; not primary-confirmed** | **[MONITOR]** | Auto-maintained from `tmp/event-calendar-rollforward.json`. Confidence: provider estimate from yfinance; not primary-confirmed. Provider fetched: 2026-08-28T20:20:04.760395+00:00. Review support only; no deployment, promotion, sizing, or trade authority. |
+| Nov 3 | Tue | **AMD next expected earnings — provider estimate from yfinance; not primary-confirmed** | **[MONITOR]** | Auto-maintained from `tmp/event-calendar-rollforward.json`. Confidence: provider estimate from yfinance; not primary-confirmed. Provider fetched: 2026-08-28T20:20:04.605077+00:00. Review support only; no deployment, promotion, sizing, or trade authority. |
+| Nov 3 | Tue | **ETN next expected earnings — provider estimate from yfinance; not primary-confirmed** | **[HIGH]** | Auto-maintained from `tmp/event-calendar-rollforward.json`. Confidence: provider estimate from yfinance; not primary-confirmed. Provider fetched: 2026-08-28T20:20:04.525390+00:00. Review support only; no deployment, promotion, sizing, or trade authority. |
+| Nov 3 | Tue | **SMCI next expected earnings — provider estimate from yfinance; not primary-confirmed** | **[MONITOR]** | Auto-maintained from `tmp/event-calendar-rollforward.json`. Confidence: provider estimate from yfinance; not primary-confirmed. Provider fetched: 2026-08-28T20:20:04.840703+00:00. Review support only; no deployment, promotion, sizing, or trade authority. |
+| Nov 7 | Sat | **BRK.B next expected earnings — provider estimate from yfinance; not primary-confirmed** | **[HIGH]** | Auto-maintained from `tmp/event-calendar-rollforward.json`. Confidence: provider estimate from yfinance; not primary-confirmed. Provider fetched: 2026-08-28T20:20:05.464035+00:00. Review support only; no deployment, promotion, sizing, or trade authority. |
 
 <!-- VERITAS_AUTO_EVENT_CALENDAR_ROLLFORWARD_END -->
 
@@ -236,4 +246,5 @@ Boundary: this block keeps the Event Calendar fresh. It does not authorize portf
 - 2026-08-24 — daily-chain Event Calendar maintenance approved by Randall and applied through `scripts/event_calendar_apply.py`: auto-managed provider-estimated roll-forward block refreshed with 0 staged next-earnings dates. Provider-estimated entries remain explicitly non-primary-confirmed unless primary evidence is attached; no portfolio/deployment/trade authority widened. NVDA May 20 was updated to primary-confirmed from Randall-provided NVIDIA IR evidence.
 - 2026-08-25 — daily-chain Event Calendar maintenance approved by Randall and applied through `scripts/event_calendar_apply.py`: auto-managed provider-estimated roll-forward block refreshed with 11 staged next-earnings dates. Provider-estimated entries remain explicitly non-primary-confirmed unless primary evidence is attached; no portfolio/deployment/trade authority widened. NVDA May 20 was updated to primary-confirmed from Randall-provided NVIDIA IR evidence.
 - 2026-08-26 — daily-chain Event Calendar maintenance approved by Randall and applied through `scripts/event_calendar_apply.py`: auto-managed provider-estimated roll-forward block refreshed with 11 staged next-earnings dates. Provider-estimated entries remain explicitly non-primary-confirmed unless primary evidence is attached; no portfolio/deployment/trade authority widened. NVDA May 20 was updated to primary-confirmed from Randall-provided NVIDIA IR evidence.
-- 2026-08-27 — daily-chain Event Calendar maintenance approved by Randall and applied through `scripts/event_calendar_apply.py`: auto-managed provider-estimated roll-forward block refreshed with 0 staged next-earnings dates. Provider-estimated entries remain explicitly non-primary-confirmed unless primary evidence is attached; no portfolio/deployment/trade authority widened. NVDA May 20 was updated to primary-confirmed from Randall-provided NVIDIA IR evidence.
+- 2026-08-27 — daily-chain Event Calendar maintenance approved by Randall and applied through `scripts/event_calendar_apply.py`: auto-managed provider-estimated roll-forward block refreshed with 11 staged next-earnings dates. Provider-estimated entries remain explicitly non-primary-confirmed unless primary evidence is attached; no portfolio/deployment/trade authority widened. NVDA May 20 was updated to primary-confirmed from Randall-provided NVIDIA IR evidence.
+- 2026-08-28 — daily-chain Event Calendar maintenance approved by Randall and applied through `scripts/event_calendar_apply.py`: auto-managed provider-estimated roll-forward block refreshed with 11 staged next-earnings dates. Provider-estimated entries remain explicitly non-primary-confirmed unless primary evidence is attached; no portfolio/deployment/trade authority widened. NVDA May 20 was updated to primary-confirmed from Randall-provided NVIDIA IR evidence.

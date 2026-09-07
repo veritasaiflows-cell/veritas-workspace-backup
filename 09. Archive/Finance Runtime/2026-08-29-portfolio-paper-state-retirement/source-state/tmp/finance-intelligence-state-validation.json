@@ -1,0 +1,689 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-08-29T21:44:03Z",
+  "artifact_type": "finance_intelligence_state_validation",
+  "db_path": "tmp/finance-intelligence-state.sqlite",
+  "status": "ok",
+  "summary": {
+    "universe_rows": 300,
+    "all_ticker_sql_rows": 300,
+    "production_answer_path_rows": 12,
+    "review_monitor_thin_rows": 258,
+    "current_ticker_cards": 12,
+    "latest_valid_entry_stop_refs": 42,
+    "fundamental_snapshot_rows": 300,
+    "analyst_snapshot_rows": 300,
+    "stale_ticker_cards": 285,
+    "pending_approval_queue": 17,
+    "preopen_action_queue": 12,
+    "pilot_fixture_rows": 0,
+    "current_pilot_fixtures": 0,
+    "canon_conflict_candidates": 258
+  },
+  "sql_canon_state": {
+    "schema": "veritas.finance_intelligence_state.sql_canon_context.v1",
+    "status": "ok",
+    "access_validation_status": "ok",
+    "sql_canon_db": "state/finance/finance-canon.sqlite",
+    "production_answer_count": 12,
+    "production_answer_tickers": [
+      "BKNG",
+      "BRK.B",
+      "CME",
+      "CVX",
+      "ECL",
+      "GOOG",
+      "JPM",
+      "LIN",
+      "LLY",
+      "META",
+      "PLTR",
+      "XOM"
+    ],
+    "production_answer_definition": "validated proof-joined production-grade set",
+    "legacy_production_answer_count": 0,
+    "legacy_production_answer_tickers": [],
+    "legacy_production_answer_definition": "hard-retired Legacy 42 answer scope; expected empty after schema apply",
+    "legacy_42_retired_from_blocking": true,
+    "legacy_42_count_advisory_only": true,
+    "compatibility_scope_active": false,
+    "migration_registry_summary": {
+      "priority_counts": {
+        "P0": 21,
+        "P1": 459,
+        "P2": 204
+      },
+      "lane_counts": {
+        "answer_path_parity_lane": 21,
+        "cron_pm_governance_lane": 14,
+        "pm_cockpit_lane": 2,
+        "source_loader_lane": 436,
+        "test_parity_lane": 203,
+        "typed_access_guard_lane": 3,
+        "wf78_wf77_routing_lane": 5
+      },
+      "cutover_state_counts": {
+        "not_cut_over": 116,
+        "source_producer": 389,
+        "sql_primary_guarded": 179
+      },
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": [],
+      "p0_answer_path_lane_status": {
+        "ok": true,
+        "errors": [],
+        "p0_count": 21,
+        "answer_path_lane_count": 21,
+        "p0_answer_path_lane_count": 21,
+        "p0_non_answer_path_count": 0,
+        "answer_path_non_p0_count": 0,
+        "p0_non_answer_path_consumers": [],
+        "answer_path_non_p0_consumers": []
+      }
+    },
+    "p0_registry_lane_status": {
+      "ok": true,
+      "errors": [],
+      "p0_count": 21,
+      "answer_path_lane_count": 21,
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": []
+    },
+    "answer_route_policy": {
+      "strategic_answer_route": "sql_first_tier_routing_plus_production_grade_policy",
+      "production_grade_empty_is_valid_wait_state": true,
+      "legacy_42_retired_from_blocking": true,
+      "legacy_42_role": "historical_compatibility_only_not_readiness_or_repair_authority"
+    },
+    "field_family_summary": {
+      "review_only_internal_sql_primary": true,
+      "review_only_sql_json_canon_owner": true,
+      "canon_owner_metadata": {
+        "schema_version": "finance_sql_canon_owner_field_families.v1",
+        "promoted_at_utc": "2026-06-19T19:30:27Z",
+        "structured_truth_owner": "state/finance/finance-canon.sqlite plus generated JSON proof packets",
+        "markdown_owner_scope": "policy, narrative, owner decisions, weekly reasoning, and audit context",
+        "fallback_retained": true,
+        "archive_delete_apply_allowed": false,
+        "promoted_field_families": [
+          "answer_path_scope",
+          "evidence_freshness",
+          "reference_levels",
+          "source_lineage",
+          "ticker_state",
+          "tier_routing_state",
+          "universe_membership"
+        ]
+      },
+      "source_open_required_before_material_claims": true,
+      "field_families": {
+        "ticker_state": {
+          "sql_primary_current_state": true,
+          "row_count": 300,
+          "active_rows": 300,
+          "authority_scope": "review_only_ticker_identity_and_route_state",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "universe_membership": {
+          "sql_primary_current_state": true,
+          "row_count": 300,
+          "legacy_production_rows": 0,
+          "production_scope_rows": 12,
+          "review_monitor_rows": 258,
+          "decision_grade_rows": 32,
+          "sql_tier_counts": {
+            "Tier A": 15,
+            "Tier B": 17,
+            "Tier C": 268
+          },
+          "legacy_42_role": "hard_retired_from_active_runtime_schema",
+          "authority_scope": "review_only_universe_membership_and_monitoring_role",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "reference_levels": {
+          "sql_primary_current_state": true,
+          "row_count": 200,
+          "complete_reference_rows": 200,
+          "authority_scope": "review_only_entry_band_stop_metadata",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "evidence_freshness": {
+          "sql_primary_current_state": true,
+          "row_count": 200,
+          "authority_scope": "review_only_freshness_and_source_confidence_metadata",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "source_lineage": {
+          "sql_primary_current_state": true,
+          "row_count": 3521,
+          "scope_key_count": 734,
+          "rows_by_field_family": {
+            "consumer_migration_registry": 434,
+            "evidence_freshness": 800,
+            "reference_levels": 1087,
+            "tier_routing_state": 1200
+          },
+          "authority_scope": "review_only_source_traceability_metadata",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "answer_path_scope": {
+          "sql_primary_current_state": true,
+          "row_count": 300,
+          "production_answer_rows": 12,
+          "authority_scope": "review_only_answer_routing_scope",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "production_grade_policy": {
+          "sql_primary_current_state": true,
+          "row_count": 300,
+          "legacy_tier_a_ready_compatibility_rows": 0,
+          "dynamic_production_review_rows": 61,
+          "dynamic_production_review_definition": "current SQL-first Tier A/B routing surface for review-only production attention",
+          "production_grade_rows": 12,
+          "production_grade_definition": "proof-joined routing Tier A/B, decision-grade fresh, zero critical data conflicts, confidence ready, in coverage, card on disk, with router authority flags still closed",
+          "legacy_42_role": "compatibility_only_not_strategic_authority",
+          "authority_scope": "review_only_production_grade_answer_eligibility_no_execution_authority",
+          "canon_owner": false,
+          "canon_owner_source": null
+        },
+        "tier_routing_state": {
+          "sql_primary_current_state": true,
+          "row_count": 300,
+          "authority_scope": "review_only_non_capital_tier_routing",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        },
+        "consumer_registry": {
+          "sql_primary_current_state": true,
+          "cutover_state_counts": {
+            "not_cut_over": 116,
+            "source_producer": 389,
+            "sql_primary_guarded": 179
+          },
+          "authority_scope": "review_only_consumer_guard_and_migration_registry",
+          "canon_owner": false,
+          "canon_owner_source": null
+        }
+      },
+      "authority_boundary": {
+        "capital_deployment_allowed": false,
+        "paper_or_live_execution_allowed": false,
+        "brokerage_or_account_action_allowed": false,
+        "customer_or_external_delivery_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    "ticker_state": null,
+    "reference_level": null,
+    "evidence_freshness": null,
+    "validation": {
+      "status": "ok",
+      "critical_errors": [],
+      "warnings": []
+    },
+    "authority_boundary": {
+      "durable_sql_canon_current_state": true,
+      "internal_sql_canon_primary_guarded": true,
+      "read_only_access_layer_required": true,
+      "tmp_finance_intelligence_state_is_compatibility_cache": true,
+      "source_open_required_before_material_finance_claims": true,
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "database_path": "tmp/finance-intelligence-state.sqlite",
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_sql_canon_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_sql_canon_current_state_field_families": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "tmp_database_is_compatibility_cache": true,
+    "database_path_migration_performed": false,
+    "tmp_database_promotion_performed": false,
+    "full_sql_canon_migration_allowed": false,
+    "sql_canon_authority_expanded": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_trade_execution_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "source_open_required_before_finance_claims": true
+  },
+  "checks": [
+    {
+      "name": "integrity_check_ok",
+      "ok": true,
+      "detail": "ok",
+      "severity": "error"
+    },
+    {
+      "name": "foreign_key_check_ok",
+      "ok": true,
+      "detail": {
+        "rows": 0
+      },
+      "severity": "error"
+    },
+    {
+      "name": "universe_count_supported_scaleout",
+      "ok": true,
+      "detail": {
+        "actual": 300,
+        "supported": [
+          58,
+          100,
+          158,
+          200,
+          258,
+          300,
+          358,
+          400,
+          458,
+          500
+        ]
+      },
+      "severity": "error"
+    },
+    {
+      "name": "active_sql_rows_supported_scaleout_count",
+      "ok": true,
+      "detail": {
+        "actual": 300,
+        "supported": [
+          58,
+          100,
+          158,
+          200,
+          258,
+          300,
+          358,
+          400,
+          458,
+          500
+        ]
+      },
+      "severity": "error"
+    },
+    {
+      "name": "current_ticker_cards_match_production_scope",
+      "ok": true,
+      "detail": {
+        "actual": 12,
+        "expected_production_scope": 12,
+        "expected_strict_production_scope": 0,
+        "dynamic_scope_source": "sql_first_universe_production_answer_path_member",
+        "empty_production_scope_is_wait_state": false
+      },
+      "severity": "error"
+    },
+    {
+      "name": "cards_exist_for_dynamic_production_scope",
+      "ok": true,
+      "detail": {
+        "missing": 0
+      },
+      "severity": "error"
+    },
+    {
+      "name": "review_monitor_thin_rows_supported_scaleout_count",
+      "ok": true,
+      "detail": {
+        "actual": 258,
+        "supported": [
+          58,
+          158,
+          258,
+          358,
+          458
+        ]
+      },
+      "severity": "error"
+    },
+    {
+      "name": "entry_stop_rows_for_all_tickers",
+      "ok": true,
+      "detail": {
+        "expected": 300,
+        "actual": 300
+      },
+      "severity": "error"
+    },
+    {
+      "name": "fundamental_rows_for_all_tickers",
+      "ok": true,
+      "detail": {
+        "expected": 300,
+        "actual": 300
+      },
+      "severity": "error"
+    },
+    {
+      "name": "analyst_rows_for_all_tickers",
+      "ok": true,
+      "detail": {
+        "expected": 300,
+        "actual": 300
+      },
+      "severity": "error"
+    },
+    {
+      "name": "latest_valid_entry_stop_refs_cover_dynamic_production_scope",
+      "ok": true,
+      "detail": {
+        "valid_reference_rows": 42,
+        "strict_production_scope_rows": 12,
+        "expected_strict_production_scope": 0,
+        "dynamic_scope_source": "sql_first_universe_production_answer_path_member",
+        "empty_production_scope_is_wait_state": false
+      },
+      "severity": "error"
+    },
+    {
+      "name": "pilot_fixtures_excluded_from_production_cards",
+      "ok": true,
+      "detail": {
+        "rows": 0
+      },
+      "severity": "error"
+    },
+    {
+      "name": "pilot_fixtures_thin_on_demand_only",
+      "ok": true,
+      "detail": {
+        "rows": 0
+      },
+      "severity": "error"
+    },
+    {
+      "name": "no_forbidden_authority_in_cards",
+      "ok": true,
+      "detail": {
+        "rows": 0
+      },
+      "severity": "error"
+    },
+    {
+      "name": "router_qa_pass",
+      "ok": true,
+      "detail": {
+        "checks_total": 480,
+        "checks_failed_error": 0,
+        "checks_failed_warning": 0,
+        "router_examples_checked": 5,
+        "phase1_coverage_registry_exists": true,
+        "phase2_ticker_cards_found": 42
+      },
+      "severity": "error"
+    },
+    {
+      "name": "source_open_required_all_cards",
+      "ok": true,
+      "detail": {
+        "rows": 0
+      },
+      "severity": "error"
+    },
+    {
+      "name": "preopen_action_queue_has_rows",
+      "ok": true,
+      "detail": {
+        "rows": 12
+      },
+      "severity": "warning"
+    },
+    {
+      "name": "durable_sql_canon_access_ok",
+      "ok": true,
+      "detail": {
+        "schema": "veritas.finance_intelligence_state.sql_canon_context.v1",
+        "status": "ok",
+        "access_validation_status": "ok",
+        "sql_canon_db": "state/finance/finance-canon.sqlite",
+        "production_answer_count": 12,
+        "production_answer_tickers": [
+          "BKNG",
+          "BRK.B",
+          "CME",
+          "CVX",
+          "ECL",
+          "GOOG",
+          "JPM",
+          "LIN",
+          "LLY",
+          "META",
+          "PLTR",
+          "XOM"
+        ],
+        "production_answer_definition": "validated proof-joined production-grade set",
+        "legacy_production_answer_count": 0,
+        "legacy_production_answer_tickers": [],
+        "legacy_production_answer_definition": "hard-retired Legacy 42 answer scope; expected empty after schema apply",
+        "legacy_42_retired_from_blocking": true,
+        "legacy_42_count_advisory_only": true,
+        "compatibility_scope_active": false,
+        "migration_registry_summary": {
+          "priority_counts": {
+            "P0": 21,
+            "P1": 459,
+            "P2": 204
+          },
+          "lane_counts": {
+            "answer_path_parity_lane": 21,
+            "cron_pm_governance_lane": 14,
+            "pm_cockpit_lane": 2,
+            "source_loader_lane": 436,
+            "test_parity_lane": 203,
+            "typed_access_guard_lane": 3,
+            "wf78_wf77_routing_lane": 5
+          },
+          "cutover_state_counts": {
+            "not_cut_over": 116,
+            "source_producer": 389,
+            "sql_primary_guarded": 179
+          },
+          "p0_answer_path_lane_count": 21,
+          "p0_non_answer_path_count": 0,
+          "answer_path_non_p0_count": 0,
+          "p0_non_answer_path_consumers": [],
+          "answer_path_non_p0_consumers": [],
+          "p0_answer_path_lane_status": {
+            "ok": true,
+            "errors": [],
+            "p0_count": 21,
+            "answer_path_lane_count": 21,
+            "p0_answer_path_lane_count": 21,
+            "p0_non_answer_path_count": 0,
+            "answer_path_non_p0_count": 0,
+            "p0_non_answer_path_consumers": [],
+            "answer_path_non_p0_consumers": []
+          }
+        },
+        "p0_registry_lane_status": {
+          "ok": true,
+          "errors": [],
+          "p0_count": 21,
+          "answer_path_lane_count": 21,
+          "p0_answer_path_lane_count": 21,
+          "p0_non_answer_path_count": 0,
+          "answer_path_non_p0_count": 0,
+          "p0_non_answer_path_consumers": [],
+          "answer_path_non_p0_consumers": []
+        },
+        "answer_route_policy": {
+          "strategic_answer_route": "sql_first_tier_routing_plus_production_grade_policy",
+          "production_grade_empty_is_valid_wait_state": true,
+          "legacy_42_retired_from_blocking": true,
+          "legacy_42_role": "historical_compatibility_only_not_readiness_or_repair_authority"
+        },
+        "field_family_summary": {
+          "review_only_internal_sql_primary": true,
+          "review_only_sql_json_canon_owner": true,
+          "canon_owner_metadata": {
+            "schema_version": "finance_sql_canon_owner_field_families.v1",
+            "promoted_at_utc": "2026-06-19T19:30:27Z",
+            "structured_truth_owner": "state/finance/finance-canon.sqlite plus generated JSON proof packets",
+            "markdown_owner_scope": "policy, narrative, owner decisions, weekly reasoning, and audit context",
+            "fallback_retained": true,
+            "archive_delete_apply_allowed": false,
+            "promoted_field_families": [
+              "answer_path_scope",
+              "evidence_freshness",
+              "reference_levels",
+              "source_lineage",
+              "ticker_state",
+              "tier_routing_state",
+              "universe_membership"
+            ]
+          },
+          "source_open_required_before_material_claims": true,
+          "field_families": {
+            "ticker_state": {
+              "sql_primary_current_state": true,
+              "row_count": 300,
+              "active_rows": 300,
+              "authority_scope": "review_only_ticker_identity_and_route_state",
+              "canon_owner": true,
+              "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+            },
+            "universe_membership": {
+              "sql_primary_current_state": true,
+              "row_count": 300,
+              "legacy_production_rows": 0,
+              "production_scope_rows": 12,
+              "review_monitor_rows": 258,
+              "decision_grade_rows": 32,
+              "sql_tier_counts": {
+                "Tier A": 15,
+                "Tier B": 17,
+                "Tier C": 268
+              },
+              "legacy_42_role": "hard_retired_from_active_runtime_schema",
+              "authority_scope": "review_only_universe_membership_and_monitoring_role",
+              "canon_owner": true,
+              "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+            },
+            "reference_levels": {
+              "sql_primary_current_state": true,
+              "row_count": 200,
+              "complete_reference_rows": 200,
+              "authority_scope": "review_only_entry_band_stop_metadata",
+              "canon_owner": true,
+              "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+            },
+            "evidence_freshness": {
+              "sql_primary_current_state": true,
+              "row_count": 200,
+              "authority_scope": "review_only_freshness_and_source_confidence_metadata",
+              "canon_owner": true,
+              "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+            },
+            "source_lineage": {
+              "sql_primary_current_state": true,
+              "row_count": 3521,
+              "scope_key_count": 734,
+              "rows_by_field_family": {
+                "consumer_migration_registry": 434,
+                "evidence_freshness": 800,
+                "reference_levels": 1087,
+                "tier_routing_state": 1200
+              },
+              "authority_scope": "review_only_source_traceability_metadata",
+              "canon_owner": true,
+              "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+            },
+            "answer_path_scope": {
+              "sql_primary_current_state": true,
+              "row_count": 300,
+              "production_answer_rows": 12,
+              "authority_scope": "review_only_answer_routing_scope",
+              "canon_owner": true,
+              "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+            },
+            "production_grade_policy": {
+              "sql_primary_current_state": true,
+              "row_count": 300,
+              "legacy_tier_a_ready_compatibility_rows": 0,
+              "dynamic_production_review_rows": 61,
+              "dynamic_production_review_definition": "current SQL-first Tier A/B routing surface for review-only production attention",
+              "production_grade_rows": 12,
+              "production_grade_definition": "proof-joined routing Tier A/B, decision-grade fresh, zero critical data conflicts, confidence ready, in coverage, card on disk, with router authority flags still closed",
+              "legacy_42_role": "compatibility_only_not_strategic_authority",
+              "authority_scope": "review_only_production_grade_answer_eligibility_no_execution_authority",
+              "canon_owner": false,
+              "canon_owner_source": null
+            },
+            "tier_routing_state": {
+              "sql_primary_current_state": true,
+              "row_count": 300,
+              "authority_scope": "review_only_non_capital_tier_routing",
+              "canon_owner": true,
+              "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+            },
+            "consumer_registry": {
+              "sql_primary_current_state": true,
+              "cutover_state_counts": {
+                "not_cut_over": 116,
+                "source_producer": 389,
+                "sql_primary_guarded": 179
+              },
+              "authority_scope": "review_only_consumer_guard_and_migration_registry",
+              "canon_owner": false,
+              "canon_owner_source": null
+            }
+          },
+          "authority_boundary": {
+            "capital_deployment_allowed": false,
+            "paper_or_live_execution_allowed": false,
+            "brokerage_or_account_action_allowed": false,
+            "customer_or_external_delivery_allowed": false,
+            "owner_approval_inferred": false
+          }
+        },
+        "ticker_state": null,
+        "reference_level": null,
+        "evidence_freshness": null,
+        "validation": {
+          "status": "ok",
+          "critical_errors": [],
+          "warnings": []
+        },
+        "authority_boundary": {
+          "durable_sql_canon_current_state": true,
+          "internal_sql_canon_primary_guarded": true,
+          "read_only_access_layer_required": true,
+          "tmp_finance_intelligence_state_is_compatibility_cache": true,
+          "source_open_required_before_material_finance_claims": true,
+          "capital_deployment_allowed": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        }
+      },
+      "severity": "error"
+    }
+  ]
+}

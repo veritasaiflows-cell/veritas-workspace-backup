@@ -1,0 +1,43 @@
+{
+  "artifact_type": "wf67_paper_execution_guard_validation",
+  "artifacts": {
+    "approval": "tmp/alpaca-paper-readiness/phase-6-paper-execution-approval.json",
+    "audit_log": "tmp/alpaca-paper-readiness/audit-log.jsonl",
+    "cancel_request": "tmp/alpaca-paper-readiness/paper-cancel-request.sample.json",
+    "cancel_schema": "tmp/alpaca-paper-readiness/paper-cancel-request.schema.json",
+    "canon_drift_gate": "tmp/canon-drift-freshness-gate.json",
+    "guard_report": "tmp/alpaca-paper-readiness/paper-execution-guard-report.json",
+    "kill_switch": "tmp/alpaca-paper-readiness/kill-switch.json",
+    "result": "tmp/alpaca-paper-readiness/paper-execution-dry-run-result.json",
+    "trade_request": "tmp\\alpaca-paper-readiness\\paper-trade-request.wf86-assisted-vrt.json",
+    "trade_schema": "tmp/alpaca-paper-readiness/paper-trade-request.schema.json",
+    "wrapper": "scripts/alpaca_paper_trade_executor.py"
+  },
+  "endpoint_policy": {
+    "forbidden_live_endpoint": "https://api.alpaca.markets",
+    "required_credential_names": [
+      "ALPACA_PAPER_API_KEY_ID",
+      "ALPACA_PAPER_API_SECRET_KEY"
+    ],
+    "required_endpoint": "https://paper-api.alpaca.markets"
+  },
+  "findings": [
+    {
+      "code": "kill_switch_missing_or_expired",
+      "severity": "critical",
+      "value": "2026-06-15T17:21:03Z"
+    }
+  ],
+  "generated_at_utc": "2026-06-16T23:07:41Z",
+  "live_trading_allowed": false,
+  "money_movement_allowed": false,
+  "ready_for_paper_submit_cancel": false,
+  "schema_version": 1,
+  "status": "blocked",
+  "summary": {
+    "critical": 1,
+    "warning": 0
+  },
+  "verdict": "WF67 remains blocked until critical findings are resolved.",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

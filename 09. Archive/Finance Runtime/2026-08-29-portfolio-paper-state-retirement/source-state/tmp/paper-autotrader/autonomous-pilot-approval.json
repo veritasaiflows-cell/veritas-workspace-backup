@@ -1,0 +1,39 @@
+{
+  "schema": "veritas.wf86_autonomous_paper_pilot_approval.v1",
+  "workflow_id": "WF86",
+  "created_at_utc": "2026-06-11T17:52:31Z",
+  "approved_by": "Randall",
+  "approved_at_mst": "2026-06-11 10:52:31 MST",
+  "status": "approved_scoped_pilot",
+  "approval_text": "Approve WF86 autonomous paper pilot for Tier A buy candidates only, limit/day orders only, max $5,000 notional per order, max 3 orders per day, market-hours only, no live trading, no account actions, stop on any guard warning.",
+  "scope": {
+    "paper_only": true,
+    "tier_a_buy_candidates_only": true,
+    "limit_day_orders_only": true,
+    "max_notional_per_order_usd": 5000,
+    "max_orders_per_day": 3,
+    "market_hours_only": true,
+    "live_trading_allowed": false,
+    "brokerage_or_account_actions_allowed": false,
+    "stop_on_any_guard_warning": true
+  },
+  "authority_boundary": {
+    "paper_only": true,
+    "wf67_wrapper_required": true,
+    "fresh_short_lived_kill_switch_required": true,
+    "pre_submit_guard_validation_required": true,
+    "redacted_audit_required": true,
+    "post_trade_reconciliation_required": true,
+    "live_trade_allowed": false,
+    "live_endpoint_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_context": {
+    "conversation": "Telegram direct conversation",
+    "message_id": "2145",
+    "approval_received_at_local": "2026-06-11 10:52:31 MST"
+  }
+}

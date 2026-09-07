@@ -72,9 +72,24 @@ def main() -> int:
         "present": True,
         "automatic_ranking_or_promotion_active": False,
     }
+    alerts_os_ok = {
+        "status": "ok",
+        "blocked_proofs": [],
+        "ticker_count": 18,
+        "alert_state_counts": {"monitor_only": 18},
+    }
     expect(fresh["stale"] is False, "fresh timestamp should not be stale", errors)
     expect(stale["stale"] is True, "stale timestamp should be stale", errors)
     expect(stale["age_hours"] == 30.0, "stale age should be measured in hours", errors)
+
+    for core_path, expected_markers in packet.CORE_EFFICIENCY_MARKERS.items():
+        state = packet.file_state(core_path)
+        expect(state.get("exists") is True, f"core efficiency surface is missing: {core_path}", errors)
+        expect(
+            not state.get("missing_efficiency_markers"),
+            f"core efficiency markers drifted for {core_path}: expected {expected_markers}, got {state}",
+            errors,
+        )
 
     payload = {
         "authority_boundary": packet.AUTHORITY_BOUNDARY.copy(),
@@ -99,6 +114,7 @@ def main() -> int:
         "coding_outcome_efficiency": coding_outcome_ok,
         "otel_carry_forward": otel_ok,
         "wiki_bootstrap_proof": bootstrap_ok,
+        "finance_alerts_os_summary": alerts_os_ok,
         "challenger_model_policy": {"required_challenger_model": "claude-cli/claude-opus-4-8"},
     }
     validation = packet.validate(payload)
@@ -144,12 +160,7 @@ def main() -> int:
             "repeated_blocker_count": 6,
             "auto_actionable_count": 6,
         },
-        "finance_evidence_warning_router_summary": {
-            "status": "warning",
-            "validation_status": "ok",
-            "blocking_section_count": 0,
-            "customer_output_allowed": False,
-        },
+        "finance_alerts_os_summary": alerts_os_ok,
         "challenger_model_policy": {"required_challenger_model": "claude-cli/claude-opus-4-8"},
     }
     routed_validation = packet.validate(routed_payload)
@@ -158,7 +169,7 @@ def main() -> int:
     expect("high-priority improvement is overdue" in routed_details, "actual overdue improvement warning should remain", errors)
     expect("WF74 collection validation is not ok" not in routed_details, "routed WF74 collection wrapper should not warn", errors)
     expect("main-session escalation consumer has repeated blocker residue" not in routed_details, "routed repeated escalation residue should not warn", errors)
-    expect("finance evidence warning router has blocking sections" not in routed_details, "caveat-only router should not block", errors)
+    expect("alerts OS proof chain is blocked" not in routed_details, "green alerts OS proofs should not block", errors)
     expect("stale improvement ledger current packet without JSONL fallback" not in routed_details, "stale current ledger with fallback should not be critical", errors)
     expect("improvement ledger current packet stale; JSONL fallback used" in routed_details, "fallback warning should be visible", errors)
 
@@ -184,12 +195,7 @@ def main() -> int:
         "otel_carry_forward": otel_ok,
         "wiki_bootstrap_proof": bootstrap_ok,
         "main_session_escalation_consumer_summary": {"validation_status": "ok"},
-        "finance_evidence_warning_router_summary": {
-            "status": "warning",
-            "validation_status": "ok",
-            "blocking_section_count": 0,
-            "customer_output_allowed": False,
-        },
+        "finance_alerts_os_summary": alerts_os_ok,
         "challenger_model_policy": {"required_challenger_model": "claude-cli/claude-opus-4-8"},
     }
     quality_gate_validation = packet.validate(quality_gate_payload)
@@ -226,12 +232,7 @@ def main() -> int:
         "otel_carry_forward": otel_ok,
         "wiki_bootstrap_proof": bootstrap_ok,
         "main_session_escalation_consumer_summary": {"validation_status": "ok", "unresolved_count": 0},
-        "finance_evidence_warning_router_summary": {
-            "status": "warning",
-            "validation_status": "ok",
-            "blocking_section_count": 0,
-            "customer_output_allowed": False,
-        },
+        "finance_alerts_os_summary": alerts_os_ok,
         "challenger_model_policy": {"required_challenger_model": "claude-cli/claude-opus-4-8"},
     }
     nonblocking_validation = packet.validate(nonblocking_residue_payload)
@@ -692,6 +693,24 @@ def main() -> int:
     live_otel = live_payload.get("otel_carry_forward", {})
     expect("auto_apply_allowed" in live_otel, "live OTEL carry-forward summary missing auto-apply flag", errors)
     expect(live_otel.get("auto_apply_allowed") is False, "live OTEL carry-forward must keep auto-apply false", errors)
+    startup_route = live_payload.get("startup_recall_relationship_tool_route", {})
+    expect(
+        startup_route.get("schema") == "veritas.startup_recall_relationship_tool_route.v1",
+        "live startup recall/relationship/tool route is missing",
+        errors,
+    )
+    startup_triggers = {row.get("trigger") for row in startup_route.get("routes", [])}
+    expect(
+        {
+            "prior decision, continuity, person, date, or todo",
+            "code, workflow, skill, or document relationship",
+            "current operational, finance, approval, or execution truth",
+        }.issubset(startup_triggers),
+        "startup route must cover memory, relationship, and direct-owner branches",
+        errors,
+    )
+    expect(bool(startup_route.get("tool_references")), "startup tool references are missing", errors)
+    expect("never mandatory" in str(startup_route.get("selection_rule") or ""), "graph route must remain conditional", errors)
 
     old_root = packet.ROOT
     old_tmp = packet.TMP

@@ -1,6 +1,6 @@
 ---
 name: "veritas-model-routing-helper-lanes"
-description: "Versioned execution route ladder, bounded handoffs, proportional QA, and quality-weighted efficiency."
+description: "Route Main and isolated agents by exact role-bound models."
 ---
 
 # Veritas Model Routing And Helper Lanes
@@ -16,11 +16,13 @@ Veritas Main remains the queue owner, final integrator, QC owner, acceptance own
 Apply this order before spawning or implementing:
 
 1. `model_free_command` — use when an explicit deterministic command and proof are both available. Model is null; thinking is `none`.
-2. `codex_native_subagent` — opt-in only for bounded read-only work or one exact leased implementation file. Use Terra low for read-only and Terra medium for eligible one-file implementation.
-3. `main` — explicit exception only for a quick bounded fix, final integration, or authority-sensitive judgment. Use Sol high.
-4. `persistent_isolated_agent` — the remaining bounded helper route. Use Terra at effort matched to scope, and dispatch only with fresh strict context-transport proof.
+2. `codex_native_subagent` — opt-in only for bounded read-only work that is neither code implementation nor independent QA; use Terra low.
+3. `main` — use explicitly configured Astra for integration, acceptance, and authority-sensitive judgment; Sol is Main's backup. Main does not author implementation code or substitute for independent QA.
+4. `persistent_isolated_agent` — resolve stable IDs through `scripts/agent_fleet_policy.py` and the router: Opportunity Intelligence/Grok 4.6, Engineering QA/GLM 5.3, Finance Evidence/Terra, Finance Risk Challenger/GLM 5.3, Engineering Builder/Muse Spark 1.3 Contributor, Knowledge and Continuity/Luna. Require fresh strict agent-matched transport proof; writes additionally require scoped-writeback proof.
 
-Never silently fall back from a blocked persistent route to Main/Sol. Never select Kimi or another provider as a default route. Luna low remains limited to already-proven deterministic scheduled agent turns; command-backed deterministic work stays model-free.
+Keep IDs/workspace/auth/history stable; use display names in prose. Specialist automatic fallbacks stay empty. The shared policy owns closed recovery lists. Main may select one listed backup only in a NEW clean-context attempt from a verified checkpoint, preserving role/scope and reacquiring model/runtime/transport/lease proof when changed or stale. Review cannot use the patch-author model. Options and structural checks prove no readiness or dispatch/write authority. Unproven recovery stays blocked; never silently substitute Main.
+
+Main alone may dispatch Sol architecture or Opus 5 advisory work on demand. Opus is never a persistent primary or automatic/recovery fallback. For Opus 5, keep the canonical ref `anthropic/claude-opus-5`, pin a dedicated session, and wait until live runtime is `claude-cli` before the role's work. Do not isolated-spawn Opus 5 from an Astra/Codex parent, pass `runtime: claude-cli` to `sessions_spawn`, or use a `claude-cli/` model prefix. Verify actual model/runtime per task; aliases are not provenance. Command-backed deterministic work stays model-free.
 
 ## Route Eligibility
 
@@ -30,17 +32,21 @@ Relevant command and proof must both be explicit. A declaration does not prove c
 
 ### Codex-native
 
-Codex-native must be explicitly allowed. Read-only work must be bounded. One-file implementation additionally requires one exact non-forbidden path, a leased or distinct-output write mode, single-surface scope, and no sensitive authority. Multi-file, broad, finance-sensitive, runtime-sensitive, external, destructive, or ambiguous work is ineligible.
+Codex-native must be explicitly allowed and bounded read-only. Code implementation belongs to Muse Builder, including one-file fixes; independent QA belongs to GLM 5.3. Multi-file writes, broad work, sensitive authority, and ambiguous scope are ineligible. Deterministic commands may verify artifacts but do not grant code-authoring, acceptance, or unattended-repair authority.
 
 The requested and actual backend/model/thinking must be captured. Native rollout provenance must remain `codex_native_subagent`; a later update cannot relabel it.
 
 ### Persistent isolated agent
 
-Require both an explicit readiness expectation and a workspace-relative strict JSON proof, fresh within 24 hours, with status `ok` and an attested `attachment_context_transport` or `shared_main_workspace_access` capability. Missing, stale, malformed, escaped, unsupported, or false-capability proof blocks dispatch.
+Require both an explicit readiness expectation and a workspace-relative strict JSON proof, fresh within 24 hours, with status `ok`, matching agent identity, and an attested `attachment_context_transport`, `shared_main_workspace_access`, or scoped-worktree capability appropriate to the route. The expected model must exactly match the selected agent's live configured model; model-family substitution blocks dispatch. Missing, stale, malformed, escaped, unsupported, agent-mismatched, model-mismatched, or false-capability proof blocks dispatch. A read-only attachment draft is not writeback proof.
 
 ### Main exception
 
-Main/Sol is not the default implementation lane. Record the exception reason. Main may own final integration and authority-sensitive judgment even when helpers performed implementation or QA.
+Main is not the default broad implementation lane. Record why Main is the smallest reliable route. Main/Astra owns final integration and authority-sensitive judgment; Muse authors implementation code and GLM 5.3 performs independent QA. A helper blockage does not authorize silent fallback to Main or model substitution.
+
+### Owner-directed same-session model roles
+
+When Randall explicitly directs Main-only work with named reviewer/QA models and no subagents, run each named role as its own sequential inference in the same Main session. Pin the session model to the named role's model, then verify the actual live model for that inference before doing the role's work; if the current inference is not the named model, reissue the caller-owned wake instead of claiming the role ran. Lease each role's writes as a bounded distinct-output lane, record the runtime backend distinction (for example `claude-cli/claude-opus-5` versus a requested provider path), and disclose that same-session roles are not clean-context independent review. Restore the primary Main model when the role's work ends and queue continuation through a caller-owned wake. The exception is task-scoped: it never becomes a persistent specialist, routing, or config change.
 
 ## Thinking Effort
 
@@ -82,7 +88,7 @@ For a failed or stalled lane, issue a provisional incident update within 90 seco
 
 ## Efficiency Evaluation
 
-Optimize for accepted outcomes, not the smallest raw token number. Compare like-for-like cohorts using:
+Optimize for accepted outcomes, not the smallest raw token number. Review available like-for-like evidence when useful using:
 
 - uncached input tokens per Main-accepted job;
 - gross replay tokens per Main-accepted job;
@@ -93,7 +99,7 @@ Optimize for accepted outcomes, not the smallest raw token number. Compare like-
 
 Invalid or partial telemetry remains unavailable/partial and receives no success credit. API-equivalent cost is not an invoice, OAuth capacity is advisory, and token counts do not prove quota consumption.
 
-Automatic route ranking and promotion are disabled. A route becomes statistically reviewable only after at least 10 comparable Main-accepted jobs. Until then, evidence is descriptive and Main retains the current policy.
+Automatic route ranking and promotion are disabled. Randall may request an on-demand review from available token attribution, elapsed-time, retry, first-pass acceptance, and escaped-defect evidence. No fixed cohort pilot or minimum job count is required. Evidence remains descriptive, like-for-like comparisons are preferred when available, and Main retains policy until an explicit change.
 
 ## Privacy
 

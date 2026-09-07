@@ -140,6 +140,43 @@ def test_post_cutover_unverified_model_lane_is_audit_only() -> None:
     assert ledger_payload["summary"]["session_attribution_applicable_coverage"] == 0.0
 
 
+def test_negative_usage_claim_short_circuits_source_reopen() -> None:
+    lane = {
+        "lane_id": "WF74::negative-usage-claim",
+        "status": "complete",
+        "created_at_utc": "2026-08-13T21:00:00Z",
+        "completed_at_utc": "2026-08-13T21:05:00Z",
+    }
+    runtime = {
+        "model_path": "openai/gpt-5.6-terra",
+        "usage_creditable": False,
+        "source_reverification_status": "blocked",
+        "usage_credit_block_reasons": ["codex_dispatch_binding_required"],
+    }
+    original_verifier = ledger.verify_usage_source_receipt
+
+    def unexpected_source_reopen(*_args: object, **_kwargs: object) -> list[str]:
+        raise AssertionError("negative usage claim must short-circuit source reopen")
+
+    ledger.verify_usage_source_receipt = unexpected_source_reopen
+    try:
+        result = ledger.lane_telemetry_eligibility(
+            lane,
+            runtime,
+            register_path=Path("unused-register.json"),
+        )
+    finally:
+        ledger.verify_usage_source_receipt = original_verifier
+
+    assert result["eligible"] is False
+    assert result["status"] == "blocked_unverified_usage_source"
+    assert result["reasons"] == [
+        "codex_dispatch_binding_required",
+        "source_reverification_not_verified",
+        "usage_creditable_not_true",
+    ]
+
+
 def test_post_cutover_coherent_writable_receipt_stays_blocked_without_source_reopen() -> None:
     lane = {
         "lane_id": "WF74::forged-receipt-lane",
@@ -192,7 +229,7 @@ def test_post_cutover_coherent_writable_receipt_stays_blocked_without_source_reo
     assert row["attribution"]["model_applicable"] is False
     assert row["attribution"]["telemetry_eligible"] is False
     assert row["attribution"]["telemetry_credit_status"] == "blocked_unverified_usage_source"
-    assert "isolated_source_reverification_mismatch" in row["attribution"]["telemetry_block_reasons"]
+    assert "isolated_dispatch_binding_required" in row["attribution"]["telemetry_block_reasons"]
 
 
 def test_cron_run_rows_inclusive_cached_semantics() -> None:
@@ -472,6 +509,7 @@ def test_unsupported_fable_rows_are_auditable_but_not_capacity() -> None:
 if __name__ == "__main__":
     test_lane_register_rows_stamp_session_and_model_when_present()
     test_post_cutover_unverified_model_lane_is_audit_only()
+    test_negative_usage_claim_short_circuits_source_reopen()
     test_post_cutover_coherent_writable_receipt_stays_blocked_without_source_reopen()
     test_cron_run_rows_inclusive_cached_semantics()
     test_cron_run_rows_exclusive_cached_semantics()

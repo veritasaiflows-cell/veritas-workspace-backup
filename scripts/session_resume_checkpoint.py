@@ -55,6 +55,21 @@ PRECEDENCE = [
     "pm_queue",
     "general_status",
 ]
+RESUME_FOUR_STATE_DEFAULTS = {
+    "technical_acceptance_status": "pending",
+    "accounting_status": "pending",
+    "administrative_closure_status": "open",
+    "activation_status": "blocked",
+}
+
+
+def resume_release_blocked(lane: dict[str, Any]) -> bool:
+    return not (
+        str(lane.get("technical_acceptance_status") or "pending") == "accepted"
+        and str(lane.get("accounting_status") or "pending") == "credited"
+        and str(lane.get("administrative_closure_status") or "open") == "closed"
+        and str(lane.get("activation_status") or "blocked") == "ready"
+    )
 
 
 def as_dict(value: Any) -> dict[str, Any]:
@@ -380,6 +395,22 @@ def normalize_active_lane(raw: dict[str, Any], full: dict[str, Any], now: dateti
             "attempt_number": runtime.get("attempt_number"),
             "retry_count": runtime.get("retry_count"),
         },
+        "root_objective_id": runtime.get("root_objective_id"),
+        "objective_slice_id": runtime.get("objective_slice_id"),
+        "predecessor_lane_id": runtime.get("predecessor_lane_id"),
+        "cumulative_attempt_number": runtime.get("cumulative_attempt_number"),
+        "cumulative_retry_count": runtime.get("cumulative_retry_count"),
+        "accepted_slice_id": runtime.get("accepted_slice_id"),
+        "technical_acceptance_status": runtime.get("technical_acceptance_status") or RESUME_FOUR_STATE_DEFAULTS["technical_acceptance_status"],
+        "accounting_status": runtime.get("accounting_status") or RESUME_FOUR_STATE_DEFAULTS["accounting_status"],
+        "administrative_closure_status": runtime.get("administrative_closure_status") or RESUME_FOUR_STATE_DEFAULTS["administrative_closure_status"],
+        "activation_status": runtime.get("activation_status") or RESUME_FOUR_STATE_DEFAULTS["activation_status"],
+        "release_blocked": resume_release_blocked({
+            "technical_acceptance_status": runtime.get("technical_acceptance_status") or RESUME_FOUR_STATE_DEFAULTS["technical_acceptance_status"],
+            "accounting_status": runtime.get("accounting_status") or RESUME_FOUR_STATE_DEFAULTS["accounting_status"],
+            "administrative_closure_status": runtime.get("administrative_closure_status") or RESUME_FOUR_STATE_DEFAULTS["administrative_closure_status"],
+            "activation_status": runtime.get("activation_status") or RESUME_FOUR_STATE_DEFAULTS["activation_status"],
+        }),
         "updated_at_utc": merged.get("updated_at_utc") or full.get("updated_at_utc"),
     }
 
@@ -877,6 +908,16 @@ def assemble_checkpoint(
         "changed_files_and_hashes": hash_paths(root, [str(item) for item in as_list(record.get("changed_files"))]),
         "proof_artifacts_and_hashes": hash_paths(root, [str(item) for item in as_list(record.get("proof_artifacts"))]),
         "attempt_retry_identity": record.get("attempt_retry_identity") or lane.get("attempt_retry_identity") or {},
+        "root_objective_id": record.get("root_objective_id") or lane.get("root_objective_id"),
+        "objective_slice_id": record.get("objective_slice_id") or lane.get("objective_slice_id"),
+        "predecessor_lane_id": record.get("predecessor_lane_id") or lane.get("predecessor_lane_id"),
+        "cumulative_attempt_number": record.get("cumulative_attempt_number") if record.get("cumulative_attempt_number") not in (None, "") else lane.get("cumulative_attempt_number"),
+        "cumulative_retry_count": record.get("cumulative_retry_count") if record.get("cumulative_retry_count") not in (None, "") else lane.get("cumulative_retry_count"),
+        "accepted_slice_id": record.get("accepted_slice_id") or lane.get("accepted_slice_id"),
+        "technical_acceptance_status": record.get("technical_acceptance_status") or lane.get("technical_acceptance_status") or RESUME_FOUR_STATE_DEFAULTS["technical_acceptance_status"],
+        "accounting_status": record.get("accounting_status") or lane.get("accounting_status") or RESUME_FOUR_STATE_DEFAULTS["accounting_status"],
+        "administrative_closure_status": record.get("administrative_closure_status") or lane.get("administrative_closure_status") or RESUME_FOUR_STATE_DEFAULTS["administrative_closure_status"],
+        "activation_status": record.get("activation_status") or lane.get("activation_status") or RESUME_FOUR_STATE_DEFAULTS["activation_status"],
         "active_lease": active_lease,
         "blocker": record.get("blocker") or lane.get("blocker"),
         "approval_boundary": record.get("approval_boundary") or lane.get("authority_boundary"),

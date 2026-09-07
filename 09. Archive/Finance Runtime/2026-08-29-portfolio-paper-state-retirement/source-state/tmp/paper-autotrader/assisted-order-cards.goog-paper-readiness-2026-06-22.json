@@ -1,0 +1,52 @@
+{
+  "schema": "veritas.wf86_assisted_order_cards.v1",
+  "generated_at_utc": "2026-06-22T14:49:23Z",
+  "status": "no_current_card_candidate",
+  "workflow_id": "WF86",
+  "authority_boundary": {
+    "paper_only": true,
+    "request_generation_only": true,
+    "paper_submit_allowed": false,
+    "paper_cancel_allowed": false,
+    "paper_sell_allowed": false,
+    "live_trade_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "summary": {
+    "card_count": 0,
+    "requested_ticker": "GOOG",
+    "would_buy_shadow_tickers": [
+      "NVDA"
+    ],
+    "candidate_count": 3,
+    "reason": "ticker_not_would_buy_shadow:GOOG:no_action_wait_for_band",
+    "execution_ready": false,
+    "next_safe_action": "No assisted order card was refreshed; continue shadow logging and do not execute."
+  },
+  "cards": [],
+  "stale_outputs_not_refreshed": {
+    "card_path": "tmp/alpaca-paper-readiness/main-session-cards/GOOG.paper-readiness-2026-06-22.owner-card.json",
+    "request_path": "tmp/alpaca-paper-readiness/paper-trade-request.goog-paper-readiness-2026-06-22.json",
+    "reason": "Default assisted ticker is not currently eligible for a new card."
+  },
+  "source_artifacts": {
+    "eligibility": "tmp/paper-autotrader/shadow-eligibility.json",
+    "wf67_guard": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json"
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "ticker_not_would_buy_shadow:GOOG:no_action_wait_for_band"
+    ]
+  },
+  "stop_lines": [
+    "No current assisted card candidate is not an execution failure.",
+    "No paper submit/cancel/sell from this builder.",
+    "No live endpoint, credentials, account action, money movement, or owner approval inference."
+  ],
+  "wf67_guard_status": "blocked",
+  "wf67_ready_for_paper_submit_cancel": false
+}

@@ -1,0 +1,99 @@
+{
+  "schema": "veritas.workflow_checkpoint_config.v1",
+  "workflow_id": "WF74-WF88",
+  "description": "Checkpointed OS learning loop from WF74 self-improvement proof into WF88 OS2 control synthesis.",
+  "db_path": "state/workflow-checkpoints/generic-workflow-checkpoints.sqlite",
+  "out_path": "tmp/wf74-wf88-generic-checkpointed-execution.json",
+  "authority_boundary": {
+    "review_only": true,
+    "checkpoint_runner_only": true,
+    "runs_existing_producers": true,
+    "auto_apply_allowed": false,
+    "skill_application_allowed": false,
+    "delete_archive_or_move_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "sql_or_source_mutation_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "cash_sizing_risk_mutation_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "customer_or_external_output_allowed": false,
+    "model_training_claim_allowed": false,
+    "raw_prompt_or_tool_capture_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "steps": [
+    {
+      "id": "wf74_improvement_opportunity_queue",
+      "command": ["{python}", "scripts/wf74_improvement_opportunity_queue.py", "--write", "--validate"],
+      "expected_outputs": ["tmp/wf74-improvement-opportunity-queue.json"],
+      "input_paths": ["tmp/coding-outcome-ledger-current.json", "tmp/otel-ops-control.json", "tmp/pm-control-packet.json"],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "wf74_autonomy_work_router",
+      "command": ["{python}", "scripts/wf74_autonomy_work_router.py", "--write", "--validate"],
+      "expected_outputs": ["tmp/wf74-autonomy-work-router.json"],
+      "input_paths": ["tmp/wf74-improvement-opportunity-queue.json", "tmp/improvement-ledger-current.json"],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "wf74_auto_patch_proposer",
+      "command": ["{python}", "scripts/wf74_auto_patch_proposer.py", "--write", "--validate"],
+      "expected_outputs": ["tmp/wf74-auto-patch-proposer.json"],
+      "input_paths": ["tmp/wf74-improvement-opportunity-queue.json", "tmp/wf74-reflection-to-proposal-autopilot.json"],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "wf74_decision_docket",
+      "command": ["{python}", "scripts/wf74_decision_docket.py", "--write", "--write-md", "--validate"],
+      "expected_outputs": ["tmp/wf74-decision-docket.json", "tmp/wf74-decision-docket.md"],
+      "input_paths": ["tmp/wf74-improvement-opportunity-queue.json", "tmp/wf74-autonomy-work-router.json", "tmp/wf74-auto-patch-proposer.json"],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "wf74_learning_loop_eval_harness",
+      "command": ["{python}", "scripts/wf74_learning_loop_eval_harness.py", "--write", "--validate"],
+      "expected_outputs": ["tmp/wf74-learning-loop-eval-harness.json"],
+      "input_paths": ["data/wf74-learning-loop-evals/cases.json"],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "token_efficiency_scorecard",
+      "command": ["{python}", "scripts/token_efficiency_scorecard.py", "--write", "--write-md", "--validate"],
+      "expected_outputs": ["tmp/token-efficiency-scorecard.json", "tmp/token-efficiency-scorecard.md"],
+      "input_paths": ["tmp/token-usage-ledger-current.json", "tmp/token-budget-status.json"],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "implementation_token_attribution_bridge",
+      "command": ["{python}", "scripts/implementation_token_attribution_bridge.py", "--write", "--write-md", "--validate"],
+      "expected_outputs": ["tmp/implementation-token-attribution-bridge.json", "tmp/implementation-token-attribution-bridge.md"],
+      "input_paths": ["state/concurrent-lane-register.json", "tmp/token-usage-ledger-current.json"],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "wf88_os2_control_seed",
+      "command": ["{python}", "scripts/wf88_os2_control_packet.py", "--write", "--write-md", "--validate"],
+      "expected_outputs": ["tmp/wf88-os2-control-packet.json", "tmp/wf88-os2-control-packet.md"],
+      "input_paths": ["tmp/wf74-decision-docket.json", "tmp/implementation-token-attribution-bridge.json"],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "wf88_wiki_synthesis_packet",
+      "command": ["{python}", "scripts/wf88_wiki_synthesis_packet.py", "--write", "--write-md", "--validate"],
+      "expected_outputs": ["tmp/wf88-wiki-synthesis-packet.json", "tmp/wf88-wiki-synthesis-packet.md"],
+      "input_paths": ["tmp/wf88-os2-control-packet.json", "tmp/wf74-decision-docket.json", "tmp/token-efficiency-scorecard.json"],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "wf88_os2_control_final",
+      "command": ["{python}", "scripts/wf88_os2_control_packet.py", "--write", "--write-md", "--validate"],
+      "expected_outputs": ["tmp/wf88-os2-control-packet.json", "tmp/wf88-os2-control-packet.md"],
+      "input_paths": ["tmp/wf88-wiki-synthesis-packet.json", "tmp/wf74-decision-docket.json"],
+      "timeout_seconds": 300
+    }
+  ]
+}

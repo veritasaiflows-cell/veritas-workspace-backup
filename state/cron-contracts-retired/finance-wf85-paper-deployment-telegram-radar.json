@@ -1,8 +1,8 @@
 {
   "schema": "veritas.cron_contract.v1",
   "job_id": "94f4c7f5-7f76-4cf6-8555-08f4d697d0e4",
-  "name": "Finance - WF85 Paper Deployment Telegram Radar",
-  "required": true,
+  "name": "Retired \u2014 Finance - WF85 Paper Deployment Telegram Radar",
+  "required": false,
   "owner_workflow": "WF85/WF67",
   "contract_reason": "Paper-deployment Telegram radar with delivery-only review notification behavior. Drift can confuse review/prep messaging with approval or execution authority; stale band/card artifacts must be verified before digest/send.",
   "description": "WF85/WF67 review-only paper-deployment Telegram radar consolidated to the single morning capital-deployment alert at 06:50 America/Phoenix, after the 06:36 paper-card builder. The builder owns full refresh; this runner performs bounded ledger-only card/band-integrity verification before digest/send so alerts cannot consume stale approval artifacts. Delivery-only; no APPROVE path, no submit/cancel/sell/account action, no approval inference.",
@@ -81,5 +81,8 @@
     "owner_approval_inferred": false
   },
   "updated_at_utc": "2026-06-29T02:58:53Z",
-  "contract_update_reason": "Randall approved forced MiniMaxM3 migration for GPT-5.4/GPT-5.4-mini cron jobs and hard quiet-output prompt tightening; metadata-only sync to match live scheduler readback."
+  "contract_update_reason": "Randall approved forced MiniMaxM3 migration for GPT-5.4/GPT-5.4-mini cron jobs and hard quiet-output prompt tightening; metadata-only sync to match live scheduler readback.",
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired from the active scheduler contract set. Historical proof only; no automatic resume.",
+  "rollback_requires_owner_gate": true
 }

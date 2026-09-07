@@ -15,12 +15,10 @@ from pathlib import Path
 from typing import Any
 
 from board_state_contract import deployment_contract
-from finance_sql_canon_access import FinanceSqlCanonAccess
-from wf72_entry_stop_reference_helper import (
-    NO_DRIFT_PILOT_JSON,
-    PILOT_TICKERS,
-    build_entry_stop_reference_metadata,
-    write_no_drift_pilot,
+from finance_sql_canon_access import (
+    FinanceSqlCanonAccess,
+    ReferenceLevelRecord,
+    UniverseMembershipRecord,
 )
 from wf78_ticker_card_field_repair_apply import apply_rows as apply_wf78_repair_rows
 from wf78_ticker_card_field_repair_apply import collect_rows as collect_wf78_repair_rows
@@ -46,6 +44,54 @@ DECISION_SYNC_SPINE_PATH = WORKSPACE / "tmp" / "finance-decision-sync-spine.json
 CAPITAL_REVIEW_QUEUE_PATH = WORKSPACE / "tmp" / "wf78-capital-review-queue.json"
 SQL_CANON_DB = WORKSPACE / "state" / "finance" / "finance-canon.sqlite"
 LEGACY_PRODUCTION_COMPATIBILITY_COUNT = 42
+ACTIVE_INTERNAL_SCOPE = "active_internal_universe"
+ENTRY_STOP_REFERENCE_METADATA_FIELDS = (
+    "reference_price_low",
+    "reference_price_high",
+    "reference_invalidation_level",
+    "reference_level_source_timestamp",
+    "reference_level_source_sha256",
+    "reference_level_owner_source_path",
+)
+ENTRY_STOP_REFERENCE_METADATA_AUTHORITY_BOUNDARY = (
+    "wf72_entry_stop_reference_metadata_exact_key_gated_no_execution_authority"
+)
+ANALYST_PROJECTION_FIELDS = {
+    "source_status",
+    "as_of",
+    "source_lineage",
+    "cross_check_conflict",
+}
+ANALYST_LINEAGE_FIELDS = {
+    "provider",
+    "provider_symbol",
+    "source_url",
+    "retrieval_method",
+    "evidence_digest_sha256",
+}
+ANALYST_SOURCE_STATUSES = {
+    "auto_sourced_yfinance",
+    "partial_yfinance",
+    "missing_yfinance",
+    "missing_or_partial",
+    "unavailable",
+}
+ANALYST_CROSS_CHECK_STATUSES = {"pass", "fail", "stale", "unavailable"}
+ENTRY_STOP_REFERENCE_METADATA_FALSE_FLAGS = {
+    "display_reference_only": True,
+    "fallback_required": True,
+    "recommendation_allowed": False,
+    "deployment_or_action_state_change_allowed": False,
+    "canonical_note_mutation_allowed": False,
+    "markdown_mutation_allowed": False,
+    "portfolio_mutation_allowed": False,
+    "owner_approval_inferred": False,
+    "proposal_apply_allowed": False,
+    "trade_or_account_action_allowed": False,
+    "paper_trade_authority_allowed": False,
+    "live_trade_authority_allowed": False,
+    "money_movement_allowed": False,
+}
 
 AUTHORITY_BOUNDARY = {
     "artifact_role": "derived_review_and_question_routing_surface_only",
@@ -197,8 +243,40 @@ def find_ticker_keyed_entry(obj: Any, ticker: str, key_name: str) -> dict[str, A
 
 
 def find_analyst_consensus_entry(obj: Any, ticker: str) -> dict[str, Any] | None:
-    # The analyst artifact also carries thin manual-review rows; the full row is under tickers.
-    return find_ticker_keyed_entry(obj, ticker, "tickers") or find_ticker_entry(obj, ticker)
+    """Accept only the quarantined four-field consumer projection."""
+
+    if (
+        not isinstance(obj, dict)
+        or obj.get("status") != "placeholder_manual_required"
+        or obj.get("consumer_posture") != "quarantined_source_evidence_only_not_decision_input"
+        or not isinstance(obj.get("tickers"), dict)
+    ):
+        return None
+    normalized = ticker.upper()
+    row = next(
+        (
+            value
+            for key, value in obj["tickers"].items()
+            if isinstance(key, str) and key.upper() == normalized and isinstance(value, dict)
+        ),
+        None,
+    )
+    lineage = row.get("source_lineage") if isinstance(row, dict) else None
+    digest = lineage.get("evidence_digest_sha256") if isinstance(lineage, dict) else None
+    if (
+        not isinstance(row, dict)
+        or set(row) != ANALYST_PROJECTION_FIELDS
+        or row.get("source_status") not in ANALYST_SOURCE_STATUSES
+        or not isinstance(lineage, dict)
+        or set(lineage) != ANALYST_LINEAGE_FIELDS
+        or not all(isinstance(lineage.get(field), str) and lineage.get(field) for field in ANALYST_LINEAGE_FIELDS - {"evidence_digest_sha256"})
+        or not isinstance(digest, str)
+        or len(digest) != 64
+        or any(character not in "0123456789abcdefABCDEF" for character in digest)
+        or row.get("cross_check_conflict") not in ANALYST_CROSS_CHECK_STATUSES
+    ):
+        return None
+    return dict(row)
 
 
 def find_order_card(ticker: str) -> tuple[dict[str, Any] | None, str | None]:
@@ -1041,13 +1119,151 @@ def build_missing_and_stale(
             )
     if not deployment_entry:
         items.append({"family": "deployment_readiness_surface", "severity": "context", "status": "missing", "detail": "Ticker not present in current deployment-readiness surface groups"})
-    if not analyst_entry:
-        items.append({"family": "analyst_consensus_ratings_targets", "severity": "context", "status": "missing_manual_required", "detail": "tmp/analyst-consensus-current.json is absent or lacks ticker; do not fabricate ratings/targets"})
-    elif analyst_entry.get("status") == "missing_manual_required" or analyst_entry.get("manual_required") is True:
-        items.append({"family": "analyst_consensus_ratings_targets", "severity": "context", "status": "missing_manual_required", "detail": "Analyst consensus placeholder is present but values remain null/manual-required; do not fabricate ratings/targets"})
+    items.append({
+        "family": "analyst_consensus_ratings_targets",
+        "severity": "context",
+        "status": "analyst_quarantined",
+        "detail": "Analyst evidence is lineage-only and cannot affect completeness, confidence, bands, invalidation, thesis, or recommendation posture.",
+    })
     if effective_review_fresh_quote_required(readiness, post_close_quote):
         items.append({"family": "fresh_price_quote", "severity": "context", "status": "stale_until_refreshed", "detail": "Readiness packet uses pre-Tuesday/reference price and requires fresh quote confirmation"})
     return items
+
+
+def reference_level_compatibility_projection(record: ReferenceLevelRecord) -> dict[str, Any]:
+    """Project a verified durable record to the frozen eight-field card shape."""
+
+    return {
+        "ticker": record.ticker,
+        "reference_price_low": record.reference_price_low,
+        "reference_price_high": record.reference_price_high,
+        "reference_invalidation_level": record.reference_invalidation_level,
+        "reference_confidence": record.reference_confidence,
+        "reference_band_status": record.reference_band_status,
+        "authority_class": record.authority_class,
+        "fallback_rule": record.fallback_rule,
+    }
+
+
+def build_entry_stop_reference_metadata(
+    ticker: str,
+    record: ReferenceLevelRecord | None,
+) -> dict[str, Any]:
+    """Build the frozen display-only compatibility shape from verified SQL lineage."""
+
+    ticker = ticker.upper()
+    values: dict[str, Any] = {}
+    source_rows: list[dict[str, Any]] = []
+    if record is not None:
+        values = {
+            "reference_price_low": record.reference_price_low,
+            "reference_price_high": record.reference_price_high,
+            "reference_invalidation_level": record.reference_invalidation_level,
+            "reference_level_source_timestamp": record.source_generated_at_utc,
+            "reference_level_source_sha256": record.source_artifact_sha256,
+            "reference_level_owner_source_path": record.source_artifact_path,
+        }
+        source_rows = [
+            {
+                "key": f"{ticker}:{field}",
+                "source_artifact_path": record.source_artifact_path,
+                "source_artifact_hash": record.source_artifact_sha256,
+                "freshness_status": record.source_status,
+                "last_reconciled_at_utc": record.lineage_inserted_at_utc,
+                "updated_at_utc": record.lineage_inserted_at_utc,
+            }
+            for field in ENTRY_STOP_REFERENCE_METADATA_FIELDS
+        ]
+    missing_fields = [field for field in ENTRY_STOP_REFERENCE_METADATA_FIELDS if field not in values]
+    issues = ["durable_reference_record_missing"] if record is None else []
+    return {
+        "schema_version": "wf72_entry_stop_reference_metadata.v1",
+        "status": "available" if record is not None else "fallback_required",
+        "ticker": ticker,
+        "authority_boundary": ENTRY_STOP_REFERENCE_METADATA_AUTHORITY_BOUNDARY,
+        "sql_cache_path": "state/finance/finance-canon.sqlite",
+        "sql_read_mode": "sqlite_uri_mode_ro",
+        "approved_row_family": "durable_finance_canon_reference_level_compatibility_projection",
+        "approved_fields": list(ENTRY_STOP_REFERENCE_METADATA_FIELDS),
+        "row_keys": [f"{ticker}:{field}" for field in ENTRY_STOP_REFERENCE_METADATA_FIELDS if field in values],
+        "values": values,
+        "source_lineage": {
+            "owner_source_path": values.get("reference_level_owner_source_path"),
+            "source_timestamp": values.get("reference_level_source_timestamp"),
+            "source_sha256": values.get("reference_level_source_sha256"),
+        },
+        "source_rows": source_rows,
+        "missing_fields": missing_fields,
+        "issues": issues,
+        "notes": [
+            "Reference metadata only; does not replace price_band_stop fallback values.",
+            "No recommendation, deployment/action state, approval, portfolio mutation, or execution authority.",
+        ],
+        **ENTRY_STOP_REFERENCE_METADATA_FALSE_FLAGS,
+    }
+
+
+def sql_membership_universe_projection(
+    record: UniverseMembershipRecord,
+    compatibility_entry: dict[str, Any] | None,
+) -> dict[str, Any]:
+    """Keep descriptive compatibility evidence while SQL owns identity, scope, and tier."""
+
+    projected = dict(record.raw_json)
+    for key, value in (compatibility_entry or {}).items():
+        projected.setdefault(key, value)
+    projected.update({
+        "ticker": record.ticker,
+        "name": record.name,
+        "instrument_type": record.instrument_type,
+        "sector": record.sector,
+        "industry": record.industry,
+        "source_symbols": {
+            "yfinance": record.yfinance_symbol,
+            "sec_cik": record.sec_cik,
+            "company_ir": record.company_ir,
+        },
+        "active": record.active,
+        "universe_scope": record.universe_scope,
+        "production_scope": record.production_scope_member,
+        "tier": record.tier,
+        "coverage_obligation_tier": record.coverage_obligation_tier,
+        "monitoring_role": record.monitoring_role,
+        "sql_tier": record.sql_tier,
+        "sql_tier_state": record.sql_tier_state,
+        "tier_decision_scope": record.tier_decision_scope,
+        "review_100_monitor": record.review_100_monitor,
+        "decision_grade_eligible": record.decision_grade_eligible,
+        "source_open_required": record.source_open_required,
+        "promotion_required_before_action": record.promotion_required_before_action,
+        "identity_scope_tier_authority_source": "state/finance/finance-canon.sqlite:universe_membership",
+    })
+    return projected
+
+
+def sql_membership_tier_projection(
+    record: UniverseMembershipRecord,
+    compatibility_entry: dict[str, Any] | None,
+) -> dict[str, Any]:
+    """Overlay SQL-owned tier state without treating the legacy route packet as authority."""
+
+    projected = dict(compatibility_entry or {})
+    projected.update({
+        "ticker": record.ticker,
+        "name": record.name,
+        "sector": record.sector,
+        "instrument_type": record.instrument_type,
+        "auto_tier": record.sql_tier or f"Tier {record.tier}",
+        "auto_state": record.sql_tier_state,
+        "tier_decision_scope": record.tier_decision_scope,
+        "monitoring_role": record.monitoring_role,
+        "decision_grade_eligible": record.decision_grade_eligible,
+        "source_open_required": record.source_open_required,
+        "promotion_required_before_action": record.promotion_required_before_action,
+        "would_mutate_universe": False,
+        "identity_scope_tier_authority_source": "state/finance/finance-canon.sqlite:universe_membership",
+    })
+    return projected
 
 
 def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
@@ -1061,10 +1277,22 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
     tech_entry = technical_record(inputs.get("technical_refresh"), ticker)
     sector_entry = sector_record(inputs.get("sector_expansion_board"), (card_fundamentals or {}).get("sector") or ticker)
     config_band = portfolio_config_band(inputs.get("portfolio_config"), ticker)
-    universe_entry = inputs.get("universe_index", {}).get(ticker)
-    auto_tier_entry = inputs.get("auto_tier_index", {}).get(ticker)
+    sql_canon_membership = inputs.get("sql_canon_membership_index", {}).get(ticker)
+    legacy_universe_entry = inputs.get("universe_index", {}).get(ticker)
+    legacy_auto_tier_entry = inputs.get("auto_tier_index", {}).get(ticker)
+    universe_entry = (
+        sql_membership_universe_projection(sql_canon_membership, legacy_universe_entry)
+        if isinstance(sql_canon_membership, UniverseMembershipRecord)
+        else legacy_universe_entry
+    )
+    auto_tier_entry = (
+        sql_membership_tier_projection(sql_canon_membership, legacy_auto_tier_entry)
+        if isinstance(sql_canon_membership, UniverseMembershipRecord)
+        else legacy_auto_tier_entry
+    )
     sql_canon_state = inputs.get("sql_canon_state_index", {}).get(ticker)
     sql_canon_reference = inputs.get("sql_canon_reference_index", {}).get(ticker)
+    sql_canon_reference_record = inputs.get("sql_canon_reference_record_index", {}).get(ticker)
     sql_reference_available = isinstance(sql_canon_reference, dict) and any(
         sql_canon_reference.get(key) is not None
         for key in ("reference_price_low", "reference_price_high", "reference_invalidation_level")
@@ -1149,7 +1377,7 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
             "review_only": True,
             "execution_freshness_approved": False,
         }
-    entry_stop_reference_metadata = build_entry_stop_reference_metadata(ticker)
+    entry_stop_reference_metadata = build_entry_stop_reference_metadata(ticker, sql_canon_reference_record)
     recommendation = build_recommendation_posture(ticker, readiness, post_close_quote, deployment_entry, price_band_stop, order_card, missing)
 
     source_artifacts = [
@@ -1214,15 +1442,10 @@ def build_card(ticker: str, inputs: dict[str, Any]) -> dict[str, Any]:
             "period_alignment": period_alignment,
         },
         "analyst_consensus_ratings_targets": analyst_entry or {
-            "status": "missing_manual_required",
-            "consensus_rating": None,
-            "buy_hold_sell_counts": None,
-            "average_target": None,
-            "median_target": None,
-            "high_target": None,
-            "low_target": None,
-            "implied_upside_downside": None,
-            "note": "Analyst consensus layer is WF77 Phase 3; no value is fabricated here.",
+            "source_status": "unavailable",
+            "as_of": None,
+            "source_lineage": {},
+            "cross_check_conflict": "unavailable",
         },
         "competitive_moat": competitive_moat,
         "recent_developments": claim_summary(official_claims.get("acquisition_debt_notes")),
@@ -1350,23 +1573,6 @@ def apply_post_close_price_overlay(card: dict[str, Any], inputs: dict[str, Any])
     return card
 
 
-def uses_current_wf84_band_precedence(card: dict[str, Any]) -> bool:
-    pbs = card.get("price_band_stop") if isinstance(card.get("price_band_stop"), dict) else {}
-    source_text = json.dumps({
-        "band_source": pbs.get("band_source"),
-        "stop_source": pbs.get("stop_source"),
-        "sql_canon_reference": pbs.get("sql_canon_reference"),
-    }, sort_keys=True)
-    return any(
-        marker in source_text
-        for marker in (
-            "state/finance/finance-canon.sqlite:reference_levels",
-            "tmp/finance-decision-sync-spine.json",
-            "tmp/wf78-capital-review-queue.json",
-        )
-    )
-
-
 def validate_card(card: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     required = [
@@ -1401,8 +1607,30 @@ def validate_card(card: dict[str, Any]) -> list[str]:
     if authority.get("durable_sql_canon_current_state_allowed") is not True:
         errors.append("durable SQL-canon current-state read flag must be true")
     analyst = card.get("analyst_consensus_ratings_targets") or {}
-    if analyst.get("status") == "missing_manual_required" and analyst.get("average_target") is not None:
-        errors.append("analyst targets must remain null when status is missing_manual_required")
+    if set(analyst) != ANALYST_PROJECTION_FIELDS:
+        errors.append("analyst evidence must use the exact quarantined four-field projection")
+    elif analyst.get("source_status") not in ANALYST_SOURCE_STATUSES:
+        errors.append("analyst source status is outside the quarantined contract")
+    elif analyst.get("cross_check_conflict") not in ANALYST_CROSS_CHECK_STATUSES:
+        errors.append("analyst cross-check status must be pass, fail, stale, or unavailable")
+    else:
+        lineage = analyst.get("source_lineage")
+        digest = lineage.get("evidence_digest_sha256") if isinstance(lineage, dict) else None
+        unavailable_fallback = (
+            analyst.get("source_status") == "unavailable"
+            and analyst.get("as_of") is None
+            and lineage == {}
+            and analyst.get("cross_check_conflict") == "unavailable"
+        )
+        if not unavailable_fallback and (
+            not isinstance(lineage, dict)
+            or set(lineage) != ANALYST_LINEAGE_FIELDS
+            or not all(isinstance(lineage.get(field), str) and lineage.get(field) for field in ANALYST_LINEAGE_FIELDS - {"evidence_digest_sha256"})
+            or not isinstance(digest, str)
+            or len(digest) != 64
+            or any(character not in "0123456789abcdefABCDEF" for character in digest)
+        ):
+            errors.append("analyst source_lineage must use the exact quarantined lineage schema")
     if card.get("competitive_moat", {}).get("status") != "not_yet_structured_source_open_required" and not card.get("competitive_moat", {}).get("evidence"):
         errors.append("competitive moat claims require structured evidence")
     if not card.get("universe_metadata") or card.get("universe_metadata", {}).get("status") == "missing_universe_metadata":
@@ -1417,7 +1645,7 @@ def validate_card(card: dict[str, Any]) -> list[str]:
     return errors
 
 
-def load_sql_canon_inputs(tickers: list[str]) -> dict[str, Any]:
+def load_sql_canon_inputs(tickers: list[str] | None) -> dict[str, Any]:
     context: dict[str, Any] = {
         "schema": "wf77.ticker_intelligence_card.sql_canon_context.v1",
         "status": "blocked",
@@ -1425,6 +1653,10 @@ def load_sql_canon_inputs(tickers: list[str]) -> dict[str, Any]:
         "typed_access_layer": "scripts/finance_sql_canon_access.py",
         "production_answer_count": None,
         "missing_ticker_state": [],
+        "identity_resolution": {},
+        "selected_ticker_count": 0,
+        "verified_reference_count": 0,
+        "unavailable_reference_count": 0,
         "registry_summary": {},
         "validation": {"status": "blocked", "errors": [], "warnings": []},
         "authority_boundary": {
@@ -1435,22 +1667,68 @@ def load_sql_canon_inputs(tickers: list[str]) -> dict[str, Any]:
             "owner_approval_inferred": False,
         },
     }
+    resolved_tickers: list[str] = []
+    membership_index: dict[str, UniverseMembershipRecord] = {}
     state_index: dict[str, dict[str, Any]] = {}
     reference_index: dict[str, dict[str, Any]] = {}
+    reference_record_index: dict[str, ReferenceLevelRecord] = {}
+
+    def result() -> dict[str, Any]:
+        return {
+            "context": context,
+            "resolved_tickers": resolved_tickers,
+            "membership_index": membership_index,
+            "state_index": state_index,
+            "reference_index": reference_index,
+            "reference_record_index": reference_record_index,
+        }
+
     try:
         client = FinanceSqlCanonAccess(SQL_CANON_DB)
         validation = client.validate()
         context["access_validation_status"] = validation.get("status")
         if validation.get("status") != "ok":
             context["validation"]["errors"].append({"sql_canon_access_blocked": validation.get("errors")})
-            return {"context": context, "state_index": state_index, "reference_index": reference_index}
-        states = client.ticker_states(tickers)
+            return result()
+
+        if tickers is None:
+            all_memberships = client.universe_memberships()
+            membership_index.update({
+                ticker: record
+                for ticker, record in all_memberships.items()
+                if record.universe_scope == ACTIVE_INTERNAL_SCOPE
+            })
+            resolved_tickers.extend(membership_index)
+            context["identity_resolution"] = {ticker: ticker for ticker in resolved_tickers}
+            context["selection_mode"] = "default_active_internal_sql_universe"
+        else:
+            resolution = client.resolve_tickers(tickers)
+            resolved_tickers.extend(dict.fromkeys(resolution.values()))
+            membership_index.update(client.universe_memberships(resolved_tickers))
+            context["identity_resolution"] = resolution
+            context["selection_mode"] = "explicit_or_coverage_sql_identity_resolution"
+
+        context["selected_ticker_count"] = len(resolved_tickers)
+        if not resolved_tickers:
+            context["validation"]["errors"].append("sql_identity_selection_empty")
+            return result()
+        if set(resolved_tickers) != set(membership_index):
+            missing_membership = sorted(set(resolved_tickers) - set(membership_index))
+            context["validation"]["errors"].append({"missing_sql_membership": missing_membership})
+            return result()
+
+        states = client.ticker_states(resolved_tickers)
+        reference_records = client.reference_level_records(resolved_tickers)
         for ticker, state in states.items():
             state_index[ticker] = asdict(state)
-            reference = client.reference_level(ticker)
-            if reference:
-                reference_index[ticker] = asdict(reference)
-        missing = sorted(set(tickers) - set(states))
+        for ticker, record in reference_records.items():
+            if record is None:
+                continue
+            reference_record_index[ticker] = record
+            reference_index[ticker] = reference_level_compatibility_projection(record)
+        context["verified_reference_count"] = len(reference_record_index)
+        context["unavailable_reference_count"] = len(resolved_tickers) - len(reference_record_index)
+        missing = sorted(set(resolved_tickers) - set(states))
         production = client.production_answer_tickers()
         legacy = client.legacy_production_answer_tickers()
         context["production_answer_count"] = len(production)
@@ -1475,7 +1753,7 @@ def load_sql_canon_inputs(tickers: list[str]) -> dict[str, Any]:
         context["status"] = "blocked" if errors else "ok"
     except Exception as exc:  # noqa: BLE001 - card builder must fail closed on SQL-canon guard errors.
         context["validation"]["errors"].append({"exception": repr(exc)})
-    return {"context": context, "state_index": state_index, "reference_index": reference_index}
+    return result()
 
 
 def tickers_from_coverage(path: Path = COVERAGE_PATH) -> list[str]:
@@ -1521,28 +1799,22 @@ def main() -> int:
     }
     if args.all_from_coverage:
         coverage_tickers = tickers_from_coverage()
-        tickers = coverage_tickers
+        requested_tickers: list[str] | None = coverage_tickers
         if args.tickers:
             requested = {ticker.upper() for ticker in args.tickers}
-            tickers = [ticker for ticker in tickers if ticker in requested]
+            requested_tickers = [ticker for ticker in requested_tickers if ticker in requested]
     else:
-        tickers = [t.upper() for t in (args.tickers or ["CME", "PH"])]
-    sql_canon_inputs = load_sql_canon_inputs(tickers)
+        requested_tickers = [t.upper() for t in args.tickers] if args.tickers else None
+    sql_canon_inputs = load_sql_canon_inputs(requested_tickers)
+    tickers = sql_canon_inputs["resolved_tickers"]
     inputs.update({
         "sql_canon_context": sql_canon_inputs["context"],
+        "sql_canon_membership_index": sql_canon_inputs["membership_index"],
         "sql_canon_state_index": sql_canon_inputs["state_index"],
         "sql_canon_reference_index": sql_canon_inputs["reference_index"],
+        "sql_canon_reference_record_index": sql_canon_inputs["reference_record_index"],
     })
     out_dir = Path(args.out_dir)
-    if not args.validate_only:
-        out_dir.mkdir(parents=True, exist_ok=True)
-    before_pilot_cards: dict[str, dict[str, Any]] = {}
-    requested_pilot = set(PILOT_TICKERS).issubset(set(tickers))
-    if requested_pilot and not args.validate_only:
-        for ticker in PILOT_TICKERS:
-            existing_path = out_dir / f"{ticker}.current.json"
-            if existing_path.exists():
-                before_pilot_cards[ticker] = apply_post_close_price_overlay(load_json(existing_path, {}), inputs)
 
     summary = {
         "schema_version": 1,
@@ -1551,40 +1823,30 @@ def main() -> int:
         "status": "ok",
         "mode": "all_from_coverage" if args.all_from_coverage else "explicit_or_default_tickers",
         "validate_only": bool(args.validate_only),
-        "requested_ticker_count": len(tickers),
+        "requested_ticker_count": len(requested_tickers) if requested_tickers is not None else len(tickers),
+        "resolved_ticker_count": len(tickers),
         "cards": [],
         "errors": [],
         "authority_boundary": AUTHORITY_BOUNDARY,
         "sql_canon_context": sql_canon_inputs["context"],
     }
-    after_pilot_cards: dict[str, dict[str, Any]] = {}
-    pilot_band_precedence_refresh: set[str] = set()
-    if args.all_from_coverage and not tickers:
+    if args.all_from_coverage and not requested_tickers:
         summary["status"] = "error"
         summary["errors"].append({"scope": "coverage_registry", "errors": ["No tickers found in tmp/finance-data-coverage-current.json ticker_coverage"]})
     if sql_canon_inputs["context"].get("status") != "ok":
         summary["status"] = "error"
         summary["errors"].append({"scope": "sql_canon_guard", "errors": [sql_canon_inputs["context"].get("validation")]})
+    if summary["status"] != "ok":
+        summary["card_count"] = 0
+        summary["error_count"] = len(summary["errors"])
+        print(json.dumps(summary, indent=2))
+        return 1
+    if not args.validate_only:
+        out_dir.mkdir(parents=True, exist_ok=True)
     for ticker in tickers:
         card = build_card(ticker, inputs)
         card = apply_approved_wf78_card_field_repair(card)
         card = apply_post_close_price_overlay(card, inputs)
-        if requested_pilot and ticker in before_pilot_cards:
-            if uses_current_wf84_band_precedence(card):
-                pilot_band_precedence_refresh.add(ticker)
-            else:
-                additive_card = dict(before_pilot_cards[ticker])
-                additive_card["entry_stop_reference_metadata"] = card["entry_stop_reference_metadata"]
-                additive_card["durable_sql_canon_state"] = card["durable_sql_canon_state"]
-                additive_card["authority_boundary"] = AUTHORITY_BOUNDARY
-                source_artifacts = additive_card.get("source_artifacts")
-                if isinstance(source_artifacts, list):
-                    source_artifacts.append(compact_source(SQL_CANON_DB, inputs.get("sql_canon_context")))
-                additive_card["generated_at_utc"] = card["generated_at_utc"]
-                additive_card = apply_post_close_price_overlay(additive_card, inputs)
-                card = additive_card
-        if ticker in PILOT_TICKERS:
-            after_pilot_cards[ticker] = card
         errors = validate_card(card)
         rel_path = str((out_dir / f"{ticker}.current.json").relative_to(WORKSPACE)) if out_dir.is_absolute() and out_dir.is_relative_to(WORKSPACE) else str(out_dir / f"{ticker}.current.json")
         if errors:
@@ -1603,30 +1865,6 @@ def main() -> int:
             "context_gap_count": len([item for item in gaps if item.get("severity") == "context"]),
             "blocking_gap_families": sorted({str(item.get("family")) for item in gaps if item.get("severity") == "blocking"}),
         })
-
-    if requested_pilot and not args.validate_only and pilot_band_precedence_refresh:
-        summary["wf72_entry_stop_no_drift_pilot"] = {
-            "status": "skipped_due_to_current_wf84_band_precedence_refresh",
-            "path": str(NO_DRIFT_PILOT_JSON.relative_to(WORKSPACE)).replace("\\", "/"),
-            "tickers": sorted(pilot_band_precedence_refresh),
-            "authority": "derived_card_refresh_only_no_canon_or_portfolio_mutation",
-        }
-    elif requested_pilot and not args.validate_only and len(before_pilot_cards) == len(PILOT_TICKERS) and len(after_pilot_cards) == len(PILOT_TICKERS):
-        pilot = write_no_drift_pilot(before_pilot_cards, after_pilot_cards)
-        summary["wf72_entry_stop_no_drift_pilot"] = {
-            "status": pilot.get("status"),
-            "path": str(NO_DRIFT_PILOT_JSON.relative_to(WORKSPACE)).replace("\\", "/"),
-            "tickers": list(PILOT_TICKERS),
-        }
-        if pilot.get("status") != "no_drift":
-            summary["status"] = "error"
-            summary["errors"].append({"scope": "wf72_entry_stop_no_drift_pilot", "errors": ["price/band/stop or posture drift detected"]})
-    elif requested_pilot and not args.validate_only:
-        summary["wf72_entry_stop_no_drift_pilot"] = {
-            "status": "skipped_missing_before_or_after_cards",
-            "path": str(NO_DRIFT_PILOT_JSON.relative_to(WORKSPACE)).replace("\\", "/"),
-            "tickers": list(PILOT_TICKERS),
-        }
 
     summary["card_count"] = len(summary["cards"])
     summary["error_count"] = len(summary["errors"])

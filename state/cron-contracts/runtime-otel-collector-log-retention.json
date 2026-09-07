@@ -1,0 +1,88 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "00a93ab7-27b0-4452-881e-fc449c9c6142",
+  "name": "Runtime - OTEL Collector Log Retention",
+  "required": true,
+  "owner_workflow": "Runtime observability hygiene",
+  "contract_reason": "Daily local-only retention keeps the OTEL collector stderr log bounded while preserving a drift-checked, non-exporting runtime hygiene route.",
+  "description": "Daily local-only OTEL collector stderr log retention. Rotates collector.err.log when over 256 MB by restarting the local loopback collector, keeping 5 archives. No collector config mutation, external export, raw content capture, finance/canon/portfolio mutation, or execution authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "30 3 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts\\otel_log_retention.py",
+      "--max-mb",
+      "256",
+      "--keep",
+      "5",
+      "--restart",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 240
+  },
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "compare_fields": [
+    "name",
+    "description",
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "failureAlert.after",
+    "failureAlert.mode"
+  ],
+  "expected_artifacts": [
+    "tmp/otel-log-retention.json",
+    {
+      "path": "tmp/otel-ops-control.json",
+      "role": "optional_runtime_observability_evidence",
+      "required": false,
+      "blocking": false
+    },
+    {
+      "path": "tmp/otel-runtime-metadata-probe.json",
+      "role": "optional_runtime_metadata_evidence",
+      "required": false,
+      "blocking": false
+    }
+  ],
+  "authority_boundary": {
+    "local_runtime_hygiene_only": true,
+    "cron_contract_only": true,
+    "collector_config_mutation_allowed": false,
+    "external_export_allowed": false,
+    "raw_content_capture_allowed": false,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-09-06T22:26:26Z",
+  "contract_update_reason": "Pin command argv to CPython 3.13 after Gateway python ENOENT."
+}

@@ -3,7 +3,7 @@
 
 Canonical page: `wiki/decisions/Decision Compiler.md`
 Canonical rendered SHA-256: `d36c362399c6047b5844d60253630eecd089dde991899de31d4a6c44afa50670`.
-Source snapshot SHA-256: `a1233468c72b1cab176cded8e6fe0893cfd2a490d0ea3a9f33f15a2fa81b8e54`.
+Source snapshot SHA-256: `f6ee80a8d183635520f429f34c7ca23360ebdb6d238c1622f6dffae691bee7f1`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases

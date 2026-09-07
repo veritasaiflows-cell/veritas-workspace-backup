@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-06-12T20:30:10Z",
+  "status": "applied_pending_post_apply_validation",
+  "window": "post-close",
+  "approval_artifact": "tmp/portfolio-mutation-proposals/approvals/standing-approved/standing-post-close-JPM-capital-deployment-review-2026-06-12-20260612T203010Z.json",
+  "proposal_id": "post-close:JPM:capital-deployment-review:2026-06-12",
+  "authority": {
+    "phase": "WF64 approval-gated atomic apply foundation",
+    "apply_allowed_without_valid_approval_artifact": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false,
+    "brokerage_order_allowed": false,
+    "money_movement_allowed": false,
+    "rollback_required_on_failure": true,
+    "post_apply_validation_required": true,
+    "valid_approval_artifact": true,
+    "apply_allowed": true,
+    "scoped_owner_file_write_allowed": true
+  },
+  "validation": {
+    "schema_version": 1,
+    "generated_at_utc": "2026-06-12T20:30:10Z",
+    "status": "ok",
+    "input": "tmp/portfolio-mutation-proposals/approvals/standing-approved/standing-post-close-JPM-capital-deployment-review-2026-06-12-20260612T203010Z.json",
+    "proposal_id": "post-close:JPM:capital-deployment-review:2026-06-12",
+    "authority": {
+      "approval_artifact_can_scope_owner_file_write": true,
+      "approved_adjustment_categories": [
+        "sizing"
+      ],
+      "trade_or_account_action_allowed": false,
+      "owner_approval_inferred": false,
+      "legacy_sizing_sleeve_cash_risk_rule_field_allowed": false,
+      "execution_entitlement_allowed": false
+    },
+    "summary": {
+      "critical": 0,
+      "warning": 0
+    },
+    "findings": []
+  },
+  "summary": {
+    "files_to_write": 1,
+    "writes_performed": true,
+    "rollback_plan_created": true,
+    "post_apply_validation_required": true,
+    "files_written": 1,
+    "rollback_performed": false,
+    "failure": null
+  },
+  "build_errors": [],
+  "rollback_plan": {
+    "backup_root": "tmp/portfolio-mutation-proposals/apply-backups/2026-06-12T20-30-10Z-post-close-JPM-capital-deployment-review-2026-06-12",
+    "restore_method": "copy each backup file back to its original relative path using atomic replace; apply helper also restores from backups automatically on failure",
+    "files": [
+      {
+        "path": "03. Portfolio/Portfolio Snapshot.md",
+        "backup_path": "tmp/portfolio-mutation-proposals/apply-backups/2026-06-12T20-30-10Z-post-close-JPM-capital-deployment-review-2026-06-12/03. Portfolio/Portfolio Snapshot.md.bak",
+        "original_sha256": "58c79f19d6ee55d51c56c868cb90704f33976739cc1d06c7a268c4758392604f",
+        "updated_sha256": "b35e21ff14b3e5726b490c866573de1c3771788b69fe19cc10696094fe3aee7f",
+        "changes": [
+          {
+            "change_type": "exact_text_replace",
+            "adjustment_category": "sizing",
+            "old_text_sha256": "11da735485d08d2f291dea24355c92858e735671fc861bb513a5d2dc958ce187",
+            "new_text_sha256": "6781562854e397c0d91a89f9c5aeb731db37c9a2e39aff0884c62eda48771764"
+          }
+        ]
+      }
+    ]
+  },
+  "stop_lines": [
+    "Apply is blocked unless the approval artifact validator returns ok for an unexpired, hash-matched, target-file-matched approval artifact.",
+    "Proposal packet authority flags remain false; this helper grants only scoped owner-file write mechanics for the approved exact diff.",
+    "No trade, order, brokerage, account, money-movement, owner-approval inference, or execution authority is granted.",
+    "Post-apply validators remain required before any workflow closure claim."
+  ],
+  "applied_files": [
+    {
+      "path": "03. Portfolio/Portfolio Snapshot.md",
+      "backup_path": "tmp/portfolio-mutation-proposals/apply-backups/2026-06-12T20-30-10Z-post-close-JPM-capital-deployment-review-2026-06-12/03. Portfolio/Portfolio Snapshot.md.bak",
+      "updated_sha256": "b35e21ff14b3e5726b490c866573de1c3771788b69fe19cc10696094fe3aee7f"
+    }
+  ]
+}

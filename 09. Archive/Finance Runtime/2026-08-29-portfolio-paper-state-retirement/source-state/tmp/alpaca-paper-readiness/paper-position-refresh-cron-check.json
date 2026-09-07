@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-08-28T21:40:03Z",
+  "status": "ok",
+  "authority_boundary": {
+    "review_only": true,
+    "paper_position_sql_state_only": true,
+    "allowed_methods": [
+      "GET"
+    ],
+    "endpoint": "https://paper-api.alpaca.markets",
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "paper_order_execution_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "account_or_credential_action_allowed": false,
+    "money_movement_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "cron_schedule_mutation_allowed_by_this_packet": false
+  },
+  "sources": {
+    "db": "tmp/wf67-paper-position-state.sqlite",
+    "paper_positions_packet": "tmp/finance-intelligence-state-paper-positions.json",
+    "holdings_export": "tmp/alpaca-paper-readiness/current-paper-holdings-readonly.json",
+    "finance_stack_snapshot": "tmp/finance-stack-snapshot.json"
+  },
+  "sqlite": {
+    "path": "tmp/wf67-paper-position-state.sqlite",
+    "exists": true,
+    "integrity_check": "ok",
+    "foreign_key_rows": 0,
+    "latest_snapshot": {
+      "snapshot_id": "wf67-paper-pos-20260828T214001Z",
+      "generated_at_utc": "2026-08-28T21:40:01Z",
+      "status": "ok",
+      "endpoint": "https://paper-api.alpaca.markets",
+      "method": "GET_only",
+      "positions_count": 10,
+      "open_orders_count": 0,
+      "freshness_status": "fresh",
+      "position_rows": 10
+    }
+  },
+  "summary": {
+    "critical": 0,
+    "warning": 0,
+    "findings": 0
+  },
+  "findings": []
+}

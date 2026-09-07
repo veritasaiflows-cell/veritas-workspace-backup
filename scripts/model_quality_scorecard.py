@@ -5,14 +5,13 @@ Joins existing proof surfaces into one normalized scorecard that measures
 model output quality across three tracks:
 
   1. implementation_quality - live now. Built from behavior-eval discipline,
-     validator pass rate, and surface-readiness pass rate. No WF55 dependency.
+     validator pass rate, and surface-readiness pass rate.
   2. performance            - runtime latency live now; OTEL operational
      dimensions (cost, tokens, failover/errors, blocked tools, session
      friction) pending the OTEL backend, which is disabled in this lane.
-  3. decision_quality       - active measurement-only. WF55 review-only append
-     and ex-ante finance rule checks activate the scorecard now; mature
-     semantic outcome grades are required only before predictive/recommendation
-     quality claims.
+  3. decision_quality       - active measurement-only. Append-only
+     recommendation outcomes and the current alerts-OS evidence chain activate
+     the scorecard; predictive/model-ranking claims remain blocked.
 
 This is a scaffold, not a deployed model ranker. It can measure process quality
 now, but it cannot claim "model A is better than model B" until per-model/session
@@ -49,15 +48,18 @@ OTEL_OPS = TMP / "otel-ops-control.json"
 OTEL_WINDOW_SUMMARY = TMP / "otel-ops-window-summary.json"
 OTEL_RUNTIME_PROBE = TMP / "otel-runtime-metadata-probe.json"
 RECO_LEDGER = TMP / "recommendation-outcome-ledger-current.json"
-WF55_AUTONOMY_LEDGER = TMP / "wf55-autonomy-outcome-ledger.json"
+RECOMMENDATION_PERFORMANCE = TMP / "finance-decision-performance-digest.json"
+FINANCE_SQL_VALIDATION = TMP / "finance-sql-canon-access-validation.json"
+QUOTE_SNAPSHOT = TMP / "intraday-alerts" / "quote-snapshot-proof.json"
+ALERT_CONTROLLER = TMP / "alert-level-freshness-controller.json"
+ALERT_DIGEST = TMP / "finance-alert-os-digest.json"
+ALERTS_OS_PIVOT = TMP / "alerts-os-pivot-validator.json"
 CRON_SPARK_CANARY = TMP / "cron-spark-canary-monitor.json"
 MODEL_RUN_LEDGER = TMP / "model-run-ledger-current.json"
 TOKEN_USAGE_LEDGER = TMP / "token-usage-ledger-current.json"
 MODEL_LEARNING_LEDGER = TMP / "model-learning-metadata-ledger.json"
 IMPROVEMENT_LEDGER = TMP / "improvement-ledger-current.json"
 CODING_RUNTIME_PROBE = TMP / "coding-runtime-kpi-probe.json"
-FINANCE_CORRECTNESS_LEDGER = TMP / "finance-recommendation-correctness-ledger-current.json"
-FINANCE_RESPONSE_QUALITY = TMP / "finance-response-quality-slice.json"
 PM_CONTROL = TMP / "pm-control-packet.json"
 CRON_CONTROL = TMP / "cron-control-packet.json"
 ROUTE_EFFICIENCY = TMP / "route-efficiency-scorecard.json"
@@ -74,7 +76,6 @@ OTEL_DIMENSIONS = [
     "harness_failures",
     "session_friction",
 ]
-
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -113,15 +114,18 @@ def load_inputs() -> dict[str, Any]:
         "otel_window_summary": as_dict(load_json_artifact(OTEL_WINDOW_SUMMARY)),
         "otel_runtime_probe": as_dict(load_json_artifact(OTEL_RUNTIME_PROBE)),
         "reco_ledger": as_dict(load_json_artifact(RECO_LEDGER)),
-        "wf55_autonomy_ledger": as_dict(load_json_artifact(WF55_AUTONOMY_LEDGER)),
+        "recommendation_performance": as_dict(load_json_artifact(RECOMMENDATION_PERFORMANCE)),
+        "finance_sql_validation": as_dict(load_json_artifact(FINANCE_SQL_VALIDATION)),
+        "quote_snapshot": as_dict(load_json_artifact(QUOTE_SNAPSHOT)),
+        "alert_controller": as_dict(load_json_artifact(ALERT_CONTROLLER)),
+        "alert_digest": as_dict(load_json_artifact(ALERT_DIGEST)),
+        "alerts_os_pivot": as_dict(load_json_artifact(ALERTS_OS_PIVOT)),
         "cron_spark_canary": as_dict(load_json_artifact(CRON_SPARK_CANARY)),
         "model_run_ledger": as_dict(load_json_artifact(MODEL_RUN_LEDGER)),
         "token_usage_ledger": as_dict(load_json_artifact(TOKEN_USAGE_LEDGER)),
         "model_learning_ledger": as_dict(load_json_artifact(MODEL_LEARNING_LEDGER)),
         "improvement_ledger": as_dict(load_json_artifact(IMPROVEMENT_LEDGER)),
         "coding_runtime_probe": as_dict(load_json_artifact(CODING_RUNTIME_PROBE)),
-        "finance_correctness_ledger": as_dict(load_json_artifact(FINANCE_CORRECTNESS_LEDGER)),
-        "finance_response_quality": as_dict(load_json_artifact(FINANCE_RESPONSE_QUALITY)),
         "pm_control": as_dict(load_json_artifact(PM_CONTROL)),
         "cron_control": as_dict(load_json_artifact(CRON_CONTROL)),
         "route_efficiency": as_dict(load_json_artifact(ROUTE_EFFICIENCY)),
@@ -132,11 +136,18 @@ def load_inputs() -> dict[str, Any]:
 
 
 def finance_sql_canon_context() -> dict[str, Any]:
-    context = strategic_answer_route_context(consumer="model_quality_scorecard", db_path=SQL_CANON_DB)
-    context["schema"] = "wf74.model_quality_scorecard.finance_sql_canon_context.v2"
-    context["sql_canon_db"] = rel(SQL_CANON_DB)
-    context["registry_summary"] = context.get("migration_registry_summary", {})
-    return context
+    raw = strategic_answer_route_context(consumer="model_quality_scorecard", db_path=SQL_CANON_DB)
+    return {
+        "schema": "wf74.model_quality_scorecard.finance_sql_canon_context.v3",
+        "status": raw.get("status"),
+        "sql_canon_db": rel(SQL_CANON_DB),
+        "typed_access_layer": raw.get("typed_access_layer"),
+        "access_validation_status": raw.get("access_validation_status"),
+        "production_answer_count": raw.get("production_answer_count"),
+        "production_answer_tickers": raw.get("production_answer_tickers"),
+        "answer_route_policy": as_dict(raw.get("answer_route_policy")),
+        "validation": as_dict(raw.get("validation")),
+    }
 
 
 def implementation_quality_track(inputs: dict[str, Any]) -> dict[str, Any]:
@@ -171,7 +182,6 @@ def implementation_quality_track(inputs: dict[str, Any]) -> dict[str, Any]:
     inputs_present = bool(eval_summary) and bool(perf_summary) and bool(harness_summary)
     return {
         "readiness": "active" if inputs_present else "inputs_missing",
-        "depends_on_wf55": False,
         "summary": (
             "Implementation-quality signals are observable now from behavior-eval "
             "discipline, validator pass rate, and surface-readiness checks. Not yet "
@@ -267,7 +277,6 @@ def performance_track(inputs: dict[str, Any]) -> dict[str, Any]:
     }
     return {
         "readiness": "partial" if perf_summary or otel_summary else "inputs_missing",
-        "depends_on_wf55": False,
         "summary": (
             "Runtime/build latency is live from the runtime performance scorecard. "
             "Local OTEL now provides queryable collector metrics/traces, but basic "
@@ -365,187 +374,92 @@ def performance_track(inputs: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def finance_response_blocker_metrics(finance_response: dict[str, Any]) -> dict[str, Any]:
-    """Classify WF74 collection blockers without double-counting repair tracks."""
-    summary = as_dict(finance_response.get("summary"))
-    legacy_source_freshness_blocked = int(as_num(summary.get("source_freshness_blocked_count")))
-    source_freshness_raw_blocked = int(
-        as_num(summary.get("source_freshness_raw_blocked_count", legacy_source_freshness_blocked))
-    )
-    source_freshness_structural_hold = (
-        int(as_num(summary.get("source_freshness_structural_hold_non_collection_count")))
-        if "source_freshness_structural_hold_non_collection_count" in summary
-        else None
-    )
-    source_freshness_collection_blocked = (
-        int(as_num(summary.get("source_freshness_collection_blocked_count")))
-        if "source_freshness_collection_blocked_count" in summary
-        else legacy_source_freshness_blocked
-    )
-    source_open_blocked = int(as_num(summary.get("source_open_blocked_count")))
-    technical_gap = int(as_num(summary.get("technical_posture_missing_both_count")))
-    remediation_needs_repair = int(as_num(summary.get("remediation_tracks_needing_repair")))
-    primary_state_blocked = int(as_num(summary.get("primary_state_blocked_count")))
-    below_stop_blocked = int(as_num(summary.get("below_stop_blocked_count")))
-
-    # Remediation tracks summarize the same source/open/technical rows. Keep the
-    # track count visible, but never add it to the effective collection count.
-    collection_blocker_count = source_freshness_collection_blocked + source_open_blocked + technical_gap
-    decision_readiness_debt_count = primary_state_blocked + below_stop_blocked
-
-    if collection_blocker_count:
-        blocking_status = "collection_blocking_source_or_technical_repair"
-    elif decision_readiness_debt_count:
-        blocking_status = "decision_readiness_debt_nonblocking"
-    elif finance_response.get("status") in {None, "ok"}:
-        blocking_status = "ok"
-    else:
-        blocking_status = "unclassified_blocked_status"
-
-    return {
-        "source_freshness_blocked_count": source_freshness_collection_blocked,
-        "source_freshness_raw_blocked_count": source_freshness_raw_blocked,
-        "source_freshness_structural_hold_non_collection_count": source_freshness_structural_hold,
-        "source_freshness_collection_blocked_count": source_freshness_collection_blocked,
-        "source_freshness_collection_count_source": (
-            "explicit_effective_count"
-            if "source_freshness_collection_blocked_count" in summary
-            else "legacy_source_freshness_blocked_count_fallback"
-        ),
-        "source_open_blocked_count": source_open_blocked,
-        "technical_gap_count": technical_gap,
-        "remediation_tracks_needing_repair": remediation_needs_repair,
-        "primary_state_blocked_count": primary_state_blocked,
-        "below_stop_blocked_count": below_stop_blocked,
-        "collection_blocker_count": collection_blocker_count,
-        "decision_readiness_debt_count": decision_readiness_debt_count,
-        "blocking_status": blocking_status,
-    }
-
-
 def decision_quality_track(inputs: dict[str, Any]) -> dict[str, Any]:
     ledger = inputs["reco_ledger"]
-    wf55_autonomy = as_dict(inputs.get("wf55_autonomy_ledger"))
-    correctness = as_dict(inputs.get("finance_correctness_ledger"))
-    finance_response = as_dict(inputs.get("finance_response_quality"))
+    performance = as_dict(inputs.get("recommendation_performance"))
+    finance_sql = as_dict(inputs.get("finance_sql_validation"))
+    quote_snapshot = as_dict(inputs.get("quote_snapshot"))
+    controller = as_dict(inputs.get("alert_controller"))
+    digest = as_dict(inputs.get("alert_digest"))
+    pivot = as_dict(inputs.get("alerts_os_pivot"))
     tracking = as_dict(ledger.get("recommendation_tracking_summary"))
     taxonomy = as_dict(ledger.get("outcome_grading_taxonomy"))
-    wf55_summary = as_dict(wf55_autonomy.get("summary"))
-    correctness_summary = as_dict(correctness.get("summary"))
-    finance_response_summary = as_dict(finance_response.get("summary"))
-    finance_response_blockers = finance_response_blocker_metrics(finance_response)
-    finance_source_freshness_blocked = finance_response_blockers["source_freshness_blocked_count"]
-    finance_source_freshness_raw_blocked = finance_response_blockers["source_freshness_raw_blocked_count"]
-    finance_source_freshness_structural_hold = finance_response_blockers[
-        "source_freshness_structural_hold_non_collection_count"
-    ]
-    finance_source_freshness_collection_blocked = finance_response_blockers[
-        "source_freshness_collection_blocked_count"
-    ]
-    finance_source_open_blocked = finance_response_blockers["source_open_blocked_count"]
-    finance_technical_gap = finance_response_blockers["technical_gap_count"]
-    finance_remediation_needs_repair = finance_response_blockers["remediation_tracks_needing_repair"]
-    finance_primary_state_blocked = finance_response_blockers["primary_state_blocked_count"]
-    finance_below_stop_blocked = finance_response_blockers["below_stop_blocked_count"]
-    finance_response_collection_blocker = finance_response_blockers["collection_blocker_count"]
-    finance_decision_readiness_debt = finance_response_blockers["decision_readiness_debt_count"]
-    finance_response_quality_blocking_status = finance_response_blockers["blocking_status"]
-    durable_append_allowed = bool(tracking.get("durable_append_allowed"))
-    applied_to_rows = int(as_num(taxonomy.get("applied_to_rows")))
-    ex_ante_rows = int(as_num(correctness_summary.get("row_count")))
-    blocked_rule_rows = int(as_num(correctness_summary.get("blocked_count")))
-    wf55_measurement_grades = int(as_num(wf55_summary.get("measurement_grade_count")))
-    wf55_failure_grades = int(as_num(wf55_summary.get("measurement_failure_grade_count")))
-    wf55_claim_allowed = bool(wf55_summary.get("decision_quality_claim_allowed_now"))
-    scorecard_active_now = bool(durable_append_allowed and ex_ante_rows and wf55_measurement_grades)
-    semantic_outcome_claim_allowed = bool(wf55_claim_allowed and applied_to_rows > 0)
-    readiness = "blocked_on_wf55"
-    if scorecard_active_now:
-        readiness = "active_measurement_only_semantic_claims_gated"
-    elif ex_ante_rows and wf55_measurement_grades:
-        readiness = "partial_ex_ante_and_wf55_measurement_active_durable_blocked"
-    elif ex_ante_rows and applied_to_rows == 0:
-        readiness = "partial_ex_ante_active_outcomes_blocked"
+    durable = as_dict(ledger.get("durable_v2_ledger"))
+    grade_history = as_dict(durable.get("grade_history"))
+    outcome_summary = as_dict(performance.get("recommendation_outcomes"))
+    controller_summary = as_dict(controller.get("summary"))
+    digest_summary = as_dict(digest.get("summary"))
+    durable_append_allowed = bool(tracking.get("durable_append_allowed") and durable.get("append_only") and durable.get("review_only"))
+    recommendation_rows = int(as_num(durable.get("recommendation_tracking_rows") or outcome_summary.get("recommendation_tracking_rows")))
+    graded_rows = int(as_num(grade_history.get("graded_ledger_event_count") or outcome_summary.get("outcome_grade_assigned_count")))
+    assigned_grade_events = int(as_num(grade_history.get("assigned_grade_event_count")))
+    source_green = {
+        "guarded_sql": finance_sql.get("status") == "ok" and as_dict(finance_sql.get("validation")).get("status") == "ok",
+        "quote_snapshot": quote_snapshot.get("status") == "ok",
+        "alert_controller": controller.get("status") == "ok" and as_dict(controller.get("validation")).get("status") == "ok",
+        "recommendation_digest": digest.get("status") == "ok" and as_dict(digest.get("validation")).get("status") == "ok",
+        "pivot_validator": pivot.get("status") == "ok" and as_dict(pivot.get("validation")).get("status") == "ok",
+    }
+    scorecard_active_now = bool(durable_append_allowed and recommendation_rows and graded_rows)
+    active_chain_green = all(source_green.values())
+    readiness = (
+        "active_measurement_only_semantic_claims_gated"
+        if scorecard_active_now
+        else "partial_recommendation_outcome_evidence"
+        if recommendation_rows
+        else "blocked_on_recommendation_outcomes"
+    )
     return {
         "readiness": readiness,
-        "depends_on_wf55": True,
         "summary": (
-            "Finance recommendation rule discipline and WF55 measurement grades "
-            "activate the review-only scorecard now. These rows measure process "
-            "quality, stale-data failures, and ex-ante rule discipline. Mature "
-            "semantic outcome grades are required only before predictive, "
-            "model-ranking, or investment-decision quality claims."
+            "Review-only recommendation outcomes and the active alert evidence chain "
+            "measure process quality, evidence freshness, and alert-state discipline. "
+            "They do not authorize predictive, model-ranking, execution, or capital claims."
         ),
         "metrics": {
             "scorecard_active_now": scorecard_active_now,
             "scorecard_activation_basis": (
-                "ex_ante_correctness_and_wf55_measurement_grades"
+                "append_only_recommendation_outcomes"
                 if scorecard_active_now
-                else "insufficient_wf55_measurement_or_durable_append"
+                else "insufficient_review_only_recommendation_outcomes"
             ),
-            "tracking_row_count": int(as_num(tracking.get("tracking_row_count"))),
-            "graded_rows": applied_to_rows,
-            "semantic_outcome_grade_count": applied_to_rows,
-            "grade_taxonomy_count": int(as_num(taxonomy.get("grade_count"))),
+            "tracking_row_count": recommendation_rows,
+            "graded_rows": graded_rows,
+            "semantic_outcome_grade_count": graded_rows,
+            "assigned_grade_event_count": assigned_grade_events,
+            "grade_taxonomy_count": len(as_dict(grade_history.get("grade_counts"))),
             "assignment_status": taxonomy.get("assignment_status"),
             "durable_append_allowed": durable_append_allowed,
-            "wf55_measurement_status": wf55_autonomy.get("status"),
-            "wf55_measurement_event_count": int(as_num(wf55_summary.get("decision_event_count"))),
-            "wf55_measurement_grade_count": wf55_measurement_grades,
-            "wf55_measurement_failure_grade_count": wf55_failure_grades,
-            "wf55_measurement_grade_assignment_status": wf55_summary.get("measurement_grade_assignment_status"),
-            "wf55_measurement_grade_counts": as_dict(wf55_summary.get("measurement_grade_counts")),
-            "wf55_measurement_grade_status_counts": as_dict(wf55_summary.get("measurement_grade_status_counts")),
-            "wf55_decision_quality_claim_allowed_now": wf55_claim_allowed,
-            "wf55_durable_v2_append_allowed": bool(wf55_summary.get("durable_v2_append_allowed")),
-            "process_quality_failure_grade_count": wf55_failure_grades,
-            "semantic_outcome_claim_allowed": semantic_outcome_claim_allowed,
+            "recommendation_outcome_status": performance.get("status"),
+            "recommendation_grade_counts": as_dict(grade_history.get("grade_counts")),
+            "active_alert_chain_green": active_chain_green,
+            "active_alert_chain_components": source_green,
+            "alert_ticker_count": int(as_num(controller_summary.get("ticker_count"))),
+            "alert_state_counts": as_dict(controller_summary.get("alert_state_counts")),
+            "freshness_review_ticker_count": len(controller_summary.get("freshness_review_tickers") or []),
+            "digest_ticker_count": int(as_num(digest_summary.get("ticker_count"))),
+            "semantic_outcome_claim_allowed": False,
             "predictive_or_model_ranking_allowed": False,
             "consumer_posture": ledger.get("consumer_posture"),
-            "ex_ante_correctness_rows": ex_ante_rows,
-            "ex_ante_correctness_ok_rows": int(as_num(correctness_summary.get("ok_count"))),
-            "ex_ante_correctness_warning_rows": int(as_num(correctness_summary.get("warning_count"))),
-            "ex_ante_correctness_blocked_rows": blocked_rule_rows,
-            "capital_validation_status": correctness_summary.get("capital_validation_status"),
-            "finance_response_quality_status": finance_response.get("status"),
-            "finance_response_quality_average_score": finance_response_summary.get("average_quality_score"),
-            "finance_response_quality_blocked_archetypes": finance_response_summary.get("blocked_archetype_count"),
-            "finance_response_wf72_support_only": finance_response_summary.get("wf72_support_only_confirmed"),
-            "finance_response_sector_timing_warning": finance_response_summary.get("sector_timing_warning_available"),
-            "finance_response_section_coverage_status": finance_response_summary.get("section_coverage_status"),
-            "finance_response_technical_gap_count": finance_technical_gap,
-            "finance_response_source_freshness_blocked_count": finance_source_freshness_blocked,
-            "finance_response_source_freshness_raw_blocked_count": finance_source_freshness_raw_blocked,
-            "finance_response_source_freshness_structural_hold_non_collection_count": finance_source_freshness_structural_hold,
-            "finance_response_source_freshness_collection_blocked_count": finance_source_freshness_collection_blocked,
-            "finance_response_source_freshness_collection_count_source": finance_response_blockers[
-                "source_freshness_collection_count_source"
-            ],
-            "finance_response_source_open_blocked_count": finance_source_open_blocked,
-            "finance_response_primary_state_blocked_count": finance_primary_state_blocked,
-            "finance_response_below_stop_blocked_count": finance_below_stop_blocked,
-            "finance_response_collection_blocker_count": finance_response_collection_blocker,
-            "finance_response_decision_readiness_debt_count": finance_decision_readiness_debt,
-            "finance_response_quality_blocking_status": finance_response_quality_blocking_status,
-            "finance_response_blocker_category_counts": as_dict(finance_response_summary.get("blocker_category_counts")),
-            "finance_response_scorecard_blocker_semantics": as_dict(finance_response_summary.get("scorecard_blocker_semantics")),
-            "finance_response_negative_canary_pass_count": finance_response_summary.get("negative_canary_pass_count"),
-            "finance_response_remediation_tracks_needing_repair": finance_remediation_needs_repair,
         },
         "blockers": [
-            *([] if wf55_measurement_grades else ["WF55 measurement outcomes are not graded"]),
+            *([] if recommendation_rows else ["review-only recommendation outcomes are missing"]),
+            *([] if graded_rows else ["review-only recommendation grades are missing"]),
             *([] if durable_append_allowed else ["durable append gate not approved (durable_append_allowed=false)"]),
-            *([] if not wf55_claim_allowed else ["WF55 measurement unexpectedly allows decision-quality claims"]),
+            *([] if active_chain_green else ["active alerts OS evidence chain is not fully green"]),
         ],
         "claim_blockers": [
-            *(
-                []
-                if applied_to_rows
-                else ["later semantic outcome grades not yet applied to mature rows (applied_to_rows=0)"]
-            ),
             "predictive scoring, model ranking, win-rate, and expected-return claims remain blocked",
         ],
-        "sources": [rel(RECO_LEDGER), rel(WF55_AUTONOMY_LEDGER), rel(FINANCE_CORRECTNESS_LEDGER), rel(FINANCE_RESPONSE_QUALITY)],
+        "sources": [
+            rel(RECO_LEDGER),
+            rel(RECOMMENDATION_PERFORMANCE),
+            rel(FINANCE_SQL_VALIDATION),
+            rel(QUOTE_SNAPSHOT),
+            rel(ALERT_CONTROLLER),
+            rel(ALERT_DIGEST),
+            rel(ALERTS_OS_PIVOT),
+        ],
     }
 
 
@@ -575,7 +489,6 @@ def learning_capture_track(inputs: dict[str, Any]) -> dict[str, Any]:
     privacy = as_dict(ledger.get("privacy_scan"))
     runtime_rows = int(as_num(summary.get("runtime_otel_rows")))
     coding_runtime_rows = int(as_num(summary.get("coding_runtime_rows")))
-    finance_response_quality_rows = int(as_num(summary.get("finance_response_quality_rows")))
     runtime_probe_status = None
     runtime_fields = None
     coding_runtime_status = None
@@ -594,9 +507,8 @@ def learning_capture_track(inputs: dict[str, Any]) -> dict[str, Any]:
     active = ledger.get("status") == "ok" and privacy.get("status") == "ok"
     return {
         "readiness": "active_metadata_only" if active else "missing_or_blocked",
-        "depends_on_wf55": False,
         "summary": (
-            "Metadata-only model/tool/failure/coding/finance-response learning capture is active from "
+            "Metadata-only model/tool/failure/coding learning capture is active from "
             "local proof artifacts. It records names, statuses, durations, categories, "
             "and validator outcomes while raw prompts, responses, tool payloads, "
             "system prompts, secrets, and external export remain blocked."
@@ -609,7 +521,6 @@ def learning_capture_track(inputs: dict[str, Any]) -> dict[str, Any]:
             "coding_rows": summary.get("coding_rows"),
             "runtime_otel_rows": runtime_rows,
             "coding_runtime_rows": coding_runtime_rows,
-            "finance_response_quality_rows": finance_response_quality_rows,
             "runtime_probe_status": runtime_probe_status,
             "runtime_allowed_field_count": runtime_fields,
             "coding_runtime_status": coding_runtime_status,
@@ -682,7 +593,7 @@ def model_attribution(inputs: dict[str, Any]) -> dict[str, Any]:
             )
             if instrumentation_working
             else (
-                "Stamp session_id/run_id/model_path on helper lanes, WF55 ledger rows, "
+                "Stamp session_id/run_id/model_path on helper lanes, recommendation-review rows, "
                 "PM jobs, and any new agent-run producers; keep runtime validator "
                 "commands as non-applicable operational timings. Require repeated sample "
                 "history before ranking."
@@ -694,23 +605,18 @@ def model_attribution(inputs: dict[str, Any]) -> dict[str, Any]:
 def readiness_gates(tracks: dict[str, Any], attribution: dict[str, Any]) -> list[dict[str, Any]]:
     gates = []
     decision_metrics = as_dict(as_dict(tracks.get("decision_quality")).get("metrics"))
-    durable_enabled = bool(decision_metrics.get("durable_append_allowed"))
     graded_rows = int(as_num(decision_metrics.get("graded_rows")))
     scorecard_active_now = bool(decision_metrics.get("scorecard_active_now"))
     gates.append({
-        "gate": "wf55_outcome_grades",
-        "status": "claim_maturity_gated" if scorecard_active_now and graded_rows == 0 else ("claim_ready" if graded_rows else "blocked"),
+        "gate": "recommendation_outcome_history",
+        "status": "review_measurement_active" if scorecard_active_now and graded_rows else "blocked",
         "blocks_track": "none" if scorecard_active_now else "decision_quality",
         "blocks_claim": "semantic_predictive_decision_quality",
         "track_status": "active_measurement_only" if scorecard_active_now else "not_active",
         "detail": (
-            "WF55 measurement scorecard is active now; later semantic grades are still waiting for mature deterministic evidence before predictive or recommendation-quality claims."
-            if scorecard_active_now and graded_rows == 0
-            else (
-                "Mature semantic outcome grades are available for review-only claim analysis."
-                if graded_rows
-                else "Activate WF55 measurement grades and clear durable append gate before scorecard use."
-            )
+            "Append-only recommendation outcomes are available for review-only process measurement; predictive and model-ranking claims remain blocked."
+            if scorecard_active_now and graded_rows
+            else "Collect append-only recommendation outcomes and deterministic review grades before activating this track."
         ),
     })
     gates.append({
@@ -768,8 +674,6 @@ def efficiency_loops(inputs: dict[str, Any], tracks: dict[str, Any], attribution
     pm_control = as_dict(inputs.get("pm_control"))
     pm_summary = as_dict(pm_control.get("summary"))
     pm_readiness = as_dict(pm_summary.get("pm_readiness"))
-    implementation_queue = as_dict(pm_summary.get("implementation_queue"))
-    top_next_action = as_dict(pm_summary.get("top_next_action"))
     route_efficiency = as_dict(inputs.get("route_efficiency"))
     route_summary = as_dict(route_efficiency.get("summary"))
     wf73_audit = as_dict(inputs.get("wf73_audit"))
@@ -837,7 +741,7 @@ def efficiency_loops(inputs: dict[str, Any], tracks: dict[str, Any], attribution
             owner_surface="model_quality_scorecard.py / model_run_ledger.py / wf74_model_quality_collection_cron_runner.py",
             status="active_with_known_gates",
             meaning=(
-                "Model/run evidence, Spark cron canaries, ex-ante finance rule "
+                "Model/run evidence, Spark cron canaries, alert/recommendation evidence "
                 "discipline, and OTEL collector health are joined into one review-only "
                 "scorecard. It is not a model ranker because mature semantic "
                 "outcome claims and richer cost/tool OTEL fields are still gated."
@@ -856,21 +760,11 @@ def efficiency_loops(inputs: dict[str, Any], tracks: dict[str, Any], attribution
                 "coding_runtime_rework_required": learning_metrics.get("coding_runtime_rework_required"),
                 "runtime_probe_status": learning_metrics.get("runtime_probe_status"),
                 "runtime_allowed_field_count": learning_metrics.get("runtime_allowed_field_count"),
-                "ex_ante_correctness_rows": decision_metrics.get("ex_ante_correctness_rows"),
-                "ex_ante_correctness_blocked_rows": decision_metrics.get("ex_ante_correctness_blocked_rows"),
-                "finance_response_quality_score": decision_metrics.get("finance_response_quality_average_score"),
-                "finance_response_quality_blocked_archetypes": decision_metrics.get("finance_response_quality_blocked_archetypes"),
-                "finance_response_wf72_support_only": decision_metrics.get("finance_response_wf72_support_only"),
-                "finance_response_sector_timing_warning": decision_metrics.get("finance_response_sector_timing_warning"),
-                "finance_response_section_coverage_status": decision_metrics.get("finance_response_section_coverage_status"),
-                "finance_response_technical_gap_count": decision_metrics.get("finance_response_technical_gap_count"),
-                "finance_response_source_freshness_blocked_count": decision_metrics.get("finance_response_source_freshness_blocked_count"),
-                "finance_response_source_freshness_raw_blocked_count": decision_metrics.get("finance_response_source_freshness_raw_blocked_count"),
-                "finance_response_source_freshness_structural_hold_non_collection_count": decision_metrics.get("finance_response_source_freshness_structural_hold_non_collection_count"),
-                "finance_response_source_freshness_collection_blocked_count": decision_metrics.get("finance_response_source_freshness_collection_blocked_count"),
-                "finance_response_source_open_blocked_count": decision_metrics.get("finance_response_source_open_blocked_count"),
-                "finance_response_remediation_tracks_needing_repair": decision_metrics.get("finance_response_remediation_tracks_needing_repair"),
-                "wf55_graded_rows": decision_metrics.get("graded_rows"),
+                "recommendation_tracking_rows": decision_metrics.get("tracking_row_count"),
+                "recommendation_graded_rows": decision_metrics.get("graded_rows"),
+                "active_alert_chain_green": decision_metrics.get("active_alert_chain_green"),
+                "alert_ticker_count": decision_metrics.get("alert_ticker_count"),
+                "freshness_review_ticker_count": decision_metrics.get("freshness_review_ticker_count"),
                 "otel_event_count": otel_summary.get("event_count"),
                 "otel_trace_batches": otel_summary.get("trace_batches"),
                 "otel_window_summary_status": otel_window_summary.get("status"),
@@ -878,16 +772,16 @@ def efficiency_loops(inputs: dict[str, Any], tracks: dict[str, Any], attribution
             },
             next_safe_action=(
                 "Keep the WF74 collection runner as the single scheduled owner; next "
-                "enhancement is producer stamping plus mature WF55 semantic outcome "
+                "enhancement is producer stamping plus mature recommendation-outcome "
                 "review, not runtime-based model ranking."
             ),
-            feedback_sink="WF74 model-quality scorecard and WF55 outcome ledger",
+            feedback_sink="WF74 model-quality scorecard and recommendation-outcome ledger",
             blocker_or_limit=(
-                "WF55 measurement scorecard is active; semantic/predictive outcome "
-                "claims remain gated until mature evidence exists. Direct runtime "
+                "Recommendation-outcome measurement is review-only; semantic/predictive "
+                "claims remain gated. Direct runtime "
                 "cost/tool field depth remains limited, but metadata-only learning capture is active."
             ),
-            proof_sources=[MODEL_RUN_LEDGER, MODEL_LEARNING_LEDGER, CODING_RUNTIME_PROBE, FINANCE_CORRECTNESS_LEDGER, FINANCE_RESPONSE_QUALITY, CRON_SPARK_CANARY, OTEL_OPS, OTEL_WINDOW_SUMMARY, OTEL_RUNTIME_PROBE],
+            proof_sources=[MODEL_RUN_LEDGER, MODEL_LEARNING_LEDGER, CODING_RUNTIME_PROBE, RECO_LEDGER, RECOMMENDATION_PERFORMANCE, ALERT_CONTROLLER, ALERT_DIGEST, ALERTS_OS_PIVOT, CRON_SPARK_CANARY, OTEL_OPS, OTEL_WINDOW_SUMMARY, OTEL_RUNTIME_PROBE],
         ),
         _loop(
             loop_id="implementation_queue_efficiency",
@@ -908,12 +802,8 @@ def efficiency_loops(inputs: dict[str, Any], tracks: dict[str, Any], attribution
                 "average_score": pm_readiness.get("average_score"),
                 "stale_lanes": pm_readiness.get("stale_lanes"),
                 "blocked_lanes": pm_readiness.get("blocked_lanes"),
-                "ready_jobs": implementation_queue.get("ready_job_count"),
-                "top_job_id": implementation_queue.get("top_job_id"),
-                "top_action": top_next_action.get("action_id"),
             },
-            next_safe_action=top_next_action.get("description")
-            or "Use PM control packet top action for the next implementation slice.",
+            next_safe_action="Refresh the PM control packet and use only non-finance or active alerts-OS implementation work.",
             feedback_sink="PM control packet / workflow capsules / daily memory closeout",
             proof_sources=[PM_CONTROL],
         ),
@@ -991,8 +881,8 @@ def efficiency_loops(inputs: dict[str, Any], tracks: dict[str, Any], attribution
         },
         {
             "priority": 2,
-            "owner": "WF55 / WF74",
-            "action": "Keep WF55 scorecard active for process-quality measurement; apply predictive/semantic outcome claims only when deterministic mature evidence exists.",
+            "owner": "alerts OS / WF74",
+            "action": "Keep recommendation-outcome measurement review-only; apply predictive or semantic claims only under a separate evidence gate.",
             "status": "active_measurement_only_claims_gated",
         },
         {
@@ -1028,7 +918,7 @@ def efficiency_loops(inputs: dict[str, Any], tracks: dict[str, Any], attribution
                 "source producers so stale consumer artifacts do not create false "
                 "regression or retirement blockers."
             ),
-            "owner_surface": "wf74_model_quality_collection_cron_runner.py / trade_grade_os_freshness_cron_runner.py",
+            "owner_surface": "wf74_model_quality_collection_cron_runner.py / run_alerts_recommendations_chain.py",
             "next_safe_action": "Keep collection runners ordered from source producers to downstream scorecards and parity checks.",
         },
         {
@@ -1050,7 +940,7 @@ def efficiency_loops(inputs: dict[str, Any], tracks: dict[str, Any], attribution
                 "context unless the active workflow specifically requires fresh "
                 "intraday quotes or real-time proof."
             ),
-            "owner_surface": "cron_freshness_spine.py / market_execution_readiness_cron_hardening.py",
+            "owner_surface": "alert_level_freshness_controller.py / run_alerts_recommendations_chain.py",
             "next_safe_action": "Name the freshness window before promoting a warning into a blocker.",
         },
         {
@@ -1120,9 +1010,9 @@ def build_scorecard(inputs: dict[str, Any]) -> dict[str, Any]:
         "next_actions": [
             loops["summary"]["next_safe_action"],
             "Stamp model/session attribution on producing surfaces, then join here.",
-            "Keep WF55 durable review-only append active while waiting for mature later-outcome evidence.",
-            "Use WF55 measurement grades as active process-quality evidence now; keep semantic/predictive decision-quality claims gated.",
-            "Use model_learning_metadata_ledger.py for metadata-only tool/failure/coding/runtime-OTEL/finance-response learning capture; keep direct runtime capture gated by otel_runtime_metadata_probe.py.",
+            "Keep recommendation outcomes append-only and review-only while preserving evidence lineage.",
+            "Use deterministic recommendation grades as process-quality evidence; keep semantic/predictive claims gated.",
+            "Use model_learning_metadata_ledger.py for metadata-only tool/failure/coding/runtime-OTEL learning capture; keep direct runtime capture gated by otel_runtime_metadata_probe.py.",
             "Keep otel_ops_control.py refreshed so WF74 can distinguish observed friction from anecdotes.",
         ],
         "authority_boundary": {
@@ -1150,14 +1040,17 @@ def validate(scorecard: dict[str, Any], inputs: dict[str, Any]) -> dict[str, Any
         ("otel_window_summary", OTEL_WINDOW_SUMMARY),
         ("otel_runtime_probe", OTEL_RUNTIME_PROBE),
         ("reco_ledger", RECO_LEDGER),
-        ("wf55_autonomy_ledger", WF55_AUTONOMY_LEDGER),
+        ("recommendation_performance", RECOMMENDATION_PERFORMANCE),
+        ("finance_sql_validation", FINANCE_SQL_VALIDATION),
+        ("quote_snapshot", QUOTE_SNAPSHOT),
+        ("alert_controller", ALERT_CONTROLLER),
+        ("alert_digest", ALERT_DIGEST),
+        ("alerts_os_pivot", ALERTS_OS_PIVOT),
         ("cron_spark_canary", CRON_SPARK_CANARY),
         ("model_run_ledger", MODEL_RUN_LEDGER),
         ("model_learning_ledger", MODEL_LEARNING_LEDGER),
         ("improvement_ledger", IMPROVEMENT_LEDGER),
         ("coding_runtime_probe", CODING_RUNTIME_PROBE),
-        ("finance_correctness_ledger", FINANCE_CORRECTNESS_LEDGER),
-        ("finance_response_quality", FINANCE_RESPONSE_QUALITY),
         ("pm_control", PM_CONTROL),
         ("cron_control", CRON_CONTROL),
         ("route_efficiency", ROUTE_EFFICIENCY),
@@ -1168,57 +1061,24 @@ def validate(scorecard: dict[str, Any], inputs: dict[str, Any]) -> dict[str, Any
             findings.append({"severity": "warning", "detail": f"input artifact missing or empty: {rel(path)}"})
 
     decision = scorecard["tracks"]["decision_quality"]
-    if (
-        decision["metrics"].get("durable_append_allowed")
-        and decision["metrics"].get("wf55_measurement_grade_count")
-        and decision["readiness"] not in {
-            "active",
-            "active_measurement_only_semantic_claims_gated",
-            "partial_ex_ante_and_wf55_measurement_active_durable_enabled",
-        }
-    ):
-        findings.append({"severity": "warning", "detail": "WF55 measurement grades are available; decision_quality scorecard should be active measurement-only or explicitly partial on mature-evidence gating."})
-    if not decision["metrics"].get("durable_append_allowed") and decision["metrics"].get("graded_rows") != 0:
-        findings.append({"severity": "critical", "detail": "decision_quality cannot report graded rows while WF55 durable append is not allowed."})
-    if (
-        not decision["metrics"].get("durable_append_allowed")
-        and decision["readiness"] not in {
-            "blocked_on_wf55",
-            "partial_ex_ante_active_outcomes_blocked",
-            "partial_ex_ante_and_wf55_measurement_active_durable_blocked",
-        }
-    ):
-        findings.append({"severity": "critical", "detail": "decision_quality must keep outcome scoring blocked while WF55 durable append is not allowed."})
-    if decision["metrics"].get("wf55_decision_quality_claim_allowed_now") is not False:
-        findings.append({"severity": "critical", "detail": "WF55 measurement grades must not allow decision-quality claims."})
-    if decision["metrics"].get("wf55_durable_v2_append_allowed") is not True:
-        findings.append({"severity": "critical", "detail": "WF55 autonomy measurement layer should expose Randall-approved review-only durable append."})
+    if not decision["metrics"].get("durable_append_allowed") and decision["metrics"].get("graded_rows"):
+        findings.append({"severity": "critical", "detail": "decision_quality cannot use recommendation grades without the review-only append contract."})
     if decision["metrics"].get("scorecard_active_now") is not True:
-        findings.append({"severity": "warning", "detail": "decision_quality scorecard should be active when ex-ante correctness rows and WF55 measurement grades exist."})
+        findings.append({"severity": "warning", "detail": "decision_quality scorecard needs append-only recommendation rows and review grades."})
     if decision["metrics"].get("semantic_outcome_claim_allowed") is not False:
         findings.append({"severity": "critical", "detail": "semantic outcome claims must remain blocked until mature evidence exists."})
     if decision["metrics"].get("predictive_or_model_ranking_allowed") is not False:
         findings.append({"severity": "critical", "detail": "predictive/model-ranking claims must remain blocked."})
-    wf55_gate = next(
-        (gate for gate in scorecard.get("readiness_gates", []) if as_dict(gate).get("gate") == "wf55_outcome_grades"),
+    outcome_gate = next(
+        (gate for gate in scorecard.get("readiness_gates", []) if as_dict(gate).get("gate") == "recommendation_outcome_history"),
         {},
     )
-    if decision["metrics"].get("scorecard_active_now") and as_dict(wf55_gate).get("blocks_track") != "none":
-        findings.append({"severity": "critical", "detail": "WF55 outcome gate must not block the active decision_quality measurement track."})
-    if decision["metrics"].get("scorecard_active_now") and as_dict(wf55_gate).get("blocks_claim") != "semantic_predictive_decision_quality":
-        findings.append({"severity": "critical", "detail": "WF55 outcome gate must block only semantic/predictive decision-quality claims."})
-    finance_response_quality_blocking_status = decision["metrics"].get("finance_response_quality_blocking_status")
-    if finance_response_quality_blocking_status in {
-        "collection_blocking_source_or_technical_repair",
-        "unclassified_blocked_status",
-    }:
-        findings.append({
-            "severity": "critical",
-            "detail": (
-                "finance response quality slice has source/technical or unclassified blockers "
-                "that still block WF74 collection."
-            ),
-        })
+    if decision["metrics"].get("scorecard_active_now") and as_dict(outcome_gate).get("blocks_track") != "none":
+        findings.append({"severity": "critical", "detail": "recommendation outcome gate must not block an active review-only measurement track."})
+    if decision["metrics"].get("scorecard_active_now") and as_dict(outcome_gate).get("blocks_claim") != "semantic_predictive_decision_quality":
+        findings.append({"severity": "critical", "detail": "recommendation outcome gate must keep semantic/predictive claims blocked."})
+    if not decision["metrics"].get("active_alert_chain_green"):
+        findings.append({"severity": "warning", "detail": "active alerts OS evidence chain is not fully green."})
 
     boundary = scorecard["authority_boundary"]
     for flag in (

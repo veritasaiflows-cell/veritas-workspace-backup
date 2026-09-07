@@ -1,0 +1,2049 @@
+{
+  "schema": "veritas.trade_grade_repair_conveyor.v1",
+  "generated_at_utc": "2026-08-30T03:18:20Z",
+  "status": "ready_for_repair_execution",
+  "purpose": "Route WF85 fail-closed cards to upstream source/freshness and band/stop repair lanes before review-ready pilots.",
+  "authority": {
+    "review_only": true,
+    "repair_routing_only": true,
+    "automated_non_capital_routing_allowed": true,
+    "ticker_card_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_or_risk_rule_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "approval_card_draft_allowed_by_conveyor": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "repair_routing_only": true,
+    "automated_non_capital_routing_allowed": true,
+    "ticker_card_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_or_risk_rule_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "approval_card_draft_allowed_by_conveyor": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": {
+    "decision_cards": "tmp/trade-grade-decision-cards.json",
+    "source_freshness_gate": "tmp/trade-grade-source-freshness-gate.json",
+    "approval_card_gate": "tmp/trade-grade-approval-card-gate.json",
+    "tier_weighted_freshness_resolution": "tmp/wf78-tier-weighted-freshness-resolution.json",
+    "ticker_freshness_ledger": "tmp/wf78-ticker-freshness-ledger.json",
+    "missing_band_context_repair": "tmp/wf78-missing-band-context-repair.json",
+    "band_hygiene_freshness_controller": "tmp/band-hygiene-freshness-controller.json",
+    "ticker_card_refresh_gate": "tmp/finance-ticker-card-refresh-gate.json"
+  },
+  "summary": {
+    "card_count": 0,
+    "decision_state_counts": {},
+    "repair_lane_counts": {},
+    "repair_scope_counts": {},
+    "review_ready_pilot_candidate_count": 0,
+    "review_ready_pilot_tickers": [],
+    "tier_a_b_pilot_candidate_count": 0,
+    "approval_card_draft_count": 0,
+    "approval_gate_review_ready_count": 0,
+    "ticker_card_gate_decision_ready_card_count": 7,
+    "wf67_paper_guard_fresh": false,
+    "atomic_five_family_repair_queue_count": 24,
+    "atomic_five_family_tier_a_count": 1,
+    "atomic_five_family_tier_b_count": 23,
+    "atomic_five_family_pilot_tickers": [
+      "TSM",
+      "AVGO"
+    ],
+    "atomic_five_family_completeness_count": 24,
+    "pm_blocker_scope": "finance_domain_only",
+    "implementation_queue_posture": "not_an_implementation_blocker",
+    "tier_a_b_daily_decision_grade_band_policy": "required_for_daily_finance_review_not_auto_canon_apply",
+    "tier_a_b_missing_decision_grade_band_count": 0,
+    "tier_a_b_missing_decision_grade_band_tickers": [],
+    "tier_b_missing_decision_grade_band_count": 0,
+    "tier_b_missing_decision_grade_band_tickers": [],
+    "normal_finance_repair_rows_create_pm_implementation_jobs": false,
+    "only_validation_errors_create_implementation_blockers": true,
+    "total_repair_conveyor_row_count": 0,
+    "finance_domain_repair_item_count": 0,
+    "finance_or_owner_gate_repair_item_count": 0,
+    "finance_domain_blocker_count": 0,
+    "implementation_blocker_count": 0,
+    "control_plane_blocker_count": 0,
+    "monitor_only_count": 0,
+    "owner_finance_gate_count": 0,
+    "next_safe_action": "Use these rows as finance-domain repair queue only; create implementation work only if conveyor validation fails or WF84/WF85 quality gates regress."
+  },
+  "implementation_noise_policy": {
+    "normal_repair_lanes_are_domain_debt": true,
+    "normal_repair_lanes_block_implementation": false,
+    "monitor_only_rows_block_implementation": false,
+    "below_stop_or_invalidation_rows_block_implementation": false,
+    "band_stop_context_repair_rows_block_implementation": false,
+    "implementation_blocker_trigger": "validation_errors_only"
+  },
+  "pilot_queue": [],
+  "atomic_five_family_repair_intake": {
+    "queue": [
+      {
+        "ticker": "NVDA",
+        "tier": "Tier A",
+        "required_depth": "decision_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:NVDA:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "NVDA|Tier A|blocked_unresolved_tier_ab_debt|fundamental_period_alignment",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "retained_current",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "retained_current",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "retained_current",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "retained_current",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "retained_current",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "TSM",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:TSM:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "TSM|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "AVGO",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:AVGO:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "AVGO|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "AAPL",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:AAPL:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "AAPL|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "ABBV",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:ABBV:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "ABBV|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "ADBE",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:ADBE:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "ADBE|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "AJG",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:AJG:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "AJG|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "AME",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:AME:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "AME|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "AON",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:AON:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "AON|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "APD",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:APD:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "APD|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "AXON",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:AXON:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "AXON|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "CRM",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:CRM:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "CRM|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "CRWD",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:CRWD:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "CRWD|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "DDOG",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:DDOG:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "DDOG|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "GS",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:GS:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "GS|Tier B|blocked_unresolved_tier_ab_debt|fundamental_period_alignment",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "retained_current",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "retained_current",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "retained_current",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "retained_current",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "retained_current",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "MA",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:MA:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "MA|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "MDB",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:MDB:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "MDB|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "NOW",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:NOW:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "NOW|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "PANW",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:PANW:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "PANW|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "PH",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:PH:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "PH|Tier B|blocked_unresolved_tier_ab_debt|fundamental_period_alignment",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "retained_current",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "retained_current",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "retained_current",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "retained_current",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "retained_current",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "SCCO",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:SCCO:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "SCCO|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "SHOP",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:SHOP:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "SHOP|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "SNOW",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:SNOW:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "SNOW|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      },
+      {
+        "ticker": "V",
+        "tier": "Tier B",
+        "required_depth": "promotion_repair",
+        "current_resolution_state": "blocked_unresolved_tier_ab_debt",
+        "repair_bundle_id": "tier-ab-five-family:V:blocked_unresolved_tier_ab_debt",
+        "repair_input_signature": "V|Tier B|blocked_unresolved_tier_ab_debt|catalyst_earnings_state|deployment_readiness|price_band_stop|recommendation_support|technical_posture",
+        "repair_as_of_utc": "2026-08-30T03:18:20Z",
+        "first_family": "catalyst_earnings_state",
+        "family_dispositions": [
+          {
+            "family": "catalyst_earnings_state",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "price_band_stop",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "technical_posture",
+            "status": "refresh_required",
+            "depends_on": []
+          },
+          {
+            "family": "recommendation_support",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture"
+            ]
+          },
+          {
+            "family": "deployment_readiness",
+            "status": "refresh_required",
+            "depends_on": [
+              "catalyst_earnings_state",
+              "price_band_stop",
+              "technical_posture",
+              "recommendation_support"
+            ]
+          }
+        ],
+        "official_earnings_intake_requirements": [
+          "issuer_or_ticker",
+          "event_type",
+          "source_class",
+          "source_url",
+          "publisher",
+          "published_at_utc",
+          "retrieved_at_utc",
+          "fiscal_period_label",
+          "fiscal_period_start",
+          "fiscal_period_end",
+          "fiscal_period_basis",
+          "event_datetime",
+          "event_timezone",
+          "event_session",
+          "timing_status",
+          "evidence_linkage_id",
+          "conflicts",
+          "ambiguity_reason"
+        ],
+        "official_earnings_intake_status": "pending_source_open",
+        "source_open_manual_only": true,
+        "authority_boundary": {
+          "finance_data_mutation_allowed": false,
+          "canon_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "customer_or_external_delivery_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "owner_approval_inferred": false
+        },
+        "source_mismatch_handling": "manual_source_open_only_no_auto_overwrite"
+      }
+    ],
+    "summary": {
+      "queue_count": 24,
+      "tier_a_count": 1,
+      "tier_b_count": 23,
+      "pilot_tickers": [
+        "TSM",
+        "AVGO"
+      ],
+      "five_family_completeness_count": 24,
+      "first_family": "catalyst_earnings_state",
+      "source_open_manual_only": true,
+      "next_safe_action": "Open official sources manually, reconcile fiscal-period evidence, and retain source mismatches without auto-overwriting finance data."
+    },
+    "validation_errors": []
+  },
+  "rows": [],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "review_ready pilot candidates are not approval-card drafts",
+      "WF67 paper guard must be fresh before any paper-request draft posture",
+      "ticker_card_gate_decision_ready_requires_owner_approval_gate"
+    ]
+  },
+  "stop_lines": [
+    "No approval-card draft is created by this conveyor.",
+    "No generated row is Randall approval.",
+    "No paper/live/account action, money movement, canon/portfolio/cash/sizing/risk-rule mutation, or customer/external delivery."
+  ]
+}

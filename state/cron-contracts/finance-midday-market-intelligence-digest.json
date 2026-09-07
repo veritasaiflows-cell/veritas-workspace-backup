@@ -1,0 +1,74 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "0ef79012-1917-4532-974b-057ad3d03458",
+  "name": "Finance - Midday Alerts and Recommendations Digest",
+  "required": true,
+  "owner_workflow": "Finance alert and recommendations OS",
+  "contract_reason": "Midday owner alert delivery over the current intraday-chain proof; review-only, with explicit freshness decay and no approval or execution authority.",
+  "description": "Midday owner alert and recommendations digest consuming the current intraday-chain proof. Deduplicated delivery; no portfolio, account, capital, order, or execution authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "5 11 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none"
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "python",
+      "scripts/finance_alert_os_digest.py",
+      "--mode",
+      "midday",
+      "--send",
+      "--weekday-only",
+      "--write",
+      "--write-md",
+      "--validate",
+      "--timeout-seconds",
+      "120"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 240
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "failureAlert",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/finance-alert-os-midday-digest.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "owner_telegram_delivery_allowed": true,
+    "customer_or_public_delivery_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-08-30T01:45:00Z",
+  "contract_update_reason": "Retained one deduplicated midday owner digest consuming the current intraday alert-chain proof."
+}

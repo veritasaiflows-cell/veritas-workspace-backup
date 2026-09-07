@@ -1,0 +1,146 @@
+
+Finance refresh window: morning
+Pre-open readiness refresh. Rebuilds macro, technical, regime scores, and band-staleness artifacts, then regenerates trigger layer and dashboard.
+  1. validate_portfolio_config.py
+  2. earnings_calendar_enrichment.py
+  3. earnings_date_source_confidence.py
+  4. event_calendar_rollforward.py
+  5. event_calendar_apply.py --apply
+  6. policy_expectations_refresh.py
+  7. credit_spread_refresh.py
+  8. breadth_refresh.py
+  9. market_state_refresh.py
+  10. macro_regime_refresh.py
+  11. technical_refresh.py
+  12. regime_scoring_refresh.py
+  13. band_refresh.py
+  14. entry_band_fetch.py --all-tracked --html
+  15. generate_entry_band_status.py
+  16. deployment_check.py
+  17. trigger_sheet_refresh.py
+  18. positioning_ranking_refresh.py
+  19. post_earnings_prep.py
+  20. post_earnings_note_targets.py
+  21. universe_consistency_check.py
+  22. test_dashboard_acceptance.py
+  23. generate_dashboard.py
+  24. validate_dashboard_state.py --write
+  25. workbook_export.py
+  26. premarket_snapshot.py
+  27. snapshot_contract_check.py --window morning
+  28. summary_brief_packet.py --window morning
+  29. review_brief_report.py --window morning
+  30. pipeline_state_consistency_check.py --window morning
+  31. run_summary_refresh.py --window morning
+  32. dashboard_run_summary_consumer.py --window morning
+  33. deployment_readiness_surface.py --window morning
+  34. daily_price_trend_signals.py --window morning
+  35. market_intelligence_event_router.py --window morning
+  36. sector_correlation_check.py --window morning
+  37. sector_expansion_board.py --window morning
+  38. daily_review_objects.py --window morning
+
+Manifest summary:
+  1. validate_portfolio_config.py [portfolio] recovery=fail_chain
+  2. earnings_calendar_enrichment.py [intelligence] recovery=fail_chain
+     expected_outputs: tmp/earnings-calendar.json
+  3. earnings_date_source_confidence.py [intelligence] recovery=fail_chain
+     depends_on: earnings_calendar_enrichment.py
+     expected_outputs: tmp/earnings-date-source-confidence.json, tmp/earnings-date-source-confidence.md
+  4. event_calendar_rollforward.py [intelligence] recovery=fail_chain
+     depends_on: earnings_calendar_enrichment.py, earnings_date_source_confidence.py
+     expected_outputs: tmp/event-calendar-rollforward.json, tmp/event-calendar-rollforward.md
+  5. event_calendar_apply.py [intelligence] recovery=fail_chain
+     depends_on: event_calendar_rollforward.py
+     expected_outputs: tmp/event-calendar-apply.json, tmp/event-calendar-apply.md
+  6. policy_expectations_refresh.py [market_data] recovery=fail_chain
+     expected_outputs: tmp/policy-expectations.json
+  7. credit_spread_refresh.py [market_data] recovery=fail_chain
+     expected_outputs: tmp/credit-spreads.json
+  8. breadth_refresh.py [market_data] recovery=fail_chain
+     expected_outputs: tmp/breadth-state.json
+  9. market_state_refresh.py [market_data] recovery=fail_chain
+     depends_on: policy_expectations_refresh.py, credit_spread_refresh.py, breadth_refresh.py
+     expected_outputs: tmp/market-state.json
+  10. macro_regime_refresh.py [market_data] recovery=fail_chain
+     depends_on: market_state_refresh.py, credit_spread_refresh.py, breadth_refresh.py
+     expected_outputs: tmp/macro-regime.json
+  11. technical_refresh.py [portfolio] recovery=fail_chain
+     expected_outputs: tmp/technical-refresh.json
+  12. regime_scoring_refresh.py [portfolio] recovery=fail_chain
+     depends_on: macro_regime_refresh.py, technical_refresh.py
+     expected_outputs: tmp/regime-scores.json
+  13. band_refresh.py [portfolio] recovery=fail_chain
+     depends_on: technical_refresh.py
+     expected_outputs: tmp/band-proposals.json
+  14. entry_band_fetch.py [portfolio] recovery=fail_chain
+     depends_on: band_refresh.py
+  15. generate_entry_band_status.py [portfolio] recovery=fail_chain
+     depends_on: entry_band_fetch.py
+  16. deployment_check.py [validation] recovery=fail_chain
+     depends_on: technical_refresh.py, band_refresh.py, earnings_calendar_enrichment.py
+     expected_outputs: tmp/deployment-check.json
+  17. trigger_sheet_refresh.py [portfolio] recovery=fail_chain
+     depends_on: deployment_check.py
+     expected_outputs: tmp/trigger-sheet.json
+  18. positioning_ranking_refresh.py [portfolio] recovery=fail_chain
+     depends_on: trigger_sheet_refresh.py, regime_scoring_refresh.py
+  19. post_earnings_prep.py [intelligence] recovery=fail_chain
+     depends_on: earnings_calendar_enrichment.py
+     expected_outputs: tmp/post-earnings-prep.json
+  20. post_earnings_note_targets.py [intelligence] recovery=fail_chain
+     depends_on: post_earnings_prep.py
+     expected_outputs: tmp/post-earnings-note-targets.json
+  21. universe_consistency_check.py [validation] recovery=fail_chain
+     depends_on: technical_refresh.py, deployment_check.py, trigger_sheet_refresh.py
+  22. test_dashboard_acceptance.py [validation] recovery=fail_chain
+     depends_on: market_state_refresh.py, deployment_check.py, trigger_sheet_refresh.py
+     expected_outputs: tmp/dashboard-acceptance-report.json
+  23. generate_dashboard.py [summary] recovery=fail_chain
+     depends_on: market_state_refresh.py, technical_refresh.py, deployment_check.py
+     expected_outputs: tmp/veritas-command-center.html
+  24. validate_dashboard_state.py [validation] recovery=fail_chain
+     depends_on: generate_dashboard.py
+     expected_outputs: tmp/dashboard-validation.json
+  25. workbook_export.py [summary] recovery=fail_chain
+     depends_on: validate_dashboard_state.py
+  26. premarket_snapshot.py [summary] recovery=fail_chain
+     depends_on: trigger_sheet_refresh.py, validate_dashboard_state.py
+     expected_outputs: tmp/premarket-snapshot.json
+  27. snapshot_contract_check.py [validation] recovery=fail_chain
+     depends_on: trigger_sheet_refresh.py, premarket_snapshot.py
+     expected_outputs: tmp/snapshot-contract-check.json
+  28. summary_brief_packet.py [summary] recovery=fail_chain
+     depends_on: premarket_snapshot.py, snapshot_contract_check.py, market_state_refresh.py, trigger_sheet_refresh.py, earnings_calendar_enrichment.py, validate_dashboard_state.py
+     expected_outputs: tmp/premarket-brief-input.json
+  29. review_brief_report.py [summary] recovery=fail_chain
+     depends_on: summary_brief_packet.py
+     expected_outputs: tmp/reports/premarket-review-brief-latest.json, tmp/reports/premarket-review-brief-latest.md, tmp/reports/premarket-review-brief-latest.html
+  30. pipeline_state_consistency_check.py [validation] recovery=fail_chain
+     depends_on: trigger_sheet_refresh.py, deployment_check.py, premarket_snapshot.py, snapshot_contract_check.py
+     expected_outputs: tmp/pipeline-state-consistency.json
+  31. run_summary_refresh.py [summary] recovery=recovery_finalizer
+     depends_on: premarket_snapshot.py, summary_brief_packet.py, review_brief_report.py, validate_dashboard_state.py
+     expected_outputs: tmp/run-summary-morning.json
+  32. dashboard_run_summary_consumer.py [summary] recovery=recovery_finalizer
+     depends_on: run_summary_refresh.py
+  33. deployment_readiness_surface.py [summary] recovery=fail_chain
+     depends_on: trigger_sheet_refresh.py, validate_dashboard_state.py, run_summary_refresh.py
+     expected_outputs: tmp/deployment-readiness-surface.json
+  34. daily_price_trend_signals.py [summary] recovery=fail_chain
+     depends_on: deployment_readiness_surface.py, band_refresh.py, technical_refresh.py, validate_dashboard_state.py
+     expected_outputs: tmp/daily-price-trend-signals.json
+  35. market_intelligence_event_router.py [intelligence] recovery=fail_chain
+     depends_on: deployment_readiness_surface.py, band_refresh.py, validate_dashboard_state.py, market_state_refresh.py
+     expected_outputs: tmp/market-intelligence-events-morning.json
+  36. sector_correlation_check.py [validation] recovery=fail_chain
+     depends_on: deployment_readiness_surface.py, trigger_sheet_refresh.py, band_refresh.py
+     expected_outputs: tmp/sector-correlation-check.json
+  37. sector_expansion_board.py [summary] recovery=fail_chain
+     depends_on: sector_correlation_check.py, breadth_refresh.py, market_state_refresh.py
+     expected_outputs: tmp/sector-expansion-board.json
+  38. daily_review_objects.py [summary] recovery=fail_chain
+     depends_on: deployment_readiness_surface.py, market_intelligence_event_router.py, sector_correlation_check.py, sector_expansion_board.py, premarket_snapshot.py, run_summary_refresh.py, validate_dashboard_state.py
+     expected_outputs: tmp/daily-review-objects-morning.json
+
+Dry run only, nothing executed.

@@ -1,0 +1,459 @@
+{
+  "schema": "veritas.canonical_finance_data_plane_retirement_readiness.v1",
+  "generated_at_utc": "2026-08-29T21:46:47Z",
+  "status": "ok",
+  "workflow_id": "WF84",
+  "purpose": "Preview-only retirement readiness for duplicate finance data-plane surfaces after WF84 Phase 1-3.",
+  "authority_boundary": {
+    "review_only": true,
+    "preview_only": true,
+    "archive_allowed": false,
+    "delete_allowed": false,
+    "move_allowed": false,
+    "db_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_or_execution_authority": false,
+    "owner_approval_inferred": false
+  },
+  "summary": {
+    "surface_count": 8,
+    "archive_ready_count": 0,
+    "delete_ready_count": 0,
+    "apply_allowed_count": 0,
+    "approval_plan_prepared": true,
+    "source_feeder_retirement_ready_count": 0,
+    "duplicate_surface_retirement_ready_count": 0,
+    "full_answer_parity_status": "ok",
+    "full_answer_parity_ready_to_start_duplicate_surface_retirement_planning": true,
+    "archive_plan_owner_action_required": true,
+    "next_safe_action": "Use the prepared owner-approval plan only; keep source feeders/fallback surfaces until additional consumer parity and DB lifecycle approval gates clear."
+  },
+  "archive_approval_plan": {
+    "status": "prepared_for_owner_review",
+    "apply_allowed_now": false,
+    "archive_allowed_now": false,
+    "delete_allowed_now": false,
+    "recommended_decision": "do_not_archive_trade_grade_feeders_yet",
+    "retained_surfaces": [
+      "tmp/finance-intelligence-state.sqlite",
+      "tmp/wf78-auto-tier-routing.json",
+      "tmp/wf78-tier-weighted-freshness-resolution.json",
+      "tmp/finance-decision-sync-spine.json",
+      "tmp/wf78-capital-review-queue.json",
+      "tmp/canonical-finance-data-plane-contract.json",
+      "tmp/ticker-answer-packets",
+      "tmp/ticker-intelligence-cards"
+    ],
+    "approval_sequence": [
+      "Keep WF84 as the default read-only consumer interface while source feeders remain retained.",
+      "Use full-answer parity results to identify generated duplicate surfaces, but retain source artifacts and evidence caches.",
+      "Run WF84/WF85 freshness, phase 6-10, retirement readiness, and DB lifecycle proof after each consumer migration.",
+      "Require active-reference review for every candidate surface.",
+      "Prepare a db_lifecycle_archive_apply.py packet only for surfaces that become archive_ready in db_lifecycle_manifest.py.",
+      "Ask Randall for exact archive approval before any move/delete/archive apply."
+    ]
+  },
+  "surfaces": [
+    {
+      "path": "tmp/finance-intelligence-state.sqlite",
+      "owner": "WF78 finance intelligence state",
+      "classification": "retain_active_consumer_fallback",
+      "reason": "Existing ticker/front-door consumer still owns fallback and rich packet behavior; WF84 overlay is additive only.",
+      "exists": true,
+      "archive_ready": false,
+      "delete_ready": false,
+      "apply_allowed": false,
+      "owner_approval_plan": {
+        "candidate_action": "retain_now",
+        "approval_required_before_archive_or_delete": true,
+        "minimum_future_evidence": [
+          "WF84 consumer default switch remains clean",
+          "WF84/WF85 full-answer value parity is clean across the full WF84 ticker population",
+          "WF85 full-answer assembler remains the default ticker answer path",
+          "legacy answer packets are generated only from the assembler",
+          "additional consumers prove parity against WF84",
+          "active references no longer require this surface as feeder or fallback",
+          "ticker-answer-packet retirement approval plan remains planning_ready",
+          "db_lifecycle_manifest.py classifies the database or sidecar as archive_ready",
+          "Randall approves the exact archive packet"
+        ]
+      },
+      "reference_count": 60,
+      "active_reference_count": 33,
+      "sample_references": [
+        "scripts/cache_dependency_manifest.py",
+        "scripts/canonical_finance_data_plane.py",
+        "scripts/canonical_finance_data_plane_contract.py",
+        "scripts/canonical_finance_data_plane_retirement_readiness.py",
+        "scripts/db_lifecycle_manifest.py",
+        "scripts/finance_cache_cleanup_readiness.py",
+        "scripts/finance_intelligence_state.py",
+        "scripts/finance_sql_canon.py",
+        "scripts/finance_ticker_card_refresh_gate.py",
+        "scripts/human_facing_truth_surface.py",
+        "scripts/post_close_final_quote_ledger.py",
+        "scripts/README.md",
+        "scripts/reference_levels_targeted_repair_packet.py",
+        "scripts/sql_500_ticker_expansion_design_gate.py",
+        "scripts/sql_canon_phase2_backfill.py",
+        "scripts/sql_latency_benchmark.py",
+        "scripts/sql_pre_phase5_hardening_gate.py",
+        "scripts/sql_retail_expansion_phase_gate.py",
+        "scripts/sql_source_truth_apply_scaffold.py",
+        "scripts/sql_source_truth_authority_manifest.py"
+      ]
+    },
+    {
+      "path": "tmp/wf78-auto-tier-routing.json",
+      "owner": "WF78 auto-router",
+      "classification": "retain_source_feeder",
+      "reason": "Primary non-capital Tier A/B/C routing source feeding WF84; not duplicate truth.",
+      "exists": true,
+      "archive_ready": false,
+      "delete_ready": false,
+      "apply_allowed": false,
+      "owner_approval_plan": {
+        "candidate_action": "retain_now",
+        "approval_required_before_archive_or_delete": true,
+        "minimum_future_evidence": [
+          "WF84 consumer default switch remains clean",
+          "WF84/WF85 full-answer value parity is clean across the full WF84 ticker population",
+          "WF85 full-answer assembler remains the default ticker answer path",
+          "legacy answer packets are generated only from the assembler",
+          "additional consumers prove parity against WF84",
+          "active references no longer require this surface as feeder or fallback",
+          "ticker-answer-packet retirement approval plan remains planning_ready",
+          "db_lifecycle_manifest.py classifies the database or sidecar as archive_ready",
+          "Randall approves the exact archive packet"
+        ]
+      },
+      "reference_count": 131,
+      "active_reference_count": 83,
+      "sample_references": [
+        "scripts/artifact_index.py",
+        "scripts/artifact_intelligence_action_scorer.py",
+        "scripts/autonomous_routing_deployment_cards.py",
+        "scripts/canonical_finance_data_plane.py",
+        "scripts/canonical_finance_data_plane_contract.py",
+        "scripts/canonical_finance_data_plane_retirement_readiness.py",
+        "scripts/cron_freshness_spine.py",
+        "scripts/finance_decision_sync_spine.py",
+        "scripts/finance_intelligence_state.py",
+        "scripts/finance_market_deployment_operating_loop.py",
+        "scripts/finance_os_noncapital_expansion_packet.py",
+        "scripts/finance_sql_canon.py",
+        "scripts/finance_sql_canon_access.py",
+        "scripts/intraday_quote_snapshot_proof.py",
+        "scripts/in_band_review_attention_bridge.py",
+        "scripts/market_execution_readiness_cron_hardening.py",
+        "scripts/morning_paper_deployment_recommendation_builder.py",
+        "scripts/parallel_lane_recommender.py",
+        "scripts/parallel_repeatable_work_orchestrator.py",
+        "scripts/pm1_pm3_finance_pipeline_runner.py"
+      ]
+    },
+    {
+      "path": "tmp/wf78-tier-weighted-freshness-resolution.json",
+      "owner": "WF78 freshness resolution",
+      "classification": "retain_source_feeder",
+      "reason": "Evidence/freshness resolution source feeding WF84; not replaced by canonical interface.",
+      "exists": true,
+      "archive_ready": false,
+      "delete_ready": false,
+      "apply_allowed": false,
+      "owner_approval_plan": {
+        "candidate_action": "retain_now",
+        "approval_required_before_archive_or_delete": true,
+        "minimum_future_evidence": [
+          "WF84 consumer default switch remains clean",
+          "WF84/WF85 full-answer value parity is clean across the full WF84 ticker population",
+          "WF85 full-answer assembler remains the default ticker answer path",
+          "legacy answer packets are generated only from the assembler",
+          "additional consumers prove parity against WF84",
+          "active references no longer require this surface as feeder or fallback",
+          "ticker-answer-packet retirement approval plan remains planning_ready",
+          "db_lifecycle_manifest.py classifies the database or sidecar as archive_ready",
+          "Randall approves the exact archive packet"
+        ]
+      },
+      "reference_count": 43,
+      "active_reference_count": 27,
+      "sample_references": [
+        "scripts/artifact_index.py",
+        "scripts/canonical_finance_data_plane.py",
+        "scripts/canonical_finance_data_plane_contract.py",
+        "scripts/canonical_finance_data_plane_retirement_readiness.py",
+        "scripts/chain_manifest.py",
+        "scripts/cron_freshness_spine.py",
+        "scripts/finance_sql_canon.py",
+        "scripts/pm1_pm3_finance_pipeline_runner.py",
+        "scripts/pm_implementation_job_queue.py",
+        "scripts/pm_program_state.py",
+        "scripts/post_close_final_quote_ledger.py",
+        "scripts/README.md",
+        "scripts/reference_levels_targeted_repair_packet.py",
+        "scripts/sql_canon_migration_master_plan.py",
+        "scripts/sql_canon_phase2_backfill.py",
+        "scripts/test_reference_levels_targeted_repair_packet.py",
+        "scripts/test_reference_levels_wf78_retirement_migration_exception.py",
+        "scripts/trade_grade_os_freshness_cron_runner.py",
+        "scripts/trade_grade_os_readiness_rollup.py",
+        "scripts/trade_grade_repair_conveyor.py"
+      ]
+    },
+    {
+      "path": "tmp/finance-decision-sync-spine.json",
+      "owner": "finance decision sync spine",
+      "classification": "retain_optional_enrichment",
+      "reason": "Wider 206-row sync/enrichment surface; WF84 records its 6 extras but does not replace its synchronization role.",
+      "exists": true,
+      "archive_ready": false,
+      "delete_ready": false,
+      "apply_allowed": false,
+      "owner_approval_plan": {
+        "candidate_action": "retain_now",
+        "approval_required_before_archive_or_delete": true,
+        "minimum_future_evidence": [
+          "WF84 consumer default switch remains clean",
+          "WF84/WF85 full-answer value parity is clean across the full WF84 ticker population",
+          "WF85 full-answer assembler remains the default ticker answer path",
+          "legacy answer packets are generated only from the assembler",
+          "additional consumers prove parity against WF84",
+          "active references no longer require this surface as feeder or fallback",
+          "ticker-answer-packet retirement approval plan remains planning_ready",
+          "db_lifecycle_manifest.py classifies the database or sidecar as archive_ready",
+          "Randall approves the exact archive packet"
+        ]
+      },
+      "reference_count": 31,
+      "active_reference_count": 22,
+      "sample_references": [
+        "scripts/canonical_finance_data_plane.py",
+        "scripts/canonical_finance_data_plane_contract.py",
+        "scripts/canonical_finance_data_plane_phase6_10.py",
+        "scripts/canonical_finance_data_plane_retirement_readiness.py",
+        "scripts/chain_manifest.py",
+        "scripts/cron_freshness_spine.py",
+        "scripts/finance_decision_sync_spine.py",
+        "scripts/intraday_quote_snapshot_proof.py",
+        "scripts/in_band_review_attention_bridge.py",
+        "scripts/morning_paper_deployment_recommendation_builder.py",
+        "scripts/pm_implementation_job_queue.py",
+        "scripts/README.md",
+        "scripts/stale_paper_card_reference_guard.py",
+        "scripts/test_stale_paper_card_reference_guard.py",
+        "scripts/test_veritas_finance_brief.py",
+        "scripts/ticker_data_repair_controller.py",
+        "scripts/ticker_intelligence_card.py",
+        "scripts/trade_grade_decision_os_contract.py",
+        "scripts/truth_surface_inventory.py",
+        "scripts/veritas_finance_brief.py"
+      ]
+    },
+    {
+      "path": "tmp/wf78-capital-review-queue.json",
+      "owner": "WF78 capital-review preparation",
+      "classification": "retain_non_executing_review_queue",
+      "reason": "Owner-review queue source only; WF84 normalizes selected fields but does not own queue generation.",
+      "exists": true,
+      "archive_ready": false,
+      "delete_ready": false,
+      "apply_allowed": false,
+      "owner_approval_plan": {
+        "candidate_action": "retain_now",
+        "approval_required_before_archive_or_delete": true,
+        "minimum_future_evidence": [
+          "WF84 consumer default switch remains clean",
+          "WF84/WF85 full-answer value parity is clean across the full WF84 ticker population",
+          "WF85 full-answer assembler remains the default ticker answer path",
+          "legacy answer packets are generated only from the assembler",
+          "additional consumers prove parity against WF84",
+          "active references no longer require this surface as feeder or fallback",
+          "ticker-answer-packet retirement approval plan remains planning_ready",
+          "db_lifecycle_manifest.py classifies the database or sidecar as archive_ready",
+          "Randall approves the exact archive packet"
+        ]
+      },
+      "reference_count": 45,
+      "active_reference_count": 35,
+      "sample_references": [
+        "scripts/artifact_index.py",
+        "scripts/automation_stack_hardening_pass.py",
+        "scripts/canonical_finance_data_plane.py",
+        "scripts/canonical_finance_data_plane_contract.py",
+        "scripts/canonical_finance_data_plane_retirement_readiness.py",
+        "scripts/capital_deployment_band_integrity_validator.py",
+        "scripts/capital_deployment_recommendation_validator.py",
+        "scripts/chain_manifest.py",
+        "scripts/cron_freshness_spine.py",
+        "scripts/finance_decision_factory.py",
+        "scripts/finance_decision_sync_spine.py",
+        "scripts/intraday_quote_snapshot_proof.py",
+        "scripts/market_execution_readiness_cron_hardening.py",
+        "scripts/morning_paper_deployment_recommendation_builder.py",
+        "scripts/owner_gated_action_review_queue.py",
+        "scripts/parallel_lane_recommender.py",
+        "scripts/parallel_repeatable_work_orchestrator.py",
+        "scripts/pm_implementation_job_queue.py",
+        "scripts/pm_main_session_handoff.py",
+        "scripts/pm_program_state.py"
+      ]
+    },
+    {
+      "path": "tmp/canonical-finance-data-plane-contract.json",
+      "owner": "WF84 canonical finance data-plane",
+      "classification": "retain_contract",
+      "reason": "Schema/feeder/validator contract remains the design control surface for the packet and DB companion.",
+      "exists": true,
+      "archive_ready": false,
+      "delete_ready": false,
+      "apply_allowed": false,
+      "owner_approval_plan": {
+        "candidate_action": "retain_now",
+        "approval_required_before_archive_or_delete": true,
+        "minimum_future_evidence": [
+          "WF84 consumer default switch remains clean",
+          "WF84/WF85 full-answer value parity is clean across the full WF84 ticker population",
+          "WF85 full-answer assembler remains the default ticker answer path",
+          "legacy answer packets are generated only from the assembler",
+          "additional consumers prove parity against WF84",
+          "active references no longer require this surface as feeder or fallback",
+          "ticker-answer-packet retirement approval plan remains planning_ready",
+          "db_lifecycle_manifest.py classifies the database or sidecar as archive_ready",
+          "Randall approves the exact archive packet"
+        ]
+      },
+      "reference_count": 12,
+      "active_reference_count": 10,
+      "sample_references": [
+        "scripts/artifact_index.py",
+        "scripts/canonical_finance_data_plane.py",
+        "scripts/canonical_finance_data_plane_contract.py",
+        "scripts/canonical_finance_data_plane_retirement_readiness.py",
+        "scripts/pm_implementation_job_queue.py",
+        "scripts/pm_program_state.py",
+        "scripts/README.md",
+        "scripts/trade_grade_os_freshness_cron_runner.py",
+        "scripts/truth_surface_inventory.py",
+        "scripts/workflow_routing_index.py",
+        "06. Playbooks/Project Continuity/Workflow 84 - Trade-Grade Personal Finance OS Canonical Data Model.md",
+        "memory/2026-06-08.md"
+      ]
+    },
+    {
+      "path": "tmp/ticker-answer-packets",
+      "owner": "ticker answer packet response layer",
+      "classification": "compatibility_snapshot_retirement_candidate_planning_only",
+      "reason": "Legacy generated answer packets are now compatibility snapshots generated from the WF85 full-answer assembler; keep them until active readers are migrated and Randall approves the exact retirement packet.",
+      "exists": true,
+      "archive_ready": false,
+      "delete_ready": false,
+      "apply_allowed": false,
+      "owner_approval_plan": {
+        "candidate_action": "retain_now",
+        "approval_required_before_archive_or_delete": true,
+        "minimum_future_evidence": [
+          "WF84 consumer default switch remains clean",
+          "WF84/WF85 full-answer value parity is clean across the full WF84 ticker population",
+          "WF85 full-answer assembler remains the default ticker answer path",
+          "legacy answer packets are generated only from the assembler",
+          "additional consumers prove parity against WF84",
+          "active references no longer require this surface as feeder or fallback",
+          "ticker-answer-packet retirement approval plan remains planning_ready",
+          "db_lifecycle_manifest.py classifies the database or sidecar as archive_ready",
+          "Randall approves the exact archive packet"
+        ]
+      },
+      "reference_count": 11,
+      "active_reference_count": 6,
+      "sample_references": [
+        "scripts/canonical_finance_data_plane_retirement_readiness.py",
+        "scripts/concurrent_lane_manager.py",
+        "scripts/sql_canon_parallel_phase_executor.py",
+        "scripts/ticker_answer_packet.py",
+        "scripts/ticker_answer_packet_retirement_plan.py",
+        "scripts/trade_grade_full_answer_assembler.py",
+        "memory/2026-06-06.md",
+        "memory/2026-06-07.md",
+        "memory/2026-06-09.md",
+        "memory/2026-06-19-1842.md",
+        "memory/2026-06-19.md"
+      ]
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards",
+      "owner": "ticker intelligence evidence cache",
+      "classification": "retain_evidence_cache",
+      "reason": "Cards still carry rich source-fed evidence sections and remain source-openable evidence caches under WF84/WF85.",
+      "exists": true,
+      "archive_ready": false,
+      "delete_ready": false,
+      "apply_allowed": false,
+      "owner_approval_plan": {
+        "candidate_action": "retain_now",
+        "approval_required_before_archive_or_delete": true,
+        "minimum_future_evidence": [
+          "WF84 consumer default switch remains clean",
+          "WF84/WF85 full-answer value parity is clean across the full WF84 ticker population",
+          "WF85 full-answer assembler remains the default ticker answer path",
+          "legacy answer packets are generated only from the assembler",
+          "additional consumers prove parity against WF84",
+          "active references no longer require this surface as feeder or fallback",
+          "ticker-answer-packet retirement approval plan remains planning_ready",
+          "db_lifecycle_manifest.py classifies the database or sidecar as archive_ready",
+          "Randall approves the exact archive packet"
+        ]
+      },
+      "reference_count": 81,
+      "active_reference_count": 63,
+      "sample_references": [
+        "scripts/artifact_index.py",
+        "scripts/canonical_finance_data_plane.py",
+        "scripts/canonical_finance_data_plane_retirement_readiness.py",
+        "scripts/dashboard_validation.py",
+        "scripts/finance_data_coverage.py",
+        "scripts/finance_intelligence_router_qa.py",
+        "scripts/finance_intelligence_state.py",
+        "scripts/finance_sql_canon.py",
+        "scripts/full_intelligence_answer_parity.py",
+        "scripts/human_facing_truth_surface.py",
+        "scripts/json_sql_promotion_index.py",
+        "scripts/retail_saas_fixture_demo.py",
+        "scripts/retail_truth_routing_contract.py",
+        "scripts/sql_500_ticker_expansion_design_gate.py",
+        "scripts/sql_pre_phase5_hardening_gate.py",
+        "scripts/test_canonical_finance_data_plane_repair_semantics.py",
+        "scripts/ticker_answer_packet.py",
+        "scripts/ticker_card_freshness_owner_runner.py",
+        "scripts/ticker_intelligence_card.py",
+        "scripts/tier_a_cohort_alignment_reconciliation.py"
+      ]
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [],
+    "checks": [
+      {
+        "check": "archive_ready_count_zero",
+        "status": "ok",
+        "count": 0
+      },
+      {
+        "check": "delete_ready_count_zero",
+        "status": "ok",
+        "count": 0
+      },
+      {
+        "check": "apply_allowed_false",
+        "status": "ok"
+      }
+    ]
+  },
+  "stop_lines": [
+    "No archive, move, delete, rewrite, checkpoint, vacuum, or cleanup action.",
+    "No source feeder is retired while WF84 remains an interface built from those feeders.",
+    "No generated packet or SQLite row becomes canon, portfolio, capital, or execution authority."
+  ]
+}

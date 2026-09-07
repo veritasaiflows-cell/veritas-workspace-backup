@@ -36,17 +36,17 @@ CRON_SCORECARD = TMP / "cron-signal-scorecard.json"
 ESCALATION = TMP / "escalation-trigger.json"
 ESCALATION_CONSUMER = TMP / "main-session-escalation-consumer.json"
 PM_CONTROL = TMP / "pm-control-packet.json"
-PM_EXECUTION_LOOP = TMP / "pm-execution-loop.json"
-PARALLEL_RECOMMENDATION = TMP / "parallel-lane-recommendation.json"
 CONTROL_CLOSEOUT = TMP / "control-closeout-bundle.json"
 WF74_OPPORTUNITY_QUEUE = TMP / "wf74-improvement-opportunity-queue.json"
 WF74_PROPOSAL_AUTOPILOT = TMP / "wf74-reflection-to-proposal-autopilot.json"
 WF74_AUTO_PATCH_PROPOSER = TMP / "wf74-auto-patch-proposer.json"
 WORKFLOW_ADVANCEMENT = TMP / "workflow-advancement-scorecard.json"
 WORKFLOW_BLOCKER_FOLLOWUPS = TMP / "workflow-blocker-followups.json"
-FINANCE_RESPONSE_QUALITY = TMP / "finance-response-quality-slice.json"
-TRADE_GRADE_REPAIR_CONVEYOR = TMP / "trade-grade-repair-conveyor.json"
-WF78_SOURCE_OPEN_WORK_PACKETS = TMP / "wf78-source-open-work-packets.json"
+FINANCE_SQL_GUARD = TMP / "finance-sql-canon-access-validation.json"
+ALERT_QUOTE_PROOF = TMP / "intraday-alerts" / "quote-snapshot-proof.json"
+ALERT_FRESHNESS_CONTROLLER = TMP / "alert-level-freshness-controller.json"
+ALERT_RECOMMENDATIONS_DIGEST = TMP / "finance-alert-os-digest.json"
+ALERTS_OS_PIVOT_VALIDATOR = TMP / "alerts-os-pivot-validator.json"
 
 SCHEMA = "veritas.main_session_greenkeeper_controller.v1"
 
@@ -58,16 +58,12 @@ AUTHORITY_BOUNDARY = {
     "cron_schedule_mutation_allowed": False,
     "runtime_config_mutation_allowed": False,
     "config_auth_channel_mutation_allowed": False,
-    "canon_or_portfolio_mutation_allowed": False,
+    "finance_state_mutation_allowed": False,
     "sql_canon_mutation_allowed": False,
     "sql_or_ticker_import_allowed": False,
     "cleanup_move_delete_archive_allowed": False,
     "customer_or_external_delivery_allowed": False,
-    "capital_deployment_allowed": False,
-    "capital_deployment_approved": False,
-    "trade_or_execution_allowed": False,
-    "trade_or_execution_approved": False,
-    "paper_or_live_execution_allowed": False,
+    "capital_or_execution_action_allowed": False,
     "brokerage_or_account_action_allowed": False,
     "money_movement_allowed": False,
     "owner_approval_inferred": False,
@@ -79,19 +75,12 @@ FRONTDOOR_REFRESH_COMMANDS: list[tuple[str, list[str], int]] = [
     ("escalation_trigger", ["scripts\\escalation_trigger.py", "--write", "--validate"], 240),
     ("cron_control_packet", ["scripts\\cron_control_packet.py", "--write", "--validate"], 300),
     ("pm_control_packet", ["scripts\\pm_control_packet.py", "--write", "--write-db", "--validate"], 300),
-    ("parallel_lane_recommender", ["scripts\\parallel_lane_recommender.py", "--write", "--validate"], 240),
-    ("pm_execution_loop_dry_run", ["scripts\\pm_execution_loop.py", "--write", "--validate"], 240),
 ]
 
 SAFE_REPAIR_COMMANDS: dict[str, tuple[list[str], int]] = {
     "artifact_index_incremental": (["scripts\\artifact_index.py", "incremental"], 300),
     "artifact_index_validate": (["scripts\\artifact_index.py", "validate"], 300),
-    "pm_cockpit_live_required_source_refresh": (
-        ["scripts\\wf78_tier_capacity_policy_gate.py", "--write", "--write-db", "--validate"],
-        240,
-    ),
     "pm_control_packet": (["scripts\\pm_control_packet.py", "--write", "--write-db", "--validate"], 300),
-    "parallel_lane_recommender": (["scripts\\parallel_lane_recommender.py", "--write", "--validate"], 240),
     "workflow_advancement_scorecard": (
         ["scripts\\workflow_advancement_scorecard.py", "--write", "--validate"],
         240,
@@ -104,41 +93,17 @@ SAFE_REPAIR_COMMANDS: dict[str, tuple[list[str], int]] = {
         ["scripts\\wf74_auto_patch_proposer.py", "--write", "--validate"],
         240,
     ),
-    "finance_response_quality_slice": (
-        ["scripts\\finance_response_quality_slice.py", "--write", "--write-md", "--validate"],
-        300,
+    "alerts_recommendations_midday_chain": (
+        ["scripts\\run_alerts_recommendations_chain.py", "midday", "--timeout-seconds", "120", "--write", "--validate"],
+        600,
     ),
-    "trade_grade_decision_cards": (
-        ["scripts\\trade_grade_decision_cards.py", "--write", "--validate"],
-        300,
-    ),
-    "trade_grade_repair_conveyor": (
-        ["scripts\\trade_grade_repair_conveyor.py", "--write", "--validate"],
-        300,
-    ),
-    "finance_response_quality_repair_loop": (
-        ["scripts\\finance_response_quality_repair_loop.py", "--write", "--write-md", "--validate"],
-        300,
-    ),
-    "wf78_source_open_repair_executor": (
-        ["scripts\\wf78_source_open_repair_executor.py", "--tier", "all", "--write", "--validate"],
-        300,
-    ),
-    "wf78_source_open_work_packet": (
-        ["scripts\\wf78_source_open_work_packet.py", "--write", "--validate"],
-        300,
-    ),
-    "wf78_deployment_readiness_review": (
-        ["scripts\\wf78_deployment_readiness_review.py", "--write", "--validate"],
-        300,
-    ),
-    "wf78_tier_weighted_freshness_resolver": (
-        ["scripts\\wf78_tier_weighted_freshness_resolver.py", "--write", "--validate"],
-        300,
+    "alerts_os_pivot_validator": (
+        ["scripts\\alerts_os_pivot_validator.py", "--write", "--validate"],
+        240,
     ),
 }
 
-SOFT_FRONTDOOR_FAILURES = {"parallel_lane_recommender"}
+SOFT_FRONTDOOR_FAILURES: set[str] = set()
 
 STOP_LINE_TOKENS = (
     "--apply",
@@ -176,6 +141,95 @@ def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
 
+RETIRED_FINANCE_ROUTE_MARKERS = (
+    "wf67", "wf68", "wf78", "wf86", "wf87",
+    "trade-grade", "trade_grade",
+    "deployment-readiness", "deployment_readiness",
+    "capital-deployment", "capital_deployment",
+    "position-sizing", "position_sizing",
+    "approval-card", "approval_card",
+    "repair-conveyor", "repair_conveyor",
+    "paper-position", "paper_position",
+    "paper-state", "paper_state",
+    "paper-autotrader", "paper_autotrader",
+    "portfolio-config", "portfolio_config",
+)
+
+
+def retired_finance_route_text(value: Any) -> bool:
+    text = str(value or "").lower()
+    return any(marker in text for marker in RETIRED_FINANCE_ROUTE_MARKERS)
+
+
+def active_action_is_retired(action: dict[str, Any]) -> bool:
+    identity = " ".join(str(action.get(key) or "") for key in (
+        "id", "opportunity_id", "title", "category", "reason", "source", "path"
+    ))
+    commands = " ".join(str(item) for item in as_list(action.get("commands")))
+    return retired_finance_route_text(f"{identity} {commands}")
+
+
+def alerts_os_proof_health() -> dict[str, Any]:
+    sources = {
+        "sql_guard": FINANCE_SQL_GUARD,
+        "quote_snapshot": ALERT_QUOTE_PROOF,
+        "freshness_controller": ALERT_FRESHNESS_CONTROLLER,
+        "recommendations_digest": ALERT_RECOMMENDATIONS_DIGEST,
+        "pivot_validator": ALERTS_OS_PIVOT_VALIDATOR,
+    }
+    proofs: dict[str, dict[str, Any]] = {}
+    blocked: list[str] = []
+    for name, path in sources.items():
+        payload = load_json(path)
+        validation_status = as_dict(payload.get("validation")).get("status")
+        ok = bool(payload) and payload.get("status") == "ok" and validation_status in {None, "ok"}
+        if not ok:
+            blocked.append(name)
+        proofs[name] = {
+            **artifact_view(path),
+            "ticker_count": as_dict(payload.get("summary")).get("ticker_count"),
+        }
+    return {
+        "status": "ok" if not blocked else "blocked",
+        "blocked_proofs": blocked,
+        "proofs": proofs,
+    }
+
+
+def classify_alerts_os(health: dict[str, Any]) -> list[dict[str, Any]]:
+    blocked = [str(item) for item in as_list(health.get("blocked_proofs"))]
+    if not blocked:
+        return [{
+            "id": "alerts_os_green",
+            "classification": "no_reply",
+            "severity": "info",
+            "reason": "Guarded SQL, quote evidence, alert freshness, recommendations digest, and pivot boundary are clean.",
+            "commands": [],
+            "owner_gate_required": False,
+        }]
+    repairable = [item for item in blocked if item != "pivot_validator"]
+    actions: list[dict[str, Any]] = []
+    if repairable:
+        actions.append({
+            "id": "alerts_os_proof_refresh",
+            "classification": "auto_refresh",
+            "severity": "medium",
+            "reason": f"Alerts OS proof refresh required: {', '.join(repairable)}",
+            "commands": ["alerts_recommendations_midday_chain", "alerts_os_pivot_validator"],
+            "owner_gate_required": False,
+        })
+    if "pivot_validator" in blocked:
+        actions.append({
+            "id": "alerts_os_boundary_blocked",
+            "classification": "main_handoff",
+            "severity": "high",
+            "reason": "Alerts OS pivot boundary validator is not clean; inspect its exact active-surface findings.",
+            "commands": [],
+            "owner_gate_required": False,
+        })
+    return actions
+
+
 def load_json(path: Path) -> dict[str, Any]:
     payload = load_json_artifact(path)
     return payload if isinstance(payload, dict) else {}
@@ -206,9 +260,8 @@ def command_is_greenkeeper_safe(parts: list[str], *, allow_execute: bool = False
     lowered = f" {command.lower()} "
     if any(token in lowered for token in STOP_LINE_TOKENS):
         return False
-    if allow_execute and parts[:1] == ["scripts\\pm_execution_loop.py"] and "--execute" in parts:
-        stripped = [part for part in parts if part != "--execute"]
-        return command_is_review_only_safe(" ".join(stripped))
+    if allow_execute:
+        return False
     return command_is_review_only_safe(command)
 
 
@@ -230,11 +283,6 @@ def run_command(name: str, parts: list[str], timeout: int, *, allow_execute: boo
     try:
         proc = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, timeout=timeout)
         ok = proc.returncode == 0
-        accepted_no_work = False
-        if not ok and name == "wf78_source_open_work_packet":
-            packet = load_json(WF78_SOURCE_OPEN_WORK_PACKETS)
-            accepted_no_work = wf78_source_open_work_packet_no_work_ok(packet)
-            ok = accepted_no_work
         return {
             "name": name,
             "command": command,
@@ -242,9 +290,8 @@ def run_command(name: str, parts: list[str], timeout: int, *, allow_execute: boo
             "completed_at_utc": utc_now(),
             "returncode": proc.returncode,
             "ok": ok,
-            "accepted_no_work_wait_state": accepted_no_work,
-            "stdout_preview": proc.stdout.strip()[-2500:],
-            "stderr_preview": proc.stderr.strip()[-1500:],
+            "stdout_captured": bool(proc.stdout.strip()),
+            "stderr_captured": bool(proc.stderr.strip()),
         }
     except subprocess.TimeoutExpired as exc:
         return {
@@ -255,29 +302,9 @@ def run_command(name: str, parts: list[str], timeout: int, *, allow_execute: boo
             "returncode": None,
             "ok": False,
             "timeout_seconds": timeout,
-            "stdout_preview": (exc.stdout or "")[-2500:] if isinstance(exc.stdout, str) else "",
-            "stderr_preview": (exc.stderr or "")[-1500:] if isinstance(exc.stderr, str) else "",
+            "stdout_captured": bool(exc.stdout),
+            "stderr_captured": bool(exc.stderr),
         }
-
-
-def wf78_source_open_work_packet_no_work_ok(packet: dict[str, Any]) -> bool:
-    summary = as_dict(packet.get("summary"))
-    validation = as_dict(packet.get("validation"))
-    boundary = as_dict(packet.get("authority_boundary"))
-    return (
-        str(packet.get("status")) == "blocked"
-        and summary.get("work_item_count") == 0
-        and summary.get("packet_count") == 0
-        and summary.get("top_recommendation") == "No packet work available."
-        and validation.get("errors") == ["no source-open work items found"]
-        and boundary.get("review_only") is True
-        and boundary.get("work_packet_generation_only") is True
-        and boundary.get("capital_deployment_allowed") is False
-        and boundary.get("trade_or_execution_allowed") is False
-        and boundary.get("paper_or_live_execution_allowed") is False
-        and boundary.get("brokerage_or_account_action_allowed") is False
-        and boundary.get("owner_approval_inferred") is False
-    )
 
 
 def maybe_refresh_frontdoors(args: argparse.Namespace) -> list[dict[str, Any]]:
@@ -360,10 +387,10 @@ def classify_pm(pm_control: dict[str, Any], pm_loop: dict[str, Any]) -> list[dic
     if int(cockpit.get("missing_required_count") or 0) or int(cockpit.get("stale_required_count") or 0):
         actions.append({
             "id": "pm_cockpit_required_source_drift",
-            "classification": "auto_repair",
+            "classification": "main_handoff",
             "severity": "medium",
-            "reason": "PM cockpit required source health is not clean",
-            "commands": ["pm_cockpit_live_required_source_refresh", "pm_control_packet"],
+            "reason": "PM cockpit required source health is not clean; inspect the named current owner proof.",
+            "commands": [],
             "owner_gate_required": False,
         })
     if int(readiness.get("stale_lanes") or 0) > 0:
@@ -384,7 +411,9 @@ def classify_pm(pm_control: dict[str, Any], pm_loop: dict[str, Any]) -> list[dic
             "commands": [],
             "owner_gate_required": True,
         })
-    if handoff.get("signal_class") == "MAIN_SESSION_REQUIRED":
+    top_action_retired = active_action_is_retired(top_next_action) if top_next_action else False
+    handoff_retired = retired_finance_route_text(json.dumps(handoff, sort_keys=True))
+    if handoff.get("signal_class") == "MAIN_SESSION_REQUIRED" and not top_action_retired and not handoff_retired:
         actions.append({
             "id": "pm_main_session_handoff_ready",
             "classification": "main_handoff",
@@ -394,7 +423,7 @@ def classify_pm(pm_control: dict[str, Any], pm_loop: dict[str, Any]) -> list[dic
             "owner_gate_required": False,
             "selected_job": as_list(loop_summary.get("selected_jobs"))[:1],
         })
-    elif handoff.get("status") == "recently_dispatched" and top_next_action:
+    elif handoff.get("status") == "recently_dispatched" and top_next_action and not top_action_retired:
         actions.append({
             "id": "pm_main_session_followup_throttled_but_visible",
             "classification": "main_handoff",
@@ -470,9 +499,7 @@ def classify_wf74_auto_handling(
     queue: dict[str, Any],
     proposals: dict[str, Any],
     auto_patch: dict[str, Any],
-    finance_response: dict[str, Any],
     workflow_advancement: dict[str, Any],
-    repair_conveyor: dict[str, Any],
     cron_control: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     actions: list[dict[str, Any]] = []
@@ -493,6 +520,8 @@ def classify_wf74_auto_handling(
     for row in opportunities:
         priority = int(row.get("priority") or 0)
         category = row.get("category")
+        if category == "finance_mutation" or active_action_is_retired(row):
+            continue
         proposal_gate = row.get("proposal_gate")
         boundary = as_dict(row.get("authority_boundary"))
         if category == "workflow_maturity" and priority >= 85 and proposal_gate == "main_review_required":
@@ -601,69 +630,6 @@ def classify_wf74_auto_handling(
                 blocked.update({
                     "classification": "blocked",
                     "reason": "WF74 cron migration opportunity authority boundary is not review-only clean",
-                    "commands": [],
-                    "owner_gate_required": True,
-                })
-                actions.append(blocked)
-        elif category == "finance_mutation" and priority >= 85 and proposal_gate == "finance_repair_proposal_only":
-            finance_summary = as_dict(finance_response.get("summary"))
-            repair_summary = as_dict(repair_conveyor.get("summary"))
-            proposals_for_row = matching_proposals(proposals, str(row.get("opportunity_id")))
-            action_base = {
-                "id": "wf74_finance_quality_repair_routing",
-                "opportunity_id": row.get("opportunity_id"),
-                "classification": "auto_repair",
-                "severity": "high",
-                "reason": row.get("recommended_action") or "Route finance response-quality gaps into repair proposals.",
-                "title": row.get("title"),
-                "priority": priority,
-                "category": category,
-                "proposal_gate": proposal_gate,
-                "source_artifacts": [
-                    rel(WF74_OPPORTUNITY_QUEUE),
-                    rel(WF74_PROPOSAL_AUTOPILOT),
-                    rel(FINANCE_RESPONSE_QUALITY),
-                    rel(TRADE_GRADE_REPAIR_CONVEYOR),
-                ],
-                "proposal_ids": [proposal.get("proposal_id") for proposal in proposals_for_row],
-                "evidence": {
-                    **as_dict(row.get("evidence")),
-                    "finance_response_quality_status": finance_response.get("status"),
-                    "finance_source_freshness_blocked_count": finance_summary.get("source_freshness_blocked_count"),
-                    "finance_remediation_tracks_needing_repair": finance_summary.get("remediation_tracks_needing_repair"),
-                    "repair_conveyor_status": repair_conveyor.get("status"),
-                    "repair_conveyor_row_count": repair_summary.get("total_repair_conveyor_row_count"),
-                },
-                "commands": [
-                    "trade_grade_decision_cards",
-                    "trade_grade_repair_conveyor",
-                    "wf78_source_open_repair_executor",
-                    "wf78_source_open_work_packet",
-                    "wf78_deployment_readiness_review",
-                    "wf78_tier_weighted_freshness_resolver",
-                    "finance_response_quality_repair_loop",
-                    "pm_control_packet",
-                ],
-                "post_repair_verification_commands": [
-                    "finance_response_quality_slice",
-                    "wf74_model_quality_collection_cron_runner",
-                ],
-                "owner_gate_required": False,
-                "auto_handling_scope": "refresh_review_only_finance_source_open_repair_inputs_before_fail_closed_quality_verification",
-                "blocked_if_next_step_requires": [
-                    "canon_or_portfolio_mutation",
-                    "cash_sizing_risk_or_execution_mutation",
-                    "paper_or_live_order_action",
-                    "owner_approval_inference",
-                ],
-            }
-            if review_only_boundary_clean(boundary):
-                actions.append(action_base)
-            else:
-                blocked = dict(action_base)
-                blocked.update({
-                    "classification": "blocked",
-                    "reason": "WF74 finance opportunity authority boundary is not review-only clean",
                     "commands": [],
                     "owner_gate_required": True,
                 })
@@ -821,13 +787,6 @@ def execute_safe_actions(actions: list[dict[str, Any]], args: argparse.Namespace
                 continue
             seen.add(key)
             results.append(run_command(command_id, parts, timeout))
-    if args.execute_pm_proof:
-        results.append(run_command(
-            "pm_execution_loop_execute",
-            ["scripts\\pm_execution_loop.py", "--execute", "--write", "--validate"],
-            900,
-            allow_execute=True,
-        ))
     return results
 
 
@@ -853,59 +812,53 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     escalation = load_json(ESCALATION)
     escalation_consumer = load_json(ESCALATION_CONSUMER)
     pm_control = load_json(PM_CONTROL)
-    pm_loop = load_json(PM_EXECUTION_LOOP)
-    parallel = load_json(PARALLEL_RECOMMENDATION)
     wf74_queue = load_json(WF74_OPPORTUNITY_QUEUE)
     wf74_proposals = load_json(WF74_PROPOSAL_AUTOPILOT)
     wf74_auto_patch = load_json(WF74_AUTO_PATCH_PROPOSER)
-    finance_response = load_json(FINANCE_RESPONSE_QUALITY)
     workflow_advancement = load_json(WORKFLOW_ADVANCEMENT)
-    repair_conveyor = load_json(TRADE_GRADE_REPAIR_CONVEYOR)
+    alerts_health = alerts_os_proof_health()
 
     actions = (
         classify_cron(cron_control, escalation)
-        + classify_pm(pm_control, pm_loop)
+        + classify_pm(pm_control, {})
+        + classify_alerts_os(alerts_health)
         + classify_wf74_auto_handling(
             wf74_queue,
             wf74_proposals,
             wf74_auto_patch,
-            finance_response,
             workflow_advancement,
-            repair_conveyor,
             cron_control=cron_control,
         )
         + classify_sidecars(pm_control)
         + contract_lint()
     )
+    actions = [action for action in actions if not active_action_is_retired(action)]
     execution_results = execute_safe_actions(actions, args)
     pre_execution_actions = actions
     if execution_results and all(result.get("ok") for result in execution_results):
         cron_control = load_json(CRON_CONTROL)
         escalation = load_json(ESCALATION)
         pm_control = load_json(PM_CONTROL)
-        pm_loop = load_json(PM_EXECUTION_LOOP)
-        parallel = load_json(PARALLEL_RECOMMENDATION)
         wf74_queue = load_json(WF74_OPPORTUNITY_QUEUE)
         wf74_proposals = load_json(WF74_PROPOSAL_AUTOPILOT)
         wf74_auto_patch = load_json(WF74_AUTO_PATCH_PROPOSER)
-        finance_response = load_json(FINANCE_RESPONSE_QUALITY)
         workflow_advancement = load_json(WORKFLOW_ADVANCEMENT)
-        repair_conveyor = load_json(TRADE_GRADE_REPAIR_CONVEYOR)
+        alerts_health = alerts_os_proof_health()
         actions = (
             classify_cron(cron_control, escalation)
-            + classify_pm(pm_control, pm_loop)
+            + classify_pm(pm_control, {})
+            + classify_alerts_os(alerts_health)
             + classify_wf74_auto_handling(
                 wf74_queue,
                 wf74_proposals,
                 wf74_auto_patch,
-                finance_response,
                 workflow_advancement,
-                repair_conveyor,
                 cron_control=cron_control,
             )
             + classify_sidecars(pm_control)
             + contract_lint()
         )
+        actions = [action for action in actions if not active_action_is_retired(action)]
 
     errors: list[str] = []
     warnings: list[str] = []
@@ -953,6 +906,9 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     status = "ok" if not errors else "blocked"
     if status == "ok" and warnings:
         status = "warning"
+    pm_handoff = as_dict(as_dict(pm_control.get("summary")).get("main_session_handoff"))
+    if retired_finance_route_text(json.dumps(pm_handoff, sort_keys=True)):
+        pm_handoff = {}
 
     report = {
         "schema": SCHEMA,
@@ -966,16 +922,17 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "escalation_trigger": artifact_view(ESCALATION),
             "main_session_escalation_consumer": artifact_view(ESCALATION_CONSUMER),
             "pm_control": artifact_view(PM_CONTROL),
-            "pm_execution_loop": artifact_view(PM_EXECUTION_LOOP),
-            "parallel_lane_recommendation": artifact_view(PARALLEL_RECOMMENDATION),
             "control_closeout": artifact_view(CONTROL_CLOSEOUT),
             "wf74_opportunity_queue": artifact_view(WF74_OPPORTUNITY_QUEUE),
             "wf74_proposal_autopilot": artifact_view(WF74_PROPOSAL_AUTOPILOT),
             "wf74_auto_patch_proposer": artifact_view(WF74_AUTO_PATCH_PROPOSER),
             "workflow_advancement_scorecard": artifact_view(WORKFLOW_ADVANCEMENT),
             "workflow_blocker_followups": artifact_view(WORKFLOW_BLOCKER_FOLLOWUPS),
-            "finance_response_quality_slice": artifact_view(FINANCE_RESPONSE_QUALITY),
-            "trade_grade_repair_conveyor": artifact_view(TRADE_GRADE_REPAIR_CONVEYOR),
+            "finance_sql_guard": artifact_view(FINANCE_SQL_GUARD),
+            "alert_quote_snapshot": artifact_view(ALERT_QUOTE_PROOF),
+            "alert_freshness_controller": artifact_view(ALERT_FRESHNESS_CONTROLLER),
+            "alert_recommendations_digest": artifact_view(ALERT_RECOMMENDATIONS_DIGEST),
+            "alerts_os_pivot_validator": artifact_view(ALERTS_OS_PIVOT_VALIDATOR),
         },
         "summary": {
             "action_count": len(actions),
@@ -1015,8 +972,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "escalation_consumer_status": escalation_consumer.get("status"),
             "escalation_consumer_unresolved_count": as_dict(escalation_consumer.get("summary")).get("unresolved_count"),
             "escalation_consumer_executed_safe_action_count": as_dict(escalation_consumer.get("summary")).get("executed_safe_action_count"),
-            "pm_main_session_handoff": as_dict(as_dict(pm_control.get("summary")).get("main_session_handoff")),
-            "parallel_eligible_candidate_count": as_dict(parallel.get("summary")).get("eligible_candidate_count"),
+            "pm_main_session_handoff": pm_handoff,
+            "finance_alerts_os": alerts_health,
             "next_safe_action": (
                 "Inspect blocked_action_present before running safe execution."
                 if "blocked_action_present" in warnings
@@ -1034,8 +991,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         },
         "stop_lines": [
             "Dry-run by default; --execute-safe runs only allowlisted review-only proof/freshness commands.",
-            "--execute-pm-proof is separately explicit and still routes through pm_execution_loop command guards.",
-            "No cron schedule/state edit, runtime/config/auth mutation, external delivery, canon/portfolio mutation, SQL/ticker import, capital deployment, paper/live/account action, money movement, or owner approval inference.",
+            "The retired --execute-pm-proof compatibility flag always fails closed.",
+            "No cron schedule/state edit, runtime/config/auth mutation, external delivery, finance-state mutation, SQL/ticker import, capital/execution/account action, money movement, or owner approval inference.",
         ],
     }
     return report
@@ -1047,14 +1004,14 @@ def main() -> int:
     parser.add_argument("--validate", action="store_true", help="Return non-zero only on blocked validation.")
     parser.add_argument("--refresh-frontdoors", action="store_true", help="Run allowlisted front-door proof refresh before classifying.")
     parser.add_argument("--execute-safe", action="store_true", help="Run allowlisted auto_refresh/auto_repair proof commands.")
-    parser.add_argument("--execute-pm-proof", action="store_true", help="When --execute-safe is set, also run guarded pm_execution_loop --execute.")
+    parser.add_argument("--execute-pm-proof", action="store_true", help="Retired compatibility flag; always fails closed.")
     parser.add_argument("--append-ledger", action="store_true", help="Append this report summary to the greenkeeper action ledger.")
     parser.add_argument("--out", type=Path, default=OUT)
     parser.add_argument("--ledger", type=Path, default=LEDGER)
     args = parser.parse_args()
 
-    if args.execute_pm_proof and not args.execute_safe:
-        print("--execute-pm-proof requires --execute-safe", file=sys.stderr)
+    if args.execute_pm_proof:
+        print("--execute-pm-proof is retired; route explicit PM work through its active owner", file=sys.stderr)
         return 2
 
     report = build_report(args)

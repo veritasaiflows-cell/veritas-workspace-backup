@@ -27,6 +27,9 @@ LEDGER_PROOF = ROOT / "tmp" / "interactive-training-xapi-ledger-proof.json"
 CATALOG_JSON = BUILDER_DIR / "catalog.json"
 CATALOG_HTML = TRAINING_ROOT / "index.html"
 PROOF = ROOT / "tmp" / "interactive-training-catalog-proof.json"
+RECORDINGS_MANIFEST = BUILDER_DIR / "recordings" / "manifest.json"
+RECORDINGS_README_HREF = "interactive-training-builder/recordings/README.md"
+WALKTHROUGHS_DIR = BUILDER_DIR / "walkthroughs"
 
 
 def utc_now() -> str:
@@ -187,6 +190,8 @@ def build_catalog() -> dict[str, Any]:
         "component_library_md": href_from_catalog(builder_outputs.get("component_library_md", "training/interactive-training-builder/component-library.md")),
         "standards_evaluation": href_from_catalog(builder_outputs.get("standards_evaluation", "training/interactive-training-builder/standards-upgrade-evaluation.json")),
     }
+    clips = load_recordings()
+    walkthroughs = load_walkthroughs()
     catalog = {
         "schema": "veritas.interactive_training_catalog.v1",
         "generated_at_utc": utc_now(),
@@ -214,6 +219,19 @@ def build_catalog() -> dict[str, Any]:
             "interactions": sum(int(module.get("interactions") or 0) for module in modules),
             "qa_ok": sum(1 for module in modules if module["qa"]["status"] == "ok"),
             "scorm_ok": sum(1 for module in modules if module["scorm"]["status"] == "ok"),
+            "local_clips": len(clips),
+            "teaching_walkthroughs": len(walkthroughs),
+        },
+        "recordings": {
+            "manifest": rel(RECORDINGS_MANIFEST),
+            "readme": RECORDINGS_README_HREF,
+            "clips": clips,
+        },
+        "walkthroughs": walkthroughs,
+        "capabilities": {
+            "screen_recording_player": True,
+            "local_screen_capture_helper": True,
+            "external_lms_lrs_configured": False,
         },
         "validation": {"errors": errors, "warnings": warnings},
         "authority_boundary": {
@@ -228,15 +246,82 @@ def build_catalog() -> dict[str, Any]:
     return catalog
 
 
+def load_walkthroughs() -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    if not WALKTHROUGHS_DIR.exists():
+        return rows
+    for path in sorted(WALKTHROUGHS_DIR.glob("*.html")):
+        rows.append(
+            {
+                "file": f"interactive-training-builder/walkthroughs/{path.name}",
+                "title": path.stem.replace("-", " "),
+                "watch_only": True,
+            }
+        )
+    return rows
+
+
+def load_recordings() -> list[dict[str, Any]]:
+    manifest = load_json(RECORDINGS_MANIFEST, default={}) or {}
+    clips = manifest.get("clips") or []
+    return [clip for clip in clips if isinstance(clip, dict)]
+
+
 def render_status(value: str) -> str:
     label = value.upper()
     cls = "ok" if value == "ok" else "warn"
     return f'<span class="badge {cls}">{esc(label)}</span>'
 
 
+def render_walkthroughs_section(walkthroughs: list[dict[str, Any]]) -> str:
+    items = "\n".join(
+        f'        <li><a href="{esc(item.get("file"))}">Watch {esc(item.get("title"))}</a></li>'
+        for item in walkthroughs
+    ) or "        <li>No teaching walkthroughs are published yet.</li>"
+    return (
+        '    <section class="ledger recordings" aria-label="Teaching walkthroughs">\n'
+        '      <h2>Teaching walkthroughs</h2>\n'
+        '      <p>Watch-only local lessons. You do not record these. Open one, then return to the Day 1 module and mark it reviewed.</p>\n'
+        '      <ul class="clip-list">\n'
+        f'{items}\n'
+        '      </ul>\n'
+        '    </section>\n'
+    )
+
+
+def render_recordings_section(clips: list[dict[str, Any]]) -> str:
+    if clips:
+        items = "\n".join(
+            f'        <li><code>{esc(clip.get("file"))}</code> ({esc(clip.get("size_bytes"))} bytes)</li>'
+            for clip in clips
+        )
+        return (
+            '    <section class="ledger recordings" aria-label="Local screen recordings">\n'
+            '      <h2>Local screen recordings</h2>\n'
+            f'      <p>{len(clips)} local clip(s) available to module players. Files stay on this machine.</p>\n'
+            '      <ul class="clip-list">\n'
+            f'{items}\n'
+            '      </ul>\n'
+            '    </section>\n'
+        )
+    return (
+        '    <section class="ledger recordings" aria-label="Local screen recordings">\n'
+        '      <h2>Local screen recordings</h2>\n'
+        '      <p>Optional later. Teaching walkthroughs above are what you watch. A raw clip is not required for Day 1. '
+        'If one is captured later, Windows Snipping Tool (<code>ms-screenclip</code> / <code>Win+Shift+R</code>) '
+        'can save <code>.webm</code> or <code>.mp4</code> under recordings/.</p>\n'
+        '      <div class="actions">\n'
+        f'        <a class="button" href="{esc(RECORDINGS_README_HREF)}">Capture instructions</a>\n'
+        '      </div>\n'
+        '    </section>\n'
+    )
+
+
 def render_catalog_html(catalog: dict[str, Any]) -> str:
     data = json.dumps(catalog, ensure_ascii=False)
     resources = catalog.get("authoring_resources", {})
+    recordings = render_recordings_section(catalog.get("recordings", {}).get("clips", []))
+    walkthroughs = render_walkthroughs_section(catalog.get("walkthroughs") or [])
     module_cards = []
     for module in catalog["modules"]:
         screenshots = " ".join(
@@ -288,9 +373,13 @@ def render_catalog_html(catalog: dict[str, Any]) -> str:
         '  <meta name="viewport" content="width=device-width, initial-scale=1">\n'
         "  <title>Veritas Local Training Catalog</title>\n"
         "  <style>\n"
-        "    :root { color-scheme: light; --ink:#17202a; --muted:#5a6472; --line:#d8dde6; --paper:#f6f7f9; --panel:#fff; --green:#0b6b4f; --blue:#2457a6; --amber:#9a5b00; --red:#a33a2a; }\n"
+        "    :root { color-scheme: light dark; --ink:#17202a; --muted:#5a6472; --line:#d8dde6; --paper:#f6f7f9; --panel:#fff; --green:#0b6b4f; --blue:#2457a6; --amber:#9a5b00; --red:#a33a2a; }\n"
         "    * { box-sizing: border-box; }\n"
         "    body { margin:0; font-family: Segoe UI, Arial, sans-serif; background:var(--paper); color:var(--ink); line-height:1.45; }\n"
+        "    header.catalog-hero { background:linear-gradient(135deg, #101820 0%, #1b3a55 60%, #0b6b4f 130%); background-color:#101820; color:#fff; border-bottom:4px solid var(--green); }\n"
+        "    header.catalog-hero p { color:#dbe4ee; }\n"
+        "    header.catalog-hero .summary div { border-left:6px solid var(--blue); }\n"
+        "    .visual-rail { height:6px; border-radius:999px; background:linear-gradient(90deg, var(--green), var(--blue)); margin-bottom:12px; }\n"
         "    header, main { max-width:1180px; margin:0 auto; padding:24px; }\n"
         "    header { padding-top:28px; }\n"
         "    h1 { margin:0 0 8px; font-size:clamp(28px, 4vw, 44px); letter-spacing:0; }\n"
@@ -298,15 +387,20 @@ def render_catalog_html(catalog: dict[str, Any]) -> str:
         "    p { margin:0 0 12px; color:var(--muted); }\n"
         "    .summary { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-top:18px; }\n"
         "    .summary div, .ledger, .module-card { background:var(--panel); border:1px solid var(--line); border-radius:8px; }\n"
-        "    .summary div { padding:14px; }\n"
+        "    .summary div { padding:14px; border-left:6px solid var(--green); }\n"
         "    .summary strong { display:block; font-size:24px; }\n"
+        "    .summary .chip { display:inline-block; padding:2px 10px; border-radius:999px; background:#e8eef6; color:var(--blue); font-size:12px; font-weight:700; }\n"
         "    .ledger { padding:16px; margin:4px 0 18px; }\n"
         "    .ledger-grid { display:grid; grid-template-columns:minmax(180px, 1fr) auto auto; gap:10px; align-items:end; }\n"
         "    label { display:block; color:var(--muted); font-size:13px; margin-bottom:4px; }\n"
         "    input { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:6px; font:inherit; }\n"
         "    code { background:#edf0f5; padding:2px 5px; border-radius:4px; }\n"
         "    .module-grid { display:grid; gap:14px; }\n"
-        "    .module-card { padding:18px; }\n"
+        "    .module-card { padding:18px; border-left:6px solid var(--blue); border-radius:12px; }\n"
+        "    .recordings { border-left:6px solid var(--green); border-radius:12px; }\n"
+        "    .clip-list { margin:8px 0 0; padding-left:20px; color:var(--muted); }\n"
+        "    :focus-visible { outline:3px solid var(--blue); outline-offset:2px; border-radius:6px; }\n"
+        "    @media (prefers-color-scheme: dark) { :root { --ink:#e8edf3; --muted:#aab6c4; --line:#2c3a4a; --paper:#0e141b; --panel:#17202b; --green:#2dd4bf; --blue:#7aa7f0; --amber:#e0a63c; --red:#e08a8a; } header.catalog-hero { background:#101820; } code { background:#243242; color:var(--ink); } .summary div, .ledger, .module-card { background:var(--panel); } .button { background:#1c2836; color:var(--ink); } input { background:#101820; color:var(--ink); border-color:var(--line); } .facts div { border-color:var(--line); } }\n"
         "    .module-main { display:grid; grid-template-columns:1fr auto; gap:16px; align-items:start; }\n"
         "    .eyebrow { margin:0 0 6px; color:var(--blue); font-weight:700; font-size:13px; }\n"
         "    .status-stack { display:flex; flex-direction:column; gap:6px; align-items:flex-end; color:var(--muted); white-space:nowrap; }\n"
@@ -327,17 +421,20 @@ def render_catalog_html(catalog: dict[str, Any]) -> str:
         "  </style>\n"
         "</head>\n"
         "<body>\n"
-        "  <header>\n"
+        "  <header class=\"catalog-hero\">\n"
+        "    <div class=\"visual-rail\" aria-hidden=\"true\"></div>\n"
         "    <h1>Veritas Local Training Catalog</h1>\n"
         "    <p>Internal training launcher for local HTML modules, QA proof, SCORM packages, and optional loopback xAPI capture.</p>\n"
         "    <section class=\"summary\" aria-label=\"Catalog summary\">\n"
-        f"      <div><span>Modules</span><strong>{esc(catalog['counts']['modules'])}</strong></div>\n"
-        f"      <div><span>Lessons</span><strong>{esc(catalog['counts']['lessons'])}</strong></div>\n"
-        f"      <div><span>Interactions</span><strong>{esc(catalog['counts']['interactions'])}</strong></div>\n"
-        f"      <div><span>Catalog status</span><strong>{esc(catalog['status'].upper())}</strong></div>\n"
+        f"      <div><span>Modules</span><strong>{esc(catalog['counts']['modules'])}</strong><span class=\"chip\">local</span></div>\n"
+        f"      <div><span>Lessons</span><strong>{esc(catalog['counts']['lessons'])}</strong><span class=\"chip\">local</span></div>\n"
+        f"      <div><span>Interactions</span><strong>{esc(catalog['counts']['interactions'])}</strong><span class=\"chip\">local</span></div>\n"
+        f"      <div><span>Catalog status</span><strong>{esc(catalog['status'].upper())}</strong><span class=\"chip\">internal only</span></div>\n"
         "    </section>\n"
         "  </header>\n"
         "  <main>\n"
+        f"{walkthroughs}\n"
+        f"{recordings}\n"
         "    <section class=\"ledger\" aria-label=\"Local xAPI ledger controls\">\n"
         "      <h2>Local xAPI Ledger</h2>\n"
         "      <p>Optional. Start the collector in PowerShell, then enable capture here. Events stay on this machine.</p>\n"
@@ -392,7 +489,7 @@ def validate_catalog(catalog: dict[str, Any], html_text: str) -> list[str]:
     errors = list(catalog.get("validation", {}).get("errors") or [])
     if '<html lang="en">' not in html_text:
         errors.append("html_lang_missing")
-    for marker in ["Enable ledger", "Authoring checklist", "Component library", "Launch", "Download SCORM", "veritas.training.xapiLedger.enabled"]:
+    for marker in ["Enable ledger", "Authoring checklist", "Component library", "Launch", "Download SCORM", "Teaching walkthroughs", "Local screen recordings", "veritas.training.xapiLedger.enabled"]:
         if marker not in html_text:
             errors.append(f"html_marker_missing:{marker}")
     if catalog["authority_boundary"]["external_lms_lrs_configured"] is not False:

@@ -19,12 +19,85 @@ from typing import Any
 
 import project_implementation_router as implementation_router
 
+try:
+    _fleet_policy_candidate = getattr(implementation_router, "fleet_policy", None)
+    if _fleet_policy_candidate is None:
+        import agent_fleet_policy as _fleet_policy_candidate  # type: ignore[no-redef]
+except Exception as exc:
+    raise ImportError(
+        "fleet policy module unavailable; refusing to generate bootstraps without the "
+        "shared model/name/recovery owner"
+    ) from exc
+
+fleet_policy = _fleet_policy_candidate
+
+_REQUIRED_FLEET_POLICY_ATTRS = (
+    "SPECIALIST_PRIMARY",
+    "SPECIALIST_DISPLAY",
+    "SPECIALIST_RECOVERY",
+    "automatic_fallbacks_for",
+    "MAIN_MODEL",
+    "MAIN_FALLBACKS",
+)
+_missing_policy_attrs = [name for name in _REQUIRED_FLEET_POLICY_ATTRS if not hasattr(fleet_policy, name)]
+if _missing_policy_attrs:
+    raise ImportError(
+        "fleet policy surface incomplete, missing: " + ", ".join(_missing_policy_attrs)
+    )
+
+MAIN_MODEL = str(fleet_policy.MAIN_MODEL)
+MAIN_FALLBACKS = [str(item) for item in (fleet_policy.MAIN_FALLBACKS or [])]
+
+
+def fleet_policy_ids() -> list[str]:
+    primaries = getattr(fleet_policy, "SPECIALIST_PRIMARY", None) or {}
+    return [str(agent_id) for agent_id in primaries]
+
+
+def fleet_primary_for(agent_id: str) -> str:
+    primaries = getattr(fleet_policy, "SPECIALIST_PRIMARY", None) or {}
+    value = primaries.get(agent_id, "")
+    return str(value) if value else ""
+
+
+def fleet_display_for(agent_id: str) -> str:
+    displays = getattr(fleet_policy, "SPECIALIST_DISPLAY", None) or {}
+    value = displays.get(agent_id)
+    if value:
+        return str(value)
+    return str(agent_id).replace("-", " ").title()
+
+
+def fleet_recovery_for(agent_id: str) -> list[str]:
+    recovery = getattr(fleet_policy, "SPECIALIST_RECOVERY", None) or {}
+    return [str(item) for item in (recovery.get(agent_id) or [])]
+
+
+def fleet_automatic_for(agent_id: str) -> list[str]:
+    func = getattr(fleet_policy, "automatic_fallbacks_for", None)
+    if not callable(func):
+        return []
+    try:
+        return [str(item) for item in (func(agent_id) or [])]
+    except Exception:
+        return []
+
+
+def fleet_checked_profile(agent_id: str, base: dict[str, Any]) -> dict[str, Any]:
+    expected_primary = fleet_primary_for(agent_id)
+    if expected_primary and base.get("default_model") != expected_primary:
+        raise ValueError(
+            f"profile model pin mismatch for {agent_id}: {base.get('default_model')!r} != "
+            f"fleet policy primary {expected_primary!r}; the shared policy map owns model pins"
+        )
+    return base
+
 ROOT = Path(__file__).resolve().parents[1]
 TMP_DIR = ROOT / "tmp" / "agent-bootstrap"
 AGENT_SHADOW_DIR = ROOT / "tmp" / "agent-shadow"
 AGENT_KB_DIR = ROOT / "06. Playbooks" / "Agent Knowledge Base"
 
-PROFILE_REVISION = "2026-08-11.execution-efficiency.v3"
+PROFILE_REVISION = "2026-09-06.tools-section.v6"
 DEFAULT_OWNER_ROUTE = "VERITAS-MAIN"
 DEFAULT_CONCEPT = (
     "Veritas finance-first multi-workflow market intelligence, research, "
@@ -189,8 +262,8 @@ FLEET_OPERATING_MODEL = {
     "general_route": [
         "model_free_command when deterministic proof is complete",
         "codex_native_subagent when explicitly eligible for bounded work",
-        "main only by explicit exception for quick fix, final integration, or authority-sensitive judgment",
-        "persistent isolated specialist on Terra only with fresh strict context transport proof",
+        "main on Sol for a quick bounded fix, final integration, or authority-sensitive judgment",
+        "persistent isolated specialist on its exact configured role model with fresh strict context transport proof",
         "risk-budgeted QA when required",
         "main acceptance and closeout",
     ],
@@ -333,12 +406,12 @@ PROFILES: dict[str, dict[str, Any]] = {
         "department": "research",
         "authority_class": "workspace_read_mostly",
         "owner_workflow": DEFAULT_OWNER_ROUTE,
-        "default_model": "openai/gpt-5.6-terra",
-        "upgrade_model": "openai/gpt-5.6-terra",
+        "default_model": "xai/grok-4.6",
+        "upgrade_model": "xai/grok-4.6",
         "runtime_tool_posture": READ_ONLY_TOOL_POSTURE,
         "role": (
-            "Public-source AI, technology, business, opportunity, competitor, vendor, and market-context "
-            "research with source tables and explicit evidence gaps."
+            "Public-source AI, technology, business, and market-context research; return dated sources, "
+            "contradictions, and evidence gaps for Veritas main."
         ),
         "tools_allowed": [
             "read its own workspace doctrine",
@@ -369,10 +442,10 @@ PROFILES: dict[str, dict[str, Any]] = {
         "department": "qa-redteam",
         "authority_class": "review_only_workspace_write",
         "owner_workflow": DEFAULT_OWNER_ROUTE,
-        "default_model": "openai/gpt-5.6-terra",
-        "upgrade_model": "openai/gpt-5.6-terra",
+        "default_model": "ollama-cloud/glm-5.3:cloud",
+        "upgrade_model": "ollama-cloud/glm-5.3:cloud",
         "runtime_tool_posture": READ_ONLY_TOOL_POSTURE,
-        "role": "Independent critique, claim challenge, privacy/risk review, acceptance criteria, and proof-gap detection.",
+        "role": "Independent applied-diff, regression, privacy, security, and authority-boundary challenge; no self-acceptance.",
         "tools_allowed": [
             "read its own workspace doctrine",
             "read Veritas-main-supplied attachments or digests made available in its workspace or assignment",
@@ -402,12 +475,12 @@ PROFILES: dict[str, dict[str, Any]] = {
         "department": "implementation",
         "authority_class": "workspace_scoped_distinct_output",
         "owner_workflow": DEFAULT_OWNER_ROUTE,
-        "default_model": "openai/gpt-5.6-terra",
-        "upgrade_model": "openai/gpt-5.6-terra",
+        "default_model": "meta/muse-spark-1.3-contributor",
+        "upgrade_model": "meta/muse-spark-1.3-contributor",
         "runtime_tool_posture": WORKSPACE_ONLY_TOOL_POSTURE,
         "role": (
-            "Bounded code, script, validator, fixture, and proof-artifact implementation "
-            "for exact leased workspace surfaces."
+            "Bounded code, tests, and infrastructure repairs in exact leased scopes; "
+            "no self-acceptance or automatic deployment."
         ),
         "tools_allowed": [
             "read factory-managed role doctrine from the read-only /role mount",
@@ -449,12 +522,12 @@ PROFILES: dict[str, dict[str, Any]] = {
         "department": "continuity",
         "authority_class": "docs_memory_playbook_scoped",
         "owner_workflow": DEFAULT_OWNER_ROUTE,
-        "default_model": "openai/gpt-5.6-terra",
-        "upgrade_model": "openai/gpt-5.6-terra",
+        "default_model": "openai/gpt-5.6-luna",
+        "upgrade_model": "openai/gpt-5.6-luna",
         "runtime_tool_posture": WORKSPACE_ONLY_TOOL_POSTURE,
         "role": (
-            "Docs, memory, playbook, prompt-book, route-catalog, and continuity synchronization "
-            "from verified implementation proof."
+            "Synchronize accepted-proof documentation and continuity; no provisional-to-accepted "
+            "promotion or policy changes."
         ),
         "tools_allowed": [
             "read its own workspace doctrine",
@@ -495,8 +568,8 @@ PROFILES: dict[str, dict[str, Any]] = {
         "upgrade_model": "openai/gpt-5.6-terra",
         "runtime_tool_posture": READ_ONLY_TOOL_POSTURE,
         "role": (
-            "Official-source discovery, source-open repair support, earnings/catalyst evidence capture, "
-            "and finance evidence-gap triage for WF78/WF84/WF85."
+            "Official-source finance evidence, earnings, catalysts, freshness, and traceable calculations; "
+            "no portfolio/account/execution authority."
         ),
         "tools_allowed": [
             "read its own workspace doctrine",
@@ -538,12 +611,12 @@ PROFILES: dict[str, dict[str, Any]] = {
         "department": "finance-redteam",
         "authority_class": "finance_sensitive_review_only",
         "owner_workflow": "WF85",
-        "default_model": "openai/gpt-5.6-terra",
-        "upgrade_model": "openai/gpt-5.6-terra",
+        "default_model": "ollama-cloud/glm-5.3:cloud",
+        "upgrade_model": "ollama-cloud/glm-5.3:cloud",
         "runtime_tool_posture": READ_ONLY_TOOL_POSTURE,
         "role": (
-            "Independent challenge of ticker cards, deployment-readiness claims, no-chase/below-stop calls, "
-            "and finance recommendation wording."
+            "Independent challenge of non-executing finance alerts and recommendation wording, "
+            "downside/invalidation coverage, and false-readiness claims; no portfolio/account/execution authority."
         ),
         "tools_allowed": [
             "read its own workspace doctrine",
@@ -553,8 +626,8 @@ PROFILES: dict[str, dict[str, Any]] = {
         ],
         "write_scope": [],
         "routing_triggers": [
-            "material WF85 ticker card, recommendation, readiness, or deployment-language challenge",
-            "no-chase, below-stop, band, invalidation, concentration, or downside wording review",
+            "material non-executing finance alert or recommendation wording challenge",
+            "band, invalidation, concentration, downside, or false-readiness wording review",
             "finance-sensitive independent review before Veritas main makes final judgment",
         ],
         "deliverable_shape": [
@@ -565,9 +638,9 @@ PROFILES: dict[str, dict[str, Any]] = {
             "recommended fix or blocker",
         ],
         "good_prompt": (
-            "Finance Red-Team, challenge this WF85 decision card for false readiness. Check source freshness, "
-            "band/stop context, bull/bear balance, downside/invalidation, concentration risk, and authority "
-            "language. Return findings first and stop before any execution or portfolio action."
+            "Finance Red-Team, challenge this non-executing finance alert or recommendation for false readiness. "
+            "Check source freshness, band/stop context, bull/bear balance, downside/invalidation, concentration "
+            "risk, and authority language. Return findings first and stop before any execution or portfolio action."
         ),
     },
     "finance-data-steward": {
@@ -655,11 +728,10 @@ def utc_now() -> str:
 
 
 def extract_json(raw: str) -> Any:
-    start = raw.find("[")
-    if start < 0:
-        start = raw.find("{")
-    if start < 0:
+    starts = [position for position in (raw.find("["), raw.find("{")) if position >= 0]
+    if not starts:
         raise ValueError("no JSON object or array found in command output")
+    start = min(starts)
     decoder = json.JSONDecoder()
     value, _ = decoder.raw_decode(raw[start:])
     return value
@@ -680,22 +752,37 @@ def run_openclaw_agents_list() -> list[dict[str, Any]]:
     if not isinstance(data, list):
         raise ValueError("openclaw agents list did not return a JSON array")
     config_proc = subprocess.run(
-        [openclaw, "config", "get", "agents.list", "--json"],
+        [openclaw, "config", "get", "agents.entries", "--json"],
         cwd=ROOT,
         text=True,
         capture_output=True,
         check=False,
     )
     if config_proc.returncode != 0:
-        raise RuntimeError(config_proc.stderr.strip() or "openclaw config get agents.list failed")
+        config_proc = subprocess.run(
+            [openclaw, "config", "get", "agents.list", "--json"],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    if config_proc.returncode != 0:
+        raise RuntimeError(config_proc.stderr.strip() or "openclaw config agent registry read failed")
     configured = extract_json(config_proc.stdout)
-    if not isinstance(configured, list):
-        raise ValueError("openclaw config agents.list did not return a JSON array")
-    configured_by_id = {
-        str(item.get("id") or ""): item
-        for item in configured
-        if isinstance(item, dict) and str(item.get("id") or "")
-    }
+    if isinstance(configured, dict):
+        configured_by_id = {
+            str(agent_id): item
+            for agent_id, item in configured.items()
+            if isinstance(item, dict) and str(agent_id)
+        }
+    elif isinstance(configured, list):
+        configured_by_id = {
+            str(item.get("id") or ""): item
+            for item in configured
+            if isinstance(item, dict) and str(item.get("id") or "")
+        }
+    else:
+        raise ValueError("openclaw config agent registry did not return an object or array")
     merged: list[dict[str, Any]] = []
     for item in data:
         if not isinstance(item, dict):
@@ -980,7 +1067,7 @@ def implementation_builder_scoped_worktree_is_configured(
     required_denied = {
         "process", "cron", "gateway", "message", "sessions_list", "sessions_history",
         "session_status", "sessions_send", "sessions_spawn", "subagents", "skill_workshop",
-        "browser", "image", "media", "nodes",
+        "browser", "view_image", "media", "nodes",
     }
     expected_binds = _normalized_bind_list(implementation_builder_scoped_worktree_binds(agent))
     actual_binds = _normalized_bind_list(docker.get("binds"))
@@ -989,7 +1076,7 @@ def implementation_builder_scoped_worktree_is_configured(
         and sandbox.get("scope") == "session"
         and sandbox.get("backend") == "docker"
         and sandbox.get("workspaceAccess") == "none"
-        and docker.get("image") == "openclaw-sandbox:bookworm-slim"
+        and docker.get("image") == "openclaw-sandbox:bookworm-slim-python-calibration-r1"
         and docker.get("network") == "none"
         and docker.get("readOnlyRoot") is True
         and docker.get("user") == "65534:65534"
@@ -1009,12 +1096,12 @@ def implementation_builder_scoped_worktree_is_configured(
         and required_denied.issubset(denied)
         and required_denied.issubset(outer_denied)
         and elevated.get("enabled") is False
-        and fs.get("workspaceOnly") is True
+        and fs.get("workspaceOnly") is False
         and exec_policy == {
             "host": "sandbox",
             "mode": "full",
-            "timeoutSec": 30,
             "strictInlineEval": True,
+            "timeoutSeconds": 30,
         }
     )
 
@@ -1043,14 +1130,14 @@ def implementation_builder_sandbox_exec_pilot_is_configured(agent: dict[str, Any
     required_denied = {
         "write", "edit", "apply_patch", "process", "cron", "gateway", "message",
         "sessions_list", "sessions_history", "session_status", "sessions_send",
-        "sessions_spawn", "subagents", "skill_workshop", "browser", "image", "media", "nodes",
+        "sessions_spawn", "subagents", "skill_workshop", "browser", "view_image", "media", "nodes",
     }
     return (
         sandbox.get("mode") == "all"
         and sandbox.get("scope") == "session"
         and sandbox.get("backend") == "docker"
         and sandbox.get("workspaceAccess") == "none"
-        and docker.get("image") == "openclaw-sandbox:bookworm-slim"
+        and docker.get("image") == "openclaw-sandbox:bookworm-slim-python-calibration-r1"
         and docker.get("network") == "none"
         and docker.get("readOnlyRoot") is True
         and docker.get("user") == "65534:65534"
@@ -1066,12 +1153,12 @@ def implementation_builder_sandbox_exec_pilot_is_configured(agent: dict[str, Any
         and "exec" in {str(value) for value in tools.get("allow") or []}
         and "process" in {str(value) for value in tools.get("deny") or []}
         and elevated.get("enabled") is False
-        and fs.get("workspaceOnly") is True
+        and fs.get("workspaceOnly") is False
         and exec_policy == {
             "host": "sandbox",
             "mode": "full",
-            "timeoutSec": 30,
             "strictInlineEval": True,
+            "timeoutSeconds": 30,
         }
     )
 
@@ -1113,7 +1200,7 @@ def profile_for(agent: dict[str, Any], owner_workflow: str, concept: str | None)
             "authority_class": "workspace_scoped",
             "owner_workflow": owner_workflow or DEFAULT_OWNER_ROUTE,
             "default_model": model,
-            "upgrade_model": "openai/gpt-5.6-terra",
+            "upgrade_model": model,
             "runtime_tool_posture": WORKSPACE_ONLY_TOOL_POSTURE,
             "role": f"Custom isolated agent for {concept or DEFAULT_CONCEPT}.",
             "tools_allowed": [
@@ -1140,6 +1227,7 @@ def profile_for(agent: dict[str, Any], owner_workflow: str, concept: str | None)
             ),
         }
     base["owner_workflow"] = base.get("owner_workflow") or owner_workflow
+    base = fleet_checked_profile(agent_id, base)
     return base
 
 
@@ -1167,7 +1255,7 @@ def planned_agent_stub(agent_id: str) -> dict[str, Any]:
     profile = PROFILES[agent_id]
     workspace = Path.home() / ".openclaw" / "workspaces" / agent_id
     agent_dir = Path.home() / ".openclaw" / "agents" / agent_id / "agent"
-    identity = agent_id.replace("-", " ").title()
+    identity = fleet_display_for(agent_id)
     return {
         "id": agent_id,
         "name": agent_id,
@@ -1214,7 +1302,9 @@ def build_manifest(
         "profile_revision": PROFILE_REVISION,
         "generated_at_utc": generated_at,
         "agent_id": agent_id,
-        "identity": agent.get("identityName") or agent.get("name") or agent_id,
+        "identity": agent.get("identityName") or fleet_display_for(agent_id),
+        "display_name": fleet_display_for(agent_id),
+        "stable_id": agent_id,
         "department": profile["department"],
         "owner_workflow": profile["owner_workflow"],
         "concept": concept or DEFAULT_CONCEPT,
@@ -1234,14 +1324,20 @@ def build_manifest(
         },
         "model_route": {
             "default_model": profile["default_model"],
+            "display_name": fleet_display_for(agent_id),
             "current_configured_model": agent.get("model"),
             "upgrade_model": profile["upgrade_model"],
+            "automatic_fallbacks": fleet_automatic_for(agent_id),
+            "recovery_candidates": fleet_recovery_for(agent_id),
+            "recovery_is_non_executing_option": True,
+            "main_model": MAIN_MODEL,
+            "main_fallbacks": list(MAIN_FALLBACKS),
             "upgrade_when": [
-                "increase Terra thinking only when the validated route requires it",
+                "increase the configured role model's thinking only when the validated route requires it",
                 "split or return cross-owner final judgment to Veritas main",
             ],
             "sol_helper_upgrade_allowed": False,
-            "cost_rule": "Keep persistent helpers on Terra; narrow scope before increasing effort, and never inherit Main/Sol.",
+            "cost_rule": "Use the role's exact configured model; narrow scope before increasing effort, and never inherit another role's model or Main.",
         },
         "execution_efficiency_policy": implementation_router.execution_efficiency_policy(),
         "assignment_route_contract": {
@@ -1346,6 +1442,11 @@ def build_bootstrap_markdown(manifest: dict[str, Any], delta: list[dict[str, Any
         "## Runtime",
         "",
         f"- Agent ID: `{manifest['agent_id']}`",
+        f"- Display name: `{manifest.get('display_name') or manifest['identity']}` (stable ID `{manifest['agent_id']}`)",
+        f"- Current role primary model: `{manifest['model_route'].get('default_model')}`",
+        "- Specialist automatic fallbacks: `[]` (none; recovery is a Main-selected new clean attempt only)",
+        f"- Recovery candidates (non-executing options): `{', '.join(manifest['model_route'].get('recovery_candidates') or []) or 'none'}`",
+        f"- Veritas Main model: `{manifest['model_route'].get('main_model')}`",
         f"- Profile revision: `{manifest['profile_revision']}`",
         f"- Department: `{manifest['department']}`",
         f"- Owner workflow: `{manifest['owner_workflow']}`",
@@ -1383,7 +1484,7 @@ def build_bootstrap_markdown(manifest: dict[str, Any], delta: list[dict[str, Any
         "",
         "- Main remains the routing, final-QC, sole-acceptance, and final-judgment owner.",
         f"- Configured fleet: Main plus `{len(manifest['fleet_operating_model']['configured_isolated_agent_ids'])}` isolated agents.",
-        "- Route: model-free first; explicit bounded native when eligible; explicit Main exception; otherwise persistent Terra only with transport proof; risk-budgeted QA; Main acceptance.",
+        "- Route: model-free first; explicit bounded native when eligible; Main/Sol for bounded integration or judgment; otherwise the persistent specialist's exact configured role model with transport proof; risk-budgeted QA; Main acceptance.",
         "- Finance route: Main -> Finance Source when needed -> Main analysis -> Finance Red-Team -> Main judgment.",
         "- Isolated output is unaccepted until Main verifies and accepts it.",
         "",
@@ -1557,11 +1658,66 @@ def build_bootstrap_markdown(manifest: dict[str, Any], delta: list[dict[str, Any
     lines.extend(
         [
             "",
-            "This BOOTSTRAP.md file is regenerated context. If it conflicts with SOUL.md, AGENTS.md, TOOLS.md, a live skill, or an exact owner artifact, the higher authority wins. Historical memory is Main-supplied context, not required role doctrine.",
+            "This BOOTSTRAP.md file is regenerated context. If it conflicts with SOUL.md, AGENTS.md, a live skill, or an exact owner artifact, the higher authority wins. TOOLS.md is a retired compatibility pointer, not injected bootstrap. Historical memory is Main-supplied context, not required role doctrine.",
             "",
         ]
     )
     return "\n".join(lines)
+
+
+def tools_shell_rule(posture: dict[str, Any]) -> str:
+    if posture.get("scoped_worktree_only"):
+        return (
+            "Use `exec` only for synchronous proof commands against `/worktree`. Write/edit/patch only under "
+            "`/worktree`; `/role`, `/attachments`, Git metadata, and handoff controls are read-only. No network, "
+            "host path, Main-workspace access, elevation, background process, or cross-session action is permitted."
+        )
+    if posture.get("pilot_only"):
+        return (
+            "Use `exec` only for synchronous, sandbox-local attachment decode/test work. No network, host path, "
+            "shared-workspace writeback, elevation, or background process is permitted."
+        )
+    return (
+        "Use no shell, process, runtime, gateway, cron, messaging, spawn/send, Skill Workshop, or "
+        "external-binding action unless a separate Main-owned configuration change explicitly authorizes it."
+    )
+
+
+def tools_guidance_lines(manifest: dict[str, Any]) -> list[str]:
+    posture = manifest["runtime_tool_posture"]
+    lines = [
+        "Skills define how tools work. This section is local environment convention only. It does not control which tools exist.",
+        "",
+        "### Local notes",
+        "",
+        f"- Access class: `{posture['access_class']}`",
+        f"- Workspace scope: `{posture['filesystem_scope']}`",
+        f"- Write/edit/patch allowed: `{posture['write_edit_patch_allowed']}`",
+        f"- Exec allowed: `{posture['exec_allowed']}`",
+        f"- Process allowed: `{posture['process_allowed']}`",
+        f"- Main-supplied context required: `{posture['main_supplied_context_required']}`",
+    ]
+    if posture.get("scoped_worktree_only"):
+        lines.extend(
+            [
+                "- Writable root: `/worktree` only.",
+                "- Read-only roots: `/role`, `/attachments`, `/worktree/.git`, and frozen handoff controls.",
+                "- When runtime context labels an attachment as `.openclaw/attachments/<id>/<filename>`, resolve that exact attachment inside this sandbox as `/attachments/<id>/<filename>`.",
+            ]
+        )
+    lines.extend(["", "### Allowed Task Actions", ""])
+    lines.extend(f"- {item}" for item in manifest["tools_allowed"])
+    lines.extend(["", "### Denied Actions", ""])
+    lines.extend(f"- {item}" for item in manifest["tools_denied"])
+    lines.extend(
+        [
+            "",
+            tools_shell_rule(posture),
+            "",
+            "- No host-path direct reads, runtime/config changes, cron changes, messaging, external bindings, or cross-agent spawn/send.",
+        ]
+    )
+    return lines
 
 
 def build_agents_markdown(manifest: dict[str, Any]) -> str:
@@ -1585,9 +1741,9 @@ def build_agents_markdown(manifest: dict[str, Any]) -> str:
         "## Startup",
         "",
         (
-            "1. Read the factory role packet under `/role`: `AGENTS.md`, `SOUL.md`, `IDENTITY.md`, `TOOLS.md`, `USER.md`, and `BOOTSTRAP.md`."
+            "1. Read the factory role packet under `/role`: `AGENTS.md` (including `## Tools`), `SOUL.md`, `IDENTITY.md`, `USER.md`, and `BOOTSTRAP.md`. `TOOLS.md` is a retired compatibility pointer, not injected bootstrap."
             if posture.get("scoped_worktree_only")
-            else "1. Read this role packet, `SOUL.md`, `IDENTITY.md`, `TOOLS.md`, `USER.md`, and `BOOTSTRAP.md`."
+            else "1. Read this role packet (`AGENTS.md`, including `## Tools`), `SOUL.md`, `IDENTITY.md`, `USER.md`, and `BOOTSTRAP.md`. `TOOLS.md` is a retired compatibility pointer, not injected bootstrap."
         ),
         (
             "2. Read only Main-supplied context under `/attachments` and frozen task material under `/worktree`."
@@ -1614,21 +1770,9 @@ def build_agents_markdown(manifest: dict[str, Any]) -> str:
         f"- Main verification required before start: `{handoff['main_verified_required_before_start']}`",
         f"- Repair path: {handoff['repair_path']}",
         "",
-        "## Effective Tool Boundary",
+        "## Tools",
         "",
-        f"- Access class: `{posture['access_class']}`",
-        f"- Write/edit/patch allowed: `{posture['write_edit_patch_allowed']}`",
-        f"- Exec allowed: `{posture['exec_allowed']}`",
-        f"- Process allowed: `{posture['process_allowed']}`",
-        *(
-            [
-                "- Writable root: `/worktree` only.",
-                "- Read-only roots: `/role`, `/attachments`, `/worktree/.git`, and frozen handoff controls.",
-            ]
-            if posture.get("scoped_worktree_only")
-            else []
-        ),
-        "- No host-path direct reads, runtime/config changes, cron changes, messaging, external bindings, or cross-agent spawn/send.",
+        *tools_guidance_lines(manifest),
         "",
         "## Required Closeout",
         "",
@@ -1683,43 +1827,17 @@ def build_identity_markdown(manifest: dict[str, Any]) -> str:
 
 
 def build_tools_markdown(manifest: dict[str, Any]) -> str:
-    posture = manifest["runtime_tool_posture"]
-    if posture.get("scoped_worktree_only"):
-        shell_rule = (
-            "Use `exec` only for synchronous proof commands against `/worktree`. Write/edit/patch only under "
-            "`/worktree`; `/role`, `/attachments`, Git metadata, and handoff controls are read-only. No network, "
-            "host path, Main-workspace access, elevation, background process, or cross-session action is permitted."
-        )
-    elif posture.get("pilot_only"):
-        shell_rule = "Use `exec` only for synchronous, sandbox-local attachment decode/test work. No network, host path, shared-workspace writeback, elevation, or background process is permitted."
-    else:
-        shell_rule = "Use no shell, process, runtime, gateway, cron, messaging, spawn/send, Skill Workshop, or external-binding action unless a separate Main-owned configuration change explicitly authorizes it."
-    lines = [
-        f"# TOOLS.md - {manifest['identity']} Tool Boundary",
+    return "\n".join([
+        f"# TOOLS.md - {manifest['identity']} retired compatibility pointer",
         "",
         f"Profile revision: `{manifest['profile_revision']}`.",
         "",
-        "## Effective Capability",
-        "",
-        f"- Access class: `{posture['access_class']}`",
-        f"- Workspace scope: `{posture['filesystem_scope']}`",
-        f"- Write/edit/patch allowed: `{posture['write_edit_patch_allowed']}`",
-        f"- Exec allowed: `{posture['exec_allowed']}`",
-        f"- Process allowed: `{posture['process_allowed']}`",
-        f"- Main-supplied context required: `{posture['main_supplied_context_required']}`",
-        "",
-        "## Allowed Task Actions",
-        "",
-    ]
-    lines.extend(f"- {item}" for item in manifest["tools_allowed"])
-    lines.extend(["", "## Denied Actions", ""])
-    lines.extend(f"- {item}" for item in manifest["tools_denied"])
-    lines.extend([
-        "",
-        shell_rule,
+        "OpenClaw retired workspace `TOOLS.md`. It is not a runtime bootstrap basename.",
+        "Local tool notes live in the `## Tools` section of `AGENTS.md`.",
+        "This file is kept only so existing sandbox binds do not recreate an empty directory.",
+        "Do not treat this file as injected operating doctrine.",
         "",
     ])
-    return "\n".join(lines)
 
 
 def build_user_markdown(manifest: dict[str, Any]) -> str:
@@ -1768,8 +1886,11 @@ def select_agents(agents: list[dict[str, Any]], selector: str) -> list[dict[str,
     if normalized in {"none", ""}:
         return []
     if normalized == "all":
-        return [agent for agent in agents if not agent.get("isDefault")]
+        configured_ids = set(CONFIGURED_ISOLATED_AGENT_IDS)
+        return [agent for agent in agents if str(agent.get("id")) in configured_ids]
     wanted = {part.strip() for part in selector.split(",") if part.strip()}
+    if "main" in wanted:
+        raise ValueError("main is not an isolated-agent bootstrap target")
     selected = [agent for agent in agents if str(agent.get("id")) in wanted]
     missing = sorted(wanted - {str(agent.get("id")) for agent in selected})
     if missing:
@@ -1782,10 +1903,39 @@ def write_json(path: Path, data: Any) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _validate_live_output_workspaces(targets):
+    root_resolved = ROOT.resolve()
+    for agent in targets:
+        aid = str(agent.get("id") or "")
+        if aid == "main":
+            raise ValueError("main is not an isolated-agent bootstrap target")
+        if bool(agent.get("planned_not_installed")):
+            raise ValueError(f"live target carries planned_not_installed: {aid}")
+        raw = str(agent.get("workspace") or "")
+        if not raw.strip():
+            raise ValueError(f"live workspace missing: {aid}")
+        candidate = Path(raw).expanduser()
+        if not candidate.is_absolute():
+            raise ValueError(f"live workspace not absolute: {aid}")
+        resolved = candidate.resolve()
+        if resolved == root_resolved:
+            raise ValueError(f"live workspace is Main root: {aid}")
+        if root_resolved in resolved.parents:
+            raise ValueError(f"live workspace nested in Main: {aid}")
+        for name in ["agent.capabilities.json", "BOOTSTRAP.md", *list(CORE_BOOTSTRAP_MARKDOWN_SURFACES)]:
+            p = candidate / name
+            if p.is_symlink() or p.exists():
+                if p.is_dir():
+                    raise ValueError(f"live output is directory: {aid}:{name}")
+                r = p.resolve()
+                if r != resolved / name and resolved not in r.parents:
+                    raise ValueError(f"live output aliases outside workspace: {aid}:{name}")
+    return True
 def build_outputs(args: argparse.Namespace) -> dict[str, Any]:
     agents = run_openclaw_agents_list()
     targets = select_agents(agents, args.agents)
     planned_targets = [planned_agent_stub(agent_id) for agent_id in expand_planned_agent_selector(args.planned_agents)]
+    _validate_live_output_workspaces(targets)
     generated_at = utc_now()
     latest_template = latest_supervised_template_packet()
     common_delta = evidence_delta(None, latest_template)
@@ -1951,7 +2101,7 @@ def validate_summary(summary: dict[str, Any]) -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--agents", default="all", help="Comma-separated agent ids or 'all' for non-default agents.")
+    parser.add_argument("--agents", default="all", help="Comma-separated isolated-agent ids or 'all' for the configured governed specialist fleet.")
     parser.add_argument(
         "--planned-agents",
         default="",

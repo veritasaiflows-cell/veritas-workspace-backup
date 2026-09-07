@@ -1,7 +1,7 @@
 # Review-Only Briefs
 
 ## Purpose
-This folder holds non-canonical human-readable draft briefs built from the new WF37 packet layer.
+This folder holds non-canonical human-readable draft briefs built from validated alert and evidence packets.
 
 ## Authority rule
 These briefs are:
@@ -11,10 +11,11 @@ These briefs are:
 - not allowed to override owner notes
 
 Canonical owner notes still win:
-- `03. Portfolio/Execution Board.md`
-- `03. Portfolio/Portfolio Snapshot.md`
-- `04. Research/Coverage and Watchlist.md`
-- `05. Intelligence/Weekly Positioning Review.md`
+- `03. Alerts and Recommendations/Investor Profile.md`
+- `03. Alerts and Recommendations/Alert Trigger Policy.md`
+- `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md`
+- `03. Alerts and Recommendations/Alert Operations Board.md`
+- `04. Research/Coverage Universe.md`
 - `05. Intelligence/Event Calendar.md`
 
 ## Folder structure
@@ -30,5 +31,6 @@ Only place drafts here after:
 ## Not allowed here
 - autonomous owner-note writes
 - direct trade instructions
+- portfolio, account, order, or simulated-position state
 - blocker clearance by summary language alone
 - anything presented as a source-of-truth layer

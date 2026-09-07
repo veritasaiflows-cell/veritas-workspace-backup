@@ -789,6 +789,12 @@ def main() -> int:
             errors,
         )
 
+        # The CLI subprocess evaluates leases against the real clock, not the
+        # fixed unit-test clock used above. Refresh only this CLI fixture so
+        # the round-trip test measures Base64 transport instead of lease age.
+        cli_now = datetime.now(timezone.utc)
+        write_json(tmp / "concurrent-lane-register.json", register([lane_row("WF74::resume", cli_now)]))
+
         script_path = Path(checkpoint.__file__).resolve()
         cli_out = tmp / "cli-current-resume.json"
         cli_active_out = tmp / "cli-current-active-lanes.json"

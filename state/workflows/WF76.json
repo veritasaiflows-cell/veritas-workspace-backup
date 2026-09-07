@@ -2,45 +2,51 @@
   "schema": "veritas.workflow_capsule.v1",
   "workflow_id": "WF76",
   "display_name": "Cron Authority / Canon Auto-Update",
-  "tier": "P1",
-  "priority": "P1",
-  "lifecycle": "active",
-  "readiness": "refresh_required",
-  "effective_status": "refresh_required",
-  "current_state": "Scheduled/review-only; cron awareness flows through freshness spine -> scorecard -> escalation.",
-  "next_action": "Verify selectivity; archive moves only after owner approval/proof.",
-  "authoritative_next_action": "Verify selectivity; archive moves only after owner approval/proof.",
+  "tier": "P3",
+  "priority": "P3",
+  "lifecycle": "paused",
+  "readiness": "paused",
+  "effective_status": "on_hold",
+  "current_state": "**Retired 2026-08-29** because its scheduled route still required WF67, sizing, and Execution Board semantics.",
+  "next_action": "Use `cron-automation-manager`, active cron contracts, the freshness spine, and the control packet. Preserve WF76 history only.",
+  "authoritative_next_action": "Use `cron-automation-manager`, active cron contracts, the freshness spine, and the control packet. Preserve WF76 history only.",
   "helper_safe": false,
   "owner_action_required": true,
-  "authority_boundary": "scheduled review-only; cron may propose, main applies bounded sync",
-  "authority_class": "owner_gated_review_only",
+  "authority_boundary": "retired history only; no operational or action authority",
+  "authority_class": "paused_review_only",
   "primary_owner_lane": "main-session-veritas",
   "secondary_consumers": [],
   "human_approval_owner": "Randall",
-  "proof_artifact": "scripts/cron_freshness_spine.py",
+  "proof_artifact": "06. Playbooks/Project Continuity/Workflow 76 - Cron Automation Authority and Canon Auto-Update Expansion.md",
   "freshness_sla": {
     "primary_artifact_max_age_hours": 72.0,
     "owner_context_max_age_hours": 72.0,
-    "material_owner_context_required": true
+    "material_owner_context_required": false
   },
-  "blockers": [],
+  "blockers": [
+    "Retired by explicit owner architecture decision",
+    "Canonical Active Workflows hold: **Retired 2026-08-29** because its scheduled route still required WF67, sizing, and Execution Board semantics."
+  ],
   "stop_lines": [
-    "No cron-direct portfolio/canon apply; no deletes; no config/auth/channel/service/runtime mutation, owner approval inference, or heartbeat inline execution."
+    "No portfolio construction/state maintenance, canon apply, simulated account state, order generation, brokerage/account action, or paper/live execution."
   ],
   "continuity_note": "06. Playbooks/Project Continuity/Workflow 76 - Cron Automation Authority and Canon Auto-Update Expansion.md",
-  "primary_route_artifact": "scripts/cron_freshness_spine.py",
-  "secondary_artifacts": [
-    "tmp/cron-freshness-spine.json",
-    "tmp/autonomy-spine-readiness-rollup.json",
-    "tmp/wf55-autonomy-outcome-ledger.json"
-  ],
-  "validator_commands": [
-    "python scripts\\wf55_autonomy_outcome_ledger.py --write --validate",
-    "python scripts\\autonomy_spine_readiness_rollup.py --write --validate",
-    "python scripts\\cron_freshness_spine.py --write --validate"
-  ],
-  "default_resume_command": "python scripts\\cron_freshness_spine.py --write --validate",
-  "control_override": null,
+  "primary_route_artifact": null,
+  "secondary_artifacts": [],
+  "validator_commands": [],
+  "default_resume_command": null,
+  "control_override": {
+    "status": "on_hold",
+    "set_by": "Randall",
+    "set_at_local": "2026-08-29 America/Phoenix",
+    "set_at_utc": "2026-08-30T03:50:00Z",
+    "reason": "Retired by Randall's alerts-and-recommendations OS pivot because WF76 required WF67, sizing, and Execution Board semantics.",
+    "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
+    "aliases": [
+      "workflow_76"
+    ],
+    "next_action": "Preserve history only; use active cron contracts, the freshness spine, and the cron control packet."
+  },
   "pm_action": null,
   "pm_job": null,
   "sources": {

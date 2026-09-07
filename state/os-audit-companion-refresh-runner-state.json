@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-08-27T02:38:22.456955+00:00",
+  "generated_at_utc": "2026-08-30T01:24:02.039618+00:00",
   "input_fingerprint_after": {
-    "sha256": "51b4b690e94148504c9abc0b0a677b137fdac4d199a1c76c7400b263f08b2f7a",
-    "file_count": 897390
+    "sha256": "c20b202cbb67391162d545a489e46e72618106882fee6666ddc851df553fdb56",
+    "file_count": 46525
   },
   "output_fingerprint": {
-    "sha256": "6102eaa08fbb3df3a15ab3043f74696fcccaba2732f0e698f37737a866e7744b",
+    "sha256": "b81dab63229e0af8bb1e210fa5893f0b53b00d27619cdf083f8e1cde2d0e2295",
     "artifacts_present": 5,
     "artifacts_total": 6
   }

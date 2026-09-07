@@ -1,101 +1,169 @@
 from __future__ import annotations
 
-import layered_finance_refresh_chain as layered
+import ast
+import json
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
 
 
-def fake_plan(
-    index: int,
-    script: str,
-    deps: tuple[str, ...] = (),
-    surfaces: tuple[str, ...] = (),
-) -> layered.StepPlan:
-    return layered.StepPlan(
-        step_id=f"{index:03d}:{script}",
-        index=index,
-        script=script,
-        args=(),
-        command=("python", script),
-        category="test",
-        expected_outputs=(),
-        depends_on_scripts=deps,
-        dependency_ids=deps,
-        recovery=layered.parse_recovery_policy("fail_chain"),
-        write_surfaces=surfaces,
-        mutating=False,
-        signature=f"sig-{index}",
+MODULE = Path(__file__).with_name("layered_finance_refresh_chain.py")
+PILOT = Path(__file__).with_name("layered_finance_cron_pilot_runner.py")
+
+
+def call_name(node: ast.Call) -> str:
+    current: ast.AST = node.func
+    pieces: list[str] = []
+    while isinstance(current, ast.Attribute):
+        pieces.append(current.attr)
+        current = current.value
+    if isinstance(current, ast.Name):
+        pieces.append(current.id)
+    return ".".join(reversed(pieces))
+
+
+def tree_state(root: Path) -> list[tuple[str, bool, bytes | None]]:
+    return [
+        (path.relative_to(root).as_posix(), path.is_dir(), None if path.is_dir() else path.read_bytes())
+        for path in sorted(root.rglob("*"))
+    ]
+
+
+def test_source_is_a_minimal_fail_closed_tombstone() -> None:
+    source = MODULE.read_text(encoding="utf-8")
+    lowered = source.lower()
+    tree = ast.parse(source)
+
+    imports = {
+        alias.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    }
+    imports.update(
+        node.module or ""
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom)
     )
+    assert imports == {"__future__", "json"}
+    functions = [node.name for node in ast.walk(tree) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
+    assert functions == ["main"]
+    calls = {call_name(node) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+    assert calls == {"print", "json.dumps", "SystemExit", "main"}
+
+    for marker in (
+        '"status": "blocked"',
+        '"reason": "retired_surface"',
+        '"retired": True',
+        '"tombstone": True',
+        '"finance_chain_execution_allowed": False',
+        '"subprocess_execution_allowed": False',
+        '"network_allowed": False',
+        '"filesystem_mutation_allowed": False',
+        '"cron_schedule_mutation_allowed": False',
+        '"sql_or_canon_mutation_allowed": False',
+        '"tier_mutation_allowed": False',
+        '"capital_account_order_or_execution_allowed": False',
+        '"paper_or_live_execution_allowed": False',
+        '"owner_approval_inferred": False',
+    ):
+        assert marker in source
+
+    for token in (
+        "threadpoolexecutor",
+        "planned_run_args",
+        "resolved_steps",
+        "atomic_write",
+        "pathlib",
+        "socket",
+        "requests",
+        "urllib",
+        "auto_apply_entry_band_maintenance",
+        "auto_apply_position_sizing_semantic_sync",
+        "reference_band_note_sync",
+    ):
+        assert token not in lowered
 
 
-def test_independent_steps_share_first_layer() -> None:
-    plans = [
-        fake_plan(1, "a.py"),
-        fake_plan(2, "b.py"),
-        fake_plan(3, "c.py", deps=("001:a.py", "002:b.py")),
-    ]
-    layers = layered.build_execution_layers(plans)
-    assert layers == [["001:a.py", "002:b.py"], ["003:c.py"]]
-    assert layered.validate_plan(plans, layers)["status"] == "ok"
+def test_all_legacy_cli_shapes_block_nonzero_without_writes() -> None:
+    with tempfile.TemporaryDirectory() as tmp_name:
+        tmp = Path(tmp_name)
+        marker = tmp / "preexisting.txt"
+        marker.write_text("unchanged\n", encoding="utf-8")
+        before = tree_state(tmp)
+        invocations = (
+            (),
+            ("--help",),
+            ("morning", "--dry-run", "--skip-mutating", "--max-workers", "4", "--write", "--validate"),
+            ("post-close", "--resume", "--strict", "--build-workbook", "--cleanup"),
+            ("--unknown-legacy-flag", "value"),
+        )
+        for args in invocations:
+            completed = subprocess.run(
+                [sys.executable, "-B", str(MODULE), *args],
+                cwd=tmp,
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=10,
+            )
+            assert completed.returncode == 2, completed
+            payload = json.loads(completed.stdout)
+            assert payload["status"] == "blocked"
+            assert payload["reason"] == "retired_surface"
+            assert payload["retired"] is True
+            assert payload["tombstone"] is True
+            assert payload["finance_chain_execution_allowed"] is False
+            assert payload["subprocess_execution_allowed"] is False
+            assert payload["network_allowed"] is False
+            assert payload["filesystem_mutation_allowed"] is False
+            assert tree_state(tmp) == before
 
 
-def test_write_surface_conflict_splits_ready_steps() -> None:
-    plans = [
-        fake_plan(1, "a.py", surfaces=("path:tmp/shared.json",)),
-        fake_plan(2, "b.py", surfaces=("path:tmp/shared.json",)),
-        fake_plan(3, "c.py", surfaces=("path:tmp/other.json",)),
-    ]
-    layers = layered.build_execution_layers(plans)
-    assert layers[0] == ["001:a.py", "003:c.py"]
-    assert layers[1] == ["002:b.py"]
-    assert layered.validate_plan(plans, layers)["status"] == "ok"
-
-
-def test_duplicate_script_dependencies_wait_for_prior_instances() -> None:
-    plans = layered.build_step_plans("morning")
-    duplicate_validate = [plan for plan in plans if plan.script == "validate_fundamental_ir_reconciliation.py"][0]
-    wf70_dependencies = [dep for dep in duplicate_validate.dependency_ids if dep.endswith(":wf70_wf66_official_evidence_spine.py")]
-    assert len(wf70_dependencies) == 2
-    layers = layered.build_execution_layers(plans)
-    validation = layered.validate_plan(plans, layers)
-    assert validation["status"] == "ok"
-
-
-def test_mutating_steps_are_identified_and_exclusive() -> None:
-    plan = layered.build_payload("morning", max_workers=4)
-    mutating = [step for step in plan["steps"] if step["mutating"]]
-    assert mutating
-    assert all("canon-apply" in step["write_surfaces"] for step in mutating)
-    assert plan["validation"]["status"] == "ok"
-
-
-def test_read_only_profile_skips_mutating_steps_and_dependents() -> None:
-    full = layered.build_payload("morning", max_workers=4)
-    readonly = layered.build_payload("morning", max_workers=4, skip_mutating=True)
-    assert readonly["execution_profile"] == "read_only_skip_mutating"
-    assert readonly["validation"]["status"] == "ok"
-    assert readonly["summary"]["original_step_count"] == full["summary"]["step_count"]
-    assert readonly["summary"]["skipped_mutating_step_count"] > 0
-    assert readonly["summary"]["skipped_dependent_step_count"] > 0
-    assert readonly["summary"]["step_count"] < full["summary"]["step_count"]
-    assert all(not step["mutating"] for step in readonly["steps"])
-    skipped_ids = {row["step_id"] for row in readonly["skipped_steps"]}
-    active_ids = {step["step_id"] for step in readonly["steps"]}
-    assert not skipped_ids & active_ids
-    assert all(set(step["dependency_ids"]).issubset(active_ids) for step in readonly["steps"])
-
-
-def test_recovery_policy_parser() -> None:
-    assert layered.parse_recovery_policy("retry(2)").mode == "retry"
-    assert layered.parse_recovery_policy("retry(2)").retries == 2
-    assert layered.parse_recovery_policy("skip_degraded").mode == "skip_degraded"
-    assert layered.parse_recovery_policy("isolate").mode == "isolate"
-    assert layered.parse_recovery_policy("unknown").mode == "fail_chain"
+def test_pilot_tombstone_blocks_all_legacy_side_effect_flags() -> None:
+    with tempfile.TemporaryDirectory() as tmp_name:
+        tmp = Path(tmp_name)
+        marker = tmp / "preexisting.txt"
+        marker.write_text("unchanged\n", encoding="utf-8")
+        before = tree_state(tmp)
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "-B",
+                str(PILOT),
+                "--window",
+                "morning",
+                "--max-workers",
+                "4",
+                "--timeout-seconds",
+                "30",
+                "--out",
+                str(tmp / "must-not-exist.json"),
+                "--write",
+                "--validate",
+            ],
+            cwd=tmp,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=30,
+        )
+        assert completed.returncode == 2, completed
+        payload = json.loads(completed.stdout)
+        assert payload["status"] == "blocked"
+        assert payload["reason"] == "retired_surface"
+        assert payload["surface"] == "layered_finance_cron_pilot_runner"
+        assert payload["cron_pilot_allowed"] is False
+        assert payload["finance_chain_execution_allowed"] is False
+        assert payload["scorecard_refresh_allowed"] is False
+        assert payload["subprocess_execution_allowed"] is False
+        assert payload["filesystem_mutation_allowed"] is False
+        assert tree_state(tmp) == before
 
 
 if __name__ == "__main__":
-    test_independent_steps_share_first_layer()
-    test_write_surface_conflict_splits_ready_steps()
-    test_duplicate_script_dependencies_wait_for_prior_instances()
-    test_mutating_steps_are_identified_and_exclusive()
-    test_read_only_profile_skips_mutating_steps_and_dependents()
-    test_recovery_policy_parser()
-    print("layered_finance_refresh_chain tests passed")
+    test_source_is_a_minimal_fail_closed_tombstone()
+    test_all_legacy_cli_shapes_block_nonzero_without_writes()
+    test_pilot_tombstone_blocks_all_legacy_side_effect_flags()
+    print("layered_finance_refresh_chain retirement tests passed")

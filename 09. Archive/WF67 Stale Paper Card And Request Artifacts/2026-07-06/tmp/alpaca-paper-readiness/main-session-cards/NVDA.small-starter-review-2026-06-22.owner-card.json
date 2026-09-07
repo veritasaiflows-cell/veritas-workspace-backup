@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "artifact_type": "main_session_wf67_order_decision_card",
+  "request_id": "nvda-small-starter-review-20260622-buy-limit",
+  "created_at_utc": "2026-06-22T15:07:01Z",
+  "authority": {
+    "main_session_recommendation_allowed": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "paper_only": true,
+    "paper_order_execution_allowed_by_card": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "order": {
+    "symbol": "NVDA",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 209.5,
+    "qty": null,
+    "notional": 300.0
+  },
+  "risk_check": {
+    "status": "superseded_prior_owner_card_request",
+    "estimated_notional_usd": 300.0,
+    "max_loss_usd": 23.7,
+    "max_notional_usd": 300.0,
+    "policy_max_notional_usd": 5000.0,
+    "setup_notional_cap_usd": 350.0,
+    "technical_notional_multiplier": 0.3,
+    "technical_setup_label": "TACTICAL_DIP_RECLAIM",
+    "entry_band_low": 202.81,
+    "entry_band_high": 212.23,
+    "observed_price": 209.525,
+    "observed_entry_status": "IN_BAND",
+    "stop": 192.95,
+    "sizing_rationale": "Superseded by refreshed main-session NVDA card using current SQL-first promotion-gate band; retained only as audit history.",
+    "full_scope_artifact": "tmp/paper-autotrader/policy.json",
+    "blockers": [
+      "superseded_prior_owner_card_request"
+    ]
+  },
+  "source": {
+    "source_artifact": "tmp/paper-autotrader/shadow-eligibility.json",
+    "capital_recommendation_source": "veritas_main_session_nvda_review_2026-06-22",
+    "owner_or_pilot_scope": "NVDA smaller paper starter review card prepared by Veritas main session; pending exact Randall approval; no execution authority.",
+    "approval_artifact": null,
+    "external_order_support_sources": [
+      "https://docs.alpaca.markets/us/docs/fractional-trading",
+      "https://alpaca.markets/blog/fractional-shares-trading-supports-limit-orders-and-extended-hours/"
+    ],
+    "superseded_by_current_gate": true,
+    "superseded_by_request_id": "wf78-owner-card-prep-NVDA-20260701T143618Z",
+    "superseded_at_utc": "2026-07-01T14:36:18Z",
+    "superseded_reason": "Stale NVDA owner card used legacy band 202.81-212.23 after refreshed SQL-first band 185.14-205.25 became the current reference for this card-prep pass."
+  },
+  "owner_approval": {
+    "status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "approval_text": null,
+    "market_order_owner_approved": false
+  },
+  "decision_context": {
+    "ticker": "NVDA",
+    "shadow_decision": "would_buy_shadow",
+    "shadow_eligible": true,
+    "assisted_review_ready": false,
+    "assisted_review_blockers": [
+      "decision_factory_disposition=not_card_preparable",
+      "exact_randall_approval_required",
+      "fresh_execution_quote_needed",
+      "fresh_kill_switch_not_proven",
+      "fresh_quote_must_remain_inside_band_or_limit_pullback_only",
+      "stale_or_mismatched_owner_approval:approval_order_mismatch:symbol",
+      "tactical_dip_reclaim_requires_fresh_exact_owner_review",
+      "trade_grade_freshness_runner_blocked:tier_a_b_complete_band_context_stale",
+      "wf67_guard_not_clean"
+    ],
+    "execution_ready": false,
+    "execution_blockers": [
+      "fresh_kill_switch_not_proven",
+      "redacted_audit_and_reconciliation_not_proven",
+      "separate_scoped_randall_pilot_approval_missing",
+      "wf67_guard_not_clean"
+    ],
+    "technical_setup": {
+      "setup_label": "TACTICAL_DIP_RECLAIM",
+      "clean_add_allowed": false,
+      "tactical_dip_reclaim_allowed": true,
+      "notional_multiplier": 0.3,
+      "reclaim_trigger": "Upgrade from tactical to clean add only after reclaiming the 20D/50D zone near 211.68; prefer two closes above 50D or one strong close above 50D with volume/range confirmation.",
+      "blocker": null,
+      "latest_close": 210.69,
+      "ma20": 211.68,
+      "ma50": 209.12,
+      "ma200": 189.68,
+      "above_ma20": false,
+      "above_ma50": true,
+      "above_ma200": true,
+      "ma_posture": "above 50d and 200d, below 20d",
+      "data_date": "2026-06-18",
+      "technical_posture": {
+        "band_status": "IN_BAND",
+        "latest_close": 210.69,
+        "ma20": 211.68,
+        "ma50": 209.12,
+        "ma200": 189.68,
+        "ma_posture": "above 50d and 200d, below 20d",
+        "above_ma20": false,
+        "above_ma50": true,
+        "above_ma200": true,
+        "data_date": "2026-06-18",
+        "deployment_surface_state": "PROMOTION REVIEW",
+        "macro_gate": "DEGRADED",
+        "near_earnings_caution": false,
+        "why": "in band at 210.69 -- explicit owner promotion review required before deployable-now status"
+      }
+    },
+    "opportunity_review": {
+      "label": "thesis_supported_but_risk_control_required",
+      "positive_signals": [
+        "eps_yoy_pct=214.47",
+        "free_cash_flow_yoy_pct=85.54",
+        "official_guidance_available",
+        "revenue_yoy_pct=85.23"
+      ],
+      "risk_flags": [],
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "portfolio_role": "tactical",
+      "source_open_required": true
+    },
+    "wf84_canonical_data_plane": {
+      "status": "ok",
+      "ticker": "NVDA",
+      "auto_tier": "Tier A",
+      "auto_state": "A-READY",
+      "primary_state": "blocked_missing_freshness",
+      "queue_state": "blocked_missing_freshness",
+      "actionability": "review_only_owner_gated",
+      "latest_known_price": 209.525,
+      "band_status": "IN_BAND",
+      "entry_band_low": 202.81,
+      "entry_band_high": 212.23,
+      "stop_or_invalidation": 192.95,
+      "authority_flags_false": true
+    },
+    "written_band": {
+      "entry_band_low": 202.81,
+      "entry_band_high": 212.23,
+      "stop_or_invalidation": 192.95,
+      "card_reference_price": 214.25,
+      "card_band_status": "IN_BAND",
+      "current_band_status": "IN_BAND",
+      "source": "wf84_canonical_overlay",
+      "decision_factory_band_snapshot": {
+        "entry_band_low": 198.47,
+        "entry_band_high": 216.66,
+        "stop_or_invalidation": 187.9,
+        "current_band_status": "IN_BAND"
+      }
+    },
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "owner_approval_inferred": false,
+    "small_starter_review": {
+      "recommended_by": "Veritas main session",
+      "recommended_notional_usd": 300.0,
+      "limit_price": 209.5,
+      "rationale": "Smaller starter fits tactical/reclaim posture better than the prior $1,500 draft.",
+      "external_quote_crosscheck": {
+        "source": "Investing.com historical quote snippet via web search",
+        "date": "2026-06-22",
+        "price": 212.83,
+        "open": 211.5,
+        "high": 213.97,
+        "low": 210.82,
+        "interpretation": "price touched above the written band high; card is pullback/no-chase only, not approval to buy above band"
+      }
+    }
+  }
+}

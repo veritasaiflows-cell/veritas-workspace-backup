@@ -1,0 +1,80 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "declarationKey": "veritas.graphify-scripts-incremental-refresh.v1",
+  "job_id": "d1f906e9-0eec-4cae-a7d5-80c40b3728c8",
+  "name": "Runtime - Graphify Scripts Incremental Refresh",
+  "agentId": "main",
+  "required": true,
+  "owner_workflow": "RUNTIME",
+  "contract_reason": "Refresh the bounded operational scripts graph once weekly after the memory dream jobs, using Graphify's local no-LLM updater and only when code-source drift is present.",
+  "description": "Weekly local-only Graphify incremental refresh of the existing scripts code graph. It runs only when code-source drift is detected, updates scripts/graphify-out with Graphify's no-LLM updater, writes tmp/operational-graph-maintenance.json, and never changes configuration, canon, or external delivery.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 4 * * 0",
+    "tz": "America/Phoenix",
+    "staggerMs": 0
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "python",
+      "scripts/memory_graph_maintenance.py",
+      "--mode",
+      "refresh",
+      "--max-seconds",
+      "600",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 660
+  },
+  "compare_fields": [
+    "declarationKey",
+    "name",
+    "agentId",
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/operational-graph-maintenance.json",
+    "scripts/graphify-out/graph.json",
+    "scripts/graphify-out/manifest.json"
+  ],
+  "authority_boundary": {
+    "derived_graph_refresh_only": true,
+    "bounded_graph_scope": "scripts/graphify-out",
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "stop_lines": [
+    "Refresh only the existing scripts/graphify-out derivation through Graphify's local incremental updater.",
+    "No broad workspace graph, configuration, auth, runtime, canon, portfolio, capital, account, execution, or external-delivery action.",
+    "No cron schedule mutation from this contract artifact."
+  ],
+  "created_at_utc": "2026-08-31T18:08:00Z",
+  "contract_update_reason": "Initial approved weekly bounded scripts-graph incremental refresh."
+}

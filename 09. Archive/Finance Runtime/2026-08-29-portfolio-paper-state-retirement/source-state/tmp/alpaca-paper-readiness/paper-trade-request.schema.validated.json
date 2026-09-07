@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "artifact_type": {
+      "const": "wf67_paper_trade_request"
+    },
+    "audit": {
+      "type": "object"
+    },
+    "authority": {
+      "properties": {
+        "account_settings_mutation_allowed": {
+          "const": false
+        },
+        "live_cancel_allowed": {
+          "const": false
+        },
+        "live_endpoint_forbidden": {
+          "const": true
+        },
+        "live_submit_allowed": {
+          "const": false
+        },
+        "money_movement_allowed": {
+          "const": false
+        },
+        "no_inferred_approval": {
+          "const": true
+        },
+        "paper_cancel_allowed": {
+          "const": true
+        },
+        "paper_only": {
+          "const": true
+        },
+        "paper_submit_allowed": {
+          "const": true
+        }
+      },
+      "required": [
+        "paper_only",
+        "paper_submit_allowed",
+        "paper_cancel_allowed",
+        "live_submit_allowed",
+        "live_cancel_allowed",
+        "live_endpoint_forbidden",
+        "money_movement_allowed",
+        "account_settings_mutation_allowed",
+        "no_inferred_approval"
+      ],
+      "type": "object"
+    },
+    "created_at_utc": {
+      "type": "string"
+    },
+    "order": {
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "time_in_force": {
+                "const": "gtc"
+              }
+            },
+            "required": [
+              "time_in_force"
+            ]
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "limit"
+              }
+            },
+            "required": [
+              "type",
+              "limit_price"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "limit_price": {
+          "exclusiveMinimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "notional": {
+          "exclusiveMinimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "qty": {
+          "exclusiveMinimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "side": {
+          "enum": [
+            "buy",
+            "sell"
+          ]
+        },
+        "symbol": {
+          "pattern": "^[A-Z.]{1,10}$",
+          "type": "string"
+        },
+        "time_in_force": {
+          "enum": [
+            "day",
+            "gtc"
+          ]
+        },
+        "type": {
+          "enum": [
+            "limit",
+            "market"
+          ]
+        }
+      },
+      "required": [
+        "symbol",
+        "side",
+        "type",
+        "time_in_force"
+      ],
+      "type": "object"
+    },
+    "request_id": {
+      "minLength": 8,
+      "type": "string"
+    },
+    "risk_check": {
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "source": {
+      "type": "object"
+    },
+    "workflow": {
+      "const": "WF67 - Alpaca Paper Execution Guardrail"
+    }
+  },
+  "required": [
+    "schema_version",
+    "workflow",
+    "artifact_type",
+    "request_id",
+    "created_at_utc",
+    "authority",
+    "order",
+    "risk_check",
+    "source",
+    "audit"
+  ],
+  "title": "WF67 Alpaca Paper Trade Request",
+  "type": "object"
+}

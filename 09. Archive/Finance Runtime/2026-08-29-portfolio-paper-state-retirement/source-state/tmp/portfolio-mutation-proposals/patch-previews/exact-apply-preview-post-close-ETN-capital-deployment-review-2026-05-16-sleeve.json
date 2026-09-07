@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-16T04:05:54Z",
+  "status": "ready_for_scoped_main_session_review",
+  "window": "post-close",
+  "input_bundle": "tmp/portfolio-mutation-proposals/exact-patch-material/post-close-ETN-capital-deployment-review-2026-05-16-sleeve.json",
+  "proposal_id": "post-close:ETN:capital-deployment-review:2026-05-16",
+  "apply_allowed": false,
+  "owner_approval_granted": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "authority": {
+    "phase": "WF56 Phase 3 dry-run scoped patch helper",
+    "dry_run_patch_preview_allowed": true,
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "main_session_final_action_required": true,
+    "write_owner_files_allowed": false,
+    "apply_allowed_by_this_helper": false,
+    "portfolio_mutation_allowed_by_this_helper": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "validation": {
+    "schema_validator_ok": true,
+    "schema_errors": [],
+    "schema_blockers": [],
+    "patch_scope_findings": [],
+    "patch_scope_critical": 0,
+    "build_errors": []
+  },
+  "summary": {
+    "requested_changes": 1,
+    "previewed_file_changes": 1,
+    "writes_performed": false,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "ready_for_main_session_portfolio_mutation_review": true
+  },
+  "file_previews": [
+    {
+      "path": "03. Portfolio/Portfolio Snapshot.md",
+      "change_type": "exact_text_replace",
+      "old_text_sha256_hint": null,
+      "old_text_match_count": 1,
+      "writes_performed": false,
+      "diff": "--- a/03. Portfolio/Portfolio Snapshot.md\n+++ b/03. Portfolio/Portfolio Snapshot.md\n@@ -89,6 +89,7 @@\n ## Risk flags\n \n - This is still a model draft, not an execution-ready account snapshot.\n+- WF64 sleeve proposal preview: `post-close:ETN:capital-deployment-review:2026-05-16` is review-only; it does not create, remove, or resize any sleeve without a separate approved apply artifact.\n - Draft weights are not live allocations and do not grant trade authority.\n - ETN remains the first Tier 1 explicit-add priority and remains manual-only.\n - MSFT is owner-promoted as a deployable-now / staged manual candidate, but below-200-day repair risk argues against full initial sizing.\n",
+      "rationale": "Preview a sleeve review note without changing canonical sizing, sleeve, sector, cash, risk-rule, or external action authority."
+    }
+  ],
+  "stop_lines": [
+    "This artifact is an exact patch preview only; it does not mutate owner notes or portfolio config.",
+    "Main-session portfolio mutation still requires explicit scoped Randall approval for the proposal id and exact diff.",
+    "A clean preview does not grant owner approval, sizing, sleeve, cash, risk-rule, execution-entitlement, trade, or account authority.",
+    "Phase 4 apply mode must be a separate approval-gated path and must run the post-apply validation chain."
+  ]
+}

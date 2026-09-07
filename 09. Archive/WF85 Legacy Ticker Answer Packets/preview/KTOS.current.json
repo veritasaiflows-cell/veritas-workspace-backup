@@ -1,0 +1,622 @@
+{
+  "schema_version": 1,
+  "artifact_type": "ticker_answer_packet_v1",
+  "ticker": "KTOS",
+  "generated_at_utc": "2026-06-16T20:38:55Z",
+  "review_only": true,
+  "source_card_generated_at_utc": "2026-06-16T19:46:49Z",
+  "freshness": {
+    "stale_after_hours": 36,
+    "built_from_card_at_utc": "2026-06-16T19:46:49Z",
+    "built_from_trade_grade_full_answer_assembler": true,
+    "assembler_schema": "veritas.trade_grade_full_answer_assembler.v1",
+    "note": "Compatibility snapshot generated from WF85 full-answer assembler."
+  },
+  "answer_confidence": {
+    "overall_level": "high",
+    "overall_label": "high_for_trade_grade_review",
+    "score": 0.9,
+    "decision_relevant_level": "high",
+    "decision_relevant_score": 0.9,
+    "peripheral_context_level": "low",
+    "peripheral_context_score": 0.75,
+    "reasons": [
+      "decision domains include action_state, price_band_stop, recommendation, and source_freshness",
+      "low/none domains: analyst, sector_context"
+    ]
+  },
+  "confidence_by_domain": {
+    "action_state": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "decision_state=below_stop_or_invalidation"
+      ]
+    },
+    "price_band_stop": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "band_status=BELOW_STOP",
+        "source_freshness=fresh"
+      ]
+    },
+    "technical": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "technical_status=None",
+        "repair_required=None"
+      ]
+    },
+    "official_earnings": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "earnings_status=available"
+      ]
+    },
+    "analyst": {
+      "level": "low",
+      "score": 0.3,
+      "reasons": [
+        "analyst_status=auto_sourced_yfinance",
+        "provider=yfinance",
+        "card_confidence=low"
+      ]
+    },
+    "sector_context": {
+      "level": "low",
+      "score": 0.3,
+      "reasons": [
+        "sector_status=missing"
+      ]
+    },
+    "recommendation": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "wf85_state=below_stop_or_invalidation"
+      ]
+    },
+    "source_freshness": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "freshness=fresh"
+      ]
+    }
+  },
+  "source_count": 18,
+  "source_lineage": [
+    {
+      "kind": "wf85_decision_card",
+      "path": "tmp/trade-grade-decision-cards.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "ticker_intelligence_card",
+      "path": "tmp/ticker-intelligence-cards/KTOS.current.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "wf84_canonical_data_plane",
+      "path": "tmp/canonical-finance-data-plane.sqlite",
+      "authority": "derived_read_only"
+    },
+    {
+      "kind": "wf84_drillback",
+      "path": "03. Portfolio/Execution Board.md",
+      "authority": "source_drillback"
+    },
+    {
+      "kind": "wf84_drillback",
+      "path": "tmp/post-close-final-quote-ledger.json",
+      "authority": "source_drillback"
+    },
+    {
+      "kind": "wf84_drillback",
+      "path": "tmp/wf78-auto-tier-routing.json",
+      "authority": "source_drillback"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/fundamental-metrics-current.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/deployment-readiness-surface.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/position-sizing-readiness-current.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/analyst-consensus-current.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/official-earnings-bridge.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/sector-expansion-board.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/technical-refresh.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/portfolio-config.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/post-close-final-quote-ledger.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/finance-decision-sync-spine.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/wf78-capital-review-queue.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "data/finance/universe-v1.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/wf78-auto-tier-routing.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "state/finance/finance-canon.sqlite",
+      "authority": "derived_review_only"
+    }
+  ],
+  "effective_price_context": {
+    "status": "available",
+    "effective_price": 56.34,
+    "price_source": "tmp/post-close-final-quote-ledger.json",
+    "market_date": "2026-06-16",
+    "as_of_utc": "2026-06-16T20:18:01Z",
+    "post_close_overlay_applied": true,
+    "fresh_quote_required": true,
+    "card_latest_known_price": 56.525,
+    "quote_freshness_status": "post_close_final_quote_available_for_non_executing_review"
+  },
+  "action_state": {
+    "status": "available",
+    "deployment_status": "DO_NOT_TOUCH",
+    "display_label": "below_stop_or_invalidation",
+    "wf85_decision_state": "below_stop_or_invalidation",
+    "workflow_state": "promotion_vetoed",
+    "band_status": "BELOW_STOP",
+    "below_stop": true,
+    "support_level": "review_context_only",
+    "actionability": "review_only_owner_gated"
+  },
+  "price_band_stop": {
+    "latest_known_price": 56.525,
+    "price_source": "tmp/post-close-final-quote-ledger.json",
+    "entry_band_low": 80.79,
+    "entry_band_high": 85.2,
+    "stop_or_invalidation": 77.27,
+    "band_status": "BELOW_STOP",
+    "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+    "stop_source": "state/finance/finance-canon.sqlite:reference_levels",
+    "fresh_quote_required": true,
+    "staleness_note": "Reference price/band from prepared packet; refresh before final use.",
+    "sql_canon_reference": {
+      "ticker": "KTOS",
+      "reference_price_low": 80.79,
+      "reference_price_high": 85.2,
+      "reference_invalidation_level": 77.27,
+      "reference_confidence": null,
+      "reference_band_status": null,
+      "authority_class": "reference_metadata_review_only_no_deployment_authority",
+      "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+    },
+    "post_close_final_quote": {
+      "market_date": "2026-06-16",
+      "retrieved_at_utc": "2026-06-16T17:43:32Z",
+      "source": "yfinance",
+      "review_only": true,
+      "execution_freshness_approved": false
+    }
+  },
+  "technical_posture": {
+    "band_status": "BELOW_STOP",
+    "latest_close": null,
+    "ma20": null,
+    "ma50": null,
+    "ma200": null,
+    "ma_posture": null,
+    "above_ma20": null,
+    "above_ma50": null,
+    "above_ma200": null,
+    "data_date": null,
+    "deployment_surface_state": null,
+    "macro_gate": null,
+    "near_earnings_caution": null,
+    "why": null
+  },
+  "thesis_summary": {
+    "thesis": "Card-level thesis synthesis requires source-open review of fundamentals, official captures, sector context, and technical posture before final answer.",
+    "bull_case_inputs": [
+      "latest_earnings_performance",
+      "key_financial_metrics",
+      "official_capture_developments_orders_backlog",
+      "current_sector_performance",
+      "technical_posture"
+    ],
+    "bear_case_inputs": [
+      "risk_register",
+      "missing_or_stale_evidence",
+      "valuation",
+      "price_band_stop"
+    ],
+    "entry_context": {
+      "latest_known_price": 56.525,
+      "price_source": "tmp/post-close-final-quote-ledger.json",
+      "entry_band_low": 80.79,
+      "entry_band_high": 85.2,
+      "stop_or_invalidation": 77.27,
+      "band_status": "BELOW_STOP",
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "stop_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "fresh_quote_required": true,
+      "staleness_note": "Reference price/band from prepared packet; refresh before final use.",
+      "sql_canon_reference": {
+        "ticker": "KTOS",
+        "reference_price_low": 80.79,
+        "reference_price_high": 85.2,
+        "reference_invalidation_level": 77.27,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      },
+      "post_close_final_quote": {
+        "market_date": "2026-06-16",
+        "retrieved_at_utc": "2026-06-16T17:43:32Z",
+        "source": "yfinance",
+        "review_only": true,
+        "execution_freshness_approved": false
+      }
+    },
+    "source_open_required": true
+  },
+  "bull_case": {
+    "bull_case": [
+      "latest_earnings_performance",
+      "key_financial_metrics",
+      "official_capture_developments_orders_backlog",
+      "current_sector_performance",
+      "technical_posture"
+    ],
+    "wf85_bull_case": "Not generated in Phase 1 until source-open material claims are promoted."
+  },
+  "bear_case": {
+    "bear_case": [
+      "risk_register",
+      "missing_or_stale_evidence",
+      "valuation",
+      "price_band_stop"
+    ],
+    "wf85_bear_case": "Not generated in Phase 1 until source-open material claims are promoted.",
+    "risks": [
+      {
+        "category": "capital_allocation",
+        "severity": "warning",
+        "detail": "Diluted average shares increased materially; EPS growth needs denominator review."
+      },
+      {
+        "category": "capital_allocation",
+        "severity": "warning",
+        "detail": "Stock issuance exceeded repurchases in the latest cash-flow period."
+      },
+      {
+        "category": "capital_allocation",
+        "severity": "warning",
+        "detail": "ROIC proxy is low; reinvestment/capital-allocation quality needs review."
+      },
+      {
+        "category": "entry_discipline",
+        "severity": "context",
+        "detail": "Band status is UNKNOWN; avoid no-chase entries without fresh reclaim evidence."
+      },
+      {
+        "category": "evidence_gap",
+        "severity": "context",
+        "detail": "Ticker not present in current deployment-readiness surface groups",
+        "family": "deployment_readiness_surface"
+      },
+      {
+        "category": "evidence_gap",
+        "severity": "context",
+        "detail": "Readiness packet uses pre-Tuesday/reference price and requires fresh quote confirmation",
+        "family": "fresh_price_quote"
+      }
+    ]
+  },
+  "latest_earnings": {
+    "status": "available",
+    "period_type": "quarterly",
+    "period_end": "2026-03-31",
+    "comparison_period_end": "2025-03-31",
+    "revenue": 371000000.0,
+    "revenue_yoy_pct": 22.6,
+    "net_income": 11900000.0,
+    "net_income_yoy_pct": 164.44,
+    "diluted_eps": 0.07,
+    "eps_yoy_pct": 133.33,
+    "free_cash_flow": -47300000.0,
+    "free_cash_flow_yoy_pct": 8.69,
+    "official_adjusted_eps": {
+      "status": "official_captured",
+      "value": {
+        "adjusted_eps": 0.16,
+        "gaap_eps": 0.07,
+        "prior_year_adjusted_eps": 0.12,
+        "prior_year_gaap_eps": 0.03
+      },
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1069258/000106925826000051/ktos202603298kexhibit991.htm",
+      "source_section": "Kratos Reports First Quarter 2026 Financial Results / adjusted_eps",
+      "period": "2026-03-29",
+      "manual_capture_required": false,
+      "inferred": false,
+      "claim_text": "Official KTOS capture field adjusted_eps is official_captured from validated SEC/IR evidence."
+    },
+    "official_growth_bridge": {
+      "status": "official_captured",
+      "value": {
+        "defense_rocket_support_growth_pct": 45.8,
+        "government_solutions_organic_growth_pct": 11.8,
+        "government_solutions_revenue_million": 288.4,
+        "microwave_products_growth_pct": 12.3,
+        "organic_revenue_growth_pct": 15.8,
+        "revenue_growth_pct": 22.6,
+        "revenue_million": 371.0,
+        "turbine_technologies_growth_pct": 20.3,
+        "unmanned_systems_organic_growth_pct": 30.9,
+        "unmanned_systems_revenue_million": 82.6
+      },
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1069258/000106925826000051/ktos202603298kexhibit991.htm",
+      "source_section": "Kratos Reports First Quarter 2026 Financial Results / growth_bridge",
+      "period": "2026-03-29",
+      "manual_capture_required": false,
+      "inferred": false,
+      "claim_text": "Official KTOS capture field growth_bridge is official_captured from validated SEC/IR evidence."
+    },
+    "official_guidance": {
+      "status": "official_captured",
+      "value": {
+        "fy_2026_adjusted_ebitda_range_million": [
+          170.0,
+          176.0
+        ],
+        "fy_2026_revenue_range_billion": [
+          1.7,
+          1.76
+        ],
+        "guidance_change": "increased fiscal FY26 financial guidance",
+        "includes_orbit_acquisition": true
+      },
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1069258/000106925826000051/ktos202603298kexhibit991.htm",
+      "source_section": "Kratos Reports First Quarter 2026 Financial Results / guidance",
+      "period": "2026-03-29",
+      "manual_capture_required": false,
+      "inferred": false,
+      "claim_text": "Official KTOS capture field guidance is official_captured from validated SEC/IR evidence."
+    },
+    "management_explanation": {
+      "status": "official_captured",
+      "value": {
+        "summary": "Management cited a balanced business model, rapid fielding for the Department of War, defense industrial base recapitalization, FY26/FY27 defense funding, multi-year production frameworks, and alignment with department objectives."
+      },
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1069258/000106925826000051/ktos202603298kexhibit991.htm",
+      "source_section": "Kratos Reports First Quarter 2026 Financial Results / management_explanation",
+      "period": "2026-03-29",
+      "manual_capture_required": false,
+      "inferred": false,
+      "claim_text": "Official KTOS capture field management_explanation is official_captured from validated SEC/IR evidence."
+    },
+    "source_open_required": true
+  },
+  "key_financial_metrics": {
+    "status": "available",
+    "growth": {
+      "revenue_yoy_pct": 22.6,
+      "net_income_yoy_pct": 164.44,
+      "eps_yoy_pct": 133.33,
+      "free_cash_flow_yoy_pct": 8.69
+    },
+    "profitability": {
+      "gross_margin_pct": 24.15,
+      "operating_margin_pct": 1.78,
+      "net_margin_pct": 3.21,
+      "roic_proxy_pct": 0.98
+    },
+    "cash_flow": {
+      "operating_cash_flow": -27400000.0,
+      "free_cash_flow": -47300000.0,
+      "fcf_per_share": -0.2637,
+      "fcf_yield_pct": -0.45
+    },
+    "balance_sheet": {
+      "cash_and_equivalents": 1464300000.0,
+      "total_debt": 185400000.0,
+      "net_debt": -1278900000.0,
+      "debt_to_annualized_ebitda": 1.73
+    },
+    "valuation": {
+      "market_cap": 10596753981.09,
+      "enterprise_value": 9413489664.0,
+      "trailing_pe": 332.41,
+      "forward_pe": 52.48,
+      "price_to_sales": 7.49,
+      "price_to_book": 3.11,
+      "ev_to_ebitda_proxy": 87.81,
+      "ev_to_fcf_proxy": null,
+      "earnings_yield_pct": 0.11
+    },
+    "capital_returns": {
+      "buyback_yield_pct": null,
+      "dividend_yield_pct": null,
+      "shareholder_yield_pct": -12.73,
+      "capital_return_to_fcf_pct": null
+    },
+    "data_quality": "clean",
+    "source_open_required": true
+  },
+  "analyst_consensus": {
+    "status": "auto_sourced_yfinance",
+    "consensus_rating": "Buy skew",
+    "average_target": 112.2,
+    "median_target": 112.5,
+    "high_target": 150.0,
+    "low_target": 75.0,
+    "implied_upside_downside_pct": 99.47,
+    "counts": {
+      "strong_buy": 4,
+      "buy": 12,
+      "hold": 3,
+      "sell": 0,
+      "strong_sell": 0
+    },
+    "provider": "yfinance",
+    "provider_confidence": "low",
+    "stale": false
+  },
+  "portfolio_fit": {
+    "status": "available",
+    "sector": "Defense",
+    "tier": "B",
+    "wf78_auto_tier": "Tier B",
+    "wf78_auto_state": "B-CANDIDATE",
+    "current_route_tier": "Tier B",
+    "current_route_state": "B-CANDIDATE",
+    "prior_card_wf78_auto_tier": null,
+    "prior_card_wf78_auto_state": null,
+    "wf85_decision_state": "below_stop_or_invalidation",
+    "wf78_tier": "B",
+    "wf78_decision_grade_eligible": true,
+    "portfolio_role": "speculative",
+    "coverage_lane": "speculative",
+    "monitoring_role": "priority_watch",
+    "recommended_starter_notional": {
+      "low_usd": 0,
+      "high_usd": 0,
+      "mid_usd": 0
+    },
+    "recommended_target_notional": {
+      "low_usd": 0,
+      "high_usd": 0,
+      "mid_usd": 0
+    },
+    "decision_note": "Monitor only."
+  },
+  "blockers": [
+    {
+      "kind": "wf85_decision_state_reason",
+      "detail": "primary_state_or_band_below_stop"
+    },
+    {
+      "kind": "missing_or_stale_evidence",
+      "detail": {
+        "family": "deployment_readiness_surface",
+        "severity": "context",
+        "status": "missing",
+        "detail": "Ticker not present in current deployment-readiness surface groups"
+      }
+    },
+    {
+      "kind": "missing_or_stale_evidence",
+      "detail": {
+        "family": "fresh_price_quote",
+        "severity": "context",
+        "status": "stale_until_refreshed",
+        "detail": "Readiness packet uses pre-Tuesday/reference price and requires fresh quote confirmation"
+      }
+    }
+  ],
+  "recommended_next_action": {
+    "action": "avoid_until_invalidation_repair_or_reclaim_review",
+    "urgency": "none",
+    "owner_approval_required": true,
+    "execution_authorized": false,
+    "based_on": {
+      "decision_state": "below_stop_or_invalidation",
+      "trade_grade": "Reject",
+      "band_status": "BELOW_STOP",
+      "effective_price": 56.34
+    }
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "report_only": true,
+    "artifact_role": "derived_ticker_answer_response_and_route_layer_only",
+    "generated_answer_is_canon": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "cash_sizing_or_risk_rule_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "live_trade_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "archive_allowed": false,
+    "delete_allowed": false,
+    "apply_allowed": false,
+    "owner_approval_inferred": false,
+    "source_open_required_before_material_finance_claims": true,
+    "generated_packet_is_canon": false,
+    "source_open_required_before_final_recommendation_or_action_claim": true,
+    "sql_canon_migration_allowed": false
+  },
+  "field_provenance": {
+    "ticker": "assembler_derived",
+    "generated_at_utc": "generated",
+    "answer_confidence": "wf85_full_answer_assembler",
+    "confidence_by_domain": "wf85_full_answer_assembler",
+    "source_count": "wf85_full_answer_assembler",
+    "source_lineage": "wf85_full_answer_assembler",
+    "effective_price_context": "wf85_current_price_or_card",
+    "action_state": "wf85_decision_state",
+    "price_band_stop": "ticker_intelligence_card_with_wf85_overlay",
+    "technical_posture": "ticker_intelligence_card_or_wf84_repair_state",
+    "thesis_summary": "wf85_full_answer_section",
+    "bull_case": "wf85_full_answer_section",
+    "bear_case": "wf85_full_answer_section",
+    "latest_earnings": "ticker_intelligence_card",
+    "key_financial_metrics": "ticker_intelligence_card",
+    "analyst_consensus": "ticker_intelligence_card",
+    "portfolio_fit": "ticker_intelligence_card",
+    "blockers": "wf85_decision_state_and_card_evidence",
+    "recommended_next_action": "wf85_full_answer_assembler_review_only",
+    "authority_boundary": "review_only_boundary"
+  }
+}

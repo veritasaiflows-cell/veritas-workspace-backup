@@ -1,0 +1,350 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-09-03T00:54:02Z",
+  "artifact_type": "finance_intelligence_state_entry_stop_refs_packet",
+  "db_path": "state/finance/finance-canon.sqlite",
+  "authority_boundary": {
+    "review_only": true,
+    "database_path": "tmp/finance-intelligence-state.sqlite",
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_sql_canon_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_sql_canon_current_state_field_families": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "tmp_database_is_compatibility_cache": true,
+    "database_path_migration_performed": false,
+    "tmp_database_promotion_performed": false,
+    "full_sql_canon_migration_allowed": false,
+    "sql_canon_authority_expanded": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_trade_execution_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "source_open_required_before_finance_claims": true
+  },
+  "answer_contract": {
+    "sql_is_routing_and_current_state_only": true,
+    "material_finance_claim_requires_source_open": true,
+    "canonical_markdown_remains_owner_truth": true,
+    "must_not_infer_approval_or_execution_authority": true,
+    "must_disclose_stale_or_conflicting_rows": true
+  },
+  "sql_canon_migration": {
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_current_state_field_families_promoted": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "this_tmp_db_is_compatibility_cache": true,
+    "sql_canon_authority_expanded": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "status": "ok",
+  "ticker": "NVDA",
+  "count": 1,
+  "sql_first_read_scope": "Durable SQL-canon reference_levels/evidence_freshness/source_lineage are the guarded internal current-state layer for the dynamic active universe. Legacy WF72/finance-intelligence compatibility caches are support-only lineage; stale whole-file source hashes do not block the front door when SQL-canon, WF84, and finance-state reference values match. Review-monitor rows still require source-open proof before material finance claims.",
+  "sql_canon_field_family_summary": {
+    "review_only_internal_sql_primary": true,
+    "review_only_sql_json_canon_owner": true,
+    "canon_owner_metadata": {
+      "schema_version": "finance_sql_canon_owner_field_families.alerts_os_v1",
+      "promoted_at_utc": "2026-06-19T19:30:27Z",
+      "structured_truth_owner": "state/finance/finance-canon.sqlite plus immutable alert-level baseline",
+      "markdown_owner_scope": "policy, narrative, owner decisions, weekly reasoning, and audit context",
+      "fallback_retained": true,
+      "archive_delete_apply_allowed": false,
+      "promoted_field_families": [
+        "answer_path_scope",
+        "evidence_freshness",
+        "reference_levels",
+        "source_lineage",
+        "ticker_state",
+        "universe_membership"
+      ]
+    },
+    "source_open_required_before_material_claims": true,
+    "field_families": {
+      "ticker_state": {
+        "sql_primary_current_state": true,
+        "row_count": 300,
+        "active_rows": 300,
+        "authority_scope": "review_only_ticker_identity_and_route_state",
+        "canon_owner": true,
+        "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+      },
+      "universe_membership": {
+        "sql_primary_current_state": true,
+        "row_count": 300,
+        "legacy_production_rows": 0,
+        "production_scope_rows": 0,
+        "review_monitor_rows": 258,
+        "decision_grade_rows": 32,
+        "sql_tier_counts": {
+          "Tier A": 15,
+          "Tier B": 17,
+          "Tier C": 268
+        },
+        "legacy_42_role": "hard_retired_from_active_runtime_schema",
+        "authority_scope": "review_only_universe_membership_and_monitoring_role",
+        "canon_owner": true,
+        "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+      },
+      "reference_levels": {
+        "sql_primary_current_state": true,
+        "row_count": 200,
+        "complete_reference_rows": 200,
+        "authority_scope": "review_only_alert_band_and_invalidation_metadata",
+        "canon_owner": true,
+        "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+      },
+      "evidence_freshness": {
+        "sql_primary_current_state": true,
+        "row_count": 200,
+        "authority_scope": "review_only_freshness_and_source_confidence_metadata",
+        "canon_owner": true,
+        "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+      },
+      "source_lineage": {
+        "sql_primary_current_state": true,
+        "row_count": 2234,
+        "scope_key_count": 634,
+        "rows_by_field_family": {
+          "consumer_migration_registry": 434,
+          "evidence_freshness": 800,
+          "reference_levels": 1000
+        },
+        "authority_scope": "review_only_source_traceability_metadata",
+        "canon_owner": true,
+        "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+      },
+      "answer_path_scope": {
+        "sql_primary_current_state": true,
+        "row_count": 300,
+        "production_answer_rows": 0,
+        "authority_scope": "review_only_non_executing_recommendation_routing_scope",
+        "canon_owner": true,
+        "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+      },
+      "production_grade_policy": {
+        "sql_primary_current_state": false,
+        "row_count": 0,
+        "legacy_tier_a_ready_compatibility_rows": 0,
+        "dynamic_production_review_rows": 0,
+        "production_grade_rows": 0,
+        "lifecycle": "retired_from_alerts_os",
+        "replacement": "alert state plus freshness, confidence, thesis, timeframe, and non-executing recommendation review",
+        "authority_scope": "retired_historical_compatibility_no_dispatch",
+        "canon_owner": false,
+        "canon_owner_source": null
+      },
+      "tier_routing_state": {
+        "sql_primary_current_state": false,
+        "row_count": 0,
+        "lifecycle": "retired_empty_compatibility_table",
+        "authority_scope": "retired_historical_compatibility_no_dispatch",
+        "canon_owner": false,
+        "canon_owner_source": null
+      },
+      "consumer_registry": {
+        "sql_primary_current_state": true,
+        "cutover_state_counts": {
+          "not_cut_over": 101,
+          "retired_alerts_os_pivot": 196,
+          "source_producer": 254,
+          "sql_primary_guarded": 133
+        },
+        "authority_scope": "review_only_consumer_guard_and_migration_registry",
+        "canon_owner": false,
+        "canon_owner_source": null
+      }
+    },
+    "authority_boundary": {
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "customer_or_external_delivery_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "sql_canon_reference_overlay_blocked": [],
+  "sql_first_consumer_migration_performed": true,
+  "markdown_owner_fallback_required": true,
+  "entry_stop_refs": [
+    {
+      "ticker": "NVDA",
+      "entry_band_low": 202.15,
+      "entry_band_high": 217.11,
+      "stop_or_invalidation": 193.84,
+      "sql_canon_reference_overlay": {
+        "ticker": "NVDA",
+        "status": "ok",
+        "sql_canon_db": "state/finance/finance-canon.sqlite",
+        "reference_level": {
+          "ticker": "NVDA",
+          "reference_price_low": 202.15,
+          "reference_price_high": 217.11,
+          "reference_invalidation_level": 193.84,
+          "reference_confidence": null,
+          "reference_band_status": "IN_BAND",
+          "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+          "fallback_rule": "emit_freshness_decay_if_baseline_hash_quote_or_level_age_is_stale_or_conflicted"
+        },
+        "validation": {
+          "status": "ok",
+          "critical_errors": [],
+          "warnings": [
+            "production_grade_set_empty_wait_for_decision_grade_gates"
+          ]
+        },
+        "authority_boundary": {
+          "reference_metadata_only": true,
+          "not_recommendation_or_execution_authority": true,
+          "source_open_required_before_material_claims": true,
+          "capital_deployment_allowed": false,
+          "paper_or_live_execution_allowed": false,
+          "owner_approval_inferred": false
+        }
+      },
+      "sql_first_reference_metadata": {
+        "schema_version": "wf72_entry_stop_reference_metadata.v1",
+        "status": "available",
+        "ticker": "NVDA",
+        "authority_boundary": "wf72_entry_stop_reference_metadata_exact_key_gated_no_execution_authority",
+        "sql_cache_path": "state/finance/finance-canon.sqlite",
+        "sql_read_mode": "sqlite_uri_mode_ro",
+        "approved_row_family": "durable_finance_canon_reference_level_compatibility_projection",
+        "approved_fields": [
+          "reference_price_low",
+          "reference_price_high",
+          "reference_invalidation_level",
+          "reference_level_source_timestamp",
+          "reference_level_source_sha256",
+          "reference_level_owner_source_path"
+        ],
+        "row_keys": [
+          "NVDA:reference_price_low",
+          "NVDA:reference_price_high",
+          "NVDA:reference_invalidation_level",
+          "NVDA:reference_level_source_timestamp",
+          "NVDA:reference_level_source_sha256",
+          "NVDA:reference_level_owner_source_path"
+        ],
+        "values": {
+          "reference_price_low": 202.15,
+          "reference_price_high": 217.11,
+          "reference_invalidation_level": 193.84,
+          "reference_level_source_timestamp": "2026-08-21T20:31:52.979543+00:00",
+          "reference_level_source_sha256": "bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007",
+          "reference_level_owner_source_path": "state/finance/baselines/alert-reference-levels-v1-bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007.json"
+        },
+        "source_lineage": {
+          "owner_source_path": "state/finance/baselines/alert-reference-levels-v1-bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007.json",
+          "source_timestamp": "2026-08-21T20:31:52.979543+00:00",
+          "source_sha256": "bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007"
+        },
+        "source_rows": [
+          {
+            "key": "NVDA:reference_price_low",
+            "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007.json",
+            "source_artifact_hash": "bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007",
+            "freshness_status": "ok",
+            "last_reconciled_at_utc": "2026-08-30T04:59:29Z",
+            "updated_at_utc": "2026-08-30T04:59:29Z"
+          },
+          {
+            "key": "NVDA:reference_price_high",
+            "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007.json",
+            "source_artifact_hash": "bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007",
+            "freshness_status": "ok",
+            "last_reconciled_at_utc": "2026-08-30T04:59:29Z",
+            "updated_at_utc": "2026-08-30T04:59:29Z"
+          },
+          {
+            "key": "NVDA:reference_invalidation_level",
+            "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007.json",
+            "source_artifact_hash": "bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007",
+            "freshness_status": "ok",
+            "last_reconciled_at_utc": "2026-08-30T04:59:29Z",
+            "updated_at_utc": "2026-08-30T04:59:29Z"
+          },
+          {
+            "key": "NVDA:reference_level_source_timestamp",
+            "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007.json",
+            "source_artifact_hash": "bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007",
+            "freshness_status": "ok",
+            "last_reconciled_at_utc": "2026-08-30T04:59:29Z",
+            "updated_at_utc": "2026-08-30T04:59:29Z"
+          },
+          {
+            "key": "NVDA:reference_level_source_sha256",
+            "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007.json",
+            "source_artifact_hash": "bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007",
+            "freshness_status": "ok",
+            "last_reconciled_at_utc": "2026-08-30T04:59:29Z",
+            "updated_at_utc": "2026-08-30T04:59:29Z"
+          },
+          {
+            "key": "NVDA:reference_level_owner_source_path",
+            "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007.json",
+            "source_artifact_hash": "bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007",
+            "freshness_status": "ok",
+            "last_reconciled_at_utc": "2026-08-30T04:59:29Z",
+            "updated_at_utc": "2026-08-30T04:59:29Z"
+          }
+        ],
+        "missing_fields": [],
+        "issues": [],
+        "notes": [
+          "Reference metadata only; does not replace price_band_stop fallback values.",
+          "No recommendation, deployment/action state, approval, portfolio mutation, or execution authority."
+        ],
+        "display_reference_only": true,
+        "fallback_required": true,
+        "recommendation_allowed": false,
+        "deployment_or_action_state_change_allowed": false,
+        "canonical_note_mutation_allowed": false,
+        "markdown_mutation_allowed": false,
+        "portfolio_mutation_allowed": false,
+        "owner_approval_inferred": false,
+        "proposal_apply_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "paper_trade_authority_allowed": false,
+        "live_trade_authority_allowed": false,
+        "money_movement_allowed": false
+      },
+      "freshness_status": "current",
+      "validation_status": "ok",
+      "owner_note_path": "state/finance/baselines/alert-reference-levels-v1-bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007.json",
+      "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007.json",
+      "source_artifact_hash": "bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007",
+      "current_owner_source_hash": null,
+      "compatibility_source_hash_status": "ok_sql_canon_authoritative_legacy_decoupled",
+      "compatibility_source_hash_blocks_front_door": false,
+      "legacy_source_hash_warning": true,
+      "legacy_source_hash_warning_reason": "legacy compatibility entry/stop cache trails SQL-canon current-state references; recorded as lineage drift only and not allowed to block the front door",
+      "source_timestamp": "2026-08-21T20:31:52.979543+00:00",
+      "reference_source_surface": "state/finance/finance-canon.sqlite:reference_levels"
+    }
+  ],
+  "cache_boundary": "Validated metadata/reference cache only; not recommendation, deployment, approval, or execution authority."
+}

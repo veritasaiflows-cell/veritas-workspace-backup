@@ -1,0 +1,616 @@
+{
+  "generated_at_utc": "2026-08-29T06:03:39Z",
+  "mode": "dry_run",
+  "window": "post-close",
+  "status": "blocked",
+  "category": "sizing",
+  "technical_sheet_mode": "sql_first_thin_portfolio_snapshot",
+  "sql_first_thin_portfolio_snapshot_contract": {
+    "schema": "veritas.sql_first_thin_board_contract.v1",
+    "generated_at_utc": "2026-08-29T06:03:39Z",
+    "status": "blocked",
+    "sql_first_thin_board_detected": true,
+    "sql_first_thin_board_allowed": false,
+    "board_table_required": true,
+    "execution_board": "03. Portfolio/Portfolio Snapshot.md",
+    "backup_path": "backups/sql-json-md-thinning/20260619T192613Z/03. Portfolio/Portfolio Snapshot.md",
+    "structured_owner": "state/finance/finance-canon.sqlite plus generated/read-only JSON proof packets",
+    "required_proof": [
+      "tmp/finance-sql-canon-access-validation.json",
+      "tmp/canonical-finance-data-plane.json",
+      "tmp/canonical-finance-data-plane-phase6-10.json",
+      "tmp/full-answer-parity/full-answer-parity-rollup.json",
+      "tmp/trade-grade-os-freshness-cron-runner.json"
+    ],
+    "checks": [
+      {
+        "name": "execution_board_exists",
+        "status": "ok",
+        "message": "Execution Board exists",
+        "detail": "03. Portfolio/Portfolio Snapshot.md"
+      },
+      {
+        "name": "thin_board_marker_present",
+        "status": "ok",
+        "message": "Thin board marker present",
+        "detail": null
+      },
+      {
+        "name": "structured_owner_route_present",
+        "status": "ok",
+        "message": "Structured SQL owner route present",
+        "detail": null
+      },
+      {
+        "name": "route_commands_present",
+        "status": "ok",
+        "message": "SQL/JSON route commands present",
+        "detail": [
+          "finance_sql_canon_access.py",
+          "finance_intelligence_state.py",
+          "trade_grade_os_freshness_cron_runner.py",
+          "full_intelligence_answer_parity.py"
+        ]
+      },
+      {
+        "name": "proof_files_present",
+        "status": "ok",
+        "message": "Primary JSON proof files present in board route",
+        "detail": [
+          "tmp/trade-grade-os-freshness-cron-runner.json",
+          "tmp/full-answer-parity/full-answer-parity-rollup.json",
+          "tmp/canonical-finance-data-plane-retirement-readiness.json"
+        ]
+      },
+      {
+        "name": "thin_board_authority_block_present",
+        "status": "ok",
+        "message": "Thin board authority block present",
+        "detail": null
+      },
+      {
+        "name": "pre_thin_backup_exists",
+        "status": "blocked",
+        "message": "Pre-thinning backup missing",
+        "detail": "backups/sql-json-md-thinning/20260619T192613Z/03. Portfolio/Portfolio Snapshot.md"
+      },
+      {
+        "name": "proof_exists:tmp/finance-sql-canon-access-validation.json",
+        "status": "ok",
+        "message": "tmp/finance-sql-canon-access-validation.json exists and is readable",
+        "detail": null
+      },
+      {
+        "name": "authority_false:tmp/finance-sql-canon-access-validation.json",
+        "status": "ok",
+        "message": "tmp/finance-sql-canon-access-validation.json authority flags remain false",
+        "detail": []
+      },
+      {
+        "name": "proof_exists:tmp/canonical-finance-data-plane.json",
+        "status": "ok",
+        "message": "tmp/canonical-finance-data-plane.json exists and is readable",
+        "detail": null
+      },
+      {
+        "name": "authority_false:tmp/canonical-finance-data-plane.json",
+        "status": "ok",
+        "message": "tmp/canonical-finance-data-plane.json authority flags remain false",
+        "detail": []
+      },
+      {
+        "name": "proof_exists:tmp/canonical-finance-data-plane-phase6-10.json",
+        "status": "ok",
+        "message": "tmp/canonical-finance-data-plane-phase6-10.json exists and is readable",
+        "detail": null
+      },
+      {
+        "name": "authority_false:tmp/canonical-finance-data-plane-phase6-10.json",
+        "status": "ok",
+        "message": "tmp/canonical-finance-data-plane-phase6-10.json authority flags remain false",
+        "detail": []
+      },
+      {
+        "name": "proof_exists:tmp/full-answer-parity/full-answer-parity-rollup.json",
+        "status": "ok",
+        "message": "tmp/full-answer-parity/full-answer-parity-rollup.json exists and is readable",
+        "detail": null
+      },
+      {
+        "name": "authority_false:tmp/full-answer-parity/full-answer-parity-rollup.json",
+        "status": "ok",
+        "message": "tmp/full-answer-parity/full-answer-parity-rollup.json authority flags remain false",
+        "detail": []
+      },
+      {
+        "name": "proof_exists:tmp/trade-grade-os-freshness-cron-runner.json",
+        "status": "ok",
+        "message": "tmp/trade-grade-os-freshness-cron-runner.json exists and is readable",
+        "detail": null
+      },
+      {
+        "name": "authority_false:tmp/trade-grade-os-freshness-cron-runner.json",
+        "status": "ok",
+        "message": "tmp/trade-grade-os-freshness-cron-runner.json authority flags remain false",
+        "detail": []
+      },
+      {
+        "name": "sql_guard_status",
+        "status": "ok",
+        "message": "SQL canon guard is ok",
+        "detail": "ok"
+      },
+      {
+        "name": "sql_guard_active_scope_complete",
+        "status": "ok",
+        "message": "SQL active scope rows match current dynamic universe",
+        "detail": {
+          "expected": 300,
+          "observed": {
+            "securities": 300,
+            "universe_membership": 300,
+            "tier_routing_state": 300,
+            "answer_path_scope": 300,
+            "evidence_status": 300
+          }
+        }
+      },
+      {
+        "name": "sql_guard_reference_levels_bounded",
+        "status": "ok",
+        "message": "SQL reference-level rows are bounded inside active scope",
+        "detail": {
+          "reference_levels": 200,
+          "active_scope": 300
+        }
+      },
+      {
+        "name": "sql_guard_source_lineage_loaded",
+        "status": "ok",
+        "message": "SQL source lineage loaded",
+        "detail": 3521
+      },
+      {
+        "name": "sql_json_canon_owner",
+        "status": "ok",
+        "message": "SQL/JSON owner metadata present",
+        "detail": true
+      },
+      {
+        "name": "reference_levels_canon_owner",
+        "status": "ok",
+        "message": "Reference levels are SQL-canon owned",
+        "detail": {
+          "sql_primary_current_state": true,
+          "row_count": 200,
+          "complete_reference_rows": 200,
+          "authority_scope": "review_only_entry_band_stop_metadata",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        }
+      },
+      {
+        "name": "source_lineage_canon_owner",
+        "status": "ok",
+        "message": "Source lineage is SQL-canon owned",
+        "detail": {
+          "sql_primary_current_state": true,
+          "row_count": 3521,
+          "scope_key_count": 734,
+          "rows_by_field_family": {
+            "consumer_migration_registry": 434,
+            "evidence_freshness": 800,
+            "reference_levels": 1087,
+            "tier_routing_state": 1200
+          },
+          "authority_scope": "review_only_source_traceability_metadata",
+          "canon_owner": true,
+          "canon_owner_source": "finance_state_meta:canon_owner_field_families_v1"
+        }
+      },
+      {
+        "name": "wf84_status",
+        "status": "ok",
+        "message": "WF84 data plane status is ok",
+        "detail": "ok"
+      },
+      {
+        "name": "wf84_validation",
+        "status": "ok",
+        "message": "WF84 data plane validation is ok",
+        "detail": "ok"
+      },
+      {
+        "name": "wf84_security_master_matches_router",
+        "status": "ok",
+        "message": "WF84 security master rows match current router scope",
+        "detail": {
+          "security_master_count": 300,
+          "router_count": 300
+        }
+      },
+      {
+        "name": "wf84_dynamic_router_scope_present",
+        "status": "ok",
+        "message": "WF84 dynamic router scope is present",
+        "detail": 300
+      },
+      {
+        "name": "wf84_evidence_family_scope_complete",
+        "status": "ok",
+        "message": "WF84 evidence family rows match current scope",
+        "detail": {
+          "complete": true,
+          "expected_count": 6300,
+          "actual_count": 6300,
+          "table_count": 6300,
+          "tier_weighted_count": 300,
+          "router_count": 300,
+          "non_tier_family_count": 20,
+          "non_tier_ticker_count": 300,
+          "missing_pair_count": 0,
+          "missing_pairs": []
+        }
+      },
+      {
+        "name": "wf84_full_answer_sections_match_scope",
+        "status": "ok",
+        "message": "WF84 full-answer section rows match current scope",
+        "detail": {
+          "actual": 5100,
+          "expected": 5100,
+          "router_count": 300
+        }
+      },
+      {
+        "name": "wf84_authority_false",
+        "status": "ok",
+        "message": "WF84 forbidden authority true count is 0",
+        "detail": 0
+      },
+      {
+        "name": "phase_6_10_status",
+        "status": "ok",
+        "message": "Phase 6-10 status is ok",
+        "detail": "ok"
+      },
+      {
+        "name": "phase_6_10_validation",
+        "status": "ok",
+        "message": "Phase 6-10 validation is ok",
+        "detail": "ok"
+      },
+      {
+        "name": "phase_6_10_no_critical_errors",
+        "status": "ok",
+        "message": "Phase 6-10 critical errors = 0",
+        "detail": 0
+      },
+      {
+        "name": "phase_6_10_no_archive_apply",
+        "status": "ok",
+        "message": "Archive/delete/apply remains false",
+        "detail": false
+      },
+      {
+        "name": "full_answer_parity_status",
+        "status": "ok",
+        "message": "Full-answer parity status is ok",
+        "detail": "ok"
+      },
+      {
+        "name": "full_answer_parity_validation",
+        "status": "ok",
+        "message": "Full-answer parity validation is ok",
+        "detail": "ok"
+      },
+      {
+        "name": "full_population_covered",
+        "status": "ok",
+        "message": "Full population covered",
+        "detail": true
+      },
+      {
+        "name": "full_answer_no_critical_tickers",
+        "status": "ok",
+        "message": "Production-scope full-answer critical ticker count = 0",
+        "detail": {
+          "actionable_critical_ticker_count": 0,
+          "actionable_source": "strategic_production_critical_ticker_count",
+          "critical_ticker_count": 0,
+          "strategic_production_critical_ticker_count": 0,
+          "production_critical_ticker_count": 0,
+          "retirement_blocker_ticker_count": 0,
+          "thin_monitor_critical_ticker_count": 0
+        }
+      },
+      {
+        "name": "full_answer_no_missing_sections",
+        "status": "ok",
+        "message": "No full-answer sections missing both sources",
+        "detail": 0
+      },
+      {
+        "name": "full_answer_no_archive_apply",
+        "status": "ok",
+        "message": "Archive/delete/apply remains false",
+        "detail": false
+      },
+      {
+        "name": "trade_grade_freshness_status",
+        "status": "blocked",
+        "message": "Trade-grade freshness runner is not ok",
+        "detail": "blocked"
+      },
+      {
+        "name": "trade_grade_freshness_validation",
+        "status": "blocked",
+        "message": "Trade-grade freshness validation is not ok",
+        "detail": {
+          "status": "error",
+          "warnings": [
+            "trade_grade_data_not_ready:24/61_tier_a_b_threshold_48",
+            "tier_a_b_band_cron_guard_finance_domain_debt_present"
+          ],
+          "review_only_exception": false
+        }
+      },
+      {
+        "name": "trade_grade_wf84_status",
+        "status": "ok",
+        "message": "WF84 status is ok in freshness runner",
+        "detail": "ok"
+      },
+      {
+        "name": "trade_grade_wf84_authority_false",
+        "status": "ok",
+        "message": "WF84 forbidden authority true count is 0",
+        "detail": 0
+      },
+      {
+        "name": "trade_grade_parity_status",
+        "status": "ok",
+        "message": "WF84/WF85 parity is ok",
+        "detail": "ok"
+      },
+      {
+        "name": "trade_grade_data_ready",
+        "status": "blocked",
+        "message": "Trade-grade data readiness is not true",
+        "detail": false
+      }
+    ],
+    "errors": [
+      {
+        "name": "pre_thin_backup_exists",
+        "status": "blocked",
+        "message": "Pre-thinning backup missing",
+        "detail": "backups/sql-json-md-thinning/20260619T192613Z/03. Portfolio/Portfolio Snapshot.md"
+      },
+      {
+        "name": "trade_grade_freshness_status",
+        "status": "blocked",
+        "message": "Trade-grade freshness runner is not ok",
+        "detail": "blocked"
+      },
+      {
+        "name": "trade_grade_freshness_validation",
+        "status": "blocked",
+        "message": "Trade-grade freshness validation is not ok",
+        "detail": {
+          "status": "error",
+          "warnings": [
+            "trade_grade_data_not_ready:24/61_tier_a_b_threshold_48",
+            "tier_a_b_band_cron_guard_finance_domain_debt_present"
+          ],
+          "review_only_exception": false
+        }
+      },
+      {
+        "name": "trade_grade_data_ready",
+        "status": "blocked",
+        "message": "Trade-grade data readiness is not true",
+        "detail": false
+      }
+    ],
+    "authority": {
+      "review_only": true,
+      "sql_write_allowed": false,
+      "human_board_mutation_allowed": false,
+      "portfolio_mutation_allowed": false,
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "sync_decision": {
+    "short_circuit_snapshot_mutation": true,
+    "status": "blocked",
+    "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+  },
+  "authority": {
+    "exact_diff_workspace_note_sync_only": false,
+    "reads_current_portfolio_config_only": true,
+    "writes_portfolio_snapshot_only": false,
+    "portfolio_config_weight_mutation_allowed": false,
+    "cash_risk_rule_sleeve_execution_mutation_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "inputs": {
+    "proposal_bundle": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "portfolio_snapshot": "03. Portfolio/Portfolio Snapshot.md",
+    "portfolio_config": "tmp/portfolio-config.json"
+  },
+  "summary": {
+    "proposal_count": 17,
+    "ready_to_apply_count": 0,
+    "applied_count": 0,
+    "already_current_count": 0,
+    "sql_first_thin_snapshot_noop_count": 0,
+    "blocked_count": 17,
+    "writes_performed": 0
+  },
+  "records": [
+    {
+      "proposal_id": "morning:AMD:capital-deployment-review:2026-08-28",
+      "ticker": "AMD",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:BKNG:capital-deployment-review:2026-08-28",
+      "ticker": "BKNG",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:BRK.B:capital-deployment-review:2026-08-28",
+      "ticker": "BRK.B",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:CVX:capital-deployment-review:2026-08-28",
+      "ticker": "CVX",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:ETN:capital-deployment-review:2026-08-28",
+      "ticker": "ETN",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:GE:capital-deployment-review:2026-08-28",
+      "ticker": "GE",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:ITA:capital-deployment-review:2026-08-28",
+      "ticker": "ITA",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:JPM:capital-deployment-review:2026-08-28",
+      "ticker": "JPM",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:LLY:capital-deployment-review:2026-08-28",
+      "ticker": "LLY",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:LMT:capital-deployment-review:2026-08-28",
+      "ticker": "LMT",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:MSFT:capital-deployment-review:2026-08-28",
+      "ticker": "MSFT",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:NVDA:capital-deployment-review:2026-08-28",
+      "ticker": "NVDA",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:PH:capital-deployment-review:2026-08-28",
+      "ticker": "PH",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:PLTR:capital-deployment-review:2026-08-28",
+      "ticker": "PLTR",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:VRT:capital-deployment-review:2026-08-28",
+      "ticker": "VRT",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:XLB:capital-deployment-review:2026-08-28",
+      "ticker": "XLB",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    },
+    {
+      "proposal_id": "morning:XOM:capital-deployment-review:2026-08-28",
+      "ticker": "XOM",
+      "status": "blocked",
+      "category": "sizing",
+      "writes_performed": false,
+      "critical": 1,
+      "reason": "SQL-first thin Portfolio Snapshot detected but its proof contract is blocked."
+    }
+  ],
+  "post_apply_validation": null,
+  "stop_lines": [
+    "Portfolio Snapshot is thin; current sizing semantics live in SQL/JSON proof surfaces.",
+    "No Portfolio Snapshot write, portfolio-config weight mutation, cash, risk-rule, sleeve, execution, trade, account, or money-movement action was performed.",
+    "Any blocked proposal record requires source-open inspection or note-surface repair before unattended reuse."
+  ]
+}

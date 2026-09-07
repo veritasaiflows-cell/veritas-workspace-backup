@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-24T16:21:38Z",
+  "status": "ready_for_scoped_main_session_review",
+  "window": "post-close",
+  "input_bundle": "tmp/portfolio-mutation-proposals/semantic-patch-material/sunday-MSFT-capital-deployment-review-2026-05-24-entry_band.json",
+  "proposal_id": "sunday:MSFT:capital-deployment-review:2026-05-24",
+  "apply_allowed": false,
+  "owner_approval_granted": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "authority": {
+    "phase": "WF56 Phase 3 dry-run scoped patch helper",
+    "dry_run_patch_preview_allowed": true,
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "main_session_final_action_required": true,
+    "write_owner_files_allowed": false,
+    "apply_allowed_by_this_helper": false,
+    "portfolio_mutation_allowed_by_this_helper": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "validation": {
+    "schema_validator_ok": true,
+    "schema_errors": [],
+    "schema_blockers": [],
+    "patch_scope_findings": [],
+    "patch_scope_critical": 0,
+    "build_errors": []
+  },
+  "summary": {
+    "requested_changes": 1,
+    "previewed_file_changes": 1,
+    "writes_performed": false,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "ready_for_main_session_portfolio_mutation_review": true
+  },
+  "file_previews": [
+    {
+      "path": "03. Portfolio/Execution Board.md",
+      "change_type": "exact_text_replace",
+      "old_text_sha256_hint": null,
+      "old_text_match_count": 1,
+      "writes_performed": false,
+      "diff": "--- a/03. Portfolio/Execution Board.md\n+++ b/03. Portfolio/Execution Board.md\n@@ -247,6 +247,7 @@\n - Support: **398.84-389.64** (50-day / lower working band), then **378.18** (explicit stop)\n - Resistance: **412.56-417.45** (band ceiling / 20-day reclaim zone), then **462.35** (200-day)\n - Preferred entry band: **389.64 to 412.56** *(current artifact layer 2026-05-22)\n+- WF64 entry-band semantic sync: config low/high/stop = **389.64 to 412.56 / stop 378.18**; source `tmp/portfolio-config.json`; proposal `sunday:MSFT:capital-deployment-review:2026-05-24`; workspace maintenance only, no external-action authority.\n - Reference band: **389.64 to 412.56** / reference stop **378.18** (current artifact layer 2026-05-22; volatile canon sync)\n - Reference-band authority: **execution-band eligible only within owner-approved manual discipline ? Almost deployable / above-band no-chase**. Reference levels refresh chart context only; they do not create trade, sizing, sleeve, owner-approval, or execution authority.\n - Explicit stop / invalidation: **378.18**; below this level the setup is fail-closed pending fresh review.\n",
+      "rationale": "Synchronize entry_band semantic context from current portfolio artifacts without widening external-action authority."
+    }
+  ],
+  "stop_lines": [
+    "This artifact is an exact patch preview only; it does not mutate owner notes or portfolio config.",
+    "Main-session portfolio mutation still requires explicit scoped Randall approval for the proposal id and exact diff.",
+    "A clean preview does not grant owner approval, sizing, sleeve, cash, risk-rule, execution-entitlement, trade, or account authority.",
+    "Phase 4 apply mode must be a separate approval-gated path and must run the post-apply validation chain."
+  ]
+}

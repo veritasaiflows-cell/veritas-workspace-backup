@@ -12,7 +12,7 @@ Use this procedure when Randall asks for:
 
 - status or "what changed today"
 - approvals or approval-card prep
-- finance ticker reviews, deployment reviews, or paper-order prep
+- finance ticker reviews, alert reviews, or non-executing recommendation-card preparation
 - long work updates
 - skill/doctrine/procedure patches
 - efficient prompting or repeated encounter patterns
@@ -54,8 +54,8 @@ Expires/limit: <time, run count, or scope limit when relevant>.
 For finance:
 
 ```text
-Approved: prepare review or paper-order approval card for <ticker>.
-Not approved: capital deployment, execution, live trading, account changes, cash/sizing/risk-rule mutation, or owner-approval inference.
+Approved: prepare an alert or non-executing recommendation review for <ticker>.
+Not approved: capital deployment, execution, simulated or live trading, account changes, cash/sizing/risk-rule mutation, or owner-approval inference.
 ```
 
 Approval language authorizes only the named scope. Silence does not expand authority.
@@ -82,26 +82,25 @@ Use local finance cadence first:
 
 ```powershell
 python scripts\finance_sql_canon_access.py --write --validate
-python scripts\finance_intelligence_state.py ticker <TICKER> --pretty
-python scripts\artifact_index.py ticker-card <TICKER>
-python scripts\artifact_index.py answer-packet <TICKER>
+python scripts\alert_level_freshness_controller.py --write --validate
+python scripts\artifact_index.py ticker-cockpit <TICKER>
 ```
 
 Use web/source-open checks only for:
 
 - full ticker reviews
-- deployment requests
-- approval-card or paper-order preparation
+- material recommendation reviews
+- explicit requests for current external verification
 - explicit user requests for external verification
 - local workspace freshness failure where the answer would otherwise make a material current claim
 
 For ordinary quick reads, status, ranking, and workspace-backed answers, use current local artifacts. If local data is stale, missing, or contradictory, report a workspace freshness blocker and run/repair the local refresh path when safe instead of substituting broad web search.
 
-Recent-news checks should be narrow: official company/SEC/IR source first when fundamentals are material, plus one credible recent-news check when the review/deployment request needs current news risk.
+Recent-news checks should be narrow: official company/SEC/IR source first when fundamentals are material, plus one credible recent-news check when a recommendation review needs current news risk.
 
 Market-hours rule:
 
-- If market is open, use local live/intraday quote readiness before current-price or entry-action claims.
+- If market is open, use explicit intraday quote evidence before current-price, band-proximity, or threshold-state claims.
 - If market is closed, prefer the post-close chain and local quote overlay. Do not do redundant live quote searches by default.
 - Post-close quote evidence is review evidence, not execution freshness.
 
@@ -109,12 +108,12 @@ Market-hours rule:
 
 Cron should match the natural update cadence of the data:
 
-- intraday / market-window: prices, trigger state, deployment gates, paper-readiness guard proof
-- daily / post-close: ticker cards, full-answer freshness, WF78/WF84/WF85 routing, earnings/catalyst deltas, market regime inputs
-- weekly: macro/sector posture, research opportunity resets, OS improvement radar, broad portfolio/readiness review
+- intraday / market-window: explicit quotes, alert state, freshness decay, threshold crossings, and suppression
+- daily / post-close: evidence freshness, alert/recommendation digests, earnings/catalyst deltas, and market-regime inputs
+- weekly: macro/sector evidence, ranked non-executing recommendations, source gaps, and OS-improvement review
 - monthly: slow-changing reference material, structural audits, non-urgent governance hygiene, stale index/sprawl reviews
 
-Do not promote slow-moving data to daily cron just because it is useful. Do not demote market-sensitive data below daily/post-close if it supports ticker freshness, deployment, or risk decisions.
+Do not promote slow-moving data to daily cron just because it is useful. Do not demote market-sensitive data below daily/post-close when it controls alert freshness, recommendation confidence, or risk context.
 
 Any schedule change requires a separate cron diff packet, owner approval when material, backup/rollback where applicable, and post-apply validation.
 

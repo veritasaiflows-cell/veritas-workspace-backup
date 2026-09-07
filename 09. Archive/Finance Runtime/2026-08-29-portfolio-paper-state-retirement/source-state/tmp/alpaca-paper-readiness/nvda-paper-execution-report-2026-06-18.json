@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "artifact_type": "wf67_paper_execution_closeout_report",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "request_id": "nvda-small-paper-proposal-2026-06-18",
+  "generated_at_utc": "2026-06-18T15:31:01Z",
+  "owner_approval": {
+    "status": "approved_exact_order",
+    "approved_by": "Randall",
+    "message_id": "telegram:8650152206:3639",
+    "approval_text": "Approve to place paper order: Ticker NVDA; Side BUY; Type/TIF limit/day; Notional $150; Limit $208.75."
+  },
+  "order": {
+    "symbol": "NVDA",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "notional": 150.0,
+    "limit_price": 208.75,
+    "quantity": null
+  },
+  "pre_submit_context": {
+    "quote": 209.15,
+    "quote_source": "yfinance_fast_info",
+    "quote_checked_at_utc": "2026-06-18T15:27:30Z",
+    "entry_band_low": 191.15,
+    "entry_band_high": 212.77,
+    "stop": 181.33,
+    "band_status": "IN_BAND",
+    "estimated_max_loss_to_stop_usd": 19.7
+  },
+  "execution_result": {
+    "status": "submitted",
+    "generated_at_utc": "2026-06-18T15:27:48Z",
+    "broker_http_status": 200,
+    "broker_order_status_at_submit": "pending_new",
+    "broker_order_symbol": "NVDA",
+    "paper_order_id_present": true,
+    "raw_response_bodies_persisted": false,
+    "headers_persisted": false,
+    "secrets_persisted": false
+  },
+  "reconciliation": {
+    "paper_position_snapshot_at_utc": "2026-06-18T15:31:01Z",
+    "order_history_classifier_generated_at_utc": "2026-06-18T15:30:51Z",
+    "open_orders_count": 0,
+    "positions_count": 9,
+    "nvda_position_observed": true,
+    "order_history_classification": "filled",
+    "broker_order_status": "filled",
+    "filled_at_utc": "2026-06-18T15:29:27.41013Z",
+    "filled_qty": 0.71851497,
+    "filled_avg_price": 208.75,
+    "position_qty": 0.71851497,
+    "position_average_entry_price": 208.75,
+    "position_market_value": 150.216332,
+    "position_current_price": 209.065,
+    "position_unrealized_pl": 0.226332,
+    "next_safe_action": "Record filled paper-order outcome; any sell still needs exact owner approval and fresh WF67 guard proof."
+  },
+  "guard_proof": {
+    "dry_run_status": "validated_dry_run",
+    "execution_guard_status": "ok",
+    "critical_findings": 0,
+    "warning_findings": 0,
+    "ready_for_paper_submit_cancel": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_detected": false,
+    "live_trading_allowed": false,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false
+  },
+  "artifacts": {
+    "trade_request": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-small-paper-proposal-2026-06-18.json",
+    "dry_run_result": "tmp/alpaca-paper-readiness/paper-execution-dry-run-result.json",
+    "execution_result": "tmp/alpaca-paper-readiness/paper-execution-result.json",
+    "guard_validation": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
+    "order_history_classifier": "tmp/alpaca-paper-readiness/paper-order-history-classifier.json",
+    "paper_positions_packet": "tmp/finance-intelligence-state-paper-positions.json",
+    "audit_log": "tmp/alpaca-paper-readiness/audit-log.jsonl"
+  },
+  "authority_boundary": {
+    "paper_only": true,
+    "live_trade_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "additional_submit_cancel_replace_sell_allowed": false
+  }
+}

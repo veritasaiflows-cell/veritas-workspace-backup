@@ -1,0 +1,71 @@
+{
+  "schema": "veritas.wf85_paper_deployment_telegram_notifier.v1",
+  "generated_at_utc": "2026-08-28T18:05:18Z",
+  "workflow": "WF85/WF67",
+  "status": "SENT",
+  "mode": "send",
+  "channel": "telegram",
+  "target": "8650152206",
+  "message_kind": "radar",
+  "alert_window": "midday",
+  "dedupe_key": "1667e57422b56333e8ac2460",
+  "duplicate": false,
+  "digest_age_minutes": 0.01,
+  "sent_count": 1,
+  "blockers": [],
+  "market_hours_gate": {
+    "timezone": "America/New_York",
+    "checked_at_local": "2026-08-28T14:05:05-04:00",
+    "weekday": true,
+    "regular_session": "09:30-16:00 America/New_York",
+    "in_regular_session": true,
+    "reason": "regular_market_hours"
+  },
+  "message_preview": "Generated UTC: 2026-08-28T18:05:05Z\nWF67 guard: blocked; not execution-ready\n\nPaper Deployment Radar\n\nBottom line\n- Ready for review: 0 names\n- Execution-ready now: 0 names\n- Near deployment: 0 names\n- Watch list: 12 names\n- Repair / blocked sample: 12 names\n\nWatch\n- AAPL: watch only; fresh quote required; price/band/stop display suppressed\n- ABBV: watch only; fresh quote required; price/band/stop display suppressed\n- ADBE: watch only; fresh quote required; price/band/stop display suppressed\n- ADI: watch only at $361.43; in band; range $356.65-$385.25, stop $340.76\n- ADP: watch only at $286.55; above band; range $248.30-$266.80, stop $237.69\n\nRepair / Blocked Sample\n- BKNG: freshness missing at $205.27; in band; range $188.28-$205.72, stop $178.75\n- BRK.B: freshness missing at $505.52; in band; range $488.39-$506.98, stop $478.07\n- CVX: freshness missing at $201.55; above band; range $186.90-$196.84, stop $181.26\n- GOOG: freshness missing at $343.26; in band; range $326.46-$348.13, stop $314.42\n- ITA: freshness missing at $232.34; above band; range $212.15-$223.44, stop $205.88\n\nActions\n- Reply REVIEW to inspect the clean and near-deployment names.\n- PREPARE is disabled until a name reaches near-deployment or clean approval-card state.\n- APPROVE is not active from this alert.\n\nGuardrail\n- Paper submission still requires exact Randall order approval plus fresh WF67 guard and kill-switch proof.\n- Proof: tmp/wf85-paper-deployment-notification-digest.json\n\nDelivery note: this alert is review/prep only. It does not approve or submit any paper/live order. Paper orders still require exact Randall approval plus fresh WF67 guard and kill-switch proof.",
+  "delivery_message_preview": "WF85 Paper Deployment Radar alert part 1/1: Generated UTC: 2026-08-28T18:05:05Z | WF67 guard: blocked; not execution-ready || Paper Deployment Radar || Bottom line | - Ready for review: 0 names | - Execution-ready now: 0 names | - Near deployment: 0 names | - Watch list: 12 names | - Repair / blocked sample: 12 names || Watch | - AAPL: watch only; fresh quote required; price/band/stop display suppressed | - ABBV: watch only; fresh quote required; price/band/stop display suppressed | - ADBE: watch only; fresh quote required; price/band/stop display suppressed | - ADI: watch only at $361.43; in band; range $356.65-$385.25, stop $340.76 | - ADP: watch only at $286.55; above band; range $248.30-$266.80, stop $237.69 || Repair / Blocked Sample | - BKNG: freshness missing at $205.27; in band; range $188.28-$205.72, stop $178.75 | - BRK.B: freshness missing at $505.52; in band; range $488.39-$506.98, stop $478.07 | - CVX: freshness missing at $201.55; above band; range $186.90-$196.84, stop $181.26 | - GOOG: freshness missing at $343.26; in band; range $326.46-$348.13, stop $314.42 | - ITA: freshness missing at $232.34; above band; range $212.15-$223.44, stop $205.88 || Actions | - Reply REVIEW to inspect the clean and near-deployment names. | - PREPARE is disabled until a name reaches near-deployment or clean approval-card state. | - APPROVE is not active from this alert. || Guardrail | - Paper submission still requires exact Randall order approval plus fresh WF67 guard and kill-switch proof. | - Proof: tmp/wf85-paper-deployment-notification-digest.json || Delivery note: this alert is review/prep only. It does not approve or submit any paper/live order. Paper orders still require exact Randall approval plus fresh WF67 guard and kill-switch proof.",
+  "delivery_messages_preview": [
+    "WF85 Paper Deployment Radar alert part 1/1: Generated UTC: 2026-08-28T18:05:05Z | WF67 guard: blocked; not execution-ready || Paper Deployment Radar || Bottom line | - Ready for review: 0 names | - Execution-ready now: 0 names | - Near deployment: 0 names | - Watch list: 12 names | - Repair / blocked sample: 12 names || Watch | - AAPL: watch only; fresh quote required; price/band/stop display suppressed | - ABBV: watch only; fresh quote required; price/band/stop display suppressed | - ADBE: watch only; fresh quote required; price/band/stop display suppressed | - ADI: watch only at $361.43; in band; range $356.65-$385.25, stop $340.76 | - ADP: watch only at $286.55; above band; range $248.30-$266.80, stop $237.69 || Repair / Blocked Sample | - BKNG: freshness missing at $205.27; in band; range $188.28-$205.72, stop $178.75 | - BRK.B: freshness missing at $505.52; in band; range $488.39-$506.98, stop $478.07 | - CVX: freshness missing at $201.55; above band; range $186.90-$196.84, stop $181.26 | - GOOG: freshness missing at $343.26; in band; range $326.46-$348.13, stop $314.42 | - ITA: freshness missing at $232.34; above band; range $212.15-$223.44, stop $205.88 || Actions | - Reply REVIEW to inspect the clean and near-deployment names. | - PREPARE is disabled until a name reaches near-deployment or clean approval-card state. | - APPROVE is not active from this alert. || Guardrail | - Paper submission still requires exact Randall order approval plus fresh WF67 guard and kill-switch proof. | - Proof: tmp/wf85-paper-deployment-notification-digest.json || Delivery note: this alert is review/prep only. It does not approve or submit any paper/live order. Paper orders still require exact Randall approval plus fresh WF67 guard and kill-switch proof."
+  ],
+  "delivery_chunk_count": 1,
+  "send_result": {
+    "chunk_count": 1,
+    "chunks": [
+      {
+        "command": "openclaw message send --channel <channel> --target <target> --message <redacted>",
+        "resolved_command": "C:\\Users\\Veritas\\AppData\\Roaming\\npm\\openclaw.CMD",
+        "returncode": 0,
+        "stdout_tail": "✅ Sent via telegram. Message ID: 8117\n",
+        "stderr_tail": "[sessions/store] session disk budget exceeded (warn-only mode)\n",
+        "ok": true
+      }
+    ],
+    "ok": true
+  },
+  "source_artifacts": {
+    "digest": "tmp/wf85-paper-deployment-notification-digest.json",
+    "state": "tmp/wf85-paper-deployment-telegram-state.json"
+  },
+  "authority": {
+    "posture": "telegram_delivery_review_only_wf85_paper_deployment_radar",
+    "telegram_delivery_allowed": true,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "paper_or_live_order_submission_allowed": false,
+    "paper_or_live_order_cancellation_allowed": false,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "paper_order_sell_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "brokerage_account_mutation_allowed": false,
+    "money_movement_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "sizing_sleeve_cash_risk_rule_change_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "authority_clean": true,
+  "boundary": "Delivery note: this alert is review/prep only. It does not approve or submit any paper/live order. Paper orders still require exact Randall approval plus fresh WF67 guard and kill-switch proof."
+}

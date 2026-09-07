@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "artifact_type": "wf56_scoped_apply_approval",
+  "approval_artifact_id": "draft-etn-scoped-apply-approval-2026-05-14",
+  "approval_status": "draft_pending_randall_approval",
+  "approved_by": null,
+  "approved_at_utc": null,
+  "expires_at_utc": "2026-05-18T01:47:20Z",
+  "proposal_id": "post-close:ETN:capital-deployment-review:2026-05-14",
+  "proposal_artifact": "tmp/portfolio-mutation-proposals/exact-patch-material/post-close-ETN-capital-deployment-review-2026-05-14-etn_execution_board_review_note.json",
+  "preview_artifact": "tmp/portfolio-mutation-proposals/patch-previews/exact-apply-preview-post-close-ETN-capital-deployment-review-2026-05-14.json",
+  "approved_target_files": [
+    "03. Portfolio/Execution Board.md"
+  ],
+  "approved_diff_sha256": "a4a1237ec33adf3318b27984c8ed3868d8fbc194c02d939323458e76ebbdc281",
+  "owner_approval_granted": false,
+  "scoped_owner_file_write_allowed": false,
+  "canonical_note_write_allowed": false,
+  "trade_or_account_action_allowed": false,
+  "trade_execution_allowed": false,
+  "brokerage_order_allowed": false,
+  "money_movement_allowed": false,
+  "sizing_sleeve_cash_risk_rule_allowed": false,
+  "approved_adjustment_categories": [
+    "review_note",
+    "ticker_state"
+  ],
+  "execution_entitlement_allowed": false,
+  "owner_approval_inferred": false,
+  "scope_note": "Draft template only. Change approval_status to approved and the three write/approval fields to true only after explicit Randall approval for this exact proposal id, preview artifact, target file, and diff hash."
+}

@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-17T04:45:09Z",
+  "status": "ready_for_scoped_main_session_review",
+  "window": "post-close",
+  "input_bundle": "tmp/portfolio-mutation-proposals/semantic-patch-material/post-close-ETN-capital-deployment-review-2026-05-17-entry_band.json",
+  "proposal_id": "post-close:ETN:capital-deployment-review:2026-05-17",
+  "apply_allowed": false,
+  "owner_approval_granted": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "authority": {
+    "phase": "WF56 Phase 3 dry-run scoped patch helper",
+    "dry_run_patch_preview_allowed": true,
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "main_session_final_action_required": true,
+    "write_owner_files_allowed": false,
+    "apply_allowed_by_this_helper": false,
+    "portfolio_mutation_allowed_by_this_helper": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "validation": {
+    "schema_validator_ok": true,
+    "schema_errors": [],
+    "schema_blockers": [],
+    "patch_scope_findings": [],
+    "patch_scope_critical": 0,
+    "build_errors": []
+  },
+  "summary": {
+    "requested_changes": 1,
+    "previewed_file_changes": 1,
+    "writes_performed": false,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "ready_for_main_session_portfolio_mutation_review": true
+  },
+  "file_previews": [
+    {
+      "path": "03. Portfolio/Execution Board.md",
+      "change_type": "exact_text_replace",
+      "old_text_sha256_hint": null,
+      "old_text_match_count": 1,
+      "writes_performed": false,
+      "diff": "--- a/03. Portfolio/Execution Board.md\n+++ b/03. Portfolio/Execution Board.md\n@@ -156,6 +156,7 @@\n - Support: **386.35?399.44** (50-day / current pullback zone inside the preferred band), then **350.45** (explicit stop)\n - Resistance: **410.06?412.65** (top of preferred band / 20-day reclaim / no-chase ceiling)\n - Preferred entry band: **369.08 to 410.06** (auto-applied band maintenance 2026-05-15; KELTNER_PRIMARY / IN_BAND)\n+- WF64 entry-band semantic sync: config low/high/stop = **369.08 to 410.06 / stop 350.45**; source `tmp/portfolio-config.json`; proposal `post-close:ETN:capital-deployment-review:2026-05-17`; workspace maintenance only, no external-action authority.\n - Reference band: **368.42 to 410.79** / reference stop **349.15** (weekly reference refresh 2026-05-12; KELTNER_PRIMARY / IN_BAND; data as of 2026-05-12)\n - Explicit stop: **350.45**\n - Invalidation logic: loses the preferred band / 50-day support zone and ultimately fails the explicit 350.45 stop.\n",
+      "rationale": "Synchronize entry_band semantic context from current portfolio artifacts without widening external-action authority."
+    }
+  ],
+  "stop_lines": [
+    "This artifact is an exact patch preview only; it does not mutate owner notes or portfolio config.",
+    "Main-session portfolio mutation still requires explicit scoped Randall approval for the proposal id and exact diff.",
+    "A clean preview does not grant owner approval, sizing, sleeve, cash, risk-rule, execution-entitlement, trade, or account authority.",
+    "Phase 4 apply mode must be a separate approval-gated path and must run the post-apply validation chain."
+  ]
+}

@@ -1,124 +1,209 @@
 from __future__ import annotations
 
-from copy import deepcopy
+import ast
+import json
+import subprocess
+import sys
+import tempfile
+import unittest
 from pathlib import Path
 
-import wf86_assisted_order_card_builder as builder
-import alpaca_paper_trade_executor as wf67
+
+MODULE = Path(__file__).resolve().with_name("wf86_assisted_order_card_builder.py")
+EXPECTED_PAYLOAD = {
+    "status": "blocked",
+    "reason": "retired_surface",
+    "retired": True,
+    "tombstone": True,
+    "network_allowed": False,
+    "filesystem_mutation_allowed": False,
+    "paper_authority": False,
+    "order_authority": False,
+    "account_authority": False,
+}
+LEGACY_FLAGS = (
+    "--ticker",
+    "--policy",
+    "--eligibility",
+    "--card-out",
+    "--request-out",
+    "--index-out",
+    "--approval",
+    "--guard",
+    "--write",
+    "--validate",
+)
 
 
-def sample_policy() -> dict:
-    return {
-        "initial_caps": {
-            "max_notional_per_order_usd": 5000,
-            "setup_notional_caps_usd": {"TACTICAL_DIP_RECLAIM": 1500},
-        },
-    }
+def call_name(node: ast.Call) -> str:
+    current: ast.AST = node.func
+    pieces: list[str] = []
+    while isinstance(current, ast.Attribute):
+        pieces.append(current.attr)
+        current = current.value
+    if isinstance(current, ast.Name):
+        pieces.append(current.id)
+    return ".".join(reversed(pieces))
 
 
-def sample_decision(*, shadow_decision: str = "would_buy_shadow") -> dict:
-    return {
-        "ticker": "VRT",
-        "shadow_eligible": True,
-        "shadow_decision": shadow_decision,
-        "assisted_review_blockers": [],
-        "execution_blockers": [
-            "wf67_guard_not_clean",
-            "fresh_kill_switch_not_proven",
-            "redacted_audit_and_reconciliation_not_proven",
-            "separate_scoped_randall_pilot_approval_missing",
-        ],
-        "recommended_shadow_notional_usd": 1500,
-        "setup_notional_cap_usd": 1500,
-        "current_price": 300,
-        "current_band_status": "IN_BAND",
-        "written_band": {
-            "entry_band_low": 275,
-            "entry_band_high": 315,
-            "stop_or_invalidation": 250,
-        },
-        "technical_setup": {
-            "setup_label": "TACTICAL_DIP_RECLAIM",
-            "notional_multiplier": 0.3,
-        },
-        "opportunity_review": {},
-        "wf84_canonical_data_plane": {},
-    }
+def assignment_literal(tree: ast.Module, name: str) -> object:
+    for node in tree.body:
+        if (
+            isinstance(node, ast.Assign)
+            and len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)
+            and node.targets[0].id == name
+        ):
+            return ast.literal_eval(node.value)
+    raise AssertionError(f"missing literal assignment: {name}")
 
 
-def sample_eligibility(decision: dict | None = None) -> dict:
-    row = decision or sample_decision()
-    would_buy = [row["ticker"]] if row.get("shadow_decision") == "would_buy_shadow" else []
-    return {
-        "summary": {
-            "candidate_count": 1,
-            "would_buy_shadow_tickers": would_buy,
-        },
-        "decisions": [row],
-    }
+def tree_state(root: Path) -> list[tuple[str, bool, bytes | None]]:
+    return [
+        (path.relative_to(root).as_posix(), path.is_dir(), None if path.is_dir() else path.read_bytes())
+        for path in sorted(root.rglob("*"))
+    ]
 
 
-def test_build_vrt_assisted_card_is_non_executing_and_cap_bridged() -> None:
-    policy = sample_policy()
-    eligibility = sample_eligibility()
-    card = builder.build_card("VRT", policy, eligibility, builder.DEFAULT_POLICY)
-    request = builder.wf67_card.build_request(card, card_path=Path("tmp/card.json"))
-    assert card["order"]["symbol"] == "VRT"
-    assert card["order"]["notional"] == 1500.0
-    assert card["risk_check"]["policy_max_notional_usd"] == 5000.0
-    assert card["risk_check"]["setup_notional_cap_usd"] == 1500.0
-    assert card["risk_check"]["technical_setup_label"] == "TACTICAL_DIP_RECLAIM"
-    assert "tactical_dip_reclaim_requires_fresh_exact_owner_review" in card["decision_context"]["assisted_review_blockers"]
-    assert card["authority"]["paper_order_execution_allowed_by_card"] is False
-    assert request["risk_check"]["pilot_notional_cap_usd"] == 5000.0
-    assert request["risk_check"]["estimated_notional_usd"] == 1500.0
-    assert request["risk_check"]["full_scope_artifact"] == "tmp/paper-autotrader/policy.json"
-    assert wf67.validate_trade_request(request) == "ok"
-    try:
-        wf67.validate_exact_order_owner_approval_for_execute(request)
-    except wf67.BlockedRun as exc:
-        assert "exact_order_owner_approval_missing_for_execute" in str(exc), str(exc)
-    else:
-        raise AssertionError("assisted request must remain blocked for execution")
+class Wf86AssistedOrderCardBuilderRetirementTests(unittest.TestCase):
+    def test_source_is_a_minimal_fail_closed_tombstone(self) -> None:
+        source = MODULE.read_text(encoding="utf-8")
+        lowered = source.lower()
+        tree = ast.parse(source, filename=str(MODULE))
 
+        imports: list[tuple[str, tuple[str, ...]]] = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                imports.extend((alias.name, ()) for alias in node.names)
+            elif isinstance(node, ast.ImportFrom):
+                imports.append((node.module or "", tuple(alias.name for alias in node.names)))
+        self.assertEqual(imports, [("__future__", ("annotations",)), ("json", ())])
 
-def test_stale_exact_approval_is_stripped_fail_closed() -> None:
-    policy = sample_policy()
-    eligibility = sample_eligibility()
-    card = builder.build_card("VRT", policy, eligibility, builder.DEFAULT_POLICY)
-    approval = deepcopy(builder.load_dict(builder.DEFAULT_APPROVAL))
-    approval["approved_order"]["limit_price"] = round(card["order"]["limit_price"] + 1.0, 2)
+        functions = [
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        ]
+        self.assertEqual([node.name for node in functions], ["main"])
+        main = functions[0]
+        self.assertEqual([argument.arg for argument in main.args.args], ["_argv"])
+        self.assertEqual(len(main.args.defaults), 1)
+        self.assertIsNone(ast.literal_eval(main.args.defaults[0]))
+        self.assertFalse(
+            any(
+                isinstance(node, ast.Name)
+                and node.id == "_argv"
+                and isinstance(node.ctx, ast.Load)
+                for node in ast.walk(main)
+            ),
+            "main must ignore every supplied argv shape",
+        )
 
-    blocked = builder.apply_approval_fail_closed(card, approval, Path("tmp/stale-approval.json"))
-    blockers = blocked["decision_context"]["assisted_review_blockers"]
+        calls = {call_name(node) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+        self.assertEqual(calls, {"print", "json.dumps", "SystemExit", "main"})
+        self.assertEqual(assignment_literal(tree, "EXIT_BLOCKED"), 2)
+        self.assertEqual(assignment_literal(tree, "BLOCKED_PAYLOAD"), EXPECTED_PAYLOAD)
 
-    assert blocked["owner_approval"]["status"] == "pending_exact_randall_approval"
-    assert blocked["decision_context"]["trade_or_execution_approved"] is False
-    assert blocked["decision_context"]["paper_or_live_execution_allowed"] is False
-    assert any(item.startswith("stale_or_mismatched_owner_approval:") for item in blockers)
+        self.assertIn("retired", lowered)
+        self.assertIn("tombstone", lowered)
+        forbidden = (
+            *LEGACY_FLAGS,
+            "--apply",
+            "--execute",
+            "argparse",
+            "pathlib",
+            "subprocess",
+            "socket",
+            "requests",
+            "httpx",
+            "urllib",
+            "http://",
+            "https://",
+            "credential",
+            "os.environ",
+            "sys.argv",
+            "__import__",
+            "importlib",
+            "eval(",
+            "exec(",
+            "open(",
+            "read_text",
+            "read_bytes",
+            "write_text",
+            "write_bytes",
+            "mkdir(",
+            "unlink(",
+            "rename(",
+            "replace(",
+        )
+        for token in forbidden:
+            self.assertNotIn(token, lowered, token)
 
+    def test_all_argv_shapes_block_with_stable_json_and_no_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            sandbox = Path(temporary_directory)
+            sentinel = sandbox / "input-sentinel.json"
+            sentinel.write_text('{"sentinel":"must-remain-unchanged"}\n', encoding="utf-8")
+            owner_directory = sandbox / "owner"
+            owner_directory.mkdir()
+            owner_sentinel = owner_directory / "approval-sentinel.json"
+            owner_sentinel.write_text('{"owner":"must-remain-unchanged"}\n', encoding="utf-8")
+            card_target = sandbox / "must-not-exist-card.json"
+            request_target = sandbox / "must-not-exist-request.json"
+            index_target = sandbox / "must-not-exist-index.json"
+            before = tree_state(sandbox)
+            expected_stdout = json.dumps(EXPECTED_PAYLOAD, sort_keys=True) + "\n"
+            invocations = (
+                (),
+                ("--help",),
+                ("--unknown-legacy-flag", "ignored", str(sentinel)),
+                (
+                    "--ticker",
+                    "VRT",
+                    "--policy",
+                    str(sentinel),
+                    "--eligibility",
+                    str(sentinel),
+                    "--card-out",
+                    str(card_target),
+                    "--request-out",
+                    str(request_target),
+                    "--index-out",
+                    str(index_target),
+                    "--approval",
+                    str(owner_sentinel),
+                    "--guard",
+                    str(owner_sentinel),
+                    "--write",
+                    "--validate",
+                ),
+                ("--apply", "--execute", "--submit-order", "--account", str(owner_sentinel)),
+            )
 
-def test_non_candidate_writes_safe_no_card_index() -> None:
-    eligibility = sample_eligibility(sample_decision(shadow_decision="no_action_wait_for_band"))
-    index = builder.build_no_candidate_index(
-        ticker="VRT",
-        eligibility=eligibility,
-        reason="ticker_not_would_buy_shadow:VRT:no_action_wait_for_band",
-        card_path=Path("tmp/card.json"),
-        request_path=Path("tmp/request.json"),
-    )
+            for argv in invocations:
+                with self.subTest(argv=argv):
+                    completed = subprocess.run(
+                        [sys.executable, "-B", str(MODULE), *argv],
+                        cwd=sandbox,
+                        capture_output=True,
+                        text=True,
+                        check=False,
+                        timeout=10,
+                    )
+                    self.assertEqual(completed.returncode, 2, completed)
+                    self.assertEqual(completed.stdout, expected_stdout)
+                    self.assertEqual(completed.stderr, "")
+                    self.assertEqual(json.loads(completed.stdout), EXPECTED_PAYLOAD)
+                    self.assertEqual(tree_state(sandbox), before)
 
-    assert index["status"] == "no_current_card_candidate"
-    assert index["summary"]["card_count"] == 0
-    assert index["summary"]["execution_ready"] is False
-    assert index["authority_boundary"]["paper_submit_allowed"] is False
-    assert index["authority_boundary"]["live_trade_allowed"] is False
-    assert index["validation"]["status"] == "ok"
-    assert index["cards"] == []
+            for target in (card_target, request_target, index_target):
+                self.assertFalse(target.exists())
+            self.assertEqual(sentinel.read_text(encoding="utf-8"), '{"sentinel":"must-remain-unchanged"}\n')
+            self.assertEqual(
+                owner_sentinel.read_text(encoding="utf-8"),
+                '{"owner":"must-remain-unchanged"}\n',
+            )
 
 
 if __name__ == "__main__":
-    test_build_vrt_assisted_card_is_non_executing_and_cap_bridged()
-    test_stale_exact_approval_is_stripped_fail_closed()
-    test_non_candidate_writes_safe_no_card_index()
-    print("wf86_assisted_order_card_builder_tests_passed")
+    unittest.main()

@@ -2,10 +2,8 @@
 """Report-only hygiene check for live workflow truth surfaces.
 
 This validator checks that Active Workflows, WF72/WF73 continuity, and the
-latest boot-size proof still preserve the current queue, authority boundaries,
-and WF68 advisor-validation visibility. It does not mutate runtime, config,
-auth, channels, finance canon, portfolio state, SQL-canon, archive state, or
-trading surfaces.
+latest boot-size proof preserve the current queue and alerts-OS authority
+boundaries. It does not mutate any inspected surface.
 """
 from __future__ import annotations
 
@@ -23,29 +21,27 @@ TMP = ROOT / "tmp"
 DEFAULT_OUT = TMP / "workflow-hygiene-check.json"
 
 ACTIVE_WORKFLOWS = ROOT / "06. Playbooks" / "Active Workflows.md"
-WF72 = ROOT / "06. Playbooks" / "Project Continuity" / "Workflow 72 - Financial OS Efficiency Restructure and Priority Compression.md"
+WF72 = ROOT / "06. Playbooks" / "Project Continuity" / "Workflow 72 - Guarded Finance SQL Canon.md"
 WF73 = ROOT / "06. Playbooks" / "Project Continuity" / "Workflow 73 - Queue Index and Boot Surface Optimization.md"
 BOOT_GUARD = TMP / "boot-surface-size-guard.json"
 
 REQUIRED_ACTIVE_LANES: tuple[str, ...] = (
-    "WF75",
     "WF72",
-    "WF68",
     "WF73",
     "WF70/WF66",
     "WF77",
-    "WF78",
-    "WF67",
-    "WF64/WF56",
+    "WF79-SMB",
+    "WF84",
+    "WF85",
+    "WF88",
     "WF71",
     "WF74",
-    "WF76",
     "WF69",
 )
 
 STOP_LINE_CHECKS: tuple[tuple[str, tuple[str, ...]], ...] = (
-    ("no_live_trading_account_money_movement", ("no live trading/account/money movement",)),
-    ("no_paper_execution_outside_wf67", ("no paper execution outside WF67",)),
+    ("no_account_order_execution", ("no capital, account, order, or execution",)),
+    ("no_portfolio_state_maintenance", ("no portfolio construction/state maintenance",)),
     (
         "no_config_auth_channel_service_runtime_without_approval",
         ("no config/auth/channel/service/runtime mutation without approval",),
@@ -58,6 +54,10 @@ STOP_LINE_CHECKS: tuple[tuple[str, tuple[str, ...]], ...] = (
 )
 
 STOP_LINE_ALTERNATIVES: dict[str, tuple[tuple[str, ...], ...]] = {
+    "no_account_order_execution": (
+        ("no portfolio construction/state maintenance", "no paper/live trading", "account action", "money movement"),
+        ("no operational paper/live route", "account access", "order generation", "execution"),
+    ),
     "no_sql_canon_expansion_beyond_gates": (
         ("canon/import/apply authority",),
         ("SQL/JSON structured canon owner", "approved field families"),
@@ -148,23 +148,6 @@ def build_report() -> dict[str, Any]:
     if "WF50" in active_register:
         add_finding(findings, "blocked", "wf50_not_active", "WF50 appears in the P0/P1 active register.")
 
-    blocker_mentions_wf68 = "WF68" in current_snapshot and "advisor validation" in current_snapshot.lower()
-    wf68_row_match = re.search(r"^\| P1 \| WF68\b.*$", active_register, re.MULTILINE)
-    wf68_row = wf68_row_match.group(0) if wf68_row_match else ""
-    if blocker_mentions_wf68:
-        if not wf68_row:
-            add_finding(findings, "blocked", "wf68_row_for_blocker", "Current blocker names WF68 advisor validation, but no WF68 P1 row exists.")
-        elif not (
-            contains_all(wf68_row, ("advisor validation", "in-band"))
-            or contains_all(wf68_row, ("advisor validation", "clean", "NO_REPLY"))
-        ):
-            add_finding(
-                findings,
-                "blocked",
-                "wf68_row_for_blocker",
-                "WF68 P1 row does not mention advisor validation failure context or current clean NO_REPLY posture.",
-            )
-
     for check, needles in STOP_LINE_CHECKS:
         if not stop_line_present(active, check, needles):
             add_finding(
@@ -175,16 +158,12 @@ def build_report() -> dict[str, Any]:
                 required_terms=list(needles),
             )
 
-    if not (
-        contains_all(wf72_next, ("typed read-only", "entry/stop", "no-drift"))
-        or contains_all(wf72_next, ("pilot proof", "42-card", "no-drift"))
-        or contains_all(wf72_next, ("validation bundle", "42-card", "no-drift"))
-    ):
+    if not contains_all(wf72, ("guarded finance sql canon", "numeric alert", "independent reviews")):
         add_finding(
             findings,
-            "warning",
+            "blocked",
             "wf72_next_action",
-            "WF72 top Next Action no longer matches the legacy typed read-only entry/stop helper wording; verify WF72 stays support-only through the workflow router.",
+            "WF72 continuity does not preserve the guarded SQL, numeric-preservation, and independent-review contract.",
         )
     if contains_all(wf72_next, ("boot", "guard", "rollup")):
         add_finding(
@@ -254,8 +233,8 @@ def build_report() -> dict[str, Any]:
         "mutations_performed": False,
         "authority_boundary": (
             "Read-only workflow hygiene validator. No config/auth/channel/service/runtime mutation, "
-            "SQL-canon expansion, archive/move/delete, finance canon or portfolio mutation, "
-            "trade/account/money movement, paper execution, live execution, or owner-approval authority."
+            "SQL-canon expansion, archive/move/delete, finance-canon mutation, capital/account/order/"
+            "execution action, external delivery, or owner-approval authority."
         ),
         "policy": {
             "validate_exit_nonzero_only_on": "critical/blocking findings",

@@ -1,0 +1,37 @@
+{
+  "artifact_type": "wf67_paper_cancel_request",
+  "audit": {
+    "headers_persistence_allowed": false,
+    "raw_response_persistence_allowed": false,
+    "secret_material_present": false
+  },
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "live_submit_allowed": false,
+    "money_movement_allowed": false,
+    "no_inferred_approval": true,
+    "paper_cancel_allowed": true,
+    "paper_only": true,
+    "paper_submit_allowed": false
+  },
+  "cancel": {
+    "expected_limit_price": "385",
+    "expected_qty": "1",
+    "expected_side": "buy",
+    "paper_order_id": "c45aabf6-e1d0-4943-a520-1b682e0db59a",
+    "reason": "WF67 Phase 4 first paper cancel pilot after accepted MSFT passive paper order; owner approved proceed with cancel test.",
+    "symbol": "MSFT"
+  },
+  "created_at_utc": "2026-05-18T02:31:51Z",
+  "request_id": "wf67-pilot-001-msft-cancel",
+  "schema_version": 1,
+  "source": {
+    "owner_confirmation": "Randall approved proceeding with recommended cancel test at 2026-05-17 19:31 MST.",
+    "owner_or_pilot_scope": "WF67 Phase 4 first paper cancel pilot for the accepted MSFT buy 1 @ $385.00 paper order.",
+    "scoped_paper_trade_or_pilot": true,
+    "submit_request_artifact": "tmp/alpaca-paper-readiness/paper-trade-request.wf67-pilot-001.json"
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

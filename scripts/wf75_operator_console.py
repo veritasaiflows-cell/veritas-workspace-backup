@@ -435,7 +435,7 @@ def validate(console: dict[str, Any]) -> dict[str, Any]:
     if rec_loop.get("status") != "ok":
         errors.append("recommendation/outcome ledger is not ok")
     if int(rec_summary.get("tracking_row_count") or 0) == 0:
-        errors.append("recommendation/outcome ledger has no tracking rows")
+        warnings.append("recommendation/outcome ledger has no tracking rows (valid empty preview state while ledger status is ok; append pipeline found zero candidates)")
     if rec_summary.get("predictive_or_model_claims_allowed") is not False:
         errors.append("recommendation/outcome ledger must block predictive/model claims")
     if rec_summary.get("paper_or_live_execution_allowed") is not False:

@@ -2,53 +2,32 @@
 
 ## Purpose
 
-Single human-facing surface for thesis strength, leadership quality, ranking posture, and what should be reviewed first.
-
-This board is review-only. It does not approve capital deployment, paper/live execution, portfolio mutation, cash changes, sizing changes, or risk-rule changes.
+Rank thesis quality, leadership, evidence strength, and review priority for non-executing recommendations.
 
 ## Canon Sources
 
-- Portfolio posture and holdings: `03. Portfolio/Portfolio Snapshot.md`
-- Entry bands, stop/invalidation, and execution posture: `03. Portfolio/Execution Board.md`
-- Research universe and watchlist: `04. Research/Coverage and Watchlist.md`
-- Weekly macro/market posture: `05. Intelligence/Weekly Positioning Review.md`
-- Machine proof and routing: WF84/WF85 finance state, SQL canon guard, ticker cards, and validated finance artifacts
-
-## How To Use
-
-Use this as the human ranking layer. If a ticker looks attractive here but the Execution Board, SQL canon, source freshness, or WF85 answer path is stale or blocked, it is not deployable.
-
-## Current Leadership Buckets
-
-Status: structure current, investment freshness requires the next finance refresh before material buy/sell/add/trim recommendations.
-
-| Bucket | Names | Human Read |
-|---|---|---|
-| Core AI and software leadership | MSFT, GOOGL/GOOG, NVDA, META | Highest strategic relevance, but entry and event posture must be checked fresh. Good company does not automatically mean good entry. |
-| Power, electrification, and AI infrastructure | ETN, PH, GE, VRT, ITA | Strong thematic leadership. Requires fresh price-vs-band and sector confirmation before any capital decision. |
-| Financial infrastructure and quality cyclicals | JPM, GS, CME | Leadership quality is high, but macro/rate sensitivity and valuation discipline matter. |
-| Healthcare and defensive compounders | LLY, ECL | Durable quality candidates. Entry discipline and catalyst freshness are the gating questions. |
-| Materials, industrial supply chain, and real assets | LIN, XLB, VMC, WMB | Useful for macro balance, inflation linkage, and infrastructure exposure. Requires sector-relative confirmation. |
-| Communication, media, and consumer platform leadership | NFLX, TMUS, META | Quality varies by valuation and catalyst path. Treat as ranking candidates, not automatic deployment. |
+- Preferences and objectives: `03. Alerts and Recommendations/Investor Profile.md`
+- Trigger states: `03. Alerts and Recommendations/Alert Trigger Policy.md`
+- Ticker levels and invalidation: `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md`
+- Operational proof: `03. Alerts and Recommendations/Alert Operations Board.md`
+- Research scope: `04. Research/Coverage Universe.md`
+- Macro context: `02. Markets/Macro Regime Dashboard.md`
 
 ## Ranking Fields
 
-Use these fields when refreshing the board:
-
 | Field | Meaning |
 |---|---|
-| Thesis rank | Relative long-term attractiveness after evidence refresh. |
-| Leadership score | Quality of business, moat, execution, and sector leadership. |
-| Entry posture | In band, near band, extended/no-chase, invalidated, or blocked/stale. |
-| Catalyst state | Earnings, macro, product, regulatory, order/backlog, technical, or event driver. |
-| Portfolio role | Core, satellite, hedge, income, tactical, research bench, or avoid. |
-| Action status | Monitor, refresh, prepare proposal, approval card candidate, blocked, or retire. |
+| Thesis rank | Relative long-term attractiveness after current evidence review. |
+| Leadership score | Business quality, moat, execution, and sector leadership. |
+| Review state | Recommendation review, band entry, near band, no chase, invalidation alert, thesis change, catalyst alert, freshness decay, monitor only, or suppressed. |
+| Catalyst state | Earnings, macro, product, regulatory, backlog, technical, or event driver. |
+| Risk/time label | Long-term, tactical, speculative, income, hedge-like, or monitor context for the recommendation. |
+| Confidence | Evidence-backed confidence with explicit uncertainty and freshness. |
 
-## Refresh Checklist
+## Use
 
-- Confirm latest price and price behavior versus written entry band.
-- Confirm latest earnings and guidance state where relevant.
-- Confirm source freshness and ticker-card/answer-path health.
-- Separate good thesis from good entry.
-- State the bear case and invalidation before ranking anything as actionable.
-- Preserve owner-gated authority for every capital or execution decision.
+A high rank means “review first.” It is not approval. If source lineage, current price, evidence freshness, or invalidation logic is weak, the item must remain warning-grade or suppressed.
+
+## Boundary
+
+This board owns ranking and recommendation context only. It does not maintain account, capital, order, execution, or simulated-account state.

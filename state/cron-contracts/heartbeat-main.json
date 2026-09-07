@@ -1,0 +1,50 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "2caea721-dc73-49c7-bd10-b27c648e2ce2",
+  "name": "heartbeat-main",
+  "required": true,
+  "owner_workflow": "OpenClaw platform heartbeat",
+  "contract_reason": "Register the Gateway main heartbeat so freshness does not treat the platform job as unregistered. HEARTBEAT.md is existence proof only; this job has no tmp packet.",
+  "description": "OpenClaw main-session heartbeat. Review-only wake; no schedule mutation, delivery, finance, or execution authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "every",
+    "everyMs": 21600000
+  },
+  "sessionTarget": "main",
+  "wakeMode": "next-heartbeat",
+  "payload": {
+    "kind": "heartbeat"
+  },
+  "delivery": null,
+  "freshness_hours": 168,
+  "compare_fields": [
+    "enabled",
+    "schedule.kind",
+    "schedule.everyMs",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind"
+  ],
+  "expected_artifacts": [
+    {
+      "path": "HEARTBEAT.md",
+      "required": true,
+      "blocking": false
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-09-06T22:40:42Z",
+  "contract_update_reason": "Register platform heartbeat to clear enabled_job_missing_freshness_contract."
+}

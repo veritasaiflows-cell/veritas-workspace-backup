@@ -31,11 +31,11 @@ Use **notes**, not folders, for reading order.
 Default human-facing read order:
 1. `01. Dashboards/Executive Brief.md`
 2. `05. Intelligence/Thesis Ranking and Leadership Board.md`
-3. `05. Intelligence/Weekly Positioning Review.md`
-4. `06. Playbooks/Active Workflows.md`
-5. `03. Portfolio/Execution Board.md`
-6. `03. Portfolio/Portfolio Snapshot.md`
-7. `04. Research/Coverage and Watchlist.md`
+3. `03. Alerts and Recommendations/Alert Operations Board.md`
+4. `03. Alerts and Recommendations/Alert Trigger Policy.md`
+5. `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md`
+6. `06. Playbooks/Active Workflows.md`
+7. `04. Research/Coverage Universe.md`
 8. `02. Markets/Macro Regime Dashboard.md`
 9. `07. Risk/Risk Rules.md`
 10. `10. Deliverables/INDEX.md`
@@ -82,11 +82,11 @@ Do not create root-level session scratch notes for continuity.
 
 If something is machine-generated but useful for review, it still does **not** outrank the canonical note layer.
 
-Deliverables are presentation and retrieval objects. They do not replace machine proof, portfolio canon, approval records, or source notes.
+Deliverables are presentation and retrieval objects. They do not replace machine proof, alert canon, approval records, or source notes.
 
 ## Filing rules
 When creating or moving a note, ask:
-1. Is it a dashboard, market view, portfolio view, research note, intelligence note, playbook, risk rule, audit, or archive?
+1. Is it a dashboard, market view, alert/recommendation view, research note, intelligence note, playbook, risk rule, audit, or archive?
 2. Is it active, generated, or retired?
 3. Does an existing folder already fit it?
 

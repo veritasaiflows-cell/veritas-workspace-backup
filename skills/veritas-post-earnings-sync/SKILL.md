@@ -1,197 +1,60 @@
 ---
-name: veritas-post-earnings-sync
-description: Orchestrate the end-to-end post-earnings closure workflow for tracked names. Use this to run the post-earnings refresh chain, turn `tmp/post-earnings-prep.json` and `tmp/post-earnings-note-targets.json` into a canonical scorecard under `05. Intelligence/Earnings/`, and synchronize only the note-layer updates that actually belong in the current vault structure.
+name: "veritas-post-earnings-sync"
+description: "Synchronize earnings evidence, thesis, catalysts, freshness, and alert state."
 ---
 
-# Veritas Post-Earnings Sync
+# Veritas Post-Earnings Alert Sync
 
-This skill owns the transition from **reported earnings event** to **synchronized note-layer truth**.
+## Purpose
 
-It is a workflow skill, not a replacement for the analysis spine.
-Use:
-- `veritas-fundamental-pass` for thesis / business / valuation judgment
-- `veritas-technical-pass` for band / stop / state judgment
-- `veritas-positioning-pass` when the print materially changes portfolio priority or action state
-- `veritas-financial-planning-pass` when the print changes holistic portfolio fit, concentration, liquidity, drawdown, or sleeve advice
+Turn a reported earnings event into a source-backed scorecard and synchronized alert/recommendation state. Machine output is evidence; interpretation must distinguish facts, judgment, and uncertainty.
 
-Core rule:
-- scripts prepare evidence
-- notes own final judgment
-- do not promote raw machine output into canonical conclusions without an explicit interpretation pass
+## Inputs
 
-## When to use this skill
+Use current official company evidence, earnings/catalyst artifacts, guarded SQL, the quote snapshot, alert controller, and the relevant ticker research. Run the direct post-close alerts chain when current price context is needed.
 
-Use when:
-- a tracked company has just reported
-- Randall asks to sync, process, interpret, or close out an earnings event
-- `tmp/post-earnings-prep.json` and `tmp/post-earnings-note-targets.json` exist and the note layer needs to catch up
-- an earnings blocker should be removed, extended, or replaced with a new post-print stance
+## Closure States
 
-Do not use this for general research unrelated to a fresh report.
+- Reported, evidence pending
+- Interpreted
+- Synced
+- Closed with follow-up
 
-Advisor boundary: a post-earnings stance is review support, not owner approval, trade/account action, tax/legal advice, or sizing execution. Any workspace portfolio/canon update must still pass its exact gated apply path.
+Never use Closed alone when a real dependency remains.
 
-## Primary inputs
+## Workflow
 
-Run and inspect these first:
+1. Confirm what happened versus expectations and guidance.
+2. Record evidence dates, sources, conflicts, and missing fields.
+3. Create or update the ticker/quarter scorecard under `05. Intelligence\Earnings`.
+4. Reassess thesis, base/bull/bear, catalysts, risks, and confidence.
+5. Reassess the active alert state using guarded bands and current quote proof.
+6. Sync only the research, catalyst, alert, and recommendation owners whose truth materially changed.
+7. Validate the direct alerts chain and pivot boundary.
+8. Report the real closure state.
 
-1. `python scripts/run_finance_refresh_chain.py post-earnings`
-2. `tmp/post-earnings-prep.json`
-3. `tmp/post-earnings-note-targets.json`
-4. `tmp/earnings-calendar.json`
-5. `tmp/trigger-sheet.json`
-6. `tmp/technical-refresh.json`
-7. `tmp/dashboard-validation.json`
+## Alert Vocabulary
 
-If the post-earnings chain fails or artifacts are partial, continue only with explicit warnings.
-Do not pretend the closure is clean when evidence is weak.
+Use Recommendation review, Band entry, Near band, No chase, Invalidation alert, Thesis change, Catalyst alert, Freshness decay, Monitor only, or Suppressed.
 
-## Canonical output home
+A good quarter, a durable thesis, and an attractive threshold state are separate judgments.
 
-The canonical post-earnings interpretation note lives here:
-- `05. Intelligence/Earnings/<Ticker> <Quarter> Post-Earnings Scorecard.md`
+## Scorecard
 
-This is the first required write target.
-The scorecard is the canonical interpretation layer for the report.
+Include:
 
-## Closure-state model
-
-Use these states consistently inside the scorecard and related note updates:
-
-- **Reported, evidence pending** — the event happened, but interpretation is incomplete
-- **Interpreted** — results and implications are written clearly in the scorecard
-- **Synced** — required downstream note targets were updated selectively
-- **Closed with follow-up** — the report is processed, but a real dependency remains explicit
-
-Do not use `Closed` by itself.
-If follow-up remains, say what it is.
-
-## Required workflow
-
-### 1. Evidence pass
-
-Before editing notes, identify:
-- what actually happened versus consensus
-- whether guidance changed
-- what the price reaction implies technically
-- whether earnings timing is now resolved or rolled forward
-- whether the machine layer surfaced warnings, missing fields, or contradictions
-
-If primary-source confirmation is missing, say so directly in the scorecard.
-High-confidence secondary evidence is acceptable for a first interpretation pass, but must be labeled honestly.
-
-### 2. Scorecard pass
-
-Create or update the canonical scorecard first.
-
-Minimum sections to preserve or populate:
-- event metadata
-- results summary
-- price reaction
-- what the results mean
-- sector / peer read-through when relevant
-- updated action stance
-- thesis integrity check
-- required follow-up
+- event metadata and sources
+- results and guidance
+- price reaction / as of
+- thesis impact
+- base / bull / bear
+- risks and fastest breakers
+- guarded band/invalidation context
+- alert state
+- recommendation and uncertainty
+- follow-up owner
 - closure state
 
-Rules:
-- keep the judgment layer explicit
-- distinguish confirmed facts from estimated or unverified figures
-- if the technical picture changed materially, say whether the name is now deployable, blocked, repair mode, or watch-only
-- if the thesis changed materially, say whether it confirmed, weakened, or invalidated the prior view
+## Boundary
 
-### 3. Selective sync pass
-
-Only update the notes that actually own the changed information.
-Default sync order:
-
-1. `05. Intelligence/Earnings/<Ticker> <Quarter> Post-Earnings Scorecard.md`
-2. `03. Portfolio/Execution Board.md` — only if levels, support, resistance, entry band, stop, repair-mode framing, earnings block, or action state changed
-4. `03. Portfolio/Portfolio Snapshot.md` — only if current stance, draft role, or portfolio-level implication changed materially
-5. `05. Intelligence/Event Calendar.md` — roll the event forward and update closure visibility
-6. `05. Intelligence/Weekly Positioning Review.md` or `01. Dashboards/Executive Brief.md` — only if the print materially changes the operating board
-7. `04. Research/Coverage and Watchlist.md` — only if universe membership, coverage tier, thesis status, key risk, or act-when logic changed
-
-Important vault rule:
-- `04. Research/Coverage and Watchlist.md` is the consolidated research/index surface, not a live catalyst commentary board
-- deployment/action state, execution bands, blockers, stops, and technical posture belong in `03. Portfolio/Execution Board.md`
-- do **not** add freeform post-earnings commentary or duplicate scorecard content there
-
-### 4. Judgment precedence rules
-
-- If machine artifacts and explicit analysis disagree, the analysis judgment wins.
-- If the print breaks the old thesis or old levels, say so plainly. No smoothing.
-- If a new entry band is not decision-grade yet, do not fake one.
-- If the company beat but the stock is still too extended or structurally weak, keep that distinction explicit.
-- If the scorecard is solid but board sync is still pending, the closure state is `Interpreted`, not `Synced`.
-
-### 5. Verification pass
-
-After note updates, run:
-- `python scripts/validate_dashboard_state.py --write`
-
-If the update introduced or preserved warnings, surface them honestly.
-Do not claim full closure if contradiction or trust warnings remain relevant.
-
-## Minimum board-sync logic by note type
-
-### Execution Board
-Owns:
-- entry bands
-- support / resistance
-- stops / invalidation
-- repair-mode technical framing
-- blocked / unblocked state
-- deployable vs not deployable state
-- post-print readiness judgment in operational terms
-
-### Portfolio Snapshot
-Owns:
-- current stance
-- draft role / weight relevance
-- portfolio-level implication
-
-### Event Calendar
-Owns:
-- removal of stale upcoming framing
-- roll-forward to next expected quarter when appropriate
-- explicit closure visibility for material tracked earnings
-
-### Coverage and Watchlist
-Owns only:
-- active tracking universe membership
-- coverage tier
-- high-level current deployment state
-- canonical source pointer
-
-## Execution procedure
-
-When Randall asks to sync a ticker's earnings:
-
-1. **Research**
-   - run `python scripts/run_finance_refresh_chain.py post-earnings`
-   - read the relevant `tmp/` artifacts
-2. **State the update path briefly**
-   - what changed
-   - which notes actually need updates
-   - what remains unknown
-3. **Write the scorecard first**
-4. **Sync only the owning notes** in the required order
-5. **Validate** with `python scripts/validate_dashboard_state.py --write`
-6. **Report the real closure state**
-   - Reported, evidence pending
-   - Interpreted
-   - Synced
-   - Closed with follow-up
-
-## Quality standard
-
-A production-grade post-earnings sync should leave behind:
-- one canonical scorecard
-- no stale upcoming earnings framing for the processed event
-- no silent mismatch between scorecard, Execution Board, Coverage and Watchlist, and portfolio posture
-- explicit unresolved items when closure is partial
-
-The goal is not just to record the quarter.
-The goal is to leave the operating board more truthful than it was before the report landed.
+Do not write or maintain holdings, positions, sleeves, allocations, weights, sizing, tranches, cash, rebalancing, simulated positions, order packages, account state, or execution routes. Any capital or execution choice belongs to Randall outside this OS.

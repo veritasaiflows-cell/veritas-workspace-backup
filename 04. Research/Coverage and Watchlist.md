@@ -33,16 +33,15 @@ Do not use this page for:
 Use these generated/read-only routes for machine-owned structured fields:
 
 - SQL-generated/read-only structured canon guard: `python scripts\finance_sql_canon_access.py --write --validate`
-- SQL-generated/read-only ticker drilldown: `python scripts\finance_intelligence_state.py ticker <TICKER> --pretty`
-- SQL-generated/read-only full-population parity: `python scripts\full_intelligence_answer_parity.py --all --write --validate`
-- SQL-generated/read-only data-plane proof: `python scripts\canonical_finance_data_plane.py --write --write-db --validate`
+- Current alert/recommendation refresh: `python scripts\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate`
+- Current ticker alert state: `tmp/alert-level-freshness-controller.json`
+- Current recommendation digest: `tmp/finance-alert-os-digest.json`
 
 Generated/read-only proof files:
 
-- `tmp/full-answer-parity/full-answer-parity-rollup.json`
-- `tmp/trade-grade-full-answer/`
-- `tmp/ticker-intelligence-cards/`
-- `tmp/canonical-finance-data-plane.sqlite`
+- `tmp/intraday-alerts/quote-snapshot-proof.json`
+- `tmp/alert-level-freshness-controller.json`
+- `tmp/finance-alert-os-digest.json`
 - `state/finance/finance-canon.sqlite`
 
 ## Durable Research Pointers

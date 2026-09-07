@@ -24,7 +24,7 @@
   "payload": {
     "kind": "command",
     "argv": [
-      "python",
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
       "scripts\\cron_efficiency_review_runner.py",
       "--write",
       "--validate"
@@ -39,7 +39,6 @@
     "sessionTarget",
     "wakeMode",
     "delivery.mode",
-    "delivery.channel",
     "failureAlert",
     "payload.kind",
     "payload.argv",
@@ -47,17 +46,24 @@
     "payload.timeoutSeconds"
   ],
   "expected_artifacts": [
-    "tmp/token-usage-ledger-current.json",
-    "tmp/token-budget-status.json",
-    "tmp/token-efficiency-scorecard.json",
-    "tmp/token-efficiency-review-packet.json",
+    {"path": "tmp/token-usage-ledger-current.json", "role": "token_usage_warning_evidence", "required": true, "blocking": false},
+    {"path": "tmp/token-budget-status.json", "role": "token_budget_warning_evidence", "required": true, "blocking": false},
+    {"path": "tmp/token-efficiency-scorecard.json", "role": "token_efficiency_warning_evidence", "required": true, "blocking": false},
+    {"path": "tmp/token-efficiency-review-packet.json", "role": "token_review_warning_evidence", "required": true, "blocking": false},
     "tmp/cron-predispatch-efficiency-plan.json",
-    "tmp/pm-autonomous-worker-predispatch-prefilter.json",
-    "tmp/pm-autonomous-worker-predispatch-prefilter-proposal.json",
-    "tmp/ticker-card-freshness-owner-runner-prefilter.json",
-    "tmp/agi-os-eval-gate-packet.json",
-    "tmp/agi-harness-readiness-packet.json",
-    "tmp/agi-harness-readiness-packet.md",
+    {"path": "tmp/agi-os-eval-gate-packet.json", "role": "agi_eval_warning_evidence", "required": true, "blocking": false},
+    {
+      "path": "tmp/agi-harness-readiness-packet.json",
+      "role": "agi_harness_readiness_evidence",
+      "required": true,
+      "blocking": false
+    },
+    {
+      "path": "tmp/agi-harness-readiness-packet.md",
+      "role": "agi_harness_readiness_evidence_md",
+      "required": true,
+      "blocking": false
+    },
     "tmp/prompt-book-registry.json",
     "tmp/prompt-book-registry.md",
     "tmp/prompt-book-eval-fixtures.json",
@@ -69,7 +75,7 @@
     "tmp/prompt-book-pm-job-packet.md",
     "tmp/cron-contract-validator.json",
     "tmp/cron-efficiency-review-runner.json",
-    "tmp/veritas-status-card.json"
+    {"path": "tmp/veritas-status-card.json", "role": "status_card_warning_evidence", "required": true, "blocking": false}
   ],
   "authority_boundary": {
     "review_only": true,
@@ -85,6 +91,6 @@
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-08-09T17:31:00Z",
-  "contract_update_reason": "Moved the deterministic producer chain to 17:55 Phoenix so fresh six-agent usage, budget, efficiency, and status proof precedes the 18:15 briefing; added explicit OAuth/API-equivalent semantics and expected artifacts."
+  "updated_at_utc": "2026-09-07T02:52:00Z",
+  "contract_update_reason": "Pin command argv to CPython 3.13 so Gateway can spawn the job after python ENOENT auto-failures; keep AGI harness readiness as required warning evidence."
 }

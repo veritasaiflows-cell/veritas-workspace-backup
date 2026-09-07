@@ -137,6 +137,7 @@ def run_scenario(scenario: dict[str, Any]) -> dict[str, Any]:
         "scenario_id": scenario_id,
         "status": validation["status"],
         "ticker_set": scenario["ticker_set"],
+        "card_provenance": payload.get("internal_input_summary", {}).get("card_provenance", {}),
         "expected_validator_outcome": scenario.get("expected_validator_outcome"),
         "critical_count": validation["critical_count"],
         "warning_count": validation["warning_count"],
@@ -160,6 +161,7 @@ def run_seeded_bad() -> dict[str, Any]:
     md_validation = write_seeded_bad_markdown(md_path, md_validation_path)
     return {
         "scenario_id": "seeded-bad-claim-and-leak-fixture",
+        "card_provenance": clean.get("internal_input_summary", {}).get("card_provenance", {}),
         "expected_validator_outcome": "error",
         "json_validation_status": validation["status"],
         "markdown_validation_status": md_validation["status"],
@@ -291,10 +293,17 @@ def build_regression(args: argparse.Namespace) -> dict[str, Any]:
     seeded_bad = run_seeded_bad()
     router_renderer = build_router_renderer_pilot()
     clean_failed = [row for row in clean_results if row["status"] != "ok"]
+    synthetic_tickers = sorted({
+        ticker
+        for row in clean_results + [seeded_bad]
+        for ticker, origin in (row.get("card_provenance") or {}).items()
+        if origin != "live"
+    })
     payload: dict[str, Any] = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
         "status": "ok" if not clean_failed else "blocked",
+        "warnings": [f"synthetic_fixture_cards_used:{','.join(synthetic_tickers)}"] if synthetic_tickers else [],
         "template_library": rel(args.template_library),
         "run_dir": rel(RUN_DIR),
         "clean_scenario_count": len(clean_results),

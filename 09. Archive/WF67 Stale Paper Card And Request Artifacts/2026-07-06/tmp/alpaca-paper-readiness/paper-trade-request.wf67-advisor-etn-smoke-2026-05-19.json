@@ -1,0 +1,61 @@
+{
+  "artifact_type": "wf67_paper_trade_request",
+  "audit": {
+    "live_endpoint_forbidden": "https://api.alpaca.markets",
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "secret_material_present": false
+  },
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "live_submit_allowed": false,
+    "money_movement_allowed": false,
+    "no_inferred_approval": true,
+    "paper_cancel_allowed": true,
+    "paper_only": true,
+    "paper_submit_allowed": true
+  },
+  "created_at_utc": "2026-05-20T05:21:03Z",
+  "order": {
+    "limit_price": null,
+    "notional": null,
+    "qty": 1.0,
+    "side": "buy",
+    "symbol": "ETN",
+    "time_in_force": "day",
+    "type": "market"
+  },
+  "request_id": "wf67-advisor-etn-smoke-2026-05-19",
+  "risk_check": {
+    "entry_band_high": 404.94,
+    "entry_band_low": 360.99,
+    "estimated_notional_usd": 404.0,
+    "full_scope_artifact": null,
+    "max_loss_usd": 500.0,
+    "max_notional_usd": 500.0,
+    "observed_entry_status": "IN_BAND",
+    "observed_price": 404.0,
+    "pilot_notional_cap_usd": 500.0,
+    "pilot_qty_cap": 1.0,
+    "position_size_reviewed": true,
+    "status": "ok",
+    "stop": 341.01
+  },
+  "schema_version": 1,
+  "source": {
+    "advisor_packet_id": "wf68-forced-etn-20260519t214000z",
+    "advisor_packet_path": "tmp/intraday-alerts/advisor-alert-packet.json",
+    "approval_artifact": "tmp/alpaca-paper-readiness/phase-7-advisor-paper-execution-approval-2026-05-19.json",
+    "capital_recommendation_source": "tmp\\portfolio-mutation-proposals\\current-capital-deployment-recommendations.json",
+    "main_session_capital_package_notification_required": true,
+    "market_order_owner_approved": true,
+    "owner_or_pilot_scope": "advisor-derived ETN paper buy package generation smoke test - do not execute without fresh kill switch",
+    "recommendation_source": "wf68_advisor_packet",
+    "scoped_paper_trade_or_pilot": true,
+    "source_alert_packet_path": "tmp\\intraday-alerts\\forced-alert-fixture.etn.json"
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

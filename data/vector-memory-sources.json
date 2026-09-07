@@ -1,0 +1,375 @@
+{
+  "schema": "veritas.vector_memory_sources.v1",
+  "authority_boundary": {
+    "derived_index_only": true,
+    "routes_to_exact_sources": true,
+    "creates_canon": false,
+    "approval_authority": false,
+    "portfolio_mutation_allowed": false,
+    "cash_sizing_risk_mutation_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "customer_or_external_output_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_profiles": {
+    "primary": {
+      "purpose": "Protected default for fast semantic retrieval: durable owner/memory sources plus compact derived routing summaries.",
+      "selection_rule": "Include all non-tmp registry sources and only explicitly classified primary derived summaries; exclude raw tmp proof packets.",
+      "finance_route": "The guarded SQL proof, explicit quote proof, alert controller, and recommendation digest are the active finance retrieval route."
+    },
+    "durable": {
+      "purpose": "Strict durable-only recall for continuity and owner-note questions.",
+      "selection_rule": "Include non-tmp registry sources only."
+    },
+    "full": {
+      "purpose": "On-demand proof corpus for exact investigation after routing.",
+      "selection_rule": "Include all registry sources, including selected tmp proof packets."
+    }
+  },
+  "source_patterns": [
+    {
+      "pattern": "memory/*.md",
+      "purpose": "Durable daily memory and session continuity"
+    },
+    {
+      "pattern": "06. Playbooks/Project Continuity/Workflow 74 - Veritas Recursive Self-Improvement Loop.md",
+      "purpose": "WF74 owner continuity note"
+    },
+    {
+      "pattern": "06. Playbooks/Project Continuity/Workflow 88 - Veritas OS 2.0.md",
+      "purpose": "WF88 owner continuity note"
+    },
+    {
+      "pattern": "06. Playbooks/Project Continuity/Workflow 73*.md",
+      "purpose": "WF73 audit, queue, and boot optimization owner notes"
+    },
+    {
+      "pattern": "06. Playbooks/Project Continuity/Workflow 75*.md",
+      "purpose": "WF75 product and service-readiness owner notes; no customer/external authority"
+    },
+    {
+      "pattern": "06. Playbooks/Project Continuity/Workflow 72 - Guarded Finance SQL Canon.md",
+      "purpose": "WF72 guarded SQL alert-canon continuity note"
+    },
+    {
+      "pattern": "06. Playbooks/Project Continuity/Workflow 77 - Finance Intelligence Coverage and Question Router.md",
+      "purpose": "WF77 alerts-and-recommendations question-routing continuity note"
+    },
+    {
+      "pattern": "06. Playbooks/Project Continuity/Workflow 79-SMB - SMB Workflow Clarity and Marketing Ops Automation.md",
+      "purpose": "WF79-SMB workflow/product owner note"
+    },
+    {
+      "pattern": "06. Playbooks/Project Continuity/Workflow 84 - Guarded Alert Evidence Plane.md",
+      "purpose": "WF84 guarded alert-evidence continuity note; review-only routing"
+    },
+    {
+      "pattern": "06. Playbooks/Project Continuity/Workflow 85 - Alerts and Recommendations OS.md",
+      "purpose": "WF85 alerts-and-recommendations OS continuity note; review-only routing"
+    },
+    {
+      "pattern": "data/workflow-checkpoints/*.json",
+      "purpose": "Data-driven checkpoint runner configs for workflow expansion"
+    },
+    {
+      "pattern": "data/vector-memory-sources.json",
+      "purpose": "Vector-memory source coverage registry and expansion rule"
+    },
+    {
+      "pattern": "skills/veritas-self-improvement/SKILL.md",
+      "purpose": "Evidence-backed self-improvement workflow source for the Graphify bridge; no promotion authority"
+    },
+    {
+      "pattern": "skills/project-continuity-manager/SKILL.md",
+      "purpose": "Evidence-backed continuity-to-memory workflow source for the Graphify bridge"
+    },
+    {
+      "pattern": "skills/workspace-qa-pass/SKILL.md",
+      "purpose": "Evidence-backed QA advisory-governance source for the Graphify bridge"
+    },
+    {
+      "pattern": "skills/veritas-prompt-book-operator/SKILL.md",
+      "purpose": "Evidence-backed prompt-book routing source for the Graphify bridge"
+    },
+    {
+      "pattern": "tmp/wf74-improvement-opportunity-queue.json",
+      "purpose": "WF74 learning loop proof packet"
+    },
+    {
+      "pattern": "tmp/wf74-autonomy-work-router.json",
+      "purpose": "WF74 learning loop proof packet"
+    },
+    {
+      "pattern": "tmp/wf74-auto-patch-proposer.json",
+      "purpose": "WF74 learning loop proof packet"
+    },
+    {
+      "pattern": "tmp/wf74-decision-docket.json",
+      "purpose": "WF74 learning loop proof packet"
+    },
+    {
+      "pattern": "tmp/wf74-learning-loop-eval-harness.json",
+      "purpose": "WF74 learning loop proof packet"
+    },
+    {
+      "pattern": "tmp/wf88-os2-control-packet.json",
+      "purpose": "WF88 OS2 proof packet"
+    },
+    {
+      "pattern": "tmp/wf88-wiki-synthesis-packet.json",
+      "purpose": "WF88 OS2 proof packet"
+    },
+    {
+      "pattern": "wiki/index.md",
+      "purpose": "WF88 second-brain index; review-only synthesis, no apply authority"
+    },
+    {
+      "pattern": "wiki/os2/OTEL To Proposal Route.md",
+      "purpose": "WF88 OTEL-to-proposal route map; review-only synthesis"
+    },
+    {
+      "pattern": "wiki/scorecards-and-evals/Current Map.md",
+      "purpose": "WF88 scorecard/evaluation map; review-only synthesis"
+    },
+    {
+      "pattern": "wiki/scorecards-and-evals/Token Efficiency Map.md",
+      "purpose": "WF88 token-efficiency map; review-only synthesis"
+    },
+    {
+      "pattern": "wiki/self-improvement/RSI Control Loop.md",
+      "purpose": "WF74/WF88 RSI control-loop map; review-only synthesis"
+    },
+    {
+      "pattern": "wiki/recommendations/Action Promotion Map.md",
+      "purpose": "WF88 recommendation action-promotion map; review-only synthesis"
+    },
+    {
+      "pattern": "wiki/gaps/Open Follow Up Debt.md",
+      "purpose": "WF88 open follow-up debt map; review-only synthesis"
+    },
+    {
+      "pattern": "wiki/source-map/WF88 Wiki Source Map.md",
+      "purpose": "WF88 wiki source map; review-only synthesis"
+    },
+    {
+      "pattern": "tmp/token-efficiency-scorecard.json",
+      "purpose": "WF88 token metadata packet"
+    },
+    {
+      "pattern": "tmp/token-efficiency-review-packet.json",
+      "purpose": "Stable WF88 token/API efficiency review packet; review-only, no cron/model/runtime/code authority"
+    },
+    {
+      "pattern": "tmp/implementation-token-attribution-bridge.json",
+      "purpose": "WF88 token metadata packet"
+    },
+    {
+      "pattern": "tmp/pm-control-summary-packet.json",
+      "purpose": "Stable PM control summary for retrieval; raw PM control packet stays out of default semantic memory"
+    },
+    {
+      "pattern": "tmp/vector-memory-graph-packet.json",
+      "purpose": "Derived graph memory packet connecting sources, workflows, tickers, blockers, actions, and outcomes"
+    },
+    {
+      "pattern": "tmp/agi-os-eval-gate-packet.json",
+      "purpose": "Outcome-aware AGI-OS eval gates; review-only, no promotion authority"
+    },
+    {
+      "pattern": "tmp/agent-message-ledger-current.json",
+      "purpose": "Metadata-only helper lane audit ledger; no raw prompt, response, or tool payload capture"
+    },
+    {
+      "pattern": "tmp/recommendation-outcome-ledger-current.json",
+      "purpose": "Current recommendation outcome memory; review-only evidence, no performance claim authority"
+    },
+    {
+      "pattern": "tmp/coding-outcome-ledger-current.json",
+      "purpose": "Current coding outcome memory; review-only evidence"
+    },
+    {
+      "pattern": "tmp/wf74-wf88-loop-trace.json",
+      "purpose": "WF74/WF88 suggestion-to-route loop trace; review-only proof"
+    },
+    {
+      "pattern": "tmp/actionable-improvement-queue.json",
+      "purpose": "WF88 actionable improvement queue; review-only routing"
+    },
+    {
+      "pattern": "tmp/improvement-ledger-current.json",
+      "purpose": "Current improvement ledger; review-only routing"
+    },
+    {
+      "pattern": "tmp/wf74-wf88-generic-checkpointed-execution.json",
+      "purpose": "Checkpoint runner proof packet"
+    },
+    {
+      "pattern": "tmp/wf84-wf85-checkpointed-execution.json",
+      "purpose": "Checkpoint runner proof packet"
+    },
+    {
+      "pattern": "tmp/implementation-closeout-checkpointed-execution.json",
+      "purpose": "Checkpoint runner proof packet for implementation closeout proof"
+    },
+    {
+      "pattern": "tmp/workflow-checkpoint-runner.json",
+      "purpose": "Checkpoint runner proof packet"
+    },
+    {
+      "pattern": "tmp/wf73-control-plane-audit.json",
+      "purpose": "WF73 control-plane audit proof"
+    },
+    {
+      "pattern": "tmp/wf73-efficiency-scorecard.json",
+      "purpose": "WF73 efficiency and boot-surface scorecard"
+    },
+    {
+      "pattern": "tmp/wf73-active-workflows-compression-proposal.json",
+      "purpose": "WF73 Active Workflows compression proposal"
+    },
+    {
+      "pattern": "tmp/wf73-active-workflows-compression-qa.json",
+      "purpose": "WF73 Active Workflows compression QA proof"
+    },
+    {
+      "pattern": "tmp/wf73-startup-truth-index-proposal.json",
+      "purpose": "WF73 Startup Truth Index proposal proof"
+    },
+    {
+      "pattern": "tmp/wf73-shadow-pilot-stress-test-summary.json",
+      "purpose": "WF73 shadow/stress-test summary proof"
+    },
+    {
+      "pattern": "tmp/wf75-service-state-current.json",
+      "purpose": "WF75 current internal service state; no customer/external authority"
+    },
+    {
+      "pattern": "tmp/wf75-internal-prototype-readiness.json",
+      "purpose": "WF75 internal prototype readiness proof"
+    },
+    {
+      "pattern": "tmp/wf75-operator-review-state.json",
+      "purpose": "WF75 operator review-state proof"
+    },
+    {
+      "pattern": "tmp/wf75-operator-queue.json",
+      "purpose": "WF75 operator queue proof"
+    },
+    {
+      "pattern": "tmp/wf75-scenario-regression-matrix.json",
+      "purpose": "WF75 anonymous scenario regression matrix"
+    },
+    {
+      "pattern": "tmp/wf75-smb-service-state-current.json",
+      "purpose": "WF75 SMB current service state"
+    },
+    {
+      "pattern": "tmp/wf75-smb-pilot-decision-packet.json",
+      "purpose": "WF75 SMB pilot decision packet"
+    },
+    {
+      "pattern": "tmp/wf75-training-desk-current.json",
+      "purpose": "WF75 training desk current proof"
+    },
+    {
+      "pattern": "tmp/wf75-artifact-only-pm-handoff.json",
+      "purpose": "WF75 PM handoff proof"
+    },
+    {
+      "pattern": "tmp/retail-automation-control-plane.json",
+      "purpose": "WF75 retail automation control-plane proof"
+    },
+    {
+      "pattern": "tmp/retail-automation-control-plane-cron-runner.json",
+      "purpose": "WF75 retail control-plane runner proof; no cron schedule authority"
+    },
+    {
+      "pattern": "tmp/retail-investor-finance-engine-workflow-map.json",
+      "purpose": "WF75 retail workflow map"
+    },
+    {
+      "pattern": "tmp/retail-investor-saas-claims-stoplines-qa.json",
+      "purpose": "WF75 retail claims and stop-line QA proof"
+    },
+    {
+      "pattern": "tmp/retail-truth-routing-contract.json",
+      "purpose": "WF75 retail truth-routing contract proof"
+    },
+    {
+      "pattern": "tmp/sql-retail-grade-validation-bundle.json",
+      "purpose": "WF75 retail SQL validation bundle"
+    },
+    {
+      "pattern": "tmp/sql-retail-blocker-classification.json",
+      "purpose": "WF75 retail blocker classification proof"
+    },
+    {
+      "pattern": "tmp/wf79-smb-pilot-readiness-packet.json",
+      "purpose": "WF79-SMB pilot readiness packet"
+    },
+    {
+      "pattern": "tmp/wf79-smb-rollout-readiness-plan.json",
+      "purpose": "WF79-SMB rollout readiness plan"
+    },
+    {
+      "pattern": "tmp/wf79-smb-demo-packets.json",
+      "purpose": "WF79-SMB demo packet proof"
+    },
+    {
+      "pattern": "tmp/wf79-smb-offer-icp-packet.json",
+      "purpose": "WF79-SMB offer and ICP packet"
+    },
+    {
+      "pattern": "tmp/wf79-smb-outreach-kit.json",
+      "purpose": "WF79-SMB outreach kit proof; no external send authority"
+    },
+    {
+      "pattern": "tmp/wf79-smb-marketing-ops-blueprints.json",
+      "purpose": "WF79-SMB marketing ops blueprint proof"
+    },
+    {
+      "pattern": "tmp/wf79-smb-client-rollout-checklist.json",
+      "purpose": "WF79-SMB client rollout checklist"
+    },
+    {
+      "pattern": "tmp/wf79-smb-pilot-readiness-validation.json",
+      "purpose": "WF79-SMB pilot readiness validation"
+    },
+    {
+      "pattern": "tmp/finance-sql-canon-access-validation.json",
+      "purpose": "Guarded SQL alert-evidence and authority validation"
+    },
+    {
+      "pattern": "tmp/intraday-alerts/quote-snapshot-proof.json",
+      "purpose": "Explicit current or current-last-session quote proof"
+    },
+    {
+      "pattern": "tmp/intraday-alerts/quote-snapshot-proof-validation.json",
+      "purpose": "Quote snapshot validation and freshness proof"
+    },
+    {
+      "pattern": "tmp/alert-level-freshness-controller.json",
+      "purpose": "Current ticker alert state, provenance, and freshness"
+    },
+    {
+      "pattern": "tmp/finance-alert-os-digest.json",
+      "purpose": "Current non-executing finance recommendation digest"
+    },
+    {
+      "pattern": "tmp/finance-alert-os-weekly-digest.json",
+      "purpose": "Current weekly non-executing recommendation digest"
+    },
+    {
+      "pattern": "tmp/alerts-recommendations-chain-*.json",
+      "purpose": "Bounded alerts and recommendations chain proof"
+    },
+    {
+      "pattern": "tmp/alerts-os-pivot-validator.json",
+      "purpose": "Alerts OS boundary and retirement validation"
+    }
+  ],
+  "expansion_rule": "Add new workflow owner notes, checkpoint configs, and derived proof packets here after their authority boundary is clear. This registry is source coverage only; it does not grant canon, approval, execution, config/runtime, customer, portfolio, or trade authority."
+}

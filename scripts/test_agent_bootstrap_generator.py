@@ -10,14 +10,15 @@ import agent_bootstrap_generator as generator
 import agent_bootstrap_linter as linter
 
 
-def agent_stub(agent_id: str, model: str = "openai/gpt-5.6-terra") -> dict[str, object]:
+def agent_stub(agent_id: str, model: str | None = None) -> dict[str, object]:
+    resolved_model = model or str((generator.PROFILES.get(agent_id) or {}).get("default_model") or "openai/gpt-5.6-terra")
     return {
         "id": agent_id,
         "name": agent_id,
         "identityName": agent_id.replace("-", " ").title(),
         "workspace": f"C:\\Users\\Veritas\\.openclaw\\workspaces\\{agent_id}",
         "agentDir": f"C:\\Users\\Veritas\\.openclaw\\agents\\{agent_id}\\agent",
-        "model": model,
+        "model": resolved_model,
         "bindings": 0,
         "isDefault": False,
     }
@@ -31,7 +32,7 @@ def sandbox_exec_pilot_agent() -> dict[str, object]:
         "backend": "docker",
         "workspaceAccess": "none",
         "docker": {
-            "image": "openclaw-sandbox:bookworm-slim",
+            "image": "openclaw-sandbox:bookworm-slim-python-calibration-r1",
             "network": "none",
             "readOnlyRoot": True,
             "user": "65534:65534",
@@ -49,21 +50,21 @@ def sandbox_exec_pilot_agent() -> dict[str, object]:
         "deny": [
             "process", "cron", "gateway", "message", "sessions_list", "sessions_history",
             "session_status", "sessions_send", "sessions_spawn", "subagents", "skill_workshop",
-            "browser", "image", "media", "nodes",
+            "browser", "view_image", "media", "nodes",
         ],
         "elevated": {"enabled": False},
-        "fs": {"workspaceOnly": True},
+        "fs": {"workspaceOnly": False},
         "sandbox": {
             "tools": {
                 "allow": ["read", "exec"],
                 "deny": [
                     "write", "edit", "apply_patch", "process", "cron", "gateway", "message",
                     "sessions_list", "sessions_history", "session_status", "sessions_send",
-                    "sessions_spawn", "subagents", "skill_workshop", "browser", "image", "media", "nodes",
+                    "sessions_spawn", "subagents", "skill_workshop", "browser", "view_image", "media", "nodes",
                 ],
             },
         },
-        "exec": {"host": "sandbox", "mode": "full", "timeoutSec": 30, "strictInlineEval": True},
+        "exec": {"host": "sandbox", "mode": "full", "strictInlineEval": True, "timeoutSeconds": 30},
     }
     return agent
 
@@ -125,6 +126,42 @@ def latest_finance_template_packet() -> dict[str, object]:
 
 
 class AgentBootstrapGeneratorTests(unittest.TestCase):
+    def test_all_selector_targets_only_configured_isolated_fleet(self) -> None:
+        agents = [
+            {**agent_stub("main", "openai/gpt-6-astra"), "workspace": str(generator.ROOT)},
+            *(agent_stub(agent_id) for agent_id in generator.CONFIGURED_ISOLATED_AGENT_IDS),
+            agent_stub("oxalpha-lab", "openrouter/stealth/ox-alpha"),
+        ]
+
+        selected = generator.select_agents(agents, "all")
+
+        self.assertEqual(
+            [str(agent["id"]) for agent in selected],
+            list(generator.CONFIGURED_ISOLATED_AGENT_IDS),
+        )
+        self.assertEqual(
+            [str(agent["id"]) for agent in linter.select_agents(agents, "all")],
+            list(generator.CONFIGURED_ISOLATED_AGENT_IDS),
+        )
+
+    def test_main_cannot_be_selected_as_isolated_bootstrap_target(self) -> None:
+        with self.assertRaisesRegex(ValueError, "main is not an isolated-agent bootstrap target"):
+            generator.select_agents(
+                [agent_stub("main", "openai/gpt-6-astra")],
+                "main",
+            )
+        with self.assertRaisesRegex(ValueError, "main is not an isolated-agent bootstrap target"):
+            linter.select_agents(
+                [agent_stub("main", "openai/gpt-6-astra")],
+                "main",
+            )
+
+    def test_extract_json_uses_first_json_container(self) -> None:
+        self.assertEqual(
+            generator.extract_json('notice\n{"entries": ["qa-redteam"]}'),
+            {"entries": ["qa-redteam"]},
+        )
+
     def test_implementation_builder_profile_is_bounded_and_non_finance_feed(self) -> None:
         manifest = generator.build_manifest(
             agent_stub("implementation-builder"),
@@ -140,8 +177,8 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
         self.assertEqual(manifest["profile_revision"], generator.PROFILE_REVISION)
         self.assertEqual(manifest["orchestration"], generator.MAIN_ORCHESTRATION)
         self.assertEqual(manifest["runtime_tool_posture"], generator.WORKSPACE_ONLY_TOOL_POSTURE)
-        self.assertEqual(manifest["model_route"]["default_model"], "openai/gpt-5.6-terra")
-        self.assertEqual(manifest["model_route"]["upgrade_model"], "openai/gpt-5.6-terra")
+        self.assertEqual(manifest["model_route"]["default_model"], "meta/muse-spark-1.3-contributor")
+        self.assertEqual(manifest["model_route"]["upgrade_model"], "meta/muse-spark-1.3-contributor")
         self.assertFalse(manifest["model_route"]["sol_helper_upgrade_allowed"])
         self.assertEqual(
             manifest["execution_efficiency_policy"],
@@ -155,7 +192,12 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
             manifest["assignment_route_contract"]["handoff_budget"],
             {"max_files": 6, "max_total_bytes": 120000, "max_context_tokens": 30000},
         )
-        self.assertIn("Bounded code, script, validator", manifest["role"])
+        self.assertEqual(
+            manifest["role"],
+            "Bounded code, tests, and infrastructure repairs in exact leased scopes; "
+            "no self-acceptance or automatic deployment.",
+        )
+        self.assertIn("no self-acceptance", manifest["role"])
         self.assertFalse(manifest["supervised_agent_template_feed"]["present"])
         self.assertEqual(
             manifest["supervised_agent_template_feed"]["reason"],
@@ -184,7 +226,12 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
         self.assertEqual(manifest["department"], "continuity")
         self.assertEqual(manifest["authority_class"], "docs_memory_playbook_scoped")
         self.assertEqual(manifest["owner_workflow"], generator.DEFAULT_OWNER_ROUTE)
-        self.assertIn("Docs, memory, playbook", manifest["role"])
+        self.assertEqual(
+            manifest["role"],
+            "Synchronize accepted-proof documentation and continuity; "
+            "no provisional-to-accepted promotion or policy changes.",
+        )
+        self.assertIn("no provisional-to-accepted promotion", manifest["role"])
         self.assertFalse(manifest["supervised_agent_template_feed"]["present"])
         self.assertTrue(
             any(page.endswith("agent-templates\\docs-continuity-editor.md") for page in manifest["agent_knowledge_base"]["recommended_pages"])
@@ -245,7 +292,7 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
             self.assertEqual(manifest["fleet_operating_model"], generator.FLEET_OPERATING_MODEL)
             self.assertEqual(manifest["handoff_contract"], generator.handoff_contract_for(agent_id))
             self.assertEqual(manifest["attribution_closeout_contract"], generator.ATTRIBUTION_CLOSEOUT_CONTRACT)
-            self.assertEqual(manifest["model_route"]["upgrade_model"], "openai/gpt-5.6-terra")
+            self.assertEqual(manifest["model_route"]["upgrade_model"], generator.PROFILES[agent_id]["upgrade_model"])
             self.assertFalse(manifest["model_route"]["sol_helper_upgrade_allowed"])
             self.assertEqual(
                 manifest["execution_efficiency_policy"]["schema"],
@@ -316,7 +363,7 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
         self.assertIn("Isolated output is unaccepted until Main verifies and accepts it.", bootstrap)
         self.assertIn("Historical memory is Main-supplied context", bootstrap)
         self.assertIn("veritas.execution_efficiency_policy.v1", bootstrap)
-        self.assertIn("otherwise persistent Terra only with transport proof", bootstrap)
+        self.assertIn("otherwise the persistent specialist's exact configured role model with transport proof", bootstrap)
         self.assertIn("6 files / 120,000 bytes / 30,000 estimated context tokens", bootstrap)
         self.assertIn("Expected and actual backend/model/thinking must match", bootstrap)
         self.assertNotIn("AI Drop-Service", bootstrap)
@@ -395,8 +442,11 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
         self.assertIn("Writable root: `/worktree` only", core["AGENTS.md"])
         self.assertIn("/attachments/<id>/<filename>", core["AGENTS.md"])
         self.assertIn("do not enumerate sibling attachments", core["AGENTS.md"])
-        self.assertIn("Write/edit/patch only under `/worktree`", core["TOOLS.md"])
-        self.assertIn("/attachments/<id>/<filename>", core["TOOLS.md"])
+        self.assertIn("## Tools", core["AGENTS.md"])
+        self.assertIn("does not control which tools exist", core["AGENTS.md"])
+        self.assertIn("Write/edit/patch only under `/worktree`", core["AGENTS.md"])
+        self.assertIn("retired compatibility pointer", core["TOOLS.md"])
+        self.assertIn("not a runtime bootstrap", core["TOOLS.md"])
         self.assertNotIn("C:\\Users\\", "\n".join(core.values()))
 
         unsafe = json.loads(json.dumps(agent))
@@ -529,8 +579,8 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
             error_text = "\n".join(result["errors"])
             self.assertIn("execution efficiency policy mismatch", error_text)
             self.assertIn("assignment route contract mismatch", error_text)
-            self.assertIn("persistent helper upgrade model must remain Terra", error_text)
-            self.assertIn("persistent helper Sol upgrade must be disabled", error_text)
+            self.assertIn("known profile upgrade model mismatch", error_text)
+            self.assertIn("cross-role helper model upgrade must be disabled", error_text)
 
     def test_linter_rejects_legacy_or_conflicting_core_role_packet(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -558,6 +608,186 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
             )
             result = linter.lint_agent(agent)
             self.assertIn("AGENTS.md contains legacy or unsafe term: ai drop-service", result["errors"])
+
+    def test_fleet_policy_alignment_matches_approved_mapping(self) -> None:
+        expected_primaries = {
+            "research-scout": "xai/grok-4.6",
+            "qa-redteam": "ollama-cloud/glm-5.3:cloud",
+            "finance-source-scout": "openai/gpt-5.6-terra",
+            "finance-redteam": "ollama-cloud/glm-5.3:cloud",
+            "implementation-builder": "meta/muse-spark-1.3-contributor",
+            "docs-continuity-editor": "openai/gpt-5.6-luna",
+        }
+        expected_displays = {
+            "research-scout": "Opportunity Intelligence",
+            "qa-redteam": "Engineering QA",
+            "finance-source-scout": "Finance Evidence",
+            "finance-redteam": "Finance Risk Challenger",
+            "implementation-builder": "Engineering Builder",
+            "docs-continuity-editor": "Knowledge and Continuity",
+        }
+        expected_recovery = {
+            "research-scout": ["openai/gpt-5.6-terra", "ollama-cloud/glm-5.3:cloud"],
+            "qa-redteam": ["openai/gpt-5.6-sol"],
+            "finance-source-scout": ["xai/grok-4.6", "ollama-cloud/glm-5.3:cloud"],
+            "finance-redteam": ["openai/gpt-5.6-sol"],
+            "implementation-builder": ["openai/gpt-5.6-sol", "openai/gpt-5.6-terra"],
+            "docs-continuity-editor": ["openai/gpt-5.6-terra", "ollama-cloud/glm-5.3:cloud"],
+        }
+        for agent_id, primary in expected_primaries.items():
+            self.assertEqual(generator.fleet_primary_for(agent_id), primary)
+            self.assertEqual(generator.PROFILES[agent_id]["default_model"], primary)
+            self.assertEqual(generator.PROFILES[agent_id]["upgrade_model"], primary)
+            self.assertEqual(generator.fleet_display_for(agent_id), expected_displays[agent_id])
+            self.assertEqual(generator.fleet_recovery_for(agent_id), expected_recovery[agent_id])
+            self.assertEqual(generator.fleet_automatic_for(agent_id), [])
+        self.assertEqual(generator.MAIN_MODEL, "openai/gpt-6-astra")
+        self.assertEqual(generator.MAIN_FALLBACKS, ["openai/gpt-5.6-sol"])
+
+    def test_manifest_shows_display_name_and_non_executing_recovery(self) -> None:
+        manifest = generator.build_manifest(
+            agent_stub("finance-redteam"),
+            "2026-09-06T00:00:00Z",
+            "WF85",
+            None,
+            {"present": False},
+        )
+        self.assertEqual(manifest["display_name"], "Finance Risk Challenger")
+        self.assertEqual(manifest["stable_id"], "finance-redteam")
+        self.assertEqual(manifest["model_route"]["display_name"], "Finance Risk Challenger")
+        self.assertEqual(manifest["model_route"]["default_model"], "ollama-cloud/glm-5.3:cloud")
+        self.assertEqual(manifest["model_route"]["automatic_fallbacks"], [])
+        self.assertEqual(manifest["model_route"]["recovery_candidates"], ["openai/gpt-5.6-sol"])
+        self.assertTrue(manifest["model_route"]["recovery_is_non_executing_option"])
+        self.assertEqual(manifest["model_route"]["main_model"], "openai/gpt-6-astra")
+        bootstrap = generator.build_bootstrap_markdown(manifest, [])
+        self.assertIn("Display name:", bootstrap)
+        self.assertIn("Finance Risk Challenger", bootstrap)
+        self.assertIn("Specialist automatic fallbacks: `[]`", bootstrap)
+        self.assertIn("non-executing", bootstrap)
+        self.assertIn("Veritas Main model:", bootstrap)
+        self.assertNotIn("opus", bootstrap.lower())
+
+    def test_linter_rejects_opus_and_automatic_fallback(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            workspace = Path(tmp_dir) / "workspace"
+            agent_dir = Path(tmp_dir) / "agent-dir"
+            workspace.mkdir()
+            agent_dir.mkdir()
+            (workspace / "SOUL.md").write_text("role\n", encoding="utf-8")
+            agent = agent_stub("qa-redteam")
+            agent["workspace"] = str(workspace)
+            agent["agentDir"] = str(agent_dir)
+            manifest = generator.build_manifest(
+                agent,
+                "2026-09-06T00:00:00Z",
+                generator.DEFAULT_OWNER_ROUTE,
+                None,
+                {"present": False},
+            )
+            for name, text in generator.build_core_markdown_documents(manifest, []).items():
+                (workspace / name).write_text(text, encoding="utf-8")
+            (workspace / "agent.capabilities.json").write_text(json.dumps(manifest), encoding="utf-8")
+            clean = linter.lint_agent(agent)
+            self.assertEqual(clean["errors"], [])
+            manifest["model_route"]["automatic_fallbacks"] = ["openai/gpt-5.6-sol"]
+            manifest["model_route"]["recovery_candidates"] = ["anthropic/claude-opus-5"]
+            (workspace / "agent.capabilities.json").write_text(json.dumps(manifest), encoding="utf-8")
+            drifted = linter.lint_agent(agent)
+            error_text = "\n".join(drifted["errors"])
+            self.assertIn("automatic fallbacks must be empty", error_text)
+            self.assertIn("never be Opus", error_text)
+
+    def test_live_guard_rejects_unsafe_and_blocks_writes(self) -> None:
+        with tempfile.TemporaryDirectory() as t:
+            safe = agent_stub("qa-redteam")
+            safe["workspace"] = str(Path(t) / "ws")
+            self.assertTrue(generator._validate_live_output_workspaces([safe]))
+            for raw in (str(generator.ROOT), str(generator.ROOT / "tmp" / "x"), "", "   ", "relative/ws"):
+                bad = agent_stub("qa-redteam")
+                bad["workspace"] = raw
+                with self.assertRaises(ValueError, msg=repr(raw)):
+                    generator._validate_live_output_workspaces([bad])
+            flag = agent_stub("qa-redteam")
+            flag["workspace"] = str(Path(t) / "ws2")
+            flag["planned_not_installed"] = True
+            with self.assertRaises(ValueError):
+                generator._validate_live_output_workspaces([flag])
+            with self.assertRaises(ValueError):
+                generator._validate_live_output_workspaces([safe, flag])
+            orig_list = generator.run_openclaw_agents_list
+            orig_write = generator.write_json
+            good = agent_stub("qa-redteam")
+            good["workspace"] = str(Path(t) / "g")
+            evil = agent_stub("research-scout")
+            evil["workspace"] = str(generator.ROOT)
+            generator.run_openclaw_agents_list = lambda: [good, evil]
+            def _fail(*a, **k):
+                raise AssertionError("write before validation")
+            generator.write_json = _fail
+            try:
+                class A:
+                    agents = "all"
+                    planned_agents = ""
+                    owner_workflow = generator.DEFAULT_OWNER_ROUTE
+                    concept = None
+                    write = True
+                    validate = False
+                with self.assertRaises(ValueError):
+                    generator.build_outputs(A())
+            finally:
+                generator.run_openclaw_agents_list = orig_list
+                generator.write_json = orig_write
+
+    def test_live_guard_symlink_escape_and_planned_exempt(self) -> None:
+        with tempfile.TemporaryDirectory() as t:
+            ws = Path(t) / "ws"
+            ws.mkdir()
+            out = Path(t) / "out.txt"
+            out.write_text("x", encoding="utf-8")
+            try:
+                (ws / "AGENTS.md").symlink_to(out)
+            except (OSError, NotImplementedError) as exc:
+                self.skipTest(f"symlink unsupported: {exc}")
+                return
+            bad = agent_stub("qa-redteam")
+            bad["workspace"] = str(ws)
+            with self.assertRaises(ValueError):
+                generator._validate_live_output_workspaces([bad])
+        self.assertTrue(generator._validate_live_output_workspaces([]))
+        stub = generator.planned_agent_stub("qa-redteam")
+        self.assertTrue(stub.get("planned_not_installed"))
+
+    def test_live_guard_rejects_directory_at_output(self) -> None:
+        with tempfile.TemporaryDirectory() as t:
+            g = agent_stub("qa-redteam")
+            g["workspace"] = str(Path(t) / "g")
+            e = agent_stub("research-scout")
+            w = Path(t) / "e"
+            (w / "TOOLS.md").parent.mkdir(parents=True)
+            (w / "TOOLS.md").mkdir()
+            e["workspace"] = str(w)
+            with self.assertRaisesRegex(ValueError, "is directory"):
+                generator._validate_live_output_workspaces([e])
+            ol = generator.run_openclaw_agents_list
+            ow = generator.write_json
+            generator.run_openclaw_agents_list = lambda: [g, e]
+            def _f(*a, **k):
+                raise AssertionError("write before guard")
+            generator.write_json = _f
+            try:
+                class A:
+                    agents = "all"
+                    planned_agents = ""
+                    owner_workflow = generator.DEFAULT_OWNER_ROUTE
+                    concept = None
+                    write = True
+                    validate = False
+                with self.assertRaisesRegex(ValueError, "is directory"):
+                    generator.build_outputs(A())
+            finally:
+                generator.run_openclaw_agents_list = ol
+                generator.write_json = ow
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@ Provide one operator-facing map of the procedure repository without pretending e
 - `06. Playbooks/Playbooks Index.md`
 - `06. Playbooks/Operating Procedures/Procedure Index.md`
 - `06. Playbooks/Operating Procedures/SQLite Retrieval Index Procedure.md`
+- `06. Playbooks/Operating Procedures/Derived Evidence Freshness Convention.md`
 - `06. Playbooks/Operating Procedures/Retrieval Metadata and Notes Field Standard.md`
 
 ### 01. Control plane / operating model

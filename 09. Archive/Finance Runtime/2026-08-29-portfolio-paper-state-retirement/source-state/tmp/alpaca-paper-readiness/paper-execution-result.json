@@ -1,0 +1,31 @@
+{
+  "account_settings_mutation_allowed": false,
+  "action": "submit",
+  "approval_status": "ok",
+  "artifact_type": "wf67_paper_execution_result",
+  "broker_redacted_result": {
+    "http_status": 200,
+    "paper_order_id_present": true,
+    "paper_order_status": "pending_new",
+    "paper_order_symbol": "NVDA",
+    "side": "buy",
+    "symbol": "NVDA"
+  },
+  "credential_status": "ok",
+  "endpoint": "https://paper-api.alpaca.markets",
+  "execute_requested": true,
+  "generated_at_utc": "2026-06-18T15:27:48Z",
+  "headers_persisted": false,
+  "kill_switch_status": "ok",
+  "live_endpoint_detected": false,
+  "live_submit_allowed": false,
+  "money_movement_allowed": false,
+  "no_inferred_approval": true,
+  "phase": "phase_6_paper_execution_guardrail",
+  "raw_response_bodies_persisted": false,
+  "request_status": "ok",
+  "schema_version": 1,
+  "secrets_persisted": false,
+  "status": "submitted",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

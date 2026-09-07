@@ -1,0 +1,65 @@
+{
+  "approved_at_utc": "2026-05-26T14:08:30Z",
+  "artifact_type": "wf67_paper_trade_request",
+  "audit": {
+    "live_endpoint_forbidden": "https://api.alpaca.markets",
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "secret_material_present": false
+  },
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "live_submit_allowed": false,
+    "money_movement_allowed": false,
+    "no_inferred_approval": true,
+    "paper_cancel_allowed": true,
+    "paper_only": true,
+    "paper_submit_allowed": true
+  },
+  "created_at_utc": "2026-05-26T14:00:16Z",
+  "order": {
+    "limit_price": 876.0,
+    "notional": null,
+    "qty": 0.3,
+    "side": "buy",
+    "symbol": "PH",
+    "time_in_force": "day",
+    "type": "limit"
+  },
+  "request_id": "wf67-main-card-ph-tight-limit-starter-pending-20260526T0659MST",
+  "risk_check": {
+    "entry_band_high": 908.98,
+    "entry_band_low": 851.36,
+    "estimated_notional_usd": 262.8,
+    "max_loss_usd": 262.8,
+    "max_notional_usd": 300.0,
+    "observed_entry_status": "IN_ENTRY_BAND_FRESH_TUESDAY_QUOTE_2026-05-26T14:08Z",
+    "observed_price": 873.92,
+    "pilot_notional_cap_usd": 500.0,
+    "pilot_qty_cap": 1,
+    "position_size_reviewed": true,
+    "sizing_rationale": "PH is a quality industrial diversifier but remains second-tier versus CME/ETN priority and overlaps Industrials; use a small ~0.3 share paper starter. The tightened $876 limit is near the fresh quote (~$873.96) rather than the stale upper-band limit, preserving no-chase discipline while staying well below the $908.98 band ceiling. Do not use if fresh price exits the written band or violates stop discipline.",
+    "status": "ok",
+    "stop": 819.35
+  },
+  "schema_version": 1,
+  "source": {
+    "approval_artifact": "tmp/alpaca-paper-readiness/phase-7-advisor-paper-execution-approval-2026-05-19.json",
+    "approved_by": "Randall",
+    "capital_recommendation_source": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "exact_order_owner_approval_at_utc": "2026-05-26T14:08:30Z",
+    "exact_order_owner_approval_status": "approved_exact_order",
+    "exact_order_owner_approval_text": "Approved: buy 0.3 PH, limit day, limit 876.00 or better, max notional 300, source tmp/alpaca-paper-readiness/order-card.ph-tight-limit-2026-05-26T0659.json, after WF67 guards pass.",
+    "main_session_capital_package_notification_required": true,
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/order-card.ph-tight-limit-2026-05-26T0659.json",
+    "market_order_owner_approved": false,
+    "owner_or_pilot_scope": "PH quality-industrial diversification starter after fresh Tuesday quote/band check",
+    "recommendation_source": "main_session_order_decision_card",
+    "scoped_paper_trade_or_pilot": true,
+    "source_artifact": "tmp/alpaca-paper-readiness/fresh-quote-band-check-cme-ph-2026-05-26T0706.json"
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

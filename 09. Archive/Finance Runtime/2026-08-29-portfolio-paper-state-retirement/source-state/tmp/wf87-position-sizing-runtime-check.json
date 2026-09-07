@@ -1,0 +1,74 @@
+{
+  "authority_boundary": {
+    "account_action_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "live_endpoint_allowed": false,
+    "live_execution_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_execution_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "paper_order_sell_allowed": false,
+    "paper_order_submit_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "review_only": true,
+    "runtime_guard_only": true
+  },
+  "candidates": [],
+  "findings": [
+    {
+      "age_seconds": 6742147,
+      "code": "policy_expired",
+      "path": "tmp/paper-autotrader/policy.json",
+      "severity": "warning"
+    },
+    {
+      "age_seconds": 4560196,
+      "code": "wf67_guard_validation_expired",
+      "path": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
+      "severity": "warning"
+    },
+    {
+      "code": "wf67_guard_not_ok",
+      "severity": "warning",
+      "status": "blocked"
+    },
+    {
+      "code": "no_order_candidates",
+      "severity": "info"
+    }
+  ],
+  "generated_at_utc": "2026-08-28T18:05:22Z",
+  "policy_caps": {
+    "max_entry_to_stop_risk_pct": 0.25,
+    "max_notional_per_order_usd": 5000.0,
+    "max_orders_per_day": 3,
+    "max_same_ticker_orders_per_day": 1
+  },
+  "schema": "veritas.wf87_position_sizing_runtime_check.v1",
+  "source_artifacts": [
+    "tmp/paper-autotrader/policy.json",
+    "tmp/paper-autotrader/assisted-order-cards.json",
+    "tmp/wf78-capital-review-queue.json",
+    "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json"
+  ],
+  "status": "idle_no_candidates",
+  "stop_lines": [
+    "This validator grants no paper/live execution authority.",
+    "Missing, stale, or cap-breaching inputs block runtime sizing.",
+    "No live endpoint, account action, money movement, owner approval inference, or canon/portfolio mutation."
+  ],
+  "summary": {
+    "blocked_candidate_count": 0,
+    "candidate_count": 0,
+    "critical_finding_count": 0,
+    "next_safe_action": "No current order candidate is present; keep execution disabled and rerun after a fresh review card exists."
+  },
+  "validation": {
+    "errors": [],
+    "status": "ok",
+    "warnings": []
+  },
+  "workflow_id": "WF87"
+}

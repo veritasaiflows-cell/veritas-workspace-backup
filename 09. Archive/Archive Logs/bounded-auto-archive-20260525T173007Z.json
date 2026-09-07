@@ -1,0 +1,955 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T17:30:07Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-full-tmp-md-archive-microbatch-2026-05-25.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 104,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/sec-skill-smoke-test-report.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/sec-skill-smoke-test-report.md",
+      "sha256_before": "bb5d34623e22e45508086c1f40ef4b1ed2c4b2ccca44a582a22fe2e91132962c",
+      "sha256_after": "bb5d34623e22e45508086c1f40ef4b1ed2c4b2ccca44a582a22fe2e91132962c"
+    },
+    {
+      "path": "tmp/sector-allocation-decision-review-2026-05-24.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/sector-allocation-decision-review-2026-05-24.md",
+      "sha256_before": "8f8b2b39e6c96f0d39a6fdd861ce8a86511a64f1ed133d74aa72af851aaf8142",
+      "sha256_after": "8f8b2b39e6c96f0d39a6fdd861ce8a86511a64f1ed133d74aa72af851aaf8142"
+    },
+    {
+      "path": "tmp/sql-canon-cache-rollback-export-20260523T215733Z.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/sql-canon-cache-rollback-export-20260523T215733Z.md",
+      "sha256_before": "6bd7843f7b8452cdf7f1665567b2dc15f89f17d6ecb33a2157283b220f9aaeed",
+      "sha256_after": "6bd7843f7b8452cdf7f1665567b2dc15f89f17d6ecb33a2157283b220f9aaeed"
+    },
+    {
+      "path": "tmp/sql-canon-cache-rollback-export-20260523T215940Z.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/sql-canon-cache-rollback-export-20260523T215940Z.md",
+      "sha256_before": "2eb3176b1de40559a1358abe64caa3066ff69c80556d2c12c538b1fba17b94a2",
+      "sha256_after": "2eb3176b1de40559a1358abe64caa3066ff69c80556d2c12c538b1fba17b94a2"
+    },
+    {
+      "path": "tmp/sql-canon-phase3a-qa-handoff.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/sql-canon-phase3a-qa-handoff.md",
+      "sha256_before": "893526d28252579d0cf161616bebd0ce9c81dd5090467ee919f1bb9e22177cad",
+      "sha256_after": "893526d28252579d0cf161616bebd0ce9c81dd5090467ee919f1bb9e22177cad"
+    },
+    {
+      "path": "tmp/sql-proof-cockpit-phase1-completion-plan.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/sql-proof-cockpit-phase1-completion-plan.md",
+      "sha256_before": "1f751bc1f637e7b149c8268b7e27025d525284804e444c260b91d4dba8e3826d",
+      "sha256_after": "1f751bc1f637e7b149c8268b7e27025d525284804e444c260b91d4dba8e3826d"
+    },
+    {
+      "path": "tmp/telemetry-audit-mode-plan.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/telemetry-audit-mode-plan.md",
+      "sha256_before": "6579683582a8b1ef69e3cf6c1600f34cdab4eb92f87525e2018fe7d4ed33ff87",
+      "sha256_after": "6579683582a8b1ef69e3cf6c1600f34cdab4eb92f87525e2018fe7d4ed33ff87"
+    },
+    {
+      "path": "tmp/tuesday-alert-proposal-sizing-readiness-2026-05-26.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/tuesday-alert-proposal-sizing-readiness-2026-05-26.md",
+      "sha256_before": "a1ede503571f7906a82775e2bf7e069870c8932f55d2fd4305e31bc48dc55436",
+      "sha256_after": "a1ede503571f7906a82775e2bf7e069870c8932f55d2fd4305e31bc48dc55436"
+    },
+    {
+      "path": "tmp/tuesday-entry-opportunity-watchlist-2026-05-26.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/tuesday-entry-opportunity-watchlist-2026-05-26.md",
+      "sha256_before": "9efa4896ed639804d57f909ae4d94bb9fe3c6ba5c5506185c3a3cc7b31179906",
+      "sha256_after": "9efa4896ed639804d57f909ae4d94bb9fe3c6ba5c5506185c3a3cc7b31179906"
+    },
+    {
+      "path": "tmp/wf55-call-log-patch-preview-2026-05-19.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-call-log-patch-preview-2026-05-19.md",
+      "sha256_before": "0d6cff9952a97255c60029cfa22b9cb9cad98e1ba62e9f5df0bc65f7528abd8b",
+      "sha256_after": "0d6cff9952a97255c60029cfa22b9cb9cad98e1ba62e9f5df0bc65f7528abd8b"
+    },
+    {
+      "path": "tmp/wf55-no-hindsight-qa-2026-05-19.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-no-hindsight-qa-2026-05-19.md",
+      "sha256_before": "aaec20b3c7afd29dc0c4d05a2fe90e5698322d70c64007e66972105d92fcde84",
+      "sha256_after": "aaec20b3c7afd29dc0c4d05a2fe90e5698322d70c64007e66972105d92fcde84"
+    },
+    {
+      "path": "tmp/wf55-orchestration-control-2026-05-19.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-orchestration-control-2026-05-19.md",
+      "sha256_before": "92ca2f3664f83ea141ea6cb24197c623b711a37edfb811573cf8a5dccd906946",
+      "sha256_after": "92ca2f3664f83ea141ea6cb24197c623b711a37edfb811573cf8a5dccd906946"
+    },
+    {
+      "path": "tmp/wf55-outcome-ledger-v2-design.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-outcome-ledger-v2-design.md",
+      "sha256_before": "631e6b2eba94e7d8f39d8c5502fffaad080771c39e9ec3350b53969b3838608e",
+      "sha256_after": "631e6b2eba94e7d8f39d8c5502fffaad080771c39e9ec3350b53969b3838608e"
+    },
+    {
+      "path": "tmp/wf55-outcome-sidecar-bridge-proposal-2026-05-19.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-outcome-sidecar-bridge-proposal-2026-05-19.md",
+      "sha256_before": "ac6045782f01cc0aa5ec35649a1fc196adc0c0d0e31cee9880b6041996274a16",
+      "sha256_after": "ac6045782f01cc0aa5ec35649a1fc196adc0c0d0e31cee9880b6041996274a16"
+    },
+    {
+      "path": "tmp/wf55-paper-lifecycle-taxonomy-proposal-2026-05-19.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-paper-lifecycle-taxonomy-proposal-2026-05-19.md",
+      "sha256_before": "38c0485a512e514af76f71cddaa290deb572e7af215b71195a9b67bfbd782025",
+      "sha256_after": "38c0485a512e514af76f71cddaa290deb572e7af215b71195a9b67bfbd782025"
+    },
+    {
+      "path": "tmp/wf55-phase6-wf68-bridge-acceptance-2026-05-19.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-phase6-wf68-bridge-acceptance-2026-05-19.md",
+      "sha256_before": "729bd1e1cf1f09e36751d52e77379e5d0fae6b88b0f2ca41c74342fc33a04b6c",
+      "sha256_after": "729bd1e1cf1f09e36751d52e77379e5d0fae6b88b0f2ca41c74342fc33a04b6c"
+    },
+    {
+      "path": "tmp/wf55-wf68-alert-outcome-bridge-proposal-2026-05-19.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf55-wf68-alert-outcome-bridge-proposal-2026-05-19.md",
+      "sha256_before": "dcf14b91241374fe1adddf8a413676788f201e9502e74f511cd0558b828b18e2",
+      "sha256_after": "dcf14b91241374fe1adddf8a413676788f201e9502e74f511cd0558b828b18e2"
+    },
+    {
+      "path": "tmp/wf70-chain-manifest-registry-closeout.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-chain-manifest-registry-closeout.md",
+      "sha256_before": "2381c6c016ee91ad462c6547a851d85ac4fc8672a316ae298f303dd0ae82f970",
+      "sha256_after": "2381c6c016ee91ad462c6547a851d85ac4fc8672a316ae298f303dd0ae82f970"
+    },
+    {
+      "path": "tmp/wf70-future-quarter-rollforward-rules.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-future-quarter-rollforward-rules.md",
+      "sha256_before": "76f4455232722f1a03c5415692be624c422e5e352c2a8b9c06d3d13796fffc43",
+      "sha256_after": "76f4455232722f1a03c5415692be624c422e5e352c2a8b9c06d3d13796fffc43"
+    },
+    {
+      "path": "tmp/wf70-official-source-gap-map.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-official-source-gap-map.md",
+      "sha256_before": "fcda199ab7681099117a8c3e9a8527c9a57f886cc341146be7d72f6f0fc85442",
+      "sha256_after": "fcda199ab7681099117a8c3e9a8527c9a57f886cc341146be7d72f6f0fc85442"
+    },
+    {
+      "path": "tmp/wf70-period-registry-implementation.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-period-registry-implementation.md",
+      "sha256_before": "6d6005b64e74db39697d7650a8c23c3ed24d71ffb29266292ac79a814ced6627",
+      "sha256_after": "6d6005b64e74db39697d7650a8c23c3ed24d71ffb29266292ac79a814ced6627"
+    },
+    {
+      "path": "tmp/wf70-phase3d-helper-consolidation-batch2-migration.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase3d-helper-consolidation-batch2-migration.md",
+      "sha256_before": "4412f06759b3a4257ebe334058f72716d0e140a789f0146809166aea66cf8dc7",
+      "sha256_after": "4412f06759b3a4257ebe334058f72716d0e140a789f0146809166aea66cf8dc7"
+    },
+    {
+      "path": "tmp/wf70-phase3d-helper-consolidation-etn-vrt-migration.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase3d-helper-consolidation-etn-vrt-migration.md",
+      "sha256_before": "3be153ca072597f181105d8a1540a8b8235bd1e887e51818e68b0113481882a3",
+      "sha256_after": "3be153ca072597f181105d8a1540a8b8235bd1e887e51818e68b0113481882a3"
+    },
+    {
+      "path": "tmp/wf70-phase3d-helper-consolidation-priority-migration.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase3d-helper-consolidation-priority-migration.md",
+      "sha256_before": "cfcdba5c8ac97c57324b0cbf48621c5e7d3df847003763ae0b512fedd277c73d",
+      "sha256_after": "cfcdba5c8ac97c57324b0cbf48621c5e7d3df847003763ae0b512fedd277c73d"
+    },
+    {
+      "path": "tmp/wf70-phase3d-helper-consolidation-tech-migration.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase3d-helper-consolidation-tech-migration.md",
+      "sha256_before": "21696308540b0a49ccd469dee403138e7adfbcc8c3f9627af209bdbc63a6a85d",
+      "sha256_after": "21696308540b0a49ccd469dee403138e7adfbcc8c3f9627af209bdbc63a6a85d"
+    },
+    {
+      "path": "tmp/wf70-phase4-longtail-extractor-hardening-batch1.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase4-longtail-extractor-hardening-batch1.md",
+      "sha256_before": "3b2f1ceb3e0f113b47b88fed0314e168da8da5d318f3a8ea386f01c0aa09779a",
+      "sha256_after": "3b2f1ceb3e0f113b47b88fed0314e168da8da5d318f3a8ea386f01c0aa09779a"
+    },
+    {
+      "path": "tmp/wf70-phase4-longtail-extractor-hardening-batch2.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase4-longtail-extractor-hardening-batch2.md",
+      "sha256_before": "c23bbe991ab216fecee41842dbf05155c8dc625a794d1a183d6844c15f8963cc",
+      "sha256_after": "c23bbe991ab216fecee41842dbf05155c8dc625a794d1a183d6844c15f8963cc"
+    },
+    {
+      "path": "tmp/wf70-phase4-longtail-extractor-hardening-batch3-closeout.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase4-longtail-extractor-hardening-batch3-closeout.md",
+      "sha256_before": "4188c3d8859d3f5c9d004e7361766b789ac5960ce86384de13f8c231d335f288",
+      "sha256_after": "4188c3d8859d3f5c9d004e7361766b789ac5960ce86384de13f8c231d335f288"
+    },
+    {
+      "path": "tmp/wf70-phase4-longtail-refactor-maintainability.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase4-longtail-refactor-maintainability.md",
+      "sha256_before": "5cc4e1c518991f8f0bd6234d99ddddbc78e951e7935f22b8a3ba77bc2561ccf1",
+      "sha256_after": "5cc4e1c518991f8f0bd6234d99ddddbc78e951e7935f22b8a3ba77bc2561ccf1"
+    },
+    {
+      "path": "tmp/wf70-phase4-longtail-source-expansion.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase4-longtail-source-expansion.md",
+      "sha256_before": "2324c491a048f49ecf7d3bb0f1f40e4b56eae0db38a635e0009caa191570c497",
+      "sha256_after": "2324c491a048f49ecf7d3bb0f1f40e4b56eae0db38a635e0009caa191570c497"
+    },
+    {
+      "path": "tmp/wf70-phase5-bridge-recon-registry-migration.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-phase5-bridge-recon-registry-migration.md",
+      "sha256_before": "28937b687c7a1d598aa94ee2b297786e42a0dd4e02263a6b0a1a87afd0a500a7",
+      "sha256_after": "28937b687c7a1d598aa94ee2b297786e42a0dd4e02263a6b0a1a87afd0a500a7"
+    },
+    {
+      "path": "tmp/wf70-rollforward-registry-selector-implementation.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-rollforward-registry-selector-implementation.md",
+      "sha256_before": "2e192790e3629025a70f39453f8a1748fd181b6399780b99ff120a37b7db17a2",
+      "sha256_after": "2e192790e3629025a70f39453f8a1748fd181b6399780b99ff120a37b7db17a2"
+    },
+    {
+      "path": "tmp/wf70-run-summary-registry-migration.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-run-summary-registry-migration.md",
+      "sha256_before": "2cf7a82ed1acd80580e7ce7725974b65b70cd2cf6ff29ac96c503296f3ea3283",
+      "sha256_after": "2cf7a82ed1acd80580e7ce7725974b65b70cd2cf6ff29ac96c503296f3ea3283"
+    },
+    {
+      "path": "tmp/wf70-tech-msft-before-migration.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf70-tech-msft-before-migration.md",
+      "sha256_before": "53cfdc711cd65f4706038e075595810e02a84590cdfb68e16761d6cae5b90876",
+      "sha256_after": "53cfdc711cd65f4706038e075595810e02a84590cdfb68e16761d6cae5b90876"
+    },
+    {
+      "path": "tmp/wf71-department-skill-ownership-proposal.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf71-department-skill-ownership-proposal.md",
+      "sha256_before": "c13ff2662b22790a90759bdf2ee58f18081995eaca6a3e0d155ac67119289bfc",
+      "sha256_after": "c13ff2662b22790a90759bdf2ee58f18081995eaca6a3e0d155ac67119289bfc"
+    },
+    {
+      "path": "tmp/wf71-live-use-audit-wf70-wf72-next-task.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf71-live-use-audit-wf70-wf72-next-task.md",
+      "sha256_before": "2f6eda76e6c7652a343d93bc0a782926e7c311ec7e6b1aac47212c03292412d3",
+      "sha256_after": "2f6eda76e6c7652a343d93bc0a782926e7c311ec7e6b1aac47212c03292412d3"
+    },
+    {
+      "path": "tmp/wf71-skill-routing-load-budget-rules.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf71-skill-routing-load-budget-rules.md",
+      "sha256_before": "f7967a952ae446e5b61f419da4a783b7f65b7579ae0675c4bb939a4e2bd8bb05",
+      "sha256_after": "f7967a952ae446e5b61f419da4a783b7f65b7579ae0675c4bb939a4e2bd8bb05"
+    },
+    {
+      "path": "tmp/wf72-active-tmp-md-cleanup-2026-05-25.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-active-tmp-md-cleanup-2026-05-25.md",
+      "sha256_before": "be6060079da41920d8b033626d7ffa4397461caaa7bf11ee8f2a84dab5bf4bb3",
+      "sha256_after": "be6060079da41920d8b033626d7ffa4397461caaa7bf11ee8f2a84dab5bf4bb3"
+    },
+    {
+      "path": "tmp/wf72-archive-suggestions-decision-register-2026-05-25.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-archive-suggestions-decision-register-2026-05-25.md",
+      "sha256_before": "dbf867649f416a4b25f885403e275364b69cf542924a4a1f4cfe4b0ccbfcd0a1",
+      "sha256_after": "dbf867649f416a4b25f885403e275364b69cf542924a4a1f4cfe4b0ccbfcd0a1"
+    },
+    {
+      "path": "tmp/wf72-backup-surface-classification-2026-05-25.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-backup-surface-classification-2026-05-25.md",
+      "sha256_before": "406aa26affef6be69897e5cfce22679c7c76e4ebaa3f10092a49a49ce1f8fcf7",
+      "sha256_after": "406aa26affef6be69897e5cfce22679c7c76e4ebaa3f10092a49a49ce1f8fcf7"
+    },
+    {
+      "path": "tmp/wf72-broad-archive-phase1-2-integration.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-broad-archive-phase1-2-integration.md",
+      "sha256_before": "c3f03e3e092ca2c606b96e543aecf0b8a0e602b704069cc7226e5e76819faa9e",
+      "sha256_after": "c3f03e3e092ca2c606b96e543aecf0b8a0e602b704069cc7226e5e76819faa9e"
+    },
+    {
+      "path": "tmp/wf72-consumer-guard-qa.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-consumer-guard-qa.md",
+      "sha256_before": "35337dcedace8899ec87d1cf704cd30ddf68537b20cf6553d222213138e5cee3",
+      "sha256_after": "35337dcedace8899ec87d1cf704cd30ddf68537b20cf6553d222213138e5cee3"
+    },
+    {
+      "path": "tmp/wf72-dashboard-decision-queue-sql-migration.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-dashboard-decision-queue-sql-migration.md",
+      "sha256_before": "deb0188a23e0495421ba554ad0fd922c1d9f1c8125bd1db7e3d9662204d2cebd",
+      "sha256_after": "deb0188a23e0495421ba554ad0fd922c1d9f1c8125bd1db7e3d9662204d2cebd"
+    },
+    {
+      "path": "tmp/wf72-dashboard-handoff-sql-adoption-proof.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-dashboard-handoff-sql-adoption-proof.md",
+      "sha256_before": "7801329a30785227213bf34fa5fdf66a4970b0019a81c53a6d073fed7fe3f8e9",
+      "sha256_after": "7801329a30785227213bf34fa5fdf66a4970b0019a81c53a6d073fed7fe3f8e9"
+    },
+    {
+      "path": "tmp/wf72-entry-stop-sql-activation-closeout.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-entry-stop-sql-activation-closeout.md",
+      "sha256_before": "024b986a22ff58c8d29d2f94017e24ca301e35c14cd11b3707d5e1515ed1d766",
+      "sha256_after": "024b986a22ff58c8d29d2f94017e24ca301e35c14cd11b3707d5e1515ed1d766"
+    },
+    {
+      "path": "tmp/wf72-entry-stop-sql-activation-first-slice-approval-request.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-entry-stop-sql-activation-first-slice-approval-request.md",
+      "sha256_before": "d7eb3b64eaaf40b820b036896d086a7bb59af554a2dcd9493e8fe5987624580a",
+      "sha256_after": "d7eb3b64eaaf40b820b036896d086a7bb59af554a2dcd9493e8fe5987624580a"
+    },
+    {
+      "path": "tmp/wf72-entry-stop-sql-activation-pilot-main-integration.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-entry-stop-sql-activation-pilot-main-integration.md",
+      "sha256_before": "25131aadad1f73d52149b8bd5bee20e3bdc3a3a74d12fdd9da8f1ccaf3c080a9",
+      "sha256_after": "25131aadad1f73d52149b8bd5bee20e3bdc3a3a74d12fdd9da8f1ccaf3c080a9"
+    },
+    {
+      "path": "tmp/wf72-entry-stop-sql-activation-pilot-postworker-qa.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-entry-stop-sql-activation-pilot-postworker-qa.md",
+      "sha256_before": "4c832000b0eb5c8d57d1b72e8dc4c2c561b9a9c62429b229a3aacb99c2138765",
+      "sha256_after": "4c832000b0eb5c8d57d1b72e8dc4c2c561b9a9c62429b229a3aacb99c2138765"
+    },
+    {
+      "path": "tmp/wf72-field-family-migration-prework.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-field-family-migration-prework.md",
+      "sha256_before": "e684745f208202f0db5212196d91a0940515184c0c0f0915c5d13e94180a43ee",
+      "sha256_after": "e684745f208202f0db5212196d91a0940515184c0c0f0915c5d13e94180a43ee"
+    },
+    {
+      "path": "tmp/wf72-finance-canon-cleanup-proposals.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-finance-canon-cleanup-proposals.md",
+      "sha256_before": "00ce9d591b0400de1a40fd2bf4090af9f75a13d6b11c5a306e4f1e9921c5a1eb",
+      "sha256_after": "00ce9d591b0400de1a40fd2bf4090af9f75a13d6b11c5a306e4f1e9921c5a1eb"
+    },
+    {
+      "path": "tmp/wf72-fts-field-plan-qa.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-fts-field-plan-qa.md",
+      "sha256_before": "022f861e906036510a62ca6d6558c11d39586b9b281af159994219a7d7bd7279",
+      "sha256_after": "022f861e906036510a62ca6d6558c11d39586b9b281af159994219a7d7bd7279"
+    },
+    {
+      "path": "tmp/wf72-fts-query-hardening.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-fts-query-hardening.md",
+      "sha256_before": "81fe16834c79e01ce0d7f045db2334a11be597e77b9609085b130bf419a83c7b",
+      "sha256_after": "81fe16834c79e01ce0d7f045db2334a11be597e77b9609085b130bf419a83c7b"
+    },
+    {
+      "path": "tmp/wf72-gate13-portfolio-source-freshness-redesign-worker.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-gate13-portfolio-source-freshness-redesign-worker.md",
+      "sha256_before": "a05f553650cea10ae89efb96108ab5c69a74aa924bfc7b9ea649f451539a08eb",
+      "sha256_after": "a05f553650cea10ae89efb96108ab5c69a74aa924bfc7b9ea649f451539a08eb"
+    },
+    {
+      "path": "tmp/wf72-gate14-neutral-deployment-display-closeout.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-gate14-neutral-deployment-display-closeout.md",
+      "sha256_before": "c7a30950f40fe79a2250a0f9888f91c4ef81ee52b1fd9291618b6b12aa4b4500",
+      "sha256_after": "c7a30950f40fe79a2250a0f9888f91c4ef81ee52b1fd9291618b6b12aa4b4500"
+    },
+    {
+      "path": "tmp/wf72-gate15-higher-risk-family-closeout.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-gate15-higher-risk-family-closeout.md",
+      "sha256_before": "f2ceed9434f9233c000a9d4b0a42b6e6ac56a13e3bd7ae650c93610db11c7c46",
+      "sha256_after": "f2ceed9434f9233c000a9d4b0a42b6e6ac56a13e3bd7ae650c93610db11c7c46"
+    },
+    {
+      "path": "tmp/wf72-gate16-final-os-revamp-closeout-qa.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-gate16-final-os-revamp-closeout-qa.md",
+      "sha256_before": "90a57050fe758c8a8650c27fd1aeef7e6bb5086559dff7912429d0a138245e81",
+      "sha256_after": "90a57050fe758c8a8650c27fd1aeef7e6bb5086559dff7912429d0a138245e81"
+    },
+    {
+      "path": "tmp/wf72-gate16-final-os-revamp-closeout.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-gate16-final-os-revamp-closeout.md",
+      "sha256_before": "2223442c13eb317816700a38d743cbbd8b9819716c7bf32eda6e4d7f1c2dca06",
+      "sha256_after": "2223442c13eb317816700a38d743cbbd8b9819716c7bf32eda6e4d7f1c2dca06"
+    },
+    {
+      "path": "tmp/wf72-obsidian-note-lookup-procedure-proof.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-obsidian-note-lookup-procedure-proof.md",
+      "sha256_before": "6e2e4e7c9ccab8b1a5a0b7bd88364318b90ffedee7359e532c651172917bac55",
+      "sha256_after": "6e2e4e7c9ccab8b1a5a0b7bd88364318b90ffedee7359e532c651172917bac55"
+    },
+    {
+      "path": "tmp/wf72-os-optimization-execution-phase-packet.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-os-optimization-execution-phase-packet.md",
+      "sha256_before": "70034c65ff2459168ad3a8c082c458be8cccd284b08983fbd2a5ac9415ff1974",
+      "sha256_after": "70034c65ff2459168ad3a8c082c458be8cccd284b08983fbd2a5ac9415ff1974"
+    },
+    {
+      "path": "tmp/wf72-phase10-closeout.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase10-closeout.md",
+      "sha256_before": "b9757d75b5e7627506616db2d2be2103ddafe811a40a9b608383cb47a02cb5ba",
+      "sha256_after": "b9757d75b5e7627506616db2d2be2103ddafe811a40a9b608383cb47a02cb5ba"
+    },
+    {
+      "path": "tmp/wf72-phase10-hardening-qa.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase10-hardening-qa.md",
+      "sha256_before": "aab2975d678177b2949d6122fe47a12eeab12f8f7acd2706a6049fde2e1a6e51",
+      "sha256_after": "aab2975d678177b2949d6122fe47a12eeab12f8f7acd2706a6049fde2e1a6e51"
+    },
+    {
+      "path": "tmp/wf72-phase10-higher-risk-family-taxonomy.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase10-higher-risk-family-taxonomy.md",
+      "sha256_before": "4ed146b8ca7a1dce0c343c28159312db7e2ab80d6bd117ad0cd45796c2a38070",
+      "sha256_after": "4ed146b8ca7a1dce0c343c28159312db7e2ab80d6bd117ad0cd45796c2a38070"
+    },
+    {
+      "path": "tmp/wf72-phase11-closeout.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase11-closeout.md",
+      "sha256_before": "83714af4007c57c3a57ae943dfc7a75f125b57bcf2c1eefd04aa2823b4cc8370",
+      "sha256_after": "83714af4007c57c3a57ae943dfc7a75f125b57bcf2c1eefd04aa2823b4cc8370"
+    },
+    {
+      "path": "tmp/wf72-phase11-full-activation-readiness-packet.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase11-full-activation-readiness-packet.md",
+      "sha256_before": "ae3fa8e64ac9434205ccef4d8317bafda378f19483bb8435ba67890c9fa20fe0",
+      "sha256_after": "ae3fa8e64ac9434205ccef4d8317bafda378f19483bb8435ba67890c9fa20fe0"
+    },
+    {
+      "path": "tmp/wf72-phase11-readiness-qa.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase11-readiness-qa.md",
+      "sha256_before": "e4bae7dce0f73d4ce65505300b069c31429d1044ccdede9688da7cb2b635b85d",
+      "sha256_after": "e4bae7dce0f73d4ce65505300b069c31429d1044ccdede9688da7cb2b635b85d"
+    },
+    {
+      "path": "tmp/wf72-phase3c-weekly-product-apply.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase3c-weekly-product-apply.md",
+      "sha256_before": "431b8bab693bbb23e75f7ad70bf8999f4b9c7e70e05b4b1fa5a1c2a88a5dc4d9",
+      "sha256_after": "431b8bab693bbb23e75f7ad70bf8999f4b9c7e70e05b4b1fa5a1c2a88a5dc4d9"
+    },
+    {
+      "path": "tmp/wf72-phase4-7-integration-summary.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-7-integration-summary.md",
+      "sha256_before": "3381f40e4d8173c84311b86528cbaaa4c562eb9b96c1ac4f16b6344f1f806ed9",
+      "sha256_after": "3381f40e4d8173c84311b86528cbaaa4c562eb9b96c1ac4f16b6344f1f806ed9"
+    },
+    {
+      "path": "tmp/wf72-phase4-narrow-cleanup-result.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-narrow-cleanup-result.md",
+      "sha256_before": "f2a82163d1a20ff591c13bdbb7ada0d5fbb08a8513f4cd0eb1a200595bcb69b9",
+      "sha256_after": "f2a82163d1a20ff591c13bdbb7ada0d5fbb08a8513f4cd0eb1a200595bcb69b9"
+    },
+    {
+      "path": "tmp/wf72-phase4-six-key-stabilization-postfix.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-six-key-stabilization-postfix.md",
+      "sha256_before": "3490746c66384c54ba406b684e4b1bc99db491c05b1b5c540065aff6e4e5a319",
+      "sha256_after": "3490746c66384c54ba406b684e4b1bc99db491c05b1b5c540065aff6e4e5a319"
+    },
+    {
+      "path": "tmp/wf72-phase4-six-key-stabilization.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-six-key-stabilization.md",
+      "sha256_before": "1353556c3489d21589270f42d2690173c43c05e555b85ab06d3e8661092d3202",
+      "sha256_after": "1353556c3489d21589270f42d2690173c43c05e555b85ab06d3e8661092d3202"
+    },
+    {
+      "path": "tmp/wf72-phase4-sql-lineage-expansion-proposal.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-sql-lineage-expansion-proposal.md",
+      "sha256_before": "db53d6f1053e558caaf0ef6efdc392376b638bf553271de1c2b49f1cf3c8533e",
+      "sha256_after": "db53d6f1053e558caaf0ef6efdc392376b638bf553271de1c2b49f1cf3c8533e"
+    },
+    {
+      "path": "tmp/wf72-phase4-sql-schema-v3-implementation.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-sql-schema-v3-implementation.md",
+      "sha256_before": "ade8312444d5d4af78fe8f2db9c031561fbafd15cd4cc0cb28aea6910926336f",
+      "sha256_after": "ade8312444d5d4af78fe8f2db9c031561fbafd15cd4cc0cb28aea6910926336f"
+    },
+    {
+      "path": "tmp/wf72-phase4-sql-truth-spine-prototype.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase4-sql-truth-spine-prototype.md",
+      "sha256_before": "8131249404fb28b1affc48f9e88f73264c249a509e47127360831cedfebad955",
+      "sha256_after": "8131249404fb28b1affc48f9e88f73264c249a509e47127360831cedfebad955"
+    },
+    {
+      "path": "tmp/wf72-phase5-sql-consumer-inventory.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase5-sql-consumer-inventory.md",
+      "sha256_before": "85f53d92ac53eb99162895ff0cddd4aaa7c0e3667b50f78a4e6de38c5cf336e5",
+      "sha256_after": "85f53d92ac53eb99162895ff0cddd4aaa7c0e3667b50f78a4e6de38c5cf336e5"
+    },
+    {
+      "path": "tmp/wf72-phase6-held-field-adjudication.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase6-held-field-adjudication.md",
+      "sha256_before": "c441ef5ed1990bd440e90713ab4ad7eecb4b81bb452e10ab0ec13ff80f5a9404",
+      "sha256_after": "c441ef5ed1990bd440e90713ab4ad7eecb4b81bb452e10ab0ec13ff80f5a9404"
+    },
+    {
+      "path": "tmp/wf72-phase7-key-level-activation-summary.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase7-key-level-activation-summary.md",
+      "sha256_before": "57f9d3bbdeced0ed116c56228235fce521116933ab7d18486e33fbc0bec4d939",
+      "sha256_after": "57f9d3bbdeced0ed116c56228235fce521116933ab7d18486e33fbc0bec4d939"
+    },
+    {
+      "path": "tmp/wf72-phase7-shadow-iteration.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase7-shadow-iteration.md",
+      "sha256_before": "589629a225502f3d881c9973529b4b505088b1ac7852478585049ae3346de437",
+      "sha256_after": "589629a225502f3d881c9973529b4b505088b1ac7852478585049ae3346de437"
+    },
+    {
+      "path": "tmp/wf72-phase7-source-freshness-shadow-proof.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase7-source-freshness-shadow-proof.md",
+      "sha256_before": "cbaf220e8b37d5039971aed6b3081d9fd0bd29830686a40bc647f6f1cfdf0ea4",
+      "sha256_after": "cbaf220e8b37d5039971aed6b3081d9fd0bd29830686a40bc647f6f1cfdf0ea4"
+    },
+    {
+      "path": "tmp/wf72-phase8-closeout.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase8-closeout.md",
+      "sha256_before": "b62847d546271a16fcdb1497ead5b5ae5256a19e0b8aa4a4d9f7838393d8396e",
+      "sha256_after": "b62847d546271a16fcdb1497ead5b5ae5256a19e0b8aa4a4d9f7838393d8396e"
+    },
+    {
+      "path": "tmp/wf72-phase8-portfolio-source-freshness-adjudication.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase8-portfolio-source-freshness-adjudication.md",
+      "sha256_before": "d0eea512b218a58d78d05f3c5153903629b8c8a53a6158053533bfd914b3e05c",
+      "sha256_after": "d0eea512b218a58d78d05f3c5153903629b8c8a53a6158053533bfd914b3e05c"
+    },
+    {
+      "path": "tmp/wf72-phase8-portfolio-source-freshness-qa.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase8-portfolio-source-freshness-qa.md",
+      "sha256_before": "9a30d5c34ea6f5b7f4c6d94313d5b0c2f853558294f510244198fdd2ce35def8",
+      "sha256_after": "9a30d5c34ea6f5b7f4c6d94313d5b0c2f853558294f510244198fdd2ce35def8"
+    },
+    {
+      "path": "tmp/wf72-phase9-closeout.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase9-closeout.md",
+      "sha256_before": "02d20f37e154d4deb7746c76a16b60b81814a7b5b5b9c9dfa75f430c5bcf9f86",
+      "sha256_after": "02d20f37e154d4deb7746c76a16b60b81814a7b5b5b9c9dfa75f430c5bcf9f86"
+    },
+    {
+      "path": "tmp/wf72-phase9-deployment-status-adjudication.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phase9-deployment-status-adjudication.md",
+      "sha256_before": "25013b08e2e011e48de0045b22ddeeed3425029f9adc12d20e798919cb607b00",
+      "sha256_after": "25013b08e2e011e48de0045b22ddeeed3425029f9adc12d20e798919cb607b00"
+    },
+    {
+      "path": "tmp/wf72-phases-8-11-full-activation-readiness-plan.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-phases-8-11-full-activation-readiness-plan.md",
+      "sha256_before": "d1af134cc4f713a32379ab4f6e1e1dccf276b2c426b71919c8ac9beec6144a46",
+      "sha256_after": "d1af134cc4f713a32379ab4f6e1e1dccf276b2c426b71919c8ac9beec6144a46"
+    },
+    {
+      "path": "tmp/wf72-runtime-cache-delete-2026-05-25.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-runtime-cache-delete-2026-05-25.md",
+      "sha256_before": "d75eed7bf6eba50fb969d18dd37a6cb4e8e59cefd354ae300c0f64edcbe71b60",
+      "sha256_after": "d75eed7bf6eba50fb969d18dd37a6cb4e8e59cefd354ae300c0f64edcbe71b60"
+    },
+    {
+      "path": "tmp/wf72-runtime-cache-delete-closeout-2026-05-25.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-runtime-cache-delete-closeout-2026-05-25.md",
+      "sha256_before": "e7913218ba52ac6ed376dce28d19e360b8651c87586f5669c0f1f388977185b9",
+      "sha256_after": "e7913218ba52ac6ed376dce28d19e360b8651c87586f5669c0f1f388977185b9"
+    },
+    {
+      "path": "tmp/wf72-safe-delete-proposal-runtime-cache-2026-05-25.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-safe-delete-proposal-runtime-cache-2026-05-25.md",
+      "sha256_before": "7dd42c925879c38909af4f890c076b77a5e52a78e02f5bc26accd143eea72b36",
+      "sha256_after": "7dd42c925879c38909af4f890c076b77a5e52a78e02f5bc26accd143eea72b36"
+    },
+    {
+      "path": "tmp/wf72-script-ownership-inventory.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-script-ownership-inventory.md",
+      "sha256_before": "df76fda2b11e3254db62a84f257227cc93576bb386b5fd20fbe9790d89f4ac21",
+      "sha256_after": "df76fda2b11e3254db62a84f257227cc93576bb386b5fd20fbe9790d89f4ac21"
+    },
+    {
+      "path": "tmp/wf72-sql-adoption-phase5a-proof.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-adoption-phase5a-proof.md",
+      "sha256_before": "f16275bc234f2222377fff2c8f29dd4b3bfd8939a980b557eb72e0ede58e706e",
+      "sha256_after": "f16275bc234f2222377fff2c8f29dd4b3bfd8939a980b557eb72e0ede58e706e"
+    },
+    {
+      "path": "tmp/wf72-sql-adoption-phase5b-dashboard-trust-proof.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-adoption-phase5b-dashboard-trust-proof.md",
+      "sha256_before": "235aaa567f00412456593e1f28039baa6bc073b30c57f93e76d0f7cfd0a5484d",
+      "sha256_after": "235aaa567f00412456593e1f28039baa6bc073b30c57f93e76d0f7cfd0a5484d"
+    },
+    {
+      "path": "tmp/wf72-sql-adoption-phase5c-today-card-proof.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-adoption-phase5c-today-card-proof.md",
+      "sha256_before": "c720b86a088ad1bfaa54d266455b7f375a36b273a0522e5e25ef2091ff0ea19f",
+      "sha256_after": "c720b86a088ad1bfaa54d266455b7f375a36b273a0522e5e25ef2091ff0ea19f"
+    },
+    {
+      "path": "tmp/wf72-sql-authority-phase-implementation-synthesis.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-authority-phase-implementation-synthesis.md",
+      "sha256_before": "ce427149e0a24bb5b1204dd1cc4c7eb8877f11d92e2213b8a587ee5dbe99b24c",
+      "sha256_after": "ce427149e0a24bb5b1204dd1cc4c7eb8877f11d92e2213b8a587ee5dbe99b24c"
+    },
+    {
+      "path": "tmp/wf72-sql-authority-prework-review.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-authority-prework-review.md",
+      "sha256_before": "9eabadcb046241d2a4a7ccfa26e283a75d9be2600eb6afaa668e68a624ae860f",
+      "sha256_after": "9eabadcb046241d2a4a7ccfa26e283a75d9be2600eb6afaa668e68a624ae860f"
+    },
+    {
+      "path": "tmp/wf72-sql-cockpit-boot-protocol-promotion.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-cockpit-boot-protocol-promotion.md",
+      "sha256_before": "662127bf7bf7249aadc5a1cd13abf4a93b5ff5a03f1c549e2aa823c0cb6aa833",
+      "sha256_after": "662127bf7bf7249aadc5a1cd13abf4a93b5ff5a03f1c549e2aa823c0cb6aa833"
+    },
+    {
+      "path": "tmp/wf72-sql-cockpit-phase4d-proof.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-cockpit-phase4d-proof.md",
+      "sha256_before": "0b3c7c848695796c9f68cc6bb94d5deba88f3b1bafe6b751f3c6b14baacfc5fa",
+      "sha256_after": "0b3c7c848695796c9f68cc6bb94d5deba88f3b1bafe6b751f3c6b14baacfc5fa"
+    },
+    {
+      "path": "tmp/wf72-sql-freshness-drift-validator-proof.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-freshness-drift-validator-proof.md",
+      "sha256_before": "466704a1e82c94029c68d4eee3deaa121289c09ca379597ff8e8734b49227353",
+      "sha256_after": "466704a1e82c94029c68d4eee3deaa121289c09ca379597ff8e8734b49227353"
+    },
+    {
+      "path": "tmp/wf72-sql-obsidian-capability-phase-proof.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-obsidian-capability-phase-proof.md",
+      "sha256_before": "c842fb1a834e35257e146b2dc45e2a8ece9f2218dc24f660fd8c4c821cb0b378",
+      "sha256_after": "c842fb1a834e35257e146b2dc45e2a8ece9f2218dc24f660fd8c4c821cb0b378"
+    },
+    {
+      "path": "tmp/wf72-sql-workflow-handoff-proof.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-sql-workflow-handoff-proof.md",
+      "sha256_before": "0e8550d177c0445572e70e5137721283d3115c9d33eae1ac0f15130358fdb096",
+      "sha256_after": "0e8550d177c0445572e70e5137721283d3115c9d33eae1ac0f15130358fdb096"
+    },
+    {
+      "path": "tmp/wf72-workspace-index-refresh-proof.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf72-workspace-index-refresh-proof.md",
+      "sha256_before": "3090afffd8c875d554b94e9820ed51bd95076fc1892c2fd9bedd619aa8ef844c",
+      "sha256_after": "3090afffd8c875d554b94e9820ed51bd95076fc1892c2fd9bedd619aa8ef844c"
+    },
+    {
+      "path": "tmp/wf73-active-workflows-compression-proposal.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf73-active-workflows-compression-proposal.md",
+      "sha256_before": "533eda4da2b3b32935182c885ba4657d46d51de2a913829a2c5be5dc8805204d",
+      "sha256_after": "533eda4da2b3b32935182c885ba4657d46d51de2a913829a2c5be5dc8805204d"
+    },
+    {
+      "path": "tmp/wf73-active-workflows-compression-qa.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf73-active-workflows-compression-qa.md",
+      "sha256_before": "1c4f700d71250e67cc0a4a3f5d198c6314a2349b56c9eef0ad58d6fbe22f65c0",
+      "sha256_after": "1c4f700d71250e67cc0a4a3f5d198c6314a2349b56c9eef0ad58d6fbe22f65c0"
+    },
+    {
+      "path": "tmp/wf73-boot-surface-load-map.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf73-boot-surface-load-map.md",
+      "sha256_before": "b5a560f8354618b6879f222acc6971e829fe9c6bf90fd7b2f524b9c775889c1a",
+      "sha256_after": "b5a560f8354618b6879f222acc6971e829fe9c6bf90fd7b2f524b9c775889c1a"
+    },
+    {
+      "path": "tmp/wf73-startup-truth-index-proposal.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf73-startup-truth-index-proposal.md",
+      "sha256_before": "76ed0b488263ca44bca1e847c1edd8cb6ebc2b913bd08e9e4faa79b266a01e0a",
+      "sha256_after": "76ed0b488263ca44bca1e847c1edd8cb6ebc2b913bd08e9e4faa79b266a01e0a"
+    },
+    {
+      "path": "tmp/wf75-opportunity-intelligence-expansion-plan.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Full Tmp Markdown Sweep/wf75-opportunity-intelligence-expansion-plan.md",
+      "sha256_before": "ec371eaad54697d8dbd601d81b258de9bd577fba57d876c6ddf32c44a8306f07",
+      "sha256_after": "ec371eaad54697d8dbd601d81b258de9bd577fba57d876c6ddf32c44a8306f07"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; only explicit apply_allowed true suggestions with zero references and approved destination roots can move"
+}

@@ -1,0 +1,59 @@
+{
+  "authority_boundary": {
+    "account_settings_mutation_allowed": false,
+    "live_trade_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_only": true,
+    "portfolio_or_canon_mutation_allowed": false,
+    "sell_cancel_replace_requires_new_exact_owner_approval": true
+  },
+  "execution": {
+    "broker_order_status": "new",
+    "classifier_status": "open_or_pending",
+    "filled_avg_price": null,
+    "filled_qty": 0.0,
+    "http_status": 200,
+    "next_safe_action": "Continue GET-only reconciliation; do not cancel or replace without exact owner approval.",
+    "paper_order_id_present": true,
+    "paper_order_status_at_submit": "pending_new",
+    "wrapper_status": "submitted"
+  },
+  "generated_at_utc": "2026-06-12T19:11:29Z",
+  "notes": [
+    "No external alert was sent by this artifact.",
+    "The mutable WF86 assisted request/card path was regenerated after submit; immutable approved request artifact preserves the exact submitted request.",
+    "Order is open_or_pending/new at last GET-only reconciliation; no fill credit or maturity rep yet."
+  ],
+  "order": {
+    "limit_price": 298.87,
+    "notional": 1500.0,
+    "request_id": "wf86-assisted-VRT-buy-limit-20260612T174732Z",
+    "side": "buy",
+    "symbol": "VRT",
+    "time_in_force": "day",
+    "type": "limit"
+  },
+  "owner_approval_text": "Approve WF86 assisted paper-only buy order for VRT, request_id wf86-assisted-VRT-buy-limit-20260612T174732Z: buy VRT as a day limit order with $1,500 notional at limit price $298.87. I understand this is a tactical dip/reclaim setup, not a clean add, and I approve this exact paper order only. No live trading is approved.",
+  "proof_artifacts": {
+    "approved_request": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-wf86-assisted-20260612T174732Z.approved.json",
+    "dry_run": "tmp/alpaca-paper-readiness/paper-execution-dry-run-result.vrt-wf86-assisted-20260612.json",
+    "execution_result": "tmp/alpaca-paper-readiness/paper-execution-result.vrt-wf86-assisted-20260612.json",
+    "mutable_request_current": "tmp/alpaca-paper-readiness/paper-trade-request.wf86-assisted-vrt.json",
+    "order_history_classifier": "tmp/alpaca-paper-readiness/paper-order-history-classifier.json",
+    "owner_approval": "tmp/alpaca-paper-readiness/owner-approval.vrt-wf86-assisted-20260612T1806Z.json",
+    "post_submit_guard": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.vrt-wf86-assisted-20260612.post-submit.json",
+    "pre_submit_guard": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.vrt-wf86-assisted-20260612.json",
+    "wf87_cadence": "tmp/wf87-assisted-paper-cadence.json",
+    "wf87_command_center": "tmp/wf87-autonomy-command-center.json",
+    "wf87_rollup": "tmp/wf87-v2-readiness-rollup.json"
+  },
+  "purpose": "Local main-session proof notification for exact owner-approved paper-only VRT assisted limit order.",
+  "schema": "veritas.main_session_capital_package_notification.v1",
+  "status": "submitted_open_or_pending",
+  "validation": {
+    "errors": [],
+    "status": "ok"
+  },
+  "workflow": "WF67/WF86"
+}

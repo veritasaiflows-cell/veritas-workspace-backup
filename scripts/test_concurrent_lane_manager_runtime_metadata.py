@@ -878,9 +878,23 @@ def test_codex_native_rollout_import_is_allowlisted_and_route_conformant() -> No
         lane = load_register(register)["lanes"][0]
         assert lane["status"] == "blocked"
         assert lane["runtime"]["actual_model_path"] == "openai/gpt-5.6-terra"
-        failed = next(row for row in load_register(register)["validation"]["checks"] if row["name"] == "terminal_codex_native_route_conforms_to_expected_route")
-        assert failed["ok"] is False
-        assert set(failed["detail"][0]["errors"]) == {"model_path_mismatch", "thinking_mismatch"}
+        assert lane["runtime"]["usage_credit_status"] == "blocked"
+        assert lane["runtime"]["usage_credit_status"] != "creditable"
+        assert lane["runtime"]["usage_creditable"] is False
+        assert lane["runtime"]["accounting_status"] == "blocked"
+        assert lane["runtime"]["administrative_closure_status"] == "blocked"
+        assert lane["runtime"]["activation_status"] == "blocked"
+        assert lane["runtime"]["release_blocked"] is True
+        assert lane["runtime"]["source_reverification_status"] == "blocked"
+        validation = load_register(register)["validation"]
+        incident = next(row for row in validation["checks"] if row["name"] == "terminal_nonaccepted_route_mismatch_incidents_are_classified")
+        assert incident["ok"] is False
+        assert incident["severity"] == "warning"
+        assert incident["detail"][0]["lane_id"] == lane["lane_id"]
+        assert set(incident["detail"][0]["errors"]) == {"model_path_mismatch", "thinking_mismatch"}
+        assert incident["detail"][0]["classification"] == "terminal_nonaccepted_route_mismatch_incident"
+        conformant = next(row for row in validation["checks"] if row["name"] == "terminal_codex_native_route_conforms_to_expected_route")
+        assert conformant["ok"] is True
 
     with tempfile.TemporaryDirectory() as tmpdir:
         base = Path(tmpdir)
@@ -1830,8 +1844,61 @@ def test_safe_active_lease_persists_despite_terminal_ledger_debt() -> None:
             check for check in persisted["validation"]["checks"]
             if check["name"] == "proof_artifacts_exist"
         )
+        historical_proof_check = next(
+            check for check in persisted["validation"]["checks"]
+            if check["name"] == "historical_missing_proof_artifacts_are_classified_not_retargeted"
+        )
         assert route_check["ok"] is False
-        assert proof_check["ok"] is False
+        assert route_check["severity"] == "critical"
+        assert route_check["detail"][0]["lane_id"] == "RUNTIME::historical-route-debt"
+        assert "model_path_mismatch" in route_check["detail"][0]["errors"]
+        assert proof_check["ok"] is True
+        assert historical_proof_check["ok"] is False
+        assert historical_proof_check["severity"] == "warning"
+        assert historical_proof_check["detail"]["classification"] == "historical_proof_path_unavailable_not_retargeted"
+        assert historical_proof_check["detail"]["gaps"][0]["lane_id"] == "RUNTIME::historical-route-debt"
+        assert historical_proof_check["detail"]["gaps"][0]["proof"] == "tmp/does-not-exist-historical-proof.json"
+
+
+def test_post_cutover_missing_proof_is_critical_not_historical() -> None:
+    manager = load_manager_module()
+    base_lane = {
+        "lane_id": "RUNTIME::historical-route-debt",
+        "workflow_id": "RUNTIME",
+        "workstream_id": "historical-route-debt",
+        "owner": "historical-helper",
+        "status": "complete",
+        "created_at_utc": "2026-06-01T00:00:00Z",
+        "ended_at_utc": "2026-06-01T00:00:00Z",
+        "completed_at_utc": "2026-06-01T00:00:00Z",
+        "allowed_writes": ["tmp/historical-route-debt.json"],
+        "forbidden_writes": [],
+        "acceptance_commands": ["historical acceptance retained"],
+        "proof_artifacts": ["tmp/does-not-exist-historical-proof.json"],
+        "runtime": {},
+    }
+    with tempfile.TemporaryDirectory() as tmpdir:
+        receipts = Path(tmpdir) / "receipts.json"
+        newer = json.loads(json.dumps(base_lane))
+        newer["lane_id"] = "RUNTIME::post-cutover-proof-debt"
+        newer["workstream_id"] = "post-cutover-proof-debt"
+        newer["created_at_utc"] = "2026-08-23T00:00:00Z"
+        newer["completed_at_utc"] = "2026-08-23T00:00:00Z"
+        newer["ended_at_utc"] = "2026-08-23T00:00:00Z"
+        validation = manager.validate_register({"schema": "veritas.concurrent_lane_register.v1", "lanes": [newer]}, receipts)
+        critical = next(check for check in validation["checks"] if check["name"] == "proof_artifacts_exist")
+        assert critical["ok"] is False
+        assert critical["severity"] == "critical"
+        assert critical["detail"][0]["lane_id"] == "RUNTIME::post-cutover-proof-debt"
+        assert critical["detail"][0]["proof"] == "tmp/does-not-exist-historical-proof.json"
+        unknown = json.loads(json.dumps(base_lane))
+        unknown["lane_id"] = "RUNTIME::unknown-time-proof-debt"
+        unknown["workstream_id"] = "unknown-time-proof-debt"
+        unknown.pop("created_at_utc", None)
+        validation = manager.validate_register({"schema": "veritas.concurrent_lane_register.v1", "lanes": [unknown]}, receipts)
+        critical = next(check for check in validation["checks"] if check["name"] == "proof_artifacts_exist")
+        assert critical["ok"] is False
+        assert critical["detail"][0]["lane_id"] == "RUNTIME::unknown-time-proof-debt"
 
 
 def test_active_admission_lock_fails_closed_without_register_write() -> None:
@@ -2828,6 +2895,369 @@ def test_rework_and_fresh_qa_rerun_caps_fail_closed() -> None:
         assert run_manager_raw(*qa_two).returncode != 0
 
 
+def _retention_canary_ms(value: str) -> int:
+    return int(datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp() * 1000)
+
+
+def _build_retention_canary_lane(manager):
+    """Build the exact historical terminal canary shape (no outcome_events key)."""
+    session_key = "agent:implementation-builder:retention-canary-child"
+    created_ms = _retention_canary_ms("2026-08-20T10:00:00Z")
+    completed_ms = _retention_canary_ms("2026-08-20T12:01:00Z")
+    lane = {
+        "lane_id": "WF74::historical-terminal-session-index-canary",
+        "workflow_id": "WF74",
+        "status": "complete",
+        "created_at_utc": "2026-08-20T10:00:00Z",
+        "completed_at_utc": "2026-08-20T12:01:00Z",
+        "ended_at_utc": "2026-08-20T12:01:00Z",
+        "proof_artifacts": ["validation completed"],
+        "runtime": {
+            "agent_id": "implementation-builder",
+            "parent_job_id": "retention-canary-parent",
+            "phase": "implementation",
+            "attempt_number": 1,
+            "retry_count": 0,
+            "attempt_id": "attempt-1",
+            "is_first_attempt": True,
+            "model_path": "openai/gpt-5.6-terra",
+            "run_id": "retention-canary-run",
+            "session_ref_hash": "retention-canary-session-ref",
+            "source_snapshot_fingerprint": "retention-canary-snapshot",
+            "input_token_semantics": "exclusive_cached",
+            "input_tokens": 100,
+            "cached_input_tokens": 20,
+            "cache_write_tokens": 0,
+            "output_tokens": 30,
+            "total_tokens": 150,
+            "source_input_total_tokens": 120,
+            "source_total_tokens_fresh": True,
+            "token_attribution_source": "openclaw_isolated_session_store_v2",
+            "max_gross_tokens": 100000,
+            "max_cached_replay_tokens": 50000,
+            "max_tool_calls": 10,
+            "max_elapsed_seconds": 600,
+            "outcome_recorded_at_utc": "2026-08-20T12:00:00Z",
+            "usage_credit_status": "creditable",
+            "usage_creditable": True,
+            "source_reverification_status": "verified",
+            "main_acceptance_status": "accepted",
+            "outcome_status": "accepted",
+            "validator_result": "pass",
+            "closure_durability": "verified",
+            "accounting_status": "blocked",
+            "technical_acceptance_status": "pending",
+            "administrative_closure_status": "blocked",
+            "activation_status": "blocked",
+        },
+    }
+    runtime = lane["runtime"]
+    manager.bind_attempt_correlation(lane, runtime)
+    attempt_hash = runtime["attempt_correlation"]["key_hash"]
+    binding_ms = {
+        "reserved_at_ms": created_ms + 60_000,
+        "accepted_at_ms": created_ms + 120_000,
+        "terminal_at_ms": completed_ms - 60_000,
+    }
+    runtime["dispatch_binding"] = {
+        "schema": "veritas.isolated_dispatch_binding.v1",
+        "binding_token_hash": manager.dispatch_binding_token_hash_for_attempt(
+            attempt_correlation_hash=attempt_hash
+        ),
+        "child_session_key_hash": full_hash(session_key),
+        "dispatch_nonce_hash": full_hash("retention-canary-dispatch-nonce"),
+        "target_agent_id_hash": full_hash("implementation-builder"),
+        "registry_run_id_hash": full_hash("retention-canary-registry-run"),
+        "terminal_status": "ok",
+        **binding_ms,
+    }
+    return lane, session_key, binding_ms
+
+
+def _persist_retention_canary(manager, lane, session_key, binding_ms, base: Path):
+    """Persist receipt plus a valid dispatch binding whose session-index row is absent."""
+    receipt_store = base / "register.usage-receipts.json"
+    state_db = base / "state" / "openclaw.sqlite"
+    state_db.parent.mkdir(parents=True, exist_ok=True)
+    runtime = lane["runtime"]
+    attempt_hash = runtime["attempt_correlation"]["key_hash"]
+    write_v2_dispatch_binding(
+        state_db,
+        manager=manager,
+        agent_id="implementation-builder",
+        session_key=session_key,
+        attempt_hash=attempt_hash,
+        **binding_ms,
+    )
+    manager.persist_usage_source_receipt(lane, runtime, receipt_store)
+    return receipt_store
+
+
+def test_finance_vector_retrieval_archived_relocation_counts_as_existing() -> None:
+    manager = load_manager_module()
+    assert manager.ARCHIVED_PROOF_EXACT_RELOCATIONS.get("tmp/finance-vector-retrieval-summary.json") == (
+        "09. Archive/Finance Runtime/2026-08-29-portfolio-paper-state-retirement/source-state"
+        "/tmp/finance-vector-retrieval-summary.json"
+    )
+    # The exact relocation map must never leak to a sibling/near-miss name.
+    sibling = "tmp/finance-vector-retrieval-summary.json.bak"
+    assert sibling not in manager.ARCHIVED_PROOF_EXACT_RELOCATIONS
+    with tempfile.TemporaryDirectory() as tmpdir:
+        old_root = manager.ROOT
+        try:
+            manager.ROOT = Path(tmpdir)
+            proof_path = "tmp/finance-vector-retrieval-summary.json"
+            assert not manager.proof_path_exists(proof_path)
+            assert not manager.proof_path_exists(sibling)
+            archived = (
+                manager.ROOT
+                / "09. Archive/Finance Runtime/2026-08-29-portfolio-paper-state-retirement"
+                / "source-state"
+                / proof_path
+            )
+            archived.parent.mkdir(parents=True, exist_ok=True)
+            archived.write_text("{}", encoding="utf-8")
+            assert manager.proof_path_exists(proof_path)
+            # The canonical archived target now exists; the sibling must still
+            # not resolve through the exact relocation.
+            assert not manager.proof_path_exists(sibling)
+            # Even a same-named decoy inside the archive directory must not
+            # make the sibling resolve: relocation is exact-match only.
+            (archived.parent / "finance-vector-retrieval-summary.json.bak").write_text("{}", encoding="utf-8")
+            assert not manager.proof_path_exists(sibling)
+        finally:
+            manager.ROOT = old_root
+
+
+def test_historical_terminal_session_index_retention_gap_is_warning_only() -> None:
+    manager = load_manager_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        base = Path(tmpdir)
+        lane, session_key, binding_ms = _build_retention_canary_lane(manager)
+        runtime = lane["runtime"]
+        receipt_store = _persist_retention_canary(manager, lane, session_key, binding_ms, base)
+        original_root = manager.configured_openclaw_runtime_root
+        try:
+            manager.configured_openclaw_runtime_root = lambda: base
+            credit = manager.usage_credit_assessment(lane, runtime, receipt_store_path=receipt_store)
+            assert credit["required"] is True
+            assert credit["usage_creditable"] is False
+            assert credit["reasons"] == ["dispatch_binding_session_index_unavailable"], credit
+            assert manager.is_release_blocked(runtime) is True
+            assert manager.is_historical_terminal_session_index_retention_gap(lane, runtime, credit) is True
+            register = manager.empty_register()
+            register["lanes"].append(lane)
+            result = manager.validate_register(register, receipt_store_path=receipt_store)
+            assert result["status"] == "ok", result["errors"]
+            telemetry = [item for item in result["checks"] if item["name"] == "new_model_driven_lanes_require_deterministic_creditable_usage"]
+            assert len(telemetry) == 1 and telemetry[0]["ok"] is True, telemetry
+            warning = [item for item in result["checks"] if item["name"] == "historical_terminal_session_index_retention_gaps_are_classified_not_recredited"]
+            assert len(warning) == 1
+            assert warning[0]["severity"] == "warning" and warning[0]["ok"] is False, warning
+            gaps = warning[0]["detail"]["gaps"]
+            assert [row["lane_id"] for row in gaps] == [lane["lane_id"]], gaps
+        finally:
+            manager.configured_openclaw_runtime_root = original_root
+
+
+def test_historical_terminal_session_index_retention_near_misses_stay_critical() -> None:
+    manager = load_manager_module()
+
+    def mutate_post_cutoff(lane, runtime):
+        runtime["outcome_recorded_at_utc"] = "2026-08-27T00:00:00Z"
+
+    def mutate_receipt_mismatch(lane, runtime):
+        runtime["run_id"] = "tampered-run-id"
+
+    def mutate_binding_mismatch(lane, runtime):
+        runtime["dispatch_binding"]["binding_token_hash"] = "0" * 64
+
+    def mutate_source_mismatch(lane, runtime):
+        runtime["token_attribution_source"] = "codex_native_rollout_jsonl"
+
+    def mutate_accounting_credited(lane, runtime):
+        runtime["accounting_status"] = "credited"
+
+    def mutate_release_ready(lane, runtime):
+        runtime["technical_acceptance_status"] = "accepted"
+        runtime["accounting_status"] = "credited"
+        runtime["administrative_closure_status"] = "closed"
+        runtime["activation_status"] = "ready"
+
+    def mutate_missing_acceptance(lane, runtime):
+        runtime["main_acceptance_status"] = "pending"
+
+    def mutate_validator_failed(lane, runtime):
+        runtime["validator_result"] = "fail"
+
+    def mutate_closure_unverified(lane, runtime):
+        runtime["closure_durability"] = "unverified"
+
+    def mutate_modern_empty_list(lane, runtime):
+        lane["outcome_events"] = []
+
+    def mutate_non_complete(lane, runtime):
+        lane["status"] = "blocked"
+
+    variants = [
+        ("post_cutoff_event_time", mutate_post_cutoff),
+        ("receipt_runtime_binding_mismatch", mutate_receipt_mismatch),
+        ("dispatch_binding_mismatch", mutate_binding_mismatch),
+        ("source_mismatch", mutate_source_mismatch),
+        ("accounting_credited", mutate_accounting_credited),
+        ("release_ready", mutate_release_ready),
+        ("missing_main_acceptance", mutate_missing_acceptance),
+        ("validator_failed", mutate_validator_failed),
+        ("closure_unverified", mutate_closure_unverified),
+        ("modern_empty_outcome_events_list", mutate_modern_empty_list),
+        ("non_complete_status", mutate_non_complete),
+    ]
+    for name, mutate in variants:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base = Path(tmpdir)
+            lane, session_key, binding_ms = _build_retention_canary_lane(manager)
+            receipt_store = _persist_retention_canary(manager, lane, session_key, binding_ms, base)
+            # Mutate after the receipt is persisted so receipt/binding/source
+            # breaks are observed by the current assessment instead of being
+            # absorbed into a self-consistent receipt.
+            mutate(lane, lane["runtime"])
+            runtime = lane["runtime"]
+            original_root = manager.configured_openclaw_runtime_root
+            try:
+                manager.configured_openclaw_runtime_root = lambda: base
+                credit = manager.usage_credit_assessment(lane, runtime, receipt_store_path=receipt_store)
+                assert manager.is_historical_terminal_session_index_retention_gap(lane, runtime, credit) is False, name
+                if name in {"post_cutoff_event_time", "accounting_credited", "release_ready"}:
+                    register = manager.empty_register()
+                    register["lanes"].append(lane)
+                    result = manager.validate_register(register, receipt_store_path=receipt_store)
+                    telemetry = [item for item in result["checks"] if item["name"] == "new_model_driven_lanes_require_deterministic_creditable_usage"]
+                    assert len(telemetry) == 1 and telemetry[0]["ok"] is False, (name, telemetry)
+                    assert telemetry[0]["severity"] == "critical", (name, telemetry)
+            finally:
+                manager.configured_openclaw_runtime_root = original_root
+
+
+def _write_legacy_isolated_session_store(base: Path, *, session_key: str, session_id: str) -> Path:
+    state_root = base / "agents"
+    store = state_root / "implementation-builder" / "sessions" / "sessions.json"
+    store.parent.mkdir(parents=True, exist_ok=True)
+    store.write_text(json.dumps({
+        session_key: {
+            "status": "done",
+            "totalTokensFresh": True,
+            "sessionId": session_id,
+            "modelProvider": "openai",
+            "model": "gpt-5.6-terra",
+            "startedAt": 1_786_272_000_000,
+            "endedAt": 1_786_272_003_000,
+            "runtimeMs": 3000,
+            "inputTokens": 1127,
+            "cacheRead": 15104,
+            "cacheWrite": 0,
+            "outputTokens": 28,
+            "totalTokens": 16231,
+            "parent_job_id": "test-parent-job",
+            "lane_id": "WF74::import-baseline-canary",
+            "phase": "implementation",
+            "retry_count": 0,
+            "sessionFile": "must-not-open.jsonl",
+        }
+    }), encoding="utf-8")
+    return state_root
+
+
+def test_imported_active_implementation_lease_gets_clean_outcome_baseline() -> None:
+    """Imported model_path must still yield the clean active outcome baseline.
+
+    The baseline defaults are applied before the isolated/codex importers run,
+    so an active implementation lane whose model_path arrives via import used
+    to fail active lease admission with active_incident_code_not_clean,
+    active_incident_count_not_zero, and active_outcome_events_not_empty.
+    """
+    with tempfile.TemporaryDirectory() as tmpdir:
+        base = Path(tmpdir)
+        register = base / "lane-register.json"
+        state_root = _write_legacy_isolated_session_store(
+            base,
+            session_key="agent:implementation-builder:baseline-canary",
+            session_id="session-baseline-canary",
+        )
+        common = [
+            "WF74",
+            "--workstream", "import-baseline-canary",
+            "--register", str(register),
+            "--write", "--validate",
+            "--agent-id", "implementation-builder",
+            "--phase", "implementation",
+            "--authority-class", "workspace-write",
+            "--session-key", "agent:implementation-builder:baseline-canary",
+            "--session-id", "session-baseline-canary",
+            "--isolated-agent-state-root", str(state_root),
+            "--import-isolated-session-usage",
+        ]
+        run_manager(
+            "--lease", *common,
+            "--owner", "implementation-builder",
+            "--status-value", "running",
+            "--allowed-write", "tmp/parallel-lanes/import-baseline-canary.json",
+        )
+        lane = load_register(register)["lanes"][0]
+        runtime = lane["runtime"]
+        assert runtime["model_path"] == "openai/gpt-5.6-terra"
+        assert runtime["incident_code"] == ""
+        assert runtime["incident_count"] == 0
+        assert lane["outcome_events"] == []
+        manager = load_manager_module()
+        assert manager.is_release_blocked(runtime) is True
+        assert runtime["usage_credit_status"] == "blocked"
+        assert runtime["usage_creditable"] is False
+
+
+def test_outcome_baseline_reapplication_preserves_existing_incident_state() -> None:
+    """The post-import baseline must never overwrite existing incident state."""
+    manager = load_manager_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        base = Path(tmpdir)
+        lane = {
+            "lane_id": "WF74::baseline-preservation",
+            "workflow_id": "WF74",
+            "status": "running",
+            "outcome_events": [
+                {
+                    "event_kind": "incident",
+                    "event_sequence": 1,
+                    "recorded_at_utc": "2026-08-20T10:00:00Z",
+                }
+            ],
+            "runtime": {
+                "parent_job_id": "baseline-preservation-parent",
+                "phase": "implementation",
+                "attempt_number": 2,
+                "retry_count": 1,
+                "model_path": "openai/gpt-5.6-terra",
+                "incident_code": "blocked_dependency",
+                "incident_count": 1,
+            },
+        }
+        args = SimpleNamespace(
+            register=str(base / "lane-register.json"),
+            import_isolated_session_usage=False,
+            import_codex_native_rollout=False,
+        )
+        manager.apply_runtime_metadata(lane, args)
+        runtime = lane["runtime"]
+        assert runtime["incident_code"] == "blocked_dependency"
+        assert runtime["incident_count"] == 1
+        assert lane["outcome_events"] == [
+            {
+                "event_kind": "incident",
+                "event_sequence": 1,
+                "recorded_at_utc": "2026-08-20T10:00:00Z",
+            }
+        ]
+
+
 def main() -> int:
     test_dispatch_task_name_emission_is_opaque_deterministic_and_nonmutating()
     test_credit_roots_ignore_userprofile_redirection()
@@ -2857,6 +3287,11 @@ def main() -> int:
     test_wf67_july_archive_apply_lane_allows_exact_archive_path()
     test_portfolio_governance_lane_allows_exact_execution_board_marker_only()
     test_wf67_july_archived_proof_relocation_counts_as_existing()
+    test_finance_vector_retrieval_archived_relocation_counts_as_existing()
+    test_historical_terminal_session_index_retention_gap_is_warning_only()
+    test_historical_terminal_session_index_retention_near_misses_stay_critical()
+    test_imported_active_implementation_lease_gets_clean_outcome_baseline()
+    test_outcome_baseline_reapplication_preserves_existing_incident_state()
     test_completed_lane_allows_narrative_proof_entries()
     test_completed_lane_ignores_path_like_narrative_sentence()
     test_set_status_blocked_records_proof_entries()

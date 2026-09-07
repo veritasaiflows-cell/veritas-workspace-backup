@@ -147,6 +147,23 @@ def has_workspace_path(text: str) -> bool:
     return any(candidate in lowered for candidate in candidates)
 
 
+def has_unqualified_sensitive_approval_gate(text: str) -> bool:
+    """Recognize one-line sensitive-action gates that apply at every path.
+
+    An unqualified ``ask first`` rule is stronger than an ``outside the
+    workspace`` rule because it applies both inside and outside the workspace.
+    Requiring the terms on the same line prevents scattered vocabulary from
+    accidentally satisfying this safety check.
+    """
+    for line in normalize(text).splitlines():
+        approval_language = any(
+            term in line for term in ("ask first", "ask before", "approval-gated", "approval gated")
+        )
+        if approval_language and all(term in line for term in SENSITIVE_OUTSIDE_WORKSPACE_TERMS):
+            return True
+    return False
+
+
 def check_approval_gating(findings: list[dict[str, Any]]) -> None:
     for name in ("AGENTS.md", "TOOLS.md"):
         text = read_text(CORE_FILES[name])
@@ -154,7 +171,9 @@ def check_approval_gating(findings: list[dict[str, Any]]) -> None:
         missing_terms = [term for term in SENSITIVE_OUTSIDE_WORKSPACE_TERMS if term not in lowered]
         approval_language = any(term in lowered for term in ("ask first", "ask before", "approval-gated", "approval gated"))
         outside_workspace = ("outside the workspace" in lowered) or ("outside" in lowered and has_workspace_path(text))
-        if missing_terms or not approval_language or not outside_workspace:
+        unqualified_sensitive_gate = has_unqualified_sensitive_approval_gate(text)
+        approval_scope_present = outside_workspace or unqualified_sensitive_gate
+        if missing_terms or not approval_language or not approval_scope_present:
             add(
                 findings,
                 f"approval_gating_{name.lower()}",
@@ -165,6 +184,7 @@ def check_approval_gating(findings: list[dict[str, Any]]) -> None:
                     "missing_terms": missing_terms,
                     "approval_language_present": approval_language,
                     "outside_workspace_path_present": outside_workspace,
+                    "unqualified_sensitive_gate_present": unqualified_sensitive_gate,
                 },
             )
 
@@ -670,9 +690,14 @@ def check_channel_config(findings: list[dict[str, Any]], cli_timeout: int) -> No
         "owner allowlisting",
         "mention-gating",
     )
-    telegram_approved = all(term in lowered_tools for term in telegram_policy_terms) and any(
+    legacy_telegram_approved = all(term in lowered_tools for term in telegram_policy_terms) and any(
         term in lowered_tools for term in ("enabled", "explicitly approved", "approved telegram exception")
     )
+    compact_telegram_exception = all(
+        term in lowered_tools
+        for term in ("telegram", "owner-allowlisted exception", "does not authorize channel expansion")
+    )
+    telegram_approved = legacy_telegram_approved or compact_telegram_exception
     local_control_claim_present = "local control ui remains trusted" in lowered_tools or "local control ui remains the trusted operating surface" in lowered_tools
     discord_disabled_claim_present = (
         "discord remains disabled" in lowered_tools
@@ -683,7 +708,10 @@ def check_channel_config(findings: list[dict[str, Any]], cli_timeout: int) -> No
         tools_text,
         ("all chat channels are intentionally disabled", "channels", "{}", "telegram.enabled=false", "discord.enabled=false", "ownerAllowFrom"),
     )
-    if not (no_channel_claim_present or (telegram_approved and local_control_claim_present and discord_disabled_claim_present)):
+    documented_telegram_boundary = compact_telegram_exception or (
+        legacy_telegram_approved and local_control_claim_present and discord_disabled_claim_present
+    )
+    if not (no_channel_claim_present or documented_telegram_boundary):
         add(
             findings,
             "tools_channel_hardening_claim",

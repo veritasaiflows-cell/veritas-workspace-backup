@@ -1,0 +1,8 @@
+{
+  "agents": {
+    "defaults": {
+      "contextTokens": null,
+      "compaction": null
+    }
+  }
+}

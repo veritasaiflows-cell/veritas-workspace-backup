@@ -1,0 +1,118 @@
+from __future__ import annotations
+
+import json
+import tempfile
+from pathlib import Path
+
+import research_freshness_opportunity_review as mod
+
+
+def write_json(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+
+def test_payload_composes_existing_outputs_review_only() -> None:
+    with tempfile.TemporaryDirectory() as raw:
+        root = Path(raw)
+        tmp = root / "tmp"
+        generated = "2026-05-13T22:00:00Z"
+        sector_board = tmp / "sector-expansion-board.json"
+        ticker_perf = tmp / "ticker-monitoring-performance.json"
+        promo_csv = tmp / "sector-dashboard-promotion-queue.csv"
+        dashboard = tmp / "sector-dashboard-suite.html"
+        write_json(sector_board, {
+            "generated_at_utc": generated,
+            "status": "ok",
+            "summary": {
+                "improving_leadership_sectors": ["Health Care"],
+                "underexposed_sectors": ["Health Care"],
+                "promotion_review_candidates": ["LLY"],
+            },
+            "sectors": [
+                {
+                    "ticker": "XLV",
+                    "sector": "Health Care",
+                    "leadership_status": "improving_leadership",
+                    "underexposed": True,
+                    "promotion_review_status": [
+                        {
+                            "candidate": "LLY",
+                            "promotion_review_pending": True,
+                            "blocking_gate": "sizing / explicit promotion judgment",
+                            "automated_queue_judgment": "hold in promotion review",
+                            "next_action": "manual review only",
+                        }
+                    ],
+                }
+            ],
+        })
+        write_json(ticker_perf, {
+            "generated_at_utc": generated,
+            "status": "ok",
+            "history_status": {"outcome_analytics_ready": False},
+            "summary": {"fail_closed_tickers": []},
+            "tickers": [
+                {
+                    "ticker": "LLY",
+                    "known_at_time": {"data_date": "2026-05-13", "close": 720.0},
+                    "workflow_state": "WATCH",
+                    "deployment_status": "ALMOST DEPLOYABLE",
+                    "band_status": "ABOVE_BAND",
+                    "below_stop_or_repair": False,
+                    "monitoring_flags": ["band_review_required"],
+                    "blocked_reasons": ["band_review_debt"],
+                }
+            ],
+        })
+        promo_csv.write_text(
+            "Candidate,Sector,ETF,Blocking Gate,Queue Judgment,Next Action,Owner Approval Granted,Watchlist Promotion Allowed\n"
+            "LLY,Health Care,XLV,sizing / explicit promotion judgment,hold in promotion review,manual review only,No,No\n",
+            encoding="utf-8",
+        )
+        dashboard.write_text("<html></html>", encoding="utf-8")
+
+        old_workspace = mod.WORKSPACE
+        try:
+            mod.WORKSPACE = root
+            payload = mod.build_payload(
+                "post-close",
+                sector_board_path=sector_board,
+                ticker_performance_path=ticker_perf,
+                promotion_queue_path=promo_csv,
+                dashboard_html_path=dashboard,
+            )
+        finally:
+            mod.WORKSPACE = old_workspace
+
+    assert payload["consumer_posture"] == "review_only"
+    assert all(value is False for value in payload["authority"].values())
+    assert payload["research_freshness_review"]["future_realized_outcomes_used"] is False
+    assert payload["opportunity_review"]["promotion_review_candidates"] == ["LLY"]
+    assert payload["opportunity_review"]["blocked_or_review_required_candidates"] == ["LLY"]
+    candidate = payload["candidate_reviews"][0]
+    assert candidate["owner_approval_granted"] is False
+    assert candidate["watchlist_promotion_allowed"] is False
+    assert candidate["monitoring_context_available"] is True
+    assert candidate["blocked_reasons"] == ["band_review_debt"]
+
+
+def test_validate_rejects_authority_drift() -> None:
+    payload = {
+        "consumer_posture": "review_only",
+        "authority": dict(mod.AUTHORITY, capital_action_allowed=True),
+        "research_freshness_review": {"future_realized_outcomes_used": False},
+        "candidate_reviews": [],
+    }
+    try:
+        mod.validate_payload(payload)
+    except ValueError as exc:
+        assert "capital_action_allowed" in str(exc)
+    else:  # pragma: no cover
+        raise AssertionError("expected authority drift rejection")
+
+
+if __name__ == "__main__":
+    test_payload_composes_existing_outputs_review_only()
+    test_validate_rejects_authority_drift()
+    print("research_freshness_opportunity_review tests passed")

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "wf67-pilot-001-msft-passive-buy",
+  "created_at_utc": "2026-05-18T02:24:30Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true
+  },
+  "order": {
+    "symbol": "MSFT",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 385.0,
+    "qty": 1,
+    "notional": null
+  },
+  "risk_check": {
+    "status": "ok",
+    "max_loss_usd": 385.0,
+    "max_notional_usd": 500.0,
+    "position_size_reviewed": true,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "estimated_notional_usd": 385.0,
+    "fill_probability_assessment": "low — limit price is about 8.75% below the 2026-05-18T02:23:53Z yfinance MSFT price basis of 421.92; order is intended as a passive paper mechanism test and expected to remain open/expire unless price falls materially.",
+    "rationale": "WF67 Phase 4 first paper submit pilot — mechanism test only, not a portfolio recommendation. 1 share MSFT buy limit intentionally set below market. Paper account only. Max loss capped at the 1-share paper limit notional. No leverage, margin, shorting, options, crypto, live endpoint, live credentials, or real capital at risk."
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "WF67 Phase 4 first paper submit pilot; dry-run only until Randall confirms exact order terms for paper execution.",
+    "recommendation_source": "Claude challenger recommendation 2026-05-17 19:23 MST, Veritas price check via yfinance",
+    "price_basis": {
+      "ticker": "MSFT",
+      "price": 421.9200134277344,
+      "basis": "yfinance fast_info/last close fallback",
+      "observed_at_utc": "2026-05-18T02:23:53Z",
+      "currency": "USD"
+    },
+    "fallback_ticker": "GOOG if MSFT price exceeds pilot cap before execution"
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "headers_persistence_allowed": false
+  }
+}

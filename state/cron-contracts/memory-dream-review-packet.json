@@ -30,7 +30,7 @@
     "payload.timeoutSeconds"
   ],
   "contract_reason": "Randall approved a second review-only cron after the 3 AM OpenClaw Dreaming sweep so tmp/dream-review-packet.json is rebuilt automatically for diary/corpus/promoted/candidate comparison.",
-  "contract_update_reason": "Restore quiet-only agentTurn cron to command-backed pre-dispatch proof path; preserve schedule/session/delivery.",
+  "contract_update_reason": "Pin command argv to CPython 3.13 after Gateway python ENOENT.",
   "deleteAfterRun": false,
   "delivery": {
     "mode": "none"
@@ -45,7 +45,7 @@
   "owner_workflow": "OpenClaw Dreaming review packet",
   "payload": {
     "argv": [
-      "python",
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
       "scripts\\dream_review_packet.py",
       "--write",
       "--validate"
@@ -63,6 +63,6 @@
   },
   "schema": "veritas.cron_contract.v1",
   "sessionTarget": "isolated",
-  "updated_at_utc": "2026-06-29T04:55:48Z",
+  "updated_at_utc": "2026-09-06T22:26:26Z",
   "wakeMode": "now"
 }

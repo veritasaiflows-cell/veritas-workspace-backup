@@ -1,12 +1,12 @@
 {
   "schema": "veritas.cron_contract.v1",
   "name": "PM - Main Session Priority Pickup",
-  "declaration_key": "veritas.main_session_priority_pickup.v1",
+  "declarationKey": "veritas.main_session_priority_pickup.v1",
   "job_id": "c295580b-fd61-4995-9a0e-f876873a5ea4",
   "required": true,
   "owner_workflow": "Heartbeat priority handoff",
   "contract_reason": "A bounded main-session checkpoint must pick up new or aging P0/P1 current-window, ticker-debt, and cron-error handoffs within thirty minutes during the Phoenix operating window.",
-  "description": "Every-30-minute review-only main-session priority pickup. It refreshes the non-aging main-session priority handoff, selects one P0/P1 handoff, and persists an explicit Main disposition. It never executes a repair, PM proof, agent packet, lane lease, ticker import, canon/portfolio change, or finance/account action.",
+  "description": "Every-30-minute review-only main-session priority pickup, gated. A model-free command runs the escalation consumer and action executor, then wakes Main only when the deterministic handoff proves a P0/P1 review, a failed control, or an unreadable state. Unchanged priorities are suppressed inside their re-escalation window. The gate never decides a disposition, executes a repair, spawns a helper, leases a lane, imports tickers, or touches canon, capital, execution, account, config, or runtime state. Rollback: state/cron-rollback/c295580b-main-session-priority-pickup-2026-08-30.json",
   "enabled": true,
   "schedule": {
     "kind": "cron",
@@ -14,25 +14,40 @@
     "tz": "America/Phoenix",
     "staggerMs": 0
   },
-  "sessionTarget": "main",
+  "sessionTarget": "isolated",
   "wakeMode": "now",
   "payload": {
-    "kind": "systemEvent",
-    "text": "Priority pickup checkpoint. Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\n1. Run exactly: python scripts\\main_session_escalation_consumer.py --context main_session --priority-observation-source main_session --write --validate\n2. Run exactly: python scripts\\main_session_action_executor.py --context main_session --write --validate\n3. Read tmp\\main-session-priority-handoff.json and tmp\\main-session-action-executor.json. If either validation is not ok, report only its path, failed control, and named owner.\n4. If selected priority is P0/P1 and disposition.status is pending, claim it with this exact PowerShell sequence:\n$selectedPriority = (Get-Content -LiteralPath 'tmp\\main-session-priority-handoff.json' -Raw | ConvertFrom-Json).selected_item\npython scripts\\main_session_escalation_consumer.py --context main_session --priority-observation-source main_session --write --validate --priority-id $selectedPriority.priority_id --priority-disposition accepted\nVerify the matching accepted entry in state\\main-session-priority-disposition-ledger.jsonl, then route its named bounded review/repair owner. For defer/block, replace accepted and add a factual --priority-note. Do not close without its acceptance proof.\n5. P2 is monitor-only; it must not preempt generic PM work or require a claim.\n6. Do not execute a repair, generic PM proof, --execute-safe, --execute-one, finance-agent packet, helper spawn, or lane lease. Reply NO_REPLY only when no P0/P1 main-session action is required.\n\nBoundaries: review/routing only; no ticker or SQL import, canon/portfolio/cash/sizing/risk mutation, capital deployment, paper/live/brokerage/account action, money movement, config/auth/runtime mutation, external delivery, archive/delete, or owner approval inference."
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts/pm_priority_pickup_predispatch_prefilter.py",
+      "--execute",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:/Users/Veritas/.openclaw/workspace",
+    "kind": "command",
+    "timeoutSeconds": 900
   },
   "compare_fields": [
+    "name",
+    "declarationKey",
     "enabled",
     "description",
     "schedule",
     "sessionTarget",
     "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
     "payload.kind",
-    "payload.text"
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
   ],
   "expected_artifacts": [
     "tmp/main-session-escalation-consumer.json",
     "tmp/main-session-priority-handoff.json",
     "tmp/main-session-action-executor.json",
+    "tmp/pm-priority-pickup-predispatch-prefilter.json",
     "state/main-session-priority-disposition-ledger.jsonl"
   ],
   "authority_boundary": {
@@ -58,5 +73,7 @@
   "delivery": {
     "mode": "none",
     "bestEffort": true
-  }
+  },
+  "updated_at_utc": "2026-09-06T22:26:26Z",
+  "contract_update_reason": "Pin command argv to CPython 3.13 after Gateway python ENOENT."
 }

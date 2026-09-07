@@ -41,6 +41,32 @@ def load_card(ticker: str) -> dict[str, Any]:
     return payload
 
 
+def synthetic_fixture_card(ticker: str, now: str) -> dict[str, Any]:
+    """Minimal fixture-only card scaffolding for renderer/validator regression.
+
+    Used only when no live ticker card exists. It carries no market data and
+    is labeled synthetic so proof stays honest. Freshness resolves to
+    "partial" via the populated missing-evidence entry.
+    """
+    return {
+        "ticker": ticker,
+        "generated_at_utc": now,
+        "fixture_synthetic_no_live_card": True,
+        "universe_metadata": {},
+        "price_band_stop": {},
+        "thesis_bull_bear_entry_context": {},
+        "latest_earnings_performance": {},
+        "risk_register": [],
+        "missing_or_stale_evidence": [
+            {
+                "family": "live_ticker_card",
+                "status": "missing",
+                "detail": "No live card in tmp/ticker-intelligence-cards; synthetic fixture scaffolding used for renderer/validator regression only. Not market data.",
+            }
+        ],
+    }
+
+
 def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
@@ -130,8 +156,16 @@ def build_watchlist_item(card: dict[str, Any]) -> dict[str, Any]:
 
 
 def build_payload(tickers: list[str]) -> dict[str, Any]:
-    cards = [load_card(t) for t in tickers]
     now = utc_now()
+    cards: list[dict[str, Any]] = []
+    provenance: dict[str, str] = {}
+    for ticker in tickers:
+        try:
+            cards.append(load_card(ticker))
+            provenance[ticker] = "live"
+        except SystemExit:
+            cards.append(synthetic_fixture_card(ticker, now))
+            provenance[ticker] = "synthetic_fixture_no_live_card"
     customer_export = {
         "customer_visible": True,
         "product_name": "Veritas Retail Investor Finance Intelligence",
@@ -185,6 +219,7 @@ def build_payload(tickers: list[str]) -> dict[str, Any]:
         "internal_input_summary": {
             "source_family": "WF77 ticker intelligence cards",
             "tickers": tickers,
+            "card_provenance": provenance,
             "customer_visible": False,
             "notes": "Internal provenance only. Do not expose this section to customers.",
         },

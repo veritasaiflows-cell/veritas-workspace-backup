@@ -1,0 +1,204 @@
+{
+  "schema_version": 1,
+  "artifact_type": "wf78_100_review_monitor_backup_manifest",
+  "generated_at_utc": "2026-05-31T04:09:35Z",
+  "run_id": "wf78-100-review-monitor-import-20260531T040935Z",
+  "candidate_list_sha256": "d2b639500a3fa37d0a4925f5774f40f4af7dbf672846af9bf975b899b6969c86",
+  "backup_dir": "backups/wf78-100-review-monitor-import/wf78-100-review-monitor-import-20260531T040935Z",
+  "copied": [
+    {
+      "source": "data/finance/universe-v1.json",
+      "backup": "backups/wf78-100-review-monitor-import/wf78-100-review-monitor-import-20260531T040935Z/universe-v1.json",
+      "sha256": "e00e7e3f8341a81437297c4afeedec52e48db105cec230e47eb3d884a02b11c7",
+      "bytes": 309189
+    },
+    {
+      "source": "tmp/finance-intelligence-state.sqlite",
+      "backup": "backups/wf78-100-review-monitor-import/wf78-100-review-monitor-import-20260531T040935Z/finance-intelligence-state.sqlite",
+      "sha256": "510b4821bb6b58f2e8ec85468352098845eeb797cc3c0ab03fa39a0238ee0198",
+      "bytes": 2146304
+    },
+    {
+      "source": "tmp/wf78-100-ticker-candidate-scope-packet.json",
+      "backup": "backups/wf78-100-review-monitor-import/wf78-100-review-monitor-import-20260531T040935Z/wf78-100-ticker-candidate-scope-packet.json",
+      "sha256": "e92daf0fe3b2a569ada09a5da33df6f3221c42c582bc0b3345f12fd53d719264",
+      "bytes": 20412
+    }
+  ],
+  "production_ticker_card_hashes": [
+    {
+      "path": "tmp/ticker-intelligence-cards/AMD.current.json",
+      "sha256": "80b33f83ab30141e8f2695e05270de3135a50cd7ca07299b636b6c45115a8e23"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/AMZN.current.json",
+      "sha256": "a5f385dd9bd7e2f1c504d27b334015ae02eef3295948c49a490041071b8ffe72"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/BKNG.current.json",
+      "sha256": "e793d4062e3364d11beef9f87ee9e9bebd296babbea4fe4fafcc951bba720046"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/BRK.B.current.json",
+      "sha256": "9f10435e37c3bd0e522c01940522663699dfb6036f76513bbc228f72514c4ef8"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/CAT.current.json",
+      "sha256": "4ec7413d93af955f8b27f4ce9ee921de61e032640cc080b558ed391e64f76ed6"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/CME.current.json",
+      "sha256": "6d17e2353b3fbbf6c157db9e2469a60315cc88ccb881addb0ceac8ffadc09d93"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/CVX.current.json",
+      "sha256": "60544f166f375a22c90144921e09ee140a1697060a3cfb750e144fe13e135683"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/ECL.current.json",
+      "sha256": "da3a7cbbe0f1369cd1c11bd4753c04829dc4d343bb1470e438a7c87ebfd6af58"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/ETN.current.json",
+      "sha256": "5372d746097b6a6d9b136fbda84e24752270b7e679043ce3da9ac3c1909c2654"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/GE.current.json",
+      "sha256": "4368b54506b3665481a1ee5d305f3a624288279d16029d8394f3912f92f4f9f9"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/GOOG.current.json",
+      "sha256": "82dfcd0f4e722786310e7f4285a999a2843d543490abfc7daff0e319b7a1525c"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/GS.current.json",
+      "sha256": "e53f43b1bd4e2e88ca3659cb6c198f41bf88c783e695f9d5c599943cd87c4e23"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/ITA.current.json",
+      "sha256": "da931c9e268bb39fb62b60c25ad8f95dbf6279f7004c39fcd366b4584c66e646"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/JPM.current.json",
+      "sha256": "bd9ab13f596d91b1eccf8aa5cafe9a9f04ed2be29fda44da202115b3a42a2bc2"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/KTOS.current.json",
+      "sha256": "9441398c82b3d2e3ffe63ce58fd20ba8baf5e5c3033255f94c759311ed317289"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/LIN.current.json",
+      "sha256": "e400a50b5016e26698bcf355e2292b8fad18e8453fe106efc6c4827f68e38a6e"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/LLY.current.json",
+      "sha256": "8ce4f32f02c109b7706df0c60a5fb86860c339464f195f79dc0df5c1c55ce5da"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/LMT.current.json",
+      "sha256": "6330070ea763d4e2c41f7cc57274a2a95814b6b72c1fc6165a1ca0bc68ead0f6"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/LNG.current.json",
+      "sha256": "ed49337b156d432fee2cc3c28e9e7a66148441ed43e4bd4f52b0c6c3c686719d"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/META.current.json",
+      "sha256": "0128b3315b1213c838a930107f435f5b517feef496a1799966695d327e788acf"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/MSFT.current.json",
+      "sha256": "65bdd478bb9c4041c11f19ce170535c3abbec1c282d9df78fcd2fb0b40d69f0d"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/NFLX.current.json",
+      "sha256": "3622e842f14fbc90b12565e81f5a64a7122dccbc66331c20e41d61f238455376"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/NVDA.current.json",
+      "sha256": "67c389fb641ebe497aa04f7bc5dcce1a074e2b9568354277eb65488dd9c9be52"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/PAVE.current.json",
+      "sha256": "6b2ee1930c3e2e7e924ad61b89c5a559bd759bd9a968b1794b8d2650dcd34c66"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/PH.current.json",
+      "sha256": "ed50fbc782b084bb5d87383af5329de5141641836edfdc56b489be2cca93f14c"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/PLTR.current.json",
+      "sha256": "581633a987ce642fc927ad444b54512c9921e9e1a12d1fc9c39c2d232cff7c25"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/RTX.current.json",
+      "sha256": "814c3096bdc09662fc6d294fbb09cdb26b3a18ec1b2a54e70c21826d855e45b1"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/SLV.current.json",
+      "sha256": "6f718c71db70822109ff780eefe37a322446aec13aeea31ca2f3309e0003b13f"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/SMCI.current.json",
+      "sha256": "697408d43dc19714d07d8408fdcf0d8194bef4e5a3d634db1bb92a4023f44e78"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/TLT.current.json",
+      "sha256": "698982eebbef74b4661f823b0ad4bde113365ab3199f40dde1a9dd36d511a501"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/TMUS.current.json",
+      "sha256": "2a75e21a7d9005acbd4d1504fd0661024166d6d85cce411b90b2b572b5edd2fa"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/VAW.current.json",
+      "sha256": "dd4473cea309602472cdf33cd8a871db6436cccf33844d8a116449965d0573ad"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/VMC.current.json",
+      "sha256": "472c3a9d68b5803a6f29d24f99ffeb7d87f7201e44701479d0e979b56ac59091"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/VRT.current.json",
+      "sha256": "8cd56f84de70e7e36cad3a5ccaeed6f81ae0950b813b0c795d164861e39437ee"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/VXUS.current.json",
+      "sha256": "52c4a40356ae110c1d6d1114b9bf809f00577d1087af16e13e6b13dd08d435a4"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/WMB.current.json",
+      "sha256": "911815a7d9ffb2f525d7aaef0a73b63894c86d0467df8e715285bc9cf629093e"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/XLB.current.json",
+      "sha256": "b806f2b54be0b6b3fb9d2476d98980d1fdb9bb75f7f342fdcc8e47ef85fd80cf"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/XLC.current.json",
+      "sha256": "0346ee5757a5b6e2ace6499b25f2b80a1030fb5a414de0ef1f2a91d7ef3c7abf"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/XLE.current.json",
+      "sha256": "31524decc944b9ae2ae5ce6907e66ef83201201766ff2fe2fc3d0e96fc401305"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/XLF.current.json",
+      "sha256": "c716bcbbbba2199262feb3f81d9af59faeb0856e0aaad3de42ac58f08ccbe496"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/XLI.current.json",
+      "sha256": "6219acfd7e10a21668a3ea2d50785afa469d1f1435f76a3f0ca9b6aa3985f974"
+    },
+    {
+      "path": "tmp/ticker-intelligence-cards/XOM.current.json",
+      "sha256": "4598408015ae8bd36c877a2060774c616d17a52f9c5e65f64eccbad7435ba23d"
+    }
+  ],
+  "rollback_route": [
+    "restore data/finance/universe-v1.json from this backup manifest",
+    "restore tmp/finance-intelligence-state.sqlite from this backup if rebuilt state must be rolled back",
+    "rerun finance_universe_validator, finance_data_coverage, finance_intelligence_state, router QA, artifact index, and harness validators",
+    "do not delete historical proof without a separate lifecycle/archive approval"
+  ]
+}

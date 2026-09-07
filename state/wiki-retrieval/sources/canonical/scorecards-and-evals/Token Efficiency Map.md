@@ -2,8 +2,8 @@
 # Token Efficiency Map
 
 Canonical page: `wiki/scorecards-and-evals/Token Efficiency Map.md`
-Canonical rendered SHA-256: `4d96b75fc2691c02e1ca2771d096fde6ccbbb5b09d4a4a20058010c6a168acfd`.
-Source snapshot SHA-256: `a1233468c72b1cab176cded8e6fe0893cfd2a490d0ea3a9f33f15a2fa81b8e54`.
+Canonical rendered SHA-256: `2e22103785b0f357390b0cc71314fce176630bedf5cec1c782bf4accfac94066`.
+Source snapshot SHA-256: `f6ee80a8d183635520f429f34c7ca23360ebdb6d238c1622f6dffae691bee7f1`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -35,20 +35,20 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 
 - Token usage ledger status: `warning`.
 - Token efficiency scorecard status: `warning`.
-- Token events observed: `907`.
-- Total observed tokens: `48819242`.
-- API-equivalent token benchmark (not an invoice): `13.233436` (`partial_unknown_input_semantics_or_missing_rate`; `186/907` events priced).
-- Estimated ChatGPT credits (not an observed debit): `302.49816` (`partial_separate_no_public_rate_or_missing_rate`; `186/907` events priced).
-- Rolling 5h / observed 7d tokens: `137375` / `1193338`; usage timestamp coverage `18.9636`%.
+- Token events observed: `927`.
+- Total observed tokens: `49288324`.
+- API-equivalent token benchmark (not an invoice): `13.453455` (`partial_unknown_input_semantics_or_missing_rate`; `191/927` events priced).
+- Estimated ChatGPT credits (not an observed debit): `307.998645` (`partial_separate_no_public_rate_or_missing_rate`; `191/927` events priced).
+- Rolling 5h / observed 7d tokens: `0` / `348982`; usage timestamp coverage `20.0647`%.
 - Actual billed cost (owner-entered only): `None`.
 - OAuth quota state / remaining / days to reset: `stale` / `58.0` / `0.0`.
-- Cron token events: `721`.
+- Cron token events: `735`.
 - Implementation token events: `1`.
-- Implementation token gaps: `597`.
-- API-call reduction candidates: `6`.
-- Prompt-compression candidates: `6`.
-- Failure-cost candidates: `0`.
-- Top token candidate: `Runtime - OS Audit Companion Packets Refresh`.
+- Implementation token gaps: `598`.
+- API-call reduction candidates: `5`.
+- Prompt-compression candidates: `3`.
+- Failure-cost candidates: `1`.
+- Top token candidate: `Runtime - Status Card Freshness Refresh`.
 
 ## What this proves
 
@@ -59,15 +59,18 @@ WF88 can now see which cron/API model calls are token-heavy, which ones are cand
 - Optimize uncached input tokens per Main-accepted job and gross tokens per Main-accepted job, not raw token minima.
 - Track first-pass acceptance, elapsed time to accepted proof, retry tax, and escaped defects for each parent/phase/attempt route.
 - Current route-conformant / mismatch rows: `16` / `1`.
-- Current incidents / invalid-token-integrity rows / retry tax: `0` / `1` / `33`.
+- Current incidents / invalid-token-integrity rows / retry tax: `0` / `1` / `37`.
 - Comparable cohorts / eligible cohorts: `6` / `0`.
-- A route needs ten comparable Main-accepted jobs before it can clear the sample gate; automatic route ranking and promotion remain disabled.
+- Evaluation mode: owner-directed on-demand evidence review.
+- Use available token attribution, elapsed-time, retry, first-pass/Main-acceptance, and escaped-defect evidence; prefer like-for-like comparisons when available; no fixed cohort pilot is required.
+- Keep normal routing light. Load these ledgers only for an explicit review with `python scripts\project_implementation_router.py --example --include-efficiency-observation --validate`.
+- automatic route ranking and promotion remain disabled; a route-policy change requires explicit Main/owner review.
 - Incidents, invalid telemetry, unavailable actual-route data, and mismatches are cost or trust signals; they receive no efficiency success credit.
 
 ## Natural-language retrieval anchors
 
 - How should a new session measure token efficiency? Use accepted-outcome metrics: uncached and gross tokens per Main-accepted job, first-pass acceptance, time to accepted proof, retry tax, and escaped defects.
-- When can an implementation route be promoted? Never automatically; first collect at least ten comparable Main-accepted jobs, then require explicit Main policy review.
+- When can an implementation route be promoted? Never automatically; review available evidence on demand, then require an explicit Main/owner policy change.
 
 ## What it does not prove
 

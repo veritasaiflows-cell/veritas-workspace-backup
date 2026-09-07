@@ -34,10 +34,7 @@ HEARTBEAT_OUT = TMP / "heartbeat-main-session-escalation-consumer.json"
 HEARTBEAT_PRIORITY_OUT = TMP / "heartbeat-main-session-priority-handoff.json"
 PRIORITY_DISPOSITION_LEDGER = ROOT / "state" / "main-session-priority-disposition-ledger.jsonl"
 CRON_CONTROL = TMP / "cron-control-packet.json"
-FINANCE_EVIDENCE_WARNING_ROUTER = TMP / "finance-evidence-warning-router.json"
 CURRENT_WINDOW_ARTIFACTS = TMP / "current-window-artifacts.json"
-TICKER_FRESHNESS_RUNNER = TMP / "ticker-card-freshness-owner-runner.json"
-TRADE_GRADE_REPAIR_CONVEYOR = TMP / "trade-grade-repair-conveyor.json"
 
 SCHEMA = "veritas.main_session_escalation_consumer.v1"
 PRIORITY_SCHEMA = "veritas.main_session_priority_handoff.v1"
@@ -126,6 +123,49 @@ FORBIDDEN_COMMAND_TOKENS = (
     "brokerage",
     "openclaw.json",
     "db_lifecycle_archive_apply",
+    "weekday_morning_review_cron_runner.py",
+    "post_close_review_cron_runner.py",
+    "run_finance_refresh_chain.py",
+    "wf76",
+    "wf86",
+    "shadow_reconciliation",
+)
+
+RETIRED_SIGNAL_ROUTE_TOKENS = (
+    "morning-control-digest",
+    "post-close-control-digest",
+    "weekday-morning-review",
+    "post-close-review",
+    "run-summary-morning",
+    "run-summary-post-close",
+    "ticker-card-freshness-owner",
+    "trade-grade",
+    "trade_grade",
+    "paper-autotrader",
+    "wf67",
+    "wf68",
+    "wf76",
+    "wf78",
+    "wf86",
+    "wf87",
+)
+
+RETIRED_PRIORITY_SOURCE_TOKENS = (
+    "capital-deployment",
+    "portfolio-config",
+    "portfolio-snapshot",
+    "portfolio-state",
+    "paper-position",
+    "paper-trading",
+    "position-sizing",
+    "sector-allocation",
+    "trade-grade",
+    "wf67",
+    "wf68",
+    "wf76",
+    "wf78",
+    "wf86",
+    "wf87",
 )
 
 
@@ -165,29 +205,22 @@ COMMANDS: dict[str, tuple[list[str], int]] = {
     "cron_control_packet": (py_cmd("scripts\\cron_control_packet.py", "--write", "--validate"), 300),
     "pm_control_packet": (py_cmd("scripts\\pm_control_packet.py", "--write", "--write-db", "--validate"), 300),
     "handoff_first_proof_gate": (py_cmd("scripts\\handoff_first_proof_gate.py", "--write", "--validate"), 240),
-    "morning_control_digest": (py_cmd("scripts\\morning_control_digest.py", "--write", "--write-md", "--validate"), 240),
-    "post_close_control_digest": (py_cmd("scripts\\post_close_control_digest.py", "--write", "--write-md", "--validate"), 240),
-    "weekday_morning_review_classify": (
-        py_cmd("scripts\\weekday_morning_review_cron_runner.py", "--skip-chain", "--write", "--validate"),
-        300,
+    "alerts_os_boundary_gate": (py_cmd("scripts\\alerts_os_pivot_validator.py", "--write", "--validate"), 240),
+    "alerts_chain_morning": (
+        py_cmd("scripts\\run_alerts_recommendations_chain.py", "morning", "--timeout-seconds", "120", "--write", "--validate"),
+        600,
     ),
-    "finance_evidence_warning_router": (
-        py_cmd("scripts\\finance_evidence_warning_router.py", "--write", "--validate"),
-        240,
+    "alerts_chain_midday": (
+        py_cmd("scripts\\run_alerts_recommendations_chain.py", "midday", "--timeout-seconds", "120", "--write", "--validate"),
+        600,
     ),
-    "post_close_review_classify": (
-        py_cmd("scripts\\post_close_review_cron_runner.py", "--skip-chain", "--write", "--validate"),
-        300,
+    "alerts_chain_post_close": (
+        py_cmd("scripts\\run_alerts_recommendations_chain.py", "post-close", "--timeout-seconds", "120", "--write", "--validate"),
+        600,
     ),
-    "wf86_shadow_reconciliation_no_brokerage": (
-        py_cmd(
-            "scripts\\wf86_daily_shadow_reconciliation_cron_runner.py",
-            "--skip-paper-reconciliation",
-            "--write",
-            "--write-md",
-            "--validate",
-        ),
-        900,
+    "alerts_chain_weekly": (
+        py_cmd("scripts\\run_alerts_recommendations_chain.py", "weekly", "--timeout-seconds", "120", "--write", "--validate"),
+        600,
     ),
 }
 
@@ -196,7 +229,7 @@ FRONTDOOR_COMMAND_IDS = [
     "handoff_first_proof_gate",
     "cron_freshness_spine",
     "cron_signal_scorecard",
-    "finance_evidence_warning_router",
+    "alerts_os_boundary_gate",
     "escalation_trigger",
     "cron_control_packet",
 ]
@@ -218,38 +251,39 @@ HANDLERS = [
         "next_action": "Refresh cron ledger and recompute cron control.",
     },
     {
-        "id": "morning_control_digest_refresh",
+        "id": "alerts_os_boundary_gate_refresh",
         "classification": "auto_repair",
-        "match_artifacts": ["tmp/morning-control-digest.json"],
-        "commands": ["morning_control_digest", *POST_ACTION_REFRESH_COMMAND_IDS],
-        "next_action": "Rebuild the morning digest and recompute cron control.",
+        "match_artifacts": ["tmp/alerts-os-pivot-validator.json"],
+        "commands": ["alerts_os_boundary_gate", *POST_ACTION_REFRESH_COMMAND_IDS],
+        "next_action": "Refresh the alerts-OS boundary proof and recompute cron control.",
     },
     {
-        "id": "post_close_control_digest_refresh",
+        "id": "alerts_chain_morning_refresh",
         "classification": "auto_repair",
-        "match_artifacts": ["tmp/post-close-control-digest.json"],
-        "commands": ["post_close_control_digest", *POST_ACTION_REFRESH_COMMAND_IDS],
-        "next_action": "Rebuild the post-close digest and recompute cron control.",
+        "match_artifacts": ["tmp/alerts-recommendations-chain-morning.json"],
+        "commands": ["alerts_chain_morning", *POST_ACTION_REFRESH_COMMAND_IDS],
+        "next_action": "Refresh the bounded morning alerts-and-recommendations proof chain.",
     },
     {
-        "id": "weekday_morning_review_reclassify",
+        "id": "alerts_chain_midday_refresh",
         "classification": "auto_repair",
-        "match_artifacts": [
-            "tmp/weekday-morning-review-cron-runner.json",
-            "tmp/weekday-morning-review-cron-launcher.json",
-        ],
-        "commands": ["weekday_morning_review_classify", *POST_ACTION_REFRESH_COMMAND_IDS],
-        "next_action": "Reclassify current morning-review proof and write the first-proof gate; full chain remains owned by its approved runner.",
+        "match_artifacts": ["tmp/alerts-recommendations-chain-midday.json"],
+        "commands": ["alerts_chain_midday", *POST_ACTION_REFRESH_COMMAND_IDS],
+        "next_action": "Refresh the bounded midday alerts-and-recommendations proof chain.",
     },
     {
-        "id": "post_close_review_reclassify",
+        "id": "alerts_chain_post_close_refresh",
         "classification": "auto_repair",
-        "match_artifacts": [
-            "tmp/post-close-review-cron-runner.json",
-            "tmp/post-close-review-cron-launcher.json",
-        ],
-        "commands": ["post_close_review_classify", *POST_ACTION_REFRESH_COMMAND_IDS],
-        "next_action": "Reclassify current post-close proof and write the first-proof gate; full chain remains owned by its approved runner.",
+        "match_artifacts": ["tmp/alerts-recommendations-chain-post-close.json"],
+        "commands": ["alerts_chain_post_close", *POST_ACTION_REFRESH_COMMAND_IDS],
+        "next_action": "Refresh the bounded post-close alerts-and-recommendations proof chain.",
+    },
+    {
+        "id": "alerts_chain_weekly_refresh",
+        "classification": "auto_repair",
+        "match_artifacts": ["tmp/alerts-recommendations-chain-weekly.json"],
+        "commands": ["alerts_chain_weekly", *POST_ACTION_REFRESH_COMMAND_IDS],
+        "next_action": "Refresh the bounded weekly alerts-and-recommendations proof chain.",
     },
     {
         "id": "handoff_first_proof_gate_refresh",
@@ -258,18 +292,25 @@ HANDLERS = [
         "commands": ["handoff_first_proof_gate", *POST_ACTION_REFRESH_COMMAND_IDS],
         "next_action": "Refresh handoff first-proof gate and route any blocked/missing lane to repair actions.",
     },
-    {
-        "id": "wf86_shadow_reconciliation_review_refresh",
-        "classification": "auto_repair",
-        "match_artifacts": ["tmp/paper-autotrader/wf86-daily-shadow-reconciliation-cron-runner.json"],
-        "commands": ["wf86_shadow_reconciliation_no_brokerage", *POST_ACTION_REFRESH_COMMAND_IDS],
-        "next_action": "Refresh WF86 shadow proof without paper reconciliation or brokerage/account action.",
-    },
 ]
 
 
 def normalized_path(value: Any) -> str:
     return str(value or "").replace("\\", "/").strip()
+
+
+def signal_uses_retired_route(signal: dict[str, Any]) -> bool:
+    material = " ".join(
+        str(signal.get(field) or "")
+        for field in ("source", "artifact", "reason", "next_action")
+    ).lower()
+    return any(token in material for token in RETIRED_SIGNAL_ROUTE_TOKENS)
+
+
+def priority_source_uses_retired_route(value: Any) -> bool:
+    rendered = json.dumps(value, sort_keys=True, default=str).lower()
+    normalized = rendered.replace("_", "-").replace(" ", "-")
+    return any(token in normalized for token in RETIRED_PRIORITY_SOURCE_TOKENS)
 
 
 def fingerprint(signal: dict[str, Any]) -> str:
@@ -434,6 +475,8 @@ def current_window_priority(current_window: dict[str, Any]) -> dict[str, Any] | 
     critical_roles = as_list(summary.get("critical_or_unreadable_roles"))
     if not unusable:
         return None
+    if priority_source_uses_retired_route(summary):
+        return None
     return {
         "priority_id": stable_priority_id("current-window", "unusable"),
         "priority": "P0",
@@ -465,27 +508,17 @@ def priority_from_escalation_action(action: dict[str, Any]) -> dict[str, Any] | 
     repeated = action.get("repeated_blocker") is True
     artifact = normalized_path(action.get("artifact"))
     source = str(action.get("source") or "")
-    source_lower = source.lower()
     status = str(action.get("status") or "").lower()
     reason = str(action.get("reason") or "").lower()
     ticker = str(action.get("ticker") or "").upper() or None
     if classification in {"auto_refresh", "auto_repair", "monitor_only", "known_monitor_only"} and not repeated:
         return None
 
-    is_ticker_freshness_runner = (
-        "ticker-card-freshness-owner-runner" in artifact
-        or "ticker card freshness owner runner" in source_lower
-    )
-    is_fundamental_ticker_repair = action.get("handler_id") == "ticker_fundamental_repair_handoff"
     scheduler_error = status == "scheduler_error" or "scheduler_failure" in reason or "scheduler_failures" in reason
-    if is_ticker_freshness_runner and scheduler_error:
-        level, urgency, category, owner, due_window = "P0", 1, "ticker_freshness_runner_failure", "ticker_card_freshness_owner_runner", "immediate"
-    elif classification == "owner_decision":
+    if classification == "owner_decision":
         level, urgency, category, owner, due_window = "P0", 2, "authority_or_owner_stop", "Randall", "immediate"
-    elif is_fundamental_ticker_repair:
-        level, urgency, category, owner, due_window = "P1", 25, "ticker_fundamental_source_repair", "main_session_ticker_source_repair_owner", "next_main_session"
     elif scheduler_error or classification in {"blocked_manual", "helper_lane_required"}:
-        level, urgency, category, owner, due_window = "P1", 20, "cron_or_ticker_repair", "main_session_cron_repair_owner", "next_main_session"
+        level, urgency, category, owner, due_window = "P1", 20, "cron_or_proof_repair", "main_session_cron_repair_owner", "next_main_session"
     else:
         level, urgency, category, owner, due_window = "P2", 80, "monitor_or_recheck", "scheduled_cron_monitor", "scheduled_monitoring"
 
@@ -503,19 +536,11 @@ def priority_from_escalation_action(action: dict[str, Any]) -> dict[str, Any] | 
         "owner": owner,
         "due_window": due_window,
         "next_action": action.get("next_action"),
-        "acceptance_proof": (
-            {
-                "artifact": rel(FINANCE_EVIDENCE_WARNING_ROUTER),
-                "required_state": "The matching ticker/code repair finding must clear after source-open reconciliation and the affected ticker review rerun.",
-                "validation_command": "python scripts\\finance_evidence_warning_router.py --write --validate",
-            }
-            if is_fundamental_ticker_repair else
-            {
-                "artifact": rel(CRON_CONTROL),
-                "required_state": "The escalation signal must clear after a successful rerun; repeated alerts alone are not closure.",
-                "validation_command": "python scripts\\cron_control_packet.py --write --validate",
-            }
-        ),
+        "acceptance_proof": {
+            "artifact": rel(CRON_CONTROL),
+            "required_state": "The escalation signal must clear after a successful rerun; repeated alerts alone are not closure.",
+            "validation_command": "python scripts\\cron_control_packet.py --write --validate",
+        },
         "evidence": {
             "fingerprint": action.get("fingerprint"),
             "handler_id": action.get("handler_id"),
@@ -529,87 +554,6 @@ def priority_from_escalation_action(action: dict[str, Any]) -> dict[str, Any] | 
         },
         "authority_boundary": priority_authority_boundary(),
     }
-
-
-def ticker_repair_priorities(conveyor: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, int]]:
-    """Route material Tier A/B repair debt, while summarizing Tier C monitor work."""
-    candidates: list[dict[str, Any]] = []
-    tier_c_counts: dict[str, int] = {}
-    for raw_row in as_list(conveyor.get("rows")):
-        row = as_dict(raw_row)
-        ticker = str(row.get("ticker") or "").upper()
-        tier = str(row.get("auto_tier") or "")
-        lane = str(row.get("repair_lane") or "")
-        if not ticker or not lane:
-            continue
-        decision_state = str(row.get("decision_state") or "")
-        freshness_state = str(row.get("freshness_status") or "")
-        ledger_state = str(row.get("freshness_ledger_state") or "")
-        material = (
-            decision_state == "below_stop_or_invalidation"
-            or freshness_state in {"blocked", "stale", "stale_refreshable"}
-            or ledger_state in {"blocked", "stale", "stale_refreshable"}
-            or lane in {"freshness_repair_after_band_review", "wf78_band_stop_context_repair"}
-        )
-        if not material:
-            continue
-        if tier not in {"Tier A", "Tier B"}:
-            tier_c_counts[lane] = tier_c_counts.get(lane, 0) + 1
-            continue
-        invalidation = decision_state == "below_stop_or_invalidation" or lane == "invalidation_or_below_stop_review_only"
-        candidates.append({
-            "priority_id": stable_priority_id("ticker-repair", ticker, lane),
-            "priority": "P1",
-            "urgency_rank": 30 if invalidation else 40,
-            "category": "ticker_invalidation_review" if invalidation else "ticker_freshness_or_band_repair",
-            "source_type": "trade_grade_repair_conveyor",
-            "source_artifact": rel(TRADE_GRADE_REPAIR_CONVEYOR),
-            "ticker": ticker,
-            "tier": tier,
-            "manual_review_required": invalidation or row.get("source_open_status") != "verified",
-            "owner_gate_required": False,
-            "owner": "main_session_ticker_review_owner",
-            "due_window": "next_main_session",
-            "next_action": row.get("next_action") or "Review the ticker-specific repair evidence and disposition it with validator-backed proof.",
-            "acceptance_proof": {
-                "artifact": rel(TRADE_GRADE_REPAIR_CONVEYOR),
-                "required_state": "Ticker row is refreshed and either no longer carries the material repair state or has an explicit review disposition.",
-                "validation_command": "python scripts\\trade_grade_repair_conveyor.py --write --validate",
-            },
-            "evidence": {
-                "repair_lane": lane,
-                "repair_priority": row.get("repair_priority"),
-                "decision_state": decision_state,
-                "freshness_status": freshness_state,
-                "freshness_ledger_state": ledger_state,
-                "band_status": row.get("band_status"),
-                "stop_or_invalidation_present": row.get("stop_or_invalidation_present"),
-            },
-            "authority_boundary": priority_authority_boundary(),
-        })
-    for lane, count in sorted(tier_c_counts.items()):
-        candidates.append({
-            "priority_id": stable_priority_id("ticker-monitor", lane),
-            "priority": "P2",
-            "urgency_rank": 90,
-            "category": "tier_c_monitor_batch",
-            "source_type": "trade_grade_repair_conveyor",
-            "source_artifact": rel(TRADE_GRADE_REPAIR_CONVEYOR),
-            "ticker": None,
-            "manual_review_required": False,
-            "owner_gate_required": False,
-            "owner": "scheduled_ticker_monitor",
-            "due_window": "scheduled_monitoring",
-            "next_action": "Keep Tier C monitor debt in the scheduled evidence queue; promote only if state worsens or an explicit review gate requires it.",
-            "acceptance_proof": {
-                "artifact": rel(TRADE_GRADE_REPAIR_CONVEYOR),
-                "required_state": "Scheduled monitoring refresh remains validated; monitor-only rows are not auto-promoted.",
-                "validation_command": "python scripts\\trade_grade_repair_conveyor.py --write --validate",
-            },
-            "evidence": {"repair_lane": lane, "ticker_count": count},
-            "authority_boundary": priority_authority_boundary(),
-        })
-    return candidates, tier_c_counts
 
 
 def deduplicate_priority_candidates(candidates: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], int]:
@@ -655,7 +599,6 @@ def priority_input_fingerprint(candidates: list[dict[str, Any]]) -> str:
 def build_priority_handoff(
     actions: list[dict[str, Any]],
     current_window: dict[str, Any],
-    conveyor: dict[str, Any],
     previous_path: Path,
     disposition_ledger: Path,
     max_items: int,
@@ -664,8 +607,6 @@ def build_priority_handoff(
 ) -> dict[str, Any]:
     candidates = [item for item in (current_window_priority(current_window),) if item]
     candidates.extend(item for action in actions if (item := priority_from_escalation_action(action)))
-    ticker_candidates, tier_c_counts = ticker_repair_priorities(conveyor)
-    candidates.extend(ticker_candidates)
     candidates, duplicate_candidate_count = deduplicate_priority_candidates(candidates)
     previous_payload = load(previous_path)
     previous_items = prior_priority_items(previous_path)
@@ -724,7 +665,6 @@ def build_priority_handoff(
         "priority_observation_source": observation_source,
         "priority_repeat_age_advanced": advance_repeat,
         "duplicate_candidate_count": duplicate_candidate_count,
-        "tier_c_monitor_lane_counts": tier_c_counts,
         "selected_priority_id": selected.get("priority_id"),
         "selected_priority": selected.get("priority"),
         "next_safe_action": (
@@ -736,7 +676,7 @@ def build_priority_handoff(
         "schema": PRIORITY_SCHEMA,
         "generated_at_utc": utc_now(),
         "status": "needs_main_review" if selected else "no_priority",
-        "purpose": "Deduplicated, review-only main-session priority handoff for current-window, ticker-debt, and cron-error follow-up.",
+        "purpose": "Deduplicated, review-only main-session priority handoff for current-window and cron/proof follow-up.",
         "receipt": receipt,
         "input_signature": {"sha256": signature, "previous_sha256": prior_signature or None},
         "observation": {
@@ -748,8 +688,6 @@ def build_priority_handoff(
         "source_artifacts": {
             "current_window_artifacts": rel(CURRENT_WINDOW_ARTIFACTS),
             "cron_control": rel(CRON_CONTROL),
-            "ticker_freshness_owner_runner": rel(TICKER_FRESHNESS_RUNNER),
-            "trade_grade_repair_conveyor": rel(TRADE_GRADE_REPAIR_CONVEYOR),
             "disposition_ledger": rel(disposition_ledger),
         },
         "summary": summary,
@@ -820,16 +758,6 @@ def same_workspace_path(left: Path, right: str) -> bool:
         return False
 
 
-def priority_material_ticker_row(row: dict[str, Any]) -> bool:
-    lane = str(row.get("repair_lane") or "")
-    return (
-        str(row.get("decision_state") or "") == "below_stop_or_invalidation"
-        or str(row.get("freshness_status") or "") in {"blocked", "stale", "stale_refreshable"}
-        or str(row.get("freshness_ledger_state") or "") in {"blocked", "stale", "stale_refreshable"}
-        or lane in {"freshness_repair_after_band_review", "wf78_band_stop_context_repair"}
-    )
-
-
 def matching_cron_signal_present(payload: dict[str, Any], item: dict[str, Any]) -> bool:
     evidence = as_dict(item.get("evidence"))
     expected_source = str(evidence.get("source") or "")
@@ -875,32 +803,9 @@ def proof_is_valid_for_closure(proof: str, item: dict[str, Any]) -> tuple[bool, 
         summary = as_dict(payload.get("summary"))
         if summary.get("current_usable") is not True:
             return False, "current_window_not_usable"
-    elif category in {"ticker_freshness_runner_failure", "cron_or_ticker_repair"}:
+    elif category == "cron_or_proof_repair":
         if matching_cron_signal_present(payload, item):
             return False, "cron_signal_still_present"
-        if category == "ticker_freshness_runner_failure":
-            runner = load(TICKER_FRESHNESS_RUNNER)
-            runner_status = str(runner.get("status") or "").lower()
-            runner_validation = str(as_dict(runner.get("validation")).get("status") or "").lower()
-            if runner_status in {"blocked", "critical", "error", "scheduler_error"} or runner_validation in {"blocked", "critical", "error"}:
-                return False, "ticker_freshness_runner_proof_not_clean"
-    elif category in {"ticker_invalidation_review", "ticker_freshness_or_band_repair"}:
-        ticker = str(item.get("ticker") or "").upper()
-        lane = str(as_dict(item.get("evidence")).get("repair_lane") or "")
-        for raw_row in as_list(payload.get("rows")):
-            row = as_dict(raw_row)
-            if str(row.get("ticker") or "").upper() != ticker or str(row.get("repair_lane") or "") != lane:
-                continue
-            if priority_material_ticker_row(row):
-                return False, "ticker_repair_state_still_present"
-    elif category == "ticker_fundamental_source_repair":
-        ticker = str(item.get("ticker") or "").upper()
-        code = str(as_dict(item.get("evidence")).get("reason") or "")
-        repairs = as_list(as_dict(as_dict(payload.get("sections")).get("fundamentals")).get("repair_queue"))
-        for raw_repair in repairs:
-            repair = as_dict(raw_repair)
-            if str(repair.get("ticker") or "").upper() == ticker and str(repair.get("code") or "") == code:
-                return False, "ticker_fundamental_repair_still_present"
     return True, "ok"
 
 
@@ -1107,32 +1012,6 @@ def classify_signal(signal: dict[str, Any], prior_counts: dict[str, int], repeat
             "owner_gate_required": False,
         }
 
-    # Market execution readiness is expected to be stale when markets are closed.
-    if artifact_schema == "veritas.market_execution_readiness_cron_hardening.v1":
-        session_window = str(
-            as_dict(artifact_payload.get("summary")).get("market_session_window") or ""
-        ).lower()
-        if "closed" in session_window and not findings:
-            return {
-                **base,
-                "handler_id": "market_closed_expected_monitor",
-                "classification": "monitor_only",
-                "commands": [],
-                "next_action": "Market is closed; stale quote state is expected. Reclassify as monitor_only.",
-                "owner_gate_required": False,
-            }
-
-    # WF87 intentional data-collection state with clean authority.
-    if artifact_status == "blocked_collecting_data" and artifact_schema == "veritas.wf87_autonomy_command_center.v1" and not findings:
-        return {
-            **base,
-            "handler_id": "wf87_collecting_data_known_state",
-            "classification": "known_monitor_only",
-            "commands": [],
-            "next_action": "WF87 is in intentional blocked_collecting_data state with clean authority; no escalation.",
-            "owner_gate_required": False,
-        }
-
     handler = find_handler(signal)
     if not handler:
         return {
@@ -1161,86 +1040,11 @@ def classify_signal(signal: dict[str, Any], prior_counts: dict[str, int], repeat
 
 def classify_all(cron_control: dict[str, Any], ledger: Path, repeat_threshold: int) -> list[dict[str, Any]]:
     counts = prior_fingerprint_counts(ledger)
-    return [classify_signal(signal, counts, repeat_threshold) for signal in escalation_signals(cron_control)]
-
-
-def classify_ticker_repair_handoffs(
-    router_packet: dict[str, Any], ledger: Path, repeat_threshold: int,
-) -> list[dict[str, Any]]:
-    """Expose validator-created, per-ticker repair work to the main session.
-
-    These are deliberately non-executable actions.  A data-quality conflict is
-    not authorization to alter a source, canon, portfolio, or recommendation;
-    it is a source-open review task scoped to the affected ticker.
-    """
-    counts = prior_fingerprint_counts(ledger)
-    fundamentals = as_dict(as_dict(router_packet.get("sections")).get("fundamentals"))
-    repairs = as_list(fundamentals.get("repair_queue"))
-    actions: list[dict[str, Any]] = []
-    seen: set[str] = set()
-    for raw_repair in repairs:
-        repair = as_dict(raw_repair)
-        repair_fingerprint = str(repair.get("fingerprint") or "").strip()
-        ticker = str(repair.get("ticker") or "").upper().strip()
-        code = str(repair.get("code") or "").strip()
-        if not repair_fingerprint or not ticker or not code or repair_fingerprint in seen:
-            continue
-        seen.add(repair_fingerprint)
-        authority = as_dict(repair.get("authority"))
-        findings = collect_forbidden_true_flags(authority)
-        repeat_count = counts.get(repair_fingerprint, 0) + 1
-        evidence = as_dict(repair.get("evidence"))
-        base = {
-            "fingerprint": repair_fingerprint,
-            "repeat_count": repeat_count,
-            "source": "finance_evidence_warning_router",
-            "signal_class": "TICKER_DATA_QUALITY",
-            "status": repair.get("status") or "repair_required",
-            "reason": code,
-            "artifact": normalized_path(rel(FINANCE_EVIDENCE_WARNING_ROUTER)),
-            "authority_findings": findings,
-            "ticker": ticker,
-            "code": code,
-            "severity": repair.get("severity"),
-            "blocks_ticker_only": repair.get("blocks_ticker_only") is True,
-            "source_open_required": repair.get("source_open_required") is True,
-            "manual_review_required": repair.get("manual_review_required") is True,
-            "deduplicated_finding_count": int(repair.get("deduplicated_finding_count") or 0),
-            "evidence": {
-                "local_period_end": evidence.get("local_period_end"),
-                "official_period": evidence.get("official_period"),
-                "official_source_url": evidence.get("official_source_url"),
-                "official_period_fields": as_list(evidence.get("official_period_fields")),
-            },
-        }
-        if findings:
-            actions.append({
-                **base,
-                "handler_id": "ticker_repair_authority_boundary_stop",
-                "classification": "owner_decision",
-                "commands": [],
-                "next_action": "Stop: inspect unexpected authority widening before any ticker data-quality repair.",
-                "owner_gate_required": True,
-            })
-            continue
-        repeated = repeat_count >= repeat_threshold
-        actions.append({
-            **base,
-            "handler_id": "ticker_fundamental_repair_handoff",
-            "classification": "helper_lane_required",
-            "commands": [],
-            "next_action": (
-                f"Source-open and reconcile {ticker} {code}; keep the block scoped to {ticker}, "
-                "validate the proposed mapping, then rerun only that ticker's affected review surfaces."
-            ),
-            "owner_gate_required": False,
-            "repeated_blocker": repeated,
-            "repeat_policy": (
-                "Create or inspect the existing ticker-specific repair lane; do not repeat a raw chain-level escalation."
-                if repeated else "Prepare a ticker-specific source-open repair lane; no automatic apply is allowed."
-            ),
-        })
-    return sorted(actions, key=lambda item: (str(item.get("ticker") or ""), str(item.get("code") or ""), str(item.get("fingerprint") or "")))
+    return [
+        classify_signal(signal, counts, repeat_threshold)
+        for signal in escalation_signals(cron_control)
+        if not signal_uses_retired_route(signal)
+    ]
 
 
 def execute_actions(actions: list[dict[str, Any]], args: argparse.Namespace) -> list[dict[str, Any]]:
@@ -1303,6 +1107,10 @@ def validate_report(report: dict[str, Any], args: argparse.Namespace) -> dict[st
     warnings: list[str] = []
     if report.get("authority_boundary") != AUTHORITY_BOUNDARY:
         errors.append("authority_boundary_changed")
+    for action in as_list(report.get("actions")) + as_list(report.get("post_execution_actions")):
+        if signal_uses_retired_route(as_dict(action)):
+            errors.append("retired_finance_route_surfaced")
+            break
     if report.get("context") == "heartbeat":
         if report.get("execution_results"):
             errors.append("heartbeat_executed_actions")
@@ -1334,25 +1142,15 @@ def validate_report(report: dict[str, Any], args: argparse.Namespace) -> dict[st
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
     frontdoor_results = maybe_refresh_frontdoors(args)
     cron_control = load(CRON_CONTROL)
-    router_packet = load(FINANCE_EVIDENCE_WARNING_ROUTER)
-    actions = [
-        *classify_all(cron_control, args.ledger, args.repeat_threshold),
-        *classify_ticker_repair_handoffs(router_packet, args.ledger, args.repeat_threshold),
-    ]
+    raw_signals = escalation_signals(cron_control)
+    actions = classify_all(cron_control, args.ledger, args.repeat_threshold)
     execution_results = execute_actions(actions, args)
     post_execution_actions: list[dict[str, Any]] = []
-    refreshed_cron = cron_control
     if execution_results:
         execution_results.extend(run_command_ids(POST_ACTION_REFRESH_COMMAND_IDS, args.max_actions, post_action_refresh=True))
-        refreshed_cron = load(CRON_CONTROL)
-        refreshed_router_packet = load(FINANCE_EVIDENCE_WARNING_ROUTER)
-        post_execution_actions = [
-            *classify_all(refreshed_cron, args.ledger, args.repeat_threshold),
-            *classify_ticker_repair_handoffs(refreshed_router_packet, args.ledger, args.repeat_threshold),
-        ]
+        post_execution_actions = classify_all(load(CRON_CONTROL), args.ledger, args.repeat_threshold)
     active_actions = post_execution_actions if post_execution_actions else actions
     current_window = load(CURRENT_WINDOW_ARTIFACTS)
-    conveyor = load(TRADE_GRADE_REPAIR_CONVEYOR)
     configured_priority_out = getattr(args, "priority_out", PRIORITY_OUT)
     priority_out = configured_priority_out if configured_priority_out.is_absolute() else ROOT / configured_priority_out
     configured_disposition_ledger = getattr(args, "priority_disposition_ledger", PRIORITY_DISPOSITION_LEDGER)
@@ -1364,7 +1162,6 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     priority_handoff = build_priority_handoff(
         active_actions,
         current_window,
-        conveyor,
         priority_out,
         disposition_ledger,
         int(getattr(args, "max_priority_items", 25) or 25),
@@ -1377,13 +1174,15 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "cron_control_status": cron_control.get("status"),
         "cron_should_wake_main_session": as_dict(cron_control.get("summary")).get("should_wake_main_session"),
         "cron_escalation_signal_count": as_dict(cron_control.get("summary")).get("escalation_signal_count"),
+        "retired_signal_suppressed_count": len([signal for signal in raw_signals if signal_uses_retired_route(signal)]),
+        "retired_priority_source_suppressed": priority_source_uses_retired_route(
+            as_dict(current_window.get("summary"))
+        ),
         "frontdoor_refresh_ran": bool(frontdoor_results),
         "frontdoor_refresh_failed": [item.get("name") for item in frontdoor_results if item.get("ok") is not True],
         "executed_safe_action_count": len([item for item in execution_results if item.get("ok") is True and not item.get("skipped")]),
         "execution_failed": [item.get("name") for item in execution_results if item.get("ok") is not True],
         "post_execution_escalation_signal_count": len(post_execution_actions) if post_execution_actions else None,
-        "ticker_repair_handoff_count": len([item for item in active_actions if item.get("handler_id") == "ticker_fundamental_repair_handoff"]),
-        "ticker_repair_handoff_tickers": sorted({str(item.get("ticker")) for item in active_actions if item.get("handler_id") == "ticker_fundamental_repair_handoff"}),
         "priority_handoff_status": priority_handoff.get("status"),
         "priority_handoff_receipt": priority_handoff.get("receipt"),
         "priority_handoff_selected_id": as_dict(priority_handoff.get("selected_item")).get("priority_id"),
@@ -1414,9 +1213,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "authority_boundary": AUTHORITY_BOUNDARY,
         "source_artifacts": {
             "cron_control": rel(CRON_CONTROL),
-            "finance_evidence_warning_router": rel(FINANCE_EVIDENCE_WARNING_ROUTER),
             "current_window_artifacts": rel(CURRENT_WINDOW_ARTIFACTS),
-            "trade_grade_repair_conveyor": rel(TRADE_GRADE_REPAIR_CONVEYOR),
             "ledger": rel(args.ledger),
             "priority_handoff": rel(priority_out),
             "priority_disposition_ledger": rel(disposition_ledger),

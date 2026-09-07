@@ -1,0 +1,67 @@
+{
+  "artifact_type": "wf67_paper_trade_request",
+  "audit": {
+    "live_endpoint_forbidden": "https://api.alpaca.markets",
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "secret_material_present": false
+  },
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "live_submit_allowed": false,
+    "money_movement_allowed": false,
+    "no_inferred_approval": true,
+    "paper_cancel_allowed": true,
+    "paper_only": true,
+    "paper_submit_allowed": true
+  },
+  "created_at_utc": "2026-06-02T17:05:04Z",
+  "order": {
+    "limit_price": 150.26,
+    "notional": null,
+    "qty": 1.0,
+    "side": "buy",
+    "symbol": "XOM",
+    "time_in_force": "day",
+    "type": "limit"
+  },
+  "request_id": "wf68-xom-20260602T163530Z",
+  "risk_check": {
+    "entry_band_high": 158.44,
+    "entry_band_low": 150.24,
+    "estimated_notional_usd": 150.26,
+    "full_scope_artifact": null,
+    "max_loss_usd": 150.26,
+    "max_notional_usd": 500.0,
+    "observed_entry_status": "IN_BAND",
+    "observed_price": 150.26,
+    "pilot_notional_cap_usd": 500.0,
+    "pilot_qty_cap": 1.0,
+    "position_size_reviewed": true,
+    "status": "ok",
+    "stop": 146.14
+  },
+  "schema_version": 1,
+  "source": {
+    "advisor_packet_id": "wf68-26352121ac49",
+    "advisor_packet_path": "tmp/intraday-alerts/advisor-alert-packet.json",
+    "approval_artifact": "tmp/alpaca-paper-readiness/phase-7-advisor-paper-execution-approval-2026-05-19.json",
+    "capital_recommendation_source": null,
+    "main_session_capital_package_notification_required": true,
+    "market_order_owner_approved": false,
+    "exact_order_owner_approval_status": "approved_exact_order",
+    "approved_by": "Randall",
+    "exact_order_owner_approval_text": "Approved to buy XOM Action: buy; Qty: 1 share; Order: limit/day; Limit: $150.26; Est. notional: $150.26",
+    "approval_received_channel": "telegram",
+    "approval_received_message_id": "142",
+    "approval_received_at_local": "2026-06-02T10:09:00-07:00",
+    "owner_or_pilot_scope": "WF68 Telegram PREPARE for XOM paper-ready packet wf68-exec-XOM-20260602T163530Z; pending exact Randall approval before execution",
+    "recommendation_source": "wf68_advisor_packet",
+    "scoped_paper_trade_or_pilot": true,
+    "source_alert_packet_path": "tmp\\intraday-alerts\\current-alerts.json#alerts[wf68-26352121ac49]"
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

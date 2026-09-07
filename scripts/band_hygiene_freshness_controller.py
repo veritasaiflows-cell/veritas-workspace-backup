@@ -450,7 +450,7 @@ def run_refresh_steps(args: argparse.Namespace) -> list[dict[str, Any]]:
     if not args.skip_technical_refresh:
         steps.append(run_step("technical_refresh", py_cmd("scripts\\technical_refresh.py"), 300))
     if not args.skip_band_refresh:
-        steps.append(run_step("band_refresh", py_cmd("scripts\\band_refresh.py"), args.band_refresh_timeout_seconds))
+        steps.append(run_step("band_refresh", py_cmd("scripts\\band_refresh.py", "--include-tracked-missing"), args.band_refresh_timeout_seconds))
     apply_cmd = py_cmd("scripts\\auto_apply_entry_band_maintenance.py", "--apply" if args.apply_eligible else "--dry-run")
     steps.append(run_step("auto_apply_entry_band_maintenance", apply_cmd, 180))
     if args.apply_eligible:

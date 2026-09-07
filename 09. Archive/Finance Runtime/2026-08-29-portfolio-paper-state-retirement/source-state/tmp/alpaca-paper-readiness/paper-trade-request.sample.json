@@ -1,0 +1,44 @@
+{
+  "artifact_type": "wf67_paper_trade_request",
+  "audit": {
+    "raw_response_persistence_allowed": false,
+    "secret_material_present": false
+  },
+  "authority": {
+    "account_settings_mutation_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "live_submit_allowed": false,
+    "money_movement_allowed": false,
+    "no_inferred_approval": true,
+    "paper_cancel_allowed": true,
+    "paper_only": true,
+    "paper_submit_allowed": true
+  },
+  "created_at_utc": "2026-05-18T02:17:34Z",
+  "order": {
+    "limit_price": 1.0,
+    "notional": null,
+    "qty": 1,
+    "side": "buy",
+    "symbol": "MSFT",
+    "time_in_force": "day",
+    "type": "limit"
+  },
+  "request_id": "sample-not-executable",
+  "risk_check": {
+    "max_loss_usd": 1.0,
+    "max_notional_usd": 1.0,
+    "pilot_notional_cap_usd": 500.0,
+    "pilot_qty_cap": 1,
+    "position_size_reviewed": true,
+    "status": "ok"
+  },
+  "schema_version": 1,
+  "source": {
+    "owner_or_pilot_scope": "sample only - do not execute",
+    "recommendation_source": "manual_sample",
+    "scoped_paper_trade_or_pilot": true
+  },
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

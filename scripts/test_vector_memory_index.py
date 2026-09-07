@@ -342,24 +342,24 @@ class VectorMemoryIndexTests(unittest.TestCase):
             self.assertEqual(summary["status"], "ok")
             self.assertEqual(summary["source_count"], 2)
 
-    def test_primary_profile_excludes_raw_tmp_packets_but_keeps_compact_summary(self) -> None:
+    def test_primary_profile_excludes_raw_tmp_packets_but_keeps_alert_digest(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / "memory").mkdir()
             (root / "tmp").mkdir()
             (root / "memory" / "note.md").write_text("Durable route.\n", encoding="utf-8")
             (root / "tmp" / "raw-proof.json").write_text('{"raw":"large"}\n', encoding="utf-8")
-            (root / "tmp" / "finance-vector-retrieval-summary.json").write_text('{"route":"compact"}\n', encoding="utf-8")
+            (root / "tmp" / "finance-alert-os-digest.json").write_text('{"route":"alerts"}\n', encoding="utf-8")
             patterns = ["memory/*.md", "tmp/*.json"]
 
             primary = [vmi.rel(root, path) for path in vmi.select_sources(root, patterns, source_profile="primary")]
             durable = [vmi.rel(root, path) for path in vmi.select_sources(root, patterns, source_profile="durable")]
             full = [vmi.rel(root, path) for path in vmi.select_sources(root, patterns, source_profile="full")]
 
-            self.assertEqual(primary, ["memory/note.md", "tmp/finance-vector-retrieval-summary.json"])
+            self.assertEqual(primary, ["memory/note.md", "tmp/finance-alert-os-digest.json"])
             self.assertEqual(durable, ["memory/note.md"])
-            self.assertEqual(full, ["memory/note.md", "tmp/finance-vector-retrieval-summary.json", "tmp/raw-proof.json"])
-            self.assertEqual(vmi.source_family_for("tmp/finance-vector-retrieval-summary.json"), "finance_vector_retrieval_summary")
+            self.assertEqual(full, ["memory/note.md", "tmp/finance-alert-os-digest.json", "tmp/raw-proof.json"])
+            self.assertEqual(vmi.source_family_for("tmp/finance-alert-os-digest.json"), "finance_alert_recommendation_digest")
 
     def test_primary_default_blocks_hash_downgrade_without_explicit_override(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -415,32 +415,18 @@ class VectorMemoryIndexTests(unittest.TestCase):
             self.assertEqual(summary["embedding_provider"], "hash")
             self.assertEqual(vmi.load_existing_db_meta(db_path).get("embedding_provider"), "hash")
 
-    def test_validation_detects_transitive_finance_summary_drift(self) -> None:
+    def test_validation_detects_direct_alert_digest_drift(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / "tmp").mkdir()
-            raw = root / "tmp" / "canonical-finance-data-plane.json"
-            raw.write_text('{"status":"original"}\n', encoding="utf-8")
-            compact = root / "tmp" / "finance-vector-retrieval-summary.json"
-            compact.write_text(
-                json.dumps(
-                    {
-                        "source_packets": [
-                            {
-                                "path": "tmp/canonical-finance-data-plane.json",
-                                "sha256": vmi.sha256_bytes(raw.read_bytes()),
-                            }
-                        ]
-                    }
-                ),
-                encoding="utf-8",
-            )
+            digest = root / "tmp" / "finance-alert-os-digest.json"
+            digest.write_text('{"status":"original"}\n', encoding="utf-8")
             db_path = root / "tmp" / "test-vector-memory.sqlite"
             vmi.build_index(
                 root=root,
                 db_path=db_path,
                 out_path=root / "tmp" / "test-vector-memory-index.json",
-                patterns=["tmp/finance-vector-retrieval-summary.json"],
+                patterns=["tmp/finance-alert-os-digest.json"],
                 provider="hash",
                 model="hashing-vector-v0",
                 ollama_url="http://127.0.0.1:1",
@@ -450,11 +436,11 @@ class VectorMemoryIndexTests(unittest.TestCase):
                 overlap=0,
                 max_chars=2000,
             )
-            raw.write_text('{"status":"changed"}\n', encoding="utf-8")
+            digest.write_text('{"status":"changed"}\n', encoding="utf-8")
             validation = vmi.validate_index(root=root, db_path=db_path)
             self.assertEqual(validation["status"], "error")
-            self.assertEqual(validation["stale_sources"][0]["reason"], "transitive_source_hash_drift")
-            self.assertEqual(validation["transitive_stale_paths"], ["tmp/canonical-finance-data-plane.json"])
+            self.assertEqual(validation["stale_sources"][0]["reason"], "sha256_mismatch")
+            self.assertEqual(validation["transitive_stale_paths"], [])
 
     def test_main_writes_error_status_when_validation_fails(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -500,23 +486,21 @@ class VectorMemoryIndexTests(unittest.TestCase):
     def test_default_registry_covers_recommended_workflow_expansion(self) -> None:
         patterns = set(vmi.load_source_patterns(vmi.ROOT, vmi.DEFAULT_SOURCE_REGISTRY))
         expected_patterns = {
-            "06. Playbooks/Project Continuity/Workflow 67*.md",
+            "06. Playbooks/Project Continuity/Workflow 72 - Guarded Finance SQL Canon.md",
             "06. Playbooks/Project Continuity/Workflow 73*.md",
             "06. Playbooks/Project Continuity/Workflow 75*.md",
-            "06. Playbooks/Project Continuity/Workflow 78*.md",
-            "06. Playbooks/Project Continuity/Workflow 79*.md",
-            "06. Playbooks/Project Continuity/Workflow 84*.md",
-            "06. Playbooks/Project Continuity/Workflow 85*.md",
-            "tmp/wf67-promotion-gate-cli-smoke.json",
+            "06. Playbooks/Project Continuity/Workflow 77 - Finance Intelligence Coverage and Question Router.md",
+            "06. Playbooks/Project Continuity/Workflow 79-SMB - SMB Workflow Clarity and Marketing Ops Automation.md",
+            "06. Playbooks/Project Continuity/Workflow 84 - Guarded Alert Evidence Plane.md",
+            "06. Playbooks/Project Continuity/Workflow 85 - Alerts and Recommendations OS.md",
             "tmp/wf73-control-plane-audit.json",
             "tmp/wf75-service-state-current.json",
-            "tmp/wf78-auto-tier-routing.json",
             "tmp/wf79-smb-pilot-readiness-packet.json",
-            "tmp/wf84-wf85-route-migration-git-hygiene.json",
-            "tmp/wf85-decision-os-review-packet.json",
-            "tmp/finance-intelligence-state-validation.json",
-            "tmp/trade-grade-*.json",
-            "tmp/finance-vector-retrieval-summary.json",
+            "tmp/finance-sql-canon-access-validation.json",
+            "tmp/intraday-alerts/quote-snapshot-proof.json",
+            "tmp/alert-level-freshness-controller.json",
+            "tmp/finance-alert-os-digest.json",
+            "tmp/alerts-os-pivot-validator.json",
             "wiki/index.md",
             "wiki/os2/OTEL To Proposal Route.md",
             "wiki/scorecards-and-evals/Current Map.md",
@@ -526,10 +510,7 @@ class VectorMemoryIndexTests(unittest.TestCase):
             "wiki/gaps/Open Follow Up Debt.md",
             "wiki/source-map/WF88 Wiki Source Map.md",
             "tmp/recommendation-outcome-ledger-current.json",
-            "tmp/finance-decision-performance-digest.json",
             "tmp/coding-outcome-ledger-current.json",
-            "tmp/wf55-autonomy-outcome-ledger.json",
-            "tmp/wf87-shadow-outcome-scorecard.json",
             "tmp/wf74-wf88-loop-trace.json",
             "tmp/actionable-improvement-queue.json",
             "tmp/improvement-ledger-current.json",
@@ -541,15 +522,16 @@ class VectorMemoryIndexTests(unittest.TestCase):
             "tmp/implementation-closeout-checkpointed-execution.json",
         }
         self.assertTrue(expected_patterns.issubset(patterns))
+        self.assertNotIn("tmp/wf84-wf85-route-migration-git-hygiene.json", patterns)
+        self.assertNotIn("tmp/finance-decision-performance-digest.json", patterns)
+        self.assertNotIn("tmp/retail-answer-harness.json", patterns)
+        self.assertNotIn("tmp/wf55-autonomy-outcome-ledger.json", patterns)
         self.assertFalse(any(pattern.endswith((".sqlite", ".sqlite-wal", ".sqlite-shm", ".html", ".pdf", ".xlsx")) for pattern in patterns))
         self.assertNotIn("tmp/pm-control-packet.json", patterns)
 
-        self.assertEqual(vmi.source_family_for("tmp/wf67-paper-position-proof.json"), "wf67_paper_guard_packet")
         self.assertEqual(vmi.source_family_for("tmp/wf73-control-plane-audit.json"), "wf73_audit_boot_packet")
         self.assertEqual(vmi.source_family_for("tmp/wf75-service-state-current.json"), "wf75_product_readiness_packet")
         self.assertEqual(vmi.source_family_for("tmp/retail-answer-harness.json"), "wf75_retail_truth_packet")
-        self.assertEqual(vmi.source_family_for("tmp/wf78-auto-tier-routing.json"), "wf78_finance_routing_packet")
-        self.assertEqual(vmi.source_family_for("tmp/finance-intelligence-state-validation.json"), "wf78_finance_routing_packet")
         self.assertEqual(vmi.source_family_for("tmp/wf79-smb-pilot-readiness-packet.json"), "wf79_smb_workflow_packet")
         self.assertEqual(vmi.source_family_for("tmp/wf84-data-plane-proof.json"), "wf84_finance_data_plane_packet")
         self.assertEqual(vmi.source_family_for("tmp/wf85-decision-os-review-packet.json"), "wf85_decision_os_packet")
@@ -557,8 +539,11 @@ class VectorMemoryIndexTests(unittest.TestCase):
         self.assertEqual(vmi.source_family_for("tmp/recommendation-outcome-ledger-current.json"), "recommendation_outcome_memory_packet")
         self.assertEqual(vmi.source_family_for("tmp/finance-decision-performance-digest.json"), "finance_decision_outcome_packet")
         self.assertEqual(vmi.source_family_for("tmp/coding-outcome-ledger-current.json"), "coding_outcome_memory_packet")
-        self.assertEqual(vmi.source_family_for("tmp/wf55-autonomy-outcome-ledger.json"), "wf55_autonomy_outcome_packet")
-        self.assertEqual(vmi.source_family_for("tmp/wf87-shadow-outcome-scorecard.json"), "wf87_shadow_outcome_packet")
+        self.assertEqual(vmi.source_family_for("tmp/finance-sql-canon-access-validation.json"), "finance_alert_sql_guard_packet")
+        self.assertEqual(vmi.source_family_for("tmp/intraday-alerts/quote-snapshot-proof.json"), "finance_alert_quote_proof_packet")
+        self.assertEqual(vmi.source_family_for("tmp/alert-level-freshness-controller.json"), "finance_alert_freshness_packet")
+        self.assertEqual(vmi.source_family_for("tmp/finance-alert-os-digest.json"), "finance_alert_recommendation_digest")
+        self.assertEqual(vmi.source_family_for("tmp/alerts-os-pivot-validator.json"), "finance_alert_os_boundary_packet")
         self.assertEqual(vmi.source_family_for("tmp/wf74-wf88-loop-trace.json"), "wf74_wf88_loop_trace_packet")
         self.assertEqual(vmi.source_family_for("tmp/actionable-improvement-queue.json"), "wf88_actionable_improvement_queue")
         self.assertEqual(vmi.source_family_for("tmp/improvement-ledger-current.json"), "improvement_ledger_packet")

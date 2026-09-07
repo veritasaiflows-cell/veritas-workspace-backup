@@ -1,0 +1,55 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T16:31:01Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-archive-microbatch-2026-05-25-2.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 4,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/automation-health-dashboard.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/automation-health-dashboard.md",
+      "sha256_before": "aeacf9377872a358474971e28c9e9984fa64bbb62e6cecfd90d399cf9eecfabe",
+      "sha256_after": "aeacf9377872a358474971e28c9e9984fa64bbb62e6cecfd90d399cf9eecfabe"
+    },
+    {
+      "path": "tmp/official-source-reconciliation-readiness-queue.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/official-source-reconciliation-readiness-queue.md",
+      "sha256_before": "4132bfece927fc6930e91f893223f7da4d4149679ebf3c5abce7f129511bdd7c",
+      "sha256_after": "4132bfece927fc6930e91f893223f7da4d4149679ebf3c5abce7f129511bdd7c"
+    },
+    {
+      "path": "tmp/openai-sdk-openclaw-enhancement-research-2026-05-24.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/openai-sdk-openclaw-enhancement-research-2026-05-24.md",
+      "sha256_before": "61eb071aa7aadb5e903bdbbd3839308ef4a7655d21f30d070af72e552332f223",
+      "sha256_after": "61eb071aa7aadb5e903bdbbd3839308ef4a7655d21f30d070af72e552332f223"
+    },
+    {
+      "path": "tmp/os-opt-advisor-unlock-prework.md",
+      "kind": "obsolete_proof_residue",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Reviewed Tmp Markdown/os-opt-advisor-unlock-prework.md",
+      "sha256_before": "a3308159e5286583143058e8cb13551136762ecc1fd1c09fc5a22f63428a6110",
+      "sha256_after": "a3308159e5286583143058e8cb13551136762ecc1fd1c09fc5a22f63428a6110"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; only explicit apply_allowed true suggestions with zero references and approved destination roots can move"
+}

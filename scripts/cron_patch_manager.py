@@ -256,11 +256,25 @@ def build_requested_patch(args: argparse.Namespace) -> dict[str, Any]:
         patch["timeoutSeconds"] = args.timeout_seconds
     if args.light_context is not None:
         patch["lightContext"] = args.light_context
-    if args.failure_alert_after is not None or args.failure_alert_mode is not None:
-        patch["failureAlert"] = {
+    alert_args = (
+        args.failure_alert_after,
+        args.failure_alert_mode,
+        args.failure_alert_channel,
+        args.failure_alert_to,
+        args.failure_alert_cooldown_ms,
+    )
+    if any(value is not None for value in alert_args):
+        alert: dict[str, Any] = {
             "after": args.failure_alert_after if args.failure_alert_after is not None else 1,
             "mode": args.failure_alert_mode or "announce",
         }
+        if args.failure_alert_channel is not None:
+            alert["channel"] = args.failure_alert_channel
+        if args.failure_alert_to is not None:
+            alert["to"] = args.failure_alert_to
+        if args.failure_alert_cooldown_ms is not None:
+            alert["cooldownMs"] = args.failure_alert_cooldown_ms
+        patch["failureAlert"] = alert
     if args.no_failure_alert:
         patch["failureAlert"] = None
     return patch
@@ -397,7 +411,11 @@ def classify_impact(patch: dict[str, Any], job: dict[str, Any]) -> dict[str, Any
     return impact
 
 
-def validate_patch(patch: dict[str, Any], allow_schedule_or_delivery: bool = False) -> tuple[list[str], list[str]]:
+def validate_patch(
+    patch: dict[str, Any],
+    allow_schedule_or_delivery: bool = False,
+    job: dict[str, Any] | None = None,
+) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
     unknown = sorted(set(patch) - ALLOWED_PATCH_KEYS)
@@ -421,6 +439,15 @@ def validate_patch(patch: dict[str, Any], allow_schedule_or_delivery: bool = Fal
             errors.append("failureAlert_not_object_or_null")
         elif fa.get("mode") not in {"announce", "webhook"}:
             errors.append(f"failureAlert_invalid_mode:{fa.get('mode')}")
+        elif fa.get("mode") == "announce" and not str(fa.get("to") or "").strip():
+            # An announce alert with no explicit target only resolves when the job's
+            # own delivery is already announce. On delivery.mode=none it is enabled
+            # but undeliverable, which is why existing alerts have never fired.
+            delivery_mode = as_dict(as_dict(job).get("delivery")).get("mode")
+            if job is not None and delivery_mode != "announce":
+                errors.append(f"failureAlert_announce_without_destination:delivery_mode={delivery_mode}")
+            elif job is None:
+                warnings.append("failureAlert_announce_destination_unverified")
     if not patch:
         warnings.append("empty_patch")
     return errors, warnings
@@ -459,6 +486,12 @@ def edit_command(job_id: str, patch: dict[str, Any]) -> list[str]:
                 cmd += ["--failure-alert-after", str(int(fa["after"]))]
             if fa.get("mode") is not None:
                 cmd += ["--failure-alert-mode", str(fa["mode"])]
+            if fa.get("channel") is not None:
+                cmd += ["--failure-alert-channel", str(fa["channel"])]
+            if fa.get("to") is not None:
+                cmd += ["--failure-alert-to", str(fa["to"])]
+            if fa.get("cooldownMs") is not None:
+                cmd += ["--failure-alert-cooldown", f"{int(fa['cooldownMs'])}ms"]
     return cmd
 
 
@@ -525,7 +558,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     else:
         requested_patch = build_requested_patch(args)
         job, lookup = resolve_job(args.job_id, args.name)
-    patch_errors, patch_warnings = validate_patch(requested_patch, allow_schedule_or_delivery=False)
+    patch_errors, patch_warnings = validate_patch(requested_patch, allow_schedule_or_delivery=False, job=job or None)
     patch_errors = [*rollback_errors, *patch_errors]
     diffs = diff_fields(job, requested_patch) if job else []
     impact = classify_impact(requested_patch, job) if job else {}
@@ -631,6 +664,9 @@ def parse_args() -> argparse.Namespace:
     parser.set_defaults(light_context=None)
     parser.add_argument("--failure-alert-after", type=int)
     parser.add_argument("--failure-alert-mode", choices=["announce", "webhook"])
+    parser.add_argument("--failure-alert-channel")
+    parser.add_argument("--failure-alert-to")
+    parser.add_argument("--failure-alert-cooldown-ms", type=int)
     parser.add_argument("--no-failure-alert", action="store_true")
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--verify", action="store_true")

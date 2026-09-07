@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 import finance_decision_state_compiler as compiler
 
@@ -39,6 +40,25 @@ class FinanceDecisionStateCompilerTests(unittest.TestCase):
         self.assertIsNone(
             compiler.state_for_promotion_gate_verdict("promote_for_owner_review")
         )
+
+    def test_current_compiler_owns_its_immutable_blocker_sets(self) -> None:
+        self.assertEqual(
+            compiler.BLOCKING_PRIMARY_STATES,
+            {
+                "blocked_missing_freshness",
+                "blocked_missing_source_open",
+                "blocked_missing_band_or_stop",
+                "blocked_wf67_guard_context",
+                "below_stop_or_invalidation",
+                "evidence_repair",
+            },
+        )
+        self.assertEqual(
+            compiler.INVALIDATION_PRIMARY_STATES,
+            {"below_stop_or_invalidation", "invalidation_review"},
+        )
+        source = Path(compiler.__file__).read_text(encoding="utf-8")
+        self.assertNotIn("trade_grade_decision_os_contract", source)
 
     def test_above_band_rewrites_stale_in_band_gate(self) -> None:
         fields = compiler.normalized_promotion_gate_fields(

@@ -1,0 +1,24 @@
+{
+  "schema": "veritas.cron_job_rollback_record.v1",
+  "captured_at_utc": "2026-08-30T17:05:00Z",
+  "reason": "Converted the every-30-minute systemEvent Main wake into a model-free command gate that wakes Main only when the deterministic handoff proves a review is required. Measured burn before change: 22 runs / 627,497 tokens / ~114 output tokens.",
+  "job_id": "c295580b-fd61-4995-9a0e-f876873a5ea4",
+  "rollback_instruction": "Restore the previous_job fields below via cron update (payload, sessionTarget, wakeMode, description). No config, auth, or schedule change is involved in either direction.",
+  "previous_job": {
+    "declarationKey": "veritas.main_session_priority_pickup.v1",
+    "name": "PM - Main Session Priority Pickup",
+    "description": "Every-30-minute review-only main-session priority pickup. It refreshes the non-aging main-session priority handoff, selects one P0/P1 handoff, and persists an explicit Main disposition. It never executes a repair, PM proof, agent packet, lane lease, ticker import, canon/portfolio change, or finance/account action.",
+    "schedule": {
+      "kind": "cron",
+      "expr": "*/30 7-17 * * *",
+      "tz": "America/Phoenix",
+      "staggerMs": 0
+    },
+    "sessionTarget": "main",
+    "wakeMode": "now",
+    "payload": {
+      "kind": "systemEvent",
+      "text": "Priority pickup checkpoint. Work in C:\\Users\\Veritas\\.openclaw\\workspace.\n\n1. Run exactly: python scripts\\main_session_escalation_consumer.py --context main_session --priority-observation-source main_session --write --validate\n2. Run exactly: python scripts\\main_session_action_executor.py --context main_session --write --validate\n3. Read tmp\\main-session-priority-handoff.json and tmp\\main-session-action-executor.json. If either validation is not ok, report only its path, failed control, and named owner.\n4. If selected priority is P0/P1 and disposition.status is pending, claim it with this exact PowerShell sequence:\n$selectedPriority = (Get-Content -LiteralPath 'tmp\\main-session-priority-handoff.json' -Raw | ConvertFrom-Json).selected_item\npython scripts\\main_session_escalation_consumer.py --context main_session --priority-observation-source main_session --write --validate --priority-id $selectedPriority.priority_id --priority-disposition accepted\nVerify the matching accepted entry in state\\main-session-priority-disposition-ledger.jsonl, then route its named bounded review/repair owner. For defer/block, replace accepted and add a factual --priority-note. Do not close without its acceptance proof.\n5. P2 is monitor-only; it must not preempt generic PM work or require a claim.\n6. Do not execute a repair, generic PM proof, --execute-safe, --execute-one, finance-agent packet, helper spawn, or lane lease. Reply NO_REPLY only when no P0/P1 main-session action is required.\n\nBoundaries: review/routing only; no ticker or SQL import, canon/portfolio/cash/sizing/risk mutation, capital deployment, paper/live/brokerage/account action, money movement, config/auth/runtime mutation, external delivery, archive/delete, or owner approval inference."
+    }
+  }
+}

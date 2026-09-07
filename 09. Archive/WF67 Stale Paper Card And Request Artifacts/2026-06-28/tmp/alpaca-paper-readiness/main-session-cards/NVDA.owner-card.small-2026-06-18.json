@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "artifact_type": "main_session_wf67_order_decision_card",
+  "request_id": "nvda-small-paper-proposal-2026-06-18",
+  "created_at_utc": "2026-06-18T15:21:17Z",
+  "authority": {
+    "main_session_recommendation_allowed": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "paper_only": true,
+    "paper_order_execution_allowed_by_card": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "order": {
+    "symbol": "NVDA",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 208.75,
+    "qty": null,
+    "notional": 150.0
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 150.0,
+    "max_notional_usd": 150.0,
+    "max_loss_usd": 19.7,
+    "entry_band_low": 191.15,
+    "entry_band_high": 212.77,
+    "observed_price": 209.25,
+    "observed_entry_status": "IN_BAND",
+    "stop": 181.33,
+    "sizing_rationale": "Owner-requested small paper-only starter proposal; deliberately below $500 WF67 pilot cap and below the prior $200-$350 starter range because direct Tech exposure is at cap/crowded."
+  },
+  "source": {
+    "source_artifact": "tmp/wf78-capital-review-queue.json",
+    "capital_recommendation_source": "owner_requested_nvda_small_paper_proposal",
+    "owner_or_pilot_scope": "WF67 paper-only NVDA small starter proposal requested by Randall; pending exact approval before any execution.",
+    "approval_artifact": null
+  },
+  "owner_approval": {
+    "status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "approval_text": null,
+    "market_order_owner_approved": false
+  },
+  "decision_context": {
+    "promotion_veto_handling": "cleared_for_this_non_executing_proposal_only_by_owner_request; global promotion gate/canon/portfolio state not mutated",
+    "prior_veto_source": "tmp/chief-intelligence-promotion-gate.json / tmp/research-freshness-opportunity-review.json",
+    "prior_veto_root_causes": [
+      "band_calibration_review",
+      "ai_technology_crowding_review",
+      "starter_sizing_review"
+    ],
+    "current_quote": {
+      "price": 209.25,
+      "bid": null,
+      "ask": null,
+      "quote_source": "yfinance_fast_info",
+      "quote_time_utc": "2026-06-18T15:21:17Z"
+    },
+    "band_status": "IN_BAND",
+    "tech_cap_note": "Direct Tech exposure is already at cap; this proposal is paper-only and should be treated as a tiny learning/proof rep, not real-capital sizing approval.",
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false
+  }
+}

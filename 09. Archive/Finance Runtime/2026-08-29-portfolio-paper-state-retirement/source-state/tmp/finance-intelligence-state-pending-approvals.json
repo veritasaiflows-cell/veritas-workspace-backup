@@ -1,0 +1,292 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-08-28T02:49:07Z",
+  "artifact_type": "finance_intelligence_state_pending_approvals_packet",
+  "db_path": "tmp/finance-intelligence-state.sqlite",
+  "authority_boundary": {
+    "review_only": true,
+    "database_path": "tmp/finance-intelligence-state.sqlite",
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_sql_canon_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_sql_canon_current_state_field_families": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "tmp_database_is_compatibility_cache": true,
+    "database_path_migration_performed": false,
+    "tmp_database_promotion_performed": false,
+    "full_sql_canon_migration_allowed": false,
+    "sql_canon_authority_expanded": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_trade_execution_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "source_open_required_before_finance_claims": true
+  },
+  "answer_contract": {
+    "sql_is_routing_and_current_state_only": true,
+    "material_finance_claim_requires_source_open": true,
+    "canonical_markdown_remains_owner_truth": true,
+    "must_not_infer_approval_or_execution_authority": true,
+    "must_disclose_stale_or_conflicting_rows": true
+  },
+  "sql_canon_migration": {
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_current_state_field_families_promoted": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "this_tmp_db_is_compatibility_cache": true,
+    "sql_canon_authority_expanded": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "status": "ok",
+  "count": 17,
+  "pending_approval_queue": [
+    {
+      "ticker": "ETN",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers": [
+        "owner promotion/selection still required before treating as deployed",
+        "card itself grants no paper/live execution authority and infers no approval"
+      ]
+    },
+    {
+      "ticker": "GOOG",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval"
+      ]
+    },
+    {
+      "ticker": "GS",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval"
+      ]
+    },
+    {
+      "ticker": "JPM",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval"
+      ]
+    },
+    {
+      "ticker": "LIN",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval"
+      ]
+    },
+    {
+      "ticker": "NVDA",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval"
+      ]
+    },
+    {
+      "ticker": "VRT",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers": [
+        "owner promotion/selection still required before treating as deployed",
+        "card itself grants no paper/live execution authority and infers no approval"
+      ]
+    },
+    {
+      "ticker": "XOM",
+      "tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval"
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval"
+      ]
+    },
+    {
+      "ticker": "CAT",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval"
+      ]
+    },
+    {
+      "ticker": "GE",
+      "tier": "B",
+      "monitoring_role": "priority_watch",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 1,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval"
+      ]
+    },
+    {
+      "ticker": "ADI",
+      "tier": "C",
+      "monitoring_role": "tier_c_review_monitor_breadth_only",
+      "recommendation_posture": "approval-ready paper starter if fresh in band",
+      "support_level": "prepared_order_card_present",
+      "pending_approval_count": 0,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval",
+        "fresh_price_band_stop_required",
+        "official_fundamentals_required_if_promoted",
+        "owner promotion/selection still required before treating as deployed",
+        "risk_register_required_if_promoted",
+        "technical_posture_required",
+        "thin_monitor_sql_row_only"
+      ]
+    },
+    {
+      "ticker": "ADSK",
+      "tier": "C",
+      "monitoring_role": "tier_c_review_monitor_breadth_only",
+      "recommendation_posture": "promotion review",
+      "support_level": "review_context_only",
+      "pending_approval_count": 0,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval",
+        "fresh_price_band_stop_required",
+        "official_fundamentals_required_if_promoted",
+        "owner promotion/selection still required before treating as deployed",
+        "risk_register_required_if_promoted",
+        "technical_posture_required",
+        "thin_monitor_sql_row_only"
+      ]
+    },
+    {
+      "ticker": "AKAM",
+      "tier": "C",
+      "monitoring_role": "tier_c_review_monitor_breadth_only",
+      "recommendation_posture": "promotion review",
+      "support_level": "review_context_only",
+      "pending_approval_count": 0,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval",
+        "fresh_price_band_stop_required",
+        "official_fundamentals_required_if_promoted",
+        "owner promotion/selection still required before treating as deployed",
+        "risk_register_required_if_promoted",
+        "technical_posture_required",
+        "thin_monitor_sql_row_only"
+      ]
+    },
+    {
+      "ticker": "AME",
+      "tier": "C",
+      "monitoring_role": "tier_c_review_monitor_breadth_only",
+      "recommendation_posture": "promotion review",
+      "support_level": "review_context_only",
+      "pending_approval_count": 0,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval",
+        "fresh_price_band_stop_required",
+        "official_fundamentals_required_if_promoted",
+        "owner promotion/selection still required before treating as deployed",
+        "risk_register_required_if_promoted",
+        "technical_posture_required",
+        "thin_monitor_sql_row_only"
+      ]
+    },
+    {
+      "ticker": "TSM",
+      "tier": "C",
+      "monitoring_role": "review_100_thin_monitor",
+      "recommendation_posture": "promotion review",
+      "support_level": "review_context_only",
+      "pending_approval_count": 0,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval",
+        "fresh_price_band_stop_required",
+        "official_fundamentals_required_if_promoted",
+        "owner promotion/selection still required before treating as deployed",
+        "risk_register_required_if_promoted",
+        "technical_posture_required",
+        "thin_monitor_sql_row_only"
+      ]
+    },
+    {
+      "ticker": "TXN",
+      "tier": "C",
+      "monitoring_role": "review_100_thin_monitor",
+      "recommendation_posture": "promotion review",
+      "support_level": "review_context_only",
+      "pending_approval_count": 0,
+      "blockers": [
+        "card itself grants no paper/live execution authority and infers no approval",
+        "fresh_price_band_stop_required",
+        "official_fundamentals_required_if_promoted",
+        "owner promotion/selection still required before treating as deployed",
+        "risk_register_required_if_promoted",
+        "technical_posture_required",
+        "thin_monitor_sql_row_only"
+      ]
+    }
+  ],
+  "review_boundary": "Rows are review/promotion/approval-prep routing only; they do not grant owner approval or execution authority."
+}

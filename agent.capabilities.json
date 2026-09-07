@@ -1,0 +1,374 @@
+{
+  "agent_id": "main",
+  "agent_knowledge_base": {
+    "authority_limit": "Shared reference only; it cannot grant approval, mutate runtime/config, authorize external/customer delivery, or override doctrine/proof.",
+    "exists": true,
+    "path": "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base",
+    "recommended_pages": [
+      "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base\\index.md",
+      "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base\\contracts\\authority-boundaries.md",
+      "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base\\contracts\\capability-manifest.schema.json",
+      "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base\\runbooks\\spawn-contract.md",
+      "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base\\runbooks\\direct-agent-communication.md",
+      "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base\\self-improvement\\latest-agent-delta.md"
+    ]
+  },
+  "assignment_route_contract": {
+    "actual_backend_model_thinking_required_at_closeout": true,
+    "expected_execution_backend": "persistent_isolated_agent",
+    "explicit_workspace_relative_base_path_required": true,
+    "fresh_transport_proof_required": true,
+    "handoff_budget": {
+      "max_context_tokens": 30000,
+      "max_files": 6,
+      "max_total_bytes": 120000
+    },
+    "manifest_hashes_and_frozen_snapshot_required": true,
+    "parent_job_phase_attempt_retry_required": true,
+    "persistent_dispatch_ready_must_be_true": true,
+    "provisional_incident_update_sla_seconds": 90,
+    "route_mismatch_blocks_acceptance": true,
+    "transport_proof_supplied_by": "Veritas main"
+  },
+  "attribution_closeout_contract": {
+    "billing_semantics": "API-equivalent estimates are not an invoice; OAuth capacity remains advisory only.",
+    "do_not_invent_token_counts": true,
+    "metadata_only": true,
+    "provider_usage_unavailable_is_explicitly_allowed": true,
+    "raw_prompt_response_or_tool_payload_allowed": false,
+    "required_when_exposed": [
+      "parent_job_id",
+      "workflow_id",
+      "lane_id",
+      "agent_id",
+      "phase",
+      "model_path",
+      "token_attribution_source",
+      "input_token_semantics",
+      "usage_at_utc",
+      "usage_time_source",
+      "outcome_status",
+      "main_acceptance_status"
+    ]
+  },
+  "authority_class": "workspace_scoped",
+  "authority_disclaimer": "This packet is a routing and context aid only. It is not approval, canon, execution authority, or a replacement for workspace doctrine.",
+  "closeout_required": [
+    "deliverable path or summary",
+    "proof commands run",
+    "parent job, workflow, and lane identifiers when a lane is used",
+    "pricing-grade token/usage closeout when exposed, or explicit provider_usage_unavailable without invented counts",
+    "required independent QA/Red-Team verdict when the route requires it",
+    "Main acceptance state and any rework/blocker handoff",
+    "stop lines preserved",
+    "owner-gated decisions still needed",
+    "handoff to Veritas main for verification and final integration"
+  ],
+  "concept": "Veritas finance-first multi-workflow market intelligence, research, implementation, QA, and continuity operating system",
+  "deliverable_shape": [
+    "bottom line",
+    "work performed",
+    "proof",
+    "risks and blockers",
+    "next action"
+  ],
+  "department": "custom",
+  "execution_efficiency_policy": {
+    "closeout": {
+      "actual_backend_model_thinking_required": true,
+      "attempt_and_retry_identity_required": true,
+      "incident_update_sla_seconds": 90,
+      "route_mismatch_blocks_acceptance": true
+    },
+    "effort_controls": {
+      "bounded_read_only_qa_thinking": "low",
+      "independent_material_privacy_or_security_qa_thinking": "high",
+      "low_effort_write_exception": "only an exact short-lived frozen Wave 2 admission binding with a current retained Terra-low v3 calibration; no fallback",
+      "ordinary_write_thinking": "medium_or_high_by_scope"
+    },
+    "handoff_budget": {
+      "explicit_base_path_required": true,
+      "manifest_hashes_and_frozen_snapshot_required": true,
+      "max_context_tokens": 30000,
+      "max_files": 6,
+      "max_total_bytes": 120000
+    },
+    "owner": "scripts/project_implementation_router.py",
+    "quality_weighted_efficiency": {
+      "automatic_route_promotion_allowed": false,
+      "automatic_route_ranking_allowed": false,
+      "cohort_pilot_required": false,
+      "compare_like_for_like_when_available": true,
+      "evaluation_mode": "owner_directed_on_demand_evidence_review",
+      "evidence_sources": [
+        "tmp/token-usage-ledger-current.json",
+        "tmp/implementation-token-attribution-bridge.json",
+        "tmp/model-run-ledger-current.json",
+        "tmp/coding-outcome-ledger-current.json"
+      ],
+      "incidents_and_invalid_telemetry_receive_success_credit": false,
+      "metrics": [
+        "uncached_input_tokens_per_main_accepted_job",
+        "gross_tokens_per_main_accepted_job",
+        "first_pass_acceptance",
+        "elapsed_time_to_accepted_proof",
+        "retry_tax",
+        "escaped_defects"
+      ],
+      "minimum_jobs_for_on_demand_review": 0
+    },
+    "route_order": [
+      {
+        "execution_backend": "model_free_command",
+        "expected_model_path": null,
+        "expected_thinking": "none",
+        "when": "explicit deterministic command and proof are both present"
+      },
+      {
+        "execution_backend": "codex_native_subagent",
+        "expected_model_path": "openai/gpt-5.6-terra",
+        "expected_thinking": "low_or_medium",
+        "fresh_dispatch_capability_proof_required": true,
+        "required_fork_policy": "none",
+        "when": "explicitly opted in, narrowly eligible, and backed by a fresh capability proof for model, thinking, backend, and fork controls"
+      },
+      {
+        "execution_backend": "main",
+        "expected_model_path": "openai/gpt-5.6-sol",
+        "expected_thinking": "high",
+        "implicit_fallback_allowed": false,
+        "when": "explicit quick bounded fix, final integration, or authority-sensitive judgment"
+      },
+      {
+        "cross_role_model_substitution_allowed": false,
+        "execution_backend": "persistent_isolated_agent",
+        "expected_model_path": null,
+        "expected_thinking": "low_medium_or_high_by_scope",
+        "fresh_transport_proof_required": true,
+        "model_selection": "exact_selected_agent_model",
+        "role_model_paths": {
+          "docs-continuity-editor": "ollama-cloud/glm-5.3-flash:cloud",
+          "finance-redteam": "openai/gpt-5.6-terra",
+          "finance-source-scout": "openai/gpt-5.6-terra",
+          "implementation-builder": "meta/muse-spark-1.3-contributor",
+          "qa-redteam": "ollama-cloud/glm-5.3:cloud",
+          "research-scout": "openai/gpt-5.6-terra"
+        },
+        "silent_main_fallback_allowed": false,
+        "when": "remaining bounded helper work with a fresh strict context-transport proof"
+      }
+    ],
+    "schema": "veritas.execution_efficiency_policy.v1",
+    "validation_budget": {
+      "micro": "deterministic proof plus Main verification",
+      "narrow": "focused tests plus Main verification",
+      "shared_or_major": "fresh independent QA after deterministic preflight"
+    }
+  },
+  "factory_managed_surfaces": [
+    "agent.capabilities.json",
+    "BOOTSTRAP.md",
+    "AGENTS.md",
+    "SOUL.md",
+    "IDENTITY.md",
+    "TOOLS.md",
+    "USER.md",
+    "HEARTBEAT.md"
+  ],
+  "fleet_operating_model": {
+    "automatic_runtime_or_authority_change_allowed": false,
+    "configured_isolated_agent_ids": [
+      "research-scout",
+      "qa-redteam",
+      "finance-source-scout",
+      "finance-redteam",
+      "implementation-builder",
+      "docs-continuity-editor"
+    ],
+    "configured_total_agent_count": 7,
+    "finance_route": [
+      "main",
+      "finance-source-scout when official evidence is needed",
+      "main analysis",
+      "finance-redteam for material judgment challenge",
+      "main final judgment"
+    ],
+    "general_route": [
+      "model_free_command when deterministic proof is complete",
+      "codex_native_subagent when explicitly eligible for bounded work",
+      "main on Sol for a quick bounded fix, final integration, or authority-sensitive judgment",
+      "persistent isolated specialist on its exact configured role model with fresh strict context transport proof",
+      "risk-budgeted QA when required",
+      "main acceptance and closeout"
+    ],
+    "main_agent_id": "main",
+    "main_authority": {
+      "final_judgment_owner": true,
+      "final_qc_owner": true,
+      "isolated_agents_can_accept": false,
+      "routing_owner": true,
+      "sole_acceptance_owner": true
+    },
+    "schema": "veritas.seven_agent_operating_model.v1"
+  },
+  "forbidden_surfaces": [
+    "~/.openclaw/openclaw.json unless separately approved",
+    "auth profiles, credentials, tokens, cookies, headers, and secrets",
+    "runtime, startup, service, plugin, channel, and network exposure config",
+    "brokerage, account, payment, customer, public-delivery, and external systems",
+    "finance canon, portfolio, cash, sizing, risk, paper, and live execution surfaces",
+    "factory-managed isolated-agent core boot surface mutation by the isolated agent"
+  ],
+  "generated_at_utc": "2026-09-05T04:57:12Z",
+  "handoff_contract": {
+    "entry_condition": "Main provides a bounded assignment with source scope, proof, and stop lines.",
+    "main_acceptance_proof_required_before_start": false,
+    "main_verified_required_before_start": false,
+    "mandatory_downstream_review": null,
+    "next_recipient": "Veritas main",
+    "predecessor": "Veritas main",
+    "repair_path": "Main decides whether a focused follow-up is needed.",
+    "self_acceptance_allowed": false
+  },
+  "identity": "main",
+  "main_supplied_context": {
+    "access_mode": "veritas_main_supplied_attachment_or_digest",
+    "assignment_rule": "Veritas main must supply the smallest relevant excerpt, attachment, or digest inside the assignment; the isolated agent must not reach outside its workspace to fetch these paths.",
+    "direct_read_required": false,
+    "surfaces": [
+      "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base\\index.md",
+      "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base\\contracts\\authority-boundaries.md",
+      "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base\\contracts\\capability-manifest.schema.json",
+      "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base\\runbooks\\spawn-contract.md",
+      "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base\\runbooks\\direct-agent-communication.md",
+      "C:\\Users\\Veritas\\.openclaw\\workspace\\06. Playbooks\\Agent Knowledge Base\\self-improvement\\latest-agent-delta.md"
+    ],
+    "workspace_only_compatible": true
+  },
+  "model_route": {
+    "cost_rule": "Use the role's exact configured model; narrow scope before increasing effort, and never inherit another role's model or Main.",
+    "current_configured_model": "openai/gpt-5.6-sol",
+    "default_model": "openai/gpt-5.6-sol",
+    "sol_helper_upgrade_allowed": false,
+    "upgrade_model": "openai/gpt-5.6-sol",
+    "upgrade_when": [
+      "increase the configured role model's thinking only when the validated route requires it",
+      "split or return cross-owner final judgment to Veritas main"
+    ]
+  },
+  "orchestration": {
+    "direct_agent_delegation_allowed": false,
+    "final_integrator": "Veritas main",
+    "final_judgment_owner": "Veritas main",
+    "final_qc_owner": "Veritas main",
+    "isolated_agents_can_accept": false,
+    "router": "Veritas main",
+    "sole_acceptance_owner": "Veritas main",
+    "user_facing_final_authority_allowed": false
+  },
+  "owner_workflow": "VERITAS-MAIN",
+  "profile_revision": "2026-09-04.role-bound-models.v4",
+  "prompt_examples": {
+    "bad_prompt": "Go do whatever is needed and update shared config if useful.",
+    "bad_prompt_reason": "Too broad; missing source scope, write scope, proof, and stop lines.",
+    "good_direct_prompt": "main, handle this scoped task for Veritas finance-first multi-workflow market intelligence, research, implementation, QA, and continuity operating system. State boundaries, read the requested sources, return proof, and stop before gated actions."
+  },
+  "role": "Custom isolated agent for Veritas finance-first multi-workflow market intelligence, research, implementation, QA, and continuity operating system.",
+  "routing_triggers": [
+    "an exact Veritas-main assignment whose role is not covered by a named profile"
+  ],
+  "runtime": {
+    "agent_dir": "C:\\Users\\Veritas\\.openclaw\\agents\\main\\agent",
+    "bindings_count": 1,
+    "is_default": false,
+    "model": "openai/gpt-5.6-sol",
+    "planned_not_installed": false,
+    "workspace": "C:\\Users\\Veritas\\.openclaw\\workspace"
+  },
+  "runtime_tool_posture": {
+    "access_class": "scoped_workspace_write",
+    "exec_allowed": false,
+    "exec_or_process_allowed": false,
+    "filesystem_scope": "agent_workspace_only",
+    "host_path_direct_reads_allowed": false,
+    "main_supplied_context_required": true,
+    "process_allowed": false,
+    "write_edit_patch_allowed": true
+  },
+  "schema": "openclaw.agent_capabilities.v1",
+  "self_improvement_feed": {
+    "allowed_inputs": [
+      "OTEL metadata summaries",
+      "WF74 opportunity and decision docket summaries",
+      "validator failure summaries",
+      "PM queue state summaries",
+      "Skill Workshop proposal status",
+      "lane closeout proof"
+    ],
+    "authority_limit": "Feed signals are routing evidence only, never approval or execution authority.",
+    "forbidden_inputs": [
+      "raw prompts, responses, hidden reasoning, raw tool payloads, secrets, credentials, customer/private data, brokerage/account data, external telemetry export"
+    ]
+  },
+  "source_surfaces_first": [
+    "SOUL.md",
+    "AGENTS.md",
+    "USER.md"
+  ],
+  "stop_lines": [
+    "Do not change runtime config.",
+    "Do not enable external bindings.",
+    "Do not create or mutate cron schedules.",
+    "Do not change telemetry capture depth, collector config, or external telemetry export.",
+    "Do not touch credentials, auth profiles, tokens, cookies, or secrets.",
+    "Do not contact people, businesses, customers, or public channels.",
+    "Do not infer owner approval, execution authority, finance authority, or customer/public delivery authority.",
+    "Return all work to Veritas main; do not claim final integration or user-facing final authority.",
+    "Do not delegate directly to another persistent isolated agent.",
+    "Do not delete, replace, or self-mutate factory-managed role packets."
+  ],
+  "supervised_agent_template_feed": {
+    "present": false,
+    "reason": "no role template mapped for this agent"
+  },
+  "tools_allowed": [
+    "read its own workspace doctrine",
+    "read task artifacts supplied or staged by Veritas main",
+    "write only inside its own scoped workspace"
+  ],
+  "tools_denied": [
+    "credential changes",
+    "runtime/config mutation",
+    "collector or telemetry capture-depth changes",
+    "cron schedule mutation",
+    "external posting, email, webhook, Telegram, Discord, or customer messaging",
+    "finance execution, brokerage/account action, money movement, or capital deployment",
+    "destructive cleanup, archive, delete, or broad file moves",
+    "live skill mutation unless Skill Workshop apply is explicitly approved"
+  ],
+  "validation_command_owner": "Veritas main",
+  "validation_commands": [
+    "python scripts\\agent_bootstrap_linter.py --agents <agent-id> --write --validate",
+    "openclaw agents list --json",
+    "openclaw agents bindings --json",
+    "openclaw config validate"
+  ],
+  "wiki_context_route": {
+    "agent_can_query_directly": false,
+    "authority": "routing and evidence only; never canon, approval, execution, or finance authority",
+    "canonical_pages": "wiki/**/*.md",
+    "corpus": "wiki",
+    "entry_pages": [
+      "wiki/index.md",
+      "wiki/syntheses/Cold Session Operating Routes.md",
+      "wiki/source-map/WF88 Wiki Source Map.md"
+    ],
+    "reason_agent_cannot_query": "isolated agents have no memory_search tool and no host-path direct reads",
+    "retrieval_mirror": "state/wiki-retrieval",
+    "supplier": "Veritas main",
+    "supply_mechanism": "Main runs memory_search with corpus=wiki and attaches the smallest relevant excerpt inside the frozen handoff"
+  },
+  "write_scope": [
+    "own workspace drafts and memory"
+  ]
+}

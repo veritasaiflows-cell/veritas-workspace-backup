@@ -102,7 +102,14 @@ def source_registry() -> dict[str, Any]:
 
 
 def stale_families(row: dict[str, Any]) -> list[str]:
-    return [str(item) for item in as_list(row.get("stale_families"))]
+    """Normalize the ``stale:`` family prefix emitted by the freshness ledger.
+
+    ``finance_intelligence_state.py`` prefixes ledger-derived families while card
+    gap families arrive bare; without this the Tier A/B evidence debt never
+    matches ``TARGET_FAMILIES``.
+    """
+
+    return [str(item).removeprefix("stale:") for item in as_list(row.get("stale_families"))]
 
 
 def matched_families(row: dict[str, Any]) -> set[str]:

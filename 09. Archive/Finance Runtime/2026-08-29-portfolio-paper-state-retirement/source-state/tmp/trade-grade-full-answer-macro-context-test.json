@@ -1,0 +1,342 @@
+{
+  "schema": "veritas.trade_grade_full_answer_assembler.v1",
+  "generated_at_utc": "2026-08-08T08:38:59Z",
+  "status": "ok",
+  "workflow_ids": [
+    "WF84",
+    "WF85"
+  ],
+  "purpose": "Build canonical WF85 full-answer objects and optional legacy answer-packet compatibility snapshots.",
+  "authority_boundary": {
+    "review_only": true,
+    "report_only": true,
+    "artifact_role": "wf85_full_answer_assembler_review_only",
+    "generated_answer_is_canon": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "cash_sizing_or_risk_rule_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "live_trade_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "archive_allowed": false,
+    "delete_allowed": false,
+    "apply_allowed": false,
+    "owner_approval_inferred": false,
+    "source_open_required_before_material_finance_claims": true
+  },
+  "summary": {
+    "requested_ticker_count": 1,
+    "full_answer_built_count": 1,
+    "legacy_packet_write_requested": false,
+    "legacy_packet_generation_source": "trade_grade_full_answer_assembler",
+    "validation_error_count": 0,
+    "validation_warning_count": 0,
+    "required_section_count": 17,
+    "sql_canon_scope_status": "ok",
+    "strategic_production_answer_count": 0,
+    "strategic_production_answer_definition": "Tier A/A-READY",
+    "legacy_compatibility_answer_count": 0,
+    "legacy_compatibility_scope_diff": {
+      "missing_from_sql": [],
+      "extra_in_sql": []
+    },
+    "sql_canon_production_answer_count": 0,
+    "sql_canon_production_scope_diff": {
+      "missing_from_sql": [],
+      "extra_in_sql": []
+    }
+  },
+  "required_sections": [
+    "thesis",
+    "business_quality_moat",
+    "bull_case",
+    "bear_case",
+    "earnings_guidance",
+    "financial_metrics",
+    "valuation",
+    "technical_setup",
+    "catalyst_news_macro",
+    "risk_invalidation",
+    "portfolio_fit",
+    "entry_stop_sizing",
+    "decision_state",
+    "trade_grade",
+    "owner_action",
+    "authority_approval_status",
+    "evidence_freshness_confidence"
+  ],
+  "results": [
+    {
+      "ticker": "GOOG",
+      "status": "built",
+      "full_answer_path": "tmp/trade-grade-full-answer/GOOG.json",
+      "legacy_packet_path": null,
+      "decision_state": "monitor_only",
+      "trade_grade": "C",
+      "missing_sections": [],
+      "issues": []
+    }
+  ],
+  "sql_canon_scope": {
+    "schema": "veritas.trade_grade_full_answer_assembler.sql_canon_scope.v1",
+    "status": "ok",
+    "access_validation_status": "ok",
+    "requested_ticker_count": 1,
+    "requested_state_ticker_count": 1,
+    "missing_state_tickers": [],
+    "expected_production_answer_tickers": [],
+    "strategic_production_answer_tickers": [],
+    "strategic_production_answer_count": 0,
+    "strategic_production_definition": "Tier A/A-READY",
+    "sql_canon_production_answer_tickers": [],
+    "sql_canon_production_answer_count": 0,
+    "sql_canon_production_answer_definition": "proof-joined strategic production scope",
+    "production_scope_diff": {
+      "missing_from_sql": [],
+      "extra_in_sql": []
+    },
+    "evaluated_scope_mismatches": [],
+    "migration_registry_summary": {
+      "priority_counts": {
+        "P0": 21,
+        "P1": 459,
+        "P2": 204
+      },
+      "lane_counts": {
+        "answer_path_parity_lane": 21,
+        "cron_pm_governance_lane": 14,
+        "pm_cockpit_lane": 2,
+        "source_loader_lane": 436,
+        "test_parity_lane": 203,
+        "typed_access_guard_lane": 3,
+        "wf78_wf77_routing_lane": 5
+      },
+      "cutover_state_counts": {
+        "not_cut_over": 116,
+        "source_producer": 389,
+        "sql_primary_guarded": 179
+      },
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": [],
+      "p0_answer_path_lane_status": {
+        "ok": true,
+        "errors": [],
+        "p0_count": 21,
+        "answer_path_lane_count": 21,
+        "p0_answer_path_lane_count": 21,
+        "p0_non_answer_path_count": 0,
+        "answer_path_non_p0_count": 0,
+        "p0_non_answer_path_consumers": [],
+        "answer_path_non_p0_consumers": []
+      }
+    },
+    "p0_registry_lane_status": {
+      "ok": true,
+      "errors": [],
+      "p0_count": 21,
+      "answer_path_lane_count": 21,
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": []
+    },
+    "validation": {
+      "status": "ok",
+      "critical_errors": [],
+      "warnings": []
+    },
+    "authority_boundary": {
+      "sql_canon_scope_validation_only": true,
+      "read_only_access_layer_required": true,
+      "consumer_cutover_allowed_by_this_packet": false,
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [],
+    "checks": [
+      {
+        "ticker": "GOOG",
+        "name": "all_required_sections_present",
+        "passed": true,
+        "severity": "error",
+        "detail": {
+          "missing": []
+        }
+      },
+      {
+        "ticker": "GOOG",
+        "name": "human_answer_text_present",
+        "passed": true,
+        "severity": "error",
+        "detail": "human answer text must be emitted"
+      },
+      {
+        "ticker": "GOOG",
+        "name": "machine_state_separated",
+        "passed": true,
+        "severity": "error",
+        "detail": "machine_state must be structured"
+      },
+      {
+        "ticker": "GOOG",
+        "name": "decision_grade_gate_present",
+        "passed": true,
+        "severity": "error",
+        "detail": "decision_grade_gate must be structured"
+      },
+      {
+        "ticker": "GOOG",
+        "name": "repair_states_not_decision_grade",
+        "passed": true,
+        "severity": "error",
+        "detail": {
+          "decision_state": "monitor_only",
+          "gate": {
+            "decision_grade_claim_allowed": false,
+            "decision_grade_status": "not_decision_grade_yet",
+            "specific_repair_required": "not_review_ready",
+            "blockers": [
+              "decision_state=monitor_only",
+              "not_owner_review_candidate",
+              "primary_state=blocked_missing_freshness",
+              "queue_state=blocked_missing_freshness"
+            ],
+            "may_use_approval_ready_language": false,
+            "owner_approval_required_before_action": true,
+            "capital_or_execution_authority": false
+          }
+        }
+      },
+      {
+        "ticker": "GOOG",
+        "name": "no_forbidden_authority_true",
+        "passed": true,
+        "severity": "error",
+        "detail": {
+          "forbidden": []
+        }
+      },
+      {
+        "ticker": "GOOG",
+        "name": "archive_delete_apply_false",
+        "passed": true,
+        "severity": "error",
+        "detail": {
+          "review_only": true,
+          "report_only": true,
+          "artifact_role": "wf85_full_answer_assembler_review_only",
+          "generated_answer_is_canon": false,
+          "canonical_note_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "cash_sizing_or_risk_rule_mutation_allowed": false,
+          "capital_deployment_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "paper_order_execution_allowed": false,
+          "paper_order_submit_allowed": false,
+          "paper_order_cancel_allowed": false,
+          "live_trade_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "live_brokerage_or_account_action_allowed": false,
+          "money_movement_allowed": false,
+          "archive_allowed": false,
+          "delete_allowed": false,
+          "apply_allowed": false,
+          "owner_approval_inferred": false,
+          "source_open_required_before_material_finance_claims": true
+        }
+      },
+      {
+        "ticker": "GOOG",
+        "name": "execution_authority_false",
+        "passed": true,
+        "severity": "error",
+        "detail": {
+          "review_only": true,
+          "report_only": true,
+          "artifact_role": "wf85_full_answer_assembler_review_only",
+          "generated_answer_is_canon": false,
+          "canonical_note_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "cash_sizing_or_risk_rule_mutation_allowed": false,
+          "capital_deployment_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "paper_order_execution_allowed": false,
+          "paper_order_submit_allowed": false,
+          "paper_order_cancel_allowed": false,
+          "live_trade_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "live_brokerage_or_account_action_allowed": false,
+          "money_movement_allowed": false,
+          "archive_allowed": false,
+          "delete_allowed": false,
+          "apply_allowed": false,
+          "owner_approval_inferred": false,
+          "source_open_required_before_material_finance_claims": true
+        }
+      },
+      {
+        "ticker": "GOOG",
+        "name": "legacy_packet_required_fields_present",
+        "passed": true,
+        "severity": "error",
+        "detail": {
+          "missing": []
+        }
+      },
+      {
+        "ticker": "GOOG",
+        "name": "legacy_packet_no_forbidden_authority_true",
+        "passed": true,
+        "severity": "error",
+        "detail": {
+          "forbidden": []
+        }
+      },
+      {
+        "ticker": "GOOG",
+        "name": "legacy_packet_from_assembler",
+        "passed": true,
+        "severity": "error",
+        "detail": {
+          "stale_after_hours": 36,
+          "built_from_card_at_utc": "2026-08-08T06:00:31Z",
+          "built_from_trade_grade_full_answer_assembler": true,
+          "assembler_schema": "veritas.trade_grade_full_answer_assembler.v1",
+          "note": "Compatibility snapshot generated from WF85 full-answer assembler."
+        }
+      }
+    ]
+  },
+  "retirement_signal": {
+    "ticker_answer_packets_are_compatibility_snapshots": true,
+    "answer_packets_may_be_retired_after_reader_inventory_and_exact_owner_approval": true,
+    "archive_delete_apply_allowed": false
+  },
+  "stop_lines": [
+    "No archive/delete/apply authority.",
+    "No source feeder or evidence cache retirement.",
+    "No paper/live/account/capital action or owner approval inference."
+  ]
+}

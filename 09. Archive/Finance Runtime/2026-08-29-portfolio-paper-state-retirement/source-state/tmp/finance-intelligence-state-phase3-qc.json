@@ -1,0 +1,183 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-08-28T02:51:52Z",
+  "artifact_type": "finance_intelligence_state_phase3_qc",
+  "db_path": "tmp/finance-intelligence-state.sqlite",
+  "authority_boundary": {
+    "review_only": true,
+    "database_path": "tmp/finance-intelligence-state.sqlite",
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_sql_canon_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_sql_canon_current_state_field_families": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "tmp_database_is_compatibility_cache": true,
+    "database_path_migration_performed": false,
+    "tmp_database_promotion_performed": false,
+    "full_sql_canon_migration_allowed": false,
+    "sql_canon_authority_expanded": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_trade_execution_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "source_open_required_before_finance_claims": true
+  },
+  "answer_contract": {
+    "sql_is_routing_and_current_state_only": true,
+    "material_finance_claim_requires_source_open": true,
+    "canonical_markdown_remains_owner_truth": true,
+    "must_not_infer_approval_or_execution_authority": true,
+    "must_disclose_stale_or_conflicting_rows": true
+  },
+  "sql_canon_migration": {
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_current_state_field_families_promoted": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "this_tmp_db_is_compatibility_cache": true,
+    "sql_canon_authority_expanded": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "status": "ok",
+  "phase": "WF78 Phase 3",
+  "sample_tickers": [
+    "ETN",
+    "VRT",
+    "NVDA",
+    "CME"
+  ],
+  "checks": [
+    {
+      "name": "state_validation_ok",
+      "ok": true,
+      "detail": {
+        "universe_rows": 300,
+        "all_ticker_sql_rows": 300,
+        "production_answer_path_rows": 14,
+        "review_monitor_thin_rows": 258,
+        "current_ticker_cards": 14,
+        "latest_valid_entry_stop_refs": 42,
+        "fundamental_snapshot_rows": 300,
+        "analyst_snapshot_rows": 300,
+        "stale_ticker_cards": 285,
+        "pending_approval_queue": 17,
+        "preopen_action_queue": 14,
+        "pilot_fixture_rows": 0,
+        "current_pilot_fixtures": 0,
+        "canon_conflict_candidates": 258
+      },
+      "severity": "error"
+    },
+    {
+      "name": "sample_ticker_packets_ok",
+      "ok": true,
+      "detail": {
+        "ETN": "ok",
+        "VRT": "ok",
+        "NVDA": "ok",
+        "CME": "ok"
+      },
+      "severity": "error"
+    },
+    {
+      "name": "sample_packets_source_open_required",
+      "ok": true,
+      "detail": "",
+      "severity": "error"
+    },
+    {
+      "name": "preopen_packet_ok",
+      "ok": true,
+      "detail": {
+        "rows": 10
+      },
+      "severity": "error"
+    },
+    {
+      "name": "pending_packet_ok",
+      "ok": true,
+      "detail": {
+        "rows": 17
+      },
+      "severity": "error"
+    },
+    {
+      "name": "validator_packet_ok",
+      "ok": true,
+      "detail": {
+        "error_failures": 0
+      },
+      "severity": "error"
+    },
+    {
+      "name": "entry_stop_refs_packet_has_rows",
+      "ok": true,
+      "detail": {
+        "rows": 42
+      },
+      "severity": "error"
+    },
+    {
+      "name": "pilot_fixtures_packet_ok",
+      "ok": true,
+      "detail": {
+        "rows": 0,
+        "production_overlap_count": 0
+      },
+      "severity": "error"
+    },
+    {
+      "name": "source_proof_packets_ok",
+      "ok": true,
+      "detail": {
+        "ETN": "ok",
+        "VRT": "ok",
+        "NVDA": "ok",
+        "CME": "ok"
+      },
+      "severity": "error"
+    },
+    {
+      "name": "all_query_packets_preserve_forbidden_authority_false",
+      "ok": true,
+      "detail": [],
+      "severity": "error"
+    }
+  ],
+  "generated_packets": {
+    "validation": "tmp/finance-intelligence-state-validation.json",
+    "ticker_packet": "tmp/finance-intelligence-state-ticker-packet.json",
+    "preopen": "tmp/finance-intelligence-state-preopen-packet.json",
+    "stale_tickers": "tmp/finance-intelligence-state-stale-tickers.json",
+    "pending_approvals": "tmp/finance-intelligence-state-pending-approvals.json",
+    "validator_status": "tmp/finance-intelligence-state-validator-status.json",
+    "source_proof": "tmp/finance-intelligence-state-source-proof.json",
+    "entry_stop_refs": "tmp/finance-intelligence-state-entry-stop-refs.json",
+    "action_queue": "tmp/finance-intelligence-state-action-queue.json",
+    "pilot_fixtures": "tmp/finance-intelligence-state-pilot-fixtures.json",
+    "live_pilot": "tmp/finance-intelligence-state-live-pilot.json",
+    "paper_positions": "tmp/finance-intelligence-state-paper-positions.json"
+  },
+  "scope_boundary": "Read-only query surface over internal SQL-canon primary guarded current-state plus the legacy compatibility cache where still required. No database path move, no tmp promotion, no retail/customer activation, and no capital/execution authority expansion."
+}

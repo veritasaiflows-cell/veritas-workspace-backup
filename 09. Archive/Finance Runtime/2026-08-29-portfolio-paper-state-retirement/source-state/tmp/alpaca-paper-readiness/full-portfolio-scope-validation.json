@@ -1,0 +1,25 @@
+{
+  "artifact_type": "wf67_full_portfolio_scope_validation",
+  "artifacts": {
+    "basket_request": "tmp/alpaca-paper-readiness/paper-basket-request.tranche0-dry-run.json",
+    "scope": "tmp/alpaca-paper-readiness/full-portfolio-scope.wf67-100k-v1.json"
+  },
+  "canonical_portfolio_apply_allowed": false,
+  "findings": [],
+  "generated_at_utc": "2026-06-12T06:25:17Z",
+  "live_trading_allowed": false,
+  "money_movement_allowed": false,
+  "owner_approval_required": true,
+  "paper_only": true,
+  "ready_for_basket_dry_run": true,
+  "ready_for_paper_execution": false,
+  "review_ready_scope": true,
+  "schema_version": 1,
+  "status": "ok",
+  "summary": {
+    "critical": 0,
+    "warning": 0
+  },
+  "verdict": "WF67 full-portfolio paper scope is review-ready and dry-run-scaffolded, but paper execution remains blocked pending explicit owner approval, fresh validators, kill switch, and exact tranche/basket order terms.",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

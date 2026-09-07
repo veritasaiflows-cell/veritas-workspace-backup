@@ -1,7 +1,7 @@
 {
   "window": "post-close",
-  "run_id": "20260826T203311Z_post-close",
-  "generated_at_utc": "2026-08-26T20:33:11Z",
+  "run_id": "20260828T203035Z_post-close",
+  "generated_at_utc": "2026-08-28T20:30:35Z",
   "status": "blocked",
   "stop_line": true,
   "owner": {
@@ -9,9 +9,9 @@
     "window_owner": "scripts/run_finance_refresh_chain.py"
   },
   "timing": {
-    "started_at_utc": "2026-08-26T20:20:08Z",
-    "completed_at_utc": "2026-08-26T20:33:10Z",
-    "duration_seconds": 782
+    "started_at_utc": "2026-08-28T20:20:01Z",
+    "completed_at_utc": "2026-08-28T20:30:34Z",
+    "duration_seconds": 633
   },
   "execution": {
     "chain_status": "completed_with_recovery",
@@ -116,7 +116,7 @@
   "validation": {
     "acceptance_passed": false,
     "dashboard_validation_status": "critical",
-    "critical": 14,
+    "critical": 16,
     "warning": 11,
     "info": 1,
     "exec_freshness": "usable_with_caution"
@@ -129,11 +129,11 @@
     "operator_next_action": "Run python scripts/artifact_index.py incremental, then python scripts/artifact_index.py validate, before relying on the SQL cockpit as the primary proof lookup route.",
     "status": "blocked",
     "schema_version": 7,
-    "generated_at_utc": "2026-08-26T20:33:11Z",
-    "db_mtime_utc": "2026-08-26T20:33:07Z",
+    "generated_at_utc": "2026-08-28T20:30:35Z",
+    "db_mtime_utc": "2026-08-28T20:30:33Z",
     "last_rebuilt_at_utc": "2026-08-08T15:38:45Z",
-    "last_incremental_rebuilt_at_utc": "2026-08-26T20:33:05Z",
-    "source_file_count": 188,
+    "last_incremental_rebuilt_at_utc": "2026-08-28T20:30:31Z",
+    "source_file_count": 189,
     "checks": {
       "checks": 33,
       "failed": 1
@@ -148,12 +148,12 @@
       "official_ir_fields_without_lineage": 0
     },
     "key_counts": {
-      "artifact_runs": 186,
-      "artifact_file_state": 188,
+      "artifact_runs": 187,
+      "artifact_file_state": 189,
       "market_events": 993,
-      "daily_review_objects": 104,
-      "official_ir_capture_runs": 60,
-      "source_field_lineage": 449,
+      "daily_review_objects": 87,
+      "official_ir_capture_runs": 61,
+      "source_field_lineage": 457,
       "canon_proposal_staging": 18
     },
     "drift_fingerprint_tables": 19,
@@ -165,12 +165,12 @@
     "command_center": {
       "status": "ok",
       "path": "tmp/veritas-command-center.html",
-      "generated_at_utc": "2026-08-26T20:33:10Z"
+      "generated_at_utc": "2026-08-28T20:30:34Z"
     },
     "dashboard_validation": {
       "status": "stale",
       "path": "tmp/dashboard-validation.json",
-      "generated_at_utc": "2026-08-26T13:25:24.672150+00:00"
+      "generated_at_utc": "2026-08-28T13:24:41.834454+00:00"
     },
     "dashboard_acceptance": {
       "status": "stale",
@@ -210,22 +210,22 @@
     "fundamental_metrics_current": {
       "status": "ok",
       "path": "tmp/fundamental-metrics-current.json",
-      "generated_at_utc": "2026-08-26T20:20:25Z"
+      "generated_at_utc": "2026-08-28T20:20:09Z"
     },
     "fundamental_metrics_validation": {
       "status": "partial",
       "path": "tmp/fundamental-metrics-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:24Z"
+      "generated_at_utc": "2026-08-28T20:28:33Z"
     },
     "fundamental_ir_reconciliation_packets": {
       "status": "ok",
       "path": "tmp/fundamental-ir-reconciliation-packets.json",
-      "generated_at_utc": "2026-08-26T20:30:48Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "fundamental_ir_reconciliation_validation": {
       "status": "ok",
       "path": "tmp/fundamental-ir-reconciliation-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:50Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "amd_official_ir_capture": {
       "status": "ok",
@@ -236,7 +236,7 @@
     "amd_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/amd-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "amzn_official_ir_capture": {
       "status": "stale",
@@ -246,7 +246,7 @@
     "amzn_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/amzn-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "brk_b_official_ir_capture": {
       "status": "stale",
@@ -256,7 +256,7 @@
     "brk_b_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/brk.b-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "cat_official_ir_capture": {
       "status": "stale",
@@ -266,7 +266,7 @@
     "cat_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/cat-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "cvx_official_ir_capture": {
       "status": "stale",
@@ -276,7 +276,7 @@
     "cvx_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/cvx-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "etn_official_ir_capture": {
       "status": "ok",
@@ -287,7 +287,7 @@
     "etn_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/etn-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "ge_official_ir_capture": {
       "status": "stale",
@@ -297,7 +297,7 @@
     "ge_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/ge-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "goog_official_ir_capture": {
       "status": "ok",
@@ -308,7 +308,7 @@
     "goog_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/goog-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "gs_official_ir_capture": {
       "status": "stale",
@@ -318,7 +318,7 @@
     "gs_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/gs-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "jpm_official_ir_capture": {
       "status": "stale",
@@ -328,7 +328,7 @@
     "jpm_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/jpm-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "lly_official_ir_capture": {
       "status": "stale",
@@ -338,7 +338,7 @@
     "lly_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/lly-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "lmt_official_ir_capture": {
       "status": "ok",
@@ -349,7 +349,7 @@
     "lmt_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/lmt-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "meta_official_ir_capture": {
       "status": "stale",
@@ -359,7 +359,7 @@
     "meta_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/meta-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "msft_official_ir_capture": {
       "status": "ok",
@@ -370,17 +370,18 @@
     "msft_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/msft-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "nvda_official_ir_capture": {
       "status": "ok",
-      "path": "tmp/official-ir-captures/nvda-q1-2026.json",
-      "generated_at_utc": "2026-08-26T20:30:33Z"
+      "path": "tmp/official-ir-captures/nvda-q3-2026.json",
+      "generated_at_utc": "2026-08-26T20:55:34Z",
+      "rollforward_guard_current_reused": true
     },
     "nvda_official_ir_capture_validation": {
       "status": "ok",
-      "path": "tmp/official-ir-captures/nvda-q1-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "path": "tmp/official-ir-captures/nvda-q3-2026-validation.json",
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "ph_official_ir_capture": {
       "status": "stale",
@@ -390,7 +391,7 @@
     "ph_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/ph-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "pltr_official_ir_capture": {
       "status": "stale",
@@ -400,7 +401,7 @@
     "pltr_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/pltr-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "rtx_official_ir_capture": {
       "status": "stale",
@@ -410,7 +411,7 @@
     "rtx_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/rtx-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "vrt_official_ir_capture": {
       "status": "stale",
@@ -420,7 +421,7 @@
     "vrt_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/vrt-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     },
     "xom_official_ir_capture": {
       "status": "ok",
@@ -431,25 +432,27 @@
     "xom_official_ir_capture_validation": {
       "status": "ok",
       "path": "tmp/official-ir-captures/xom-q2-2026-validation.json",
-      "generated_at_utc": "2026-08-26T20:30:47Z"
+      "generated_at_utc": "2026-08-28T20:28:47Z"
     }
   },
   "warnings": [
     "AMD inBand flag disagrees with configured band math",
+    "BKNG inBand flag disagrees with configured band math",
     "BRK.B inBand flag disagrees with configured band math",
-    "CAT inBand flag disagrees with configured band math",
     "ETN inBand flag disagrees with configured band math",
     "GE inBand flag disagrees with configured band math",
+    "GOOG belowStop flag disagrees with configured stop",
     "GOOG inBand flag disagrees with configured band math",
     "JPM inBand flag disagrees with configured band math",
+    "LIN belowStop flag disagrees with configured stop",
     "LIN inBand flag disagrees with configured band math",
-    "NVDA inBand flag disagrees with configured band math",
+    "LLY inBand flag disagrees with configured band math",
     "PH inBand flag disagrees with configured band math",
     "RTX inBand flag disagrees with configured band math",
     "VRT belowStop flag disagrees with configured stop",
     "VRT inBand flag disagrees with configured band math",
     "WMB inBand flag disagrees with configured band math",
-    "2 entry band(s) still have applyable review debt: ETN, MSFT. Run auto_apply_entry_band_maintenance.py --apply for eligible proposed levels: ETN, MSFT.",
+    "2 entry band(s) still have applyable review debt: ETN, VRT. Run auto_apply_entry_band_maintenance.py --apply for eligible proposed levels: ETN, VRT.",
     "BRK.B is execution-lane in config but missing from the Coverage and Watchlist universe table, and the SQL-first thin-board contract is not accepted.",
     "ETN is execution-lane in config but missing from the Coverage and Watchlist universe table, and the SQL-first thin-board contract is not accepted.",
     "GOOG is execution-lane in config but missing from the Coverage and Watchlist universe table, and the SQL-first thin-board contract is not accepted.",
@@ -467,7 +470,7 @@
     "Finance refresh chain failed at auto_apply_entry_band_maintenance.py (exit code 1)",
     "Missing, stale, or failed required outputs: dashboard_validation, dashboard_acceptance, workbook_exports, post_earnings_prep, post_earnings_note_targets, postmarket_snapshot, daily_executive_brief, postclose_brief_input, amzn_official_ir_capture, brk_b_official_ir_capture, cat_official_ir_capture, cvx_official_ir_capture, ge_official_ir_capture, gs_official_ir_capture, jpm_official_ir_capture, lly_official_ir_capture, meta_official_ir_capture, ph_official_ir_capture, pltr_official_ir_capture, rtx_official_ir_capture, vrt_official_ir_capture",
     "Dashboard acceptance did not fully pass",
-    "Dashboard validation surfaced 14 critical issue(s)"
+    "Dashboard validation surfaced 16 critical issue(s)"
   ],
   "operator_action_required": [
     "Run python scripts/artifact_index.py incremental, then python scripts/artifact_index.py validate, before relying on the SQL cockpit as the primary proof lookup route.",

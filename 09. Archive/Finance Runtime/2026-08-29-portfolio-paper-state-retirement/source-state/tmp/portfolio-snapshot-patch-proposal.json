@@ -1,0 +1,387 @@
+{
+  "authority": {
+    "canonical_mutation_scope": "bounded freshness/status sync only",
+    "cron_apply_allowed": false,
+    "cron_generation_allowed": true,
+    "deployment_authority_allowed": false,
+    "main_session_may_apply_after_review": true,
+    "owner_judgment_promotion_demotion_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "posture": "review_only_portfolio_snapshot_patch_proposals",
+    "sizing_or_weight_change_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "candidates": [
+    {
+      "apply_instruction": "Main session may apply only after inspecting current artifacts and confirming this is a freshness/status sync. Do not change draft weights, cash, sleeves, owner approval, sizing, execution entitlement, or trade action.",
+      "candidate_id": "pspp_20260814T131556Z_001_freshness_header",
+      "canonical_auto_apply_allowed": false,
+      "cron_apply_allowed": false,
+      "current_machine_summary": "Machine view shows deployable-now/review-only: none; prepare/wait: ETN, GOOG, JPM, MSFT, NVDA; below-stop/do-not-touch: CME, LIN, META, NFLX, TMUS, VMC, XLC; near-stop: GOOG.",
+      "current_note_freshness": {
+        "data_as_of": null,
+        "data_as_of_clean": null,
+        "date": null,
+        "date_clean": null,
+        "last_updated": null,
+        "last_updated_clean": null
+      },
+      "deployment_authority_allowed": false,
+      "evidence": {
+        "full_portfolio_view_generated_at_utc": "2026-08-14T13:15:56Z",
+        "full_portfolio_view_market_data_as_of": "2026-08-13",
+        "source_artifacts": [
+          {
+            "exists": true,
+            "expected_update_window": "Update after any portfolio model change, rebalance, risk rule revision, entry-band refresh, or tracked-universe policy change.",
+            "generated_at_utc": "2026-05-23T19:50:12Z",
+            "last_trading_day": null,
+            "name": "portfolio_config",
+            "path": "tmp\\portfolio-config.json",
+            "stale_after_hours": 168,
+            "status": "ok"
+          },
+          {
+            "exists": true,
+            "expected_update_window": "Refresh each weekday, after material earnings moves, and before decision-grade deployment work.",
+            "generated_at_utc": "2026-08-14T13:14:45.500350+00:00",
+            "last_trading_day": "2026-08-13",
+            "name": "technical_refresh",
+            "path": "tmp\\technical-refresh.json",
+            "stale_after_hours": 36,
+            "status": "ok"
+          },
+          {
+            "exists": true,
+            "expected_update_window": "Run after technical and market refresh, before trigger-sheet generation, dashboard generation, or any decision-grade execution review.",
+            "generated_at_utc": "2026-08-14T13:15:19.195114+00:00",
+            "last_trading_day": "2026-08-13",
+            "name": "deployment_check",
+            "path": "tmp\\deployment-check.json",
+            "stale_after_hours": 24,
+            "status": "ok"
+          },
+          {
+            "exists": true,
+            "expected_update_window": "Run after deployment check, earnings enrichment, and market-state refresh before dashboard generation or note-layer deployment review.",
+            "generated_at_utc": "2026-08-14T13:15:19.270841+00:00",
+            "last_trading_day": "2026-08-13",
+            "name": "trigger_sheet",
+            "path": "tmp\\trigger-sheet.json",
+            "stale_after_hours": 24,
+            "status": "ok"
+          },
+          {
+            "exists": true,
+            "expected_update_window": null,
+            "generated_at_utc": "2026-08-14T13:15:20.797442+00:00",
+            "last_trading_day": "2026-08-13",
+            "name": "regime_scores",
+            "path": "tmp\\regime-scores.json",
+            "stale_after_hours": 36,
+            "status": "ok"
+          },
+          {
+            "exists": true,
+            "expected_update_window": null,
+            "generated_at_utc": "2026-08-14T13:15:55Z",
+            "last_trading_day": null,
+            "name": "board_canon_guardrail",
+            "path": "tmp\\board-canon-guardrail.json",
+            "stale_after_hours": null,
+            "status": "warning"
+          },
+          {
+            "exists": true,
+            "expected_update_window": null,
+            "generated_at_utc": "2026-08-13T23:33:40.754741+00:00",
+            "last_trading_day": "2026-08-13",
+            "name": "daily_executive_brief",
+            "path": "tmp\\daily-executive-brief.json",
+            "stale_after_hours": null,
+            "status": null
+          },
+          {
+            "exists": true,
+            "expected_update_window": "Refresh before weekly intelligence, weekday executive briefs, deployment review, trigger-sheet generation, and any macro-sensitive portfolio review.",
+            "generated_at_utc": "2026-08-14T13:13:50.858900+00:00",
+            "last_trading_day": "2026-08-13",
+            "name": "market_state",
+            "path": "tmp\\market-state.json",
+            "stale_after_hours": 24,
+            "status": "ok"
+          }
+        ],
+        "summary": {
+          "below_stop": [
+            "CME",
+            "LIN",
+            "META",
+            "NFLX",
+            "TMUS",
+            "VMC",
+            "XLC"
+          ],
+          "bench_or_repair": [
+            "BKNG",
+            "BRK.B",
+            "LMT",
+            "XOM"
+          ],
+          "deployable_now_review_only": [],
+          "do_not_touch": [
+            "CME",
+            "LIN",
+            "META",
+            "NFLX",
+            "TMUS",
+            "VMC",
+            "XLC"
+          ],
+          "market_data_as_of": "2026-08-13",
+          "monitor": [
+            "AMZN",
+            "CAT",
+            "ECL",
+            "GS",
+            "ITA",
+            "LNG",
+            "PH",
+            "VRT",
+            "XLB"
+          ],
+          "near_stop": [
+            "GOOG"
+          ],
+          "prepare_or_wait": [
+            "ETN",
+            "GOOG",
+            "JPM",
+            "MSFT",
+            "NVDA"
+          ],
+          "record_count": 42,
+          "sector_summary": [
+            {
+              "draft_weight_total": 25.0,
+              "sector": "Tech",
+              "tickers": [
+                "AMD",
+                "AMZN",
+                "GOOG",
+                "MSFT",
+                "NVDA",
+                "PLTR",
+                "SMCI"
+              ]
+            },
+            {
+              "draft_weight_total": 21.0,
+              "sector": "Financials",
+              "tickers": [
+                "GS",
+                "JPM",
+                "XLF"
+              ]
+            },
+            {
+              "draft_weight_total": 12.0,
+              "sector": "Diversified Quality",
+              "tickers": [
+                "BRK.B"
+              ]
+            },
+            {
+              "draft_weight_total": 10.0,
+              "sector": "Energy",
+              "tickers": [
+                "CVX",
+                "LNG",
+                "XLE",
+                "XOM"
+              ]
+            },
+            {
+              "draft_weight_total": 7.0,
+              "sector": "Industrials",
+              "tickers": [
+                "CAT",
+                "ETN",
+                "PH",
+                "VRT",
+                "XLI"
+              ]
+            },
+            {
+              "draft_weight_total": 3.0,
+              "sector": "Commodities",
+              "tickers": [
+                "SLV"
+              ]
+            },
+            {
+              "draft_weight_total": 2.0,
+              "sector": "Defense",
+              "tickers": [
+                "KTOS",
+                "LMT",
+                "RTX"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Aerospace",
+              "tickers": [
+                "GE"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Aerospace & Defense",
+              "tickers": [
+                "ITA"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Communication Services",
+              "tickers": [
+                "META",
+                "NFLX",
+                "XLC"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Communication Services / Telecom",
+              "tickers": [
+                "TMUS"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Consumer Discretionary",
+              "tickers": [
+                "BKNG"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Energy Infrastructure",
+              "tickers": [
+                "WMB"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Financial Infrastructure",
+              "tickers": [
+                "CME"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Fixed Income",
+              "tickers": [
+                "TLT"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Healthcare",
+              "tickers": [
+                "LLY"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Infrastructure",
+              "tickers": [
+                "PAVE"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "International Equity",
+              "tickers": [
+                "VXUS"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Materials",
+              "tickers": [
+                "LIN",
+                "VAW",
+                "XLB"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Materials / Infrastructure",
+              "tickers": [
+                "VMC"
+              ]
+            },
+            {
+              "draft_weight_total": 0.0,
+              "sector": "Materials / Services",
+              "tickers": [
+                "ECL"
+              ]
+            }
+          ],
+          "watch": [
+            "AMD",
+            "CVX",
+            "GE",
+            "KTOS",
+            "LLY",
+            "PAVE",
+            "PLTR",
+            "RTX",
+            "SLV",
+            "SMCI",
+            "TLT",
+            "VAW",
+            "VXUS",
+            "WMB",
+            "XLE",
+            "XLF",
+            "XLI"
+          ]
+        }
+      },
+      "exact_old_text": "",
+      "main_session_approval_required": true,
+      "owner_judgment_promotion_demotion_allowed": false,
+      "portfolio_mutation_allowed": false,
+      "proposal_class": "portfolio_snapshot_freshness_sync",
+      "proposed_new_text": "",
+      "rollback_note": "Restore the previous header/freshness lines if the machine view was stale or contradicted by live artifacts.",
+      "severity": "warning",
+      "sizing_or_weight_change_allowed": false,
+      "status": "proposed_for_main_session_review",
+      "target_market_data_as_of": "2026-08-13",
+      "target_note": "03. Portfolio\\Portfolio Snapshot.md",
+      "trade_execution_allowed": false,
+      "why_patch_is_needed": "Portfolio Snapshot freshness fields do not match full portfolio machine view market_data_as_of=2026-08-13."
+    }
+  ],
+  "generated_at_utc": "2026-08-14T13:15:56Z",
+  "schema_version": 1,
+  "status": "proposals_pending_review",
+  "summary": {
+    "candidate_count": 1,
+    "full_portfolio_view_market_data_as_of": "2026-08-13",
+    "note_freshness": {
+      "data_as_of": null,
+      "data_as_of_clean": null,
+      "date": null,
+      "date_clean": null,
+      "last_updated": null,
+      "last_updated_clean": null
+    },
+    "target_note": "03. Portfolio\\Portfolio Snapshot.md"
+  }
+}

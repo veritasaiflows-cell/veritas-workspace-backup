@@ -1,3 +1,15 @@
+# Retired — Weekly Intelligence Brief Machine Sidecar
+
+Status: retired on 2026-08-29 during the alerts-and-recommendations OS pivot.
+
+This generated sidecar is retained only as dated historical evidence. It is not current proof, canon, or a workflow input. The active weekly route is:
+
+`python scripts\run_alerts_recommendations_chain.py weekly --timeout-seconds 120 --write --validate`
+
+## Retired generated history — non-operative
+
+Every record below is legacy output. Old sources, classifications, routes, and authority language are retired.
+
 # Weekly Intelligence Brief
 
 ## Purpose
@@ -330,6 +342,7 @@ Use it to synthesize macro, sector, company, sentiment, and event-driven signals
 - **Bank manual-review queue:** JPM, GS, AXP, MA, V, ACGL, AFL, AIG, AIZ, AJG, ALL, AMP require CET1/ROTCE/NIM/deposit/credit-quality review; industrial FCF/debt gates are suppressed.
 - **Structured anomaly queue:** ETN, JPM, GOOG, MSFT, LMT, XOM, AMZN, BKNG, CAT, GS, CVX, KTOS.
 - **Boundary:** buybacks, share-count improvements, FCF/share growth, ROIC proxy, and valuation context are evidence only; they do not create deployability, owner approval, sizing, sleeve, account, or trade authority.
+
 
 ---
 

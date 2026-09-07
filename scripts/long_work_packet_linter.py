@@ -18,6 +18,13 @@ from typing import Any
 
 from market_data_utils import atomic_write_json, load_json_artifact
 
+try:
+    import task_scoped_model_role_contract as task_role_contract
+except ImportError:  # Contract module absent: default linter behavior unchanged.
+    task_role_contract = None  # type: ignore[assignment]
+
+import agent_fleet_policy as fleet_policy  # Required owner: missing module fails closed at import.
+
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -52,18 +59,25 @@ VALIDATOR_BUDGETS = {"micro": 0, "narrow": 1, "shared": 2, "major": 3}
 TERMINAL_STATUSES = {"complete", "blocked", "cancelled"}
 ACTIVE_STATUSES = {"planned", "leased", "running"}
 
+# Specialist role ownership derives from the required fleet owner module
+# (approved FLEET-ALIGNMENT-20260905 six-role map). Helper/draft entries
+# below are retained for compatibility; legacy GPT-5.5/5.4 entries are
+# removed (no persistent or fallback use remains).
 MODEL_ROLES: dict[str, set[str]] = {
-    "openai/gpt-5.6-terra": {"main_integrator", "final_integrator", "main_integration_final_judgment", "bounded_implementation_helper", "serious_helper", "research_helper", "qa_helper", "cron_tool_helper"},
-    "openai/gpt-5.6-sol": {"main_escalation", "main_challenger", "main_qa_exception", "high_stakes_exception"},
+    "openai/gpt-5.6-terra": {
+        "bounded_native_helper",
+        "cron_tool_helper",
+    },
+    "openai/gpt-6-astra": {"main_integration_final_judgment", "main_integrator", "final_integrator"},
+    "openai/gpt-5.6-sol": {"main_integration_final_judgment", "main_integrator", "final_integrator"},
     "openai/gpt-5.6-luna": {"deterministic_cron_helper", "proof_digest_status_helper"},
-    "openai/gpt-5.5": {"primary_fallback"},
-    "openai/gpt-5.4": {"rollback_control"},
-    "openai/gpt-5.4-mini": {"rollback_control"},
     "ollama-cloud/kimi-k2.7-code:cloud": {"code_research_draft_helper"},
     "ollama-cloud/glm-5.2:cloud": {"long_context_draft_review_helper"},
     "ollama-cloud/minimax-m3:cloud": {"bounded_drafting_scaffolding_helper"},
     "ollama-cloud/deepseek-v4-pro:cloud": {"untrusted_research_reasoning_challenger"},
 }
+for _fleet_role, _fleet_model in fleet_policy.SPECIALIST_PRIMARY.items():
+    MODEL_ROLES.setdefault(_fleet_model, set()).add(f"{_fleet_role}_specialist")
 
 AUTHORITY_STOP_LINE_TERMS: dict[str, tuple[str, ...]] = {
     "runtime_sensitive": ("auth", "config", "runtime", "credential"),
@@ -254,6 +268,61 @@ def validate_write_mode(packet: dict[str, Any], lane: dict[str, Any], stage: str
         add_finding(findings, "critical", "closeout_lane_not_terminal", "Closeout requires the lane to be complete, blocked, or cancelled.", status=lane_status)
 
 
+def validate_task_role_in_packet(packet: dict[str, Any], findings: list[dict[str, Any]]) -> None:
+    """Project the bounded task-role contract into packet lint.
+
+    Absent fragment: no findings (default GLM QA, mandatory downstream
+    review order, and persistent-specialist guards unchanged). Present
+    fragment: re-validate structurally and fail closed on invalid scope,
+    child Main-acceptance claims, persistent masquerade, model/effort
+    mismatch in the typed task-child block, or review-sequence drift.
+    Non-executing. Approval bytes are re-verified here against the frozen snapshot
+    as well as router-side at build and validate; hand-built packets with
+    missing or tampered approval bytes fail closed.
+    """
+    fragment = as_dict(as_dict(packet.get("model_route")).get("task_role_contract"))
+    if not fragment:
+        return
+    if task_role_contract is None:
+        add_finding(findings, "critical", "task_role_module_absent", "Packet carries a task-role fragment but the contract module is unavailable.")
+        return
+    if fragment.get("status") != "ok" or not isinstance(fragment.get("contract"), dict):
+        add_finding(findings, "critical", "task_role_contract_invalid", "Packet task-role fragment is not a validated ok contract.", errors=fragment.get("errors"))
+        return
+    check = task_role_contract.validate_task_role_contract(fragment.get("contract"))
+    if check.get("status") != "ok":
+        add_finding(findings, "critical", "task_role_contract_invalid", "Packet task-role contract failed re-validation.", errors=check.get("errors"))
+        return
+    gate = task_role_contract.verify_contract_against_approval(fragment.get("contract"), ROOT)
+    if gate.get("status") != "ok":
+        add_finding(findings, "critical", "task_role_approval_unverified", "Packet task-role approval bytes failed verification.", errors=gate.get("errors"))
+        return
+    model_route = as_dict(packet.get("model_route"))
+    hit = task_role_contract.child_claims_main_acceptance(child_role=fragment.get("child_role"), model_route=model_route)
+    if hit is not None:
+        add_finding(findings, "critical", hit["code"], hit["message"], **hit.get("detail", {}))
+    mask = task_role_contract.persistent_masquerade(child_role=fragment.get("child_role"), model_route=model_route)
+    if mask is not None:
+        add_finding(findings, "critical", mask["code"], mask["message"], **mask.get("detail", {}))
+    child = str(fragment.get("child_role") or "").strip()
+    typed = fragment.get("task_child_route")
+    if child:
+        if not isinstance(typed, dict):
+            add_finding(findings, "critical", "task_child_route_projection_invalid", "Valid packet fragment must carry the typed task-child route block.", child_role=child)
+            return
+        approved = task_role_contract.APPROVED_ROLE_MAP.get(child, {})
+        acceptable = {str(approved.get("requested_model") or "").strip(), str(approved.get("observed_backend_model") or "").strip()} - {""}
+        typed_model = str(typed.get("model") or "").strip()
+        if typed_model not in acceptable:
+            add_finding(findings, "critical", "task_role_model_masquerade", "Typed task-child model does not match the approved mapping.", child_role=child, expected=sorted(acceptable), actual=typed_model)
+        if str(typed.get("execution_backend") or "").strip() != task_role_contract.TASK_CHILD_BACKEND:
+            add_finding(findings, "critical", "task_child_backend_invalid", "Typed task-child route must use the explicit tool-loop backend.", child_role=child)
+        if child in {"plan_challenger", "qa"} and str(typed.get("thinking") or "").strip().lower() != "high":
+            add_finding(findings, "critical", "task_child_thinking_not_high", "Challenger/QA task-child routes require HIGH effort.", child_role=child)
+        if [str(item) for item in (typed.get("review_sequence") or [])] != list(task_role_contract.MANDATORY_REVIEW_SEQUENCE):
+            add_finding(findings, "critical", "review_sequence_invalid", "Packet fragment must carry the exact mandatory review sequence.", child_role=child)
+
+
 def validate_model(packet: dict[str, Any], findings: list[dict[str, Any]]) -> None:
     model_route = as_dict(packet.get("model_route"))
     model = str(model_route.get("model") or "").strip()
@@ -279,6 +348,7 @@ def validate_model(packet: dict[str, Any], findings: list[dict[str, Any]]) -> No
         if not value:
             add_finding(findings, "critical", "model_route_missing_field", "Model route is missing a required field.", field=field)
 
+    validate_task_role_in_packet(packet, findings)
     if model_free:
         if expected_model_path is not None or expected_thinking != "none":
             add_finding(findings, "critical", "model_free_route_invalid", "Model-free routes must preserve a null model and none thinking posture.")
@@ -286,21 +356,26 @@ def validate_model(packet: dict[str, Any], findings: list[dict[str, Any]]) -> No
             add_finding(findings, "critical", "model_free_sentinel_invalid", "Model-free compatibility metadata cannot name a real model.", model=model)
         return
 
-    sol_main_exception = as_dict(model_route.get("main_model_exception"))
-    approved_sol_main_exception = (
-        model == "openai/gpt-5.6-sol"
-        and execution_backend == "main"
-        and expected_role == "main_integration_final_judgment"
-        and sol_main_exception.get("approved") is True
-        and sol_main_exception.get("model_path") == "openai/gpt-5.6-sol"
-        and sol_main_exception.get("use_case") in {"escalation", "challenger", "qa"}
-        and len(str(sol_main_exception.get("reason") or "").strip()) >= 8
-    )
-    if model in MODEL_ROLES and expected_role and expected_role not in MODEL_ROLES[model] and not approved_sol_main_exception:
+    specialist_owner = {}
+    for candidate_model, candidate_roles in MODEL_ROLES.items():
+        for candidate_role in candidate_roles:
+            if candidate_role.endswith("_specialist"):
+                specialist_owner.setdefault(candidate_role, candidate_model)
+    if expected_role.endswith("_specialist"):
+        want = specialist_owner.get(expected_role)
+        if want is None:
+            add_finding(findings, "critical", "unknown_specialist_role", "Specialist role is not recognized.", expected_role=expected_role)
+        elif model != want:
+            add_finding(findings, "critical", "specialist_model_mismatch", "Specialist role requires its exact bound model.", model=model, expected_role=expected_role, expected_model=want)
+    elif model in MODEL_ROLES and expected_role and expected_role not in MODEL_ROLES[model]:
         add_finding(findings, "warning", "model_role_mismatch", "Expected role does not match the current model-routing matrix.", model=model, expected_role=expected_role)
 
-    if model == "openai/gpt-5.5" and expected_role != "primary_fallback":
-        add_finding(findings, "warning", "gpt55_nonfallback_use", "GPT-5.5 is the primary fallback, not the normal active helper route.", expected_role=expected_role)
+    if expected_role.endswith("_specialist") and model in {"openai/gpt-5.5", "openai/gpt-5.4", "openai/gpt-5.4-mini"}:
+        add_finding(findings, "critical", "legacy_model_denied", "Legacy GPT-5.5/5.4 models are denied in persistent specialist scope.", model=model, expected_role=expected_role)
+    if expected_role.endswith("_specialist") and model == "anthropic/claude-opus-5":
+        add_finding(findings, "critical", "opus_persistent_denied", "Opus is Main-spawn on-demand only; never a persistent specialist model.", model=model, expected_role=expected_role)
+    if expected_role.endswith("_specialist") and model_route.get("fallbacks"):
+        add_finding(findings, "critical", "specialist_automatic_fallback_denied", "Specialist automatic fallbacks are []; recovery is Main-selected in a new attempt.", expected_role=expected_role)
 
     if model == "openai/gpt-5.6-luna" and task_type == "implementation" and write_mode in {"leased", "distinct_output"}:
         add_finding(findings, "warning", "luna_write_implementation_lane", "Luna is restricted to proven deterministic cron/proof/digest/status work; use Terra for implementation.")
@@ -438,11 +513,11 @@ def example_packet() -> dict[str, Any]:
             "tmp/long-work-packet-linter-proof.json",
         ],
         "model_route": {
-            "model": "openai/gpt-5.6-terra",
+            "model": "openai/gpt-5.6-sol",
             "expected_role": "main_integrator",
             "trust_label": "main-session verified implementation",
             "smoke_proof": "native_tool_loop_available",
-            "resource_reason": "Terra is the default Main integrator; Sol remains a named escalation, challenger, or QA exception",
+            "resource_reason": "Sol is the configured Main integrator; persistent specialists use exact role-bound models",
         },
         "validator_budget": "shared",
         "stop_lines": [

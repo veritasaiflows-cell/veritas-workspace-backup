@@ -12,20 +12,48 @@ import argparse
 import hashlib
 import json
 import sqlite3
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Iterator
 
+from alerts_os_sql_retirement_policy import (
+    AUDITED_INITIAL_RECORD_COUNT,
+    is_retired_alerts_os_consumer,
+    is_unaudited_legacy_signal,
+)
 from market_data_utils import atomic_write_json
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = ROOT / "state" / "finance" / "finance-canon.sqlite"
 VALIDATION_OUT = ROOT / "tmp" / "finance-sql-canon-access-validation.json"
-AUTO_ROUTER_PATH = ROOT / "tmp" / "wf78-auto-tier-routing.json"
-COVERAGE_GATE_PATH = ROOT / "tmp" / "tier-a-trade-grade-coverage-gate.json"
-CONFIDENCE_GATE_PATH = ROOT / "tmp" / "wf78-tier-a-confidence-gate.json"
+REFERENCE_BASELINE_META_KEY = "alerts_os_reference_baseline_v1"
+CONSUMER_RETIREMENT_META_KEY = "alerts_os_consumer_retirement_manifest_v1"
+_CAPTURED_SOURCE_READER: ContextVar[Any] = ContextVar("finance_captured_sources", default=None)
+
+
+@contextmanager
+def _captured_source_reads(reader: Any) -> Iterator[None]:
+    """Private acquisition dependency; no global monkeypatch or guard bypass.
+
+    All three guard artifact validators reuse the very same captured bytes.
+    Exceptions from the safe reader propagate as systemic acquisition failure.
+    """
+    token = _CAPTURED_SOURCE_READER.set(reader)
+    try:
+        yield
+    finally:
+        _CAPTURED_SOURCE_READER.reset(token)
+
+
+def _source_exists(path: Path) -> bool:
+    reader = _CAPTURED_SOURCE_READER.get()
+    if reader is None:
+        return path.is_file()
+    return reader.read(path.relative_to(ROOT).as_posix()) is not None
 
 REQUIRED_TABLES = {
     "securities",
@@ -45,16 +73,74 @@ FALSE_FLAG_TABLES = {
     "evidence_status": ("customer_output_allowed", "paper_or_live_execution_allowed"),
 }
 SQL_FIRST_ANSWER_ROUTE_POLICY = {
-    "strategic_answer_route": "sql_first_tier_routing_plus_production_grade_policy",
+    "strategic_answer_route": "guarded_alert_levels_plus_non_executing_recommendation_review",
     "production_grade_empty_is_valid_wait_state": True,
+    "legacy_tier_routing_retired": True,
     "legacy_42_retired_from_blocking": True,
     "legacy_42_role": "historical_compatibility_only_not_readiness_or_repair_authority",
 }
-# The only provenance the write side may stamp on a production row. Read-side membership is
-# fail-closed on provenance rather than on count: any row flipped to 1 without this exact
-# proof-join source blocks the guard.
-PROOF_JOIN_SOURCE = "proof_joined_routing_tier_ab_fresh_confident_card_coverage"
 SUPPORTED_ACTIVE_UNIVERSE_COUNTS = {100, 200, 300, 400, 500}
+REFERENCE_LEVEL_LINEAGE_FIELDS = {
+    "reference_price_low",
+    "reference_price_high",
+    "reference_invalidation_level",
+    "reference_confidence",
+    "reference_band_status",
+}
+FORBIDDEN_CURRENT_TEXT = (
+    "portfolio_fit",
+    "portfolio_role",
+    "portfolio_config",
+    "portfolio_or_canon",
+    "paper_position",
+    "paper_order",
+    "paper_or_live",
+    "position_sizing",
+    "draft_weight",
+    "capital_deployment",
+    "deployment_readiness",
+    "deployment_role",
+    "trade_grade",
+    "sleeve",
+    "tranche",
+)
+
+DYNAMIC_ENTITLEMENT_SCOPE_SOURCE = "guarded_sql:universe_membership.tier"
+DYNAMIC_ENTITLEMENT_WITNESSES = {
+    "A": ("Tier A", "A"),
+    "B": ("Tier B", "B"),
+    "C": ("Tier C", "C"),
+}
+
+# Phase3G authoritative eligibility-debt separation (2026-09-05, repair attempt 2):
+# ``decision_grade_eligible=false`` is resolver-owned evidence/decision-readiness
+# debt, NOT a structural integrity failure.  The resolver NEVER emits
+# eligibility strings into ``integrity_breaches``: that field means only
+# structural integrity failure, and every gate refuses any non-empty value
+# without string-shape exceptions (a fabricated debt-shaped string must not
+# bypass a structural check).  Eligibility debt lives solely in the derived
+# ``eligibility_debt`` annotation, cross-checked against the fingerprint-bound
+# member flags.  Debt never confers decision or recommendation readiness.
+
+
+def eligibility_debt_label(debt_tickers: Iterable[str]) -> str:
+    """Render the explicit debt label; never a readiness conferral."""
+
+    tickers = tuple(sorted({str(ticker).strip().upper() for ticker in debt_tickers if str(ticker).strip()}))
+    if not tickers:
+        return "no_eligibility_debt_declared;readiness_requires_owner_gates"
+    return (
+        f"evidence_only:{len(tickers)}_members_lack_decision_grade_eligibility"
+        f"({','.join(tickers)});not_decision_or_recommendation_ready"
+    )
+
+
+class DynamicEntitlementScopeError(RuntimeError):
+    """A guarded dynamic-entitlement scope cannot be used safely."""
+
+
+class DynamicEntitlementExternalGateError(DynamicEntitlementScopeError):
+    """A caller attempted dynamic provider work before the positive gate exists."""
 
 
 @dataclass(frozen=True)
@@ -83,6 +169,214 @@ class SecurityState:
 
 
 @dataclass(frozen=True)
+class UniverseMembershipRecord:
+    ticker: str
+    name: str
+    instrument_type: str
+    sector: str | None
+    industry: str | None
+    yfinance_symbol: str
+    sec_cik: str | None
+    company_ir: str | None
+    active: bool
+    universe_scope: str
+    tier: str
+    coverage_obligation_tier: str
+    monitoring_role: str
+    production_scope_member: bool
+    production_scope_source: str | None
+    sql_tier: str | None
+    sql_tier_state: str | None
+    tier_decision_scope: str | None
+    review_100_monitor: bool
+    decision_grade_eligible: bool
+    source_open_required: bool
+    promotion_required_before_action: bool
+    raw_json: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class DynamicEntitlementScope:
+    """One guarded SQL snapshot of the active Tier A+B attention scope.
+
+    ``memberships`` is deliberately limited to Tier A+B.  ``identities`` and
+    ``aliases`` are read from the same snapshot so internal routing can
+    identify a Tier C name without adding it to provider scope.
+    """
+
+    source: str
+    memberships: dict[str, UniverseMembershipRecord]
+    identities: dict[str, UniverseMembershipRecord]
+    aliases: dict[str, str]
+    fingerprint: str
+    tier_breakdown: dict[str, int]
+    integrity_breaches: tuple[str, ...]
+    envelope_name: str | None
+    envelope_count: int | None
+    overflow_tickers: tuple[str, ...]
+    eligibility_debt: tuple[str, ...] = ()
+
+    @property
+    def tickers(self) -> tuple[str, ...]:
+        return tuple(self.memberships)
+
+    def payload(self) -> dict[str, Any]:
+        """Serialize the immutable membership proof passed to child planners."""
+
+        return {
+            "source": self.source,
+            "members": [
+                {
+                    "ticker": row.ticker,
+                    "tier": row.tier,
+                    "decision_grade_eligible": row.decision_grade_eligible,
+                }
+                for row in self.memberships.values()
+            ],
+            "fingerprint": self.fingerprint,
+            "count": len(self.memberships),
+            "tier_breakdown": dict(self.tier_breakdown),
+            "integrity_breaches": list(self.integrity_breaches),
+            "eligibility_debt": list(self.eligibility_debt),
+            "eligibility_debt_count": len(self.eligibility_debt),
+            "debt_label": eligibility_debt_label(self.eligibility_debt),
+            "envelope_name": self.envelope_name,
+            "envelope_count": self.envelope_count,
+            "overflow_tickers": list(self.overflow_tickers),
+            "overflow_count": len(self.overflow_tickers),
+        }
+
+
+def _dynamic_scope_fingerprint(
+    triples: Iterable[tuple[str, str, bool]],
+) -> str:
+    serialized = json.dumps(
+        [[ticker, tier, eligible] for ticker, tier, eligible in triples],
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(serialized).hexdigest()
+
+
+def dynamic_entitlement_payload_fingerprint(payload: dict[str, Any]) -> str:
+    """Validate and fingerprint child scope payload without touching SQL."""
+
+    members = payload.get("members")
+    if not isinstance(members, list) or not members:
+        raise DynamicEntitlementScopeError("guarded_sql_scope_payload_fingerprint_mismatch")
+    triples: list[tuple[str, str, bool]] = []
+    for member in members:
+        if not isinstance(member, dict):
+            raise DynamicEntitlementScopeError("guarded_sql_scope_payload_fingerprint_mismatch")
+        ticker = str(member.get("ticker") or "").strip().upper()
+        tier = str(member.get("tier") or "").strip().upper()
+        eligible = member.get("decision_grade_eligible")
+        if not ticker or tier not in {"A", "B"} or type(eligible) is not bool:
+            raise DynamicEntitlementScopeError("guarded_sql_scope_payload_fingerprint_mismatch")
+        triples.append((ticker, tier, eligible))
+    if [item[0] for item in triples] != sorted({item[0] for item in triples}):
+        raise DynamicEntitlementScopeError("guarded_sql_scope_payload_fingerprint_mismatch")
+    return _dynamic_scope_fingerprint(triples)
+
+
+def verify_dynamic_entitlement_payload(
+    payload: dict[str, Any],
+    expected_fingerprint: str,
+) -> str:
+    """Fail closed if a child receives a changed scope serialization.
+
+    A present ``eligibility_debt`` annotation must exactly restate the debt
+    derived from the fingerprint-bound member flags; an understated (or
+    overstated) annotation fails closed even when the member fingerprint is
+    valid.  Payloads without the annotation are accepted under the explicit
+    legacy rule that debt is derived from member flags, never trusted.
+    """
+
+    actual = dynamic_entitlement_payload_fingerprint(payload)
+    declared = str(payload.get("fingerprint") or "").lower()
+    expected = str(expected_fingerprint or "").lower()
+    if not expected or actual != expected or declared != expected:
+        raise DynamicEntitlementScopeError("guarded_sql_scope_payload_fingerprint_mismatch")
+    if "eligibility_debt" in payload:
+        declared_debt = payload["eligibility_debt"]
+        members = payload.get("members")
+        derived_debt = sorted(
+            str(member.get("ticker") or "").strip().upper()
+            for member in members
+            if member.get("decision_grade_eligible") is False
+        )
+        if (
+            not isinstance(declared_debt, list)
+            or any(type(entry) is not str for entry in declared_debt)
+            or sorted(declared_debt) != derived_debt
+        ):
+            raise DynamicEntitlementScopeError("guarded_sql_scope_payload_fingerprint_mismatch")
+    return actual
+
+
+ALLOWED_DYNAMIC_SCOPE_ORIGINS = frozenset({"phase3f_dynamic_entitlement"})
+
+
+def require_dynamic_entitlement_external_gate(
+    scope: DynamicEntitlementScope,
+    *,
+    scope_origin: str,
+    workspace_root: Path | None = None,
+    policy: Any = None,
+) -> Any:
+    """Enforce the standing owner-approved provider policy, or fail closed.
+
+    Grants provider reads only.  Tier, membership, canon, recommendation,
+    scheduler, capital, and account authority stay outside this gate.
+    """
+
+    from dynamic_entitlement_provider_policy import (
+        ProviderPolicyError,
+        load_provider_policy,
+    )
+
+    if scope_origin not in ALLOWED_DYNAMIC_SCOPE_ORIGINS:
+        raise DynamicEntitlementExternalGateError(
+            "dynamic_entitlement_scope_origin_not_allowed"
+        )
+    if scope.source != DYNAMIC_ENTITLEMENT_SCOPE_SOURCE:
+        raise DynamicEntitlementExternalGateError(
+            "dynamic_entitlement_scope_source_not_guarded_sql"
+        )
+    if scope.integrity_breaches:
+        raise DynamicEntitlementExternalGateError(
+            "dynamic_entitlement_scope_integrity_breach"
+        )
+    # Eligibility debt is evidence-only intake debt, never a gate refusal.
+    # Cross-check the annotation against authoritative member flags so a
+    # fabricated scope cannot understate debt while passing the gate.
+    members = getattr(scope, "memberships", None)
+    declared_debt = getattr(scope, "eligibility_debt", None)
+    if members is not None and declared_debt is not None:
+        derived_debt = tuple(
+            sorted(
+                ticker
+                for ticker, row in members.items()
+                if getattr(row, "decision_grade_eligible", True) is False
+            )
+        )
+        if tuple(sorted(declared_debt)) != derived_debt:
+            raise DynamicEntitlementExternalGateError(
+                "dynamic_entitlement_scope_eligibility_debt_mismatch"
+            )
+    # ``scope.overflow_tickers`` reflects the caller's reporting envelope, not
+    # owner authority, so the policy ceiling is the only admission limit here.
+    # Treating a narrow caller envelope as a denial would block legitimate
+    # membership growth, which is the exact static behaviour this phase removed.
+    try:
+        resolved = policy if policy is not None else load_provider_policy(workspace_root or ROOT)
+        resolved.require_scope_within_envelope(len(scope.memberships))
+    except ProviderPolicyError as exc:
+        raise DynamicEntitlementExternalGateError(str(exc)) from exc
+    return resolved
+
+
+@dataclass(frozen=True)
 class ReferenceLevel:
     ticker: str
     reference_price_low: float | None
@@ -92,6 +386,26 @@ class ReferenceLevel:
     reference_band_status: str | None
     authority_class: str
     fallback_rule: str
+
+
+@dataclass(frozen=True)
+class ReferenceLevelRecord:
+    ticker: str
+    reference_price_low: float | None
+    reference_price_high: float | None
+    reference_invalidation_level: float | None
+    reference_confidence: int | None
+    reference_band_status: str | None
+    source_artifact_path: str
+    source_artifact_sha256: str | None
+    source_generated_at_utc: str | None
+    source_status: str
+    validator_status: str
+    authority_class: str
+    fallback_rule: str
+    raw_json: dict[str, Any]
+    lineage_field_names: tuple[str, ...]
+    lineage_inserted_at_utc: str
 
 
 @dataclass(frozen=True)
@@ -117,13 +431,20 @@ def rel(path: Path) -> str:
         return path.as_posix()
 
 
-def connect_readonly(db_path: Path = DEFAULT_DB) -> sqlite3.Connection:
-    uri = db_path.resolve().as_uri() + "?mode=ro"
+@contextmanager
+def connect_readonly(
+    db_path: Path | None = None,
+) -> Iterator[sqlite3.Connection]:
+    resolved_path = DEFAULT_DB if db_path is None else Path(db_path)
+    uri = resolved_path.resolve().as_uri() + "?mode=ro"
     conn = sqlite3.connect(uri, uri=True)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA busy_timeout=5000")
-    conn.execute("PRAGMA foreign_keys=ON")
-    return conn
+    try:
+        conn.row_factory = sqlite3.Row
+        conn.execute("PRAGMA busy_timeout=5000")
+        conn.execute("PRAGMA foreign_keys=ON")
+        yield conn
+    finally:
+        conn.close()
 
 
 def table_columns_from_conn(conn: sqlite3.Connection, table_or_view: str) -> set[str]:
@@ -153,7 +474,29 @@ def _row_get(row: sqlite3.Row, key: str, default: Any = None) -> Any:
     return row[key] if key in row.keys() else default
 
 
+def _json_dict(value: Any) -> dict[str, Any]:
+    if isinstance(value, dict):
+        return dict(value)
+    if not isinstance(value, str) or not value:
+        return {}
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError:
+        return {}
+    return parsed if isinstance(parsed, dict) else {}
+
+
 def _load_json(path: Path) -> dict[str, Any]:
+    reader = _CAPTURED_SOURCE_READER.get()
+    if reader is not None:
+        raw = reader.read(path.relative_to(ROOT).as_posix())
+        if raw is None:
+            return {}
+        try:
+            payload = json.loads(raw.decode("utf-8"))
+        except (UnicodeError, json.JSONDecodeError):
+            return {}
+        return payload if isinstance(payload, dict) else {}
     if not path.exists():
         return {}
     try:
@@ -163,110 +506,206 @@ def _load_json(path: Path) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
-def _rows_by_ticker(rows: Any) -> dict[str, dict[str, Any]]:
-    result: dict[str, dict[str, Any]] = {}
-    if not isinstance(rows, list):
-        return result
+def _file_hash(path: Path) -> str:
+    reader = _CAPTURED_SOURCE_READER.get()
+    if reader is not None:
+        raw = reader.read(path.relative_to(ROOT).as_posix())
+        if raw is None:
+            raise FileNotFoundError("captured_source_missing")
+        return hashlib.sha256(raw).hexdigest()
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _reference_projection(rows: Iterable[sqlite3.Row | dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "ticker": str(row["ticker"]),
+            "reference_price_low": row["reference_price_low"],
+            "reference_price_high": row["reference_price_high"],
+            "reference_invalidation_level": row["reference_invalidation_level"],
+            "reference_confidence": row["reference_confidence"],
+        }
+        for row in rows
+    ]
+
+
+def _reference_projection_hash(rows: Iterable[sqlite3.Row | dict[str, Any]]) -> str:
+    projection = _reference_projection(rows)
+    return hashlib.sha256(
+        json.dumps(projection, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    ).hexdigest()
+
+
+def _is_legacy_consumer(path: str) -> bool:
+    return is_retired_alerts_os_consumer(path)
+
+
+def _lineage_artifact_check(
+    rows: Iterable[sqlite3.Row | dict[str, Any]],
+) -> tuple[str, bool, dict[str, Any]]:
+    cache: dict[str, str | None] = {}
+    mismatches: list[dict[str, Any]] = []
+    checked_rows = 0
     for row in rows:
-        if isinstance(row, dict) and row.get("ticker"):
-            result[str(row["ticker"]).upper()] = row
-    return result
-
-
-def _coverage_allowed_tickers(coverage_gate: dict[str, Any]) -> set[str]:
-    allowed: set[str] = set()
-    cohorts = coverage_gate.get("cohorts")
-    if not isinstance(cohorts, dict):
-        return allowed
-    for rows in cohorts.values():
-        if not isinstance(rows, list):
-            continue
-        for row in rows:
-            if isinstance(row, dict) and row.get("decision_grade_claim_allowed") is True and row.get("ticker"):
-                allowed.add(str(row["ticker"]).upper())
-    return allowed
-
-
-def _tier_routing_mirror_check(provenance: list[tuple[str, str]]) -> tuple[str, bool, dict[str, Any]]:
-    """Check the tier_routing_state mirror against the live WF78 router artifact.
-
-    ``tier_routing_state`` only refreshes on a full finance_sql_canon rebuild, so it
-    can serve tiers from an older router generation while storing the provenance that
-    proves it. Report-only: this never rewrites canon.
-    """
-    name = "tier_routing_state_mirrors_current_router_artifact"
-    detail: dict[str, Any] = {
-        "router_artifact": rel(AUTO_ROUTER_PATH),
-        "mirror_generations": sorted({gen for _, gen in provenance if gen}),
-        "authority_scope": "report_only_mirror_freshness; no canon mutation implied",
+        source = str(row["source_artifact_path"] or "")
+        expected = str(row["source_artifact_sha256"] or "").lower()
+        checked_rows += int(row["row_count"] or 0)
+        if source not in cache:
+            path = ROOT / source if source else None
+            cache[source] = _file_hash(path) if path is not None and _source_exists(path) else None
+        actual = cache[source]
+        if not source or len(expected) != 64 or actual != expected:
+            mismatches.append({
+                "path": source or None,
+                "expected_sha256": expected or None,
+                "actual_sha256": actual,
+                "row_count": int(row["row_count"] or 0),
+            })
+    detail = {
+        "lineage_row_count": checked_rows,
+        "distinct_artifact_count": len(cache),
+        "mismatches": mismatches,
+        "rule": "every current lineage row resolves to an existing exact-hash artifact",
     }
-    if not provenance:
-        detail["reason"] = "tier_routing_state_absent_or_empty"
-        return name, True, detail
-    if not AUTO_ROUTER_PATH.exists():
-        detail["reason"] = "router_artifact_missing"
-        return name, False, detail
-    live_sha = hashlib.sha256(AUTO_ROUTER_PATH.read_bytes()).hexdigest()
-    live_generated = str(_load_json(AUTO_ROUTER_PATH).get("generated_at_utc") or "")
-    mirror_shas = sorted({sha for sha, _ in provenance if sha})
-    detail["live_router_sha256"] = live_sha
-    detail["live_router_generated_at_utc"] = live_generated
-    detail["mirror_sha256"] = mirror_shas
-    ok = mirror_shas == [live_sha]
-    if not ok:
-        detail["reason"] = "mirror_rebuilt_from_older_router_generation"
-        detail["remediation"] = "rebuild finance_sql_canon so tier_routing_state re-mirrors the current router artifact"
-    return name, ok, detail
+    return "current_lineage_artifacts_exist_and_hash_match", not mismatches and checked_rows > 0, detail
 
 
-def _current_proof_state() -> dict[str, Any]:
-    auto_router = _load_json(AUTO_ROUTER_PATH)
-    coverage_gate = _load_json(COVERAGE_GATE_PATH)
-    confidence_gate = _load_json(CONFIDENCE_GATE_PATH)
-    return {
-        "auto_router": auto_router,
-        "coverage_gate": coverage_gate,
-        "confidence_gate": confidence_gate,
-        "router_rows": _rows_by_ticker(auto_router.get("rows")),
-        "confidence_rows": _rows_by_ticker(confidence_gate.get("rows")),
-        "coverage_allowed_tickers": _coverage_allowed_tickers(coverage_gate),
+def _baseline_check(
+    meta_value: str | None,
+    reference_rows: list[sqlite3.Row],
+) -> tuple[str, bool, dict[str, Any]]:
+    try:
+        meta = json.loads(meta_value or "{}")
+    except json.JSONDecodeError:
+        meta = {}
+    source = str(meta.get("path") or "")
+    expected_file_hash = str(meta.get("sha256") or "").lower()
+    expected_projection_hash = str(meta.get("numeric_projection_sha256") or "").lower()
+    path = ROOT / source if source else None
+    actual_file_hash = _file_hash(path) if path is not None and _source_exists(path) else None
+    actual_projection_hash = _reference_projection_hash(reference_rows)
+    baseline = _load_json(path) if path is not None else {}
+    baseline_rows = baseline.get("rows") if isinstance(baseline.get("rows"), list) else []
+    baseline_projection_hash = _reference_projection_hash(
+        [row for row in baseline_rows if isinstance(row, dict)]
+    ) if baseline_rows else None
+    reference_paths = {
+        (str(row["source_artifact_path"] or ""), str(row["source_artifact_sha256"] or "").lower())
+        for row in reference_rows
     }
+    ok = all([
+        len(reference_rows) == 200,
+        meta.get("row_count") == 200,
+        meta.get("lifecycle") == "immutable_active_alert_reference_baseline",
+        len(baseline_rows) == 200,
+        actual_file_hash == expected_file_hash,
+        path is not None and path.stem.endswith(expected_file_hash),
+        actual_projection_hash == expected_projection_hash,
+        baseline.get("numeric_projection_sha256") == expected_projection_hash,
+        baseline_projection_hash == expected_projection_hash,
+        reference_paths == {(source, expected_file_hash)},
+        baseline.get("authority", {}).get("numeric_values_changed") is False,
+        baseline.get("authority", {}).get("original_provenance_invented") is False,
+        baseline.get("authority", {}).get("portfolio_or_account_state_maintained") is False,
+        baseline.get("authority", {}).get("capital_or_order_authority") is False,
+        baseline.get("authority", {}).get("execution_allowed") is False,
+    ])
+    detail = {
+        "path": source or None,
+        "expected_sha256": expected_file_hash or None,
+        "actual_sha256": actual_file_hash,
+        "expected_numeric_projection_sha256": expected_projection_hash or None,
+        "actual_numeric_projection_sha256": actual_projection_hash,
+        "baseline_numeric_projection_sha256": baseline_projection_hash,
+        "database_reference_row_count": len(reference_rows),
+        "baseline_row_count": len(baseline_rows),
+        "database_source_path_hash_pairs": sorted([list(value) for value in reference_paths]),
+        "original_provenance_invented": baseline.get("authority", {}).get("original_provenance_invented"),
+    }
+    return "immutable_alert_reference_baseline_exact", ok, detail
 
 
-def _routing_authority_flags_closed(ticker: str, proof: dict[str, Any]) -> bool:
-    """Assert the live router still denies capital and execution authority for a ticker.
-
-    A production row is data-quality proof only. If the routing artifact ever asserts
-    capital or execution approval, the read path drops the name rather than surfacing it.
-    """
-    router_row = proof["router_rows"].get(ticker.upper(), {})
-    return (
-        router_row.get("capital_deployment_approved") is False
-        and router_row.get("trade_or_execution_approved") is False
+def _consumer_retirement_manifest_check(
+    meta_value: str | None,
+    consumer_rows: list[sqlite3.Row],
+) -> tuple[str, bool, dict[str, Any]]:
+    try:
+        meta = json.loads(meta_value or "{}")
+    except json.JSONDecodeError:
+        meta = {}
+    source = str(meta.get("path") or "")
+    expected_hash = str(meta.get("sha256") or "").lower()
+    path = ROOT / source if source else None
+    actual_hash = _file_hash(path) if path is not None and _source_exists(path) else None
+    manifest = _load_json(path) if path is not None else {}
+    records = manifest.get("records") if isinstance(manifest.get("records"), list) else []
+    record_paths = sorted(
+        str(row.get("consumer_path"))
+        for row in records
+        if isinstance(row, dict) and row.get("consumer_path")
     )
-
-
-def _validated_production_row(row: sqlite3.Row | dict[str, Any], proof: dict[str, Any]) -> bool:
-    ticker = str(row["ticker"]).upper()
-    router_row = proof["router_rows"].get(ticker, {})
-    confidence_row = proof["confidence_rows"].get(ticker, {})
-    coverage_summary = proof["coverage_gate"].get("summary") if isinstance(proof.get("coverage_gate"), dict) else {}
-    decision_grade_allowed_count = _count_value(
-        coverage_summary.get("decision_grade_allowed_count") if isinstance(coverage_summary, dict) else 0
+    expected_paths = sorted(
+        str(row["consumer_path"])
+        for row in consumer_rows
+        if is_retired_alerts_os_consumer(str(row["consumer_path"]))
     )
-    return all(
-        [
-            row["auto_tier"] == "Tier A",
-            row["auto_state"] == "A-READY",
-            router_row.get("auto_tier") == "Tier A",
-            router_row.get("auto_state") == "A-READY",
-            ticker in proof["coverage_allowed_tickers"],
-            decision_grade_allowed_count > 0,
-            _count_value(confidence_row.get("critical_conflict_count")) == 0,
-            router_row.get("capital_deployment_approved") is False,
-            router_row.get("trade_or_execution_approved") is False,
-        ]
+    registry_mismatches = [
+        str(row["consumer_path"])
+        for row in consumer_rows
+        if is_retired_alerts_os_consumer(str(row["consumer_path"]))
+        and (
+            str(row["cutover_state"]) != "retired_alerts_os_pivot"
+            or str(row["priority"]) != "P3"
+            or str(row["migration_lane"]) != "retired_historical_no_dispatch"
+            or int(row["fallback_required"]) != 0
+            or int(row["parity_required"]) != 0
+            or int(row["raw_sql_needs_review"]) != 0
+            or str(row["source_artifact_path"] or "") != source
+            or str(row["source_artifact_sha256"] or "").lower() != expected_hash
+        )
+    ]
+    record_set_sha256 = hashlib.sha256(
+        json.dumps(records, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    ).hexdigest() if records else None
+    retired_by_migration_count = sum(
+        1
+        for row in records
+        if isinstance(row, dict) and row.get("retired_by_this_migration") is True
     )
+    ok = all([
+        meta.get("lifecycle")
+        == "immutable_historical_lifecycle_proof_no_dispatch_authority",
+        meta.get("record_count") == AUDITED_INITIAL_RECORD_COUNT,
+        meta.get("retired_by_this_migration_count") == retired_by_migration_count,
+        actual_hash == expected_hash,
+        path is not None and path.stem.endswith(expected_hash),
+        manifest.get("schema") == "veritas.alerts_os_consumer_retirement_manifest.v1",
+        manifest.get("record_count") == AUDITED_INITIAL_RECORD_COUNT,
+        manifest.get("retired_by_this_migration_count") == retired_by_migration_count,
+        len(record_paths) == len(set(record_paths)) == AUDITED_INITIAL_RECORD_COUNT,
+        record_paths == expected_paths,
+        0 <= retired_by_migration_count <= AUDITED_INITIAL_RECORD_COUNT,
+        manifest.get("record_set_sha256") == record_set_sha256,
+        not registry_mismatches,
+        manifest.get("authority", {}).get("active_dispatch_allowed") is False,
+        manifest.get("authority", {}).get("capital_or_order_authority") is False,
+        manifest.get("authority", {}).get("execution_allowed") is False,
+    ])
+    detail = {
+        "path": source or None,
+        "expected_sha256": expected_hash or None,
+        "actual_sha256": actual_hash,
+        "record_count": len(record_paths),
+        "retired_by_this_migration_count": retired_by_migration_count,
+        "registry_mismatch_count": len(registry_mismatches),
+        "registry_mismatches": registry_mismatches,
+        "record_set_sha256": record_set_sha256,
+    }
+    return "audited_consumer_retirement_manifest_exact", ok, detail
 
 
 def p0_registry_lane_status(registry: dict[str, Any]) -> dict[str, Any]:
@@ -333,6 +772,72 @@ def _row_to_security(row: sqlite3.Row) -> SecurityState:
     )
 
 
+def _row_to_universe_membership(row: sqlite3.Row) -> UniverseMembershipRecord:
+    return UniverseMembershipRecord(
+        ticker=str(row["ticker"]),
+        name=str(row["name"]),
+        instrument_type=str(row["instrument_type"]),
+        sector=row["sector"],
+        industry=row["industry"],
+        yfinance_symbol=str(row["yfinance_symbol"] or ""),
+        sec_cik=row["sec_cik"],
+        company_ir=row["company_ir"],
+        active=_bool(row["active"]),
+        universe_scope=str(row["universe_scope"]),
+        tier=str(row["tier"]),
+        coverage_obligation_tier=str(row["coverage_obligation_tier"]),
+        monitoring_role=str(row["monitoring_role"]),
+        production_scope_member=_bool(row["production_scope_member"]),
+        production_scope_source=row["production_scope_source"],
+        sql_tier=row["sql_tier"],
+        sql_tier_state=row["sql_tier_state"],
+        tier_decision_scope=row["tier_decision_scope"],
+        review_100_monitor=_bool(row["review_100_monitor"]),
+        decision_grade_eligible=_bool(row["decision_grade_eligible"]),
+        source_open_required=_bool(row["source_open_required"]),
+        promotion_required_before_action=_bool(row["promotion_required_before_action"]),
+        raw_json=_json_dict(row["raw_json"]),
+    )
+
+
+def _resolve_tickers_from_conn(
+    conn: sqlite3.Connection,
+    tickers: Iterable[str],
+) -> dict[str, str]:
+    requested = [str(ticker).strip().upper() for ticker in tickers]
+    if not requested:
+        return {}
+    identity_rows = conn.execute(
+        "SELECT ticker, yfinance_symbol FROM securities WHERE active=1 ORDER BY ticker"
+    ).fetchall()
+    canonical = {str(row["ticker"]).upper(): str(row["ticker"]) for row in identity_rows}
+    aliases: dict[str, list[str]] = {}
+    for row in identity_rows:
+        alias = str(row["yfinance_symbol"] or "").strip().upper()
+        if alias:
+            aliases.setdefault(alias, []).append(str(row["ticker"]))
+
+    resolved: dict[str, str] = {}
+    failures: list[str] = []
+    for normalized in requested:
+        if not normalized:
+            failures.append("blank_ticker")
+            continue
+        if normalized in canonical:
+            resolved[normalized] = canonical[normalized]
+            continue
+        matches = sorted(set(aliases.get(normalized, [])))
+        if len(matches) == 1:
+            resolved[normalized] = matches[0]
+        elif not matches:
+            failures.append(f"unresolved_ticker:{normalized}")
+        else:
+            failures.append(f"ambiguous_ticker:{normalized}:{','.join(matches)}")
+    if failures:
+        raise ValueError("finance SQL ticker resolution blocked: " + ";".join(failures))
+    return resolved
+
+
 def _row_to_reference(row: sqlite3.Row) -> ReferenceLevel:
     return ReferenceLevel(
         ticker=str(row["ticker"]),
@@ -366,8 +871,19 @@ def _row_to_freshness(row: sqlite3.Row) -> EvidenceFreshness:
 class FinanceSqlCanonAccess:
     """Fail-closed read-only accessor for internal finance SQL-canon state."""
 
-    def __init__(self, db_path: Path = DEFAULT_DB) -> None:
-        self.db_path = db_path
+    def __init__(self, db_path: Path | None = None) -> None:
+        self.db_path = DEFAULT_DB if db_path is None else Path(db_path)
+
+    @contextmanager
+    def _read_connection(self) -> Iterator[sqlite3.Connection]:
+        """Connection owner hook for guarded transaction-bound acquisition.
+
+        Ordinary access retains its existing independent-connection behavior.
+        The private coherent reader overrides this hook for validation and
+        membership only; it never exposes a general accessor to its caller.
+        """
+        with connect_readonly(self.db_path) as conn:
+            yield conn
 
     def validate(self) -> dict[str, Any]:
         checks: list[dict[str, Any]] = []
@@ -379,7 +895,7 @@ class FinanceSqlCanonAccess:
             add("db_exists", False, rel(self.db_path))
             return self._validation_payload(checks, {})
         field_family_summary: dict[str, Any] = {}
-        with connect_readonly(self.db_path) as conn:
+        with self._read_connection() as conn:
             tables = {str(row[0]) for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
             views = {str(row[0]) for row in conn.execute("SELECT name FROM sqlite_master WHERE type='view'")}
             missing_tables = sorted(REQUIRED_TABLES - tables)
@@ -400,24 +916,18 @@ class FinanceSqlCanonAccess:
                 if "source_lineage" in tables
                 else -1
             )
-            production_reference_nulls = (
+            alert_reference_nulls = (
                 int(
                     conn.execute(
                         """
-                        SELECT COUNT(*)
-                        FROM current_sql_canon_routing AS routing
-                        JOIN reference_levels AS refs ON refs.ticker = routing.ticker
-                        WHERE routing.production_scope_member = 1
-                          AND routing.production_card_generation_allowed = 1
-                          AND (
-                            refs.reference_price_low IS NULL
-                            OR refs.reference_price_high IS NULL
-                            OR refs.reference_invalidation_level IS NULL
-                          )
+                        SELECT COUNT(*) FROM reference_levels
+                        WHERE reference_price_low IS NULL
+                           OR reference_price_high IS NULL
+                           OR reference_invalidation_level IS NULL
                         """
                     ).fetchone()[0]
                 )
-                if "current_sql_canon_routing" in views and "reference_levels" in tables
+                if "reference_levels" in tables
                 else -1
             )
             neutral_columns = (
@@ -442,21 +952,19 @@ class FinanceSqlCanonAccess:
                 if required_sql_first <= neutral_columns
                 else -1
             )
-            production_scope_unproven = (
-                int(
-                    conn.execute(
-                        "SELECT COUNT(*) FROM universe_membership "
-                        "WHERE production_scope_member=1 AND COALESCE(production_scope_source,'') != ?",
-                        (PROOF_JOIN_SOURCE,),
-                    ).fetchone()[0]
-                )
-                if required_sql_first <= neutral_columns
-                else -1
-            )
             production_answer_scope_count = (
                 int(
                     conn.execute(
                         "SELECT COUNT(*) FROM answer_path_scope WHERE answer_scope='sql_first_production_grade'"
+                    ).fetchone()[0]
+                )
+                if "answer_path_scope" in tables
+                else -1
+            )
+            non_alert_review_scope_count = (
+                int(
+                    conn.execute(
+                        "SELECT COUNT(*) FROM answer_path_scope WHERE answer_scope!='alert_recommendation_review'"
                     ).fetchone()[0]
                 )
                 if "answer_path_scope" in tables
@@ -471,7 +979,7 @@ class FinanceSqlCanonAccess:
                 if "answer_path_scope" in tables
                 else -1
             )
-            production_recommendation_count = (
+            recommendation_fields_allowed_count = (
                 int(
                     conn.execute(
                         "SELECT COUNT(*) FROM evidence_status WHERE recommendation_fields_allowed=1"
@@ -480,16 +988,169 @@ class FinanceSqlCanonAccess:
                 if "evidence_status" in tables
                 else -1
             )
-            tier_routing_provenance = (
-                [
-                    (str(row[0] or ""), str(row[1] or ""))
-                    for row in conn.execute(
-                        "SELECT DISTINCT source_artifact_sha256, source_generated_at_utc FROM tier_routing_state"
-                    )
-                ]
-                if "tier_routing_state" in tables
-                else []
+            current_card_path_count = int(
+                conn.execute(
+                    "SELECT COUNT(*) FROM evidence_status WHERE has_production_card!=0 OR card_path IS NOT NULL"
+                ).fetchone()[0]
+            ) if "evidence_status" in tables else -1
+            tier_lineage_count = int(
+                conn.execute(
+                    "SELECT COUNT(*) FROM source_lineage WHERE field_family='tier_routing_state'"
+                ).fetchone()[0]
+            ) if "source_lineage" in tables else -1
+            reference_lineage_count = int(
+                conn.execute(
+                    "SELECT COUNT(*) FROM source_lineage WHERE field_family='reference_levels'"
+                ).fetchone()[0]
+            ) if "source_lineage" in tables else -1
+            evidence_lineage_count = int(
+                conn.execute(
+                    "SELECT COUNT(*) FROM source_lineage WHERE field_family='evidence_freshness'"
+                ).fetchone()[0]
+            ) if "source_lineage" in tables else -1
+            lineage_artifacts = list(conn.execute(
+                """
+                SELECT source_artifact_path, source_artifact_sha256, COUNT(*) AS row_count
+                FROM source_lineage
+                GROUP BY source_artifact_path, source_artifact_sha256
+                ORDER BY source_artifact_path, source_artifact_sha256
+                """
+            )) if "source_lineage" in tables else []
+            reference_rows = list(conn.execute(
+                """
+                SELECT ticker, reference_price_low, reference_price_high,
+                       reference_invalidation_level, reference_confidence,
+                       source_artifact_path,
+                       source_artifact_sha256
+                FROM reference_levels ORDER BY ticker
+                """
+            )) if "reference_levels" in tables else []
+            baseline_meta_row = conn.execute(
+                "SELECT value FROM finance_state_meta WHERE key=?",
+                (REFERENCE_BASELINE_META_KEY,),
+            ).fetchone() if "finance_state_meta" in tables else None
+            try:
+                baseline_meta = json.loads(str(baseline_meta_row[0])) if baseline_meta_row else {}
+            except json.JSONDecodeError:
+                baseline_meta = {}
+            baseline_source = str(baseline_meta.get("path") or "")
+            baseline_sha256 = str(baseline_meta.get("sha256") or "").lower()
+            reference_lineage_owner_mismatch_count = int(
+                conn.execute(
+                    """
+                    SELECT COUNT(*)
+                    FROM source_lineage AS l
+                    LEFT JOIN reference_levels AS r ON r.ticker=l.scope_key
+                    WHERE l.field_family='reference_levels'
+                      AND (r.ticker IS NULL
+                           OR l.scope!='ticker'
+                           OR l.field_name NOT IN (
+                               'reference_price_low', 'reference_price_high',
+                               'reference_invalidation_level', 'reference_confidence',
+                               'reference_band_status'
+                           )
+                           OR l.source_artifact_path!=?
+                           OR l.source_artifact_sha256!=?
+                           OR l.source_generated_at_utc IS NOT r.source_generated_at_utc)
+                    """,
+                    (baseline_source, baseline_sha256),
+                ).fetchone()[0]
+            ) if "source_lineage" in tables and "reference_levels" in tables else -1
+            evidence_lineage_owner_mismatch_count = int(
+                conn.execute(
+                    """
+                    SELECT COUNT(*)
+                    FROM source_lineage AS l
+                    LEFT JOIN evidence_freshness AS e ON e.ticker=l.scope_key
+                    WHERE l.field_family='evidence_freshness'
+                      AND (e.ticker IS NULL
+                           OR l.scope!='ticker'
+                           OR l.field_name NOT IN (
+                               'card_generated_at_utc', 'required_depth',
+                               'resolution_state', 'stale_families'
+                           )
+                           OR l.source_artifact_path IS NOT e.source_artifact_path
+                           OR l.source_artifact_sha256 IS NOT e.source_artifact_sha256
+                           OR l.source_generated_at_utc IS NOT e.source_generated_at_utc
+                           OR l.authority_class IS NOT e.authority_class)
+                    """
+                ).fetchone()[0]
+            ) if "source_lineage" in tables and "evidence_freshness" in tables else -1
+            consumer_lineage_owner_mismatch_count = int(
+                conn.execute(
+                    """
+                    SELECT COUNT(*)
+                    FROM source_lineage AS l
+                    LEFT JOIN consumer_migration_registry AS c
+                      ON c.consumer_path=l.scope_key
+                    WHERE l.field_family='consumer_migration_registry'
+                      AND (c.consumer_path IS NULL
+                           OR l.source_artifact_path IS NOT c.source_artifact_path
+                           OR l.source_artifact_sha256 IS NOT c.source_artifact_sha256
+                           OR (
+                               c.cutover_state='retired_alerts_os_pivot'
+                               AND (
+                                   l.authority_class!='alerts_os_retired_consumer_lifecycle_metadata'
+                                   OR l.fallback_rule!='retired_consumers_never_dispatch'
+                               )
+                           )
+                           OR (
+                               c.cutover_state!='retired_alerts_os_pivot'
+                               AND (
+                                   l.authority_class!='alerts_os_active_consumer_lifecycle_metadata'
+                                   OR l.fallback_rule!='active_consumer_requires_typed_sql_guard'
+                               )
+                           ))
+                    """
+                ).fetchone()[0]
+            ) if "source_lineage" in tables and "consumer_migration_registry" in tables else -1
+            owner_meta_row = conn.execute(
+                "SELECT value FROM finance_state_meta WHERE key='canon_owner_field_families_v1'"
+            ).fetchone() if "finance_state_meta" in tables else None
+            retirement_meta_row = conn.execute(
+                "SELECT value FROM finance_state_meta WHERE key=?",
+                (CONSUMER_RETIREMENT_META_KEY,),
+            ).fetchone() if "finance_state_meta" in tables else None
+            try:
+                owner_meta = json.loads(str(owner_meta_row[0])) if owner_meta_row else {}
+            except json.JSONDecodeError:
+                owner_meta = {}
+            promoted_families = {
+                str(item.get("family"))
+                for item in owner_meta.get("field_families", [])
+                if isinstance(item, dict) and item.get("family")
+            }
+            consumer_rows = list(conn.execute(
+                """
+                SELECT consumer_path, priority, migration_lane, cutover_state,
+                       fallback_required, parity_required, raw_sql_needs_review,
+                       source_artifact_path, source_artifact_sha256
+                FROM consumer_migration_registry
+                ORDER BY consumer_path
+                """
+            )) if "consumer_migration_registry" in tables else []
+            legacy_active_consumers = sorted(
+                str(row["consumer_path"])
+                for row in consumer_rows
+                if _is_legacy_consumer(str(row["consumer_path"]))
+                and str(row["cutover_state"]) != "retired_alerts_os_pivot"
+            ) if "consumer_migration_registry" in tables else []
+            unaudited_active_legacy_signals = sorted(
+                str(row["consumer_path"])
+                for row in consumer_rows
+                if is_unaudited_legacy_signal(str(row["consumer_path"]))
+                and str(row["cutover_state"]) != "retired_alerts_os_pivot"
             )
+            forbidden_expression = " OR ".join("lower(raw_json) LIKE ?" for _ in FORBIDDEN_CURRENT_TEXT)
+            forbidden_params = [f"%{token}%" for token in FORBIDDEN_CURRENT_TEXT]
+            forbidden_current_counts = {
+                table: int(conn.execute(
+                    f"SELECT COUNT(*) FROM {table} WHERE {forbidden_expression}",
+                    forbidden_params,
+                ).fetchone()[0])
+                for table in ("reference_levels", "universe_membership", "evidence_freshness")
+                if table in tables
+            }
             field_family_summary = self._field_family_summary_from_conn(conn, tables)
         add("integrity_ok", integrity == "ok", integrity)
         add("foreign_keys_ok", len(fk_issues) == 0, len(fk_issues))
@@ -498,25 +1159,21 @@ class FinanceSqlCanonAccess:
         add("sql_first_production_scope_columns_present", required_sql_first <= neutral_columns, sorted(required_sql_first - neutral_columns))
         add("routing_view_sql_first_columns_present", required_sql_first <= routing_view_columns, sorted(required_sql_first - routing_view_columns))
         add(
-            "production_scope_member_proof_backed",
-            production_scope_unproven == 0,
-            {
-                "production_scope_member_count": production_scope_member_count,
-                "rows_without_proof_join_source": production_scope_unproven,
-                "required_source": PROOF_JOIN_SOURCE,
-            },
-        )
-        add(
-            "production_scope_downstream_flags_coherent",
-            production_scope_member_count
-            == production_answer_scope_count
-            == production_card_allowed_count
-            == production_recommendation_count,
+            "legacy_production_route_retired",
+            production_scope_member_count == 0
+            and production_answer_scope_count == 0
+            and non_alert_review_scope_count == 0
+            and production_card_allowed_count == 0
+            and recommendation_fields_allowed_count == 0
+            and current_card_path_count == 0,
             {
                 "production_scope_member": production_scope_member_count,
                 "answer_scope_production_grade": production_answer_scope_count,
+                "answer_scope_not_alert_recommendation_review": non_alert_review_scope_count,
                 "production_card_generation_allowed": production_card_allowed_count,
-                "recommendation_fields_allowed": production_recommendation_count,
+                "current_card_paths_or_flags": current_card_path_count,
+                "recommendation_fields_allowed": recommendation_fields_allowed_count,
+                "note": "non-executing recommendations are produced by the alerts OS chain, not legacy production-card state",
             },
         )
         active_count = counts.get("securities", 0)
@@ -534,11 +1191,73 @@ class FinanceSqlCanonAccess:
             {"active_count": active_count, "tier_routing_state": counts.get("tier_routing_state"), "reference_levels": counts.get("reference_levels"), "evidence_freshness": counts.get("evidence_freshness")},
         )
         add("consumer_registry_loaded", counts.get("consumer_migration_registry", 0) >= 400, counts.get("consumer_migration_registry"))
-        add("source_lineage_loaded", counts.get("source_lineage", 0) >= 3000 and source_lineage_nulls == 0, {"count": counts.get("source_lineage"), "nulls": source_lineage_nulls})
-        add("production_reference_levels_complete", production_reference_nulls == 0, {"null_production_references": production_reference_nulls})
+        add(
+            "alert_lineage_complete",
+            reference_lineage_count == counts.get("reference_levels", 0) * 5
+            and evidence_lineage_count == counts.get("evidence_freshness", 0) * 4
+            and reference_lineage_owner_mismatch_count == 0
+            and evidence_lineage_owner_mismatch_count == 0
+            and consumer_lineage_owner_mismatch_count == 0
+            and source_lineage_nulls == 0,
+            {
+                "total_count": counts.get("source_lineage"),
+                "nulls": source_lineage_nulls,
+                "reference_lineage_count": reference_lineage_count,
+                "expected_reference_lineage_count": counts.get("reference_levels", 0) * 5,
+                "evidence_lineage_count": evidence_lineage_count,
+                "expected_evidence_lineage_count": counts.get("evidence_freshness", 0) * 4,
+                "reference_lineage_owner_mismatch_count": reference_lineage_owner_mismatch_count,
+                "evidence_lineage_owner_mismatch_count": evidence_lineage_owner_mismatch_count,
+                "consumer_lineage_owner_mismatch_count": consumer_lineage_owner_mismatch_count,
+            },
+        )
+        add(
+            "alert_reference_levels_complete",
+            alert_reference_nulls == 0
+            and counts.get("reference_levels") == 200
+            and counts.get("evidence_freshness") == 200,
+            {
+                "null_alert_references": alert_reference_nulls,
+                "reference_row_count": counts.get("reference_levels"),
+                "evidence_freshness_row_count": counts.get("evidence_freshness"),
+            },
+        )
         add("authority_false_flags_clean", all(value == 0 for value in false_counts.values()), false_counts)
-        mirror_name, mirror_ok, mirror_detail = _tier_routing_mirror_check(tier_routing_provenance)
-        add(mirror_name, mirror_ok, mirror_detail, severity="warning")
+        add(
+            "legacy_tier_routing_and_consumers_retired",
+            counts.get("tier_routing_state", -1) == 0
+            and tier_lineage_count == 0
+            and "tier_routing_state" not in promoted_families
+            and not legacy_active_consumers
+            and not unaudited_active_legacy_signals,
+            {
+                "tier_routing_row_count": counts.get("tier_routing_state"),
+                "tier_routing_lineage_count": tier_lineage_count,
+                "tier_routing_promoted_as_canon": "tier_routing_state" in promoted_families,
+                "legacy_active_consumer_count": len(legacy_active_consumers),
+                "legacy_active_consumers": legacy_active_consumers,
+                "unaudited_active_legacy_signals": unaudited_active_legacy_signals,
+            },
+        )
+        add(
+            "current_sql_raw_json_alerts_only",
+            all(value == 0 for value in forbidden_current_counts.values()),
+            forbidden_current_counts,
+        )
+        lineage_name, lineage_ok, lineage_detail = _lineage_artifact_check(lineage_artifacts)
+        add(lineage_name, lineage_ok, lineage_detail)
+        baseline_name, baseline_ok, baseline_detail = _baseline_check(
+            str(baseline_meta_row[0]) if baseline_meta_row else None,
+            reference_rows,
+        )
+        add(baseline_name, baseline_ok, baseline_detail)
+        retirement_name, retirement_ok, retirement_detail = (
+            _consumer_retirement_manifest_check(
+                str(retirement_meta_row[0]) if retirement_meta_row else None,
+                consumer_rows,
+            )
+        )
+        add(retirement_name, retirement_ok, retirement_detail)
         return self._validation_payload(checks, counts, field_family_summary)
 
     def _canon_owner_metadata_from_conn(self, conn: sqlite3.Connection, tables: set[str]) -> dict[str, Any]:
@@ -659,7 +1378,7 @@ class FinanceSqlCanonAccess:
                 "sql_primary_current_state": True,
                 "row_count": int(row["total_rows"] or 0),
                 "complete_reference_rows": int(row["complete_rows"] or 0),
-                "authority_scope": "review_only_entry_band_stop_metadata",
+                "authority_scope": "review_only_alert_band_and_invalidation_metadata",
             }
         if "evidence_freshness" in tables:
             families["evidence_freshness"] = {
@@ -694,7 +1413,7 @@ class FinanceSqlCanonAccess:
                 "sql_primary_current_state": True,
                 "row_count": int(row["total_rows"] or 0),
                 "production_answer_rows": int(row["production_allowed_rows"] or 0),
-                "authority_scope": "review_only_answer_routing_scope",
+                "authority_scope": "review_only_non_executing_recommendation_routing_scope",
             }
         if "tier_routing_state" in tables:
             row = conn.execute(
@@ -706,37 +1425,22 @@ class FinanceSqlCanonAccess:
                 FROM tier_routing_state
                 """
             ).fetchone()
-            proof = _current_proof_state()
-            production_rows = [
-                str(candidate["ticker"])
-                for candidate in conn.execute(
-                    """
-                    SELECT ticker
-                    FROM universe_membership
-                    WHERE production_scope_member=1 AND production_scope_source=?
-                    ORDER BY ticker
-                    """,
-                    (PROOF_JOIN_SOURCE,),
-                )
-            ]
-            validated_rows = [t for t in production_rows if _routing_authority_flags_closed(t, proof)]
             families["production_grade_policy"] = {
-                "sql_primary_current_state": True,
+                "sql_primary_current_state": False,
                 "row_count": int(row["total_rows"] or 0),
                 "legacy_tier_a_ready_compatibility_rows": int(row["tier_a_ready_rows"] or 0),
                 "dynamic_production_review_rows": int(row["dynamic_production_review_rows"] or 0),
-                "dynamic_production_review_definition": "current SQL-first Tier A/B routing surface for review-only production attention",
-                "production_grade_rows": len(validated_rows),
-                "production_grade_definition": "proof-joined routing Tier A/B, decision-grade fresh, zero critical data "
-                "conflicts, confidence ready, in coverage, card on disk, with router authority flags still closed",
-                "legacy_42_role": "compatibility_only_not_strategic_authority",
-                "authority_scope": "review_only_production_grade_answer_eligibility_no_execution_authority",
+                "production_grade_rows": 0,
+                "lifecycle": "retired_from_alerts_os",
+                "replacement": "alert state plus freshness, confidence, thesis, timeframe, and non-executing recommendation review",
+                "authority_scope": "retired_historical_compatibility_no_dispatch",
             }
         if "tier_routing_state" in tables:
             families["tier_routing_state"] = {
-                "sql_primary_current_state": True,
+                "sql_primary_current_state": False,
                 "row_count": int(conn.execute("SELECT COUNT(*) FROM tier_routing_state").fetchone()[0]),
-                "authority_scope": "review_only_non_capital_tier_routing",
+                "lifecycle": "retired_empty_compatibility_table",
+                "authority_scope": "retired_historical_compatibility_no_dispatch",
             }
         if "consumer_migration_registry" in tables:
             families["consumer_registry"] = {
@@ -794,6 +1498,280 @@ class FinanceSqlCanonAccess:
         validation = self.validate()
         if validation["status"] != "ok":
             raise RuntimeError(f"finance SQL canon guard blocked: {validation['errors']}")
+
+    def resolve_tickers(self, tickers: Iterable[str]) -> dict[str, str]:
+        """Resolve canonical or provider identities without a local alias map."""
+
+        self._guard()
+        with connect_readonly(self.db_path) as conn:
+            return _resolve_tickers_from_conn(conn, tickers)
+
+    def universe_memberships(
+        self,
+        tickers: Iterable[str] | None = None,
+    ) -> dict[str, UniverseMembershipRecord]:
+        """Return guarded SQL-owned identity, scope, tier, and eligibility rows."""
+
+        self._guard()
+        with self._read_connection() as conn:
+            params: tuple[str, ...] = ()
+            where = "s.active=1"
+            if tickers is not None:
+                resolved = _resolve_tickers_from_conn(conn, tickers)
+                wanted = sorted(set(resolved.values()))
+                if not wanted:
+                    return {}
+                placeholders = ",".join("?" for _ in wanted)
+                where += f" AND s.ticker IN ({placeholders})"
+                params = tuple(wanted)
+            query = f"""
+                SELECT
+                  s.ticker, s.name, s.instrument_type, s.sector, s.industry,
+                  s.yfinance_symbol, s.sec_cik, s.company_ir, s.active,
+                  u.universe_scope, u.tier, u.coverage_obligation_tier,
+                  u.monitoring_role, u.production_scope_member,
+                  u.production_scope_source, u.sql_tier, u.sql_tier_state,
+                  u.tier_decision_scope, u.review_100_monitor,
+                  u.decision_grade_eligible, u.source_open_required,
+                  u.promotion_required_before_action, u.raw_json
+                FROM securities s
+                JOIN universe_membership u ON u.ticker=s.ticker
+                WHERE {where}
+                ORDER BY s.ticker
+            """
+            membership_rows = conn.execute(query, params).fetchall()
+        return {
+            str(row["ticker"]): _row_to_universe_membership(row)
+            for row in membership_rows
+        }
+
+    def dynamic_entitlement_scope(
+        self,
+        *,
+        envelope_name: str | None = "phase3_initial_32",
+        envelope_count: int | None = 32,
+    ) -> DynamicEntitlementScope:
+        """Return one fail-closed, SQL-owned Tier A+B entitlement snapshot.
+
+        This performs exactly one guarded membership read.  It never writes
+        SQL, calls a provider, truncates an over-envelope scope, or falls back
+        to a local ticker list.
+        """
+
+        all_memberships = self.universe_memberships()
+        identities = dict(sorted(
+            (
+                ticker,
+                row,
+            )
+            for ticker, row in all_memberships.items()
+            if row.active
+        ))
+        for ticker, row in identities.items():
+            raw_tier = str(row.tier or "").strip()
+            canonical_tier = raw_tier.upper()
+            expected = DYNAMIC_ENTITLEMENT_WITNESSES.get(canonical_tier)
+            witnesses = (
+                str(row.sql_tier or "").strip(),
+                str(row.coverage_obligation_tier or "").strip(),
+            )
+            if raw_tier != canonical_tier or expected is None or witnesses != expected:
+                raise DynamicEntitlementScopeError("guarded_sql_scope_tier_conflict")
+
+        memberships = {
+            ticker: row
+            for ticker, row in identities.items()
+            if row.tier in {"A", "B"}
+        }
+        if not memberships:
+            raise DynamicEntitlementScopeError("guarded_sql_scope_empty")
+
+        aliases: dict[str, str] = {}
+        for ticker, row in identities.items():
+            for raw_alias in (row.ticker, row.yfinance_symbol):
+                alias = str(raw_alias or "").strip().upper()
+                if not alias:
+                    raise DynamicEntitlementScopeError("guarded_sql_scope_alias_conflict")
+                variants = {alias, alias.replace(".", "-"), alias.replace("-", ".")}
+                for variant in variants:
+                    prior = aliases.setdefault(variant, ticker)
+                    if prior != ticker:
+                        raise DynamicEntitlementScopeError("guarded_sql_scope_alias_conflict")
+
+        triples = [
+            (row.ticker, row.tier, row.decision_grade_eligible)
+            for row in memberships.values()
+        ]
+        fingerprint = _dynamic_scope_fingerprint(triples)
+        tier_breakdown = {
+            tier: sum(1 for row in memberships.values() if row.tier == tier)
+            for tier in ("A", "B")
+        }
+        # Structural integrity failures raise before this point (tier witness,
+        # alias, envelope, empty scope).  Eligibility debt is never recorded
+        # here: ``integrity_breaches`` means structural failure only, so the
+        # unchanged downstream guards admit debt-only scopes to evidence work.
+        integrity_breaches: tuple[str, ...] = ()
+        eligibility_debt = tuple(
+            ticker for ticker, row in memberships.items() if not row.decision_grade_eligible
+        )
+        if envelope_count is not None and envelope_count < 0:
+            raise DynamicEntitlementScopeError("guarded_sql_scope_invalid_envelope")
+        overflow_tickers = (
+            tuple(list(memberships)[envelope_count:])
+            if envelope_count is not None
+            else ()
+        )
+        return DynamicEntitlementScope(
+            source=DYNAMIC_ENTITLEMENT_SCOPE_SOURCE,
+            memberships=memberships,
+            identities=identities,
+            aliases=dict(sorted(aliases.items())),
+            fingerprint=fingerprint,
+            tier_breakdown=tier_breakdown,
+            integrity_breaches=integrity_breaches,
+            envelope_name=envelope_name,
+            envelope_count=envelope_count,
+            overflow_tickers=overflow_tickers,
+            eligibility_debt=eligibility_debt,
+        )
+
+    def reference_level_records(
+        self,
+        tickers: Iterable[str] | None = None,
+    ) -> dict[str, ReferenceLevelRecord | None]:
+        """Return provenance-verified reference records in one guarded read."""
+
+        self._guard()
+        with connect_readonly(self.db_path) as conn:
+            if tickers is None:
+                canonical_tickers = [
+                    str(row["ticker"])
+                    for row in conn.execute(
+                        "SELECT ticker FROM securities WHERE active=1 ORDER BY ticker"
+                    )
+                ]
+            else:
+                resolved = _resolve_tickers_from_conn(conn, tickers)
+                canonical_tickers = sorted(set(resolved.values()))
+            if not canonical_tickers:
+                return {}
+            placeholders = ",".join("?" for _ in canonical_tickers)
+            params = tuple(canonical_tickers)
+            present_reference_tickers = {
+                str(row["ticker"])
+                for row in conn.execute(
+                    f"SELECT ticker FROM reference_levels WHERE ticker IN ({placeholders})",
+                    params,
+                )
+            }
+            joined_rows = conn.execute(
+                f"""
+                SELECT
+                  r.ticker,
+                  r.reference_price_low,
+                  r.reference_price_high,
+                  r.reference_invalidation_level,
+                  r.reference_confidence,
+                  r.reference_band_status,
+                  r.source_artifact_path,
+                  r.source_artifact_sha256,
+                  r.source_generated_at_utc,
+                  r.authority_class,
+                  r.fallback_rule,
+                  r.raw_json,
+                  l.field_name,
+                  l.source_artifact_path AS lineage_source_artifact_path,
+                  l.source_artifact_sha256 AS lineage_source_artifact_sha256,
+                  l.source_generated_at_utc AS lineage_source_generated_at_utc,
+                  l.source_status,
+                  l.validator_status,
+                  l.authority_class AS lineage_authority_class,
+                  l.fallback_rule AS lineage_fallback_rule,
+                  l.inserted_at_utc
+                FROM reference_levels r
+                JOIN source_lineage l
+                  ON l.scope='ticker'
+                 AND l.scope_key=r.ticker
+                 AND l.field_family='reference_levels'
+                WHERE r.ticker IN ({placeholders})
+                ORDER BY r.ticker, l.field_name
+                """,
+                params,
+            ).fetchall()
+
+        grouped: dict[str, list[sqlite3.Row]] = {}
+        for row in joined_rows:
+            grouped.setdefault(str(row["ticker"]), []).append(row)
+        if set(grouped) != present_reference_tickers:
+            missing_lineage = sorted(present_reference_tickers - set(grouped))
+            raise RuntimeError(
+                "finance SQL reference lineage missing: " + ",".join(missing_lineage)
+            )
+
+        records: dict[str, ReferenceLevelRecord | None] = {
+            ticker: None for ticker in canonical_tickers
+        }
+        for ticker, lineage_rows in grouped.items():
+            first = lineage_rows[0]
+            field_names = tuple(sorted(str(row["field_name"]) for row in lineage_rows))
+            issues: list[str] = []
+            if set(field_names) != REFERENCE_LEVEL_LINEAGE_FIELDS or len(lineage_rows) != len(REFERENCE_LEVEL_LINEAGE_FIELDS):
+                issues.append(f"lineage_fields={list(field_names)}")
+            expected_lineage = (
+                first["source_artifact_path"],
+                first["source_artifact_sha256"],
+                first["source_generated_at_utc"],
+                first["authority_class"],
+                first["fallback_rule"],
+            )
+            lineage_status_ok = True
+            for row in lineage_rows:
+                actual_lineage = (
+                    row["lineage_source_artifact_path"],
+                    row["lineage_source_artifact_sha256"],
+                    row["lineage_source_generated_at_utc"],
+                    row["lineage_authority_class"],
+                    row["lineage_fallback_rule"],
+                )
+                if actual_lineage != expected_lineage:
+                    issues.append(f"lineage_mismatch:{row['field_name']}")
+                if row["source_status"] != "ok" or row["validator_status"] != "ok":
+                    lineage_status_ok = False
+            inserted_at = {str(row["inserted_at_utc"]) for row in lineage_rows}
+            if len(inserted_at) != 1:
+                issues.append("lineage_inserted_at_mismatch")
+            if issues:
+                raise RuntimeError(
+                    f"finance SQL reference lineage blocked for {ticker}: {sorted(set(issues))}"
+                )
+            if not lineage_status_ok:
+                records[ticker] = None
+                continue
+            records[ticker] = ReferenceLevelRecord(
+                ticker=ticker,
+                reference_price_low=_float(first["reference_price_low"]),
+                reference_price_high=_float(first["reference_price_high"]),
+                reference_invalidation_level=_float(first["reference_invalidation_level"]),
+                reference_confidence=_int(first["reference_confidence"]),
+                reference_band_status=first["reference_band_status"],
+                source_artifact_path=str(first["source_artifact_path"]),
+                source_artifact_sha256=first["source_artifact_sha256"],
+                source_generated_at_utc=first["source_generated_at_utc"],
+                source_status=str(first["source_status"]),
+                validator_status=str(first["validator_status"]),
+                authority_class=str(first["authority_class"]),
+                fallback_rule=str(first["fallback_rule"]),
+                raw_json=_json_dict(first["raw_json"]),
+                lineage_field_names=field_names,
+                lineage_inserted_at_utc=next(iter(inserted_at)),
+            )
+        return records
+
+    def reference_level_record(self, ticker: str) -> ReferenceLevelRecord | None:
+        records = self.reference_level_records([ticker])
+        canonical = next(iter(records), None)
+        return records.get(canonical) if canonical else None
 
     def ticker_state(self, ticker: str) -> SecurityState | None:
         self._guard()
@@ -853,7 +1831,7 @@ class FinanceSqlCanonAccess:
             ]
 
     def legacy_tier_a_ready_compatibility_tickers(self) -> list[str]:
-        """Return the legacy label-only Tier A/A-READY compatibility set."""
+        """Return the retired label-only Tier A/A-READY compatibility set."""
 
         self._guard()
         with connect_readonly(self.db_path) as conn:
@@ -871,36 +1849,15 @@ class FinanceSqlCanonAccess:
             ]
 
     def production_grade_tickers(self) -> list[str]:
-        """Return proof-joined production-grade answer tickers.
+        """Return the retired production-grade compatibility set (always empty).
 
-        Reads the ``production_scope_member`` column written by the
-        ``finance_sql_canon`` proof join (routing tier A/B, decision-grade fresh, zero
-        critical data conflicts, confidence ready, in coverage, card on disk) rather than
-        re-deriving a second definition here. The router authority flags are still asserted
-        live so a routing artifact that widened capital or execution authority fails closed.
-
-        The SQL label-only Tier A/A-READY set is retained through
-        ``legacy_tier_a_ready_compatibility_tickers``.
+        Alert and recommendation eligibility now comes from the current alert
+        controller and evidence/freshness chain. The SQL access layer must not
+        resurrect the retired WF78 production-card route.
         """
 
         self._guard()
-        proof = _current_proof_state()
-        with connect_readonly(self.db_path) as conn:
-            rows = conn.execute(
-                """
-                SELECT ticker
-                FROM current_sql_canon_routing
-                WHERE production_scope_member=1
-                  AND production_scope_source=?
-                ORDER BY ticker
-                """,
-                (PROOF_JOIN_SOURCE,),
-            ).fetchall()
-        return [
-            str(row["ticker"])
-            for row in rows
-            if _routing_authority_flags_closed(str(row["ticker"]), proof)
-        ]
+        return []
 
     def production_answer_tickers(self) -> list[str]:
         """Return the strategic production-grade answer set.
@@ -975,7 +1932,7 @@ class FinanceSqlCanonAccess:
         return summary
 
 
-def access(db_path: Path = DEFAULT_DB) -> FinanceSqlCanonAccess:
+def access(db_path: Path | None = None) -> FinanceSqlCanonAccess:
     return FinanceSqlCanonAccess(db_path)
 
 
@@ -983,16 +1940,17 @@ def guard_context(
     *,
     consumer: str = "",
     require_production_count: int | None = None,
-    db_path: Path = DEFAULT_DB,
+    db_path: Path | None = None,
 ) -> dict[str, Any]:
     """Return a compact fail-closed guard payload for migrated consumers."""
 
+    resolved_db = DEFAULT_DB if db_path is None else Path(db_path)
     context: dict[str, Any] = {
         "schema_version": "finance_sql_canon_guard_context.v1",
         "generated_at_utc": utc_now(),
         "consumer": consumer,
         "status": "blocked",
-        "db_path": rel(db_path),
+        "db_path": rel(resolved_db),
         "typed_access_layer": "scripts/finance_sql_canon_access.py",
         "access_validation_status": None,
         "production_answer_count": None,
@@ -1011,7 +1969,7 @@ def guard_context(
     }
     errors = context["validation"]["errors"]
     try:
-        client = FinanceSqlCanonAccess(db_path)
+        client = FinanceSqlCanonAccess(resolved_db)
         validation = client.validate()
         context["access_validation_status"] = validation.get("status")
         if validation.get("status") != "ok":
@@ -1040,7 +1998,7 @@ def guard_context(
 def strategic_answer_route_context(
     *,
     consumer: str = "",
-    db_path: Path = DEFAULT_DB,
+    db_path: Path | None = None,
 ) -> dict[str, Any]:
     """Return SQL-first Tier routing / production-grade answer route health.
 
@@ -1051,12 +2009,13 @@ def strategic_answer_route_context(
     legacy 42 as a blocker.
     """
 
+    resolved_db = DEFAULT_DB if db_path is None else Path(db_path)
     context: dict[str, Any] = {
         "schema_version": "finance_sql_canon_strategic_answer_route_context.v1",
         "generated_at_utc": utc_now(),
         "consumer": consumer,
         "status": "blocked",
-        "db_path": rel(db_path),
+        "db_path": rel(resolved_db),
         "typed_access_layer": "scripts/finance_sql_canon_access.py",
         "access_validation_status": None,
         "production_answer_count": None,
@@ -1092,7 +2051,7 @@ def strategic_answer_route_context(
     errors = context["validation"]["errors"]
     warnings = context["validation"]["warnings"]
     try:
-        client = FinanceSqlCanonAccess(db_path)
+        client = FinanceSqlCanonAccess(resolved_db)
         validation = client.validate()
         context["access_validation_status"] = validation.get("status")
         if validation.get("status") != "ok":

@@ -1,4 +1,6 @@
-# WF25-P1 - EOG Admission Review
+# Retired Historical — WF25-P1 - EOG Admission Review
+
+Lifecycle: Retired on 2026-08-29. This dated review is historical evidence only and is not current alert canon, recommendation state, or routing authority.
 
 - **candidate:** EOG
 - **review date:** 2026-05-04

@@ -10,7 +10,7 @@
     "enable_disable_mutation_allowed": false,
     "finance_canon_or_portfolio_mutation_allowed": false,
     "owner_approval_inferred": false,
-    "owner_workflow": "WF64/WF56 canon drift proof",
+    "owner_workflow": "WF85 alerts-and-recommendations boundary proof",
     "paper_or_live_execution_allowed": false,
     "payload_restore_only": true,
     "review_only": true,
@@ -29,31 +29,31 @@
     "payload.cwd",
     "payload.timeoutSeconds"
   ],
-  "contract_reason": "Command-backed cron payload contract so quiet-only agentTurn drift is caught by validation.",
-  "contract_update_reason": "Restore quiet-only agentTurn cron to command-backed pre-dispatch proof path; preserve schedule/session/delivery.",
+  "contract_reason": "Daily structural proof that active finance canon, workflow routes, and cron contracts remain inside the alerts-and-recommendations boundary.",
+  "contract_update_reason": "Pin command argv to CPython 3.13 so Gateway can spawn the job after python ENOENT auto-failures.",
   "deleteAfterRun": false,
   "delivery": {
     "bestEffort": true,
     "mode": "none"
   },
-  "description": "Command-backed daily canon drift/freshness proof with changed-input skip. Review-only; no canon/portfolio mutation, capital deployment, paper/live/account action, or owner approval inference.",
+  "description": "Deterministic daily alerts-OS boundary validation. Enforces that active finance surfaces exclude portfolio construction/state and paper/execution routes. No external delivery, capital, orders, accounts, or execution authority.",
   "enabled": true,
   "expected_artifacts": [
-    "tmp/canon-drift-freshness-gate.json"
+    "tmp/alerts-os-pivot-validator.json"
   ],
   "job_id": "814ad19c-e6a4-4496-bdb5-7f04d1858727",
-  "name": "Finance - Daily Canon Drift Freshness Gate",
-  "owner_workflow": "WF64/WF56 canon drift proof",
+  "name": "Finance - Daily Alerts OS Boundary Gate",
+  "owner_workflow": "WF85 alerts-and-recommendations boundary proof",
   "payload": {
     "argv": [
-      "python",
-      "scripts\\canon_drift_freshness_gate.py",
-      "--skip-if-unchanged",
-      "--write"
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts\\alerts_os_pivot_validator.py",
+      "--write",
+      "--validate"
     ],
     "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
     "kind": "command",
-    "timeoutSeconds": 600
+    "timeoutSeconds": 180
   },
   "required": true,
   "schedule": {
@@ -63,6 +63,6 @@
   },
   "schema": "veritas.cron_contract.v1",
   "sessionTarget": "isolated",
-  "updated_at_utc": "2026-06-29T04:55:48Z",
+  "updated_at_utc": "2026-09-06T22:13:50Z",
   "wakeMode": "now"
 }

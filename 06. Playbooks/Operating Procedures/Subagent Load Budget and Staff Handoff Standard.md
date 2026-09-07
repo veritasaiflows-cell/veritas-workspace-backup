@@ -19,7 +19,7 @@ Use WF71 department ownership as a routing index, not a new authority layer. Sta
 ## Default Load Budget
 - Doctrine: cite or summarize `SOUL.md`/`AGENTS.md` hard boundaries in the handoff; do not paste broad doctrine unless needed.
 - Skills: read at most one relevant skill up front unless the lane is explicitly multi-domain.
-- Artifact awareness: when a helper needs generated artifact/proof/provenance context, prefer SQL cockpit command output (`scripts/artifact_index.py cockpit`, `ticker-cockpit`, `trust-cockpit`, `proof-field`, `stoplines`, `validate`) over handing it broad `tmp/` directory scans. Include only the specific target artifact paths it must inspect after SQL routing.
+- Artifact awareness: when a helper needs generated artifact/proof/provenance context, prefer current SQL cockpit output (`scripts/artifact_index.py cockpit`, `ticker-cockpit`, `trust-cockpit`, `proof-field`, `ticker-card`, `answer-packet`, `validate`) over handing it broad `tmp/` directory scans. Include only the specific target artifact paths it must inspect after SQL routing.
 - Files-to-read-first: at most 6 exact files, 120,000 total bytes, and 30,000 estimated context tokens per frozen handoff. Split a broad audit rather than widening these ceilings.
 - Broad audit lanes: read-only by default and must return a claim matrix plus priority recommendations.
 - Outputs: one summary artifact/final response plus exact proof paths; JSON artifacts must parse.
@@ -51,9 +51,9 @@ Every helper-lane prompt should include:
 | Staff lane | Typical files-to-read-first | Default merge mode |
 |---|---|---|
 | Official Source Desk | WF70 note, company source metadata, target capture scripts/artifacts | Artifact or patch proposal |
-| Advisor Alert Desk | WF68 note, alert artifacts, Execution Board, WF67 guardrails | Artifact/implementation with tests |
+| Alerts and Recommendations Desk | WF84 evidence, WF85 non-executing recommendations, active alert canon, current freshness proofs | Artifact/implementation with tests; no finance-state ownership |
 | Analytics / Probability Desk | WF69, WF55, state-history artifacts, validators | Artifact/validator; no probability claims |
-| Portfolio / Canon Steward | Execution Board, Portfolio Snapshot, WF56/WF58/WF64, validators | Exact gated patch proposal or bounded apply if approved |
+| Finance Alert Canon Steward | guarded SQL, Alert Trigger Policy, Alert Bands and Invalidation Register, pivot validator | Read-only audit or exact owner-approved alert-canon patch with numeric-preservation proof; no construction or simulated-account state |
 | OS Operator / Automation Desk | Active Workflows, target continuity note, runtime docs, relevant scripts | Patch proposal/implementation; config gated |
 | Independent QA Desk | Target files/artifacts only plus governing boundaries | Read-only report unless explicitly scoped |
 

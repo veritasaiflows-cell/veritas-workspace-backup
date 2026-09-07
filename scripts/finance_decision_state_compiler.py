@@ -9,7 +9,22 @@ from __future__ import annotations
 
 from typing import Any
 
-from trade_grade_decision_os_contract import BLOCKING_PRIMARY_STATES, INVALIDATION_PRIMARY_STATES
+# These immutable review-state sets are deliberately local.  Importing the
+# retired trade-grade contract here turned a pure current-state compiler into
+# an active reactivation edge, despite this module needing no contract I/O.
+BLOCKING_PRIMARY_STATES = {
+    "blocked_missing_freshness",
+    "blocked_missing_source_open",
+    "blocked_missing_band_or_stop",
+    "blocked_wf67_guard_context",
+    "below_stop_or_invalidation",
+    "evidence_repair",
+}
+
+INVALIDATION_PRIMARY_STATES = {
+    "below_stop_or_invalidation",
+    "invalidation_review",
+}
 
 STATE_ORDER = [
     "below_stop_or_invalidation",

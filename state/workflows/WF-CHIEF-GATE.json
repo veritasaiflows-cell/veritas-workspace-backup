@@ -1,23 +1,23 @@
 {
   "schema": "veritas.workflow_capsule.v1",
   "workflow_id": "WF-CHIEF-GATE",
-  "display_name": "Chief / WF67 Manager Gate Monitor",
+  "display_name": "Alert Recommendation Guardrail Monitor",
   "tier": "P2",
   "priority": "P2",
   "lifecycle": "monitor",
   "readiness": "monitor_only",
   "effective_status": "monitor_only",
-  "current_state": "Monitor: Chief gate and WF67 manager/card artifacts.",
-  "next_action": "Escalate when a candidate/card lacks rank, band/stop proof, sector/monitor/paper context, WF55 caution, or manager readiness.",
-  "authoritative_next_action": "Escalate when a candidate/card lacks rank, band/stop proof, sector/monitor/paper context, WF55 caution, or manager readiness.",
+  "current_state": "Monitor guarded alert evidence, freshness, and recommendation boundaries.",
+  "next_action": "Escalate on missing lineage, freshness decay, contradictory thesis/band state, or any output that implies approval or action authority.",
+  "authoritative_next_action": "Escalate on missing lineage, freshness decay, contradictory thesis/band state, or any output that implies approval or action authority.",
   "helper_safe": false,
   "owner_action_required": false,
-  "authority_boundary": "monitor-only; review/routing",
+  "authority_boundary": "monitor-only alert and recommendation guardrail",
   "authority_class": "monitor_only",
   "primary_owner_lane": "main-session-veritas",
   "secondary_consumers": [],
   "human_approval_owner": "Randall",
-  "proof_artifact": "scripts/chief_intelligence_promotion_gate.py",
+  "proof_artifact": "tmp/alerts-os-pivot-validator.json",
   "freshness_sla": {
     "primary_artifact_max_age_hours": 72.0,
     "owner_context_max_age_hours": 72.0,
@@ -25,15 +25,16 @@
   },
   "blockers": [],
   "stop_lines": [
-    "Review/routing only; no watchlist apply, portfolio/canon mutation, paper/live execution, owner approval inference, probability/model authority, or money movement."
+    "Monitor and escalate only. No canon, schedule, account, order, execution, or approval authority."
   ],
   "continuity_note": null,
-  "primary_route_artifact": "scripts/chief_intelligence_promotion_gate.py",
+  "primary_route_artifact": "tmp/alerts-os-pivot-validator.json",
   "secondary_artifacts": [
-    "scripts/wf67_autonomous_paper_manager.py"
+    "tmp/alert-level-freshness-controller.json",
+    "tmp/finance-alert-os-digest.json"
   ],
   "validator_commands": [
-    "python scripts\\chief_intelligence_promotion_gate.py --write --validate"
+    "python scripts\\alerts_os_pivot_validator.py --write --validate"
   ],
   "default_resume_command": null,
   "control_override": null,

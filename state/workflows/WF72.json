@@ -1,7 +1,7 @@
 {
   "schema": "veritas.workflow_capsule.v1",
   "workflow_id": "WF72",
-  "display_name": "Financial OS SQL Support / SQL-Primary Migration",
+  "display_name": "WF72 - Guarded Finance SQL Support",
   "tier": "P1",
   "priority": "P1",
   "lifecycle": "active",
@@ -11,84 +11,36 @@
   "next_action": "Maintain typed access, registry guard, fallbacks, and lifecycle proof; retirement needs exact parity/lifecycle gates.",
   "authoritative_next_action": "Maintain typed access, registry guard, fallbacks, and lifecycle proof; retirement needs exact parity/lifecycle gates.",
   "helper_safe": true,
-  "owner_action_required": true,
-  "authority_boundary": "support-only plus migration proof; SQL-first migration green does not grant source-feeder retirement, archive/delete, portfolio/canon mutation, or finance execution authority by itself",
-  "authority_class": "owner_gated_review_only",
+  "owner_action_required": false,
+  "authority_boundary": "read-only guarded SQL support for alert evidence",
+  "authority_class": "review_only",
   "primary_owner_lane": "main-session-veritas",
   "secondary_consumers": [],
   "human_approval_owner": "Randall",
-  "proof_artifact": "tmp/finance-sql-primary-migration-plan.json",
+  "proof_artifact": "tmp/finance-sql-canon-access-validation.json",
   "freshness_sla": {
     "primary_artifact_max_age_hours": 72.0,
     "owner_context_max_age_hours": 72.0,
     "material_owner_context_required": true
   },
-  "blockers": [
-    "Band-proposals source migration is complete for GOOG/GS/NVDA/VRT; source-family proof reports row_issue_counts={} and SQL-first provenance clean.",
-    "The legacy Execution Board anchor packet remains compatibility-only and should not be used as the strategic migration boundary.",
-    "Separate gate required before schema mutation, cron schedule change, Python fallback retirement, source-feeder retirement, archive/delete apply, or finance answer-path ownership."
-  ],
+  "blockers": [],
   "stop_lines": [
-    "No SQL data/schema mutation, cron schedule mutation, archive/move/delete, human canon/portfolio mutation, action-state mutation, customer output, runtime/config mutation, Python retirement, SQL-first promotion, finance front-door ownership, capital deployment, paper/live/account action, or owner approval inference without a separate exact gate."
+    "Guarded alert evidence only. No tier-routing mirror, legacy consumer, portfolio or simulated-account state, canon write, capital, order, account, or execution authority."
   ],
-  "continuity_note": "06. Playbooks/Project Continuity/Workflow 72 - Financial OS Efficiency Restructure and Priority Compression.md",
-  "primary_route_artifact": "tmp/finance-sql-primary-migration-plan.json",
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 72 - Guarded Finance SQL Canon.md",
+  "primary_route_artifact": "tmp/finance-sql-canon-access-validation.json",
   "secondary_artifacts": [
     "state/finance/finance-canon.sqlite",
-    "tmp/band-proposals.json",
-    "tmp/reference-levels-band-proposals-source-migration.json",
-    "tmp/reference-levels-band-proposals-source-migration-apply-result.json",
-    "tmp/reference-levels-targeted-repair-packet.json",
-    "tmp/reference-levels-sql-native-source-family-proof.json",
-    "tmp/full-answer-parity/full-answer-parity-rollup.json",
-    "tmp/sql-canon-consumer-registry-guard.json",
-    "tmp/sql-canon-migration-completion-runner.json",
-    "tmp/sql-canon-old-anchor-residue-guard.json",
-    "tmp/finance-sql-consumer-migration-burndown.json",
-    "tmp/finance-sql-markdown-field-ownership.json",
-    "tmp/veritas-artifact-index.sqlite",
-    "tmp/veritas-canon-cache.sqlite",
-    "tmp/fast-path-qa.json",
-    "08. Audits/SQL Primary Finance Canon Migration Audit and Finish Line Plan - 2026-06-19.md"
+    "tmp/alerts-os-pivot-validator.json"
   ],
   "validator_commands": [
-    "python scripts\\finance_sql_primary_migration_plan.py --write --write-md --validate",
-    "python scripts\\finance_sql_markdown_field_ownership.py --write --validate",
-    "python scripts\\reference_levels_band_proposals_source_migration.py --write --validate",
-    "python scripts\\reference_levels_targeted_repair_packet.py --write --validate",
-    "python scripts\\reference_levels_sql_native_source_family_proof.py --write --validate",
-    "python scripts\\full_intelligence_answer_parity.py --all --write --validate --pretty",
-    "python scripts\\sql_canon_migration_completion_runner.py --write --validate",
-    "python scripts\\sql_canon_old_anchor_residue_guard.py --write --validate",
-    "python scripts\\finance_sql_consumer_migration_burndown.py --write --write-md --validate",
     "python scripts\\finance_sql_canon_access.py --write --validate",
-    "python scripts\\artifact_index.py validate",
-    "python scripts\\fast_path_qa.py --write --validate"
+    "python scripts\\alerts_os_pivot_validator.py --write --validate",
+    "python scripts\\workflow_router.py WF72 --answer all --write-capsules --validate"
   ],
-  "default_resume_command": "python scripts\\finance_sql_primary_migration_plan.py --write --write-md --validate",
+  "default_resume_command": "python scripts\\finance_sql_canon_access.py --write --validate",
   "control_override": null,
-  "pm_action": {
-    "action_id": "sql_index-run_validator",
-    "action_type": "run_validator",
-    "description": "Refresh JSON-to-SQL promotion index, Python/SQL contract lint, schema drift lint, and SQL proof probe.",
-    "lane_id": "sql_index",
-    "authority": "review_only",
-    "inline_execution_allowed": false,
-    "helper_lane_allowed_from_main_session": true,
-    "heartbeat_may_execute": false,
-    "stop_lines": [
-      "JSON remains source",
-      "no SQL import authority",
-      "no canon/portfolio authority",
-      "no finance answer front-door ownership"
-    ],
-    "lane_status": "route_only",
-    "readiness_score": 60,
-    "rank": 17,
-    "pm_packet_only": true,
-    "source_lane_status": "needs_validation",
-    "superseded_by_route_contract": true
-  },
+  "pm_action": null,
   "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",

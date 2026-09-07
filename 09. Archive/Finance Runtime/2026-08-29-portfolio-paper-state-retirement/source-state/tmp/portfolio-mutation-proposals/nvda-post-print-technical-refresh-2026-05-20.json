@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-21T00:53:21Z",
+  "ticker": "NVDA",
+  "action": "post_print_technical_refresh_metadata",
+  "source_evidence": [
+    "05. Intelligence/Earnings/NVDA Q1 FY2027 Post-Earnings Scorecard.md",
+    "05. Intelligence/Event Calendar.md",
+    "tmp/technical-refresh.json",
+    "tmp/band-proposals.json"
+  ],
+  "expected_refresh": "band_refresh may clear same-day earnings freeze only after last_earnings_date and post_earnings_review_date confirm the event has been captured.",
+  "authority": {
+    "canonical_note_mutation_allowed": true,
+    "portfolio_mutation_allowed": true,
+    "owner_approval_granted": true,
+    "entry_band_or_ticker_state_only": true,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false,
+    "paper_order_allowed": false,
+    "cash_movement_allowed": false,
+    "sizing_sleeve_cash_risk_rule_authority": false,
+    "owner_approval_inferred_for_execution": false
+  },
+  "rollback_path": "backups\\20260520T1749MST-nvda-post-print-refresh"
+}

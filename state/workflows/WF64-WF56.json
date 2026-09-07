@@ -2,18 +2,18 @@
   "schema": "veritas.workflow_capsule.v1",
   "workflow_id": "WF64-WF56",
   "display_name": "Portfolio/Canon Maintenance",
-  "tier": "P1",
-  "priority": "P1",
-  "lifecycle": "active",
-  "readiness": "refresh_required",
-  "effective_status": "refresh_required",
-  "current_state": "Proposal/semantic preview/gated apply architecture active; scoped routine entry-band maintenance is system-owned inside its gate, while broader applies remain exact-gated.",
-  "next_action": "Keep validators clean; use scoped band maintenance for eligible entry-band/stop refresh and exact standing/scoped approval artifacts for broader categories.",
-  "authoritative_next_action": "Keep validators clean; use scoped band maintenance for eligible entry-band/stop refresh and exact standing/scoped approval artifacts for broader categories.",
+  "tier": "P3",
+  "priority": "P3",
+  "lifecycle": "paused",
+  "readiness": "paused",
+  "effective_status": "on_hold",
+  "current_state": "Retired 2026-08-29 by Randall's alerts-and-recommendations OS pivot; historical evidence is retained but no operational route remains.",
+  "next_action": "Do not advance or schedule this workflow. Preserve historical proof and route current evidence/freshness needs to WF84/WF85.",
+  "authoritative_next_action": "Do not advance or schedule this workflow. Preserve historical proof and route current evidence/freshness needs to WF84/WF85.",
   "helper_safe": false,
   "owner_action_required": true,
-  "authority_boundary": "scoped entry-band maintenance allowed; broader proposal/preview/gated-apply only",
-  "authority_class": "owner_gated_review_only",
+  "authority_boundary": "retired history only; no operational or action authority",
+  "authority_class": "paused_review_only",
   "primary_owner_lane": "main-session-veritas",
   "secondary_consumers": [],
   "human_approval_owner": "Randall",
@@ -21,24 +21,32 @@
   "freshness_sla": {
     "primary_artifact_max_age_hours": 72.0,
     "owner_context_max_age_hours": 72.0,
-    "material_owner_context_required": true
+    "material_owner_context_required": false
   },
   "blockers": [
-    "Broader applies remain exact-gated"
+    "Retired by explicit owner architecture decision",
+    "Canonical Active Workflows hold: Retired 2026-08-29 by Randall's alerts-and-recommendations OS pivot; historical evidence is retained but no operational route remains."
   ],
   "stop_lines": [
-    "No trade/account/brokerage/money movement; no cron direct apply outside approved scoped band/reference paths; no cash/risk-rule/execution-entitlement mutation unless separately scoped; no clean-validation-equals-approval."
+    "No portfolio construction/state maintenance, canon apply, simulated account state, order generation, brokerage/account action, or paper/live execution."
   ],
   "continuity_note": "06. Playbooks/Project Continuity/Workflow 64 - Bounded Portfolio Agent Cron Architecture.md",
   "primary_route_artifact": null,
-  "secondary_artifacts": [
-    "06. Playbooks/Project Continuity/Workflow 56 - Portfolio Mutation Proposal Object and Gated Apply Helper.md"
-  ],
-  "validator_commands": [
-    "python scripts\\test_portfolio_mutation_validators.py"
-  ],
+  "secondary_artifacts": [],
+  "validator_commands": [],
   "default_resume_command": null,
-  "control_override": null,
+  "control_override": {
+    "status": "on_hold",
+    "set_by": "Randall",
+    "set_at_local": "2026-08-29 America/Phoenix",
+    "set_at_utc": "2026-08-30T01:20:00Z",
+    "reason": "Combined routing identity for the retired WF64/WF56 portfolio/canon maintenance lane.",
+    "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
+    "aliases": [
+      "wf64_wf56"
+    ],
+    "next_action": "Preserve history and deny validators only; route read-only evidence/freshness to WF84/WF85."
+  },
   "pm_action": null,
   "pm_job": null,
   "sources": {

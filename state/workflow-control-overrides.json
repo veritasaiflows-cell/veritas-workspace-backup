@@ -1,6 +1,6 @@
 {
   "schema": "veritas.workflow_control_overrides.v1",
-  "generated_at_utc": "2026-08-27T02:02:16Z",
+  "generated_at_utc": "2026-08-30T01:20:00Z",
   "authority_boundary": {
     "review_only": true,
     "routing_override_only": true,
@@ -71,6 +71,126 @@
         "workflow_83"
       ],
       "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
+    },
+    "wf56": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": "2026-08-29 America/Phoenix",
+      "set_at_utc": "2026-08-30T01:20:00Z",
+      "reason": "Retired by Randall's alerts-and-recommendations OS pivot because WF56 maintains portfolio mutation/apply state.",
+      "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
+      "aliases": ["workflow_56"],
+      "next_action": "Preserve history and deny validators only; do not generate or apply portfolio mutations."
+    },
+    "wf58": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": "2026-08-29 America/Phoenix",
+      "set_at_utc": "2026-08-30T01:20:00Z",
+      "reason": "Retired by Randall's alerts-and-recommendations OS pivot because WF58 owns capital/deployment dashboard state.",
+      "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
+      "aliases": ["workflow_58"],
+      "next_action": "Preserve history only; route current alerts and recommendation health to WF84/WF85."
+    },
+    "wf63": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": "2026-08-29 America/Phoenix",
+      "set_at_utc": "2026-08-30T01:20:00Z",
+      "reason": "Superseded as deny-only safety history by Randall's alerts-and-recommendations OS pivot.",
+      "resume_condition": "No broker/account/position/order monitoring may resume without a new explicit architecture decision.",
+      "aliases": ["workflow_63"],
+      "next_action": "Preserve static endpoint isolation, redaction, and fail-closed no-submit evidence only."
+    },
+    "wf64": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": "2026-08-29 America/Phoenix",
+      "set_at_utc": "2026-08-30T01:20:00Z",
+      "reason": "Retired by Randall's alerts-and-recommendations OS pivot because WF64 owns portfolio/canon maintenance applies.",
+      "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
+      "aliases": ["workflow_64"],
+      "next_action": "Preserve history and deny validators only; route read-only evidence/freshness to WF84/WF85."
+    },
+    "wf64-wf56": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": "2026-08-29 America/Phoenix",
+      "set_at_utc": "2026-08-30T01:20:00Z",
+      "reason": "Combined routing identity for the retired WF64/WF56 portfolio/canon maintenance lane.",
+      "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
+      "aliases": ["wf64_wf56"],
+      "next_action": "Preserve history and deny validators only; route read-only evidence/freshness to WF84/WF85."
+    },
+    "wf67": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": "2026-08-29 America/Phoenix",
+      "set_at_utc": "2026-08-30T01:20:00Z",
+      "reason": "Superseded as deny-only safety history by Randall's alerts-and-recommendations OS pivot.",
+      "resume_condition": "No paper manager, order card, broker refresh, submit, cancel, or sell path may resume without a new explicit architecture decision.",
+      "aliases": ["workflow_67"],
+      "next_action": "Preserve endpoint isolation, redaction, stale-artifact rejection, and immutable audit history only."
+    },
+    "wf68": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": "2026-08-29 America/Phoenix",
+      "set_at_utc": "2026-08-30T03:50:00Z",
+      "reason": "Retired by Randall's alerts-and-recommendations OS pivot because WF68 generated execution-packet and WF67 handoff states.",
+      "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
+      "aliases": ["workflow_68"],
+      "next_action": "Preserve historical proof only; use the deterministic alerts-and-recommendations chain for active refresh and digest output."
+    },
+    "wf76": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": "2026-08-29 America/Phoenix",
+      "set_at_utc": "2026-08-30T03:50:00Z",
+      "reason": "Retired by Randall's alerts-and-recommendations OS pivot because WF76 required WF67, sizing, and Execution Board semantics.",
+      "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
+      "aliases": ["workflow_76"],
+      "next_action": "Preserve history only; use active cron contracts, the freshness spine, and the cron control packet."
+    },
+    "wf78": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": "2026-08-29 America/Phoenix",
+      "set_at_utc": "2026-08-30T03:50:00Z",
+      "reason": "Retired by Randall's alerts-and-recommendations OS pivot because WF78 maintained tier, sizing, deployment, and promotion state.",
+      "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
+      "aliases": ["workflow_78"],
+      "next_action": "Preserve historical proof only; use guarded SQL, explicit quote proof, the alert controller, WF84, and WF85."
+    },
+    "wf79": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": "2026-08-29 America/Phoenix",
+      "set_at_utc": "2026-08-30T04:30:00Z",
+      "reason": "Retired by Randall's alerts-and-recommendations OS pivot because the current Command Center still exposes portfolio, sizing, capital-bucket, and deployment state.",
+      "resume_condition": "Resume only after an alerts-only rebuild passes active-surface and pivot validation under a new explicit architecture decision.",
+      "aliases": ["workflow_79"],
+      "next_action": "Preserve history only; do not run or promote the legacy finance dashboard as a current truth surface."
+    },
+    "wf86": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": "2026-08-29 America/Phoenix",
+      "set_at_utc": "2026-08-30T01:20:00Z",
+      "reason": "Retired by Randall's alerts-and-recommendations OS pivot because WF86 is a paper-autotrader orchestration lane.",
+      "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
+      "aliases": ["workflow_86"],
+      "next_action": "Preserve historical simulation evidence only; do not shadow-log, reconcile, draft orders, or execute."
+    },
+    "wf87": {
+      "status": "on_hold",
+      "set_by": "Randall",
+      "set_at_local": "2026-08-29 America/Phoenix",
+      "set_at_utc": "2026-08-30T01:20:00Z",
+      "reason": "Retired with WF86 by Randall's alerts-and-recommendations OS pivot.",
+      "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
+      "aliases": ["workflow_87"],
+      "next_action": "Preserve deny-only runtime history; do not advance paper autonomy phases."
     },
     "wave2": {
       "status": "on_hold",

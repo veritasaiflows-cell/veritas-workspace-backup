@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-24T16:21:50Z",
+  "status": "blocked",
+  "input_bundle": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+  "proposal_id": "sunday:GOOG:capital-deployment-review:2026-05-24",
+  "authority": {
+    "dry_run_patch_preview_allowed": true,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "write_owner_files_allowed": false,
+    "portfolio_mutation_allowed_by_this_artifact": false,
+    "trade_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "summary": {
+    "changes_checked": 0,
+    "critical": 1,
+    "warning": 0
+  },
+  "findings": [
+    {
+      "severity": "critical",
+      "issue": "missing exact patch material",
+      "detail": "Phase 3 dry-run helper requires exact_patch_preview/proposed_patch/patch changes with target path, old_text, and new_text."
+    }
+  ]
+}

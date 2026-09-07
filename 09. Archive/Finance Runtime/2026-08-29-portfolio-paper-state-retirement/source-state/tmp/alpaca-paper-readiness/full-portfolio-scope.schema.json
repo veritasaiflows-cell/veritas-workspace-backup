@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "allowed_symbols": {
+      "type": "array"
+    },
+    "approval_status": {
+      "enum": [
+        "review_ready_pending_owner_approval",
+        "approved_full_portfolio_paper_scope"
+      ]
+    },
+    "artifact_type": {
+      "const": "wf67_full_portfolio_paper_scope"
+    },
+    "authority": {
+      "type": "object"
+    },
+    "blocked_symbols": {
+      "type": "array"
+    },
+    "order_constraints": {
+      "type": "object"
+    },
+    "phase": {
+      "const": "phase_6_paper_execution_guardrail"
+    },
+    "portfolio_model": {
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "scope_id": {
+      "minLength": 12,
+      "type": "string"
+    },
+    "tranche_controls": {
+      "type": "object"
+    },
+    "workflow": {
+      "const": "WF67 - Alpaca Paper Execution Guardrail"
+    }
+  },
+  "required": [
+    "schema_version",
+    "workflow",
+    "phase",
+    "artifact_type",
+    "scope_id",
+    "approval_status",
+    "authority",
+    "portfolio_model",
+    "tranche_controls",
+    "allowed_symbols",
+    "blocked_symbols",
+    "order_constraints"
+  ],
+  "title": "WF67 Full Portfolio Paper Scope",
+  "type": "object"
+}

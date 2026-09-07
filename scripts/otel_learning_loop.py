@@ -24,6 +24,8 @@ DEFAULT_JSON = TMP / "otel-learning-loop.json"
 DEFAULT_MD = DEFAULT_JSON.with_suffix(".md")
 SCHEMA = "veritas.otel_learning_loop.v1"
 
+LEARNING_WORKFLOW_ALLOWLIST = {"CRON", "WF73", "WF74", "WF88", "OTEL"}
+
 OTEL_CONTROL = TMP / "otel-ops-control.json"
 OTEL_WINDOWS = TMP / "otel-ops-window-summary.json"
 OTEL_TOOL_WORKFLOW = TMP / "otel-tool-workflow-metadata.json"
@@ -35,8 +37,6 @@ CHANGED_FILE_ROUTER = TMP / "changed-file-validator-router.json"
 WF74_OPPORTUNITY_QUEUE = TMP / "wf74-improvement-opportunity-queue.json"
 CRON_SIGNAL_SCORECARD = TMP / "cron-signal-scorecard.json"
 WORKFLOW_ADVANCEMENT = TMP / "workflow-advancement-scorecard.json"
-WF87_SHADOW_OUTCOME = TMP / "wf87-shadow-outcome-scorecard.json"
-WF87_READINESS_ROLLUP = TMP / "wf87-v2-readiness-rollup.json"
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -302,14 +302,9 @@ def otel_health_summary(otel: dict[str, Any], windows: dict[str, Any]) -> dict[s
 def operational_friction_summary(
     cron_signal: dict[str, Any],
     workflow_advancement: dict[str, Any],
-    wf87_shadow: dict[str, Any],
-    wf87_rollup: dict[str, Any],
 ) -> dict[str, Any]:
     cron_scorecard = as_dict(cron_signal.get("scorecard"))
     workflow_summary = as_dict(workflow_advancement.get("summary"))
-    shadow_summary = as_dict(wf87_shadow.get("summary"))
-    phase = as_dict(wf87_rollup.get("phase_readiness"))
-    blocker_taxonomy = as_dict(wf87_rollup.get("blocker_taxonomy"))
     attention_signals = [
         {
             "source": row.get("source"),
@@ -320,7 +315,10 @@ def operational_friction_summary(
             "next_action": row.get("next_action"),
         }
         for row in as_list(cron_signal.get("signals"))
-        if isinstance(row, dict) and row.get("attention") == "requires_main_attention"
+        if (
+            isinstance(row, dict)
+            and row.get("attention") == "requires_main_attention"
+        )
     ][:8]
     blocked_workflows = [
         {
@@ -331,7 +329,11 @@ def operational_friction_summary(
             "next_action": row.get("next_action"),
         }
         for row in as_list(workflow_advancement.get("signals"))
-        if isinstance(row, dict) and row.get("signal") == "blocked"
+        if (
+            isinstance(row, dict)
+            and row.get("signal") == "blocked"
+            and str(row.get("workflow_id") or "").upper() in LEARNING_WORKFLOW_ALLOWLIST
+        )
     ][:8]
     return {
         "cron": {
@@ -341,25 +343,10 @@ def operational_friction_summary(
             "attention_signals": attention_signals,
         },
         "workflow_advancement": {
-            "blocked_count": workflow_summary.get("blocked_count"),
+            "blocked_count": len(blocked_workflows),
             "owner_needed_count": workflow_summary.get("owner_needed_count"),
             "cron_update_recommended": workflow_summary.get("cron_update_recommended"),
             "blocked_workflows": blocked_workflows,
-        },
-        "wf87_shadow_outcomes": {
-            "decision_count": shadow_summary.get("decision_count"),
-            "scoreable_decision_count": shadow_summary.get("scoreable_decision_count"),
-            "pending_regular_session_followup_count": shadow_summary.get("pending_regular_session_followup_count"),
-            "stale_pending_followup_count": shadow_summary.get("stale_pending_followup_count"),
-            "decision_quality_claim_allowed_now": shadow_summary.get("decision_quality_claim_allowed_now"),
-            "model_performance_claim_allowed_now": shadow_summary.get("model_performance_claim_allowed_now"),
-        },
-        "wf87_readiness": {
-            "phase_a_runtime_gates_clean": phase.get("phase_a_runtime_gates_clean"),
-            "phase_b_assisted_round_trip_ready": phase.get("phase_b_assisted_round_trip_ready"),
-            "phase_c_autonomous_paper_buy_ready": phase.get("phase_c_autonomous_paper_buy_ready"),
-            "blocker_counts": as_dict(blocker_taxonomy.get("counts")),
-            "binding_blockers": blocker_taxonomy.get("binding_blockers"),
         },
     }
 
@@ -432,15 +419,6 @@ def build_recommendations(
             "decision": "route_workflow_blockers_into_followup_queue",
             "rationale": "Workflow advancement blockers should create implementation or owner-decision follow-ups, not disappear after a status packet.",
             "next_action": "Rank blocked workflows in the WF74 opportunity queue and open narrow lanes only when write surfaces are clear.",
-        })
-    shadow = as_dict(friction.get("wf87_shadow_outcomes"))
-    if as_float(shadow.get("pending_regular_session_followup_count")) or shadow.get("decision_quality_claim_allowed_now") is False:
-        recommendations.append({
-            "id": "wf87_outcome_measurement_backlog",
-            "severity": "info",
-            "decision": "keep_shadow_outcomes_as_measurement_backlog",
-            "rationale": "WF87 has shadow outcome data, but low scoreable follow-up means it can calibrate only, not claim decision quality.",
-            "next_action": "Keep collecting regular-session follow-up observations and block performance/execution claims until thresholds are met.",
         })
     recommendations.append({
         "id": "content_capture_boundary",
@@ -598,13 +576,11 @@ def build_payload() -> dict[str, Any]:
     queue = as_dict(load_json_artifact(WF74_OPPORTUNITY_QUEUE))
     cron_signal = as_dict(load_json_artifact(CRON_SIGNAL_SCORECARD))
     workflow_advancement = as_dict(load_json_artifact(WORKFLOW_ADVANCEMENT))
-    wf87_shadow = as_dict(load_json_artifact(WF87_SHADOW_OUTCOME))
-    wf87_rollup = as_dict(load_json_artifact(WF87_READINESS_ROLLUP))
 
     cost = model_cost_summary(model_run)
     latency = tool_latency_summary(tool_workflow, validator_timing, coding_runtime)
     health = otel_health_summary(otel, windows)
-    friction = operational_friction_summary(cron_signal, workflow_advancement, wf87_shadow, wf87_rollup)
+    friction = operational_friction_summary(cron_signal, workflow_advancement)
     recommendations = build_recommendations(cost, latency, health, queue, friction)
     carry_forward = build_carry_forward_contract(cost, health, recommendations)
     auto_router = build_auto_implementation_router(recommendations, queue)
@@ -626,8 +602,6 @@ def build_payload() -> dict[str, Any]:
             source_status(WF74_OPPORTUNITY_QUEUE),
             source_status(CRON_SIGNAL_SCORECARD),
             source_status(WORKFLOW_ADVANCEMENT),
-            source_status(WF87_SHADOW_OUTCOME),
-            source_status(WF87_READINESS_ROLLUP),
         ],
         "redaction_policy": {
             "allowed": [

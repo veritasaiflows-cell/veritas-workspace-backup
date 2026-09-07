@@ -129,11 +129,15 @@ def wf78_legacy_coverage_scope_ok(
     registry_tickers: list[str],
     production_missing_from_coverage: list[str],
 ) -> bool:
+    """Coverage is clean when every production ticker is represented.
+
+    Production scope is derived from live SQL canon and no longer has a fixed
+    size; the legacy 42-ticker scope was archived 2026-06-24.
+    """
+
     if production_missing_from_coverage:
         return False
-    if len(production_tickers) == 42:
-        return True
-    return len(production_tickers) == 0 and bool(registry_tickers)
+    return bool(registry_tickers)
 
 
 def find_true_forbidden_flags(obj: Any, path: str = "$", hits: list[dict[str, str]] | None = None) -> list[dict[str, str]]:
@@ -294,7 +298,7 @@ def validate_optional_artifacts(results: list[dict[str, Any]]) -> None:
             wf78_legacy_coverage_scope_ok(production_tickers, registry_tickers, production_missing_from_coverage),
             (
                 f"coverage={len(registry_tickers)} production={len(production_tickers)} "
-                f"missing={production_missing_from_coverage} retired_ok={len(production_tickers) == 0}"
+                f"missing={production_missing_from_coverage}"
             ),
         ))
         results.append(check(
@@ -415,7 +419,7 @@ def validate_full_answer_assembler(results: list[dict[str, Any]]) -> None:
         missing_answers = sorted(set(production_tickers) - set(answer_tickers))
         results.append(check(
             "full_answer_legacy_42_coverage",
-            not missing_answers and len(production_tickers) == 42,
+            not missing_answers,
             f"expected={len(production_tickers)} full_answers={len(answer_tickers)} missing={missing_answers[:20]}",
         ))
 

@@ -23,7 +23,7 @@ class QuestionRouteCatalogTests(unittest.TestCase):
 
     def test_route_selection_for_common_questions(self) -> None:
         cases = {
-            "What are my capital deployment recommendations?": "capital_deployment_recommendations",
+            "What are my current finance alerts and recommendations?": "finance_alerts_and_recommendations",
             "Last 10 skill proposals and patches?": "skill_proposals_and_patches",
             "What skills were modified or created?": "skills_modified_or_created",
             "What improvements and opportunities do we have today?": "daily_improvements_and_opportunities",
@@ -111,10 +111,10 @@ class QuestionRouteCatalogTests(unittest.TestCase):
         self.assertEqual(result["status"], "blocked")
         self.assertTrue(any("broad_first_hop_source" in error for error in result["errors"]))
 
-    def test_capital_deployment_route_requires_fresh_quote_band_stop_proof(self) -> None:
+    def test_finance_alert_route_requires_guarded_current_proof(self) -> None:
         packet = catalog.build_catalog()
         route = next(
-            route for route in packet["routes"] if route["route_id"] == "capital_deployment_recommendations"
+            route for route in packet["routes"] if route["route_id"] == "finance_alerts_and_recommendations"
         )
 
         joined_sources = "\n".join(route["first_hop_sources"]).lower()
@@ -122,11 +122,11 @@ class QuestionRouteCatalogTests(unittest.TestCase):
         joined_limits = "\n".join(route["trust_limits"]).lower()
         joined_proof = "\n".join(route["proof"]).lower()
 
-        self.assertIn("fresh ticker quote/band/stop proof", joined_sources)
-        self.assertIn("stale quote/band/stop proof", joined_forbidden)
-        self.assertIn("stale quote/band/stop proof downgrades answer to review-only", joined_limits)
-        self.assertIn("fresh quote/band/stop packet", joined_proof)
-        self.assertIn("no capital deployment approval inference", "\n".join(route["stop_lines"]))
+        self.assertIn("run_alerts_recommendations_chain.py midday", joined_sources)
+        self.assertIn("stale evidence presented as current", joined_forbidden)
+        self.assertIn("lowers confidence or suppresses", joined_limits)
+        self.assertIn("quote-snapshot-proof.json", joined_proof)
+        self.assertIn("no owner-approval inference", "\n".join(route["stop_lines"]))
 
 
 if __name__ == "__main__":

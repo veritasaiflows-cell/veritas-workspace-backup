@@ -20,19 +20,12 @@ Veritas remains the:
 - final integrator
 
 Claude CLI, Gemini Flash, OpenClaw subagents, and other helper lanes are support lanes.
-They do not own final queue state, final judgment, or canonical conflict resolution. `scripts/project_implementation_router.py` and `veritas.execution_efficiency_policy.v1` own implementation route selection. Use model-free proof first; explicit bounded Codex-native Terra only when eligible; Main/Terra is the default integrator route; Main/Sol is permitted only as an explicit escalation, challenger, or QA exception; otherwise persistent Terra requires fresh strict transport proof. Missing transport does not authorize silent Main fallback.
+They do not own final queue state, final judgment, or canonical conflict resolution. Exact route, model, effort, and transport rules live under **Execution route and lane roles** below.
 
 ## Main-lane reserve rule
 When an approved workflow is being advanced, route before spawning. Use deterministic/model-free execution where possible. Use one file-grounded helper when a distinct bounded deliverable justifies the overhead; use multiple helpers only for genuinely independent outputs. Main may own quick bounded fixes, final integration, and authority-sensitive judgment, but is not the implicit implementation fallback.
 
-The main session should remain available as the:
-- PM / orchestrator
-- QA/QC owner
-- executive manager
-- final integrator
-
-Child lanes should do the bounded implementation, inspection, or draft-prep work.
-The main lane should do the handoff packet, scope control, live control-plane updates, QC judgment, and queue movement.
+Keep Main available for orchestration, QC, integration, and queue movement; child lanes own only bounded implementation, inspection, or draft preparation.
 
 For early automation lanes, default helper scope is contract-building, audit / QA, contradiction review, or distinct-output prep unless a workflow contract explicitly widens authority.
 
@@ -80,12 +73,12 @@ When a new script is justified, the lane must state:
 
 For proof-first work, isolated scripts are allowed to reduce blast radius. But proof scripts must not become permanent by default. Once the proof is green, the next workflow step should consider migration into a shared module, stable CLI wrapper, declarative registry, or archive-candidate review.
 
-This rule is especially strict for finance automation, canon/portfolio maintenance, WF67 paper execution, WF68 alerting, WF70 official-source capture, and dashboard/Today-card surfaces. Never flatten by merging high-authority guardrails into generic helpers unless validators prove authority boundaries remain intact.
+This rule is especially strict for the alerts-and-recommendations finance chain, alert-canon maintenance, WF70 official-source capture, and dashboard/Today-card surfaces. Never flatten by merging high-authority guardrails into generic helpers unless validators prove authority boundaries remain intact. Retired WF67/WF68 routes are not operational inputs.
 
 ## Queue freshness rule
 The active project queue must stay fresh enough that the next move is visible without reconstructing chat history.
 
-For generated artifact/proof awareness, use the SQL cockpit as the first routing layer before broad `tmp/` scans: `scripts/artifact_index.py cockpit`, `ticker-cockpit`, `trust-cockpit`, `proof-field`, `stoplines`, and `validate`. SQL cockpit output may route work, expose provenance, and flag authority boundaries, but it remains derived proof/index/staging only. Inspect the target artifact or canonical owner note before making content claims, queue moves, finance judgments, or any gated apply decision.
+For generated artifact/proof awareness, use the current SQL cockpit as the first routing layer before broad `tmp/` scans: `scripts/artifact_index.py cockpit`, `ticker-cockpit`, `trust-cockpit`, `proof-field`, `ticker-card`, `answer-packet`, and `validate`. SQL cockpit output may route work, expose provenance, and flag authority boundaries, but it remains a derived alerts/evidence index only. Inspect the target artifact or canonical owner note before making content claims, queue moves, or finance judgments.
 
 At minimum, each active or near-term queued item should make clear:
 - current status
@@ -186,13 +179,13 @@ Route order:
 1. explicit deterministic command plus proof -> `model_free_command`
 2. explicitly eligible bounded read-only or one-file leased task -> Codex-native Terra low/medium, only when the spawn capability proof exposes exact model, thinking, backend, and `fork_turns=none`
 3. explicit quick fix, final integration, or authority-sensitive judgment -> Main/Terra; use Main/Sol only when the route carries an explicit `escalation`, `challenger`, or `qa` use case and reason
-4. other bounded helper work -> persistent Terra only with fresh strict context-transport proof
+4. other bounded helper work -> persistent Luna/low only for bounded low-risk read-only extraction/review; persistent Terra/medium-or-high for every helper write, scoped implementation, and higher-risk review; both require fresh strict agent-matched context-transport proof, and writes additionally require scoped writeback proof
 
 Missing capability/transport proof blocks dispatch. Never convert it into a silent Main/Terra or Main/Sol fallback. Sol is a named escalation/challenger/QA path, not a default or helper fallback. Manual Claude/Gemini/challenger work is evidence-only and requires Randall's choice; it never rewrites the selected default route.
 
-Main owns selection, queue movement, QC, acceptance, integration, and final judgment. Helpers own only leased bounded deliverables. Actual backend/model/thinking and authoritative usage or a controlled unavailable reason must be recorded at closeout; mismatch blocks acceptance.
+Main owns selection, queue movement, QC, acceptance, integration, and final judgment. Helpers own only leased bounded deliverables. Every persistent `sessions_spawn` call must explicitly pin `agentId`, `model`, and `thinking`; missing or mismatched proof emits no actionable lease/spawn arguments. A multi-model task uses separate inference/session runs under one parent task; the model never changes within a single inference. Actual backend/model/thinking and authoritative usage or a controlled unavailable reason must be recorded at closeout; mismatch blocks acceptance.
 
-Effort follows scope: low for bounded read-only checks, medium for narrow implementation, high only for broad ambiguity or material trust/security/finance adjudication. Compare like-for-like Main-accepted cohorts; require at least 10 comparable jobs before reviewing a default change; automatic ranking/promotion remains disabled.
+Effort follows scope: low for bounded read-only checks, medium for narrow implementation, high only for broad ambiguity or material trust/security/finance adjudication. Randall may review route efficiency on demand using available token attribution, elapsed time, retry tax, first-pass/Main acceptance, and escaped-defect evidence. Prefer like-for-like comparisons when available, but no fixed cohort pilot or minimum job count is required. Automatic ranking/promotion remains disabled; a policy change remains an explicit Main/owner decision.
 
 Resource rules: bounded handoff, `fork_turns=none`, fork-baseline-aware usage, per-lane token/replay/tool/time ceilings, and early incident stop. One repair plus one fresh QA rerun is the normal loop; another rejection returns to Main for scope reduction.
 
@@ -383,8 +376,6 @@ For any meaningful workflow, do not issue an executive summary until all are tru
 If one of those is missing, give status instead of closure theater.
 
 ## Current operating decision
-- Veritas remains the orchestrator, auditor, and PoM.
-- Queue movement stays route-selected, category-driven, trust-gated, and instrumented for actual usage/outcomes.
-- Deterministic work is first; bounded Terra lanes are next; Main/Terra integrates by default; Main/Sol is an explicit escalation/challenger/QA exception, never a fallback.
+- Queue movement stays route-selected, trust-gated, and instrumented for available usage/outcomes.
 - Status replies must name the current project and the next queued item explicitly.
 - Final QC should trigger immediate promotion of the next approved project instead of leaving the chain idle.

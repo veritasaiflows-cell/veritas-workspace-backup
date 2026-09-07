@@ -1,0 +1,101 @@
+{
+  "artifact_type": "wf67_paper_order_readiness_packet",
+  "schema_version": 1,
+  "generated_at_utc": "2026-06-22T15:07:01Z",
+  "workflow": "WF67/WF86",
+  "target_session_date": "2026-06-22",
+  "requested_tickers": [
+    "NVDA"
+  ],
+  "status": "small_approval_card_prepared_blocked_before_approval",
+  "execution_ready": false,
+  "kill_switch_created": false,
+  "orders_submitted": false,
+  "authority_boundary": {
+    "review_only": true,
+    "paper_order_request_artifact_generation_allowed": true,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "paper_order_sell_allowed": false,
+    "live_trade_allowed": false,
+    "live_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "summary": {
+    "clean_approval_card_count": 0,
+    "prepared_review_card_count": 1,
+    "prepared_review_card_tickers": [
+      "NVDA"
+    ],
+    "paper_execution_ready_count": 0,
+    "draft_order": "BUY limit/day @ $209.50, $300 notional",
+    "primary_read": "Smaller NVDA review card is prepared, but execution remains blocked until exact approval and fresh WF67 guard proof."
+  },
+  "item": {
+    "ticker": "NVDA",
+    "draft_order": {
+      "symbol": "NVDA",
+      "side": "buy",
+      "type": "limit",
+      "time_in_force": "day",
+      "limit_price": 209.5,
+      "qty": null,
+      "notional": 300.0
+    },
+    "risk_check": {
+      "status": "ok",
+      "estimated_notional_usd": 300.0,
+      "max_loss_usd": 23.7,
+      "max_notional_usd": 300.0,
+      "policy_max_notional_usd": 5000.0,
+      "setup_notional_cap_usd": 350.0,
+      "technical_notional_multiplier": 0.3,
+      "technical_setup_label": "TACTICAL_DIP_RECLAIM",
+      "entry_band_low": 202.81,
+      "entry_band_high": 212.23,
+      "observed_price": 209.525,
+      "observed_entry_status": "IN_BAND",
+      "stop": 192.95,
+      "sizing_rationale": "Reduced NVDA review-only paper starter capped at $300 because the setup is tactical/reclaim-grade, Tech/AI concentration is already a workspace concern, and current external quote cross-check is near/above the written band high. Limit/day at $209.50 is a pullback/no-chase term, not permission to buy above the band. Execution remains blocked until exact Randall approval, fresh quote/band check, fresh kill switch, and clean WF67 guard proof.",
+      "full_scope_artifact": "tmp/paper-autotrader/policy.json"
+    },
+    "owner_approval": {
+      "status": "pending_exact_randall_approval",
+      "approved_by": null,
+      "approval_text": null,
+      "market_order_owner_approved": false
+    },
+    "card_path": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.small-starter-review-2026-06-22.owner-card.json",
+    "wf67_request_path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-small-starter-review-2026-06-22.json",
+    "index_path": "tmp/paper-autotrader/assisted-order-cards.nvda-small-starter-review-2026-06-22.json",
+    "paper_execution_ready": false,
+    "paper_submit_allowed": false,
+    "owner_approval_inferred": false,
+    "required_before_execution": [
+      "exact Randall approval of ticker/side/notional/order type/TIF/limit",
+      "fresh quote still inside band or limit remains a pullback/no-chase order",
+      "fresh short-lived kill switch",
+      "fresh WF67 guard validation ready_for_paper_submit_cancel=true",
+      "redacted audit/reconciliation proof",
+      "WF67 wrapper-only paper endpoint execution"
+    ]
+  },
+  "validation": {
+    "status": "warning",
+    "errors": [],
+    "warnings": [
+      "not_clean_approval_card_until_exact_owner_approval",
+      "wf67_guard_not_clean",
+      "fresh_kill_switch_not_proven",
+      "pullback_no_chase_limit_required"
+    ]
+  },
+  "stop_lines": [
+    "Review-only card. No paper/live submit, cancel, sell, account action, money movement, portfolio/canon mutation, or owner approval inference."
+  ]
+}

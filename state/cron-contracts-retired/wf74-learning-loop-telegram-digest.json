@@ -1,0 +1,13 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "a27acb79-4178-4809-90b3-805d34a6fd16",
+  "name": "Retired — WF74 - Learning Loop Telegram Digest",
+  "required": false,
+  "enabled": false,
+  "owner_workflow": "WF74",
+  "original_schedule": {"kind": "cron", "expr": "15 18 * * *", "tz": "America/Phoenix"},
+  "original_payload": ["python", "scripts\\wf74_learning_loop_telegram_cron_runner.py", "--send", "--write", "--validate"],
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired without force-running or sending externally because its delivery path still carried retired WF87 context. The non-delivery WF74 collector remains available and green.",
+  "rollback_requires_owner_gate": true
+}

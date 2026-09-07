@@ -3,8 +3,8 @@
 
 This gate exists so the dashboard and cron/main-session pickup path stop
 confusing "no proof artifact" with "artifact exists but is blocked". It is
-review-only. It does not run finance producers, mutate schedules, edit canon,
-or infer approval.
+review-only. It does not run alert producers, mutate schedules, edit canon, or
+infer approval.
 """
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ SCHEMA = "veritas.main_session_handoff_first_proof.v1"
 AUTHORITY_BOUNDARY = {
     "review_only": True,
     "handoff_proof_only": True,
-    "runs_finance_producers": False,
+    "runs_alerts_recommendations_producers": False,
     "cron_state_mutation_allowed": False,
     "cron_schedule_mutation_allowed": False,
     "config_auth_runtime_mutation_allowed": False,
@@ -42,6 +42,15 @@ AUTHORITY_BOUNDARY = {
     "customer_or_external_delivery_allowed": False,
     "owner_approval_inferred": False,
 }
+
+ACTIVE_CHAIN_SCRIPT = "scripts\\run_alerts_recommendations_chain.py"
+RETIRED_ROUTE_TOKENS = (
+    "weekday_morning_review_cron_runner.py",
+    "post_close_review_cron_runner.py",
+    "run_finance_refresh_chain.py",
+    "wf76",
+    "wf86",
+)
 
 FORBIDDEN_TRUE_FLAGS = {
     "cron_state_mutation_allowed",
@@ -75,51 +84,42 @@ FORBIDDEN_TRUE_FLAGS = {
 
 LANES = [
     {
-        "key": "weekday_research",
-        "label": "Weekday research",
-        "path": TMP / "research-freshness-opportunity-review.json",
+        "key": "morning",
+        "label": "Morning alerts and recommendations",
+        "path": TMP / "alerts-recommendations-chain-morning.json",
         "max_age_hours": 36,
         "weekday_only": True,
         "weekend_freshness_hours": 84,
-        "standing_proof": True,
-        "producer": "python scripts\\research_freshness_opportunity_cron_runner.py --write --validate",
-        "repair_action": "Refresh the weekday research opportunity proof if it becomes stale or missing.",
+        "producer": f"python {ACTIVE_CHAIN_SCRIPT} morning --timeout-seconds 120 --write --validate",
+        "repair_action": "Refresh the bounded morning alerts-and-recommendations proof chain.",
     },
     {
-        "key": "morning",
-        "label": "Morning handoff",
-        "path": TMP / "run-summary-morning.json",
+        "key": "midday",
+        "label": "Midday alerts and recommendations",
+        "path": TMP / "alerts-recommendations-chain-midday.json",
         "max_age_hours": 36,
         "weekday_only": True,
         "weekend_freshness_hours": 84,
-        "producer": "python scripts\\weekday_morning_review_cron_runner.py --write --validate",
-        "repair_action": "Repair or rerun the morning finance refresh chain; current proof must clear stop_line before promotion.",
+        "producer": f"python {ACTIVE_CHAIN_SCRIPT} midday --timeout-seconds 120 --write --validate",
+        "repair_action": "Refresh the bounded midday alerts-and-recommendations proof chain.",
     },
     {
         "key": "post_close",
-        "label": "Post-close handoff",
-        "path": TMP / "run-summary-post-close.json",
+        "label": "Post-close alerts and recommendations",
+        "path": TMP / "alerts-recommendations-chain-post-close.json",
         "max_age_hours": 36,
         "weekday_only": True,
         "weekend_freshness_hours": 84,
-        "producer": "python scripts\\post_close_review_cron_runner.py --write --validate",
-        "repair_action": "Repair or rerun the post-close finance refresh chain; current proof must clear stop_line before promotion.",
+        "producer": f"python {ACTIVE_CHAIN_SCRIPT} post-close --timeout-seconds 120 --write --validate",
+        "repair_action": "Refresh the bounded post-close alerts-and-recommendations proof chain.",
     },
     {
-        "key": "sunday_weekly",
-        "label": "Sunday weekly handoff",
-        "path": TMP / "weekly-intelligence-brief.json",
+        "key": "weekly",
+        "label": "Weekly alerts and recommendations",
+        "path": TMP / "alerts-recommendations-chain-weekly.json",
         "max_age_hours": 192,
-        "producer": "python scripts\\run_finance_refresh_chain.py sunday",
-        "repair_action": "Regenerate the Sunday weekly proof or record an explicit paused/manual-gate retirement for this dashboard pill.",
-    },
-    {
-        "key": "sunday_research",
-        "label": "Sunday research handoff",
-        "path": TMP / "sunday-research-opportunity-reset-cron-runner.json",
-        "max_age_hours": 192,
-        "producer": "python scripts\\sunday_research_opportunity_reset_cron_runner.py --write --validate",
-        "repair_action": "Regenerate the Sunday research opportunity reset proof, or retire this pill if Sunday research was intentionally merged elsewhere.",
+        "producer": f"python {ACTIVE_CHAIN_SCRIPT} weekly --timeout-seconds 120 --write --validate",
+        "repair_action": "Refresh the bounded weekly alerts-and-recommendations proof chain.",
     },
 ]
 
@@ -228,20 +228,6 @@ def status_tone(state: str) -> str:
     }.get(state, "warn")
 
 
-def is_machine_sidecar_handoff_proof(spec: dict[str, Any], payload: dict[str, Any]) -> bool:
-    """Accept Sunday weekly machine-sidecar output as proof without canon authority."""
-    if spec.get("key") != "sunday_weekly":
-        return False
-    if payload.get("trust_gate_blocked") is not True:
-        return False
-    if payload.get("canonical_mutation_allowed") is not False:
-        return False
-    wrote_to = str(payload.get("wrote_to") or "").replace("\\", "/")
-    if wrote_to != "05. Intelligence/Weekly Intelligence Brief - machine.md":
-        return False
-    return str(payload.get("action") or "") in {"appended_machine", "delta_only"}
-
-
 def evaluate_lane(spec: dict[str, Any]) -> dict[str, Any]:
     path = spec["path"]
     payload = load(path)
@@ -269,11 +255,16 @@ def evaluate_lane(spec: dict[str, Any]) -> dict[str, Any]:
     elif stale:
         state = "STALE"
         blockers.append("proof_artifact_stale")
-    elif spec.get("standing_proof"):
-        state = "PROVED"
-    elif is_machine_sidecar_handoff_proof(spec, payload) and not stop_line:
-        state = "PROVED"
-    elif status in {"ok", "warning"} and not stop_line and validation.get("acceptance_passed") is not False and not trust_gate_blocked:
+    elif validation.get("status") in {"error", "blocked", "critical"}:
+        state = "BLOCKED"
+        blockers.append(f"source_validation:{validation.get('status')}")
+    elif (
+        status in {"ok", "warning"}
+        and not stop_line
+        and validation.get("status") not in {"error", "blocked", "critical"}
+        and validation.get("acceptance_passed") is not False
+        and not trust_gate_blocked
+    ):
         state = "PROVED"
     elif status in {"blocked", "error", "critical"} or stop_line or trust_gate_blocked:
         state = "BLOCKED"
@@ -321,7 +312,7 @@ def build_repair_packet(lanes: list[dict[str, Any]]) -> dict[str, Any]:
     actionable = [lane for lane in lanes if lane.get("state") != "PROVED"]
     return {
         "status": "ready" if actionable else "not_needed",
-        "workstream": "WF76::handoff-first-proof-auto-repair",
+        "owner_route": "alerts_and_recommendations_os",
         "lane_needed": bool(actionable),
         "target_lanes": [lane.get("key") for lane in actionable],
         "recommended_actions": [
@@ -335,19 +326,9 @@ def build_repair_packet(lanes: list[dict[str, Any]]) -> dict[str, Any]:
             }
             for lane in actionable
         ],
-        "lease_command": (
-            "python scripts\\concurrent_lane_manager.py --lease WF76 "
-            "--workstream handoff-first-proof-auto-repair --owner main-session-veritas "
-            "--allowed-write scripts\\handoff_first_proof_gate.py "
-            "--allowed-write scripts\\dashboard_payload.py "
-            "--allowed-write tmp\\main-session-handoff-first-proof.json "
-            "--allowed-write tmp\\cron-control-packet.json "
-            "--allowed-write tmp\\main-session-escalation-consumer.json "
-            "--write --validate"
-        ),
         "operator_contract": (
-            "If source artifacts are blocked, repair or rerun the owner producer. "
-            "If a source is missing because the handoff was intentionally paused or merged, update the dashboard/cron contract to retire that pill."
+            "If a proof is blocked, stale, or missing, rerun only its bounded active "
+            "alerts-and-recommendations chain and revalidate the handoff proof."
         ),
     }
 
@@ -382,7 +363,7 @@ def build_payload() -> dict[str, Any]:
         "repair_lane_packet": build_repair_packet(lanes),
         "stop_lines": [
             "This gate does not make blocked source artifacts trustworthy.",
-            "This gate does not run finance producers or mutate cron schedules.",
+            "This gate does not run alerts-and-recommendations producers or mutate cron schedules.",
             "No capital deployment, paper/live execution, brokerage/account action, money movement, portfolio/canon mutation, customer/external delivery, or owner approval inference.",
         ],
     }
@@ -408,6 +389,14 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
             errors.append(f"lane_authority_widened:{row.get('key')}")
         if row.get("state") != "PROVED":
             warnings.append(f"handoff_not_proved:{row.get('key')}:{row.get('state')}")
+        producer = str(row.get("producer_command") or "").lower()
+        if ACTIVE_CHAIN_SCRIPT.lower() not in producer:
+            errors.append(f"inactive_producer_route:{row.get('key')}")
+        if any(token in producer for token in RETIRED_ROUTE_TOKENS):
+            errors.append(f"retired_producer_route:{row.get('key')}")
+    repair_packet_text = json.dumps(payload.get("repair_lane_packet"), sort_keys=True).lower()
+    if any(token in repair_packet_text for token in RETIRED_ROUTE_TOKENS):
+        errors.append("retired_repair_route_present")
     return {"status": "ok" if not errors else "error", "errors": errors, "warnings": warnings}
 
 

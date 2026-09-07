@@ -1,6 +1,6 @@
 # Interactive Training Standards Upgrade Evaluation
 
-Generated UTC: 2026-07-04T14:40:03Z
+Generated UTC: 2026-09-07T04:48:28Z
 
 This is a local-first implementation record. It does not configure an external LMS, LRS, hosting surface, subscription, or public delivery path.
 

@@ -58,6 +58,11 @@ EARNINGS_PATH = TMP / "earnings-calendar.json"
 OUT_PATH = TMP / "band-proposals.json"
 CANON_DB = WORKSPACE / "state" / "finance" / "finance-canon.sqlite"
 
+# Static thesis-anchored alert levels (owner decision 2026-08-29). Once a ticker has
+# levels, price moving away from them is the alert we want -- not a signal to move the
+# levels. Re-deriving on drift made the band follow price, which is a chase mechanism.
+STATIC_ALERT_LEVELS = True
+
 STALE_TRADING_DAYS = 7       # flag needs_review if band older than this many trading days
 PRICE_DRIFT_PCT = 5.0        # flag needs_review if price moved >5% from band midpoint
 MATERIAL_BAND_CHANGE_PCT = 1.0
@@ -634,7 +639,15 @@ def build_proposal(
             f"Band is ~{trading_days_old} trading days old; {pct_str}; {method} status {status}; no review required at this time"
         )
 
+    has_existing_levels = any(level is not None for level in (current_low, current_high, current_stop))
+    static_levels_blocker = (
+        "static alert levels: existing owner-anchored levels are not re-derived from price; "
+        "drift is reported as an alert instead"
+    )
+
     apply_blockers: list[str] = []
+    if STATIC_ALERT_LEVELS and has_existing_levels:
+        apply_blockers.append(static_levels_blocker)
     if not calc.get("apply_eligible"):
         apply_blockers.append("engine marked proposal non-applyable")
     if coverage_lane != "execution":
@@ -654,6 +667,8 @@ def build_proposal(
     # They update SQL reference_levels only (not owner execution bands) and remain
     # review-only metadata. They must still be technically sound and not earnings-frozen.
     reference_apply_blockers: list[str] = []
+    if STATIC_ALERT_LEVELS and has_existing_levels:
+        reference_apply_blockers.append(static_levels_blocker)
     if not calc.get("apply_eligible"):
         reference_apply_blockers.append("engine marked proposal non-applyable")
     method = calc.get("method")
@@ -928,6 +943,13 @@ def main() -> None:
         "status": "needs_review" if needs_review_count > 0 else "ok",
         "engine_version": ENGINE_VERSION,
         "method_policy": "Keltner-first, Dual-MA-gated, SMA-envelope-audited",
+        "static_alert_levels": STATIC_ALERT_LEVELS,
+        "level_policy": (
+            "Static thesis-anchored alert levels: levels are seeded once where none exist and "
+            "thereafter changed only by owner decision. Price drift is alerted, never re-banded."
+            if STATIC_ALERT_LEVELS
+            else "Drift re-banding (retired 2026-08-29)"
+        ),
         "stale_threshold_trading_days": STALE_TRADING_DAYS,
         "price_drift_threshold_pct": PRICE_DRIFT_PCT,
         "material_band_change_pct": MATERIAL_BAND_CHANGE_PCT,

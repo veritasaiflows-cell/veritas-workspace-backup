@@ -1,0 +1,33 @@
+{
+  "models": {
+    "providers": {
+      "openai-codex": {
+        "baseUrl": "https://chatgpt.com/backend-api/codex",
+        "api": "openai-codex-responses",
+        "models": [
+          {
+            "id": "gpt-5.5",
+            "name": "GPT-5.5",
+            "api": "openai-codex-responses",
+            "reasoning": true,
+            "input": ["text", "image"],
+            "contextWindow": 400000,
+            "contextTokens": 391000,
+            "maxTokens": 128000,
+            "cost": {
+              "input": 5,
+              "output": 30,
+              "cacheRead": 0.5,
+              "cacheWrite": 0
+            }
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "contextTokens": 391000
+    }
+  }
+}

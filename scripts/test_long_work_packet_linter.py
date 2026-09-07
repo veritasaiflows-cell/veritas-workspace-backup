@@ -37,7 +37,7 @@ def test_valid_spawn_packet(errors: list[str]) -> None:
     packet = linter.example_packet()
     result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
     expect(result["status"] == "ok", f"valid spawn packet should pass: {result['findings']}", errors)
-    expect(result["summary"]["model"] == "openai/gpt-5.6-terra", "model summary should be preserved", errors)
+    expect(result["summary"]["model"] == "openai/gpt-5.6-sol", "model summary should preserve the configured Main model", errors)
 
 
 def test_ollama_write_requires_tool_loop(errors: list[str]) -> None:
@@ -55,7 +55,7 @@ def test_ollama_write_requires_tool_loop(errors: list[str]) -> None:
     expect("ollama_write_without_tool_loop_proof" in codes, "expected Ollama tool-loop blocker", errors)
 
 
-def test_approved_sol_main_exception_is_not_misclassified(errors: list[str]) -> None:
+def test_sol_main_default_is_not_misclassified(errors: list[str]) -> None:
     packet = linter.example_packet()
     packet["model_route"] = {
         "model": "openai/gpt-5.6-sol",
@@ -63,22 +63,62 @@ def test_approved_sol_main_exception_is_not_misclassified(errors: list[str]) -> 
         "expected_role": "main_integration_final_judgment",
         "trust_label": "route metadata only; Main verifies and accepts",
         "smoke_proof": "native_tool_loop_available",
-        "resource_reason": "Sol is the recorded Main escalation/challenger/QA exception for this bounded route.",
-        "main_model_exception": {
-            "model_path": "openai/gpt-5.6-sol",
-            "use_case": "qa",
-            "reason": "Independent QA challenge for a shared runtime control",
-            "approved": True,
-        },
+        "resource_reason": "Sol is the configured Main integration model.",
     }
     result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
     codes = {finding["code"] for finding in result["findings"]}
-    expect("model_role_mismatch" not in codes, "recorded approved Sol Main exception must not be mislabeled as a role mismatch", errors)
+    expect("model_role_mismatch" not in codes, "configured Sol Main route must not be mislabeled as a role mismatch", errors)
 
-    packet["model_route"]["main_model_exception"]["reason"] = ""
+    packet["model_route"]["expected_role"] = "qa-redteam_specialist"
     result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
     codes = {finding["code"] for finding in result["findings"]}
-    expect("model_role_mismatch" in codes, "Sol Main exception without a reason must remain a warning", errors)
+    expect(result["status"] == "error", "Sol claiming qa-redteam_specialist must be critical", errors)
+    expect("specialist_model_mismatch" in codes, "Sol specialist mismatch must be critical", errors)
+
+
+def test_legacy_terra_qa_role_is_flagged(errors: list[str]) -> None:
+    packet = linter.example_packet()
+    packet["model_route"] = {
+        "model": "openai/gpt-5.6-terra",
+        "execution_backend": "persistent_isolated_agent",
+        "expected_role": "qa_helper",
+        "trust_label": "untrusted review draft; Main verifies and accepts",
+        "smoke_proof": "native_tool_loop_available",
+        "resource_reason": "legacy role-label regression probe",
+    }
+    result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
+    codes = {finding["code"] for finding in result["findings"]}
+    expect("model_role_mismatch" in codes, "legacy Terra QA role must be surfaced after QA Red-Team moved to GLM 5.3", errors)
+
+
+def test_specialist_strict_matrix(errors: list[str]) -> None:
+    pairs = [
+        ("xai/grok-4.6", "research-scout_specialist"),
+        ("openai/gpt-5.6-terra", "finance-source-scout_specialist"),
+        ("ollama-cloud/glm-5.3:cloud", "finance-redteam_specialist"),
+        ("meta/muse-spark-1.3-contributor", "implementation-builder_specialist"),
+        ("ollama-cloud/glm-5.3:cloud", "qa-redteam_specialist"),
+        ("openai/gpt-5.6-luna", "docs-continuity-editor_specialist"),
+    ]
+    def run(model, role):
+        p = linter.example_packet()
+        if role == "docs-continuity-editor_specialist":
+            # Luna docs-continuity is continuity-only: the generic example
+            # packet is task_type=implementation, which correctly keeps the
+            # frozen luna_write_implementation_lane flag on code lanes.
+            p["task_type"] = "continuity"
+        p["model_route"] = {"model": model, "expected_role": role, "trust_label": "untrusted draft scaffold", "smoke_proof": "tool_loop_passed", "resource_reason": "r"}
+        return linter.validate_packet(p, stage="spawn", register=base_register(p))
+    for model, role in pairs:
+        expect(run(model, role)["status"] == "ok", f"valid {role} should pass", errors)
+    rb = run("openai/gpt-5.6-terra", "qa-redteam_specialist")
+    expect(rb["status"] == "error" and "specialist_model_mismatch" in {f["code"] for f in rb["findings"]}, "wrong known model must be critical", errors)
+    ru = run("unknown/model-x", "qa-redteam_specialist")
+    expect(ru["status"] == "error" and "specialist_model_mismatch" in {f["code"] for f in ru["findings"]}, "unknown model must be critical", errors)
+    rz = run("openai/gpt-5.6-terra", "bogus_specialist")
+    expect(rz["status"] == "error" and "unknown_specialist_role" in {f["code"] for f in rz["findings"]}, "unknown specialist must be critical", errors)
+    ra = run("openai/gpt-5.6-terra", "qa_helper")
+    expect(ra["status"] != "error" and "model_role_mismatch" in {f["code"] for f in ra["findings"]}, "advisory qa_helper must stay warning", errors)
 
 
 def test_read_only_cannot_have_leased_paths(errors: list[str]) -> None:
@@ -191,18 +231,71 @@ def test_raw_model_free_project_artifact_passes_without_invented_model(errors: l
     expect("model_route_missing_field" not in codes, "model-free route must not require a model field", errors)
 
 
+def test_legacy_and_opus_denied_in_specialist_scope(errors: list[str]) -> None:
+    for legacy in ("openai/gpt-5.5", "openai/gpt-5.4", "openai/gpt-5.4-mini"):
+        packet = linter.example_packet()
+        packet["model_route"] = {"model": legacy, "expected_role": "qa-redteam_specialist", "trust_label": "legacy probe", "smoke_proof": "native_tool_loop_available", "resource_reason": "legacy denial probe"}
+        result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
+        expect(result["status"] == "error" and "legacy_model_denied" in {f["code"] for f in result["findings"]}, f"{legacy} specialist use must be critically denied", errors)
+    packet = linter.example_packet()
+    packet["model_route"] = {"model": "anthropic/claude-opus-5", "expected_role": "qa-redteam_specialist", "trust_label": "opus probe", "smoke_proof": "native_tool_loop_available", "resource_reason": "opus denial probe"}
+    result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
+    expect(result["status"] == "error" and "opus_persistent_denied" in {f["code"] for f in result["findings"]}, "Opus specialist use must be critically denied", errors)
+
+
+def test_main_ondemand_opus_and_historical_records_not_denied(errors: list[str]) -> None:
+    # Scope probe only: an on_demand_advisory Opus task must not attract
+    # persistent-model denial. This asserts nothing about route acceptance:
+    # independent actual runtime/role proof remains required before any use.
+    packet = linter.example_packet()
+    packet["model_route"] = {"model": "anthropic/claude-opus-5", "expected_role": "on_demand_advisory", "trust_label": "main-session routed advisory; actual runtime proof required", "smoke_proof": "native_tool_loop_available", "resource_reason": "Main on-demand advisory scope probe"}
+    result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
+    codes = {finding["code"] for finding in result["findings"]}
+    expect("opus_persistent_denied" not in codes, "Main on-demand Opus advisory must not be denied as a persistent model", errors)
+    historical = linter.example_packet()
+    historical["model_route"] = {"model": "openai/gpt-5.5", "expected_role": "primary_fallback", "trust_label": "historical record probe", "smoke_proof": "native_tool_loop_available", "resource_reason": "historical record probe"}
+    hresult = linter.validate_packet(historical, stage="spawn", register=base_register(historical))
+    expect("legacy_model_denied" not in {f["code"] for f in hresult["findings"]}, "non-specialist historical record must not be denied", errors)
+
+
+def test_specialist_fallbacks_denied(errors: list[str]) -> None:
+    packet = linter.example_packet()
+    packet["model_route"] = {"model": "ollama-cloud/glm-5.3:cloud", "expected_role": "qa-redteam_specialist", "trust_label": "untrusted draft scaffold", "smoke_proof": "tool_loop_passed", "resource_reason": "r", "fallbacks": ["openai/gpt-5.6-sol"]}
+    result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
+    expect(result["status"] == "error" and "specialist_automatic_fallback_denied" in {f["code"] for f in result["findings"]}, "specialist fallbacks array must be critically denied", errors)
+
+
+def test_docs_luna_continuity_ok_but_not_coding(errors: list[str]) -> None:
+    packet = linter.example_packet()
+    packet["task_type"] = "continuity"
+    packet["model_route"] = {"model": "openai/gpt-5.6-luna", "expected_role": "docs-continuity-editor_specialist", "trust_label": "continuity digest; Main verifies", "smoke_proof": "native_tool_loop_available", "resource_reason": "Luna docs-continuity route"}
+    result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
+    expect(result["status"] != "error", "Luna docs-continuity lane must not error", errors)
+    expect("specialist_model_mismatch" not in {f["code"] for f in result["findings"]}, "Luna docs-continuity role must match", errors)
+    coding = linter.example_packet()
+    coding["model_route"] = {"model": "openai/gpt-5.6-luna", "expected_role": "docs-continuity-editor_specialist", "trust_label": "continuity digest; Main verifies", "smoke_proof": "native_tool_loop_available", "resource_reason": "Luna coding probe"}
+    coding_result = linter.validate_packet(coding, stage="spawn", register=base_register(coding))
+    expect("luna_write_implementation_lane" in {f["code"] for f in coding_result["findings"]}, "Luna implementation write must keep the frozen continuity-only flag", errors)
+
+
 def main() -> int:
     errors: list[str] = []
     for test in (
         test_valid_spawn_packet,
         test_ollama_write_requires_tool_loop,
-        test_approved_sol_main_exception_is_not_misclassified,
+        test_sol_main_default_is_not_misclassified,
+        test_legacy_terra_qa_role_is_flagged,
+        test_legacy_and_opus_denied_in_specialist_scope,
+        test_main_ondemand_opus_and_historical_records_not_denied,
+        test_specialist_fallbacks_denied,
+        test_docs_luna_continuity_ok_but_not_coding,
         test_read_only_cannot_have_leased_paths,
         test_closeout_requires_terminal_lane_and_proof,
         test_closeout_blocks_non_terminal_lane,
         test_packet_missing_from_lane_register,
         test_project_artifact_is_coerced_to_packet,
         test_raw_model_free_project_artifact_passes_without_invented_model,
+        test_specialist_strict_matrix,
     ):
         try:
             test(errors)

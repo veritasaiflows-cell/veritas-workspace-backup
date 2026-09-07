@@ -1,0 +1,144 @@
+{
+  "schema": "veritas.interactive_training_module.v1",
+  "module_id": "openclaw-day1-gateway-control-ui",
+  "title": "OpenClaw Day 1: Gateway, Session, and Control UI",
+  "audience": "Randall internal OpenClaw operator training",
+  "summary": "Fifteen-minute practice for naming Gateway, agent, session, and Control UI correctly, inspecting this WebChat without changing settings, and keeping updates/config owner-gated.",
+  "authority_boundary": {
+    "internal_training_only": true,
+    "external_delivery_approved": false,
+    "customer_data_allowed": false,
+    "credential_access_allowed": false,
+    "owner_approval_inferred": false,
+    "runtime_config_mutation_approved": false,
+    "channel_expansion_approved": false,
+    "gateway_update_approved": false,
+    "pairing_or_allowlist_mutation_approved": false
+  },
+  "learning_objectives": [
+    "Name Gateway, agent, session, and Control UI without mixing them up.",
+    "Describe the path from a WebChat message to an agent reply.",
+    "Keep install/update, config, and channel changes owner-run and out of this lab."
+  ],
+  "lessons": [
+    {
+      "id": "four-parts",
+      "title": "Four Parts, One Box",
+      "body": "OpenClaw is a local Gateway that owns chat surfaces. The Control UI is the browser app the Gateway serves, usually on 127.0.0.1:18789. An agent is the model-plus-tools persona (here, Veritas Main). A session is one conversation's memory and tool loop. This WebChat is Control UI talking to the Gateway, which starts an agent run in this session.",
+      "key_points": [
+        "Gateway: long-lived daemon; one per host; owns channels and the WebSocket API.",
+        "Control UI: browser dashboard served by that Gateway, not a second product.",
+        "Agent: who answers. Session: which thread they are answering in.",
+        "A clean training score does not approve config, updates, or new channels."
+      ]
+    },
+    {
+      "id": "inspect-only-day1",
+      "title": "Day 1 Is Inspect-Only",
+      "body": "Day 1 practice is look, name, and stop. You may open Control UI, read a session, and run read-only status. You do not patch openclaw.json, pair a new channel, or run openclaw update from this lab. Randall runs updates in a terminal or Control UI when he chooses. Completing this module is not that approval.",
+      "key_points": [
+        "Live inspect: this chat, the session list, and `openclaw status` if needed.",
+        "Blocked here: config, auth, channels, pairing, plugins, runtime, and updates.",
+        "Message in, Gateway accepts a run, agent replies. That is the whole loop."
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "id": "what-is-gateway",
+      "type": "multiple_choice",
+      "title": "What Is The Gateway?",
+      "prompt": "Which statement is accurate?",
+      "choices": [
+        {
+          "id": "daemon",
+          "text": "The Gateway is the local long-lived process that owns channels, WebChat, and the Control UI WebSocket.",
+          "correct": true,
+          "feedback": "Correct. One Gateway per host; Control UI and chats connect to it."
+        },
+        {
+          "id": "model",
+          "text": "The Gateway is the LLM vendor, such as xAI or OpenAI.",
+          "correct": false,
+          "feedback": "Vendors supply models. The Gateway is the local OpenClaw daemon."
+        },
+        {
+          "id": "session",
+          "text": "The Gateway is this single chat thread and its transcript.",
+          "correct": false,
+          "feedback": "That is a session. Many sessions can share one Gateway."
+        }
+      ],
+      "xapi_object": "activity/what-is-gateway"
+    },
+    {
+      "id": "who-runs-update",
+      "type": "multiple_choice",
+      "title": "Who Runs Updates?",
+      "prompt": "This training lab finishes with a passing score. What is still true?",
+      "choices": [
+        {
+          "id": "randall-update",
+          "text": "Randall still has to run `openclaw update` himself if he wants an update; the lab does not authorize it.",
+          "correct": true,
+          "feedback": "Correct. Updates and config stay owner-gated."
+        },
+        {
+          "id": "agent-update",
+          "text": "The agent should now run npm install -g openclaw and restart the Gateway.",
+          "correct": false,
+          "feedback": "Agents must not install or restart the Gateway from training completion."
+        },
+        {
+          "id": "auto-channel",
+          "text": "A passing score lets the agent pair Telegram or Discord next.",
+          "correct": false,
+          "feedback": "Channel pairing stays owner-gated and is not Day 1 work."
+        }
+      ],
+      "xapi_object": "activity/who-runs-update"
+    },
+    {
+      "id": "inspect-only-checklist",
+      "type": "checklist",
+      "title": "Day 1 Inspect-Only Minimums",
+      "prompt": "Check every item that stays true for this lab.",
+      "checklist_items": [
+        "I can name Gateway, Control UI, agent, and session.",
+        "This WebChat is Control UI talking to the local Gateway.",
+        "I will not change config, pairing, channels, or plugins from this lab.",
+        "I will not treat a training score as approval to update OpenClaw."
+      ],
+      "xapi_object": "activity/inspect-only-checklist"
+    },
+    {
+      "id": "control-ui-walkthrough-clip",
+      "type": "screen_recording",
+      "title": "Day 1 Teaching Walkthrough",
+      "prompt": "Watch the local teaching walkthrough, then mark it reviewed. You do not record anything.",
+      "walkthrough_src": "walkthroughs/openclaw-day1.html",
+      "capture_hint": "Teaching walkthrough is embedded. You watch it; you do not record a clip.",
+      "caption": "Watch-only map of Gateway, Control UI, agent, and session.",
+      "xapi_object": "activity/control-ui-walkthrough-clip"
+    },
+    {
+      "id": "day1-boundary-ack",
+      "type": "boundary_ack",
+      "title": "Day 1 Boundary Acknowledgement",
+      "prompt": "Confirm this module is internal OpenClaw literacy only and does not approve Gateway updates, config edits, channel pairing, allowlist changes, or runtime mutation.",
+      "expected": "I confirm this is internal OpenClaw Day 1 training only.",
+      "xapi_object": "activity/day1-boundary-ack"
+    }
+  ],
+  "xapi": {
+    "activity_id": "https://veritas.local/training/openclaw-day1-gateway-control-ui",
+    "verbs": [
+      "answered",
+      "completed",
+      "failed",
+      "passed",
+      "reviewed_boundary",
+      "started"
+    ]
+  }
+}

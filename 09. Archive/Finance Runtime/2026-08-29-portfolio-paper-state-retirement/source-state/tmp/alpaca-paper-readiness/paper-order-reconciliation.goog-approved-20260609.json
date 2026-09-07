@@ -1,0 +1,177 @@
+{
+  "artifact_type": "wf67_paper_order_read_only_reconciliation",
+  "artifacts": {
+    "execution_result": "tmp/alpaca-paper-readiness/paper-execution-result.goog-approved-20260609.json",
+    "output": "tmp/alpaca-paper-readiness/paper-order-reconciliation.goog-approved-20260609.json",
+    "position_refresh": "tmp/alpaca-paper-readiness/current-paper-holdings-readonly.json",
+    "request": "tmp/alpaca-paper-readiness/paper-trade-request.wf85-goog-draft-20260609.json"
+  },
+  "authority_boundary": {
+    "account_settings_mutation_allowed": false,
+    "allowed_methods": [
+      "GET"
+    ],
+    "blocked_methods": [
+      "POST",
+      "PATCH",
+      "PUT",
+      "DELETE"
+    ],
+    "live_endpoint_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_cancel_allowed_by_this_reconciliation": false,
+    "paper_only": true,
+    "paper_submit_allowed_by_this_reconciliation": false,
+    "paper_to_live_promotion_allowed": false,
+    "read_only_reconciliation": true
+  },
+  "broker_redacted_submit_result": {
+    "http_status": 200,
+    "paper_order_id_present": true,
+    "paper_order_status": "pending_new",
+    "paper_order_symbol": "GOOG",
+    "side": "buy",
+    "symbol": "GOOG"
+  },
+  "execution_result_status": "submitted",
+  "expected_order": {
+    "limit_price": "361.98",
+    "notional": "361.98",
+    "side": "buy",
+    "symbol": "GOOG",
+    "time_in_force": "day",
+    "type": "limit"
+  },
+  "findings": [],
+  "generated_at_utc": "2026-06-09T18:23:54Z",
+  "goog_positions_from_latest_read_only_refresh": [
+    {
+      "avg_entry_price": 359.937983,
+      "change_today": 0.00487,
+      "current_price": 362.93,
+      "market_value": 725.853984,
+      "qty": 1.999983424,
+      "side": "long",
+      "symbol": "GOOG",
+      "unrealized_pl": 5.983984,
+      "unrealized_plpc": 0.00831
+    }
+  ],
+  "goog_recent_orders_redacted": [
+    {
+      "asset_class": "us_equity",
+      "canceled_at": null,
+      "client_order_id_present": true,
+      "created_at": "2026-06-09T18:15:02.132913Z",
+      "expired_at": null,
+      "expires_at": "2026-06-09T20:00:00Z",
+      "extended_hours": false,
+      "filled_at": "2026-06-09T18:16:52.185421Z",
+      "filled_avg_price": "361.976",
+      "filled_qty": "0.999983424",
+      "limit_price": "361.98",
+      "matches_approved_terms": true,
+      "notional": "361.98",
+      "order_id_present": true,
+      "order_id_sha256_12": "e44c3285ebef",
+      "qty": null,
+      "side": "buy",
+      "status": "filled",
+      "submitted_at": "2026-06-09T18:15:02.132913Z",
+      "symbol": "GOOG",
+      "time_in_force": "day",
+      "type": "limit",
+      "updated_at": "2026-06-09T18:16:52.195664Z"
+    },
+    {
+      "asset_class": "us_equity",
+      "canceled_at": null,
+      "client_order_id_present": true,
+      "created_at": "2026-06-02T13:50:37.206021Z",
+      "expired_at": null,
+      "expires_at": "2026-06-02T20:00:00Z",
+      "extended_hours": false,
+      "filled_at": "2026-06-02T19:59:05.555474Z",
+      "filled_avg_price": "357.9",
+      "filled_qty": "1",
+      "limit_price": "357.91",
+      "matches_approved_terms": false,
+      "notional": null,
+      "order_id_present": true,
+      "order_id_sha256_12": "6c65ab9bd685",
+      "qty": "1",
+      "side": "buy",
+      "status": "filled",
+      "submitted_at": "2026-06-02T13:50:37.225049Z",
+      "symbol": "GOOG",
+      "time_in_force": "day",
+      "type": "limit",
+      "updated_at": "2026-06-02T19:59:05.564839Z"
+    }
+  ],
+  "latest_matching_order_redacted": {
+    "asset_class": "us_equity",
+    "canceled_at": null,
+    "client_order_id_present": true,
+    "created_at": "2026-06-09T18:15:02.132913Z",
+    "expired_at": null,
+    "expires_at": "2026-06-09T20:00:00Z",
+    "extended_hours": false,
+    "filled_at": "2026-06-09T18:16:52.185421Z",
+    "filled_avg_price": "361.976",
+    "filled_qty": "0.999983424",
+    "limit_price": "361.98",
+    "matches_approved_terms": true,
+    "notional": "361.98",
+    "order_id_present": true,
+    "order_id_sha256_12": "e44c3285ebef",
+    "qty": null,
+    "side": "buy",
+    "status": "filled",
+    "submitted_at": "2026-06-09T18:15:02.132913Z",
+    "symbol": "GOOG",
+    "time_in_force": "day",
+    "type": "limit",
+    "updated_at": "2026-06-09T18:16:52.195664Z"
+  },
+  "next_safe_action": "Monitor the filled GOOG paper position via GET-only paper position refresh; no cancel action is needed because open_orders_count is 0.",
+  "post_fill_position_refresh": {
+    "generated_at_utc": "2026-06-09T18:24:02Z",
+    "goog_positions": [
+      {
+        "avg_entry_price": 359.937983,
+        "change_today": 0.00487,
+        "current_price": 362.93,
+        "market_value": 725.853984,
+        "qty": 1.999983424,
+        "side": "long",
+        "symbol": "GOOG",
+        "unrealized_pl": 5.983984,
+        "unrealized_plpc": 0.00831
+      }
+    ],
+    "open_orders_count": 0,
+    "orders_count": 11,
+    "path": "tmp/alpaca-paper-readiness/current-paper-holdings-readonly.json",
+    "positions_count": 7,
+    "status": "ok"
+  },
+  "reconciliation_state": "filled",
+  "schema_version": 1,
+  "status": "ok",
+  "summary": {
+    "approved_terms_match_count": 1,
+    "critical": 0,
+    "filled": true,
+    "goog_recent_order_count": 2,
+    "latest_match_filled_qty": "0.999983424",
+    "latest_match_status": "filled",
+    "open_or_resting": false,
+    "recent_order_count": 11,
+    "warning": 0
+  },
+  "updated_at_utc": "2026-06-09T18:24:30Z",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

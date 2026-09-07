@@ -1,5 +1,9 @@
 # Skill Consolidation Matrix - 2026-07-02
 
+> Status: Historical baseline. Superseded as the current classification on 2026-08-31.
+>
+> This preserves the July decisions as history only. For live ownership and consolidation status, use `06. Playbooks/Skills Governance Index.md` and `08. Audits/Skill Consolidation Review - 2026-08-31.md`. It does not authorize current routing, skill lifecycle actions, removals, or other workspace changes.
+
 ## Conclusion
 
 The skill layer is not broken, but it is over-expanded. Current posture should be: keep the core operating and finance skills, merge or retire narrow bridge skills only after their behavior is absorbed by stronger owners, and do not add external skills or new local skills until overlap pressure drops.

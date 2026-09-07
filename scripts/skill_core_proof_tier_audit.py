@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Audit core workspace skills for Tier 2 local proof eligibility.
 
-This validator is review-only. It reads selected live `skills/*/SKILL.md`
-files, verifies that core contract anchors and authority stop-line language are
-still present, and writes a JSON proof surface for the governance index.
+This validator is review-only. It reads selected live, non-retired
+`skills/*/SKILL.md` files, verifies that core contract anchors and authority
+stop-line language are still present, and writes a JSON proof surface for the
+governance index.
 """
 from __future__ import annotations
 
@@ -47,6 +48,16 @@ NAME_RE = re.compile(r'^name:\s*["\']?([^\r\n"\']+)["\']?\s*$', re.MULTILINE)
 MOJIBAKE_MARKERS = ("â€”", "â€“", "â€", "ï¿½")
 
 
+# These former core candidates are deny-only compatibility tombstones. Keep
+# them visible in proof metadata, but never treat their intentionally thin
+# bodies as promotion candidates.
+RETIRED_FORMER_CORE_CANDIDATES = (
+    "veritas-bounded-portfolio-agent",
+    "veritas-positioning-pass",
+    "wf67-paper-trading-operator",
+)
+
+
 CORE_CONTRACTS: dict[str, dict[str, Any]] = {
     "task-intake-contract": {
         "cluster": "task_intake",
@@ -55,11 +66,14 @@ CORE_CONTRACTS: dict[str, dict[str, Any]] = {
             "Acceptance proof",
             "Debugging loop",
             "Cleanup scope",
-            "Response contract",
+            "Finance Alerts And Recommendations",
+            "closeout shape",
         ],
         "required_groups": {
             "stop_line": ("Stop line", "Stop if"),
-            "finance_boundary": ("paper/live/account", "capital deployment"),
+            "alerts_os_scope": ("finance OS owns alerts", "alerts, evidence, source lineage"),
+            "portfolio_boundary": ("does not own or maintain holdings", "maintained portfolio state"),
+            "execution_boundary": ("Paper and live execution are outside the OS", "requires capital, order, account"),
             "config_boundary": ("config/runtime", "Config / Auth / Runtime"),
         },
     },
@@ -98,17 +112,19 @@ CORE_CONTRACTS: dict[str, dict[str, Any]] = {
         "cluster": "response",
         "required_terms": [
             "Bottom line",
-            "Evidence summary",
-            "Top recommendations",
-            "Do:",
-            "Don't:",
-            "Skill/runtime check",
-            "owner-gated",
+            "Evidence And Proof Reporting",
+            "Trust limits",
+            "Next actions",
+            "Finance Alerts And Recommendations",
+            "run_alerts_recommendations_chain.py",
+            "Randall's decision point",
         ],
         "required_groups": {
-            "finance_boundary": ("paper/live execution", "owner approval"),
-            "recommendation_contract": ("Auto-safe now", "Review-only", "Blocked"),
+            "recommendation_vs_approval": ("recommendation from approval", "A recommendation is not an order"),
+            "recommendation_contract": ("Auto-safe now", "Review-only", "Owner-gated", "Blocked"),
             "proof_rollup": ("pass/warning/fail", "validator proof"),
+            "system_state_boundary": ("Do not create or maintain system-owned holdings", "do not become canon"),
+            "authority_boundary": ("No response label", "creates capital, order, brokerage"),
         },
     },
     "cron-automation-manager": {
@@ -116,14 +132,17 @@ CORE_CONTRACTS: dict[str, dict[str, Any]] = {
         "required_terms": [
             "cron_contract_validator.py",
             "cron_freshness_spine.py",
-            "Phase 2A",
-            "delivery.mode",
+            "cron_control_packet.py",
+            "zero contract drift",
+            "no false-green transitive route",
             "NO_REPLY",
         ],
         "required_groups": {
-            "schedule_boundary": ("schedule mutation", "Schedule changes require"),
+            "schedule_boundary": ("material scheduler/payload change", "scheduler expansion/mutation"),
             "finance_boundary": ("capital deployment", "paper/live", "owner approval inference"),
-            "domain_vs_technical": ("Technical cron failure", "Domain blocker"),
+            "domain_vs_technical": ("Technical: scheduler", "Domain: evidence freshness"),
+            "closed_market_truth": ("monitor-only", "cannot fire fresh intraday alerts"),
+            "retired_route_boundary": ("No enabled job or transitive consumer", "retired finance-state"),
         },
     },
     "openclaw-operator": {
@@ -131,123 +150,144 @@ CORE_CONTRACTS: dict[str, dict[str, Any]] = {
         "required_terms": [
             "status_card_packet.py",
             "startup_brief_packet.py",
-            "concurrent_lane_manager.py",
-            "openclaw skills check",
+            "workspace-route-map.md",
+            "concurrent lane register",
+            "skill validation",
+            "Active Finance Route",
             "Stop Lines",
         ],
         "required_groups": {
             "cached_status": ("Cached Status Card", "shallow status"),
             "blocked_operator_work": ("Blocked Operator Work", "config/auth/network"),
-            "authority_boundary": ("paper/live execution", "owner approval inference"),
+            "alerts_route": ("guarded SQL", "direct alerts/recommendations chain"),
+            "retired_finance_route": ("Old portfolio maintenance", "paper operation"),
+            "authority_boundary": ("account access", "money, capital, orders, or execution"),
         },
     },
     "veritas-model-routing-helper-lanes": {
         "cluster": "model_routing",
         "required_terms": [
             "Veritas main remains",
-            "Smoke proof",
-            "NO_REPLY",
-            "MiniMaxM3",
-            "Kimi",
+            "model_free_command",
+            "Luna",
+            "Terra",
+            "Sol",
+            "provider_usage_unavailable",
             "Stop lines",
         ],
         "required_groups": {
             "helper_authority": ("main verifies", "final integrator"),
-            "fallback_boundary": ("Fallback changes the evidence source", "not the authority level"),
-            "finance_boundary": ("paper/live/brokerage/account", "capital deployment"),
+            "fallback_boundary": ("route changes capability and cost, never authority", "not authority", "never silently fall back"),
+            "finance_boundary": ("paper/live", "brokerage/account", "capital deployment"),
         },
     },
     "veritas-intelligence-effort-router": {
         "cluster": "intelligence_routing",
         "required_terms": [
+            "03. Alerts and Recommendations/",
             "finance_sql_canon_access.py",
-            "canonical_finance_data_plane.py",
-            "tier_a_trade_grade_coverage_gate.py",
-            "Scarce-Attention Policy",
+            "run_alerts_recommendations_chain.py",
+            "alert-level-freshness-controller.json",
+            "finance-alert-os-digest.json",
+            "Recommendation Contract",
+            "Retired Routes",
             "Stop Lines",
         ],
         "required_groups": {
-            "wf78_route": ("current WF78 router", "WF78 lane-qualified truth"),
-            "capital_boundary": ("capital deployment", "paper/live orders"),
-            "tier_a_depth": ("Tier A Coverage", "depth blockers"),
-        },
-    },
-    "wf67-paper-trading-operator": {
-        "cluster": "paper_trading",
-        "required_terms": [
-            "paper-api.alpaca.markets",
-            "ALPACA_PAPER_API_KEY_ID",
-            "Execution Stop Line",
-            "fresh short-lived paper kill switch",
-            "WF67 paper-only wrapper",
-            "Randall's exact approval",
-        ],
-        "required_groups": {
-            "live_block": ("Forbidden endpoint", "live credentials"),
-            "paper_only": ("paper-only", "simulation system"),
-            "approval_separation": ("recommendation object", "execution decision"),
+            "current_alert_route": ("Current WF84 evidence", "WF85 non-executing recommendation cards"),
+            "freshness_boundary": ("emit `freshness_decay`", "Stale, missing, conflicted"),
+            "portfolio_boundary": ("former portfolio board", "Never store them as system-maintained holdings"),
+            "execution_boundary": ("simulated account", "capital, order, account, brokerage"),
         },
     },
     "veritas-fundamental-pass": {
         "cluster": "finance_fundamental",
         "required_terms": [
             "finance_sql_canon_access.py",
-            "source-open",
-            "SQL/JSON proof is not approval authority",
-            "decision-grade",
-            "portfolio-quality",
+            "run_alerts_recommendations_chain.py",
+            "issuer IR",
+            "SEC filings",
+            "base, bull, and bear cases",
+            "fastest thesis breakers",
+            "Randall's decision point",
         ],
         "required_groups": {
-            "official_source": ("official-source", "SEC", "IR"),
-            "freshness_boundary": ("source lineage", "evidence freshness"),
-            "capital_boundary": ("capital deployment", "paper/live execution"),
+            "recommendation_scope": ("support an alert or non-executing recommendation", "recommendation support only"),
+            "official_source": ("official evidence", "SEC filings", "issuer IR"),
+            "freshness_boundary": ("evidence dates", "source conflict lowers confidence"),
+            "business_not_account_state": ("not account or portfolio state", "not maintained as account state"),
+            "execution_boundary": ("No maintained holdings", "account reads, or execution"),
         },
     },
     "veritas-technical-pass": {
         "cluster": "finance_technical",
         "required_terms": [
             "finance_sql_canon_access.py",
-            "capital_deployment_band_integrity_validator.py",
-            "preferred entry band",
-            "stop or invalidation",
-            "Sidecar validator pilot",
-            "four-state",
+            "run_alerts_recommendations_chain.py",
+            "Alert Bands and Invalidation Register.md",
+            "Alert Trigger Policy.md",
+            "Recommendation review",
+            "alerts_os_pivot_validator.py",
+            "Randall's decision point",
         ],
         "required_groups": {
-            "sql_first": ("SQL-First Technical Context", "SQL-first reference levels"),
-            "review_only": ("review readiness only", "owner approval inference"),
-            "propagation": ("validate_portfolio_config.py", "deployment_check.py"),
+            "guarded_levels": ("Static levels come from guarded canon", "never writes guarded levels"),
+            "freshness_boundary": ("Freshness decay", "Suppressed"),
+            "nonexecuting_state": ("information states, not action authority", "does not infer a transaction"),
+            "system_state_boundary": ("No system-owned sleeves", "maintained account exposure"),
+            "capital_boundary": ("infers capital approval", "No system-owned sleeves"),
         },
     },
-    "veritas-positioning-pass": {
-        "cluster": "finance_positioning",
+    "veritas-macro-pass": {
+        "cluster": "finance_macro",
         "required_terms": [
-            "veritas-intelligence-effort-router",
-            "portfolio posture",
-            "capital efficiency",
-            "conditional portfolio actions",
-            "review-ready, deployable, or paper-ready",
+            "current alerts digest",
+            "official central-bank and government releases",
+            "Alert Implications",
+            "Recommendation review",
+            "Invalidation triggers",
+            "Randall's decision point",
         ],
         "required_groups": {
-            "capital_boundary": ("Capital deployment", "owner approval"),
-            "risk_rules": ("risk rules", "invalidation clarity"),
-            "handoff": ("veritas-fundamental-pass", "veritas-technical-pass"),
+            "context_not_signal": ("Macro is context, not a transaction signal", "non-executing recommendations"),
+            "freshness_boundary": ("manual, partial, stale, or conflicting", "source dates, freshness, and confidence"),
+            "alert_scope": ("market/sector alerts", "Market and sector alert implications"),
+            "system_state_boundary": ("Do not translate macro into maintained account posture", "No system-owned sleeves"),
         },
     },
-    "veritas-bounded-portfolio-agent": {
-        "cluster": "bounded_portfolio",
+    "veritas-post-earnings-sync": {
+        "cluster": "finance_post_earnings",
         "required_terms": [
-            "standing approval",
-            "entry_band",
-            "Proposal lane",
-            "Verifier/challenger lane",
-            "Autonomous workspace apply lane",
-            "Minimum proof before closure",
+            "guarded SQL",
+            "alert controller",
+            "direct post-close alerts chain",
+            "base/bull/bear",
+            "guarded band/invalidation context",
+            "closure state",
         ],
         "required_groups": {
-            "apply_requirements": ("exact proposal", "backup/rollback", "validator-clean"),
-            "execution_boundary": ("does not itself authorize trades", "live order placement"),
-            "wf78_boundary": ("WF78 tier-funnel artifacts", "not portfolio/canon mutation authority"),
+            "source_backed": ("source-backed scorecard", "official company evidence"),
+            "alert_vocabulary": ("Recommendation review", "Invalidation alert", "Freshness decay"),
+            "truthful_closure": ("Never use Closed alone", "real closure state"),
+            "system_state_boundary": ("Do not write or maintain holdings", "outside this OS"),
+        },
+    },
+    "veritas-entry-policy-opportunity-surface": {
+        "cluster": "finance_alert_opportunity",
+        "required_terms": [
+            "finance_sql_canon_access.py",
+            "run_alerts_recommendations_chain.py",
+            "Alert Bands and Invalidation Register",
+            "Thin Queue Contract",
+            "Recommendation Gate",
+            "Randall's decision point",
+            "Acceptance",
+        ],
+        "required_groups": {
+            "visibility_not_endorsement": ("Visibility is not endorsement", "non-executing recommendation"),
+            "guarded_lineage": ("every numeric level has guarded lineage", "never re-derived here"),
+            "no_duplicate_truth": ("does not calculate a second technical truth layer", "no duplicate technical calculation"),
+            "system_state_boundary": ("No portfolio roles", "no output implies capital or execution approval"),
         },
     },
 }
@@ -402,9 +442,19 @@ def audit_skill(skills_dir: Path, skill: str, contract: dict[str, Any]) -> dict[
 
 def build_payload(skills_dir: Path) -> dict[str, Any]:
     results = [audit_skill(skills_dir, skill, contract) for skill, contract in CORE_CONTRACTS.items()]
-    blocked = [item for item in results if item["status"] != "ok"]
-    ok = [item for item in results if item["status"] == "ok"]
-    all_findings = [
+    retired_overlap = set(CORE_CONTRACTS).intersection(RETIRED_FORMER_CORE_CANDIDATES)
+    scope_findings: list[dict[str, Any]] = []
+    for skill in sorted(retired_overlap):
+        add_finding(
+            scope_findings,
+            "critical",
+            "retired_tombstone_is_promotion_candidate",
+            "A retired compatibility tombstone must not be audited for Tier 2 promotion.",
+            skill=skill,
+        )
+    blocked = [item for item in results if item["status"] != "ok" or item["skill"] in retired_overlap]
+    ok = [item for item in results if item["status"] == "ok" and item["skill"] not in retired_overlap]
+    all_findings = scope_findings + [
         {**finding, "skill": item["skill"]}
         for item in results
         for finding in item.get("findings", [])
@@ -420,6 +470,7 @@ def build_payload(skills_dir: Path) -> dict[str, Any]:
         "parameters": {
             "skills_dir": rel(skills_dir),
             "core_skill_count": len(CORE_CONTRACTS),
+            "retired_former_core_candidates_excluded": list(RETIRED_FORMER_CORE_CANDIDATES),
         },
         "summary": {
             "audited_core_skill_count": len(results),
@@ -431,13 +482,14 @@ def build_payload(skills_dir: Path) -> dict[str, Any]:
         },
         "tier2_promoted_skills": [item["skill"] for item in ok],
         "blocked_skills": [item["skill"] for item in blocked],
+        "scope_findings": scope_findings,
         "results": results,
         "validation": {
             "status": status,
             "errors": critical,
             "warnings": warnings,
         },
-        "validator_note": "Tier 2 here means local machine proof of skill contract anchors and authority boundaries. It is not Tier 3 live workflow proof and does not apply skills or widen authority.",
+        "validator_note": "Tier 2 here means local machine proof of active, non-retired skill contract anchors and authority boundaries. Retired compatibility tombstones are excluded from promotion. This is not Tier 3 live workflow proof and does not apply skills or widen authority.",
     }
 
 

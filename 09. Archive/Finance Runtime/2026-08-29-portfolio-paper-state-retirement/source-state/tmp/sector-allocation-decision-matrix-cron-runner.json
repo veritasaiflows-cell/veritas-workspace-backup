@@ -1,0 +1,203 @@
+{
+  "schema": "veritas.sector_allocation_decision_matrix_cron_runner.v1",
+  "generated_at_utc": "2026-08-28T12:58:04Z",
+  "status": "ok",
+  "operator_action": "NO_REPLY",
+  "authority_boundary": {
+    "review_only": true,
+    "sector_matrix_report_only": true,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "sizing_or_allocation_change_allowed": false,
+    "trade_or_execution_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "sql_canon_context": {
+    "schema_version": "finance_sql_canon_guard_context.v1",
+    "generated_at_utc": "2026-08-28T12:58:04Z",
+    "consumer": "scripts/sector_allocation_decision_matrix_cron_runner.py",
+    "status": "ok",
+    "db_path": "state/finance/finance-canon.sqlite",
+    "typed_access_layer": "scripts/finance_sql_canon_access.py",
+    "access_validation_status": "ok",
+    "production_answer_count": 14,
+    "legacy_production_answer_count": 0,
+    "migration_registry_summary": {
+      "priority_counts": {
+        "P0": 21,
+        "P1": 459,
+        "P2": 204
+      },
+      "lane_counts": {
+        "answer_path_parity_lane": 21,
+        "cron_pm_governance_lane": 14,
+        "pm_cockpit_lane": 2,
+        "source_loader_lane": 436,
+        "test_parity_lane": 203,
+        "typed_access_guard_lane": 3,
+        "wf78_wf77_routing_lane": 5
+      },
+      "cutover_state_counts": {
+        "not_cut_over": 116,
+        "source_producer": 389,
+        "sql_primary_guarded": 179
+      },
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": [],
+      "p0_answer_path_lane_status": {
+        "ok": true,
+        "errors": [],
+        "p0_count": 21,
+        "answer_path_lane_count": 21,
+        "p0_answer_path_lane_count": 21,
+        "p0_non_answer_path_count": 0,
+        "answer_path_non_p0_count": 0,
+        "p0_non_answer_path_consumers": [],
+        "answer_path_non_p0_consumers": []
+      }
+    },
+    "validation": {
+      "status": "ok",
+      "errors": [],
+      "warnings": []
+    },
+    "authority_boundary": {
+      "read_only_access_layer": true,
+      "db_mutation_allowed": false,
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "customer_or_external_delivery_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "summary": {
+    "sector_matrix_status": "ok",
+    "sector_matrix_validation": "ok",
+    "sector_matrix_critical_count": 0,
+    "sector_matrix_warning_count": 1,
+    "probability_readiness": "SAFE_WITH_GAPS",
+    "failed_step_count": 0,
+    "accepted_warning_count": 1
+  },
+  "steps": [
+    {
+      "name": "sector_allocation_decision_matrix",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\sector_allocation_decision_matrix.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-28T12:58:00Z",
+      "completed_at_utc": "2026-08-28T12:58:00Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 91.541,
+      "stdout_tail": "{\n  \"status\": \"ok\",\n  \"sectors\": 19,\n  \"critical\": 0,\n  \"warning\": 1,\n  \"output\": \"tmp\\\\sector-allocation-decision-matrix.json\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "sector_allocation_decision_matrix_tests",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\test_sector_allocation_decision_matrix.py"
+      ],
+      "started_at_utc": "2026-08-28T12:58:00Z",
+      "completed_at_utc": "2026-08-28T12:58:00Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 77.224,
+      "stdout_tail": "ok sector allocation decision matrix acceptance\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "artifact_index_incremental",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\artifact_index.py",
+        "incremental"
+      ],
+      "started_at_utc": "2026-08-28T12:58:00Z",
+      "completed_at_utc": "2026-08-28T12:58:00Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 139.725,
+      "stdout_tail": "incremental_rebuilt tmp/veritas-artifact-index.sqlite\nsource_files=189 changed_or_new=0 unchanged=189 removed=0\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "artifact_index_validate",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\artifact_index.py",
+        "validate"
+      ],
+      "started_at_utc": "2026-08-28T12:58:00Z",
+      "completed_at_utc": "2026-08-28T12:58:00Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 221.109,
+      "stdout_tail": "_timeline | \nok | view_exists:v_cockpit_trust_boundary | \nok | view_exists:v_cockpit_official_source_fields | \nok | view_exists:v_cockpit_canon_staging | \nok | view_exists:v_cockpit_earnings_lifecycle | \nok | view_exists:v_cockpit_dashboard_findings | \nok | view_exists:v_cockpit_source_freshness | \nok | view_exists:v_cockpit_deployment_readiness | \nok | forbidden_true_authority_flags_zero | count=0\nok | canon_stage_apply_allowed_zero | count=0\nok | canon_stage_activation_or_apply_ready_rows_zero | count=0\nok | official_ir_fields_have_lineage | missing=0\nok | cockpit_action_queue_has_rows | rows=85\nok | cockpit_action_queue_deduped_has_rows | rows=69\nok | cockpit_action_queue_deduped_not_larger_than_raw | raw=85 deduped=69\nok | cockpit_action_queue_deduped_unique_keys | duplicates=0\nok | official_field_proof_amd_adjusted_eps | rows=2\nok | ticker_timeline_etn_has_rows | rows=35\nok | earnings_lifecycle_nvda_review_only | rows=1\nok | earnings_lifecycle_review_only_no_action | rows=0\nok | deployment_readiness_etn_indexed | rows=1 buckets=['WATCH / RESEARCH NEEDED']\nok | source_freshness_rows_indexed | rows=10\nok | dashboard_findings_indexed | rows=25\nok | ticker_expression_index_query_plan | (5, 0, 52, 'SEARCH daily_review_objects USING INDEX idx_daily_review_ticker_upper_time (<expr>=?)')\nok | drift_fingerprint_row_counts_match | \nok | freshness_live_files_all_indexed | not_indexed=0\nok | freshness_no_orphaned_rows | orphaned=0\nok | freshness_no_stale_content | stale=0\nok | freshness_index_has_been_built | last_rebuilt=2026-08-08T15:38:45Z last_incremental=2026-08-28T12:58:00Z\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "cron_operator_ledger",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\cron_operator_ledger.py",
+        "--write",
+        "--write-md",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-28T12:58:00Z",
+      "completed_at_utc": "2026-08-28T12:58:04Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 3840.02,
+      "stdout_tail": "{\n  \"status\": \"ok\",\n  \"out\": \"tmp/cron-operator-ledger.json\",\n  \"md\": \"tmp/cron-operator-ledger.md\",\n  \"errors\": []\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "tmp/sector-allocation-decision-matrix.json",
+      "exists": true,
+      "status": "ok",
+      "operator_action": null,
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T12:58:00Z"
+    },
+    {
+      "path": "tmp/sector-allocation-decision-matrix.md",
+      "exists": true,
+      "status": null,
+      "operator_action": null,
+      "validation_status": null,
+      "generated_at_utc": null
+    },
+    {
+      "path": "tmp/cron-operator-ledger.json",
+      "exists": true,
+      "status": "blocked",
+      "operator_action": null,
+      "validation_status": null,
+      "generated_at_utc": "2026-08-28T12:58:04Z"
+    }
+  ],
+  "validation": {
+    "status": "warning",
+    "errors": [],
+    "warnings": [
+      "sector_matrix_warning_accepted"
+    ]
+  }
+}

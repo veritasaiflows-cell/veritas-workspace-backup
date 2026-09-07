@@ -15,14 +15,14 @@ Run this procedure when Randall asks for faster retrieval, SQL-backed lookup, ar
 | Index | Script | DB/cache | Use |
 |---|---|---|---|
 | Workspace retrieval index | `scripts/workspace_index.py` | `tmp/workspace-index.sqlite` | Markdown/workflow lookup, owner maps, aliases, artifact inventory, freshness hints |
-| Finance artifact-output index / SQL cockpit | `scripts/artifact_index.py` | `tmp/veritas-artifact-index.sqlite` | Primary generated-artifact/proof/provenance/staging lookup; cockpit queue, ticker timelines, helper handoff locator packets, official-source field proof, trust/authority boundaries, canon-staging stop lines, SQL-routed note drift candidates, validation, and incremental rebuilds |
+| Alerts/evidence artifact index / SQL cockpit | `scripts/artifact_index.py` | `tmp/veritas-artifact-index.sqlite` | Derived lookup over the active alerts-OS proof allowlist, official-source captures, ticker timelines, helper handoff locators, source-field proof, trust boundaries, validation, and incremental rebuilds |
 
 ## Operator steps
 1. Rebuild or incrementally refresh the relevant index if freshness matters.
 2. Run the narrowest query that answers the retrieval question.
 3. Open the returned source file(s) or JSON artifact(s).
 4. If the source file conflicts with the SQL row, trust the source file and rebuild the index if needed.
-5. Use the SQL result as a locator/provenance hint only; do not mutate queue, portfolio, dashboard, or canonical notes from SQL alone.
+5. Use the SQL result as a locator/provenance hint only; do not mutate queues, finance canon, alerts, accounts, or external state from SQL alone.
 6. If a query pattern becomes repeatedly useful, update `scripts/README.md` or this procedure instead of scattering examples through workflow notes.
 
 ## Common commands
@@ -38,9 +38,9 @@ python scripts\artifact_index.py cockpit --limit 20
 python scripts\artifact_index.py ticker-cockpit ETN --limit 30
 python scripts\artifact_index.py trust-cockpit --limit 50
 python scripts\artifact_index.py proof-field AMD adjusted_eps
-python scripts\artifact_index.py stoplines --limit 50
-python scripts\artifact_index.py handoff --workflow WF72 --limit 20
-python scripts\artifact_index.py note-drift --limit 100 --output tmp\wf72-sql-to-note-drift-report.json --md-output tmp\wf72-sql-to-note-drift-report.md
+python scripts\artifact_index.py ticker-card AMD --json
+python scripts\artifact_index.py answer-packet AMD --json
+python scripts\artifact_index.py handoff --workflow WF-FINANCE-CHAINS --limit 20
 python scripts\artifact_index.py fingerprints --json
 ```
 
@@ -56,7 +56,7 @@ python scripts\artifact_index.py fingerprints --json
 
 ## Stop lines
 - Do not index credentials, runtime secrets, `.git`, `.obsidian`, `.openclaw`, migration backups, or broad `tmp/` content outside the explicitly intended generated DB/report/artifact-output scope.
-- Do not treat SQL rows as portfolio truth, queue authority, deployment authorization, or closeout proof.
+- Do not treat SQL rows as account state, finance action authority, owner approval, or closeout proof.
 - Do not widen chain integration beyond derived index refresh/health visibility without a bounded proposal, no-drift proof, and authority review.
 - Do not create another retrieval index if `workspace_index.py` or `artifact_index.py` can be extended safely under Workflow 36.
 

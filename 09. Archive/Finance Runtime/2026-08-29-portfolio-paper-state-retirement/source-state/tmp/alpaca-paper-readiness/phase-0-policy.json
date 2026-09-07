@@ -1,0 +1,65 @@
+{
+  "allowed_http_methods_phase_1": [
+    "GET"
+  ],
+  "current_authority": {
+    "config_or_auth_mutation_allowed": false,
+    "credential_handling_approved": false,
+    "live_submit_allowed": false,
+    "manual_paper_pilot_reconciliation_allowed": false,
+    "money_movement_allowed": false,
+    "openclaw_paper_submit_allowed": false,
+    "order_preview_generation_allowed": true,
+    "paper_submit_cancel_approved_in_principle": true,
+    "read_only_connection_allowed": true,
+    "readiness_design_allowed": true,
+    "shadow_mode_allowed": true,
+    "trade_or_account_action_allowed": false
+  },
+  "forbidden_endpoint": "https://api.alpaca.markets",
+  "forbidden_http_methods": [
+    "POST",
+    "PATCH",
+    "PUT",
+    "DELETE"
+  ],
+  "generated_at_utc": "2026-05-15T20:42:42Z",
+  "next_required_owner_decision": "WF67 implementation scope is open; next required step is building paper execution schemas/validators/guard report and exact wrapper dry-run before any paper submit/cancel call.",
+  "paper_execution_approval_artifact": "tmp/alpaca-paper-readiness/phase-6-paper-execution-approval.json",
+  "phase": "phase_0_policy_and_architecture_lock",
+  "phase_1_2_scaffolding_artifacts": [
+    "06. Playbooks/Operating Procedures/Alpaca Paper Credential Handling Procedure.md",
+    "tmp/alpaca-paper-readiness/read-only-connection-proof.schema.json",
+    "tmp/alpaca-paper-readiness/phase-1-2-readiness-spec.json"
+  ],
+  "policy_scope_note": "This policy remains the safety/authority lock, not a chronology artifact. Phase 3 non-executable order previews and Phase 4 shadow reports are allowed as review-only scaffolding only; they do not permit paper/live submit, cancel/replace, account mutation, owner-approval inference, or trade/account action.",
+  "required_endpoint": "https://paper-api.alpaca.markets",
+  "required_files": [
+    "06. Playbooks/Project Continuity/Workflow 63 - Alpaca Paper Trading Readiness.md",
+    "07. Risk/Alpaca Paper Trading Guardrails.md"
+  ],
+  "required_future_artifacts": [
+    "tmp/alpaca-paper-readiness/read-only-connection-proof.json",
+    "tmp/alpaca-paper-readiness/kill-switch.json",
+    "tmp/alpaca-paper-readiness/audit-log.jsonl",
+    "tmp/alpaca-paper-readiness/no-submit-guard-report.json",
+    "tmp/alpaca-paper-readiness/manual-pilot-reconciliation.json",
+    "tmp/alpaca-paper-readiness/phase-6-paper-execution-approval.json"
+  ],
+  "schema_version": 1,
+  "status": "phase_1_read_only_proof_passed_wf67_paper_execution_guardrail_opened",
+  "stop_lines": [
+    "No live trading",
+    "No brokerage/account mutation",
+    "No money movement",
+    "No live endpoint or live credential use",
+    "No shorting, margin, leverage, options, crypto, or complex order types",
+    "No secrets in notes, memory, logs, or generated artifacts",
+    "No inferred owner approval from validators or recommendations",
+    "No paper submit/cancel outside WF67 validated wrapper and scoped paper-trade/pilot artifact",
+    "No money movement or account setting mutation",
+    "No replace, close-position, liquidation, transfer, market, short, margin, leverage, options, crypto, or complex order path without separate approval"
+  ],
+  "successor_workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "workflow": "WF63 - Alpaca Paper Trading Readiness"
+}

@@ -1,0 +1,290 @@
+{
+  "schema": "veritas.wf87_paper_autonomy_runtime_governor.v1",
+  "generated_at_utc": "2026-08-26T01:32:34Z",
+  "workflow_id": "WF87",
+  "status": "runtime_fail_closed_maturity_improved",
+  "purpose": "Narrow WF87 to the paper-autonomy runtime governor and evidence harness under WF88.",
+  "authority_boundary": {
+    "review_only": true,
+    "runtime_governor_only": true,
+    "explanation_only": true,
+    "proposal_generation_only": true,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "autonomous_paper_submit_allowed": false,
+    "autonomous_paper_cancel_allowed": false,
+    "autonomous_paper_sell_allowed": false,
+    "owner_approval_inferred": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "cash_sizing_risk_mutation_allowed": false,
+    "cron_direct_execution_allowed": false,
+    "delete_archive_or_cleanup_apply_allowed": false,
+    "wf88_learning_owner": false
+  },
+  "responsibility_split": {
+    "wf87_owns": [
+      "WF85 candidate consumption for paper-autonomy consideration",
+      "WF67 guard and runtime safety gate interpretation",
+      "TTL, kill-switch, circuit-breaker, stale quote/band/stop fail-closed checks",
+      "trade-decision journal and assisted/shadow outcome classification",
+      "owner-review card readiness explanation"
+    ],
+    "wf88_owns": [
+      "finance-call intake",
+      "outcome grading and experiment registry",
+      "OS 2.0 control packet",
+      "retired-surface cleanup planning and route contraction",
+      "coding/behavior portability and cross-workflow learning"
+    ],
+    "handoff": "WF87 emits runtime eligibility and outcome signals; WF88 owns learning, cleanup, and control-plane synthesis."
+  },
+  "inputs": {
+    "rollup": {
+      "path": "tmp/wf87-v2-readiness-rollup.json",
+      "present": true,
+      "required": true,
+      "generated_at_utc": "2026-08-25T23:44:30Z",
+      "age_hours": 1.8,
+      "max_age_hours": 24,
+      "freshness_status": "fresh",
+      "status": "phase_a_hardening_implemented_runtime_blocked",
+      "validation_status": "ok",
+      "warning": false,
+      "blocking": false
+    },
+    "runtime_gate_explanation": {
+      "path": "tmp/wf87-runtime-gate-explanation.json",
+      "present": true,
+      "required": true,
+      "generated_at_utc": "2026-07-03T21:13:48Z",
+      "age_hours": 1276.31,
+      "max_age_hours": 24,
+      "freshness_status": "stale",
+      "status": "runtime_blocked_explained",
+      "validation_status": "ok",
+      "warning": true,
+      "blocking": false
+    },
+    "wf85_decision_os_review_packet": {
+      "path": "tmp/wf85-decision-os-review-packet.json",
+      "present": true,
+      "required": true,
+      "generated_at_utc": "2026-07-06T23:31:38Z",
+      "age_hours": 1202.02,
+      "max_age_hours": 24,
+      "freshness_status": "stale",
+      "status": "warning",
+      "validation_status": null,
+      "warning": true,
+      "blocking": false
+    },
+    "wf67_paper_execution_guard_validation": {
+      "path": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.json",
+      "present": true,
+      "required": true,
+      "generated_at_utc": "2026-07-06T23:22:06Z",
+      "age_hours": 1202.17,
+      "max_age_hours": 12,
+      "freshness_status": "stale",
+      "status": "blocked",
+      "validation_status": null,
+      "warning": true,
+      "blocking": false
+    }
+  },
+  "current_diagnosis": {
+    "shadow_threshold_met": true,
+    "reconciliation_maturity_met": true,
+    "shadow_scoreable_decision_count": 22,
+    "assisted_filled_round_trips_all_time": 0,
+    "runtime_status": "blocked",
+    "phase_c_autonomous_paper_buy_ready": false,
+    "phase_e_live_ready": false,
+    "plain_english": "WF87 maturity improved, but paper autonomy is still blocked by fail-closed runtime proof, zero clean assisted filled round trips, and no exact owner-approved paper action."
+  },
+  "wf85_candidate_intake": {
+    "source_status": "warning",
+    "card_count": 300,
+    "approval_card_draft_count": 0,
+    "approval_gate_review_ready_count": 0,
+    "capital_review_ready_count": 0,
+    "wf67_paper_guard_status": "blocked",
+    "wf67_paper_guard_fresh": false,
+    "wf67_paper_guard_clean": false,
+    "source_open_status_counts": {
+      "verified": 300
+    },
+    "next_safe_action": "Use ranked Tier A/B actions as review/repair routing only; do not draft approval cards or execute orders from this packet."
+  },
+  "wf67_guard_state": {
+    "source_status": "blocked",
+    "verdict": "WF67 remains blocked until critical findings are resolved.",
+    "ready_for_paper_submit_cancel": false,
+    "live_trading_allowed": false,
+    "money_movement_allowed": false,
+    "summary": {
+      "critical": 1,
+      "warning": 0
+    }
+  },
+  "maturity": {
+    "shadow_threshold": {
+      "clean_shadow_decision_count": 21,
+      "required_clean_decisions": 20,
+      "unique_clean_market_sessions": 7,
+      "required_clean_market_sessions": 5,
+      "threshold_met": true
+    },
+    "shadow_outcome_calibration": {
+      "status": "ok",
+      "scoreable_decision_count": 22,
+      "pending_regular_session_followup_count": 0,
+      "decision_quality_claim_allowed_now": false,
+      "model_performance_claim_allowed_now": false
+    },
+    "assisted_paper_cadence": {
+      "status": "outside_fresh_gate_window",
+      "owner_policy_approved": true,
+      "exact_order_approval_required_each_time": true,
+      "all_time_assisted_attempt_count": 2,
+      "all_time_assisted_terminal_attempt_count": 0,
+      "all_time_assisted_maturity_rep_count": 0,
+      "all_time_assisted_filled_round_trip_count": 0,
+      "required_clean_assisted_filled_round_trips_before_phase_c_proposal": 5,
+      "phase_b_round_trip_threshold_met": false
+    },
+    "reconciliation_maturity": {
+      "status": "ok",
+      "order_history_mature": true,
+      "current_reconciliation_clean": true,
+      "mature_for_autonomy": true,
+      "submitted_source_count": 15,
+      "unresolved_count": 0
+    }
+  },
+  "runtime_gates": {
+    "status": "blocked",
+    "fail_closed_at_rest": [
+      "approval_freshness_ttl_status_not_allowed:blocked",
+      "intraday_monitor_status_not_allowed:wake_recommended",
+      "portfolio_circuit_breakers_status_not_allowed:blocked"
+    ],
+    "runtime_blockers": [],
+    "binding_blockers": [],
+    "maturity_blockers": [],
+    "non_ok_gates": [
+      {
+        "name": "portfolio_circuit_breakers",
+        "status": "ok",
+        "runtime_status": "blocked",
+        "source_status": "blocked",
+        "path": "tmp/wf87-portfolio-circuit-breakers.json",
+        "blockers": [
+          "portfolio_circuit_breakers_status_not_allowed:blocked",
+          "portfolio_circuit_breakers_status_not_allowed:blocked"
+        ]
+      },
+      {
+        "name": "approval_freshness_ttl",
+        "status": "ok",
+        "runtime_status": "blocked",
+        "source_status": "blocked",
+        "path": "tmp/wf87-approval-freshness-ttl.json",
+        "blockers": [
+          "approval_freshness_ttl_status_not_allowed:blocked",
+          "approval_freshness_ttl_status_not_allowed:blocked"
+        ]
+      },
+      {
+        "name": "intraday_monitor",
+        "status": "ok",
+        "runtime_status": "blocked",
+        "source_status": "wake_recommended",
+        "path": "tmp/wf87-intraday-monitor.json",
+        "blockers": [
+          "intraday_monitor_status_not_allowed:wake_recommended",
+          "intraday_monitor_status_not_allowed:wake_recommended"
+        ]
+      }
+    ],
+    "gate_explanation_status": "runtime_blocked_explained",
+    "gate_explanation_blocker_count": 3,
+    "gate_explanation_unexplained_blocker_count": 0,
+    "classification_note": "Outside regular market hours, expired TTL/quote/guard/reconciliation style gates are expected fail-closed-at-rest blockers, not autonomy maturity proof failures."
+  },
+  "phase_c_proposal_gate": {
+    "phase_c_autonomous_paper_buy_ready": false,
+    "phase_d_autonomous_risk_reduction_sell_ready": false,
+    "phase_e_live_ready": false,
+    "eligible_for_owner_phase_c_review_now": false,
+    "execution_allowed": false,
+    "owner_action_required_before_any_paper_action": true,
+    "blockers": [
+      "phase_b_clean_assisted_filled_round_trip_threshold_not_met",
+      "execution_time_runtime_gates_fail_closed",
+      "wf67_guard_not_ready_for_paper_submit_cancel",
+      "exact_owner_approved_paper_action_absent"
+    ],
+    "thresholds": {
+      "phase_b_required_clean_assisted_filled_round_trips": 5,
+      "phase_c_requires_exact_separate_owner_approval": true,
+      "phase_c_is_not_automatic_promotion": true
+    }
+  },
+  "wf88_feedback_export": {
+    "export_allowed": true,
+    "export_authority": "review_only_learning_signal",
+    "shadow_scoreable_decision_count": 22,
+    "shadow_threshold_met": true,
+    "reconciliation_maturity_met": true,
+    "assisted_filled_round_trips_all_time": 0,
+    "runtime_blockers": [
+      "approval_freshness_ttl_status_not_allowed:blocked",
+      "intraday_monitor_status_not_allowed:wake_recommended",
+      "portfolio_circuit_breakers_status_not_allowed:blocked"
+    ],
+    "decision_quality_claim_allowed_now": false,
+    "model_performance_claim_allowed_now": false
+  },
+  "next_safe_action": "Refresh execution-time proof only in a live review window, then prepare an owner-review card if gates clean. Do not infer approval or execute.",
+  "stop_lines": [
+    "No paper/live execution, submit, cancel, sell, brokerage/account action, or owner approval inference.",
+    "No capital deployment, portfolio/canon/cash/sizing/risk mutation, delete/archive/apply, or cron/runtime mutation.",
+    "Phase C remains a separate owner approval event even if runtime gates later become clean."
+  ],
+  "summary": {
+    "status": "runtime_fail_closed_maturity_improved",
+    "stale_input_count": 3,
+    "stale_inputs": [
+      "runtime_gate_explanation",
+      "wf85_decision_os_review_packet",
+      "wf67_paper_execution_guard_validation"
+    ],
+    "shadow_threshold_met": true,
+    "reconciliation_maturity_met": true,
+    "shadow_scoreable_decision_count": 22,
+    "assisted_filled_round_trips_all_time": 0,
+    "required_assisted_filled_round_trips_for_phase_c_proposal": 5,
+    "runtime_status": "blocked",
+    "fail_closed_at_rest_count": 3,
+    "phase_c_owner_review_eligible_now": false,
+    "phase_c_autonomous_paper_buy_ready": false,
+    "phase_e_live_ready": false,
+    "execution_allowed": false,
+    "next_safe_action": "Refresh execution-time proof only in a live review window, then prepare an owner-review card if gates clean. Do not infer approval or execute."
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "stale_input:runtime_gate_explanation:age_hours=1276.31:max_age_hours=24",
+      "stale_input:wf85_decision_os_review_packet:age_hours=1202.02:max_age_hours=24",
+      "stale_input:wf67_paper_execution_guard_validation:age_hours=1202.17:max_age_hours=12",
+      "phase_b_clean_assisted_filled_round_trip_threshold_not_met",
+      "runtime_gates_fail_closed"
+    ]
+  }
+}

@@ -1,258 +1,115 @@
 ---
 name: "veritas-pm-department"
-description: "Add prompt-book PM job intake for eval and prompt debt."
+description: "Coordinate project delivery, readiness, PM queues, and proof without widening authority."
 ---
 
 # Veritas PM Department
 
-This skill owns the **project-management layer** for active Veritas product and workflow delivery.
+This skill owns the project-management layer for active Veritas product and workflow delivery. It turns current workflow truth into concise updates, roadmaps, readiness timelines, implementation routing, and presentation handoffs.
 
-Its job is to turn live workflow truth into weekly project updates, upcoming enhancement roadmaps, WF75 readiness timelines, 55-65% internal/service-led SaaS readiness tracking, implementation-job routing, and Presentation/PDF Handoff Brief outputs.
-It does not create launch authority, customer authority, legal authority, source-licensing authority, portfolio authority, or execution authority.
+It does not create launch, customer, legal, source-licensing, finance-state, capital, order, account, or execution authority.
 
-## When to use this skill
+## Use when
 
-Use when Randall asks for:
-- PM department updates
-- weekly project status
-- upcoming enhancements
-- WF75 readiness timelines
-- 55-65% internal/service-led SaaS readiness tracking
-- infrastructure-first WF75 sprint tracking
-- WF75 generic service-run / SMB Workflow Clarity / Lead Rescue queue advancement
-- product-management triage, product roadmap, pilot-readiness, customer-onboarding, or SaaS delivery planning
-- roadmap or milestone planning
-- presentation or PDF planning for project readiness
-- cross-workflow delivery coordination
+Use for PM updates, weekly project status, roadmaps, milestone planning, WF75 readiness, internal/service-led SaaS readiness, product or pilot planning, cross-workflow delivery coordination, and presentation/PDF planning.
 
-Do not use this skill to run broad workflow phases by itself.
-It packages and coordinates live truth; it does not infer approval.
-
-## Source order
+Do not use it to run broad workflow phases or infer approval.
 
 ## Effort routing
 
-Before PM work, classify the request with `veritas-intelligence-effort-router`.
+Classify material work with veritas-intelligence-effort-router.
 
-Default route:
+- Band 0: answer conceptual PM/process questions directly.
+- Band 1: read tmp/pm-control-packet.json, workflow-router output, or the exact named PM packet.
+- Band 2: refresh pm_control_packet.py --write --write-db --validate when PM state is stale or contradictory.
+- Band 3: integrate PM, cron, workflow, and proof when selecting work or changing priority.
+- Band 4: use disciplined implementation, cron governance, QA, and Skill Workshop when recurring rules or control contracts change.
 
-- **Band 0:** answer conceptual PM/process questions directly.
-- **Band 1:** read `tmp/pm-control-packet.json`, workflow router output, or the exact PM packet named by the user.
-- **Band 2:** refresh `pm_control_packet.py --write --write-db --validate` when PM state is stale, warning-classed, or needed for current queue truth.
-- **Band 3:** integrate PM, cron, workflow router, and artifact proof when selecting next work or changing priority.
-- **Band 4:** use disciplined implementation, cron automation, QA, and Skill Workshop when PM rules, recurring jobs, skills, workflow state, or control-plane contracts change.
+Use the thinnest live truth surface first. Generated PM packets route evidence; they do not outrank workflow lifecycle, owner canon, or Main acceptance.
 
-PM should reduce ambiguity. Do not broad-scan Active Workflows, project notes, and memory before checking the current PM/control front doors unless the front door is missing, contradictory, or says source detail is required.
+## Source order
 
-Read the thinnest live truth surfaces first:
-- `06. Playbooks/Active Workflows.md`
-- `tmp/wf75-service-led-saas-readiness-plan.json`
-- `tmp/operator-packets/retail-saas-wf75.json`
-- `tmp/workflow-automation-autonomy-review.json`
-- `tmp/heartbeat-continuation-candidates.json`
-- `06. Playbooks/Project Continuity/Workflow 75 - AI Productivity and Business Opportunity Intelligence Expansion.md`
-- relevant WF72/WF78 continuity notes when SQL or ticker expansion affects WF75
-- today's `memory/YYYY-MM-DD.md`
-- exact proof artifacts named by the workflow surfaces
+1. 06. Playbooks/Active Workflows.md
+2. exact workflow-router result or continuity note
+3. tmp/pm-control-packet.json and the exact named proof
+4. current cron control only when scheduling or automation health matters
+5. today's memory for chronological context
 
-If a source is stale, missing, or contradictory, say that directly and downgrade confidence.
+For finance-adjacent PM status, use only the active alerts-and-recommendations proofs: guarded SQL, explicit quote proof, alert freshness controller, non-executing digest, and pivot validator. PM never makes retired workflow, simulated-account, sizing, deployment, approval-card, or order artifacts current.
 
-## ClawHub Pattern Intake
+If a source is stale, missing, or contradictory, say so and downgrade confidence.
 
-Do not install generic ClawHub skills by default. Use their search results as pattern libraries, then fold only the useful operating pattern into Veritas-owned skills, scripts, validators, and PM packets.
+## External pattern intake
 
-Current WF75 pattern intake:
-- `queue` / `agent-task-queue` pattern: durable queue rows, priority, retry/dead-letter review, blocker reason, owner, next action, and lifecycle state. In Veritas, this belongs in `tmp/pm-next-actions.json`, `tmp/pm-blocker-register.json`, `tmp/pm-main-session-handoff.json`, and the local SQLite control-plane surfaces. It must not create autonomous execution authority.
-- `afrexai-product-manager` / `pm-copilot` pattern: product discovery, roadmap, prioritization, activation metrics, pilot-readiness, customer value, and delivery risk. In Veritas, use this for WF75 PM packets and the Lead Rescue roadmap, while keeping launch/customer/external-delivery gates closed.
-- `agent-evaluation` / `skill-evaluation` pattern: scenario quality, output consistency, safety/regression checks, trigger fit, and claim-boundary validation. In Veritas, this belongs in `veritas_harness_scorecard.py`, renderer/export regression, SMB preview validation, and skill QA.
-- workflow automation pattern: n8n/Zapier/Make-style trigger design, dedup keys, idempotent reruns, retry/backoff, audit logs, failure queues, tool-selection, automation ROI, and maintenance reviews. In Veritas, this belongs in `tmp/wf75-smb-automation-blueprints.json` and its validation artifact. It is design-only until a future customer/intake/implementation gate opens.
+Treat ClawHub and web results as pattern libraries, not installed authority.
 
-Current WF78 pattern intake:
-- ClawHub routing/monitoring/finance-promotion searches are pattern intake only unless Randall explicitly approves installation. Generic hits such as workflow templates, monitoring dashboards, infra/API monitoring, ledger/PE monitoring, or portfolio-risk analyzers do not outrank the local WF78 gate stack.
-- Web pattern carry-forward: use human review, explicit approvals, monitoring/evaluation proof, source freshness, concentration-risk controls, and audit trails as design inputs. Fold these into Veritas-owned scripts/skills instead of giving external skills finance authority.
-- PM should track WF78 by phase and live proof artifact: capacity policy, funnel contract, lower-tier promotion gate, Tier A competitive gate, owner-decision packet layer, evidence/research packet depth, and baseline/batch reruns.
-- PM status must separate machinery built from ticker readiness. A green gate stack means the evaluator works; it does not mean any D/C/B/A promotion is approved.
+Useful patterns include durable queue state, retry/dead-letter handling, roadmap and activation metrics, evaluation fixtures, deduplication, idempotency, backoff, audit logs, failure queues, automation ROI, and maintenance review.
 
-When reviewing an external skill candidate, score it against:
-- WF75 fit
-- overlap with existing Veritas skills
-- install/runtime risk
-- customer-data or credential risk
-- external-delivery or autonomous-action risk
-- whether the pattern should be copied into existing Veritas surfaces instead of installed
-- acceptance proof needed after adoption
+Before adopting a pattern, assess overlap, runtime risk, credential/customer-data risk, external-delivery risk, provenance, and the exact acceptance proof. Fold approved patterns into Veritas-owned skills, scripts, validators, and PM packets.
 
-For finance-promotion skill candidates, add these checks:
-- whether the skill needs market/account credentials
-- whether it could imply recommendation, allocation, or execution authority
-- whether it preserves owner approval and concentration-risk review
-- whether its useful pattern can be copied locally without installing it
-- whether the candidate has enough provenance to justify a future security review
+Finance patterns may improve evidence lineage, freshness, confidence, suppression, and recommendation review. They may not introduce maintained holdings, sleeves, positions, allocations, weights, sizing, cash, simulated positions, request packages, brokerage/account access, or execution routes.
 
 ## Core outputs
 
 ### Weekly PM Update
 
-Include:
-- headline status
-- current readiness band or phase
-- completed this week
-- planned next week
-- upcoming enhancements
-- blockers, dependencies, and owner decisions needed
-- proof artifacts and validation status
-- next safe action
+Include conclusion, readiness band or phase, completed work, next work, enhancements, blockers, owner decisions, proof, and next safe action.
 
 ### WF75 Readiness Timeline
 
-Include:
-- target readiness band, usually 55-65% internal/service-led SaaS readiness
-- week-by-week milestone path
-- acceptance criteria by phase
-- infrastructure gaps and proof gates
-- what does and does not count as SaaS readiness
+Include target readiness band, weekly milestones, acceptance criteria, infrastructure gaps, proof gates, and what does not count as readiness.
 
 ### Enhancement Roadmap
 
-Include:
-- enhancement name
-- user or operator value
-- dependency
-- expected timing band
-- required proof or validator
-- launch/customer/legal/source boundary
+Include user/operator value, dependency, timing band, proof, and launch/customer/legal/source boundary.
 
-### WF75 Queue Advancement Review
+### Queue Advancement Review
 
-Use this when PM needs to move the work forward without crossing authority gates.
+Include selected lane, source packet, ready/stale/blocked state, retry condition, next safe action, owner layer, acceptance proof, and stop lines.
 
-Include:
-- selected lane and source packet
-- queue status: ready, stale, blocked, or needs validation
-- retry/dead-letter condition if a prior action failed
-- next safe action
-- owner layer: main session, helper lane, cron proof, or manual Randall decision
-- acceptance proof
-- stop lines
+PM may queue bounded review-only work for Main. It may not execute outreach, delivery, credential access, customer-data ingestion, external system writes, finance-canon mutation, config/auth/runtime changes, or owner-gated actions.
 
-PM may queue bounded review-only work for main-session continuation. PM may not execute customer outreach, external delivery, credential access, customer-data ingestion, system implementation, canon/portfolio mutation, paper/live/account action, config/auth/runtime mutation, or infer owner approval.
+### Product / Pilot Readiness
 
-### Product / Pilot Readiness Review
+Include target user, painful job, offer shape, activation hypothesis, pilot deliverables, exclusions, package hypothesis when requested, risk gates, and next validation artifact.
 
-Use the product-manager pattern for WF75 and Lead Rescue.
+Internal readiness is not public launch readiness.
 
-Include:
-- target user and painful job
-- offer shape
-- activation / time-to-value hypothesis
-- pilot deliverables
-- exclusions
-- pricing or package hypothesis if requested
-- risk and trust gates
-- next validation artifact
+### Workflow Automation Blueprint
 
-Do not turn a PM-ready packet into public launch readiness. Product readiness is internal proof until explicit owner approval opens a customer/pilot gate.
+Include trigger, input contract, dedup key, idempotency store, ordered steps, fallbacks, retry/backoff, audit log, human review queue, tool candidate, dry-run state, activation gate, and stop lines.
 
-### Workflow Automation Blueprint Review
+Activation of customer or external automations requires its own explicit gate.
 
-Use the workflow-automation pattern when WF75 turns an SMB scenario into a proposed automation.
+### Evaluation / Skill QA
 
-Include:
-- trigger and schedule/event source
-- input contract and required fields
-- dedup key and idempotency store
-- ordered steps and fallback path
-- retry/backoff behavior
-- audit log and status fields
-- human review queue
-- tool candidate: existing tools, Zapier, Make, n8n, local script, or manual process
-- dry-run status and activation gate
-- stop lines
+Include scenarios, expected outputs, seeded-bad cases, safety checks, regressions, and remaining warning debt. Clean evaluation proves only the covered contract.
 
-PM may recommend a blueprint as a service-design artifact. PM may not activate Zaps, n8n workflows, Make scenarios, CRM workflows, phone/SMS/email automation, ad-platform automation, payment/POS/payroll automation, or customer-system writeback without a separate explicit gate.
+### Presentation/PDF Handoff
 
-### Evaluation / Skill QA Review
+Include audience, purpose, outline, charts/tables, sources, trust disclosures, and open decisions. Hand rendering to the owning PDF/presentation route only when requested.
 
-Use the evaluation pattern when a skill, renderer, scenario, or PM queue rule changes.
-
-Include:
-- scenarios tested
-- expected good outputs
-- seeded-bad or blocked claims
-- safety checks
-- regression result
-- remaining warning-only debt
-
-Clean evaluation means the artifact is safer to review. It does not imply launch, customer, delivery, approval, or execution authority.
-
-### Presentation/PDF Handoff Brief
-
-Use this when the output should become a deck or fixed-layout document.
-Provide:
-- audience
-- purpose
-- slide/page outline
-- required charts or tables
-- source stack
-- trust disclosures
-- open decisions
-
-Then hand the rendering posture to `veritas-pdf-brief` for PDFs or the relevant presentation tool when Randall explicitly wants a generated deck.
-
-## Weekly reporting format
-
-Use this default shape:
+## Reporting shape
 
 1. Conclusion
-2. Readiness status
+2. Readiness
 3. Timeline
 4. Completed work
-5. Upcoming enhancements
+5. Next enhancements
 6. Blockers and decisions
 7. Proof
 8. Next action
 
-Keep it concise. PM work should reduce ambiguity, not create bureaucracy.
+Keep it concise and decision-oriented.
 
 ## Stop lines
 
-Never let PM packaging imply:
-- public launch readiness
-- real customer-data readiness
-- external delivery approval
-- legal, compliance, or source-licensing clearance
-- SQL import or ticker expansion approval
-- portfolio/canon mutation approval
-- paper/live/account/trading authority
-- owner approval inferred from clean validation
+PM packaging never implies public launch, customer-data readiness, external delivery, legal clearance, SQL/ticker import, finance-state maintenance, capital or execution authority, config/runtime mutation, or owner approval.
 
-Current WF75 posture:
-- the active 6-10 week route is infrastructure-first: anonymous-scenario service-state storage, operator queue/status, renderer/export pipeline, QA regression harness, scenario-template library, and artifact-only PM handoffs
-- use anonymous service request scenarios, not fake-person customer personas; real public ticker/company/market evidence may be used when source-labeled and validator-gated
-- privacy/licensing/counsel decision-packet work is not the active sprint route
-- public launch, real customer data, customer identity, customer portfolio data, suitability/risk-profile intake, external delivery, legal/compliance claims, source-licensing claims, brokerage/account connection, personalized regulated advice, and paper/live execution remain blocked
+WF75 remains internal and review-only until an exact separate gate opens customer or delivery scope. Use anonymous service-request scenarios rather than fake-person personas or real customer suitability data.
 
-WF75 PM updates are internal and review-only unless a separate exact approval artifact says otherwise.
+## Prompt Book PM Intake
 
-## Prompt Book PM Job Intake
+Use the current prompt-book registry, fixtures, eval-gap packet, PM job packet, and morning contract. These packets are candidates, not commitments. Skill Workshop proposals remain pending until explicit apply approval.
 
-Use this route when PM needs to package prompt-book, self-prompt, helper-lane packet, or internal challenge-solving work.
-
-First-hop proof:
-
-```powershell
-python scripts\prompt_book_registry.py --write --write-md --validate
-python scripts\prompt_book_eval_fixtures.py --write --write-md --validate
-python scripts\prompt_book_eval_gap_packet.py --write --write-md --validate
-python scripts\prompt_book_pm_job_packet.py --write --write-md --validate
-python scripts\prompt_book_morning_p0_contract.py --write --write-md --validate
-```
-
-Interpretation:
-
-- `tmp/prompt-book-pm-job-packet.json` contains PM job candidates, not live PM commitments unless an owner PM packet consumes them.
-- High-priority eval gaps are implementation candidates for deterministic fixtures and validators.
-- Zero eval gaps means current prompt-book entries have fixture coverage; PM should shift to maintenance and future-entry coverage.
-- Skill Workshop proposals stay pending by default unless Randall explicitly approves apply.
-
-Stop lines: PM packaging does not imply skill apply, cron schedule mutation, customer/external delivery, finance/canon/portfolio mutation, paper/live/account action, capital deployment, or owner approval inference.
+PM intake does not authorize skill apply, cron mutation, delivery, finance-state mutation, account action, capital action, or owner approval inference.

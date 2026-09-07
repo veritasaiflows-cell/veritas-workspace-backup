@@ -1,0 +1,91 @@
+{
+  "schema": "veritas.cron_rollback.v1",
+  "created_at_utc": "2026-08-31T18:06:00Z",
+  "scope": "Approved local memory, vector, and scripts-graph maintenance cadence change.",
+  "prechange_provenance": {
+    "captured_from": "OpenClaw cron get e1ec05d7-f87c-4a82-b194-4103fed8afc0 immediately before the approved scheduler update",
+    "captured_at_utc": "2026-08-31T18:06:00Z",
+    "restore_rule": "Restore the observed live scheduler object, not an older Git contract baseline."
+  },
+  "authority_boundary": {
+    "local_derived_maintenance_only": true,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "prechange": {
+    "semantic_memory_cache_maintenance": {
+      "id": "e1ec05d7-f87c-4a82-b194-4103fed8afc0",
+      "declarationKey": "veritas.semantic-memory-maintenance.v1",
+      "name": "Runtime - Semantic Memory Cache Maintenance",
+      "description": "Deterministic local-only semantic-memory cache validation and conditional rebuild. Runs four times daily in Phoenix time and rebuilds on any registered-source drift; retired finance summaries are excluded from the active corpus. No external delivery, config/auth/runtime, finance/canon mutation, capital, paper/live/account action, or approval authority.",
+      "enabled": true,
+      "schedule": {
+        "kind": "cron",
+        "expr": "15 6,12,18,22 * * *",
+        "tz": "America/Phoenix"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "delivery": {
+        "mode": "none",
+        "channel": "last"
+      },
+      "payload": {
+        "kind": "command",
+        "argv": [
+          "python",
+          "scripts/semantic_memory_maintenance.py",
+          "--max-seconds",
+          "600",
+          "--batch-size",
+          "16",
+          "--write",
+          "--validate"
+        ],
+        "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+        "timeoutSeconds": 660
+      }
+    }
+  },
+  "planned_new_jobs": [
+    {
+      "declarationKey": "veritas.graphify-scripts-freshness-gate.v1",
+      "job_id": "74ae81d7-71e1-4afd-adbd-6a77141684a9",
+      "rollback_action": "remove_created_job"
+    },
+    {
+      "declarationKey": "veritas.graphify-scripts-incremental-refresh.v1",
+      "job_id": "d1f906e9-0eec-4cae-a7d5-80c40b3728c8",
+      "rollback_action": "remove_created_job"
+    },
+    {
+      "declarationKey": "veritas.memory-vector-graph-weekly-scorecard.v1",
+      "job_id": "323f2df1-cc10-44cf-9287-4b5a084727cc",
+      "rollback_action": "remove_created_job"
+    }
+  ],
+  "rollback_actions": [
+    {
+      "kind": "update_existing_job",
+      "job_id": "e1ec05d7-f87c-4a82-b194-4103fed8afc0",
+      "restore_from": "prechange.semantic_memory_cache_maintenance"
+    },
+    {
+      "kind": "remove_created_jobs",
+      "declaration_keys_from": "planned_new_jobs"
+    }
+  ],
+  "postchange": {
+    "job_ids": {
+      "semantic_memory_cache_maintenance": "e1ec05d7-f87c-4a82-b194-4103fed8afc0",
+      "graphify_scripts_freshness_gate": "74ae81d7-71e1-4afd-adbd-6a77141684a9",
+      "graphify_scripts_incremental_refresh": "d1f906e9-0eec-4cae-a7d5-80c40b3728c8",
+      "memory_vector_graph_weekly_scorecard": "323f2df1-cc10-44cf-9287-4b5a084727cc"
+    }
+  }
+}

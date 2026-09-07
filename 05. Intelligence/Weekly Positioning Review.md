@@ -1,3 +1,21 @@
+# Retired — Weekly Positioning Review
+
+Status: retired on 2026-08-29 during the alerts-and-recommendations OS pivot.
+
+This path remains only for backlinks and historical audit context. It is not active finance canon, a weekly control surface, or a source of current recommendation state.
+
+## Active replacement
+
+- Human finance canon: `03. Alerts and Recommendations/`
+- Weekly deterministic route: `python scripts\run_alerts_recommendations_chain.py weekly --timeout-seconds 120 --write --validate`
+- Weekly output: evidence-dated alerts and non-executing recommendations with freshness, confidence, thesis, risks, band/invalidation context, uncertainty, and Randall's decision point
+
+No content below this notice authorizes or maintains portfolio structure, account state, orders, or paper/live execution.
+
+## Retired historical source — non-operative
+
+The preserved body below is dated legacy/audit material. Its routes, owners, states, permissions, and “current” labels are retired and must not be used operationally.
+
 <!-- THIN HUMAN SURFACE
 Backup before thinning: backups/sql-json-md-thinning/20260619T192613Z/05. Intelligence/Weekly Positioning Review.md
 Structured owner: state/finance/finance-canon.sqlite plus generated/read-only proof packets.
@@ -208,6 +226,7 @@ Historical/audit note: the older 2026-06-15 to 2026-06-26 scaffold below is reta
 ### 8) Friday close / week lookback
 
 - _[Fill at end of week: what happened, what changed, which theses were confirmed or challenged, what updates to the vault are needed?]_
+
 ---
 
 ## Week of 2026-06-22 to 2026-06-26
@@ -300,6 +319,7 @@ Historical/audit note: the older 2026-06-15 to 2026-06-26 scaffold below is reta
 ### 8) Friday close / week lookback
 
 - _[Fill at end of week: what happened, what changed, which theses were confirmed or challenged, what updates to the vault are needed?]_
+
 ---
 
 ## Week of 2026-06-29 to 2026-07-03

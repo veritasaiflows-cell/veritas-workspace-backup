@@ -1,0 +1,429 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-06-09T13:13:18Z",
+  "proposal_id": "morning:NVDA:capital-deployment-review:2026-06-09",
+  "mutation_type": "ticker_lane_change",
+  "ticker_or_scope": "NVDA",
+  "current_state": {
+    "source_window": "morning",
+    "daily_review_state": "PROMOTION REVIEW",
+    "deployment_state": "PROMOTION REVIEW",
+    "band_status": "IN_BAND",
+    "proposal_band_status": "IN_BAND",
+    "raw_band_status": "IN_BAND",
+    "band_status_note": null
+  },
+  "proposed_state": {
+    "recommendation_posture": "deploy_candidate",
+    "state_change_requested": false,
+    "review_packet_only": true
+  },
+  "why_now": "NVDA surfaced from ranked daily review because current state is PROMOTION REVIEW and recommendation class is review_for_possible_add.",
+  "why_stack": {
+    "setup_reason": "NVDA surfaced from ranked daily review because current state is PROMOTION REVIEW and recommendation class is review_for_possible_add.",
+    "entry_reason": "Entry context is IN_BAND against configured band 198.47\u2013216.66; this is setup context, not approval.",
+    "fundamental_reason": "WF65 fundamental context status is available_review_only; thesis context: intact / thesis strengthened by Q1 FY2027 post-earnings official review, but crowded and above-band",
+    "official_earnings_reason": "Official earnings bridge status is available_review_only; official evidence=manual_confirmed/review_only; adjusted EPS=official_captured, guidance=official_captured; unresolved official fields remain manual-required: .",
+    "sector_macro_reason": "Sector/macro context is available_review_only; macro gate is CLEAN.",
+    "risk_blocker_reason": "Risk/catalyst blocker context: Last earnings reported 2026-05-20; post-earnings review confirmed; next print not yet on calendar; band proposal remains review-only / non-applyable; dashboard validation has 1 warning(s); blockers: Last earnings reported 2026-05-20; post-earnings review confirmed; next print not yet on calendar; band proposal remains review-only / non-applyable; dashboard validation has 1 warning(s)",
+    "missing_evidence_reason": "state-history / owner-outcome retention is not wired; no predictive outcome score is available; official earnings bridge remains manual-required; adjusted EPS, guidance, growth bridge, margin bridge, and management explanation need official-source review",
+    "authority_boundary": "Review-only packet rationale; standing main-session workspace canon/portfolio maintenance authority is recognized, but this individual packet does not self-apply and grants no external financial, account, cash, live-order, or unguarded paper-submit authority."
+  },
+  "decision_rationale": {
+    "setup_reason": "NVDA surfaced from ranked daily review because current state is PROMOTION REVIEW and recommendation class is review_for_possible_add.",
+    "entry_reason": "Entry context is IN_BAND against configured band 198.47\u2013216.66; this is setup context, not approval.",
+    "fundamental_reason": "WF65 fundamental context status is available_review_only; thesis context: intact / thesis strengthened by Q1 FY2027 post-earnings official review, but crowded and above-band",
+    "official_earnings_reason": "Official earnings bridge status is available_review_only; official evidence=manual_confirmed/review_only; adjusted EPS=official_captured, guidance=official_captured; unresolved official fields remain manual-required: .",
+    "sector_macro_reason": "Sector/macro context is available_review_only; macro gate is CLEAN.",
+    "risk_blocker_reason": "Risk/catalyst blocker context: Last earnings reported 2026-05-20; post-earnings review confirmed; next print not yet on calendar; band proposal remains review-only / non-applyable; dashboard validation has 1 warning(s); blockers: Last earnings reported 2026-05-20; post-earnings review confirmed; next print not yet on calendar; band proposal remains review-only / non-applyable; dashboard validation has 1 warning(s)",
+    "missing_evidence_reason": "state-history / owner-outcome retention is not wired; no predictive outcome score is available; official earnings bridge remains manual-required; adjusted EPS, guidance, growth bridge, margin bridge, and management explanation need official-source review",
+    "authority_boundary": "Review-only packet rationale; standing main-session workspace canon/portfolio maintenance authority is recognized, but this individual packet does not self-apply and grants no external financial, account, cash, live-order, or unguarded paper-submit authority."
+  },
+  "evidence": [
+    "Daily review object action family: deploy",
+    "Entry-band status: IN_BAND",
+    "Deployment state: PROMOTION REVIEW",
+    "Band proposal status: IN_BAND",
+    "Official earnings bridge: available_review_only; SEC reconciliation: matched; adjusted EPS/guidance remain manual where unresolved."
+  ],
+  "source_freshness": {
+    "overall_classification": "stale",
+    "trust_level": "review_required",
+    "owner_review_required": true,
+    "explicit_blocker": true,
+    "capital_action_allowed": false
+  },
+  "base_case": "Base case: NVDA remains review-worthy only if thesis, macro fit, written entry band, stop/invalidation, and catalyst gates are manually confirmed.",
+  "bear_case": "Bear case: defer or reject NVDA if price violates stop/invalidation, catalyst risk worsens, macro fit deteriorates, or evidence remains incomplete.",
+  "risk_rule_check": {
+    "status": "review_required",
+    "references": [
+      "25% sector cap",
+      "15% normal single-name ceiling",
+      "speculative sleeve cap",
+      "catalyst-window exception"
+    ],
+    "review_boundary": "Risk context only; no size, cash, sleeve, or account action is authorized by this packet."
+  },
+  "concentration_check": {
+    "status": "review_required",
+    "ticker": "NVDA",
+    "single_name_after_pct": null,
+    "max_single_name_after_pct": null,
+    "sector_after_pct": null,
+    "normal_single_name_ceiling_pct": 15,
+    "sector_cap_pct": 25,
+    "written_exception": false,
+    "note": "No pro-forma exposure change is proposed; owner must review concentration before any action."
+  },
+  "technical_gate": {
+    "status": "candidate_review",
+    "entry_band_status": "IN_BAND",
+    "band_status": "IN_BAND",
+    "proposal_band_status": "IN_BAND",
+    "raw_band_status": "IN_BAND",
+    "band_status_note": null,
+    "distance_to_band_pct": -3.56,
+    "close": 208.64,
+    "current_band_low": 198.47,
+    "current_band_high": 216.66,
+    "in_entry_band": true,
+    "below_stop": false,
+    "stop_line": "Do not treat in-band status as approval, sizing, or account-action authority."
+  },
+  "catalyst_gate": {
+    "status": "review_required",
+    "days_to_earnings": null,
+    "earnings_state": "UNKNOWN",
+    "blockers": [
+      "Last earnings reported 2026-05-20; post-earnings review confirmed; next print not yet on calendar",
+      "band proposal remains review-only / non-applyable",
+      "dashboard validation has 1 warning(s)",
+      "Active portfolio weights plus cash sum to 90.0%; 10% is explicitly suspended legacy model weight and not active exposure.",
+      "state-history / owner-outcome retention is not wired; no predictive outcome score is available"
+    ]
+  },
+  "official_earnings_gate": {
+    "status": "available_review_only",
+    "manual_review_required": true,
+    "capital_action_allowed": false,
+    "deployment_authority_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "summary": "Official earnings bridge is present as review-only context; adjusted EPS, guidance, growth bridge, segment margin, and management explanation remain manual-required until official capture."
+  },
+  "official_earnings_bridge": {
+    "status": "available_review_only",
+    "source_artifact": "tmp/fundamental-ir-reconciliation-packets.json",
+    "period_end": "2026-04-30",
+    "source_urls": {
+      "ir_home_url": "https://investor.nvidia.com/",
+      "earnings_url": "https://investor.nvidia.com/financial-info/quarterly-results/default.aspx",
+      "guidance_url": "https://investor.nvidia.com/financial-info/quarterly-results/default.aspx"
+    },
+    "official_evidence_status": "manual_confirmed",
+    "official_evidence_posture": "review_only",
+    "source_authority_level": "manual_confirmed_official_source",
+    "source_freshness": {
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000051/q1fy27cfocommentary.htm",
+      "source_type": "sec_8k_exhibit_99_1",
+      "retrieval_status": "manual_confirmed",
+      "manual_capture_date": "2026-06-09T13:10:32Z",
+      "as_of_period": "2026-04-26",
+      "freshness_status": "current"
+    },
+    "evidence_claims": [
+      {
+        "claim_type": "official_capture_acquisition_debt_notes",
+        "claim_text": "Official capture field acquisition_debt_notes is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000051/q1fy27cfocommentary.htm",
+        "source_section": "Balance Sheet and Cash Flow / capital return",
+        "value": {
+          "additional_share_repurchase_authorization_billion": 80.0,
+          "debt_or_acquisition_commentary": null,
+          "quarterly_dividend_per_share": 0.25,
+          "strategic_investments_mentioned": true
+        },
+        "period": "2026-04-26",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-09T13:10:32Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_adjusted_eps",
+        "claim_text": "Official capture field adjusted_eps is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000051/q1fy27cfocommentary.htm",
+        "source_section": "Q1 FY2027 Summary / non-GAAP table",
+        "value": {
+          "gaap_diluted_eps": 2.39,
+          "non_gaap_diluted_eps": 1.87,
+          "non_gaap_diluted_eps_yoy_growth_pct": 140
+        },
+        "period": "2026-04-26",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-09T13:10:32Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_growth_bridge",
+        "claim_text": "Official capture field growth_bridge is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000051/q1fy27cfocommentary.htm",
+        "source_section": "Revenue commentary / market-platform table",
+        "value": {
+          "data_center_revenue_billion": 75.246,
+          "data_center_yoy_growth_pct": 92,
+          "edge_computing_revenue_billion": 6.369,
+          "edge_computing_yoy_growth_pct": 29,
+          "revenue_billion": 81.615,
+          "revenue_qoq_growth_pct": 20,
+          "revenue_yoy_growth_pct": 85
+        },
+        "period": "2026-04-26",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-09T13:10:32Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_guidance",
+        "claim_text": "Official capture field guidance is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000051/q1fy27cfocommentary.htm",
+        "source_section": "Outlook",
+        "value": {
+          "gaap_gross_margin_pct": 74.9,
+          "gaap_opex_billion": 8.5,
+          "non_gaap_gross_margin_pct": 75.0,
+          "non_gaap_opex_billion": 8.3,
+          "q2_fy2027_revenue_billion": 91.0,
+          "revenue_range_pct": 2,
+          "tax_rate_range_pct": {
+            "high": 18.0,
+            "low": 16.0
+          }
+        },
+        "period": "2026-04-26",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-09T13:10:32Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_management_explanation",
+        "claim_text": "Official capture field management_explanation is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000051/q1fy27cfocommentary.htm",
+        "source_section": "Revenue / Gross Margin / Outlook commentary",
+        "value": {
+          "demand_drivers": [
+            "Blackwell 300 ramp",
+            "Data Center demand",
+            "InfiniBand/Spectrum-X/NVLink",
+            "AI clouds/industrial/enterprise/sovereign customers"
+          ],
+          "margin_drivers": [
+            "lower prior-year H20 inventory provision comparison",
+            "Blackwell mix"
+          ],
+          "risk_items": [
+            "China Data Center compute revenue excluded from outlook",
+            "cash tax increase expected in Q2"
+          ],
+          "summary": "Management attributed growth to Blackwell 300 ramp, demand for InfiniBand, Spectrum-X Ethernet, and NVLink, diversified Data Center demand, and Edge Computing demand partly offset by slower consumer PC demand."
+        },
+        "period": "2026-04-26",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-09T13:10:32Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_orders_backlog",
+        "claim_text": "Official capture field orders_backlog is partial from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000051/q1fy27cfocommentary.htm",
+        "source_section": "Balance Sheet and Cash Flow",
+        "value": {
+          "backlog": null,
+          "book_to_bill": null,
+          "inventory_billion": 25.8,
+          "multi_year_cloud_service_commitments_billion": 30.0,
+          "orders_growth_pct": null,
+          "supply_related_commitments_billion": 119.0
+        },
+        "period": "2026-04-26",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-09T13:10:32Z",
+        "capture_status": "partial",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_segment_margins",
+        "claim_text": "Official capture field segment_margins is partial from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000051/q1fy27cfocommentary.htm",
+        "source_section": "Q1 FY2027 Summary / Gross Margin",
+        "value": {
+          "gaap_gross_margin_pct": 74.9,
+          "gaap_operating_income_million": 53536,
+          "non_gaap_gross_margin_pct": 75.0,
+          "non_gaap_operating_income_million": 53783,
+          "note": "CFO commentary provides gross margin and operating income, not segment operating margin percentages."
+        },
+        "period": "2026-04-26",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-09T13:10:32Z",
+        "capture_status": "partial",
+        "reconciled": false,
+        "inferred": false
+      }
+    ],
+    "unresolved_official_fields": [],
+    "bank_native_metrics": null,
+    "sec_reconciliation_status": "matched",
+    "adjusted_eps_status": "official_captured",
+    "guidance_status": "official_captured",
+    "manual_review_required": true,
+    "blockers": [],
+    "summary": "Official earnings bridge is present as review-only context; adjusted EPS, guidance, growth bridge, segment margin, and management explanation remain manual-required until official capture.",
+    "capital_action_allowed": false,
+    "deployment_authority_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "proposed_files_to_edit": [
+    "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "03. Portfolio/Portfolio Snapshot.md"
+  ],
+  "rollback_or_reversal_note": "Delete or ignore this generated packet; it has no apply path and changes no canonical state. Semantic exact patch material remains preview-only until a valid standing/scoped approval artifact exists.",
+  "stop_lines_triggered": [
+    "Owner decision required before any portfolio state changes.",
+    "No canonical note, portfolio, size, sleeve, cash, or account-action mutation is authorized.",
+    "Recommendation has unresolved blockers or missing evidence."
+  ],
+  "owner_decision_required": true,
+  "owner_approval_granted": false,
+  "apply_allowed": false,
+  "canonical_mutation_allowed": false,
+  "portfolio_mutation_allowed": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "ticker": "NVDA",
+  "current_lane_status_tuple": {
+    "ticker": "NVDA",
+    "workflow_state": "ALMOST",
+    "coverage_lane": "owner-gated action",
+    "entry_policy": "band_defined",
+    "recommendation_action": "deploy",
+    "review_state": "owner_review_required"
+  },
+  "proposed_lane_status_tuple": {
+    "ticker": "NVDA",
+    "workflow_state": "ALMOST",
+    "coverage_lane": "owner-gated action",
+    "entry_policy": "band_defined",
+    "recommendation_action": "deploy",
+    "review_state": "review_packet_only_no_state_change",
+    "recommendation_posture": "deploy_candidate"
+  },
+  "thesis_gate": {
+    "status": "manual_review_required",
+    "summary": "intact / thesis strengthened by Q1 FY2027 post-earnings official review, but crowded and above-band"
+  },
+  "macro_regime_gate": {
+    "status": "review_required",
+    "summary": "CLEAN"
+  },
+  "risk_sizing_gate": {
+    "status": "review_required",
+    "summary": "Owner-gated risk envelope only; no dollar/share amount, portfolio mutation, deployment-state mutation, or owner-gated action owner-gated action authority."
+  },
+  "sector_correlation_artifact": {
+    "status": "available_review_only",
+    "fresh_artifacts": [
+      "tmp/sector-expansion-board.json",
+      "tmp/sector-correlation-check.json"
+    ],
+    "summary": "Sector/correlation context is review-only and does not grant authority."
+  },
+  "owner_conflict_check": {
+    "status": "review_required",
+    "summary": "Check owner notes before any state change."
+  },
+  "promotion_review_queue": {
+    "status": "review_only",
+    "recommended_action": "deploy_candidate"
+  },
+  "current_portfolio_model": "unchanged",
+  "proposed_portfolio_model": "unchanged",
+  "current_cash_target_pct": 10,
+  "proposed_cash_target_pct": 10,
+  "sleeve_deltas": [],
+  "sector_exposure_before_after": [],
+  "correlated_sleeve_exposure_before_after": [],
+  "semantic_patch_generator": {
+    "script": "portfolio_mutation_semantic_patch_generator.py",
+    "category": "sizing",
+    "generated_at_utc": "2026-06-09T13:13:18Z",
+    "source_artifacts": [
+      "tmp/portfolio-config.json"
+    ],
+    "source_gate": {
+      "classification": "stale",
+      "explicit_blocker_or_review_required": true,
+      "manual_review_required_before_apply": true,
+      "category_preview_only": true,
+      "low_risk_apply_candidate_category": false,
+      "apply_trial_eligible_from_generator": false,
+      "reason": "sizing affects portfolio construction/risk semantics and remains preview-only until stronger owner-surface coherence proof exists."
+    }
+  },
+  "exact_patch_preview": {
+    "schema_version": 1,
+    "generated_at_utc": "2026-06-09T13:13:18Z",
+    "generator": "portfolio_mutation_semantic_patch_generator.py",
+    "generation_target": "sizing",
+    "adjustment_category": "sizing",
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "trade_or_account_action_allowed": false,
+    "main_session_final_action_required": true,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "writes_performed": false,
+    "source_gate": {
+      "classification": "stale",
+      "explicit_blocker_or_review_required": true,
+      "manual_review_required_before_apply": true,
+      "category_preview_only": true,
+      "low_risk_apply_candidate_category": false,
+      "apply_trial_eligible_from_generator": false,
+      "reason": "sizing affects portfolio construction/risk semantics and remains preview-only until stronger owner-surface coherence proof exists."
+    },
+    "apply_trial_eligible_from_generator": false,
+    "category_preview_only": true,
+    "changes": [
+      {
+        "target_file": "03. Portfolio/Portfolio Snapshot.md",
+        "operation": "exact_text_replace",
+        "old_text": "- WF64 sizing semantic sync (NVDA): draft_weight=`5%`, sizing_tier=`Tier 2`; source `tmp/portfolio-config.json`; proposal `post-close:NVDA:capital-deployment-review:2026-06-08`; draft model only, no external-action sizing authority.",
+        "new_text": "- WF64 sizing semantic sync (NVDA): draft_weight=`5%`, sizing_tier=`Tier 2`; source `tmp/portfolio-config.json`; proposal `morning:NVDA:capital-deployment-review:2026-06-09`; draft model only, no external-action sizing authority.",
+        "mutation_class": "sizing_semantic_sync",
+        "adjustment_category": "sizing",
+        "owner_surface": "portfolio_snapshot",
+        "rationale": "Synchronize sizing semantic context from current portfolio artifacts without widening external-action authority."
+      }
+    ],
+    "stop_lines": [
+      "Semantic patch material is exact-diff workspace maintenance only.",
+      "Proposal packets remain non-self-applying; write authority requires a valid standing/scoped approval artifact.",
+      "Freshness/manual-dependency and category-risk gates may keep this preview-only even when exact text validates.",
+      "No external financial action or entitlement is authorized."
+    ]
+  }
+}

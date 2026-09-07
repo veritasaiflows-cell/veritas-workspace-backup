@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Build and validate the WF78 durable monitored-universe registry.
+"""Build and validate the alerts-and-recommendations universe registry.
 
 The universe registry is durable routing metadata for finance intelligence
-scaleout. It is not canon, approval, portfolio mutation authority, or trading
-authority. Production-grade answer scope is SQL-first and dynamic; the retired
-42-name label may appear only as historical compatibility residue.
+routing. It is not canon, approval, account, capital, order, or execution
+authority. Production-grade answer scope is SQL-first and dynamic.
 """
 from __future__ import annotations
 
@@ -50,23 +49,37 @@ VALID_REQUIREMENT_STATUSES = {
 }
 
 AUTHORITY_BOUNDARY = {
-    "posture": "durable_review_only_universe_registry_not_canon_not_approval_not_apply_authority",
-    "canonical_note_mutation_allowed": False,
-    "portfolio_mutation_allowed": False,
-    "deployment_state_mutation_allowed": False,
-    "sizing_sleeve_cash_risk_rule_authority": False,
-    "owner_approval_granted": False,
+    "posture": "alerts_and_non_executing_recommendations_universe_registry",
+    "review_only": True,
+    "writes_finance_canon": False,
+    "maintains_account_or_capital_state": False,
+    "capital_or_order_authority": False,
+    "execution_allowed": False,
     "owner_approval_inferred": False,
-    "trade_execution_allowed": False,
-    "trade_or_account_action_allowed": False,
-    "live_brokerage_or_account_action_allowed": False,
-    "paper_order_execution_allowed": False,
-    "paper_order_submit_allowed_by_this_registry": False,
-    "paper_order_cancel_allowed_by_this_registry": False,
-    "sql_canon_migration_allowed": False,
-    "db_path_migration_allowed": False,
-    "tmp_artifact_promotion_allowed": False,
 }
+
+RETIRED_FIELD_TOKENS = (
+    "portfolio",
+    "paper_order",
+    "paper_or_live",
+    "deployment_surface",
+    "sizing",
+    "sleeve",
+    "allocation",
+    "tranche",
+)
+
+
+def strip_retired_fields(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {
+            key: strip_retired_fields(item)
+            for key, item in value.items()
+            if not any(token in str(key).lower() for token in RETIRED_FIELD_TOKENS)
+        }
+    if isinstance(value, list):
+        return [strip_retired_fields(item) for item in value]
+    return value
 
 ETF_SYMBOLS = {"ITA", "PAVE", "VAW", "VXUS", "XLB", "XLC", "XLE", "XLF", "XLI"}
 COMMODITY_PROXY_SYMBOLS = {"SLV"}
@@ -113,18 +126,6 @@ def index_fundamentals(data: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {str(row.get("ticker", "")).upper(): row for row in rows if isinstance(row, dict) and row.get("ticker")}
 
 
-def deployment_group_index(data: dict[str, Any]) -> dict[str, str]:
-    out: dict[str, str] = {}
-    groups = data.get("groups") if isinstance(data.get("groups"), dict) else {}
-    for group_name, rows in groups.items():
-        if not isinstance(rows, list):
-            continue
-        for row in rows:
-            if isinstance(row, dict) and row.get("ticker"):
-                out[str(row["ticker"]).upper()] = str(group_name)
-    return out
-
-
 def infer_instrument_type(ticker: str, fundamental: dict[str, Any]) -> str:
     if ticker in COMMODITY_PROXY_SYMBOLS:
         return "commodity_proxy"
@@ -135,13 +136,7 @@ def infer_instrument_type(ticker: str, fundamental: dict[str, Any]) -> str:
     return "operating_company"
 
 
-def infer_tier(ticker: str, fundamental: dict[str, Any], deployment_group: str | None, instrument_type: str) -> str:
-    workflow_state = str(fundamental.get("workflow_state") or "").upper()
-    coverage_lane = str(fundamental.get("coverage_lane") or "").lower()
-    if deployment_group in {"DEPLOYABLE NOW", "PROMOTION REVIEW", "ALMOST DEPLOYABLE", "DO NOT TOUCH", "AUTHORITY CONFLICT"}:
-        return "A"
-    if workflow_state in {"DEPLOYED", "ALMOST", "PROMOTION REVIEW"} or coverage_lane == "execution":
-        return "A"
+def infer_tier(ticker: str, fundamental: dict[str, Any], instrument_type: str) -> str:
     if instrument_type == "operating_company":
         return "B"
     return "C"
@@ -216,11 +211,9 @@ def active_internal_entries(active_entries: list[dict[str, Any]]) -> list[dict[s
 def build_universe() -> dict[str, Any]:
     coverage = load_dict(TMP / "finance-data-coverage-current.json")
     fundamentals = load_dict(TMP / "fundamental-metrics-current.json")
-    deployment = load_dict(TMP / "deployment-readiness-surface.json")
     company_ir = load_dict(ROOT / "data" / "fundamentals" / "company-ir-metadata.json")
 
     fundamental_index = index_fundamentals(fundamentals)
-    deployment_index = deployment_group_index(deployment)
     coverage_tickers = sorted((coverage.get("ticker_coverage") or {}).keys())
     tickers = sorted(set(str(ticker).upper() for ticker in coverage_tickers) | set(fundamental_index.keys()))
     ir_tickers = company_ir.get("tickers") if isinstance(company_ir.get("tickers"), dict) else {}
@@ -229,12 +222,12 @@ def build_universe() -> dict[str, Any]:
     for ticker in tickers:
         fundamental = fundamental_index.get(ticker, {})
         instrument_type = infer_instrument_type(ticker, fundamental)
-        tier = infer_tier(ticker, fundamental, deployment_index.get(ticker), instrument_type)
+        tier = infer_tier(ticker, fundamental, instrument_type)
         monitoring_role = {
-            "A": "decision_queue_or_near_action",
-            "B": "priority_watch",
-            "C": "sector_or_thematic_monitor",
-            "D": "broad_radar",
+            "A": "priority_alert_monitor",
+            "B": "standard_alert_monitor",
+            "C": "thematic_alert_monitor",
+            "D": "broad_alert_radar",
         }[tier]
         company_meta = ir_tickers.get(ticker, {}) if isinstance(ir_tickers.get(ticker), dict) else {}
         sector = fundamental.get("sector")
@@ -260,10 +253,7 @@ def build_universe() -> dict[str, Any]:
             "coverage_reason": {
                 "wf77_current_coverage": ticker in coverage_tickers,
                 "fundamental_row_present": ticker in fundamental_index,
-                "deployment_surface_group": deployment_index.get(ticker),
-                "workflow_state": fundamental.get("workflow_state"),
-                "coverage_lane": fundamental.get("coverage_lane"),
-                "portfolio_role": fundamental.get("portfolio_role"),
+                "alert_evidence_route": "guarded_sql_and_source_open",
             },
             "decision_grade_eligible": decision_grade,
             "promotion_required_before_action": True,
@@ -285,31 +275,29 @@ def build_universe() -> dict[str, Any]:
             "authority_boundary": AUTHORITY_BOUNDARY,
         })
 
-    return with_summary({
+    return strip_retired_fields(with_summary({
         "schema_version": SCHEMA_VERSION,
-        "artifact_type": "wf78_finance_universe_registry",
+        "artifact_type": "alerts_finance_universe_registry",
         "generated_at_utc": utc_now(),
-        "workflow": "WF78 - 500 Ticker Finance Intelligence Scaleout",
-        "status": "dynamic_sql_first_universe_ready",
+        "workflow": "WF84/WF85 - Alerts and Recommendations OS",
+        "status": "alerts_sql_first_universe_ready",
         "review_only": True,
-        "source_open_rule": "Use this durable universe registry for tier/type/routing metadata only. Open exact source artifacts and canonical owner notes before finance, readiness, recommendation, authority, or action claims.",
+        "source_open_rule": "Use this registry for alert evidence routing only. Open exact sources before material recommendation claims; stale or conflicted evidence emits freshness decay.",
         "architecture_boundary": {
-            "markdown_owner_notes_remain_approved_canon": True,
+            "alert_register_remains_human_canon": True,
             "json_artifacts_remain_proof_review_packets": True,
             "sqlite_remains_validated_routing_current_state_cache": True,
-            "full_sql_canon_migration_allowed": False,
-            "tmp_artifact_promotion_allowed": False,
-            "db_path_migration_allowed": False,
+            "capital_or_order_authority": False,
+            "execution_allowed": False,
         },
         "authority_boundary": AUTHORITY_BOUNDARY,
         "source_artifacts": {
             "coverage_registry": rel(TMP / "finance-data-coverage-current.json"),
             "fundamentals": rel(TMP / "fundamental-metrics-current.json"),
-            "deployment_readiness_surface": rel(TMP / "deployment-readiness-surface.json"),
             "company_ir_metadata": rel(ROOT / "data" / "fundamentals" / "company-ir-metadata.json"),
         },
         "entries": entries,
-    })
+    }))
 
 
 def with_summary(universe: dict[str, Any]) -> dict[str, Any]:
@@ -652,16 +640,19 @@ def main() -> int:
             "rebuild data/finance/universe-v1.json from WF77 coverage artifacts."
         )
 
+    should_write = False
     if args.write_from_coverage:
         universe = build_universe()
-        atomic_write_json(args.universe, universe)
+        should_write = True
     elif args.add_pilot_fixtures:
         universe = add_pilot_fixtures(load_dict(args.universe))
-        atomic_write_json(args.universe, universe)
+        should_write = True
     else:
         universe = load_dict(args.universe)
 
-    universe = with_summary(universe)
+    universe = strip_retired_fields(with_summary(universe))
+    if should_write:
+        atomic_write_json(args.universe, universe)
     validation = build_validation(universe)
     if args.validate:
         atomic_write_json(args.validation_output, validation)

@@ -1,0 +1,554 @@
+{
+  "schema_version": 1,
+  "artifact_type": "ticker_answer_packet_v1",
+  "ticker": "GOOGL",
+  "generated_at_utc": "2026-06-20T21:44:49Z",
+  "review_only": true,
+  "source_card_generated_at_utc": "2026-06-20T16:54:25Z",
+  "freshness": {
+    "stale_after_hours": 36,
+    "built_from_card_at_utc": "2026-06-20T16:54:25Z",
+    "built_from_trade_grade_full_answer_assembler": true,
+    "assembler_schema": "veritas.trade_grade_full_answer_assembler.v1",
+    "note": "Compatibility snapshot generated from WF85 full-answer assembler."
+  },
+  "answer_confidence": {
+    "overall_level": "high",
+    "overall_label": "high_for_trade_grade_review",
+    "score": 0.9,
+    "decision_relevant_level": "high",
+    "decision_relevant_score": 0.9,
+    "peripheral_context_level": "low",
+    "peripheral_context_score": 0.75,
+    "reasons": [
+      "decision domains include action_state, price_band_stop, recommendation, and source_freshness",
+      "low/none domains: technical, analyst"
+    ]
+  },
+  "confidence_by_domain": {
+    "action_state": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "decision_state=monitor_only"
+      ]
+    },
+    "price_band_stop": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "band_status=None",
+        "source_freshness=fresh"
+      ]
+    },
+    "technical": {
+      "level": "low",
+      "score": 0.3,
+      "reasons": [
+        "technical_status=missing_required_refresh",
+        "repair_required=True"
+      ]
+    },
+    "official_earnings": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "earnings_status=available"
+      ]
+    },
+    "analyst": {
+      "level": "low",
+      "score": 0.3,
+      "reasons": [
+        "analyst_status=auto_sourced_yfinance",
+        "provider=yfinance",
+        "card_confidence=low"
+      ]
+    },
+    "sector_context": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "sector_status=available"
+      ]
+    },
+    "recommendation": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "wf85_state=monitor_only"
+      ]
+    },
+    "source_freshness": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "freshness=fresh"
+      ]
+    }
+  },
+  "source_count": 18,
+  "source_lineage": [
+    {
+      "kind": "wf85_decision_card",
+      "path": "tmp/trade-grade-decision-cards.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "ticker_intelligence_card",
+      "path": "tmp/ticker-intelligence-cards/GOOGL.current.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "wf84_canonical_data_plane",
+      "path": "tmp/canonical-finance-data-plane.sqlite",
+      "authority": "derived_read_only"
+    },
+    {
+      "kind": "wf84_drillback",
+      "path": "tmp/tier-c-band-status.json",
+      "authority": "source_drillback"
+    },
+    {
+      "kind": "wf84_drillback",
+      "path": "tmp/wf78-auto-tier-routing.json",
+      "authority": "source_drillback"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/fundamental-metrics-current.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/deployment-readiness-surface.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/position-sizing-readiness-current.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/analyst-consensus-current.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/official-earnings-bridge.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/sector-expansion-board.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/technical-refresh.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/portfolio-config.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/post-close-final-quote-ledger.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/finance-decision-sync-spine.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/wf78-capital-review-queue.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "data/finance/universe-v1.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/wf78-auto-tier-routing.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "state/finance/finance-canon.sqlite",
+      "authority": "derived_review_only"
+    }
+  ],
+  "effective_price_context": {
+    "status": "available",
+    "effective_price": 368.03,
+    "price_source": "tmp/tier-c-band-status.json",
+    "market_date": "2026-06-18",
+    "as_of_utc": null,
+    "post_close_overlay_applied": false,
+    "fresh_quote_required": false,
+    "card_latest_known_price": null,
+    "quote_freshness_status": "current_price_technical_available_for_non_executing_review"
+  },
+  "action_state": {
+    "status": "available",
+    "deployment_status": "DO_NOT_TOUCH",
+    "display_label": "monitor_only",
+    "wf85_decision_state": "monitor_only",
+    "workflow_state": "route_monitor",
+    "band_status": "IN_BAND",
+    "below_stop": false,
+    "support_level": "review_context_only",
+    "actionability": "review_only_owner_gated"
+  },
+  "price_band_stop": {
+    "latest_known_price": null,
+    "price_source": null,
+    "entry_band_low": 356.49,
+    "entry_band_high": 372.76,
+    "stop_or_invalidation": 343.37,
+    "band_status": null,
+    "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+    "stop_source": "state/finance/finance-canon.sqlite:reference_levels",
+    "fresh_quote_required": false,
+    "staleness_note": null,
+    "sql_canon_reference": {
+      "ticker": "GOOGL",
+      "reference_price_low": 356.49,
+      "reference_price_high": 372.76,
+      "reference_invalidation_level": 343.37,
+      "reference_confidence": null,
+      "reference_band_status": null,
+      "authority_class": "reference_metadata_review_only_no_deployment_authority",
+      "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+    }
+  },
+  "technical_posture": {
+    "above_ma20": null,
+    "above_ma200": null,
+    "above_ma50": null,
+    "band_status": null,
+    "data_date": null,
+    "deployment_surface_state": null,
+    "latest_close": null,
+    "ma20": null,
+    "ma200": null,
+    "ma50": null,
+    "ma_posture": null,
+    "macro_gate": null,
+    "near_earnings_caution": null,
+    "repair_required": true,
+    "source_open_required_before_material_claims": true,
+    "source_path": "tmp/finance-data-coverage-current.json",
+    "status": "missing_required_refresh",
+    "summary": "thin monitor: price/technical refresh required",
+    "why": null
+  },
+  "thesis_summary": {
+    "status": "synthesized_review_only_source_backed",
+    "thesis": "Alphabet Inc. (Class A) has a review-only synthesized Tier A thesis from local sourced artifacts: revenue YoY 21.79%, EPS YoY 81.85%, FCF YoY -46.63%. Entry posture is unknown band status; 1 evidence/freshness gaps still require review before decision-grade use.",
+    "bull_case_inputs": [
+      "latest_earnings_performance",
+      "key_financial_metrics",
+      "official_capture_developments_orders_backlog",
+      "current_sector_performance",
+      "technical_posture"
+    ],
+    "bear_case_inputs": [
+      "risk_register",
+      "missing_or_stale_evidence",
+      "valuation",
+      "price_band_stop"
+    ],
+    "entry_context": {
+      "latest_known_price": null,
+      "price_source": null,
+      "entry_band_low": 356.49,
+      "entry_band_high": 372.76,
+      "stop_or_invalidation": 343.37,
+      "band_status": null,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "stop_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "fresh_quote_required": false,
+      "staleness_note": null,
+      "sql_canon_reference": {
+        "ticker": "GOOGL",
+        "reference_price_low": 356.49,
+        "reference_price_high": 372.76,
+        "reference_invalidation_level": 343.37,
+        "reference_confidence": null,
+        "reference_band_status": null,
+        "authority_class": "reference_metadata_review_only_no_deployment_authority",
+        "fallback_rule": "fallback_to_finance_intelligence_state_entry_stop_reference_or_owner_notes"
+      }
+    },
+    "synthesis_evidence": [
+      {
+        "label": "fundamental_snapshot",
+        "summary": "revenue YoY 21.79%, EPS YoY 81.85%, FCF YoY -46.63%",
+        "source_artifact": "tmp\\fundamental-metrics-current.json",
+        "period_end": "2026-03-31",
+        "source_tier": "aggregator_secondary"
+      },
+      {
+        "label": "sector_proxy_context",
+        "summary": "Communication Services via XLC versus SPY; leadership=deteriorating",
+        "source_artifact": "tmp\\sector-expansion-board.json",
+        "as_of": "2026-06-18",
+        "match_basis": "exact"
+      }
+    ],
+    "source_open_required": true,
+    "limits": [
+      "Review-only synthesis generated from existing local sourced artifacts.",
+      "This does not clear owner approval, capital deployment, paper/live execution, or final recommendation authority."
+    ]
+  },
+  "bull_case": {
+    "bull_case": [
+      "latest_earnings_performance",
+      "key_financial_metrics",
+      "official_capture_developments_orders_backlog",
+      "current_sector_performance",
+      "technical_posture"
+    ],
+    "wf85_bull_case": "Not generated in Phase 1 until source-open material claims are promoted."
+  },
+  "bear_case": {
+    "bear_case": [
+      "risk_register",
+      "missing_or_stale_evidence",
+      "valuation",
+      "price_band_stop"
+    ],
+    "wf85_bear_case": "Not generated in Phase 1 until source-open material claims are promoted.",
+    "risks": [
+      {
+        "category": "capital_allocation",
+        "severity": "warning",
+        "detail": "EPS grew while FCF/share declined materially; earnings quality needs review."
+      },
+      {
+        "category": "evidence_gap",
+        "severity": "context",
+        "detail": "Ticker not present in current deployment-readiness surface groups",
+        "family": "deployment_readiness_surface"
+      }
+    ]
+  },
+  "latest_earnings": {
+    "status": "available",
+    "period_type": "quarterly",
+    "period_end": "2026-03-31",
+    "comparison_period_end": "2025-03-31",
+    "revenue": 109896000000.0,
+    "revenue_yoy_pct": 21.79,
+    "net_income": 62578000000.0,
+    "net_income_yoy_pct": 81.18,
+    "diluted_eps": 5.11,
+    "eps_yoy_pct": 81.85,
+    "free_cash_flow": 10116000000.0,
+    "free_cash_flow_yoy_pct": -46.63,
+    "official_adjusted_eps": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "official_growth_bridge": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "official_guidance": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "management_explanation": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "source_open_required": true
+  },
+  "key_financial_metrics": {
+    "status": "available",
+    "growth": {
+      "revenue_yoy_pct": 21.79,
+      "net_income_yoy_pct": 81.18,
+      "eps_yoy_pct": 81.85,
+      "free_cash_flow_yoy_pct": -46.63
+    },
+    "profitability": {
+      "gross_margin_pct": 62.45,
+      "operating_margin_pct": 36.12,
+      "net_margin_pct": 56.94,
+      "roic_proxy_pct": 23.62
+    },
+    "cash_flow": {
+      "operating_cash_flow": 45790000000.0,
+      "free_cash_flow": 10116000000.0,
+      "fcf_per_share": 0.8266,
+      "fcf_yield_pct": 0.23
+    },
+    "balance_sheet": {
+      "cash_and_equivalents": 38063000000.0,
+      "total_debt": 90484000000.0,
+      "net_debt": 52421000000.0,
+      "debt_to_annualized_ebitda": 0.27
+    },
+    "valuation": {
+      "market_cap": 4490912973770.15,
+      "enterprise_value": 4491333074944.0,
+      "trailing_pe": 28.09,
+      "forward_pe": 25.42,
+      "price_to_sales": 10.63,
+      "price_to_book": 9.31,
+      "ev_to_ebitda_proxy": 13.3,
+      "ev_to_fcf_proxy": 111.0,
+      "earnings_yield_pct": 1.39
+    },
+    "capital_returns": {
+      "buyback_yield_pct": 0.0,
+      "dividend_yield_pct": 0.06,
+      "shareholder_yield_pct": 0.06,
+      "capital_return_to_fcf_pct": 25.13
+    },
+    "data_quality": "clean",
+    "source_open_required": true
+  },
+  "analyst_consensus": {
+    "status": "auto_sourced_yfinance",
+    "consensus_rating": "Buy skew",
+    "average_target": 432.8345,
+    "median_target": 430.0,
+    "high_target": 515.0,
+    "low_target": 340.0,
+    "implied_upside_downside_pct": 17.61,
+    "counts": {
+      "strong_buy": 14,
+      "buy": 42,
+      "hold": 7,
+      "sell": 0,
+      "strong_sell": 0
+    },
+    "provider": "yfinance",
+    "provider_confidence": "low",
+    "stale": false
+  },
+  "portfolio_fit": {
+    "status": "available",
+    "sector": "Communication Services",
+    "tier": "C",
+    "wf78_auto_tier": "Tier C",
+    "wf78_auto_state": "C-MONITOR",
+    "current_route_tier": "Tier C",
+    "current_route_state": "C-MONITOR",
+    "prior_card_wf78_auto_tier": null,
+    "prior_card_wf78_auto_state": null,
+    "wf85_decision_state": "monitor_only",
+    "wf78_tier": "C",
+    "wf78_decision_grade_eligible": false,
+    "portfolio_role": "tier_c_review_monitor_breadth_only",
+    "coverage_lane": "review_100_monitor",
+    "monitoring_role": "tier_c_review_monitor_breadth_only",
+    "recommended_starter_notional": null,
+    "recommended_target_notional": null,
+    "decision_note": null
+  },
+  "blockers": [
+    {
+      "kind": "wf85_decision_state_reason",
+      "detail": "thin_monitor_not_decision_grade"
+    },
+    {
+      "kind": "missing_or_stale_evidence",
+      "detail": {
+        "family": "deployment_readiness_surface",
+        "severity": "context",
+        "status": "missing",
+        "detail": "Ticker not present in current deployment-readiness surface groups"
+      }
+    }
+  ],
+  "recommended_next_action": {
+    "action": "monitor_only_no_owner_action",
+    "urgency": "none",
+    "owner_approval_required": true,
+    "execution_authorized": false,
+    "based_on": {
+      "decision_state": "monitor_only",
+      "trade_grade": "C",
+      "band_status": "IN_BAND",
+      "effective_price": 368.03
+    }
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "report_only": true,
+    "artifact_role": "derived_ticker_answer_response_and_route_layer_only",
+    "generated_answer_is_canon": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "cash_sizing_or_risk_rule_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "live_trade_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "archive_allowed": false,
+    "delete_allowed": false,
+    "apply_allowed": false,
+    "owner_approval_inferred": false,
+    "source_open_required_before_material_finance_claims": true,
+    "generated_packet_is_canon": false,
+    "source_open_required_before_final_recommendation_or_action_claim": true,
+    "sql_canon_migration_allowed": false
+  },
+  "field_provenance": {
+    "ticker": "assembler_derived",
+    "generated_at_utc": "generated",
+    "answer_confidence": "wf85_full_answer_assembler",
+    "confidence_by_domain": "wf85_full_answer_assembler",
+    "source_count": "wf85_full_answer_assembler",
+    "source_lineage": "wf85_full_answer_assembler",
+    "effective_price_context": "wf85_current_price_or_card",
+    "action_state": "wf85_decision_state",
+    "price_band_stop": "ticker_intelligence_card_with_wf85_overlay",
+    "technical_posture": "ticker_intelligence_card_or_wf84_repair_state",
+    "thesis_summary": "wf85_full_answer_section",
+    "bull_case": "wf85_full_answer_section",
+    "bear_case": "wf85_full_answer_section",
+    "latest_earnings": "ticker_intelligence_card",
+    "key_financial_metrics": "ticker_intelligence_card",
+    "analyst_consensus": "ticker_intelligence_card",
+    "portfolio_fit": "ticker_intelligence_card",
+    "blockers": "wf85_decision_state_and_card_evidence",
+    "recommended_next_action": "wf85_full_answer_assembler_review_only",
+    "authority_boundary": "review_only_boundary"
+  }
+}

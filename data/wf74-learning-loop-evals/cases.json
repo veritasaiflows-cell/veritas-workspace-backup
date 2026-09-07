@@ -1,0 +1,417 @@
+{
+  "schema": "veritas.wf74_learning_loop_eval_cases.v1",
+  "generated_at_utc": "2026-08-31T04:41:57Z",
+  "purpose": "Local regression cases for WF74 V2 review/routing classification. Cases come from observed OpenClaw failures and stop-line patterns.",
+  "authority_boundary": {
+    "review_only": true,
+    "eval_only": true,
+    "auto_apply_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "cases": [
+    {
+      "case_id": "phase2a_missing_cron_contract",
+      "title": "Enabled replacement/reminder cron job missing freshness contract",
+      "item": {
+        "source_kind": "opportunity",
+        "source_id": "cron-contract-gap",
+        "category": "cron_migration",
+        "title": "Repair missing cron freshness contract for enabled job",
+        "priority": 92,
+        "next_action": "Add the missing contract and rerun cron freshness/control."
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 1,
+          "escalation_signal_count": 1,
+          "stale_count": 0
+        }
+      },
+      "expected_action_state": "fix_now"
+    },
+    {
+      "case_id": "sql_source_lineage_metadata_drift",
+      "title": "Generated-artifact SQL source-lineage hash drift",
+      "item": {
+        "source_kind": "opportunity",
+        "source_id": "sql-metadata-drift",
+        "category": "workflow_maturity",
+        "title": "SQL source-lineage metadata drift blocks release contract",
+        "priority": 90,
+        "next_action": "Run dry-run SQL metadata repair, confirm metadata-only scope, back up, apply, and rerun release proof.",
+        "details": "metadata-only source_lineage/source_artifacts repair; no source content/schema/portfolio/canon mutation"
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_action_state": "proof_refresh"
+    },
+    {
+      "case_id": "wf87_threshold_short",
+      "title": "WF87 shadow threshold not met",
+      "item": {
+        "source_kind": "workflow_followup",
+        "source_id": "wf87-maturity-accrual",
+        "category": "outcome_measurement",
+        "title": "Track WF87 shadow outcomes until regular-session follow-up thresholds are met",
+        "priority": 68,
+        "next_action": "Collect regular-session observations and rerun scorecards after market hours."
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_action_state": "market_session_accrual"
+    },
+    {
+      "case_id": "autonomy_spine_child_gates_blocked",
+      "title": "AUTONOMY-SPINE parent blocked by child workflow maturity gates",
+      "item": {
+        "source_kind": "workflow_followup",
+        "source_id": "autonomy-spine-dependency-rollup",
+        "category": "workflow_maturity",
+        "route": "dependency_rollup",
+        "title": "AUTONOMY-SPINE blocked by WF87 child maturity gates",
+        "priority": 74,
+        "next_action": "Clear child WF87/reconciliation/cron proof; do not patch parent rollup quiet."
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_action_state": "market_session_accrual"
+    },
+    {
+      "case_id": "raw_prompt_capture_request",
+      "title": "Raw prompt or tool-payload capture request",
+      "item": {
+        "source_kind": "durable_improvement",
+        "source_id": "raw-capture",
+        "category": "otel_learning_loop",
+        "title": "Capture raw prompt and tool payload data for learning-loop metadata depth",
+        "priority": 99
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_action_state": "hard_stop"
+    },
+    {
+      "case_id": "skill_update_proposal",
+      "title": "Repeated process friction requiring a durable skill proposal",
+      "item": {
+        "source_kind": "skill_workshop_request",
+        "source_id": "skill-v2",
+        "category": "skill_application",
+        "title": "Update the disciplined-implementation skill with release-cleanup doctrine",
+        "priority": 80,
+        "next_action": "Create a Skill Workshop proposal and apply only with explicit approval."
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_action_state": "skill_proposal"
+    },
+    {
+      "case_id": "response_facts_without_recommendations",
+      "title": "Response gives facts and repairs but no recommendations",
+      "item": {
+        "source_kind": "opportunity",
+        "source_id": "response-recommendation-gap",
+        "category": "response_quality",
+        "title": "Facts and repairs are reported without top recommendations or next steps",
+        "priority": 86,
+        "next_action": "Add or repair response recommendation contract linting, then rerun response-quality proof.",
+        "details": "Substantive closeout/status responses must include P0/P1/P2 recommendations, action labels, Do/Don't guidance, and prevention/improvement guidance."
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_action_state": "fix_now"
+    },
+    {
+      "case_id": "active_self_review_skill_gap_routes_to_skill_proposal",
+      "title": "Active self-review finds reusable procedural gap",
+      "item": {
+        "source_kind": "skill_workshop_request",
+        "source_id": "active-self-review-trigger",
+        "category": "skill_application",
+        "title": "Add active post-response self-review trigger to veritas-self-improvement",
+        "priority": 84,
+        "next_action": "Create a Skill Workshop proposal that adds a bounded post-response self-check pattern; keep apply owner-gated.",
+        "details": "Substantive responses should be self-checked against the response contract and recurring procedural gaps should route to Skill Workshop without auto-apply or raw transcript capture."
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_action_state": "skill_proposal"
+    },
+    {
+      "case_id": "wf74_source_open_recurrence_guard_clean_proof",
+      "title": "Source-open recurrence guard clean proof should stay proof-refresh routed",
+      "item": {
+        "source_kind": "outcome_feedback",
+        "source_id": "wf74-source-open-recurrence-guard",
+        "category": "workflow_maturity",
+        "title": "WF74 source-open recurrence guard proof is clean after hard producer ordering",
+        "priority": 72,
+        "next_action": "Keep the recurrence guard in daily proof and rerun if source-open/freshness blockers reappear.",
+        "details": "proof clean; finance response-quality source_open/source_freshness blockers are zero; review-only recurrence prevention"
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_action_state": "proof_refresh"
+    },
+    {
+      "case_id": "wf74_closed_improvements_need_successor_artifact_or_class",
+      "title": "Closed improvement rows must carry successor or durable follow-up classification",
+      "item": {
+        "source_kind": "outcome_feedback",
+        "source_id": "closed-followup-classification",
+        "category": "workflow_maturity",
+        "title": "Improvement ledger closure proof has no unclassified closed follow-ups",
+        "priority": 64,
+        "next_action": "Refresh improvement-ledger proof when closure rows lack successor artifacts or durable follow-up class.",
+        "details": "proof outcome feedback; no unclassified closed follow-up rows; successor artifact discipline"
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_action_state": "proof_refresh"
+    },
+    {
+      "case_id": "wf74_self_prompt_variant_metadata_only",
+      "title": "Self-review variants are metadata-only review signals",
+      "item": {
+        "source_kind": "outcome_feedback",
+        "source_id": "self-review-variant-ledger",
+        "category": "workflow_maturity",
+        "title": "Self-review variant ledger records metadata-only proof without auto-apply",
+        "priority": 58,
+        "next_action": "Use review-variant metadata to compare proposal outcomes; do not store raw text or apply changes automatically.",
+        "details": "proof metadata-only; review identifiers only; no content capture"
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_action_state": "proof_refresh"
+    },
+    {
+      "case_id": "wf88_delete_readiness_zero_stays_monitor_only",
+      "title": "WF88 zero delete readiness should not create cleanup implementation work",
+      "item": {
+        "source_kind": "outcome_feedback",
+        "source_id": "wf88-delete-readiness-zero",
+        "category": "os2_cleanup",
+        "title": "WF88 delete readiness is zero and should remain monitor-only",
+        "priority": 42,
+        "next_action": "Monitor; do not create destructive cleanup work without exact approval and ready delete packet.",
+        "details": "delete readiness zero; no destructive/archive authority"
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_action_state": "monitor_only"
+    },
+    {
+      "case_id": "wf74_dispatch_active_cron_regression_to_pm_job",
+      "title": "Active cron regression dispatches to an existing PM job candidate",
+      "item": {
+        "source_kind": "opportunity",
+        "source_id": "cron_migration-1",
+        "category": "cron_migration",
+        "title": "Repair regressed cron signals after completed migration plan",
+        "priority": 92,
+        "action_state": "fix_now",
+        "next_action": "Inspect blocked cron-control artifacts and repair the failing proof surface."
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 2,
+          "escalation_signal_count": 2,
+          "stale_count": 0,
+          "should_wake_main_session": true
+        }
+      },
+      "dispatch_context": {
+        "router_pm_job_candidates": [
+          {
+            "job_id": "pm-wf74-cron-migration-regression-repair",
+            "source_key": "cron_migration-1",
+            "title": "Repair regressed cron signals after completed migration plan",
+            "source_category": "cron_migration",
+            "status": "ready_for_main_or_helper"
+          }
+        ]
+      },
+      "expected_dispatch_destination": "pm_job"
+    },
+    {
+      "case_id": "wf74_dispatch_green_cron_residue_monitor_only",
+      "title": "Cron migration residue stays monitor-only when current cron control is green",
+      "item": {
+        "source_kind": "opportunity",
+        "source_id": "cron_migration-1",
+        "category": "cron_migration",
+        "title": "Repair regressed cron signals after completed migration plan",
+        "priority": 92,
+        "action_state": "fix_now",
+        "next_action": "Inspect blocked cron-control artifacts and repair the failing proof surface."
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0,
+          "should_wake_main_session": false
+        }
+      },
+      "expected_dispatch_destination": "monitor_only"
+    },
+    {
+      "case_id": "wf74_dispatch_pm_completion_ledger_to_validator_ticket",
+      "title": "Fresh router candidate suppressed by PM completion ledger becomes a validator ticket",
+      "item": {
+        "source_kind": "opportunity",
+        "source_id": "cron_migration-1",
+        "category": "cron_migration",
+        "title": "Repair regressed cron signals after completed migration plan",
+        "priority": 92,
+        "action_state": "fix_now",
+        "next_action": "Inspect blocked cron-control artifacts and repair the failing proof surface."
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 1,
+          "escalation_signal_count": 1,
+          "stale_count": 0,
+          "should_wake_main_session": true
+        }
+      },
+      "dispatch_context": {
+        "router_pm_job_candidates": [
+          {
+            "job_id": "pm-wf74-cron-migration-regression-repair",
+            "source_key": "cron_migration-1",
+            "title": "Repair regressed cron signals after completed migration plan",
+            "source_category": "cron_migration",
+            "status": "ready_for_main_or_helper"
+          }
+        ],
+        "pm_jobs": [
+          {
+            "job_id": "pm-wf74-cron-migration-regression-repair",
+            "status": "completed_by_ledger",
+            "allowed_execution_mode": "completed_by_ledger_resolved"
+          }
+        ]
+      },
+      "expected_dispatch_destination": "validator_ticket"
+    },
+    {
+      "case_id": "wf74_dispatch_skill_request_to_skill_workshop_proposal",
+      "title": "Skill update proposal routes to Skill Workshop proposal lane",
+      "item": {
+        "source_kind": "skill_workshop_request",
+        "source_id": "skill-v2",
+        "category": "skill_application",
+        "title": "Update the disciplined-implementation skill with release-cleanup doctrine",
+        "priority": 80,
+        "action_state": "skill_proposal",
+        "next_action": "Create a Skill Workshop proposal and apply only with explicit approval."
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_dispatch_destination": "skill_workshop_proposal"
+    },
+    {
+      "case_id": "wf74_dispatch_active_self_review_skill_gap_to_skill_workshop",
+      "title": "Active self-review skill gap dispatches to Skill Workshop proposal lane",
+      "item": {
+        "source_kind": "skill_workshop_request",
+        "source_id": "active-self-review-trigger",
+        "category": "skill_application",
+        "title": "Add active post-response self-review trigger to veritas-self-improvement",
+        "priority": 84,
+        "action_state": "skill_proposal",
+        "next_action": "Create a Skill Workshop proposal that adds a bounded post-response self-check pattern; keep apply owner-gated."
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_dispatch_destination": "skill_workshop_proposal"
+    },
+    {
+      "case_id": "wf74_dispatch_raw_capture_blocked_no_dispatch",
+      "title": "Raw prompt or tool-payload capture requests do not dispatch",
+      "item": {
+        "source_kind": "durable_improvement",
+        "source_id": "raw-capture",
+        "category": "otel_learning_loop",
+        "title": "Capture raw prompt and tool payload data for learning-loop metadata depth",
+        "priority": 99,
+        "action_state": "monitor_only"
+      },
+      "context": {
+        "cron": {
+          "blocked_count": 0,
+          "escalation_signal_count": 0,
+          "stale_count": 0
+        }
+      },
+      "expected_dispatch_destination": "blocked_no_dispatch"
+    }
+  ]
+}

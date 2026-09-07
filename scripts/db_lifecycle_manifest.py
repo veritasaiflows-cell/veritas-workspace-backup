@@ -78,21 +78,6 @@ LIVE_STATE = {
         "reason": "durable internal SQL-primary current-state layer for answer-path scope, evidence freshness, reference levels, source lineage, tier routing, and universe membership; review-only, not approval/execution authority",
         "rebuild": "python scripts\\finance_sql_canon.py --write --validate --approval-reference \"<owner approval reference>\"",
     },
-    "veritas-canon-cache.sqlite": {
-        "owner": "WF72 legacy/support-only bounded metadata cache",
-        "reason": "support-only 265-row metadata cache retained for lineage/fallback compatibility; not the finance front door, not SQL-canon current-state authority, and stale whole-file source hashes are warning-only when SQL-canon/WF84 values match",
-        "rebuild": "scripts/artifact_index.py low-risk/WF72 activation paths only after gated approval",
-    },
-    "finance-intelligence-state.sqlite": {
-        "owner": "Finance intelligence front-door compatibility/query cache",
-        "reason": "rebuilt tmp compatibility DB for ticker query packets; current-state authority routes through SQL-canon/WF84/WF85 and legacy source hashes are labeled support-only lineage",
-        "rebuild": "python scripts\\finance_intelligence_state.py build --pretty",
-    },
-    "wf67-paper-position-state.sqlite": {
-        "owner": "WF63/WF67 paper-position read-only state",
-        "reason": "active GET-only paper account/position visibility state",
-        "rebuild": "python scripts\\alpaca_paper_position_sql_refresh.py refresh --create-kill-switch --expires-minutes 90",
-    },
     "wf75-service-state.sqlite": {
         "owner": "WF75 anonymous service-state control plane",
         "reason": "active local service request/operator queue state for prototype work",
@@ -160,11 +145,6 @@ DERIVED = {
         "owner": "Implementation closeout checkpointed execution derived state",
         "reason": "active checkpoint database for AGI-OS/implementation closeout proof-chain resumability; JSON/source artifacts remain proof, and this DB is not canon, approval, portfolio, account, paper/live, or execution authority",
         "rebuild": "python scripts\\workflow_checkpoint_runner.py --config data\\workflow-checkpoints\\implementation-closeout.json --write --validate",
-    },
-    "canonical-finance-data-plane.sqlite": {
-        "owner": "WF84 canonical finance data-plane derived lookup",
-        "reason": "rebuildable SQLite companion loaded only from tmp/canonical-finance-data-plane.json; JSON packet and source artifacts remain proof, and this DB is not canon, approval, portfolio, account, paper/live, or execution authority",
-        "rebuild": "python scripts\\canonical_finance_data_plane.py --write --write-db --validate",
     },
     "generic-service-state.sqlite": {
         "owner": "WF75 SMB Workflow Clarity derived control plane",
@@ -334,13 +314,6 @@ DERIVED = {
 }
 
 SNAPSHOT = {
-    "finance-stack-snapshot.sqlite": {
-        "owner": "finance stack snapshot",
-        "reason": "review-only snapshot surface documented in scripts README; useful but not canon",
-        "rebuild": "python scripts\\finance_stack_snapshot.py --write --validate",
-        "decision": "conditional_keep",
-        "retention": "conditional keep; regenerate on demand and archive only after a superseding live route is confirmed",
-    },
     "finance-canon-backup.sqlite": {
         "owner": "SQL-canon rollback rehearsal backup",
         "reason": "rollback rehearsal copy retained under tmp/sql-canon-rollback-rehearsal; proof-only and not active finance-canon current state",
@@ -365,6 +338,36 @@ SNAPSHOT = {
 }
 
 ARCHIVE_CANDIDATE_RULES = {
+    "veritas-canon-cache.sqlite": {
+        "lifecycle": "retired",
+        "owner": "Retired WF72 canon-cache compatibility surface",
+        "reason": "retired by the 2026-08-29 alerts-and-recommendations OS pivot; preserve the immutable change ledger as historical evidence, but never restore this cache as active finance authority",
+        "archive_bucket": "alerts-os-retired-current-state",
+    },
+    "finance-intelligence-state.sqlite": {
+        "lifecycle": "retired",
+        "owner": "Retired portfolio-management intelligence state",
+        "reason": "retired by the 2026-08-29 alerts-and-recommendations OS pivot because it maintains portfolio roles, draft weights, prepared-order paths, and pending approvals",
+        "archive_bucket": "alerts-os-retired-current-state",
+    },
+    "wf67-paper-position-state.sqlite": {
+        "lifecycle": "retired",
+        "owner": "Retired WF67 paper-position state",
+        "reason": "retired by the 2026-08-29 alerts-and-recommendations OS pivot; paper positions and broker/account snapshots are outside the active OS",
+        "archive_bucket": "alerts-os-retired-current-state",
+    },
+    "canonical-finance-data-plane.sqlite": {
+        "lifecycle": "retired",
+        "owner": "Retired WF84 portfolio data plane",
+        "reason": "retired by the 2026-08-29 alerts-and-recommendations OS pivot because the derived plane contains sizing, sleeve, portfolio-role, prepared-order, and paper-position state",
+        "archive_bucket": "alerts-os-retired-current-state",
+    },
+    "finance-stack-snapshot.sqlite": {
+        "lifecycle": "retired",
+        "owner": "Retired portfolio and paper-state snapshot",
+        "reason": "retired by the 2026-08-29 alerts-and-recommendations OS pivot because it preserves capital-base posture and nonzero paper quantities",
+        "archive_bucket": "alerts-os-retired-current-state",
+    },
     "wf72-entry-stop-sql-activation-rollback-drill.sqlite": {
         "lifecycle": "drill",
         "owner": "WF72 rollback drill proof",
@@ -386,14 +389,20 @@ ARCHIVE_CANDIDATE_RULES = {
     "veritas-canon-cache.pre-a1-20260604T041856Z.sqlite": {
         "lifecycle": "rollback",
         "owner": "WF72 A1 low-risk cache refresh rollback copy",
-        "reason": "pre-A1 backup retained after the 13-row low-risk metadata refresh; active cache remains veritas-canon-cache.sqlite",
+        "reason": "pre-A1 backup retained as historical rollback evidence; the active cache and its rebuild route were retired by the 2026-08-29 alerts-and-recommendations OS pivot",
         "archive_bucket": "wf72-rollback-copies",
     },
     "wf67-paper-position-state.pre-block-test.20260528-175138.sqlite": {
         "lifecycle": "test",
         "owner": "WF67 paper-position block-test fixture",
-        "reason": "test snapshot from WF67 block repair; active state now lives in wf67-paper-position-state.sqlite",
+        "reason": "historical test snapshot from WF67 block repair; the active paper-position surface was retired by the 2026-08-29 alerts-and-recommendations OS pivot",
         "archive_bucket": "wf67-test-fixtures",
+    },
+    "test-vector-memory.sqlite": {
+        "lifecycle": "test",
+        "owner": "WF88 vector memory index unit-test fixture",
+        "reason": "ephemeral test fixture created by scripts/test_vector_memory_index.py when running unit tests; not active operational state",
+        "archive_bucket": "wf88-test-fixtures",
     },
 }
 
@@ -859,6 +868,17 @@ def classify(path: Path, active_refs: int, operational_refs: int, sqlite_meta: d
         if retention_policy:
             evidence.append(f"retention policy: {retention_policy}")
         blockers.append("still documented and currently reusable")
+    elif path_rel.startswith("state/finance/backups/alerts-os-pivot-20260829/"):
+        lifecycle = "rollback"
+        owner = "Alerts-and-recommendations SQL lineage migration rollback proof"
+        status = "conditional_keep"
+        recommendation = "retain as transaction-safe rollback evidence; never use as active finance state"
+        retention_policy = "preserve with the 2026-08-29 alerts-OS lineage migration and its immutable audit proof"
+        evidence.append("pre-migration SQLite backup captured through the backup API before the alerts-OS lineage apply")
+        evidence.append("historical rollback only; current finance state remains state/finance/finance-canon.sqlite")
+        blockers.append("rollback evidence retained for the alerts-OS migration")
+        if integrity_check_problem(sqlite_meta):
+            blockers.append("integrity check is not ok; preserve for rollback investigation")
     elif path_rel.startswith("tmp/backups/") and path_rel.endswith("/state/openclaw.sqlite"):
         lifecycle = "rollback"
         owner = "OpenClaw runtime remediation rollback/provenance backup"

@@ -1,4 +1,6 @@
-# WF27 Data and Provenance Audit - Phase 2
+# Retired Historical — WF27 Data and Provenance Audit - Phase 2
+
+Lifecycle: Retired on 2026-08-29. The content below is dated methodology history and is not an active finance-state model, route, or authority surface.
 
 Date: 2026-05-06  
 Owner: Veritas  

@@ -1,0 +1,166 @@
+{
+  "artifact_type": "wf67_paper_execution_guard_validation",
+  "artifacts": {
+    "approval": "tmp\\alpaca-paper-readiness\\owner-approval.nvda-small-starter-20260622T151120Z.json",
+    "audit_log": "tmp/alpaca-paper-readiness/audit-log.jsonl",
+    "cancel_request": "tmp/alpaca-paper-readiness/paper-cancel-request.sample.json",
+    "cancel_schema": "tmp/alpaca-paper-readiness/paper-cancel-request.schema.json",
+    "canon_drift_gate": "tmp\\canon-drift-freshness-gate.json",
+    "guard_report": "tmp/alpaca-paper-readiness/paper-execution-guard-report.json",
+    "kill_switch": "tmp\\alpaca-paper-readiness\\execution-kill-switch.nvda-small-starter-2026-06-22.json",
+    "result": "tmp\\alpaca-paper-readiness\\paper-execution-dry-run-result.nvda-small-starter-2026-06-22.json",
+    "trade_request": "tmp\\alpaca-paper-readiness\\paper-trade-request.nvda-small-starter-review-2026-06-22.approved.json",
+    "trade_schema": "tmp/alpaca-paper-readiness/paper-trade-request.schema.json",
+    "wrapper": "scripts/alpaca_paper_trade_executor.py"
+  },
+  "endpoint_policy": {
+    "forbidden_live_endpoint": "https://api.alpaca.markets",
+    "required_credential_names": [
+      "ALPACA_PAPER_API_KEY_ID",
+      "ALPACA_PAPER_API_SECRET_KEY"
+    ],
+    "required_endpoint": "https://paper-api.alpaca.markets"
+  },
+  "findings": [
+    {
+      "code": "approval_status_not_expected",
+      "severity": "critical",
+      "value": "approved_exact_order"
+    },
+    {
+      "code": "approval_required_true_missing",
+      "field": "paper_submit_allowed",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_required_true_missing",
+      "field": "per_order_or_bounded_pilot_scope_required",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_required_true_missing",
+      "field": "secret_redaction_required",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_required_true_missing",
+      "field": "live_endpoint_forbidden",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_required_true_missing",
+      "field": "paper_only",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_required_true_missing",
+      "field": "paper_cancel_allowed",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_required_true_missing",
+      "field": "live_credentials_forbidden",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_required_true_missing",
+      "field": "scoped_paper_trade_artifact_required",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_required_true_missing",
+      "field": "no_inferred_approval",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_required_true_missing",
+      "field": "doctrine_exception_acknowledged",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_forbidden_field_not_false",
+      "field": "live_cancel_allowed",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_forbidden_field_not_false",
+      "field": "money_movement_allowed",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_forbidden_field_not_false",
+      "field": "close_position_allowed",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_forbidden_field_not_false",
+      "field": "replace_order_allowed",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_forbidden_field_not_false",
+      "field": "live_submit_allowed",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_forbidden_field_not_false",
+      "field": "liquidation_allowed",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_forbidden_field_not_false",
+      "field": "account_settings_mutation_allowed",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_forbidden_field_not_false",
+      "field": "paper_results_promote_to_live_allowed",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_endpoint_not_exact_paper",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "approval_credential_names_not_paper_specific",
+      "severity": "critical",
+      "value": null
+    },
+    {
+      "code": "kill_switch_missing_or_expired",
+      "severity": "critical",
+      "value": "2026-06-22T15:30:57Z"
+    }
+  ],
+  "generated_at_utc": "2026-06-22T15:31:37Z",
+  "live_trading_allowed": false,
+  "money_movement_allowed": false,
+  "ready_for_paper_submit_cancel": false,
+  "schema_version": 1,
+  "status": "blocked",
+  "summary": {
+    "critical": 22,
+    "warning": 0
+  },
+  "verdict": "WF67 remains blocked until critical findings are resolved.",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

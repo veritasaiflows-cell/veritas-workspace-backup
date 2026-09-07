@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-06-02T00:00:00Z",
+  "purpose": "Official source-open URL registry for WF78 review-monitor cleanup. URLs are evidence pointers only and do not reconcile values, promote tickers, mutate canon, or authorize production/portfolio/trading action.",
+  "authority_boundary": {
+    "review_only_source_registry_allowed": true,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "production_answer_path_expansion_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_or_live_execution_allowed": false,
+    "trade_or_account_action_allowed": false
+  },
+  "tickers": {
+    "AAPL": {
+      "official_earnings_source_url": "https://www.apple.com/newsroom/2026/04/apple-reports-second-quarter-results/",
+      "source_label": "Apple Newsroom Q2 FY2026 results",
+      "period_label": "Fiscal Q2 2026",
+      "source_section": "official earnings release"
+    },
+    "ASML": {
+      "official_earnings_source_url": "https://www.asml.com/en/news/press-releases/2026/q1-2026-financial-results",
+      "source_label": "ASML Q1 2026 financial results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "AVGO": {
+      "official_earnings_source_url": "https://investors.broadcom.com/news-releases/news-release-details/broadcom-inc-announces-first-quarter-fiscal-year-2026-financial",
+      "source_label": "Broadcom Q1 FY2026 financial results",
+      "period_label": "Fiscal Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "COST": {
+      "official_earnings_source_url": "https://investor.costco.com/news/news-details/2026/Costco-Wholesale-Corporation-Reports-Third-Quarter-and-Year-To-Date-Operating-Results-For-Fiscal-2026/default.aspx",
+      "source_label": "Costco Q3 FY2026 operating results",
+      "period_label": "Fiscal Q3 2026",
+      "source_section": "official earnings release"
+    },
+    "CRM": {
+      "official_earnings_source_url": "https://investor.salesforce.com/news/news-details/2026/Salesforce-Delivers-Record-First-Quarter-Fiscal-2027-Results/default.aspx",
+      "source_label": "Salesforce Q1 FY2027 results",
+      "period_label": "Fiscal Q1 2027",
+      "source_section": "official earnings release"
+    },
+    "PANW": {
+      "official_earnings_source_url": "https://investors.paloaltonetworks.com/news-releases/news-release-details/palo-alto-networks-reports-fiscal-second-quarter-2026-financial/",
+      "source_label": "Palo Alto Networks Q2 FY2026 results",
+      "period_label": "Fiscal Q2 2026",
+      "source_section": "official earnings release"
+    },
+    "TSM": {
+      "official_earnings_source_url": "https://investor.tsmc.com/english/quarterly-results",
+      "source_label": "TSMC quarterly results page",
+      "period_label": "Q1 2026",
+      "source_section": "official quarterly results"
+    },
+    "UNH": {
+      "official_earnings_source_url": "https://www.unitedhealthgroup.com/newsroom/2026/2026-03-17-uhg-announces-q1-earnings-release-date.html",
+      "source_label": "UnitedHealth Group Q1 2026 results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "V": {
+      "official_earnings_source_url": "https://investor.visa.com/news/news-details/2026/Visa-Fiscal-Second-Quarter-2026-Financial-Results/default.aspx",
+      "source_label": "Visa fiscal Q2 2026 financial results",
+      "period_label": "Fiscal Q2 2026",
+      "source_section": "official earnings release"
+    },
+    "WMT": {
+      "official_earnings_source_url": "https://corporate.walmart.com/news/2026/05/21/walmart-releases-q1-fy27-earnings",
+      "source_label": "Walmart Q1 FY2027 earnings",
+      "period_label": "Fiscal Q1 2027",
+      "source_section": "official earnings release"
+    },
+    "MA": {
+      "official_earnings_source_url": "https://s25.q4cdn.com/479285134/files/doc_financials/2026/q1/1Q26-Mastercard-Earnings-Release.pdf",
+      "source_label": "Mastercard Q1 2026 earnings release",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "SCCO": {
+      "official_earnings_source_url": "https://southerncoppercorp.com/wp-content/uploads/2026/04/pr260428.pdf",
+      "source_label": "Southern Copper 1Q26 results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "AME": {
+      "official_earnings_source_url": "https://www.sec.gov/Archives/edgar/data/1037868/000103786826000141/ametek8kexhibit99104302026.htm",
+      "source_label": "AMETEK Q1 2026 8-K Exhibit 99.1 results",
+      "period_label": "Q1 2026",
+      "source_section": "SEC 8-K exhibit 99.1 earnings release"
+    },
+    "AON": {
+      "official_earnings_source_url": "https://aon.mediaroom.com/2026-05-01-Aon-Reports-First-Quarter-2026-Results",
+      "source_label": "Aon Q1 2026 results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "ADBE": {
+      "official_earnings_source_url": "https://news.adobe.com/news/2026/03/adobe-q1fy26-financial-results",
+      "source_label": "Adobe Q1 FY2026 results",
+      "period_label": "Fiscal Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "CRWD": {
+      "official_earnings_source_url": "https://ir.crowdstrike.com/news-releases/news-release-details/crowdstrike-reports-fourth-quarter-and-fiscal-year-2026/",
+      "source_label": "CrowdStrike Q4 FY2026 and fiscal 2026 results",
+      "period_label": "Fiscal Q4 2026",
+      "source_section": "official earnings release"
+    },
+    "DDOG": {
+      "official_earnings_source_url": "https://investors.datadoghq.com/news-releases/news-release-details/datadog-announces-first-quarter-2026-financial-results/",
+      "source_label": "Datadog Q1 2026 financial results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "INTU": {
+      "official_earnings_source_url": "https://investors.intuit.com/news-events/press-releases/detail/1312/intuit-reports-strong-third-quarter-results-and-raises-full-year-revenue-guidance",
+      "source_label": "Intuit Q3 FY2026 results",
+      "period_label": "Fiscal Q3 2026",
+      "source_section": "official earnings release"
+    },
+    "GOOG": {
+      "official_earnings_source_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000043/googexhibit991q12026.htm",
+      "source_label": "Alphabet Q1 2026 8-K Exhibit 99.1 results",
+      "period_label": "Q1 2026",
+      "source_section": "SEC 8-K exhibit 99.1 earnings release"
+    },
+    "MDB": {
+      "official_earnings_source_url": "https://investors.mongodb.com/news-releases/news-release-details/mongodb-inc-announces-first-quarter-fiscal-2027-financial-results",
+      "source_label": "MongoDB Q1 FY2027 results",
+      "period_label": "Fiscal Q1 2027",
+      "source_section": "official earnings release"
+    },
+    "ABBV": {
+      "official_earnings_source_url": "https://investors.abbvie.com/news-releases/news-release-details/abbvie-reports-first-quarter-2026-financial-results",
+      "source_label": "AbbVie Q1 2026 financial results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "AJG": {
+      "official_earnings_source_url": "https://www.sec.gov/Archives/edgar/data/354190/000035419026000132/lab_exhibit991q1.htm",
+      "source_label": "Arthur J. Gallagher Q1 2026 8-K Exhibit 99.1 results",
+      "period_label": "Q1 2026",
+      "source_section": "SEC 8-K exhibit 99.1 earnings release"
+    },
+    "ALGN": {
+      "official_earnings_source_url": "https://investor.aligntech.com/news-releases/news-release-details/align-technology-announces-first-quarter-2026-financial-results/",
+      "source_label": "Align Technology Q1 2026 financial results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "APD": {
+      "official_earnings_source_url": "https://investors.airproducts.com/news-releases/news-release-details/air-products-reports-fiscal-2026-second-quarter-results",
+      "source_label": "Air Products fiscal Q2 2026 results",
+      "period_label": "Fiscal Q2 2026",
+      "source_section": "official earnings release"
+    },
+    "AXON": {
+      "official_earnings_source_url": "https://investor.axon.com/2026-05-06-Axon-reports-Q1-2026-revenue-of-807-million,-up-34-year-over-year",
+      "source_label": "Axon Q1 2026 results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "BRO": {
+      "official_earnings_source_url": "https://investor.bbrown.com/news-releases/news-release-details/brown-brown-inc-announces-first-quarter-2026-results-including",
+      "source_label": "Brown & Brown Q1 2026 results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "CINF": {
+      "official_earnings_source_url": "https://investors.cinfin.com/2026-04-27-Cincinnati-Financial-Reports-First-Quarter-2026-Results",
+      "source_label": "Cincinnati Financial Q1 2026 results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "DVA": {
+      "official_earnings_source_url": "https://newsroom.davita.com/2026-05-05-davita-inc-1st-quarter-2026-results/",
+      "source_label": "DaVita Q1 2026 results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "EFX": {
+      "official_earnings_source_url": "https://www.sec.gov/Archives/edgar/data/33185/000003318526000016/exhibit99120260331.htm",
+      "source_label": "Equifax Q1 2026 8-K Exhibit 99.1 results",
+      "period_label": "Q1 2026",
+      "source_section": "SEC 8-K exhibit 99.1 earnings release"
+    },
+    "EXPE": {
+      "official_earnings_source_url": "https://ir.expediagroup.com/news-and-events/news/news-details/2026/Expedia-Group-Reports-First-Quarter-2026-Results/default.aspx",
+      "source_label": "Expedia Group Q1 2026 results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "FICO": {
+      "official_earnings_source_url": "https://investors.fico.com/news-releases/news-release-details/fico-announces-earnings-1114-share-second-quarter-fiscal-2026",
+      "source_label": "FICO fiscal Q2 2026 results",
+      "period_label": "Fiscal Q2 2026",
+      "source_section": "official earnings release"
+    },
+    "IFF": {
+      "official_earnings_source_url": "https://ir.iff.com/news-releases/news-release-details/iff-reports-first-quarter-2026-results",
+      "source_label": "IFF Q1 2026 results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "NOW": {
+      "official_earnings_source_url": "https://newsroom.servicenow.com/press-releases/details/2026/ServiceNow-Reports-First-Quarter-2026-Financial-Results/default.aspx",
+      "source_label": "ServiceNow Q1 2026 financial results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "SHOP": {
+      "official_earnings_source_url": "https://www.shopify.com/investors/press-releases/shopify-delivers-again-merchants-clear-100-billion-q1-gmv",
+      "source_label": "Shopify Q1 2026 financial results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    },
+    "SNOW": {
+      "official_earnings_source_url": "https://www.sec.gov/Archives/edgar/data/1640147/000164014726000027/fy2027q1earnings.htm",
+      "source_label": "Snowflake Q1 FY2027 8-K Exhibit 99.1 results",
+      "period_label": "Fiscal Q1 2027",
+      "source_section": "SEC 8-K exhibit 99.1 earnings release"
+    },
+    "TTD": {
+      "official_earnings_source_url": "https://investors.thetradedesk.com/news-and-events/news/news-details/2026/The-Trade-Desk-Reports-First-Quarter-2026-Financial-Results/default.aspx",
+      "source_label": "The Trade Desk Q1 2026 financial results",
+      "period_label": "Q1 2026",
+      "source_section": "official earnings release"
+    }
+  }
+}

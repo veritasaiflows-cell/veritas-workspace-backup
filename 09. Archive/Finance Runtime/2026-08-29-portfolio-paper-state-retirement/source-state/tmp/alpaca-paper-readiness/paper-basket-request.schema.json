@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "artifact_type": {
+      "const": "wf67_paper_basket_request"
+    },
+    "authority": {
+      "type": "object"
+    },
+    "execution_mode": {
+      "const": "dry_run_only"
+    },
+    "orders": {
+      "type": "array"
+    },
+    "portfolio_scope_id": {
+      "type": "string"
+    },
+    "request_id": {
+      "minLength": 8,
+      "type": "string"
+    },
+    "risk_check": {
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "tranche": {
+      "type": "object"
+    },
+    "workflow": {
+      "const": "WF67 - Alpaca Paper Execution Guardrail"
+    }
+  },
+  "required": [
+    "schema_version",
+    "workflow",
+    "artifact_type",
+    "request_id",
+    "portfolio_scope_id",
+    "execution_mode",
+    "authority",
+    "tranche",
+    "orders",
+    "risk_check"
+  ],
+  "title": "WF67 Paper Basket Request",
+  "type": "object"
+}

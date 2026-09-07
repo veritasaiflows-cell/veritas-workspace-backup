@@ -1,0 +1,1458 @@
+{
+  "schema": "veritas.trade_grade_os_freshness_cron_runner.v1",
+  "generated_at_utc": "2026-08-29T21:46:55Z",
+  "status": "ok",
+  "operator_action": "MAIN_HANDOFF_REQUIRED",
+  "purpose": "Cron-owned deterministic WF84/WF85 freshness proof for the personal trade-grade decision OS.",
+  "authority_boundary": {
+    "review_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "paper_order_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "summary": {
+    "finance_state_status": "ok",
+    "finance_state_universe_rows": 300,
+    "finance_state_production_rows": 12,
+    "finance_state_review_monitor_rows": 258,
+    "wf84_status": "ok",
+    "wf84_validation_status": "ok",
+    "wf84_sqlite_status": "ok",
+    "wf84_tier_counts": {
+      "Tier C": 239,
+      "Tier B": 49,
+      "Tier A": 12
+    },
+    "wf84_forbidden_authority_true_count": 0,
+    "wf84_phase6_10_status": "ok",
+    "wf84_phase6_10_critical_error_count": 0,
+    "wf84_phase6_10_warning_count": 0,
+    "wf84_wf85_full_answer_parity_status": "ok",
+    "wf84_wf85_full_answer_parity_critical_ticker_count": 0,
+    "wf84_wf85_full_answer_parity_ready_for_duplicate_retirement_planning": true,
+    "wf78_auto_tier_counts": {
+      "Tier A": 12,
+      "Tier B": 49,
+      "Tier C": 239
+    },
+    "wf78_auto_state_counts": {
+      "A-CHALLENGED": 9,
+      "A-WATCH": 3,
+      "B-CANDIDATE": 45,
+      "B-CHALLENGED": 4,
+      "C-CANDIDATE-REPAIR": 4,
+      "C-MONITOR": 233,
+      "C-REPAIR": 1,
+      "C-THEME-WATCH": 1
+    },
+    "wf78_phase2_c_to_b_eligible_count": 0,
+    "wf78_b_to_a_auto_routing_eligible_count": 4,
+    "wf78_routing_delta_promotion_count": null,
+    "wf78_routing_delta_demotion_count": null,
+    "wf78_true_fresh_ticker_count": 263,
+    "wf78_ticker_count": 300,
+    "wf78_true_fresh_ratio": 0.8767,
+    "wf78_true_fresh_metric_source": "tier_weighted_freshness_resolution",
+    "wf78_raw_true_fresh_ticker_count": 15,
+    "wf78_freshness_state_counts": {
+      "blocked_structural": 238,
+      "stale_source_open": 44,
+      "fresh": 15,
+      "stale_review_required": 3
+    },
+    "wf78_tier_weighted_resolution_status": "ok",
+    "wf78_tier_weighted_resolution_state_counts": {
+      "resolved_thin_monitor_current": 233,
+      "blocked_unresolved_tier_ab_debt": 24,
+      "fresh": 14,
+      "resolved_to_owner_lineage_proposal_review": 10,
+      "blocked_owner_lineage_decision_required": 8,
+      "blocked_structural_or_candidate_hold": 6,
+      "blocked_source_artifact_required": 5
+    },
+    "wf78_tier_weighted_resolved_count": 263,
+    "wf78_tier_weighted_unresolved_count": 37,
+    "wf78_decision_or_promotion_ready_count": 24,
+    "trade_grade_data_ready_for_decisions": false,
+    "trade_grade_data_readiness_status": "data_not_ready",
+    "trade_grade_data_readiness_reason": "tier_a_b_resolved_count_below_threshold",
+    "trade_grade_data_readiness_basis": "tier_a_b_decision_slice",
+    "trade_grade_decision_slice_ticker_count": 61,
+    "trade_grade_decision_slice_resolved_count": 24,
+    "trade_grade_decision_slice_threshold": 48,
+    "trade_grade_decision_slice_ratio": 0.3934,
+    "trade_grade_decision_slice_unresolved_count": 37,
+    "trade_grade_decision_slice_unresolved_tickers": [
+      "AAPL",
+      "ABBV",
+      "ADBE",
+      "AJG",
+      "ALB",
+      "ALLE",
+      "AMCR",
+      "AME",
+      "AON",
+      "AOS",
+      "APD",
+      "AVGO",
+      "AXON",
+      "CASY",
+      "CCL",
+      "CRM",
+      "CRWD",
+      "DASH",
+      "DDOG",
+      "DECK",
+      "EMR",
+      "FCX",
+      "GS",
+      "MA",
+      "MDB",
+      "MU",
+      "NOW",
+      "NVDA",
+      "PANW",
+      "PH",
+      "QCOM",
+      "SCCO",
+      "SHOP",
+      "SNOW",
+      "TSM",
+      "TXN",
+      "V"
+    ],
+    "wf78_missing_band_context_repair_status": "ok",
+    "wf78_clean_tier_roster_status": "ok",
+    "wf78_clean_tier_roster_validation": "ok",
+    "wf78_truth_layer_map_status": "ok",
+    "wf78_truth_layer_map_validation": "ok",
+    "wf78_tier_semantics_guard_status": "ok",
+    "wf78_tier_semantics_guard_validation": "ok",
+    "wf78_tier_semantics_source_router_sha256": "1a6cc9a64348d87c49a328689aba00206c5fda9aea1a7c6e7c8e0fd63d4e46eb",
+    "wf78_tier_semantics_source_router_generated_at_utc": "2026-08-29T21:43:51Z",
+    "tier_a_b_missing_decision_grade_band_count": 0,
+    "tier_a_b_missing_decision_grade_band_tickers": [],
+    "tier_b_missing_decision_grade_band_count": 0,
+    "tier_a_b_active_missing_band_repair_context_count": 0,
+    "tier_a_b_active_missing_band_repair_context_tickers": [],
+    "tier_a_b_band_cron_guard_status": "warning",
+    "tier_a_b_band_cron_guard_validation": "warning",
+    "tier_a_b_complete_and_current_band_count": 17,
+    "tier_a_b_stale_complete_band_context_count": 0,
+    "tier_a_b_band_context_expected_market_date": "2026-08-28",
+    "tier_a_b_cron_contracts_ok": true,
+    "wf85_source_open_status_counts": {
+      "verified": 300
+    },
+    "wf85_freshness_status_counts": {
+      "blocked": 19,
+      "scoped_thin_monitor_not_required": 83,
+      "fresh": 198
+    },
+    "wf85_wf84_json_sqlite_parity": "ok",
+    "wf85_card_count": 300,
+    "wf85_decision_state_counts": {
+      "blocked_missing_freshness": 18,
+      "monitor_only": 208,
+      "below_stop_or_invalidation": 63,
+      "no_chase": 11
+    },
+    "wf85_deployment_timing_gate_status": "ok",
+    "wf85_deployment_timing_gate_validation": "ok",
+    "wf85_tier_a_b_timing_row_count": 61,
+    "wf85_tier_a_b_final_timing_state_counts": {
+      "repair_first": 51,
+      "blocked_below_stop_or_invalidation": 10
+    },
+    "wf85_tier_a_b_review_ready_wait_approval_count": 0,
+    "wf85_tier_a_b_review_ready_wait_fresh_quote_count": 0,
+    "wf85_tier_a_b_review_ready_suppressed_count": 0,
+    "wf85_full_answer_assembler_status": "ok",
+    "wf85_full_answer_assembler_built_count": 300,
+    "wf85_full_answer_assembler_legacy_packet_generation_source": "trade_grade_full_answer_assembler",
+    "finance_cache_frontdoor_status": "ok",
+    "finance_cache_frontdoor_source_open_status_counts": {
+      "verified": 300
+    },
+    "finance_cache_frontdoor_material_claim_source_open_required_count": 0,
+    "finance_cache_frontdoor_timing_state_counts": {
+      "above_band_monitor_grade_no_chase": 3,
+      "above_band_no_chase": 80,
+      "band_status_missing_required_refresh": 3,
+      "below_band_monitor_grade_reclaim_watch": 17,
+      "below_band_reclaim_watch": 19,
+      "below_stop_or_invalidation": 86,
+      "in_band_fresh_review": 3,
+      "in_band_monitor_grade": 21,
+      "in_band_review_only_quote": 35,
+      "near_band_monitor_grade": 27,
+      "reclaim_only_monitor_grade": 6
+    },
+    "finance_cache_frontdoor_trade_readiness_state_counts": {
+      "not_trade_ready_below_stop_or_invalidation": 87,
+      "not_trade_ready_evidence_or_freshness_repair": 11,
+      "not_trade_ready_in_band_monitor_only": 27,
+      "not_trade_ready_monitor_grade": 54,
+      "not_trade_ready_monitor_only": 3,
+      "not_trade_ready_no_chase": 83,
+      "not_trade_ready_reclaim_watch": 35
+    },
+    "finance_cache_frontdoor_authority_state_counts": {
+      "review_only_no_capital_or_execution_authority": 300
+    },
+    "wf78_route_readiness_p3_status": "ok",
+    "wf78_route_readiness_p3_validation": "warning",
+    "wf78_route_readiness_p3_market_window": "weekend",
+    "wf78_route_readiness_p3_market_holiday": false,
+    "wf78_route_readiness_p3_market_refresh_required_count": 300,
+    "wf78_route_readiness_p3_category_counts": {
+      "avoid_until_reclaim_or_invalidation_repair": 86,
+      "in_band_review_monitor": 38,
+      "monitor_grade_triage": 54,
+      "monitor_only": 3,
+      "no_chase": 83,
+      "reclaim_watch": 36
+    },
+    "wf78_route_readiness_p3_top_review_queue_tickers": [
+      "BKNG",
+      "LLY",
+      "BRK.B",
+      "GOOG",
+      "LIN",
+      "VRT",
+      "XOM",
+      "ADI",
+      "ADSK",
+      "AKAM",
+      "ALLE",
+      "APH",
+      "AVGO",
+      "EMR",
+      "MU",
+      "NOW",
+      "TSM",
+      "TXN",
+      "ETN",
+      "GS",
+      "PH",
+      "CVNA",
+      "AFL",
+      "AMD",
+      "ARES"
+    ],
+    "wf78_route_readiness_p3_approval_card_candidate_owner_gated_tickers": [],
+    "wf78_route_readiness_p3_in_band_review_monitor_tickers": [
+      "BKNG",
+      "LLY",
+      "BRK.B",
+      "GOOG",
+      "LIN",
+      "VRT",
+      "XOM",
+      "ADI",
+      "ADSK",
+      "AKAM",
+      "ALLE",
+      "APH",
+      "AVGO",
+      "EMR",
+      "MU",
+      "NOW",
+      "TSM",
+      "TXN",
+      "ETN",
+      "GS"
+    ],
+    "wf85_source_open_reconciliation_status": "ok",
+    "wf85_source_open_reconciliation_unnecessary_blocker_count": 0,
+    "wf85_source_open_reconciliation_mismatch_error_count": 0,
+    "wf85_source_open_reconciliation_producer_order_error_count": 0,
+    "wf85_authority_violation_count": 0,
+    "wf85_forbidden_action_phrase_count": 0,
+    "wf85_review_ready_count": 0,
+    "wf85_approval_band_eligible_count": 0,
+    "wf85_approval_card_draft_count": 0,
+    "wf85_decision_blocked_count": 300,
+    "wf85_approval_draft_blocked_count": 300,
+    "wf85_blocked_count": 300,
+    "wf85_blocked_count_semantics": "approval_draft_blocked_count",
+    "wf67_paper_guard_fresh": false,
+    "wf67_paper_guard_clean": false,
+    "wf67_paper_guard_status": "blocked",
+    "wf67_paper_guard_ready_for_paper_submit_cancel": false,
+    "wf67_paper_guard_age_days": 53.93,
+    "repair_conveyor_status": "ready_for_repair_execution",
+    "repair_pilot_candidate_count": 3,
+    "repair_pilot_tickers": [
+      "BRK.B",
+      "AVGO",
+      "NOW"
+    ],
+    "full_answer_rebuild": {
+      "mode": "changed",
+      "previous_source_digest": "31b4bb3222adbf3eb9eda8ba65acf73cabe973d8efdc814d57a202a25315597a",
+      "source_digest": "1eccbd70239c5eda93655e43482ef70289085952a65796f4eba4eff62635e425",
+      "source_digest_changed": true,
+      "command_run": true,
+      "skip_reason": null,
+      "run_reason": "source_digest_changed",
+      "source_artifacts": [
+        "tmp/canonical-finance-data-plane.json",
+        "tmp/trade-grade-decision-cards.json",
+        "tmp/market-today-answer-packet.json",
+        "tmp/macro-metrics-current.json",
+        "tmp/macro-judgment-draft.json"
+      ]
+    }
+  },
+  "parameters": {
+    "requested_components": [
+      "all"
+    ],
+    "selected_components": [
+      "answers",
+      "cards",
+      "foundation",
+      "parity",
+      "repair",
+      "wf78",
+      "wf84"
+    ]
+  },
+  "steps": [
+    {
+      "name": "finance_intelligence_state_refresh_100",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\finance_intelligence_state.py",
+        "refresh-100"
+      ],
+      "started_at_utc": "2026-08-29T21:43:18Z",
+      "completed_at_utc": "2026-08-29T21:43:21Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 2164.133,
+      "stdout_tail": "ernance_lane\": 14, \"pm_cockpit_lane\": 2, \"source_loader_lane\": 436, \"test_parity_lane\": 203, \"typed_access_guard_lane\": 3, \"wf78_wf77_routing_lane\": 5}, \"p0_answer_path_lane_count\": 21, \"p0_answer_path_lane_status\": {\"answer_path_lane_count\": 21, \"answer_path_non_p0_consumers\": [], \"answer_path_non_p0_count\": 0, \"errors\": [], \"ok\": true, \"p0_answer_path_lane_count\": 21, \"p0_count\": 21, \"p0_non_answer_path_consumers\": [], \"p0_non_answer_path_count\": 0}, \"p0_non_answer_path_consumers\": [], \"p0_non_answer_path_count\": 0, \"priority_counts\": {\"P0\": 21, \"P1\": 459, \"P2\": 204}}, \"p0_registry_lane_status\": {\"answer_path_lane_count\": 21, \"answer_path_non_p0_consumers\": [], \"answer_path_non_p0_count\": 0, \"errors\": [], \"ok\": true, \"p0_answer_path_lane_count\": 21, \"p0_count\": 21, \"p0_non_answer_path_consumers\": [], \"p0_non_answer_path_count\": 0}, \"production_answer_count\": 12, \"production_answer_definition\": \"validated proof-joined production-grade set\", \"production_answer_tickers\": [\"BKNG\", \"BRK.B\", \"CME\", \"CVX\", \"ECL\", \"GOOG\", \"JPM\", \"LIN\", \"LLY\", \"META\", \"PLTR\", \"XOM\"], \"reference_level\": null, \"schema\": \"veritas.finance_intelligence_state.sql_canon_context.v1\", \"sql_canon_db\": \"state/finance/finance-canon.sqlite\", \"status\": \"ok\", \"ticker_state\": null, \"validation\": {\"critical_errors\": [], \"status\": \"ok\", \"warnings\": []}}, \"status\": \"ok\", \"summary\": {\"all_ticker_sql_rows\": 300, \"analyst_snapshot_rows\": 300, \"canon_conflict_candidates\": 258, \"current_pilot_fixtures\": 0, \"current_ticker_cards\": 12, \"fundamental_snapshot_rows\": 300, \"latest_valid_entry_stop_refs\": 42, \"pending_approval_queue\": 17, \"pilot_fixture_rows\": 0, \"preopen_action_queue\": 12, \"production_answer_path_rows\": 12, \"review_monitor_thin_rows\": 258, \"stale_ticker_cards\": 285, \"universe_rows\": 300}}, \"status\": \"ok\"}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "post_close_final_quote_ledger",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\post_close_final_quote_ledger.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:43:21Z",
+      "completed_at_utc": "2026-08-29T21:43:49Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 28578.834,
+      "stdout_tail": "      \"DAL\",\n      \"DASH\",\n      \"DD\",\n      \"DDOG\",\n      \"DE\",\n      \"DECK\",\n      \"DELL\",\n      \"DHR\",\n      \"DIS\",\n      \"DLR\",\n      \"DLTR\",\n      \"DOC\",\n      \"DOW\",\n      \"DRI\",\n      \"DVA\",\n      \"DVN\",\n      \"ECL\",\n      \"EFX\",\n      \"EL\",\n      \"EME\",\n      \"EMR\",\n      \"EOG\",\n      \"ES\",\n      \"ETN\",\n      \"EXPD\",\n      \"EXPE\",\n      \"FANG\",\n      \"FAST\",\n      \"FCX\",\n      \"FFIV\",\n      \"FICO\",\n      \"FLEX\",\n      \"FOX\",\n      \"FOXA\",\n      \"FSLR\",\n      \"GD\",\n      \"GE\",\n      \"GOOG\",\n      \"GOOGL\",\n      \"GPC\",\n      \"GRMN\",\n      \"GS\",\n      \"HD\",\n      \"HON\",\n      \"HRL\",\n      \"IFF\",\n      \"INTU\",\n      \"IP\",\n      \"IRM\",\n      \"ISRG\",\n      \"ITA\",\n      \"JPM\",\n      \"KDP\",\n      \"KMB\",\n      \"KMI\",\n      \"KTOS\",\n      \"LIN\",\n      \"LLY\",\n      \"LMT\",\n      \"LNG\",\n      \"LYB\",\n      \"LYV\",\n      \"MA\",\n      \"MDB\",\n      \"META\",\n      \"MLM\",\n      \"MPC\",\n      \"MSFT\",\n      \"MU\",\n      \"NEM\",\n      \"NFLX\",\n      \"NOW\",\n      \"NUE\",\n      \"NVDA\",\n      \"NWSA\",\n      \"OKE\",\n      \"OMC\",\n      \"ORCL\",\n      \"OXY\",\n      \"PANW\",\n      \"PH\",\n      \"PLTR\",\n      \"PSKY\",\n      \"PSX\",\n      \"QCOM\",\n      \"RTX\",\n      \"SAP\",\n      \"SCCO\",\n      \"SHOP\",\n      \"SHW\",\n      \"SLB\",\n      \"SMCI\",\n      \"SNOW\",\n      \"STLD\",\n      \"SYK\",\n      \"TDG\",\n      \"TKO\",\n      \"TMO\",\n      \"TMUS\",\n      \"TPL\",\n      \"TRGP\",\n      \"TSM\",\n      \"TTD\",\n      \"TTWO\",\n      \"TXN\",\n      \"UBER\",\n      \"UNH\",\n      \"UNP\",\n      \"URI\",\n      \"V\",\n      \"VLO\",\n      \"VMC\",\n      \"VRT\",\n      \"WMB\",\n      \"XLB\",\n      \"XOM\"\n    ],\n    \"error_tickers\": [],\n    \"next_safe_action\": \"Use as the preferred closed-market quote overlay for recommendation prep; do not treat as execution freshness or approval.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": [],\n    \"warnings\": []\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_tier_a_confidence_gate",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_tier_a_confidence_gate.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:43:49Z",
+      "completed_at_utc": "2026-08-29T21:43:49Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 239.19,
+      "stdout_tail": "{\n  \"status\": \"ok\",\n  \"out\": \"tmp/wf78-tier-a-confidence-gate.json\",\n  \"summary\": {\n    \"tier_a_count\": 61,\n    \"data_confidence_rating_counts\": {\n      \"conflicted\": 16,\n      \"high\": 43,\n      \"not_applicable\": 2\n    },\n    \"tier_a_confidence_status_counts\": {\n      \"challenged\": 16,\n      \"manual_review\": 2,\n      \"ready\": 43\n    },\n    \"promotion_effect_counts\": {\n      \"allow_a_ready\": 43,\n      \"force_a_challenged\": 18\n    },\n    \"allow_a_ready_tickers\": [\n      \"AAPL\",\n      \"ABBV\",\n      \"ACN\",\n      \"ADBE\",\n      \"ADSK\",\n      \"AJG\",\n      \"AKAM\",\n      \"ALLE\",\n      \"AMCR\",\n      \"AME\",\n      \"ANET\",\n      \"AON\",\n      \"AOS\",\n      \"APD\",\n      \"APP\",\n      \"AVGO\",\n      \"AXON\",\n      \"BKNG\",\n      \"BRK.B\",\n      \"CCL\",\n      \"CRM\",\n      \"CVX\",\n      \"DASH\",\n      \"DDOG\",\n      \"DECK\",\n      \"FCX\",\n      \"GOOG\",\n      \"JPM\",\n      \"LIN\",\n      \"LLY\",\n      \"MDB\",\n      \"MU\",\n      \"NOW\",\n      \"NVDA\",\n      \"PANW\",\n      \"PLTR\",\n      \"QCOM\",\n      \"SCCO\",\n      \"SHOP\",\n      \"SNOW\",\n      \"TXN\",\n      \"VRT\",\n      \"XOM\"\n    ],\n    \"force_a_challenged_tickers\": [\n      \"ADI\",\n      \"ADP\",\n      \"ALB\",\n      \"AMAT\",\n      \"APH\",\n      \"CASY\",\n      \"CDNS\",\n      \"CRWD\",\n      \"EMR\",\n      \"ETN\",\n      \"GS\",\n      \"ITA\",\n      \"MA\",\n      \"MSFT\",\n      \"PH\",\n      \"TSM\",\n      \"V\",\n      \"XLB\"\n    ],\n    \"conflicted_tickers\": [\n      \"ADI\",\n      \"ADP\",\n      \"ALB\",\n      \"AMAT\",\n      \"APH\",\n      \"CASY\",\n      \"CDNS\",\n      \"CRWD\",\n      \"EMR\",\n      \"ETN\",\n      \"GS\",\n      \"MA\",\n      \"MSFT\",\n      \"PH\",\n      \"TSM\",\n      \"V\"\n    ],\n    \"next_safe_action\": \"Use promotion_effect as a downstream auto-router constraint; critical data conflicts force A-CHALLENGED, never A-READY.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": 0\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_auto_tier_router_initial",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_auto_tier_router.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:43:49Z",
+      "completed_at_utc": "2026-08-29T21:43:50Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 254.043,
+      "stdout_tail": "2_validated_tier_b_candidates\": [],\n    \"phase2_auto_tier_b_candidate_count\": 0,\n    \"phase2_auto_tier_b_candidates\": [],\n    \"phase2_ready_but_not_admitted_count\": 0,\n    \"phase2_ready_but_not_admitted_tickers\": [],\n    \"phase2_eligible_c_to_b_candidate_count\": 0,\n    \"phase2_eligible_c_to_b_candidates\": [],\n    \"competitive_gate_auto_tier_a_candidate_count\": 4,\n    \"competitive_gate_auto_tier_a_candidates\": [\n      \"BKNG\",\n      \"CVX\",\n      \"LLY\",\n      \"XLB\"\n    ],\n    \"competitive_gate_auto_tier_a_capacity_held_count\": 0,\n    \"competitive_gate_auto_tier_a_capacity_held\": [],\n    \"auto_tier_a_capacity_demoted_count\": 0,\n    \"auto_tier_a_capacity_demoted_tickers\": [],\n    \"auto_tier_b_capacity_demoted_count\": 0,\n    \"auto_tier_b_capacity_demoted_tickers\": [],\n    \"tier_a_missing_confidence_count\": 0,\n    \"tier_a_missing_confidence_tickers\": [],\n    \"tier_a_conflicted_ready_count\": 0,\n    \"tier_a_conflicted_ready_tickers\": [],\n    \"tier_a_packet_max_age_hours\": 24,\n    \"tier_a_packet_quote_max_age_hours\": 24,\n    \"tier_a_stale_packet_row_count\": 0,\n    \"tier_a_stale_packet_tickers\": [],\n    \"inline_confidence_convergence_count\": 0,\n    \"inline_confidence_convergence_tickers\": [],\n    \"tier_c_attention_candidate_count\": 5,\n    \"tier_c_attention_candidates\": [\n      \"CDW\",\n      \"CMG\",\n      \"CVNA\",\n      \"META\",\n      \"SLB\"\n    ],\n    \"capital_deployment_approved_count\": 0,\n    \"trade_or_execution_approved_count\": 0,\n    \"flat_auto_tier_compatibility_retained\": true,\n    \"wf78_recommendation_language_retired\": true,\n    \"next_safe_action\": \"Use lane_tier/review_lane for opportunity routing; flat auto_tier remains compatibility only. Capital deployment and execution still require separate exact approval.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": 0\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_tier_b_research_packet",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_tier_b_research_packet.py",
+        "--write",
+        "--write-db",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:43:50Z",
+      "completed_at_utc": "2026-08-29T21:43:50Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 370.904,
+      "stdout_tail": "owed\": false,\n          \"customer_or_external_delivery_allowed\": false,\n          \"money_movement_allowed\": false,\n          \"owner_approval_inferred\": false,\n          \"paper_or_live_execution_allowed\": false,\n          \"phase2_request_generation_only\": true,\n          \"production_answer_path_change_allowed\": false,\n          \"promotion_allowed\": false,\n          \"report_only\": true,\n          \"research_packet_only\": true,\n          \"review_only\": true,\n          \"sql_first_promotion_allowed\": false,\n          \"ticker_import_allowed\": false,\n          \"tier_a_admission_executed\": false,\n          \"tier_b_admission_executed\": false\n        },\n        \"name\": \"authority_false_flags_preserved\",\n        \"ok\": true,\n        \"severity\": \"critical\",\n        \"status\": \"ok\"\n      },\n      {\n        \"detail\": {\n          \"evidence_repair_repaired_count\": 0,\n          \"evidence_repair_rows\": 15,\n          \"missing_evidence_counts\": {\n            \"evidence repair burden acceptable\": 15,\n            \"initial technical/price-band context\": 15\n          },\n          \"needs_evidence_repair_count\": 15,\n          \"next_safe_action\": \"Feed phase2_requests into wf78_tier_funnel_promotion_gate --requests, then build/repair the missing evidence families before any owner Tier B admission decision.\",\n          \"owner_approval_inferred_count\": 0,\n          \"packet_count\": 15,\n          \"phase2_ready_request_count\": 0,\n          \"phase2_request_count\": 15,\n          \"shortlist_count\": 15,\n          \"tier_a_admission_executed_count\": 0,\n          \"tier_b_admission_executed_count\": 0\n        },\n        \"name\": \"all_ready_requires_repair_backing\",\n        \"ok\": true,\n        \"severity\": \"warning\",\n        \"status\": \"ok\"\n      }\n    ],\n    \"errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_tier_b_research_packet_phase2_eval",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_tier_funnel_promotion_gate.py",
+        "--requests",
+        "tmp\\wf78-tier-b-research-packet-requests.json",
+        "--out",
+        "tmp\\wf78-tier-b-research-packet-phase2-eval.json",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:43:50Z",
+      "completed_at_utc": "2026-08-29T21:43:50Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 272.549,
+      "stdout_tail": "{\"out\": \"tmp/wf78-tier-b-research-packet-phase2-eval.json\", \"output_errors\": [], \"status\": \"ok\", \"summary\": {\"c_to_b_candidate_count\": 15, \"candidate_count\": 15, \"checks_failed_error\": 0, \"checks_failed_warning\": 0, \"checks_total\": 41, \"d_to_c_candidate_count\": 0, \"decision_status_counts\": {\"blocked_missing_evidence\": 15}, \"eligible_for_admission_count\": 0, \"next_safe_action\": \"Build evidence packets for the highest-priority Tier C->B leads; once a lead's required evidence is proven present, this gate marks it eligible for nomination (still report-only, still owner/apply-gated).\", \"other_candidate_count\": 0, \"self_tests_passed\": 11, \"self_tests_total\": 11, \"status\": \"ok\"}, \"validation_status\": \"ok\"}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_auto_tier_router_post_phase2_gate",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_auto_tier_router.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:43:50Z",
+      "completed_at_utc": "2026-08-29T21:43:51Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 261.44,
+      "stdout_tail": "2_validated_tier_b_candidates\": [],\n    \"phase2_auto_tier_b_candidate_count\": 0,\n    \"phase2_auto_tier_b_candidates\": [],\n    \"phase2_ready_but_not_admitted_count\": 0,\n    \"phase2_ready_but_not_admitted_tickers\": [],\n    \"phase2_eligible_c_to_b_candidate_count\": 0,\n    \"phase2_eligible_c_to_b_candidates\": [],\n    \"competitive_gate_auto_tier_a_candidate_count\": 4,\n    \"competitive_gate_auto_tier_a_candidates\": [\n      \"BKNG\",\n      \"CVX\",\n      \"LLY\",\n      \"XLB\"\n    ],\n    \"competitive_gate_auto_tier_a_capacity_held_count\": 0,\n    \"competitive_gate_auto_tier_a_capacity_held\": [],\n    \"auto_tier_a_capacity_demoted_count\": 0,\n    \"auto_tier_a_capacity_demoted_tickers\": [],\n    \"auto_tier_b_capacity_demoted_count\": 0,\n    \"auto_tier_b_capacity_demoted_tickers\": [],\n    \"tier_a_missing_confidence_count\": 0,\n    \"tier_a_missing_confidence_tickers\": [],\n    \"tier_a_conflicted_ready_count\": 0,\n    \"tier_a_conflicted_ready_tickers\": [],\n    \"tier_a_packet_max_age_hours\": 24,\n    \"tier_a_packet_quote_max_age_hours\": 24,\n    \"tier_a_stale_packet_row_count\": 0,\n    \"tier_a_stale_packet_tickers\": [],\n    \"inline_confidence_convergence_count\": 0,\n    \"inline_confidence_convergence_tickers\": [],\n    \"tier_c_attention_candidate_count\": 5,\n    \"tier_c_attention_candidates\": [\n      \"CDW\",\n      \"CMG\",\n      \"CVNA\",\n      \"META\",\n      \"SLB\"\n    ],\n    \"capital_deployment_approved_count\": 0,\n    \"trade_or_execution_approved_count\": 0,\n    \"flat_auto_tier_compatibility_retained\": true,\n    \"wf78_recommendation_language_retired\": true,\n    \"next_safe_action\": \"Use lane_tier/review_lane for opportunity routing; flat auto_tier remains compatibility only. Capital deployment and execution still require separate exact approval.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": 0\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_tier_a_competitive_promotion_gate",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_tier_a_competitive_promotion_gate.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:43:51Z",
+      "completed_at_utc": "2026-08-29T21:43:51Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 234.701,
+      "stdout_tail": "{\"out\": \"tmp/wf78-tier-a-competitive-promotion-gate.json\", \"output_errors\": [], \"status\": \"ok\", \"summary\": {\"candidate_count\": 53, \"checks_failed_error\": 0, \"checks_failed_warning\": 0, \"checks_total\": 49, \"decision_status_counts\": {\"blocked_decay_state\": 4, \"blocked_not_validated\": 45, \"eligible_for_auto_tier_a_routing\": 4}, \"eligible_for_auto_tier_a_routing_count\": 4, \"eligible_for_owner_approval_count\": 0, \"next_safe_action\": \"Feed eligible_for_auto_tier_a_routing decisions into the auto-router as non-capital Tier A routing state. Capital deployment and execution remain separately owner-gated.\", \"self_tests_passed\": 11, \"self_tests_total\": 11, \"status\": \"ok\"}, \"validation_status\": \"ok\"}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_auto_tier_router_post_promotion_gates",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_auto_tier_router.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:43:51Z",
+      "completed_at_utc": "2026-08-29T21:43:51Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 380.764,
+      "stdout_tail": "2_validated_tier_b_candidates\": [],\n    \"phase2_auto_tier_b_candidate_count\": 0,\n    \"phase2_auto_tier_b_candidates\": [],\n    \"phase2_ready_but_not_admitted_count\": 0,\n    \"phase2_ready_but_not_admitted_tickers\": [],\n    \"phase2_eligible_c_to_b_candidate_count\": 0,\n    \"phase2_eligible_c_to_b_candidates\": [],\n    \"competitive_gate_auto_tier_a_candidate_count\": 4,\n    \"competitive_gate_auto_tier_a_candidates\": [\n      \"BKNG\",\n      \"CVX\",\n      \"LLY\",\n      \"XLB\"\n    ],\n    \"competitive_gate_auto_tier_a_capacity_held_count\": 0,\n    \"competitive_gate_auto_tier_a_capacity_held\": [],\n    \"auto_tier_a_capacity_demoted_count\": 0,\n    \"auto_tier_a_capacity_demoted_tickers\": [],\n    \"auto_tier_b_capacity_demoted_count\": 0,\n    \"auto_tier_b_capacity_demoted_tickers\": [],\n    \"tier_a_missing_confidence_count\": 0,\n    \"tier_a_missing_confidence_tickers\": [],\n    \"tier_a_conflicted_ready_count\": 0,\n    \"tier_a_conflicted_ready_tickers\": [],\n    \"tier_a_packet_max_age_hours\": 24,\n    \"tier_a_packet_quote_max_age_hours\": 24,\n    \"tier_a_stale_packet_row_count\": 0,\n    \"tier_a_stale_packet_tickers\": [],\n    \"inline_confidence_convergence_count\": 0,\n    \"inline_confidence_convergence_tickers\": [],\n    \"tier_c_attention_candidate_count\": 5,\n    \"tier_c_attention_candidates\": [\n      \"CDW\",\n      \"CMG\",\n      \"CVNA\",\n      \"META\",\n      \"SLB\"\n    ],\n    \"capital_deployment_approved_count\": 0,\n    \"trade_or_execution_approved_count\": 0,\n    \"flat_auto_tier_compatibility_retained\": true,\n    \"wf78_recommendation_language_retired\": true,\n    \"next_safe_action\": \"Use lane_tier/review_lane for opportunity routing; flat auto_tier remains compatibility only. Capital deployment and execution still require separate exact approval.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": 0\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_tier_a_technical_refresh",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\technical_refresh.py"
+      ],
+      "started_at_utc": "2026-08-29T21:43:51Z",
+      "completed_at_utc": "2026-08-29T21:43:58Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 6943.303,
+      "stdout_tail": "\n  CVX       above all MAs -- bullish 20>50>200 stack  [OUTSIDE BAND]\n  PLTR      above all MAs  [OUTSIDE BAND]\n  AMD       above 200d, below 20d and 50d  [OUTSIDE BAND]\n  LNG       above all MAs -- bullish 20>50>200 stack  [OUTSIDE BAND]\n  LLY       above 200d, below 20d and 50d  [OUTSIDE BAND]\n  LIN       above 20d and 200d, below 50d  [OUTSIDE BAND]\n  ECL       above all MAs -- bullish 20>50>200 stack  [OUTSIDE BAND]\n  VMC       below all MAs  [OUTSIDE BAND  BELOW STOP]\n  META      above 20d, below 50d and 200d  [OUTSIDE BAND  BELOW STOP]\n  NFLX      above 20d and 50d, below 200d  [OUTSIDE BAND  BELOW STOP]\n  TMUS      above 20d and 50d, below 200d  [OUTSIDE BAND  BELOW STOP]\n  PH        above 50d and 200d, below 20d  [OUTSIDE BAND]\n  GE        above 200d, below 20d and 50d  [OUTSIDE BAND]\n  CME       above all MAs  [OUTSIDE BAND]\n  WMB       above all MAs  [IN ENTRY BAND]\n  XLI       above 200d, below 20d and 50d  [OUTSIDE BAND]\n  XLB       above all MAs -- bullish 20>50>200 stack  [OUTSIDE BAND]\n  XLC       above 20d and 50d, below 200d  [OUTSIDE BAND]\n  PAVE      above 200d, below 20d and 50d  [IN ENTRY BAND]\n  XLF       above all MAs -- bullish 20>50>200 stack  [OUTSIDE BAND]\n  XLE       above all MAs -- bullish 20>50>200 stack  [OUTSIDE BAND]\n  ITA       above 200d, below 20d and 50d  [OUTSIDE BAND]\n  VAW       above all MAs -- bullish 20>50>200 stack  [OUTSIDE BAND]\n  VXUS      above all MAs -- bullish 20>50>200 stack  [OUTSIDE BAND]\n\n  DEPLOYMENT SUMMARY\n  ----------------------------------------\n  In entry band: ETN, LMT, XOM, AMZN, GS, WMB, PAVE\n  Below stop:    VRT, VMC, META, NFLX, TMUS\n==========================================================================\n\nOutput written to C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\technical-refresh.json  [status: ok]\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_routing_delta",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_routing_delta.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:43:58Z",
+      "completed_at_utc": "2026-08-29T21:43:59Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 536.349,
+      "stdout_tail": "{\n  \"delta_mode\": \"compared_to_prior_snapshot\",\n  \"out\": \"tmp/wf78-routing-delta.json\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"active_ticker_count\": 300,\n    \"auto_state_counts\": {\n      \"A-CHALLENGED\": 9,\n      \"A-WATCH\": 3,\n      \"B-CANDIDATE\": 45,\n      \"B-CHALLENGED\": 4,\n      \"C-CANDIDATE-REPAIR\": 4,\n      \"C-MONITOR\": 233,\n      \"C-REPAIR\": 1,\n      \"C-THEME-WATCH\": 1\n    },\n    \"auto_tier_counts\": {\n      \"Tier A\": 12,\n      \"Tier B\": 49,\n      \"Tier C\": 239\n    },\n    \"capital_deployment_approved_count\": 0,\n    \"capital_review_candidate_count\": 0,\n    \"challenged_count\": 13,\n    \"demotions_count\": 0,\n    \"holds_count\": 0,\n    \"next_safe_action\": \"Review challenged, hold, and stale sections; use route-ticker for single-name packets. No capital or execution authority is granted.\",\n    \"promotions_count\": 0,\n    \"stale_count\": 285,\n    \"state_changes_count\": 0,\n    \"trade_or_execution_approved_count\": 0\n  },\n  \"validation\": {\n    \"errors\": 0,\n    \"status\": \"ok\"\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_event_triggered_rerouting",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_event_triggered_rerouting.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:43:59Z",
+      "completed_at_utc": "2026-08-29T21:43:59Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 308.373,
+      "stdout_tail": "{\n  \"actions\": 298,\n  \"db_out\": null,\n  \"out\": \"tmp/wf78-event-triggered-rerouting.json\",\n  \"owner_action_required\": 0,\n  \"status\": \"ok\",\n  \"validation\": \"ok\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_evidence_drag_reducer",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_evidence_drag_reducer.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:43:59Z",
+      "completed_at_utc": "2026-08-29T21:44:00Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 642.579,
+      "stdout_tail": "wrote tmp/wf78-evidence-drag-reduction.json status=ok ranked=295\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_source_open_repair_executor",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_source_open_repair_executor.py",
+        "--tier",
+        "all",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:00Z",
+      "completed_at_utc": "2026-08-29T21:44:00Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 206.155,
+      "stdout_tail": "wrote tmp/wf78-source-open-repair-execution.json status=ok rows=44\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_ticker_freshness_ledger",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_ticker_freshness_ledger.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:00Z",
+      "completed_at_utc": "2026-08-29T21:44:00Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 387.14,
+      "stdout_tail": "wrote tmp/wf78-ticker-freshness-ledger.json status=ok tickers=300\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_source_open_work_packet",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_source_open_work_packet.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:00Z",
+      "completed_at_utc": "2026-08-29T21:44:01Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 413.26,
+      "stdout_tail": "wrote tmp/wf78-source-open-work-packets.json status=ok items=44 packets=4\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_deployment_readiness_review",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_deployment_readiness_review.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:01Z",
+      "completed_at_utc": "2026-08-29T21:44:01Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 209.703,
+      "stdout_tail": "wrote tmp/wf78-deployment-readiness-review.json status=ok rows=0\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_tier_weighted_freshness_resolver",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_tier_weighted_freshness_resolver.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:01Z",
+      "completed_at_utc": "2026-08-29T21:44:01Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 416.586,
+      "stdout_tail": "wrote tmp/wf78-tier-weighted-freshness-resolution.json status=ok resolved=263 unresolved=37\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_missing_band_context_repair",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_missing_band_context_repair.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:01Z",
+      "completed_at_utc": "2026-08-29T21:44:02Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 769.278,
+      "stdout_tail": "wrote tmp/wf78-missing-band-context-repair.json status=ok ready=0\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "finance_intelligence_state_validate",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\finance_intelligence_state.py",
+        "validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:02Z",
+      "completed_at_utc": "2026-08-29T21:44:03Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 767.88,
+      "stdout_tail": " 21, \"cron_pm_governance_lane\": 14, \"pm_cockpit_lane\": 2, \"source_loader_lane\": 436, \"test_parity_lane\": 203, \"typed_access_guard_lane\": 3, \"wf78_wf77_routing_lane\": 5}, \"p0_answer_path_lane_count\": 21, \"p0_answer_path_lane_status\": {\"answer_path_lane_count\": 21, \"answer_path_non_p0_consumers\": [], \"answer_path_non_p0_count\": 0, \"errors\": [], \"ok\": true, \"p0_answer_path_lane_count\": 21, \"p0_count\": 21, \"p0_non_answer_path_consumers\": [], \"p0_non_answer_path_count\": 0}, \"p0_non_answer_path_consumers\": [], \"p0_non_answer_path_count\": 0, \"priority_counts\": {\"P0\": 21, \"P1\": 459, \"P2\": 204}}, \"p0_registry_lane_status\": {\"answer_path_lane_count\": 21, \"answer_path_non_p0_consumers\": [], \"answer_path_non_p0_count\": 0, \"errors\": [], \"ok\": true, \"p0_answer_path_lane_count\": 21, \"p0_count\": 21, \"p0_non_answer_path_consumers\": [], \"p0_non_answer_path_count\": 0}, \"production_answer_count\": 12, \"production_answer_definition\": \"validated proof-joined production-grade set\", \"production_answer_tickers\": [\"BKNG\", \"BRK.B\", \"CME\", \"CVX\", \"ECL\", \"GOOG\", \"JPM\", \"LIN\", \"LLY\", \"META\", \"PLTR\", \"XOM\"], \"reference_level\": null, \"schema\": \"veritas.finance_intelligence_state.sql_canon_context.v1\", \"sql_canon_db\": \"state/finance/finance-canon.sqlite\", \"status\": \"ok\", \"ticker_state\": null, \"validation\": {\"critical_errors\": [], \"status\": \"ok\", \"warnings\": []}}, \"status\": \"ok\", \"summary\": {\"all_ticker_sql_rows\": 300, \"analyst_snapshot_rows\": 300, \"canon_conflict_candidates\": 258, \"current_pilot_fixtures\": 0, \"current_ticker_cards\": 12, \"fundamental_snapshot_rows\": 300, \"latest_valid_entry_stop_refs\": 42, \"pending_approval_queue\": 17, \"pilot_fixture_rows\": 0, \"preopen_action_queue\": 12, \"production_answer_path_rows\": 12, \"review_monitor_thin_rows\": 258, \"stale_ticker_cards\": 285, \"universe_rows\": 300}}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf84_contract",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\canonical_finance_data_plane_contract.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:03Z",
+      "completed_at_utc": "2026-08-29T21:44:03Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 601.696,
+      "stdout_tail": "ce_only_count\": 0,\n    \"canonical_table_count\": 14,\n    \"feeder_source_count\": 18\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": [],\n    \"warnings\": [],\n    \"observed_counts\": {\n      \"expected_active_tickers\": 300,\n      \"router_active_tickers\": 300,\n      \"router_row_count\": 300,\n      \"finance_state_universe_rows\": 300,\n      \"finance_state_ticker_tier_rows\": 300,\n      \"finance_state_scope_compatibility_allowed\": false,\n      \"finance_state_router_only_count\": 0,\n      \"finance_state_finance_only_count\": 0,\n      \"canonical_table_count\": 14,\n      \"feeder_source_count\": 18\n    },\n    \"finance_state_scope_profile\": {\n      \"scope_compatibility_allowed\": false,\n      \"router_count\": 300,\n      \"finance_state_universe_count\": 300,\n      \"finance_state_ticker_tier_count\": 300,\n      \"router_only_count\": 0,\n      \"finance_only_count\": 0,\n      \"tier_universe_mismatch_count\": 0,\n      \"invalid_scope_row_count\": 42,\n      \"router_only_authority_risk_count\": 0,\n      \"router_only\": [],\n      \"finance_only\": [],\n      \"tier_universe_mismatch\": [],\n      \"invalid_scope_rows\": [\n        \"AMD\",\n        \"AMZN\",\n        \"BKNG\",\n        \"BRK.B\",\n        \"CAT\",\n        \"CME\",\n        \"CVX\",\n        \"ECL\",\n        \"ETN\",\n        \"GE\",\n        \"GOOG\",\n        \"GS\",\n        \"ITA\",\n        \"JPM\",\n        \"KTOS\",\n        \"LIN\",\n        \"LLY\",\n        \"LMT\",\n        \"LNG\",\n        \"META\",\n        \"MSFT\",\n        \"NFLX\",\n        \"NVDA\",\n        \"PAVE\",\n        \"PH\",\n        \"PLTR\",\n        \"RTX\",\n        \"SLV\",\n        \"SMCI\",\n        \"TLT\",\n        \"TMUS\",\n        \"VAW\",\n        \"VMC\",\n        \"VRT\",\n        \"VXUS\",\n        \"WMB\",\n        \"XLB\",\n        \"XLC\",\n        \"XLE\",\n        \"XLF\",\n        \"XLI\",\n        \"XOM\"\n      ],\n      \"router_only_authority_risk\": []\n    }\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf84_canonical_data_plane",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\canonical_finance_data_plane.py",
+        "--write",
+        "--write-db",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:03Z",
+      "completed_at_utc": "2026-08-29T21:44:06Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 2301.59,
+      "stdout_tail": "{\"db\": \"tmp/canonical-finance-data-plane.sqlite\", \"packet\": \"tmp/canonical-finance-data-plane.json\", \"sqlite\": {\"authority_view\": {\"decision_forbidden_count\": 0, \"routing_forbidden_count\": 0}, \"db_path\": \"tmp/canonical-finance-data-plane.sqlite\", \"foreign_key_errors\": [], \"integrity_check\": \"ok\", \"schema\": \"veritas.canonical_finance_data_plane.sqlite.v1\", \"status\": \"ok\", \"table_counts\": {\"analyst_snapshot\": 300, \"decision_queue_state\": 300, \"earnings_catalyst\": 300, \"entry_stop_reference\": 300, \"evidence_family_status\": 6300, \"full_answer_section_context\": 5100, \"fundamental_snapshot\": 300, \"official_evidence\": 1200, \"price_technical_current\": 300, \"routing_state_current\": 300, \"schema_run\": 1, \"security_master\": 300, \"source_artifact\": 12, \"universe_membership\": 300, \"validation_result\": 27}, \"view_counts\": {\"v_current_decision_overview\": 300, \"v_decision_grade_os_layer\": 300, \"v_full_answer_source_drillback\": 5100, \"v_full_ticker_answer_context\": 5100, \"v_owner_action_queue\": 16, \"v_pm_decision_queue_overlay\": 300, \"v_source_lineage_drillback\": 12, \"v_ticker_source_drillback\": 800, \"v_wf84_priority_queue\": 300}}, \"status\": \"ok\", \"summary\": {\"canonical_table_count\": 15, \"decision_queue_state_count\": 300, \"decision_spine_extra_count\": 6, \"evidence_family_status_count\": 6300, \"forbidden_authority_true_count\": 0, \"full_answer_section_context_count\": 5100, \"owner_action_required_count\": 16, \"routing_state_current_count\": 300, \"security_master_count\": 300, \"source_artifact_count\": 12, \"tier_counts\": {\"Tier A\": 12, \"Tier B\": 49, \"Tier C\": 239}}, \"validation\": \"tmp/canonical-finance-data-plane-validation.json\"}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf85_contract",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\trade_grade_decision_os_contract.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:06Z",
+      "completed_at_utc": "2026-08-29T21:44:06Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 743.32,
+      "stdout_tail": "wrote tmp/trade-grade-decision-os-contract.json status=ok\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf85_decision_cards",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\trade_grade_decision_cards.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:06Z",
+      "completed_at_utc": "2026-08-29T21:44:08Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 1652.443,
+      "stdout_tail": "wrote tmp/trade-grade-source-freshness-gate.json, tmp/trade-grade-decision-cards.json, tmp/trade-grade-decision-card-authority-validation.json, tmp/trade-grade-approval-card-gate.json, tmp/trade-grade-risk-sizing-overlay.json status=ok authority=ok\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf85_deployment_timing_gate",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf85_deployment_timing_gate.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:08Z",
+      "completed_at_utc": "2026-08-29T21:44:09Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 606.244,
+      "stdout_tail": "status=ok validation=ok rows=300 tier_ab=61 review_ready_wait_approval=0 suppressed=0\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_missing_band_context_repair_post_cards",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_missing_band_context_repair.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:09Z",
+      "completed_at_utc": "2026-08-29T21:44:09Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 785.333,
+      "stdout_tail": "wrote tmp/wf78-missing-band-context-repair.json status=ok ready=0\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf85_full_answer_assembler",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\trade_grade_full_answer_assembler.py",
+        "--all-wf84",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:44:12Z",
+      "completed_at_utc": "2026-08-29T21:46:22Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 130398.797,
+      "stdout_tail": "ner_approval_inferred\": false, \"source_open_required_before_material_finance_claims\": true}}, {\"ticker\": \"ATO\", \"name\": \"legacy_packet_required_fields_present\", \"passed\": true, \"severity\": \"error\", \"detail\": {\"missing\": []}}, {\"ticker\": \"ATO\", \"name\": \"legacy_packet_no_forbidden_authority_true\", \"passed\": true, \"severity\": \"error\", \"detail\": {\"forbidden\": []}}, {\"ticker\": \"ATO\", \"name\": \"legacy_packet_from_assembler\", \"passed\": true, \"severity\": \"error\", \"detail\": {\"stale_after_hours\": 36, \"built_from_card_at_utc\": \"2026-08-29T21:40:48Z\", \"built_from_trade_grade_full_answer_assembler\": true, \"assembler_schema\": \"veritas.trade_grade_full_answer_assembler.v1\", \"note\": \"Compatibility snapshot generated from WF85 full-answer assembler.\"}}, {\"ticker\": \"AVB\", \"name\": \"all_required_sections_present\", \"passed\": true, \"severity\": \"error\", \"detail\": {\"missing\": []}}, {\"ticker\": \"AVB\", \"name\": \"human_answer_text_present\", \"passed\": true, \"severity\": \"error\", \"detail\": \"human answer text must be emitted\"}, {\"ticker\": \"AVB\", \"name\": \"machine_state_separated\", \"passed\": true, \"severity\": \"error\", \"detail\": \"machine_state must be structured\"}, {\"ticker\": \"AVB\", \"name\": \"decision_grade_gate_present\", \"passed\": true, \"severity\": \"error\", \"detail\": \"decision_grade_gate must be structured\"}, {\"ticker\": \"AVB\", \"name\": \"repair_states_not_decision_grade\", \"passed\": true, \"severity\": \"error\", \"detail\": {\"decision_state\": \"monitor_only\", \"gate\": {\"decision_grade_claim_allowed\": false, \"decision_grade_status\": \"not_decision_grade_yet\", \"specific_repair_required\": \"not_review_ready\", \"blockers\": [\"decision_state=monitor_only\", \"thin_monitor_not_decision_grade\"], \"may_use_approval_ready_language\": false, \"owner_approval_required_before_action\": true, \"capital_or_execution_authority\": false}}}]}}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_route_readiness_p3_market_ranking",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_route_readiness_p3_market_ranking.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:46:22Z",
+      "completed_at_utc": "2026-08-29T21:46:23Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 393.602,
+      "stdout_tail": "status=ok validation=warning tickers=300 categories={'avoid_until_reclaim_or_invalidation_repair': 86, 'in_band_review_monitor': 38, 'monitor_grade_triage': 54, 'monitor_only': 3, 'no_chase': 83, 'reclaim_watch': 36} market_window=weekend refresh_required=300\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf84_canonical_data_plane_post_full_answer",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\canonical_finance_data_plane.py",
+        "--write",
+        "--write-db",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:46:23Z",
+      "completed_at_utc": "2026-08-29T21:46:25Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 2258.028,
+      "stdout_tail": "{\"db\": \"tmp/canonical-finance-data-plane.sqlite\", \"packet\": \"tmp/canonical-finance-data-plane.json\", \"sqlite\": {\"authority_view\": {\"decision_forbidden_count\": 0, \"routing_forbidden_count\": 0}, \"db_path\": \"tmp/canonical-finance-data-plane.sqlite\", \"foreign_key_errors\": [], \"integrity_check\": \"ok\", \"schema\": \"veritas.canonical_finance_data_plane.sqlite.v1\", \"status\": \"ok\", \"table_counts\": {\"analyst_snapshot\": 300, \"decision_queue_state\": 300, \"earnings_catalyst\": 300, \"entry_stop_reference\": 300, \"evidence_family_status\": 6300, \"full_answer_section_context\": 5100, \"fundamental_snapshot\": 300, \"official_evidence\": 1200, \"price_technical_current\": 300, \"routing_state_current\": 300, \"schema_run\": 1, \"security_master\": 300, \"source_artifact\": 12, \"universe_membership\": 300, \"validation_result\": 27}, \"view_counts\": {\"v_current_decision_overview\": 300, \"v_decision_grade_os_layer\": 300, \"v_full_answer_source_drillback\": 5100, \"v_full_ticker_answer_context\": 5100, \"v_owner_action_queue\": 16, \"v_pm_decision_queue_overlay\": 300, \"v_source_lineage_drillback\": 12, \"v_ticker_source_drillback\": 800, \"v_wf84_priority_queue\": 300}}, \"status\": \"ok\", \"summary\": {\"canonical_table_count\": 15, \"decision_queue_state_count\": 300, \"decision_spine_extra_count\": 6, \"evidence_family_status_count\": 6300, \"forbidden_authority_true_count\": 0, \"full_answer_section_context_count\": 5100, \"owner_action_required_count\": 16, \"routing_state_current_count\": 300, \"security_master_count\": 300, \"source_artifact_count\": 12, \"tier_counts\": {\"Tier A\": 12, \"Tier B\": 49, \"Tier C\": 239}}, \"validation\": \"tmp/canonical-finance-data-plane-validation.json\"}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "finance_cache_frontdoor",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\finance_cache_frontdoor.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:46:25Z",
+      "completed_at_utc": "2026-08-29T21:46:26Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 559.387,
+      "stdout_tail": "QL-first truth production, cache-first chat consumption, explicit route/timing/decision/trade/authority states.\",\n    \"decision_state_counts\": {\n      \"below_stop_or_invalidation\": 63,\n      \"blocked_missing_freshness\": 18,\n      \"monitor_only\": 208,\n      \"no_chase\": 11\n    },\n    \"material_claim_source_open_required_count\": 0,\n    \"max_answer_age_hours\": 12.0,\n    \"next_safe_action\": \"Use route_readiness for lightweight chat answers; source-open and market-window proof before material recommendation, readiness, approval, or action claims.\",\n    \"refresh_or_source_open_needed_count\": 19,\n    \"safe_cached_review_answer_count\": 281,\n    \"safe_material_claim_from_cache_count\": 281,\n    \"source_open_status_counts\": {\n      \"verified\": 300\n    },\n    \"status_counts\": {\n      \"needs_refresh_or_source_open\": 19,\n      \"safe\": 281\n    },\n    \"ticker_count\": 300,\n    \"tier_c_monitor_grade_band_overlay_count\": 98,\n    \"timing_state_counts\": {\n      \"above_band_monitor_grade_no_chase\": 3,\n      \"above_band_no_chase\": 80,\n      \"band_status_missing_required_refresh\": 3,\n      \"below_band_monitor_grade_reclaim_watch\": 17,\n      \"below_band_reclaim_watch\": 19,\n      \"below_stop_or_invalidation\": 86,\n      \"in_band_fresh_review\": 3,\n      \"in_band_monitor_grade\": 21,\n      \"in_band_review_only_quote\": 35,\n      \"near_band_monitor_grade\": 27,\n      \"reclaim_only_monitor_grade\": 6\n    },\n    \"trade_readiness_state_counts\": {\n      \"not_trade_ready_below_stop_or_invalidation\": 87,\n      \"not_trade_ready_evidence_or_freshness_repair\": 11,\n      \"not_trade_ready_in_band_monitor_only\": 27,\n      \"not_trade_ready_monitor_grade\": 54,\n      \"not_trade_ready_monitor_only\": 3,\n      \"not_trade_ready_no_chase\": 83,\n      \"not_trade_ready_reclaim_watch\": 35\n    }\n  },\n  \"validation_errors\": []\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf85_source_open_reconciliation_contract",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf85_source_open_reconciliation_contract.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:46:26Z",
+      "completed_at_utc": "2026-08-29T21:46:26Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 517.478,
+      "stdout_tail": "{\"status\": \"ok\", \"out\": \"tmp\\\\wf85-source-open-reconciliation-contract.json\", \"summary\": {\"ticker_count\": 300, \"source_gate_ticker_count\": 300, \"decision_card_ticker_count\": 300, \"full_answer_ticker_count\": 300, \"cache_ticker_count\": 300, \"verified_source_open_count\": 300, \"fresh_verified_source_count\": 281, \"unnecessary_source_open_blocker_count\": 0, \"wrong_source_open_blocker_reason_count\": 0, \"mismatch_error_count\": 0, \"mismatch_warning_count\": 0, \"producer_order_error_count\": 0}, \"repair_order\": [\"python scripts\\\\trade_grade_decision_cards.py --write --validate\", \"python scripts\\\\trade_grade_full_answer_assembler.py --all-wf84 --write --validate\", \"python scripts\\\\finance_cache_frontdoor.py --write --validate\", \"python scripts\\\\wf85_source_open_reconciliation_contract.py --write --validate\"]}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf84_wf85_full_answer_parity",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\full_intelligence_answer_parity.py",
+        "--all",
+        "--write"
+      ],
+      "started_at_utc": "2026-08-29T21:46:26Z",
+      "completed_at_utc": "2026-08-29T21:46:29Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 2813.483,
+      "stdout_tail": "{\"out\": \"tmp/full-answer-parity/full-answer-parity-rollup.json\", \"status\": \"ok\", \"summary\": {\"archive_delete_apply_allowed\": false, \"critical_ticker_count\": 0, \"full_population_covered\": true, \"material_section_missing_both_count\": 0, \"production_answer_packet_retirement_planning_ready\": true, \"production_answer_path_count\": 12, \"production_critical_ticker_count\": 0, \"ready_to_start_duplicate_surface_retirement_planning\": true, \"retirement_blocker_ticker_count\": 0, \"section_count\": 5100, \"section_coverage_status\": \"ok\", \"section_missing_both_count\": 0, \"section_ok_count\": 5100, \"section_ok_ratio\": 1.0, \"section_reason_counts\": {\"mapped\": 5100}, \"section_status_counts\": {\"ok\": 5100}, \"sql_canon_production_answer_count\": 12, \"sql_canon_production_scope_diff\": {\"extra_in_sql\": [], \"missing_from_sql\": []}, \"sql_canon_scope_status\": \"ok\", \"strategic_production_critical_ticker_count\": 0, \"technical_posture_missing_both_count\": 0, \"thin_monitor_count\": 258, \"thin_monitor_critical_ticker_count\": 0, \"ticker_count\": 300, \"ticker_pass_count\": 300, \"warning_ticker_count\": 0, \"wf84_population_ticker_count\": 300}, \"validation\": {\"critical_errors\": [], \"status\": \"ok\", \"warnings\": []}}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf84_retirement_readiness",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\canonical_finance_data_plane_retirement_readiness.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:46:29Z",
+      "completed_at_utc": "2026-08-29T21:46:47Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 18340.412,
+      "stdout_tail": "{\n  \"status\": \"ok\",\n  \"out\": \"tmp/canonical-finance-data-plane-retirement-readiness.json\",\n  \"summary\": {\n    \"surface_count\": 8,\n    \"archive_ready_count\": 0,\n    \"delete_ready_count\": 0,\n    \"apply_allowed_count\": 0,\n    \"approval_plan_prepared\": true,\n    \"source_feeder_retirement_ready_count\": 0,\n    \"duplicate_surface_retirement_ready_count\": 0,\n    \"full_answer_parity_status\": \"ok\",\n    \"full_answer_parity_ready_to_start_duplicate_surface_retirement_planning\": true,\n    \"archive_plan_owner_action_required\": true,\n    \"next_safe_action\": \"Use the prepared owner-approval plan only; keep source feeders/fallback surfaces until additional consumer parity and DB lifecycle approval gates clear.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": [],\n    \"warnings\": [],\n    \"checks\": [\n      {\n        \"check\": \"archive_ready_count_zero\",\n        \"status\": \"ok\",\n        \"count\": 0\n      },\n      {\n        \"check\": \"delete_ready_count_zero\",\n        \"status\": \"ok\",\n        \"count\": 0\n      },\n      {\n        \"check\": \"apply_allowed_false\",\n        \"status\": \"ok\"\n      }\n    ]\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf84_phase6_10",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\canonical_finance_data_plane_phase6_10.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:46:47Z",
+      "completed_at_utc": "2026-08-29T21:46:48Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 351.773,
+      "stdout_tail": "{\n  \"out\": \"tmp/canonical-finance-data-plane-phase6-10.json\",\n  \"status\": \"ok\",\n  \"summary\": {\n    \"archive_delete_apply_allowed\": false,\n    \"checks\": 54,\n    \"consumer_default_switch_allowed\": true,\n    \"critical_error_count\": 0,\n    \"default_switched_consumer_count\": 4,\n    \"fallback_required_for_default_consumers\": false,\n    \"fallback_surfaces_retained_for_resilience\": true,\n    \"phase_count\": 6,\n    \"source_feeders_required\": true,\n    \"warning_count\": 0\n  },\n  \"validation\": {\n    \"critical_errors\": [],\n    \"status\": \"ok\",\n    \"warnings\": []\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf85_repair_conveyor",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\trade_grade_repair_conveyor.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:46:48Z",
+      "completed_at_utc": "2026-08-29T21:46:48Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 260.548,
+      "stdout_tail": "wrote tmp/trade-grade-repair-conveyor.json status=ready_for_repair_execution pilots=3\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "tier_ab_band_freshness_cron_guard",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\tier_ab_band_freshness_cron_guard.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:46:48Z",
+      "completed_at_utc": "2026-08-29T21:46:48Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 374.415,
+      "stdout_tail": "    \"CRM\",\n      \"CRWD\",\n      \"DASH\",\n      \"DDOG\",\n      \"DECK\",\n      \"EMR\",\n      \"FCX\",\n      \"MA\",\n      \"MDB\",\n      \"MU\",\n      \"NOW\",\n      \"PANW\",\n      \"QCOM\",\n      \"SCCO\",\n      \"SHOP\",\n      \"SNOW\",\n      \"TSM\",\n      \"TXN\",\n      \"V\"\n    ],\n    \"stale_band_evidence_scope\": \"finance_domain_debt_not_implementation_blocker\",\n    \"band_source_timestamp_missing_count\": 18,\n    \"band_source_timestamp_missing_tickers\": [\n      \"AAPL\",\n      \"ABBV\",\n      \"ADBE\",\n      \"AJG\",\n      \"AON\",\n      \"APD\",\n      \"AXON\",\n      \"CRM\",\n      \"CRWD\",\n      \"DASH\",\n      \"DDOG\",\n      \"MA\",\n      \"MDB\",\n      \"NOW\",\n      \"PANW\",\n      \"SHOP\",\n      \"SNOW\",\n      \"V\"\n    ],\n    \"oldest_band_source_age_hours\": 1797.8,\n    \"band_evidence_ledger_available\": true,\n    \"band_evidence_ledger_stale_tier_a_b_count\": 44,\n    \"stale_complete_band_context_count\": 0,\n    \"stale_complete_band_context_tickers\": [],\n    \"stale_complete_band_context_scope\": \"finance_domain_debt_not_implementation_blocker\",\n    \"missing_decision_grade_band_count\": 0,\n    \"missing_decision_grade_band_tickers\": [],\n    \"missing_decision_grade_band_scope\": \"finance_domain_debt_not_implementation_blocker\",\n    \"active_missing_band_repair_context_count\": 0,\n    \"active_missing_band_repair_context_tickers\": [],\n    \"missing_band_repair_target_count\": 0,\n    \"missing_band_repair_targets_match_cards\": true,\n    \"missing_band_repair_uncovered_missing_tickers\": [],\n    \"repair_conveyor_tier_a_b_missing_count\": 0,\n    \"implementation_blocker_count\": 0,\n    \"control_plane_blocker_count\": 0,\n    \"cron_contracts_ok\": true\n  },\n  \"validation\": {\n    \"status\": \"warning\",\n    \"errors\": [],\n    \"warnings\": [\n      \"tier_a_b_stale_band_evidence_finance_domain_debt\",\n      \"tier_a_b_band_source_timestamp_missing\"\n    ]\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "trade_grade_os_readiness_rollup",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\trade_grade_os_readiness_rollup.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:46:48Z",
+      "completed_at_utc": "2026-08-29T21:46:49Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 527.008,
+      "stdout_tail": "status=warning validation=warning wf84=ok answer_ready=300 approval_eligible=0 telegram_owner=True submitted_open=0\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_clean_tier_roster_final_publish",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_clean_tier_roster.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:46:49Z",
+      "completed_at_utc": "2026-08-29T21:46:49Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 217.486,
+      "stdout_tail": "{\n  \"status\": \"ok\",\n  \"out\": \"tmp/wf78-clean-tier-roster.json\",\n  \"summary\": {\n    \"active_ticker_count\": 300,\n    \"current_tier_counts\": {\n      \"Tier A\": 12,\n      \"Tier B\": 49,\n      \"Tier C\": 239\n    },\n    \"current_state_counts\": {\n      \"A-CHALLENGED\": 9,\n      \"A-WATCH\": 3,\n      \"B-CANDIDATE\": 45,\n      \"B-CHALLENGED\": 4,\n      \"C-CANDIDATE-REPAIR\": 4,\n      \"C-MONITOR\": 233,\n      \"C-REPAIR\": 1,\n      \"C-THEME-WATCH\": 1\n    },\n    \"lane_tier_counts\": {\n      \"Tier A Equity\": 10,\n      \"Tier A Sleeve\": 2,\n      \"Tier B Equity\": 49,\n      \"Tier C Commodity\": 1,\n      \"Tier C Equity\": 230,\n      \"Tier C Rates/Income\": 1,\n      \"Tier C Sleeve\": 7\n    },\n    \"review_lane_counts\": {\n      \"commodity_proxy\": 1,\n      \"equity_depth\": 289,\n      \"rates_income_proxy\": 1,\n      \"sleeve_proxy\": 9\n    },\n    \"tier_a_equity_count\": 10,\n    \"tier_a_sleeve_count\": 2,\n    \"tier_a_commodity_count\": 0,\n    \"tier_a_rates_income_count\": 0,\n    \"tier_a_macro_currency_count\": 0,\n    \"tier_a_crypto_proxy_count\": 0,\n    \"true_tier_a_count\": 12,\n    \"true_tier_b_count\": 49,\n    \"true_tier_c_count\": 239,\n    \"legacy_seed_overlap_count\": 0,\n    \"promotion_overlap_count\": 4,\n    \"capital_deployment_approved_count\": 0,\n    \"trade_or_execution_approved_count\": 0,\n    \"source_router_sha256\": \"1a6cc9a64348d87c49a328689aba00206c5fda9aea1a7c6e7c8e0fd63d4e46eb\",\n    \"source_router_generated_at_utc\": \"2026-08-29T21:43:51Z\",\n    \"next_safe_action\": \"Route current tier questions through this artifact or wf78-auto-tier-routing; use label preview only for audit/apply-preview work.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": 0\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_truth_layer_map_final_publish",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_truth_layer_map.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:46:49Z",
+      "completed_at_utc": "2026-08-29T21:46:49Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 230.557,
+      "stdout_tail": "{\n  \"status\": \"ok\",\n  \"out\": \"tmp/wf78-truth-layer-map.json\",\n  \"summary\": {\n    \"status\": \"ok\",\n    \"layer_count\": 10,\n    \"category_counts\": {\n      \"current_authority\": 2,\n      \"repair_readiness\": 3,\n      \"audit_only\": 2,\n      \"retired_archive_proof\": 2,\n      \"execution_guardrail\": 1\n    },\n    \"current_tier_authority\": \"tmp/wf78-auto-tier-routing.json\",\n    \"model_safe_answer_surface\": \"tmp/wf78-clean-tier-roster.json\",\n    \"true_tier_a_count\": 12,\n    \"true_tier_b_count\": 49,\n    \"true_tier_c_count\": 239,\n    \"tier_state_substate_count\": 8,\n    \"not_current_tier_authority_layer_count\": 8,\n    \"paper_readiness_json_file_count\": 201,\n    \"source_router_sha256\": \"1a6cc9a64348d87c49a328689aba00206c5fda9aea1a7c6e7c8e0fd63d4e46eb\",\n    \"source_router_generated_at_utc\": \"2026-08-29T21:43:51Z\",\n    \"clean_roster_router_lineage_matches_live_router\": true,\n    \"capital_deployment_approved_count\": 0,\n    \"trade_or_execution_approved_count\": 0,\n    \"next_safe_action\": \"Run the tier semantics guard after this map; consumers should read the map before any WF78 tier answer or cleanup decision.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": 0\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "wf78_tier_semantics_guard_final_publish",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\wf78_tier_semantics_guard.py",
+        "--write",
+        "--validate"
+      ],
+      "started_at_utc": "2026-08-29T21:46:49Z",
+      "completed_at_utc": "2026-08-29T21:46:49Z",
+      "returncode": 0,
+      "ok": true,
+      "duration_ms": 212.112,
+      "stdout_tail": "tomer, answer-cutover, capital, execution, paper/live, account, money movement, and owner-approval flags remain false.\"\n    },\n    \"lane_qualified_tiers\": {\n      \"router_lane_tier_counts\": {\n        \"Tier A Equity\": 10,\n        \"Tier A Sleeve\": 2,\n        \"Tier B Equity\": 49,\n        \"Tier C Commodity\": 1,\n        \"Tier C Equity\": 230,\n        \"Tier C Rates/Income\": 1,\n        \"Tier C Sleeve\": 7\n      },\n      \"roster_lane_tier_counts\": {\n        \"Tier A Equity\": 10,\n        \"Tier A Sleeve\": 2,\n        \"Tier B Equity\": 49,\n        \"Tier C Commodity\": 1,\n        \"Tier C Equity\": 230,\n        \"Tier C Rates/Income\": 1,\n        \"Tier C Sleeve\": 7\n      },\n      \"tier_a_equity_count\": 10,\n      \"tier_a_sleeve_count\": 2,\n      \"tier_a_commodity_count\": 0,\n      \"tier_a_rates_income_count\": 0,\n      \"tier_a_macro_currency_count\": 0,\n      \"tier_a_crypto_proxy_count\": 0,\n      \"rule\": \"Flat Tier A/B/C is compatibility; use lane_tier for opportunity-class answers.\"\n    },\n    \"production_grade_policy\": {\n      \"candidate_count\": 0,\n      \"tickers\": [],\n      \"answer_consumer_cutover_allowed\": false\n    },\n    \"capital_deployment_approved_count\": 0,\n    \"trade_or_execution_approved_count\": 0,\n    \"lower_model_rule\": \"Answer current Tier A/B/C membership from wf78-clean-tier-roster or wf78-auto-tier-routing; answer opportunity class from lane_tier/review_lane.\",\n    \"a_ready_language_rule\": \"Do not translate A-READY or internal decision-grade allowance into approval-ready, deployable, customer-output, production-answer, or trade/execution language without the separate downstream gates.\",\n    \"next_safe_action\": \"Use the truth-layer map before any WF78 tier answer; use this guard as the fail-closed semantics proof.\"\n  },\n  \"validation\": {\n    \"status\": \"ok\",\n    \"errors\": 0\n  }\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "artifact_records": [
+    {
+      "name": "finance_state_refresh_100",
+      "path": "tmp/finance-intelligence-state-refresh-100.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": null,
+      "generated_at_utc": "2026-08-29T21:43:20Z",
+      "authority_widened": false
+    },
+    {
+      "name": "finance_state_validation",
+      "path": "tmp/finance-intelligence-state-validation.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": null,
+      "generated_at_utc": "2026-08-29T21:44:03Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf84_contract",
+      "path": "tmp/canonical-finance-data-plane-contract.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:03Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf84_packet",
+      "path": "tmp/canonical-finance-data-plane.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:46:23Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf84_validation",
+      "path": "tmp/canonical-finance-data-plane-validation.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": null,
+      "generated_at_utc": "2026-08-29T21:46:24Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf84_sqlite",
+      "path": "tmp/canonical-finance-data-plane.sqlite",
+      "exists": true,
+      "parseable_json": null,
+      "status": "ok",
+      "validation_status": null,
+      "generated_at_utc": "2026-08-29T21:46:25Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf84_retirement_readiness",
+      "path": "tmp/canonical-finance-data-plane-retirement-readiness.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:46:47Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf84_phase6_10",
+      "path": "tmp/canonical-finance-data-plane-phase6-10.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:46:47Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf84_wf85_full_answer_parity",
+      "path": "tmp/full-answer-parity/full-answer-parity-rollup.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:46:27Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_auto_tier_router",
+      "path": "tmp/wf78-auto-tier-routing.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:43:51Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_tier_a_technical_refresh",
+      "path": "tmp/technical-refresh.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": null,
+      "generated_at_utc": "2026-08-29T21:43:58.075260+00:00",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_routing_delta",
+      "path": "tmp/wf78-routing-delta.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:43:58Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_event_triggered_rerouting",
+      "path": "tmp/wf78-event-triggered-rerouting.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:43:59Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_evidence_drag_reduction",
+      "path": "tmp/wf78-evidence-drag-reduction.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:43:59Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_source_open_repair_execution",
+      "path": "tmp/wf78-source-open-repair-execution.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:00Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_tier_b_research_packets",
+      "path": "tmp/wf78-tier-b-research-packets.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:43:50Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_tier_b_research_packet_requests",
+      "path": "tmp/wf78-tier-b-research-packet-requests.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": null,
+      "validation_status": null,
+      "generated_at_utc": "2026-08-29T21:43:50Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_tier_b_research_packet_phase2_eval",
+      "path": "tmp/wf78-tier-b-research-packet-phase2-eval.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:43:50Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_tier_a_competitive_promotion_gate",
+      "path": "tmp/wf78-tier-a-competitive-promotion-gate.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:43:51Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_ticker_freshness_ledger",
+      "path": "tmp/wf78-ticker-freshness-ledger.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:00Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_source_open_work_packets",
+      "path": "tmp/wf78-source-open-work-packets.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:00Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_deployment_readiness_review",
+      "path": "tmp/wf78-deployment-readiness-review.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:01Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_tier_weighted_freshness_resolution",
+      "path": "tmp/wf78-tier-weighted-freshness-resolution.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:01Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_missing_band_context_repair",
+      "path": "tmp/wf78-missing-band-context-repair.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:09Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_clean_tier_roster",
+      "path": "tmp/wf78-clean-tier-roster.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:46:49Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_truth_layer_map",
+      "path": "tmp/wf78-truth-layer-map.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:46:49Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_tier_semantics_guard",
+      "path": "tmp/wf78-tier-semantics-guard.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:46:49Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf85_contract",
+      "path": "tmp/trade-grade-decision-os-contract.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:06Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf85_source_freshness_gate",
+      "path": "tmp/trade-grade-source-freshness-gate.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:06Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf85_decision_cards",
+      "path": "tmp/trade-grade-decision-cards.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:06Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf85_deployment_timing_gate",
+      "path": "tmp/wf85-deployment-timing-gate.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:08Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf85_full_answer_assembler",
+      "path": "tmp/trade-grade-full-answer-assembler.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:46:22Z",
+      "authority_widened": false
+    },
+    {
+      "name": "finance_cache_frontdoor",
+      "path": "tmp/finance-cache-frontdoor.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:46:25Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf78_route_readiness_p3_market_ranking",
+      "path": "tmp/wf78-route-readiness-p3-market-ranking.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "warning",
+      "generated_at_utc": "2026-08-29T21:46:23Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf85_source_open_reconciliation_contract",
+      "path": "tmp/wf85-source-open-reconciliation-contract.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:46:26Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf85_authority_validation",
+      "path": "tmp/trade-grade-decision-card-authority-validation.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:08Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf85_approval_card_gate",
+      "path": "tmp/trade-grade-approval-card-gate.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:44:07Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf85_risk_sizing_overlay",
+      "path": "tmp/trade-grade-risk-sizing-overlay.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ok",
+      "validation_status": null,
+      "generated_at_utc": "2026-08-29T21:44:07Z",
+      "authority_widened": false
+    },
+    {
+      "name": "wf85_repair_conveyor",
+      "path": "tmp/trade-grade-repair-conveyor.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "ready_for_repair_execution",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-29T21:46:48Z",
+      "authority_widened": false
+    },
+    {
+      "name": "tier_ab_band_freshness_cron_guard",
+      "path": "tmp/tier-ab-band-freshness-cron-guard.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "warning",
+      "validation_status": "warning",
+      "generated_at_utc": "2026-08-29T21:46:48Z",
+      "authority_widened": false
+    },
+    {
+      "name": "trade_grade_os_readiness_rollup",
+      "path": "tmp/trade-grade-os-readiness-rollup.json",
+      "exists": true,
+      "parseable_json": true,
+      "status": "warning",
+      "validation_status": "warning",
+      "generated_at_utc": "2026-08-29T21:46:49Z",
+      "authority_widened": false
+    }
+  ],
+  "source_artifacts": {
+    "finance_state_refresh_100": "tmp/finance-intelligence-state-refresh-100.json",
+    "finance_state_validation": "tmp/finance-intelligence-state-validation.json",
+    "wf84_contract": "tmp/canonical-finance-data-plane-contract.json",
+    "wf84_packet": "tmp/canonical-finance-data-plane.json",
+    "wf84_validation": "tmp/canonical-finance-data-plane-validation.json",
+    "wf84_sqlite": "tmp/canonical-finance-data-plane.sqlite",
+    "wf84_retirement_readiness": "tmp/canonical-finance-data-plane-retirement-readiness.json",
+    "wf84_phase6_10": "tmp/canonical-finance-data-plane-phase6-10.json",
+    "wf84_wf85_full_answer_parity": "tmp/full-answer-parity/full-answer-parity-rollup.json",
+    "wf78_auto_tier_router": "tmp/wf78-auto-tier-routing.json",
+    "wf78_tier_a_technical_refresh": "tmp/technical-refresh.json",
+    "wf78_routing_delta": "tmp/wf78-routing-delta.json",
+    "wf78_event_triggered_rerouting": "tmp/wf78-event-triggered-rerouting.json",
+    "wf78_evidence_drag_reduction": "tmp/wf78-evidence-drag-reduction.json",
+    "wf78_source_open_repair_execution": "tmp/wf78-source-open-repair-execution.json",
+    "wf78_tier_b_research_packets": "tmp/wf78-tier-b-research-packets.json",
+    "wf78_tier_b_research_packet_requests": "tmp/wf78-tier-b-research-packet-requests.json",
+    "wf78_tier_b_research_packet_phase2_eval": "tmp/wf78-tier-b-research-packet-phase2-eval.json",
+    "wf78_tier_a_competitive_promotion_gate": "tmp/wf78-tier-a-competitive-promotion-gate.json",
+    "wf78_ticker_freshness_ledger": "tmp/wf78-ticker-freshness-ledger.json",
+    "wf78_source_open_work_packets": "tmp/wf78-source-open-work-packets.json",
+    "wf78_deployment_readiness_review": "tmp/wf78-deployment-readiness-review.json",
+    "wf78_tier_weighted_freshness_resolution": "tmp/wf78-tier-weighted-freshness-resolution.json",
+    "wf78_missing_band_context_repair": "tmp/wf78-missing-band-context-repair.json",
+    "wf78_clean_tier_roster": "tmp/wf78-clean-tier-roster.json",
+    "wf78_truth_layer_map": "tmp/wf78-truth-layer-map.json",
+    "wf78_tier_semantics_guard": "tmp/wf78-tier-semantics-guard.json",
+    "wf85_contract": "tmp/trade-grade-decision-os-contract.json",
+    "wf85_source_freshness_gate": "tmp/trade-grade-source-freshness-gate.json",
+    "wf85_decision_cards": "tmp/trade-grade-decision-cards.json",
+    "wf85_deployment_timing_gate": "tmp/wf85-deployment-timing-gate.json",
+    "wf85_full_answer_assembler": "tmp/trade-grade-full-answer-assembler.json",
+    "finance_cache_frontdoor": "tmp/finance-cache-frontdoor.json",
+    "wf78_route_readiness_p3_market_ranking": "tmp/wf78-route-readiness-p3-market-ranking.json",
+    "wf85_source_open_reconciliation_contract": "tmp/wf85-source-open-reconciliation-contract.json",
+    "wf85_authority_validation": "tmp/trade-grade-decision-card-authority-validation.json",
+    "wf85_approval_card_gate": "tmp/trade-grade-approval-card-gate.json",
+    "wf85_risk_sizing_overlay": "tmp/trade-grade-risk-sizing-overlay.json",
+    "wf85_repair_conveyor": "tmp/trade-grade-repair-conveyor.json",
+    "tier_ab_band_freshness_cron_guard": "tmp/tier-ab-band-freshness-cron-guard.json",
+    "trade_grade_os_readiness_rollup": "tmp/trade-grade-os-readiness-rollup.json"
+  },
+  "stop_lines": [
+    "Review-only proof and routing surface.",
+    "No generated card, score, SQL row, runner result, or cron proof is capital approval.",
+    "No paper/live execution, brokerage/account action, money movement, canon/portfolio mutation, customer delivery, or owner approval inference."
+  ],
+  "validation": {
+    "status": "warning",
+    "errors": [],
+    "warnings": [
+      "trade_grade_data_not_ready:24/61_tier_a_b_threshold_48",
+      "tier_a_b_band_cron_guard_finance_domain_debt_present"
+    ],
+    "info": [
+      "wf67_guard_stale_with_no_approval_drafts_no_operator_action"
+    ],
+    "critical_count": 0,
+    "warning_count": 2,
+    "info_count": 1
+  },
+  "next_safe_action": "Trade-grade infrastructure is refreshed, but ticker true-freshness is below the decision-data threshold; disclose data-not-ready before any WF85 decision claim."
+}

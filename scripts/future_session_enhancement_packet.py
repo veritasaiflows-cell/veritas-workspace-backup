@@ -29,12 +29,39 @@ LOCAL_TZ = ZoneInfo("America/Phoenix")
 CRON_MIGRATION_REPAIR_TITLE = "Route blocked cron signals into a migration-ready repair plan"
 WORKFLOW_BLOCKER_FOLLOWUP_TITLE = "Convert workflow advancement blockers into implementation follow-ups"
 
+RETIRED_FINANCE_ROUTE_MARKERS = (
+    "wf67",
+    "wf68",
+    "wf78",
+    "wf86",
+    "wf87",
+    "trade-grade",
+    "trade_grade",
+    "deployment-readiness",
+    "deployment_readiness",
+    "capital-deployment",
+    "capital_deployment",
+    "position-sizing",
+    "position_sizing",
+    "approval-card",
+    "approval_card",
+    "repair-conveyor",
+    "repair_conveyor",
+    "paper-position",
+    "paper_position",
+    "paper-state",
+    "paper_state",
+    "paper-autotrader",
+    "paper_autotrader",
+    "portfolio-config",
+    "portfolio_config",
+)
+
 AUTHORITY_BOUNDARY = {
     "review_only": True,
     "routes_truth_surfaces_only": True,
-    "canon_or_portfolio_mutation_allowed": False,
-    "capital_deployment_approved": False,
-    "paper_or_live_execution_allowed": False,
+    "finance_state_mutation_allowed": False,
+    "capital_or_execution_action_allowed": False,
     "brokerage_or_account_action_allowed": False,
     "config_auth_runtime_mutation_allowed": False,
     "customer_or_external_delivery_allowed": False,
@@ -52,12 +79,21 @@ CORE_SURFACES = [
 ]
 
 CORE_EFFICIENCY_MARKERS = {
-    "AGENTS.md": ["project_implementation_router.py", "model_free_command", "codex_native_subagent"],
-    "TOOLS.md": ["project_implementation_router.py", "persistent_isolated_agent", "Main/Sol"],
+    "AGENTS.md": [
+        "project_implementation_router.py",
+        "veritas-model-routing-helper-lanes",
+        "concurrent lane register",
+    ],
+    "TOOLS.md": [
+        "thin compatibility pointer",
+        "Runtime and command facts live",
+        "Hard boundaries",
+    ],
     "06. Playbooks/Startup Truth Index.md": [
-        "veritas.execution_efficiency_policy.v1",
-        "persistent_isolated_agent",
-        "actual backend/model/thinking",
+        "project_implementation_router.py",
+        "Prefer deterministic model-free work.",
+        "Main uses explicitly configured Astra",
+        "No fixed cohort pilot is required",
     ],
 }
 
@@ -76,7 +112,6 @@ ARTIFACTS = {
     "owner_gated_action_review_queue": "tmp/owner-gated-action-review-queue.json",
     "token_usage_ledger": "tmp/token-usage-ledger-current.json",
     "model_run_ledger": "tmp/model-run-ledger-current.json",
-    "finance_correctness_ledger": "tmp/finance-recommendation-correctness-ledger-current.json",
     "model_quality_scorecard": "tmp/model-quality-scorecard.json",
     "wf74_cron_duplication_audit": "tmp/wf74-cron-duplication-audit.json",
     "training_dataset_candidates": "tmp/training-dataset-candidates.json",
@@ -85,7 +120,11 @@ ARTIFACTS = {
     "current_active_lanes": "tmp/current-active-lanes.json",
     "main_session_escalation_consumer": "tmp/main-session-escalation-consumer.json",
     "main_session_action_executor": "tmp/main-session-action-executor.json",
-    "finance_evidence_warning_router": "tmp/finance-evidence-warning-router.json",
+    "finance_sql_guard": "tmp/finance-sql-canon-access-validation.json",
+    "alert_quote_snapshot": "tmp/intraday-alerts/quote-snapshot-proof.json",
+    "alert_freshness_controller": "tmp/alert-level-freshness-controller.json",
+    "alert_recommendations_digest": "tmp/finance-alert-os-digest.json",
+    "alerts_os_pivot_validator": "tmp/alerts-os-pivot-validator.json",
     "wf88_wiki_synthesis": "tmp/wf88-wiki-synthesis-packet.json",
     "wiki_bootstrap_proof": "tmp/wiki-bootstrap-proof.json",
     "coding_outcome_ledger": "tmp/coding-outcome-ledger-current.json",
@@ -130,7 +169,6 @@ ARTIFACT_MAX_AGE_HOURS = {
     "owner_gated_action_review_queue": 24,
     "token_usage_ledger": 24,
     "model_run_ledger": 24,
-    "finance_correctness_ledger": 24,
     "model_quality_scorecard": 24,
     "wf74_cron_duplication_audit": 24,
     "training_dataset_candidates": 168,
@@ -139,7 +177,11 @@ ARTIFACT_MAX_AGE_HOURS = {
     "current_active_lanes": 12,
     "main_session_escalation_consumer": 12,
     "main_session_action_executor": 12,
-    "finance_evidence_warning_router": 12,
+    "finance_sql_guard": 24,
+    "alert_quote_snapshot": 24,
+    "alert_freshness_controller": 24,
+    "alert_recommendations_digest": 24,
+    "alerts_os_pivot_validator": 24,
     "wf88_wiki_synthesis": 24,
     "wiki_bootstrap_proof": 24,
     "coding_outcome_ledger": 24,
@@ -149,11 +191,11 @@ DERIVED_FILE_MAX_AGE_HOURS = {
     "artifact_index_sqlite": 24,
 }
 
-WORKFLOW_IDS = ["WF75", "WF78", "WF79-SMB", "WF72", "WF73", "WF74", "WF84", "WF85", "WF88"]
+WORKFLOW_IDS = ["WF75", "WF79-SMB", "WF72", "WF73", "WF74", "WF85"]
 
 CHALLENGER_MODEL_POLICY = {
     "schema": "veritas.challenger_model_policy.v1",
-    "scope": "serious finance workflow contracts, authority-sensitive decision layers, and trade-grade OS promotion gates",
+    "scope": "serious alerts-and-recommendations contracts, authority-sensitive decision layers, and freshness/confidence gates",
     "required_challenger_model": "claude-cli/claude-opus-4-8",
     "use_for": [
         "false-ready detection",
@@ -165,7 +207,7 @@ CHALLENGER_MODEL_POLICY = {
         "routine implementation default",
         "execution authority",
         "approval authority",
-        "canon or portfolio mutation authority",
+        "finance state mutation authority",
     ],
     "verification_rule": "After spawn, verify the actual subagent model path equals claude-cli/claude-opus-4-8; labels such as Opus are not sufficient.",
     "fallback_rule": "If the verified model path is unavailable or mismatched, classify the lane as standard challenger output and do not count it as Opus acceptance proof.",
@@ -189,6 +231,28 @@ def as_dict(value: Any) -> dict[str, Any]:
 
 def as_list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
+
+
+def strip_retired_finance_routes(value: Any) -> Any:
+    """Project startup state without carrying obsolete finance routes forward."""
+    if isinstance(value, dict):
+        cleaned: dict[str, Any] = {}
+        for key, item in value.items():
+            if any(marker in str(key).lower() for marker in RETIRED_FINANCE_ROUTE_MARKERS):
+                continue
+            projected = strip_retired_finance_routes(item)
+            if projected is not None:
+                cleaned[key] = projected
+        return cleaned
+    if isinstance(value, list):
+        return [
+            projected
+            for item in value
+            if (projected := strip_retired_finance_routes(item)) is not None
+        ]
+    if isinstance(value, str) and any(marker in value.lower() for marker in RETIRED_FINANCE_ROUTE_MARKERS):
+        return None
+    return value
 
 
 def file_state(path: str) -> dict[str, Any]:
@@ -462,15 +526,23 @@ def workflow_capsules() -> list[dict[str, Any]]:
 def extract_pm_summary() -> dict[str, Any]:
     data = as_dict(load_json_artifact(TMP / "pm-control-packet.json"))
     summary = as_dict(data.get("summary"))
-    next_actions = as_list(data.get("next_actions"))
-    jobs = as_list(as_dict(data.get("implementation_job_queue")).get("jobs"))
+    readiness = as_dict(summary.get("pm_readiness"))
+    queue = as_dict(summary.get("implementation_queue"))
+    alerts = as_dict(summary.get("finance_alerts_os"))
+    top_action = as_dict(summary.get("top_next_action"))
+    top_text = " ".join(str(top_action.get(key) or "") for key in ("action_id", "lane_id", "description"))
+    if any(token in top_text.lower() for token in RETIRED_FINANCE_ROUTE_MARKERS):
+        top_action = {}
     return {
         "status": data.get("status"),
         "validation_status": as_dict(data.get("validation")).get("status"),
-        "top_lane": (next_actions[0] or {}).get("lane_id") if next_actions and isinstance(next_actions[0], dict) else None,
-        "top_action": (next_actions[0] or {}).get("description") if next_actions and isinstance(next_actions[0], dict) else None,
-        "open_job_count": len(jobs),
-        "summary": {key: summary.get(key) for key in sorted(summary.keys())[:12]},
+        "top_lane": top_action.get("lane_id"),
+        "top_action": top_action.get("description"),
+        "ready_job_count": queue.get("ready_job_count"),
+        "blocked_job_count": queue.get("blocked_job_count"),
+        "readiness_band": readiness.get("readiness_band"),
+        "finance_alerts_os_status": alerts.get("status"),
+        "finance_alerts_os_blocked_proofs": alerts.get("blocked_proofs"),
     }
 
 
@@ -510,29 +582,19 @@ def extract_otel_carry_forward(now: datetime) -> dict[str, Any]:
         "carry_forward_status": carry_forward.get("status"),
         "auto_implementation_status": auto_router.get("status"),
         "auto_apply_allowed": False,
-        "next_safe_action": data.get("next_safe_action") or carry_forward.get("next_safe_action"),
     }
 
 
 def extract_action_executor_summary() -> dict[str, Any]:
     data = as_dict(load_json_artifact(TMP / "main-session-action-executor.json"))
     summary = as_dict(data.get("summary"))
-    selected = as_dict(summary.get("selected_pm_job"))
     return {
         "status": data.get("status"),
         "validation_status": as_dict(data.get("validation")).get("status"),
         "mode": data.get("mode"),
         "context": data.get("context"),
-        "action_type": summary.get("action_type"),
-        "classification": summary.get("classification"),
-        "selected_pm_job": selected.get("job_id"),
-        "selected_pm_title": selected.get("title"),
-        "parallel_helper_workstream": summary.get("parallel_helper_workstream"),
-        "parallel_helper_title": summary.get("parallel_helper_title"),
-        "parallel_helper_pm_job_id": summary.get("parallel_helper_pm_job_id"),
         "executed": summary.get("executed"),
         "execution_failed": summary.get("execution_failed"),
-        "next_safe_action": summary.get("next_safe_action"),
     }
 
 
@@ -558,28 +620,44 @@ def extract_escalation_consumer_summary() -> dict[str, Any]:
         "repeated_blocker_count": repeated,
         "auto_actionable_count": auto_actionable,
         "repeated_only_routed": repeated > 0 and unresolved == 0 and owner == 0 and manual == 0 and auto_actionable > 0,
-        "next_safe_action": summary.get("next_safe_action"),
     }
 
 
-def extract_finance_warning_router_summary() -> dict[str, Any]:
-    data = as_dict(load_json_artifact(TMP / "finance-evidence-warning-router.json"))
-    summary = as_dict(data.get("summary"))
+def extract_alerts_os_summary() -> dict[str, Any]:
+    source_labels = (
+        "finance_sql_guard",
+        "alert_quote_snapshot",
+        "alert_freshness_controller",
+        "alert_recommendations_digest",
+        "alerts_os_pivot_validator",
+    )
+    proofs: dict[str, dict[str, Any]] = {}
+    blocked: list[str] = []
+    ticker_count = None
+    alert_state_counts = None
+    for label in source_labels:
+        path_text = ARTIFACTS[label]
+        payload = as_dict(load_json_artifact(ROOT / path_text))
+        validation_status = as_dict(payload.get("validation")).get("status")
+        ok = bool(payload) and payload.get("status") == "ok" and validation_status in {None, "ok"}
+        if not ok:
+            blocked.append(label)
+        summary = as_dict(payload.get("summary"))
+        ticker_count = summary.get("ticker_count") or ticker_count
+        alert_state_counts = summary.get("alert_state_counts") or alert_state_counts
+        proofs[label] = {
+            "path": path_text,
+            "present": bool(payload),
+            "status": payload.get("status"),
+            "validation_status": validation_status,
+            "generated_at_utc": payload.get("generated_at_utc"),
+        }
     return {
-        "status": data.get("status"),
-        "validation_status": as_dict(data.get("validation")).get("status"),
-        "blocking_section_count": summary.get("blocking_section_count"),
-        "blocking_sections": summary.get("blocking_sections"),
-        "caveat_section_count": summary.get("caveat_section_count"),
-        "caveat_sections": summary.get("caveat_sections"),
-        "fundamental_warning_count": summary.get("fundamental_warning_count"),
-        "fundamental_unknown_warning_codes": summary.get("fundamental_unknown_warning_codes"),
-        "macro_warning_count": summary.get("macro_warning_count"),
-        "energy_warning_count": summary.get("energy_warning_count"),
-        "escalation_routed_repeated_only": summary.get("escalation_routed_repeated_only"),
-        "saas_review_only_answer_can_proceed_with_caveats": summary.get("saas_review_only_answer_can_proceed_with_caveats"),
-        "customer_output_allowed": summary.get("customer_output_allowed"),
-        "next_safe_action": summary.get("next_safe_action"),
+        "status": "ok" if not blocked else "blocked",
+        "blocked_proofs": blocked,
+        "ticker_count": ticker_count,
+        "alert_state_counts": alert_state_counts,
+        "proofs": proofs,
     }
 
 
@@ -637,7 +715,6 @@ def extract_wf74_summary(now: datetime) -> dict[str, Any]:
     owner_gated = as_dict(load_json_artifact(TMP / "owner-gated-action-review-queue.json"))
     token_usage = as_dict(load_json_artifact(TMP / "token-usage-ledger-current.json"))
     model_run = as_dict(load_json_artifact(TMP / "model-run-ledger-current.json"))
-    finance = as_dict(load_json_artifact(TMP / "finance-recommendation-correctness-ledger-current.json"))
     scorecard = as_dict(load_json_artifact(TMP / "model-quality-scorecard.json"))
     duplication_audit = as_dict(load_json_artifact(TMP / "wf74-cron-duplication-audit.json"))
     collection_summary = as_dict(collection.get("summary"))
@@ -681,7 +758,6 @@ def extract_wf74_summary(now: datetime) -> dict[str, Any]:
     owner_gated_summary = as_dict(owner_gated.get("summary"))
     token_summary = as_dict(token_usage.get("summary"))
     model_summary = as_dict(model_run.get("summary"))
-    finance_summary = as_dict(finance.get("summary"))
     duplication_summary = as_dict(duplication_audit.get("summary"))
     collection_validation_data = as_dict(collection.get("validation"))
     learning_environment = as_dict(collection_summary.get("learning_environment_status"))
@@ -846,10 +922,6 @@ def extract_wf74_summary(now: datetime) -> dict[str, Any]:
         "model_run_rows": model_summary.get("row_count"),
         "model_attribution_coverage": model_summary.get("model_attribution_coverage"),
         "session_attribution_coverage": model_summary.get("session_attribution_coverage"),
-        "finance_correctness_rows": finance_summary.get("row_count"),
-        "finance_ok_rows": finance_summary.get("ok_count"),
-        "finance_warning_rows": finance_summary.get("warning_count"),
-        "finance_blocked_rows": finance_summary.get("blocked_count"),
         "scorecard_validation": as_dict(scorecard.get("validation")).get("status"),
         "cron_duplication_status": duplication_audit.get("status"),
         "cron_duplication_validation": as_dict(duplication_audit.get("validation")).get("status"),
@@ -868,10 +940,6 @@ def extract_wf74_summary(now: datetime) -> dict[str, Any]:
 def recommended_routes() -> list[dict[str, Any]]:
     return [
         {
-            "use_case": "WF88 wiki synthesis / second-brain route",
-            "command": "python scripts\\wf88_wiki_synthesis_packet.py --write --write-md --write-wiki --validate",
-        },
-        {
             "use_case": "WF88 wiki bootstrap proof",
             "command": "python scripts\\wiki_bootstrap_validator.py --write --validate",
         },
@@ -888,24 +956,16 @@ def recommended_routes() -> list[dict[str, Any]]:
             "command": "python scripts\\pm_control_packet.py --write --write-db --validate",
         },
         {
-            "use_case": "main-session automatic PM/cron pickup",
-            "command": "python scripts\\main_session_action_executor.py --context main_session --refresh-frontdoors --execute-safe --write --validate --append-ledger",
-        },
-        {
-            "use_case": "WF74 blocked cron and workflow blocker pickup",
-            "command": "python scripts\\main_session_greenkeeper_controller.py --refresh-frontdoors --execute-safe --write --validate --append-ledger",
-        },
-        {
-            "use_case": "direct cron escalation consumption",
-            "command": "python scripts\\main_session_escalation_consumer.py --context main_session --refresh-frontdoors --execute-safe --write --validate --append-ledger",
-        },
-        {
             "use_case": "cron/autonomy trust",
             "command": "python scripts\\cron_control_packet.py --write --validate",
         },
         {
-            "use_case": "model/run/finance-quality evidence",
-            "command": "python scripts\\wf74_model_quality_collection_cron_runner.py --write --write-md --validate --include-harness",
+            "use_case": "alerts and recommendations proof chain",
+            "command": "python scripts\\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate",
+        },
+        {
+            "use_case": "alerts OS boundary validation",
+            "command": "python scripts\\alerts_os_pivot_validator.py --write --validate",
         },
         {
             "use_case": "actionable improvement queue",
@@ -918,10 +978,6 @@ def recommended_routes() -> list[dict[str, Any]]:
         {
             "use_case": "refresh current improvement packet without appending durable history",
             "command": "python scripts\\improvement_ledger.py --check --write --write-md --validate",
-        },
-        {
-            "use_case": "owner-gated approval/recommendation queue",
-            "command": "python scripts\\owner_gated_action_review_queue.py --write --write-md --validate",
         },
         {
             "use_case": "rank cron and implementation token usage",
@@ -939,11 +995,49 @@ def recommended_routes() -> list[dict[str, Any]]:
             "use_case": "changed-file validator choice",
             "command": "python scripts\\changed_file_validator_router.py --write --validate",
         },
-        {
-            "use_case": "finance/SaaS warning caveat classification",
-            "command": "python scripts\\finance_evidence_warning_router.py --write --validate",
-        },
     ]
+
+
+def startup_recall_relationship_tool_route() -> dict[str, Any]:
+    """Return the bounded fast-route contract used after deterministic boot."""
+    return {
+        "schema": "veritas.startup_recall_relationship_tool_route.v1",
+        "selection_rule": "Classify the request and run only its relevant branch; graph loading is never mandatory startup work.",
+        "routes": [
+            {
+                "trigger": "prior decision, continuity, person, date, or todo",
+                "primary": "memory_search across durable memory, or corpus=all when wiki context is relevant",
+                "follow_up": "bounded memory_get for needed excerpts, then live-owner verification for any current claim",
+                "degraded_route": "disclose partial/unavailable retrieval; use dated memory, MEMORY.md, workflow capsule, and live owners without claiming unverified recall",
+            },
+            {
+                "trigger": "code, workflow, skill, or document relationship",
+                "primary": "Graphify freshness/health, then the smallest query, path, or affected lookup",
+                "follow_up": "verify graph edges against current source and exact owners",
+                "degraded_route": "when stale, missing, or noisy, use rg, workflow router/capsule, and exact source owners; do not rebuild for an ordinary request",
+            },
+            {
+                "trigger": "current operational, finance, approval, or execution truth",
+                "primary": "open the exact owner artifact or validator directly",
+                "follow_up": "treat derived memory, graph, wiki, index, and packet output as evidence only",
+                "degraded_route": "stop or report the exact owner/proof gap rather than substituting stale derived context",
+            },
+        ],
+        "tool_references": [
+            {
+                "scope": "workspace command routing",
+                "owner": "TOOLS.md and openclaw-operator",
+                "reference": "skills/openclaw-operator/references/workspace-route-map.md",
+            },
+            {
+                "scope": "specialized or deferred tool",
+                "owner": "named owner SKILL.md",
+                "reference": "exact linked references/ item and callable schema when available",
+            },
+        ],
+        "tool_rule": "Do not guess flags, capability, or authority from a tool name. If the exact reference is unavailable, stay read-only or use the documented owner front door.",
+        "authority_boundary": "Memory, graphs, wiki, indexes, packets, and tool catalogs route evidence only; none grants approval, execution, or mutation authority.",
+    }
 
 
 def extract_wf88_wiki_synthesis() -> dict[str, Any]:
@@ -1283,9 +1377,10 @@ def build_payload(
         "otel_carry_forward": extract_otel_carry_forward(now),
         "main_session_escalation_consumer_summary": extract_escalation_consumer_summary(),
         "main_session_action_executor_summary": extract_action_executor_summary(),
-        "finance_evidence_warning_router_summary": extract_finance_warning_router_summary(),
+        "finance_alerts_os_summary": extract_alerts_os_summary(),
         "wf88_wiki_synthesis": extract_wf88_wiki_synthesis(),
         "wiki_bootstrap_proof": extract_wiki_bootstrap_proof(),
+        "startup_recall_relationship_tool_route": startup_recall_relationship_tool_route(),
         "execution_efficiency_policy": implementation_router.execution_efficiency_policy(),
         "coding_outcome_efficiency": extract_coding_outcome_efficiency(),
         "actionability_summary": extract_actionability_summary(),
@@ -1307,12 +1402,27 @@ def build_payload(
         "next_safe_action": "Open this packet first, then drill into exact owner artifacts only for the active request.",
         "stop_lines": [
             "Generated packets route proof; they are not canon or approval.",
-            "Do not infer owner approval, portfolio/canon mutation, capital deployment, or paper/live/account authority.",
+            "Do not infer owner approval or any finance-state, capital, order, account, or execution authority.",
             "Model-quality evidence is review-only until sample depth, attribution, and WF55 graded outcomes support stronger claims.",
-            "For serious finance workflow gates, Opus challenger acceptance requires verified model path claude-cli/claude-opus-4-8; label text alone is not proof.",
+            "For serious alerts-and-recommendations gates, Opus challenger acceptance requires verified model path claude-cli/claude-opus-4-8; label text alone is not proof.",
             "Do not dispatch material implementation when the versioned efficiency policy is missing or malformed; shallow status remains available.",
         ],
     }
+    for key in (
+        "workflow_capsules",
+        "pm_summary",
+        "otel_carry_forward",
+        "main_session_escalation_consumer_summary",
+        "main_session_action_executor_summary",
+        "wf88_wiki_synthesis",
+        "wiki_bootstrap_proof",
+        "coding_outcome_efficiency",
+        "actionability_summary",
+        "interruption_recovery",
+        "wf74_summary",
+        "recommended_routes",
+    ):
+        payload[key] = strip_retired_finance_routes(payload.get(key))
     payload["validation"] = validate(payload)
     if payload["validation"]["status"] != "ok":
         payload["status"] = "warning"
@@ -1370,6 +1480,21 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
     for item in payload.get("core_surfaces", []):
         for marker in as_list(as_dict(item).get("missing_efficiency_markers")):
             findings.append({"severity": "critical", "detail": f"missing efficiency marker: {item.get('path')}:{marker}"})
+    routing_contract = as_dict(payload.get("startup_recall_relationship_tool_route"))
+    if payload.get("schema") == SCHEMA:
+        if routing_contract.get("schema") != "veritas.startup_recall_relationship_tool_route.v1":
+            findings.append({"severity": "critical", "detail": "startup recall, relationship, and tool-reference route is missing or malformed"})
+        else:
+            route_triggers = {str(as_dict(row).get("trigger") or "") for row in as_list(routing_contract.get("routes"))}
+            required_triggers = {
+                "prior decision, continuity, person, date, or todo",
+                "code, workflow, skill, or document relationship",
+                "current operational, finance, approval, or execution truth",
+            }
+            if not required_triggers.issubset(route_triggers):
+                findings.append({"severity": "critical", "detail": "startup recall route is missing a required memory, relationship, or live-owner branch"})
+            if not as_list(routing_contract.get("tool_references")) or not str(routing_contract.get("tool_rule") or "").strip():
+                findings.append({"severity": "critical", "detail": "startup tool-reference contract is missing"})
     efficiency_policy = as_dict(payload.get("execution_efficiency_policy"))
     canonical_efficiency_policy = implementation_router.execution_efficiency_policy()
     if efficiency_policy != canonical_efficiency_policy:
@@ -1378,8 +1503,12 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
     if route_order != ["model_free_command", "codex_native_subagent", "main", "persistent_isolated_agent"]:
         findings.append({"severity": "critical", "detail": "execution efficiency route order mismatch"})
     quality = as_dict(efficiency_policy.get("quality_weighted_efficiency"))
-    if quality.get("minimum_comparable_main_accepted_jobs") != 10:
-        findings.append({"severity": "critical", "detail": "execution efficiency cohort gate mismatch"})
+    if (
+        quality.get("evaluation_mode") != "owner_directed_on_demand_evidence_review"
+        or quality.get("cohort_pilot_required") is not False
+        or quality.get("minimum_jobs_for_on_demand_review") != 0
+    ):
+        findings.append({"severity": "critical", "detail": "execution efficiency on-demand review contract mismatch"})
     if quality.get("automatic_route_ranking_allowed") is not False or quality.get("automatic_route_promotion_allowed") is not False:
         findings.append({"severity": "critical", "detail": "automatic route ranking or promotion must remain disabled"})
     outcome_efficiency = as_dict(payload.get("coding_outcome_efficiency"))
@@ -1494,7 +1623,7 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
     )
     if int(escalation_consumer.get("repeated_blocker_count") or 0) and not repeated_only_is_routed:
         findings.append({"severity": "warning", "detail": "main-session escalation consumer has repeated blocker residue"})
-    finance_warning_router = as_dict(payload.get("finance_evidence_warning_router_summary"))
+    finance_alerts = as_dict(payload.get("finance_alerts_os_summary"))
     wf88_wiki = as_dict(payload.get("wf88_wiki_synthesis"))
     wiki_bootstrap = as_dict(payload.get("wiki_bootstrap_proof"))
     actionability = as_dict(payload.get("actionability_summary"))
@@ -1678,12 +1807,8 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
                     "priority": "P2",
                     "detail": "validator bundle selected commands lack clear plan-only interpretation",
                 })
-    if finance_warning_router.get("validation_status") not in {None, "ok"}:
-        findings.append({"severity": "warning", "detail": "finance evidence warning router validation is not ok"})
-    if int(finance_warning_router.get("blocking_section_count") or 0):
-        findings.append({"severity": "warning", "detail": "finance evidence warning router has blocking sections"})
-    if finance_warning_router.get("status") is not None and finance_warning_router.get("customer_output_allowed") is not False:
-        findings.append({"severity": "critical", "detail": "finance warning router must keep customer output disabled"})
+    if finance_alerts.get("status") != "ok":
+        findings.append({"severity": "critical", "detail": "alerts OS proof chain is blocked"})
     challenger_policy = as_dict(payload.get("challenger_model_policy"))
     efficiency_policy = as_dict(payload.get("execution_efficiency_policy"))
     quality_efficiency = as_dict(efficiency_policy.get("quality_weighted_efficiency"))
@@ -1709,7 +1834,7 @@ def render_md(payload: dict[str, Any]) -> str:
     otel = as_dict(payload.get("otel_carry_forward"))
     escalation_consumer = as_dict(payload.get("main_session_escalation_consumer_summary"))
     action_executor = as_dict(payload.get("main_session_action_executor_summary"))
-    finance_warning_router = as_dict(payload.get("finance_evidence_warning_router_summary"))
+    finance_alerts = as_dict(payload.get("finance_alerts_os_summary"))
     actionability = as_dict(payload.get("actionability_summary"))
     wiki_bootstrap = as_dict(payload.get("wiki_bootstrap_proof"))
     recovery = as_dict(payload.get("interruption_recovery"))
@@ -1717,6 +1842,7 @@ def render_md(payload: dict[str, Any]) -> str:
     recovery_lane = as_dict(recovery.get("lane_register"))
     recovery_release = as_dict(recovery.get("release_contract"))
     recovery_validator = as_dict(recovery.get("validator_bundle"))
+    startup_route = as_dict(payload.get("startup_recall_relationship_tool_route"))
     validation = as_dict(payload.get("validation"))
     challenger_policy = as_dict(payload.get("challenger_model_policy"))
     efficiency_policy = as_dict(payload.get("execution_efficiency_policy"))
@@ -1746,8 +1872,8 @@ def render_md(payload: dict[str, Any]) -> str:
         f"- Cron status: {cron.get('status')} / wake main {cron.get('should_wake_main_session')}",
         f"- OTEL carry-forward: {otel.get('status')} / drift {otel.get('drift_status')} / recs {otel.get('recommendation_count')} / auto-route {otel.get('auto_implementation_status')}",
         f"- Escalation consumer: {escalation_consumer.get('status')} / safe actions {escalation_consumer.get('executed_safe_action_count')} / unresolved {escalation_consumer.get('unresolved_count')} / repeated {escalation_consumer.get('repeated_blocker_count')}",
-        f"- Main action executor: {action_executor.get('status')} / {action_executor.get('action_type')} / selected {action_executor.get('selected_pm_job') or action_executor.get('parallel_helper_workstream')} / executed {action_executor.get('executed')}",
-        f"- Finance warning router: {finance_warning_router.get('status')} / blocking {finance_warning_router.get('blocking_section_count')} / caveats {finance_warning_router.get('caveat_sections')}",
+        f"- Main action executor: {action_executor.get('status')} / executed {action_executor.get('executed')} / failed {action_executor.get('execution_failed')}",
+        f"- Alerts OS proofs: {finance_alerts.get('status')} / blocked {finance_alerts.get('blocked_proofs')} / tickers {finance_alerts.get('ticker_count')} / states {finance_alerts.get('alert_state_counts')}",
         f"- Wiki bootstrap proof: {wiki_bootstrap.get('status')} / validation {wiki_bootstrap.get('validation_status')} / gate {wiki_bootstrap.get('bootstrap_gate')} / files {wiki_bootstrap.get('validated_file_count')}/{wiki_bootstrap.get('required_file_count')} / auto-apply {wiki_bootstrap.get('auto_apply_count')}",
         f"- Implementation efficiency contract: {efficiency_policy.get('schema')} / model-free first / bounded native Terra / persistent Terra with proof / Main-Sol explicit only",
         f"- Efficiency evidence: conformant {outcome_efficiency.get('route_conformant_count')} / mismatches {outcome_efficiency.get('route_mismatch_count')} / retries {outcome_efficiency.get('total_retry_count')} / comparable cohorts {outcome_efficiency.get('comparable_cohort_count')} / gate {quality_efficiency.get('minimum_comparable_main_accepted_jobs')} accepted jobs / auto-promotion {quality_efficiency.get('automatic_route_promotion_allowed')}",
@@ -1774,7 +1900,6 @@ def render_md(payload: dict[str, Any]) -> str:
         f"- Owner-gated decisions: {wf74.get('owner_gated_decision_required_count')} / top {wf74.get('owner_gated_top_gate')}: {wf74.get('owner_gated_top_title')}",
         f"- Token usage events/tokens: {wf74.get('token_usage_event_count')} / {wf74.get('token_usage_total_tokens')}",
         f"- Implementation token events/gaps: {wf74.get('token_usage_implementation_event_count')} / {wf74.get('token_usage_implementation_gap_count')}",
-        f"- Finance correctness rows ok/warn/blocked: {wf74.get('finance_ok_rows')} / {wf74.get('finance_warning_rows')} / {wf74.get('finance_blocked_rows')}",
         f"- Serious-work challenger model: {challenger_policy.get('required_challenger_model')}",
         "",
         "## WF74 Startup Pickup",
@@ -1786,6 +1911,19 @@ def render_md(payload: dict[str, Any]) -> str:
             f"priority `{pickup.get('priority')}`, followups `{pickup.get('followup_count')}`; "
             f"`{pickup.get('command')}`"
         )
+    lines.extend([
+        "",
+        "## Recall, Relationship, And Tool Route",
+        f"- Selection: {startup_route.get('selection_rule')}",
+    ])
+    for route in as_list(startup_route.get("routes")):
+        row = as_dict(route)
+        lines.append(f"- {row.get('trigger')}: {row.get('primary')}; then {row.get('follow_up')}. Fallback: {row.get('degraded_route')}")
+    for reference in as_list(startup_route.get("tool_references")):
+        row = as_dict(reference)
+        lines.append(f"- Tool reference — {row.get('scope')}: {row.get('owner')} -> `{row.get('reference')}`")
+    if startup_route:
+        lines.append(f"- Tool rule: {startup_route.get('tool_rule')}")
     lines.extend([
         "",
         "## Open First",

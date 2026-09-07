@@ -1,0 +1,13 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "42e1f659-cb2c-4678-8279-10ff5f67302c",
+  "name": "Retired — Runtime - OS Audit Companion Packets Refresh",
+  "required": false,
+  "enabled": false,
+  "owner_workflow": "RUNTIME",
+  "original_schedule": {"kind": "cron", "expr": "24 18 * * *", "tz": "America/Phoenix"},
+  "original_payload": ["python", "scripts\\os_audit_companion_refresh_predispatch_prefilter.py", "--execute", "--write", "--validate"],
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired during the alerts-and-recommendations OS cutover because its companion refresh still invoked the obsolete WF78 visibility producer.",
+  "rollback_requires_owner_gate": true
+}

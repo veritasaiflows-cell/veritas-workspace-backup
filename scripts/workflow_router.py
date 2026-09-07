@@ -37,10 +37,6 @@ PM_ROUTE_ALIASES = {
     "WF75": "wf75_service_state",
     "WF-RETAIL-ROUTING": "retail_truth_routing",
     "WF73": "parallel_lane_orchestration",
-    "WF78": "wf78_scaleout",
-    "WF84": "finance_os_data_model",
-    "WF85": "trade_grade_decision_os",
-    "WF72": "sql_index",
 }
 
 

@@ -12,11 +12,11 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `tmp/wf88-wiki-review-events.json`
 ## Claim-catalog delta
 
-- Baseline generated: `2026-08-26T05:12:13Z`.
+- Baseline generated: `2026-09-03T04:43:54Z`.
 - Added claim IDs: `none`.
 - Removed claim IDs: `none`.
-- Changed claim IDs: `recommendation-outcome-closure`.
-- Source-reference changes: `action-state:enforce-no-orphan-improvement-actions, action-state:grade-recommendation-outcomes, action-state:optimize-token-heavy-cron-api-calls, action-state:preserve-zero-auto-apply, action-state:refresh-wf88-wiki-synthesis, action-state:route-open-improvement-followups, followup-no-orphan-health, promotion-leak-guard-health, recommendation-outcome-closure`.
+- Changed claim IDs: `none`.
+- Source-reference changes: `action-state:grade-recommendation-outcomes, action-state:maintain-wf74-wf88-loop-trace, action-state:preserve-zero-auto-apply, action-state:refresh-wf88-wiki-synthesis, promotion-leak-guard-health, recommendation-outcome-closure`.
 
 ## Review event references
 

@@ -1,0 +1,61 @@
+{
+  "schema": "veritas.wf78_position_sizing_integration_proposal.v1",
+  "generated_at_utc": "2026-08-29T15:06:02Z",
+  "status": "ok",
+  "purpose": "Review-only integration proposal for WF78 source-backed position-sizing/deployment-readiness rows.",
+  "authority_boundary": {
+    "review_only": true,
+    "integration_proposal_only": true,
+    "automated_non_capital_routing_allowed": true,
+    "proposal_applied": false,
+    "ticker_card_mutation_allowed": false,
+    "deployment_surface_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "portfolio_sizing_mutation_allowed": false,
+    "sql_canon_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": [
+    "tmp/wf78-position-sizing-surface-review.json",
+    "tmp/wf78-deployment-readiness-review.json"
+  ],
+  "summary": {
+    "proposal_row_count": 0,
+    "ready_for_review_count": 0,
+    "blocked_count": 0,
+    "slice_count": 0,
+    "tier_counts": {},
+    "proposal_status_counts": {},
+    "band_state_counts": {},
+    "deployment_singleton_status": {
+      "row_count": 0,
+      "review_status_counts": {},
+      "ready_for_review_count": 0,
+      "next_safe_action": "Review ready rows for deployment-readiness surface packaging; do not mutate deployment surfaces or infer approval."
+    },
+    "next_safe_action": "No pending integration proposal rows remain after the current repair/apply cycle."
+  },
+  "slices": [],
+  "rows": [],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "no proposal rows found"
+    ]
+  },
+  "stop_lines": [
+    "Integration proposal only; no ticker-card, deployment-surface, canon, portfolio, or SQL-canon mutation.",
+    "No capital deployment, paper/live execution, brokerage/account action, money movement, customer output, or owner approval inference.",
+    "Rows marked ready are ready for owner-review proposal drafting only, not deployment or execution."
+  ]
+}

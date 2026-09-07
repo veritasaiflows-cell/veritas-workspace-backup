@@ -1,0 +1,2109 @@
+{
+ "schema": "veritas.wf78_tier_parity_baseline.v1",
+ "generated_at_utc": "2026-08-20T14:05:06Z",
+ "purpose": "Pre-retirement routing baseline. Post-retirement routing MUST match this exactly.",
+ "row_count": 300,
+ "baseline_hash_sha256": "aeb525da3576f903fae26491db017512b87e8f2dc26d13f6bf961df04c4c990e",
+ "rows": {
+  "XLB": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-CHALLENGED",
+   "route_reason": "auto_promoted_from_b_to_a_competitive_gate_under_non_capital_routing_authority; tier_a_confidence_gate_force_a_challenged",
+   "lane_tier": "Tier A Sleeve",
+   "route_priority": 15
+  },
+  "BKNG": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-WATCH",
+   "route_reason": "auto_promoted_from_b_to_a_competitive_gate_under_non_capital_routing_authority",
+   "lane_tier": "Tier A Equity",
+   "route_priority": 15
+  },
+  "CVX": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-WATCH",
+   "route_reason": "auto_promoted_from_b_to_a_competitive_gate_under_non_capital_routing_authority",
+   "lane_tier": "Tier A Equity",
+   "route_priority": 15
+  },
+  "LLY": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-WATCH",
+   "route_reason": "auto_promoted_from_b_to_a_competitive_gate_under_non_capital_routing_authority",
+   "lane_tier": "Tier A Equity",
+   "route_priority": 15
+  },
+  "AAPL": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "ACN": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "ADI": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "ADP": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "ADSK": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "AJG": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "AKAM": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "ALB": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "ALLE": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "AMAT": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "AMCR": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "AME": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "ANET": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "AON": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "AOS": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "APD": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "APH": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "APP": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "AVGO": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "AXON": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "CASY": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "CCL": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "CDNS": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "CRWD": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "DASH": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "DDOG": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "DECK": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "EMR": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "FCX": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "MA": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "MDB": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "MU": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "NOW": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "PANW": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "PLTR": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "QCOM": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "SCCO": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "SHOP": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "SNOW": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "TSM": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "TXN": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "V": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "auto_research_bench_from_recorded_or_previewed_tier_b_label",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 20
+  },
+  "ABBV": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "APA": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "CF": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "COP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "CPRT": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "DOW": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "DVN": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "EL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "EOG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "FANG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "FICO": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "LYB": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "NEM": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "OXY": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "PSX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "TPL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "TRGP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "UBER": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "CTVA": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-REPAIR",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "FOX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-REPAIR",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "FOXA": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-REPAIR",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "HAL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-REPAIR",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "OKE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-REPAIR",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "PSKY": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-REPAIR",
+   "route_reason": "tier_c_attention_triggered_by_momentum_fundamentals_and_repair_burden",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 35
+  },
+  "BRK.B": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-CHALLENGED",
+   "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate",
+   "lane_tier": "Tier A Equity",
+   "route_priority": 40
+  },
+  "GOOG": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-CHALLENGED",
+   "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate",
+   "lane_tier": "Tier A Equity",
+   "route_priority": 40
+  },
+  "ITA": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-CHALLENGED",
+   "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate; tier_a_confidence_gate_force_a_challenged",
+   "lane_tier": "Tier A Sleeve",
+   "route_priority": 40
+  },
+  "JPM": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-CHALLENGED",
+   "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate",
+   "lane_tier": "Tier A Equity",
+   "route_priority": 40
+  },
+  "LIN": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-CHALLENGED",
+   "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate",
+   "lane_tier": "Tier A Equity",
+   "route_priority": 40
+  },
+  "NVDA": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-CHALLENGED",
+   "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate",
+   "lane_tier": "Tier A Equity",
+   "route_priority": 40
+  },
+  "VRT": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-CHALLENGED",
+   "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate",
+   "lane_tier": "Tier A Equity",
+   "route_priority": 40
+  },
+  "XOM": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-CHALLENGED",
+   "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate",
+   "lane_tier": "Tier A Equity",
+   "route_priority": 40
+  },
+  "ETN": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CHALLENGED",
+   "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate; tier_a_confidence_repaired_inline_from_current_fundamentals; auto_demoted_a_to_b_by_tier_a_confidence_gate_force_a_challenged",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 40
+  },
+  "GS": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CHALLENGED",
+   "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate; tier_a_confidence_repaired_inline_from_current_fundamentals; auto_demoted_a_to_b_by_tier_a_confidence_gate_force_a_challenged",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 40
+  },
+  "MSFT": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CHALLENGED",
+   "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate; tier_a_confidence_repaired_inline_from_current_fundamentals; auto_demoted_a_to_b_by_tier_a_confidence_gate_force_a_challenged",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 40
+  },
+  "PH": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CHALLENGED",
+   "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate; tier_a_confidence_repaired_inline_from_current_fundamentals; auto_demoted_a_to_b_by_tier_a_confidence_gate_force_a_challenged",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 40
+  },
+  "CME": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-WATCH",
+   "route_reason": "legacy_tier_a_preserved_pending_auto_router_evidence",
+   "lane_tier": "Tier A Equity",
+   "route_priority": 50
+  },
+  "META": {
+   "auto_tier": "Tier A",
+   "auto_state": "A-WATCH",
+   "route_reason": "legacy_tier_a_preserved_pending_auto_router_evidence",
+   "lane_tier": "Tier A Equity",
+   "route_priority": 50
+  },
+  "AMD": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 50
+  },
+  "AMZN": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 50
+  },
+  "CAT": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 50
+  },
+  "ECL": {
+   "auto_tier": "Tier B",
+   "auto_state": "B-CANDIDATE",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence",
+   "lane_tier": "Tier B Equity",
+   "route_priority": 50
+  },
+  "GE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-HOLD",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence; auto_demoted_to_c_hold_by_tier_b_capacity_cap",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "KTOS": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-HOLD",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence; auto_demoted_to_c_hold_by_tier_b_capacity_cap",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "LMT": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-HOLD",
+   "route_reason": "legacy_tier_a_preserved_pending_auto_router_evidence; tier_a_confidence_repaired_inline_from_current_fundamentals; auto_demoted_a_to_b_by_tier_a_confidence_gate_force_a_challenged; auto_demoted_to_c_hold_by_tier_b_capacity_cap",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "LNG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-HOLD",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence; auto_demoted_to_c_hold_by_tier_b_capacity_cap",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "NFLX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-HOLD",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence; auto_demoted_to_c_hold_by_tier_b_capacity_cap",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "RTX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-HOLD",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence; auto_demoted_to_c_hold_by_tier_b_capacity_cap",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "SMCI": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-HOLD",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence; auto_demoted_to_c_hold_by_tier_b_capacity_cap",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "TMUS": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-HOLD",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence; auto_demoted_to_c_hold_by_tier_b_capacity_cap",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "VMC": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-HOLD",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence; auto_demoted_to_c_hold_by_tier_b_capacity_cap",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "WMB": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-CANDIDATE-HOLD",
+   "route_reason": "legacy_tier_b_preserved_pending_auto_router_evidence; auto_demoted_to_c_hold_by_tier_b_capacity_cap",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "A": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ABNB": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ABT": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ACGL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ADBE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ADM": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AEE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AEP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AES": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AFL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AIG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AIZ": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ALGN": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ALL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AMGN": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AMP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AMT": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "APO": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "APTV": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ARE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ARES": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ASML": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ATO": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AVB": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AVY": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AWK": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AXP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "AZO": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BA": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BAC": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BALL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BAX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BBY": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BDX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BEN": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BF-B": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BIIB": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BKR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BLDR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BLK": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BMY": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BNY": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BRO": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BSX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "BXP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "C": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CAG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CAH": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CARR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CB": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CBOE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CBRE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CCI": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CDW": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CEG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CFG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CHD": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CHRW": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CHTR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CI": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CIEN": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CINF": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CLX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CMCSA": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CMG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CMI": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CMS": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CNC": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CNP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "COHR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "COO": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "COR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "COST": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CPB": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CPT": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CRH": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CRL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CRM": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CSCO": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CSGP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CSX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CTAS": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CTSH": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CVNA": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "CVS": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "D": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DAL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DD": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DELL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DGX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DHI": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DHR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DIS": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DLR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DLTR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DOC": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DOV": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DPZ": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DRI": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DTE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DUK": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "DVA": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EA": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EBAY": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ED": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EFX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EIX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EME": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EQIX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EQR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EQT": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ES": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ESS": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ETR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EVRG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EXC": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EXE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EXPD": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EXPE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "EXR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "F": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "FAST": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "FE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "FFIV": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "FLEX": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "FRT": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "FSLR": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "GD": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "GIS": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "GM": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "GOOGL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "GPC": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "GRMN": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "HAS": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "HD": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "HON": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "HRL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "HST": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "HSY": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "IFF": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "INTU": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "INVH": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "IP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "IRM": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ISRG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "KDP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "KHC": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "KMB": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "KMI": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "LNT": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "LYV": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "MCD": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "MCK": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "MLM": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "MOS": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "MPC": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "NEE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "NI": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "NOC": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "NUE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "NWS": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "NWSA": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "OMC": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ORCL": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "ORLY": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "PAVE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Sleeve",
+   "route_priority": 50
+  },
+  "PEP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "PG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "PKG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "PPG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "SAP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "SHW": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "SLB": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "SLV": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Commodity",
+   "route_priority": 50
+  },
+  "SO": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "STLD": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "SYK": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "T": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "TDG": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "TKO": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "TLT": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Rates/Income",
+   "route_priority": 50
+  },
+  "TMO": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "TTD": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "TTWO": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "UNH": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "UNP": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "URI": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "VAW": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Sleeve",
+   "route_priority": 50
+  },
+  "VLO": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "VXUS": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Sleeve",
+   "route_priority": 50
+  },
+  "VZ": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "WMT": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Equity",
+   "route_priority": 50
+  },
+  "XLC": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Sleeve",
+   "route_priority": 50
+  },
+  "XLE": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Sleeve",
+   "route_priority": 50
+  },
+  "XLF": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Sleeve",
+   "route_priority": 50
+  },
+  "XLI": {
+   "auto_tier": "Tier C",
+   "auto_state": "C-MONITOR",
+   "route_reason": "default_breadth_monitor",
+   "lane_tier": "Tier C Sleeve",
+   "route_priority": 50
+  }
+ }
+}

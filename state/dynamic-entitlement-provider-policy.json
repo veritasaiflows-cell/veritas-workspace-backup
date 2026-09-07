@@ -1,0 +1,66 @@
+{
+  "schema": "veritas.dynamic_entitlement_provider_policy.v1",
+  "effective_at_utc": "2026-09-02T22:20:00Z",
+  "approved_by": "Randall",
+  "approved_at_local": "2026-09-02 15:17 America/Phoenix",
+  "enabled": true,
+  "purpose": "Standing owner-approved envelope for non-capital provider evidence refresh over the guarded-SQL dynamic Tier A+B entitlement scope. Replaces the retired per-run signed approval record.",
+  "supersedes": {
+    "mechanism": "phase3f_external_canary_approval_record",
+    "retired_elements": [
+      "Ed25519 signature verification",
+      "PRODUCTION_PHASE3F_TRUST pin",
+      "cryptography/nacl/ed25519 backend requirement",
+      "900-second record TTL",
+      "one-shot consumption receipt",
+      "per-run decision packet binding",
+      "twelve-file source hash binding"
+    ],
+    "reason": "Owner directed that ordinary non-capital data collection must not require per-run approval. USER.md already authorizes automating validated non-capital research without ordinary manual approval."
+  },
+  "allowed_components": [
+    "analyst_consensus",
+    "alert_level_freshness"
+  ],
+  "allowed_providers": [
+    "yfinance",
+    "alpaca_market_data"
+  ],
+  "envelope": {
+    "max_scope_count": 128,
+    "max_attempts_per_scope_member": 2,
+    "max_run_duration_seconds": 900,
+    "max_retries_per_component": 0
+  },
+  "daily_budget": {
+    "max_daily_provider_calls": 400,
+    "timezone": "America/Phoenix",
+    "ledger_path": "state/dynamic-entitlement-provider-call-ledger.json",
+    "exhausted_behavior": "fail_closed_zero_provider_calls"
+  },
+  "scope_source": {
+    "authority": "guarded_sql_dynamic_entitlement_scope",
+    "truncation_allowed": false,
+    "overflow_behavior": "fail_closed_zero_provider_calls_with_member_enumerating_debt_artifact"
+  },
+  "authority_boundary": {
+    "provider_reads_allowed": true,
+    "guarded_sql_tier_or_membership_writes_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "recommendation_generation_or_publication_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "dependency_install_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "review": {
+    "review_by_utc": "2026-12-02T00:00:00Z",
+    "review_trigger": "Review on schedule, or earlier if allowed_providers, allowed_components, or the daily budget need to change.",
+    "expiry_behavior": "advisory_warning_not_hard_stop"
+  }
+}

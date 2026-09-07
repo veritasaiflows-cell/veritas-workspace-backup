@@ -339,7 +339,104 @@ def test_future_cancelled_lane_requires_ended_at_despite_completed_at() -> None:
     expect(not fallbacks, "future terminal row must not be mislabeled as a historical fallback")
 
 
-def test_active_admission_keeps_terminal_route_and_proof_debt_in_full_ledger() -> None:
+def terminal_outcome_history_gap_lane(recorded_at_utc: str) -> dict:
+    lane = active_implementation_attempt_lane()
+    lane["status"] = "blocked"
+    lane["lease_expires_at_utc"] = None
+    lane["ended_at_utc"] = recorded_at_utc
+    lane["runtime"].update({
+        "incident_code": "validation_failure",
+        "incident_count": 1,
+        "outcome_event_kind": "incident",
+        "outcome_event_sequence": 1,
+        "outcome_recorded_at_utc": recorded_at_utc,
+    })
+    lane.pop("outcome_events", None)
+    return lane
+
+
+def test_historical_terminal_outcome_history_gap_is_warning_not_backfill() -> None:
+    register = lanes.empty_register()
+    register["lanes"] = [terminal_outcome_history_gap_lane("2026-08-26T13:57:13Z")]
+    result = lanes.validate_register(register)
+    expect(result["status"] == "ok", "proven historical event-history gap should be warning-grade")
+    expect(
+        "historical_terminal_outcome_event_history_gaps_are_classified_not_backfilled" in warning_names(result),
+        "historical event-history gap must remain visible without invented events",
+    )
+    expect(
+        "outcome_event_metadata_is_bounded_and_complete" not in error_names(result),
+        "historical event-history gap must not remain a current-contract error",
+    )
+
+
+def test_post_cutover_terminal_outcome_history_gap_fails_closed() -> None:
+    register = lanes.empty_register()
+    register["lanes"] = [terminal_outcome_history_gap_lane("2026-08-26T13:57:14Z")]
+    result = lanes.validate_register(register)
+    expect(result["status"] == "error", "post-cutover event-history gap must fail closed")
+    expect(
+        "outcome_event_metadata_is_bounded_and_complete" in error_names(result),
+        "future event-history enforcement must remain critical",
+    )
+
+
+def missing_proof_lane(created_at_utc: str) -> dict:
+    lane = completed_model_lane(completed_at_utc=created_at_utc)
+    lane["runtime"] = {}
+    lane["proof_artifacts"] = ["tmp/unit-missing-proof-retention.json"]
+    return lane
+
+
+def test_historical_missing_proof_is_warning_not_retargeted() -> None:
+    register = lanes.empty_register()
+    register["lanes"] = [missing_proof_lane("2026-08-14T00:00:00Z")]
+    result = lanes.validate_register(register)
+    expect(result["status"] == "ok", "historical missing proof should be warning-grade")
+    expect(
+        "historical_missing_proof_artifacts_are_classified_not_retargeted" in warning_names(result),
+        "historical missing proof must remain visible without basename retargeting",
+    )
+    expect("proof_artifacts_exist" not in error_names(result), "historical proof debt must not remain critical")
+
+
+def test_post_cutover_missing_proof_fails_closed() -> None:
+    register = lanes.empty_register()
+    register["lanes"] = [missing_proof_lane("2026-08-22T15:42:23Z")]
+    result = lanes.validate_register(register)
+    expect(result["status"] == "error", "post-cutover missing proof must fail closed")
+    expect("proof_artifacts_exist" in error_names(result), "future proof retention must remain critical")
+
+
+def test_blocked_route_mismatch_is_warning_incident() -> None:
+    register = lanes.empty_register()
+    lane = completed_model_lane(completed_at_utc="2026-06-01T00:00:00Z")
+    lane["lane_id"] = "WF88::blocked-route-mismatch-incident"
+    lane["status"] = "blocked"
+    lane["runtime"].update({
+        "incident_code": "telemetry_attribution_unavailable",
+        "token_attribution_source": "codex_native_rollout_jsonl",
+        "expected_model_path": "openai/gpt-5.6-terra",
+        "actual_model_path": "openai/gpt-5.6-sol",
+        "expected_thinking": "low",
+        "actual_thinking": "ultra",
+        "expected_execution_backend": "codex_native_subagent",
+        "actual_execution_backend": "codex_native_subagent",
+    })
+    register["lanes"] = [lane]
+    result = lanes.validate_register(register)
+    expect(result["status"] == "ok", "fail-closed blocked route mismatch should be warning-grade")
+    expect(
+        "terminal_nonaccepted_route_mismatch_incidents_are_classified" in warning_names(result),
+        "blocked route mismatch must remain visible as an incident",
+    )
+    expect(
+        "terminal_codex_native_route_conforms_to_expected_route" not in error_names(result),
+        "a nonaccepted route incident must not invalidate the full ledger",
+    )
+
+
+def test_active_admission_keeps_terminal_route_and_proof_debt_visible() -> None:
     register = lanes.empty_register()
     historical = completed_model_lane(completed_at_utc="2026-06-01T00:00:00Z")
     historical["lane_id"] = "WF88::historical-route-proof-debt"
@@ -363,7 +460,11 @@ def test_active_admission_keeps_terminal_route_and_proof_debt_in_full_ledger() -
         "terminal_codex_native_route_conforms_to_expected_route" in error_names(full),
         "terminal route mismatch must remain visible",
     )
-    expect("proof_artifacts_exist" in error_names(full), "missing proof must remain visible")
+    expect(
+        "historical_missing_proof_artifacts_are_classified_not_retargeted" in warning_names(full),
+        "historical missing proof must remain visible without invented recovery",
+    )
+    expect("proof_artifacts_exist" not in error_names(full), "pre-cutover missing proof should be warning-grade")
     expect(admission["status"] == "ok", "terminal debt must not block an otherwise empty active projection")
 
 
@@ -382,7 +483,12 @@ def main() -> None:
     test_active_identity_gap_with_unclassifiable_created_at_fails_closed()
     test_cancelled_lane_accepts_completed_at_as_historical_terminal_end()
     test_future_cancelled_lane_requires_ended_at_despite_completed_at()
-    test_active_admission_keeps_terminal_route_and_proof_debt_in_full_ledger()
+    test_historical_terminal_outcome_history_gap_is_warning_not_backfill()
+    test_post_cutover_terminal_outcome_history_gap_fails_closed()
+    test_historical_missing_proof_is_warning_not_retargeted()
+    test_post_cutover_missing_proof_fails_closed()
+    test_blocked_route_mismatch_is_warning_incident()
+    test_active_admission_keeps_terminal_route_and_proof_debt_visible()
     print("concurrent lane token closeout tests passed")
 
 

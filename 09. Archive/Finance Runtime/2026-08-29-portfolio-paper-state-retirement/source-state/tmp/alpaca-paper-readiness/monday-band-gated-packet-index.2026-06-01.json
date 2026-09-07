@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "artifact_type": "wf67_monday_band_gated_packet_index",
+  "created_at_utc": "2026-05-30T07:29:26Z",
+  "target_session_date": "2026-06-01",
+  "purpose": "Prepare promoted-name paper-only packets for possible Monday execution if tickers stay in written bands and Randall gives exact order approval.",
+  "authority_boundary": {
+    "paper_only": true,
+    "packet_generation_only": true,
+    "execution_allowed_by_index": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "ranking_basis": [
+    {
+      "rank": 1,
+      "ticker": "XLB",
+      "reason": "Best incremental portfolio-construction add; Materials ETF diversification and in band."
+    },
+    {
+      "rank": 2,
+      "ticker": "ETN",
+      "reason": "Only deployable-now workflow, but already held and near top of band."
+    },
+    {
+      "rank": 3,
+      "ticker": "VRT",
+      "reason": "Strong AI-power challenger, but overlaps ETN and wider stop distance."
+    },
+    {
+      "rank": 4,
+      "ticker": "LIN",
+      "reason": "Quality Materials single-name, behind XLB due weaker technical posture/valuation discipline."
+    },
+    {
+      "rank": 5,
+      "ticker": "NVDA",
+      "reason": "Excellent thesis but lowest incremental add due Tech/AI concentration and crowding."
+    }
+  ],
+  "cards": [
+    "tmp/alpaca-paper-readiness/order-card.xlb-monday-band-gated-2026-06-01.json",
+    "tmp/alpaca-paper-readiness/order-card.etn-monday-band-gated-2026-06-01.json",
+    "tmp/alpaca-paper-readiness/order-card.vrt-monday-band-gated-2026-06-01.json",
+    "tmp/alpaca-paper-readiness/order-card.lin-monday-band-gated-2026-06-01.json",
+    "tmp/alpaca-paper-readiness/order-card.nvda-monday-band-gated-2026-06-01.json"
+  ],
+  "required_before_any_execution": [
+    "fresh Monday 2026-06-01 quote for each ticker",
+    "price inside written band and limit not above band high",
+    "exact Randall approval of ticker, side, notional, order type, TIF, and limit",
+    "fresh WF67 guard validation",
+    "fresh short-lived kill switch",
+    "WF67 wrapper-only paper endpoint execution"
+  ],
+  "requests": [
+    "tmp/alpaca-paper-readiness/paper-trade-request.xlb-monday-band-gated-2026-06-01.json",
+    "tmp/alpaca-paper-readiness/paper-trade-request.etn-monday-band-gated-2026-06-01.json",
+    "tmp/alpaca-paper-readiness/paper-trade-request.vrt-monday-band-gated-2026-06-01.json",
+    "tmp/alpaca-paper-readiness/paper-trade-request.lin-monday-band-gated-2026-06-01.json",
+    "tmp/alpaca-paper-readiness/paper-trade-request.nvda-monday-band-gated-2026-06-01.json"
+  ],
+  "validation": {
+    "json_validation": "passed",
+    "request_generation": "passed_for_all_cards",
+    "portfolio_config_strict": "passed",
+    "wf67_guard_validation_pre_monday": "blocked_expected_expired_kill_switch",
+    "wf67_guard_validation_path": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.monday-band-gated-prep-2026-06-01.json",
+    "execution_readiness_now": false,
+    "reason_not_ready_now": "Saturday prep only; kill switch is expired by design and exact Randall per-order approval is still pending."
+  }
+}

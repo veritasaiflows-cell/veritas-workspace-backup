@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-06-10T21:13:58Z",
+  "status": "applied_pending_post_apply_validation",
+  "window": "post-close",
+  "approval_artifact": "tmp/portfolio-mutation-proposals/approvals/standing-approved/standing-post-close-MSFT-capital-deployment-review-2026-06-10-20260610T211358Z.json",
+  "proposal_id": "post-close:MSFT:capital-deployment-review:2026-06-10",
+  "authority": {
+    "phase": "WF64 approval-gated atomic apply foundation",
+    "apply_allowed_without_valid_approval_artifact": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false,
+    "brokerage_order_allowed": false,
+    "money_movement_allowed": false,
+    "rollback_required_on_failure": true,
+    "post_apply_validation_required": true,
+    "valid_approval_artifact": true,
+    "apply_allowed": true,
+    "scoped_owner_file_write_allowed": true
+  },
+  "validation": {
+    "schema_version": 1,
+    "generated_at_utc": "2026-06-10T21:13:58Z",
+    "status": "ok",
+    "input": "tmp/portfolio-mutation-proposals/approvals/standing-approved/standing-post-close-MSFT-capital-deployment-review-2026-06-10-20260610T211358Z.json",
+    "proposal_id": "post-close:MSFT:capital-deployment-review:2026-06-10",
+    "authority": {
+      "approval_artifact_can_scope_owner_file_write": true,
+      "approved_adjustment_categories": [
+        "sizing"
+      ],
+      "trade_or_account_action_allowed": false,
+      "owner_approval_inferred": false,
+      "legacy_sizing_sleeve_cash_risk_rule_field_allowed": false,
+      "execution_entitlement_allowed": false
+    },
+    "summary": {
+      "critical": 0,
+      "warning": 0
+    },
+    "findings": []
+  },
+  "summary": {
+    "files_to_write": 1,
+    "writes_performed": true,
+    "rollback_plan_created": true,
+    "post_apply_validation_required": true,
+    "files_written": 1,
+    "rollback_performed": false,
+    "failure": null
+  },
+  "build_errors": [],
+  "rollback_plan": {
+    "backup_root": "tmp/portfolio-mutation-proposals/apply-backups/2026-06-10T21-13-58Z-post-close-MSFT-capital-deployment-review-2026-06-10",
+    "restore_method": "copy each backup file back to its original relative path using atomic replace; apply helper also restores from backups automatically on failure",
+    "files": [
+      {
+        "path": "03. Portfolio/Portfolio Snapshot.md",
+        "backup_path": "tmp/portfolio-mutation-proposals/apply-backups/2026-06-10T21-13-58Z-post-close-MSFT-capital-deployment-review-2026-06-10/03. Portfolio/Portfolio Snapshot.md.bak",
+        "original_sha256": "f6c30b71d0e885d3ac11d3023c52fcc05de2d47140f2e888df7f6b1d85a7f245",
+        "updated_sha256": "5779cb47d311422eab2b2aaa5283c6710722bb0de55097e8b2919e75a2cb6014",
+        "changes": [
+          {
+            "change_type": "exact_text_replace",
+            "adjustment_category": "sizing",
+            "old_text_sha256": "5900dd5b4fb18b1f0937f09e18317c6cbb7682d69afe42981c26090f1b0fe54e",
+            "new_text_sha256": "42196a74f3abe2d45b680da0dd5f49c425c136ca3f74e43431dc6f57a3a166c6"
+          }
+        ]
+      }
+    ]
+  },
+  "stop_lines": [
+    "Apply is blocked unless the approval artifact validator returns ok for an unexpired, hash-matched, target-file-matched approval artifact.",
+    "Proposal packet authority flags remain false; this helper grants only scoped owner-file write mechanics for the approved exact diff.",
+    "No trade, order, brokerage, account, money-movement, owner-approval inference, or execution authority is granted.",
+    "Post-apply validators remain required before any workflow closure claim."
+  ],
+  "applied_files": [
+    {
+      "path": "03. Portfolio/Portfolio Snapshot.md",
+      "backup_path": "tmp/portfolio-mutation-proposals/apply-backups/2026-06-10T21-13-58Z-post-close-MSFT-capital-deployment-review-2026-06-10/03. Portfolio/Portfolio Snapshot.md.bak",
+      "updated_sha256": "5779cb47d311422eab2b2aaa5283c6710722bb0de55097e8b2919e75a2cb6014"
+    }
+  ]
+}

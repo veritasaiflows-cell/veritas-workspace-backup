@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.interactive_training_recordings_manifest.v1",
+  "generated_at_utc": "2026-09-06T23:27:21Z",
+  "clips": [],
+  "counts": {
+    "clips": 0
+  },
+  "authority_boundary": {
+    "local_files_only": true,
+    "external_upload_allowed": false,
+    "lms_configured": false,
+    "customer_data_allowed": false
+  }
+}

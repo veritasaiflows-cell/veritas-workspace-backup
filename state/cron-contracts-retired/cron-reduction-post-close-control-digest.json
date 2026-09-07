@@ -1,0 +1,13 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "e220c30e-c0ab-4f5a-8a7a-a2c0d16207ad",
+  "name": "Retired — Cron Reduction - Post-Close Control Digest",
+  "required": false,
+  "enabled": false,
+  "owner_workflow": "CRON phase1 post-close control reduction",
+  "original_schedule": {"kind": "cron", "expr": "22 15 * * 1-5", "tz": "America/Phoenix"},
+  "original_payload": ["python", "scripts\\cron_control_digest_runner.py", "--window", "post-close", "--write", "--write-md", "--validate"],
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired during the alerts-and-recommendations OS cutover because its digest consumed archived portfolio, deployment, and simulated-account state. The active post-close alerts chain supersedes it.",
+  "rollback_requires_owner_gate": true
+}

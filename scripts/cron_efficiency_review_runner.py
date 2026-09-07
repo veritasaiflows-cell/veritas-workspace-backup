@@ -12,13 +12,11 @@ import agi_harness_readiness_packet as agi_harness
 import agi_os_eval_gate_packet as agi_eval
 import cron_contract_validator as contract_validator
 import cron_predispatch_efficiency_plan as predispatch_plan
-import pm_autonomous_worker_predispatch_prefilter as pm_prefilter
 import prompt_book_eval_fixtures as prompt_fixtures
 import prompt_book_eval_gap_packet as prompt_eval_gap
 import prompt_book_linter as prompt_linter
 import prompt_book_pm_job_packet as prompt_pm_jobs
 import prompt_book_registry as prompt_registry
-import ticker_card_freshness_owner_runner as ticker_prefilter
 import isolated_agent_usage_metadata as isolated_usage
 import status_card_packet as status_card
 import token_budget_status as token_budget
@@ -54,7 +52,7 @@ AUTHORITY_BOUNDARY = {
     "raw_prompt_capture_allowed": False,
     "raw_response_capture_allowed": False,
     "tool_payload_capture_allowed": False,
-    "finance_canon_or_portfolio_mutation_allowed": False,
+    "finance_canon_mutation_allowed": False,
     "paper_or_live_execution_allowed": False,
     "brokerage_or_account_action_allowed": False,
     "owner_approval_inferred": False,
@@ -257,8 +255,6 @@ def build_review_payload(
     scorecard: dict[str, Any],
     predispatch: dict[str, Any],
     token_review_packet: dict[str, Any],
-    pm_prefilter_packet: dict[str, Any],
-    ticker_prefilter_packet: dict[str, Any],
     agi_eval_packet: dict[str, Any],
     agi_harness_packet: dict[str, Any],
     contract: dict[str, Any],
@@ -282,25 +278,26 @@ def build_review_payload(
     if token_review_validation.get("warnings"):
         warnings.extend(f"token_review:{item}" for item in as_list(token_review_validation.get("warnings")))
     warnings.extend(f"predispatch:{item}" for item in as_list(predispatch.get("warnings")))
-    pm_validation = as_dict(pm_prefilter_packet.get("validation"))
-    if pm_validation.get("status") == "blocked":
-        errors.append("pm_prefilter_blocked")
-    elif pm_validation.get("warnings"):
-        warnings.extend(f"pm_prefilter:{item}" for item in as_list(pm_validation.get("warnings")))
-    ticker_validation = as_dict(ticker_prefilter_packet.get("validation"))
-    if ticker_validation.get("status") == "blocked":
-        errors.append("ticker_card_prefilter_blocked")
-    elif ticker_validation.get("warnings"):
-        warnings.extend(f"ticker_card_prefilter:{item}" for item in as_list(ticker_validation.get("warnings")))
     agi_eval_validation = as_dict(agi_eval_packet.get("validation"))
     if agi_eval_validation.get("status") == "blocked":
         errors.append("agi_eval_blocked")
     elif agi_eval_validation.get("warnings"):
         warnings.extend(f"agi_eval:{item}" for item in as_list(agi_eval_validation.get("warnings")))
     agi_harness_validation = as_dict(agi_harness_packet.get("validation"))
+    agi_harness_errors = [str(item) for item in as_list(agi_harness_validation.get("errors"))]
+    agi_harness_readiness_blocked = bool(
+        agi_harness_packet.get("status") == "blocked"
+        and agi_harness_packet.get("readiness_state") == "not_ready_blocked"
+        and agi_harness_errors
+        and all(item.endswith("_gate") for item in agi_harness_errors)
+    )
     if agi_harness_validation.get("status") == "blocked":
-        errors.append("agi_harness_blocked")
-    elif agi_harness_validation.get("warnings"):
+        if agi_harness_readiness_blocked:
+            warnings.append("agi_harness_readiness:not_ready_blocked")
+            warnings.extend(f"agi_harness_readiness_gate:{item}" for item in agi_harness_errors)
+        else:
+            errors.append("agi_harness_blocked")
+    if agi_harness_validation.get("warnings"):
         warnings.extend(f"agi_harness:{item}" for item in as_list(agi_harness_validation.get("warnings")))
 
     prompt_registry_packet = as_dict(prompt_book.get("registry"))
@@ -341,8 +338,6 @@ def build_review_payload(
     changed_only_queue = as_dict(automation_queues.get("changed_only_prefilter"))
     prompt_queue = as_dict(automation_queues.get("prompt_compression"))
     later_outcome_queue = as_dict(automation_queues.get("later_outcome_guard"))
-    pm_prefilter = as_dict(pm_prefilter_packet.get("worker_prefilter"))
-    ticker_card_prefilter = as_dict(ticker_prefilter_packet.get("worker_prefilter"))
 
     review_status = "blocked" if errors else ("warning" if warnings else "ok")
     return {
@@ -369,18 +364,12 @@ def build_review_payload(
             "next_changed_only_candidate": token_review_summary.get("next_changed_only_candidate"),
             "fallback_changed_only_candidate": token_review_summary.get("fallback_changed_only_candidate"),
             "next_prompt_compression_candidate": token_review_summary.get("next_prompt_compression_candidate"),
-            "pm_prefilter_status": pm_prefilter_packet.get("status"),
-            "pm_prefilter_action": pm_prefilter_packet.get("action"),
-            "pm_prefilter_reason": pm_prefilter.get("reason"),
-            "pm_prefilter_source_unchanged": pm_prefilter.get("source_unchanged"),
-            "ticker_card_prefilter_status": ticker_prefilter_packet.get("status"),
-            "ticker_card_prefilter_action": ticker_prefilter_packet.get("action"),
-            "ticker_card_prefilter_reason": ticker_card_prefilter.get("reason"),
-            "ticker_card_prefilter_source_unchanged": ticker_card_prefilter.get("source_unchanged"),
             "agi_eval_status": agi_eval_packet.get("status"),
             "agi_eval_warning_count": as_dict(agi_eval_packet.get("summary")).get("warning_count"),
             "agi_harness_readiness_state": agi_harness_packet.get("readiness_state"),
             "agi_harness_warning_count": agi_harness_summary.get("warning_count"),
+            "agi_harness_readiness_blocked": agi_harness_readiness_blocked,
+            "agi_harness_readiness_gate_errors": agi_harness_errors,
             "prompt_book_registry_status": prompt_registry_packet.get("status"),
             "prompt_book_entry_count": prompt_registry_summary.get("entry_count"),
             "prompt_book_lint_status": prompt_lint_packet.get("status"),
@@ -405,16 +394,17 @@ def build_review_payload(
             "cron_prompt_integrity_error_count": contract_summary.get("live_prompt_integrity_error_count"),
             "scorecard_detail_mismatch_count": len(mismatches),
             "next_safe_action": (
-                "Repair prompt-integrity/contract errors before trusting cron success."
-                if errors else
+                "Repair technical proof, prompt-integrity, or contract errors before trusting cron success."
+                if errors else (
+                "Keep AGI harness readiness blocked and route the named readiness gates; the scheduled review proof remains usable and grants no promotion authority."
+                if agi_harness_readiness_blocked else
                 "Use promotion-ready proof for a separate cron payload proposal, or route the next fallback candidate; no cron/model mutation is implied by this packet."
+                )
             ),
         },
         "source_artifacts": {
             "token_efficiency_scorecard": "tmp/token-efficiency-scorecard.json",
             "token_efficiency_review_packet": "tmp/token-efficiency-review-packet.json",
-            "pm_autonomous_worker_predispatch_prefilter": "tmp/pm-autonomous-worker-predispatch-prefilter.json",
-            "ticker_card_freshness_owner_runner_prefilter": "tmp/ticker-card-freshness-owner-runner-prefilter.json",
             "cron_predispatch_efficiency_plan": "tmp/cron-predispatch-efficiency-plan.json",
             "cron_contract_validator": "tmp/cron-contract-validator.json",
             "agi_os_eval_gate_packet": "tmp/agi-os-eval-gate-packet.json",
@@ -436,12 +426,6 @@ def build_review_payload(
                 "priority": "P1",
                 "recommendation": "Add pre-model changed-input gates to recurring model cron jobs where source hashes are stable.",
                 "authority": "separate validated cron payload patch required",
-            },
-            {
-                "id": "pm_worker_no_action_command_prefilter",
-                "priority": "P1",
-                "recommendation": "Move PM no-action detection before GPT-5.5 model spawn, then keep GPT only for selected proof work.",
-                "authority": "PM proof-only worker boundary remains",
             },
             {
                 "id": "historical_vs_current_failure_cost",
@@ -473,20 +457,6 @@ def build_payload() -> dict[str, Any]:
     reporting_chain = run_reporting_producers()
     scorecard = as_dict(reporting_chain.get("scorecard"))
     token_out = TMP / "token-efficiency-scorecard.json"
-
-    pm_args = argparse.Namespace(execute=False, prefilter_only=True, timeout_seconds=0)
-    pm_prefilter_packet = pm_prefilter.build_report(pm_args)
-    atomic_write_json(pm_prefilter.OUT, pm_prefilter_packet)
-    atomic_write_json(pm_prefilter.PROPOSAL_OUT, pm_prefilter.build_promotion_proposal())
-
-    ticker_args = argparse.Namespace(
-        output=ticker_prefilter.DEFAULT_OUT,
-        prefilter_output=ticker_prefilter.DEFAULT_PREFILTER_OUT,
-        full_answer_mode="changed",
-        skip_provider_refresh=False,
-    )
-    ticker_prefilter_packet = ticker_prefilter.build_prefilter_report(ticker_args)
-    atomic_write_json(ticker_prefilter.DEFAULT_PREFILTER_OUT, ticker_prefilter_packet)
 
     token_review_packet = token_review.build_packet(token_out)
     atomic_write_json(token_review.OUT, token_review_packet)
@@ -522,8 +492,6 @@ def build_payload() -> dict[str, Any]:
         scorecard=scorecard,
         predispatch=predispatch,
         token_review_packet=token_review_packet,
-        pm_prefilter_packet=pm_prefilter_packet,
-        ticker_prefilter_packet=ticker_prefilter_packet,
         agi_eval_packet=agi_eval_packet,
         agi_harness_packet=agi_harness_packet,
         contract=contract,

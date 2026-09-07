@@ -1,0 +1,488 @@
+{
+  "schema_version": "wf67_autonomous_paper_manager.v1",
+  "artifact_type": "wf67_autonomous_paper_manager_packet",
+  "generated_at_utc": "2026-08-28T18:05:04Z",
+  "target_session_date": "2026-06-01",
+  "status": "ok",
+  "consumer_posture": "review_only_owner_gated_paper_manager",
+  "authority": {
+    "review_only": true,
+    "packet_generation_only": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "paper_order_sell_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "probability_or_modeling_authority": false
+  },
+  "source_artifacts": {
+    "chief_intelligence_promotion_gate": {
+      "path": "tmp/chief-intelligence-promotion-gate.json",
+      "exists": true,
+      "generated_at_utc": "2026-07-01T14:32:38Z",
+      "status": "ok"
+    },
+    "paper_positions": {
+      "path": "tmp/finance-intelligence-state-paper-positions.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-27T21:42:02Z",
+      "status": "ok"
+    },
+    "packet_index": {
+      "path": "tmp/alpaca-paper-readiness/monday-band-gated-packet-index.2026-06-01.json",
+      "exists": true,
+      "generated_at_utc": "2026-05-30T07:29:26Z",
+      "status": {
+        "json_validation": "passed",
+        "request_generation": "passed_for_all_cards",
+        "portfolio_config_strict": "passed",
+        "wf67_guard_validation_pre_monday": "blocked_expected_expired_kill_switch",
+        "wf67_guard_validation_path": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.monday-band-gated-prep-2026-06-01.json",
+        "execution_readiness_now": false,
+        "reason_not_ready_now": "Saturday prep only; kill switch is expired by design and exact Randall per-order approval is still pending."
+      }
+    }
+  },
+  "account_summary": {
+    "account_mode": "paper",
+    "endpoint": "https://paper-api.alpaca.markets",
+    "method": "GET_only",
+    "equity": 100152.64,
+    "cash": 96343.89,
+    "buying_power": 396040.07,
+    "portfolio_value": 100152.64,
+    "positions_count": 10,
+    "orders_count": 18,
+    "open_orders_count": 0,
+    "last_successful_snapshot_id": "wf67-paper-pos-20260827T214202Z",
+    "last_successful_snapshot_at_utc": "2026-08-27T21:42:02Z"
+  },
+  "paper_position_reviews": [
+    {
+      "symbol": "AMZN",
+      "quantity": 2.0,
+      "market_value": 512.56,
+      "average_entry_price": 258.605,
+      "current_price": 256.28,
+      "unrealized_pl": -4.65,
+      "unrealized_pl_percent": -0.00899,
+      "chief_intelligence_verdict": "reject_currently",
+      "band_status": "BELOW_STOP",
+      "manager_action": "repair_review_do_not_add",
+      "blockers": [
+        "gate_band_status:BELOW_STOP"
+      ]
+    },
+    {
+      "symbol": "BKNG",
+      "quantity": 1.0,
+      "market_value": 202.96,
+      "average_entry_price": 163.6,
+      "current_price": 202.96,
+      "unrealized_pl": 39.36,
+      "unrealized_pl_percent": 0.24059,
+      "chief_intelligence_verdict": "defer_until_veto_clears",
+      "band_status": "ABOVE_BAND_WAIT",
+      "manager_action": "hold_do_not_add",
+      "blockers": [
+        "gate_verdict:defer_until_veto_clears"
+      ]
+    },
+    {
+      "symbol": "ETN",
+      "quantity": 1.0,
+      "market_value": 416.72,
+      "average_entry_price": 372.76,
+      "current_price": 416.72,
+      "unrealized_pl": 43.96,
+      "unrealized_pl_percent": 0.11793,
+      "chief_intelligence_verdict": "defer_until_veto_clears",
+      "band_status": "ABOVE_BAND_WAIT",
+      "manager_action": "hold_do_not_add",
+      "blockers": [
+        "gate_verdict:defer_until_veto_clears"
+      ]
+    },
+    {
+      "symbol": "GOOG",
+      "quantity": 1.999983424,
+      "market_value": 675.6462,
+      "average_entry_price": 359.937983,
+      "current_price": 337.8259,
+      "unrealized_pl": -44.2238,
+      "unrealized_pl_percent": -0.06143,
+      "chief_intelligence_verdict": "in_band_review_hold",
+      "band_status": "IN_BAND",
+      "manager_action": "hold_do_not_add",
+      "blockers": [
+        "gate_verdict:in_band_review_hold"
+      ]
+    },
+    {
+      "symbol": "MSFT",
+      "quantity": 1.0,
+      "market_value": 503.76,
+      "average_entry_price": 420.26,
+      "current_price": 503.76,
+      "unrealized_pl": 83.5,
+      "unrealized_pl_percent": 0.19869,
+      "chief_intelligence_verdict": "monitor_only",
+      "band_status": "BELOW_BAND_WAIT",
+      "manager_action": "repair_review_do_not_add",
+      "blockers": [
+        "gate_band_status:BELOW_BAND_WAIT"
+      ]
+    },
+    {
+      "symbol": "NVDA",
+      "quantity": 1.483208256,
+      "market_value": 336.198815,
+      "average_entry_price": 202.250762,
+      "current_price": 226.67,
+      "unrealized_pl": 36.218815,
+      "unrealized_pl_percent": 0.12074,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "band_status": "IN_BAND",
+      "manager_action": "hold_or_add_only_with_exact_approval",
+      "blockers": []
+    },
+    {
+      "symbol": "PH",
+      "quantity": 0.3,
+      "market_value": 303.36,
+      "average_entry_price": 874.84,
+      "current_price": 1011.2,
+      "unrealized_pl": 40.908,
+      "unrealized_pl_percent": 0.15587,
+      "chief_intelligence_verdict": "defer_until_veto_clears",
+      "band_status": "ABOVE_BAND_WAIT",
+      "manager_action": "repair_review_do_not_add",
+      "blockers": [
+        "gate_verdict:defer_until_veto_clears",
+        "randall_flagged_ph_decision_review"
+      ]
+    },
+    {
+      "symbol": "VRT",
+      "quantity": 1.642703849,
+      "market_value": 440.540318,
+      "average_entry_price": 304.364052,
+      "current_price": 268.18,
+      "unrealized_pl": -59.439682,
+      "unrealized_pl_percent": -0.11888,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "band_status": "IN_BAND",
+      "manager_action": "loss_review",
+      "blockers": []
+    },
+    {
+      "symbol": "XLB",
+      "quantity": 4.888345717,
+      "market_value": 260.206643,
+      "average_entry_price": 51.14,
+      "current_price": 53.23,
+      "unrealized_pl": 10.216643,
+      "unrealized_pl_percent": 0.04087,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "band_status": "IN_BAND",
+      "manager_action": "hold_or_add_only_with_exact_approval",
+      "blockers": []
+    },
+    {
+      "symbol": "XOM",
+      "quantity": 1.0,
+      "market_value": 156.8,
+      "average_entry_price": 149.97,
+      "current_price": 156.8,
+      "unrealized_pl": 6.83,
+      "unrealized_pl_percent": 0.04554,
+      "chief_intelligence_verdict": "reject_currently",
+      "band_status": "BELOW_STOP",
+      "manager_action": "repair_review_do_not_add",
+      "blockers": [
+        "gate_band_status:BELOW_STOP"
+      ]
+    }
+  ],
+  "candidate_card_reviews": [
+    {
+      "ticker": "XLB",
+      "status": "conditional_ready_after_fresh_monday_quote",
+      "packet_rank": 1,
+      "packet_rank_reason": "Best incremental portfolio-construction add; Materials ETF diversification and in band.",
+      "rank": 2,
+      "chief_intelligence_score": 78.0,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "band_status": "IN_BAND",
+      "order": {
+        "symbol": "XLB",
+        "side": "buy",
+        "type": "limit",
+        "time_in_force": "day",
+        "limit_price": 51.68,
+        "notional": 250.0
+      },
+      "risk_check": {
+        "status": "ok",
+        "estimated_notional_usd": 250.0,
+        "max_notional_usd": 250.0,
+        "max_loss_usd": 250.0,
+        "entry_band_low": 49.84,
+        "entry_band_high": 51.68,
+        "observed_price": 51.15,
+        "observed_price_as_of": "2026-05-29 close",
+        "observed_entry_status": "IN_BAND",
+        "stop": 48.81,
+        "sizing_rationale": "Rank 1 starter-sized Materials ETF paper simulation. Best incremental paper-money add because it improves Materials diversification and avoids adding more AI-power concentration; limit is capped at the written band high and stays below WF67 pilot cap."
+      },
+      "owner_approval_status": "pending_exact_randall_approval",
+      "card_path": "tmp/alpaca-paper-readiness/order-card.xlb-monday-band-gated-2026-06-01.json",
+      "request_path": "tmp/alpaca-paper-readiness/paper-trade-request.xlb-monday-band-gated-2026-06-01.json",
+      "request_refreshed_with_promotion_gate": false,
+      "request_has_promotion_gate": true,
+      "request_refresh_error": null,
+      "blockers": [],
+      "required_before_execution": [
+        "fresh Monday market-session quote",
+        "price still inside written band",
+        "exact Randall approval of ticker/side/notional/order type/TIF/limit",
+        "fresh WF67 guard validation",
+        "fresh short-lived kill switch",
+        "WF67 wrapper-only paper endpoint execution"
+      ]
+    },
+    {
+      "ticker": "ETN",
+      "status": "blocked",
+      "packet_rank": 2,
+      "packet_rank_reason": "Only deployable-now workflow, but already held and near top of band.",
+      "rank": 16,
+      "chief_intelligence_score": 28.0,
+      "chief_intelligence_verdict": "defer_until_veto_clears",
+      "band_status": "ABOVE_BAND_WAIT",
+      "order": {
+        "symbol": "ETN",
+        "side": "buy",
+        "type": "limit",
+        "time_in_force": "day",
+        "limit_price": 401.36,
+        "notional": 250.0
+      },
+      "risk_check": {
+        "status": "ok",
+        "estimated_notional_usd": 250.0,
+        "max_notional_usd": 250.0,
+        "max_loss_usd": 250.0,
+        "entry_band_low": 382.9,
+        "entry_band_high": 401.36,
+        "observed_price": 400.6,
+        "observed_price_as_of": "2026-05-29 close",
+        "observed_entry_status": "IN_BAND",
+        "stop": 362.67,
+        "sizing_rationale": "Rank 2 modest paper add. ETN is the strongest deployable-now workflow and proven AI-power/electrification thesis, but current paper account already holds ETN and price is near the top of band; size is capped and limit is capped at the written band high."
+      },
+      "owner_approval_status": "pending_exact_randall_approval",
+      "card_path": "tmp/alpaca-paper-readiness/order-card.etn-monday-band-gated-2026-06-01.json",
+      "request_path": "tmp/alpaca-paper-readiness/paper-trade-request.etn-monday-band-gated-2026-06-01.json",
+      "request_refreshed_with_promotion_gate": false,
+      "request_has_promotion_gate": true,
+      "request_refresh_error": null,
+      "blockers": [
+        "gate_verdict:defer_until_veto_clears",
+        "gate_band_status:ABOVE_BAND_WAIT",
+        "gate_veto_present"
+      ],
+      "required_before_execution": [
+        "fresh Monday market-session quote",
+        "price still inside written band",
+        "exact Randall approval of ticker/side/notional/order type/TIF/limit",
+        "fresh WF67 guard validation",
+        "fresh short-lived kill switch",
+        "WF67 wrapper-only paper endpoint execution"
+      ]
+    },
+    {
+      "ticker": "VRT",
+      "status": "conditional_ready_after_fresh_monday_quote",
+      "packet_rank": 3,
+      "packet_rank_reason": "Strong AI-power challenger, but overlaps ETN and wider stop distance.",
+      "rank": 1,
+      "chief_intelligence_score": 88.0,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "band_status": "IN_BAND",
+      "order": {
+        "symbol": "VRT",
+        "side": "buy",
+        "type": "limit",
+        "time_in_force": "day",
+        "limit_price": 333.07,
+        "notional": 200.0
+      },
+      "risk_check": {
+        "status": "ok",
+        "estimated_notional_usd": 200.0,
+        "max_notional_usd": 200.0,
+        "max_loss_usd": 200.0,
+        "entry_band_low": 284.18,
+        "entry_band_high": 333.07,
+        "observed_price": 315.71,
+        "observed_price_as_of": "2026-05-29 close",
+        "observed_entry_status": "IN_BAND",
+        "stop": 261.95,
+        "sizing_rationale": "Rank 3 challenger starter. VRT has strong AI-power/data-center upside and is in band, but overlaps ETN and carries wider downside to stop; starter size is smaller and conditional on concentration review."
+      },
+      "owner_approval_status": "pending_exact_randall_approval",
+      "card_path": "tmp/alpaca-paper-readiness/order-card.vrt-monday-band-gated-2026-06-01.json",
+      "request_path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-monday-band-gated-2026-06-01.json",
+      "request_refreshed_with_promotion_gate": false,
+      "request_has_promotion_gate": true,
+      "request_refresh_error": null,
+      "blockers": [],
+      "required_before_execution": [
+        "fresh Monday market-session quote",
+        "price still inside written band",
+        "exact Randall approval of ticker/side/notional/order type/TIF/limit",
+        "fresh WF67 guard validation",
+        "fresh short-lived kill switch",
+        "WF67 wrapper-only paper endpoint execution"
+      ]
+    },
+    {
+      "ticker": "LIN",
+      "status": "blocked",
+      "packet_rank": 4,
+      "packet_rank_reason": "Quality Materials single-name, behind XLB due weaker technical posture/valuation discipline.",
+      "rank": 6,
+      "chief_intelligence_score": 41.0,
+      "chief_intelligence_verdict": "defer_until_veto_clears",
+      "band_status": "ABOVE_BAND_WAIT",
+      "order": {
+        "symbol": "LIN",
+        "side": "buy",
+        "type": "limit",
+        "time_in_force": "day",
+        "limit_price": 506.11,
+        "notional": 200.0
+      },
+      "risk_check": {
+        "status": "ok",
+        "estimated_notional_usd": 200.0,
+        "max_notional_usd": 200.0,
+        "max_loss_usd": 200.0,
+        "entry_band_low": 497.11,
+        "entry_band_high": 506.11,
+        "observed_price": 497.69,
+        "observed_price_as_of": "2026-05-29 close",
+        "observed_entry_status": "IN_BAND",
+        "stop": 487.17,
+        "sizing_rationale": "Rank 4 quality Materials starter. LIN is a strong quality compounder and near the band floor, but technicals are weaker than XLB and valuation discipline remains binding; packet is prepared but sequenced behind XLB/ETN/VRT."
+      },
+      "owner_approval_status": "pending_exact_randall_approval",
+      "card_path": "tmp/alpaca-paper-readiness/order-card.lin-monday-band-gated-2026-06-01.json",
+      "request_path": "tmp/alpaca-paper-readiness/paper-trade-request.lin-monday-band-gated-2026-06-01.json",
+      "request_refreshed_with_promotion_gate": false,
+      "request_has_promotion_gate": true,
+      "request_refresh_error": null,
+      "blockers": [
+        "gate_verdict:defer_until_veto_clears",
+        "gate_band_status:ABOVE_BAND_WAIT",
+        "gate_veto_present"
+      ],
+      "required_before_execution": [
+        "fresh Monday market-session quote",
+        "price still inside written band",
+        "exact Randall approval of ticker/side/notional/order type/TIF/limit",
+        "fresh WF67 guard validation",
+        "fresh short-lived kill switch",
+        "WF67 wrapper-only paper endpoint execution"
+      ]
+    },
+    {
+      "ticker": "NVDA",
+      "status": "conditional_ready_after_fresh_monday_quote",
+      "packet_rank": 5,
+      "packet_rank_reason": "Excellent thesis but lowest incremental add due Tech/AI concentration and crowding.",
+      "rank": 3,
+      "chief_intelligence_score": 62.51,
+      "chief_intelligence_verdict": "promote_for_owner_review",
+      "band_status": "IN_BAND",
+      "order": {
+        "symbol": "NVDA",
+        "side": "buy",
+        "type": "limit",
+        "time_in_force": "day",
+        "limit_price": 216.66,
+        "notional": 150.0
+      },
+      "risk_check": {
+        "status": "ok",
+        "estimated_notional_usd": 150.0,
+        "max_notional_usd": 150.0,
+        "max_loss_usd": 150.0,
+        "entry_band_low": 198.47,
+        "entry_band_high": 216.66,
+        "observed_price": 211.14,
+        "observed_price_as_of": "2026-05-29 close",
+        "observed_entry_status": "IN_BAND",
+        "stop": 187.9,
+        "sizing_rationale": "Rank 5 lowest-priority starter. NVDA thesis remains excellent and price is in band, but Tech/AI concentration and crowding make it the least attractive incremental paper add; notional is intentionally smallest and limit is capped at written band high."
+      },
+      "owner_approval_status": "pending_exact_randall_approval",
+      "card_path": "tmp/alpaca-paper-readiness/order-card.nvda-monday-band-gated-2026-06-01.json",
+      "request_path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-monday-band-gated-2026-06-01.json",
+      "request_refreshed_with_promotion_gate": false,
+      "request_has_promotion_gate": true,
+      "request_refresh_error": null,
+      "blockers": [],
+      "required_before_execution": [
+        "fresh Monday market-session quote",
+        "price still inside written band",
+        "exact Randall approval of ticker/side/notional/order type/TIF/limit",
+        "fresh WF67 guard validation",
+        "fresh short-lived kill switch",
+        "WF67 wrapper-only paper endpoint execution"
+      ]
+    }
+  ],
+  "summary": {
+    "position_count": 10,
+    "repair_review_count": 5,
+    "candidate_card_count": 5,
+    "conditional_ready_after_fresh_monday_quote_count": 3,
+    "blocked_candidate_count": 2,
+    "ready_tickers": [
+      "XLB",
+      "VRT",
+      "NVDA"
+    ],
+    "blocked_tickers": [
+      "ETN",
+      "LIN"
+    ],
+    "repair_review_tickers": [
+      "AMZN",
+      "MSFT",
+      "PH",
+      "VRT",
+      "XOM"
+    ]
+  },
+  "operator_next_action": {
+    "monday_open_action": "refresh quotes, rerun Chief gate, rerun this manager, then present exact approval cards for ready tickers",
+    "paper_execution_action": "blocked_until_exact_randall_approval_fresh_kill_switch_and_clean_wf67_guard",
+    "ph_action": "repair_review_do_not_add"
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "fresh_market_session_quotes_required_before_any_execution_window",
+      "WF55_probability_readiness_not_ready_so_no_predictive_or_expected_return_claims"
+    ]
+  }
+}

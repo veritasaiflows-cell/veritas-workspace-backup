@@ -16,6 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import project_implementation_router as implementation_router
 from lib.pm_control_reader import pm_implementation_job_queue
 from market_data_utils import atomic_write_json, load_json_artifact
 
@@ -84,7 +85,10 @@ def rel(path: Path) -> str:
 
 
 def normalize_path(value: str) -> str:
-    return value.strip().replace("\\", "/").lstrip("./")
+    normalized = str(value or "").strip().replace("\\", "/")
+    while normalized.startswith("./"):
+        normalized = normalized[2:]
+    return normalized
 
 
 def as_dict(value: Any) -> dict[str, Any]:
@@ -166,6 +170,21 @@ def completion_freshness(candidate: dict[str, Any], lane: dict[str, Any] | None)
 
 def forbidden_write(path: str) -> str | None:
     normalized = normalize_path(path)
+    parts = normalized.split("/")
+    if (
+        not normalized
+        or normalized.startswith("/")
+        or re.match(r"^[A-Za-z]:", normalized)
+        or any(char in normalized for char in "*?[]")
+        or ".." in parts
+        or "." in parts
+        or normalized.endswith("/")
+    ):
+        return "workspace_relative_exact_path_required"
+    try:
+        (ROOT / normalized).resolve().relative_to(ROOT.resolve())
+    except (OSError, ValueError):
+        return "workspace_path_escape"
     for pattern in FORBIDDEN_WRITE_PATTERNS:
         if re.search(pattern, normalized, re.IGNORECASE):
             return pattern
@@ -204,7 +223,7 @@ def base_templates() -> list[dict[str, Any]]:
             "title": "WF72 A2 support-readiness QA lane",
             "reason": "Safe parallel lane while WF72 implementation continues: independently verify A2 read-only support/fallback posture without editing SQL, cache, or canon surfaces.",
             "read_first": [
-                "06. Playbooks/Project Continuity/Workflow 72 - Financial OS Efficiency Restructure and Priority Compression.md",
+                "06. Playbooks/Project Continuity/Workflow 72 - Guarded Finance SQL Canon.md",
                 "tmp/automation-stack-hardening-pass.json",
                 "tmp/go-sql-consumer-authority-guard.json",
                 "tmp/wf72-a2-consumer-authority-fallback-manifest.json",
@@ -463,7 +482,115 @@ def make_task(candidate: dict[str, Any]) -> str:
     )
 
 
-def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
+def recommendation_dispatch_contract(
+    candidate: dict[str, Any],
+    *,
+    persistent_transport_proof: str | None = None,
+    persistent_lane_mode: str = "patch_draft",
+) -> dict[str, Any]:
+    """Select and format one exact persistent route without spawning it."""
+    description = " ".join(
+        str(candidate.get(field) or "").strip()
+        for field in ("title", "reason", "deliverable", "workflow_id")
+        if str(candidate.get(field) or "").strip()
+    )
+    allowed_writes = [str(path) for path in as_list(candidate.get("allowed_writes")) if str(path).strip()]
+    invalid_writes = [path for path in allowed_writes if forbidden_write(path)]
+    if invalid_writes:
+        return {
+            "schema": "veritas.sessions_spawn_dispatch_contract.v1",
+            "status": "blocked",
+            "dispatch_executes_agent": False,
+            "implicit_model_fallback_allowed": False,
+            "same_inference_model_switching": False,
+            "agent_dispatch": {},
+            "model_route": {},
+            "blockers": [f"invalid_or_forbidden_write_path:{path}" for path in invalid_writes],
+            "spawn_args": {},
+        }
+    if allowed_writes and persistent_lane_mode != "scoped_worktree_implementation":
+        return {
+            "schema": "veritas.sessions_spawn_dispatch_contract.v1",
+            "status": "blocked",
+            "dispatch_executes_agent": False,
+            "implicit_model_fallback_allowed": False,
+            "same_inference_model_switching": False,
+            "agent_dispatch": {},
+            "model_route": {},
+            "blockers": ["scoped_writeback_transport_proof_required"],
+            "spawn_args": {},
+        }
+    dispatch = implementation_router.select_isolated_agent_dispatch(
+        description,
+        leased_paths=allowed_writes,
+        write_mode="distinct_output" if allowed_writes else "read_only",
+    )
+    agent_id = str(dispatch.get("primary_agent_id") or "")
+    if dispatch.get("decision") != "route" or not agent_id:
+        return {
+            "schema": "veritas.sessions_spawn_dispatch_contract.v1",
+            "status": "blocked",
+            "dispatch_executes_agent": False,
+            "implicit_model_fallback_allowed": False,
+            "same_inference_model_switching": False,
+            "agent_dispatch": dispatch,
+            "model_route": {},
+            "blockers": [str(dispatch.get("fallback_reason") or "no_specialist_route")],
+            "spawn_args": {},
+        }
+
+    normalized = implementation_router.normalize_dispatch_text(description)
+    task_shape = (
+        "qa" if "qa" in normalized or "verify" in normalized
+        else "continuity" if "continuity" in normalized or "documentation" in normalized
+        else "implementation" if any(term in normalized for term in ("implement", "patch", "code"))
+        else "audit"
+    )
+    write_mode = "distinct_output" if allowed_writes else "read_only"
+    write_scope = implementation_router.infer_write_scope(allowed_writes, write_mode)
+    authority_class = implementation_router.infer_authority_class(description)
+    execution_route = implementation_router.select_execution_route(
+        description,
+        task_shape=task_shape,
+        authority_class=authority_class,
+        write_scope=write_scope,
+        write_mode=write_mode,
+        helper_fit="one_bounded_helper",
+        leased_paths=allowed_writes,
+        agent_dispatch=dispatch,
+        model_free_commands=[],
+        model_free_proofs=[],
+        allow_codex_native=False,
+        native_dispatch_proof=None,
+        main_only_reason=None,
+        main_sol_use_case=None,
+        main_sol_reason=None,
+        persistent_transport_ready=bool(persistent_transport_proof),
+        persistent_transport_proof=persistent_transport_proof,
+        persistent_lane_mode=persistent_lane_mode,
+        validation_budget="narrow",
+        measurement_cohort_binding=None,
+    )
+    model_route = implementation_router.default_model_route(execution_route)
+    contract = implementation_router.sessions_spawn_dispatch_contract(
+        model_route,
+        agent_id=agent_id,
+        task_name=f"{str(candidate.get('workflow_id') or 'wf').lower()}-{str(candidate.get('workstream_id') or 'lane').lower()}",
+        label=str(candidate.get("title") or "parallel helper lane"),
+        task=make_task(candidate),
+        cwd=ROOT,
+    )
+    contract["agent_dispatch"] = dispatch
+    contract["model_route"] = model_route
+    return contract
+
+
+def build_report(
+    prefer_workflow: str | None = None,
+    *,
+    persistent_transport_proof: str | None = None,
+    persistent_lane_mode: str = "patch_draft",
+) -> dict[str, Any]:
     workflow_index = as_dict(load(WORKFLOW_INDEX))
     register = as_dict(load(LANE_REGISTER))
     pm_queue = pm_implementation_job_queue()
@@ -485,7 +612,14 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
     top = eligible[0] if eligible else (scored[0] if scored else {})
     owner = f"helper-{str(top.get('workflow_id') or 'wf').lower()}-{str(top.get('workstream_id') or 'lane').replace('_', '-').replace(' ', '-')}"
     lease_command = ""
+    proposed_lease_command = ""
     spawn_args: dict[str, Any] = {}
+    dispatch_contract: dict[str, Any] = {
+        "schema": "veritas.sessions_spawn_dispatch_contract.v1",
+        "status": "not_applicable",
+        "spawn_args": {},
+        "blockers": [],
+    }
     if top and top.get("eligible"):
         allowed_flags = " ".join(f"--allowed-write {ps_quote(str(path))}" for path in as_list(top.get("allowed_writes")))
         read_flags = " ".join(f"--read-first {ps_quote(str(path))}" for path in as_list(top.get("read_first")))
@@ -493,25 +627,27 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
             f"--acceptance-command {ps_quote(str(command))}" for command in as_list(top.get("acceptance_commands"))
         )
         reopen_flag = "--reopen-complete " if str(top.get("completion_state") or "") not in {"", "not_completed"} else ""
-        lease_command = (
+        proposed_lease_command = (
             f"python scripts\\concurrent_lane_manager.py --lease {top.get('workflow_id')} "
             f"--workstream {top.get('workstream_id')} --owner {owner} {allowed_flags} "
             f"{read_flags} {acceptance_flags} --replace-contract {reopen_flag}--write --validate"
         )
-        spawn_args = {
-            "runtime": "subagent",
-            "mode": "run",
-            "context": "isolated",
-            "lightContext": True,
-            "cwd": str(ROOT),
-            "taskName": f"{str(top.get('workflow_id')).lower()}-{str(top.get('workstream_id')).lower()}",
-            "label": str(top.get("title") or "parallel helper lane"),
-            "task": make_task(top),
-        }
+        dispatch_contract = recommendation_dispatch_contract(
+            top,
+            persistent_transport_proof=persistent_transport_proof,
+            persistent_lane_mode=persistent_lane_mode,
+        )
+        if dispatch_contract.get("status") == "ready":
+            lease_command = proposed_lease_command
+            spawn_args = as_dict(dispatch_contract.get("spawn_args"))
     next_safe_action = (
         "Run lease_command, then call sessions_spawn with spawn_args. Main session must verify output and complete the lease."
-        if top.get("eligible")
-        else "No eligible new helper lane is available; do not re-lease a completed or ineligible lane. Main session should continue ready PM work inline or refresh candidates after state changes."
+        if top.get("eligible") and dispatch_contract.get("status") == "ready"
+        else (
+            "Dispatch is blocked. Supply a fresh agent-matched persistent transport proof; do not lease or spawn using runtime defaults."
+            if top.get("eligible")
+            else "No eligible new helper lane is available; do not re-lease a completed or ineligible lane. Main session should continue ready PM work inline or refresh candidates after state changes."
+        )
     )
 
     checks: list[dict[str, Any]] = []
@@ -534,6 +670,18 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
     )
     check("top_candidate_no_collisions", not as_dict(top.get("collisions")), top.get("collisions"))
     check("top_candidate_no_forbidden_writes", not as_list(top.get("forbidden_writes")), top.get("forbidden_writes"))
+    if top.get("eligible"):
+        check(
+            "top_candidate_dispatch_ready",
+            dispatch_contract.get("status") == "ready",
+            dispatch_contract,
+        )
+        if dispatch_contract.get("status") == "ready":
+            check(
+                "spawn_args_pin_agent_model_and_thinking",
+                all(key in spawn_args for key in ("agentId", "model", "thinking")),
+                spawn_args,
+            )
     contract_departments = [str(row.get("department") or "") for row in contracts]
     contract_collisions = [str(row.get("collision_group") or "") for row in contracts if row.get("collision_group")]
     check("lane_contracts_unique_departments", len(contract_departments) == len(set(contract_departments)), contracts)
@@ -592,12 +740,16 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
             "next_safe_action": next_safe_action,
         },
         "lease_command": lease_command,
+        "proposed_lease_command": proposed_lease_command,
         "spawn_args": spawn_args,
+        "dispatch_contract": dispatch_contract,
         "complete_command_template": complete_command_template,
         "recommendation": {
             "top_candidate": top,
             "lease_command": lease_command,
+            "proposed_lease_command": proposed_lease_command,
             "spawn_args": spawn_args,
+            "dispatch_contract": dispatch_contract,
             "complete_command_template": complete_command_template,
         },
         "ranked_candidates": scored,
@@ -611,6 +763,7 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
         },
         "stop_lines": [
             "This script does not spawn sessions; main session must call sessions_spawn.",
+            "No lease or spawn arguments are actionable until fresh transport proof makes dispatch_contract ready.",
             "Lease before spawn; complete or cancel the lease after integration.",
             "Parallel lanes should write one distinct tmp proof artifact by default.",
             "No capital, execution, account, cron/config/auth/runtime, canon/portfolio, customer/public, SQL-canon, or owner-approval authority.",
@@ -621,6 +774,15 @@ def build_report(prefer_workflow: str | None = None) -> dict[str, Any]:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Recommend a safe parallel helper lane.")
     parser.add_argument("--workflow", help="Prefer candidates for this workflow, e.g. WF78 or WF72.")
+    parser.add_argument(
+        "--persistent-transport-proof",
+        help="Fresh workspace-relative proof for the selected persistent agent; required before lease/spawn args become actionable.",
+    )
+    parser.add_argument(
+        "--persistent-lane-mode",
+        choices=sorted(implementation_router.PERSISTENT_LANE_MODES),
+        default="patch_draft",
+    )
     parser.add_argument("--out", default=str(DEFAULT_OUT))
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--validate", action="store_true")
@@ -629,7 +791,11 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    payload = build_report(args.workflow)
+    payload = build_report(
+        args.workflow,
+        persistent_transport_proof=args.persistent_transport_proof,
+        persistent_lane_mode=args.persistent_lane_mode,
+    )
     out = Path(args.out)
     if args.write:
         atomic_write_json(out, payload)

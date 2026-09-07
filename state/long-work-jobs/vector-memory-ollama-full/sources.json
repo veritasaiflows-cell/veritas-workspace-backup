@@ -1,0 +1,4142 @@
+[
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1776560815035349300,
+    "size_bytes": 7096,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-07.md",
+    "source_sha256": "a6161f91cb2df57f059e6b9edf17b98883296085d9605e07d630012b20ba76ed"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1775796139598772300,
+    "size_bytes": 1568,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-08.md",
+    "source_sha256": "13dc0dc4369e7ad573ff294066fd44f7a26c6b2413345a91a6c7448f988b3aa3"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1775796139599772600,
+    "size_bytes": 1335,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-09.md",
+    "source_sha256": "aa09406994a486a93e89dc64a670bb07bd39f70cb45e8a16c44d85d73fdcaa97"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1775880945649651500,
+    "size_bytes": 1003,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-10.md",
+    "source_sha256": "399bca689ff32a103f0060a5a8e9c8de0c67b76aeb264b4020b241dc29480876"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1775929490457183800,
+    "size_bytes": 1141,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-11.md",
+    "source_sha256": "dac520894b3d2464acf47b56e7818191bbf0bf0ce59387a5bf0fee0eff83440d"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 12,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1776008807225013600,
+    "size_bytes": 11463,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-12 - Content Pivot.md",
+    "source_sha256": "2554c4b8fbe455914fab0b11911f65df55271d95c85a58f1d1a66a9e509b5c26"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1776016125817773800,
+    "size_bytes": 976,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-12.md",
+    "source_sha256": "0534a79d6b02d48b6c1e4ba60a34bef12300cfb0bf503843f277cf4240db1519"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1776561020728707300,
+    "size_bytes": 1274,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-18.md",
+    "source_sha256": "3262d9689268cf67752a04c9b6bcd006093ca06a6213aeb99c5a5c21b14eb65e"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 12,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1776638315206044000,
+    "size_bytes": 8822,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-19-vault-review.md",
+    "source_sha256": "ab93e1add509105d0272108d7b9f781b369351b6fdcc2e4dffe421436ad69031"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1776663165513487500,
+    "size_bytes": 21186,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-19.md",
+    "source_sha256": "5902d917227c53ac54d7f01f4af3000bde79c72214110045af5037a01dc4c864"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777772885982378100,
+    "size_bytes": 7044,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-20.md",
+    "source_sha256": "d07a62ee16c90e9c81b1551987dc7c09dce74b04d80db2bc440601857df051fb"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538111052000,
+    "size_bytes": 11350,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-21-workspace-audit.md",
+    "source_sha256": "a59f98e763af4851b209b41ba9df00a960a492c48c06122f229ddb1f61ab268d"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1776833746894818800,
+    "size_bytes": 3227,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-21.md",
+    "source_sha256": "c46910540571a8d59863e404b9e07a9cca593fb7a411cc81e5936877c6fc0bcb"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1776923160641996700,
+    "size_bytes": 6864,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-22.md",
+    "source_sha256": "a8a3723c803d6f0092e286120cfcfff58d567656bbe117e1d8e89bc1d028c6d7"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 12,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1776906619340957300,
+    "size_bytes": 11654,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-23-post-earnings-targets.md",
+    "source_sha256": "3aef9f782b7aea71f4111e01f0e8d843328f33a5585767bab4acc2ceecb08404"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777176175099859700,
+    "size_bytes": 7534,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-23.md",
+    "source_sha256": "d706809be9eedcaf01a864b5dce18c0e1551b70ba2f03de802edb427502477ab"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777007878134137200,
+    "size_bytes": 9377,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-24-model-limits.md",
+    "source_sha256": "2db3b83542bd665a6a34ea751032e73db0b584b748661f96a48bb4aa55cb3ac3"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777772885982378100,
+    "size_bytes": 6929,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-24.md",
+    "source_sha256": "297e7056a51c8f1b97190722c13cec84fe8ad23d3e5efafc3365f00550f3f87e"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777156785885028900,
+    "size_bytes": 6254,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-25.md",
+    "source_sha256": "b7ed46f10ae1dc091c2f745136cf0a850c734ceb7c140b44e7484f002a0d53b4"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777173701288991100,
+    "size_bytes": 1041,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-26-0321.md",
+    "source_sha256": "10ad3698c54a9fc7ef0dcc359557ed970ab4f8873ce16c33bc0d3062cb7e4932"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777173829331764100,
+    "size_bytes": 148,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-26-0323.md",
+    "source_sha256": "bd195d35dca6edd74dd237284fb850d7dd8676c0a28bd864c0490f5ef2404de5"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777239831299238900,
+    "size_bytes": 5549,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-26-2143.md",
+    "source_sha256": "51913eba6f1b318be5ad10b2d9559b9b15889df6920e799a31e0c1cdf218c12c"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777243607093619300,
+    "size_bytes": 8743,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-26-2244.md",
+    "source_sha256": "b70510f9a79841a0f9b78efb1f034864d5fef26d0ed59d665af3e7cd46050a78"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777178289842763500,
+    "size_bytes": 572,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-26-agent-couldn-t-generate-a-resp.md",
+    "source_sha256": "b05ef01e3d42c47430ef81d0f0af4a5b9a427ed4a7a2b8e7e5a207a5f845ddcf"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777193807509714600,
+    "size_bytes": 5909,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-26-entry-band-tool.md",
+    "source_sha256": "5a023ca28fd754270aeaac64f488d4b5a2361a90f7ca9c46f603a867c07108b3"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777355749052353500,
+    "size_bytes": 9743,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-27.md",
+    "source_sha256": "68de70643425717a845a163606c8f07432bf01d3c7b302d0ae984cb863895f5f"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777446296849899300,
+    "size_bytes": 1470,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-28.md",
+    "source_sha256": "0022f8c4dc9e4d13876e566f3eaa4397ae855782ae6cd526155f2cc3f58b4f20"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777772885982378100,
+    "size_bytes": 36126,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-29.md",
+    "source_sha256": "b4af096982ae1f6fb8331120e2b2bc118b4ca41ef49818a2e79eb792d98f8b87"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777646341751041300,
+    "size_bytes": 12122,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-04-30.md",
+    "source_sha256": "0e487aea6c7b495668646093327a8f3d45975ec55e0e1c0846a1e4360df01a11"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777661427715899300,
+    "size_bytes": 9634,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-01-cli-limits.md",
+    "source_sha256": "98a9b1c25fb570260efcb0eefd19fcd66f4bc6dbe90ee54835fa57b778616714"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777705062692586900,
+    "size_bytes": 14860,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-01.md",
+    "source_sha256": "e4b79e01681e2beebac2e7d804fcb0750f54eb81016c5752aee42e85ade91ebd"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 13,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538111052000,
+    "size_bytes": 22183,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-02-0040.md",
+    "source_sha256": "ac2b106c18454a7f8b6637e841636caa72b81a8728e8337c8e3f081aeb9b426a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777731572889189500,
+    "size_bytes": 2297,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-02-project-queue.md",
+    "source_sha256": "6232ad5eba4f6aa02ea7314ade9afaa0288b00949343785b7bd83a51a85a7890"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777815299110209200,
+    "size_bytes": 39413,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-02.md",
+    "source_sha256": "e05146fb247385357ac5ecaea2c4d384250437968e4709867af59f0bcb351891"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 11,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777768952743308400,
+    "size_bytes": 16951,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-03-risk-rules-fix.md",
+    "source_sha256": "0e2f0a6f2725100cf9d196cdbb23d3c5f984cd23fe5cec50f45218eff32a129e"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777874415328661200,
+    "size_bytes": 17445,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-03.md",
+    "source_sha256": "10b6e1ee7ef265d00adeb5d381f781898d5f6d9bf7b2233704e556d71d001f6b"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1777962818179776600,
+    "size_bytes": 15106,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-04.md",
+    "source_sha256": "a850a810119108f3f42e5667e4a05c0da4efa88bcdd7a9e6c84b8b4690054b17"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778051570015444400,
+    "size_bytes": 2303,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-05.md",
+    "source_sha256": "333ef9a5f9870d2df03c81f87b2eae66fde798fc94f1abe95413a29aad8f62b7"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778231352455727900,
+    "size_bytes": 11331,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-06-telegram-routing.md",
+    "source_sha256": "e3828524b3a94724cf70abbe16283a9df6b6b162e17e3cfc648bb96803ac36db"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778231352450865300,
+    "size_bytes": 27044,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-06.md",
+    "source_sha256": "b1864fec5b55877e069746f3a84b29b4694676e1401f8c0356068935694a6438"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778221673840979900,
+    "size_bytes": 10698,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-07.md",
+    "source_sha256": "06a3d133a7d2de358c286b6d0672f31855807efe87a355c0daf01101cc5465b9"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 11,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778230777876489000,
+    "size_bytes": 13315,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-08-0159.md",
+    "source_sha256": "0d6884b879babd92dbca75043769527af45266c902950f9d94824de13f7ffe20"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778284131717634900,
+    "size_bytes": 6849,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-08.md",
+    "source_sha256": "54303c7ed7ce33775aa4e86b31e334e20c6ffda54614d8bed539ec84fe9c7c43"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778396455587332100,
+    "size_bytes": 1863,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-09.md",
+    "source_sha256": "502b08877260e17d553fc73db84d6f74885ca43cf9d44389c5ca99b4f833e078"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778424696379274900,
+    "size_bytes": 9037,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-10-0751.md",
+    "source_sha256": "aceab7d7922ce30c19d7ce2a931c316485a94c8286a26be14e3e44e58e263875"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538111052000,
+    "size_bytes": 12062,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-10.md",
+    "source_sha256": "438565f06f1c15c459ab0fd0ee1e9577dcdcbecf8c65f9ce89207041ea8aa1e9"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538111052000,
+    "size_bytes": 13551,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-11.md",
+    "source_sha256": "16c8147c48d7b5b7e96bf497479dd61565990c1994ba5c6d86e073d999da12e9"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778645637689268200,
+    "size_bytes": 13002,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-12-2113.md",
+    "source_sha256": "6353a47dee2e10ef6078436afb86be4ab3a8bd558660b30c15114ab67f063c73"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538120934000,
+    "size_bytes": 11491,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-12.md",
+    "source_sha256": "cfb853f58470006a59ce25021bc2d182647d15a610b940a7f0c42cfa98678b06"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538120934000,
+    "size_bytes": 9056,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-13-1640.md",
+    "source_sha256": "63222aa9675e55484d087d7c3df1996c9eec56420111b33828caa52d8ea7d72d"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538120934000,
+    "size_bytes": 9056,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-13-1657.md",
+    "source_sha256": "741762bd7cd28ed5674527b42c618637439a49f8094f1f5ab4bf9e5720ec43bc"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538120934000,
+    "size_bytes": 9056,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-13-1717.md",
+    "source_sha256": "920f4a0d7e6115a7dd8b8ff46fae1ee85e99a0842784ca5e2f5fa2f58b169e30"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778734251609356600,
+    "size_bytes": 9404,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-13-2150.md",
+    "source_sha256": "fea89c30b010b9a7afdff0ec0856de7f84f3a296fd366eb8551d1c856b1ab159"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538123975900,
+    "size_bytes": 8706,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-13.md",
+    "source_sha256": "18eec6851627dddb4604c44332e0a424c4cc74e311eb15aa81849bd559fc3307"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778776713931375900,
+    "size_bytes": 8164,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-14-0938.md",
+    "source_sha256": "c08db15876f2f76b3d4099015fda886022ebfc132b9b647fae8fd2a85ac6835a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778824548895453100,
+    "size_bytes": 18569,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-14.md",
+    "source_sha256": "c98d872450078f1288d5a4124f80b039b6f340937c35e80350621f1f09fe2154"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778915694558868800,
+    "size_bytes": 25102,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-15.md",
+    "source_sha256": "8b5084b85fda8f3ba81f0c3e742a742d28c9c06b7ca8960863c707c48fbd9a83"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538123975900,
+    "size_bytes": 18363,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-16-1801.md",
+    "source_sha256": "42afdb38b54c5d4d74498e05d500e76f6ae1a34c69b98d161b79886fb81dfae8"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1778997603097349900,
+    "size_bytes": 18935,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-16.md",
+    "source_sha256": "dd8439c3f997b21242ca62c0adad006637bf33bcf3cb29e6fbdf9d79ddeb87bb"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779083245058278700,
+    "size_bytes": 35639,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-17.md",
+    "source_sha256": "622a3194bbe17012c737df9798365e72c4ab8e4125b09807fedf273a6ba9f186"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538123975900,
+    "size_bytes": 23324,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-18.md",
+    "source_sha256": "779603223c5d0e7ad9c84a1c284f416530c8f005997ce6ed729f1b4aaa3c08e1"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538123975900,
+    "size_bytes": 63772,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-19.md",
+    "source_sha256": "fe3a9186f9cdda4cf1e3ff373cff4ac82a7c1ffb92dd0d26d34cff5e62483efd"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779344064546765200,
+    "size_bytes": 42226,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-20.md",
+    "source_sha256": "77ef18e1c4570ac75240bb9774f3f2f3080bce0d03a6dcf39dc39421545beaa3"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779433246943619000,
+    "size_bytes": 16425,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-21.md",
+    "source_sha256": "b55d73acba25490b03f11e100de741ad06c50163c094c8b1f4c6a8733e74f8e6"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779489282701954300,
+    "size_bytes": 6280,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-22-1534.md",
+    "source_sha256": "c21b06c1510edbdfde9e57a650d7c0190a086648ef6c00b887ff40e878d78835"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779489916440723700,
+    "size_bytes": 190,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-22-1545.md",
+    "source_sha256": "7dcb4eeca91c21c894f153a4ff14f6dbfc4773c34e261b1cf4a45e79366d624c"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779501567917416600,
+    "size_bytes": 92364,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-22.md",
+    "source_sha256": "5933fd737e267fb57a31cb2cdb00d0a3bb4eabce99c0801df47bd8a886fcecaf"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779607545286587400,
+    "size_bytes": 20789,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-23.md",
+    "source_sha256": "8cec25d9ffba22f7398bb81436976225168b53ec1b53914414d492d9059e98af"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779758538123975900,
+    "size_bytes": 96165,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-24.md",
+    "source_sha256": "5ee48384598bf9242479b70e84427a5c0fd6172c3447ceaf6b796766ab72a987"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779776439418698400,
+    "size_bytes": 68009,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-25.md",
+    "source_sha256": "3cabc0c680e97f800e0cb1052cb5c1e98b5bc3628f3a0cfd18a871628cca7fbc"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779862884973707600,
+    "size_bytes": 6830,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-26.md",
+    "source_sha256": "c6006812aadc0de14f0a9f6a5cb1e636ae5d3a09bd08b702207b356908f47f6a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779946243583363700,
+    "size_bytes": 8910,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-27.md",
+    "source_sha256": "0af007eae7115c5b6405f4b648f9aad17e77edee7eff14e067201f0c3cab93e5"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779972421524843600,
+    "size_bytes": 3903,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-0547.md",
+    "source_sha256": "e2a1570e188f38597d3db0c93c5fbf293bdc5ac8bba0291e03944e031304c483"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780014384120709100,
+    "size_bytes": 9930,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-1726.md",
+    "source_sha256": "e8ef5c33936378658817acb6911a607c15c4f636b9a13356c3c2cc0157fba899"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780017257980324200,
+    "size_bytes": 7995,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-1814.md",
+    "source_sha256": "dd891ebf531b0fe640a5d6dd38510039ad278c355172f54651f7ad5469a1281b"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780017520116632100,
+    "size_bytes": 9749,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-1818.md",
+    "source_sha256": "41a28c68c4dc48389e66726fa1f102cd0c8c1f2675b513ecb11b8ae34a68a731"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780026485796372200,
+    "size_bytes": 10478,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-2048.md",
+    "source_sha256": "05cc1d507d605a85ff1e2e7d786a31b116d7252fc938f38f0dc2b561e23e06cc"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780027921735130600,
+    "size_bytes": 7415,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-2112.md",
+    "source_sha256": "3bb06afec89e6ec7a8233ce283209bbe94b40c603bfe04e5f0b468f1bd7f46e4"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780028292575690100,
+    "size_bytes": 9951,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-2118.md",
+    "source_sha256": "a7533626ee7bbc4e3e6713f6081ff758739ff9b4c32566a95d18a65dd05906b7"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780029816191331700,
+    "size_bytes": 4404,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-2143.md",
+    "source_sha256": "9d5fd339231f557f006028d6b3e65989104ad55064ae6ad403486f69edc426eb"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780029918923981800,
+    "size_bytes": 190,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-2145.md",
+    "source_sha256": "bb5c8308d856c2f925c651424ed19a4635ca4e11ae737d0ffe1ec32387b38535"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780031037343408700,
+    "size_bytes": 1158,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-2203.md",
+    "source_sha256": "31ea3ff75fa001a839220c6d9fe1eea7b57df0782052fa0bd84ad2c1cbce0a39"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780031311062462800,
+    "size_bytes": 664,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-2208.md",
+    "source_sha256": "d70430104867db7d8dab82908aacf8885d3d7bdb6ca0eae62ccb180a6aba1f62"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780031583961717200,
+    "size_bytes": 1172,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-2213.md",
+    "source_sha256": "b8abf19332ed48b7c4a76231eb2a8e4e9f2a2979f65082edc9f505b693174495"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780032285862355300,
+    "size_bytes": 4404,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28-2224.md",
+    "source_sha256": "0b11fe7e0af0349cb981286a2f2a795c7ca8e46bd30cc01d61cf6813de7a1b6c"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780031728885134300,
+    "size_bytes": 51145,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-28.md",
+    "source_sha256": "3bf18cfafc68d6543a89b01060470807805e7c43d0a541191ec1b17b6a48cb9b"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780084194403473900,
+    "size_bytes": 3668,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-29-1249.md",
+    "source_sha256": "e866fcaacc29bd5c52dde633d89e840a01932d510b96e6795655442b510423ca"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780088219189690600,
+    "size_bytes": 7575,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-29-1356.md",
+    "source_sha256": "e7977bfec74f147268eff92e4f973f4ec7d6c3b6e1c92d78e9fdc627cda9f539"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780113367900409200,
+    "size_bytes": 12137,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-29-2056.md",
+    "source_sha256": "53b6c39f2cb38c11784b524c08429ad2e51eeefd2e377daa69f2f7374ad39815"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780118463454770500,
+    "size_bytes": 7575,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-29-2221.md",
+    "source_sha256": "5e8a2ceb2d2daff372742c11573493922e89002dd03846bd5e49ef07ec8bc64d"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 19,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780124420243235200,
+    "size_bytes": 145228,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-29.md",
+    "source_sha256": "edf32e67a6165f816af18bd45317f3ec8ecc26844ed1d070dffa6f81784247f8"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780173797281155700,
+    "size_bytes": 13914,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-30-1343.md",
+    "source_sha256": "7e83d99d13202bd503b06873d5b2658e29da0a92c50a5bc4e4df801191e004e3"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780178958899848300,
+    "size_bytes": 13914,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-30-1509.md",
+    "source_sha256": "b00ef992be659e43f9c42d1851bbd449098268e229b18221e29b603892cf8389"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 18,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780210728210291800,
+    "size_bytes": 132996,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-30.md",
+    "source_sha256": "d0c95b1687b15b5c5477072bba989657d9638ecf36936eb0e6c7cec614850aba"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 0,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780213944134601100,
+    "size_bytes": 0,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-31-0052.md",
+    "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780255144795865400,
+    "size_bytes": 2039,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-31-1219.md",
+    "source_sha256": "78014a83e37818e4275701b037ab900dc887cc9549fe9eb393419bc23ead3a11"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780261579994179400,
+    "size_bytes": 13055,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-31-1406.md",
+    "source_sha256": "20a6ab7eac6d494f93d51707bf65bacfcb0f0a2dab75b223003d60e6b7e1e638"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780265127043499700,
+    "size_bytes": 14651,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-31-1505.md",
+    "source_sha256": "1846fef3222280e23d464fb1ea10412e89de1d7988af3a28702a6867559706bb"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 20,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780268983766769800,
+    "size_bytes": 20993,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-31-1609.md",
+    "source_sha256": "0b4a42ee1f0f5891854af1ab65cb8c82f5d941f45c56f4193dfc6e1c9baba7c1"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780280209348976500,
+    "size_bytes": 457,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-31-1916.md",
+    "source_sha256": "8f1a09d9b8aab45fe0a0a781485b31029aba67335e7d04777a2bacaf26f9f271"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 13,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780294438693867800,
+    "size_bytes": 13807,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-31-2313.md",
+    "source_sha256": "60455fae7721102151cab16f335969734411386cfdad94eca75ba82eb9e7a3e6"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 34,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780296244656920100,
+    "size_bytes": 216093,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-05-31.md",
+    "source_sha256": "fea3cf1e2f71901470b5bbcfbd4346a71f8963e2189556412d8bbd70ee0c839b"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780354410210902500,
+    "size_bytes": 8275,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-01-1553.md",
+    "source_sha256": "835c37988ab481b6a81cee5791802b7b911784fa8fdacfc0ad92018bc4ed1ba9"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780363193853574600,
+    "size_bytes": 13851,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-01-1819.md",
+    "source_sha256": "90bffac443f7e85d70583a33dc8ad4cb195de0723cd72e2541fcdbc202d070bf"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780369971406561100,
+    "size_bytes": 3505,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-01-2012.md",
+    "source_sha256": "401dd72082d8e8b41c8ad7c8dec77326760e361fda469da958014f7f5de1daf5"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780377978821820000,
+    "size_bytes": 45673,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-01.md",
+    "source_sha256": "78360834a4cb51c6cc42c73e52dc980e19401212c3a33308b9987a7f4002af26"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 11,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780443594034606000,
+    "size_bytes": 14945,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-02-1639.md",
+    "source_sha256": "2b43d3488504c55acf26a74623f7adaa2b71172b9b38b77b361a294df9c9088c"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780444221162934400,
+    "size_bytes": 12919,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-02-1650.md",
+    "source_sha256": "0ba69008d638fb4b098f745be549007d9e343d86acc5ec5dd1fe6330a83bc747"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780444654790945700,
+    "size_bytes": 460,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-02-1657.md",
+    "source_sha256": "15d60121be34599406b4cb0301365da2096941faaa048a2e19866cf5fa365bd6"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 11,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780448104208125100,
+    "size_bytes": 17807,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-02-1755.md",
+    "source_sha256": "9a28437b7b2aa2ce4fdd04b6123109d2c2d29f4df56e70a0cd1266cb74087a41"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780457722352181200,
+    "size_bytes": 10320,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-02-2035.md",
+    "source_sha256": "10d62603b4049bcb00db16b0a214d3dd7141c51ae9a241235a39d9bd98070eef"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780454616851084100,
+    "size_bytes": 43147,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-02.md",
+    "source_sha256": "f6a2ff9ce0efb721add2ed07020116f0f4511541937b672d7f5233162c85d165"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780521782556079500,
+    "size_bytes": 7013,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-03-1423.md",
+    "source_sha256": "03025b7b53674b46d621f6463d52c33a66a2aefbeaf1a114fb2f73a2a9d5bff5"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780552493675041000,
+    "size_bytes": 45201,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-03.md",
+    "source_sha256": "df4cefa08f2e27f93b5518ab8161303658b81e4a9c2257cc97615606eae441b5"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 12,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780579074909068100,
+    "size_bytes": 17888,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-04-0617.md",
+    "source_sha256": "3b578bc426e55d7335ea5e22755d85546fa9ed7418225d66d6722dc370e5e194"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 11,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780640466599231000,
+    "size_bytes": 99056,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-04.md",
+    "source_sha256": "e2bbefc1043af505502beb44c450d094d61b513636d350e38c52a6e549369926"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780715481997414000,
+    "size_bytes": 8213,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-05-2011.md",
+    "source_sha256": "24c2e157c17518b1060f1372d936b9fface80331d0300da5d0c17962852e3be6"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780726097244550300,
+    "size_bytes": 12628,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-05-2308.md",
+    "source_sha256": "fcb37d671ec2183831453055ee76bd57de3062b6a2cdd16793a7c6eb6f2e971b"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780727260597778400,
+    "size_bytes": 95888,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-05.md",
+    "source_sha256": "954cd1eceed736ebe33f6795e435e431b11e29abd85c4b6e83c618eea8debd35"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780756194542513300,
+    "size_bytes": 1492,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-06-0720.md",
+    "source_sha256": "06820f58ef29e8c12fd5d9c2b38d094809433f28e97457458fc633e359de5cf3"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 13,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780784934924895300,
+    "size_bytes": 18801,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-06-1528.md",
+    "source_sha256": "6c30794447b1ca757f0ee1a5740b853eb2d5d66205bb19927a49245b0eea4e46"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780805451287171300,
+    "size_bytes": 21540,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-06-2110.md",
+    "source_sha256": "82a02b42b379eccb75dc24a6a1f0a5ce38e9d2f99d82bada93f03b1205dc4281"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780815474707566900,
+    "size_bytes": 109539,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-06.md",
+    "source_sha256": "4cacbf225da684bc78c5a5627141906567c9f6994f97a7e46673ff0e1440a30e"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780816362223133600,
+    "size_bytes": 15363,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-07-0012.md",
+    "source_sha256": "9a8c8b6eabec63598009007e1a71591be75159a99d1fe063169e436cd5d99b44"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780853130518594700,
+    "size_bytes": 1244,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-07-1025.md",
+    "source_sha256": "01b7824f7a0d02fd10dd50d1c5d1eb31900e5b07258de5a106d3933f0d2489dd"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 14,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780853262974500100,
+    "size_bytes": 24746,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-07-1027-2.md",
+    "source_sha256": "95e908f03bd936496ed96235993a68262151d91e57cbe0c71f53611a4dec201f"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 14,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780853221373722600,
+    "size_bytes": 24746,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-07-1027.md",
+    "source_sha256": "7683cc44ebb23ef68cb8edd892536873230fa2d46037c21355dd6df05edcb55a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780869313883438800,
+    "size_bytes": 1773,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-07-1455.md",
+    "source_sha256": "082a4d09a8c3976a96d5e502cd800191d66a2391934d70ebf7eadabe09b5001b"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780875882297809200,
+    "size_bytes": 4480,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-07-1644.md",
+    "source_sha256": "702f7e7aacabf6bd8000a9964b8779a9f1d72164829414caaf39b53049288a9f"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780899874750565800,
+    "size_bytes": 136007,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-07.md",
+    "source_sha256": "ba8486c3e5d67cbae1b958333e387324a9b98182db38fb674a0544987157e495"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780981259407689100,
+    "size_bytes": 4160,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-08-2200.md",
+    "source_sha256": "41b31cfac55b230024dff4a68a6a41883c1f50b7b83fa65605ea52d01c75c34e"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780984434979334900,
+    "size_bytes": 7666,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-08-2253.md",
+    "source_sha256": "a1a3820d96f3cbcf69e437a829133291a590136394ee0433e0e68a47f6a6584d"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780986206641944500,
+    "size_bytes": 81191,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-08.md",
+    "source_sha256": "2ea46759e095e156898f3d8f3db9fb0155263c97c247440640e364600d06c89f"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 22,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781075615915777900,
+    "size_bytes": 131339,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-09.md",
+    "source_sha256": "4a8b826009b237fb3c8e9b410660efd3cb62c5ab768a4ea7d36643f4c374f2c7"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781159042890596900,
+    "size_bytes": 83424,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-10.md",
+    "source_sha256": "b1e8ddaa9e0d76629a039ce2f2ec4d43bc28f82b5bf14b03d0c84099d9ce3f66"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781236570718861000,
+    "size_bytes": 20867,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-11-2056.md",
+    "source_sha256": "dced35e7bc53afb1be7a6bc99d6a90a82f998a33ca7d6dbcff3ebbd7b05e267b"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781244799188734400,
+    "size_bytes": 15714,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-11-2313.md",
+    "source_sha256": "6f21bc46388a732ce1e5b86e9b27629bd945ca56e9e580d196f6fde9609c35b9"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 34,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781245723576966100,
+    "size_bytes": 91855,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-11.md",
+    "source_sha256": "3be792fd3a03a5a8c351bcc7f42836f53dc6dcd3eb95f44d3d4fb18545413329"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781290660595927500,
+    "size_bytes": 10771,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-12-1157.md",
+    "source_sha256": "1f41f04064b2e92f14beb170e9dd9353b57669196c49f9c3b65f986c8450e785"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781314996821073800,
+    "size_bytes": 9391,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-12-1843.md",
+    "source_sha256": "a6fd3fba4902e6594d6bd11f558390e6f0f41596c5818f4605868242b51cde15"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781333495777460300,
+    "size_bytes": 79183,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-12.md",
+    "source_sha256": "956c94cc00527dc5d93953312a019bae10a3493ab343c8143bc3c1385badcb4f"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781365934496652300,
+    "size_bytes": 7710,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-13-0852.md",
+    "source_sha256": "859053580045b359e1ede75f9437c45d3e2eb10034e9ce42b7f7ed46cd19a565"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781412402517917400,
+    "size_bytes": 540,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-13-2146.md",
+    "source_sha256": "eed82f5493919d489f6f76c13f51926424521c4898ddddacae76b43487bfbaf7"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781419707328955000,
+    "size_bytes": 66905,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-13.md",
+    "source_sha256": "c490bd7e44258897baf199e39e0fb5d1229cd517e7a60d22db4ac5c98fbd6759"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781425079245655200,
+    "size_bytes": 5961,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-14-0117.md",
+    "source_sha256": "f9fc042d75dd6817d42bd8ed6f228f7e412a9531fcedb5d603345d261cfec7c7"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781425154096653400,
+    "size_bytes": 238,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-14-0119.md",
+    "source_sha256": "b853e2731a2f19905f698f98d9ad4807e1237b1b33a5e31a4905cce49507a137"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781461813586713600,
+    "size_bytes": 1668,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-14-1130.md",
+    "source_sha256": "98814262cea0ec47f2fc83d416ac170bad9a37effd47d8ce815059693c88074d"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781461884459920300,
+    "size_bytes": 282,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-14-1131.md",
+    "source_sha256": "4957fbbf9a748e8cde7be18bd036ef2a4d2a7ba3cbcb2d8a43ce3f70c54f3437"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781463176869189400,
+    "size_bytes": 1433,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-14-1152.md",
+    "source_sha256": "716df8ed1dd632cee1b19665b7cab9cc64a2a4967101a31fddfd9e5520b8675a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781470616441581900,
+    "size_bytes": 12746,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-14-1356.md",
+    "source_sha256": "0ed7d7c0a6757068a0f5b41915c2b75cf505cba1dcf2534d8d2c8924e94a8846"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781472418523109800,
+    "size_bytes": 3621,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-14-1426.md",
+    "source_sha256": "441303d22ba83f45321d563419698adbcecccfb558b9aa2e4bfc276ece159d8d"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781482048066082800,
+    "size_bytes": 5303,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-14-1707.md",
+    "source_sha256": "3e82dee3131a3d01d603d1a3545c3cd6c9cdbf458160548eae2a777e760aadb1"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781500209096071800,
+    "size_bytes": 24758,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-14-2210.md",
+    "source_sha256": "23bd493713833ca6aa96f0056276b7cc7351a8a4d15b7dce37ad0a513035464b"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781501273494637100,
+    "size_bytes": 509,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-14-2227.md",
+    "source_sha256": "27fa0e86f136eef1015d4f83c6eb5e082363909ca96f28e4e1ea75b35f43fe2d"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 13,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781502752157101400,
+    "size_bytes": 116909,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-14.md",
+    "source_sha256": "175816d2bc91e5e0985fa407b589887428ec78b963d3ce2987f78dc1e9c437dc"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781540959884783200,
+    "size_bytes": 1276,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-15-0929.md",
+    "source_sha256": "f422e770be107adf942b3a6cd314c81b94021abe0be800ebb41c6e7a82cc6fef"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781541574747891700,
+    "size_bytes": 2310,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-15-0932.md",
+    "source_sha256": "4ba4c07e62b237a0371a2d773337b79b98d7319be9fca264396ef4cdc7393edb"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781542405026702500,
+    "size_bytes": 2776,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-15-0941.md",
+    "source_sha256": "700c19857969430bf0db04fdc8a9b89970f5c521ecb4a13453fbc575eb986b63"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781542188112046900,
+    "size_bytes": 6665,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-15-0949.md",
+    "source_sha256": "76df8bf03120653a77d1ec9f252f497fc8bd9ca7ef579166e1b405be67936568"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781582097134357300,
+    "size_bytes": 13587,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-15-2054.md",
+    "source_sha256": "31181cef87b6a0b257b494dd7059d3134851beb809be4ec6c1a3648626f5f013"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 28,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781590667964217200,
+    "size_bytes": 73007,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-15.md",
+    "source_sha256": "e5991bc618a7ae44327ce4ad2dcb936a43be158f63ca51d4e899220e47d6f02a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781670310490057900,
+    "size_bytes": 16395,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-16-2125.md",
+    "source_sha256": "8f3d59f8592e35363bf622522907d8b54c15ffe68f7dad02d2c578ca51fba839"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781670403989444400,
+    "size_bytes": 16395,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-16-2126-2.md",
+    "source_sha256": "0721c4a3c89fd3e3a07c2bb39ff1c50354b1ffc04eaabd1828d4d6e26d8c100a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781670373905067100,
+    "size_bytes": 16395,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-16-2126.md",
+    "source_sha256": "004d71bbad78bdc1c4854aa9f88a45dd0e70c3b36183e33371a70d1601a6cb4b"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 13,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781673234390366700,
+    "size_bytes": 74785,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-16.md",
+    "source_sha256": "01bf5a42eb4a211aa6f1bc7e755efb73b088e3f04012960eeeaabcbc34b3aec6"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781735392477311600,
+    "size_bytes": 11436,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-17-1529.md",
+    "source_sha256": "ca9656387ef92a0a4ef5e25ec453ed551ed42c10c9cd62bf3b2e64d2b4cda3b0"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781735541328753400,
+    "size_bytes": 3335,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-17-1532.md",
+    "source_sha256": "270d70433947ec0645c1baca763673146856b2daa6d756853ded54b5a1b6e4f3"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781736322494371200,
+    "size_bytes": 2622,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-17-1545.md",
+    "source_sha256": "e155ba1967d45a6adc75aa23fbad5bd035300b3d8f1f5465134a6bc0e1cea688"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781764787985572600,
+    "size_bytes": 53295,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-17.md",
+    "source_sha256": "5ccdeee497d2beac6d5a510d6dd27121398633748759534d24682a8b5b82c886"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783307740435456600,
+    "size_bytes": 18839,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-18-1942.md",
+    "source_sha256": "b69eaaf52f3f53749af0fc33ba9cc5f39a4fd920ddcb453b748b36400518da55"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781842249285501300,
+    "size_bytes": 19301,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-18-2110.md",
+    "source_sha256": "a88e3bc9342c329b6c186a398097f5424f7eecfe1baafcf000644862e8f7801c"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 17,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783307740435456600,
+    "size_bytes": 80245,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-18.md",
+    "source_sha256": "035261a8fd6f64bfa6a92b7a20f52b1354ea555113a9a64c8f109a9d4802c7b5"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781886974608808200,
+    "size_bytes": 29683,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19-0936.md",
+    "source_sha256": "2b806443608cd893e24b77f0a1d1c047db050e718cb74b6bcbe7c1afe67b6192"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781888197503909500,
+    "size_bytes": 573,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19-0956.md",
+    "source_sha256": "4a766b3034f96470ca8b1df0349e64f39be3e4ee356a00b0677a03bfc0714bc5"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 11,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781890246546589300,
+    "size_bytes": 22075,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19-1030.md",
+    "source_sha256": "2de42265f793d622ab4ab330b01c7e63b2ceb792715cdd7eea47bca0eb108a56"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781893419765559100,
+    "size_bytes": 4630,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19-1123.md",
+    "source_sha256": "ce755a0860caaef363debfb89b6d17525d7e9b4c560f436f23a9a6a71064854f"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781893687018940100,
+    "size_bytes": 3315,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19-1128.md",
+    "source_sha256": "75e0a7576e9cd6e2a6a08ca858f385fd1e448a128db1e74e2e965d355ccb2c62"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 15,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781894097600800900,
+    "size_bytes": 24136,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19-1134.md",
+    "source_sha256": "002a2b4216a3d07df11cdcee4f38bb6ae372fbda201f7b9cd53dd3b9ead9fa7d"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781913880785212500,
+    "size_bytes": 2273,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19-1704.md",
+    "source_sha256": "1494302a43ec6b0806371434e6c350bda54ea90f655e4028acf7d622e18b1d30"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 0,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781914571560170800,
+    "size_bytes": 0,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19-1716.md",
+    "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781919757012993900,
+    "size_bytes": 14922,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19-1842.md",
+    "source_sha256": "4cabf93847cd4618016a3d5c97d4f216536dd79845aa00d92f67807b145b0b61"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 20,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781927973174763400,
+    "size_bytes": 38042,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19-2059.md",
+    "source_sha256": "e8f450fe00fc709c4a9f4349ee078da348a6ff9effc7fd766d347b55c0a1c1cb"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781931041535975200,
+    "size_bytes": 22314,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19-2150.md",
+    "source_sha256": "be076d20b3eab0f0682d1d75eaccdea3dcde5d81d4a8c5b38b9e33caadd5045a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781934735330744600,
+    "size_bytes": 9906,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19-2252.md",
+    "source_sha256": "1757b64e67f2308752ca739b5c7806c89120c54d197ef7124ae22ce4647b9c15"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 23,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781933295226036300,
+    "size_bytes": 126404,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-19.md",
+    "source_sha256": "95003d0468cb9c411be3793df4b94f82d70a3ad36a734cce355ba2a6d1b13954"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781975254300577800,
+    "size_bytes": 9347,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-20-1007.md",
+    "source_sha256": "72ce816a57b8700f21c90122319de2e30cbbd0b8120f9d951e2fd37a78ea5a3b"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781975980002331700,
+    "size_bytes": 11026,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-20-1019.md",
+    "source_sha256": "618434eb5949c28130a313f13a8a528016094da460f6477c4cb7f207ec3ec3b3"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 13,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782016029304891800,
+    "size_bytes": 19437,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-20-2127.md",
+    "source_sha256": "5830e07bf9ac06cf8e7a44748b030ddd1ee56da90fec3153533eec576f1694bb"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 18,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782025140876800500,
+    "size_bytes": 115635,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-20.md",
+    "source_sha256": "d255567f9a2e9ad422849e470f6759d9e94721d382e4db8fbfd36cf21eaea8b4"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782026045776495400,
+    "size_bytes": 10595,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-21-0014.md",
+    "source_sha256": "4ed08325de7f5eafcf4b9bb497639c475cc7569a7a53b8d3e267e9fae70ecea9"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782064443626066800,
+    "size_bytes": 5624,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-21-1054.md",
+    "source_sha256": "b72e298065cdfcc4fa2c9c23a6e719f7e6fe1748ca502d8ddfdbbf6b629b0c2a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782065771205573000,
+    "size_bytes": 13057,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-21-1116.md",
+    "source_sha256": "c9205be1db340c8bd7cd605ac9c9eabde69b42f43376f7d478d26f889863d61e"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782065826326492300,
+    "size_bytes": 13057,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-21-1117.md",
+    "source_sha256": "bf9707ac0c7b21b144464fc77402655f70ce094d375306c3421378fe07f1b576"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782080705330135900,
+    "size_bytes": 16588,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-21-1525.md",
+    "source_sha256": "6f64832a95f36d592a5622a3e4c71b088a5650af07bf9095197272dcdecd5b94"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 23,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782108539189311600,
+    "size_bytes": 146107,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-21.md",
+    "source_sha256": "4b018524b1a89a091cbc321cf151509825c0316bd04ba62e66d0813a58245bf4"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783307740435456600,
+    "size_bytes": 104041,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-22.md",
+    "source_sha256": "248d65c1e4339def9b709c77c92674772f5e2aea1a585f4a8aebb1638f2ac1c8"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782259341113114800,
+    "size_bytes": 12271,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-23-1702.md",
+    "source_sha256": "51d4c669e17494d6a2494812495443300e3db87d1d4c2b6420f632b51c085bc8"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782259922956679900,
+    "size_bytes": 3824,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-23-1712.md",
+    "source_sha256": "67e4db91f5039c4955b42efa9114d6e8dccc82a886e7a92d4ca65342d4159ab8"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782282097747192300,
+    "size_bytes": 46405,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-23.md",
+    "source_sha256": "633c3e484d2c48b4662c24e0f2d7bdedad0508dbe0588d98525a82f49151f32d"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 0,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782344108780410300,
+    "size_bytes": 0,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-24-1635.md",
+    "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782352400906992200,
+    "size_bytes": 9580,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-24-1853.md",
+    "source_sha256": "f9948af8758acb8bcdee2b40af87e2e4c17d902c1e82d4fe49fc7487128b0aef"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 22,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782368203700303400,
+    "size_bytes": 153060,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-24.md",
+    "source_sha256": "0b136322d8e615b0fb2b42c5afb8e71cdd40c24fa6ec33a624db0f64213f7bb3"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782451930009486600,
+    "size_bytes": 64340,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-25.md",
+    "source_sha256": "07c0f74eb384a8f1f7ee3e16a8f677a0eb0586eebead82fd2a4db920731471be"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782542583241447800,
+    "size_bytes": 51750,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-26.md",
+    "source_sha256": "60623a27fbf705773b1bce35b8dbb30aa2b7884d232f52530c8425d0d7df93c4"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782628681692123000,
+    "size_bytes": 33691,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-27-2338.md",
+    "source_sha256": "50f6e9781f22034605119e9f32a1119ac7a611f05b098d7d3f8f225b1b84129c"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 12,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782629576401720800,
+    "size_bytes": 26524,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-27-2352.md",
+    "source_sha256": "95de3647b0c82ac521445b9678bdc5eb2773cbecd7d23ddfb7c988f0d1a28990"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 11,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782629616646301500,
+    "size_bytes": 22379,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-27-2353.md",
+    "source_sha256": "fb55da3c463cfd9b23640374c5b569b52d41b3e98c0c4bed07267002bd0ab5c8"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 17,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782631618846436000,
+    "size_bytes": 104352,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-27.md",
+    "source_sha256": "1dc96f150c9cc7aa282108a5031d1f888426dde0cb23db9c5b068e95935b1c01"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782682748684722000,
+    "size_bytes": 4619,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-28-1439.md",
+    "source_sha256": "c739aed8f6937e7500905f8abbaf89f9badad3b299e80ffaa74d9f578ac42bc4"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782689709124568400,
+    "size_bytes": 8437,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-28-1635.md",
+    "source_sha256": "f104e0394603922c8f25fc64043f62871be4e0957f261385635bfaa24c804b1b"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782696017989491600,
+    "size_bytes": 928,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-28-1820.md",
+    "source_sha256": "33f5dabf77b7168bdbee5da7fb109e2cff87ed35295da8f0ae6905a199c6e739"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782704149370826200,
+    "size_bytes": 20918,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-28-2035.md",
+    "source_sha256": "cdaf264dcce9d020324a3624b5ca3b9a8b793950fd7251329ee2f7bc2e98266e"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782709521600344500,
+    "size_bytes": 27090,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-28-2205.md",
+    "source_sha256": "203c6aaf2d89191d0ed981a3a598a3b5a53414be0cad6b94b9831b05b75d06e8"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 13,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782710578088375300,
+    "size_bytes": 84906,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-28.md",
+    "source_sha256": "d9db6093ddee12a06d49fd8e4235943aa5741256a555fac6e52b061a017422e9"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782799747620733300,
+    "size_bytes": 90481,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-29.md",
+    "source_sha256": "ab8cfa81fbecc3cd6539d2ffa2acf115c2a003fed586b750beb136a5f1657261"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782883731367307200,
+    "size_bytes": 67532,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-06-30.md",
+    "source_sha256": "aa1b4b9bf7627560b4c196673b44b44abf7163cca10d8b8d1f00dae2fe6d8456"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782949019591621800,
+    "size_bytes": 190,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-01-1636-2.md",
+    "source_sha256": "b2cdf6eefdb8acde925643e785fbd9a8082a21526da0ac1a424ed3689462715a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782948979465864000,
+    "size_bytes": 12340,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-01-1636.md",
+    "source_sha256": "f655d61dcc2a8386bd37ad93120f55e8653584289cd3e067548244cf9861ebb7"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782956609429723200,
+    "size_bytes": 21042,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-01.md",
+    "source_sha256": "e22283d13aa0b2511c032b93da6f44025b7de4491a9eb2b0225c4be7347405b3"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783025895379403100,
+    "size_bytes": 171,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-02-1358-2.md",
+    "source_sha256": "4d05a091c238422b5ccbe58cf55e0a3fa89a08a630890803f469084275257c60"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 18,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783025888294464500,
+    "size_bytes": 30116,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-02-1358.md",
+    "source_sha256": "edfd4629ccd6ea4015bf66e750b2ca212fb96be54aaa57e11bae4d0b6393ff2c"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783035051370676400,
+    "size_bytes": 171,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-02-1630-2.md",
+    "source_sha256": "15473733deadbcdfee2656daafb473fa10d2bffee74c936851d9f6618fb258e9"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 13,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783035046819047000,
+    "size_bytes": 29881,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-02-1630.md",
+    "source_sha256": "c175615a5dda25ba615df42ba97990c2e3923826cb7e846e3c4ec1f527026bf9"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783059341157670700,
+    "size_bytes": 4102,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-02-2315.md",
+    "source_sha256": "c8d33f4e8d7ba8c21926cc76779637c51f69d200b1a248ef0f87fd20c10bb123"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783062499865220100,
+    "size_bytes": 20392,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-02.md",
+    "source_sha256": "a784ebf1b73e1b6b7309bdc7e5a8342ecf206e9924d9f1c58813959050bf2d30"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783063022429137400,
+    "size_bytes": 4102,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-03-0017.md",
+    "source_sha256": "b754d8c64e04112cb77f32d52b854a03fc6864966849e9804e7366d4fa00404f"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783096592185162200,
+    "size_bytes": 5356,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-03-0936.md",
+    "source_sha256": "9cb4fca0708ea1b84c04002b2ee388436bf0f45f3f211ed8101344bf69b63003"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783097043170285500,
+    "size_bytes": 10111,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-03-0944.md",
+    "source_sha256": "e2b2b22daf90b2059c328948ed39c04e934be0984d9a87f0cdd3eaa702d7990b"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 18,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783105029146642800,
+    "size_bytes": 30852,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-03-1157.md",
+    "source_sha256": "d138fee8f50bec2df2a27ae526bcb7efe99476334db7d76f86f6ef3a96528290"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 14,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783143226725982500,
+    "size_bytes": 102239,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-03.md",
+    "source_sha256": "fe7b671d1d41358ae872846c6e5444dcedf668a4ed5aefd757766c51af46570a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783200997420292900,
+    "size_bytes": 9805,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-04-1436.md",
+    "source_sha256": "a2d37befe3e1152758b7b3af08b255222fc8d85deeed6e911a55c4ecd1ff2aac"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783203219191984800,
+    "size_bytes": 16683,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-04-1513.md",
+    "source_sha256": "8ce78fe7e6a0e8464e7b0cd885660cfbe707263ed6ef600585b5ea463c0a4939"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783223077540350000,
+    "size_bytes": 14725,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-04-2044.md",
+    "source_sha256": "d16b3e22e8eec0cc6eb5821e2d5ff017222439639abb6b96e7d30d55dca434e6"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783225647912433200,
+    "size_bytes": 15981,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-04-2127.md",
+    "source_sha256": "b36b4e2496c4d70de713ca06b8a79e8da1e7bd0bef47dce2b3c15f46a81d0f0f"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783235306837273900,
+    "size_bytes": 81001,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-04.md",
+    "source_sha256": "dcad7b76f37d60b6020c9351384bc881e665268d4ea3746d283f10b34efe82b1"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783280326602788900,
+    "size_bytes": 1888,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-05-1238.md",
+    "source_sha256": "dd524610c4d68c8e58285c285d61502d4ba48bde7fe93515e04a914df5e60b4c"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783287244386428000,
+    "size_bytes": 13158,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-05-1434.md",
+    "source_sha256": "afd7a7b279f52bb56014f35cf2256423c9cae0a5eb897d06fdfdb0144c6b5e66"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 18,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783315427291799100,
+    "size_bytes": 118329,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-05.md",
+    "source_sha256": "d5a6cd84af3554baee75bb8c529dc4bb9de847a7cb463fcc15f6430d8f8b6daa"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783402894507357800,
+    "size_bytes": 12649,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-06-2241.md",
+    "source_sha256": "809b5484016293842dbedf6a5085d4fc4569a7db687012d84c2ac8753e60ac67"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783403626176712300,
+    "size_bytes": 14381,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-06-2253.md",
+    "source_sha256": "e8bab0b05d385da4f1eb2a9707805484bb5b4a1ac821c83c3f0e824e4ce35244"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783407440786777600,
+    "size_bytes": 65189,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-06.md",
+    "source_sha256": "45f1bb9e8c35a2a4b64476e099f60d8a5cc854299d56ef764d4cc351eb0fe19e"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 12,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783471217529629400,
+    "size_bytes": 19784,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-07-1740.md",
+    "source_sha256": "d183809b799ef792127c997a14756ea221e479aa40e1d68fe5bc9275c5b9accd"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 12,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783483783915012100,
+    "size_bytes": 19989,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-07-2109.md",
+    "source_sha256": "2cbbf001a3f181095238f51d9155279d15ea079342300b2f0e90573dcefbb6ff"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783484746104728500,
+    "size_bytes": 420,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-07-2125.md",
+    "source_sha256": "7b7375ca16a2abf2125c2218268673ae2a9a81d424c7e9eca7a0c9d5e1531c9a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783491658442389300,
+    "size_bytes": 21555,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-07-2320.md",
+    "source_sha256": "c86f0e49ae82c8d9285c60cd45a4f07789df847a4e2ffccfbf3cb0e91ab397a0"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783469586935624900,
+    "size_bytes": 33460,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-07.md",
+    "source_sha256": "db5e96701e65c5fa64d6f98d0a94e45da7d6be3fc21e211a21d488478f2dce67"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783520984652536400,
+    "size_bytes": 171,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-08-0729-2.md",
+    "source_sha256": "a432bbe813d42079c840762a4d2d9ee4361c4ad784802bf678f27fc9546c3996"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783520964497603900,
+    "size_bytes": 5050,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-08-0729.md",
+    "source_sha256": "fb1022161c09e585a6ba16e031f4d444c35ac31b9567971caeb9d396a18c1bbb"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783525596787544300,
+    "size_bytes": 584,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-08.md",
+    "source_sha256": "ddf649dc854cc630aef74ab7ca02943c1fd1a90458ebe3bb987908e8c19360be"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1784599812469131800,
+    "size_bytes": 148,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-20-1910.md",
+    "source_sha256": "a2ac9f1b59256597871f74841b89fa7eef89ebb96e55d5ef873aad14ea985e75"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1784600022871371900,
+    "size_bytes": 186,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-07-20-1913.md",
+    "source_sha256": "7fe4ee7994004df3a67aa1d3b98126a0768161951e006bdb7e9e431a0d5be920"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786151779670315600,
+    "size_bytes": 13531,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-08-07-1816-2.md",
+    "source_sha256": "66323e13e42db91fb6e1d3c3cea8ac424683335d16c58b890634b74fd550aee8"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786151782465607700,
+    "size_bytes": 13531,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-08-07-1816-3.md",
+    "source_sha256": "7fa7a5ce3bb5f780ffae9e1bb0e87958ea8fbca37724e34aa85c0bf580b20fa6"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786151776108234200,
+    "size_bytes": 13531,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-08-07-1816.md",
+    "source_sha256": "6c36977970141af1dff33eb1c77440898e9578f931ffd0f1900e611a84d43189"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786154326999852800,
+    "size_bytes": 737,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-08-07-1858.md",
+    "source_sha256": "01dc929d3440d692d70652b9b5c29cdc806f30a4502eacab9288d7b83040a520"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786161068432934400,
+    "size_bytes": 7215,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-08-07-2051.md",
+    "source_sha256": "7be0e6c949e09fa426eebffca540d4f8b33265c272e374aaba2806edc76133b5"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786161546850096600,
+    "size_bytes": 3153,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-08-07-2059.md",
+    "source_sha256": "db5d873dc7a287c8195ae0c53a294cdaa2ebdb04b9c87c43105d11d502def5d1"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786170499568024800,
+    "size_bytes": 28195,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-08-07.md",
+    "source_sha256": "2d23f6d5240778233f09126b20171438bdf339961d2190f1667287afef3532b6"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786201719928709600,
+    "size_bytes": 4437,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-08-08-0808-2.md",
+    "source_sha256": "4b3517eb1670225591e2d1644febbd6297aadad928b71616fdae2ee4f7127da8"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786201709065538400,
+    "size_bytes": 4437,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-08-08-0808.md",
+    "source_sha256": "b6527cdf44d9ecc3c952feae5a4568dd70e451bffe2b875e7fb264642bcda57e"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 19,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202120916568900,
+    "size_bytes": 37001,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-08-08-0815.md",
+    "source_sha256": "f19d129e9b9488f12b60f971cfd1cec8bd929adc864223cd504e97f0ec1d280a"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 19,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786203912079244600,
+    "size_bytes": 37001,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-08-08-0845.md",
+    "source_sha256": "81ebc145228d0ee527823dc4994ca436a70eb4d79602b92bd15b43804912c70f"
+  },
+  {
+    "authority_class": "durable_memory_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786203988111085500,
+    "size_bytes": 13053,
+    "source_family": "daily_memory",
+    "source_path": "memory/2026-08-08.md",
+    "source_sha256": "b57f66039ba4528179633a96a98cb05be34780162e6d734ee6ceff1e669c38fe"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783438259643803400,
+    "size_bytes": 55717,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 74 - Veritas Recursive Self-Improvement Loop.md",
+    "source_sha256": "6c0ecffc41494cf20f673718a4a8689f4ef423e7b424deefef2f53ac157491aa"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 25,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783438274186379700,
+    "size_bytes": 61038,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 88 - Veritas OS 2.0.md",
+    "source_sha256": "4dc311cb15c1dcad70120be7beef9ec810e4a5de10e9e67b4dabfd4a22d8c158"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781890127275539100,
+    "size_bytes": 29241,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 67 - Alpaca Paper Execution Guardrail.md",
+    "source_sha256": "a6d37f6ca1a0b36bcf9876168036fbc9053beb3c30a9e4fbe4cf9534fb5fb5ea"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779253729764370100,
+    "size_bytes": 3211,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 67 - Paper Trading Skill Scout - 2026-05-19.md",
+    "source_sha256": "c09f91c0120ac0bbf92e7b71f892b9d59621cc3523071e83c02f4505cc830d38"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781312286682111900,
+    "size_bytes": 27893,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 73 - Queue Index and Boot Surface Optimization.md",
+    "source_sha256": "d78f12ee320f5c062af1a3cbb18542515e9b8c26fc7ddf30fb5be765370dcb6e"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783106312517540900,
+    "size_bytes": 3618,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 75 - Agent Workspace Findings - 2026-07-03.md",
+    "source_sha256": "0c6179b1995835785e99a3d89c7e0785de87136b363fa69c1d41a85ee05011bc"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783101590464270500,
+    "size_bytes": 4147,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 75 - AI Drop-Service OS Agent Training.md",
+    "source_sha256": "25dd47bbdf5365eebc48f6a6afcac45d5b5e642bae7463bbfc318d3100f408fa"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783060370936190200,
+    "size_bytes": 2864,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 75 - AI Drop-Service OS First Slice.md",
+    "source_sha256": "670f1329d8772395166cb94e6fc44271f98fef5fea39fc179c43c2baee131801"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 13,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783228093254566000,
+    "size_bytes": 13671,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 75 - AI Drop-Service OS Full Implementation Plan - 2026-07-03.md",
+    "source_sha256": "f35a0038c71cb01935129d48b0d7fa36052d645585af2568c0e25d5e34755f74"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783060370936190200,
+    "size_bytes": 7058,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 75 - AI Drop-Service OS Training Plan.md",
+    "source_sha256": "8b118095d48ab941c16c2b42bee2a4be3b771df09cf1df23b728423436a9b634"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 15,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783307740435456600,
+    "size_bytes": 66124,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 75 - AI Productivity and Business Opportunity Intelligence Expansion.md",
+    "source_sha256": "fe4c1e0ec1e7798fb7001eb2bbe5c37fcd8c84363a2842b67a6d21f0bb0a46a7"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783104296829655900,
+    "size_bytes": 1552,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 75 - AI Workflow Clarity Sprint Demo Stack - 2026-07-03.md",
+    "source_sha256": "2039a084acd73106b5f44d98d2af686be3c8e0fd23794063a2d0801e4ec1ba67"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783107570657442100,
+    "size_bytes": 1600,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 75 - AI Workflow Clarity Sprint Monetization Training - 2026-07-03.md",
+    "source_sha256": "e7229bc020275aee7b741aff0119151b029a649961a3e735421a9775be039f44"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783110346895890800,
+    "size_bytes": 5027,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 75 - HVAC Evidence Pass - 2026-07-03.md",
+    "source_sha256": "e35dff12049ee63f44c501391e922befd59d7082cd31326bd3fdbd6e49fbbd22"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783110877744272100,
+    "size_bytes": 1398,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 75 - HVAC Internal Offer And Intake Draft - 2026-07-03.md",
+    "source_sha256": "0f750d4c907c2ce6d73e18c2f0b3d4b8545ad2a4dd32f4710f9c1f5f9b00a2f5"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783128198267736900,
+    "size_bytes": 2904,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 75 - HVAC Private Pilot Outreach Prep - 2026-07-03.md",
+    "source_sha256": "e9f0a716fd4a6a2bd3b1add85a450d6ca9e75fa7ea27ab969a5841bc652d0250"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783101571518087300,
+    "size_bytes": 3844,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 75 - Missed Lead Demo Proof - 2026-07-03.md",
+    "source_sha256": "5bf9ee175f648d15db11f37fce013c54a3b93ad1aae70ac862b8437b53badd46"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 44,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783066762005198000,
+    "size_bytes": 148759,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 78 - 500 Ticker Finance Intelligence Scaleout.md",
+    "source_sha256": "43b2ac9fd275d5c07fae48f2191780161d264969f207f9584c65a2183874dd1c"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783307740435456600,
+    "size_bytes": 25566,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 79 - Veritas Command Center V2 UI Infrastructure.md",
+    "source_sha256": "a978cc08b8eb8701ab7bbe62854d3119dd87430c70f0d029bc7a2747d2502927"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783307740435456600,
+    "size_bytes": 7398,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 79-SMB - SMB Workflow Clarity and Marketing Ops Automation.md",
+    "source_sha256": "d95387baa0870b136fc555746d1f9767cfe863b37d7cb6c37a7d05fd3a472699"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 12,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781897628381298800,
+    "size_bytes": 21603,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 84 - Trade-Grade Personal Finance OS Canonical Data Model.md",
+    "source_sha256": "27d5b18b7a5a6371495bf058cab738d40f740b7631445e623f2c89cec06385c5"
+  },
+  {
+    "authority_class": "workflow_owner_note",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782528976282816400,
+    "size_bytes": 40691,
+    "source_family": "workflow_continuity_note",
+    "source_path": "06. Playbooks/Project Continuity/Workflow 85 - Trade-Grade Decision and Approval Card OS.md",
+    "source_sha256": "cbd1873ff71cd432885f1fb028634d394b2e98aabd95dbc8a3a8a8b80d17ab82"
+  },
+  {
+    "authority_class": "source_reference",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783291357327262800,
+    "size_bytes": 3494,
+    "source_family": "workflow_checkpoint_config",
+    "source_path": "data/workflow-checkpoints/implementation-closeout.json",
+    "source_sha256": "4255e9866bd3fed827f3204d50d073ba4afa6fa41dc8fdbf338e990340dad01d"
+  },
+  {
+    "authority_class": "source_reference",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783211275279881500,
+    "size_bytes": 5074,
+    "source_family": "workflow_checkpoint_config",
+    "source_path": "data/workflow-checkpoints/wf74-wf88.json",
+    "source_sha256": "92abab4116a4f61c0bb705e49d906ae2bf17c065b90461ef033953c253490ab6"
+  },
+  {
+    "authority_class": "source_reference",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783211275280881400,
+    "size_bytes": 5011,
+    "source_family": "workflow_checkpoint_config",
+    "source_path": "data/workflow-checkpoints/wf84-wf85.json",
+    "source_sha256": "ce80c5dcb0ed9f3dc4325fa612603334bbce4595478d19a3c7e1d4520d40c242"
+  },
+  {
+    "authority_class": "source_reference",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783291374622769300,
+    "size_bytes": 18178,
+    "source_family": "vector_memory_source_registry",
+    "source_path": "data/vector-memory-sources.json",
+    "source_sha256": "4013600a9170cde2930296648dd76eb9eb286dfb4c416ab5b1005cb69efd05ac"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 23,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786203053179889600,
+    "size_bytes": 36484,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-improvement-opportunity-queue.json",
+    "source_sha256": "1c679f214b74d9b7e1b05e35714b555ebd2ac41962007dcdf31a500cdd95358b"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 63,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786203054429784800,
+    "size_bytes": 93757,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-autonomy-work-router.json",
+    "source_sha256": "86aa28b6459d5d4b3d01cba055e6e64a34d1ef7cc8b3495631eb0cbccb6dfcce"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 18,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786203053664894300,
+    "size_bytes": 25172,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-auto-patch-proposer.json",
+    "source_sha256": "bed3fce3df878b52a3bdca3d4c74a315808a7c915a02f4a90d43746f245ae35f"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 34,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786203054823230400,
+    "size_bytes": 53365,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-decision-docket.json",
+    "source_sha256": "826d320380f2c3bb68b16b2609bf1affed0e9b55d2b0481741a055013a8e6f1e"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202399122193000,
+    "size_bytes": 21149,
+    "source_family": "wf74_learning_loop_packet",
+    "source_path": "tmp/wf74-learning-loop-eval-harness.json",
+    "source_sha256": "c7d52891a35e76d22ea2e77dc0c843b770e7bb473f12db30166b6315048c65dc"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 34,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202462361787200,
+    "size_bytes": 43731,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-os2-control-packet.json",
+    "source_sha256": "f69af8786dd0c194944b3633659e41dd2e9c8935b441b0b3b0d32715b504b62d"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 29,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202478294969700,
+    "size_bytes": 36762,
+    "source_family": "wf88_os2_packet",
+    "source_path": "tmp/wf88-wiki-synthesis-packet.json",
+    "source_sha256": "e91c90064e1b02dc92670c1530c3ed7b7e919bea4ed831528f295f820928c843"
+  },
+  {
+    "authority_class": "source_reference",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202478243216100,
+    "size_bytes": 1428,
+    "source_family": "wf88_second_brain_wiki_page",
+    "source_path": "wiki/index.md",
+    "source_sha256": "eaa8eea01eadf2dc684c783242fbd44e9a3565bd38de4088312ed68d5fe74440"
+  },
+  {
+    "authority_class": "source_reference",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202478245436000,
+    "size_bytes": 3009,
+    "source_family": "wf88_second_brain_wiki_page",
+    "source_path": "wiki/os2/OTEL To Proposal Route.md",
+    "source_sha256": "5f8d9e136b88a6db23f79cbe590f3d53fb67c670b487e89d3a9e7e6939ee9f3f"
+  },
+  {
+    "authority_class": "source_reference",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202478247904900,
+    "size_bytes": 1826,
+    "source_family": "wf88_second_brain_wiki_page",
+    "source_path": "wiki/scorecards-and-evals/Current Map.md",
+    "source_sha256": "72d6a32e51f29498afef44a595092c0fa482646bdae65c27dae5944a68c768a5"
+  },
+  {
+    "authority_class": "source_reference",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202478249962300,
+    "size_bytes": 2094,
+    "source_family": "wf88_second_brain_wiki_page",
+    "source_path": "wiki/scorecards-and-evals/Token Efficiency Map.md",
+    "source_sha256": "b0e46c6509d30bb2ac17c37474fc73dfd7f0f6690e28c9cc8ded17579725b0f9"
+  },
+  {
+    "authority_class": "source_reference",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202478252541100,
+    "size_bytes": 1771,
+    "source_family": "wf88_second_brain_wiki_page",
+    "source_path": "wiki/self-improvement/RSI Control Loop.md",
+    "source_sha256": "ddffba790d9a684e0daabe498e73d898a62940d27c99d4eff98b543b31e8ed75"
+  },
+  {
+    "authority_class": "source_reference",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202478254739100,
+    "size_bytes": 2792,
+    "source_family": "wf88_second_brain_wiki_page",
+    "source_path": "wiki/recommendations/Action Promotion Map.md",
+    "source_sha256": "57ec9e8c9d2338a39aa2f678751391e8441209cfca217c8f79e8f86b0dcee6e0"
+  },
+  {
+    "authority_class": "source_reference",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202478256746000,
+    "size_bytes": 1302,
+    "source_family": "wf88_second_brain_wiki_page",
+    "source_path": "wiki/gaps/Open Follow Up Debt.md",
+    "source_sha256": "5fc5a526f84875c9450eef36e0caae0a170bf154631321ca4cdfce3321f5f81a"
+  },
+  {
+    "authority_class": "source_reference",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202478258738700,
+    "size_bytes": 4084,
+    "source_family": "wf88_second_brain_wiki_page",
+    "source_path": "wiki/source-map/WF88 Wiki Source Map.md",
+    "source_sha256": "4ef4162f8f32c9fa2106906b70bafc5f7a0f8bf2326106a6d744ebf6227838cb"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 41,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202493448155400,
+    "size_bytes": 53445,
+    "source_family": "wf88_token_metadata_packet",
+    "source_path": "tmp/token-efficiency-scorecard.json",
+    "source_sha256": "321bfc10457782004f383bf76864e9a7d3c6c6b059c45025285de4d3c27b8333"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 18,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202493485068000,
+    "size_bytes": 24122,
+    "source_family": "wf88_token_efficiency_review_packet",
+    "source_path": "tmp/token-efficiency-review-packet.json",
+    "source_sha256": "006534f7862e3d39520298697da0c5f3f8741b3702cfc5b6d46df7dee4c359e8"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 25,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786208500559686200,
+    "size_bytes": 30824,
+    "source_family": "wf88_token_metadata_packet",
+    "source_path": "tmp/implementation-token-attribution-bridge.json",
+    "source_sha256": "2337407461d68019bfd015c33e8b021e0eeee5534ab7ac4f76f4d0d3d4d037de"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783300484945444400,
+    "size_bytes": 3744,
+    "source_family": "pm_control_summary_packet",
+    "source_path": "tmp/pm-control-summary-packet.json",
+    "source_sha256": "6a89f3907831c1f7db849cca5de58d84460f0fc11b26bc60d14b0bc3c86fc352"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 1688,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786172679536386300,
+    "size_bytes": 1465362,
+    "source_family": "vector_memory_graph_packet",
+    "source_path": "tmp/vector-memory-graph-packet.json",
+    "source_sha256": "d0cc5cde3bde6dcbe7083445f643d044167aa9f5a71f627eda6fbe0dbe282878"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 26,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786209279342622500,
+    "size_bytes": 39409,
+    "source_family": "agi_os_eval_gate_packet",
+    "source_path": "tmp/agi-os-eval-gate-packet.json",
+    "source_sha256": "1db082540ea812989528a544d51415043fd6e5a7d3ad35503384cb380bf990f1"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 395,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786172678279452400,
+    "size_bytes": 696458,
+    "source_family": "agent_message_ledger_packet",
+    "source_path": "tmp/agent-message-ledger-current.json",
+    "source_sha256": "fa8c443ad3bb7bc86da6d483adfafc2b216cc3fdd9930795f57c3ecec8243845"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 118,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786165920484320600,
+    "size_bytes": 194210,
+    "source_family": "recommendation_outcome_memory_packet",
+    "source_path": "tmp/recommendation-outcome-ledger-current.json",
+    "source_sha256": "e311159bfb2432d66ecc68fce086cf47a37fc197c024c97bf71a84dc7bc65c8b"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786165921547304400,
+    "size_bytes": 4518,
+    "source_family": "finance_decision_outcome_packet",
+    "source_path": "tmp/finance-decision-performance-digest.json",
+    "source_sha256": "214e33f9fa58d4161ec5f796eec9f4abbc9b771d50f8f439c033f46a33259218"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 85,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786208443421070000,
+    "size_bytes": 119263,
+    "source_family": "coding_outcome_memory_packet",
+    "source_path": "tmp/coding-outcome-ledger-current.json",
+    "source_sha256": "a7929a6a7568e9df111f643460d1e838cf3656d976efca1c0e0cdfd507008423"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 36,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786148594663635000,
+    "size_bytes": 59176,
+    "source_family": "wf55_autonomy_outcome_packet",
+    "source_path": "tmp/wf55-autonomy-outcome-ledger.json",
+    "source_sha256": "ed00f9afa89f97b75f6927ada21d769cc14fc36c38babb4666b860095a2dc2ea"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 44,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202970362009100,
+    "size_bytes": 54109,
+    "source_family": "wf87_shadow_outcome_packet",
+    "source_path": "tmp/wf87-shadow-outcome-scorecard.json",
+    "source_sha256": "74c7a2743224e04da7f5265316475c26e95f6b0cb207d7873337a2a3f3aab146"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 15,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202472785468600,
+    "size_bytes": 18332,
+    "source_family": "wf74_wf88_loop_trace_packet",
+    "source_path": "tmp/wf74-wf88-loop-trace.json",
+    "source_sha256": "83c9142cfa33eb850a51f8dd1ae1e4a084084e55f2ecaeec0acb04b533da4a44"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 23,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786165922079967400,
+    "size_bytes": 37635,
+    "source_family": "wf88_actionable_improvement_queue",
+    "source_path": "tmp/actionable-improvement-queue.json",
+    "source_sha256": "187e58a12540f14d61fa9a46a0ca396b7763cc4080b7d830c5a30bcf4ca50167"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 76,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786203053329680700,
+    "size_bytes": 111034,
+    "source_family": "improvement_ledger_packet",
+    "source_path": "tmp/improvement-ledger-current.json",
+    "source_sha256": "1d0d8f52e43bbef114e67bef4d41276a99e5d2be4bddeab9072d1a6379c3935d"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783211403093924100,
+    "size_bytes": 8452,
+    "source_family": "workflow_checkpoint_packet",
+    "source_path": "tmp/wf74-wf88-generic-checkpointed-execution.json",
+    "source_sha256": "e7903113a8c44fd40ab234ef177e7ab1e6d3fa4320f253d1de9204b8221144f1"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783211450838863800,
+    "size_bytes": 7361,
+    "source_family": "workflow_checkpoint_packet",
+    "source_path": "tmp/wf84-wf85-checkpointed-execution.json",
+    "source_sha256": "f528d39abf56032e71e4f3b6859b2069c8c34dafeffb66cbe842d8fae637e602"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783296565231075100,
+    "size_bytes": 5692,
+    "source_family": "workflow_checkpoint_packet",
+    "source_path": "tmp/implementation-closeout-checkpointed-execution.json",
+    "source_sha256": "879017a7da91c2d9006abc934c31f5bd8a0b3fb6c25a6125c23fa68603afd335"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780218342874198700,
+    "size_bytes": 3236,
+    "source_family": "wf67_paper_guard_packet",
+    "source_path": "tmp/wf67-promotion-gate-cli-smoke.json",
+    "source_sha256": "80e12128f0eeec0ab64143be975703968640d2ecd5c0ccef1bca9463c22b6218"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783389449523346600,
+    "size_bytes": 1407,
+    "source_family": "wf67_paper_guard_packet",
+    "source_path": "tmp/wf67-stale-paper-artifact-reference-review.json",
+    "source_sha256": "ae31e487dcd8bdedb59d70377a604383f8d49ecb245f680234c1d0a34acde041"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782008709335755800,
+    "size_bytes": 6145,
+    "source_family": "wf67_paper_guard_packet",
+    "source_path": "tmp/alpaca-paper-readiness-validator-fresh.json",
+    "source_sha256": "31082350c89ed564d7032d97cf77cd7a6d094d8e9550b47c1ca846cbf30047a2"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782154496605040700,
+    "size_bytes": 7843,
+    "source_family": "wf67_paper_guard_packet",
+    "source_path": "tmp/go-paper-trading-guard-preflight.json",
+    "source_sha256": "3d0a718000daf67ccff2e8f252bef253dfac6fdc9e0b2c912fe5ab380547df3b"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 12,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202770400529400,
+    "size_bytes": 22374,
+    "source_family": "wf67_paper_guard_packet",
+    "source_path": "tmp/morning-paper-deployment-recommendation-cards.json",
+    "source_sha256": "54db8ebe05fa9cdf6e08db4b5b3ebe323f5de03296361157a7eedf1a5f233018"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786148221726033800,
+    "size_bytes": 12385,
+    "source_family": "wf67_paper_guard_packet",
+    "source_path": "tmp/midday-market-paper-consolidated-runner.json",
+    "source_sha256": "bdf63f767f6acdc4b7998e2680112bf46812330a54dbd9596693f47d3e0a48ea"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202972629849800,
+    "size_bytes": 6817,
+    "source_family": "wf67_paper_guard_packet",
+    "source_path": "tmp/postclose-paper-reconciliation-runner.json",
+    "source_sha256": "350682b970ff54a5bcceff331a0d82a150f45a5cad27bb63966d5275e6d484d1"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 14,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202770400529400,
+    "size_bytes": 17626,
+    "source_family": "wf67_paper_guard_packet",
+    "source_path": "tmp/stale-paper-card-reference-guard.json",
+    "source_sha256": "24e02547ef9effbe898c5bceb0332a990402b3241a68e29e031f470c4b9533a1"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 35,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786184573019132900,
+    "size_bytes": 59787,
+    "source_family": "wf73_audit_boot_packet",
+    "source_path": "tmp/wf73-control-plane-audit.json",
+    "source_sha256": "15a70e7974c5bfddf5a8e6a0ffe61014b889010b9da5eaee59042c8bcf2ff20f"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783126631885225700,
+    "size_bytes": 395,
+    "source_family": "wf73_audit_boot_packet",
+    "source_path": "tmp/wf73-efficiency-scorecard.json",
+    "source_sha256": "c9a4ccede613b4db0675fd311dd4f0ba51e12ebc6624baf8bff63ada503e09b7"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779431986915152200,
+    "size_bytes": 12036,
+    "source_family": "wf73_audit_boot_packet",
+    "source_path": "tmp/wf73-active-workflows-compression-proposal.json",
+    "source_sha256": "e5c6884f2b94f01d3cd2c329143c3ee912fb7bb3cf040ada30304c9f3206eca4"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779435198340715600,
+    "size_bytes": 776,
+    "source_family": "wf73_audit_boot_packet",
+    "source_path": "tmp/wf73-active-workflows-compression-qa.json",
+    "source_sha256": "db09b21909041b4e5aca446e85066aad1a4603f4685dbc92db4c6b94c3772ccb"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1779432048377419800,
+    "size_bytes": 11664,
+    "source_family": "wf73_audit_boot_packet",
+    "source_path": "tmp/wf73-startup-truth-index-proposal.json",
+    "source_sha256": "67309519aec2ec3117dcdbbaa3d3de8967398cfe2555d4132dea389bf322c6d1"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781312177096892800,
+    "size_bytes": 4440,
+    "source_family": "wf73_audit_boot_packet",
+    "source_path": "tmp/wf73-shadow-pilot-stress-test-summary.json",
+    "source_sha256": "36fd0c771b3193820fc1dcb4360b8897536d63bcdd83124b1a132608aac4f01c"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 22,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202514990927700,
+    "size_bytes": 25892,
+    "source_family": "wf75_product_readiness_packet",
+    "source_path": "tmp/wf75-service-state-current.json",
+    "source_sha256": "a89066675cff79410669590acdadc30f2d46f3bf4d5e3e9a8d8f2cea38a5978f"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781889909315707500,
+    "size_bytes": 5880,
+    "source_family": "wf75_product_readiness_packet",
+    "source_path": "tmp/wf75-internal-prototype-readiness.json",
+    "source_sha256": "eeef4bee463a4deab837563e8579376667b994a006ed28ad99d6f1fc748c62a6"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781820736014839000,
+    "size_bytes": 5600,
+    "source_family": "wf75_product_readiness_packet",
+    "source_path": "tmp/wf75-operator-review-state.json",
+    "source_sha256": "51d6a6f85478f962ed94d7935bbe042645265658f7d0ccad73e723e426c8a5b0"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202514994886900,
+    "size_bytes": 3288,
+    "source_family": "wf75_product_readiness_packet",
+    "source_path": "tmp/wf75-operator-queue.json",
+    "source_sha256": "c00d584b58227fdf4b56eb9239ede6f1b799da6dc44e3ddb64d5452e53b68d4b"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 24,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781830354551212300,
+    "size_bytes": 29830,
+    "source_family": "wf75_product_readiness_packet",
+    "source_path": "tmp/wf75-scenario-regression-matrix.json",
+    "source_sha256": "e15f17082322e3db062c0b3e965de237943837237e9340a1a2fd192f62c03ba0"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202513224715400,
+    "size_bytes": 5881,
+    "source_family": "wf75_product_readiness_packet",
+    "source_path": "tmp/wf75-smb-service-state-current.json",
+    "source_sha256": "6225b30bdb5e6fc909f9004a82c20818e27596e24483df0e2f5d37aad7e1a4ad"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202513200407600,
+    "size_bytes": 2344,
+    "source_family": "wf75_product_readiness_packet",
+    "source_path": "tmp/wf75-smb-pilot-decision-packet.json",
+    "source_sha256": "6416f19b16310304cd5ba58502c4e37ff6cb2f308afa6f1a039e3a1007166c0b"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 12,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781986944389126700,
+    "size_bytes": 16825,
+    "source_family": "wf75_product_readiness_packet",
+    "source_path": "tmp/wf75-training-desk-current.json",
+    "source_sha256": "cd403366401cc10a8f6ee583a528d5f966fccc9fabe5bb8f537bb5fe21514727"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202515647334100,
+    "size_bytes": 9705,
+    "source_family": "wf75_product_readiness_packet",
+    "source_path": "tmp/wf75-artifact-only-pm-handoff.json",
+    "source_sha256": "50425788cf6228ac75f1258b81ce6cd7dff63f81d51572d2a4dcea0bad84b011"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 17,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783289006382269700,
+    "size_bytes": 22558,
+    "source_family": "wf75_retail_truth_packet",
+    "source_path": "tmp/retail-answer-harness.json",
+    "source_sha256": "f6f3f1c5a311c42f3882b0b58e988fb546ae8388f526ffc5cf67f6e1433859e8"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783289053409587000,
+    "size_bytes": 16248,
+    "source_family": "wf75_retail_truth_packet",
+    "source_path": "tmp/retail-automation-control-plane.json",
+    "source_sha256": "202235fd0e1717ec5b066691491b95304100c3ad9a4ccdb2e0180f8f5a47b2dd"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 19,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781368155772308300,
+    "size_bytes": 33725,
+    "source_family": "wf75_retail_truth_packet",
+    "source_path": "tmp/retail-automation-control-plane-cron-runner.json",
+    "source_sha256": "c6b04532a447abe1dd38014a7214d2e9bb6aa313ca34b0314d8f38ccf04993d8"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780067771654925600,
+    "size_bytes": 16013,
+    "source_family": "wf75_retail_truth_packet",
+    "source_path": "tmp/retail-investor-finance-engine-workflow-map.json",
+    "source_sha256": "50becb2ec6604121c5ea3926d252e40b02b68adbe6397667fba8bbd0d5d60db6"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780067781086812400,
+    "size_bytes": 15433,
+    "source_family": "wf75_retail_truth_packet",
+    "source_path": "tmp/retail-investor-saas-claims-stoplines-qa.json",
+    "source_sha256": "f45c36b15322e5ae82a55faef2071ff5b17116742dfa2d84644b40d89ebe6c4e"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 33,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783288989756817400,
+    "size_bytes": 43871,
+    "source_family": "wf75_retail_truth_packet",
+    "source_path": "tmp/retail-truth-routing-contract.json",
+    "source_sha256": "82217feca76cb22c6f01ed35dfd2f0c9cd31714db0e160f47818667b40f40518"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781893678954735700,
+    "size_bytes": 38564,
+    "source_family": "wf75_retail_truth_packet",
+    "source_path": "tmp/sql-retail-grade-validation-bundle.json",
+    "source_sha256": "bf62e1eb27efb3b995dcc955a8ca44e5d431177ccd7a4731a4cab59833214676"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781893679419496800,
+    "size_bytes": 3139,
+    "source_family": "wf75_retail_truth_packet",
+    "source_path": "tmp/sql-retail-blocker-classification.json",
+    "source_sha256": "6352c32bc9b74fd2b4f08ca689a15d29aa2b55fd2196c7e711e6888a7a4a46fa"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 387,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786206783735516900,
+    "size_bytes": 508338,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-auto-tier-routing.json",
+    "source_sha256": "2f399fec6f4d9aa250f9a5a35c9090b3b9fff8a9547f4395fd03d956b7f0eb8d"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202721686135200,
+    "size_bytes": 8795,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-capital-review-queue.json",
+    "source_sha256": "1d4c0a89154087dda815988f3035734b891fe4c4458afb9077212023d84fbdbf"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 61,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786178635180308100,
+    "size_bytes": 117082,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-intelligence-routing-v2.json",
+    "source_sha256": "ac7c1d36c2be2324fc7de47ec06c67e16888e6bf3b2abe5d877b63c5be765c03"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 736,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786178634034432300,
+    "size_bytes": 953807,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-daily-movement-ledger.json",
+    "source_sha256": "1221c771594b4524581496f1412aba0c055f377e1bcf8093f264581d4f972b57"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 52,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786178634040841300,
+    "size_bytes": 56412,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-repair-priority-queue.json",
+    "source_sha256": "caff509a517ad17111631126e06ffad08f92320b2d8096089ea4f2a2c314494d"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 355,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782846657626304200,
+    "size_bytes": 428924,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-review-monitor-source-open-cleanup-queue.json",
+    "source_sha256": "e2f9a91aff733d29ff4e01b0e8d1025b18553e3354af8e1aaff477e541a98031"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 50,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786178633695347400,
+    "size_bytes": 66763,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-tier-routing-event-ledger.json",
+    "source_sha256": "5ab109f5162e2e71239eff37934a0eff19ab053dc114c929c0bcad70add647e7"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786184100791315100,
+    "size_bytes": 2707,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-opportunity-visibility-queue.json",
+    "source_sha256": "35ca6d12713ad6a506c3492470ea9824f93a53dc40596aa8cd34af88776d670d"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 46,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786148210096302800,
+    "size_bytes": 54537,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-wf85-conversion-bridge.json",
+    "source_sha256": "6cca2698d3dddae987ad68abc9805f01f0a8acbebd9f2c41aafb4918351adf0b"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 53,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780420050753771700,
+    "size_bytes": 62016,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-promotion-review-triage-packet.json",
+    "source_sha256": "f6f0cb4aa6f70047d9ffcc8de50e8a42b71c85f84282a25341a0e6819f481219"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 303,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786206827770521200,
+    "size_bytes": 407825,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-route-readiness-p3-market-ranking.json",
+    "source_sha256": "6de22e61b5cbb77a2043fd5ff38430fe498936fdc79ad0d413c7ba0c69651619"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 283,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1782847105751825700,
+    "size_bytes": 305245,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-tier-promotion-review-gate.json",
+    "source_sha256": "be786670fb7254c24a0466c7e5c27f5aa3446bd136ce7e93d72cef156b1227fb"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 7,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786206784613002700,
+    "size_bytes": 8090,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-deployment-readiness-review.json",
+    "source_sha256": "73707c49392bd19c3293cebf10769062ab2bed6ff15fa48abe4c56c9832ae897"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786178633244788600,
+    "size_bytes": 2006,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-tier-a-owner-readiness-proposals.json",
+    "source_sha256": "5c70cb66986cb50bb6455fa9aba6bf8c69a1e75e151795e9f432d00b69dca5da"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786206784511785800,
+    "size_bytes": 12668,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-source-open-work-packets.json",
+    "source_sha256": "80b6321416b7cda5051bcb7eb809773ce1372832bd3b3c25d15a11e079c83f62"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786178607784086600,
+    "size_bytes": 2598,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/wf78-source-capture-requirements-queue.json",
+    "source_sha256": "31cbccf331b48f96cfb34eebb9ec543bd28bfc08b348b7cb2771ed1728d5006c"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 21,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786206790003142200,
+    "size_bytes": 24212,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/finance-intelligence-state-validation.json",
+    "source_sha256": "0900d9613bff3790231c6a7e19dadfbafaf61f95470d8f4a93f1e5a13ab0aa09"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 35,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786206944160154100,
+    "size_bytes": 44604,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/finance-intelligence-state-ticker-packet.json",
+    "source_sha256": "a7dbf7cb9ff65410f02432f469e9a0328966ec0d809efb8fba74427494fdec44"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783296019366435000,
+    "size_bytes": 2701,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/finance-intelligence-state-action-queue.json",
+    "source_sha256": "925079b63e5667909a20f3c37be499482143e6c26ad287aa1b3ee20b6969555a"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 12,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783296017875785400,
+    "size_bytes": 15673,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/finance-intelligence-state-pending-approvals.json",
+    "source_sha256": "cd72bd130ec6adcb11d5f5c23e139b8bb935569f998864729931b02d6a1208ef"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 10,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202968191644100,
+    "size_bytes": 12445,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/finance-intelligence-state-paper-positions.json",
+    "source_sha256": "d0753916cbeabeacecb48cb9d25f6f328694bb821adb59a4d3a4e969896e45cb"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 109,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780200751269039900,
+    "size_bytes": 221034,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/finance-intelligence-router-qa-wf78-100-review.json",
+    "source_sha256": "0e1ebab6ffc265f46942a5b48df2ef7e304b1751baf696ba25838e573e04c3ae"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 469,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1780815105597434100,
+    "size_bytes": 1078443,
+    "source_family": "wf78_finance_routing_packet",
+    "source_path": "tmp/finance-intelligence-router-qa-ticker-answer-packet.json",
+    "source_sha256": "3e78d74133def3c14d63e8f97e3f04676b5e1425982958b9a36add05c1cfd132"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202513247037100,
+    "size_bytes": 3646,
+    "source_family": "wf79_smb_workflow_packet",
+    "source_path": "tmp/wf79-smb-pilot-readiness-packet.json",
+    "source_sha256": "c1035522c0f3b32504d2f19e833972d391910665172b053ac57e9ef0fce82c63"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202513262858500,
+    "size_bytes": 6499,
+    "source_family": "wf79_smb_workflow_packet",
+    "source_path": "tmp/wf79-smb-rollout-readiness-plan.json",
+    "source_sha256": "7d31d306e5759ef34186e2f95bd9f9a640a754973fece16d1d63f9a374e6f789"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202513231641100,
+    "size_bytes": 7638,
+    "source_family": "wf79_smb_workflow_packet",
+    "source_path": "tmp/wf79-smb-demo-packets.json",
+    "source_sha256": "016bc886e37f53e3343dc1f9c199507ff41e498acf5ea6f049737fc466799110"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202513229632700,
+    "size_bytes": 3477,
+    "source_family": "wf79_smb_workflow_packet",
+    "source_path": "tmp/wf79-smb-offer-icp-packet.json",
+    "source_sha256": "6205117048967ba7eebe542da18f03ce8cf87accec6716be79c3da89ae92b4ce"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202513242640300,
+    "size_bytes": 3864,
+    "source_family": "wf79_smb_workflow_packet",
+    "source_path": "tmp/wf79-smb-outreach-kit.json",
+    "source_sha256": "4165fe8d446979067295c18984da7204f3ff5a0be1f0dc42bf3b3016c60739d5"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202513236640500,
+    "size_bytes": 10350,
+    "source_family": "wf79_smb_workflow_packet",
+    "source_path": "tmp/wf79-smb-marketing-ops-blueprints.json",
+    "source_sha256": "fe5b6a6de215dcdcd71262bdb31e36149d023c359a2c5f43b6777aad3320979e"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202513268641400,
+    "size_bytes": 2383,
+    "source_family": "wf79_smb_workflow_packet",
+    "source_path": "tmp/wf79-smb-client-rollout-checklist.json",
+    "source_sha256": "b6abf92a838aee90d87eb7d08b9eda17488c12e1af6bb0d0d853aac79f587837"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786202513262858500,
+    "size_bytes": 1248,
+    "source_family": "wf79_smb_workflow_packet",
+    "source_path": "tmp/wf79-smb-pilot-readiness-validation.json",
+    "source_sha256": "44d73dfd5776c41c7bb50d20ac2c6b1c6e7822f81f6a43d2a44f15d535f68569"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 2,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781070126343624300,
+    "size_bytes": 2562,
+    "source_family": "wf84_finance_data_plane_packet",
+    "source_path": "tmp/wf84-wf85-route-migration-git-hygiene.json",
+    "source_sha256": "5d7f143a3d8fa4480273d961d2471b49e7b39d107b63df093014fdab6f3e390b"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 170,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783380698842873300,
+    "size_bytes": 259894,
+    "source_family": "wf85_decision_os_packet",
+    "source_path": "tmp/wf85-decision-os-review-packet.json",
+    "source_sha256": "07272841853c55ae1c222a7d7097a639bf810cd1fdabcdc220285a2bbae28888"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 918,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783019916456370600,
+    "size_bytes": 1103242,
+    "source_family": "wf85_decision_os_packet",
+    "source_path": "tmp/wf85-deployment-timing-gate-current.json",
+    "source_sha256": "d8417252ab6eb557103ff618f2690eb17017fd94e4f84e82c1234011126d2474"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 9,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786148663868843800,
+    "size_bytes": 10229,
+    "source_family": "wf85_decision_os_packet",
+    "source_path": "tmp/wf85-market-hours-refresh-readiness.json",
+    "source_sha256": "09849a7a973208451242f54e24c5005b2e218f47dfb335341dfaa5bbf0d77c03"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1783019915963534200,
+    "size_bytes": 3502,
+    "source_family": "wf85_decision_os_packet",
+    "source_path": "tmp/wf85-opportunity-visibility-queue-current.json",
+    "source_sha256": "8c654437bf4436d8fb9a9dd50d2fee579ebdccbeb66b050ac2d74fd1e2b92408"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 191,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786148210096302800,
+    "size_bytes": 227394,
+    "source_family": "wf85_decision_os_packet",
+    "source_path": "tmp/wf85-owner-review-cards.json",
+    "source_sha256": "e92ff2bbad01a4b31ad529b4b8127f3ea02898659f11f0461806e54ee810d1fb"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 4,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786206828019029000,
+    "size_bytes": 4031,
+    "source_family": "wf85_decision_os_packet",
+    "source_path": "tmp/wf85-source-open-reconciliation-contract.json",
+    "source_sha256": "725dbb20e0e5bb68f503fa7783b92baa9a45f327a05763748d875e06476cfe21"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781802252838899700,
+    "size_bytes": 4008,
+    "source_family": "wf85_decision_os_packet",
+    "source_path": "tmp/wf85-telegram-radar-contract-decision-packet.json",
+    "source_sha256": "a2803837dc92d6abcb630763e4ceffa16a3e3164f607c971ab0ff9b8da573c34"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 5,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1781155586716770800,
+    "size_bytes": 6414,
+    "source_family": "wf85_decision_os_packet",
+    "source_path": "tmp/wf85-to-wf75-smb-bridge-map.json",
+    "source_sha256": "c3fa09d608611d1fb5d536b3cbed465e5f3782fff2b6d087e311178c4bfc4489"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 32,
+    "indexed_at_utc": "2026-08-08T17:16:23Z",
+    "mtime_ns": 1786178712986699100,
+    "size_bytes": 44698,
+    "source_family": "wf85_decision_os_packet",
+    "source_path": "tmp/wf85-paper-deployment-notification-digest.json",
+    "source_sha256": "528b6832fb8c2fd9aa604da10467b82d3c92dd0ef10ace7cdf34b1b29748d041"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 6240,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206829297135800,
+    "size_bytes": 50689629,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/canonical-finance-data-plane.json",
+    "source_sha256": "5447d530d6843aaf9a331e24fb8ff3eb60016c845e8bb64ba4d1c291eef2e7cb"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 46,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206790253323900,
+    "size_bytes": 36258,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/canonical-finance-data-plane-contract.json",
+    "source_sha256": "e7d205990660295de8549229b41ccbaef4559a8b303075279fcdb344e0ba2193"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 39,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206832969022000,
+    "size_bytes": 44490,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/canonical-finance-data-plane-phase6-10.json",
+    "source_sha256": "ddebff2997e5a46220e0ee6662b3248f7365dd63d6e4df766e49fd720b548a66"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 15,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206832803255200,
+    "size_bytes": 22171,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/canonical-finance-data-plane-retirement-readiness.json",
+    "source_sha256": "74d6ed760b1861e08f90c4a9ecfff05976b442efa57a599fa912ffa790adb780"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 8,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206829328847900,
+    "size_bytes": 13580,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/canonical-finance-data-plane-validation.json",
+    "source_sha256": "8d83e2a700018310630938056d0f25a99fba3f634ea4e07e9672de660ec98fb0"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 3496,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206794121783200,
+    "size_bytes": 4305978,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-decision-cards.json",
+    "source_sha256": "dc7c2a8396ec50b6663b70ef9ebd556bbdc891f70c03907fb8b3611e74006c94"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 318,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206827282599400,
+    "size_bytes": 335745,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-full-answer-assembler.json",
+    "source_sha256": "ffc64decc0c286a28924c04ea0c8876dbb905389665f4c90e058cbf7e56cc23b"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 67,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206794136694500,
+    "size_bytes": 47884,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-approval-card-gate.json",
+    "source_sha256": "b5cd03d6fc5e2e355766a26690070630ae73d71928828ac0a55270e9d4d02954"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 1,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206794127101300,
+    "size_bytes": 467,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-decision-card-authority-validation.json",
+    "source_sha256": "fb1030d80a5f05788bfebc9fb319f8049532bf886c4e6a84bc515daf1649e085"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 17,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206792677216600,
+    "size_bytes": 19531,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-decision-os-contract.json",
+    "source_sha256": "0a795ca57f16733a5697a80c590687df970d4f8be2b0557b9e8cf198a8de3f09"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 26,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786202709448112300,
+    "size_bytes": 28547,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-full-answer-assembler-delta.json",
+    "source_sha256": "2c29e22ad47175bf1a56635c0330c2d9e0323056a0c740019af7481ded7df005"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1781142661591382400,
+    "size_bytes": 16563,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-full-answer-assembler-macro-smoke.json",
+    "source_sha256": "c6f8e6781d18bf4afb4c9cb5ca35079575791045e99eb0c882d4f88fbda34484"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 11,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786178339279152800,
+    "size_bytes": 11554,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-full-answer-macro-context-test.json",
+    "source_sha256": "d0e37f787f428f1211b48da81121fc1a3e45700841319d77aa79dc4f92f1cb1b"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1781152462073781400,
+    "size_bytes": 16943,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-os-freshness-cron-runner-answer-skip-test.json",
+    "source_sha256": "aa89552660f2f2f7c679637c320cd3c7051c8e754ecba74c48a5d58505269f79"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 16,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1781152244059641400,
+    "size_bytes": 17624,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-os-freshness-cron-runner-cards-test.json",
+    "source_sha256": "118a6e797dfaf347fe33d4daea28934acb37e632c08bd5cdb165a4aae804d98a"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 41,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206835088380400,
+    "size_bytes": 78699,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-os-freshness-cron-runner.json",
+    "source_sha256": "a437966d8558ad55fdd33b4e7094c30148e6cd274acb9c7c0cf48ec87cc8371d"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 18,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206833609555500,
+    "size_bytes": 22630,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-os-readiness-rollup.json",
+    "source_sha256": "af8883fa3daa7b5886bdc2f750d222814b56b78518c61ba793959be637f8fbe7"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 381,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206833126897500,
+    "size_bytes": 520691,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-repair-conveyor.json",
+    "source_sha256": "472d0c8a46636a8af4790444e2a6aab6bd522238f1e6c6977e2fded519cf86e7"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 132,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206794145799500,
+    "size_bytes": 167947,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-risk-sizing-overlay.json",
+    "source_sha256": "6bc5b6a3152b0b601af8fea516349409132eb631f1700ed2e3ba6915ce6f91b7"
+  },
+  {
+    "authority_class": "derived_proof_packet",
+    "chunk_count": 146,
+    "indexed_at_utc": "2026-08-08T17:16:24Z",
+    "mtime_ns": 1786206794008619200,
+    "size_bytes": 208117,
+    "source_family": "finance_reference_packet",
+    "source_path": "tmp/trade-grade-source-freshness-gate.json",
+    "source_sha256": "1777326899683789f4db4bcaf55cbe2417978372837eb99ce1d3dc339d314290"
+  }
+]

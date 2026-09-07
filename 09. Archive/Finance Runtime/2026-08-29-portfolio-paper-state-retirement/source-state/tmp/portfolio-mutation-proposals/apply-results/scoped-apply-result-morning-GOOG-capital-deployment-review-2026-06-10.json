@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-06-10T21:02:14Z",
+  "status": "applied_pending_post_apply_validation",
+  "window": "morning",
+  "approval_artifact": "tmp/portfolio-mutation-proposals/approvals/standing-approved/standing-morning-GOOG-capital-deployment-review-2026-06-10-20260610T210214Z.json",
+  "proposal_id": "morning:GOOG:capital-deployment-review:2026-06-10",
+  "authority": {
+    "phase": "WF64 approval-gated atomic apply foundation",
+    "apply_allowed_without_valid_approval_artifact": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false,
+    "brokerage_order_allowed": false,
+    "money_movement_allowed": false,
+    "rollback_required_on_failure": true,
+    "post_apply_validation_required": true,
+    "valid_approval_artifact": true,
+    "apply_allowed": true,
+    "scoped_owner_file_write_allowed": true
+  },
+  "validation": {
+    "schema_version": 1,
+    "generated_at_utc": "2026-06-10T21:02:14Z",
+    "status": "ok",
+    "input": "tmp/portfolio-mutation-proposals/approvals/standing-approved/standing-morning-GOOG-capital-deployment-review-2026-06-10-20260610T210214Z.json",
+    "proposal_id": "morning:GOOG:capital-deployment-review:2026-06-10",
+    "authority": {
+      "approval_artifact_can_scope_owner_file_write": true,
+      "approved_adjustment_categories": [
+        "sizing"
+      ],
+      "trade_or_account_action_allowed": false,
+      "owner_approval_inferred": false,
+      "legacy_sizing_sleeve_cash_risk_rule_field_allowed": false,
+      "execution_entitlement_allowed": false
+    },
+    "summary": {
+      "critical": 0,
+      "warning": 0
+    },
+    "findings": []
+  },
+  "summary": {
+    "files_to_write": 1,
+    "writes_performed": true,
+    "rollback_plan_created": true,
+    "post_apply_validation_required": true,
+    "files_written": 1,
+    "rollback_performed": false,
+    "failure": null
+  },
+  "build_errors": [],
+  "rollback_plan": {
+    "backup_root": "tmp/portfolio-mutation-proposals/apply-backups/2026-06-10T21-02-14Z-morning-GOOG-capital-deployment-review-2026-06-10",
+    "restore_method": "copy each backup file back to its original relative path using atomic replace; apply helper also restores from backups automatically on failure",
+    "files": [
+      {
+        "path": "03. Portfolio/Portfolio Snapshot.md",
+        "backup_path": "tmp/portfolio-mutation-proposals/apply-backups/2026-06-10T21-02-14Z-morning-GOOG-capital-deployment-review-2026-06-10/03. Portfolio/Portfolio Snapshot.md.bak",
+        "original_sha256": "262212a1d6fc82e2d3d5a056284158ba7d178cceefe1ee3ab12efa769bce415b",
+        "updated_sha256": "2c936412b8a1c9c69c4c7023e0af79300bb5f566a091ac180a5f69fbb03d97a1",
+        "changes": [
+          {
+            "change_type": "exact_text_replace",
+            "adjustment_category": "sizing",
+            "old_text_sha256": "d2db143f711c5e82c461e90c0db364bff35a2d5bd5941d2154c6c1986cd3372b",
+            "new_text_sha256": "cd4f008690da9c8037c812b2677a763b373c0b70667dd737a5910b36b0e6e159"
+          }
+        ]
+      }
+    ]
+  },
+  "stop_lines": [
+    "Apply is blocked unless the approval artifact validator returns ok for an unexpired, hash-matched, target-file-matched approval artifact.",
+    "Proposal packet authority flags remain false; this helper grants only scoped owner-file write mechanics for the approved exact diff.",
+    "No trade, order, brokerage, account, money-movement, owner-approval inference, or execution authority is granted.",
+    "Post-apply validators remain required before any workflow closure claim."
+  ],
+  "applied_files": [
+    {
+      "path": "03. Portfolio/Portfolio Snapshot.md",
+      "backup_path": "tmp/portfolio-mutation-proposals/apply-backups/2026-06-10T21-02-14Z-morning-GOOG-capital-deployment-review-2026-06-10/03. Portfolio/Portfolio Snapshot.md.bak",
+      "updated_sha256": "2c936412b8a1c9c69c4c7023e0af79300bb5f566a091ac180a5f69fbb03d97a1"
+    }
+  ]
+}

@@ -124,6 +124,7 @@ def select_urgent(scorecard: dict[str, Any]) -> list[dict[str, Any]]:
             "artifact": signal.get("artifact"),
             "age_hours": signal.get("age_hours"),
             "next_action": signal.get("next_action") or "",
+            "last_error": signal.get("live_scheduler_last_error"),
         })
     return urgent
 
@@ -138,6 +139,9 @@ def compose_message(urgent: list[dict[str, Any]]) -> str:
         reason = item.get("reason") or item.get("status") or ""
         nxt = item.get("next_action")
         line = f"- [{cls}] {src}: {reason}".rstrip(": ")
+        err = item.get("last_error")
+        if err:
+            line += f" | error: {err}"
         if nxt:
             line += f" -> {nxt}"
         lines.append(line)

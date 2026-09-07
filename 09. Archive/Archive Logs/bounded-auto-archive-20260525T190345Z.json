@@ -1,0 +1,163 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-05-25T19:03:45Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/wf72-script-output-md-archive-microbatch-2026-05-25.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 16,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/reference-band-note-sync.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/reference-band-note-sync.md",
+      "sha256_before": "e6730578ee44fc9137c3a745e4ba5dc241d921185c1cffd98f7c79e39985cf2d",
+      "sha256_after": "e6730578ee44fc9137c3a745e4ba5dc241d921185c1cffd98f7c79e39985cf2d"
+    },
+    {
+      "path": "tmp/retrieval-quality-scorecard.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/retrieval-quality-scorecard.md",
+      "sha256_before": "4cd39b9e3f1ae6a49bbed501087e6a56f3026787491a12d20cfd5dbb3abd43ca",
+      "sha256_after": "4cd39b9e3f1ae6a49bbed501087e6a56f3026787491a12d20cfd5dbb3abd43ca"
+    },
+    {
+      "path": "tmp/runtime-expansion-pilot-status.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/runtime-expansion-pilot-status.md",
+      "sha256_before": "0e03b0000a079c36dcb0ff8fd15583dd6b0b415ab6e60f5a6aa5daa9ce29e9b5",
+      "sha256_after": "0e03b0000a079c36dcb0ff8fd15583dd6b0b415ab6e60f5a6aa5daa9ce29e9b5"
+    },
+    {
+      "path": "tmp/sector-allocation-decision-matrix.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/sector-allocation-decision-matrix.md",
+      "sha256_before": "dd0773731324dc316e2e758dc95f2b5632f2558a2bd8d592bf66849d3cc93fdb",
+      "sha256_after": "dd0773731324dc316e2e758dc95f2b5632f2558a2bd8d592bf66849d3cc93fdb"
+    },
+    {
+      "path": "tmp/tuesday-position-sizing-readiness-2026-05-26.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/tuesday-position-sizing-readiness-2026-05-26.md",
+      "sha256_before": "f58009b8bd0e606dbd259ad3081c7b5139fe48a5eea26a34666bbecd12dc7b63",
+      "sha256_after": "f58009b8bd0e606dbd259ad3081c7b5139fe48a5eea26a34666bbecd12dc7b63"
+    },
+    {
+      "path": "tmp/wf55-outcome-ledger-v2-migration-preview.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf55-outcome-ledger-v2-migration-preview.md",
+      "sha256_before": "d94a6060ecf05db879a9c684892cb10329936a4290d53be37ca7ac71d854b3c3",
+      "sha256_after": "d94a6060ecf05db879a9c684892cb10329936a4290d53be37ca7ac71d854b3c3"
+    },
+    {
+      "path": "tmp/wf70-official-source-inventory.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf70-official-source-inventory.md",
+      "sha256_before": "5fe5e426289b357923cd61915a8a865a2edcf27409f8a74288a66043592fc9fb",
+      "sha256_after": "5fe5e426289b357923cd61915a8a865a2edcf27409f8a74288a66043592fc9fb"
+    },
+    {
+      "path": "tmp/wf70-phase6-parallel-capture-runbook.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf70-phase6-parallel-capture-runbook.md",
+      "sha256_before": "a2e17babf172662a9ee57993370fd2d9c0946b212d93c444b74a2a6230e7f095",
+      "sha256_after": "a2e17babf172662a9ee57993370fd2d9c0946b212d93c444b74a2a6230e7f095"
+    },
+    {
+      "path": "tmp/wf70-phase7-q2-rollforward-readiness.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf70-phase7-q2-rollforward-readiness.md",
+      "sha256_before": "58fdd9451b1669ad2fdb61ccffe37bff4b6fb11c92363995f1361aa33610ae60",
+      "sha256_after": "58fdd9451b1669ad2fdb61ccffe37bff4b6fb11c92363995f1361aa33610ae60"
+    },
+    {
+      "path": "tmp/wf70-wf66-official-evidence-spine.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf70-wf66-official-evidence-spine.md",
+      "sha256_before": "da8a8283387a62372fb0325cdd670f010a0c184182c5c44d58ab43f359917766",
+      "sha256_after": "da8a8283387a62372fb0325cdd670f010a0c184182c5c44d58ab43f359917766"
+    },
+    {
+      "path": "tmp/wf74-clawhub-rsi-inspection-queue.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf74-clawhub-rsi-inspection-queue.md",
+      "sha256_before": "fc8df2432911cc140d6e51b56b17d2c0a909cfe6675272a0666a7b21cf14ff51",
+      "sha256_after": "fc8df2432911cc140d6e51b56b17d2c0a909cfe6675272a0666a7b21cf14ff51"
+    },
+    {
+      "path": "tmp/wf74-outcome-eval-suite-v2.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf74-outcome-eval-suite-v2.md",
+      "sha256_before": "58d6f1145aebff4acfb087d7f83a4782d7b0311f2bb67cc82e4d91feff092e80",
+      "sha256_after": "58d6f1145aebff4acfb087d7f83a4782d7b0311f2bb67cc82e4d91feff092e80"
+    },
+    {
+      "path": "tmp/wf74-reflection-to-proposal-pipeline.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf74-reflection-to-proposal-pipeline.md",
+      "sha256_before": "e2c26655a4aea40c5a0e2edbfc3b6ce72c9b4237b128cb228975b942cb94a664",
+      "sha256_after": "e2c26655a4aea40c5a0e2edbfc3b6ce72c9b4237b128cb228975b942cb94a664"
+    },
+    {
+      "path": "tmp/wf74-rsi-evaluation-harness.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf74-rsi-evaluation-harness.md",
+      "sha256_before": "8c54dd28e5f960bf93606384c8d4a6d9bff0db3d6d9f269b118ea8cec5117233",
+      "sha256_after": "8c54dd28e5f960bf93606384c8d4a6d9bff0db3d6d9f269b118ea8cec5117233"
+    },
+    {
+      "path": "tmp/wf74-rsi-research-brief.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf74-rsi-research-brief.md",
+      "sha256_before": "f5f7e98b30c304ef227bcbe55e21cd846aa91925cf81e18078aa55861c397f63",
+      "sha256_after": "f5f7e98b30c304ef227bcbe55e21cd846aa91925cf81e18078aa55861c397f63"
+    },
+    {
+      "path": "tmp/wf74-rsi-validation.md",
+      "kind": "tmp_markdown_script_output_sidecar_with_json",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/WF72 Script Output Markdown Sidecars/wf74-rsi-validation.md",
+      "sha256_before": "ece148d3262c92869582faf5f85a1625b5d02e480e55b947d9b4a8f711962a4e",
+      "sha256_after": "ece148d3262c92869582faf5f85a1625b5d02e480e55b947d9b4a8f711962a4e"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; explicit apply_allowed suggestions can move only with zero references, the WF72 adjacent-JSON historical-reference-only exception, or the WF72 adjacent-JSON script-output-constant exception"
+}

@@ -1,0 +1,29 @@
+{
+  "allowed_methods": [
+    "GET",
+    "POST",
+    "DELETE"
+  ],
+  "allowed_paths": [
+    "/v2/orders",
+    "/v2/orders/{paper_order_id}"
+  ],
+  "alpaca_access_enabled": true,
+  "approval_note": "Randall approved paper-only limit GTC capability validation; dry-run only; no execution",
+  "approved_by": "Randall",
+  "endpoint": "https://paper-api.alpaca.markets",
+  "expires_at_utc": "2026-05-21T05:00:36Z",
+  "generated_at_utc": "2026-05-21T04:55:36Z",
+  "live_cancel_enabled": false,
+  "live_endpoint_forbidden": true,
+  "live_submit_enabled": false,
+  "no_inferred_approval": true,
+  "paper_cancel_enabled": true,
+  "paper_only": true,
+  "paper_submit_enabled": true,
+  "phase": "phase_6_paper_execution_guardrail",
+  "read_only_enabled": true,
+  "schema_version": 1,
+  "trade_or_account_action_allowed": true,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

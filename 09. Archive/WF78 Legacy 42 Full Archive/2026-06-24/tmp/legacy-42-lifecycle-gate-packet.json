@@ -1,0 +1,647 @@
+{
+  "schema": "veritas.legacy_42_lifecycle_gate_packet.v1",
+  "generated_at_utc": "2026-06-24T15:19:42Z",
+  "status": "planning_ready_apply_blocked",
+  "workflow": "SQL-CANON",
+  "purpose": "Separate lifecycle gate for planning legacy-42 compatibility packet archive/delete without performing archive/delete.",
+  "recommendation": "continue parallel proof phases; prepare a separate archive approval/diff packet for tmp/ticker-answer-packets; do not delete/apply/retire fallback or source feeders yet",
+  "authority_boundary": {
+    "review_only": true,
+    "planning_packet_only": true,
+    "consumer_inventory_only": true,
+    "archive_allowed_now": false,
+    "delete_allowed_now": false,
+    "move_allowed_now": false,
+    "apply_allowed_now": false,
+    "patch_apply_allowed_now": false,
+    "sql_write_allowed": false,
+    "sql_first_front_door_promotion_allowed": false,
+    "source_feeder_retirement_allowed": false,
+    "python_fallback_retirement_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "routing_alignment": {
+    "sql_canon_full_migration_execution_plan": {
+      "path": "06. Playbooks/Project Continuity/SQL Canon Full Migration Execution Plan - 2026-06-19.md",
+      "exists": true,
+      "alignment": "legacy 42 remains compatibility-only; SQL-canon/WF84/WF85 proof owns routing readiness; destructive actions are Phase 8 hard-stop packets."
+    },
+    "retail_grade_truth_routing_system": {
+      "path": "06. Playbooks/Project Continuity/Retail-Grade Truth Routing System.md",
+      "exists": true,
+      "alignment": "internal retail truth routing may consume guarded truth surfaces, but customer/public output remains blocked."
+    },
+    "trade_grade_autonomous_os_upgrade_plan": {
+      "path": "06. Playbooks/Project Continuity/Veritas OS V2 - Trade-Grade Autonomous OS Upgrade Plan.md",
+      "exists": true,
+      "alignment": "WF87/Trade-Grade Autonomous OS preparation remains proof and assisted-readiness only; no paper/live execution authority."
+    }
+  },
+  "current_route_health": {
+    "sql_canon_front_door": {
+      "artifact": "tmp/sql-canon-front-door-readiness-packet.json",
+      "status": "readiness_waiting_no_validated_production_scope",
+      "validation_status": "ok",
+      "front_door_wf85_default": "42/42",
+      "strategic_front_door_wf85_default": "0/0",
+      "legacy_entry_stop_front_door_blockers": 0,
+      "legacy_42_retired_from_blocking": true,
+      "legacy_42_count_advisory_only": true,
+      "source_open_contract_true_count": 42,
+      "route_good_for_next_packet": true
+    },
+    "owner_decision_packet": {
+      "artifact": "tmp/sql-canon-owner-decision-packet.json",
+      "status": "ready_for_owner_review",
+      "hard_gate_actions_allowed": []
+    },
+    "wf78_tier_routing": {
+      "artifact": "tmp/wf78-auto-tier-routing.json",
+      "status": "ok",
+      "tier_counts": null,
+      "state_counts": null,
+      "capital_deployment_approved": false,
+      "trade_or_execution_approved": false
+    },
+    "wf84_wf85_trade_grade": {
+      "artifact": "tmp/trade-grade-os-freshness-cron-runner.json",
+      "status": "ok",
+      "live_validation_status": "ok",
+      "trade_grade_data_ready_for_decisions": true,
+      "wf85_full_answer_assembler_status": "ok",
+      "wf85_full_answer_assembler_built_count": 200,
+      "wf85_review_ready_count": 0,
+      "wf85_approval_card_draft_count": 0,
+      "wf85_decision_blocked_count": 200,
+      "authority_violation_count": 0,
+      "tier_a_b_band_guard_artifact": "tmp/tier-ab-band-freshness-cron-guard.json",
+      "tier_a_b_band_guard_status": "ok",
+      "tier_a_b_band_guard_validation": "ok",
+      "tier_a_b_stale_complete_band_context_count": 0,
+      "tier_a_b_stale_complete_band_context_tickers": [],
+      "trade_grade_os_upgrade_readiness_blocker": null
+    },
+    "retail_truth_routing": {
+      "customer_decision_artifact": "tmp/retail-customer-output-decision-packet.json",
+      "customer_decision_status": "blocked",
+      "control_plane_artifact": "tmp/retail-automation-control-plane.json",
+      "control_plane_status": "ok",
+      "customer_output_allowed": false,
+      "internal_truth_routing_alignment": "retain source-open and unsafe-prompt gates; route internal answers through guarded truth contracts only"
+    },
+    "trade_grade_autonomous_os": {
+      "artifact": "tmp/wf87-autonomy-command-center.json",
+      "status": "runtime_blocked",
+      "autonomy_state": "runtime_blocked",
+      "phase_c_autonomous_paper_buy_ready": false,
+      "autonomous_execution_allowed_now": false,
+      "live_execution_allowed_now": false,
+      "shadow_decisions": {
+        "done": 21,
+        "required": 20,
+        "pct": 105.0
+      },
+      "shadow_sessions": {
+        "done": 7,
+        "required": 5,
+        "pct": 140.0
+      },
+      "binding_blockers": null
+    },
+    "cron_reduction": {
+      "inventory_artifact": "tmp/cron-reduction-inventory.json",
+      "control_artifact": "tmp/cron-control-packet.json",
+      "inventory_status": "ok",
+      "control_status": "ok",
+      "enabled_jobs": 45,
+      "phase2_target_enabled_jobs": "29-32",
+      "final_target_enabled_jobs": "25-27",
+      "control_blocked_count": 7,
+      "next_slice": "phase2_market_window_shadow_proof_before_live_disable",
+      "ready_for_live_disable_to_25_27_now": false
+    }
+  },
+  "legacy_42_lifecycle_scope": {
+    "candidate_surface": "tmp/ticker-answer-packets",
+    "replacement_owner": "scripts/trade_grade_full_answer_assembler.py",
+    "replacement_artifact_pattern": "tmp/trade-grade-full-answer/<TICKER>.json",
+    "legacy_packet_count": 42,
+    "archive_planning_ready": true,
+    "archive_completed": true,
+    "archive_ready_now_from_ticker_packet_plan": false,
+    "delete_ready_now": false,
+    "apply_allowed_now": false,
+    "active_reference_count": 0,
+    "compatibility_or_governance_reference_count": 7,
+    "reference_inventory": [
+      {
+        "path": "scripts/canonical_finance_data_plane_retirement_readiness.py",
+        "classification": "retirement_governance_owner",
+        "blocking": false,
+        "rationale": "readiness planner intentionally tracks ticker-answer-packets as a candidate surface"
+      },
+      {
+        "path": "scripts/concurrent_lane_manager.py",
+        "classification": "archive_proof_path_resolver",
+        "blocking": false,
+        "rationale": "lane proof validator resolves approved archived WF85 packet paths; it is not an active packet consumer"
+      },
+      {
+        "path": "scripts/legacy_42_lifecycle_gate_packet.py",
+        "classification": "legacy_lifecycle_governance_packet",
+        "blocking": false,
+        "rationale": "lifecycle gate references the candidate surface as governance proof, not as an active packet consumer"
+      },
+      {
+        "path": "scripts/sql_canon_parallel_phase_executor.py",
+        "classification": "parallel_phase_governance_packet",
+        "blocking": false,
+        "rationale": "parallel phase executor references the candidate surface to build review packets only"
+      },
+      {
+        "path": "scripts/ticker_answer_packet.py",
+        "classification": "legacy_compatibility_wrapper",
+        "blocking": false,
+        "rationale": "compatibility writer remains only to emit assembler-built snapshots when explicitly allowed"
+      },
+      {
+        "path": "scripts/ticker_answer_packet_retirement_plan.py",
+        "classification": "current_retirement_planner",
+        "blocking": false,
+        "rationale": "this planner must reference the candidate surface it is evaluating"
+      },
+      {
+        "path": "scripts/trade_grade_full_answer_assembler.py",
+        "classification": "replacement_owner_with_compatibility_emitter",
+        "blocking": false,
+        "rationale": "replacement owner can emit legacy snapshots for compatibility while active packet files remain"
+      }
+    ],
+    "active_references": [],
+    "exact_archive_candidates": [],
+    "proposed_archive_destination": "09. Archive/WF85 Legacy Ticker Answer Packets/preview",
+    "db_lifecycle_summary": {
+      "artifact": "tmp/db-lifecycle-manifest.json",
+      "status": "ready_for_owner_decision",
+      "archive_ready_count": 1,
+      "delete_ready_count": 0,
+      "unknown_count": 0,
+      "integrity_error_count": 0
+    },
+    "duplicate_surface_retirement_summary": {
+      "artifact": "tmp/canonical-finance-data-plane-retirement-readiness.json",
+      "status": "ok",
+      "archive_ready_count": 0,
+      "delete_ready_count": 0,
+      "source_feeder_retirement_ready_count": 0,
+      "duplicate_surface_retirement_ready_count": 0
+    },
+    "no_runtime_imports_guard_summary": {
+      "artifact": "tmp/legacy-42-no-runtime-imports-guard.json",
+      "status": "ready_for_archive_packet_prep",
+      "active_runtime_blocker_count": 0,
+      "archive_candidate_script_count": 5
+    }
+  },
+  "exact_consumer_inventory": {
+    "artifact": "tmp/sql-canon-consumer-inventory.json",
+    "status": "ok",
+    "summary": {
+      "consumer_count": 638,
+      "backlog_count": 562,
+      "skipped_binary_count": 0,
+      "type_counts": {
+        "cron_contract_reference": 17,
+        "cron_or_governance_consumer": 14,
+        "existing_sql_consumer_or_guard": 3,
+        "finance_routing_or_freshness_consumer": 4,
+        "pm_cockpit_consumer": 2,
+        "production_or_answer_path_consumer": 20,
+        "source_producer_or_loader": 379,
+        "supporting_consumer_or_reference": 58,
+        "supporting_library": 2,
+        "test_or_parity_consumer": 139
+      },
+      "priority_counts": {
+        "P0": 20,
+        "P1": 402,
+        "P2": 140,
+        "P3": 76
+      },
+      "group_counts": {
+        "answer_path": 162,
+        "canon_cache_sql": 56,
+        "cron_governance": 108,
+        "finance_canon_sql": 130,
+        "portfolio_owner_notes": 114,
+        "ticker_cards": 247,
+        "universe_state": 68,
+        "wf75_product": 94,
+        "wf77_state": 57,
+        "wf78_state": 329
+      },
+      "high_impact_count": 530,
+      "raw_sql_present_count": 124,
+      "raw_sql_review_count": 0,
+      "raw_sql_retained_guarded_count": 8
+    },
+    "p0_answer_path_consumers": [
+      {
+        "path": "scripts/finance_intelligence_router_qa.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/finance_intelligence_state.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "retained_guarded_read_sql_expected",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/finance_ticker_card_refresh_gate.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "retained_guarded_read_sql_expected",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/full_intelligence_answer_parity.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "retained_guarded_read_sql_expected",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/market_today_answer_packet.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/model_quality_scorecard.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/retail_answer_harness.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/sql_canon_answer_path_ab_harness.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "retained_guarded_read_sql_expected",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/status_card_packet.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/ticker_answer_packet.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/ticker_answer_packet_archive_apply.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/ticker_answer_packet_retirement_plan.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/ticker_answer_packet_versioned_archive_packet.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/ticker_card_freshness_owner_runner.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/ticker_intelligence_card.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/today_card_generator.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "retained_guarded_read_sql_expected",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/trade_grade_decision_cards.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "retained_guarded_read_sql_expected",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/trade_grade_full_answer_assembler.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "retained_guarded_read_sql_expected",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/veritas_question_router.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      },
+      {
+        "path": "scripts/wf78_intelligence_routing_v2.py",
+        "consumer_type": "production_or_answer_path_consumer",
+        "migration_action": "migrate after A/B parity and typed access layer",
+        "raw_sql_classification": "none",
+        "fallback_required": true,
+        "cutover_requires_parity": true
+      }
+    ],
+    "legacy_packet_reference_inventory": [
+      {
+        "path": "scripts/canonical_finance_data_plane_retirement_readiness.py",
+        "classification": "retirement_governance_owner",
+        "blocking": false,
+        "rationale": "readiness planner intentionally tracks ticker-answer-packets as a candidate surface"
+      },
+      {
+        "path": "scripts/concurrent_lane_manager.py",
+        "classification": "archive_proof_path_resolver",
+        "blocking": false,
+        "rationale": "lane proof validator resolves approved archived WF85 packet paths; it is not an active packet consumer"
+      },
+      {
+        "path": "scripts/legacy_42_lifecycle_gate_packet.py",
+        "classification": "legacy_lifecycle_governance_packet",
+        "blocking": false,
+        "rationale": "lifecycle gate references the candidate surface as governance proof, not as an active packet consumer"
+      },
+      {
+        "path": "scripts/sql_canon_parallel_phase_executor.py",
+        "classification": "parallel_phase_governance_packet",
+        "blocking": false,
+        "rationale": "parallel phase executor references the candidate surface to build review packets only"
+      },
+      {
+        "path": "scripts/ticker_answer_packet.py",
+        "classification": "legacy_compatibility_wrapper",
+        "blocking": false,
+        "rationale": "compatibility writer remains only to emit assembler-built snapshots when explicitly allowed"
+      },
+      {
+        "path": "scripts/ticker_answer_packet_retirement_plan.py",
+        "classification": "current_retirement_planner",
+        "blocking": false,
+        "rationale": "this planner must reference the candidate surface it is evaluating"
+      },
+      {
+        "path": "scripts/trade_grade_full_answer_assembler.py",
+        "classification": "replacement_owner_with_compatibility_emitter",
+        "blocking": false,
+        "rationale": "replacement owner can emit legacy snapshots for compatibility while active packet files remain"
+      }
+    ]
+  },
+  "lifecycle_gates": [
+    {
+      "gate": "legacy_42_no_runtime_imports_guard",
+      "status": "complete",
+      "proof_artifact": "tmp/legacy-42-no-runtime-imports-guard.json",
+      "current_value": {
+        "guard_status": "ready_for_archive_packet_prep",
+        "active_runtime_blocker_count": 0,
+        "archive_candidate_script_count": 5,
+        "archive_or_delete_allowed_now": false
+      },
+      "acceptance": "Active runtime import/call blockers must be zero before Legacy 42 scripts can be placed in an owner archive-approval packet."
+    },
+    {
+      "gate": "exact_consumer_inventory",
+      "status": "complete",
+      "proof_artifact": "tmp/sql-canon-consumer-inventory.json",
+      "current_value": {
+        "consumer_count": 638,
+        "backlog_count": 562,
+        "p0_answer_path_consumer_count": 20,
+        "raw_sql_review_count": 0
+      },
+      "acceptance": "Inventory is current, P0 consumers are named, raw-SQL actionable review is zero, and active ticker-packet readers are classified."
+    },
+    {
+      "gate": "patch_diff_packet",
+      "status": "not_started_hard_stop",
+      "proof_artifact": null,
+      "current_value": {
+        "patch_diff_ready": false,
+        "apply_allowed_now": false
+      },
+      "acceptance": "Separate packet must name every source/destination, code reference patch, side effect, and exact command diff before archive/delete."
+    },
+    {
+      "gate": "rollback_proof",
+      "status": "not_started_hard_stop",
+      "proof_artifact": null,
+      "current_value": {
+        "rollback_proof_ready": false,
+        "proposed_archive_destination": "09. Archive/WF85 Legacy Ticker Answer Packets/preview",
+        "candidate_count": 0
+      },
+      "acceptance": "Rollback must prove every moved artifact can be restored and validators return to the pre-apply state."
+    },
+    {
+      "gate": "post_apply_validation",
+      "status": "specified_not_run",
+      "proof_artifact": null,
+      "current_value": {
+        "post_apply_validation_ready": false,
+        "commands": [
+          "python scripts\\finance_sql_canon_access.py --write --validate",
+          "python scripts\\sql_canon_front_door_readiness_packet.py --write --validate",
+          "python scripts\\ticker_answer_packet_retirement_plan.py --write --validate",
+          "python scripts\\canonical_finance_data_plane_retirement_readiness.py --write --validate",
+          "python scripts\\db_lifecycle_manifest.py --write --validate",
+          "python scripts\\trade_grade_os_freshness_cron_runner.py --component all --full-answer-mode changed --write --write-md --validate",
+          "python scripts\\retail_truth_routing_contract.py --write --validate",
+          "python scripts\\retail_answer_harness.py --write --validate",
+          "python scripts\\cron_contract_validator.py --write --validate --require-contracts",
+          "python scripts\\changed_file_validator_router.py --write --validate"
+        ]
+      },
+      "acceptance": "Post-apply validators must pass after archive/delete apply and before the lifecycle lane closes."
+    },
+    {
+      "gate": "explicit_owner_approval",
+      "status": "required_not_granted",
+      "proof_artifact": null,
+      "current_value": {
+        "randall_exact_archive_approval": false,
+        "randall_exact_delete_approval": false
+      },
+      "acceptance": "Randall must approve the exact lifecycle packet scope after seeing inventory, diff, rollback, and validation plan."
+    }
+  ],
+  "parallel_phase_plan": [
+    {
+      "phase": "A",
+      "lane": "SQL-CANON::front-door-sql-first-promotion-decision",
+      "goal": "Build the exact SQL-first promotion decision packet only from strategic SQL production proof; legacy 42 stays compatibility inventory.",
+      "can_run_parallel": true,
+      "must_not_do": [
+        "apply promotion",
+        "retire fallback",
+        "change customer output"
+      ],
+      "acceptance": [
+        "front-door packet validates SQL-first strategic readiness or a clean no-production wait state",
+        "fallback/source-open contract remains retained",
+        "patch diff and rollback proof are named but not applied"
+      ]
+    },
+    {
+      "phase": "B",
+      "lane": "SQL-CANON::legacy-42-archive-diff-rollback",
+      "goal": "Prepare the exact archive approval/diff packet for tmp/ticker-answer-packets.",
+      "can_run_parallel": true,
+      "must_not_do": [
+        "delete files",
+        "move/archive files",
+        "retire ticker_answer_packet.py"
+      ],
+      "acceptance": [
+        "all 42 archive candidates named",
+        "active references remain zero or explicitly classified compatibility-only",
+        "restore/rollback command path is proven before asking for approval"
+      ]
+    },
+    {
+      "phase": "C",
+      "lane": "WF-RETAIL-ROUTING::sql-canon-truth-contract-alignment",
+      "goal": "Keep Retail-Grade Truth Routing pointed at guarded SQL/WF85 truth for internal answer safety while customer output remains blocked.",
+      "can_run_parallel": true,
+      "must_not_do": [
+        "customer/public output",
+        "personalization/suitability/account routing"
+      ],
+      "acceptance": [
+        "retail truth routing validators pass",
+        "unsafe prompt coverage remains clean",
+        "customer output decision remains blocked without separate gates"
+      ]
+    },
+    {
+      "phase": "D",
+      "lane": "WF87::trade-grade-autonomous-os-sql-canon-readiness-bridge",
+      "goal": "Connect SQL-canon/WF85 route health into the WF87 command-center readiness view without creating execution authority.",
+      "can_run_parallel": true,
+      "must_not_do": [
+        "paper order submit/cancel/sell",
+        "live endpoint",
+        "owner approval inference"
+      ],
+      "acceptance": [
+        "WF87 command center remains validation-ok",
+        "SQL-canon status and WF85 route health are visible",
+        "autonomous execution remains false until WF87 maturity gates clear"
+      ]
+    },
+    {
+      "phase": "E",
+      "lane": "CRON::phase2-market-window-shadow-reduction",
+      "goal": "Continue cron reduction toward 25-27 by proving Phase2 replacement contracts during valid market windows.",
+      "can_run_parallel": true,
+      "must_not_do": [
+        "disable jobs",
+        "edit schedules",
+        "change runtime service/channel"
+      ],
+      "acceptance": [
+        "Phase2 shadow parity is clean during market-session windows",
+        "rollback IDs and contract validation are clean",
+        "separate owner approval packet exists before live disable"
+      ]
+    }
+  ],
+  "readiness_decision": {
+    "continue_parallel_proof_phases": true,
+    "ready_to_prepare_archive_approval_packet": false,
+    "ready_to_prepare_full_legacy_42_script_archive_packet": true,
+    "runtime_cutover_required_before_full_archive": false,
+    "active_runtime_blocker_count": 0,
+    "legacy_packet_archive_completed": true,
+    "ready_to_archive_or_delete_now": false,
+    "ready_to_disable_cron_jobs_to_25_27_now": false,
+    "ready_for_trade_grade_autonomous_execution": false,
+    "ready_for_trade_grade_os_upgrade_readiness_claim": true,
+    "trade_grade_os_readiness_blockers": [],
+    "why": "Routing is healthy for proof continuation: SQL/WF85 front door is SQL-first, legacy 42 checks are advisory-only, and ticker answer packets are assembler-generated compatibility snapshots. Full Legacy 42 script/archive prep also requires the no-runtime-import guard to be clean. Lifecycle apply still needs a separate diff, rollback proof, post-apply validation, and explicit Randall approval."
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  },
+  "stop_lines": [
+    "Do not archive, move, delete, or apply from this packet.",
+    "Do not retire source feeders, Python fallback, ticker_answer_packet.py, or source-open fallback from this packet.",
+    "Do not promote SQL-first front-door behavior without a separate exact approval packet.",
+    "Do not change cron schedules or disable jobs from this packet.",
+    "Do not create customer/public output, portfolio/canon/cash/sizing/risk mutation, capital deployment, paper/live execution, brokerage/account action, or money movement."
+  ]
+}

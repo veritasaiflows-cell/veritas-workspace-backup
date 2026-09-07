@@ -1,0 +1,64 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "563d5d69-7808-4a13-b62d-7d8741377ad2",
+  "name": "Retired \u2014 Finance - Daily Entry Band Maintenance",
+  "required": false,
+  "owner_workflow": "WF56/entry_band standing-approved auto-maintenance gate",
+  "freshness_hours": 80,
+  "contract_reason": "Register the standing-approved weekday entry-band auto-maintenance gate so cron freshness validation stops flagging it as unregistered and its posture-preserving band/stop proof is drift-checked.",
+  "description": "Standing-approved bounded entry_band auto-maintenance chain (band_refresh -> auto_apply_entry_band_maintenance -> band_hygiene_freshness_controller). Only posture-preserving, source-fresh, validator-clean proposals apply. No capital deployment, trade, account, or brokerage authority.",
+  "enabled": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "45 6 * * 1-5",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "announce",
+    "channel": "telegram",
+    "to": "telegram:8650152206",
+    "accountId": "default"
+  },
+  "payload": {
+    "model": "openai/gpt-5.6-terra",
+    "thinking": "off",
+    "timeoutSeconds": 1200
+  },
+  "compare_fields": [
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "delivery.to",
+    "payload.model",
+    "payload.thinking",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/band-hygiene-freshness-controller.json"
+  ],
+  "authority_boundary": {
+    "review_only": false,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "owner_telegram_delivery_allowed": true,
+    "customer_or_public_delivery_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "entry_band_gate_apply_allowed": true,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-08-18T21:00:00Z",
+  "contract_update_reason": "Created to register the enabled Daily Entry Band Maintenance job in cron freshness/drift contracts (was unregistered and cascading into WF85 consolidated-digest step failure).",
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired from the active scheduler contract set. Historical proof only; no automatic resume.",
+  "rollback_requires_owner_gate": true
+}

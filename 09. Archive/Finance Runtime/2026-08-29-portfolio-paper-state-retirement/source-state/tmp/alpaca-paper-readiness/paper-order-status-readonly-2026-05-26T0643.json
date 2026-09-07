@@ -1,0 +1,41 @@
+{
+  "account_mode": "paper",
+  "allowed_methods": [
+    "GET"
+  ],
+  "base_url": "https://paper-api.alpaca.markets",
+  "blocked_methods": [
+    "POST",
+    "PATCH",
+    "PUT",
+    "DELETE"
+  ],
+  "checks": {
+    "account_metadata_read": true,
+    "orders_read": true,
+    "positions_read": true
+  },
+  "credential_source": {
+    "ambiguous_or_live_names_detected": false,
+    "mode": "paper",
+    "secret_values_persisted": false,
+    "selected_variable_names": [
+      "ALPACA_PAPER_API_KEY_ID",
+      "ALPACA_PAPER_API_SECRET_KEY"
+    ]
+  },
+  "generated_at_utc": "2026-05-26T13:45:18Z",
+  "live_endpoint_detected": false,
+  "observations_redacted": {
+    "account_status_code": 200,
+    "headers_persisted": false,
+    "orders_status_code": 200,
+    "positions_status_code": 200,
+    "raw_response_bodies_persisted": false
+  },
+  "schema_version": 1,
+  "secrets_redacted": true,
+  "status": "ok",
+  "trade_or_account_action_allowed": false,
+  "write_methods_available": false
+}

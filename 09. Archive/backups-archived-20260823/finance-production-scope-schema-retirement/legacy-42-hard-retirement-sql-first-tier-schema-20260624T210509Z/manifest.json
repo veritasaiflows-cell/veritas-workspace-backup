@@ -1,0 +1,34 @@
+{
+  "schema": "veritas.production_scope_schema_retirement_backup.v1",
+  "generated_at_utc": "2026-06-24T21:05:09Z",
+  "run_id": "legacy-42-hard-retirement-sql-first-tier-schema-20260624T210509Z",
+  "authority_boundary": {
+    "backup_only": true,
+    "hard_delete_allowed": false,
+    "portfolio_or_execution_authority": false
+  },
+  "files": [
+    {
+      "path": "state/finance/finance-canon.sqlite",
+      "backup_path": "backups/finance-production-scope-schema-retirement/legacy-42-hard-retirement-sql-first-tier-schema-20260624T210509Z/finance-canon.sqlite",
+      "sha256": "e224b9200b21cc725b84aa32559a3f89637a5925b9c7599c750e705d1a2efbcb",
+      "backup_sha256": "d1a57fbf34021ca140d14a5f5a555cafce34bb0d86298420e4c963862bb6d05a",
+      "bytes": 5644288,
+      "rollback": "Replace state/finance/finance-canon.sqlite with backups/finance-production-scope-schema-retirement/legacy-42-hard-retirement-sql-first-tier-schema-20260624T210509Z/finance-canon.sqlite after stopping writers."
+    },
+    {
+      "path": "state/finance/finance-canon.sqlite-wal",
+      "backup_path": "backups/finance-production-scope-schema-retirement/legacy-42-hard-retirement-sql-first-tier-schema-20260624T210509Z/finance-canon.sqlite-wal",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "rollback": "Restore sidecar backups/finance-production-scope-schema-retirement/legacy-42-hard-retirement-sql-first-tier-schema-20260624T210509Z/finance-canon.sqlite-wal only with the matching SQLite backup set."
+    },
+    {
+      "path": "state/finance/finance-canon.sqlite-shm",
+      "backup_path": "backups/finance-production-scope-schema-retirement/legacy-42-hard-retirement-sql-first-tier-schema-20260624T210509Z/finance-canon.sqlite-shm",
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "bytes": 32768,
+      "rollback": "Restore sidecar backups/finance-production-scope-schema-retirement/legacy-42-hard-retirement-sql-first-tier-schema-20260624T210509Z/finance-canon.sqlite-shm only with the matching SQLite backup set."
+    }
+  ]
+}

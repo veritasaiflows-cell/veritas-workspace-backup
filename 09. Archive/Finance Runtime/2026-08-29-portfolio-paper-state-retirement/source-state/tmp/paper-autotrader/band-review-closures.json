@@ -1,0 +1,35 @@
+{
+  "schema": "veritas.wf86_band_review_closures.v1",
+  "generated_at_utc": "2026-06-11T17:46:55Z",
+  "workflow_id": "WF86",
+  "authority_boundary": {
+    "paper_only": true,
+    "assisted_prep_only": true,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_submit_allowed": false,
+    "paper_cancel_allowed": false,
+    "paper_sell_allowed": false,
+    "live_trade_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "closures": [
+    {
+      "ticker": "VRT",
+      "status": "approved_closed_for_wf86_assisted_prep",
+      "approved_by": "Randall",
+      "approved_at_mst": "2026-06-11 10:46 MST",
+      "source_message_id": "2141",
+      "source_transcript": "Approve the VRT band review is approved. Close for Workflow 86, Assisted Prep.",
+      "scope": "Clear VRT band_review_required and post_apply_band_review_still_open only for WF86 assisted paper-order preparation.",
+      "does_not_approve_order_execution": true
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": []
+  }
+}

@@ -12,6 +12,12 @@ Runs the full upstream freshness chain in order so the cached status card
 
 Each step must succeed (exit code 0) before the next runs.  If any step
 fails, the runner stops and writes a failure status to the output artifact.
+Workflow capsule steps recover once from the exact ``routing_index_stale``
+error by refreshing the deterministic routing index and retrying the step.
+Healthy runs do not execute that extra refresh.
+Review-packet producers that return one after writing a fresh, parseable
+critical/blocked packet are treated as executed successfully so downstream
+status surfaces can expose the condition.  The content status is preserved.
 No LLM, no interpretation, no drift — just subprocess calls with exit code
 checks.
 
@@ -36,6 +42,20 @@ OUT_JSON = TMP / "status-card-freshness-runner.json"
 SCHEMA = "veritas.status_card_freshness_runner.v1"
 
 PYTHON = sys.executable
+ROUTING_INDEX_REFRESH = [
+    PYTHON,
+    str(ROOT / "scripts" / "workflow_routing_index.py"),
+    "--write",
+    "--write-db",
+    "--validate",
+]
+ROUTING_INDEX_RECOVERY_LABELS = frozenset({"wf84_capsule_refresh", "wf85_capsule_refresh"})
+CONTENT_STATUS_OUTPUTS = {
+    "future_session_packet": TMP / "future-session-enhancement-packet.json",
+    "startup_brief_packet": TMP / "startup-brief-packet.json",
+    "status_card_packet": TMP / "veritas-status-card.json",
+}
+CONTENT_NON_GREEN_STATUSES = frozenset({"attention", "blocked", "critical", "error", "warning"})
 
 # Each step: (label, argv, timeout_seconds)
 STEPS: list[tuple[str, list[str], int]] = [
@@ -99,8 +119,13 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def run_step(label: str, argv: list[str], timeout: int) -> dict[str, Any]:
-    """Run a single subprocess step and return its result dict."""
+def run_step_once(label: str, argv: list[str], timeout: int) -> dict[str, Any]:
+    """Run one subprocess attempt and return its result dict."""
+    content_path = CONTENT_STATUS_OUTPUTS.get(label)
+    try:
+        content_mtime_ns_before = content_path.stat().st_mtime_ns if content_path and content_path.exists() else -1
+    except OSError:
+        content_mtime_ns_before = -1
     started = time.monotonic()
     started_utc = utc_now()
     try:
@@ -121,6 +146,7 @@ def run_step(label: str, argv: list[str], timeout: int) -> dict[str, Any]:
             "duration_ms": int((completed - started) * 1000),
             "returncode": result.returncode,
             "ok": ok,
+            "content_output_mtime_ns_before": content_mtime_ns_before,
             "stdout_tail": (result.stdout or "")[-2000:] if ok else (result.stdout or "")[-4000:],
             "stderr_tail": (result.stderr or "")[-2000:],
         }
@@ -134,6 +160,7 @@ def run_step(label: str, argv: list[str], timeout: int) -> dict[str, Any]:
             "duration_ms": int((completed - started) * 1000),
             "returncode": -1,
             "ok": False,
+            "content_output_mtime_ns_before": content_mtime_ns_before,
             "stdout_tail": "",
             "stderr_tail": f"Timeout after {timeout}s",
         }
@@ -147,9 +174,99 @@ def run_step(label: str, argv: list[str], timeout: int) -> dict[str, Any]:
             "duration_ms": int((completed - started) * 1000),
             "returncode": -2,
             "ok": False,
+            "content_output_mtime_ns_before": content_mtime_ns_before,
             "stdout_tail": "",
             "stderr_tail": str(exc),
         }
+
+
+def routing_index_stale(result: dict[str, Any]) -> bool:
+    """Recognize only workflow_router's structured stale-index error."""
+    if result.get("ok"):
+        return False
+    for key in ("stdout_tail", "stderr_tail"):
+        text = str(result.get(key) or "").strip()
+        if not text:
+            continue
+        try:
+            payload = json.loads(text)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict) and payload.get("error") == "routing_index_stale":
+            return True
+    return False
+
+
+def run_step(label: str, argv: list[str], timeout: int) -> dict[str, Any]:
+    """Run a step, with one bounded stale-routing-index recovery when eligible."""
+    initial = run_step_once(label, argv, timeout)
+    if label not in ROUTING_INDEX_RECOVERY_LABELS or not routing_index_stale(initial):
+        return initial
+
+    refresh = run_step_once("workflow_routing_index_refresh", ROUTING_INDEX_REFRESH, timeout)
+    if not refresh["ok"]:
+        initial["routing_index_recovery"] = {
+            "attempted": True,
+            "status": "refresh_failed",
+            "refresh_step": refresh,
+        }
+        initial["duration_ms"] += refresh["duration_ms"]
+        initial["completed_at_utc"] = refresh["completed_at_utc"]
+        return initial
+
+    retry = run_step_once(label, argv, timeout)
+    retry["routing_index_recovery"] = {
+        "attempted": True,
+        "status": "recovered" if retry["ok"] else "retry_failed",
+        "initial_step": initial,
+        "refresh_step": refresh,
+    }
+    retry["duration_ms"] += initial["duration_ms"] + refresh["duration_ms"]
+    retry["started_at_utc"] = initial["started_at_utc"]
+    return retry
+
+
+def accept_refreshed_content_status(
+    label: str,
+    result: dict[str, Any],
+    output_path: Path | None = None,
+) -> dict[str, Any]:
+    """Accept exit one only when a review producer wrote fresh non-green JSON."""
+    path = output_path or CONTENT_STATUS_OUTPUTS.get(label)
+    if result.get("ok") or result.get("returncode") != 1 or path is None or not path.exists():
+        return result
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        started = datetime.fromisoformat(str(result.get("started_at_utc") or "").replace("Z", "+00:00"))
+        stat = path.stat()
+    except (OSError, ValueError, json.JSONDecodeError):
+        return result
+    if not isinstance(payload, dict):
+        return result
+    if started.tzinfo is None:
+        started = started.replace(tzinfo=timezone.utc)
+    modified = datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc)
+    mtime_ns_before = result.get("content_output_mtime_ns_before")
+    status = str(payload.get("status") or "").lower()
+    validation = payload.get("validation") if isinstance(payload.get("validation"), dict) else {}
+    validation_status = str(validation.get("status") or "").lower()
+    if isinstance(mtime_ns_before, int):
+        if stat.st_mtime_ns <= mtime_ns_before:
+            return result
+    elif modified < started.astimezone(timezone.utc):
+        return result
+    if status not in CONTENT_NON_GREEN_STATUSES and validation_status not in CONTENT_NON_GREEN_STATUSES:
+        return result
+    accepted = dict(result)
+    accepted.update({
+        "ok": True,
+        "content_status_nonzero": True,
+        "execution_classification": "fresh_non_green_review_artifact",
+        "output_artifact": str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path),
+        "output_status": status or None,
+        "output_validation_status": validation_status or None,
+    })
+    return accepted
 
 
 def build_payload(fail_fast: bool = True) -> dict[str, Any]:
@@ -159,6 +276,7 @@ def build_payload(fail_fast: bool = True) -> dict[str, Any]:
 
     for label, argv, timeout in STEPS:
         result = run_step(label, argv, timeout)
+        result = accept_refreshed_content_status(label, result)
         step_results.append(result)
         if not result["ok"]:
             failed_step = result

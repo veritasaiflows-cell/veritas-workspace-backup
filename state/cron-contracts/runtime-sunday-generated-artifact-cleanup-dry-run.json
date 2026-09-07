@@ -1,0 +1,67 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "f14ec666-a9a9-4dd7-ad98-ac210800c544",
+  "name": "Runtime - Sunday Generated Artifact Cleanup Dry Run",
+  "required": true,
+  "owner_workflow": "Runtime hygiene",
+  "contract_reason": "Weekly dry-run inventory of generated artifacts; it is runtime hygiene and owns no finance-domain state.",
+  "description": "Sunday model-free generated-artifact cleanup dry run. A declared command sequence in scripts/deterministic_cron_sequence_runner.py runs the tmp cleanup dry run and the cron operator ledger, then writes tmp/sunday-generated-artifact-cleanup-dry-run-runner.json. Main is woken only when a step fails. Nothing is deleted, moved, archived, compressed, or rewritten, and the runner carries no cron, config, runtime, canon, capital, execution, account, or external-delivery authority. Rollback: state/cron-rollback/f14ec666-sunday-generated-artifact-cleanup-dry-run-2026-08-30.json",
+  "enabled": true,
+  "deleteAfterRun": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "15 9 * * 0",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none"
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts/deterministic_cron_sequence_runner.py",
+      "--job",
+      "sunday_generated_artifact_cleanup_dry_run",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:/Users/Veritas/.openclaw/workspace",
+    "timeoutSeconds": 900
+  },
+  "compare_fields": [
+    "name",
+    "description",
+    "enabled",
+    "deleteAfterRun",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/tmp-cleanup-report.json",
+    "tmp/cron-operator-ledger.json"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "file_move_or_delete_allowed": false,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-09-06T22:13:50Z",
+  "contract_update_reason": "Pin command argv to CPython 3.13 so Gateway can spawn the job after python ENOENT auto-failures."
+}

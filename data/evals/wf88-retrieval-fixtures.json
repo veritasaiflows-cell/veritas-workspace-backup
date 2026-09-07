@@ -1,0 +1,1095 @@
+{
+  "schema": "veritas.wf88_retrieval_fixtures.v2",
+  "minimum_fixture_count": 30,
+  "required_classes": [
+    "archive_vs_current",
+    "authority_stop_line",
+    "contradictory_evidence",
+    "missing_unparseable_source",
+    "owner_vs_generated_conflict",
+    "source_freshness",
+    "sql_structured_vs_thin_markdown",
+    "stale_vs_current",
+    "vector_index_supplement",
+    "workflow_routing"
+  ],
+  "freshness_measurement_contract": {
+    "legacy_label_semantics": "synthetic_ordering_semantics",
+    "legacy_labels_are_live_freshness_proof": false,
+    "fixture_timestamp_age_is_live_source_proof": false,
+    "source_timestamp_age_is_live_source_proof": true
+  },
+  "fixtures": [
+    {
+      "fixture_id": "rq_owner_execution_policy_over_dashboard",
+      "fixture_class": "owner_vs_generated_conflict",
+      "polarity": "contrast",
+      "evaluator": "selection",
+      "question": "Which source owns execution policy when a generated dashboard is also available?",
+      "claim_type": "policy",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "execution_board_owner",
+          "path": "03. Portfolio/Execution Board.md",
+          "source_class": "canonical_owner",
+          "freshness": "current",
+          "format": "text",
+          "claim_support": ["policy"],
+          "declared_value": "owner_gated_no_execution"
+        },
+        {
+          "candidate_id": "dashboard_validation",
+          "path": "tmp/dashboard-validation.json",
+          "source_class": "validated_generated",
+          "freshness": "fresh",
+          "format": "json",
+          "claim_support": ["policy"],
+          "declared_value": "dashboard_review"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "execution_board_owner",
+        "conflict": true,
+        "source_open_required": false
+      }
+    },
+    {
+      "fixture_id": "rq_owner_portfolio_boundary_over_generated_card",
+      "fixture_class": "owner_vs_generated_conflict",
+      "polarity": "contrast",
+      "evaluator": "selection",
+      "question": "Which source owns durable portfolio and capital-approval boundaries?",
+      "claim_type": "policy",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "portfolio_snapshot_owner",
+          "path": "03. Portfolio/Portfolio Snapshot.md",
+          "source_class": "canonical_owner",
+          "freshness": "current",
+          "format": "text",
+          "claim_support": ["policy"],
+          "declared_value": "human_owner_decisions_no_capital_approval"
+        },
+        {
+          "candidate_id": "trade_grade_cards",
+          "path": "tmp/trade-grade-decision-cards.json",
+          "source_class": "validated_generated",
+          "freshness": "fresh",
+          "format": "json",
+          "claim_support": ["policy"],
+          "declared_value": "generated_decision_cards"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "portfolio_snapshot_owner",
+        "conflict": true,
+        "source_open_required": false
+      }
+    },
+    {
+      "fixture_id": "rq_owner_wf88_capsule_over_synthesis_packet",
+      "fixture_class": "owner_vs_generated_conflict",
+      "polarity": "contrast",
+      "evaluator": "selection",
+      "question": "Which source owns the WF88 authority boundary when a synthesis packet is present?",
+      "claim_type": "workflow_policy",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "wf88_capsule",
+          "path": "state/workflows/WF88.json",
+          "source_class": "workflow_capsule",
+          "freshness": "current",
+          "format": "json",
+          "claim_support": ["workflow_policy"],
+          "declared_value": "review_only_no_apply"
+        },
+        {
+          "candidate_id": "wiki_synthesis_packet",
+          "path": "tmp/wf88-wiki-synthesis-packet.json",
+          "source_class": "validated_generated",
+          "freshness": "fresh",
+          "format": "json",
+          "claim_support": ["workflow_policy"],
+          "declared_value": "synthesis_only_no_apply"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "wf88_capsule",
+        "conflict": true,
+        "source_open_required": false
+      }
+    },
+    {
+      "fixture_id": "rq_owner_startup_route_over_index",
+      "fixture_class": "owner_vs_generated_conflict",
+      "polarity": "contrast",
+      "evaluator": "selection",
+      "question": "Does the startup owner map outrank a derived index for final route claims?",
+      "claim_type": "policy",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "startup_truth_index",
+          "path": "06. Playbooks/Startup Truth Index.md",
+          "source_class": "canonical_owner",
+          "freshness": "current",
+          "format": "text",
+          "claim_support": ["policy"],
+          "declared_value": "indexes_route_proof_only"
+        },
+        {
+          "candidate_id": "workspace_index",
+          "path": "tmp/workspace-index.sqlite",
+          "source_class": "workspace_index",
+          "freshness": "fresh",
+          "format": "sqlite",
+          "claim_support": ["policy"],
+          "declared_value": "derived_route"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "startup_truth_index",
+        "conflict": true,
+        "source_open_required": false
+      }
+    },
+    {
+      "fixture_id": "rq_sql_rtx_invalidation_level",
+      "fixture_class": "sql_structured_vs_thin_markdown",
+      "polarity": "positive",
+      "evaluator": "sql_canon",
+      "question": "Can typed SQL access retrieve the current RTX invalidation level?",
+      "operation": "reference_level",
+      "ticker": "RTX",
+      "field": "reference_invalidation_level",
+      "expected": {
+        "retrieval_outcome": "selected",
+        "value": 177.91,
+        "authority_contains": "review_only"
+      }
+    },
+    {
+      "fixture_id": "rq_sql_rtx_entry_band_low",
+      "fixture_class": "sql_structured_vs_thin_markdown",
+      "polarity": "positive",
+      "evaluator": "sql_canon",
+      "question": "Can typed SQL access retrieve the current RTX entry-band low?",
+      "operation": "reference_level",
+      "ticker": "RTX",
+      "field": "reference_price_low",
+      "expected": {
+        "retrieval_outcome": "selected",
+        "value": 183.01,
+        "authority_contains": "review_only"
+      }
+    },
+    {
+      "fixture_id": "rq_sql_rtx_entry_band_high",
+      "fixture_class": "sql_structured_vs_thin_markdown",
+      "polarity": "positive",
+      "evaluator": "sql_canon",
+      "question": "Can typed SQL access retrieve the current RTX entry-band high?",
+      "operation": "reference_level",
+      "ticker": "RTX",
+      "field": "reference_price_high",
+      "expected": {
+        "retrieval_outcome": "selected",
+        "value": 193.23,
+        "authority_contains": "review_only"
+      }
+    },
+    {
+      "fixture_id": "rq_sql_production_answer_empty_is_valid",
+      "fixture_class": "sql_structured_vs_thin_markdown",
+      "polarity": "contrast",
+      "evaluator": "sql_canon",
+      "question": "Does the production-answer path preserve the intentional zero-row fail-closed state?",
+      "operation": "production_answer_count",
+      "expected": {
+        "retrieval_outcome": "selected",
+        "value": 0
+      }
+    },
+    {
+      "fixture_id": "rq_sql_legacy_42_remains_retired",
+      "fixture_class": "sql_structured_vs_thin_markdown",
+      "polarity": "negative",
+      "evaluator": "sql_canon",
+      "question": "Does retrieval avoid resurrecting the retired 42-name production path?",
+      "operation": "legacy_production_answer_count",
+      "expected": {
+        "retrieval_outcome": "blocked",
+        "value": 0,
+        "block_reason": "legacy_path_retired"
+      }
+    },
+    {
+      "fixture_id": "rq_sql_missing_ticker_fails_closed",
+      "fixture_class": "sql_structured_vs_thin_markdown",
+      "polarity": "negative",
+      "evaluator": "sql_canon",
+      "question": "Does typed SQL access fail closed for a ticker absent from reference levels?",
+      "operation": "missing_reference_level",
+      "ticker": "ZZZZ",
+      "expected": {
+        "retrieval_outcome": "blocked",
+        "block_reason": "structured_row_missing"
+      }
+    },
+    {
+      "fixture_id": "rq_sql_reference_levels_field_family_owner",
+      "fixture_class": "sql_structured_vs_thin_markdown",
+      "polarity": "positive",
+      "evaluator": "sql_canon",
+      "question": "Does SQL canon declare reference levels as the structured current-state owner while Markdown stays thin?",
+      "operation": "field_family",
+      "field_family": "reference_levels",
+      "expected": {
+        "retrieval_outcome": "selected",
+        "sql_primary_current_state": true,
+        "canon_owner": true,
+        "authority_contains": "review_only"
+      }
+    },
+    {
+      "fixture_id": "rq_stale_generated_proof_loses_to_fresh_proof",
+      "fixture_class": "stale_vs_current",
+      "polarity": "contrast",
+      "evaluator": "selection",
+      "question": "In a deterministic timestamp-age fixture, does an in-window proof outrank an expired proof?",
+      "claim_type": "generated_proof",
+      "require_fresh": true,
+      "evaluation_time_utc": "2026-08-08T12:00:00Z",
+      "candidates": [
+        {
+          "candidate_id": "fresh_capital_validation",
+          "path": "tmp/capital-deployment-recommendation-validation.json",
+          "source_class": "validated_generated",
+          "freshness_evidence": {
+            "mode": "fixture_timestamp_age",
+            "generated_at_utc": "2026-08-08T11:30:00Z",
+            "max_age_hours": 1
+          },
+          "format": "json",
+          "claim_support": ["generated_proof"],
+          "declared_value": "current_validation"
+        },
+        {
+          "candidate_id": "stale_dashboard_validation",
+          "path": "tmp/dashboard-validation.json",
+          "source_class": "validated_generated",
+          "freshness_evidence": {
+            "mode": "fixture_timestamp_age",
+            "generated_at_utc": "2026-08-08T08:00:00Z",
+            "max_age_hours": 1
+          },
+          "format": "json",
+          "claim_support": ["generated_proof"],
+          "declared_value": "older_validation"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "fresh_capital_validation",
+        "conflict": true,
+        "source_open_required": false,
+        "rejected_reasons": {
+          "stale_dashboard_validation": "stale_source"
+        }
+      }
+    },
+    {
+      "fixture_id": "rq_stale_action_surface_loses_to_current_action_surface",
+      "fixture_class": "stale_vs_current",
+      "polarity": "contrast",
+      "evaluator": "selection",
+      "question": "In a deterministic timestamp-age fixture, does in-window action evidence outrank expired route context?",
+      "claim_type": "action_state",
+      "require_fresh": true,
+      "evaluation_time_utc": "2026-08-08T12:00:00Z",
+      "candidates": [
+        {
+          "candidate_id": "current_action_queue",
+          "path": "tmp/actionable-improvement-queue.json",
+          "source_class": "action_surface",
+          "freshness_evidence": {
+            "mode": "fixture_timestamp_age",
+            "generated_at_utc": "2026-08-08T11:45:00Z",
+            "max_age_hours": 2
+          },
+          "format": "json",
+          "claim_support": ["action_state"],
+          "declared_value": "deduped_action_state"
+        },
+        {
+          "candidate_id": "stale_docket_context",
+          "path": "tmp/wf74-decision-docket.json",
+          "source_class": "route_context",
+          "freshness_evidence": {
+            "mode": "fixture_timestamp_age",
+            "generated_at_utc": "2026-08-08T06:00:00Z",
+            "max_age_hours": 2
+          },
+          "format": "json",
+          "claim_support": ["action_state"],
+          "declared_value": "older_route_state"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "current_action_queue",
+        "conflict": true,
+        "source_open_required": false,
+        "rejected_reasons": {
+          "stale_docket_context": "stale_source"
+        }
+      }
+    },
+    {
+      "fixture_id": "rq_stale_index_cannot_make_final_claim",
+      "fixture_class": "stale_vs_current",
+      "polarity": "negative",
+      "evaluator": "selection",
+      "question": "Does a timestamp-expired artifact index fail closed for a final content claim?",
+      "claim_type": "final_content",
+      "require_fresh": true,
+      "evaluation_time_utc": "2026-08-08T12:00:00Z",
+      "candidates": [
+        {
+          "candidate_id": "stale_artifact_index",
+          "path": "tmp/veritas-artifact-index.sqlite",
+          "source_class": "artifact_index",
+          "freshness_evidence": {
+            "mode": "fixture_timestamp_age",
+            "generated_at_utc": "2026-08-08T04:00:00Z",
+            "max_age_hours": 2
+          },
+          "format": "sqlite",
+          "claim_support": ["final_content"],
+          "declared_value": "index_route_only"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "blocked",
+        "conflict": false,
+        "source_open_required": true,
+        "block_reason": "no_eligible_source",
+        "rejected_reasons": {
+          "stale_artifact_index": "stale_source"
+        }
+      }
+    },
+    {
+      "fixture_id": "rq_stale_generated_policy_never_overrides_owner",
+      "fixture_class": "stale_vs_current",
+      "polarity": "contrast",
+      "evaluator": "selection",
+      "question": "Does a stale generated policy summary remain subordinate to the current owner note?",
+      "claim_type": "policy",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "current_execution_owner",
+          "path": "03. Portfolio/Execution Board.md",
+          "source_class": "canonical_owner",
+          "freshness": "current",
+          "format": "text",
+          "claim_support": ["policy"],
+          "declared_value": "no_approval"
+        },
+        {
+          "candidate_id": "stale_generated_policy",
+          "path": "tmp/dashboard-validation.json",
+          "source_class": "generated",
+          "freshness": "stale",
+          "format": "json",
+          "claim_support": ["policy"],
+          "declared_value": "generated_review"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "current_execution_owner",
+        "conflict": true,
+        "source_open_required": false
+      }
+    },
+    {
+      "fixture_id": "rq_archive_startup_index_loses_to_current",
+      "fixture_class": "archive_vs_current",
+      "polarity": "contrast",
+      "evaluator": "selection",
+      "question": "Does the current Startup Truth Index outrank its archived predecessor?",
+      "claim_type": "policy",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "current_startup_index",
+          "path": "06. Playbooks/Startup Truth Index.md",
+          "source_class": "canonical_owner",
+          "freshness": "current",
+          "format": "text",
+          "claim_support": ["policy"],
+          "declared_value": "current_startup_contract"
+        },
+        {
+          "candidate_id": "archived_startup_index",
+          "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/wf60-backups/Startup Truth Index.before-truth-surface.md",
+          "source_class": "archive",
+          "freshness": "historical",
+          "format": "text",
+          "claim_support": ["policy"],
+          "declared_value": "historical_startup_contract"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "current_startup_index",
+        "conflict": true,
+        "source_open_required": false,
+        "rejected_reasons": {
+          "archived_startup_index": "archive_not_current"
+        }
+      }
+    },
+    {
+      "fixture_id": "rq_archive_portfolio_snapshot_loses_to_current",
+      "fixture_class": "archive_vs_current",
+      "polarity": "contrast",
+      "evaluator": "selection",
+      "question": "Does the current Portfolio Snapshot outrank a pre-$10k archived snapshot?",
+      "claim_type": "policy",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "current_portfolio_snapshot",
+          "path": "03. Portfolio/Portfolio Snapshot.md",
+          "source_class": "canonical_owner",
+          "freshness": "current",
+          "format": "text",
+          "claim_support": ["policy"],
+          "declared_value": "current_portfolio_boundary"
+        },
+        {
+          "candidate_id": "archived_portfolio_snapshot",
+          "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/Portfolio Snapshot.before-10k-universe-20260518T191332Z.md",
+          "source_class": "archive",
+          "freshness": "historical",
+          "format": "text",
+          "claim_support": ["policy"],
+          "declared_value": "pre_10k_snapshot"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "current_portfolio_snapshot",
+        "conflict": true,
+        "source_open_required": false,
+        "rejected_reasons": {
+          "archived_portfolio_snapshot": "archive_not_current"
+        }
+      }
+    },
+    {
+      "fixture_id": "rq_archive_wf88_helper_loses_to_current_owner_script",
+      "fixture_class": "archive_vs_current",
+      "polarity": "contrast",
+      "evaluator": "selection",
+      "question": "Does the active WF88 producer outrank an archived one-off audit helper?",
+      "claim_type": "workflow_implementation",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "current_wf88_producer",
+          "path": "scripts/wf88_wiki_synthesis_packet.py",
+          "source_class": "canonical_owner",
+          "freshness": "current",
+          "format": "text",
+          "claim_support": ["workflow_implementation"],
+          "declared_value": "active_producer"
+        },
+        {
+          "candidate_id": "archived_wf88_audit_helper",
+          "path": "09. Archive/tmp-python-helpers - Archived/20260705T221251Z/tmp/audit_wf88_v2.py",
+          "source_class": "archive",
+          "freshness": "historical",
+          "format": "text",
+          "claim_support": ["workflow_implementation"],
+          "declared_value": "archived_one_off_helper"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "current_wf88_producer",
+        "conflict": true,
+        "source_open_required": false,
+        "rejected_reasons": {
+          "archived_wf88_audit_helper": "archive_not_current"
+        }
+      }
+    },
+    {
+      "fixture_id": "rq_missing_owner_source_blocks",
+      "fixture_class": "missing_unparseable_source",
+      "polarity": "negative",
+      "evaluator": "read_failure",
+      "question": "Does retrieval fail closed when the named owner source is missing?",
+      "path": "03. Portfolio/THIS-OWNER-DOES-NOT-EXIST.md",
+      "format": "text",
+      "expected": {
+        "retrieval_outcome": "blocked",
+        "block_reason": "missing_source"
+      }
+    },
+    {
+      "fixture_id": "rq_missing_generated_json_blocks",
+      "fixture_class": "missing_unparseable_source",
+      "polarity": "negative",
+      "evaluator": "read_failure",
+      "question": "Does retrieval fail closed when a required generated JSON source is absent?",
+      "path": "tmp/THIS-ARTIFACT-DOES-NOT-EXIST.json",
+      "format": "json",
+      "expected": {
+        "retrieval_outcome": "blocked",
+        "block_reason": "missing_source"
+      }
+    },
+    {
+      "fixture_id": "rq_markdown_cannot_masquerade_as_json",
+      "fixture_class": "missing_unparseable_source",
+      "polarity": "negative",
+      "evaluator": "read_failure",
+      "question": "Does retrieval reject a Markdown wiki page when JSON is required?",
+      "path": "wiki/index.md",
+      "format": "json",
+      "expected": {
+        "retrieval_outcome": "blocked",
+        "block_reason": "unparseable_source"
+      }
+    },
+    {
+      "fixture_id": "rq_sqlite_cannot_masquerade_as_json",
+      "fixture_class": "missing_unparseable_source",
+      "polarity": "negative",
+      "evaluator": "read_failure",
+      "question": "Does retrieval reject a SQLite database when a JSON artifact is required?",
+      "path": "tmp/workspace-index.sqlite",
+      "format": "json",
+      "expected": {
+        "retrieval_outcome": "blocked",
+        "block_reason": "unparseable_source"
+      }
+    },
+    {
+      "fixture_id": "rq_authority_execution_board_stop_lines",
+      "fixture_class": "authority_stop_line",
+      "polarity": "positive",
+      "evaluator": "text_contract",
+      "question": "Does the execution owner preserve approval and paper/live stop lines?",
+      "path": "03. Portfolio/Execution Board.md",
+      "case_sensitive": false,
+      "required_terms": [
+        "does not approve capital deployment, paper execution, live execution",
+        "a generated card is not approval",
+        "randall's exact order approval"
+      ],
+      "forbidden_terms": [
+        "automatic live execution is allowed"
+      ],
+      "expected": {
+        "retrieval_outcome": "selected"
+      }
+    },
+    {
+      "fixture_id": "rq_authority_wf88_capsule_stop_line",
+      "fixture_class": "authority_stop_line",
+      "polarity": "positive",
+      "evaluator": "json_contract",
+      "question": "Does the WF88 capsule preserve review-only and no-apply stop lines?",
+      "path": "state/workflows/WF88.json",
+      "checks": [
+        {"pointer": "/workflow_id", "op": "equals", "value": "WF88"},
+        {"pointer": "/authority_boundary", "op": "contains", "value": "review-only"},
+        {"pointer": "/authority_boundary", "op": "contains", "value": "no delete/archive/apply authority"},
+        {"pointer": "/stop_lines", "op": "min_length", "value": 1},
+        {"pointer": "/stop_lines/0", "op": "contains", "value": "owner approval inference"}
+      ],
+      "expected": {
+        "retrieval_outcome": "selected"
+      }
+    },
+    {
+      "fixture_id": "rq_authority_wiki_packet_false_flags",
+      "fixture_class": "authority_stop_line",
+      "polarity": "positive",
+      "evaluator": "json_contract",
+      "question": "Does the wiki synthesis packet keep apply, execution, mutation, and inferred approval false?",
+      "path": "tmp/wf88-wiki-synthesis-packet.json",
+      "checks": [
+        {"pointer": "/authority_boundary/review_only", "op": "is_true"},
+        {"pointer": "/authority_boundary/apply_allowed", "op": "is_false"},
+        {"pointer": "/authority_boundary/paper_or_live_execution_allowed", "op": "is_false"},
+        {"pointer": "/authority_boundary/portfolio_mutation_allowed", "op": "is_false"},
+        {"pointer": "/authority_boundary/owner_approval_inferred", "op": "is_false"}
+      ],
+      "expected": {
+        "retrieval_outcome": "selected"
+      }
+    },
+    {
+      "fixture_id": "rq_authority_action_queue_false_flags",
+      "fixture_class": "authority_stop_line",
+      "polarity": "positive",
+      "evaluator": "json_contract",
+      "question": "Does the actionable queue remain review-only with no auto-apply or external action?",
+      "path": "tmp/actionable-improvement-queue.json",
+      "checks": [
+        {"pointer": "/authority_boundary/review_only", "op": "is_true"},
+        {"pointer": "/authority_boundary/auto_apply_allowed", "op": "is_false"},
+        {"pointer": "/authority_boundary/paper_or_live_execution_allowed", "op": "is_false"},
+        {"pointer": "/authority_boundary/external_delivery_allowed", "op": "is_false"},
+        {"pointer": "/authority_boundary/owner_approval_inferred", "op": "is_false"}
+      ],
+      "expected": {
+        "retrieval_outcome": "selected"
+      }
+    },
+    {
+      "fixture_id": "rq_authority_daily_refresh_script_stop_lines",
+      "fixture_class": "authority_stop_line",
+      "polarity": "positive",
+      "evaluator": "text_contract",
+      "question": "Does the daily actionability runner explicitly disable apply, cron mutation, execution, and inferred approval?",
+      "path": "scripts/wf88_daily_actionability_refresh.py",
+      "case_sensitive": true,
+      "required_terms": [
+        "\"auto_apply_allowed\": False",
+        "\"cron_schedule_mutation_allowed\": False",
+        "\"paper_or_live_execution_allowed\": False",
+        "\"owner_approval_inferred\": False"
+      ],
+      "forbidden_terms": [
+        "\"auto_apply_allowed\": True"
+      ],
+      "expected": {
+        "retrieval_outcome": "selected"
+      }
+    },
+    {
+      "fixture_id": "rq_contradiction_generated_approval_vs_owner_stop",
+      "fixture_class": "contradictory_evidence",
+      "polarity": "negative",
+      "evaluator": "selection",
+      "question": "Does retrieval flag a generated approval claim that contradicts the execution owner?",
+      "claim_type": "policy",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "execution_owner_no_approval",
+          "path": "03. Portfolio/Execution Board.md",
+          "source_class": "canonical_owner",
+          "freshness": "current",
+          "format": "text",
+          "claim_support": ["policy"],
+          "declared_value": "approval_not_granted"
+        },
+        {
+          "candidate_id": "generated_claims_approval",
+          "path": "tmp/dashboard-validation.json",
+          "source_class": "generated",
+          "freshness": "fresh",
+          "format": "json",
+          "claim_support": ["policy"],
+          "declared_value": "approval_granted",
+          "authority_flags": {"owner_approval_inferred": true}
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "execution_owner_no_approval",
+        "conflict": true,
+        "source_open_required": false,
+        "rejected_reasons": {
+          "generated_claims_approval": "forbidden_authority_claim"
+        }
+      }
+    },
+    {
+      "fixture_id": "rq_contradiction_action_queue_vs_docket_state",
+      "fixture_class": "contradictory_evidence",
+      "polarity": "contrast",
+      "evaluator": "selection",
+      "question": "Does the originating deduplicated action row win while a conflicting docket state is preserved as uncertainty?",
+      "claim_type": "action_state",
+      "require_fresh": true,
+      "evaluation_time_utc": "2026-08-08T12:00:00Z",
+      "candidates": [
+        {
+          "candidate_id": "action_queue_origin",
+          "path": "tmp/actionable-improvement-queue.json",
+          "source_class": "action_surface",
+          "freshness_evidence": {
+            "mode": "fixture_timestamp_age",
+            "generated_at_utc": "2026-08-08T11:45:00Z",
+            "max_age_hours": 2
+          },
+          "format": "json",
+          "claim_support": ["action_state"],
+          "declared_value": "monitor_only"
+        },
+        {
+          "candidate_id": "docket_route_context",
+          "path": "tmp/wf74-decision-docket.json",
+          "source_class": "route_context",
+          "freshness_evidence": {
+            "mode": "fixture_timestamp_age",
+            "generated_at_utc": "2026-08-08T11:30:00Z",
+            "max_age_hours": 2
+          },
+          "format": "json",
+          "claim_support": ["action_state"],
+          "declared_value": "fix_now"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "action_queue_origin",
+        "conflict": true,
+        "source_open_required": false
+      }
+    },
+    {
+      "fixture_id": "rq_contradiction_vector_index_warning_vs_source_truth",
+      "fixture_class": "contradictory_evidence",
+      "polarity": "negative",
+      "evaluator": "selection",
+      "question": "Does a warning-grade vector index remain subordinate to the exact source for final claims?",
+      "claim_type": "final_content",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "exact_wf88_capsule",
+          "path": "state/workflows/WF88.json",
+          "source_class": "workflow_capsule",
+          "freshness": "current",
+          "format": "json",
+          "claim_support": ["final_content"],
+          "declared_value": "exact_source_truth"
+        },
+        {
+          "candidate_id": "warning_vector_index",
+          "path": "tmp/vector-memory-ollama-full-index.json",
+          "source_class": "vector_supplement",
+          "freshness": "stale",
+          "format": "json",
+          "claim_support": ["final_content"],
+          "declared_value": "semantic_index_result"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "exact_wf88_capsule",
+        "conflict": true,
+        "source_open_required": false,
+        "rejected_reasons": {
+          "warning_vector_index": "supplement_not_final_authority"
+        }
+      }
+    },
+    {
+      "fixture_id": "rq_freshness_current_descriptor_accepted",
+      "fixture_class": "source_freshness",
+      "polarity": "positive",
+      "evaluator": "json_contract",
+      "question": "Does the current wiki packet expose a WF88 control descriptor whose source timestamp is within its max-age window?",
+      "path": "tmp/wf88-wiki-synthesis-packet.json",
+      "checks": [
+        {"pointer": "/inputs/wf88_os2_control/present", "op": "is_true"},
+        {"pointer": "/inputs/wf88_os2_control/max_age_hours", "op": "equals", "value": 24}
+      ],
+      "freshness_contract": {
+        "mode": "source_timestamp_age",
+        "generated_at_pointer": "/inputs/wf88_os2_control/generated_at_utc",
+        "max_age_hours_pointer": "/inputs/wf88_os2_control/max_age_hours",
+        "declared_status_pointer": "/inputs/wf88_os2_control/freshness_status",
+        "expected_status": "fresh"
+      },
+      "expected": {
+        "retrieval_outcome": "selected"
+      }
+    },
+    {
+      "fixture_id": "rq_freshness_unknown_generated_at_blocks",
+      "fixture_class": "source_freshness",
+      "polarity": "negative",
+      "evaluator": "selection",
+      "question": "Does unknown generation time block a freshness-required action claim?",
+      "claim_type": "action_state",
+      "require_fresh": true,
+      "evaluation_time_utc": "2026-08-08T12:00:00Z",
+      "candidates": [
+        {
+          "candidate_id": "unknown_action_source",
+          "path": "tmp/actionable-improvement-queue.json",
+          "source_class": "action_surface",
+          "freshness_evidence": {
+            "mode": "fixture_timestamp_age",
+            "generated_at_utc": null,
+            "max_age_hours": 2
+          },
+          "format": "json",
+          "claim_support": ["action_state"],
+          "declared_value": "unknown_age_action"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "blocked",
+        "conflict": false,
+        "source_open_required": false,
+        "block_reason": "no_eligible_source",
+        "rejected_reasons": {
+          "unknown_action_source": "freshness_unknown"
+        }
+      }
+    },
+    {
+      "fixture_id": "rq_freshness_stale_action_blocks",
+      "fixture_class": "source_freshness",
+      "polarity": "negative",
+      "evaluator": "selection",
+      "question": "Does a timestamp-expired action surface block a current-action recommendation?",
+      "claim_type": "action_state",
+      "require_fresh": true,
+      "evaluation_time_utc": "2026-08-08T12:00:00Z",
+      "candidates": [
+        {
+          "candidate_id": "stale_action_source",
+          "path": "tmp/actionable-improvement-queue.json",
+          "source_class": "action_surface",
+          "freshness_evidence": {
+            "mode": "fixture_timestamp_age",
+            "generated_at_utc": "2026-08-08T08:00:00Z",
+            "max_age_hours": 2
+          },
+          "format": "json",
+          "claim_support": ["action_state"],
+          "declared_value": "stale_action"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "blocked",
+        "conflict": false,
+        "source_open_required": false,
+        "block_reason": "no_eligible_source",
+        "rejected_reasons": {
+          "stale_action_source": "stale_source"
+        }
+      }
+    },
+    {
+      "fixture_id": "rq_workflow_capsule_primary_route",
+      "fixture_class": "workflow_routing",
+      "polarity": "positive",
+      "evaluator": "json_contract",
+      "question": "Does the WF88 capsule route first to the thin OS2 control packet?",
+      "path": "state/workflows/WF88.json",
+      "checks": [
+        {"pointer": "/workflow_id", "op": "equals", "value": "WF88"},
+        {"pointer": "/primary_route_artifact", "op": "equals", "value": "tmp/wf88-os2-control-packet.json"},
+        {"pointer": "/default_resume_command", "op": "equals", "value": "python scripts\\workflow_router.py WF88 --answer all"}
+      ],
+      "expected": {
+        "retrieval_outcome": "selected"
+      }
+    },
+    {
+      "fixture_id": "rq_workflow_action_queue_has_durable_destination",
+      "fixture_class": "workflow_routing",
+      "polarity": "positive",
+      "evaluator": "json_contract",
+      "question": "Does the top action queue row have a durable docket destination and no orphan state?",
+      "path": "tmp/actionable-improvement-queue.json",
+      "checks": [
+        {"pointer": "/summary/orphan_count", "op": "equals", "value": 0},
+        {"pointer": "/summary/missing_contract_count", "op": "equals", "value": 0},
+        {"pointer": "/action_items/0/destination", "op": "not_empty"},
+        {"pointer": "/action_items/0/is_orphan", "op": "is_false"},
+        {"pointer": "/action_items/0/destination_id", "op": "not_empty"}
+      ],
+      "expected": {
+        "retrieval_outcome": "selected"
+      }
+    },
+    {
+      "fixture_id": "rq_workflow_loop_trace_links_docket",
+      "fixture_class": "workflow_routing",
+      "polarity": "positive",
+      "evaluator": "json_contract",
+      "question": "Does the loop trace link current opportunities to the decision docket without missing destinations?",
+      "path": "tmp/wf74-wf88-loop-trace.json",
+      "checks": [
+        {"pointer": "/summary/missing_destination_count", "op": "equals", "value": 0},
+        {"pointer": "/summary/high_priority_unrouted_count", "op": "equals", "value": 0},
+        {"pointer": "/trace_rows/0/decision_docket_id", "op": "not_empty"},
+        {"pointer": "/trace_rows/0/missing_links", "op": "max_length", "value": 0}
+      ],
+      "expected": {
+        "retrieval_outcome": "selected"
+      }
+    },
+    {
+      "fixture_id": "rq_workflow_router_zero_unrouted",
+      "fixture_class": "workflow_routing",
+      "polarity": "positive",
+      "evaluator": "json_contract",
+      "question": "Does the WF74 router report zero open unrouted recommendations?",
+      "path": "tmp/wf74-autonomy-work-router.json",
+      "checks": [
+        {"pointer": "/summary/open_unrouted_recommendation_count", "op": "equals", "value": 0},
+        {"pointer": "/summary/recommendation_to_route_conversion_rate", "op": "equals", "value": 1.0},
+        {"pointer": "/authority_boundary/auto_apply_allowed", "op": "is_false"}
+      ],
+      "expected": {
+        "retrieval_outcome": "selected"
+      }
+    },
+    {
+      "fixture_id": "rq_vector_index_declares_derived_only",
+      "fixture_class": "vector_index_supplement",
+      "polarity": "positive",
+      "evaluator": "json_contract",
+      "question": "Does the current vector index declare itself derived-only and source-routing only?",
+      "path": "tmp/vector-memory-ollama-full-index.json",
+      "checks": [
+        {"pointer": "/authority_boundary/derived_index_only", "op": "is_true"},
+        {"pointer": "/authority_boundary/routes_to_exact_sources", "op": "is_true"},
+        {"pointer": "/authority_boundary/creates_canon", "op": "is_false"},
+        {"pointer": "/authority_boundary/approval_authority", "op": "is_false"},
+        {"pointer": "/authority_boundary/owner_approval_inferred", "op": "is_false"}
+      ],
+      "expected": {
+        "retrieval_outcome": "selected"
+      }
+    },
+    {
+      "fixture_id": "rq_vector_supplement_cannot_be_final_authority",
+      "fixture_class": "vector_index_supplement",
+      "polarity": "negative",
+      "evaluator": "selection",
+      "question": "Does a vector result fail closed when asked to serve as final authority?",
+      "claim_type": "final_content",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "vector_only",
+          "path": "tmp/vector-memory-ollama-full-index.json",
+          "source_class": "vector_supplement",
+          "freshness": "fresh",
+          "format": "json",
+          "claim_support": ["final_content"],
+          "declared_value": "semantic_match"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "blocked",
+        "conflict": false,
+        "source_open_required": true,
+        "block_reason": "no_eligible_source",
+        "rejected_reasons": {
+          "vector_only": "supplement_not_final_authority"
+        }
+      }
+    },
+    {
+      "fixture_id": "rq_vector_supplement_routes_to_exact_source",
+      "fixture_class": "vector_index_supplement",
+      "polarity": "positive",
+      "evaluator": "selection",
+      "question": "Can the vector index supplement route retrieval while still requiring exact source-open inspection?",
+      "claim_type": "retrieval_route",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "vector_route_supplement",
+          "path": "tmp/vector-memory-ollama-full-index.json",
+          "source_class": "vector_supplement",
+          "freshness": "fresh",
+          "format": "json",
+          "claim_support": ["retrieval_route"],
+          "declared_value": "route_to_exact_sources"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "vector_route_supplement",
+        "conflict": false,
+        "source_open_required": true
+      }
+    },
+    {
+      "fixture_id": "rq_vector_warning_state_blocks_readiness_claim",
+      "fixture_class": "vector_index_supplement",
+      "polarity": "negative",
+      "evaluator": "selection",
+      "question": "Does an unvalidated vector supplement fail closed for a readiness claim regardless of job state?",
+      "claim_type": "readiness_claim",
+      "require_fresh": true,
+      "candidates": [
+        {
+          "candidate_id": "unvalidated_vector_supplement",
+          "path": "tmp/vector-memory-ollama-full-index.json",
+          "source_class": "vector_supplement",
+          "freshness_evidence": {
+            "mode": "synthetic_ordering_semantics",
+            "semantic": "unvalidated"
+          },
+          "format": "json",
+          "claim_support": ["readiness_claim"],
+          "declared_value": "unvalidated_readiness_signal"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "blocked",
+        "conflict": false,
+        "source_open_required": true,
+        "block_reason": "no_eligible_source",
+        "rejected_reasons": {
+          "unvalidated_vector_supplement": "supplement_not_final_authority"
+        }
+      }
+    },
+    {
+      "fixture_id": "rq_workspace_index_routes_but_requires_source_open",
+      "fixture_class": "vector_index_supplement",
+      "polarity": "positive",
+      "evaluator": "selection",
+      "question": "Can the workspace index route a lookup without becoming final content authority?",
+      "claim_type": "retrieval_route",
+      "require_fresh": false,
+      "candidates": [
+        {
+          "candidate_id": "workspace_index_route",
+          "path": "tmp/workspace-index.sqlite",
+          "source_class": "workspace_index",
+          "freshness": "fresh",
+          "format": "sqlite",
+          "claim_support": ["retrieval_route"],
+          "declared_value": "route_to_owner_source"
+        }
+      ],
+      "expected": {
+        "retrieval_outcome": "selected",
+        "selected_candidate_id": "workspace_index_route",
+        "conflict": false,
+        "source_open_required": true
+      }
+    }
+  ]
+}

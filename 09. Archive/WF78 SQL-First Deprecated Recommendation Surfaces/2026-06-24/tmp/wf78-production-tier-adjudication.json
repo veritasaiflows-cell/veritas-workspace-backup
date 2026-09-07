@@ -1,0 +1,3405 @@
+{
+  "schema": "veritas.wf78_production_tier_adjudication.v1",
+  "generated_at_utc": "2026-06-25T03:25:43Z",
+  "status": "ok",
+  "workflow": "WF78 - 42 Production Tier A/B Adjudication",
+  "purpose": "Recommend a provisional Tier A review slate and Tier B bench from the 42 production answer-path tickers without admitting, promoting, applying, or authorizing action.",
+  "deprecation_status": {
+    "deprecated_for_authority": true,
+    "deprecated_at_utc": "2026-06-25T03:00:00Z",
+    "replacement_surfaces": [
+      "tmp/wf78-auto-tier-routing.json",
+      "tmp/wf78-clean-tier-roster.json",
+      "tmp/finance-production-grade-policy-gate.json"
+    ],
+    "archive_readiness": "ready_after_one_clean_lane_qualified_validation_cycle_and_explicit_archive_approval"
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "report_only": true,
+    "recommendation_packet_only": true,
+    "tier_a_admission_allowed": false,
+    "tier_b_admission_allowed": false,
+    "production_answer_path_change_allowed": false,
+    "ticker_import_allowed": false,
+    "apply_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "sizing_sleeve_cash_risk_rule_mutation_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "source_artifacts": {
+    "universe": "data/finance/universe-v1.json",
+    "production_scope": {
+      "preferred_source": "finance_sql_canon_access.production_answer_tickers",
+      "production_scope_definition": "proof_joined_sql_tier_a_ready",
+      "production_ticker_count": 0,
+      "production_tickers": [],
+      "empty_scope_is_valid_wait_state": true,
+      "authority_boundary": {
+        "read_only": true,
+        "strategic_production_scope_only": true,
+        "sql_write_allowed": false,
+        "router_mutation_allowed": false,
+        "universe_mutation_allowed": false,
+        "canon_or_portfolio_mutation_allowed": false,
+        "capital_deployment_allowed": false,
+        "paper_or_live_execution_allowed": false,
+        "brokerage_or_account_action_allowed": false,
+        "owner_approval_inferred": false
+      }
+    },
+    "capacity_gate": "tmp/wf78-tier-capacity-policy-gate.json",
+    "promotion_review_gate": "tmp/wf78-tier-promotion-review-gate.json",
+    "ticker_card_refresh_gate": "tmp/finance-ticker-card-refresh-gate.json",
+    "ticker_cards": "tmp/ticker-intelligence-cards"
+  },
+  "policy": {
+    "production_answer_path_is_not_tier_admission": true,
+    "tier_a_review_cap": 25,
+    "tier_b_research_cap": 50,
+    "formal_tier_admission_requires_owner_approval": true,
+    "fresh_quote_source_open_required_before_final_recommendation": true
+  },
+  "summary": {
+    "production_ticker_count": 42,
+    "bucket_counts": {
+      "A_REPAIR": 19,
+      "A_REVIEW": 5,
+      "B_RESEARCH": 8,
+      "C_MONITOR_REPAIR": 10
+    },
+    "sector_counts": {
+      "Aerospace": 1,
+      "Aerospace & Defense": 1,
+      "Commodities": 1,
+      "Communication Services": 3,
+      "Communication Services / Telecom": 1,
+      "Consumer Discretionary": 1,
+      "Defense": 3,
+      "Diversified Quality": 1,
+      "Energy": 4,
+      "Energy Infrastructure": 1,
+      "Financial Infrastructure": 1,
+      "Financials": 3,
+      "Fixed Income": 1,
+      "Healthcare": 1,
+      "Industrials": 5,
+      "Infrastructure": 1,
+      "International Equity": 1,
+      "Materials": 3,
+      "Materials / Infrastructure": 1,
+      "Materials / Services": 1,
+      "Tech": 7
+    },
+    "tier_a_review_candidate_count": 24,
+    "tier_b_research_count": 8,
+    "tier_c_monitor_or_repair_count": 10,
+    "formal_admission_allowed_count": 0,
+    "top_tier_a_review_candidates": [
+      "BRK.B",
+      "ETN",
+      "GOOG",
+      "GS",
+      "JPM",
+      "NVDA",
+      "VRT",
+      "XLB",
+      "ECL",
+      "LIN",
+      "RTX",
+      "PH",
+      "ITA",
+      "XOM",
+      "LLY",
+      "VAW",
+      "CAT",
+      "BKNG",
+      "GE",
+      "VMC",
+      "AMD",
+      "WMB",
+      "SMCI",
+      "MSFT"
+    ],
+    "tier_b_research_bench": [
+      "LMT",
+      "PAVE",
+      "XLF",
+      "XLI",
+      "VXUS",
+      "META",
+      "AMZN",
+      "CME"
+    ],
+    "next_safe_action": "Source-open and freshness-repair the Tier A review slate, then build an owner decision packet for actual Tier A/B admission.",
+    "deprecated_for_authority": true,
+    "forward_replacement": "Use lane-qualified WF78 router/clean-roster plus finance production-grade policy gate."
+  },
+  "rows": [
+    {
+      "ticker": "BRK.B",
+      "name": "Berkshire Hathaway Inc.",
+      "sector": "Diversified Quality",
+      "instrument_type": "operating_company",
+      "score": 100,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "DO NOT TOUCH",
+      "recommendation_posture": "promotion_review",
+      "band_status": "IN_BAND",
+      "tier_a_hard_blocked": false,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "in written band",
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture promotion_review",
+        "strong moving-average stack"
+      ],
+      "blockers": [],
+      "repair_items": [],
+      "rank": 1,
+      "recommended_bucket": "A_REVIEW",
+      "recommendation": "Tier A owner-review candidate"
+    },
+    {
+      "ticker": "ETN",
+      "name": "Eaton Corporation plc",
+      "sector": "Industrials",
+      "instrument_type": "operating_company",
+      "score": 100,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "ALMOST DEPLOYABLE",
+      "recommendation_posture": "approval_ready_if_fresh",
+      "band_status": "IN_BAND",
+      "tier_a_hard_blocked": false,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "in written band",
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture approval_ready_if_fresh",
+        "state ALMOST DEPLOYABLE"
+      ],
+      "blockers": [],
+      "repair_items": [
+        "3 warning risk flag(s)"
+      ],
+      "rank": 2,
+      "recommended_bucket": "A_REVIEW",
+      "recommendation": "Tier A owner-review candidate"
+    },
+    {
+      "ticker": "GOOG",
+      "name": "Alphabet Inc.",
+      "sector": "Tech",
+      "instrument_type": "operating_company",
+      "score": 100,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "ALMOST DEPLOYABLE",
+      "recommendation_posture": "approval_ready_if_fresh",
+      "band_status": "IN_BAND",
+      "tier_a_hard_blocked": false,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "in written band",
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture approval_ready_if_fresh",
+        "state ALMOST DEPLOYABLE"
+      ],
+      "blockers": [],
+      "repair_items": [
+        "1 warning risk flag(s)"
+      ],
+      "rank": 3,
+      "recommended_bucket": "A_REVIEW",
+      "recommendation": "Tier A owner-review candidate"
+    },
+    {
+      "ticker": "GS",
+      "name": "The Goldman Sachs Group, Inc.",
+      "sector": "Financials",
+      "instrument_type": "operating_company",
+      "score": 100,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "ALMOST DEPLOYABLE",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture no_chase",
+        "state ALMOST DEPLOYABLE",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline"
+      ],
+      "repair_items": [],
+      "rank": 4,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "JPM",
+      "name": "JPMorgan Chase & Co.",
+      "sector": "Financials",
+      "instrument_type": "operating_company",
+      "score": 100,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "ALMOST DEPLOYABLE",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture no_chase",
+        "state ALMOST DEPLOYABLE",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline"
+      ],
+      "repair_items": [],
+      "rank": 5,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "sector": "Tech",
+      "instrument_type": "operating_company",
+      "score": 100,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "ALMOST DEPLOYABLE",
+      "recommendation_posture": "approval_ready_if_fresh",
+      "band_status": "IN_BAND",
+      "tier_a_hard_blocked": false,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "in written band",
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture approval_ready_if_fresh",
+        "state ALMOST DEPLOYABLE"
+      ],
+      "blockers": [],
+      "repair_items": [],
+      "rank": 6,
+      "recommended_bucket": "A_REVIEW",
+      "recommendation": "Tier A owner-review candidate"
+    },
+    {
+      "ticker": "VRT",
+      "name": "Vertiv Holdings Co",
+      "sector": "Industrials",
+      "instrument_type": "operating_company",
+      "score": 100,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "PROMOTION REVIEW",
+      "recommendation_posture": "approval_ready_if_fresh",
+      "band_status": "IN_BAND",
+      "tier_a_hard_blocked": false,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "in written band",
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture approval_ready_if_fresh",
+        "state PROMOTION REVIEW"
+      ],
+      "blockers": [],
+      "repair_items": [],
+      "rank": 7,
+      "recommended_bucket": "A_REVIEW",
+      "recommendation": "Tier A owner-review candidate"
+    },
+    {
+      "ticker": "XLB",
+      "name": "XLB",
+      "sector": "Materials",
+      "instrument_type": "etf",
+      "score": 100,
+      "legacy_tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "workflow_state": "PROMOTION REVIEW",
+      "recommendation_posture": "approval_ready_if_fresh",
+      "band_status": "IN_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "above 50d and 200d",
+        "in written band",
+        "monitoring role sector_or_thematic_monitor",
+        "recommendation posture approval_ready_if_fresh",
+        "state PROMOTION REVIEW"
+      ],
+      "blockers": [
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 8,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "ECL",
+      "name": "Ecolab Inc.",
+      "sector": "Materials / Services",
+      "instrument_type": "operating_company",
+      "score": 97,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "conditional_ready_after_owner_promotion",
+      "recommendation_posture": "promotion_review",
+      "band_status": "IN_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "in written band",
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture promotion_review",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "2 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 9,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "LIN",
+      "name": "Linde plc",
+      "sector": "Materials",
+      "instrument_type": "operating_company",
+      "score": 90,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "PROMOTION REVIEW",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture no_chase",
+        "state PROMOTION REVIEW",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "1 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 10,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "RTX",
+      "name": "RTX Corporation",
+      "sector": "Defense",
+      "instrument_type": "operating_company",
+      "score": 88,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "ready_if_fresh_quote_confirms",
+      "recommendation_posture": "watch_only",
+      "band_status": "IN_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "in written band",
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 11,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "PH",
+      "name": "Parker-Hannifin Corporation",
+      "sector": "Industrials",
+      "instrument_type": "operating_company",
+      "score": 78,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "monitor",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture no_chase",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 12,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "ITA",
+      "name": "ITA",
+      "sector": "Aerospace & Defense",
+      "instrument_type": "etf",
+      "score": 75,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "wait_for_band_no_chase",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture no_chase",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 13,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "XOM",
+      "name": "Exxon Mobil Corporation",
+      "sector": "Energy",
+      "instrument_type": "operating_company",
+      "score": 67,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "DO NOT TOUCH",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "below stop or invalidation"
+      ],
+      "repair_items": [
+        "2 warning risk flag(s)"
+      ],
+      "rank": 14,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "LLY",
+      "name": "Eli Lilly and Company",
+      "sector": "Healthcare",
+      "instrument_type": "operating_company",
+      "score": 63,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "WATCH / RESEARCH NEEDED",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "1 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 15,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "VAW",
+      "name": "VAW",
+      "sector": "Materials",
+      "instrument_type": "etf",
+      "score": 62,
+      "legacy_tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "workflow_state": "ready_if_fresh_quote_confirms",
+      "recommendation_posture": "watch_only",
+      "band_status": "IN_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "in written band",
+        "monitoring role sector_or_thematic_monitor"
+      ],
+      "blockers": [
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 16,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "CAT",
+      "name": "Caterpillar Inc.",
+      "sector": "Industrials",
+      "instrument_type": "operating_company",
+      "score": 61,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "monitor",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "2 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 17,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "BKNG",
+      "name": "Booking Holdings Inc.",
+      "sector": "Consumer Discretionary",
+      "instrument_type": "operating_company",
+      "score": 60,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "BENCH",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "1 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 18,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "GE",
+      "name": "GE Aerospace",
+      "sector": "Aerospace",
+      "instrument_type": "operating_company",
+      "score": 60,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "monitor",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "1 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 19,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "VMC",
+      "name": "Vulcan Materials Company",
+      "sector": "Materials / Infrastructure",
+      "instrument_type": "operating_company",
+      "score": 59,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "monitor",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "3 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 20,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "AMD",
+      "name": "Advanced Micro Devices, Inc.",
+      "sector": "Tech",
+      "instrument_type": "operating_company",
+      "score": 58,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "WATCH / RESEARCH NEEDED",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "2 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 21,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "WMB",
+      "name": "The Williams Companies, Inc.",
+      "sector": "Energy Infrastructure",
+      "instrument_type": "operating_company",
+      "score": 57,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "monitor",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "5 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 22,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "SMCI",
+      "name": "Super Micro Computer, Inc.",
+      "sector": "Tech",
+      "instrument_type": "operating_company",
+      "score": 56,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "monitor",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "2 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 23,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft Corporation",
+      "sector": "Tech",
+      "instrument_type": "operating_company",
+      "score": 55,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "DO NOT TOUCH",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "below all major moving averages",
+        "below stop or invalidation"
+      ],
+      "repair_items": [
+        "2 warning risk flag(s)"
+      ],
+      "rank": 24,
+      "recommended_bucket": "A_REPAIR",
+      "recommendation": "Tier A watchlist candidate - repair required before admission"
+    },
+    {
+      "ticker": "LMT",
+      "name": "Lockheed Martin Corporation",
+      "sector": "Defense",
+      "instrument_type": "operating_company",
+      "score": 49,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "DO NOT TOUCH",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "1 critical risk flag(s)",
+        "below all major moving averages",
+        "below stop or invalidation"
+      ],
+      "repair_items": [
+        "1 warning risk flag(s)"
+      ],
+      "rank": 25,
+      "recommended_bucket": "B_RESEARCH",
+      "recommendation": "Tier B active research bench"
+    },
+    {
+      "ticker": "PAVE",
+      "name": "PAVE",
+      "sector": "Infrastructure",
+      "instrument_type": "etf",
+      "score": 48,
+      "legacy_tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "workflow_state": "monitor",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "monitoring role sector_or_thematic_monitor",
+        "recommendation posture no_chase",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 26,
+      "recommended_bucket": "B_RESEARCH",
+      "recommendation": "Tier B active research bench"
+    },
+    {
+      "ticker": "XLF",
+      "name": "XLF",
+      "sector": "Financials",
+      "instrument_type": "etf",
+      "score": 48,
+      "legacy_tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "workflow_state": "monitor",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "monitoring role sector_or_thematic_monitor",
+        "recommendation posture no_chase",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 27,
+      "recommended_bucket": "B_RESEARCH",
+      "recommendation": "Tier B active research bench"
+    },
+    {
+      "ticker": "XLI",
+      "name": "XLI",
+      "sector": "Industrials",
+      "instrument_type": "etf",
+      "score": 48,
+      "legacy_tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "workflow_state": "monitor",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "monitoring role sector_or_thematic_monitor",
+        "recommendation posture no_chase",
+        "strong moving-average stack"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 28,
+      "recommended_bucket": "B_RESEARCH",
+      "recommendation": "Tier B active research bench"
+    },
+    {
+      "ticker": "VXUS",
+      "name": "VXUS",
+      "sector": "International Equity",
+      "instrument_type": "etf",
+      "score": 46,
+      "legacy_tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "workflow_state": "monitor",
+      "recommendation_posture": "no_chase",
+      "band_status": "ABOVE_BAND",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "above 50d and 200d",
+        "monitoring role sector_or_thematic_monitor",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "above written band / no-chase discipline",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 29,
+      "recommended_bucket": "B_RESEARCH",
+      "recommendation": "Tier B active research bench"
+    },
+    {
+      "ticker": "META",
+      "name": "Meta Platforms, Inc.",
+      "sector": "Communication Services",
+      "instrument_type": "operating_company",
+      "score": 41,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "blocked_below_stop",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "below all major moving averages",
+        "below stop or invalidation",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 30,
+      "recommended_bucket": "B_RESEARCH",
+      "recommendation": "Tier B active research bench"
+    },
+    {
+      "ticker": "AMZN",
+      "name": "Amazon.com, Inc.",
+      "sector": "Tech",
+      "instrument_type": "operating_company",
+      "score": 38,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "blocked_below_stop",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "below stop or invalidation",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "1 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 31,
+      "recommended_bucket": "B_RESEARCH",
+      "recommendation": "Tier B active research bench"
+    },
+    {
+      "ticker": "CME",
+      "name": "CME Group Inc.",
+      "sector": "Financial Infrastructure",
+      "instrument_type": "operating_company",
+      "score": 37,
+      "legacy_tier": "A",
+      "monitoring_role": "decision_queue_or_near_action",
+      "workflow_state": "blocked_below_stop",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier A monitoring label",
+        "monitoring role decision_queue_or_near_action",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "below all major moving averages",
+        "below stop or invalidation",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "2 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 32,
+      "recommended_bucket": "B_RESEARCH",
+      "recommendation": "Tier B active research bench"
+    },
+    {
+      "ticker": "LNG",
+      "name": "Cheniere Energy, Inc.",
+      "sector": "Energy",
+      "instrument_type": "operating_company",
+      "score": 34,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "blocked_below_stop",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "below stop or invalidation",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "3 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 33,
+      "recommended_bucket": "C_MONITOR_REPAIR",
+      "recommendation": "Tier C monitor or repair backlog"
+    },
+    {
+      "ticker": "SLV",
+      "name": "SLV",
+      "sector": "Commodities",
+      "instrument_type": "commodity_proxy",
+      "score": 32,
+      "legacy_tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "workflow_state": "MACRO",
+      "recommendation_posture": "watch_only",
+      "band_status": "UNKNOWN",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "monitoring role sector_or_thematic_monitor"
+      ],
+      "blockers": [
+        "evidence gap: deployment_readiness_surface",
+        "missing current band status"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 34,
+      "recommended_bucket": "C_MONITOR_REPAIR",
+      "recommendation": "Tier C monitor or repair backlog"
+    },
+    {
+      "ticker": "TLT",
+      "name": "TLT",
+      "sector": "Fixed Income",
+      "instrument_type": "bond_or_rate_proxy",
+      "score": 32,
+      "legacy_tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "workflow_state": "MACRO",
+      "recommendation_posture": "watch_only",
+      "band_status": "UNKNOWN",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "monitoring role sector_or_thematic_monitor"
+      ],
+      "blockers": [
+        "evidence gap: deployment_readiness_surface",
+        "missing current band status"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 35,
+      "recommended_bucket": "C_MONITOR_REPAIR",
+      "recommendation": "Tier C monitor or repair backlog"
+    },
+    {
+      "ticker": "KTOS",
+      "name": "Kratos Defense & Security Solutions, Inc.",
+      "sector": "Defense",
+      "instrument_type": "operating_company",
+      "score": 30,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "monitor",
+      "recommendation_posture": "no_chase",
+      "band_status": "UNKNOWN",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "evidence gap: deployment_readiness_surface",
+        "evidence gap: fresh_price_quote",
+        "fresh quote required before final use",
+        "missing current band status"
+      ],
+      "repair_items": [
+        "3 warning risk flag(s)",
+        "deployment_readiness_surface:missing",
+        "fresh_price_quote:stale_until_refreshed"
+      ],
+      "rank": 36,
+      "recommended_bucket": "C_MONITOR_REPAIR",
+      "recommendation": "Tier C monitor or repair backlog"
+    },
+    {
+      "ticker": "NFLX",
+      "name": "Netflix, Inc.",
+      "sector": "Communication Services",
+      "instrument_type": "operating_company",
+      "score": 28,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "blocked_below_stop",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "below all major moving averages",
+        "below stop or invalidation",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 37,
+      "recommended_bucket": "C_MONITOR_REPAIR",
+      "recommendation": "Tier C monitor or repair backlog"
+    },
+    {
+      "ticker": "XLE",
+      "name": "XLE",
+      "sector": "Energy",
+      "instrument_type": "etf",
+      "score": 26,
+      "legacy_tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "workflow_state": "WATCH",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "monitoring role sector_or_thematic_monitor",
+        "recommendation posture no_chase",
+        "state WATCH"
+      ],
+      "blockers": [
+        "below stop or invalidation",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 38,
+      "recommended_bucket": "C_MONITOR_REPAIR",
+      "recommendation": "Tier C monitor or repair backlog"
+    },
+    {
+      "ticker": "CVX",
+      "name": "Chevron Corporation",
+      "sector": "Energy",
+      "instrument_type": "operating_company",
+      "score": 24,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "blocked_below_stop",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "1 critical risk flag(s)",
+        "below stop or invalidation",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "5 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 39,
+      "recommended_bucket": "C_MONITOR_REPAIR",
+      "recommendation": "Tier C monitor or repair backlog"
+    },
+    {
+      "ticker": "TMUS",
+      "name": "T-Mobile US, Inc.",
+      "sector": "Communication Services / Telecom",
+      "instrument_type": "operating_company",
+      "score": 24,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "blocked_below_stop",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "below all major moving averages",
+        "below stop or invalidation",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "2 warning risk flag(s)",
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 40,
+      "recommended_bucket": "C_MONITOR_REPAIR",
+      "recommendation": "Tier C monitor or repair backlog"
+    },
+    {
+      "ticker": "PLTR",
+      "name": "Palantir Technologies Inc.",
+      "sector": "Tech",
+      "instrument_type": "operating_company",
+      "score": 22,
+      "legacy_tier": "B",
+      "monitoring_role": "priority_watch",
+      "workflow_state": "blocked_below_stop",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "legacy Tier B monitoring label",
+        "monitoring role priority_watch",
+        "recommendation posture no_chase"
+      ],
+      "blockers": [
+        "below all major moving averages",
+        "below stop or invalidation",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 41,
+      "recommended_bucket": "C_MONITOR_REPAIR",
+      "recommendation": "Tier C monitor or repair backlog"
+    },
+    {
+      "ticker": "XLC",
+      "name": "XLC",
+      "sector": "Communication Services",
+      "instrument_type": "etf",
+      "score": 14,
+      "legacy_tier": "C",
+      "monitoring_role": "sector_or_thematic_monitor",
+      "workflow_state": "WATCH",
+      "recommendation_posture": "no_chase",
+      "band_status": "BELOW_STOP",
+      "tier_a_hard_blocked": true,
+      "formal_admission_allowed_now": false,
+      "reasons": [
+        "monitoring role sector_or_thematic_monitor",
+        "recommendation posture no_chase",
+        "state WATCH"
+      ],
+      "blockers": [
+        "below all major moving averages",
+        "below stop or invalidation",
+        "evidence gap: deployment_readiness_surface"
+      ],
+      "repair_items": [
+        "deployment_readiness_surface:missing"
+      ],
+      "rank": 42,
+      "recommended_bucket": "C_MONITOR_REPAIR",
+      "recommendation": "Tier C monitor or repair backlog"
+    }
+  ],
+  "owner_review_packet": {
+    "exact_owner_question": "Approve this provisional Tier A review slate and Tier B bench as labels only, with no trade/account/canon/portfolio action?",
+    "recommended_answer": "review_after_freshness_repair_not_auto_apply",
+    "tier_a_review_slate": [
+      {
+        "rank": 1,
+        "ticker": "BRK.B",
+        "name": "Berkshire Hathaway Inc.",
+        "score": 100,
+        "recommendation": "Tier A owner-review candidate",
+        "blockers": []
+      },
+      {
+        "rank": 2,
+        "ticker": "ETN",
+        "name": "Eaton Corporation plc",
+        "score": 100,
+        "recommendation": "Tier A owner-review candidate",
+        "blockers": []
+      },
+      {
+        "rank": 3,
+        "ticker": "GOOG",
+        "name": "Alphabet Inc.",
+        "score": 100,
+        "recommendation": "Tier A owner-review candidate",
+        "blockers": []
+      },
+      {
+        "rank": 4,
+        "ticker": "GS",
+        "name": "The Goldman Sachs Group, Inc.",
+        "score": 100,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline"
+        ]
+      },
+      {
+        "rank": 5,
+        "ticker": "JPM",
+        "name": "JPMorgan Chase & Co.",
+        "score": 100,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline"
+        ]
+      },
+      {
+        "rank": 6,
+        "ticker": "NVDA",
+        "name": "NVIDIA Corporation",
+        "score": 100,
+        "recommendation": "Tier A owner-review candidate",
+        "blockers": []
+      },
+      {
+        "rank": 7,
+        "ticker": "VRT",
+        "name": "Vertiv Holdings Co",
+        "score": 100,
+        "recommendation": "Tier A owner-review candidate",
+        "blockers": []
+      },
+      {
+        "rank": 8,
+        "ticker": "XLB",
+        "name": "XLB",
+        "score": 100,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 9,
+        "ticker": "ECL",
+        "name": "Ecolab Inc.",
+        "score": 97,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 10,
+        "ticker": "LIN",
+        "name": "Linde plc",
+        "score": 90,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 11,
+        "ticker": "RTX",
+        "name": "RTX Corporation",
+        "score": 88,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 12,
+        "ticker": "PH",
+        "name": "Parker-Hannifin Corporation",
+        "score": 78,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 13,
+        "ticker": "ITA",
+        "name": "ITA",
+        "score": 75,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 14,
+        "ticker": "XOM",
+        "name": "Exxon Mobil Corporation",
+        "score": 67,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "below stop or invalidation"
+        ]
+      },
+      {
+        "rank": 15,
+        "ticker": "LLY",
+        "name": "Eli Lilly and Company",
+        "score": 63,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 16,
+        "ticker": "VAW",
+        "name": "VAW",
+        "score": 62,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 17,
+        "ticker": "CAT",
+        "name": "Caterpillar Inc.",
+        "score": 61,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 18,
+        "ticker": "BKNG",
+        "name": "Booking Holdings Inc.",
+        "score": 60,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 19,
+        "ticker": "GE",
+        "name": "GE Aerospace",
+        "score": 60,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 20,
+        "ticker": "VMC",
+        "name": "Vulcan Materials Company",
+        "score": 59,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 21,
+        "ticker": "AMD",
+        "name": "Advanced Micro Devices, Inc.",
+        "score": 58,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 22,
+        "ticker": "WMB",
+        "name": "The Williams Companies, Inc.",
+        "score": 57,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 23,
+        "ticker": "SMCI",
+        "name": "Super Micro Computer, Inc.",
+        "score": 56,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 24,
+        "ticker": "MSFT",
+        "name": "Microsoft Corporation",
+        "score": 55,
+        "recommendation": "Tier A watchlist candidate - repair required before admission",
+        "blockers": [
+          "below all major moving averages",
+          "below stop or invalidation"
+        ]
+      }
+    ],
+    "tier_b_bench": [
+      {
+        "rank": 25,
+        "ticker": "LMT",
+        "name": "Lockheed Martin Corporation",
+        "score": 49,
+        "blockers": [
+          "1 critical risk flag(s)",
+          "below all major moving averages",
+          "below stop or invalidation"
+        ]
+      },
+      {
+        "rank": 26,
+        "ticker": "PAVE",
+        "name": "PAVE",
+        "score": 48,
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 27,
+        "ticker": "XLF",
+        "name": "XLF",
+        "score": 48,
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 28,
+        "ticker": "XLI",
+        "name": "XLI",
+        "score": 48,
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 29,
+        "ticker": "VXUS",
+        "name": "VXUS",
+        "score": 46,
+        "blockers": [
+          "above written band / no-chase discipline",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 30,
+        "ticker": "META",
+        "name": "Meta Platforms, Inc.",
+        "score": 41,
+        "blockers": [
+          "below all major moving averages",
+          "below stop or invalidation",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 31,
+        "ticker": "AMZN",
+        "name": "Amazon.com, Inc.",
+        "score": 38,
+        "blockers": [
+          "below stop or invalidation",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      },
+      {
+        "rank": 32,
+        "ticker": "CME",
+        "name": "CME Group Inc.",
+        "score": 37,
+        "blockers": [
+          "below all major moving averages",
+          "below stop or invalidation",
+          "evidence gap: deployment_readiness_surface"
+        ]
+      }
+    ]
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [],
+    "checks": [
+      {
+        "name": "universe_exists",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": "data/finance/universe-v1.json"
+      },
+      {
+        "name": "production_42_count",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": {
+          "count": 42,
+          "expected": 42
+        }
+      },
+      {
+        "name": "ticker_cards_present_for_all_42",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": []
+      },
+      {
+        "name": "capacity_gate_validation_ok",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": {
+          "status": "ok",
+          "errors": [],
+          "warnings": [],
+          "checks": [
+            {
+              "name": "tier_a_cap_is_25",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": 25
+            },
+            {
+              "name": "tier_b_cap_is_50",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": 50
+            },
+            {
+              "name": "combined_cap_is_75",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": 75
+            },
+            {
+              "name": "active_capital_action_cap_is_15",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": 15
+            },
+            {
+              "name": "batch_nomination_limit_is_15",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": 15
+            },
+            {
+              "name": "universe_exists",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": "data/finance/universe-v1.json"
+            },
+            {
+              "name": "tier_promotion_gate_exists",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": "tmp/wf78-tier-promotion-review-gate.json"
+            },
+            {
+              "name": "tier_promotion_gate_validation_ok",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "status": "ok",
+                "errors": [],
+                "warnings": [],
+                "checks": [
+                  {
+                    "name": "reputation_gate_exists",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": "tmp/wf78-500-ticker-reputation-gate.json"
+                  },
+                  {
+                    "name": "reputation_gate_status_ok",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": "ok"
+                  },
+                  {
+                    "name": "ticker_card_refresh_gate_exists",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": "tmp/finance-ticker-card-refresh-gate.json"
+                  },
+                  {
+                    "name": "ticker_card_refresh_gate_validation_ok",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "errors": [],
+                      "status": "ok",
+                      "warnings": []
+                    }
+                  },
+                  {
+                    "name": "import_gate_status_acceptable_if_present",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "path": "tmp/wf78-101-200-tier-c-import-gate.json",
+                      "status": "ok_already_imported_tier_c_only"
+                    }
+                  },
+                  {
+                    "name": "macro_thesis_overlay_gate_ok_if_present",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "path": "tmp/wf78-macro-thesis-overlay-gate.json",
+                      "status": "ok"
+                    }
+                  },
+                  {
+                    "name": "tier_capacity_policy_gate_ok_if_present",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "path": "tmp/wf78-tier-capacity-policy-gate.json",
+                      "status": "ok"
+                    }
+                  },
+                  {
+                    "name": "tier_a_capacity_policy_25",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "tier_a_max": 25,
+                      "tier_b_max": 50,
+                      "tier_a_b_combined_max": 75,
+                      "active_capital_action_candidate_max": 15,
+                      "tier_b_batch_nomination_limit": 15,
+                      "overflow_rule": "Anything beyond capacity remains Tier C review-monitor or Tier D raw/validation/watch.",
+                      "override_rule": "No override without exact owner approval and a separate gate."
+                    }
+                  },
+                  {
+                    "name": "tier_b_capacity_policy_50",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "tier_a_max": 25,
+                      "tier_b_max": 50,
+                      "tier_a_b_combined_max": 75,
+                      "active_capital_action_candidate_max": 15,
+                      "tier_b_batch_nomination_limit": 15,
+                      "overflow_rule": "Anything beyond capacity remains Tier C review-monitor or Tier D raw/validation/watch.",
+                      "override_rule": "No override without exact owner approval and a separate gate."
+                    }
+                  },
+                  {
+                    "name": "combined_capacity_policy_75",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "tier_a_max": 25,
+                      "tier_b_max": 50,
+                      "tier_a_b_combined_max": 75,
+                      "active_capital_action_candidate_max": 15,
+                      "tier_b_batch_nomination_limit": 15,
+                      "overflow_rule": "Anything beyond capacity remains Tier C review-monitor or Tier D raw/validation/watch.",
+                      "override_rule": "No override without exact owner approval and a separate gate."
+                    }
+                  },
+                  {
+                    "name": "owner_packet_has_100_tickers",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": 100
+                  },
+                  {
+                    "name": "owner_packet_all_tier_c_eligible_or_already_imported",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "import_applied": true,
+                      "rows": 100
+                    }
+                  },
+                  {
+                    "name": "tier_b_research_eligible_zero",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "target_count": 500,
+                      "row_count": 500,
+                      "batch_size": 100,
+                      "current_baseline_count": 200,
+                      "current_100_count": 200,
+                      "next_batch_label": "201-300",
+                      "next_batch_tier_c_eligible_count": 100,
+                      "next_101_200_tier_c_eligible_count": 0,
+                      "future_validation_required_count": 2,
+                      "future_prior_batch_hold_count": 198,
+                      "tier_b_research_eligible_count": 0,
+                      "tier_a_production_eligible_count": 0,
+                      "repair_queue_count": 2,
+                      "status": "ok",
+                      "next_safe_action": "Use this gate as the repeated WF78 scaleout step; refresh proof, validate the next 100-name batch, then create an exact owner decision packet before any apply/import."
+                    }
+                  },
+                  {
+                    "name": "tier_a_production_eligible_zero",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": {
+                      "target_count": 500,
+                      "row_count": 500,
+                      "batch_size": 100,
+                      "current_baseline_count": 200,
+                      "current_100_count": 200,
+                      "next_batch_label": "201-300",
+                      "next_batch_tier_c_eligible_count": 100,
+                      "next_101_200_tier_c_eligible_count": 0,
+                      "future_validation_required_count": 2,
+                      "future_prior_batch_hold_count": 198,
+                      "tier_b_research_eligible_count": 0,
+                      "tier_a_production_eligible_count": 0,
+                      "repair_queue_count": 2,
+                      "status": "ok",
+                      "next_safe_action": "Use this gate as the repeated WF78 scaleout step; refresh proof, validate the next 100-name batch, then create an exact owner decision packet before any apply/import."
+                    }
+                  },
+                  {
+                    "name": "current_card_repair_jobs_present",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "warning",
+                    "detail": 34
+                  },
+                  {
+                    "name": "authority_owner_decision_packet_allowed_true",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": true
+                  },
+                  {
+                    "name": "authority_review_only_true",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": true
+                  },
+                  {
+                    "name": "authority_repair_queue_allowed_true",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": true
+                  },
+                  {
+                    "name": "authority_report_only_true",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": true
+                  },
+                  {
+                    "name": "authority_canon_or_portfolio_mutation_allowed_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_ticker_import_allowed_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_capital_deployment_allowed_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_sql_first_promotion_allowed_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_owner_approval_inferred_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_production_answer_path_change_allowed_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_paper_execution_allowed_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_customer_or_external_delivery_allowed_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_tier_b_promotion_allowed_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_apply_allowed_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_brokerage_or_account_action_allowed_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_tier_a_promotion_allowed_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_live_execution_allowed_false",
+                    "ok": true,
+                    "status": "ok",
+                    "severity": "critical",
+                    "detail": false
+                  }
+                ]
+              }
+            },
+            {
+              "name": "macro_overlay_gate_exists",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": "tmp/wf78-macro-thesis-overlay-gate.json"
+            },
+            {
+              "name": "macro_overlay_gate_validation_ok",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "status": "ok",
+                "checks": [
+                  {
+                    "name": "candidate_rows_present",
+                    "ok": true,
+                    "detail": 100
+                  },
+                  {
+                    "name": "shortlist_limit_respected",
+                    "ok": true,
+                    "detail": 15
+                  },
+                  {
+                    "name": "tier_a_capacity_policy_25",
+                    "ok": true,
+                    "detail": 25
+                  },
+                  {
+                    "name": "tier_b_capacity_policy_50",
+                    "ok": true,
+                    "detail": 50
+                  },
+                  {
+                    "name": "combined_capacity_policy_75",
+                    "ok": true,
+                    "detail": 75
+                  },
+                  {
+                    "name": "authority_false_flags_preserved",
+                    "ok": true,
+                    "detail": {
+                      "review_only": true,
+                      "ranking_triage_only": true,
+                      "full_macro_vetting_claim_allowed": false,
+                      "full_fundamental_vetting_claim_allowed": false,
+                      "tier_b_promotion_allowed": false,
+                      "tier_a_promotion_allowed": false,
+                      "capital_deployment_allowed": false,
+                      "production_answer_path_change_allowed": false,
+                      "canon_or_portfolio_mutation_allowed": false,
+                      "customer_or_external_delivery_allowed": false,
+                      "paper_or_live_execution_allowed": false,
+                      "brokerage_or_account_action_allowed": false,
+                      "owner_approval_inferred": false
+                    }
+                  },
+                  {
+                    "name": "no_full_macro_or_fundamental_claim",
+                    "ok": true,
+                    "detail": {
+                      "candidate_count": 100,
+                      "tier_b_research_shortlist_count": 15,
+                      "tier_b_promoted_count": 0,
+                      "tier_a_promoted_count": 0,
+                      "capital_deployment_ready_count": 0,
+                      "full_macro_vetted_count": 0,
+                      "full_fundamentals_vetted_count": 0,
+                      "sector_counts": {
+                        "Communication Services": 9,
+                        "Consumer Discretionary": 9,
+                        "Consumer Staples": 9,
+                        "Energy": 9,
+                        "Financials": 10,
+                        "Health Care": 9,
+                        "Industrials": 9,
+                        "Information Technology": 9,
+                        "Materials": 9,
+                        "Real Estate": 9,
+                        "Utilities": 9
+                      },
+                      "theme_counts": {
+                        "AI infrastructure and semiconductors": 9,
+                        "Defensive cash-flow and rates-sensitive income": 17,
+                        "Electrification, infrastructure, and industrial automation": 18,
+                        "Energy and energy infrastructure": 15,
+                        "Financial quality and alternative assets": 17,
+                        "General Tier C monitor": 16,
+                        "Health care quality and tools": 8
+                      },
+                      "next_safe_action": "Use the shortlist to create bounded Tier B research packets; do not promote, recommend, size, or deploy without full evidence repair and owner approval."
+                    }
+                  },
+                  {
+                    "name": "no_capital_or_promotion_readiness",
+                    "ok": true,
+                    "detail": {
+                      "candidate_count": 100,
+                      "tier_b_research_shortlist_count": 15,
+                      "tier_b_promoted_count": 0,
+                      "tier_a_promoted_count": 0,
+                      "capital_deployment_ready_count": 0,
+                      "full_macro_vetted_count": 0,
+                      "full_fundamentals_vetted_count": 0,
+                      "sector_counts": {
+                        "Communication Services": 9,
+                        "Consumer Discretionary": 9,
+                        "Consumer Staples": 9,
+                        "Energy": 9,
+                        "Financials": 10,
+                        "Health Care": 9,
+                        "Industrials": 9,
+                        "Information Technology": 9,
+                        "Materials": 9,
+                        "Real Estate": 9,
+                        "Utilities": 9
+                      },
+                      "theme_counts": {
+                        "AI infrastructure and semiconductors": 9,
+                        "Defensive cash-flow and rates-sensitive income": 17,
+                        "Electrification, infrastructure, and industrial automation": 18,
+                        "Energy and energy infrastructure": 15,
+                        "Financial quality and alternative assets": 17,
+                        "General Tier C monitor": 16,
+                        "Health care quality and tools": 8
+                      },
+                      "next_safe_action": "Use the shortlist to create bounded Tier B research packets; do not promote, recommend, size, or deploy without full evidence repair and owner approval."
+                    }
+                  },
+                  {
+                    "name": "import_gate_seen_or_owner_packet_available",
+                    "ok": true,
+                    "detail": {
+                      "import_gate": "tmp/wf78-101-200-tier-c-import-gate.json",
+                      "owner_packet": "tmp/wf78-101-200-tier-c-owner-decision-packet.json"
+                    }
+                  }
+                ],
+                "failed": []
+              }
+            },
+            {
+              "name": "ticker_card_refresh_gate_exists",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": "tmp/finance-ticker-card-refresh-gate.json"
+            },
+            {
+              "name": "ticker_card_refresh_gate_validation_ok",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "errors": [],
+                "status": "ok",
+                "warnings": []
+              }
+            },
+            {
+              "name": "reputation_gate_exists",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": "tmp/wf78-500-ticker-reputation-gate.json"
+            },
+            {
+              "name": "reputation_gate_validation_ok",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "status": "ok",
+                "checks": [
+                  {
+                    "name": "wf78_scaleout_batch_manifest_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_scaleout_batch_manifest",
+                      "path": "state/workflows/wf78-scaleout-batch-manifest.json",
+                      "exists": true,
+                      "required": true,
+                      "generated_at_utc": null,
+                      "status": null,
+                      "size_bytes": 2807
+                    }
+                  },
+                  {
+                    "name": "wf78_101_200_candidate_source_registry_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_101_200_candidate_source_registry",
+                      "path": "data/finance/wf78-101-200-candidate-source-v1.json",
+                      "exists": true,
+                      "required": true,
+                      "generated_at_utc": "2026-06-23T01:02:04Z",
+                      "status": "ok",
+                      "size_bytes": 1680382
+                    }
+                  },
+                  {
+                    "name": "wf78_101_200_import_decision_packet_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_101_200_import_decision_packet",
+                      "path": "tmp/wf78-101-200-import-decision-packet.json",
+                      "exists": true,
+                      "required": true,
+                      "generated_at_utc": "2026-06-23T01:02:32Z",
+                      "status": "decision_required",
+                      "size_bytes": 142063
+                    }
+                  },
+                  {
+                    "name": "wf78_101_200_provider_source_validation_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_101_200_provider_source_validation",
+                      "path": "tmp/wf78-101-200-provider-source-validation.json",
+                      "exists": true,
+                      "required": true,
+                      "generated_at_utc": "2026-06-23T01:02:06Z",
+                      "status": "ok",
+                      "size_bytes": 786927
+                    }
+                  },
+                  {
+                    "name": "wf78_100_to_200_candidate_manifest_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_100_to_200_candidate_manifest",
+                      "path": "tmp/wf78-100-to-200-candidate-manifest.json",
+                      "exists": true,
+                      "required": true,
+                      "generated_at_utc": "2026-06-23T01:02:06Z",
+                      "status": null,
+                      "size_bytes": 2994644
+                    }
+                  },
+                  {
+                    "name": "wf78_sql_readiness_index_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_sql_readiness_index",
+                      "path": "tmp/wf78-sql-readiness-index.json",
+                      "exists": true,
+                      "required": true,
+                      "generated_at_utc": "2026-06-23T01:02:05Z",
+                      "status": null,
+                      "size_bytes": 902779
+                    }
+                  },
+                  {
+                    "name": "wf78_phase_runner_current_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_phase_runner_current",
+                      "path": "tmp/wf78-phase-runner-current.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-23T01:02:39Z",
+                      "status": "ok",
+                      "size_bytes": 59267
+                    }
+                  },
+                  {
+                    "name": "wf78_batch_201-300_source_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_batch_201-300_source",
+                      "path": "tmp/wf78-batch-201-300-source.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-20T16:10:59Z",
+                      "status": "ok",
+                      "size_bytes": 302079
+                    }
+                  },
+                  {
+                    "name": "wf78_batch_201-300_provider_validation_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_batch_201-300_provider_validation",
+                      "path": "tmp/wf78-batch-201-300-provider-source-validation.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-20T16:10:59Z",
+                      "status": "ok",
+                      "size_bytes": 656243
+                    }
+                  },
+                  {
+                    "name": "wf78_batch_201-300_owner_decision_packet_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_batch_201-300_owner_decision_packet",
+                      "path": "tmp/wf78-batch-201-300-owner-decision-packet.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-20T16:11:23Z",
+                      "status": "decision_required",
+                      "size_bytes": 384643
+                    }
+                  },
+                  {
+                    "name": "wf78_batch_201-300_import_gate_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_batch_201-300_import_gate",
+                      "path": "tmp/wf78-batch-201-300-tier-c-import-gate.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-20T16:11:23Z",
+                      "status": "planned",
+                      "size_bytes": 8550
+                    }
+                  },
+                  {
+                    "name": "wf78_batch_301-400_source_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_batch_301-400_source",
+                      "path": "tmp/wf78-batch-301-400-source.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-12T20:42:01Z",
+                      "status": "ok",
+                      "size_bytes": 302025
+                    }
+                  },
+                  {
+                    "name": "wf78_batch_301-400_provider_validation_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_batch_301-400_provider_validation",
+                      "path": "tmp/wf78-batch-301-400-provider-source-validation.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-12T20:42:01Z",
+                      "status": "ok",
+                      "size_bytes": 656513
+                    }
+                  },
+                  {
+                    "name": "wf78_batch_301-400_owner_decision_packet_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_batch_301-400_owner_decision_packet",
+                      "path": "tmp/wf78-batch-301-400-owner-decision-packet.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-12T20:42:18Z",
+                      "status": "decision_required",
+                      "size_bytes": 384777
+                    }
+                  },
+                  {
+                    "name": "wf78_batch_301-400_import_gate_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_batch_301-400_import_gate",
+                      "path": "tmp/wf78-batch-301-400-tier-c-import-gate.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-12T20:42:18Z",
+                      "status": "planned",
+                      "size_bytes": 8461
+                    }
+                  },
+                  {
+                    "name": "wf78_batch_401-500_source_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_batch_401-500_source",
+                      "path": "tmp/wf78-batch-401-500-source.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-12T20:40:55Z",
+                      "status": "ok",
+                      "size_bytes": 302445
+                    }
+                  },
+                  {
+                    "name": "wf78_batch_401-500_provider_validation_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_batch_401-500_provider_validation",
+                      "path": "tmp/wf78-batch-401-500-provider-source-validation.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-12T20:40:55Z",
+                      "status": "ok",
+                      "size_bytes": 657202
+                    }
+                  },
+                  {
+                    "name": "wf78_batch_401-500_owner_decision_packet_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_batch_401-500_owner_decision_packet",
+                      "path": "tmp/wf78-batch-401-500-owner-decision-packet.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-12T20:41:12Z",
+                      "status": "decision_required",
+                      "size_bytes": 385366
+                    }
+                  },
+                  {
+                    "name": "wf78_batch_401-500_import_gate_exists",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "artifact_type": "wf78_batch_401-500_import_gate",
+                      "path": "tmp/wf78-batch-401-500-tier-c-import-gate.json",
+                      "exists": true,
+                      "required": false,
+                      "generated_at_utc": "2026-06-12T20:41:12Z",
+                      "status": "planned",
+                      "size_bytes": 8510
+                    }
+                  },
+                  {
+                    "name": "source_registry_status_ok",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "ok"
+                  },
+                  {
+                    "name": "provider_validation_status_ok",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "ok"
+                  },
+                  {
+                    "name": "import_decision_status_present",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "decision_required"
+                  },
+                  {
+                    "name": "readiness_index_status_ok",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": "ok"
+                  },
+                  {
+                    "name": "gate_has_500_rows",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": 500
+                  },
+                  {
+                    "name": "current_baseline_present_supported",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "batch_index": 1,
+                      "batch_label": "current 200 baseline",
+                      "row_count": 200,
+                      "tier_c_import_review_eligible_count": 0,
+                      "repair_or_validation_required_count": 0,
+                      "average_reputation_score": 20.0,
+                      "sector_counts": {
+                        "Aerospace": 1,
+                        "Aerospace & Defense": 1,
+                        "Commodities": 1,
+                        "Communication Services": 12,
+                        "Communication Services / Telecom": 1,
+                        "Consumer Discretionary": 13,
+                        "Consumer Staples": 13,
+                        "Defense": 3,
+                        "Diversified Quality": 1,
+                        "Energy": 17,
+                        "Energy Infrastructure": 1,
+                        "Financial Infrastructure": 1,
+                        "Financials": 16,
+                        "Fixed Income": 1,
+                        "Health Care": 15,
+                        "Healthcare": 1,
+                        "Industrials": 24,
+                        "Information Technology": 9,
+                        "Infrastructure": 1,
+                        "International Equity": 1,
+                        "Materials": 17,
+                        "Materials / Infrastructure": 1,
+                        "Materials / Services": 1,
+                        "Real Estate": 9,
+                        "Tech": 7,
+                        "Technology": 19,
+                        "Utilities": 13
+                      },
+                      "next_action": "protect production 42 and current review-monitor breadth; use as no-regression baseline"
+                    }
+                  },
+                  {
+                    "name": "next_batch_not_auto_imported_without_fresh_validation",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "next_batch": "201-300",
+                      "eligible": 100
+                    }
+                  },
+                  {
+                    "name": "future_batches_not_import_eligible_until_prior_batch",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": 200
+                  },
+                  {
+                    "name": "phase_runner_no_apply_if_present",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": {
+                      "steps": 25,
+                      "failed_steps": 0,
+                      "successful_steps": 25,
+                      "phase5_executed": false,
+                      "apply_or_import_executed": false
+                    }
+                  },
+                  {
+                    "name": "authority_review_only_true",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": true
+                  },
+                  {
+                    "name": "authority_read_existing_artifacts_only_true",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": true
+                  },
+                  {
+                    "name": "authority_report_only_true",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": true
+                  },
+                  {
+                    "name": "authority_brokerage_or_account_action_allowed_false",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_owner_approval_inferred_false",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_promotion_allowed_false",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_canon_or_portfolio_mutation_allowed_false",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_apply_allowed_false",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_money_movement_allowed_false",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_sql_canon_expansion_allowed_false",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_ticker_import_allowed_false",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_production_answer_path_change_allowed_false",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_customer_or_external_delivery_allowed_false",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_sql_first_promotion_allowed_false",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": false
+                  },
+                  {
+                    "name": "authority_paper_or_live_execution_allowed_false",
+                    "status": "ok",
+                    "ok": true,
+                    "severity": "critical",
+                    "detail": false
+                  }
+                ],
+                "errors": [],
+                "warnings": []
+              }
+            },
+            {
+              "name": "tier_a_within_capacity",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "count": 0,
+                "cap": 25
+              }
+            },
+            {
+              "name": "tier_b_within_capacity",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "count": 0,
+                "cap": 50
+              }
+            },
+            {
+              "name": "combined_tier_a_b_within_capacity",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "count": 0,
+                "cap": 75
+              }
+            },
+            {
+              "name": "macro_shortlist_within_batch_nomination_limit",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "count": 15,
+                "cap": 15
+              }
+            },
+            {
+              "name": "legacy_tier_labels_not_treated_as_admission",
+              "ok": true,
+              "status": "ok",
+              "severity": "info",
+              "detail": {
+                "A": 15,
+                "B": 17,
+                "C": 168
+              }
+            },
+            {
+              "name": "authority_review_only_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_policy_gate_only_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_report_only_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_tier_b_promotion_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_production_answer_path_change_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_paper_or_live_execution_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_canon_or_portfolio_mutation_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_ticker_import_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_tier_a_promotion_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_apply_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_brokerage_or_account_action_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_capital_deployment_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_owner_approval_inferred_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_customer_or_external_delivery_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            }
+          ]
+        }
+      },
+      {
+        "name": "promotion_review_gate_validation_ok",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": {
+          "status": "ok",
+          "errors": [],
+          "warnings": [],
+          "checks": [
+            {
+              "name": "reputation_gate_exists",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": "tmp/wf78-500-ticker-reputation-gate.json"
+            },
+            {
+              "name": "reputation_gate_status_ok",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": "ok"
+            },
+            {
+              "name": "ticker_card_refresh_gate_exists",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": "tmp/finance-ticker-card-refresh-gate.json"
+            },
+            {
+              "name": "ticker_card_refresh_gate_validation_ok",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "errors": [],
+                "status": "ok",
+                "warnings": []
+              }
+            },
+            {
+              "name": "import_gate_status_acceptable_if_present",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "path": "tmp/wf78-101-200-tier-c-import-gate.json",
+                "status": "ok_already_imported_tier_c_only"
+              }
+            },
+            {
+              "name": "macro_thesis_overlay_gate_ok_if_present",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "path": "tmp/wf78-macro-thesis-overlay-gate.json",
+                "status": "ok"
+              }
+            },
+            {
+              "name": "tier_capacity_policy_gate_ok_if_present",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "path": "tmp/wf78-tier-capacity-policy-gate.json",
+                "status": "ok"
+              }
+            },
+            {
+              "name": "tier_a_capacity_policy_25",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "tier_a_max": 25,
+                "tier_b_max": 50,
+                "tier_a_b_combined_max": 75,
+                "active_capital_action_candidate_max": 15,
+                "tier_b_batch_nomination_limit": 15,
+                "overflow_rule": "Anything beyond capacity remains Tier C review-monitor or Tier D raw/validation/watch.",
+                "override_rule": "No override without exact owner approval and a separate gate."
+              }
+            },
+            {
+              "name": "tier_b_capacity_policy_50",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "tier_a_max": 25,
+                "tier_b_max": 50,
+                "tier_a_b_combined_max": 75,
+                "active_capital_action_candidate_max": 15,
+                "tier_b_batch_nomination_limit": 15,
+                "overflow_rule": "Anything beyond capacity remains Tier C review-monitor or Tier D raw/validation/watch.",
+                "override_rule": "No override without exact owner approval and a separate gate."
+              }
+            },
+            {
+              "name": "combined_capacity_policy_75",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "tier_a_max": 25,
+                "tier_b_max": 50,
+                "tier_a_b_combined_max": 75,
+                "active_capital_action_candidate_max": 15,
+                "tier_b_batch_nomination_limit": 15,
+                "overflow_rule": "Anything beyond capacity remains Tier C review-monitor or Tier D raw/validation/watch.",
+                "override_rule": "No override without exact owner approval and a separate gate."
+              }
+            },
+            {
+              "name": "owner_packet_has_100_tickers",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": 100
+            },
+            {
+              "name": "owner_packet_all_tier_c_eligible_or_already_imported",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "import_applied": true,
+                "rows": 100
+              }
+            },
+            {
+              "name": "tier_b_research_eligible_zero",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "target_count": 500,
+                "row_count": 500,
+                "batch_size": 100,
+                "current_baseline_count": 200,
+                "current_100_count": 200,
+                "next_batch_label": "201-300",
+                "next_batch_tier_c_eligible_count": 100,
+                "next_101_200_tier_c_eligible_count": 0,
+                "future_validation_required_count": 2,
+                "future_prior_batch_hold_count": 198,
+                "tier_b_research_eligible_count": 0,
+                "tier_a_production_eligible_count": 0,
+                "repair_queue_count": 2,
+                "status": "ok",
+                "next_safe_action": "Use this gate as the repeated WF78 scaleout step; refresh proof, validate the next 100-name batch, then create an exact owner decision packet before any apply/import."
+              }
+            },
+            {
+              "name": "tier_a_production_eligible_zero",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": {
+                "target_count": 500,
+                "row_count": 500,
+                "batch_size": 100,
+                "current_baseline_count": 200,
+                "current_100_count": 200,
+                "next_batch_label": "201-300",
+                "next_batch_tier_c_eligible_count": 100,
+                "next_101_200_tier_c_eligible_count": 0,
+                "future_validation_required_count": 2,
+                "future_prior_batch_hold_count": 198,
+                "tier_b_research_eligible_count": 0,
+                "tier_a_production_eligible_count": 0,
+                "repair_queue_count": 2,
+                "status": "ok",
+                "next_safe_action": "Use this gate as the repeated WF78 scaleout step; refresh proof, validate the next 100-name batch, then create an exact owner decision packet before any apply/import."
+              }
+            },
+            {
+              "name": "current_card_repair_jobs_present",
+              "ok": true,
+              "status": "ok",
+              "severity": "warning",
+              "detail": 34
+            },
+            {
+              "name": "authority_owner_decision_packet_allowed_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_review_only_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_repair_queue_allowed_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_report_only_true",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": true
+            },
+            {
+              "name": "authority_canon_or_portfolio_mutation_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_ticker_import_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_capital_deployment_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_sql_first_promotion_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_owner_approval_inferred_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_production_answer_path_change_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_paper_execution_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_customer_or_external_delivery_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_tier_b_promotion_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_apply_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_brokerage_or_account_action_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_tier_a_promotion_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            },
+            {
+              "name": "authority_live_execution_allowed_false",
+              "ok": true,
+              "status": "ok",
+              "severity": "critical",
+              "detail": false
+            }
+          ]
+        }
+      },
+      {
+        "name": "ticker_card_refresh_validation_ok",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": {
+          "errors": [],
+          "status": "ok",
+          "warnings": []
+        }
+      },
+      {
+        "name": "tier_a_review_candidate_cap_respected",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": {
+          "A_REVIEW": 5,
+          "A_REPAIR": 19,
+          "B_RESEARCH": 8,
+          "C_MONITOR_REPAIR": 10
+        }
+      },
+      {
+        "name": "no_formal_admission_allowed",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": null
+      },
+      {
+        "name": "blocked_rows_not_marked_formally_admitted",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": null
+      },
+      {
+        "name": "authority_review_only_true",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": true
+      },
+      {
+        "name": "authority_recommendation_packet_only_true",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": true
+      },
+      {
+        "name": "authority_report_only_true",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": true
+      },
+      {
+        "name": "authority_paper_or_live_execution_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_owner_approval_inferred_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_ticker_import_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_brokerage_or_account_action_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_apply_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_tier_b_admission_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_customer_or_external_delivery_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_sizing_sleeve_cash_risk_rule_mutation_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_tier_a_admission_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_capital_deployment_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_production_answer_path_change_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      },
+      {
+        "name": "authority_canon_or_portfolio_mutation_allowed_false",
+        "ok": true,
+        "status": "ok",
+        "severity": "critical",
+        "detail": false
+      }
+    ]
+  },
+  "stop_lines": [
+    "No formal Tier A/B admission from this packet.",
+    "No production answer-path change.",
+    "No ticker import/apply.",
+    "No canon/portfolio mutation.",
+    "No customer/external delivery.",
+    "No paper/live/brokerage/account action.",
+    "No owner approval inference."
+  ]
+}

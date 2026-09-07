@@ -1,0 +1,803 @@
+{
+  "schema_version": "wf72_broad_archive_phase3_owner_review_historical_md.v1",
+  "generated_at_utc": "2026-05-24T22:52:15Z",
+  "status": "applied",
+  "owner_instruction": "Sun 2026-05-24 15:51 MST: complete full audit, confirm all that needs archived, proceed with full archive process",
+  "archive_root": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md",
+  "move_count": 15,
+  "delete_count": 0,
+  "errors": [],
+  "boundaries": {
+    "deletes": false,
+    "config_auth_channel_service_runtime_mutation": false,
+    "finance_canon_portfolio_trade_account_mutation": false,
+    "trading_account_paper_live_action": false,
+    "owner_approval_inferred": false
+  },
+  "items": [
+    {
+      "source": "tmp/audit-remediation-macro-dashboard-draft.md",
+      "original_proposed_destination": "08. Audits/Macro Dashboard Audit Remediation Draft - 2026-05-17.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Replacement draft for canonical dashboard sections; stale/current-state risk if surfaced as live truth.",
+      "reference_count_from_triage": 3,
+      "fresh_reference_matches": [
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/authority_flag_search_2026_05_18.txt",
+          "count": 2
+        }
+      ],
+      "source_sha256": "4d09bad5329bf9f4f99a0226ddbb04b1f232d4749ce3f369c42ccc015e84a8cd",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/audit-remediation-macro-dashboard-draft.md",
+      "destination_sha256": "4d09bad5329bf9f4f99a0226ddbb04b1f232d4749ce3f369c42ccc015e84a8cd",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/audit-remediation-macro-dashboard-draft.md` back to `tmp/audit-remediation-macro-dashboard-draft.md`; source hash 4d09bad5329bf9f4f99a0226ddbb04b1f232d4749ce3f369c42ccc015e84a8cd must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/audit-remediation-portfolio-decision-packets.md",
+      "original_proposed_destination": "03. Portfolio/Portfolio Decision Packets - Audit Remediation - 2026-05-17.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Owner-decision packet; do not silently archive without disposition.",
+      "reference_count_from_triage": 12,
+      "fresh_reference_matches": [
+        {
+          "path": "01. Dashboards/Executive Brief.md",
+          "count": 2
+        },
+        {
+          "path": "03. Portfolio/Portfolio Snapshot.md",
+          "count": 4
+        },
+        {
+          "path": "05. Intelligence/Weekly Positioning Review.md",
+          "count": 4
+        },
+        {
+          "path": "08. Audits/Workspace Audit Remediation Closeout - 2026-05-17.md",
+          "count": 2
+        },
+        {
+          "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/Portfolio Snapshot.before-10k-universe-20260518T191332Z.md",
+          "count": 4
+        },
+        {
+          "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/Portfolio Snapshot.before-defense-sizing-20260518T184323Z.md",
+          "count": 4
+        },
+        {
+          "path": "backups/20260520T1729MST-vrt-promotion/Portfolio_Snapshot.md",
+          "count": 4
+        },
+        {
+          "path": "backups/wf72-phase2-canon-sync-20260521-2355/03. Portfolio/Portfolio Snapshot.md",
+          "count": 4
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/authority_flag_search_2026_05_18.txt",
+          "count": 1
+        },
+        {
+          "path": "tmp/backups/lin-materials-sleeve-starter-sizing-20260520T021400Z/Portfolio_Snapshot.md",
+          "count": 4
+        }
+      ],
+      "source_sha256": "ffc6bf20639aad57b56b64bebd15fd2c771ad449094e8f62c452bdfb512d70d2",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/audit-remediation-portfolio-decision-packets.md",
+      "destination_sha256": "ffc6bf20639aad57b56b64bebd15fd2c771ad449094e8f62c452bdfb512d70d2",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/audit-remediation-portfolio-decision-packets.md` back to `tmp/audit-remediation-portfolio-decision-packets.md`; source hash ffc6bf20639aad57b56b64bebd15fd2c771ad449094e8f62c452bdfb512d70d2 must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/audit-remediation-weekly-positioning-draft.md",
+      "original_proposed_destination": "08. Audits/Weekly Positioning Review Audit Remediation Draft - 2026-05-17.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Replacement prose draft for weekly strategy; likely superseded but needs integration check.",
+      "reference_count_from_triage": 2,
+      "fresh_reference_matches": [
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        }
+      ],
+      "source_sha256": "b4e959e41ee99a10ef96f5413d0c99041577c78c2190fd72fa536526e8b319aa",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/audit-remediation-weekly-positioning-draft.md",
+      "destination_sha256": "b4e959e41ee99a10ef96f5413d0c99041577c78c2190fd72fa536526e8b319aa",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/audit-remediation-weekly-positioning-draft.md` back to `tmp/audit-remediation-weekly-positioning-draft.md`; source hash b4e959e41ee99a10ef96f5413d0c99041577c78c2190fd72fa536526e8b319aa must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/capital-base-sizing-proposal-2026-05-18.md",
+      "original_proposed_destination": "03. Portfolio/Capital Base Sizing Proposal - 2026-05-18.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Portfolio sizing proposal; authority-sensitive and not safe for automatic archive.",
+      "reference_count_from_triage": 16,
+      "fresh_reference_matches": [
+        {
+          "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/Portfolio Snapshot.before-10k-universe-20260518T191332Z.md",
+          "count": 2
+        },
+        {
+          "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/portfolio-config.before-10k-universe-20260518T191332Z.json",
+          "count": 2
+        },
+        {
+          "path": "backups/20260520T1729MST-vrt-promotion/portfolio-config.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/dashboard-data.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/dashboard-last.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/defense-capital-base-closeout-audit-2026-05-18.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/defense-capital-base-integration-proposal-2026-05-18.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/defense-capital-base-integration-summary-2026-05-18.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/portfolio-config.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/sql-canon-phase4-dashboard-before.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/veritas-command-center.html",
+          "count": 2
+        },
+        {
+          "path": "tmp/veritas-command-center.last-good.html",
+          "count": 2
+        },
+        {
+          "path": "tmp/backups/lin-materials-sleeve-starter-sizing-20260520T021400Z/portfolio-config.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/portfolio-config-backups/portfolio-config-before-earnings-closeout-2026-05-23T195012Z.json",
+          "count": 2
+        }
+      ],
+      "source_sha256": "3deec96c97890c69cec103c2de68f635665afa60af5dcf9376258d6950efc30a",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/capital-base-sizing-proposal-2026-05-18.md",
+      "destination_sha256": "3deec96c97890c69cec103c2de68f635665afa60af5dcf9376258d6950efc30a",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/capital-base-sizing-proposal-2026-05-18.md` back to `tmp/capital-base-sizing-proposal-2026-05-18.md`; source hash 3deec96c97890c69cec103c2de68f635665afa60af5dcf9376258d6950efc30a must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/core-10-decision-universe-2026-05-19.md",
+      "original_proposed_destination": "03. Portfolio/Core 10 Decision Universe - 2026-05-19.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Portfolio modeling universe with JSON companion; owner/main disposition needed.",
+      "reference_count_from_triage": 7,
+      "fresh_reference_matches": [
+        {
+          "path": "memory/2026-05-19.md",
+          "count": 4
+        },
+        {
+          "path": "memory/.dreams/short-term-recall.json",
+          "count": 4
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/core10-model-packets-qa-2026-05-19.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/core10-model-packets-qa-2026-05-19.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/financial-model-packets-core-c-goog-jpm-2026-05-19.json",
+          "count": 2
+        }
+      ],
+      "source_sha256": "bc1ab4ccdfee2b087262f6892966b658956388c98a212d36eacf2a4aefca9446",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/core-10-decision-universe-2026-05-19.md",
+      "destination_sha256": "bc1ab4ccdfee2b087262f6892966b658956388c98a212d36eacf2a4aefca9446",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/core-10-decision-universe-2026-05-19.md` back to `tmp/core-10-decision-universe-2026-05-19.md`; source hash bc1ab4ccdfee2b087262f6892966b658956388c98a212d36eacf2a4aefca9446 must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/core10-model-packets-qa-2026-05-19.md",
+      "original_proposed_destination": "08. Audits/Core 10 Model Packets QA - 2026-05-19.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "QA acceptance packet; should travel with model packets.",
+      "reference_count_from_triage": 4,
+      "fresh_reference_matches": [
+        {
+          "path": "memory/2026-05-19.md",
+          "count": 4
+        },
+        {
+          "path": "memory/.dreams/short-term-recall.json",
+          "count": 4
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        }
+      ],
+      "source_sha256": "33e82dddc584c5993577e88c28d52ec52b756796e734a10054f357f31c429cac",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/core10-model-packets-qa-2026-05-19.md",
+      "destination_sha256": "33e82dddc584c5993577e88c28d52ec52b756796e734a10054f357f31c429cac",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/core10-model-packets-qa-2026-05-19.md` back to `tmp/core10-model-packets-qa-2026-05-19.md`; source hash 33e82dddc584c5993577e88c28d52ec52b756796e734a10054f357f31c429cac must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/defense-sleeve-resolution-proposal-2026-05-18.md",
+      "original_proposed_destination": "03. Portfolio/Defense Sleeve Resolution Proposal - 2026-05-18.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Review-only portfolio proposal; may be superseded by later integration.",
+      "reference_count_from_triage": 10,
+      "fresh_reference_matches": [
+        {
+          "path": "03. Portfolio/Portfolio Snapshot.md",
+          "count": 4
+        },
+        {
+          "path": "09. Archive/Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive/tmp/Portfolio Snapshot.before-10k-universe-20260518T191332Z.md",
+          "count": 4
+        },
+        {
+          "path": "backups/20260520T1729MST-vrt-promotion/Portfolio_Snapshot.md",
+          "count": 4
+        },
+        {
+          "path": "backups/wf72-phase2-canon-sync-20260521-2355/03. Portfolio/Portfolio Snapshot.md",
+          "count": 4
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/defense-capital-base-closeout-audit-2026-05-18.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/defense-capital-base-integration-proposal-2026-05-18.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/defense-capital-base-integration-summary-2026-05-18.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/backups/lin-materials-sleeve-starter-sizing-20260520T021400Z/Portfolio_Snapshot.md",
+          "count": 4
+        }
+      ],
+      "source_sha256": "95b6b31639752563dec3b43dd141b88664532a0b8655f4fdbd32e0ccf20ba7ac",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/defense-sleeve-resolution-proposal-2026-05-18.md",
+      "destination_sha256": "95b6b31639752563dec3b43dd141b88664532a0b8655f4fdbd32e0ccf20ba7ac",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/defense-sleeve-resolution-proposal-2026-05-18.md` back to `tmp/defense-sleeve-resolution-proposal-2026-05-18.md`; source hash 95b6b31639752563dec3b43dd141b88664532a0b8655f4fdbd32e0ccf20ba7ac must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/deployment-build-phase1-shortlist.md",
+      "original_proposed_destination": "03. Portfolio/Deployment Build Phase 1 Shortlist - 2026-05-17.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Phase subpacket referenced by final executive packet; do not separate without bundle decision.",
+      "reference_count_from_triage": 5,
+      "fresh_reference_matches": [
+        {
+          "path": "memory/2026-05-17.md",
+          "count": 1
+        },
+        {
+          "path": "memory/.dreams/short-term-recall.json",
+          "count": 1
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/deployment-build-final-executive-packet-2026-05-17.md",
+          "count": 2
+        }
+      ],
+      "source_sha256": "3b98c5b2ed4ec25aba1806e2eb6194d1ec5796691b0f40828fd221f3d8bee7be",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/deployment-build-phase1-shortlist.md",
+      "destination_sha256": "3b98c5b2ed4ec25aba1806e2eb6194d1ec5796691b0f40828fd221f3d8bee7be",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/deployment-build-phase1-shortlist.md` back to `tmp/deployment-build-phase1-shortlist.md`; source hash 3b98c5b2ed4ec25aba1806e2eb6194d1ec5796691b0f40828fd221f3d8bee7be must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/deployment-build-phase2-etf-reserve-packets.md",
+      "original_proposed_destination": "03. Portfolio/Deployment Build Phase 2 ETF Reserve Packets - 2026-05-17.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Phase subpacket referenced by final executive packet.",
+      "reference_count_from_triage": 7,
+      "fresh_reference_matches": [
+        {
+          "path": "memory/2026-05-17.md",
+          "count": 1
+        },
+        {
+          "path": "memory/.dreams/short-term-recall.json",
+          "count": 1
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/deployment-build-final-executive-packet-2026-05-17.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/review-packets/ita-vxus-execution-readiness-packets.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/review-packets/ita-vxus-execution-readiness-packets.md",
+          "count": 2
+        }
+      ],
+      "source_sha256": "83b96aa37a80f3ca09f63e333c6573da89170bcdf4b9d7177bf98bb8b896d68e",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/deployment-build-phase2-etf-reserve-packets.md",
+      "destination_sha256": "83b96aa37a80f3ca09f63e333c6573da89170bcdf4b9d7177bf98bb8b896d68e",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/deployment-build-phase2-etf-reserve-packets.md` back to `tmp/deployment-build-phase2-etf-reserve-packets.md`; source hash 83b96aa37a80f3ca09f63e333c6573da89170bcdf4b9d7177bf98bb8b896d68e must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/deployment-build-phase2-promotion-packets-core.md",
+      "original_proposed_destination": "03. Portfolio/Deployment Build Phase 2 Core Promotion Packets - 2026-05-17.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Phase subpacket referenced by final executive packet.",
+      "reference_count_from_triage": 9,
+      "fresh_reference_matches": [
+        {
+          "path": "memory/2026-05-17.md",
+          "count": 1
+        },
+        {
+          "path": "memory/.dreams/short-term-recall.json",
+          "count": 1
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/deployment-build-final-executive-packet-2026-05-17.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/review-packets/ita-vxus-execution-readiness-packets.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/review-packets/ita-vxus-execution-readiness-packets.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/review-packets/ph-lin-execution-readiness-packets.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/review-packets/ph-lin-execution-readiness-packets.md",
+          "count": 2
+        }
+      ],
+      "source_sha256": "93f40025beec78ebdbecb0cadc9fb4fe6b606b7556c3cf5c421ef766931e7b20",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/deployment-build-phase2-promotion-packets-core.md",
+      "destination_sha256": "93f40025beec78ebdbecb0cadc9fb4fe6b606b7556c3cf5c421ef766931e7b20",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/deployment-build-phase2-promotion-packets-core.md` back to `tmp/deployment-build-phase2-promotion-packets-core.md`; source hash 93f40025beec78ebdbecb0cadc9fb4fe6b606b7556c3cf5c421ef766931e7b20 must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/deployment-build-phase3-4-paper-plan-entry-gates.md",
+      "original_proposed_destination": "03. Portfolio/Deployment Build Phase 3-4 Paper Plan Entry Gates - 2026-05-17.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Paper-plan proposal intersects WF67 guardrails; owner/main disposition required.",
+      "reference_count_from_triage": 7,
+      "fresh_reference_matches": [
+        {
+          "path": "memory/2026-05-17.md",
+          "count": 1
+        },
+        {
+          "path": "memory/.dreams/short-term-recall.json",
+          "count": 1
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/deployment-build-final-executive-packet-2026-05-17.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/review-packets/ita-vxus-execution-readiness-packets.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/review-packets/ita-vxus-execution-readiness-packets.md",
+          "count": 2
+        }
+      ],
+      "source_sha256": "8b3da6c5533ef676d87586e2d03a775a592cb562834fbd8640f3c96683182c97",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/deployment-build-phase3-4-paper-plan-entry-gates.md",
+      "destination_sha256": "8b3da6c5533ef676d87586e2d03a775a592cb562834fbd8640f3c96683182c97",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/deployment-build-phase3-4-paper-plan-entry-gates.md` back to `tmp/deployment-build-phase3-4-paper-plan-entry-gates.md`; source hash 8b3da6c5533ef676d87586e2d03a775a592cb562834fbd8640f3c96683182c97 must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/execution-board-display-sync-proposal-2026-05-19.md",
+      "original_proposed_destination": "08. Audits/Execution Board Display Sync Proposal - 2026-05-19.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Display sync proposal; authority-sensitive and may be superseded by later board sync.",
+      "reference_count_from_triage": 5,
+      "fresh_reference_matches": [
+        {
+          "path": "memory/2026-05-19.md",
+          "count": 4
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/goog-jpm-sync-closeout-qa-2026-05-19.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/goog-jpm-sync-closeout-qa-2026-05-19.md",
+          "count": 2
+        }
+      ],
+      "source_sha256": "3f6b659fbcb9238d87379f6b3a0ca35cfa33a24a665746de84e9f5736a8eb4e8",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/execution-board-display-sync-proposal-2026-05-19.md",
+      "destination_sha256": "3f6b659fbcb9238d87379f6b3a0ca35cfa33a24a665746de84e9f5736a8eb4e8",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/execution-board-display-sync-proposal-2026-05-19.md` back to `tmp/execution-board-display-sync-proposal-2026-05-19.md`; source hash 3f6b659fbcb9238d87379f6b3a0ca35cfa33a24a665746de84e9f5736a8eb4e8 must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/financial-model-packets-core-a-2026-05-19.md",
+      "original_proposed_destination": "04. Research/Financial Model Packets Core A - 2026-05-19.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Research/modeling packet with JSON companion; needs currency review before promotion.",
+      "reference_count_from_triage": 8,
+      "fresh_reference_matches": [
+        {
+          "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/core10-model-packets-qa-2026-05-19.md",
+          "count": 2
+        },
+        {
+          "path": "memory/2026-05-19.md",
+          "count": 4
+        },
+        {
+          "path": "memory/.dreams/short-term-recall.json",
+          "count": 4
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/core10-model-packets-qa-2026-05-19.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/alpaca-paper-readiness/paper-trading-feedback-ledger-2026-05-19.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/alpaca-paper-readiness/paper-trading-feedback-ledger.json",
+          "count": 2
+        }
+      ],
+      "source_sha256": "e552f39b2b1d01a76248fc24be10df47e3364b2030c74f49942c41fd2a31ed7e",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/financial-model-packets-core-a-2026-05-19.md",
+      "destination_sha256": "e552f39b2b1d01a76248fc24be10df47e3364b2030c74f49942c41fd2a31ed7e",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/financial-model-packets-core-a-2026-05-19.md` back to `tmp/financial-model-packets-core-a-2026-05-19.md`; source hash e552f39b2b1d01a76248fc24be10df47e3364b2030c74f49942c41fd2a31ed7e must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/financial-model-packets-core-b-2026-05-19.md",
+      "original_proposed_destination": "04. Research/Financial Model Packets Core B - 2026-05-19.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Research/modeling packet with JSON companion; needs currency review before promotion.",
+      "reference_count_from_triage": 6,
+      "fresh_reference_matches": [
+        {
+          "path": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/core10-model-packets-qa-2026-05-19.md",
+          "count": 2
+        },
+        {
+          "path": "memory/2026-05-19.md",
+          "count": 4
+        },
+        {
+          "path": "memory/.dreams/short-term-recall.json",
+          "count": 4
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/core10-model-packets-qa-2026-05-19.json",
+          "count": 2
+        }
+      ],
+      "source_sha256": "c0e931ba773b45081dd8192bd76f1ace65799e54110f347a62ed725febbbb4bd",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/financial-model-packets-core-b-2026-05-19.md",
+      "destination_sha256": "c0e931ba773b45081dd8192bd76f1ace65799e54110f347a62ed725febbbb4bd",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/financial-model-packets-core-b-2026-05-19.md` back to `tmp/financial-model-packets-core-b-2026-05-19.md`; source hash c0e931ba773b45081dd8192bd76f1ace65799e54110f347a62ed725febbbb4bd must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    },
+    {
+      "source": "tmp/financial-model-packets-core-c-goog-jpm-2026-05-19.md",
+      "original_proposed_destination": "04. Research/Financial Model Packets Core C - GOOG JPM - 2026-05-19.md",
+      "verdict": "archive_as_historical_review_only_not_active_truth",
+      "reason": "Research/modeling packet with JSON companion; needs currency review before promotion.",
+      "reference_count_from_triage": 5,
+      "fresh_reference_matches": [
+        {
+          "path": "memory/2026-05-19.md",
+          "count": 4
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-phase3-tmp-markdown-triage.md",
+          "count": 2
+        },
+        {
+          "path": "tmp/archive-suggestions.json",
+          "count": 3
+        },
+        {
+          "path": "tmp/archive-suggestions.md",
+          "count": 3
+        },
+        {
+          "path": "tmp/goog-jpm-sync-closeout-qa-2026-05-19.json",
+          "count": 2
+        },
+        {
+          "path": "tmp/goog-jpm-sync-closeout-qa-2026-05-19.md",
+          "count": 2
+        }
+      ],
+      "source_sha256": "1f77d392c87b205b6582abab076782ce6466440fa9092686ab3715d3eab84ee9",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/financial-model-packets-core-c-goog-jpm-2026-05-19.md",
+      "destination_sha256": "1f77d392c87b205b6582abab076782ce6466440fa9092686ab3715d3eab84ee9",
+      "moved": true,
+      "delete_performed": false,
+      "rollback": "move `09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase3-owner-review-historical-md/financial-model-packets-core-c-goog-jpm-2026-05-19.md` back to `tmp/financial-model-packets-core-c-goog-jpm-2026-05-19.md`; source hash 1f77d392c87b205b6582abab076782ce6466440fa9092686ab3715d3eab84ee9 must match destination hash first",
+      "json_companion_policy": "not moved by this pass; machine companions remain in tmp if present/consumed"
+    }
+  ]
+}

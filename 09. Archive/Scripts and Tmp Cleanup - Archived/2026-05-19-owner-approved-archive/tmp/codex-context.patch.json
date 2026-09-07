@@ -1,0 +1,12 @@
+{
+  "agents": {
+    "defaults": {
+      "contextTokens": 375000,
+      "compaction": {
+        "reserveTokensFloor": 32000,
+        "reserveTokens": 40000,
+        "keepRecentTokens": 120000
+      }
+    }
+  }
+}

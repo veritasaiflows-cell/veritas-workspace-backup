@@ -1,0 +1,1224 @@
+{
+  "schema_version": "deployment_contract_legacy_read_audit.v1",
+  "generated_at_utc": "2026-06-25T04:23:14Z",
+  "status": "warning",
+  "authority": {
+    "review_only": true,
+    "canonical_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "sql_canon_promotion_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "policy": {
+    "top_level_legacy_fields_are_deprecated_for_readers": true,
+    "legacy_fields": [
+      "workflow_state",
+      "action_state",
+      "machine_state",
+      "surface_state",
+      "base_surface_state"
+    ],
+    "preferred_reader_route": "read deployment_status / deployment_contract directly",
+    "preferred_reconstruction_route": "deployment_contract(record['deployment_contract']['raw_context'])",
+    "forbidden_reconstruction_route": "deployment_contract(top_level_record)",
+    "why": "top-level legacy fields are lossy for below-stop/no-chase overrides; raw_context is the authoritative reconstruction source",
+    "report_only": true
+  },
+  "summary": {
+    "hit_count": 122,
+    "file_count": 42,
+    "allowed_hit_count": 87,
+    "warning_hit_count": 35,
+    "unclassified_warning_hit_count": 11,
+    "by_disposition": {
+      "allowed": 87,
+      "warning": 35
+    },
+    "by_reason": {
+      "additive_writer_compatibility_aliases": 7,
+      "additive_writer_trigger_aliases": 10,
+      "contract_core": 8,
+      "entry_band_hygiene_proposal_trace": 2,
+      "front_door_reader_should_prefer_canonical_contract_when_practical": 2,
+      "gated_entry_band_apply_proposal_trace": 1,
+      "intentional_or_across_raw_repair_logic": 2,
+      "legacy_answer_packet_compatibility_writer": 7,
+      "owner_config_proposal_generator": 1,
+      "owner_config_validator": 1,
+      "owner_metadata_state_propagation": 2,
+      "parity_validator_compatibility_reader": 1,
+      "portfolio_note_raw_patch_context": 1,
+      "probable_reader_or_user_facing_surface": 2,
+      "qa_reader_should_prefer_canonical_contract_when_practical": 1,
+      "raw_deployment_machine_writer": 12,
+      "raw_invariant_validator": 10,
+      "raw_staleness_guardrail": 1,
+      "raw_state_history_capture": 7,
+      "raw_vocabulary_aggregator": 4,
+      "reader_index_should_prefer_canonical_contract_when_practical": 1,
+      "source_open_repair_reader_should_prefer_canonical_contract_when_practical": 1,
+      "test_or_fixture": 3,
+      "tier_router_workflow_state_input": 1,
+      "unclassified_direct_legacy_read": 11,
+      "validator_or_preflight_by_name": 17,
+      "wf85_full_answer_compatibility_reader": 6
+    }
+  },
+  "files": [
+    {
+      "path": "scripts/band_refresh.py",
+      "disposition": "allowed",
+      "reason": "owner_config_proposal_generator",
+      "hit_count": 1,
+      "fields": [
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/board_canon_guardrail.py",
+      "disposition": "allowed",
+      "reason": "raw_invariant_validator",
+      "hit_count": 6,
+      "fields": [
+        "action_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/board_state_contract.py",
+      "disposition": "allowed",
+      "reason": "contract_core",
+      "hit_count": 8,
+      "fields": [
+        "action_state",
+        "base_surface_state",
+        "machine_state",
+        "surface_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/candidate_packet_validator.py",
+      "disposition": "allowed",
+      "reason": "raw_invariant_validator",
+      "hit_count": 4,
+      "fields": [
+        "action_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/dashboard_validation.py",
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "hit_count": 6,
+      "fields": [
+        "action_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "hit_count": 12,
+      "fields": [
+        "action_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/deployment_readiness_surface.py",
+      "disposition": "allowed",
+      "reason": "additive_writer_compatibility_aliases",
+      "hit_count": 7,
+      "fields": [
+        "action_state",
+        "surface_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/finance_universe_validator.py",
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "hit_count": 2,
+      "fields": [
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/fundamental_metrics_refresh.py",
+      "disposition": "allowed",
+      "reason": "owner_metadata_state_propagation",
+      "hit_count": 2,
+      "fields": [
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/pipeline_state_consistency_check.py",
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "hit_count": 2,
+      "fields": [
+        "action_state"
+      ]
+    },
+    {
+      "path": "scripts/portfolio_mutation_semantic_patch_generator.py",
+      "disposition": "allowed",
+      "reason": "portfolio_note_raw_patch_context",
+      "hit_count": 1,
+      "fields": [
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/promotion_review_check.py",
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "hit_count": 3,
+      "fields": [
+        "action_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/ranking_shadow_canon_check.py",
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "hit_count": 1,
+      "fields": [
+        "action_state"
+      ]
+    },
+    {
+      "path": "scripts/sector_correlation_check.py",
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "hit_count": 1,
+      "fields": [
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/sql_canon_field_family_preflight.py",
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "hit_count": 2,
+      "fields": [
+        "surface_state"
+      ]
+    },
+    {
+      "path": "scripts/stale_intelligence_guardrail.py",
+      "disposition": "allowed",
+      "reason": "raw_staleness_guardrail",
+      "hit_count": 1,
+      "fields": [
+        "action_state"
+      ]
+    },
+    {
+      "path": "scripts/state_history_capture.py",
+      "disposition": "allowed",
+      "reason": "raw_state_history_capture",
+      "hit_count": 7,
+      "fields": [
+        "action_state",
+        "base_surface_state",
+        "machine_state",
+        "surface_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/test_board_state_contract.py",
+      "disposition": "allowed",
+      "reason": "test_or_fixture",
+      "hit_count": 1,
+      "fields": [
+        "machine_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/test_canon_volatile_execution_board_sync.py",
+      "disposition": "allowed",
+      "reason": "test_or_fixture",
+      "hit_count": 1,
+      "fields": [
+        "action_state"
+      ]
+    },
+    {
+      "path": "scripts/test_wf74_decision_docket.py",
+      "disposition": "allowed",
+      "reason": "test_or_fixture",
+      "hit_count": 1,
+      "fields": [
+        "action_state"
+      ]
+    },
+    {
+      "path": "scripts/ticker_monitoring_performance.py",
+      "disposition": "allowed",
+      "reason": "raw_vocabulary_aggregator",
+      "hit_count": 4,
+      "fields": [
+        "action_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/trigger_sheet_refresh.py",
+      "disposition": "allowed",
+      "reason": "additive_writer_trigger_aliases",
+      "hit_count": 10,
+      "fields": [
+        "action_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/validate_portfolio_config.py",
+      "disposition": "allowed",
+      "reason": "owner_config_validator",
+      "hit_count": 1,
+      "fields": [
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/watchlist_promotion_radar.py",
+      "disposition": "allowed",
+      "reason": "intentional_or_across_raw_repair_logic",
+      "hit_count": 2,
+      "fields": [
+        "action_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/wf78_auto_tier_router.py",
+      "disposition": "allowed",
+      "reason": "tier_router_workflow_state_input",
+      "hit_count": 1,
+      "fields": [
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/artifact_index.py",
+      "disposition": "warning",
+      "reason": "reader_index_should_prefer_canonical_contract_when_practical",
+      "hit_count": 1,
+      "fields": [
+        "machine_state"
+      ]
+    },
+    {
+      "path": "scripts/auto_apply_entry_band_maintenance.py",
+      "disposition": "warning",
+      "reason": "gated_entry_band_apply_proposal_trace",
+      "hit_count": 1,
+      "fields": [
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/band_hygiene_freshness_controller.py",
+      "disposition": "warning",
+      "reason": "entry_band_hygiene_proposal_trace",
+      "hit_count": 2,
+      "fields": [
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/finance_intelligence_router_qa.py",
+      "disposition": "warning",
+      "reason": "qa_reader_should_prefer_canonical_contract_when_practical",
+      "hit_count": 1,
+      "fields": [
+        "machine_state"
+      ]
+    },
+    {
+      "path": "scripts/finance_intelligence_state.py",
+      "disposition": "warning",
+      "reason": "front_door_reader_should_prefer_canonical_contract_when_practical",
+      "hit_count": 2,
+      "fields": [
+        "machine_state"
+      ]
+    },
+    {
+      "path": "scripts/full_intelligence_answer_parity.py",
+      "disposition": "warning",
+      "reason": "parity_validator_compatibility_reader",
+      "hit_count": 1,
+      "fields": [
+        "machine_state"
+      ]
+    },
+    {
+      "path": "scripts/reference_levels_band_proposals_source_migration.py",
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "hit_count": 1,
+      "fields": [
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/reference_levels_derived_refresh_apply.py",
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "hit_count": 1,
+      "fields": [
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/reference_levels_derived_refresh_dry_run.py",
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "hit_count": 1,
+      "fields": [
+        "action_state"
+      ]
+    },
+    {
+      "path": "scripts/reference_levels_goog_nvda_source_authority_decision.py",
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "hit_count": 1,
+      "fields": [
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/ticker_answer_packet.py",
+      "disposition": "warning",
+      "reason": "legacy_answer_packet_compatibility_writer",
+      "hit_count": 7,
+      "fields": [
+        "action_state",
+        "workflow_state"
+      ]
+    },
+    {
+      "path": "scripts/tier_a_trade_grade_coverage_gate.py",
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "hit_count": 1,
+      "fields": [
+        "machine_state"
+      ]
+    },
+    {
+      "path": "scripts/trade_grade_full_answer_assembler.py",
+      "disposition": "warning",
+      "reason": "wf85_full_answer_compatibility_reader",
+      "hit_count": 6,
+      "fields": [
+        "machine_state"
+      ]
+    },
+    {
+      "path": "scripts/wf74_decision_docket.py",
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "hit_count": 6,
+      "fields": [
+        "action_state"
+      ]
+    },
+    {
+      "path": "scripts/wf78_capital_review_queue.py",
+      "disposition": "warning",
+      "reason": "probable_reader_or_user_facing_surface",
+      "hit_count": 1,
+      "fields": [
+        "machine_state"
+      ]
+    },
+    {
+      "path": "scripts/wf78_deployment_readiness_review.py",
+      "disposition": "warning",
+      "reason": "probable_reader_or_user_facing_surface",
+      "hit_count": 1,
+      "fields": [
+        "surface_state"
+      ]
+    },
+    {
+      "path": "scripts/wf78_source_open_work_packet.py",
+      "disposition": "warning",
+      "reason": "source_open_repair_reader_should_prefer_canonical_contract_when_practical",
+      "hit_count": 1,
+      "fields": [
+        "surface_state"
+      ]
+    }
+  ],
+  "warning_hits": [
+    {
+      "path": "scripts/artifact_index.py",
+      "line": 2435,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "reader_index_should_prefer_canonical_contract_when_practical",
+      "text": "machine_state = as_dict(packet.get(\"machine_state\"))"
+    },
+    {
+      "path": "scripts/auto_apply_entry_band_maintenance.py",
+      "line": 550,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "warning",
+      "reason": "gated_entry_band_apply_proposal_trace",
+      "text": "\"workflow_state\": proposal.get(\"workflow_state\"),"
+    },
+    {
+      "path": "scripts/band_hygiene_freshness_controller.py",
+      "line": 278,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "warning",
+      "reason": "entry_band_hygiene_proposal_trace",
+      "text": "workflow_state = str(proposal.get(\"workflow_state\") or \"\").upper()"
+    },
+    {
+      "path": "scripts/band_hygiene_freshness_controller.py",
+      "line": 353,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "warning",
+      "reason": "entry_band_hygiene_proposal_trace",
+      "text": "\"band.workflow_state\": proposal.get(\"workflow_state\"),"
+    },
+    {
+      "path": "scripts/finance_intelligence_router_qa.py",
+      "line": 396,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "qa_reader_should_prefer_canonical_contract_when_practical",
+      "text": "machine_state = answer.get(\"machine_state\") if isinstance(answer, dict) else None"
+    },
+    {
+      "path": "scripts/finance_intelligence_state.py",
+      "line": 1421,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "front_door_reader_should_prefer_canonical_contract_when_practical",
+      "text": "machine_state = as_dict(packet.get(\"machine_state\"))"
+    },
+    {
+      "path": "scripts/finance_intelligence_state.py",
+      "line": 1797,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "front_door_reader_should_prefer_canonical_contract_when_practical",
+      "text": "machine = as_dict(payload.get(\"machine_state\"))"
+    },
+    {
+      "path": "scripts/full_intelligence_answer_parity.py",
+      "line": 266,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "parity_validator_compatibility_reader",
+      "text": "machine = as_dict(packet.get(\"machine_state\"))"
+    },
+    {
+      "path": "scripts/reference_levels_band_proposals_source_migration.py",
+      "line": 179,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "text": "\"workflow_state\": proposal.get(\"workflow_state\"),"
+    },
+    {
+      "path": "scripts/reference_levels_derived_refresh_apply.py",
+      "line": 186,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "text": "\"workflow_state\": change.get(\"workflow_state\"),"
+    },
+    {
+      "path": "scripts/reference_levels_derived_refresh_dry_run.py",
+      "line": 211,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "text": "\"action_state\": anchor.get(\"action_state\"),"
+    },
+    {
+      "path": "scripts/reference_levels_goog_nvda_source_authority_decision.py",
+      "line": 403,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "text": "\"workflow_state\": proposal_row.get(\"workflow_state\"),"
+    },
+    {
+      "path": "scripts/ticker_answer_packet.py",
+      "line": 341,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "warning",
+      "reason": "legacy_answer_packet_compatibility_writer",
+      "text": "if raw.get(\"workflow_state\"):"
+    },
+    {
+      "path": "scripts/ticker_answer_packet.py",
+      "line": 342,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "warning",
+      "reason": "legacy_answer_packet_compatibility_writer",
+      "text": "reasons.append(f\"workflow_state={raw.get('workflow_state')}\")"
+    },
+    {
+      "path": "scripts/ticker_answer_packet.py",
+      "line": 343,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "warning",
+      "reason": "legacy_answer_packet_compatibility_writer",
+      "text": "if raw.get(\"action_state\"):"
+    },
+    {
+      "path": "scripts/ticker_answer_packet.py",
+      "line": 344,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "warning",
+      "reason": "legacy_answer_packet_compatibility_writer",
+      "text": "reasons.append(f\"action_state={raw.get('action_state')}\")"
+    },
+    {
+      "path": "scripts/ticker_answer_packet.py",
+      "line": 738,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "warning",
+      "reason": "legacy_answer_packet_compatibility_writer",
+      "text": "\"workflow_state\": raw_context.get(\"workflow_state\"),"
+    },
+    {
+      "path": "scripts/ticker_answer_packet.py",
+      "line": 915,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "warning",
+      "reason": "legacy_answer_packet_compatibility_writer",
+      "text": "results.append(check(\"brkb_action_state_high\", conf.get(\"action_state\", {}).get(\"level\") == \"high\", f\"action_state={conf.get('action_state', {}).get('level')!r}\"))"
+    },
+    {
+      "path": "scripts/ticker_answer_packet.py",
+      "line": 919,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "warning",
+      "reason": "legacy_answer_packet_compatibility_writer",
+      "text": "astate = packet.get(\"action_state\") or {}"
+    },
+    {
+      "path": "scripts/tier_a_trade_grade_coverage_gate.py",
+      "line": 216,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "text": "machine_state = full_answer.get(\"machine_state\") or {}"
+    },
+    {
+      "path": "scripts/trade_grade_full_answer_assembler.py",
+      "line": 1065,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "wf85_full_answer_compatibility_reader",
+      "text": "tg = as_dict(as_dict(full.get(\"machine_state\")).get(\"trade_grade\"))"
+    },
+    {
+      "path": "scripts/trade_grade_full_answer_assembler.py",
+      "line": 1066,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "wf85_full_answer_compatibility_reader",
+      "text": "oa = as_dict(as_dict(full.get(\"machine_state\")).get(\"owner_action\"))"
+    },
+    {
+      "path": "scripts/trade_grade_full_answer_assembler.py",
+      "line": 1150,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "wf85_full_answer_compatibility_reader",
+      "text": "add(\"machine_state_separated\", isinstance(packet.get(\"machine_state\"), dict), \"machine_state must be structured\")"
+    },
+    {
+      "path": "scripts/trade_grade_full_answer_assembler.py",
+      "line": 1151,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "wf85_full_answer_compatibility_reader",
+      "text": "machine = as_dict(packet.get(\"machine_state\"))"
+    },
+    {
+      "path": "scripts/trade_grade_full_answer_assembler.py",
+      "line": 1239,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "wf85_full_answer_compatibility_reader",
+      "text": "\"decision_state\": as_dict(full.get(\"machine_state\")).get(\"decision_state\"),"
+    },
+    {
+      "path": "scripts/trade_grade_full_answer_assembler.py",
+      "line": 1240,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "wf85_full_answer_compatibility_reader",
+      "text": "\"trade_grade\": as_dict(as_dict(full.get(\"machine_state\")).get(\"trade_grade\")).get(\"grade\"),"
+    },
+    {
+      "path": "scripts/wf74_decision_docket.py",
+      "line": 409,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "text": "rows.sort(key=lambda row: (STATE_ORDER.get(str(row.get(\"action_state\")), 99), -int_value(row.get(\"priority\")), str(row.get(\"title\"))))"
+    },
+    {
+      "path": "scripts/wf74_decision_docket.py",
+      "line": 412,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "text": "counts[str(row.get(\"action_state\"))] = counts.get(str(row.get(\"action_state\")), 0) + 1"
+    },
+    {
+      "path": "scripts/wf74_decision_docket.py",
+      "line": 414,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "text": "next_row = next((row for row in rows if row.get(\"action_state\") in active_states), None)"
+    },
+    {
+      "path": "scripts/wf74_decision_docket.py",
+      "line": 432,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "text": "\"highest_priority_state\": rows[0][\"action_state\"] if rows else \"monitor_only\","
+    },
+    {
+      "path": "scripts/wf74_decision_docket.py",
+      "line": 449,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "text": "state = row.get(\"action_state\")"
+    },
+    {
+      "path": "scripts/wf74_decision_docket.py",
+      "line": 489,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "warning",
+      "reason": "unclassified_direct_legacy_read",
+      "text": "f\"- State: {row.get('action_state')}\","
+    },
+    {
+      "path": "scripts/wf78_capital_review_queue.py",
+      "line": 300,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "warning",
+      "reason": "probable_reader_or_user_facing_surface",
+      "text": "machine = as_dict(packet.get(\"machine_state\"))"
+    },
+    {
+      "path": "scripts/wf78_deployment_readiness_review.py",
+      "line": 168,
+      "fields": [
+        "surface_state"
+      ],
+      "disposition": "warning",
+      "reason": "probable_reader_or_user_facing_surface",
+      "text": "\"bucket\": deployment_row.get(\"deployment_status\") or deployment_row.get(\"surface_state\") or deployment_row.get(\"display_label\"),"
+    },
+    {
+      "path": "scripts/wf78_source_open_work_packet.py",
+      "line": 270,
+      "fields": [
+        "surface_state"
+      ],
+      "disposition": "warning",
+      "reason": "source_open_repair_reader_should_prefer_canonical_contract_when_practical",
+      "text": "\"bucket\": deploy.get(\"deployment_status\") or deploy.get(\"surface_state\") or deploy.get(\"display_label\"),"
+    }
+  ],
+  "allowed_hits_sample": [
+    {
+      "path": "scripts/band_refresh.py",
+      "line": 484,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "owner_config_proposal_generator",
+      "text": "workflow_state = meta.get(\"workflow_state\")"
+    },
+    {
+      "path": "scripts/board_canon_guardrail.py",
+      "line": 114,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_invariant_validator",
+      "text": "below_stop = bool(tech.get(\"below_stop\") or dep.get(\"below_stop\") or dep.get(\"action_state\") == \"BELOW STOP\")"
+    },
+    {
+      "path": "scripts/board_canon_guardrail.py",
+      "line": 137,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_invariant_validator",
+      "text": "\"workflow_state\": (tracked.get(ticker, {}) or {}).get(\"workflow_state\"),"
+    },
+    {
+      "path": "scripts/board_canon_guardrail.py",
+      "line": 138,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_invariant_validator",
+      "text": "\"deployment_action_state\": dep.get(\"action_state\"),"
+    },
+    {
+      "path": "scripts/board_canon_guardrail.py",
+      "line": 149,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_invariant_validator",
+      "text": "workflow_state = str(risk.get(\"workflow_state\") or \"\")"
+    },
+    {
+      "path": "scripts/board_canon_guardrail.py",
+      "line": 230,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_invariant_validator",
+      "text": "if trigger_rec and below_stop and trigger_rec.get(\"action_state\") != \"DO NOT TOUCH\":"
+    },
+    {
+      "path": "scripts/board_canon_guardrail.py",
+      "line": 231,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_invariant_validator",
+      "text": "add_issue(issues, \"critical\", ticker, \"tmp/trigger-sheet.json\", \"trigger_artifact_not_do_not_touch\", f\"{ticker} trigger artifact is below stop but action_state is {trigger_rec.get('action_state')}\", json.dumps(trigger_rec))"
+    },
+    {
+      "path": "scripts/board_state_contract.py",
+      "line": 60,
+      "fields": [
+        "action_state",
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "contract_core",
+      "text": "record.get(\"action_state\") or record.get(\"deployment_state\") or record.get(\"workflow_state\")"
+    },
+    {
+      "path": "scripts/board_state_contract.py",
+      "line": 103,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "contract_core",
+      "text": "if canonical_action_state(meta.get(\"workflow_state\")) not in REVIEW_STATES:"
+    },
+    {
+      "path": "scripts/board_state_contract.py",
+      "line": 105,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "contract_core",
+      "text": "candidates.append((state_sort_rank(meta.get(\"workflow_state\")), ticker, _quote_target_for_ticker(ticker, universe)))"
+    },
+    {
+      "path": "scripts/board_state_contract.py",
+      "line": 259,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "contract_core",
+      "text": "\"workflow_state\": record.get(\"workflow_state\"),"
+    },
+    {
+      "path": "scripts/board_state_contract.py",
+      "line": 260,
+      "fields": [
+        "machine_state"
+      ],
+      "disposition": "allowed",
+      "reason": "contract_core",
+      "text": "\"machine_state\": record.get(\"machine_state\") or record.get(\"deployment_state\"),"
+    },
+    {
+      "path": "scripts/board_state_contract.py",
+      "line": 261,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "contract_core",
+      "text": "\"action_state\": record.get(\"action_state\"),"
+    },
+    {
+      "path": "scripts/board_state_contract.py",
+      "line": 262,
+      "fields": [
+        "surface_state"
+      ],
+      "disposition": "allowed",
+      "reason": "contract_core",
+      "text": "\"surface_state\": record.get(\"surface_state\"),"
+    },
+    {
+      "path": "scripts/board_state_contract.py",
+      "line": 263,
+      "fields": [
+        "base_surface_state"
+      ],
+      "disposition": "allowed",
+      "reason": "contract_core",
+      "text": "\"base_surface_state\": record.get(\"base_surface_state\"),"
+    },
+    {
+      "path": "scripts/candidate_packet_validator.py",
+      "line": 269,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_invariant_validator",
+      "text": "if packet[\"current_watch_state\"] != tracked_record.get(\"workflow_state\"):"
+    },
+    {
+      "path": "scripts/candidate_packet_validator.py",
+      "line": 287,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_invariant_validator",
+      "text": "expected_state = dep_record.get(\"action_state\", \"\").replace(\" ALMOST\", \"ALMOST\").strip()"
+    },
+    {
+      "path": "scripts/candidate_packet_validator.py",
+      "line": 288,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_invariant_validator",
+      "text": "if packet[\"current_trigger_state\"] != dep_record.get(\"action_state\"):"
+    },
+    {
+      "path": "scripts/candidate_packet_validator.py",
+      "line": 290,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_invariant_validator",
+      "text": "if dep_record.get(\"action_state\", \"\").startswith(\"WATCH\") and packet[\"promotion_candidate\"]:"
+    },
+    {
+      "path": "scripts/dashboard_validation.py",
+      "line": 195,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "text": "and proposal.get(\"workflow_state\") == \"REPAIR\""
+    },
+    {
+      "path": "scripts/dashboard_validation.py",
+      "line": 320,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "text": "workflow_state = meta.get(\"workflow_state\")"
+    },
+    {
+      "path": "scripts/dashboard_validation.py",
+      "line": 352,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "text": "action_state = deploy.get(\"action_state\")"
+    },
+    {
+      "path": "scripts/dashboard_validation.py",
+      "line": 353,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "text": "repair_mode = str(meta.get(\"workflow_state\") or \"\").upper() == \"REPAIR\" or bool(meta.get(\"repair_mode\"))"
+    },
+    {
+      "path": "scripts/dashboard_validation.py",
+      "line": 431,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "text": "state = record.get(\"action_state\")"
+    },
+    {
+      "path": "scripts/dashboard_validation.py",
+      "line": 756,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "validator_or_preflight_by_name",
+      "text": "action_state = str((trigger_by_ticker.get(ticker) or {}).get(\"action_state\") or \"\").upper()"
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "line": 75,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "text": "workflow_state = (meta.get(\"workflow_state\") or \"\").upper()"
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "line": 334,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "text": "enriched[\"action_state\"] = label"
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "line": 357,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "text": "print(\"  \" + \"{:<8}  {:<14}  {}  {}  {}  {}\".format(t, rec[\"action_state\"], c_s, m20, m50, m200))"
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "line": 361,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "text": "\"deployable\": [r[\"ticker\"] for r in rows if r[\"action_state\"] == \"DEPLOYABLE NOW\"],"
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "line": 362,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "text": "\"promotion_review\": [r[\"ticker\"] for r in rows if r[\"action_state\"] == \"PROMOTION REVIEW\"],"
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "line": 363,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "text": "\"entry_policy_review\": [r[\"ticker\"] for r in rows if r[\"action_state\"] == \"ENTRY POLICY REVIEW\"],"
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "line": 364,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "text": "\"almost\": [r[\"ticker\"] for r in rows if r[\"action_state\"] == \"ALMOST DEPLOYABLE\"],"
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "line": 365,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "text": "\"blocked\": [r[\"ticker\"] for r in rows if r[\"action_state\"] == \"BLOCKED\"],"
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "line": 366,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "text": "\"below_stop\": [r[\"ticker\"] for r in rows if r[\"action_state\"] == \"BELOW STOP\"],"
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "line": 367,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "text": "\"bench\": [r[\"ticker\"] for r in rows if r[\"action_state\"] == \"BENCH\"],"
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "line": 368,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "text": "\"watch\": [r[\"ticker\"] for r in rows if r[\"action_state\"] == \"WATCH / RESEARCH NEEDED\"],"
+    },
+    {
+      "path": "scripts/deployment_check.py",
+      "line": 369,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "raw_deployment_machine_writer",
+      "text": "\"error\": [r[\"ticker\"] for r in rows if r[\"action_state\"] == \"ERROR\"],"
+    },
+    {
+      "path": "scripts/deployment_readiness_surface.py",
+      "line": 286,
+      "fields": [
+        "workflow_state"
+      ],
+      "disposition": "allowed",
+      "reason": "additive_writer_compatibility_aliases",
+      "text": "workflow_state = str(record.get(\"workflow_state\") or \"\").upper()"
+    },
+    {
+      "path": "scripts/deployment_readiness_surface.py",
+      "line": 287,
+      "fields": [
+        "action_state"
+      ],
+      "disposition": "allowed",
+      "reason": "additive_writer_compatibility_aliases",
+      "text": "machine_state = str(record.get(\"deployment_state\") or record.get(\"action_state\") or \"WATCH\").upper()"
+    },
+    {
+      "path": "scripts/deployment_readiness_surface.py",
+      "line": 384,
+      "fields": [
+        "surface_state"
+      ],
+      "disposition": "allowed",
+      "reason": "additive_writer_compatibility_aliases",
+      "text": "surface_state = conflict[\"surface_state\"]"
+    }
+  ]
+}

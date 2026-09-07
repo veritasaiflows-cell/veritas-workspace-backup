@@ -1,0 +1,26 @@
+{
+  "generated_at_utc": "2026-06-18T04:54:58Z",
+  "input": "tmp\\deployment-readiness-surface.json",
+  "status": "ok",
+  "authority": {
+    "review_only": true,
+    "canonical_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false
+  },
+  "summary": {
+    "records_seen": 10,
+    "canonical_records_checked": 10,
+    "critical": 0,
+    "warning": 0,
+    "checks": [
+      "no_drift",
+      "enum",
+      "legacy_agree",
+      "authority",
+      "presence",
+      "alias_absence"
+    ]
+  },
+  "findings": []
+}

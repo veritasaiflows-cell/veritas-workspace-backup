@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "wf67-xlb-materials-etf-starter-2026-05-30",
+  "created_at_utc": "2026-05-30T07:09:26Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true
+  },
+  "order": {
+    "symbol": "XLB",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 51.17,
+    "qty": null,
+    "notional": 250.0
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 250.0,
+    "max_loss_usd": 250.0,
+    "max_notional_usd": 250.0,
+    "position_size_reviewed": true,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "entry_band_low": 49.84,
+    "entry_band_high": 51.68,
+    "observed_price": 51.17,
+    "observed_entry_status": "IN_BAND",
+    "stop": 48.81,
+    "sizing_rationale": "Tier 2 starter-sized Materials ETF paper simulation. XLB improves Materials diversification and avoids adding more AI-power concentration; notional stays below WF67 pilot cap."
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "XLB formal Materials ETF starter-planning paper-order card; pending exact Randall approval before any execution",
+    "recommendation_source": "main_session_order_decision_card",
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/order-card.xlb-materials-etf-starter-2026-05-30.json",
+    "capital_recommendation_source": "manual_main_session_promotion_change_approval_2026-05-30",
+    "source_artifact": "08. Audits/Promoted Ticker Audit and Promotion Change Proposal - 2026-05-29.md",
+    "market_order_owner_approved": false,
+    "exact_order_owner_approval_status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "exact_order_owner_approval_text": null,
+    "main_session_capital_package_notification_required": true,
+    "approval_artifact": null
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_forbidden": "https://api.alpaca.markets"
+  }
+}

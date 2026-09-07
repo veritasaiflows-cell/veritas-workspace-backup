@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail",
+  "artifact_type": "wf67_paper_trade_request",
+  "request_id": "wf78-owner-card-prep-GOOG-20260616T170138Z",
+  "created_at_utc": "2026-06-16T17:01:39Z",
+  "authority": {
+    "paper_only": true,
+    "paper_submit_allowed": true,
+    "paper_submit_allowed_after_exact_approval_and_guard": true,
+    "paper_cancel_allowed": true,
+    "live_submit_allowed": false,
+    "live_cancel_allowed": false,
+    "live_endpoint_forbidden": true,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "no_inferred_approval": true,
+    "currently_executable": false,
+    "paper_submit_requires_exact_owner_approval": true,
+    "paper_submit_requires_fresh_guard": true,
+    "paper_submit_requires_fresh_kill_switch": true
+  },
+  "execution_readiness": {
+    "currently_executable": false,
+    "reason": "superseded_current_gate_above_band_no_chase",
+    "exact_order_owner_approval_status": "pending_exact_randall_approval",
+    "requires_exact_owner_approval": true,
+    "requires_fresh_wf67_guard": true,
+    "requires_fresh_short_lived_kill_switch": true,
+    "execution_by_this_artifact_allowed": false,
+    "paper_submit_allowed_field_semantics": "schema capability only; this stale request is superseded and not current execution approval",
+    "blockers": [
+      "superseded_prior_owner_card_request",
+      "current_wf78_band_status:ABOVE_BAND",
+      "current_promotion_gate:defer_until_veto_clears"
+    ]
+  },
+  "order": {
+    "symbol": "GOOG",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 368.19,
+    "qty": null,
+    "notional": 368.19
+  },
+  "risk_check": {
+    "status": "superseded_current_wf78_gate",
+    "estimated_notional_usd": 371.01,
+    "max_notional_usd": 500.0,
+    "max_loss_usd": 30.14,
+    "entry_band_low": 353.94,
+    "entry_band_high": 370.31,
+    "observed_price": 371.01,
+    "observed_entry_status": "ABOVE_BAND",
+    "stop": 340.87,
+    "sizing_rationale": "Superseded GOOG paper-card artifact retained for audit only. Current WF78/promotion gate shows above-band/no-chase; do not use for approval-card or paper-order context until rebuilt from a future clean in-band gate.",
+    "blockers": [
+      "current_promotion_gate:defer_until_veto_clears",
+      "current_wf78_band_status:ABOVE_BAND",
+      "superseded_by_current_wf78_gate",
+      "superseded_prior_owner_card_request"
+    ],
+    "superseded_at_utc": "2026-06-24T03:30:36Z",
+    "superseded_reason": "current_wf78_gate:BELOW_BAND",
+    "position_size_reviewed": false,
+    "pilot_qty_cap": 1,
+    "pilot_notional_cap_usd": 500.0,
+    "full_scope_artifact": null,
+    "current_wf78_gate": {
+      "ticker": "GOOG",
+      "queue_state": "A-DEPLOY-CANDIDATE-WAIT-FOR-BAND",
+      "current_price": 346.08,
+      "current_band_status": "BELOW_BAND",
+      "entry_band_low": 354.25,
+      "entry_band_high": 369.69,
+      "stop_or_invalidation": 341.07,
+      "blockers": [],
+      "source_artifact": "tmp/wf78-capital-review-queue.json",
+      "source_generated_at_utc": "2026-06-23T20:30:45Z"
+    }
+  },
+  "source": {
+    "scoped_paper_trade_or_pilot": true,
+    "owner_or_pilot_scope": "Superseded GOOG WF78 paper-request artifact; current gate is A-DEPLOY-CANDIDATE-WAIT-FOR-BAND / BELOW_BAND. Audit-only, not approval-card or paper-order context.",
+    "recommendation_source": "main_session_order_decision_card",
+    "main_session_order_card_path": "tmp/alpaca-paper-readiness/main-session-cards/GOOG.owner-card.json",
+    "capital_recommendation_source": "wf78_non_executing_owner_card_prep",
+    "source_artifact": "tmp/wf78-capital-review-queue.json",
+    "market_order_owner_approved": false,
+    "exact_order_owner_approval_status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "exact_order_owner_approval_text": null,
+    "main_session_capital_package_notification_required": true,
+    "approval_artifact": null,
+    "chief_intelligence_promotion_gate": {
+      "gate_artifact": "tmp/chief-intelligence-promotion-gate.json",
+      "gate_schema_version": "chief_intelligence_promotion_gate.v1",
+      "gate_generated_at_utc": "2026-06-16T23:10:48Z",
+      "ticker": "GOOG",
+      "rank": 8,
+      "chief_intelligence_score": 36.7,
+      "chief_intelligence_verdict": "defer_until_veto_clears",
+      "band_status": "ABOVE_BAND_WAIT",
+      "entry_band": {
+        "low": 353.94,
+        "high": 370.31,
+        "stop": 340.87,
+        "label": "353.94–370.31",
+        "band_last_set": "2026-06-16"
+      },
+      "vetoes": [
+        "above band / no-chase"
+      ]
+    },
+    "superseded_by_current_gate": true,
+    "current_gate_checked_at_utc": "2026-06-24T03:30:36Z"
+  },
+  "audit": {
+    "secret_material_present": false,
+    "raw_response_persistence_allowed": false,
+    "redaction_required": true,
+    "paper_endpoint": "https://paper-api.alpaca.markets",
+    "live_endpoint_forbidden": "https://api.alpaca.markets"
+  },
+  "artifact_lifecycle": {
+    "status": "superseded_blocked_not_current_approval_card",
+    "updated_at_utc": "2026-06-16T23:21:34Z",
+    "reason": "GOOG current WF78 queue/promotion gate is above band; stale in-band card neutralized in place without deletion.",
+    "current_gate_artifact": "tmp/chief-intelligence-promotion-gate.json"
+  },
+  "superseded_by_current_gate": true
+}

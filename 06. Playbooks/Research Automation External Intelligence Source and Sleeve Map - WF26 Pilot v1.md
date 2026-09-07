@@ -1,16 +1,5 @@
-# Research Automation External Intelligence Source and Sleeve Map - WF26 Pilot v1
+# Retired - WF26 Research Automation Source Map Pilot
 
-## Status
-**Superseded on 2026-05-06.**
+Retired on 2026-08-29. Current research automation routes evidence into source lineage, freshness, alert review, and non-executing recommendations only.
 
-Do not treat this file as the active WF26 Phase 1 truth surface.
-
-The canonical Phase 1 source-map file is now:
-- `06. Playbooks/Fresh External Intelligence Source and Sleeve Map - WF26 Phase 1.md`
-
-Why this file should not be used:
-- it was an earlier same-pass draft
-- it diverged from the later Phase 1 continuity-linked map
-- keeping both active would recreate control-surface ambiguity and duplicate-truth drift
-
-Use this file only as archived drafting residue if historical comparison is needed.
+This compatibility path owns no current state or authority.

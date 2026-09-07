@@ -1,0 +1,112 @@
+{
+  "schema": "veritas.main_session_capital_package_notification.v1",
+  "generated_at_utc": "2026-06-12T15:44:49Z",
+  "status": "paper_order_submitted_and_reconciled_filled",
+  "ticker": "VRT",
+  "action": "paper_buy",
+  "order": {
+    "symbol": "VRT",
+    "side": "buy",
+    "type": "market",
+    "time_in_force": "day",
+    "limit_price": null,
+    "qty": null,
+    "notional": 300.0
+  },
+  "execution_result": {
+    "status": "submitted",
+    "generated_at_utc": "2026-06-12T15:43:08Z",
+    "broker_redacted_result": {
+      "http_status": 200,
+      "paper_order_id_present": true,
+      "paper_order_status": "pending_new",
+      "paper_order_symbol": "VRT",
+      "side": "buy",
+      "symbol": "VRT"
+    }
+  },
+  "guard_validation": {
+    "status": "ok",
+    "critical": 0,
+    "warning": 0
+  },
+  "reconciliation": {
+    "source_path": "tmp/alpaca-paper-readiness/paper-execution-result.vrt-market-20260612.json",
+    "submitted_at_utc": "2026-06-12T15:43:08Z",
+    "symbol": "VRT",
+    "side": "buy",
+    "paper_order_status_at_submit": "pending_new",
+    "request": {
+      "path": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-market-20260612.json",
+      "request_id": "vrt-market-20260612T154050Z",
+      "created_at_utc": "2026-06-12T15:42:46Z",
+      "order": {
+        "symbol": "VRT",
+        "side": "buy",
+        "type": "market",
+        "time_in_force": "day",
+        "limit_price": null,
+        "qty": null,
+        "notional": 300.0
+      }
+    },
+    "classification": "filled",
+    "match_status": "matched",
+    "match_score": 202,
+    "evidence": "alpaca_order_history_match",
+    "order_history": {
+      "broker_order_id_hash": "8fc728e7ac2677e3",
+      "client_order_id_hash": "430e0e41705026b4",
+      "symbol": "VRT",
+      "side": "buy",
+      "type": "market",
+      "time_in_force": "day",
+      "status": "filled",
+      "submitted_at": "2026-06-12T15:43:09.077270954Z",
+      "created_at": "2026-06-12T15:43:09.077270954Z",
+      "updated_at": "2026-06-12T15:43:09.083764454Z",
+      "filled_at": "2026-06-12T15:43:09.08285279Z",
+      "expired_at": null,
+      "canceled_at": null,
+      "failed_at": null,
+      "replaced_at": null,
+      "qty": null,
+      "notional": 300.0,
+      "filled_qty": 1.008064787,
+      "filled_avg_price": 297.59,
+      "limit_price": null,
+      "hwm": null,
+      "extended_hours": false
+    },
+    "position_cross_check": {
+      "position_observed": true,
+      "qty": 1.008064787,
+      "avg_entry_price": 297.59
+    },
+    "next_safe_action": "Update review-only paper lifecycle/outcome proof; any sell still needs exact owner approval and WF67 guard proof."
+  },
+  "authority_boundary": {
+    "paper_only": true,
+    "live_trade_allowed": false,
+    "live_endpoint_allowed": false,
+    "money_movement_allowed": false,
+    "account_settings_mutation_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "paper_sell_allowed_without_new_exact_approval": false,
+    "owner_approval_inferred": false
+  },
+  "artifacts": {
+    "owner_approval": "tmp/alpaca-paper-readiness/owner-approval.vrt-market-20260612.json",
+    "trade_request": "tmp/alpaca-paper-readiness/paper-trade-request.vrt-market-20260612.json",
+    "dry_run": "tmp/alpaca-paper-readiness/paper-execution-dry-run-result.vrt-market-20260612.json",
+    "guard_validation": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.vrt-market-20260612.json",
+    "execution_result": "tmp/alpaca-paper-readiness/paper-execution-result.vrt-market-20260612.json",
+    "post_submit_guard_validation": "tmp/alpaca-paper-readiness/paper-execution-guard-validation.vrt-market-20260612.post-submit.json",
+    "order_history_classification": "tmp/alpaca-paper-readiness/paper-order-history-classification.json"
+  },
+  "notes": [
+    "Broker/order IDs remain redacted or hashed in local artifacts.",
+    "GET-only order history classifier matched VRT order as filled and observed position cross-check.",
+    "Position SQL refresh was not used as final proof because read-only refresh blocked while execution kill switch remained active; classifier proof is the reconciliation surface for this submit."
+  ]
+}

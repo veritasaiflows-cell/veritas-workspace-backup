@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WF63 Alpaca Paper Read-Only Connection Proof",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at_utc",
+    "status",
+    "base_url",
+    "account_mode",
+    "live_endpoint_detected",
+    "write_methods_available",
+    "allowed_methods",
+    "blocked_methods",
+    "credential_source",
+    "checks",
+    "secrets_redacted",
+    "trade_or_account_action_allowed"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "generated_at_utc": {"type": "string"},
+    "status": {"enum": ["ok", "blocked"]},
+    "base_url": {"const": "https://paper-api.alpaca.markets"},
+    "account_mode": {"const": "paper"},
+    "live_endpoint_detected": {"const": false},
+    "write_methods_available": {"const": false},
+    "allowed_methods": {
+      "type": "array",
+      "prefixItems": [{"const": "GET"}],
+      "minItems": 1,
+      "maxItems": 1
+    },
+    "blocked_methods": {
+      "type": "array",
+      "items": {"enum": ["POST", "PATCH", "PUT", "DELETE"]},
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true
+    },
+    "credential_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "selected_variable_names", "secret_values_persisted", "ambiguous_or_live_names_detected"],
+      "properties": {
+        "mode": {"const": "paper"},
+        "selected_variable_names": {
+          "type": "array",
+          "items": {"enum": ["ALPACA_PAPER_API_KEY_ID", "ALPACA_PAPER_API_SECRET_KEY"]},
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true
+        },
+        "secret_values_persisted": {"const": false},
+        "ambiguous_or_live_names_detected": {"const": false}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["account_metadata_read", "positions_read", "orders_read"],
+      "properties": {
+        "account_metadata_read": {"type": "boolean"},
+        "positions_read": {"type": "boolean"},
+        "orders_read": {"type": "boolean"}
+      }
+    },
+    "secrets_redacted": {"const": true},
+    "trade_or_account_action_allowed": {"const": false}
+  }
+}

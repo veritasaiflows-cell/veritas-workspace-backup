@@ -1,0 +1,12 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "b5952d18-a1ea-4a80-85ef-57fdc922ceaf",
+  "name": "Retired — PM - Terra Auto Implementation Proof Runner",
+  "required": false,
+  "enabled": false,
+  "owner_workflow": "PM/WF74 department delegation automation",
+  "original_schedule": {"kind": "cron", "expr": "45 4,12,20 * * *", "tz": "America/Phoenix"},
+  "retired_at_local": "2026-08-29 America/Phoenix",
+  "retirement_reason": "Retired during the alerts-and-recommendations OS cutover. The worker selected obsolete WF87 work and its in-job quiescence check self-deadlocked on its own prior scheduler error.",
+  "rollback_requires_owner_gate": true
+}

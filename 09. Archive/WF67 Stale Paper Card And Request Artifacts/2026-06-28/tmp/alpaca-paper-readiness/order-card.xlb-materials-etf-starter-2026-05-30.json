@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "artifact_type": "main_session_wf67_order_decision_card",
+  "request_id": "wf67-xlb-materials-etf-starter-2026-05-30",
+  "created_at_utc": "2026-05-30T07:03:00Z",
+  "authority": {
+    "main_session_recommendation_allowed": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "paper_only": true,
+    "paper_order_execution_allowed_by_card": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "order": {
+    "symbol": "XLB",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 51.17,
+    "notional": 250.0
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 250.0,
+    "max_notional_usd": 250.0,
+    "max_loss_usd": 250.0,
+    "entry_band_low": 49.84,
+    "entry_band_high": 51.68,
+    "observed_price": 51.17,
+    "observed_entry_status": "IN_BAND",
+    "stop": 48.81,
+    "sizing_rationale": "Tier 2 starter-sized Materials ETF paper simulation. XLB improves Materials diversification and avoids adding more AI-power concentration; notional stays below WF67 pilot cap."
+  },
+  "source": {
+    "source_artifact": "08. Audits/Promoted Ticker Audit and Promotion Change Proposal - 2026-05-29.md",
+    "capital_recommendation_source": "manual_main_session_promotion_change_approval_2026-05-30",
+    "owner_or_pilot_scope": "XLB formal Materials ETF starter-planning paper-order card; pending exact Randall approval before any execution",
+    "approval_artifact": null
+  },
+  "owner_approval": {
+    "status": "pending_exact_randall_approval"
+  },
+  "notes": [
+    "This card is not executable authority.",
+    "Execution requires Randall to approve the exact ticker, side, notional, order type, TIF, and limit price, then a fresh WF67 guard path and kill switch."
+  ]
+}

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Review-only Telegram delivery for the P2 disciplined-band staleness alert.
+"""Review-only Telegram delivery for static alert-level exceptions.
 
 Reads the review-only staleness artifact produced by ``daily_review_objects.py``
 (via ``disciplined_band_gate.build_staleness_alert_payload``) and delivers a
 compact, dedupe-guarded digest to Randall's Telegram:
 
 - Auto-dropped names (no-chase: price > 8% above the disciplined band high).
-- Stale disciplined bands (age > 30d OR price > 2 ATR from the disciplined
-  midpoint) that need an owner-set band refresh.
+- Static alert levels needing a human review (age > 30d OR price > 2 ATR from
+  the static midpoint). Levels are not re-derived from price.
 
 Delivery only. Never approves, applies, mutates canon/portfolio, or executes.
 The underlying gate stays review-only; this only surfaces its proof to Telegram.
@@ -30,7 +30,7 @@ from market_data_utils import atomic_write_json, atomic_write_text, load_json_ar
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 
-DEFAULT_ALERT = TMP / "disciplined-band-staleness-alerts.json"
+DEFAULT_ALERT = TMP / "band-hygiene-freshness-controller.json"
 DEFAULT_STATE = TMP / "disciplined-band-staleness-telegram-state.json"
 DEFAULT_OUTPUT = TMP / "disciplined-band-staleness-notifier.json"
 DEFAULT_MD = TMP / "disciplined-band-staleness.md"
@@ -39,7 +39,7 @@ DEFAULT_CHANNEL = "telegram"
 PHX_TZ = ZoneInfo("America/Phoenix")
 
 AUTHORITY = {
-    "posture": "telegram_delivery_review_only_disciplined_band_staleness_alert",
+    "posture": "telegram_delivery_review_only_static_alert_level_exceptions",
     "telegram_delivery_allowed": True,
     "review_packet_generation_allowed": True,
     "canonical_note_mutation_allowed": False,
@@ -57,9 +57,9 @@ AUTHORITY = {
 }
 
 BOUNDARY = (
-    "Review-only: disciplined-band staleness/no-chase surfacing, not an approval. "
-    "No trade, account, paper, or capital action is authorized or inferred. "
-    "Owner should re-set stale disciplined bands; owner decision required on every name."
+    "Review-only: static alert-level exception/no-chase surfacing, not an approval. "
+    "No trade, account, or capital action is authorized or inferred. "
+    "A human review is required before any static level is changed."
 )
 
 
@@ -182,6 +182,28 @@ def stale_reason(alert: dict[str, Any]) -> str:
 
 
 def summarize(alert_payload: dict[str, Any]) -> dict[str, Any]:
+    # The active static-level controller is the truth surface.  Retain support
+    # for the retired P2 artifact only for an explicit --alert rollback.
+    if alert_payload.get("schema") == "veritas.band_hygiene_freshness_controller.v1":
+        summary = as_dict(alert_payload.get("summary"))
+        rows: list[dict[str, Any]] = []
+        for ticker in as_list(summary.get("entry_policy_review_candidate_tickers")):
+            rows.append({"ticker": str(ticker).upper(), "reason": "static-level policy review", "band_state": "STATIC"})
+        for ticker in as_list(summary.get("exception_owner_review_tickers")):
+            value = str(ticker).upper()
+            if not any(row["ticker"] == value for row in rows):
+                rows.append({"ticker": value, "reason": "static-level exception", "band_state": "STATIC"})
+        return {
+            "window": "morning",
+            "as_of": None,
+            "generated_at_utc": alert_payload.get("generated_at_utc"),
+            "disciplined_band_count": summary.get("ticker_count") or 0,
+            "backfilled_band_count": 0,
+            "stale_count": len(rows),
+            "extended_auto_drop_count": 0,
+            "extended_rows": [],
+            "stale_rows": rows,
+        }
     summary = as_dict(alert_payload.get("summary"))
     alerts = [a for a in as_list(alert_payload.get("alerts")) if isinstance(a, dict)]
 
@@ -231,8 +253,8 @@ def render_lines(summary: dict[str, Any]) -> list[str]:
     stale = summary.get("stale_count") or 0
     extended = summary.get("extended_auto_drop_count") or 0
     lines = [
-        f"DISCIPLINED BAND STALENESS ALERT ({window})",
-        f"{total} disciplined bands | {stale} stale | {extended} auto-dropped (no-chase >8% above disciplined high)",
+        f"STATIC ALERT-LEVEL EXCEPTIONS ({window})",
+        f"{total} monitored names | {stale} static-level reviews | {extended} no-chase extensions",
     ]
 
     extended_rows = summary.get("extended_rows") or []
@@ -242,18 +264,18 @@ def render_lines(summary: dict[str, Any]) -> list[str]:
         for r in extended_rows:
             pct = r.get("extension_pct")
             parts.append(f"{r['ticker']} +{pct:.1f}%" if isinstance(pct, float) else f"{r['ticker']}")
-        lines.append("Auto-dropped to watch (no-chase, price extended above disciplined high): " + ", ".join(parts))
+        lines.append("No-chase extensions: " + ", ".join(parts))
 
     stale_rows = summary.get("stale_rows") or []
     if stale_rows:
         lines.append("")
-        lines.append("Stale disciplined bands need owner re-set (age > 30d OR > 2 ATR from midpoint):")
+        lines.append("Static alert levels needing human review (they do not re-derive from price):")
         for group in _chunk(stale_rows, 10):
             lines.append("")
             lines.append(", ".join(f"{r['ticker']} ({r['reason']})" for r in group))
     else:
         lines.append("")
-        lines.append("No stale disciplined bands and no auto-drops this window.")
+        lines.append("No static alert-level exceptions this window.")
 
     lines.append("")
     lines.append(BOUNDARY)
@@ -280,7 +302,7 @@ def telegram_safe_messages(text: str, max_chars: int = 2800) -> list[str]:
     if current:
         chunks.append(current)
     total = len(chunks)
-    return [f"Disciplined Band Staleness part {i}/{total}: {c}" for i, c in enumerate(chunks, start=1)]
+    return [f"Static Alert-Level Exceptions part {i}/{total}: {c}" for i, c in enumerate(chunks, start=1)]
 
 
 def dedupe_key(summary: dict[str, Any], window: str) -> str | None:
@@ -310,7 +332,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--channel", default=DEFAULT_CHANNEL)
     parser.add_argument("--target", default=DEFAULT_TARGET)
     parser.add_argument("--window", default=None, help="Override dedupe window label; defaults to alert window.")
-    parser.add_argument("--max-age-minutes", type=int, default=1440)
+    parser.add_argument("--max-age-minutes", type=int, default=180)
     parser.add_argument("--render", action="store_true", help="Print the readable digest (on-demand surface).")
     parser.add_argument("--send", action="store_true")
     parser.add_argument("--force", action="store_true")
@@ -398,7 +420,7 @@ def main(argv: list[str] | None = None) -> int:
             blockers.append("openclaw_message_send_failed")
 
     result = {
-        "schema": "veritas.disciplined_band_staleness_notifier.v1",
+        "schema": "veritas.static_alert_level_exception_notifier.v1",
         "generated_at_utc": utc_now(),
         "status": status,
         "mode": mode,

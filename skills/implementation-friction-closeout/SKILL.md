@@ -1,68 +1,51 @@
 ---
 name: "implementation-friction-closeout"
-description: "Close recurring implementation friction: stale artifacts, validator order, lane/write drift, Skill Workshop hazards, and warning residue."
+description: "Deprecated compatibility router to disciplined-implementation for recurring implementation-friction work."
 ---
 
 # Implementation Friction Closeout
 
-Use this skill when a task reveals repeated implementation friction: stale generated artifacts causing false failures, lane contracts that no longer match writes, validator order problems, recurring test gaps, Skill Workshop body-replacement hazards, or closeout residue that keeps reappearing across sessions.
+Deprecated compatibility router. Do not expand this skill.
 
-## Contract
+## Migration Basis
 
-- Treat friction as evidence, not annoyance.
-- Preserve authority boundaries first: no portfolio/canon mutation, paper/live/account action, credential/auth/runtime/config mutation, external action, or cron schedule mutation unless a separate exact approval exists.
-- Do not apply skills, config, or policy changes from this skill. Produce scoped repairs, proof, or pending proposals only.
+The reusable recurring-friction doctrine now belongs to `disciplined-implementation`: friction classification, producer-consumer ordering, exact-write-surface discipline, existing-skill full-body safeguards, validation, and truthful closeout.
 
-## Skill Workshop Body-Replacement Guard
+This is an intentional full-body compatibility-deprecation replacement, not a partial patch or deletion. It is shorter because it no longer duplicates the canonical implementation procedure.
 
-When creating, revising, reviewing, or applying Skill Workshop proposals for an existing live skill, assume `proposal_content` will become the full live `SKILL.md` body unless the tool contract explicitly proves otherwise.
+## Current Posture
 
-Do not apply an existing-skill update proposal when any of these are true:
+Retain this skill only to catch older references while they are drained. When invoked, immediately route to `disciplined-implementation`.
 
-- the proposal title starts with `# Proposed Update` instead of the real live skill title
-- the body is an addendum, summary, patch note, heading-hygiene note, or partial section rather than a full merged skill document
-- the proposal says `Preserve existing behavior` but does not include the existing behavior in the proposed body
-- the proposal is materially shorter than the current live skill without an explicit replacement intent
-- important live sections would disappear after apply
+Do not use this skill as a primary owner for new work. Do not add new implementation, validation, or Skill Workshop doctrine here unless the change is a narrow compatibility or deprecation repair.
 
-Required pre-apply sequence for existing-skill updates:
+## Compatibility Routing
 
-1. Inspect the live `skills/<skill>/SKILL.md`.
-2. Inspect the pending proposal.
-3. Build or revise the proposal into a full-body merged document that preserves existing doctrine and inserts the new rule in the narrowest relevant section.
-4. Apply only after the proposed body can stand alone as the live skill file.
-5. Immediately read back the live `SKILL.md` after apply.
-6. Search the touched skill for `# Proposed Update` and other thin-proposal residue.
-7. If body replacement occurred, repair through a full-body Skill Workshop proposal before closeout.
+When an older task, playbook, script, or handoff references this skill:
 
-For multi-skill batches, apply one skill, inspect live body, then continue. Do not batch-apply multiple existing-skill updates unless each proposal has already passed the full-body check.
+1. Load `disciplined-implementation` as the active owner.
+2. Classify the work there as `code_patch`, `artifact_refresh`, `skill_proposal`, `owner_gate`, or `skill_workshop_full_body_repair`.
+3. For an existing-skill update, use its required full-body sequence: inspect the live body and proposal, run the body/pair guard, obtain explicit user approval before apply, then read back and validate the live body.
+4. Treat stale artifacts, validator ordering, lane/write drift, and recurring closeout residue as implementation work under that canonical owner.
+5. Keep unresolved work truthfully classified as fixed, expected-pending, backlog, or a blocked owner decision.
 
-## Workflow
+This router grants no separate implementation, approval, or apply authority.
 
-1. Name the friction pattern in one sentence.
-2. Check the concurrent lane register before edits.
-3. If files will be written, lease the exact write surfaces and include generated proof artifacts, sidecars, SQLite WAL/SHM files when relevant, and append-only ledgers if used.
-4. Inspect producer-consumer order before rerunning validators. Refresh source artifacts before downstream scorecards, harnesses, ledgers, and session packets.
-5. Classify the fix:
-   - `code_patch`: small deterministic script/test/harness correction.
-   - `artifact_refresh`: stale derived proof/index rebuild only.
-   - `skill_proposal`: repeated procedure problem that should become a pending Skill Workshop proposal.
-   - `owner_gate`: config, collector depth, schedule, authority, or policy decision.
-   - `skill_workshop_full_body_repair`: existing skill update proposal or live skill body risks thin-proposal replacement and needs full-body repair.
-6. Apply only scoped code patches that are inside the active lane and do not widen authority.
-7. Validate with the smallest complete chain: focused unit/path tests, producer artifact, downstream consumer, and final route/scorecard.
-8. Record what remains as real backlog, expected pending gate, or blocked owner decision. Do not make the loop look green by hiding unresolved debt.
+## Preserved Stop Lines
 
-## Expected Outputs
+This compatibility router does not authorize:
 
-- A concise friction diagnosis.
-- A repaired lane/write contract if needed.
-- A producer-order validation list.
-- Updated tests or harness predicates when the old gate was semantically wrong.
-- Pending Skill Workshop proposal only when the issue is reusable procedure debt.
-- Full-body Skill Workshop repair proposal when an existing-skill update is thin, stale, or body-replacing.
-- Final proof that distinguishes fixed, expected-pending, and still-blocked items.
+- inferred Randall approval or Skill Workshop apply actions
+- destructive cleanup, archive, delete, move, or rename actions
+- config, auth, credential, network, startup, service, plugin, runtime, or cron-schedule mutation
+- finance canon, portfolio, cash, sizing, risk, capital, paper/live, brokerage, account, money-movement, or execution action
+- external, public, customer, or messaging delivery
+- helper spawning, write leasing, or changes outside an active authorized lane
 
-## Stop Lines
+Stop for unclear ownership, a missing canonical owner, a live-skill body-replacement risk, an unresolved material validation failure, or any action that crosses these boundaries.
 
-Stop and escalate if the fix would require destructive cleanup, config/auth/network/service/startup mutation, collector config changes, cron schedule mutation, portfolio/canon/cash/sizing/risk mutation, paper/live/account action, or owner approval inference.
+## Removal Rule
+
+Keep this deprecated router in place until active references and consumers are clean, the Skills Governance Index and relevant consolidation audit are reconciled through a separately authorized implementation lane, and Randall separately approves archive, delete, or removal.
+
+Applying this compatibility-deprecation update is not deletion authority. Reference cleanup alone is not removal approval.

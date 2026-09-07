@@ -1,0 +1,845 @@
+{
+  "schema_version": 2,
+  "artifact_type": "wf77_ticker_intelligence_card",
+  "generated_at_utc": "2026-08-29T21:40:53Z",
+  "ticker": "KHC",
+  "review_only": true,
+  "instrument_type": "equity",
+  "universe_metadata": {
+    "ticker": "KHC",
+    "name": "Kraft Heinz",
+    "universe_scope": "review_100_monitor",
+    "production_scope": false,
+    "pilot_scope": false,
+    "review_100_scope": true,
+    "review_monitor_scaleout_batch": "201-300",
+    "tier_c_import_status": "approved_review_monitor_only",
+    "instrument_type": "operating_company",
+    "source_symbols": {
+      "yfinance": "KHC",
+      "sec_cik": "0001637459",
+      "company_ir": null
+    },
+    "active": true,
+    "tier": "C",
+    "monitoring_role": "tier_c_review_monitor_breadth_only",
+    "sector": "Consumer Staples",
+    "industry": "Packaged Foods & Meats",
+    "coverage_reason": {
+      "wf78_batch_tier_c_review_monitor": true,
+      "review_monitor_scaleout_batch": "201-300",
+      "candidate_scope_packet": "tmp/wf78-batch-201-300-owner-decision-packet.json",
+      "owner_approval_reference": "telegram:8650152206#4818 2026-06-25T18:11:33Z Randall exact approval for scoped Tier C review-monitor import of repaired 201-300 batch",
+      "production_answer_path_member": false,
+      "decision_grade_claim": false,
+      "capital_deployment_claim": false,
+      "source_open_status": "ready",
+      "provider_status": "ok",
+      "freshness_status": "batch_proof_current",
+      "reputation_score": 95
+    },
+    "decision_grade_eligible": false,
+    "promotion_required_before_action": true,
+    "monitoring_cadence": {
+      "price_technical": "weekly_or_triggered",
+      "fundamentals": "on_promotion",
+      "analyst": "optional",
+      "official_evidence": "on_promotion"
+    },
+    "data_requirements": {
+      "price_band_stop": "weekly_required",
+      "technical_posture": "weekly_required",
+      "fundamentals": "required_if_promoted",
+      "analyst_consensus": "optional",
+      "official_evidence": "required_if_promoted",
+      "risk_register": "required_if_promoted",
+      "authority_guardrails": "required"
+    },
+    "not_decision_grade_because_missing": [
+      "full ticker card build",
+      "fundamental evidence",
+      "analyst consensus",
+      "valuation layer",
+      "technical layer",
+      "entry/stop/band context",
+      "production answer-path QA",
+      "owner promotion decision"
+    ],
+    "promotion_triggers": [
+      "macro_or_thesis_overlay_marks_tier_b_research_candidate",
+      "fresh_price_technical_and_source_open_evidence_available",
+      "fundamentals_analyst_valuation_repair_completed",
+      "owner_promotes_from_tier_c_monitor_to_tier_b_research"
+    ],
+    "demotion_triggers": [
+      "weak_or_conflicting_source_identity",
+      "macro_or_thesis_overlay_rejects_portfolio_relevance",
+      "repeated_missing_required_evidence",
+      "owner_removes_from_scaleout_monitor_scope"
+    ],
+    "source_open_required": true,
+    "authority_boundary": {
+      "posture": "durable_review_only_universe_registry_not_canon_not_approval_not_apply_authority",
+      "canonical_note_mutation_allowed": false,
+      "portfolio_mutation_allowed": false,
+      "deployment_state_mutation_allowed": false,
+      "sizing_sleeve_cash_risk_rule_authority": false,
+      "owner_approval_granted": false,
+      "owner_approval_inferred": false,
+      "trade_execution_allowed": false,
+      "trade_or_account_action_allowed": false,
+      "live_brokerage_or_account_action_allowed": false,
+      "paper_order_execution_allowed": false,
+      "paper_order_submit_allowed_by_this_registry": false,
+      "paper_order_cancel_allowed_by_this_registry": false,
+      "sql_canon_migration_allowed": false,
+      "db_path_migration_allowed": false,
+      "tmp_artifact_promotion_allowed": false
+    }
+  },
+  "durable_sql_canon_state": {
+    "ticker": "KHC",
+    "name": "Kraft Heinz",
+    "instrument_type": "operating_company",
+    "sector": "Consumer Staples",
+    "industry": "Packaged Foods & Meats",
+    "universe_scope": "review_100_monitor",
+    "legacy_tier": "C",
+    "legacy_production_42": false,
+    "production_scope_member": false,
+    "production_scope_source": "routing_tier_below_ab",
+    "tier_ab_decision_scope": null,
+    "compatibility_reason": null,
+    "sql_tier": "Tier C",
+    "sql_tier_state": "sql_first_wait_for_routing",
+    "tier_decision_scope": "tier_c_sql_first_review_scope",
+    "auto_tier": "Tier C",
+    "auto_state": "C-MONITOR",
+    "answer_scope": "sql_first_review_monitor",
+    "production_card_generation_allowed": false,
+    "has_production_card": false,
+    "provider_status": null
+  },
+  "wf78_auto_tier_routing": {
+    "ticker": "KHC",
+    "name": "Kraft Heinz",
+    "sector": "Consumer Staples",
+    "instrument_type": "operating_company",
+    "asset_class": "equity",
+    "instrument_class": "operating_company",
+    "exposure_type": "single_company_equity",
+    "review_lane": "equity_depth",
+    "deployment_role": "company_specific_growth_quality_income_or_turnaround",
+    "opportunity_tier": "Tier C",
+    "lane_tier": "Tier C Equity",
+    "lane_tier_label": "Tier C Equity",
+    "tier_seeded_from_legacy_label": false,
+    "legacy_monitoring_role": "tier_c_review_monitor_breadth_only",
+    "auto_tier": "Tier C",
+    "auto_state": "C-MONITOR",
+    "route_reason": "default_breadth_monitor",
+    "route_priority": 50,
+    "data_confidence_rating": null,
+    "fundamentals_confidence": null,
+    "tier_a_confidence_status": null,
+    "tier_a_confidence_promotion_effect": null,
+    "tier_a_confidence_source": null,
+    "critical_data_conflict_count": null,
+    "tier_a_packet_freshness_status": null,
+    "tier_a_packet_stale_reasons": [],
+    "tier_a_packet_age_hours": null,
+    "tier_a_packet_quote_age_hours": null,
+    "tier_a_packet_ttl_hours": null,
+    "tier_a_packet_quote_ttl_hours": null,
+    "phase2_validated_tier_b": false,
+    "tier_c_attention_score": null,
+    "tier_c_attention_next_action": null,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "requires_separate_capital_or_execution_approval": true,
+    "would_mutate_universe": false
+  },
+  "latest_known_price": null,
+  "price_band_stop": {
+    "latest_known_price": null,
+    "price_source": null,
+    "entry_band_low": null,
+    "entry_band_high": null,
+    "stop_or_invalidation": null,
+    "band_status": null,
+    "band_source": null,
+    "stop_source": null,
+    "fresh_quote_required": false,
+    "staleness_note": null,
+    "reference_band_refresh_required": false,
+    "sql_canon_reference": null
+  },
+  "entry_stop_reference_metadata": {
+    "schema_version": "wf72_entry_stop_reference_metadata.v1",
+    "status": "fallback_required",
+    "ticker": "KHC",
+    "authority_boundary": "wf72_entry_stop_reference_metadata_exact_key_gated_no_execution_authority",
+    "sql_cache_path": "tmp/veritas-canon-cache.sqlite",
+    "sql_read_mode": "sqlite_uri_mode_ro",
+    "approved_row_family": "exact_252_wf72_entry_stop_reference_metadata_rows",
+    "approved_fields": [
+      "reference_price_low",
+      "reference_price_high",
+      "reference_invalidation_level",
+      "reference_level_source_timestamp",
+      "reference_level_source_sha256",
+      "reference_level_owner_source_path"
+    ],
+    "row_keys": [],
+    "values": {},
+    "source_lineage": {
+      "owner_source_path": null,
+      "source_timestamp": null,
+      "source_sha256": null
+    },
+    "source_rows": [],
+    "missing_fields": [
+      "reference_price_low",
+      "reference_price_high",
+      "reference_invalidation_level",
+      "reference_level_source_timestamp",
+      "reference_level_source_sha256",
+      "reference_level_owner_source_path"
+    ],
+    "issues": [
+      "approved_reference_rows_missing:reference_price_low,reference_price_high,reference_invalidation_level,reference_level_source_timestamp,reference_level_source_sha256,reference_level_owner_source_path"
+    ],
+    "notes": [
+      "Reference metadata only; does not replace price_band_stop fallback values.",
+      "No recommendation, deployment/action state, approval, portfolio mutation, or execution authority."
+    ],
+    "display_reference_only": true,
+    "fallback_required": true,
+    "recommendation_allowed": false,
+    "deployment_or_action_state_change_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "markdown_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "proposal_apply_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "paper_trade_authority_allowed": false,
+    "live_trade_authority_allowed": false,
+    "money_movement_allowed": false
+  },
+  "thesis_bull_bear_entry_context": {
+    "status": "synthesized_review_only_source_backed",
+    "thesis": "Kraft Heinz has a review-only synthesized Tier A thesis from local sourced artifacts: revenue YoY -1.42%, EPS YoY 30.30%, FCF YoY -12.62%. Entry posture is unknown band status; 1 evidence/freshness gaps still require review before decision-grade use.",
+    "bull_case_inputs": [
+      "latest_earnings_performance",
+      "key_financial_metrics",
+      "official_capture_developments_orders_backlog",
+      "current_sector_performance",
+      "technical_posture"
+    ],
+    "bear_case_inputs": [
+      "risk_register",
+      "missing_or_stale_evidence",
+      "valuation",
+      "price_band_stop"
+    ],
+    "entry_context": {
+      "latest_known_price": null,
+      "price_source": null,
+      "entry_band_low": null,
+      "entry_band_high": null,
+      "stop_or_invalidation": null,
+      "band_status": null,
+      "band_source": null,
+      "stop_source": null,
+      "fresh_quote_required": false,
+      "staleness_note": null,
+      "reference_band_refresh_required": false,
+      "sql_canon_reference": null
+    },
+    "synthesis_evidence": [
+      {
+        "label": "fundamental_snapshot",
+        "summary": "revenue YoY -1.42%, EPS YoY 30.30%, FCF YoY -12.62%",
+        "source_artifact": "tmp\\fundamental-metrics-current.json",
+        "period_end": "2026-06-30",
+        "source_tier": "aggregator_secondary"
+      },
+      {
+        "label": "sector_proxy_context",
+        "summary": "Consumer Staples via XLP versus SPY; leadership=deteriorating",
+        "source_artifact": "tmp\\sector-expansion-board.json",
+        "as_of": "2026-08-28",
+        "match_basis": "exact"
+      }
+    ],
+    "source_open_required": true,
+    "limits": [
+      "Review-only synthesis generated from existing local sourced artifacts.",
+      "This does not clear owner approval, capital deployment, paper/live execution, or final recommendation authority."
+    ]
+  },
+  "latest_earnings_performance": {
+    "status": "available",
+    "period_type": "quarterly",
+    "period_end": "2026-06-30",
+    "comparison_period_end": "2025-06-30",
+    "revenue": 6262000000.0,
+    "revenue_yoy_pct": -1.42,
+    "net_income": -5460000000.0,
+    "net_income_yoy_pct": 30.21,
+    "diluted_eps": -4.6,
+    "eps_yoy_pct": 30.3,
+    "free_cash_flow": 893000000.0,
+    "free_cash_flow_yoy_pct": -12.62,
+    "official_adjusted_eps": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "official_growth_bridge": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "official_guidance": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "management_explanation": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "period_alignment": {
+      "status": "aligned",
+      "latest_official_period_end": null,
+      "normalized_metrics_period_end": "2026-06-30",
+      "normalized_metrics_stale": false,
+      "source_url": null,
+      "withheld_fields": []
+    },
+    "source_open_required": true
+  },
+  "key_financial_metrics": {
+    "status": "available",
+    "period_end": "2026-06-30",
+    "growth": {
+      "revenue_yoy_pct": -1.42,
+      "net_income_yoy_pct": 30.21,
+      "eps_yoy_pct": 30.3,
+      "free_cash_flow_yoy_pct": -12.62
+    },
+    "profitability": {
+      "gross_margin_pct": 32.39,
+      "operating_margin_pct": 14.71,
+      "net_margin_pct": -87.19,
+      "roic_proxy_pct": 5.53
+    },
+    "cash_flow": {
+      "operating_cash_flow": 1082000000.0,
+      "free_cash_flow": 893000000.0,
+      "fcf_per_share": 0.753,
+      "fcf_yield_pct": 2.93
+    },
+    "balance_sheet": {
+      "cash_and_equivalents": 2419000000.0,
+      "total_debt": 19001000000.0,
+      "net_debt": 16582000000.0,
+      "debt_to_annualized_ebitda": 4.02
+    },
+    "valuation": {
+      "market_cap": 30475671485.31,
+      "enterprise_value": 46243749888.0,
+      "trailing_pe": null,
+      "forward_pe": 12.28,
+      "price_to_sales": 1.22,
+      "price_to_book": 0.85,
+      "ev_to_ebitda_proxy": 9.78,
+      "ev_to_fcf_proxy": 12.95,
+      "earnings_yield_pct": -17.92
+    },
+    "capital_returns": {
+      "buyback_yield_pct": 0.01,
+      "dividend_yield_pct": 1.56,
+      "shareholder_yield_pct": 1.56,
+      "capital_return_to_fcf_pct": 53.64
+    },
+    "data_quality": "clean",
+    "period_alignment": {
+      "status": "aligned",
+      "latest_official_period_end": null,
+      "normalized_metrics_period_end": "2026-06-30",
+      "normalized_metrics_stale": false,
+      "source_url": null,
+      "withheld_fields": []
+    },
+    "source_open_required": true
+  },
+  "valuation": {
+    "valuation_context": "available",
+    "market_cap": 30475671485.31,
+    "enterprise_value": 46243749888.0,
+    "trailing_pe": null,
+    "forward_pe": 12.28,
+    "fcf_yield_pct": 2.93,
+    "earnings_yield_pct": -17.92,
+    "price_to_sales": 1.22,
+    "price_to_book": 0.85,
+    "ev_to_ebitda_proxy": 9.78,
+    "ev_to_fcf_proxy": 12.95
+  },
+  "official_fundamentals": {
+    "source": "yfinance",
+    "source_tier": "aggregator_secondary",
+    "period_type": "quarterly",
+    "period_end": "2026-06-30",
+    "comparison_period_end": "2025-06-30",
+    "revenue": 6262000000.0,
+    "revenue_yoy_pct": -1.42,
+    "net_income": -5460000000.0,
+    "net_income_yoy_pct": 30.21,
+    "diluted_eps": -4.6,
+    "eps_yoy_pct": 30.3,
+    "gross_margin_pct": 32.39,
+    "operating_margin_pct": 14.71,
+    "net_margin_pct": -87.19,
+    "operating_cash_flow": 1082000000.0,
+    "free_cash_flow": 893000000.0,
+    "free_cash_flow_yoy_pct": -12.62,
+    "fcf_per_share": 0.753,
+    "fcf_per_share_yoy_pct": -12.69,
+    "cash_and_equivalents": 2419000000.0,
+    "total_debt": 19001000000.0,
+    "net_debt": 16582000000.0,
+    "debt_to_annualized_ebitda": 4.02,
+    "roic_proxy_pct": 5.53,
+    "data_quality": "clean"
+  },
+  "fundamental_period_alignment": {
+    "status": "aligned",
+    "latest_official_period_end": null,
+    "normalized_metrics_period_end": "2026-06-30",
+    "normalized_metrics_stale": false,
+    "source_url": null,
+    "withheld_fields": []
+  },
+  "fundamental_reconciliation": {
+    "sec_status": "sec_lag_wait",
+    "sec_source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001637459.json",
+    "company_ir_status": "manual_required",
+    "company_ir_source_url": null,
+    "quality_notes": [],
+    "period_alignment": {
+      "status": "aligned",
+      "latest_official_period_end": null,
+      "normalized_metrics_period_end": "2026-06-30",
+      "normalized_metrics_stale": false,
+      "source_url": null,
+      "withheld_fields": []
+    }
+  },
+  "analyst_consensus_ratings_targets": {
+    "ticker": "KHC",
+    "accessed_at_utc": "2026-08-29T16:48:13Z",
+    "as_of_date": null,
+    "average_target": 25.0882,
+    "buy_count": 1,
+    "confidence": "low",
+    "consensus_rating": "Hold/mixed",
+    "consensus_score_derived": 2.632,
+    "current_price": 25.7,
+    "errors": [],
+    "high_target": 40.0,
+    "hold_count": 14,
+    "implied_upside_downside_pct": -2.38,
+    "low_target": 19.0,
+    "manual_review_reason": null,
+    "manual_review_required": false,
+    "median_target": 25.0,
+    "provider": "yfinance",
+    "provider_symbol": "KHC",
+    "rating_change_notes": [],
+    "recommendation_period": "0m",
+    "sell_count": 0,
+    "source_open_required": true,
+    "source_url": "https://finance.yahoo.com/quote/KHC/analysis",
+    "stale": false,
+    "stale_after_days": 30,
+    "status": "auto_sourced_yfinance",
+    "strong_buy_count": 0,
+    "strong_sell_count": 4,
+    "tier": "C"
+  },
+  "competitive_moat": {
+    "status": "partially_structured_source_backed_review_required",
+    "summary": "Kraft Heinz has preliminary moat evidence from profitability, official operating commentary, demand/activity signals, or sector proxy context; this is not a final competitive-position conclusion.",
+    "evidence": [
+      {
+        "label": "profitability_quality",
+        "summary": "operating margin 14.71%, net margin -87.19%, ROIC proxy 5.53%",
+        "source_artifact": "tmp\\fundamental-metrics-current.json",
+        "period_end": "2026-06-30",
+        "source_tier": "aggregator_secondary"
+      },
+      {
+        "label": "sector_proxy_position",
+        "summary": "Consumer Staples proxy XLP leadership=deteriorating",
+        "source_artifact": "tmp\\sector-expansion-board.json",
+        "as_of": "2026-08-28",
+        "match_basis": "exact"
+      }
+    ],
+    "source_open_required": true,
+    "limits": [
+      "Evidence supports structured review coverage, not a final moat grade.",
+      "Peer comparison and source-open competitive research remain required before decision-grade use."
+    ]
+  },
+  "recent_developments": {
+    "status": "missing_manual_required",
+    "value": null,
+    "source_url": null,
+    "source_section": null,
+    "manual_capture_required": true,
+    "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+  },
+  "orders_backlog_book_to_bill": {
+    "status": "missing_manual_required",
+    "value": null,
+    "source_url": null,
+    "source_section": null,
+    "manual_capture_required": true,
+    "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+  },
+  "official_capture_developments_orders_backlog": {
+    "management_explanation": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "acquisition_debt_notes": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "orders_backlog": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "source_open_required": true
+  },
+  "current_sector_performance": {
+    "status": "available",
+    "sector": "Consumer Staples",
+    "sector_query": "Consumer Staples",
+    "sector_match_basis": "exact",
+    "sector_proxy_ticker": "XLP",
+    "as_of": "2026-08-28",
+    "relative_strength_vs_spy": {
+      "1d": 0.6618,
+      "5d": -1.1021,
+      "20d": -2.5175
+    },
+    "sector_returns_pct": {
+      "1d": 0.4349,
+      "5d": -0.628,
+      "20d": 0.4703
+    },
+    "spy_returns_pct": {
+      "1d": -0.2269,
+      "5d": 0.4741,
+      "20d": 2.9878
+    },
+    "relative_labels": {
+      "1d": "outperforming",
+      "5d": "underperforming",
+      "20d": "underperforming"
+    },
+    "leadership_status": "deteriorating",
+    "portfolio_exposure": {
+      "draft_weight_pct": 0,
+      "tickers": [],
+      "status": "unrepresented"
+    },
+    "underexposed": true,
+    "owner_gated_next_review_action": "Underexposed/unrepresented: monitor for quality candidates and require explicit promotion review before any lane change."
+  },
+  "etf_or_macro_proxy_profile": null,
+  "catalyst_earnings_state": {
+    "workflow_state": "tier_c_review_monitor_breadth_only",
+    "surface_state": null,
+    "days_to_earnings": null,
+    "earnings_date_confirmed": null,
+    "last_earnings_date": null,
+    "post_earnings_review_confirmed": null
+  },
+  "technical_posture": {
+    "band_status": null,
+    "latest_close": null,
+    "ma20": null,
+    "ma50": null,
+    "ma200": null,
+    "ma_posture": null,
+    "above_ma20": null,
+    "above_ma50": null,
+    "above_ma200": null,
+    "data_date": null,
+    "deployment_surface_state": null,
+    "macro_gate": null,
+    "near_earnings_caution": null,
+    "why": null
+  },
+  "portfolio_fit_concentration": {
+    "sector": "Consumer Staples",
+    "wf78_tier": "C",
+    "sql_canon_legacy_tier": "C",
+    "sql_canon_universe_scope": "review_100_monitor",
+    "sql_canon_production_answer_path_member": false,
+    "wf78_auto_tier": "Tier C",
+    "wf78_auto_state": "C-MONITOR",
+    "wf78_monitoring_role": "tier_c_review_monitor_breadth_only",
+    "wf78_decision_grade_eligible": false,
+    "wf78_promotion_required_before_action": true,
+    "coverage_tier": "C",
+    "portfolio_role": "tier_c_review_monitor_breadth_only",
+    "coverage_lane": "review_100_monitor",
+    "readiness_tier": null,
+    "recommended_starter_notional": null,
+    "recommended_target_notional": null,
+    "decision_note": null,
+    "prepared_order_card_path": null
+  },
+  "capital_allocation_quality": {
+    "quality": "caution",
+    "anomalies": [
+      {
+        "code": "buybacks_with_net_dilution",
+        "severity": "warning",
+        "message": "Repurchases occurred but diluted share count still increased; check SBC/issuance offset."
+      },
+      {
+        "code": "sbc_offsets_buybacks",
+        "severity": "warning",
+        "message": "SBC consumes more than half of gross repurchases; net shareholder return quality is weaker."
+      },
+      {
+        "code": "eps_fcf_per_share_divergence",
+        "severity": "warning",
+        "message": "EPS grew while FCF/share declined materially; earnings quality needs review."
+      },
+      {
+        "code": "leverage_elevated",
+        "severity": "warning",
+        "message": "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context."
+      }
+    ],
+    "notes": [
+      "Repurchases occurred but diluted share count still increased; check SBC/issuance offset.",
+      "SBC consumes more than half of gross repurchases; net shareholder return quality is weaker.",
+      "EPS grew while FCF/share declined materially; earnings quality needs review.",
+      "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context."
+    ]
+  },
+  "risk_register": [
+    {
+      "category": "capital_allocation",
+      "severity": "warning",
+      "detail": "Repurchases occurred but diluted share count still increased; check SBC/issuance offset."
+    },
+    {
+      "category": "capital_allocation",
+      "severity": "warning",
+      "detail": "SBC consumes more than half of gross repurchases; net shareholder return quality is weaker."
+    },
+    {
+      "category": "capital_allocation",
+      "severity": "warning",
+      "detail": "EPS grew while FCF/share declined materially; earnings quality needs review."
+    },
+    {
+      "category": "capital_allocation",
+      "severity": "warning",
+      "detail": "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context."
+    },
+    {
+      "category": "evidence_gap",
+      "severity": "context",
+      "detail": "Ticker not present in current deployment-readiness surface groups",
+      "family": "deployment_readiness_surface"
+    }
+  ],
+  "recommendation_support": {
+    "posture": "watch only",
+    "posture_key": "watch_only",
+    "deployment_contract": {
+      "deployment_status": "WATCH",
+      "status_reason": "watch_research_needed",
+      "display_label": "watch / research needed",
+      "raw_context": {
+        "workflow_state": null,
+        "machine_state": null,
+        "action_state": null,
+        "surface_state": null,
+        "base_surface_state": null,
+        "band_status": null,
+        "below_stop": false
+      },
+      "authority": {
+        "review_only": true,
+        "paper_order_execution_allowed": false,
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false
+      }
+    },
+    "support_level": "review_context_only",
+    "state_source": null,
+    "readiness_state_source": null,
+    "deployment_surface_state_source": null,
+    "band_status": null,
+    "fresh_quote_required": false,
+    "prepared_order_card_present": false,
+    "actionability": "review_only_owner_gated",
+    "blockers_or_gates": [
+      "card itself grants no paper/live execution authority and infers no approval"
+    ],
+    "notes": [
+      "This is recommendation support, not a black-box buy/sell engine.",
+      "Open source artifacts before final readiness, recommendation, approval, or action claims."
+    ]
+  },
+  "missing_or_stale_evidence": [
+    {
+      "family": "deployment_readiness_surface",
+      "severity": "context",
+      "status": "missing",
+      "detail": "Ticker not present in current deployment-readiness surface groups"
+    }
+  ],
+  "source_artifacts": [
+    {
+      "path": "tmp\\fundamental-metrics-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T20:20:09Z",
+      "status": null
+    },
+    {
+      "path": "tmp\\deployment-readiness-surface.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-21T20:32:55.183959+00:00",
+      "status": null
+    },
+    {
+      "path": "tmp\\position-sizing-readiness-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T21:39:55Z",
+      "status": "critical"
+    },
+    {
+      "path": "tmp\\analyst-consensus-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T16:48:34Z",
+      "status": "sourced_current"
+    },
+    {
+      "path": "tmp\\official-earnings-bridge.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T20:28:47Z",
+      "status": "manual_confirmed_partial"
+    },
+    {
+      "path": "tmp\\sector-expansion-board.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T21:05:19Z",
+      "status": "degraded"
+    },
+    {
+      "path": "tmp\\technical-refresh.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T16:23:33.592368+00:00",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\portfolio-config.json",
+      "exists": true,
+      "generated_at_utc": "2026-05-23T19:50:12Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\post-close-final-quote-ledger.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T16:23:25Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\finance-decision-sync-spine.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T13:25:27Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\wf78-capital-review-queue.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T13:24:42Z",
+      "status": "ok"
+    },
+    {
+      "path": "data\\finance\\universe-v1.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-22T15:33:19Z",
+      "status": "wf78_tier_c_scaleout_monitor_ready"
+    },
+    {
+      "path": "tmp\\wf78-auto-tier-routing.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T16:23:27Z",
+      "status": "ok"
+    },
+    {
+      "path": "state\\finance\\finance-canon.sqlite",
+      "exists": true,
+      "generated_at_utc": null,
+      "status": "ok"
+    }
+  ],
+  "authority_boundary": {
+    "artifact_role": "derived_review_and_question_routing_surface_only",
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "sizing_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed_by_card": false,
+    "paper_order_cancel_allowed_by_card": false,
+    "durable_sql_canon_current_state_allowed": true,
+    "sql_canon_mutation_allowed": false,
+    "live_trade_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "source_open_required_before_final_recommendation_or_action_claim": true
+  }
+}

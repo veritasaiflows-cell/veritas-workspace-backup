@@ -1,0 +1,189 @@
+{
+  "schema_version": "veritas.wf78_sizing_packet_refresh_proof.v1",
+  "generated_at_utc": "2026-08-22T15:52:00Z",
+  "status": "ok",
+  "lane": "WF78::SIZING-PACKET-REFRESH-20260822",
+  "owner_approval_reference": "randall-2026-08-22-yes-proceed-sizing-packet-refresh-ecl-meta",
+  "predecessor_lane": "WF78::PRODUCTION-JOIN-SEVERITY-20260822::finance",
+  "authority_boundary": {
+    "review_only": true,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "production_scope_membership_means": "decision_grade_answerability_only_not_buy_signal_or_capital_authority"
+  },
+  "change_summary": {
+    "action": "Refreshed tmp/position-sizing-readiness-current.json (bounded standing-approved freshness sync), rebuilt cards, re-ran confidence gate / auto tier router / freshness resolver / finance SQL canon.",
+    "scripts_modified": [],
+    "note": "No code changed in this lane. Data-refresh and rebuild only."
+  },
+  "sizing_packet_diff": {
+    "candidates_before": 61,
+    "candidates_after": 63,
+    "added": [
+      "ECL",
+      "META"
+    ],
+    "removed": [],
+    "critical_findings_changed": false,
+    "critical_findings": [
+      "capital deployment validator is not ok"
+    ],
+    "ready_if_fresh_quote_confirms_before": 4,
+    "ready_if_fresh_quote_confirms_after": 4,
+    "ready_if_fresh_quote_confirms_delta": 0,
+    "monitor_before": 32,
+    "monitor_after": 33,
+    "blocked_below_stop_before": 8,
+    "blocked_below_stop_after": 9,
+    "existing_row_drift": [
+      {
+        "ticker": "CME",
+        "field": "wf78_auto_tier",
+        "before": "Tier C",
+        "after": "Tier B",
+        "assessment": "stale label catching up to the 2026-08-21 Tier B promotion; not a new signal"
+      }
+    ]
+  },
+  "card_rebuild": {
+    "cards_built": 300,
+    "errors": 0,
+    "generated_at_utc": "2026-08-22T15:30:07Z",
+    "cards_with_blocking_gap": [],
+    "ecl_meta_cme_gap_state": "missing_or_stale_count=1, blocking_gap_count=0, context_gap_count=1 (deployment_readiness_surface context gap only)"
+  },
+  "routing_drift_check": {
+    "tiers_before": {
+      "Tier A": 12,
+      "Tier B": 49,
+      "Tier C": 239
+    },
+    "tiers_after": {
+      "Tier A": 12,
+      "Tier B": 49,
+      "Tier C": 239
+    },
+    "tier_or_state_drift": [],
+    "confidence_drift": [],
+    "resolver_validation": "ok (0 errors)"
+  },
+  "production_scope": {
+    "before": 12,
+    "after": 14,
+    "admitted": [
+      "ECL",
+      "META"
+    ],
+    "dropped": [],
+    "members": [
+      "BKNG",
+      "BRK.B",
+      "CME",
+      "CVX",
+      "ECL",
+      "GOOG",
+      "JPM",
+      "LIN",
+      "LLY",
+      "META",
+      "NVDA",
+      "PLTR",
+      "VRT",
+      "XOM"
+    ],
+    "production_scope_source": "proof_joined_routing_tier_ab_fresh_confident_card_coverage",
+    "reject_reason_distribution_before": {
+      "routing_tier_below_ab": 239,
+      "not_decision_grade_fresh": 43,
+      "card_blocking_gap_present": 2,
+      "critical_data_conflict_or_unknown": 2,
+      "confidence_status_not_ready": 2,
+      "admitted": 12
+    },
+    "reject_reason_distribution_after": {
+      "routing_tier_below_ab": 239,
+      "not_decision_grade_fresh": 43,
+      "card_blocking_gap_present": 0,
+      "critical_data_conflict_or_unknown": 2,
+      "confidence_status_not_ready": 2,
+      "admitted": 14
+    },
+    "accounting_proof": "Every reject bucket is bit-identical except card_blocking_gap_present 2 -> 0 and admitted 12 -> 14. ECL and META are the only movers; nothing was dropped and no other name changed reason.",
+    "still_rejected_named": {
+      "critical_data_conflict_or_unknown": [
+        "ETN",
+        "MSFT"
+      ],
+      "confidence_status_not_ready": [
+        "ITA",
+        "XLB"
+      ]
+    },
+    "db_matches_independent_recompute": true
+  },
+  "ecl_meta_state": {
+    "ECL": {
+      "ticker": "ECL",
+      "readiness": "monitor",
+      "band_status": "ABOVE_BAND",
+      "close_reference": 281.63,
+      "band_low": 272.36,
+      "band_high": 281.0,
+      "stop": 264.78,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "suggested_incremental_paper_notional_usd": 0,
+      "decision_note": "Monitor only."
+    },
+    "META": {
+      "ticker": "META",
+      "readiness": "blocked_below_stop",
+      "band_status": "BELOW_STOP",
+      "close_reference": 549.9,
+      "band_low": 623.36,
+      "band_high": 648.95,
+      "stop": 602.89,
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "wf78_auto_tier": "Tier B",
+      "wf78_auto_state": "B-CANDIDATE",
+      "suggested_incremental_paper_notional_usd": 0,
+      "decision_note": "Blocked until reclaim/fresh review."
+    },
+    "owner_readable_summary": "Both names are now answerable at decision grade. Neither is buyable. ECL is ABOVE_BAND (281.63 vs band_high 281.00, ~0.22% above) => no-chase, readiness 'monitor'. META is BELOW_STOP (549.90 vs stop 602.89, ~8.79% below stop and ~11.77% below band_low 623.36), readiness 'blocked_below_stop'. Recommended incremental notional is $0 for both."
+  },
+  "validation": {
+    "finance_sql_canon": {
+      "status": "ok",
+      "validation": "ok",
+      "active_ticker_count": 300,
+      "failed": 0
+    },
+    "finance_sql_canon_access": {
+      "status": "ok"
+    },
+    "finance_production_grade_policy_gate": {
+      "status": "ok",
+      "errors": 0,
+      "warnings": 0,
+      "production_scope_member_count": 14,
+      "answer_consumer_cutover_allowed": false
+    }
+  },
+  "known_open_debt_not_touched": [
+    "5 pre-existing test failures/errors in files this lane did not touch (test_wf78_auto_tier_router, test_wf77_price_freshness_bridge, test_wf78_source_open_patch_orchestrator, test_sql_canon_consumer_registry_guard)",
+    "concurrent lane register carries 1 pre-existing critical error: 14 historical lanes missing parent_job_id/attempt_number/retry_count"
+  ],
+  "source_artifacts": {
+    "tmp/position-sizing-readiness-current.json": "52fa192ac81848c1",
+    "tmp/ticker-card-refresh-gate-card-build-summary.json": "2d6c9b8309219c66",
+    "tmp/wf78-tier-weighted-freshness-resolution.json": "608c7e9f7c81a8e1",
+    "tmp/wf78-auto-tier-routing.json": "cd5387804fa94a83",
+    "tmp/finance-production-grade-policy-gate.json": "2beec1b33e4d3fa8",
+    "state/finance/finance-canon.sqlite": "43b5d0e05d21adec"
+  }
+}

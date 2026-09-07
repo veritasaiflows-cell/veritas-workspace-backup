@@ -1,0 +1,500 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-17T18:11:50Z",
+  "action": "archive_move_approved_candidates",
+  "source_second_pass": "tmp/archive-reference-second-pass.json",
+  "archive_root": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z",
+  "approved_bucket": "archive_candidate_after_owner_approval",
+  "delete_performed": false,
+  "moved_count": 48,
+  "skipped_count": 0,
+  "moved": [
+    {
+      "source": "tmp/add_bkng_to_config.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/add_bkng_to_config.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "7ef3482649fee8970749db106aef7f6dadf041ef55ba81d76a9cf33973b1969f",
+      "sha256_after": "7ef3482649fee8970749db106aef7f6dadf041ef55ba81d76a9cf33973b1969f",
+      "hash_match": true,
+      "second_pass_reference_count": 5,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/append_memory_wf58.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/append_memory_wf58.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "c2d8ee53f5c0d201a20fe90ba1da2d8ec200a4ff856dd0adc174b4787c0e48a8",
+      "sha256_after": "c2d8ee53f5c0d201a20fe90ba1da2d8ec200a4ff856dd0adc174b4787c0e48a8",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/append_wf56_phase2.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/append_wf56_phase2.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "29553c1fb279dd5dce285c8dd0d9352f2e66240456e5fb863eb7eb1d38e8d967",
+      "sha256_after": "29553c1fb279dd5dce285c8dd0d9352f2e66240456e5fb863eb7eb1d38e8d967",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/archive_compare.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/archive_compare.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "62023f4968eceeabe031019c963bbed93f6b153f0755a5cebcfb339062b25737",
+      "sha256_after": "62023f4968eceeabe031019c963bbed93f6b153f0755a5cebcfb339062b25737",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/archive_ref_check.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/archive_ref_check.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "df81a18915afc183396ef15da0ac97eb4e9dfca863ceda70bd9b085571f34e34",
+      "sha256_after": "df81a18915afc183396ef15da0ac97eb4e9dfca863ceda70bd9b085571f34e34",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/bkng_tjx_pass_data.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/bkng_tjx_pass_data.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "45ba8b34bfdd4e2ae3d1c1f2d8495a1e93af963e37de1b93524d06e056fb100a",
+      "sha256_after": "45ba8b34bfdd4e2ae3d1c1f2d8495a1e93af963e37de1b93524d06e056fb100a",
+      "hash_match": true,
+      "second_pass_reference_count": 5,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/build_archive_packet.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/build_archive_packet.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "8abc3af456838e0d0efde7c5a87e851da65751a377c39770e11f12549252d96c",
+      "sha256_after": "8abc3af456838e0d0efde7c5a87e851da65751a377c39770e11f12549252d96c",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/canonical_compression_apply.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/canonical_compression_apply.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "45170d58beeddb24ebf2f95b3b89f30394b4405a769cd92de8bac351e7cf14b2",
+      "sha256_after": "45170d58beeddb24ebf2f95b3b89f30394b4405a769cd92de8bac351e7cf14b2",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/canonical_compression_finish.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/canonical_compression_finish.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "e7eec18e674fbc184f9320f99707a4569046f79ff2c3f9eba31ac36e25bd97b3",
+      "sha256_after": "e7eec18e674fbc184f9320f99707a4569046f79ff2c3f9eba31ac36e25bd97b3",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/generate_manual_band_proposal.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/generate_manual_band_proposal.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "aa1ca29d4d73a6e5c75034fbb6193bdd0deef5b22a3921cca5641b125bceb848",
+      "sha256_after": "aa1ca29d4d73a6e5c75034fbb6193bdd0deef5b22a3921cca5641b125bceb848",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/inspect_freshness.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/inspect_freshness.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "f735c801910107e6292f15964d3890cbb3e5498b947d0fb41e679b8e30142844",
+      "sha256_after": "f735c801910107e6292f15964d3890cbb3e5498b947d0fb41e679b8e30142844",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/list_sec_dir.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/list_sec_dir.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "fd349ea5e615ce3b00e253fc1eb0435bdecfbfc1870026ac4c97896fef5c02cc",
+      "sha256_after": "fd349ea5e615ce3b00e253fc1eb0435bdecfbfc1870026ac4c97896fef5c02cc",
+      "hash_match": true,
+      "second_pass_reference_count": 5,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/models_props.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/models_props.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "cc3dafb8f20a8ed85c2d0c1ce2420a1a06de425dd3172fbd727d51fbe6ae19d6",
+      "sha256_after": "cc3dafb8f20a8ed85c2d0c1ce2420a1a06de425dd3172fbd727d51fbe6ae19d6",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/patch_capital_rec_manifest.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/patch_capital_rec_manifest.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "1e3fa11491e53f915c1f64194f4720e3de84cd640afcdb8deb7a787d88c97656",
+      "sha256_after": "1e3fa11491e53f915c1f64194f4720e3de84cd640afcdb8deb7a787d88c97656",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/patch_tail_test_wf58.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/patch_tail_test_wf58.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "8146d44c9f2e07f9e18ec4e665cb7860320ea94d8c89614f97df75b0e722d504",
+      "sha256_after": "8146d44c9f2e07f9e18ec4e665cb7860320ea94d8c89614f97df75b0e722d504",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/patch_wf58_manifest.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/patch_wf58_manifest.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "78d9b8a0743d8b1fed312f1d4e899fb94496c9445bdf651e1608a8b7b4660e77",
+      "sha256_after": "78d9b8a0743d8b1fed312f1d4e899fb94496c9445bdf651e1608a8b7b4660e77",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/plugin_models.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/plugin_models.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "c9ad5c360a70a321a47a13f2dec13f08d8252e6a277ee894f8a6f05c7a198a15",
+      "sha256_after": "c9ad5c360a70a321a47a13f2dec13f08d8252e6a277ee894f8a6f05c7a198a15",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/print_model_item_schema.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/print_model_item_schema.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "6cfd2a53936ff32030994c84d70cab1279c1d05b643939ed16ecf6ae33f52f26",
+      "sha256_after": "6cfd2a53936ff32030994c84d70cab1279c1d05b643939ed16ecf6ae33f52f26",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/print_models_schema.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/print_models_schema.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "6feb4a6a6c3356f78d0f599992271cbdfe34c9b2b2228a036955d5acd25bff9c",
+      "sha256_after": "6feb4a6a6c3356f78d0f599992271cbdfe34c9b2b2228a036955d5acd25bff9c",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/print_schema_node.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/print_schema_node.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "0e59985cc465e18a8601209d973ef61a79bfd0822d6aac0d774be2c858fd4b37",
+      "sha256_after": "0e59985cc465e18a8601209d973ef61a79bfd0822d6aac0d774be2c858fd4b37",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/repair_capital_rec_manifest.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/repair_capital_rec_manifest.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "02b3dc6b12a8757c4441b8071bf08f52a49fa810f9f22fb770382355a8016865",
+      "sha256_after": "02b3dc6b12a8757c4441b8071bf08f52a49fa810f9f22fb770382355a8016865",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/schema_paths.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/schema_paths.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "bc800ba48e21be8c6e01d086621b1fb600908783dfb635acbb3f1e09c3a93058",
+      "sha256_after": "bc800ba48e21be8c6e01d086621b1fb600908783dfb635acbb3f1e09c3a93058",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/summarize_refs.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/summarize_refs.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "aad5dfb125be64ff0c1e15e71de2e2bfe8cbdde77ee048281fdf009ce4d1a9f2",
+      "sha256_after": "aad5dfb125be64ff0c1e15e71de2e2bfe8cbdde77ee048281fdf009ce4d1a9f2",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/update_queue_wf58.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/update_queue_wf58.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "2b9ecba72da183cd356cc56c4acb56c89d6e03673f38b312c88cc94f3af78589",
+      "sha256_after": "2b9ecba72da183cd356cc56c4acb56c89d6e03673f38b312c88cc94f3af78589",
+      "hash_match": true,
+      "second_pass_reference_count": 4,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/update_registry_wf58.py",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-python-helpers/update_registry_wf58.py",
+      "kind": "tmp_executable_helper",
+      "sha256_before": "e3ded3e580384c804c4b94bd4889f4d4f6511e52e79bbaf385bc24df458fc2bc",
+      "sha256_after": "e3ded3e580384c804c4b94bd4889f4d4f6511e52e79bbaf385bc24df458fc2bc",
+      "hash_match": true,
+      "second_pass_reference_count": 4,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/archive-candidate-owner-approval-packet.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/archive-candidate-owner-approval-packet.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "264f082c06b667a0c111cf19676aa0a67423cd1128b87f4c8e5eb9a55b2aafdf",
+      "sha256_after": "264f082c06b667a0c111cf19676aa0a67423cd1128b87f4c8e5eb9a55b2aafdf",
+      "hash_match": true,
+      "second_pass_reference_count": 2,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/bkng-deep-dive.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/bkng-deep-dive.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "c4bf632fb7c5283714de3098369b77acba43881c2c5dcedf38b76aee8395b343",
+      "sha256_after": "c4bf632fb7c5283714de3098369b77acba43881c2c5dcedf38b76aee8395b343",
+      "hash_match": true,
+      "second_pass_reference_count": 2,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/bkng-promotion-review-pass.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/bkng-promotion-review-pass.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "c613ae6a92c90fe25545492017cf00061b9a99d3f09e81217f2b005659f984dd",
+      "sha256_after": "c613ae6a92c90fe25545492017cf00061b9a99d3f09e81217f2b005659f984dd",
+      "hash_match": true,
+      "second_pass_reference_count": 2,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/bkng-tjx-fundamental-technical-pass.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/bkng-tjx-fundamental-technical-pass.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "532bed1138d1c1d768dd1877dc1f9ebab148eb1c5ffbe4e199dba0fc3d2f9f3c",
+      "sha256_after": "532bed1138d1c1d768dd1877dc1f9ebab148eb1c5ffbe4e199dba0fc3d2f9f3c",
+      "hash_match": true,
+      "second_pass_reference_count": 0,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/consumer-discretionary-candidate-screen.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/consumer-discretionary-candidate-screen.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "8e8d97e59d8623ea9d262a53b959cbe23676fbc14a062fefc25cc9055392d31b",
+      "sha256_after": "8e8d97e59d8623ea9d262a53b959cbe23676fbc14a062fefc25cc9055392d31b",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/consumer-discretionary-focused-followup.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/consumer-discretionary-focused-followup.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "fdfba83d788f02419d13b6cea098f7ec77fc2ad850b5fcbe02ec9469f4218c85",
+      "sha256_after": "fdfba83d788f02419d13b6cea098f7ec77fc2ad850b5fcbe02ec9469f4218c85",
+      "hash_match": true,
+      "second_pass_reference_count": 0,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/cron-expansion-orchestration-handoff.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/cron-expansion-orchestration-handoff.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "0f23d456371ade545c1fea5b8430acd76d27e4e0a224ab729897759d7eef89ec",
+      "sha256_after": "0f23d456371ade545c1fea5b8430acd76d27e4e0a224ab729897759d7eef89ec",
+      "hash_match": true,
+      "second_pass_reference_count": 0,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/cron-expansion-qa-retention-challenge.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/cron-expansion-qa-retention-challenge.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "cfb851dc607cd9c58922c6f85892fa4c16ad1cb8ac7c307de1cb013d398a9123",
+      "sha256_after": "cfb851dc607cd9c58922c6f85892fa4c16ad1cb8ac7c307de1cb013d398a9123",
+      "hash_match": true,
+      "second_pass_reference_count": 1,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/finance-canon-consolidation-plan-2026-05-13.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/finance-canon-consolidation-plan-2026-05-13.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "e74d9c63921f0f0738503f9daa8ca970632394c00c12e6ffa7d1f446bbd79bd3",
+      "sha256_after": "e74d9c63921f0f0738503f9daa8ca970632394c00c12e6ffa7d1f446bbd79bd3",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/manual-entry-band-canon-update-proposal.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/manual-entry-band-canon-update-proposal.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "c14be50d383b9d281a5dd3e320e04aee1f52db8d24854b2254c27024065302a8",
+      "sha256_after": "c14be50d383b9d281a5dd3e320e04aee1f52db8d24854b2254c27024065302a8",
+      "hash_match": true,
+      "second_pass_reference_count": 1,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/materials-candidate-research.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/materials-candidate-research.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "e137f01509c1eb7f53e5d9ba0ac79ed76eeca0720be24b00ba2c8ac3c3146892",
+      "sha256_after": "e137f01509c1eb7f53e5d9ba0ac79ed76eeca0720be24b00ba2c8ac3c3146892",
+      "hash_match": true,
+      "second_pass_reference_count": 1,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/materials-packet-validation-confirmation.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/materials-packet-validation-confirmation.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "1627accb3f8d39b78a47b343d8fcc130cdebfcf527895c09698f7edc9507d8c7",
+      "sha256_after": "1627accb3f8d39b78a47b343d8fcc130cdebfcf527895c09698f7edc9507d8c7",
+      "hash_match": true,
+      "second_pass_reference_count": 2,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/next-workflow-queue-packet.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/next-workflow-queue-packet.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "fba4506b979576a3ebe1fbce7292478519d9c017a0fa544b7a76942aefbae8b8",
+      "sha256_after": "fba4506b979576a3ebe1fbce7292478519d9c017a0fa544b7a76942aefbae8b8",
+      "hash_match": true,
+      "second_pass_reference_count": 0,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/portfolio-mutation-automation-audit.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/portfolio-mutation-automation-audit.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "17aba11f73395a49347b860e73a9a5ad23dad4d4194640e4a87bd4b329e63faa",
+      "sha256_after": "17aba11f73395a49347b860e73a9a5ad23dad4d4194640e4a87bd4b329e63faa",
+      "hash_match": true,
+      "second_pass_reference_count": 0,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/retrospective-governance-gap-proposal-2026-05-06.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/retrospective-governance-gap-proposal-2026-05-06.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "4c92009640ee4fdd8c94f032ba5c3309aee238c2f07a9cae1007b5dee1b31d5e",
+      "sha256_after": "4c92009640ee4fdd8c94f032ba5c3309aee238c2f07a9cae1007b5dee1b31d5e",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/retrospective-hardening-qa-2026-05-06.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/retrospective-hardening-qa-2026-05-06.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "6662234fb1da9f01c91311fb89c4ecb01ce843e3776bfd262e25bec2c53c1fbb",
+      "sha256_after": "6662234fb1da9f01c91311fb89c4ecb01ce843e3776bfd262e25bec2c53c1fbb",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/sector-diversification-healthcare-lly-xlv-review.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/sector-diversification-healthcare-lly-xlv-review.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "910c727c5c701b882a224a0da5640abb2f5cf07dd5a97cc3f7ad3075032ece04",
+      "sha256_after": "910c727c5c701b882a224a0da5640abb2f5cf07dd5a97cc3f7ad3075032ece04",
+      "hash_match": true,
+      "second_pass_reference_count": 2,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/sector-diversification-quality-staples-xlp-review.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/sector-diversification-quality-staples-xlp-review.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "535f62b485dfaed5ec68cf29f67dd1387d6cdd06b65692d5653dbe697a2ffe22",
+      "sha256_after": "535f62b485dfaed5ec68cf29f67dd1387d6cdd06b65692d5653dbe697a2ffe22",
+      "hash_match": true,
+      "second_pass_reference_count": 2,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/staged-tranche-recommendation-future-enhancement.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/staged-tranche-recommendation-future-enhancement.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "665aa48419be35a1bc1afdcde3d1d85ba5f4bb6155f1fc3ad8a2c7eee0b1211d",
+      "sha256_after": "665aa48419be35a1bc1afdcde3d1d85ba5f4bb6155f1fc3ad8a2c7eee0b1211d",
+      "hash_match": true,
+      "second_pass_reference_count": 3,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/wf-implementation-readiness-scan.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/wf-implementation-readiness-scan.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "7f5c74c083e891c072d1ac910894f688bedca7987745a98f0ed3044447bce983",
+      "sha256_after": "7f5c74c083e891c072d1ac910894f688bedca7987745a98f0ed3044447bce983",
+      "hash_match": true,
+      "second_pass_reference_count": 2,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/wf-program-architect-audit.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/wf-program-architect-audit.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "4e6e37735757b3a2824fbffbd8b1fbd07e516f902d6dae3e3cdbbc2498196aa4",
+      "sha256_after": "4e6e37735757b3a2824fbffbd8b1fbd07e516f902d6dae3e3cdbbc2498196aa4",
+      "hash_match": true,
+      "second_pass_reference_count": 2,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/wf23-phase3-dashboard-overlap-edit-proposal-2026-05-06.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/wf23-phase3-dashboard-overlap-edit-proposal-2026-05-06.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "857a9f846bcddb20ab219fb8c648dd09d5530ebad99771968f9a51a26e8aa436",
+      "sha256_after": "857a9f846bcddb20ab219fb8c648dd09d5530ebad99771968f9a51a26e8aa436",
+      "hash_match": true,
+      "second_pass_reference_count": 2,
+      "active_reference_count": 0
+    },
+    {
+      "source": "tmp/wf36-slice-b-qa-checkpoint.md",
+      "destination": "09. Archive/Tmp Referenced Archive Candidates - Archived/2026-05-17T181150Z/tmp-markdown-reports/wf36-slice-b-qa-checkpoint.md",
+      "kind": "tmp_markdown_report",
+      "sha256_before": "f1b06d534bfa7942769cc3c3d10dd58af694b48ed0c1982216c38c5f9cabdcff",
+      "sha256_after": "f1b06d534bfa7942769cc3c3d10dd58af694b48ed0c1982216c38c5f9cabdcff",
+      "hash_match": true,
+      "second_pass_reference_count": 2,
+      "active_reference_count": 0
+    }
+  ],
+  "skipped": [],
+  "remaining_blocked_buckets": {
+    "blocked_pending_backup_owner_decision": 1,
+    "inspect_then_promote_or_archive": 6,
+    "promote_or_keep_until_workflow_closed": 20,
+    "keep_live_or_update_script_reference_first": 6
+  }
+}

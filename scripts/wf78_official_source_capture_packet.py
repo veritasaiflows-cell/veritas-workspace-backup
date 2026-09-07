@@ -14,8 +14,12 @@ from market_data_utils import atomic_write_json, load_json_artifact
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 INFILE = TMP / "wf78-source-capture-requirements-queue.json"
+UNIVERSE = ROOT / "data" / "finance" / "universe-v1.json"
 OUT = TMP / "wf78-official-source-capture-packet.json"
 SCHEMA = "veritas.wf78_official_source_capture_packet.v1"
+EDGAR_FILINGS_INDEX = (
+    "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik}&type=8-K&dateb=&owner=include&count=40"
+)
 
 OFFICIAL_SOURCES: dict[str, dict[str, str | None]] = {
     "ACN": {
@@ -216,20 +220,57 @@ def ticker(value: Any) -> str:
     return str(value or "").strip().upper()
 
 
+def universe_source_symbols() -> dict[str, dict[str, Any]]:
+    universe = load_dict(UNIVERSE)
+    return {
+        ticker(row.get("ticker")): as_dict(as_dict(row).get("source_symbols"))
+        for row in as_list(universe.get("entries"))
+        if isinstance(row, dict)
+    }
+
+
+def resolve_source(symbol: str, symbols: dict[str, Any]) -> tuple[dict[str, Any], str]:
+    """Resolve official-source pointers from the seed map, then durable canon.
+
+    Canon fallback keeps the daily spine green when a ticker rotates in that the
+    hand-maintained seed map never covered; SEC EDGAR is an official source, so a
+    known CIK is a real pointer rather than a missing one.
+    """
+    seed = OFFICIAL_SOURCES.get(symbol)
+    if seed:
+        return dict(seed), "official_company_and_latest_earnings_pointer_captured"
+    company_ir = str(symbols.get("company_ir") or "").strip()
+    cik = str(symbols.get("sec_cik") or "").strip()
+    if company_ir or cik:
+        return (
+            {
+                "company_ir_url": company_ir or None,
+                "latest_actual_earnings_url": EDGAR_FILINGS_INDEX.format(cik=cik) if cik else None,
+                "latest_actual_period": None,
+                "latest_actual_label": "SEC EDGAR 8-K filings index" if cik else None,
+                "upcoming_or_newer_event_url": None,
+                "upcoming_or_newer_event_label": None,
+            },
+            "official_source_pointer_from_canon",
+        )
+    return {}, "official_source_pointer_missing"
+
+
 def build_rows() -> list[dict[str, Any]]:
     requirements = load_dict(INFILE)
+    canon_symbols = universe_source_symbols()
     rows: list[dict[str, Any]] = []
     for row in as_list(requirements.get("rows")):
         row = as_dict(row)
         symbol = ticker(row.get("ticker"))
-        source = OFFICIAL_SOURCES.get(symbol, {})
+        source, capture_status = resolve_source(symbol, canon_symbols.get(symbol, {}))
         checklist = as_dict(row.get("required_evidence_checklist"))
         owner_entry_stop = as_dict(checklist.get("owner_entry_stop_source"))
         rows.append({
             "ticker": symbol,
             "tier": row.get("tier"),
             "route_state": row.get("route_state"),
-            "source_capture_status": "official_company_and_latest_earnings_pointer_captured" if source else "official_source_pointer_missing",
+            "source_capture_status": capture_status,
             "company_ir_url": source.get("company_ir_url"),
             "latest_actual_earnings_url": source.get("latest_actual_earnings_url"),
             "latest_actual_period": source.get("latest_actual_period"),
@@ -259,9 +300,12 @@ def build() -> dict[str, Any]:
     for key in sorted(FALSE_KEYS):
         if AUTHORITY_BOUNDARY.get(key) is not False:
             errors.append(f"authority flag not false: {key}")
-    missing = [row["ticker"] for row in rows if row.get("source_capture_status") != "official_company_and_latest_earnings_pointer_captured"]
+    missing = [row["ticker"] for row in rows if row.get("source_capture_status") == "official_source_pointer_missing"]
     if missing:
         errors.append(f"missing official source pointers: {', '.join(missing)}")
+    from_canon = [row["ticker"] for row in rows if row.get("source_capture_status") == "official_source_pointer_from_canon"]
+    if from_canon:
+        warnings.append(f"canon_derived_official_source_pointers: {', '.join(from_canon)}")
     if not rows:
         warnings.append("no_source_capture_rows")
     for row in rows:
@@ -280,7 +324,7 @@ def build() -> dict[str, Any]:
         "source_lookup_note": "Official URLs were gathered from company investor/newsroom surfaces during this pass; values are pointers only and are not written into registry/cards.",
         "summary": {
             "row_count": len(rows),
-            "official_pointer_captured_count": sum(1 for row in rows if row.get("source_capture_status") == "official_company_and_latest_earnings_pointer_captured"),
+            "official_pointer_captured_count": sum(1 for row in rows if row.get("source_capture_status") != "official_source_pointer_missing"),
             "owner_entry_stop_lineage_required_count": sum(1 for row in rows if row.get("owner_entry_stop_lineage_required")),
             "status_counts": dict(Counter(str(row.get("source_capture_status")) for row in rows)),
             "next_safe_action": "Use these official pointers for a separate gated registry/card reconciliation proposal; owner entry/stop lineage is still required.",

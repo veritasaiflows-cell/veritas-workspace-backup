@@ -51,11 +51,15 @@ def test_build_payload_from_existing_packets() -> None:
         module.WIKI_BOOTSTRAP_PROOF_PACKET = tmp / "wiki-bootstrap-proof.json"
         module.ACTIONABLE_QUEUE_PACKET = tmp / "actionable-improvement-queue.json"
         module.NO_ORPHAN_VALIDATOR_PACKET = tmp / "no-orphan-validator.json"
+        module.FINANCE_SQL_GUARD_PACKET = tmp / "finance-sql-canon-access-validation.json"
+        module.ALERT_QUOTE_PACKET = tmp / "intraday-alerts" / "quote-snapshot-proof.json"
+        module.ALERT_FRESHNESS_PACKET = tmp / "alert-level-freshness-controller.json"
+        module.ALERT_RECOMMENDATIONS_PACKET = tmp / "finance-alert-os-digest.json"
+        module.ALERTS_OS_PIVOT_PACKET = tmp / "alerts-os-pivot-validator.json"
 
         write_json(module.FUTURE_PACKET, {
             "workflow_capsules": [
                 {"workflow_id": "WF85", "effective_status": "ready"},
-                {"workflow_id": "WF84", "effective_status": "ready"},
             ],
             "execution_efficiency_policy": module.implementation_router.execution_efficiency_policy(),
             "coding_outcome_efficiency": {
@@ -72,13 +76,6 @@ def test_build_payload_from_existing_packets() -> None:
             "summary": {
                 "implementation_queue": {"ready_job_count": 10, "blocked_job_count": 0},
                 "pm_readiness": {"readiness_band": "yellow"},
-                "finance_domain_repair_digest": {
-                    "implementation_blocker_count": 0,
-                    "control_plane_blocker_count": 0,
-                    "finance_domain_repair_item_count": 200,
-                    "tier_a_b_missing_decision_grade_band_count": 15,
-                    "tier_a_b_missing_decision_grade_band_tickers": ["ACN"],
-                },
             },
         })
         write_json(module.CRON_PACKET, {
@@ -203,6 +200,19 @@ def test_build_payload_from_existing_packets() -> None:
             "summary": {"validation_passed": True},
             "validation": {"status": "ok", "errors": [], "warnings": []},
         })
+        for proof_path in (
+            module.FINANCE_SQL_GUARD_PACKET,
+            module.ALERT_QUOTE_PACKET,
+            module.ALERT_FRESHNESS_PACKET,
+            module.ALERT_RECOMMENDATIONS_PACKET,
+            module.ALERTS_OS_PIVOT_PACKET,
+        ):
+            write_json(proof_path, {
+                "status": "ok",
+                "generated_at_utc": "2026-08-30T05:00:00Z",
+                "summary": {"ticker_count": 18, "alert_state_counts": {"monitor_only": 18}},
+                "validation": {"status": "ok", "errors": []},
+            })
 
         payload = module.build_payload(max_age_minutes=90)
         assert payload["status"] == "ok"
@@ -219,7 +229,8 @@ def test_build_payload_from_existing_packets() -> None:
         assert payload["status_route_contract"]["regenerates_pm_or_cron_packets"] is False
         assert payload["summary"]["wf85_status"] == "ready"
         assert payload["summary"]["pm_ready_job_count"] == 10
-        assert payload["summary"]["main_session_action_executor_action"] == "execute_pm_proof"
+        assert payload["summary"]["primary_goal"] == "Alerts and Recommendations OS"
+        assert payload["summary"]["main_session_action_executor_status"] == "ok"
         assert payload["summary"]["otel_learning_loop_status"] == "ok"
         assert payload["summary"]["otel_carry_forward_status"] == "ready"
         assert payload["summary"]["actionable_queue_orphan_count"] == 0
@@ -231,9 +242,14 @@ def test_build_payload_from_existing_packets() -> None:
         assert payload["summary"]["execution_efficiency_material_dispatch_ready"] is True
         assert payload["execution_efficiency_policy"] == module.implementation_router.execution_efficiency_policy()
         assert payload["execution_efficiency_policy_source"] == "scripts/project_implementation_router.py"
+        quality_efficiency = payload["execution_efficiency_policy"]["quality_weighted_efficiency"]
+        assert quality_efficiency["evaluation_mode"] == "owner_directed_on_demand_evidence_review"
+        assert quality_efficiency["cohort_pilot_required"] is False
+        assert quality_efficiency["minimum_jobs_for_on_demand_review"] == 0
         assert payload["future_efficiency_policy_matches_owner"] is True
         assert payload["summary"]["execution_efficiency_route_conformant_count"] == 4
-        assert payload["summary"]["tier_a_b_missing_decision_grade_band_tickers"] == ["ACN"]
+        assert payload["summary"]["finance_alerts_os_status"] == "ok"
+        assert payload["summary"]["finance_alerts_os_ticker_count"] == 18
         assert payload["fleet_posture"]["status"] == "partial"
         assert payload["fleet_posture"]["operating_model"]["configured_total_agent_count"] == 7
         assert payload["fleet_posture"]["operating_model"]["main_authority"]["sole_acceptance_owner"] is True
@@ -245,6 +261,7 @@ def test_build_payload_from_existing_packets() -> None:
         assert "route=shallow_status" in text
         assert "max_tool_calls=1" in text
         assert "fleet=status:partial" in text
+        assert "finance_alerts_os=ok" in text
 
         tampered_future = json.loads(module.FUTURE_PACKET.read_text(encoding="utf-8"))
         tampered_future["execution_efficiency_policy"]["route_order"] = []

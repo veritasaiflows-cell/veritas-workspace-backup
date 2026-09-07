@@ -1,0 +1,19 @@
+{
+  "schema": "veritas.trade_grade_risk_sizing_overlay.v1",
+  "generated_at_utc": "2026-08-30T03:18:20Z",
+  "workflow_id": "WF85",
+  "status": "ok",
+  "summary": {
+    "risk_posture_counts": {},
+    "row_count": 0
+  },
+  "rows": [],
+  "authority_boundary": {
+    "review_only": true,
+    "sizing_staggering_recommendation_only": true,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "portfolio_or_cash_mutation_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

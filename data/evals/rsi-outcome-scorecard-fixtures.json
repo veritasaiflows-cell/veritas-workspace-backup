@@ -1,0 +1,633 @@
+{
+  "schema": "veritas.rsi_outcome_scorecard_fixtures.v1",
+  "metadata_only": true,
+  "purpose": "Synthetic metadata-only cases for deterministic RSI outcome scoring. Fixture success is regression proof only and is excluded from live maturity claims.",
+  "authority_boundary": {
+    "review_only": true,
+    "proof_only": true,
+    "raw_capture": false,
+    "code_apply_allowed": false,
+    "skill_apply_allowed": false,
+    "cron_runtime_model_apply_allowed": false,
+    "finance_action_allowed": false,
+    "external_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "cases": [
+    {
+      "case_id": "complete_closed_and_stable",
+      "title": "Accepted fix closes a recurring failure and stays closed",
+      "expected": {
+        "outcome_class": "complete_stable",
+        "recurrence_before_after": "available",
+        "accepted_fix_vs_proposal_only": "accepted_fix",
+        "regression_or_reopen": false,
+        "time_to_close_hours": 2.0,
+        "follow_up_sla": "met",
+        "token_usage": "available",
+        "cost_usd": "available",
+        "latency_seconds": "available",
+        "later_outcome_grade": "durable_fix_verified",
+        "authority_compliant": true
+      },
+      "lineage": {
+        "evidence": {
+          "present": true,
+          "id": "evidence-complete",
+          "observed_at_utc": "2026-07-01T10:00:00Z",
+          "recurrence_before": 4
+        },
+        "decision": {
+          "present": true,
+          "id": "decision-complete",
+          "state": "fix_now",
+          "decided_at_utc": "2026-07-01T10:15:00Z"
+        },
+        "route": {
+          "present": true,
+          "id": "route-complete",
+          "state": "pm_job",
+          "owner_gated": false,
+          "routed_at_utc": "2026-07-01T10:20:00Z"
+        },
+        "action": {
+          "present": true,
+          "id": "action-complete",
+          "state": "accepted_fix",
+          "accepted_fix": true,
+          "started_at_utc": "2026-07-01T11:00:00Z",
+          "completed_at_utc": "2026-07-01T12:00:00Z",
+          "token_usage": {
+            "status": "available",
+            "value": 1200
+          },
+          "cost_usd": {
+            "status": "available",
+            "value": 0.42
+          },
+          "latency_seconds": {
+            "status": "available",
+            "value": 3600.0
+          }
+        },
+        "result": {
+          "present": true,
+          "id": "result-complete",
+          "state": "closed",
+          "closed_at_utc": "2026-07-01T12:00:00Z",
+          "stayed_closed": true,
+          "recurrence_after": 0,
+          "regression_observed": false,
+          "reopened": false,
+          "later_outcome_grade": "durable_fix_verified"
+        },
+        "follow_up": {
+          "required": true,
+          "due_at_utc": "2026-07-08T12:00:00Z",
+          "resolved_at_utc": "2026-07-07T09:00:00Z"
+        },
+        "lesson": {
+          "present": true,
+          "id": "lesson-complete",
+          "state": "retained"
+        },
+        "authority": {
+          "review_only": true,
+          "proof_only": true,
+          "raw_capture": false,
+          "code_apply_allowed": false,
+          "skill_apply_allowed": false,
+          "cron_runtime_model_apply_allowed": false,
+          "finance_action_allowed": false,
+          "external_action_allowed": false,
+          "owner_approval_inferred": false,
+          "historical_action_authorized": true,
+          "stop_line_breached": false,
+          "violations": []
+        }
+      }
+    },
+    {
+      "case_id": "proposal_only_not_accepted",
+      "title": "Improvement remains a proposal without accepted action",
+      "expected": {
+        "outcome_class": "proposal_only",
+        "recurrence_before_after": "unavailable",
+        "accepted_fix_vs_proposal_only": "proposal_only",
+        "regression_or_reopen": "unavailable",
+        "time_to_close_hours": "unavailable",
+        "follow_up_sla": "unavailable",
+        "token_usage": "not_applicable",
+        "cost_usd": "not_applicable",
+        "latency_seconds": "not_applicable",
+        "later_outcome_grade": "unavailable",
+        "authority_compliant": true
+      },
+      "lineage": {
+        "evidence": {
+          "present": true,
+          "id": "evidence-proposal",
+          "observed_at_utc": "2026-07-02T09:00:00Z",
+          "recurrence_before": 2
+        },
+        "decision": {
+          "present": true,
+          "id": "decision-proposal",
+          "state": "skill_proposal",
+          "decided_at_utc": "2026-07-02T09:15:00Z"
+        },
+        "route": {
+          "present": true,
+          "id": "route-proposal",
+          "state": "skill_workshop_proposal",
+          "owner_gated": false,
+          "routed_at_utc": "2026-07-02T09:20:00Z"
+        },
+        "action": {
+          "present": false,
+          "id": null,
+          "state": "proposal_only",
+          "accepted_fix": false
+        },
+        "result": {
+          "present": false,
+          "id": null,
+          "state": "not_observed"
+        },
+        "follow_up": {
+          "required": true,
+          "due_at_utc": "2026-07-09T09:20:00Z",
+          "resolved_at_utc": null
+        },
+        "lesson": {
+          "present": true,
+          "id": "lesson-proposal",
+          "state": "proposal_retained"
+        },
+        "authority": {
+          "review_only": true,
+          "proof_only": true,
+          "raw_capture": false,
+          "code_apply_allowed": false,
+          "skill_apply_allowed": false,
+          "cron_runtime_model_apply_allowed": false,
+          "finance_action_allowed": false,
+          "external_action_allowed": false,
+          "owner_approval_inferred": false,
+          "historical_action_authorized": false,
+          "stop_line_breached": false,
+          "violations": []
+        }
+      }
+    },
+    {
+      "case_id": "reopened_regression_after_close",
+      "title": "Accepted fix closes and later reopens as a regression",
+      "expected": {
+        "outcome_class": "reopened_regression",
+        "recurrence_before_after": "available",
+        "accepted_fix_vs_proposal_only": "accepted_fix",
+        "regression_or_reopen": true,
+        "time_to_close_hours": 3.0,
+        "follow_up_sla": "missed",
+        "token_usage": "available",
+        "cost_usd": "available",
+        "latency_seconds": "available",
+        "later_outcome_grade": "reopened_regression",
+        "authority_compliant": true
+      },
+      "lineage": {
+        "evidence": {
+          "present": true,
+          "id": "evidence-reopened",
+          "observed_at_utc": "2026-07-03T08:00:00Z",
+          "recurrence_before": 3
+        },
+        "decision": {
+          "present": true,
+          "id": "decision-reopened",
+          "state": "fix_now",
+          "decided_at_utc": "2026-07-03T08:10:00Z"
+        },
+        "route": {
+          "present": true,
+          "id": "route-reopened",
+          "state": "implementation_lane",
+          "owner_gated": false,
+          "routed_at_utc": "2026-07-03T08:15:00Z"
+        },
+        "action": {
+          "present": true,
+          "id": "action-reopened",
+          "state": "accepted_fix",
+          "accepted_fix": true,
+          "started_at_utc": "2026-07-03T09:00:00Z",
+          "completed_at_utc": "2026-07-03T11:00:00Z",
+          "token_usage": {
+            "status": "available",
+            "value": 2400
+          },
+          "cost_usd": {
+            "status": "available",
+            "value": 0.91
+          },
+          "latency_seconds": {
+            "status": "available",
+            "value": 7200.0
+          }
+        },
+        "result": {
+          "present": true,
+          "id": "result-reopened",
+          "state": "reopened",
+          "closed_at_utc": "2026-07-03T11:00:00Z",
+          "stayed_closed": false,
+          "recurrence_after": 2,
+          "regression_observed": true,
+          "reopened": true,
+          "later_outcome_grade": "reopened_regression"
+        },
+        "follow_up": {
+          "required": true,
+          "due_at_utc": "2026-07-10T11:00:00Z",
+          "resolved_at_utc": "2026-07-12T14:00:00Z"
+        },
+        "lesson": {
+          "present": true,
+          "id": "lesson-reopened",
+          "state": "regression_recorded"
+        },
+        "authority": {
+          "review_only": true,
+          "proof_only": true,
+          "raw_capture": false,
+          "code_apply_allowed": false,
+          "skill_apply_allowed": false,
+          "cron_runtime_model_apply_allowed": false,
+          "finance_action_allowed": false,
+          "external_action_allowed": false,
+          "owner_approval_inferred": false,
+          "historical_action_authorized": true,
+          "stop_line_breached": false,
+          "violations": []
+        }
+      }
+    },
+    {
+      "case_id": "missing_result_outcome",
+      "title": "Accepted action has no linked result or closure observation",
+      "expected": {
+        "outcome_class": "missing_outcome",
+        "recurrence_before_after": "unavailable",
+        "accepted_fix_vs_proposal_only": "accepted_fix",
+        "regression_or_reopen": "unavailable",
+        "time_to_close_hours": "unavailable",
+        "follow_up_sla": "unavailable",
+        "token_usage": "available",
+        "cost_usd": "available",
+        "latency_seconds": "available",
+        "later_outcome_grade": "unavailable",
+        "authority_compliant": true
+      },
+      "lineage": {
+        "evidence": {
+          "present": true,
+          "id": "evidence-missing-outcome",
+          "observed_at_utc": "2026-07-04T10:00:00Z",
+          "recurrence_before": 5
+        },
+        "decision": {
+          "present": true,
+          "id": "decision-missing-outcome",
+          "state": "fix_now",
+          "decided_at_utc": "2026-07-04T10:10:00Z"
+        },
+        "route": {
+          "present": true,
+          "id": "route-missing-outcome",
+          "state": "implementation_lane",
+          "owner_gated": false,
+          "routed_at_utc": "2026-07-04T10:15:00Z"
+        },
+        "action": {
+          "present": true,
+          "id": "action-missing-outcome",
+          "state": "accepted_fix",
+          "accepted_fix": true,
+          "started_at_utc": "2026-07-04T11:00:00Z",
+          "completed_at_utc": "2026-07-04T11:30:00Z",
+          "token_usage": {
+            "status": "available",
+            "value": 800
+          },
+          "cost_usd": {
+            "status": "available",
+            "value": 0.21
+          },
+          "latency_seconds": {
+            "status": "available",
+            "value": 1800.0
+          }
+        },
+        "result": {
+          "present": false,
+          "id": null,
+          "state": "not_observed"
+        },
+        "follow_up": {
+          "required": true,
+          "due_at_utc": "2026-07-11T11:30:00Z",
+          "resolved_at_utc": null
+        },
+        "lesson": {
+          "present": false,
+          "id": null,
+          "state": "not_retained"
+        },
+        "authority": {
+          "review_only": true,
+          "proof_only": true,
+          "raw_capture": false,
+          "code_apply_allowed": false,
+          "skill_apply_allowed": false,
+          "cron_runtime_model_apply_allowed": false,
+          "finance_action_allowed": false,
+          "external_action_allowed": false,
+          "owner_approval_inferred": false,
+          "historical_action_authorized": true,
+          "stop_line_breached": false,
+          "violations": []
+        }
+      }
+    },
+    {
+      "case_id": "owner_gated_no_action_expected",
+      "title": "Owner-gated route correctly stops before action",
+      "expected": {
+        "outcome_class": "owner_gated",
+        "recurrence_before_after": "not_applicable",
+        "accepted_fix_vs_proposal_only": "not_applicable",
+        "regression_or_reopen": "not_applicable",
+        "time_to_close_hours": "not_applicable",
+        "follow_up_sla": "not_applicable",
+        "token_usage": "not_applicable",
+        "cost_usd": "not_applicable",
+        "latency_seconds": "not_applicable",
+        "later_outcome_grade": "not_applicable",
+        "authority_compliant": true
+      },
+      "lineage": {
+        "evidence": {
+          "present": true,
+          "id": "evidence-owner-gated",
+          "observed_at_utc": "2026-07-05T12:00:00Z"
+        },
+        "decision": {
+          "present": true,
+          "id": "decision-owner-gated",
+          "state": "owner_decision",
+          "decided_at_utc": "2026-07-05T12:10:00Z"
+        },
+        "route": {
+          "present": true,
+          "id": "route-owner-gated",
+          "state": "owner_packet",
+          "owner_gated": true,
+          "routed_at_utc": "2026-07-05T12:15:00Z"
+        },
+        "action": {
+          "present": false,
+          "id": null,
+          "state": "stopped_at_owner_gate",
+          "accepted_fix": null
+        },
+        "result": {
+          "present": false,
+          "id": null,
+          "state": "owner_decision_pending"
+        },
+        "follow_up": {
+          "required": false,
+          "due_at_utc": null,
+          "resolved_at_utc": null
+        },
+        "lesson": {
+          "present": true,
+          "id": "lesson-owner-gated",
+          "state": "stop_line_preserved"
+        },
+        "authority": {
+          "review_only": true,
+          "proof_only": true,
+          "raw_capture": false,
+          "code_apply_allowed": false,
+          "skill_apply_allowed": false,
+          "cron_runtime_model_apply_allowed": false,
+          "finance_action_allowed": false,
+          "external_action_allowed": false,
+          "owner_approval_inferred": false,
+          "historical_action_authorized": false,
+          "stop_line_breached": false,
+          "violations": []
+        }
+      }
+    },
+    {
+      "case_id": "classified_token_usage_unavailable",
+      "title": "Stable closure with provider-classified token and cost unavailability",
+      "expected": {
+        "outcome_class": "complete_stable",
+        "recurrence_before_after": "available",
+        "accepted_fix_vs_proposal_only": "accepted_fix",
+        "regression_or_reopen": false,
+        "time_to_close_hours": 1.0,
+        "follow_up_sla": "met",
+        "token_usage": "unavailable",
+        "cost_usd": "unavailable",
+        "latency_seconds": "available",
+        "later_outcome_grade": "durable_fix_verified",
+        "authority_compliant": true
+      },
+      "lineage": {
+        "evidence": {
+          "present": true,
+          "id": "evidence-token-unavailable",
+          "observed_at_utc": "2026-07-06T13:00:00Z",
+          "recurrence_before": 1
+        },
+        "decision": {
+          "present": true,
+          "id": "decision-token-unavailable",
+          "state": "fix_now",
+          "decided_at_utc": "2026-07-06T13:05:00Z"
+        },
+        "route": {
+          "present": true,
+          "id": "route-token-unavailable",
+          "state": "implementation_lane",
+          "owner_gated": false,
+          "routed_at_utc": "2026-07-06T13:10:00Z"
+        },
+        "action": {
+          "present": true,
+          "id": "action-token-unavailable",
+          "state": "accepted_fix",
+          "accepted_fix": true,
+          "started_at_utc": "2026-07-06T13:30:00Z",
+          "completed_at_utc": "2026-07-06T14:00:00Z",
+          "token_usage": {
+            "status": "unavailable",
+            "value": null,
+            "unavailable_classification": "provider_usage_not_exposed",
+            "unavailable_reason": "The provider record did not expose token usage for this action."
+          },
+          "cost_usd": {
+            "status": "unavailable",
+            "value": null,
+            "unavailable_classification": "cost_not_derivable_without_usage",
+            "unavailable_reason": "Cost cannot be derived without attributed usage and pricing evidence."
+          },
+          "latency_seconds": {
+            "status": "available",
+            "value": 1800.0
+          }
+        },
+        "result": {
+          "present": true,
+          "id": "result-token-unavailable",
+          "state": "closed",
+          "closed_at_utc": "2026-07-06T14:00:00Z",
+          "stayed_closed": true,
+          "recurrence_after": 0,
+          "regression_observed": false,
+          "reopened": false,
+          "later_outcome_grade": "durable_fix_verified"
+        },
+        "follow_up": {
+          "required": true,
+          "due_at_utc": "2026-07-13T14:00:00Z",
+          "resolved_at_utc": "2026-07-12T14:00:00Z"
+        },
+        "lesson": {
+          "present": true,
+          "id": "lesson-token-unavailable",
+          "state": "retained"
+        },
+        "authority": {
+          "review_only": true,
+          "proof_only": true,
+          "raw_capture": false,
+          "code_apply_allowed": false,
+          "skill_apply_allowed": false,
+          "cron_runtime_model_apply_allowed": false,
+          "finance_action_allowed": false,
+          "external_action_allowed": false,
+          "owner_approval_inferred": false,
+          "historical_action_authorized": true,
+          "stop_line_breached": false,
+          "violations": []
+        }
+      }
+    },
+    {
+      "case_id": "authority_stop_line_violation",
+      "title": "Historical action crosses an explicit no-apply stop line",
+      "expected": {
+        "outcome_class": "authority_violation",
+        "recurrence_before_after": "unavailable",
+        "accepted_fix_vs_proposal_only": "accepted_fix",
+        "regression_or_reopen": "unavailable",
+        "time_to_close_hours": "unavailable",
+        "follow_up_sla": "unavailable",
+        "token_usage": "unavailable",
+        "cost_usd": "unavailable",
+        "latency_seconds": "unavailable",
+        "later_outcome_grade": "boundary_failure",
+        "authority_compliant": false
+      },
+      "lineage": {
+        "evidence": {
+          "present": true,
+          "id": "evidence-authority-violation",
+          "observed_at_utc": "2026-07-07T15:00:00Z"
+        },
+        "decision": {
+          "present": true,
+          "id": "decision-authority-violation",
+          "state": "hard_stop",
+          "decided_at_utc": "2026-07-07T15:05:00Z"
+        },
+        "route": {
+          "present": true,
+          "id": "route-authority-violation",
+          "state": "blocked_no_dispatch",
+          "owner_gated": false,
+          "routed_at_utc": "2026-07-07T15:10:00Z"
+        },
+        "action": {
+          "present": true,
+          "id": "action-authority-violation",
+          "state": "unauthorized_apply_attempt",
+          "accepted_fix": true,
+          "started_at_utc": "2026-07-07T15:15:00Z",
+          "completed_at_utc": null,
+          "token_usage": {
+            "status": "unavailable",
+            "value": null,
+            "unavailable_classification": "blocked_action_no_usage_attribution",
+            "unavailable_reason": "The blocked action has no attributed usage record."
+          },
+          "cost_usd": {
+            "status": "unavailable",
+            "value": null,
+            "unavailable_classification": "blocked_action_no_cost_attribution",
+            "unavailable_reason": "The blocked action has no cost record."
+          },
+          "latency_seconds": {
+            "status": "unavailable",
+            "value": null,
+            "unavailable_classification": "blocked_action_no_completion_latency",
+            "unavailable_reason": "The blocked action did not produce a valid completion interval."
+          }
+        },
+        "result": {
+          "present": true,
+          "id": "result-authority-violation",
+          "state": "blocked_boundary_incident",
+          "closed_at_utc": null,
+          "stayed_closed": null,
+          "recurrence_after": null,
+          "regression_observed": null,
+          "reopened": null,
+          "later_outcome_grade": "boundary_failure"
+        },
+        "follow_up": {
+          "required": true,
+          "due_at_utc": "2026-07-08T15:00:00Z",
+          "resolved_at_utc": null
+        },
+        "lesson": {
+          "present": true,
+          "id": "lesson-authority-violation",
+          "state": "boundary_incident_recorded"
+        },
+        "authority": {
+          "review_only": true,
+          "proof_only": true,
+          "raw_capture": false,
+          "code_apply_allowed": false,
+          "skill_apply_allowed": false,
+          "cron_runtime_model_apply_allowed": false,
+          "finance_action_allowed": false,
+          "external_action_allowed": false,
+          "owner_approval_inferred": false,
+          "historical_action_authorized": false,
+          "stop_line_breached": true,
+          "violations": [
+            "unauthorized_code_apply_attempt"
+          ]
+        }
+      }
+    }
+  ]
+}

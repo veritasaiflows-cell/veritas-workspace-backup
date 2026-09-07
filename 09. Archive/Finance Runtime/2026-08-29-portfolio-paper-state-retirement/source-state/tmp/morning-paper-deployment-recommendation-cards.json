@@ -1,0 +1,283 @@
+{
+  "schema": "veritas.morning_paper_deployment_recommendation_cards.v1",
+  "generated_at_utc": "2026-08-28T17:55:01Z",
+  "status": "warning",
+  "purpose": "Weekday morning review-only paper deployment recommendation approval-card builder from WF78/WF67.",
+  "authority_boundary": {
+    "review_only": true,
+    "morning_paper_recommendation_cards_only": true,
+    "owner_card_generation_allowed": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "fresh_quote_required_for_clean_card": true,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_allowed": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "paper_submit_cancel_sell_modify_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_sleeve_risk_rule_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "schedule_design": {
+    "intended_window": "weekday premarket after morning freshness producers and before regular-session open",
+    "timezone": "America/Phoenix",
+    "clean_card_requires_fresh_quote_seconds": 900,
+    "numeric_price_band_stop_display_requires_fresh_intraday_quote": true
+  },
+  "summary": {
+    "candidate_count": 0,
+    "clean_approval_card_count": 0,
+    "clean_without_warnings_count": 0,
+    "clean_with_warnings_count": 0,
+    "blocked_or_not_clean_count": 0,
+    "clean_tickers": [],
+    "clean_without_warnings_tickers": [],
+    "clean_with_warnings_tickers": [],
+    "blocked_or_not_clean_tickers": [],
+    "wf84_canonical_default_overlay_count": 0,
+    "wf84_canonical_default_switch_enabled": true,
+    "soft_step_failures": [],
+    "fresh_quote_display_count": 0,
+    "fresh_quote_display_suppressed_count": 0,
+    "skipped_steps": [
+      "refresh_steps"
+    ],
+    "artifact_only": true,
+    "artifact_only_max_age_minutes": 360,
+    "artifact_only_stale_count": 1,
+    "band_hygiene_artifact_age_seconds": null,
+    "band_integrity_status": "warning",
+    "band_integrity_critical_tickers": [],
+    "band_integrity_warning_tickers": [
+      "NVDA",
+      "VRT"
+    ],
+    "next_safe_action": "No paper-deployment approval cards generated; continue scheduled refresh and repair cadence.",
+    "stale_wf67_current_surface_violation_count": 0,
+    "stale_wf67_historical_artifact_count": 37,
+    "stale_wf67_historical_artifact_older_than_current_window_count": 37
+  },
+  "cards": [],
+  "source_artifacts": {
+    "quote_snapshot_proof": "tmp/intraday-alerts/quote-snapshot-proof.json",
+    "market_execution_readiness": "tmp/market-execution-readiness-cron-hardening.json",
+    "capital_review_queue": "tmp/wf78-capital-review-queue.json",
+    "finance_decision_factory": "tmp/finance-decision-factory.json",
+    "owner_card_prep_loop": "tmp/wf78-owner-card-prep-loop.json",
+    "promotion_gate": "tmp/chief-intelligence-promotion-gate.json",
+    "auto_router": "tmp/wf78-auto-tier-routing.json",
+    "confidence_gate": "tmp/wf78-tier-a-confidence-gate.json",
+    "band_proposals": "tmp/band-proposals.json",
+    "band_hygiene_freshness_controller": "tmp/band-hygiene-freshness-controller.json",
+    "finance_decision_sync_spine": "tmp/finance-decision-sync-spine.json",
+    "wf84_canonical_data_plane_sqlite": "tmp/canonical-finance-data-plane.sqlite",
+    "wf84_phase6_10_switch_proof": "tmp/canonical-finance-data-plane-phase6-10.json",
+    "capital_deployment_band_integrity_validator": "tmp/capital-deployment-band-integrity-validator.json",
+    "stale_paper_card_reference_guard": "tmp/stale-paper-card-reference-guard.json"
+  },
+  "artifact_freshness_records": [
+    {
+      "name": "quote_snapshot_proof",
+      "path": "tmp/intraday-alerts/quote-snapshot-proof.json",
+      "exists": true,
+      "status": "ok",
+      "validation_status": null,
+      "generated_at_utc": "2026-08-28T17:55:00.425363Z",
+      "age_seconds": 0,
+      "max_age_seconds": 21600,
+      "stale": false
+    },
+    {
+      "name": "market_execution_readiness",
+      "path": "tmp/market-execution-readiness-cron-hardening.json",
+      "exists": true,
+      "status": "warning",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T13:55:00Z",
+      "age_seconds": 14400,
+      "max_age_seconds": 21600,
+      "stale": false
+    },
+    {
+      "name": "finance_decision_factory",
+      "path": "tmp/finance-decision-factory.json",
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T13:25:26Z",
+      "age_seconds": 16174,
+      "max_age_seconds": 21600,
+      "stale": false
+    },
+    {
+      "name": "promotion_gate",
+      "path": "tmp/chief-intelligence-promotion-gate.json",
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-07-01T14:32:38Z",
+      "age_seconds": 5023342,
+      "max_age_seconds": 21600,
+      "stale": true
+    },
+    {
+      "name": "auto_router",
+      "path": "tmp/wf78-auto-tier-routing.json",
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T14:33:31Z",
+      "age_seconds": 12089,
+      "max_age_seconds": 21600,
+      "stale": false
+    },
+    {
+      "name": "confidence_gate",
+      "path": "tmp/wf78-tier-a-confidence-gate.json",
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T14:33:31Z",
+      "age_seconds": 12089,
+      "max_age_seconds": 21600,
+      "stale": false
+    },
+    {
+      "name": "band_proposals",
+      "path": "tmp/band-proposals.json",
+      "exists": true,
+      "status": "needs_review",
+      "validation_status": null,
+      "generated_at_utc": "2026-08-28T13:45:51.103288+00:00",
+      "age_seconds": 14949,
+      "max_age_seconds": 21600,
+      "stale": false
+    },
+    {
+      "name": "band_hygiene_freshness_controller",
+      "path": "tmp/band-hygiene-freshness-controller.json",
+      "exists": true,
+      "status": "blocked",
+      "validation_status": "error",
+      "generated_at_utc": "2026-08-28T15:15:00Z",
+      "age_seconds": 9600,
+      "max_age_seconds": 21600,
+      "stale": false
+    },
+    {
+      "name": "finance_decision_sync_spine",
+      "path": "tmp/finance-decision-sync-spine.json",
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T13:25:27Z",
+      "age_seconds": 16173,
+      "max_age_seconds": 21600,
+      "stale": false
+    },
+    {
+      "name": "wf84_phase6_10_switch_proof",
+      "path": "tmp/canonical-finance-data-plane-phase6-10.json",
+      "exists": true,
+      "status": "ok",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T13:24:20Z",
+      "age_seconds": 16240,
+      "max_age_seconds": 21600,
+      "stale": false
+    },
+    {
+      "name": "capital_deployment_band_integrity_validator",
+      "path": "tmp/capital-deployment-band-integrity-validator.json",
+      "exists": true,
+      "status": "warning",
+      "validation_status": "ok",
+      "generated_at_utc": "2026-08-28T13:55:04Z",
+      "age_seconds": 14396,
+      "max_age_seconds": 21600,
+      "stale": false
+    }
+  ],
+  "steps": [
+    {
+      "name": "refresh_steps",
+      "command": [],
+      "started_at_utc": "2026-08-28T17:55:00Z",
+      "completed_at_utc": "2026-08-28T17:55:00Z",
+      "returncode": 0,
+      "ok": true,
+      "allowed_failure": true,
+      "skipped": true,
+      "reason": "artifact_only_fast_path_uses_existing_upstream_proof",
+      "stdout_preview": "",
+      "stderr_preview": ""
+    },
+    {
+      "name": "intraday_quote_snapshot_proof_final",
+      "command": [
+        "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "scripts\\intraday_quote_snapshot_proof.py"
+      ],
+      "started_at_utc": "2026-08-28T17:55:00Z",
+      "completed_at_utc": "2026-08-28T17:55:00Z",
+      "returncode": 0,
+      "ok": true,
+      "allowed_failure": true,
+      "stdout_preview": "{\n  \"blocked_reason\": null,\n  \"json_output\": \"tmp/intraday-alerts/quote-snapshot-proof.json\",\n  \"markdown_output\": \"tmp/intraday-alerts/quote-snapshot-proof.md\",\n  \"secrets_redacted\": true,\n  \"status\": \"ok\",\n  \"validation_output\": \"tmp/intraday-alerts/quote-snapshot-proof-validation.json\"\n}",
+      "stderr_preview": ""
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "artifact_only_stale:promotion_gate",
+      "artifact_only_validation_not_ok:band_hygiene_freshness_controller:error",
+      "stale_paper_card_reference_guard:historical_wf67_card_or_request_artifacts_present"
+    ]
+  },
+  "stop_lines": [
+    "This cron produces recommendation approval cards only.",
+    "Clean means ready for Randall review, not approved.",
+    "No paper/live submit, cancel, sell, modify, replace, close-position, account action, money movement, capital deployment, canon/portfolio mutation, or owner approval inference is allowed.",
+    "Any exact paper order or execution still requires Randall approval plus WF67 wrapper, fresh kill switch, and clean guard validation."
+  ],
+  "stale_paper_card_reference_guard": {
+    "path": "tmp/stale-paper-card-reference-guard.json",
+    "status": "warning",
+    "summary": {
+      "current_surface_reference_count": 0,
+      "current_surface_violation_count": 0,
+      "historical_artifact_count": 37,
+      "historical_artifact_older_than_current_window_count": 37,
+      "allowlisted_current_link_count": 0,
+      "next_safe_action": "Keep old WF67 files audit-only; archive/delete requires separate exact owner approval packet."
+    },
+    "validation": {
+      "status": "ok",
+      "errors": [],
+      "warnings": [
+        "historical_wf67_card_or_request_artifacts_present"
+      ]
+    },
+    "source_policy": {
+      "current_recommendation_surfaces": {
+        "morning_paper_cards": "tmp/morning-paper-deployment-recommendation-cards.json",
+        "wf85_approval_gate": "tmp/trade-grade-approval-card-gate.json",
+        "autonomous_review_card_queue": "tmp/autonomous-routing-deployment-cards.json",
+        "wf85_notification_digest": "tmp/wf85-paper-deployment-notification-digest.json",
+        "finance_decision_sync_spine": "tmp/finance-decision-sync-spine.json"
+      },
+      "historical_wf67_patterns": [
+        "tmp/alpaca-paper-readiness/order-card*.json",
+        "tmp/alpaca-paper-readiness/paper-trade-request*.json",
+        "tmp/alpaca-paper-readiness/main-session-cards/*.json"
+      ],
+      "rule": "Historical WF67 card/request paths may appear in current surfaces only when linked by the current card builder or current WF85 approval gate and fresh within the configured current window.",
+      "max_current_age_hours": 36
+    }
+  }
+}

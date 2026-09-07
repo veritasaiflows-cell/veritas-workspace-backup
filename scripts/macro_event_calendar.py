@@ -3,7 +3,7 @@
 
 This is a review-only macro schedule surface for high-impact U.S. releases.
 It tracks event timing and follow-up expectations, but does not make forecast,
-probability, portfolio, paper-trading, or execution claims.
+probability, maintained investment-account state, simulated-account, or execution claims.
 """
 from __future__ import annotations
 
@@ -19,8 +19,9 @@ ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 DEFAULT_JSON = TMP / "macro-event-calendar.json"
 DEFAULT_MD = TMP / "macro-event-calendar.md"
-MARKET_STATE = TMP / "market-state.json"
 MACRO_REGIME = TMP / "macro-regime.json"
+ALERT_CONTROLLER = TMP / "alert-level-freshness-controller.json"
+ALERT_DIGEST = TMP / "finance-alert-os-digest.json"
 
 SCHEMA = "veritas.macro_event_calendar.v1"
 EASTERN = ZoneInfo("America/New_York")
@@ -98,7 +99,7 @@ def seeded_events() -> list[dict[str, Any]]:
             period="May 2026",
             source_url="https://www.bls.gov/cps/home.htm",
             market_sensitivity="Labor strength, unemployment, wages, and Fed-cut timing.",
-            follow_up="Refresh labor read-through, rates reaction, risk appetite, and candidate sizing discipline after release.",
+            follow_up="Refresh labor read-through, rates reaction, risk appetite, alert evidence, and recommendation confidence after release.",
         ),
         event(
             event_id="2026-06-10-bls-cpi-may-2026",
@@ -109,7 +110,7 @@ def seeded_events() -> list[dict[str, Any]]:
             period="May 2026",
             source_url="https://www.bls.gov/cpi/",
             market_sensitivity="Inflation path, real yields, Fed-cut probability, duration, and no-chase discipline.",
-            follow_up="Refresh inflation posture, policy expectations, market-state, macro regime, and deployment stop lines after release.",
+            follow_up="Refresh inflation posture, policy expectations, macro regime, alert states, and recommendation risks after release.",
         ),
         event(
             event_id="2026-06-11-bls-ppi-may-2026",
@@ -131,7 +132,7 @@ def seeded_events() -> list[dict[str, Any]]:
             period="June 2026",
             source_url="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
             market_sensitivity="Policy rate path, dot-plot/readout if applicable, rates, dollar, and risk assets.",
-            follow_up="Refresh policy expectations, macro regime, portfolio posture, and stop-line state after statement/press conference.",
+            follow_up="Refresh policy expectations, macro regime, alert conditions, and recommendation confidence after statement/press conference.",
         ),
         event(
             event_id="2026-06-25-bea-pce-personal-income-outlays-may-2026",
@@ -166,8 +167,9 @@ def build_calendar(as_of: date | None = None) -> dict[str, Any]:
     if as_of is not None:
         now = datetime(as_of.year, as_of.month, as_of.day, tzinfo=timezone.utc)
 
-    market_state = as_dict(load_json_artifact(MARKET_STATE))
     macro_regime = as_dict(load_json_artifact(MACRO_REGIME))
+    alert_controller = as_dict(load_json_artifact(ALERT_CONTROLLER))
+    alert_digest = as_dict(load_json_artifact(ALERT_DIGEST))
     events = annotate_events(seeded_events(), now)
     upcoming = [row for row in events if row["status"] in {"today", "upcoming"}]
     next_7 = [row for row in upcoming if int(row["days_until"]) <= 7]
@@ -181,13 +183,15 @@ def build_calendar(as_of: date | None = None) -> dict[str, Any]:
         "status": "ok",
         "source_posture": "official_calendar_seeded_review_only",
         "source_artifacts": [
-            {"path": rel(MARKET_STATE), "exists": MARKET_STATE.exists(), "status": market_state.get("status")},
             {"path": rel(MACRO_REGIME), "exists": MACRO_REGIME.exists(), "status": macro_regime.get("status")},
+            {"path": rel(ALERT_CONTROLLER), "exists": ALERT_CONTROLLER.exists(), "status": alert_controller.get("status")},
+            {"path": rel(ALERT_DIGEST), "exists": ALERT_DIGEST.exists(), "status": alert_digest.get("status")},
         ],
         "current_macro_state": {
             "macro_regime": macro_regime.get("macro_regime") or macro_regime.get("regime"),
             "macro_verdict": macro_regime.get("verdict") or macro_regime.get("summary"),
-            "fed_target_range": as_dict(as_dict(market_state.get("macro")).get("fed")).get("target_range"),
+            "alert_controller_status": alert_controller.get("status"),
+            "recommendation_digest_status": alert_digest.get("status"),
         },
         "events": events,
         "summary": {
@@ -205,9 +209,9 @@ def build_calendar(as_of: date | None = None) -> dict[str, Any]:
             ],
         },
         "operator_followup_contract": {
-            "before_event": "Flag event risk in daily/weekly intelligence and avoid overstating deployment certainty ahead of high-impact releases.",
-            "after_event": "Refresh market-state, macro-regime, daily review objects, deployment readiness, and capital-deployment recommendation validators.",
-            "owner_decision_required": "Any resulting capital deployment, paper order, or canon/portfolio mutation still requires the normal gated approval path.",
+            "before_event": "Flag event risk in daily/weekly intelligence and avoid overstating recommendation confidence ahead of high-impact releases.",
+            "after_event": "Refresh macro-regime evidence, quote proof, alert states, freshness, and non-executing recommendation context.",
+            "owner_decision_required": "Any owner action remains Randall's decision; this calendar grants no capital, account, execution, or canon-write authority.",
         },
         "authority_boundary": AUTHORITY_BOUNDARY,
     }

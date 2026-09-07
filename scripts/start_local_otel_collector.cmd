@@ -1,6 +1,9 @@
 @echo off
 setlocal
 set "WORKSPACE=C:\Users\Veritas\.openclaw\workspace"
-set "PYTHON=C:\Users\Veritas\AppData\Local\Programs\Python\Python313\python.exe"
+set "OTELCOL=%WORKSPACE%\tools\otelcol\otelcol.exe"
+set "OTEL_CONFIG=%WORKSPACE%\tools\otelcol\openclaw-local-otel-runtime-metadata.yaml"
+set "LOG_DIR=%WORKSPACE%\tmp\otel-collector"
+if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
 cd /d "%WORKSPACE%"
-"%PYTHON%" "%WORKSPACE%\scripts\local_otel_collector.py" --host 127.0.0.1 --port 4318 --out "%WORKSPACE%\tmp\otel-collector"
+"%OTELCOL%" --config=file:tools\otelcol\openclaw-local-otel-runtime-metadata.yaml 1>>"%LOG_DIR%\collector.out.log" 2>>"%LOG_DIR%\collector.err.log"

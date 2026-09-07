@@ -1,0 +1,295 @@
+# WF72 entry/stop SQL activation pilot worker
+
+- Generated: 2026-05-24T21:17:55Z
+- Status: `complete`
+- Boundary: `entry_stop_reference_metadata_pilot_only_not_broad_sql_finance_canon_not_portfolio_or_trade_authority`
+- Activation allowed now: `False`
+- Exact candidate key count: `252`
+
+## Exact neutral candidate fields
+
+- `reference_price_low`
+- `reference_price_high`
+- `reference_invalidation_level`
+- `reference_level_source_timestamp`
+- `reference_level_source_sha256`
+- `reference_level_owner_source_path`
+
+## Candidate keys
+
+- `ETN:reference_price_low`
+- `ETN:reference_price_high`
+- `ETN:reference_invalidation_level`
+- `ETN:reference_level_source_timestamp`
+- `ETN:reference_level_source_sha256`
+- `ETN:reference_level_owner_source_path`
+- `JPM:reference_price_low`
+- `JPM:reference_price_high`
+- `JPM:reference_invalidation_level`
+- `JPM:reference_level_source_timestamp`
+- `JPM:reference_level_source_sha256`
+- `JPM:reference_level_owner_source_path`
+- `NVDA:reference_price_low`
+- `NVDA:reference_price_high`
+- `NVDA:reference_invalidation_level`
+- `NVDA:reference_level_source_timestamp`
+- `NVDA:reference_level_source_sha256`
+- `NVDA:reference_level_owner_source_path`
+- `GOOG:reference_price_low`
+- `GOOG:reference_price_high`
+- `GOOG:reference_invalidation_level`
+- `GOOG:reference_level_source_timestamp`
+- `GOOG:reference_level_source_sha256`
+- `GOOG:reference_level_owner_source_path`
+- `MSFT:reference_price_low`
+- `MSFT:reference_price_high`
+- `MSFT:reference_invalidation_level`
+- `MSFT:reference_level_source_timestamp`
+- `MSFT:reference_level_source_sha256`
+- `MSFT:reference_level_owner_source_path`
+- `AMZN:reference_price_low`
+- `AMZN:reference_price_high`
+- `AMZN:reference_invalidation_level`
+- `AMZN:reference_level_source_timestamp`
+- `AMZN:reference_level_source_sha256`
+- `AMZN:reference_level_owner_source_path`
+- `VRT:reference_price_low`
+- `VRT:reference_price_high`
+- `VRT:reference_invalidation_level`
+- `VRT:reference_level_source_timestamp`
+- `VRT:reference_level_source_sha256`
+- `VRT:reference_level_owner_source_path`
+- `CAT:reference_price_low`
+- `CAT:reference_price_high`
+- `CAT:reference_invalidation_level`
+- `CAT:reference_level_source_timestamp`
+- `CAT:reference_level_source_sha256`
+- `CAT:reference_level_owner_source_path`
+- `LLY:reference_price_low`
+- `LLY:reference_price_high`
+- `LLY:reference_invalidation_level`
+- `LLY:reference_level_source_timestamp`
+- `LLY:reference_level_source_sha256`
+- `LLY:reference_level_owner_source_path`
+- `GS:reference_price_low`
+- `GS:reference_price_high`
+- `GS:reference_invalidation_level`
+- `GS:reference_level_source_timestamp`
+- `GS:reference_level_source_sha256`
+- `GS:reference_level_owner_source_path`
+- `BRK.B:reference_price_low`
+- `BRK.B:reference_price_high`
+- `BRK.B:reference_invalidation_level`
+- `BRK.B:reference_level_source_timestamp`
+- `BRK.B:reference_level_source_sha256`
+- `BRK.B:reference_level_owner_source_path`
+- `XOM:reference_price_low`
+- `XOM:reference_price_high`
+- `XOM:reference_invalidation_level`
+- `XOM:reference_level_source_timestamp`
+- `XOM:reference_level_source_sha256`
+- `XOM:reference_level_owner_source_path`
+- `LMT:reference_price_low`
+- `LMT:reference_price_high`
+- `LMT:reference_invalidation_level`
+- `LMT:reference_level_source_timestamp`
+- `LMT:reference_level_source_sha256`
+- `LMT:reference_level_owner_source_path`
+- `RTX:reference_price_low`
+- `RTX:reference_price_high`
+- `RTX:reference_invalidation_level`
+- `RTX:reference_level_source_timestamp`
+- `RTX:reference_level_source_sha256`
+- `RTX:reference_level_owner_source_path`
+- `CVX:reference_price_low`
+- `CVX:reference_price_high`
+- `CVX:reference_invalidation_level`
+- `CVX:reference_level_source_timestamp`
+- `CVX:reference_level_source_sha256`
+- `CVX:reference_level_owner_source_path`
+- `PLTR:reference_price_low`
+- `PLTR:reference_price_high`
+- `PLTR:reference_invalidation_level`
+- `PLTR:reference_level_source_timestamp`
+- `PLTR:reference_level_source_sha256`
+- `PLTR:reference_level_owner_source_path`
+- `AMD:reference_price_low`
+- `AMD:reference_price_high`
+- `AMD:reference_invalidation_level`
+- `AMD:reference_level_source_timestamp`
+- `AMD:reference_level_source_sha256`
+- `AMD:reference_level_owner_source_path`
+- `LNG:reference_price_low`
+- `LNG:reference_price_high`
+- `LNG:reference_invalidation_level`
+- `LNG:reference_level_source_timestamp`
+- `LNG:reference_level_source_sha256`
+- `LNG:reference_level_owner_source_path`
+- `BKNG:reference_price_low`
+- `BKNG:reference_price_high`
+- `BKNG:reference_invalidation_level`
+- `BKNG:reference_level_source_timestamp`
+- `BKNG:reference_level_source_sha256`
+- `BKNG:reference_level_owner_source_path`
+- `LIN:reference_price_low`
+- `LIN:reference_price_high`
+- `LIN:reference_invalidation_level`
+- `LIN:reference_level_source_timestamp`
+- `LIN:reference_level_source_sha256`
+- `LIN:reference_level_owner_source_path`
+- `ECL:reference_price_low`
+- `ECL:reference_price_high`
+- `ECL:reference_invalidation_level`
+- `ECL:reference_level_source_timestamp`
+- `ECL:reference_level_source_sha256`
+- `ECL:reference_level_owner_source_path`
+- `VMC:reference_price_low`
+- `VMC:reference_price_high`
+- `VMC:reference_invalidation_level`
+- `VMC:reference_level_source_timestamp`
+- `VMC:reference_level_source_sha256`
+- `VMC:reference_level_owner_source_path`
+- `META:reference_price_low`
+- `META:reference_price_high`
+- `META:reference_invalidation_level`
+- `META:reference_level_source_timestamp`
+- `META:reference_level_source_sha256`
+- `META:reference_level_owner_source_path`
+- `NFLX:reference_price_low`
+- `NFLX:reference_price_high`
+- `NFLX:reference_invalidation_level`
+- `NFLX:reference_level_source_timestamp`
+- `NFLX:reference_level_source_sha256`
+- `NFLX:reference_level_owner_source_path`
+- `TMUS:reference_price_low`
+- `TMUS:reference_price_high`
+- `TMUS:reference_invalidation_level`
+- `TMUS:reference_level_source_timestamp`
+- `TMUS:reference_level_source_sha256`
+- `TMUS:reference_level_owner_source_path`
+- `PH:reference_price_low`
+- `PH:reference_price_high`
+- `PH:reference_invalidation_level`
+- `PH:reference_level_source_timestamp`
+- `PH:reference_level_source_sha256`
+- `PH:reference_level_owner_source_path`
+- `GE:reference_price_low`
+- `GE:reference_price_high`
+- `GE:reference_invalidation_level`
+- `GE:reference_level_source_timestamp`
+- `GE:reference_level_source_sha256`
+- `GE:reference_level_owner_source_path`
+- `CME:reference_price_low`
+- `CME:reference_price_high`
+- `CME:reference_invalidation_level`
+- `CME:reference_level_source_timestamp`
+- `CME:reference_level_source_sha256`
+- `CME:reference_level_owner_source_path`
+- `WMB:reference_price_low`
+- `WMB:reference_price_high`
+- `WMB:reference_invalidation_level`
+- `WMB:reference_level_source_timestamp`
+- `WMB:reference_level_source_sha256`
+- `WMB:reference_level_owner_source_path`
+- `XLI:reference_price_low`
+- `XLI:reference_price_high`
+- `XLI:reference_invalidation_level`
+- `XLI:reference_level_source_timestamp`
+- `XLI:reference_level_source_sha256`
+- `XLI:reference_level_owner_source_path`
+- `XLB:reference_price_low`
+- `XLB:reference_price_high`
+- `XLB:reference_invalidation_level`
+- `XLB:reference_level_source_timestamp`
+- `XLB:reference_level_source_sha256`
+- `XLB:reference_level_owner_source_path`
+- `XLC:reference_price_low`
+- `XLC:reference_price_high`
+- `XLC:reference_invalidation_level`
+- `XLC:reference_level_source_timestamp`
+- `XLC:reference_level_source_sha256`
+- `XLC:reference_level_owner_source_path`
+- `PAVE:reference_price_low`
+- `PAVE:reference_price_high`
+- `PAVE:reference_invalidation_level`
+- `PAVE:reference_level_source_timestamp`
+- `PAVE:reference_level_source_sha256`
+- `PAVE:reference_level_owner_source_path`
+- `XLF:reference_price_low`
+- `XLF:reference_price_high`
+- `XLF:reference_invalidation_level`
+- `XLF:reference_level_source_timestamp`
+- `XLF:reference_level_source_sha256`
+- `XLF:reference_level_owner_source_path`
+- `XLE:reference_price_low`
+- `XLE:reference_price_high`
+- `XLE:reference_invalidation_level`
+- `XLE:reference_level_source_timestamp`
+- `XLE:reference_level_source_sha256`
+- `XLE:reference_level_owner_source_path`
+- `ITA:reference_price_low`
+- `ITA:reference_price_high`
+- `ITA:reference_invalidation_level`
+- `ITA:reference_level_source_timestamp`
+- `ITA:reference_level_source_sha256`
+- `ITA:reference_level_owner_source_path`
+- `VAW:reference_price_low`
+- `VAW:reference_price_high`
+- `VAW:reference_invalidation_level`
+- `VAW:reference_level_source_timestamp`
+- `VAW:reference_level_source_sha256`
+- `VAW:reference_level_owner_source_path`
+- `VXUS:reference_price_low`
+- `VXUS:reference_price_high`
+- `VXUS:reference_invalidation_level`
+- `VXUS:reference_level_source_timestamp`
+- `VXUS:reference_level_source_sha256`
+- `VXUS:reference_level_owner_source_path`
+- `KTOS:reference_price_low`
+- `KTOS:reference_price_high`
+- `KTOS:reference_invalidation_level`
+- `KTOS:reference_level_source_timestamp`
+- `KTOS:reference_level_source_sha256`
+- `KTOS:reference_level_owner_source_path`
+- `SLV:reference_price_low`
+- `SLV:reference_price_high`
+- `SLV:reference_invalidation_level`
+- `SLV:reference_level_source_timestamp`
+- `SLV:reference_level_source_sha256`
+- `SLV:reference_level_owner_source_path`
+- `TLT:reference_price_low`
+- `TLT:reference_price_high`
+- `TLT:reference_invalidation_level`
+- `TLT:reference_level_source_timestamp`
+- `TLT:reference_level_source_sha256`
+- `TLT:reference_level_owner_source_path`
+- `SMCI:reference_price_low`
+- `SMCI:reference_price_high`
+- `SMCI:reference_invalidation_level`
+- `SMCI:reference_level_source_timestamp`
+- `SMCI:reference_level_source_sha256`
+- `SMCI:reference_level_owner_source_path`
+
+## Validation checks
+
+- `ok` execution_board_exists - 03. Portfolio/Execution Board.md
+- `ok` entry_stop_rows_extracted - 42
+- `ok` neutral_field_names_do_not_use_entry_stop_buy_sell_deploy_execute - reference_price_low, reference_price_high, reference_invalidation_level, reference_level_source_timestamp, reference_level_source_sha256, reference_level_owner_source_path
+- `ok` activation_state_exact_gated_or_shadow - activation_ready
+- `ok` cache_rows_match_activation_state - active=252 candidates=252
+
+## Residue
+
+- Rows are parsed from the current Execution Board only as shadow metadata candidates; no owner note was mutated.
+- Candidate keys are numerous because each ticker row produces the six neutral reference metadata fields; future activation should consider a smaller exact pilot slice if Randall wants less blast radius.
+- No SQL consumer reads these candidate keys yet; dashboard recommendation/deployment/action-state behavior remains unchanged.
+
+## Stop lines
+
+- Do not activate without exact key-level approval, rollback/export, fallback equality, source-hash proof, and no-drift validators.
+- Do not include sizing/sleeve/cash/weight, risk-rule, trade/account/paper/live execution, credential/config, portfolio freshness, or deployment_proof_status in this pilot.
+- Do not infer owner approval, deployment entitlement, paper/live order authority, or canonical note mutation authority from these rows.
+
+## Boundary
+No SQL-canon/cache activation, Markdown/canon/portfolio mutation, owner-approval inference, sizing/sleeve/cash/risk-rule migration, dashboard behavior change, paper/live trade/account action, money movement, or credential/config authority is granted by this pilot.
+

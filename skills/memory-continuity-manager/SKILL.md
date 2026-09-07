@@ -1,6 +1,6 @@
 ---
 name: "memory-continuity-manager"
-description: "Merge memory hygiene with long-work logging."
+description: "Route daily, durable, project, resume, audit, and long-work continuity."
 ---
 
 # Memory Continuity Manager
@@ -8,6 +8,24 @@ description: "Merge memory hygiene with long-work logging."
 ## Summary
 
 Manage memory logging, durable promotion, dedupe, daily-note hygiene, audit-to-memory routing, and compact continuity for long local jobs without creating a parallel memory system.
+
+## Canonical Continuity Ownership
+
+Use one home per kind of truth:
+
+- `memory/YYYY-MM-DD.md`: chronological outcomes and short pickup pointers.
+- `MEMORY.md`: curated durable decisions, preferences, and lessons that should survive daily-note churn.
+- `06. Playbooks/Project Continuity/` or an existing owner note: resumable project state that needs more than a short daily pointer.
+- workflow state/capsules and canonical owner artifacts: current operational or finance truth.
+- core boot files: only stable constitutional rules and thin routes, never session history or detailed continuity procedure.
+
+The root `Continuity Protocol.md` is a compact routing contract. This skill owns detailed memory hygiene; `project-continuity-manager` owns resumable project and lane handoffs. Link to proof instead of copying it across these layers.
+
+## Startup And Resume Memory Route
+
+For direct-main prior-decision work, search durable memory before answering, then open only the needed lines and verify live artifacts before current-state claims. On cold start or post-compaction, use the Startup Truth Index and current resume/active-lane pointers before broad scans. A resume pointer, memory entry, or generated packet routes work; it never restores consumed authority, proves execution, or overrides current owner artifacts.
+
+Stop on ambiguous multiple pickup points, stale or mismatched leases/hashes, expired checkpoints, or missing owner identity. Route project-specific repair through `project-continuity-manager` rather than expanding the root protocol.
 
 ## Pre-Compaction Flush Discipline
 

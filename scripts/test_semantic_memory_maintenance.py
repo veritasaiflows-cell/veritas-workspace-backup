@@ -11,23 +11,17 @@ from unittest import mock
 import semantic_memory_maintenance as maintenance
 
 
-def known_finance_validation() -> dict:
+def stale_alert_validation() -> dict:
     return {
         "status": "error",
         "errors": ["stale_source_hashes:1"],
         "stale_sources": [
             {
-                "source_path": "tmp/finance-vector-retrieval-summary.json",
-                "transitive_paths": [
-                    "tmp/canonical-finance-data-plane.json",
-                    "tmp/trade-grade-decision-cards.json",
-                ],
+                "source_path": "tmp/finance-alert-os-digest.json",
+                "reason": "sha256_mismatch",
             }
         ],
-        "transitive_stale_paths": [
-            "tmp/canonical-finance-data-plane.json",
-            "tmp/trade-grade-decision-cards.json",
-        ],
+        "transitive_stale_paths": [],
         "warnings": [],
     }
 
@@ -49,8 +43,12 @@ class SemanticMemoryMaintenanceTests(unittest.TestCase):
         maintenance.RUNTIME_DIST_DIR.mkdir()
         self.runtime_tools_source = maintenance.RUNTIME_DIST_DIR / "tools-test-hash.js"
         self.runtime_tools_source.write_text(
-            "function createMemorySearchTool() {} "
-            "MEMORY_SEARCH_ALL_MEMORY_INIT_TIMEOUT_MS memory corpus unavailable in corpus=all",
+            "async function filterMemorySearchHitsBySessionVisibility(params) { "
+            "MEMORY_SEARCH_ALL_MEMORY_INIT_TIMEOUT_MS memory corpus unavailable in corpus=all "
+            "MEMORY_SEARCH_SKIP_SESSION_VISIBILITY_FOR_NON_SESSION_HITS "
+            'if (!params.hits.some((hit) => hit.source === "sessions")) return params.hits; '
+            "const visibility = resolveEffectiveSessionToolsVisibility({}); "
+            "function createMemorySearchTool() {}",
             encoding="utf-8",
         )
         self.runtime_loader = maintenance.RUNTIME_DIST_DIR / "extensions" / "memory-core" / "index.js"
@@ -69,16 +67,22 @@ class SemanticMemoryMaintenanceTests(unittest.TestCase):
         )
         self.tmp.cleanup()
 
-    def test_known_finance_staleness_is_a_warning_without_rebuild(self) -> None:
-        with mock.patch.object(maintenance, "safe_validate", return_value=(known_finance_validation(), None)), mock.patch.object(
-            maintenance.subprocess, "run"
+    def test_alert_proof_staleness_rebuilds_without_exception(self) -> None:
+        with mock.patch.object(
+            maintenance,
+            "safe_validate",
+            side_effect=[(stale_alert_validation(), None), ({"status": "ok", "errors": [], "warnings": []}, None)],
+        ), mock.patch.object(
+            maintenance.subprocess,
+            "run",
+            return_value=subprocess.CompletedProcess(args=[], returncode=0),
         ) as run:
             code, payload = maintenance.run_maintenance(max_seconds=30, batch_size=8, write=True)
         self.assertEqual(code, 0)
-        self.assertEqual(payload["status"], "warning")
-        self.assertEqual(payload["action"], "no_refresh_needed")
-        run.assert_not_called()
-        self.assertEqual(json.loads(maintenance.OUT.read_text(encoding="utf-8"))["status"], "warning")
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(payload["action"], "rebuild_registered_sources")
+        run.assert_called_once()
+        self.assertEqual(json.loads(maintenance.OUT.read_text(encoding="utf-8"))["status"], "ok")
 
     def test_unexpected_drift_rebuilds_and_returns_ok(self) -> None:
         stale = {"status": "error", "errors": ["stale_source_hashes:1"], "stale_sources": [{"source_path": "memory/2026-08-20.md"}], "warnings": []}
@@ -90,6 +94,56 @@ class SemanticMemoryMaintenanceTests(unittest.TestCase):
         self.assertEqual(payload["status"], "ok")
         self.assertEqual(payload["action"], "rebuild_registered_sources")
         self.assertIn("scripts\\vector_memory_index.py", run.call_args.args[0])
+
+    def test_direct_finance_summary_hash_drift_rebuilds(self) -> None:
+        stale = {
+            "status": "error",
+            "errors": ["stale_source_hashes:1"],
+            "stale_sources": [
+                {
+                    "source_path": "tmp/finance-vector-retrieval-summary.json",
+                    "reason": "sha256_mismatch",
+                }
+            ],
+            "transitive_stale_paths": [],
+            "warnings": [],
+        }
+        with mock.patch.object(
+            maintenance,
+            "safe_validate",
+            side_effect=[(stale, None), ({"status": "ok", "errors": [], "warnings": []}, None)],
+        ), mock.patch.object(
+            maintenance.subprocess,
+            "run",
+            return_value=subprocess.CompletedProcess(args=[], returncode=0),
+        ) as run:
+            code, payload = maintenance.run_maintenance(max_seconds=30, batch_size=8, write=True)
+        self.assertEqual(code, 0)
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(payload["action"], "rebuild_registered_sources")
+        run.assert_called_once()
+
+    def test_volatile_source_drift_gets_one_bounded_retry(self) -> None:
+        with mock.patch.object(
+            maintenance,
+            "safe_validate",
+            side_effect=[
+                (stale_alert_validation(), None),
+                (stale_alert_validation(), None),
+                ({"status": "ok", "errors": [], "warnings": []}, None),
+            ],
+        ), mock.patch.object(
+            maintenance.subprocess,
+            "run",
+            return_value=subprocess.CompletedProcess(args=[], returncode=0),
+        ) as run:
+            code, payload = maintenance.run_maintenance(max_seconds=30, batch_size=8, write=True)
+        self.assertEqual(code, 0)
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(run.call_count, 2)
+        self.assertEqual(len(payload["rebuild_attempts"]), 2)
+        self.assertEqual(payload["rebuild_attempts"][0]["post_validation"]["status"], "error")
+        self.assertIn("post_rebuild_volatile_source_drift_retrying", payload["notes"])
 
     def test_timeout_is_an_error_and_is_written(self) -> None:
         stale = {"status": "error", "errors": ["missing_db"], "stale_sources": [], "warnings": []}
@@ -116,6 +170,38 @@ class SemanticMemoryMaintenanceTests(unittest.TestCase):
         state = maintenance.runtime_patch_state()
         self.assertEqual(state["status"], "ok")
         self.assertEqual(Path(state["path"]), self.runtime_tools_source)
+        self.assertTrue(state["non_session_fast_path_guard_before_visibility"])
+
+    def test_missing_non_session_fast_path_marker_is_attention(self) -> None:
+        self.runtime_tools_source.write_text(
+            "async function filterMemorySearchHitsBySessionVisibility(params) { "
+            "MEMORY_SEARCH_ALL_MEMORY_INIT_TIMEOUT_MS memory corpus unavailable in corpus=all "
+            'if (!params.hits.some((hit) => hit.source === "sessions")) return params.hits; '
+            "const visibility = resolveEffectiveSessionToolsVisibility({}); "
+            "function createMemorySearchTool() {}",
+            encoding="utf-8",
+        )
+        state = maintenance.runtime_patch_state()
+        self.assertEqual(state["status"], "attention")
+        self.assertEqual(
+            state["missing_markers"],
+            ["MEMORY_SEARCH_SKIP_SESSION_VISIBILITY_FOR_NON_SESSION_HITS"],
+        )
+
+    def test_non_session_fast_path_guard_must_precede_visibility_setup(self) -> None:
+        self.runtime_tools_source.write_text(
+            "async function filterMemorySearchHitsBySessionVisibility(params) { "
+            "MEMORY_SEARCH_ALL_MEMORY_INIT_TIMEOUT_MS memory corpus unavailable in corpus=all "
+            "MEMORY_SEARCH_SKIP_SESSION_VISIBILITY_FOR_NON_SESSION_HITS "
+            "const visibility = resolveEffectiveSessionToolsVisibility({}); "
+            'if (!params.hits.some((hit) => hit.source === "sessions")) return params.hits; '
+            "function createMemorySearchTool() {}",
+            encoding="utf-8",
+        )
+        state = maintenance.runtime_patch_state()
+        self.assertEqual(state["status"], "attention")
+        self.assertFalse(state["non_session_fast_path_guard_before_visibility"])
+        self.assertEqual(state["missing_markers"], ["MEMORY_SEARCH_NON_SESSION_FAST_PATH_GUARD"])
 
     def test_stale_patched_chunk_does_not_mask_active_unpatched_chunk(self) -> None:
         active_source = maintenance.RUNTIME_DIST_DIR / "tools-active-hash.js"
@@ -128,8 +214,12 @@ class SemanticMemoryMaintenanceTests(unittest.TestCase):
             encoding="utf-8",
         )
         (maintenance.RUNTIME_DIST_DIR / "tools-stale-patched-hash.js").write_text(
-            "function createMemorySearchTool() {} "
-            "MEMORY_SEARCH_ALL_MEMORY_INIT_TIMEOUT_MS memory corpus unavailable in corpus=all",
+            "async function filterMemorySearchHitsBySessionVisibility(params) { "
+            "MEMORY_SEARCH_ALL_MEMORY_INIT_TIMEOUT_MS memory corpus unavailable in corpus=all "
+            "MEMORY_SEARCH_SKIP_SESSION_VISIBILITY_FOR_NON_SESSION_HITS "
+            'if (!params.hits.some((hit) => hit.source === "sessions")) return params.hits; '
+            "const visibility = resolveEffectiveSessionToolsVisibility({}); "
+            "function createMemorySearchTool() {}",
             encoding="utf-8",
         )
         state = maintenance.runtime_patch_state()

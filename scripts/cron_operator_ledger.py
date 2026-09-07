@@ -19,7 +19,7 @@ OUT_MD = OUT_JSON.with_suffix(".md")
 SCHEMA_VERSION = 1
 GATEWAY_CRON_COMMAND = ("openclaw", "cron", "list", "--all", "--json", "--timeout", "30000")
 
-WINDOWS = ("morning", "post-close", "post-earnings", "sunday")
+ALERT_CHAIN_MODES = ("morning", "midday", "post-close", "weekly")
 
 AUTHORITY = {
     "posture": "json_first_cron_operator_ledger",
@@ -54,6 +54,10 @@ def load_json(path: Path) -> Any:
 
 def as_dict(value: Any) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
+
+
+def as_list(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else []
 
 
 def cron_jobs_from_store() -> list[dict[str, Any]]:
@@ -194,6 +198,22 @@ def next_run(job: dict[str, Any]) -> str:
     return ""
 
 
+def last_run(job: dict[str, Any]) -> str:
+    """Return the scheduler's exact last-run timestamp when the gateway exposes it."""
+    state = as_dict(job.get("state"))
+    for source in (state, job):
+        for key in ("lastRunAt", "last_run_at", "lastRunAtMs", "last_run_at_ms"):
+            value = source.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+            if isinstance(value, (int, float)) and value > 0:
+                try:
+                    return datetime.fromtimestamp(value / 1000, tz=timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+                except Exception:
+                    return str(value)
+    return ""
+
+
 def summarize_jobs(jobs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
     for job in jobs:
@@ -216,6 +236,7 @@ def summarize_jobs(jobs: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "timezone": str(job.get("timezone") or job.get("tz") or timezone),
                 "session_target": session_target(job),
                 "next_run_utc": next_run(job),
+                "last_run_utc": last_run(job),
                 "prompt_bytes": len(prompt_text.encode("utf-8")),
                 "prompt_kind": "inline_prompt" if prompt_text else "unknown",
                 "last_status": str(state.get("lastStatus") or state.get("lastRunStatus") or job.get("status") or ""),
@@ -230,47 +251,58 @@ def summarize_jobs(jobs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return sorted(records, key=lambda item: (not item["enabled"], item["name"].lower()))
 
 
-def run_summary(window: str) -> dict[str, Any]:
-    path = TMP / f"run-summary-{window}.json"
+def alert_chain_summary(mode: str) -> dict[str, Any]:
+    path = TMP / f"alerts-recommendations-chain-{mode}.json"
     data = load_json(path)
     if not isinstance(data, dict):
-        return {"window": window, "path": rel(path), "exists": path.exists(), "status": "missing"}
-    execution = data.get("execution") if isinstance(data.get("execution"), dict) else {}
-    validation = data.get("validation") if isinstance(data.get("validation"), dict) else {}
+        return {"window": mode, "mode": mode, "path": rel(path), "exists": path.exists(), "status": "missing"}
+    summary = as_dict(data.get("summary"))
+    validation = as_dict(data.get("validation"))
+    errors = [str(item) for item in as_list(summary.get("critical_errors")) + as_list(validation.get("errors"))]
+    warnings = [str(item) for item in as_list(summary.get("warnings")) + as_list(validation.get("warnings"))]
+    retired_hits = [str(item) for item in as_list(summary.get("retired_stage_hits"))]
+    status = str(data.get("status") or "unknown")
+    validation_status = str(validation.get("status") or "unknown")
+    accepted = status == "ok" and validation_status == "ok" and not errors and not retired_hits
     return {
-        "window": window,
+        "window": mode,
+        "mode": mode,
         "path": rel(path),
         "exists": True,
-        "status": str(data.get("status") or "unknown"),
-        "stop_line": bool(data.get("stop_line")),
+        "status": status if accepted else "blocked",
+        "stop_line": not accepted,
         "generated_at_utc": str(data.get("generated_at_utc") or ""),
-        "chain_status": str(execution.get("chain_status") or ""),
-        "failed_step": execution.get("failed_step"),
-        "skipped_steps": execution.get("skipped_steps") or [],
-        "acceptance_passed": bool(validation.get("acceptance_passed")),
-        "operator_action_required": data.get("operator_action_required") or [],
-        "next_action": str(data.get("next_action") or ""),
-        "blockers": data.get("blockers") or [],
-        "warnings": data.get("warnings") or [],
+        "chain_status": status,
+        "validation_status": validation_status,
+        "planned_stage_count": summary.get("planned_stage_count"),
+        "completed_stage_count": summary.get("completed_stage_count"),
+        "retired_stage_hits": retired_hits,
+        "acceptance_passed": accepted,
+        "operator_action_required": errors + retired_hits,
+        "next_action": "repair the failing alert-chain stage" if not accepted else "",
+        "blockers": errors + retired_hits,
+        "warnings": warnings,
     }
 
 
-def current_window_index() -> dict[str, Any]:
-    path = TMP / "current-window-artifacts.json"
+def current_alert_chain() -> dict[str, Any]:
+    path = TMP / "alerts-recommendations-chain-current.json"
     data = load_json(path)
     if not isinstance(data, dict):
         return {"path": rel(path), "exists": path.exists(), "status": "missing"}
-    summary = data.get("summary") if isinstance(data.get("summary"), dict) else {}
+    summary = as_dict(data.get("summary"))
+    validation = as_dict(data.get("validation"))
     return {
         "path": rel(path),
         "exists": True,
-        "window": str(data.get("window") or ""),
+        "mode": str(data.get("mode") or "current"),
         "status": str(data.get("status") or ""),
+        "validation_status": str(validation.get("status") or ""),
         "generated_at_utc": str(data.get("generated_at_utc") or ""),
-        "artifact_count": summary.get("artifact_count"),
-        "existing_artifact_count": summary.get("existing_artifact_count"),
-        "missing_required_roles": summary.get("missing_required_roles") or [],
-        "critical_or_unreadable_roles": summary.get("critical_or_unreadable_roles") or [],
+        "planned_stage_count": summary.get("planned_stage_count"),
+        "completed_stage_count": summary.get("completed_stage_count"),
+        "critical_errors": summary.get("critical_errors") or [],
+        "retired_stage_hits": summary.get("retired_stage_hits") or [],
     }
 
 
@@ -288,14 +320,18 @@ def surface(path_text: str, role: str, target: str) -> dict[str, Any]:
 def build_ledger() -> dict[str, Any]:
     raw_jobs, cron_source = cron_jobs()
     jobs = summarize_jobs(raw_jobs)
-    summaries = [run_summary(window) for window in WINDOWS]
+    summaries = [alert_chain_summary(mode) for mode in ALERT_CHAIN_MODES]
     stop_lines = [item for item in summaries if item.get("stop_line")]
     blocked = [item for item in summaries if item.get("status") in {"blocked", "error"}]
     warnings = [item for item in summaries if item.get("status") == "warning"]
+    scheduler_errors = [
+        item for item in jobs
+        if item.get("enabled") and str(item.get("last_status") or "").lower() in {"error", "failed"}
+    ]
     return {
         "schema_version": SCHEMA_VERSION,
         "generated_at_utc": utc_now(),
-        "status": "blocked" if blocked else "warning" if warnings else "ok",
+        "status": "blocked" if blocked or scheduler_errors else "warning" if warnings else "ok",
         "authority": AUTHORITY,
         "cron_store": {
             "path": rel(CRON_STORE),
@@ -309,12 +345,13 @@ def build_ledger() -> dict[str, Any]:
         },
         "jobs": jobs,
         "run_summaries": summaries,
-        "current_window_artifacts": current_window_index(),
+        "current_alert_chain": current_alert_chain(),
         "sql_canon_context": finance_sql_canon_guard_context(consumer=rel(Path(__file__))),
         "operator_attention": {
             "stop_line_windows": [item["window"] for item in stop_lines],
             "blocked_windows": [item["window"] for item in blocked],
             "warning_windows": [item["window"] for item in warnings],
+            "scheduler_error_jobs": [item["name"] for item in scheduler_errors],
             "next_actions": [
                 {"window": item["window"], "next_action": item.get("next_action", "")}
                 for item in summaries
@@ -330,14 +367,16 @@ def build_ledger() -> dict[str, Any]:
         ],
         "source_of_truth": {
             "current_operator_status": rel(OUT_JSON),
-            "window_closure": "tmp/run-summary-<window>.json",
-            "raw_step_trace": "tmp/run-chain-<window>.json",
-            "artifact_routing": "tmp/current-window-artifacts.json",
+            "finance_chain_modes": "tmp/alerts-recommendations-chain-<mode>.json",
+            "finance_chain_current": "tmp/alerts-recommendations-chain-current.json",
+            "cron_freshness": "tmp/cron-freshness-spine.json",
+            "cron_control": "tmp/cron-control-packet.json",
             "human_digest": "optional on-demand Markdown beside the JSON ledger",
             "legacy_historical_md": "06. Playbooks/Cron Run Ledger.md",
         },
         "notes": [
-            "This ledger is additive and read-only. It does not edit cron jobs or scheduled windows.",
+            "This ledger is additive and read-only. It does not edit cron jobs or scheduled work.",
+            "Finance health is sourced only from the active alerts-and-recommendations chains.",
             "Markdown should render this state for humans; downstream automation should consume the JSON artifacts above.",
             "Historical Markdown should not be thinned until job IDs, stop lines, schedules, authority boundaries, and latest proof are represented in validated JSON.",
         ],
@@ -358,7 +397,7 @@ def render_md(ledger: dict[str, Any]) -> str:
     if attention["warning_windows"]:
         lines.append(f"- Warning windows: {', '.join(attention['warning_windows'])}")
     lines.append("")
-    lines.append("## Current Windows")
+    lines.append("## Alerts And Recommendations Chains")
     lines.append("| Window | Status | Stop line | Chain | Acceptance | Next action |")
     lines.append("|---|---|---:|---|---:|---|")
     for item in ledger["run_summaries"]:
@@ -385,7 +424,7 @@ def render_md(ledger: dict[str, Any]) -> str:
     for key, value in ledger["source_of_truth"].items():
         lines.append(f"- `{key}`: `{value}`")
     lines.append("")
-    lines.append("Authority: review-only. This digest grants no cron mutation, canon/portfolio mutation, customer delivery, paper/live/account action, or owner approval.")
+    lines.append("Authority: review-only. This digest grants no cron or finance-canon mutation, external delivery, capital/order/account action, or owner approval.")
     return "\n".join(lines) + "\n"
 
 

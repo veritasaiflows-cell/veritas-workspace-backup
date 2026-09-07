@@ -1,0 +1,154 @@
+{
+  "schema": "veritas.trade_grade_decision_cards.v1",
+  "generated_at_utc": "2026-08-30T03:18:20Z",
+  "workflow_id": "WF85",
+  "status": "blocked",
+  "summary": {
+    "card_count": 0,
+    "decision_state_counts": {},
+    "approval_card_draft_count": 0,
+    "authority_flags_false_by_contract": true,
+    "sql_canon_scope_status": "ok",
+    "sql_canon_production_answer_count": 12
+  },
+  "source_gate_artifact": "tmp/trade-grade-source-freshness-gate.json",
+  "scenario_context_artifact": "tmp/current-regime-analog-match.json",
+  "sql_canon_scope": {
+    "status": "ok",
+    "access_validation_status": "ok",
+    "registry_summary": {
+      "priority_counts": {
+        "P0": 21,
+        "P1": 430,
+        "P2": 190,
+        "P3": 43
+      },
+      "lane_counts": {
+        "answer_path_parity_lane": 21,
+        "cron_pm_governance_lane": 11,
+        "pm_cockpit_lane": 2,
+        "retired_historical_no_dispatch": 43,
+        "source_loader_lane": 410,
+        "test_parity_lane": 189,
+        "typed_access_guard_lane": 3,
+        "wf78_wf77_routing_lane": 5
+      },
+      "cutover_state_counts": {
+        "not_cut_over": 113,
+        "retired_alerts_os_pivot": 43,
+        "source_producer": 364,
+        "sql_primary_guarded": 164
+      },
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": [],
+      "p0_answer_path_lane_status": {
+        "ok": true,
+        "errors": [],
+        "p0_count": 21,
+        "answer_path_lane_count": 21,
+        "p0_answer_path_lane_count": 21,
+        "p0_non_answer_path_count": 0,
+        "answer_path_non_p0_count": 0,
+        "p0_non_answer_path_consumers": [],
+        "answer_path_non_p0_consumers": []
+      }
+    },
+    "p0_registry_lane_status": {
+      "ok": true,
+      "errors": [],
+      "p0_count": 21,
+      "answer_path_lane_count": 21,
+      "p0_answer_path_lane_count": 21,
+      "p0_non_answer_path_count": 0,
+      "answer_path_non_p0_count": 0,
+      "p0_non_answer_path_consumers": [],
+      "answer_path_non_p0_consumers": []
+    },
+    "wf84_production_answer_tickers": [],
+    "sql_canon_production_answer_tickers": [
+      "BKNG",
+      "BRK.B",
+      "CME",
+      "CVX",
+      "ECL",
+      "GOOG",
+      "JPM",
+      "LIN",
+      "LLY",
+      "META",
+      "PLTR",
+      "XOM"
+    ],
+    "sql_canon_production_answer_count": 12,
+    "sql_canon_production_answer_definition": "validated proof-joined production-grade set",
+    "legacy_42_retired_from_blocking": true,
+    "legacy_42_count_advisory_only": true,
+    "effective_production_answer_count": 12,
+    "effective_production_answer_definition": "validated proof-joined production-grade set; empty means wait for decision-grade gates",
+    "sql_canon_legacy_production_answer_tickers": [],
+    "sql_canon_legacy_production_answer_count": 0,
+    "sql_canon_legacy_production_answer_definition": "retired legacy 42 compatibility answer scope",
+    "production_scope_diff": {
+      "missing_from_sql": [],
+      "extra_in_sql": [
+        "BKNG",
+        "BRK.B",
+        "CME",
+        "CVX",
+        "ECL",
+        "GOOG",
+        "JPM",
+        "LIN",
+        "LLY",
+        "META",
+        "PLTR",
+        "XOM"
+      ],
+      "legacy_wf84_scope_retired_from_blocking": true
+    },
+    "validation": {
+      "status": "ok",
+      "critical_errors": [],
+      "warnings": [
+        "sql_canon_legacy_42_compatibility_count_mismatch_advisory",
+        "legacy_wf84_answer_path_differs_from_strategic_sql_first_scope"
+      ]
+    },
+    "authority_boundary": {
+      "sql_canon_scope_validation_only": true,
+      "consumer_cutover_allowed_by_this_packet": false,
+      "capital_deployment_allowed": false,
+      "paper_or_live_execution_allowed": false,
+      "brokerage_or_account_action_allowed": false,
+      "owner_approval_inferred": false
+    }
+  },
+  "cards": [],
+  "validation": {
+    "status": "blocked",
+    "errors": [
+      "wf84_json_sqlite_parity_failed",
+      "wf85_contract_not_ok"
+    ],
+    "warnings": []
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "decision_support_only": true,
+    "approval_card_draft_allowed": true,
+    "wf67_paper_request_draft_allowed": true,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "cash_sizing_or_risk_rule_mutation_allowed": false,
+    "customer_or_external_delivery_allowed": false,
+    "customer_account_pii_or_suitability_data_allowed": false,
+    "owner_approval_inferred": false
+  }
+}

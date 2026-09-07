@@ -198,6 +198,11 @@ def state_validation_commands(*, refresh_state: bool = True) -> list[list[str]]:
     commands: list[list[str]] = []
     if refresh_state:
         commands.append([python, "scripts\\finance_intelligence_state.py", "refresh-100", "--pretty"])
+    else:
+        # refresh-100 rebuilds the SQL cache via build_state. Skipping it because
+        # provider calls are disabled must not also skip the local rebuild, or
+        # stale-tickers below reports the card generation that preceded this run.
+        commands.append([python, "scripts\\finance_intelligence_state.py", "build", "--pretty"])
     commands.extend([
         [python, "scripts\\finance_intelligence_state.py", "validate", "--pretty"],
         [python, "scripts\\finance_intelligence_state.py", "stale-tickers", "--pretty", "--limit", "500"],

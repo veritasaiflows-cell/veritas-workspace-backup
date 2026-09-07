@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-17T05:50:51Z",
+  "status": "ready_for_scoped_main_session_review",
+  "window": "post-close",
+  "input_bundle": "tmp/portfolio-mutation-proposals/semantic-patch-material/post-close-MSFT-capital-deployment-review-2026-05-17-sizing.json",
+  "proposal_id": "post-close:MSFT:capital-deployment-review:2026-05-17",
+  "apply_allowed": false,
+  "owner_approval_granted": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "authority": {
+    "phase": "WF56 Phase 3 dry-run scoped patch helper",
+    "dry_run_patch_preview_allowed": true,
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "main_session_final_action_required": true,
+    "write_owner_files_allowed": false,
+    "apply_allowed_by_this_helper": false,
+    "portfolio_mutation_allowed_by_this_helper": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "validation": {
+    "schema_validator_ok": true,
+    "schema_errors": [],
+    "schema_blockers": [],
+    "patch_scope_findings": [],
+    "patch_scope_critical": 0,
+    "build_errors": []
+  },
+  "summary": {
+    "requested_changes": 1,
+    "previewed_file_changes": 1,
+    "writes_performed": false,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "ready_for_main_session_portfolio_mutation_review": true
+  },
+  "file_previews": [
+    {
+      "path": "03. Portfolio/Portfolio Snapshot.md",
+      "change_type": "exact_text_replace",
+      "old_text_sha256_hint": null,
+      "old_text_match_count": 1,
+      "writes_performed": false,
+      "diff": "--- a/03. Portfolio/Portfolio Snapshot.md\n+++ b/03. Portfolio/Portfolio Snapshot.md\n@@ -111,6 +111,10 @@\n - Defense has a named gap: LMT's 10% draft weight is suspended while in repair, so either reduce/earmark that weight for a future defense candidate or accept KTOS-only 2% defense exposure until LMT heals.\n - If total model drawdown exceeds 6% to 8%, force a full review.\n \n+## WF64 semantic sync notes\n+\n+- WF64 sizing semantic sync (MSFT): draft_weight=`10%`, sizing_tier=`Tier 1`; source `tmp/portfolio-config.json`; proposal `post-close:MSFT:capital-deployment-review:2026-05-17`; draft model only, no external-action sizing authority.\n+\n ## Freshness and refresh policy\n \n - **Last updated:** 2026-05-15 - WF64 bounded freshness/status sync for JPM trigger-not-live residue and portfolio-config freshness; no weight, cash, sleeve, owner-approval, execution entitlement, account, or trade change\n",
+      "rationale": "Synchronize sizing semantic context from current portfolio artifacts without widening external-action authority."
+    }
+  ],
+  "stop_lines": [
+    "This artifact is an exact patch preview only; it does not mutate owner notes or portfolio config.",
+    "Main-session portfolio mutation still requires explicit scoped Randall approval for the proposal id and exact diff.",
+    "A clean preview does not grant owner approval, sizing, sleeve, cash, risk-rule, execution-entitlement, trade, or account authority.",
+    "Phase 4 apply mode must be a separate approval-gated path and must run the post-apply validation chain."
+  ]
+}

@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "handoff_first_proof_gate.py"
+LANE_KEYS = ("morning", "midday", "post_close", "weekly")
 
 
 def load_module():
@@ -30,16 +31,30 @@ def configure_paths(module, root: Path) -> None:
     module.TMP = root / "tmp"
     module.OUT = module.TMP / "main-session-handoff-first-proof.json"
     by_key = {spec["key"]: dict(spec) for spec in module.LANES}
-    by_key["weekday_research"]["path"] = module.TMP / "research-freshness-opportunity-review.json"
-    by_key["morning"]["path"] = module.TMP / "run-summary-morning.json"
-    by_key["post_close"]["path"] = module.TMP / "run-summary-post-close.json"
-    by_key["sunday_weekly"]["path"] = module.TMP / "weekly-intelligence-brief.json"
-    by_key["sunday_research"]["path"] = module.TMP / "sunday-research-opportunity-reset-cron-runner.json"
-    module.LANES = [by_key[key] for key in ("weekday_research", "morning", "post_close", "sunday_weekly", "sunday_research")]
+    for key in LANE_KEYS:
+        by_key[key]["path"] = module.TMP / f"alerts-recommendations-chain-{key.replace('_', '-')}.json"
+    module.LANES = [by_key[key] for key in LANE_KEYS]
 
 
 def now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def chain_payload(*, status: str = "ok", stop_line: bool = False, validation_status: str = "ok") -> dict:
+    return {
+        "schema": "veritas.alerts_recommendations_chain.v1",
+        "generated_at_utc": now(),
+        "status": status,
+        "stop_line": stop_line,
+        "authority": {
+            "review_only": True,
+            "alerts_and_non_executing_recommendations_only": True,
+            "writes_finance_canon": False,
+            "maintains_portfolio_state": False,
+            "paper_or_live_execution_allowed": False,
+        },
+        "validation": {"status": validation_status, "errors": []},
+    }
 
 
 class FixedSundayDateTime(datetime):
@@ -63,186 +78,108 @@ class FixedMondayPostCloseDateTime(datetime):
         return base if tz is None else base.astimezone(tz)
 
 
-def test_blocked_and_missing_lanes_are_actionable() -> None:
+def write_clean_lanes(module) -> None:
+    for spec in module.LANES:
+        write_json(spec["path"], chain_payload())
+
+
+def test_blocked_and_missing_active_lanes_are_actionable() -> None:
     module = load_module()
     with tempfile.TemporaryDirectory() as tmpdir:
-        root = Path(tmpdir)
-        configure_paths(module, root)
-        write_json(module.TMP / "research-freshness-opportunity-review.json", {"generated_at_utc": now(), "status": "degraded"})
-        write_json(
-            module.TMP / "run-summary-morning.json",
-            {
-                "generated_at_utc": now(),
-                "status": "blocked",
-                "stop_line": True,
-                "execution": {"chain_status": "completed_with_recovery", "failed_step": {"script": "test_dashboard_acceptance.py"}},
-                "validation": {"acceptance_passed": True},
-                "blockers": ["Finance refresh chain failed at test_dashboard_acceptance.py"],
-            },
-        )
-        write_json(
-            module.TMP / "run-summary-post-close.json",
-            {
-                "generated_at_utc": now(),
-                "status": "blocked",
-                "stop_line": True,
-                "execution": {"chain_status": "completed_with_recovery"},
-                "validation": {"acceptance_passed": True},
-            },
-        )
-        write_json(
-            module.TMP / "weekly-intelligence-brief.json",
-            {"generated_at_utc": now(), "trust_gate_blocked": True, "status": "warning"},
-        )
+        configure_paths(module, Path(tmpdir))
+        write_json(module.LANES[0]["path"], chain_payload(status="blocked", stop_line=True))
+        write_json(module.LANES[1]["path"], chain_payload())
+        write_json(module.LANES[2]["path"], chain_payload(validation_status="error"))
         payload = module.build_payload()
         by_key = {lane["key"]: lane for lane in payload["lanes"]}
-        assert by_key["weekday_research"]["state"] == "PROVED"
         assert by_key["morning"]["state"] == "BLOCKED"
+        assert by_key["midday"]["state"] == "PROVED"
         assert by_key["post_close"]["state"] == "BLOCKED"
-        assert by_key["sunday_weekly"]["state"] == "BLOCKED"
-        assert by_key["sunday_research"]["state"] == "MISSING"
+        assert by_key["weekly"]["state"] == "MISSING"
+        assert payload["repair_lane_packet"]["target_lanes"] == ["morning", "post_close", "weekly"]
+        assert payload["repair_lane_packet"]["owner_route"] == "alerts_and_recommendations_os"
+        assert "lease_command" not in payload["repair_lane_packet"]
+
+
+def test_clean_active_chain_proofs_are_proved() -> None:
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        configure_paths(module, Path(tmpdir))
+        write_clean_lanes(module)
+        payload = module.build_payload()
+        assert all(row["state"] == "PROVED" for row in payload["lanes"])
+        assert payload["status"] == "ok"
         assert payload["validation"]["status"] == "ok"
-        assert payload["repair_lane_packet"]["status"] == "ready"
-        assert set(payload["repair_lane_packet"]["target_lanes"]) == {"morning", "post_close", "sunday_weekly", "sunday_research"}
-
-
-def test_clean_run_summary_can_be_proved() -> None:
-    module = load_module()
-    with tempfile.TemporaryDirectory() as tmpdir:
-        root = Path(tmpdir)
-        configure_paths(module, root)
-        write_json(module.TMP / "research-freshness-opportunity-review.json", {"generated_at_utc": now(), "status": "ok"})
-        for name in ("run-summary-morning.json", "run-summary-post-close.json"):
-            write_json(
-                module.TMP / name,
-                {
-                    "generated_at_utc": now(),
-                    "status": "warning",
-                    "stop_line": False,
-                    "execution": {"chain_status": "ok", "chain_exit_code": 0},
-                    "validation": {"acceptance_passed": True},
-                },
-            )
-        write_json(module.TMP / "weekly-intelligence-brief.json", {"generated_at_utc": now(), "status": "ok"})
-        write_json(module.TMP / "sunday-research-opportunity-reset-cron-runner.json", {"generated_at_utc": now(), "status": "ok"})
-        payload = module.build_payload()
-        by_key = {lane["key"]: lane for lane in payload["lanes"]}
-        assert all(row["state"] == "PROVED" for row in by_key.values())
-        assert payload["status"] == "ok"
         assert payload["repair_lane_packet"]["status"] == "not_needed"
+        rendered = json.dumps(payload).lower()
+        assert not any(token in rendered for token in module.RETIRED_ROUTE_TOKENS)
 
 
-def test_sunday_weekly_machine_sidecar_is_proved_without_canon_authority() -> None:
+def test_weekday_lanes_use_weekend_freshness_window() -> None:
     module = load_module()
     with tempfile.TemporaryDirectory() as tmpdir:
-        root = Path(tmpdir)
-        configure_paths(module, root)
-        write_json(module.TMP / "research-freshness-opportunity-review.json", {"generated_at_utc": now(), "status": "ok"})
-        for name in ("run-summary-morning.json", "run-summary-post-close.json"):
-            write_json(
-                module.TMP / name,
-                {
-                    "generated_at_utc": now(),
-                    "status": "warning",
-                    "stop_line": False,
-                    "validation": {"acceptance_passed": True},
-                },
-            )
-        write_json(
-            module.TMP / "weekly-intelligence-brief.json",
-            {
-                "generated_at_utc": now(),
-                "action": "delta_only",
-                "canonical_mutation_allowed": False,
-                "trust_gate_blocked": True,
-                "wrote_to": "05. Intelligence/Weekly Intelligence Brief - machine.md",
-            },
-        )
-        write_json(module.TMP / "sunday-research-opportunity-reset-cron-runner.json", {"generated_at_utc": now(), "status": "ok"})
-        payload = module.build_payload()
-        by_key = {lane["key"]: lane for lane in payload["lanes"]}
-        assert by_key["sunday_weekly"]["state"] == "PROVED"
-        assert by_key["sunday_weekly"]["trust_gate_blocked"] is True
-        assert payload["status"] == "ok"
-
-
-def test_weekday_lane_uses_weekend_freshness_window() -> None:
-    module = load_module()
-    with tempfile.TemporaryDirectory() as tmpdir:
-        root = Path(tmpdir)
-        configure_paths(module, root)
+        configure_paths(module, Path(tmpdir))
         module.datetime = FixedSundayDateTime
         old_proved = "2026-06-26T15:23:13Z"
-        write_json(module.TMP / "research-freshness-opportunity-review.json", {"generated_at_utc": old_proved, "status": "ok"})
-        write_json(module.TMP / "run-summary-morning.json", {"generated_at_utc": old_proved, "status": "ok", "validation": {"acceptance_passed": True}})
-        write_json(module.TMP / "run-summary-post-close.json", {"generated_at_utc": old_proved, "status": "ok", "validation": {"acceptance_passed": True}})
-        write_json(module.TMP / "weekly-intelligence-brief.json", {"generated_at_utc": now(), "status": "ok"})
-        write_json(module.TMP / "sunday-research-opportunity-reset-cron-runner.json", {"generated_at_utc": now(), "status": "ok"})
-        payload = module.build_payload()
-        by_key = {lane["key"]: lane for lane in payload["lanes"]}
+        for spec in module.LANES:
+            payload = chain_payload()
+            payload["generated_at_utc"] = old_proved if spec.get("weekday_only") else now()
+            write_json(spec["path"], payload)
+        result = module.build_payload()
+        by_key = {lane["key"]: lane for lane in result["lanes"]}
         assert by_key["morning"]["state"] == "PROVED"
-        assert by_key["morning"]["freshness_window_hours"] == 84.0
+        assert by_key["midday"]["freshness_window_hours"] == 84.0
         assert by_key["post_close"]["state"] == "PROVED"
 
 
-def test_post_close_uses_monday_pre_close_freshness_window() -> None:
+def test_post_close_monday_grace_then_base_window() -> None:
     module = load_module()
     with tempfile.TemporaryDirectory() as tmpdir:
-        root = Path(tmpdir)
-        configure_paths(module, root)
+        configure_paths(module, Path(tmpdir))
+        write_clean_lanes(module)
+        old_post_close = "2026-06-26T20:32:40Z"
+        payload = chain_payload()
+        payload["generated_at_utc"] = old_post_close
+        post_close = next(spec for spec in module.LANES if spec["key"] == "post_close")
+        write_json(post_close["path"], payload)
         module.datetime = FixedMondayPreCloseDateTime
-        old_post_close = "2026-06-26T20:32:40Z"
-        write_json(module.TMP / "research-freshness-opportunity-review.json", {"generated_at_utc": now(), "status": "ok"})
-        write_json(module.TMP / "run-summary-morning.json", {"generated_at_utc": now(), "status": "ok", "validation": {"acceptance_passed": True}})
-        write_json(module.TMP / "run-summary-post-close.json", {"generated_at_utc": old_post_close, "status": "ok", "validation": {"acceptance_passed": True}})
-        write_json(module.TMP / "weekly-intelligence-brief.json", {"generated_at_utc": now(), "status": "ok"})
-        write_json(module.TMP / "sunday-research-opportunity-reset-cron-runner.json", {"generated_at_utc": now(), "status": "ok"})
-        payload = module.build_payload()
-        by_key = {lane["key"]: lane for lane in payload["lanes"]}
-        assert by_key["post_close"]["state"] == "PROVED"
-        assert by_key["post_close"]["freshness_window_hours"] == 84.0
-
-
-def test_post_close_uses_base_window_after_monday_post_close_window() -> None:
-    module = load_module()
-    with tempfile.TemporaryDirectory() as tmpdir:
-        root = Path(tmpdir)
-        configure_paths(module, root)
+        before = module.build_payload()
+        before_row = next(row for row in before["lanes"] if row["key"] == "post_close")
+        assert before_row["state"] == "PROVED"
+        assert before_row["freshness_window_hours"] == 84.0
         module.datetime = FixedMondayPostCloseDateTime
-        old_post_close = "2026-06-26T20:32:40Z"
-        write_json(module.TMP / "research-freshness-opportunity-review.json", {"generated_at_utc": now(), "status": "ok"})
-        write_json(module.TMP / "run-summary-morning.json", {"generated_at_utc": now(), "status": "ok", "validation": {"acceptance_passed": True}})
-        write_json(module.TMP / "run-summary-post-close.json", {"generated_at_utc": old_post_close, "status": "ok", "validation": {"acceptance_passed": True}})
-        write_json(module.TMP / "weekly-intelligence-brief.json", {"generated_at_utc": now(), "status": "ok"})
-        write_json(module.TMP / "sunday-research-opportunity-reset-cron-runner.json", {"generated_at_utc": now(), "status": "ok"})
-        payload = module.build_payload()
-        by_key = {lane["key"]: lane for lane in payload["lanes"]}
-        assert by_key["post_close"]["state"] == "STALE"
-        assert by_key["post_close"]["freshness_window_hours"] == 36.0
+        after = module.build_payload()
+        after_row = next(row for row in after["lanes"] if row["key"] == "post_close")
+        assert after_row["state"] == "STALE"
+        assert after_row["freshness_window_hours"] == 36.0
 
 
-def test_authority_widening_blocks_validation() -> None:
+def test_authority_widening_and_retired_route_fail_closed() -> None:
     module = load_module()
     with tempfile.TemporaryDirectory() as tmpdir:
-        root = Path(tmpdir)
-        configure_paths(module, root)
-        write_json(module.TMP / "research-freshness-opportunity-review.json", {"generated_at_utc": now(), "status": "ok"})
-        write_json(module.TMP / "run-summary-morning.json", {"generated_at_utc": now(), "status": "ok", "paper_submit_allowed": True})
+        configure_paths(module, Path(tmpdir))
+        write_clean_lanes(module)
+        morning = next(spec for spec in module.LANES if spec["key"] == "morning")
+        bad = chain_payload()
+        bad["paper_submit_allowed"] = True
+        write_json(morning["path"], bad)
         payload = module.build_payload()
-        by_key = {lane["key"]: lane for lane in payload["lanes"]}
-        assert by_key["morning"]["state"] == "BLOCKED"
         assert payload["validation"]["status"] == "error"
         assert "lane_authority_widened:morning" in payload["validation"]["errors"]
 
+        write_json(morning["path"], chain_payload())
+        morning["producer"] = "python scripts\\weekday_morning_review_cron_runner.py --write --validate"
+        payload = module.build_payload()
+        assert "inactive_producer_route:morning" in payload["validation"]["errors"]
+        assert "retired_producer_route:morning" in payload["validation"]["errors"]
+
 
 def main() -> int:
-    test_blocked_and_missing_lanes_are_actionable()
-    test_clean_run_summary_can_be_proved()
-    test_sunday_weekly_machine_sidecar_is_proved_without_canon_authority()
-    test_weekday_lane_uses_weekend_freshness_window()
-    test_post_close_uses_monday_pre_close_freshness_window()
-    test_post_close_uses_base_window_after_monday_post_close_window()
-    test_authority_widening_blocks_validation()
+    test_blocked_and_missing_active_lanes_are_actionable()
+    test_clean_active_chain_proofs_are_proved()
+    test_weekday_lanes_use_weekend_freshness_window()
+    test_post_close_monday_grace_then_base_window()
+    test_authority_widening_and_retired_route_fail_closed()
     print("handoff_first_proof_gate tests passed")
     return 0
 

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "workflow": "WF63/WF67 paper position read-only refresh",
+  "generated_at_utc": "2026-08-28T21:40:00Z",
+  "alpaca_access_enabled": true,
+  "read_only_enabled": true,
+  "paper_submit_enabled": false,
+  "paper_cancel_enabled": false,
+  "live_submit_enabled": false,
+  "endpoint": "https://paper-api.alpaca.markets",
+  "allowed_methods": [
+    "GET"
+  ],
+  "expires_at_utc": "2026-08-28T23:10:00Z",
+  "approval_source": "standing_read_only_policy",
+  "owner_reference": "WF63/WF67 GET-only paper account/position visibility; no per-run trade approval implied.",
+  "approval_note": "Standing WF63/WF67 read-only Alpaca paper account/position refresh approved as GET-only review/proof state; no submit/cancel/sell/live/account mutation authority.",
+  "trade_or_account_action_allowed": false
+}

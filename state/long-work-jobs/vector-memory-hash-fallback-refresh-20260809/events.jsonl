@@ -1,0 +1,46 @@
+{"at_utc": "2026-08-09T19:02:07Z", "detail": {}, "event": "started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:02:15Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:03:17Z", "detail": {"processed_this_run": 4992}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:03:25Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:04:26Z", "detail": {"processed_this_run": 2688}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:04:38Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:05:40Z", "detail": {"processed_this_run": 1792}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:05:51Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:06:37Z", "detail": {"processed_this_run": 1280}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:06:50Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:07:35Z", "detail": {"processed_this_run": 1152}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:07:43Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:08:28Z", "detail": {"processed_this_run": 1024}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:08:38Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:09:24Z", "detail": {"processed_this_run": 1024}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:09:36Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:10:26Z", "detail": {"processed_this_run": 896}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:10:34Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:11:21Z", "detail": {"processed_this_run": 768}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:11:31Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:12:25Z", "detail": {"processed_this_run": 768}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:12:36Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:13:15Z", "detail": {"processed_this_run": 512}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:13:25Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:14:01Z", "detail": {"processed_this_run": 512}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:14:09Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:14:45Z", "detail": {"processed_this_run": 512}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:14:53Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:15:29Z", "detail": {"processed_this_run": 512}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:15:40Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:16:22Z", "detail": {"processed_this_run": 512}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:16:30Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:17:11Z", "detail": {"processed_this_run": 512}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:17:27Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:18:07Z", "detail": {"processed_this_run": 512}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:18:14Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:18:54Z", "detail": {"processed_this_run": 512}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:19:03Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:19:46Z", "detail": {"processed_this_run": 512}, "event": "resume_paused", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:19:54Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:20:17Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "complete"}
+{"at_utc": "2026-08-09T19:20:35Z", "detail": {}, "event": "validated", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "complete"}
+{"at_utc": "2026-08-09T19:21:05Z", "detail": {}, "event": "started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "resumable"}
+{"at_utc": "2026-08-09T19:21:15Z", "detail": {}, "event": "resume_started", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "running"}
+{"at_utc": "2026-08-09T19:21:23Z", "detail": {}, "event": "resume_completed", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "complete"}
+{"at_utc": "2026-08-09T19:21:27Z", "detail": {}, "event": "validated", "job_id": "vector-memory-hash-fallback-refresh-20260809", "status": "complete"}

@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "workflow": "WF63 - Alpaca Paper Trading Readiness",
+  "artifact": "phase_5_6_gate_architecture",
+  "generated_at_utc": "2026-05-15T05:50:00Z",
+  "status": "design_only_no_execution_authority",
+  "current_authority": {
+    "phase_5_manual_pilot_reconciliation_approved": false,
+    "phase_6_paper_execution_approved": false,
+    "openclaw_submit_path_may_exist": false,
+    "openclaw_paper_submit_allowed": false,
+    "openclaw_cancel_replace_allowed": false,
+    "live_submit_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "credential_or_env_inspection_allowed_by_this_artifact": false,
+    "alpaca_api_call_allowed_by_this_artifact": false
+  },
+  "phase_5_manual_pilot_reconciliation": {
+    "pilot_shape": [
+      "Veritas generates one non-executable paper order preview.",
+      "Randall manually places the paper order in the Alpaca UI.",
+      "OpenClaw reconciles the result later using read-only paper-account observations only.",
+      "No OpenClaw API submit, cancel, replace, live endpoint, account mutation, or money movement occurs."
+    ],
+    "entry_requirements": [
+      "Explicit Randall approval for one manual pilot reconciliation scope.",
+      "Clean/current Phase 1 read-only connection proof.",
+      "Clean Phase 2 paper/live isolation validator.",
+      "Clean Phase 3 order-preview validator for the exact preview.",
+      "Phase 4 shadow-mode report acceptable for a one-order manual pilot.",
+      "Clean no-submit static/runtime guard proving no active submit/cancel/replace path exists.",
+      "Unexpired kill switch enabling read-only paper access only.",
+      "Audit-log validator proves append-only logging and secret redaction."
+    ],
+    "required_artifact": "tmp/alpaca-paper-readiness/manual-pilot-reconciliation.json",
+    "required_schema_fields": {
+      "schema_version": "integer",
+      "workflow": "WF63 - Alpaca Paper Trading Readiness",
+      "phase": "phase_5_manual_pilot_reconciliation",
+      "reconciliation_id": "string",
+      "generated_at_utc": "UTC timestamp",
+      "status": "blocked|pending_owner_manual_order|reconciled|mismatch|invalid",
+      "authority": {
+        "read_only_reconciliation_allowed": true,
+        "openclaw_order_submission_performed": false,
+        "openclaw_cancel_replace_performed": false,
+        "paper_submit_allowed": false,
+        "live_submit_allowed": false,
+        "trade_or_account_action_allowed": false,
+        "next_phase_authorized": false
+      },
+      "source_preview": [
+        "preview_id",
+        "preview_path",
+        "ticker",
+        "side",
+        "order_type",
+        "limit_price",
+        "quantity_or_notional",
+        "time_in_force",
+        "risk_check_summary",
+        "preview_validator_status"
+      ],
+      "owner_manual_order": [
+        "placed_manually_in_alpaca_ui",
+        "manual_attestation_by",
+        "alpaca_ui_order_id_if_provided_by_owner",
+        "placed_at_utc_if_known"
+      ],
+      "read_only_observation": [
+        "observed_at_utc",
+        "base_url_exactly_https_paper_api_alpaca_markets",
+        "account_mode_paper",
+        "http_methods_used_GET_only",
+        "live_endpoint_detected_false",
+        "order_status",
+        "fill_summary",
+        "position_delta"
+      ],
+      "comparison": [
+        "preview_vs_observed_match_status",
+        "mismatches",
+        "stale_data_warnings",
+        "unattested_account_change_detected"
+      ],
+      "validation": [
+        "paper_live_isolation_status",
+        "no_submit_guard_status",
+        "kill_switch_status",
+        "audit_log_status",
+        "secrets_redacted_status"
+      ],
+      "audit": [
+        "preview_generation_event_id",
+        "owner_attestation_event_id",
+        "read_only_observation_event_id",
+        "reconciliation_result_event_id",
+        "validator_result_event_id"
+      ],
+      "owner_review": {
+        "owner_review_required": true,
+        "recommended_next_action": "string",
+        "phase_6_authorized_by_reconciliation": false
+      }
+    },
+    "closeout_rule": "Clean Phase 5 reconciliation proves only that manual-order reconciliation worked; it does not authorize OpenClaw submission or Phase 6."
+  },
+  "phase_6_future_bounded_paper_execution": {
+    "approval_status": "not_approved",
+    "implementation_status": "must_not_exist_yet",
+    "explicit_statement": "Phase 6 is NOT approved for execution and no submit path may exist yet.",
+    "doctrine_exception_required": true,
+    "doctrine_exception_checklist": [
+      "Randall explicitly acknowledges the exception to SOUL/USER/MEMORY no-order-submission doctrine.",
+      "Exception is paper-only, time-limited, ticker/order-limited, and revocable.",
+      "Live endpoint and live credentials remain forbidden with no fallback.",
+      "Submit scope is limited to simple paper limit orders only unless separately approved.",
+      "Cancel/replace/market/short/margin/leverage/options/crypto/complex orders remain blocked unless separately approved.",
+      "Independent audit confirms paper/live isolation, no live credential selection, no secret leakage, kill-switch behavior, audit logging, and failure-closed behavior.",
+      "Approval names exact wrapper, endpoint allowlist, risk caps, operator review step, and rollback/disable path.",
+      "Approval artifact validates before any code path capable of paper submission is merged or run.",
+      "Per-order owner approval remains required; model confidence, validation, and packet quality cannot infer approval."
+    ],
+    "required_future_approval_artifact": {
+      "path": "tmp/alpaca-paper-readiness/phase-6-paper-execution-approval.json",
+      "required_fields": [
+        "schema_version",
+        "workflow",
+        "phase",
+        "approval_status",
+        "approved_by",
+        "approved_at_utc",
+        "expires_at_utc",
+        "doctrine_exception_acknowledged",
+        "paper_only",
+        "live_submit_allowed",
+        "live_endpoint_forbidden",
+        "allowed_order_scope",
+        "blocked_order_scope",
+        "max_notional_or_quantity",
+        "required_preview_validator_status",
+        "required_isolation_validator_status",
+        "required_no_submit_guard_transition",
+        "required_kill_switch_state",
+        "required_audit_log_fields",
+        "secret_redaction_required",
+        "rollback_disable_path",
+        "per_order_owner_approval_required",
+        "no_inferred_approval"
+      ],
+      "blocking_conditions": [
+        "missing",
+        "draft",
+        "expired",
+        "ambiguous",
+        "non_paper_only",
+        "live_enabled",
+        "per_order_owner_approval_not_required",
+        "secret_redaction_not_required"
+      ]
+    }
+  },
+  "no_submit_guard": {
+    "required_before_phase_6_approval": true,
+    "default_rule": "Fail if any active submit/cancel/replace path exists outside archived references and explicit documentation.",
+    "required_report": "tmp/alpaca-paper-readiness/no-submit-guard-report.json",
+    "blocked_capabilities": [
+      "submit_order",
+      "order endpoint write",
+      "cancel order",
+      "replace order",
+      "close position",
+      "liquidation",
+      "transfer or money movement",
+      "account setting mutation",
+      "live endpoint fallback",
+      "live credential selection"
+    ],
+    "runtime_rule": "Connectors default to GET-only until a separately approved Phase 6 transition exists."
+  },
+  "kill_switch": {
+    "required_artifact": "tmp/alpaca-paper-readiness/kill-switch.json",
+    "default_behavior": "Missing, malformed, expired, disabled, or contradictory state blocks every Alpaca call.",
+    "phase_5_allowed_state": {
+      "alpaca_access_enabled": true,
+      "read_only_enabled": true,
+      "paper_submit_enabled": false,
+      "live_submit_enabled": false
+    },
+    "phase_6_future_state": "Requires separate Randall-approved doctrine exception, short expiration, exact wrapper scope, and rollback instructions; not approved now."
+  },
+  "audit_log": {
+    "required_path": "tmp/alpaca-paper-readiness/audit-log.jsonl",
+    "append_only": true,
+    "required_fields": [
+      "timestamp_utc",
+      "workflow",
+      "phase",
+      "event_id",
+      "actor",
+      "action",
+      "method_class",
+      "endpoint_mode",
+      "endpoint_path_class_without_query_secrets",
+      "request_intent",
+      "preview_id_if_applicable",
+      "approval_artifact_id_if_applicable",
+      "validator_statuses",
+      "kill_switch_status",
+      "no_submit_guard_status",
+      "result",
+      "reason_code",
+      "artifact_paths",
+      "redaction_status",
+      "secret_material_present_false"
+    ],
+    "secret_redaction_rules": [
+      "Never persist or print API keys, secret keys, bearer tokens, auth headers, account secrets, raw environment values, or full request headers.",
+      "Replace any detected secret-shaped value with [REDACTED].",
+      "If redaction occurs, preserve only non-secret context and mark redaction_status=redacted.",
+      "Any unredacted secret blocks the workflow as a critical incident."
+    ]
+  }
+}

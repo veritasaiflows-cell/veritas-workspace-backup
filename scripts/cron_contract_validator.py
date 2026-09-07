@@ -296,6 +296,28 @@ def expected_value(contract: dict[str, Any], field: str) -> Any:
     return get_nested(contract, field)
 
 
+def normalize_expected_artifact(item: Any) -> dict[str, Any]:
+    """Normalize string and object artifact contracts to one path-aware shape."""
+    if isinstance(item, dict):
+        metadata = dict(item)
+        raw_path = metadata.pop("path", None)
+        if raw_path is None:
+            raw_path = metadata.pop("artifact", None)
+    else:
+        metadata = {}
+        raw_path = item
+    text = str(raw_path or "").strip()
+    normalized = Path(text).as_posix() if text else ""
+    candidate = Path(text) if text else None
+    resolved = candidate if candidate and candidate.is_absolute() else ROOT / candidate if candidate else None
+    return {
+        "path": normalized,
+        **metadata,
+        "exists": bool(resolved and resolved.exists()),
+        "valid_path": bool(text),
+    }
+
+
 def compare_contract(
     contract: dict[str, Any],
     live_job: dict[str, Any] | None,
@@ -321,11 +343,14 @@ def compare_contract(
         actual = get_nested(live_job, field)
         if actual != expected:
             drift.append({"field": field, "expected": expected, "actual": actual})
-    expected_artifacts = []
-    for item in as_list(contract.get("expected_artifacts")):
-        path = ROOT / str(item)
-        expected_artifacts.append({"path": str(item), "exists": path.exists()})
-    missing_artifacts = [item for item in expected_artifacts if not item["exists"]]
+    expected_artifacts = [
+        normalize_expected_artifact(item)
+        for item in as_list(contract.get("expected_artifacts"))
+    ]
+    missing_artifacts = [
+        item for item in expected_artifacts
+        if not item["exists"] and item.get("required", True) is not False
+    ]
     expected_message = expected_value(contract, "payload.message")
     actual_message = get_nested(live_job, "payload.message")
     prompt_shape = {
@@ -386,7 +411,18 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     missing_count = sum(1 for item in results if item.get("status") == "missing_live_job")
     unsupported_model_routes = detected_unsupported_model_routes(results)
     unsupported_model_route_count = len(unsupported_model_routes)
-    contract_prompt_integrity_error_count = sum(1 for item in results if as_list(item.get("prompt_integrity_findings")))
+    contract_prompt_integrity_findings = [
+        {
+            "contract_path": result.get("contract_path"),
+            "job_id": result.get("job_id"),
+            "name": result.get("name"),
+            **finding,
+        }
+        for result in results
+        for raw_finding in as_list(result.get("prompt_integrity_findings"))
+        if (finding := as_dict(raw_finding)).get("source") == "contract"
+    ]
+    contract_prompt_integrity_error_count = len(contract_prompt_integrity_findings)
     live_prompt_integrity_findings = [
         {
             "job_id": job.get("id"),
@@ -410,6 +446,8 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         errors.append("cron_contract_drift_present")
     if unsupported_model_route_count:
         errors.append("unsupported_cron_model_route_present")
+    if contract_prompt_integrity_error_count:
+        errors.append("cron_contract_prompt_integrity_error_present")
     if live_prompt_integrity_error_count:
         errors.append("cron_prompt_integrity_error_present")
     if args.fail_on_prompt_bloat and prompt_bloat_count:
@@ -452,6 +490,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "live": live_meta,
         },
         "contracts": results,
+        "contract_prompt_integrity_findings": contract_prompt_integrity_findings,
         "live_prompt_integrity_findings": live_prompt_integrity_findings,
         "authority_boundary": AUTHORITY_BOUNDARY,
         "validation": {"status": "error" if errors else "warning" if warnings else "ok", "errors": errors, "warnings": warnings},

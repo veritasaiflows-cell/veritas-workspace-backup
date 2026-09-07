@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WF67 Alpaca Paper Cancel Request",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "workflow",
+    "artifact_type",
+    "request_id",
+    "created_at_utc",
+    "authority",
+    "cancel",
+    "source",
+    "audit"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "workflow": { "const": "WF67 - Alpaca Paper Execution Guardrail" },
+    "artifact_type": { "const": "wf67_paper_cancel_request" },
+    "request_id": { "type": "string", "minLength": 8 },
+    "created_at_utc": { "type": "string" },
+    "authority": {
+      "type": "object",
+      "required": [
+        "paper_only",
+        "paper_cancel_allowed",
+        "live_submit_allowed",
+        "live_cancel_allowed",
+        "live_endpoint_forbidden",
+        "money_movement_allowed",
+        "account_settings_mutation_allowed",
+        "no_inferred_approval"
+      ],
+      "properties": {
+        "paper_only": { "const": true },
+        "paper_cancel_allowed": { "const": true },
+        "live_submit_allowed": { "const": false },
+        "live_cancel_allowed": { "const": false },
+        "live_endpoint_forbidden": { "const": true },
+        "money_movement_allowed": { "const": false },
+        "account_settings_mutation_allowed": { "const": false },
+        "no_inferred_approval": { "const": true }
+      }
+    },
+    "cancel": {
+      "type": "object",
+      "required": ["paper_order_id", "reason"],
+      "properties": {
+        "paper_order_id": { "type": "string", "minLength": 6 },
+        "symbol": { "type": ["string", "null"] },
+        "reason": { "type": "string", "minLength": 5 }
+      }
+    },
+    "source": { "type": "object" },
+    "audit": { "type": "object" }
+  }
+}

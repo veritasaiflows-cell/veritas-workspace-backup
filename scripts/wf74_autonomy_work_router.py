@@ -104,7 +104,7 @@ DEPARTMENT_OWNER_BY_DEPARTMENT = {
     "finance_wf78_wf84_wf85": "main-session-veritas-finance",
     "product_wf75_wf79": "smb-workflow-automation-operator",
     "qa": "workspace-qa-pass",
-    "skills_procedure": "operating-procedure-repository-manager",
+    "skills_procedure": "workspace-governor",
     "memory_continuity": "memory-continuity-manager",
     "main_session_veritas": "main-session-veritas",
 }

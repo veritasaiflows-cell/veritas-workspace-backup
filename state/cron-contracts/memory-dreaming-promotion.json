@@ -1,11 +1,11 @@
 {
   "schema": "veritas.cron_contract.v1",
-  "job_id": "e70a39b4-1203-49c5-8088-b9a33dd88bd3",
+  "job_id": "a2979b48-4c2e-4490-9ffa-3976c7bb2835",
   "name": "Memory Dreaming Promotion",
   "required": true,
   "owner_workflow": "WF74/OpenClaw memory-core Dreaming",
   "contract_reason": "Randall approved OpenClaw Dreaming inside the 2 AM-6 AM quiet window. The managed memory-core job needs a local contract so cron freshness can track it without classifying the new built-in job as unregistered.",
-  "description": "[managed-by=memory-core.short-term-promotion] Promote weighted short-term recalls into MEMORY.md (limit=10, minScore=0.800, minRecallCount=3, minUniqueQueries=3, recencyHalfLifeDays=14, maxAgeDays=30).",
+  "description": "[managed-by=memory-core.short-term-promotion] Promote weighted short-term recalls into MEMORY.md (limit=10, minScore=0.750, minRecallCount=3, minUniqueQueries=3, recencyHalfLifeDays=14, maxAgeDays=30).",
   "enabled": true,
   "schedule": {
     "kind": "cron",
@@ -50,6 +50,6 @@
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-06-19T23:52:00Z",
+  "updated_at_utc": "2026-09-06T22:16:00Z",
   "contract_update_reason": "OpenClaw Dreaming enabled at 3 AM America/Phoenix with review-only local proof packet."
 }

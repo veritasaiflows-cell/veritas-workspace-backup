@@ -1,0 +1,37 @@
+{
+  "artifact_type": "wf67_paper_execution_guard_validation",
+  "artifacts": {
+    "approval": "tmp/alpaca-paper-readiness/phase-6-paper-execution-approval.json",
+    "audit_log": "tmp/alpaca-paper-readiness/audit-log.jsonl",
+    "cancel_request": "tmp/alpaca-paper-readiness/paper-cancel-request.sample.json",
+    "cancel_schema": "tmp/alpaca-paper-readiness/paper-cancel-request.schema.json",
+    "canon_drift_gate": "tmp/canon-drift-freshness-gate.json",
+    "guard_report": "tmp/alpaca-paper-readiness/paper-execution-guard-report.json",
+    "kill_switch": "tmp/alpaca-paper-readiness/kill-switch.json",
+    "result": "tmp\\alpaca-paper-readiness\\paper-execution-result.amzn-buy-20260520T0718MST.json",
+    "trade_request": "tmp\\alpaca-paper-readiness\\paper-trade-request.wf67-advisor-amzn-buy-limit-20260520T0718MST.json",
+    "trade_schema": "tmp/alpaca-paper-readiness/paper-trade-request.schema.json",
+    "wrapper": "scripts/alpaca_paper_trade_executor.py"
+  },
+  "endpoint_policy": {
+    "forbidden_live_endpoint": "https://api.alpaca.markets",
+    "required_credential_names": [
+      "ALPACA_PAPER_API_KEY_ID",
+      "ALPACA_PAPER_API_SECRET_KEY"
+    ],
+    "required_endpoint": "https://paper-api.alpaca.markets"
+  },
+  "findings": [],
+  "generated_at_utc": "2026-05-20T14:28:57Z",
+  "live_trading_allowed": false,
+  "money_movement_allowed": false,
+  "ready_for_paper_submit_cancel": true,
+  "schema_version": 1,
+  "status": "ok",
+  "summary": {
+    "critical": 0,
+    "warning": 0
+  },
+  "verdict": "WF67 paper-only submit/cancel/sell wrapper is ready for a scoped paper-trade/pilot/advisor package artifact; live trading and money movement remain blocked.",
+  "workflow": "WF67 - Alpaca Paper Execution Guardrail"
+}

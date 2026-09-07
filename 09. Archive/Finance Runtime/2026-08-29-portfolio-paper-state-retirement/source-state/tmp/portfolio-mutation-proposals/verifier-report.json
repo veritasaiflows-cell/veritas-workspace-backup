@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-16T04:36:32Z",
+  "status": "ok",
+  "input": "tmp/portfolio-mutation-proposals",
+  "authority": {
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "trade_or_account_action_allowed": false,
+    "main_session_final_action_required": true,
+    "verifier_is_read_only": true,
+    "canonical_writes_performed": false
+  },
+  "summary": {
+    "files_checked": 6,
+    "packets_checked": 9,
+    "exact_patch_packets_checked": 5,
+    "critical": 0,
+    "warning": 9
+  },
+  "findings": [
+    {
+      "severity": "warning",
+      "source": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json#proposals[1]",
+      "issue": "decision-critical freshness is not clean",
+      "classification": "partial",
+      "explicit_blocker": true
+    },
+    {
+      "severity": "warning",
+      "source": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json#proposals[2]",
+      "issue": "decision-critical freshness is not clean",
+      "classification": "partial",
+      "explicit_blocker": true
+    },
+    {
+      "severity": "warning",
+      "source": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json#proposals[3]",
+      "issue": "decision-critical freshness is not clean",
+      "classification": "partial",
+      "explicit_blocker": true
+    },
+    {
+      "severity": "warning",
+      "source": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json#proposals[4]",
+      "issue": "decision-critical freshness is not clean",
+      "classification": "partial",
+      "explicit_blocker": true
+    },
+    {
+      "severity": "warning",
+      "source": "tmp/portfolio-mutation-proposals/exact-patch-material/post-close-ETN-capital-deployment-review-2026-05-14-etn_execution_board_review_note.json",
+      "issue": "decision-critical freshness is not clean",
+      "classification": "stale",
+      "explicit_blocker": true
+    },
+    {
+      "severity": "warning",
+      "source": "tmp/portfolio-mutation-proposals/exact-patch-material/post-close-ETN-capital-deployment-review-2026-05-16-entry_band.json",
+      "issue": "decision-critical freshness is not clean",
+      "classification": "partial",
+      "explicit_blocker": true
+    },
+    {
+      "severity": "warning",
+      "source": "tmp/portfolio-mutation-proposals/exact-patch-material/post-close-ETN-capital-deployment-review-2026-05-16-sector_posture.json",
+      "issue": "decision-critical freshness is not clean",
+      "classification": "partial",
+      "explicit_blocker": true
+    },
+    {
+      "severity": "warning",
+      "source": "tmp/portfolio-mutation-proposals/exact-patch-material/post-close-ETN-capital-deployment-review-2026-05-16-sizing.json",
+      "issue": "decision-critical freshness is not clean",
+      "classification": "partial",
+      "explicit_blocker": true
+    },
+    {
+      "severity": "warning",
+      "source": "tmp/portfolio-mutation-proposals/exact-patch-material/post-close-ETN-capital-deployment-review-2026-05-16-sleeve.json",
+      "issue": "decision-critical freshness is not clean",
+      "classification": "partial",
+      "explicit_blocker": true
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-08-27T13:14:10.064360+00:00",
-  "as_of_date": "2026-08-27",
+  "generated_at_utc": "2026-08-28T20:20:06.880115+00:00",
+  "as_of_date": "2026-08-28",
   "status": "ok",
   "stale_after_days": 7,
   "expected_update_window": "Refresh weekly, before event-calendar maintenance, and when major earnings windows approach or resolve.",
@@ -14,7 +14,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:06.107413+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:02.499752+00:00",
       "error": null
     },
     {
@@ -23,7 +23,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:06.492611+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:02.821303+00:00",
       "error": null
     },
     {
@@ -32,7 +32,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:06.577752+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:02.906332+00:00",
       "error": null
     },
     {
@@ -41,7 +41,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:06.658513+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:02.986111+00:00",
       "error": null
     },
     {
@@ -50,7 +50,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:06.738474+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:03.062177+00:00",
       "error": null
     },
     {
@@ -59,7 +59,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:06.814849+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:03.139435+00:00",
       "error": null
     },
     {
@@ -68,7 +68,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:06.930502+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:03.223438+00:00",
       "error": null
     },
     {
@@ -77,7 +77,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:07.015018+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:03.301704+00:00",
       "error": null
     },
     {
@@ -86,7 +86,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:07.096218+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:03.386913+00:00",
       "error": null
     },
     {
@@ -95,7 +95,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:07.245878+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:03.464104+00:00",
       "error": null
     },
     {
@@ -104,7 +104,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:07.321865+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:03.609006+00:00",
       "error": null
     },
     {
@@ -113,7 +113,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:07.402880+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:03.751323+00:00",
       "error": null
     },
     {
@@ -122,7 +122,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:07.481099+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:03.830900+00:00",
       "error": null
     },
     {
@@ -131,7 +131,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:07.563539+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:03.915278+00:00",
       "error": null
     },
     {
@@ -140,7 +140,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:07.639553+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:03.992965+00:00",
       "error": null
     },
     {
@@ -149,7 +149,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:07.714960+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:04.072541+00:00",
       "error": null
     },
     {
@@ -158,7 +158,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:07.798461+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:04.150343+00:00",
       "error": null
     },
     {
@@ -167,7 +167,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:07.882492+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:04.238281+00:00",
       "error": null
     },
     {
@@ -176,7 +176,7 @@
       "source": "post_earnings_lifecycle_closeout",
       "date_source_class": "post_earnings_lifecycle_closeout",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:07.959392+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:04.381186+00:00",
       "error": null,
       "lifecycle": {
         "status": "post_event_review_confirmed_next_date_pending",
@@ -197,7 +197,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.037129+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:04.525390+00:00",
       "error": null
     },
     {
@@ -206,7 +206,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.114501+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:04.605077+00:00",
       "error": null
     },
     {
@@ -215,7 +215,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.191672+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:04.683490+00:00",
       "error": null
     },
     {
@@ -224,7 +224,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.266332+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:04.760395+00:00",
       "error": null
     },
     {
@@ -233,7 +233,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.342815+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:04.840703+00:00",
       "error": null
     },
     {
@@ -242,7 +242,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.418148+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:04.918860+00:00",
       "error": null
     },
     {
@@ -251,7 +251,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.493748+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:04.997133+00:00",
       "error": null
     },
     {
@@ -260,7 +260,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.570629+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:05.073574+00:00",
       "error": null
     },
     {
@@ -269,7 +269,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.660117+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:05.157751+00:00",
       "error": null
     },
     {
@@ -278,7 +278,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.737906+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:05.234464+00:00",
       "error": null
     },
     {
@@ -287,7 +287,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.816647+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:05.324683+00:00",
       "error": null
     },
     {
@@ -296,7 +296,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.895120+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:05.464035+00:00",
       "error": null
     },
     {
@@ -305,7 +305,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:08.981009+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:05.544043+00:00",
       "error": null
     },
     {
@@ -314,7 +314,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:09.062438+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:05.626984+00:00",
       "error": null
     },
     {
@@ -323,7 +323,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:09.204870+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:05.706758+00:00",
       "error": null
     },
     {
@@ -332,7 +332,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:09.282626+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:05.783559+00:00",
       "error": null
     },
     {
@@ -341,7 +341,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:09.359641+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:05.861398+00:00",
       "error": null
     },
     {
@@ -350,7 +350,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:09.434729+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:06.011885+00:00",
       "error": null
     },
     {
@@ -359,7 +359,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:09.508345+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:06.154084+00:00",
       "error": null
     },
     {
@@ -368,7 +368,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:09.593247+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:06.232871+00:00",
       "error": null
     },
     {
@@ -377,7 +377,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:09.678392+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:06.310712+00:00",
       "error": null
     },
     {
@@ -386,7 +386,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:09.751987+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:06.385397+00:00",
       "error": null
     },
     {
@@ -395,7 +395,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:09.834070+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:06.471819+00:00",
       "error": null
     },
     {
@@ -404,7 +404,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:09.909191+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:06.573080+00:00",
       "error": null
     },
     {
@@ -413,7 +413,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-27T13:14:09.986067+00:00",
+      "fetched_at_utc": "2026-08-28T20:20:06.798896+00:00",
       "error": null
     }
   ],

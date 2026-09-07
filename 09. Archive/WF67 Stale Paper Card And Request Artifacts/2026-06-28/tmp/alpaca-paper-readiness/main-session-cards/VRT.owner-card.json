@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "artifact_type": "main_session_wf67_order_decision_card",
+  "request_id": "wf78-owner-card-prep-VRT-20260617T151746Z",
+  "created_at_utc": "2026-06-17T15:17:46Z",
+  "authority": {
+    "main_session_recommendation_allowed": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "paper_only": true,
+    "paper_order_execution_allowed_by_card": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "order": {
+    "symbol": "VRT",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 313.26,
+    "qty": null,
+    "notional": 313.26
+  },
+  "risk_check": {
+    "status": "superseded_current_wf78_gate",
+    "estimated_notional_usd": 313.26,
+    "max_notional_usd": 500.0,
+    "max_loss_usd": 35.81,
+    "entry_band_low": 299.33,
+    "entry_band_high": 316.5,
+    "observed_price": 313.26,
+    "observed_entry_status": "IN_BAND",
+    "stop": 277.45,
+    "sizing_rationale": "Paper-only starter request sized at or below WF67 $500 pilot cap; exact execution remains blocked pending Randall approval and fresh guard proof.",
+    "blockers": [
+      "superseded_by_current_wf78_gate"
+    ],
+    "superseded_at_utc": "2026-06-24T03:30:36Z",
+    "superseded_reason": "current_wf78_gate:IN_BAND",
+    "position_size_reviewed": false,
+    "current_wf78_gate": {
+      "ticker": "VRT",
+      "queue_state": "A-DEPLOY-CANDIDATE-REVIEW-READY",
+      "current_price": 318.32,
+      "current_band_status": "IN_BAND",
+      "entry_band_low": 300.02,
+      "entry_band_high": 319.13,
+      "stop_or_invalidation": 276.97,
+      "blockers": [],
+      "source_artifact": "tmp/wf78-capital-review-queue.json",
+      "source_generated_at_utc": "2026-06-23T20:30:45Z"
+    }
+  },
+  "source": {
+    "source_artifact": "tmp/wf78-capital-review-queue.json",
+    "capital_recommendation_source": "wf78_non_executing_owner_card_prep",
+    "owner_or_pilot_scope": "Superseded VRT WF78 owner-card artifact; current gate is A-DEPLOY-CANDIDATE-REVIEW-READY / IN_BAND. Audit-only, not approval-card or paper-order context.",
+    "approval_artifact": null,
+    "superseded_by_current_gate": true,
+    "current_gate_checked_at_utc": "2026-06-24T03:30:36Z"
+  },
+  "owner_approval": {
+    "status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "approval_text": null,
+    "market_order_owner_approved": false
+  },
+  "decision_context": {
+    "name": "Vertiv Holdings Co",
+    "sector": "Industrials",
+    "queue_state": "A-DEPLOY-CANDIDATE-REVIEW-READY",
+    "recommendation_support": "approval-ready paper starter if fresh in band",
+    "cautions": [
+      "card itself grants no paper/live execution authority and infers no approval",
+      "forward PE elevated at 35.73",
+      "fresh quote/band/stop check required before any final recommendation or paper-order approval request (cleared for non-executing review by same-market-day quote proof)",
+      "owner promotion/selection still required before treating as deployed"
+    ],
+    "source_artifacts": [
+      "tmp/intraday-alerts/quote-snapshot-proof.json",
+      "tmp/market-execution-readiness-cron-hardening.json",
+      "tmp/post-close-final-quote-ledger.json",
+      "tmp/ticker-intelligence-cards/VRT.current.json",
+      "tmp/wf78-auto-tier-routing.json",
+      "tmp/wf78-production-tier-adjudication.json",
+      "tmp/wf78-routing-delta.json"
+    ],
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false
+  },
+  "superseded_by_current_gate": true
+}

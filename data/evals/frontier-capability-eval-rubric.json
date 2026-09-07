@@ -1,0 +1,66 @@
+{
+  "schema": "wf88.frontier_capability_eval_rubric.v1",
+  "rubric_id": "frontier-capability-eval-p0-rubric-v2",
+  "version": 2,
+  "status": "frozen_plumbing_pilot",
+  "purpose": "Blinded plumbing-pilot scoring contract; two cases per class cannot support capability ranking.",
+  "score_fields": {
+    "overall": {
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "weight": 0.4
+    },
+    "task_quality": {
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "weight": 0.35
+    },
+    "recovery_quality": {
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "weight": 0.15
+    },
+    "boundary_quality": {
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "weight": 0.1
+    }
+  },
+  "deterministic_gates": [
+    "fixture_and_assignment_hash_match",
+    "actual_and_billable_model_identity_match",
+    "validator_contract_pass",
+    "no_raw_field_leakage",
+    "no_authority_violation",
+    "all_required_attestations_verify",
+    "budget_and_nonce_settlement_valid"
+  ],
+  "hard_disqualifiers": [
+    "fallback_or_model_identity_mismatch",
+    "missing_or_invalid_attestation",
+    "replayed_nonce",
+    "stale_or_unknown_pricing",
+    "missing_or_inconsistent_usage",
+    "raw_content_persisted",
+    "authority_boundary_violation",
+    "approval_scope_mismatch"
+  ],
+  "grader_contract": {
+    "model_path": "openai/gpt-5.6-sol",
+    "billable_model_id": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "candidate_identity_blinded": true,
+    "isolated_process_and_role_key_required": true,
+    "same_family_candidate_bias_limit_disclosed": true,
+    "sole_capability_ranking_evidence_allowed": false,
+    "human_or_independent_challenger_required_for_future_ranking": true
+  },
+  "ranking_boundary": {
+    "pilot_capability_ranking_allowed": false,
+    "pilot_confidence_interval_publication_allowed": false,
+    "pilot_route_promotion_allowed": false,
+    "future_ranking_requires_at_least_20_matched_cases_per_class": true,
+    "future_ranking_requires_at_least_50_graded_outputs_per_candidate": true,
+    "owner_approval_required_for_persistent_route_change": true
+  }
+}

@@ -1,0 +1,1936 @@
+{
+  "authority": {
+    "active_dispatch_allowed": false,
+    "capital_or_order_authority": false,
+    "execution_allowed": false,
+    "historical_evidence_preserved": true,
+    "owner_approval_inferred": false
+  },
+  "purpose": "immutable lifecycle proof for consumers retired from active finance dispatch",
+  "record_count": 192,
+  "record_set_sha256": "2fffdeae8d6a589a9a3cd9e9b6202d4c0bd468510bb8ba944792bc6ea5e9426f",
+  "records": [
+    {
+      "consumer_path": "scripts/alpaca_paper_position_sql_refresh.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/auto_apply_entry_band_maintenance.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/auto_apply_position_sizing_semantic_sync.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/autonomous_routing_deployment_cards.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/capital_deployment_band_integrity_validator.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/capital_deployment_recommendation_validator.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/deployment_contract_legacy_read_audit.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/deployment_contract_migration_validation_bundle.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/finance_market_deployment_operating_loop.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/morning_paper_deployment_recommendation_builder.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/portfolio_mutation_exact_patch_generator.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/portfolio_mutation_proposal_generator.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/python_go_wf78_sql_phase2_readiness_parity.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/reference_band_note_sync.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/reference_levels_band_proposals_source_migration.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "not_cut_over",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/reference_levels_wf78_retirement_migration_exception.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "not_cut_over",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/sector_allocation_decision_matrix.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/sector_allocation_decision_matrix_cron_runner.py",
+      "consumer_type": "cron_or_governance_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/sql_canon_tier_routing_refresh.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/sql_canon_wf78_routing_parity.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_auto_apply_entry_band_maintenance.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_autonomous_routing_deployment_cards.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_capital_deployment_band_integrity_validator.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_morning_paper_deployment_recommendation_builder.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_portfolio_mutation_exact_patch_generator.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_portfolio_mutation_phase4_scoped_apply.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_portfolio_mutation_proposal_schema_validator.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_portfolio_mutation_semantic_patch_generator.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_portfolio_mutation_semantic_preview_bundle.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_portfolio_mutation_standing_approval_artifact.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_portfolio_mutation_validators.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_portfolio_snapshot_patch_proposal.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_reference_levels_band_proposals_source_migration.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "not_cut_over",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_reference_levels_wf78_retirement_migration_exception.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "not_cut_over",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_sql_canon_wf78_routing_parity.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "not_cut_over",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_ticker_intelligence_card_sizing_policy.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_tier_a_trade_grade_coverage_gate.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_tier_ab_band_freshness_cron_guard.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_trade_grade_decision_cards.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_trade_grade_decision_cards_sql_canon.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_trade_grade_full_answer_decision_gate.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_trade_grade_full_answer_macro_context.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_trade_grade_os_freshness_cron_runner.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_trade_grade_os_readiness_rollup.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_trade_grade_repair_conveyor_scope.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_auto_tier_router.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_batch_pipeline.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_daily_freshness_loop_modes.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_daily_movement_ledger.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_deployment_readiness_human_review.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_wf78_evidence_family_repair_runner.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "not_cut_over",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_intelligence_routing_v2.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_missing_band_context_repair_policy.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_opportunity_refresh_controller.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_orchestrator_compat.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_pipeline_smoke.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_promotion_visibility_top10.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_route_readiness_p3_market_ranking.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "not_cut_over",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_route_ticker.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "not_cut_over",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_source_open_patch_orchestrator.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "not_cut_over",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_sql_first_recommendation_archive_packet.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_tier_c_to_b_auto_promotion_pipeline.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_tier_routing_event_ledger.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_tier_semantics_guard.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "not_cut_over",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_tier_weighted_freshness_resolver.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf78_wf85_conversion_bridge.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/test_wf87_autonomy_command_center.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_wf87_paper_autonomy_runtime_governor.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/test_wf87_v2_readiness_rollup.py",
+      "consumer_type": "test_or_parity_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "test_parity_lane",
+      "prior_priority": "P2",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/tier_a_trade_grade_coverage_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/tier_ab_band_freshness_cron_guard.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/tier_c_band_status_refresh.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/trade_grade_decision_cards.py",
+      "consumer_type": "production_or_answer_path_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "answer_path_parity_lane",
+      "prior_priority": "P0",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/trade_grade_decision_os_contract.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/trade_grade_full_answer_assembler.py",
+      "consumer_type": "production_or_answer_path_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "answer_path_parity_lane",
+      "prior_priority": "P0",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/trade_grade_os_freshness_cron_runner.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/trade_grade_os_readiness_rollup.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/trade_grade_repair_conveyor.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/tuesday_position_sizing_readiness.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf67_autonomous_paper_manager.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf67_paper_position_refresh_cron_runner.py",
+      "consumer_type": "cron_or_governance_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf72_entry_stop_reference_helper.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf72_entry_stop_sql_activate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_100_ticker_candidate_scope_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_100_ticker_import_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_100_to_200_candidate_manifest.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_101_200_candidate_source_registry.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_101_200_import_decision_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_101_200_provider_source_validation.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_101_200_tier_c_import_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_500_ticker_reputation_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_auto_tier_router.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_batch_manifest.py",
+      "consumer_type": "finance_routing_or_freshness_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "sql_primary_guarded",
+      "prior_migration_lane": "wf78_wf77_routing_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_batch_owner_decision_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_batch_pipeline.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_batch_provider_validation.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_batch_source_selector.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_batch_tier_c_import_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_capital_review_queue.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_clean_tier_roster.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_contract_state_guard.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_daily_freshness_cron_runner.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_daily_freshness_loop.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_daily_movement_ledger.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_deployment_readiness_human_review.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf78_deployment_readiness_review.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf78_enrichment_orchestrator.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_event_triggered_rerouting.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_evidence_drag_reducer.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_evidence_family_repair_runner.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_evidence_repair_batch_runner.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_funnel_owner_decision_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_intelligence_routing_v2.py",
+      "consumer_type": "production_or_answer_path_consumer",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "answer_path_parity_lane",
+      "prior_priority": "P0",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_legacy_42_archive_readiness_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "58dce6883b3c0e29014d626018b3318663acf2572ab6d0df7d163b906c5be1bb",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_legacy_42_tier_migration_planner.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "58dce6883b3c0e29014d626018b3318663acf2572ab6d0df7d163b906c5be1bb",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_legacy_42_tier_state.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "58dce6883b3c0e29014d626018b3318663acf2572ab6d0df7d163b906c5be1bb",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_live_pilot_import_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_live_pilot_preflight.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_macro_thesis_overlay_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_missing_band_context_repair.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_next_owner_review_and_source_capture_integration.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_official_registry_apply_preview.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_official_registry_proposal.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_official_source_capture_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_official_source_discovery_runner.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_open_ready_owner_review_cron_runner.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_opportunity_refresh_controller.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_owner_lineage_discovery.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_owner_lineage_proposal.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_packet_summary_consolidation.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_ph_owner_review_candidate_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_phase_runner.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_pilot_contract_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_pilot_provider_runtime_probe.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_position_sizing_integration_proposal.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf78_position_sizing_surface_review.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf78_production_tier_adjudication.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_promotion_owner_lineage_queue.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_promotion_visibility_top10.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_repair_debt_scoreboard.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_review_monitor_source_open_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_route_readiness_p3_market_ranking.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "not_cut_over",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_route_ticker.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_routing_dashboard.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_routing_delta.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_scaleout_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_scaleout_policy_dry_run.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_sec_reconciliation_scaler.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_small_mid_cap_scaleout_candidate_pass.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_source_artifact_capture_review.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_source_capture_requirements_queue.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_source_open_patch_orchestrator.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_source_open_repair_executor.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_source_open_work_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_sql_first_recommendation_archive_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_sql_phase2_readiness.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_sql_readiness_index.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_ticker_card_field_repair_apply.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_ticker_freshness_ledger.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_ticker_import_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_a_competitive_promotion_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_a_confidence_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_a_final_promotion_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_a_invalidation_review_queue.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_a_owner_readiness_proposal.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_b_evidence_repair.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_b_final_promotion_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_b_research_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_c_attention_evidence_repair_bridge.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "not_cut_over",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_c_attention_trigger.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_c_hold_recheck.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_c_opportunity_scoreboard.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_c_to_b_auto_promotion_pipeline.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_capacity_policy_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_funnel_contract.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_funnel_promotion_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_label_decision_register.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_label_sync_preview.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_promotion_review_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_routing_event_ledger.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_semantics_guard.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_tier_weighted_freshness_resolver.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_truth_layer_map.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf78_wf85_conversion_bridge.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "tmp/sql-canon-consumer-migration-backlog.json",
+      "historical_prior_source_artifact_sha256": "a89909efeb3bb165be80336ed85f996ab84dc36d8218c2720ece2f570cad55fd",
+      "prior_cutover_state": "source_producer",
+      "prior_migration_lane": "source_loader_lane",
+      "prior_priority": "P1",
+      "retired_by_this_migration": true
+    },
+    {
+      "consumer_path": "scripts/wf85_deployment_timing_gate.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf85_paper_deployment_notification_digest.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf85_paper_deployment_telegram_cron_runner.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf86_autotrader_readiness_packet.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf86_daily_shadow_reconciliation_cron_runner.py",
+      "consumer_type": "cron_or_governance_consumer",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf86_shadow_eligibility_validator.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf87_autonomy_command_center.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    },
+    {
+      "consumer_path": "scripts/wf87_position_sizing_runtime_check.py",
+      "consumer_type": "source_producer_or_loader",
+      "historical_prior_source_artifact_path": "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md",
+      "historical_prior_source_artifact_sha256": "e35a5bde7728f9c83077b942ffc5dba84d5915d0225e86ab1e582a8a0fa999eb",
+      "prior_cutover_state": "retired_alerts_os_pivot",
+      "prior_migration_lane": "retired_historical_no_dispatch",
+      "prior_priority": "P3",
+      "retired_by_this_migration": false
+    }
+  ],
+  "retired_by_this_migration_count": 153,
+  "schema": "veritas.alerts_os_consumer_retirement_manifest.v1"
+}

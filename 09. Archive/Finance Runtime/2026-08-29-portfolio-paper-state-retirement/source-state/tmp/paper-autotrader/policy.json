@@ -1,0 +1,93 @@
+{
+  "schema": "veritas.paper_autotrader_policy.v0",
+  "workflow_id": "WF86",
+  "generated_at_utc": "2026-06-11T17:16:15Z",
+  "status": "phase_1b_shadow_readiness_prepared",
+  "mode": "shadow_first_no_execution",
+  "authority_boundary": {
+    "paper_only": true,
+    "main_session_owned": true,
+    "shadow_mode_first": true,
+    "autonomous_paper_execution_allowed_now": false,
+    "paper_order_submit_allowed_now": false,
+    "paper_order_cancel_allowed_now": false,
+    "paper_order_sell_allowed_now": false,
+    "live_trade_allowed": false,
+    "live_endpoint_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "portfolio_or_canon_mutation_allowed": false,
+    "cron_direct_execution_allowed": false,
+    "telegram_approve_to_execute_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "initial_caps": {
+    "model_portfolio_ceiling_usd": 100000,
+    "max_notional_per_order_usd": 5000,
+    "max_notional_per_order_role": "absolute_order_ceiling_not_default_size",
+    "default_single_stock_clean_add_notional_max_usd": 2500,
+    "tactical_dip_reclaim_notional_max_usd": 1500,
+    "setup_notional_caps_usd": {
+      "CLEAN_ADD": 2500,
+      "TACTICAL_DIP_RECLAIM": 1500
+    },
+    "max_orders_per_day": 3,
+    "max_same_ticker_orders_per_day": 1,
+    "order_types_initially_allowed": [
+      "limit"
+    ],
+    "time_in_force_initially_allowed": [
+      "day"
+    ],
+    "market_hours_only_initially": true,
+    "long_only_initially": true,
+    "autonomous_profit_taking_enabled_initially": false
+  },
+  "phase_1_decisions": {
+    "approved_by": "Randall",
+    "approved_at_mst": "2026-06-11 08:41 MST",
+    "shadow_min_market_sessions": 5,
+    "shadow_min_clean_decisions": 20,
+    "initial_max_notional_per_order_usd": 5000,
+    "current_hardening_note": "$100k is the paper portfolio ceiling; $5k is an absolute order ceiling, not the default notional. Clean single-stock paper adds cap at $2.5k; tactical dip/reclaim setups cap at $1.5k until reclaim confirmation.",
+    "autonomous_buy_universe_initial": "Tier A only",
+    "tier_b_scope_initial": "shadow_only_until_explicit_review",
+    "autonomous_sell_scope_initial": "risk_reduction_only",
+    "autonomous_profit_taking_enabled_initially": false,
+    "market_hours_only_initially": true,
+    "first_fixture_policy": "VRT_NVDA_GOOG_shadow_only_until_blockers_clear",
+    "vrt_assisted_mode_condition": "only_after_band_review_and_wf67_guard_are_clean"
+  },
+  "buy_gates": [
+    "ticker_allowed_by_policy_or_owner_scope",
+    "fresh_same_session_quote",
+    "fresh_written_entry_band_and_stop",
+    "price_in_band_or_approved_reclaim_zone",
+    "no_chase_above_configured_band_percentile",
+    "wf85_decision_state_clean_enough",
+    "no_promotion_veto_or_band_review_blocker",
+    "risk_to_stop_within_caps",
+    "market_and_sector_filter_not_hostile",
+    "no_earnings_or_catalyst_blackout_unless_allowed"
+  ],
+  "sell_gates": [
+    "paper_position_exists",
+    "sell_quantity_not_greater_than_held_quantity",
+    "stop_or_invalidation_breach",
+    "thesis_or_catalyst_degradation",
+    "failed_reclaim_or_setup_break",
+    "paper_exposure_cap_breach",
+    "time_stop_or_stale_thesis_rule_when_approved"
+  ],
+  "required_before_autonomous_execution": [
+    "policy_schema_and_validator_clean",
+    "shadow_decision_proof_clean",
+    "assisted_mode_wf67_request_loop_proven",
+    "wf67_guard_clean",
+    "fresh_short_lived_kill_switch",
+    "redacted_audit_log_ready",
+    "post_trade_reconciliation_ready",
+    "separate_scoped_randall_pilot_approval"
+  ],
+  "open_decisions_for_randall": []
+}

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "artifact_type": "main_session_wf67_order_decision_card",
+  "request_id": "wf78-owner-card-prep-GOOG-20260606T175248Z",
+  "created_at_utc": "2026-06-06T17:52:48Z",
+  "authority": {
+    "main_session_recommendation_allowed": true,
+    "wf67_request_artifact_generation_allowed": true,
+    "paper_only": true,
+    "paper_order_execution_allowed_by_card": false,
+    "live_trade_allowed": false,
+    "owner_approval_inferred": false,
+    "portfolio_or_canon_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false
+  },
+  "order": {
+    "symbol": "GOOG",
+    "side": "buy",
+    "type": "limit",
+    "time_in_force": "day",
+    "limit_price": 365.99,
+    "qty": null,
+    "notional": 365.99
+  },
+  "risk_check": {
+    "status": "ok",
+    "estimated_notional_usd": 365.99,
+    "max_notional_usd": 500.0,
+    "max_loss_usd": 23.5,
+    "entry_band_low": 354.63,
+    "entry_band_high": 376.48,
+    "observed_price": 365.99,
+    "observed_entry_status": "IN_BAND",
+    "stop": 342.49,
+    "sizing_rationale": "Paper-only starter request sized at or below WF67 $500 pilot cap; exact execution remains blocked pending Randall approval and fresh guard proof."
+  },
+  "source": {
+    "source_artifact": "tmp/wf78-capital-review-queue.json",
+    "capital_recommendation_source": "wf78_non_executing_owner_card_prep",
+    "owner_or_pilot_scope": "WF78 capital-review candidate, paper-only starter card, pending exact Randall approval",
+    "approval_artifact": null
+  },
+  "owner_approval": {
+    "status": "pending_exact_randall_approval",
+    "approved_by": null,
+    "approval_text": null,
+    "market_order_owner_approved": false
+  },
+  "decision_context": {
+    "name": "Alphabet Inc.",
+    "sector": "Tech",
+    "queue_state": "A-DEPLOY-CANDIDATE-REVIEW-READY",
+    "recommendation_support": "approval-ready paper starter if fresh in band",
+    "cautions": [
+      "EPS grew while FCF/share declined materially; earnings quality needs review.",
+      "card itself grants no paper/live execution authority and infers no approval",
+      "fresh quote/band/stop check required before any final recommendation or paper-order approval request (cleared for non-executing review by same-market-day quote proof)",
+      "macro/technical gate is DEGRADED",
+      "owner promotion/selection still required before treating as deployed"
+    ],
+    "source_artifacts": [
+      "tmp/intraday-alerts/quote-snapshot-proof.json",
+      "tmp/market-execution-readiness-cron-hardening.json",
+      "tmp/ticker-intelligence-cards/GOOG.current.json",
+      "tmp/wf78-auto-tier-routing.json",
+      "tmp/wf78-production-tier-adjudication.json",
+      "tmp/wf78-routing-delta.json"
+    ],
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false
+  }
+}

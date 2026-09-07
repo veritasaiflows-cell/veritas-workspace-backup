@@ -1,6 +1,6 @@
 ---
 name: "workspace-qa-pass"
-description: "Risk-budgeted independent QA with frozen scope, adversarial route/privacy checks, and bounded repair loops."
+description: "Normalize residual encoding corruption to ASCII."
 ---
 
 # Workspace QA Pass
@@ -9,7 +9,7 @@ description: "Risk-budgeted independent QA with frozen scope, adversarial route/
 
 Provide independent findings-first review of material workspace changes without turning QA into automatic ritual, hidden reimplementation, or acceptance authority.
 
-QA verifies claims against live files, frozen handoffs, exact owner surfaces, validators, and adversarial probes. Main alone accepts and integrates work.
+QA verifies claims against live files, frozen handoffs, exact owner surfaces, validators, and adversarial probes. QA is not execution authority. Main alone accepts and integrates work.
 
 ## When Independent QA Is Required
 
@@ -39,7 +39,7 @@ Verify hashes before and after QA. If the source changes, reject the snapshot an
 
 Lead with defects ordered by severity:
 
-`Severity — file:line — issue — impact — required repair or proof`
+`Severity  -  file:line  -  issue  -  impact  -  required repair or proof`
 
 Separate verified bugs, risks, assumptions, and residual limitations. If no material blocker exists, say PASS plainly and name remaining proof gaps.
 
@@ -64,13 +64,14 @@ Confirm that:
 
 - deterministic/model-free work was considered first;
 - Codex-native was explicit and eligible;
-- persistent Terra had fresh strict transport proof;
-- Main/Sol was an explicit exception rather than fallback;
+- persistent Luna or Terra had fresh strict agent-matched transport proof, and any write route also had scoped-writeback proof;
+- Main was an explicit quick-fix, final-integration, or authority-sensitive exception rather than fallback;
+- any Sol use was a named escalation, challenger, or QA exception rather than the Main default;
 - no caller override rewrote the selected backend/model/thinking;
 - usage semantics distinguish cached, uncached, output, reasoning, and total;
 - `provider_usage_unavailable` remains unavailable rather than zero;
-- incidents and invalid telemetry receive no completion, first-pass, QA-pass, Main-accepted, or cohort credit;
-- like-for-like cohort eligibility uses at least 10 comparable Main-accepted jobs;
+- incidents and invalid telemetry receive no completion, first-pass, QA-pass, Main-accepted, or efficiency success credit;
+- on-demand route review may use available token attribution, elapsed-time, retry, acceptance, and escaped-defect evidence with no fixed cohort pilot or minimum job count; prefer like-for-like comparisons when available;
 - automatic route ranking and promotion remain disabled.
 
 API-equivalent estimates are not invoices. Token totals do not prove OAuth impact or billed cost.

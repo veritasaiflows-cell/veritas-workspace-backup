@@ -1,0 +1,73 @@
+{
+  "schema": "veritas.wf86_assisted_order_cards.v1",
+  "generated_at_utc": "2026-06-22T14:49:23Z",
+  "status": "draft_blocked_before_approval",
+  "workflow_id": "WF86",
+  "authority_boundary": {
+    "paper_only": true,
+    "request_generation_only": true,
+    "paper_submit_allowed": false,
+    "paper_cancel_allowed": false,
+    "paper_sell_allowed": false,
+    "live_trade_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "summary": {
+    "card_count": 1,
+    "ticker": "NVDA",
+    "side": "buy",
+    "notional_usd": 1500.0,
+    "limit_price": 209.46,
+    "assisted_review_blockers": [
+      "decision_factory_disposition=not_card_preparable",
+      "fresh_execution_quote_needed",
+      "stale_or_mismatched_owner_approval:approval_order_mismatch:symbol",
+      "tactical_dip_reclaim_requires_fresh_exact_owner_review"
+    ],
+    "execution_ready": false,
+    "next_safe_action": "Review/repair assisted blockers; do not execute this request."
+  },
+  "cards": [
+    {
+      "ticker": "NVDA",
+      "card_path": "tmp/alpaca-paper-readiness/main-session-cards/NVDA.paper-readiness-2026-06-22.owner-card.json",
+      "request_path": "tmp/alpaca-paper-readiness/paper-trade-request.nvda-paper-readiness-2026-06-22.json",
+      "request_id": "wf86-assisted-NVDA-buy-limit-20260622T144923Z",
+      "owner_approval_status": "pending_exact_randall_approval",
+      "wf67_guard_status": "blocked",
+      "wf67_ready_for_paper_submit_cancel": false,
+      "execute_allowed_by_card": false,
+      "execute_allowed_by_request": false,
+      "assisted_review_blockers": [
+        "decision_factory_disposition=not_card_preparable",
+        "fresh_execution_quote_needed",
+        "stale_or_mismatched_owner_approval:approval_order_mismatch:symbol",
+        "tactical_dip_reclaim_requires_fresh_exact_owner_review"
+      ],
+      "execution_blockers": [
+        "wf67_guard_not_clean",
+        "fresh_kill_switch_not_proven",
+        "redacted_audit_and_reconciliation_not_proven",
+        "separate_scoped_randall_pilot_approval_missing",
+        "submit_channel_not_allowed_from_assisted_builder"
+      ]
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "decision_factory_disposition=not_card_preparable",
+      "fresh_execution_quote_needed",
+      "stale_or_mismatched_owner_approval:approval_order_mismatch:symbol",
+      "tactical_dip_reclaim_requires_fresh_exact_owner_review"
+    ]
+  },
+  "stop_lines": [
+    "Assisted card/request drafts are not approval.",
+    "No paper submit/cancel/sell from this builder.",
+    "No live endpoint, credentials, account action, money movement, or owner approval inference."
+  ]
+}

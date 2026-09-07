@@ -1,0 +1,59 @@
+{
+  "captured_at_utc": "2026-08-30T17:40:00Z",
+  "job_id": "a9d1978a-7d52-4790-bfe4-ab211e49f560",
+  "previous_job": {
+    "delivery": {
+      "bestEffort": true,
+      "mode": "none"
+    },
+    "description": "Weekly isolated Luna proof refresh before the main OS improvement radar review. Refreshes six-agent usage, attribution, budget, efficiency, status, staleness, lane, validator, worktree, cron contract, PM, and cron control artifacts only; no implementation, scheduler/config/auth/runtime mutation, raw content capture, or finance/account/execution authority.",
+    "name": "Runtime - Weekly OS Improvement Radar Proof Refresh",
+    "payload": {
+      "kind": "agentTurn",
+      "lightContext": false,
+      "message": "QUIET CRON OUTPUT RULE (hard): delivery.mode=none; on clean success/no-action reply exactly NO_REPLY and nothing else; if blocked, report only proof path, failed command, validation errors, and next repair owner. Work in C:\\Users\\Veritas\\.openclaw\\workspace. Objective: refresh the closed Saturday-ending seven-day isolated-agent and weekly OS improvement proof before Main review. Execute exactly these commands in order: 1. python scripts\\cron_efficiency_review_runner.py --write --validate; 2. python scripts\\implementation_token_attribution_bridge.py --write --write-md --validate; 3. python scripts\\artifact_staleness_explainer.py --write --validate; 4. python scripts\\lane_collision_preflight.py --write --validate; 5. python scripts\\validator_bundle_router.py --max-budget shared --write --validate; 6. python scripts\\worktree_checkpoint_planner.py --write --validate; 7. python scripts\\cron_contract_validator.py --require-contracts --fail-on-drift --write --validate; 8. python scripts\\pm_control_packet.py --write --write-db --validate; 9. python scripts\\cron_control_packet.py --write --validate. Proof refresh only; no implementation, cron/config/runtime mutation, raw prompt/response/tool capture, skill update, finance/canon/portfolio mutation, external delivery, or approval inference.",
+      "model": "openai/gpt-5.6-luna",
+      "thinking": "low",
+      "timeoutSeconds": 600,
+      "toolsAllow": [
+        "read",
+        "edit",
+        "write",
+        "apply_patch",
+        "exec",
+        "process",
+        "cron",
+        "image_generate",
+        "music_generate",
+        "video_generate",
+        "get_goal",
+        "create_goal",
+        "update_goal",
+        "skill_workshop",
+        "update_plan",
+        "sessions_list",
+        "sessions_history",
+        "sessions_send",
+        "sessions_spawn",
+        "sessions_yield",
+        "subagents",
+        "session_status",
+        "web_search",
+        "web_fetch",
+        "image",
+        "memory_search",
+        "memory_get"
+      ]
+    },
+    "schedule": {
+      "expr": "10 16 * * 0",
+      "kind": "cron",
+      "tz": "America/Phoenix"
+    },
+    "sessionTarget": "isolated",
+    "wakeMode": "now"
+  },
+  "reason": "Converted a weekly agentTurn job whose entire instruction was an ordered command list into a model-free command job run by scripts/deterministic_cron_sequence_runner.py. This also removes the unattended 27-tool allowlist (including exec, write, cron, sessions_spawn, and media generation) that the agentTurn payload carried.",
+  "rollback_instruction": "Restore the previous_job fields below via cron update (payload, sessionTarget, wakeMode, description, delivery). No config, auth, or schedule change is involved in either direction.",
+  "schema": "veritas.cron_job_rollback_record.v1"
+}

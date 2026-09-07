@@ -1,0 +1,61 @@
+{
+  "schema_version": "wf72_broad_archive_apply_manifest.v1",
+  "workflow": "WF72 broad archive phase 1/2",
+  "generated_at_utc": "2026-05-24T22:29:50Z",
+  "approval_source": "Randall 2026-05-24 15:18 MST broad archive continuation with no-loss/no-delete/proof-first posture; applied only archive-ready Phase 1/2 candidates after classification artifacts.",
+  "archive_root": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase1-2-owner-approved",
+  "move_count": 3,
+  "delete_count": 0,
+  "error_count": 0,
+  "entries": [
+    {
+      "source": "tmpdashboard-acceptance-baseline.json",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase1-2-owner-approved/root-generated-residue/tmpdashboard-acceptance-baseline.json",
+      "reason": "Phase 1 root warning archive-ready stale diagnostic/root clutter",
+      "move_status": "ok",
+      "source_exists_after": false,
+      "destination_exists_after": true,
+      "sha256_before": "46ea33c2979f5512a75dc35a808eeff1367b49a2c925e3ec80f80b657d062cf9",
+      "sha256_after": "46ea33c2979f5512a75dc35a808eeff1367b49a2c925e3ec80f80b657d062cf9",
+      "hash_match": true,
+      "size_bytes": 203,
+      "mtime_before": 1779556926.1103213,
+      "delete_count": 0
+    },
+    {
+      "source": "tmp/implement_cron_broadening.py",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase1-2-owner-approved/tmp-python-helpers/implement_cron_broadening.py",
+      "reason": "Phase 2 one-off cron broadening helper; durable results live in scripts/WF76 artifacts",
+      "move_status": "ok",
+      "source_exists_after": false,
+      "destination_exists_after": true,
+      "sha256_before": "84c20dd94c2ffcc013a3ae9fd27fbf05b48beaf793d26f9f280df6ccf9b5aef4",
+      "sha256_after": "84c20dd94c2ffcc013a3ae9fd27fbf05b48beaf793d26f9f280df6ccf9b5aef4",
+      "hash_match": true,
+      "size_bytes": 6820,
+      "mtime_before": 1779606436.7946298,
+      "delete_count": 0
+    },
+    {
+      "source": "tmp/wf72_make_phases_8_11_plan.py",
+      "destination": "09. Archive/Broad Workspace Archive - Owner Approved/2026-05-24-wf72-phase1-2-owner-approved/tmp-python-helpers/wf72_make_phases_8_11_plan.py",
+      "reason": "Phase 2 one-off WF72 plan generator; generated proof artifacts retained in tmp",
+      "move_status": "ok",
+      "source_exists_after": false,
+      "destination_exists_after": true,
+      "sha256_before": "7c26805d8dc3fec0570aea48404219061c917187df914e72796aa0893a2a9a14",
+      "sha256_after": "7c26805d8dc3fec0570aea48404219061c917187df914e72796aa0893a2a9a14",
+      "hash_match": true,
+      "size_bytes": 6345,
+      "mtime_before": 1779646925.63704,
+      "delete_count": 0
+    }
+  ],
+  "rollback": "Move each destination back to its source path and verify sha256_before matches restored file. README/script documentation changes can be reverted from git or by removing the added README and restoring the approved data-surface allowlist.",
+  "boundaries": {
+    "deletes_performed": false,
+    "config_auth_channel_service_runtime_mutation": false,
+    "canon_portfolio_trade_account_paper_live_mutation": false,
+    "protected_surface_move": false
+  }
+}

@@ -1,0 +1,302 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-08-28T21:40:01Z",
+  "artifact_type": "finance_intelligence_state_paper_positions_packet",
+  "db_path": "tmp/wf67-paper-position-state.sqlite",
+  "authority_boundary": {
+    "review_only": true,
+    "database_path": "tmp/wf67-paper-position-state.sqlite",
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_sql_canon_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_sql_canon_current_state_field_families": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "tmp_database_is_compatibility_cache": true,
+    "database_path_migration_performed": false,
+    "tmp_database_promotion_performed": false,
+    "full_sql_canon_migration_allowed": false,
+    "sql_canon_authority_expanded": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_trade_execution_allowed": false,
+    "live_trade_or_account_action_allowed": false,
+    "source_open_required_before_finance_claims": true,
+    "paper_position_sql_state_only": true,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed_by_this_registry": false,
+    "paper_order_cancel_allowed_by_this_registry": false,
+    "trade_or_account_action_allowed": false,
+    "canon_cache_used_for_paper_positions": false,
+    "artifact_index_is_state_owner": false
+  },
+  "answer_contract": {
+    "sql_is_routing_and_current_state_only": true,
+    "material_finance_claim_requires_source_open": true,
+    "canonical_markdown_remains_owner_truth": true,
+    "must_not_infer_approval_or_execution_authority": true,
+    "must_disclose_stale_or_conflicting_rows": true
+  },
+  "sql_canon_migration": {
+    "standing_local_sql_canon_migration_approved": true,
+    "durable_sql_canon_db": "state/finance/finance-canon.sqlite",
+    "typed_access_layer": "scripts/finance_sql_canon_access.py",
+    "internal_sql_canon_primary_guarded": true,
+    "internal_current_state_field_families_promoted": [
+      "answer_path_scope",
+      "evidence_freshness",
+      "reference_levels",
+      "source_lineage",
+      "tier_routing_state",
+      "universe_membership"
+    ],
+    "retail_or_customer_sql_first_allowed": false,
+    "this_tmp_db_is_compatibility_cache": true,
+    "sql_canon_authority_expanded": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "status": "ok",
+  "freshness": {
+    "status": "fresh",
+    "generated_at_utc": "2026-08-28T21:40:01Z",
+    "age_seconds": 0,
+    "stale_threshold_seconds": 28800,
+    "latest_successful_snapshot_at_utc": "2026-08-28T21:40:01Z",
+    "last_known_positions_status": "current"
+  },
+  "latest_refresh": {
+    "snapshot_id": "wf67-paper-pos-20260828T214001Z",
+    "status": "ok",
+    "generated_at_utc": "2026-08-28T21:40:01Z",
+    "validation_findings": []
+  },
+  "account_summary": {
+    "account_mode": "paper",
+    "endpoint": "https://paper-api.alpaca.markets",
+    "method": "GET_only",
+    "equity": 100148.02,
+    "cash": 96343.89,
+    "buying_power": 396027.13,
+    "portfolio_value": 100148.02,
+    "positions_count": 10,
+    "orders_count": 18,
+    "open_orders_count": 0,
+    "last_successful_snapshot_id": "wf67-paper-pos-20260828T214001Z",
+    "last_successful_snapshot_at_utc": "2026-08-28T21:40:01Z"
+  },
+  "positions": [
+    {
+      "snapshot_id": "wf67-paper-pos-20260828T214001Z",
+      "symbol": "AMZN",
+      "quantity": 2.0,
+      "side": "long",
+      "market_value": 532.62,
+      "average_entry_price": 258.605,
+      "current_price": 266.31,
+      "unrealized_pl": 15.41,
+      "unrealized_pl_percent": 0.02979,
+      "change_today": 0.03922,
+      "source": "alpaca_paper_get_only",
+      "raw_json": "{\"avg_entry_price\":\"258.605\",\"change_today\":\"0.03922\",\"current_price\":\"266.31\",\"market_value\":\"532.62\",\"qty\":\"2\",\"side\":\"long\",\"symbol\":\"AMZN\",\"unrealized_pl\":\"15.41\",\"unrealized_plpc\":\"0.02979\"}"
+    },
+    {
+      "snapshot_id": "wf67-paper-pos-20260828T214001Z",
+      "symbol": "BKNG",
+      "quantity": 1.0,
+      "side": "long",
+      "market_value": 205.63,
+      "average_entry_price": 163.6,
+      "current_price": 205.63,
+      "unrealized_pl": 42.03,
+      "unrealized_pl_percent": 0.25691,
+      "change_today": 0.01516,
+      "source": "alpaca_paper_get_only",
+      "raw_json": "{\"avg_entry_price\":\"163.6\",\"change_today\":\"0.01516\",\"current_price\":\"205.63\",\"market_value\":\"205.63\",\"qty\":\"1\",\"side\":\"long\",\"symbol\":\"BKNG\",\"unrealized_pl\":\"42.03\",\"unrealized_plpc\":\"0.25691\"}"
+    },
+    {
+      "snapshot_id": "wf67-paper-pos-20260828T214001Z",
+      "symbol": "ETN",
+      "quantity": 1.0,
+      "side": "long",
+      "market_value": 403.74,
+      "average_entry_price": 372.76,
+      "current_price": 403.74,
+      "unrealized_pl": 30.98,
+      "unrealized_pl_percent": 0.08311,
+      "change_today": -0.02956,
+      "source": "alpaca_paper_get_only",
+      "raw_json": "{\"avg_entry_price\":\"372.76\",\"change_today\":\"-0.02956\",\"current_price\":\"403.74\",\"market_value\":\"403.74\",\"qty\":\"1\",\"side\":\"long\",\"symbol\":\"ETN\",\"unrealized_pl\":\"30.98\",\"unrealized_plpc\":\"0.08311\"}"
+    },
+    {
+      "snapshot_id": "wf67-paper-pos-20260828T214001Z",
+      "symbol": "GOOG",
+      "quantity": 1.999983424,
+      "side": "long",
+      "market_value": 685.29432,
+      "average_entry_price": 359.937983,
+      "current_price": 342.65,
+      "unrealized_pl": -34.57568,
+      "unrealized_pl_percent": -0.04803,
+      "change_today": 0.01463,
+      "source": "alpaca_paper_get_only",
+      "raw_json": "{\"avg_entry_price\":\"359.937983\",\"change_today\":\"0.01463\",\"current_price\":\"342.65\",\"market_value\":\"685.29432\",\"qty\":\"1.999983424\",\"side\":\"long\",\"symbol\":\"GOOG\",\"unrealized_pl\":\"-34.57568\",\"unrealized_plpc\":\"-0.04803\"}"
+    },
+    {
+      "snapshot_id": "wf67-paper-pos-20260828T214001Z",
+      "symbol": "MSFT",
+      "quantity": 1.0,
+      "side": "long",
+      "market_value": 512.55,
+      "average_entry_price": 420.26,
+      "current_price": 512.55,
+      "unrealized_pl": 92.29,
+      "unrealized_pl_percent": 0.2196,
+      "change_today": 0.01483,
+      "source": "alpaca_paper_get_only",
+      "raw_json": "{\"avg_entry_price\":\"420.26\",\"change_today\":\"0.01483\",\"current_price\":\"512.55\",\"market_value\":\"512.55\",\"qty\":\"1\",\"side\":\"long\",\"symbol\":\"MSFT\",\"unrealized_pl\":\"92.29\",\"unrealized_plpc\":\"0.2196\"}"
+    },
+    {
+      "snapshot_id": "wf67-paper-pos-20260828T214001Z",
+      "symbol": "NVDA",
+      "quantity": 1.483208256,
+      "side": "long",
+      "market_value": 322.820277,
+      "average_entry_price": 202.250762,
+      "current_price": 217.65,
+      "unrealized_pl": 22.840277,
+      "unrealized_pl_percent": 0.07614,
+      "change_today": -0.04531,
+      "source": "alpaca_paper_get_only",
+      "raw_json": "{\"avg_entry_price\":\"202.250762\",\"change_today\":\"-0.04531\",\"current_price\":\"217.65\",\"market_value\":\"322.820277\",\"qty\":\"1.483208256\",\"side\":\"long\",\"symbol\":\"NVDA\",\"unrealized_pl\":\"22.840277\",\"unrealized_plpc\":\"0.07614\"}"
+    },
+    {
+      "snapshot_id": "wf67-paper-pos-20260828T214001Z",
+      "symbol": "PH",
+      "quantity": 0.3,
+      "side": "long",
+      "market_value": 298.506,
+      "average_entry_price": 874.84,
+      "current_price": 995.02,
+      "unrealized_pl": 36.054,
+      "unrealized_pl_percent": 0.13737,
+      "change_today": -0.016,
+      "source": "alpaca_paper_get_only",
+      "raw_json": "{\"avg_entry_price\":\"874.84\",\"change_today\":\"-0.016\",\"current_price\":\"995.02\",\"market_value\":\"298.506\",\"qty\":\"0.3\",\"side\":\"long\",\"symbol\":\"PH\",\"unrealized_pl\":\"36.054\",\"unrealized_plpc\":\"0.13737\"}"
+    },
+    {
+      "snapshot_id": "wf67-paper-pos-20260828T214001Z",
+      "symbol": "VRT",
+      "quantity": 1.642703849,
+      "side": "long",
+      "market_value": 425.985962,
+      "average_entry_price": 304.364052,
+      "current_price": 259.32,
+      "unrealized_pl": -73.994038,
+      "unrealized_pl_percent": -0.14799,
+      "change_today": -0.03699,
+      "source": "alpaca_paper_get_only",
+      "raw_json": "{\"avg_entry_price\":\"304.364052\",\"change_today\":\"-0.03699\",\"current_price\":\"259.32\",\"market_value\":\"425.985962\",\"qty\":\"1.642703849\",\"side\":\"long\",\"symbol\":\"VRT\",\"unrealized_pl\":\"-73.994038\",\"unrealized_plpc\":\"-0.14799\"}"
+    },
+    {
+      "snapshot_id": "wf67-paper-pos-20260828T214001Z",
+      "symbol": "XLB",
+      "quantity": 4.888345717,
+      "side": "long",
+      "market_value": 260.304409,
+      "average_entry_price": 51.14,
+      "current_price": 53.25,
+      "unrealized_pl": 10.314409,
+      "unrealized_pl_percent": 0.04126,
+      "change_today": 0.00038,
+      "source": "alpaca_paper_get_only",
+      "raw_json": "{\"avg_entry_price\":\"51.14\",\"change_today\":\"0.00038\",\"current_price\":\"53.25\",\"market_value\":\"260.304409\",\"qty\":\"4.888345717\",\"side\":\"long\",\"symbol\":\"XLB\",\"unrealized_pl\":\"10.314409\",\"unrealized_plpc\":\"0.04126\"}"
+    },
+    {
+      "snapshot_id": "wf67-paper-pos-20260828T214001Z",
+      "symbol": "XOM",
+      "quantity": 1.0,
+      "side": "long",
+      "market_value": 156.68,
+      "average_entry_price": 149.97,
+      "current_price": 156.68,
+      "unrealized_pl": 6.71,
+      "unrealized_pl_percent": 0.04474,
+      "change_today": 0.00153,
+      "source": "alpaca_paper_get_only",
+      "raw_json": "{\"avg_entry_price\":\"149.97\",\"change_today\":\"0.00153\",\"current_price\":\"156.68\",\"market_value\":\"156.68\",\"qty\":\"1\",\"side\":\"long\",\"symbol\":\"XOM\",\"unrealized_pl\":\"6.71\",\"unrealized_plpc\":\"0.04474\"}"
+    }
+  ],
+  "validation": {
+    "status": "ok",
+    "checks": [
+      {
+        "name": "integrity_check_ok",
+        "ok": true,
+        "severity": "error",
+        "detail": "ok"
+      },
+      {
+        "name": "foreign_key_check_ok",
+        "ok": true,
+        "severity": "error",
+        "detail": {
+          "rows": 0
+        }
+      },
+      {
+        "name": "paper_snapshot_present",
+        "ok": true,
+        "severity": "error",
+        "detail": {
+          "rows": 1
+        }
+      },
+      {
+        "name": "ok_snapshot_available_for_current_positions",
+        "ok": true,
+        "severity": "warning",
+        "detail": {
+          "rows": 152
+        }
+      },
+      {
+        "name": "forbidden_authority_flags_false",
+        "ok": true,
+        "severity": "error",
+        "detail": {
+          "rows": 0
+        }
+      },
+      {
+        "name": "paper_position_freshness_fresh",
+        "ok": true,
+        "severity": "warning",
+        "detail": {
+          "freshness_status": "fresh",
+          "generated_at_utc": "2026-08-28T21:40:01Z"
+        }
+      }
+    ]
+  },
+  "paper_boundary": {
+    "paper_position_sql_state_only": true,
+    "no_paper_submit_cancel_sell_authority": true,
+    "no_live_trade_or_account_authority": true,
+    "no_owner_approval_inference": true,
+    "json_markdown_exports_are_not_truth_owner": true,
+    "canon_cache_used_for_paper_positions": false,
+    "artifact_index_is_state_owner": false
+  },
+  "source_open_rule": "Use this packet for paper-position routing/current-state only. Stale, missing, or blocked freshness must be disclosed before paper-advisor context."
+}

@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -1008,6 +1009,47 @@ JOB_CONTRACTS: dict[str, dict[str, Any]] = {
 }
 
 
+# Compatibility-only artifact contracts for retired scheduler routes.  They are
+# kept separate for historical tests and audit explanation, and are never
+# merged into the active freshness contract map.  Current finance jobs must be
+# registered through state/cron-contracts/*.json so a stale embedded name can
+# neither reactivate a retired route nor false-green an uncontracted live job.
+_RETIRED_LEGACY_CONTRACT_PREFIXES = (
+    "Finance -",
+    "Finance Delivery Series -",
+    "GPT54mini canary -",
+)
+_RETIRED_LEGACY_CONTRACT_NAMES = frozenset(
+    {
+        "Cron Reduction - Morning Control Digest",
+        "Cron Reduction - Post-Close Control Digest",
+        "Governance - Monthly Execution Board SQL-First Review",
+        "Cron - Main Session Auto-Green Watchdog",
+        "Operating Leverage - Escalation Trigger Check",
+        "P0 Retail Automation Control Plane Guard",
+        "PM - Autonomous Implementation Proof Worker",
+        "WF74 - Learning Loop Telegram Digest",
+        "WF76 - Weekly Cron Authority and OS Maintenance",
+    }
+)
+
+
+def _is_retired_legacy_embedded_contract(name: str) -> bool:
+    return name in _RETIRED_LEGACY_CONTRACT_NAMES or name.startswith(_RETIRED_LEGACY_CONTRACT_PREFIXES)
+
+
+RETIRED_LEGACY_JOB_CONTRACTS: dict[str, dict[str, Any]] = {
+    name: contract
+    for name, contract in JOB_CONTRACTS.items()
+    if _is_retired_legacy_embedded_contract(name)
+}
+JOB_CONTRACTS = {
+    name: contract
+    for name, contract in JOB_CONTRACTS.items()
+    if not _is_retired_legacy_embedded_contract(name)
+}
+
+
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
@@ -1453,12 +1495,90 @@ def authority_widened(payload: dict[str, Any]) -> bool:
     return any(token in text for token in forbidden_true_tokens)
 
 
+MAX_SCHEDULER_ERROR_CHARS = 400
+
+
+SCHEDULER_ERROR_JSON_KEYS = (
+    "status",
+    "proof_status",
+    "error",
+    "errors",
+    "critical",
+    "blockers",
+    "failed_steps",
+)
+
+
+def compact_json_error(text: str) -> str | None:
+    """Some producers dump their whole result object into the error field. A
+    truncated blob is unreadable in a digest line, so pull the few keys that say
+    what actually failed."""
+    try:
+        data = json.loads(text)
+    except ValueError:
+        # The operator ledger caps error text at 2000 chars, so long blobs arrive
+        # truncated and unparseable; scrape the same keys textually instead.
+        pattern = r'"(%s)"\s*:\s*"([^"]*)"' % "|".join(SCHEDULER_ERROR_JSON_KEYS)
+        found = {key: value for key, value in re.findall(pattern, text)}
+        return "; ".join(f"{k}={found[k]}" for k in SCHEDULER_ERROR_JSON_KEYS if found.get(k)) or None
+    if not isinstance(data, dict):
+        return None
+    parts = []
+    for key in SCHEDULER_ERROR_JSON_KEYS:
+        value = data.get(key)
+        if isinstance(value, (list, tuple)):
+            value = ", ".join(str(item) for item in value[:3])
+        elif isinstance(value, dict):
+            value = value.get("status") or ""
+        value = " ".join(str(value or "").split())
+        if value:
+            parts.append(f"{key}={value}")
+    return "; ".join(parts) or None
+
+
+def scheduler_error_text(job: dict[str, Any]) -> str | None:
+    """Operator-ledger error text, kept so escalations name the failure instead of
+    only counting it. Diagnostic summary is preferred because bare last_error is
+    often just an exit code."""
+    candidates = [
+        text
+        for text in (
+            str(job.get(key) or "").strip()
+            for key in ("last_diagnostic_summary", "last_error")
+        )
+        if text
+    ]
+    for text in candidates:
+        if not text.startswith(("{", "[")):
+            return " ".join(text.split())[:MAX_SCHEDULER_ERROR_CHARS]
+        compact = compact_json_error(text)
+        if compact:
+            return compact[:MAX_SCHEDULER_ERROR_CHARS]
+    if candidates:
+        return " ".join(candidates[0].split())[:MAX_SCHEDULER_ERROR_CHARS]
+    return None
+
+
+def artifacts_prove_post_failure_recovery(
+    artifacts: list[dict[str, Any]],
+    last_run_at: datetime | None,
+) -> bool:
+    """Require every required artifact to be newer than the failed scheduler run."""
+    if last_run_at is None:
+        return False
+    required = [item for item in artifacts if item.get("required")]
+    generated = [parse_utc(item.get("generated_at_utc")) for item in required]
+    return bool(required and all(value is not None and value > last_run_at for value in generated))
+
+
 def classify_job(job: dict[str, Any], contract: dict[str, Any] | None) -> dict[str, Any]:
     enabled = bool(job.get("enabled"))
     name = str(job.get("name") or "")
     live_last_status = str(job.get("last_status") or "").strip().lower()
     live_consecutive_errors = int(job.get("consecutive_errors") or 0)
     live_last_run_exception = enabled and live_last_status not in {"", "ok", "idle"}
+    live_last_error = scheduler_error_text(job)
+    live_last_run_at = parse_utc(job.get("last_run_utc"))
     if not enabled:
         return {
             "id": job.get("id"),
@@ -1472,6 +1592,7 @@ def classify_job(job: dict[str, Any], contract: dict[str, Any] | None) -> dict[s
             "live_scheduler_last_status": live_last_status or None,
             "live_scheduler_consecutive_errors": live_consecutive_errors,
             "live_scheduler_last_run_exception": False,
+            "live_scheduler_last_run_at": job.get("last_run_utc") or None,
             "expected_artifacts": [],
         }
     if not contract:
@@ -1488,6 +1609,8 @@ def classify_job(job: dict[str, Any], contract: dict[str, Any] | None) -> dict[s
             "live_scheduler_last_status": live_last_status or None,
             "live_scheduler_consecutive_errors": live_consecutive_errors,
             "live_scheduler_last_run_exception": live_last_run_exception,
+            "live_scheduler_last_run_at": job.get("last_run_utc") or None,
+            "live_scheduler_last_error": live_last_error,
             "expected_artifacts": [],
         }
     default_freshness = effective_freshness_hours(job, contract)
@@ -1545,11 +1668,24 @@ def classify_job(job: dict[str, Any], contract: dict[str, Any] | None) -> dict[s
         signal_class = "NO_REPLY"
         attention = "quiet_success"
         reason = "required_artifacts_fresh"
+    recovery_proven = bool(
+        live_last_run_exception
+        and live_consecutive_errors >= 2
+        and status in {"fresh", "needs_review"}
+        and artifacts_prove_post_failure_recovery(artifacts, live_last_run_at)
+    )
     if live_last_run_exception and live_consecutive_errors >= 2:
-        status = "scheduler_error"
-        signal_class = "BLOCKED"
-        attention = "requires_main_attention"
-        reason = "enabled_job_repeated_scheduler_failures"
+        if recovery_proven:
+            if status == "fresh":
+                status = "recovered_waiting_scheduler_canary"
+                signal_class = "STALE_OR_NOISE"
+                attention = "inspect_if_relevant"
+                reason = "fresh_artifacts_prove_recovery_after_last_scheduler_failure"
+        else:
+            status = "scheduler_error"
+            signal_class = "BLOCKED"
+            attention = "requires_main_attention"
+            reason = "enabled_job_repeated_scheduler_failures"
     latest = max((item.get("generated_at_utc") for item in artifacts if item.get("generated_at_utc")), default=None)
     max_age = max((item.get("age_hours") for item in artifacts if item.get("age_hours") is not None), default=None)
     return {
@@ -1568,8 +1704,12 @@ def classify_job(job: dict[str, Any], contract: dict[str, Any] | None) -> dict[s
         "live_scheduler_last_status": live_last_status or None,
         "live_scheduler_consecutive_errors": live_consecutive_errors,
         "live_scheduler_last_run_exception": live_last_run_exception,
+        "live_scheduler_last_run_at": job.get("last_run_utc") or None,
+        "live_scheduler_last_error": live_last_error,
         "live_scheduler_reconciliation": (
-            "artifact_freshness_governs_escalation_but_last_scheduler_status_is_visible"
+            "newer_nonblocking_artifacts_prove_execution_recovery_waiting_natural_canary"
+            if recovery_proven
+            else "artifact_freshness_governs_escalation_but_last_scheduler_status_is_visible"
             if live_last_run_exception
             else "last_scheduler_status_clean_or_absent"
         ),
@@ -1617,6 +1757,8 @@ def signal_from_job(job: dict[str, Any]) -> dict[str, Any]:
         "live_scheduler_last_status": job.get("live_scheduler_last_status"),
         "live_scheduler_consecutive_errors": job.get("live_scheduler_consecutive_errors"),
         "live_scheduler_last_run_exception": job.get("live_scheduler_last_run_exception"),
+        "live_scheduler_last_run_at": job.get("live_scheduler_last_run_at"),
+        "live_scheduler_last_error": job.get("live_scheduler_last_error"),
     }
 
 
@@ -1638,6 +1780,8 @@ def next_action_for(job: dict[str, Any]) -> str:
         return "Route owner-decision packet to Randall; do not infer approval."
     if status == "scheduler_error":
         return "Inspect live cron run history and repair the scheduler execution path before trusting artifact freshness."
+    if status == "recovered_waiting_scheduler_canary":
+        return "Keep the failed-run history visible and confirm the next natural scheduler run; newer clean artifact proof already exists."
     return ""
 
 
@@ -1722,6 +1866,7 @@ def build_payload(
             "name": job.get("name"),
             "last_status": job.get("live_scheduler_last_status"),
             "consecutive_errors": job.get("live_scheduler_consecutive_errors"),
+            "last_error": job.get("live_scheduler_last_error"),
             "artifact_status": job.get("underlying_status") or job.get("status"),
             "signal_class": job.get("underlying_signal_class") or job.get("signal_class"),
             "reconciliation": job.get("live_scheduler_reconciliation"),

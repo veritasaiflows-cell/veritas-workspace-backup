@@ -1,0 +1,442 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-06-18T20:29:18Z",
+  "proposal_id": "post-close:ETN:capital-deployment-review:2026-06-18",
+  "mutation_type": "ticker_lane_change",
+  "ticker_or_scope": "ETN",
+  "current_state": {
+    "source_window": "post-close",
+    "daily_review_state": "ALMOST DEPLOYABLE",
+    "deployment_state": "ALMOST DEPLOYABLE",
+    "band_status": "ABOVE_BAND_WAIT",
+    "proposal_band_status": "ABOVE_BAND_WAIT",
+    "raw_band_status": "ABOVE_BAND_WAIT",
+    "band_status_note": null
+  },
+  "proposed_state": {
+    "recommendation_posture": "wait_for_band",
+    "state_change_requested": false,
+    "review_packet_only": true
+  },
+  "why_now": "ETN surfaced from ranked daily review because current state is ALMOST DEPLOYABLE and recommendation class is wait_for_band.",
+  "why_stack": {
+    "setup_reason": "ETN surfaced from ranked daily review because current state is ALMOST DEPLOYABLE and recommendation class is wait_for_band.",
+    "entry_reason": "Entry context is ABOVE_BAND_WAIT against configured band 387.67\u2013404.02; this is setup context, not approval.",
+    "fundamental_reason": "WF65 fundamental context status is available_review_only; thesis context: intact; owner-gated action Tier 1 explicit add on 2026-05-10 after fresh band review",
+    "official_earnings_reason": "Official earnings bridge status is available_review_only; official evidence=manual_confirmed/review_only; adjusted EPS=official_captured, guidance=official_captured; unresolved official fields remain manual-required: .",
+    "sector_macro_reason": "Sector/macro context is available_review_only; macro gate is CLEAN.",
+    "risk_blocker_reason": "Risk/catalyst blocker context: Next earnings 2026-08-04 (47d out); band proposal remains review-only / non-applyable; dashboard validation has 2 warning(s); blockers: Next earnings 2026-08-04 (47d out); band proposal remains review-only / non-applyable; dashboard validation has 2 warning(s)",
+    "missing_evidence_reason": "state-history / owner-outcome retention is not wired; no predictive outcome score is available; official earnings bridge remains manual-required; adjusted EPS, guidance, growth bridge, margin bridge, and management explanation need official-source review",
+    "authority_boundary": "Review-only packet rationale; standing main-session workspace canon/portfolio maintenance authority is recognized, but this individual packet does not self-apply and grants no external financial, account, cash, live-order, or unguarded paper-submit authority."
+  },
+  "decision_rationale": {
+    "setup_reason": "ETN surfaced from ranked daily review because current state is ALMOST DEPLOYABLE and recommendation class is wait_for_band.",
+    "entry_reason": "Entry context is ABOVE_BAND_WAIT against configured band 387.67\u2013404.02; this is setup context, not approval.",
+    "fundamental_reason": "WF65 fundamental context status is available_review_only; thesis context: intact; owner-gated action Tier 1 explicit add on 2026-05-10 after fresh band review",
+    "official_earnings_reason": "Official earnings bridge status is available_review_only; official evidence=manual_confirmed/review_only; adjusted EPS=official_captured, guidance=official_captured; unresolved official fields remain manual-required: .",
+    "sector_macro_reason": "Sector/macro context is available_review_only; macro gate is CLEAN.",
+    "risk_blocker_reason": "Risk/catalyst blocker context: Next earnings 2026-08-04 (47d out); band proposal remains review-only / non-applyable; dashboard validation has 2 warning(s); blockers: Next earnings 2026-08-04 (47d out); band proposal remains review-only / non-applyable; dashboard validation has 2 warning(s)",
+    "missing_evidence_reason": "state-history / owner-outcome retention is not wired; no predictive outcome score is available; official earnings bridge remains manual-required; adjusted EPS, guidance, growth bridge, margin bridge, and management explanation need official-source review",
+    "authority_boundary": "Review-only packet rationale; standing main-session workspace canon/portfolio maintenance authority is recognized, but this individual packet does not self-apply and grants no external financial, account, cash, live-order, or unguarded paper-submit authority."
+  },
+  "evidence": [
+    "Daily review object action family: wait",
+    "Entry-band status: ABOVE_BAND_WAIT",
+    "Deployment state: ALMOST DEPLOYABLE",
+    "Band proposal status: ABOVE_BAND_WAIT",
+    "Official earnings bridge: available_review_only; SEC reconciliation: matched; adjusted EPS/guidance remain manual where unresolved."
+  ],
+  "source_freshness": {
+    "overall_classification": "stale",
+    "trust_level": "review_required",
+    "owner_review_required": true,
+    "explicit_blocker": true,
+    "capital_action_allowed": false
+  },
+  "base_case": "Base case: ETN remains review-worthy only if thesis, macro fit, written entry band, stop/invalidation, and catalyst gates are manually confirmed.",
+  "bear_case": "Bear case: defer or reject ETN if price violates stop/invalidation, catalyst risk worsens, macro fit deteriorates, or evidence remains incomplete.",
+  "risk_rule_check": {
+    "status": "review_required",
+    "references": [
+      "25% sector cap",
+      "15% normal single-name ceiling",
+      "speculative sleeve cap",
+      "catalyst-window exception"
+    ],
+    "review_boundary": "Risk context only; no size, cash, sleeve, or account action is authorized by this packet."
+  },
+  "concentration_check": {
+    "status": "review_required",
+    "ticker": "ETN",
+    "single_name_after_pct": null,
+    "max_single_name_after_pct": null,
+    "sector_after_pct": null,
+    "normal_single_name_ceiling_pct": 15,
+    "sector_cap_pct": 25,
+    "written_exception": false,
+    "note": "No pro-forma exposure change is proposed; owner must review concentration before any action."
+  },
+  "technical_gate": {
+    "status": "review_required",
+    "entry_band_status": "ABOVE_BAND_WAIT",
+    "band_status": "ABOVE_BAND_WAIT",
+    "proposal_band_status": "ABOVE_BAND_WAIT",
+    "raw_band_status": "ABOVE_BAND_WAIT",
+    "band_status_note": null,
+    "distance_to_band_pct": 3.57,
+    "close": 421.77,
+    "current_band_low": 387.67,
+    "current_band_high": 404.02,
+    "stop_or_invalidation": null,
+    "band_source": "band_proposals",
+    "raw_band_proposal": null,
+    "in_entry_band": false,
+    "below_stop": false,
+    "stop_line": "Do not treat in-band status as approval, sizing, or account-action authority."
+  },
+  "catalyst_gate": {
+    "status": "review_required",
+    "days_to_earnings": 47,
+    "earnings_state": "CLEAR",
+    "blockers": [
+      "Next earnings 2026-08-04 (47d out)",
+      "band proposal remains review-only / non-applyable",
+      "dashboard validation has 2 warning(s)",
+      "Breadth regime is deteriorating. Index-level strength may not reflect broad participation. Deployment confidence should be lower.",
+      "state-history / owner-outcome retention is not wired; no predictive outcome score is available"
+    ]
+  },
+  "official_earnings_gate": {
+    "status": "available_review_only",
+    "manual_review_required": true,
+    "capital_action_allowed": false,
+    "deployment_authority_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "summary": "Official earnings bridge is present as review-only context; adjusted EPS, guidance, growth bridge, segment margin, and management explanation remain manual-required until official capture."
+  },
+  "official_earnings_bridge": {
+    "status": "available_review_only",
+    "source_artifact": "tmp/fundamental-ir-reconciliation-packets.json",
+    "period_end": "2026-03-31",
+    "source_urls": {
+      "ir_home_url": "https://www.eaton.com/us/en-us/company/investor-relations.html",
+      "earnings_url": "https://www.eaton.com/us/en-us/company/investor-relations/quarterly-earnings.html",
+      "guidance_url": "https://www.eaton.com/us/en-us/company/investor-relations.html"
+    },
+    "official_evidence_status": "manual_confirmed",
+    "official_evidence_posture": "review_only",
+    "source_authority_level": "manual_confirmed_official_source",
+    "source_freshness": {
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000010/etn03312026exhibit99.htm",
+      "source_type": "sec_8k_exhibit_99_1",
+      "retrieval_status": "manual_confirmed",
+      "manual_capture_date": "2026-06-18T20:26:41Z",
+      "as_of_period": "2026-03-31",
+      "freshness_status": "current"
+    },
+    "evidence_claims": [
+      {
+        "claim_type": "official_capture_acquisition_debt_notes",
+        "claim_text": "Official capture field acquisition_debt_notes is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000010/etn03312026exhibit99.htm",
+        "source_section": "Headline acquisition bullet",
+        "value": {
+          "acquisitions_mentioned": [
+            "Boyd Thermal",
+            "Ultra PCS Limited"
+          ],
+          "debt_or_leverage_commentary": null,
+          "integration_or_synergy_commentary": null,
+          "strategic_acquisitions_closed_billion": 11
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-18T20:26:41Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_adjusted_eps",
+        "claim_text": "Official capture field adjusted_eps is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000010/etn03312026exhibit99.htm",
+        "source_section": "Q1 2026 release adjusted EPS paragraph",
+        "value": {
+          "adjusted_eps": 2.81,
+          "adjustments_per_share": {
+            "acquisitions_and_divestitures": 0.22,
+            "intangible_amortization": 0.29,
+            "multi_year_restructuring_program": 0.08
+          },
+          "gaap_eps": 2.22
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-18T20:26:41Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_growth_bridge",
+        "claim_text": "Official capture field growth_bridge is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000010/etn03312026exhibit99.htm",
+        "source_section": "Q1 2026 release sales bridge paragraph",
+        "value": {
+          "acquisition_growth_pct": 4,
+          "fx_growth_pct": 3,
+          "organic_sales_growth_pct": 10,
+          "reported_sales_growth_pct": 17
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-18T20:26:41Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_guidance",
+        "claim_text": "Official capture field guidance is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000010/etn03312026exhibit99.htm",
+        "source_section": "Headline bullets / full-year 2026 guidance",
+        "value": {
+          "adjusted_eps_midpoint_growth_pct": 10,
+          "adjusted_eps_range": {
+            "high": 13.5,
+            "low": 13.05
+          },
+          "eps_range": {
+            "high": 11.33,
+            "low": 10.88
+          },
+          "organic_growth_guidance_midpoint_pct": 10,
+          "organic_growth_guidance_prior_midpoint_pct": 8,
+          "raised_cut_reaffirmed": "raised organic growth guidance to 10% from 8% at the midpoint"
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-18T20:26:41Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_management_explanation",
+        "claim_text": "Official capture field management_explanation is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000010/etn03312026exhibit99.htm",
+        "source_section": "CEO quote and operating commentary",
+        "value": {
+          "demand_drivers": [
+            "data center momentum",
+            "Electrical Americas demand",
+            "Electrical Global outperformance",
+            "Aerospace backlog growth"
+          ],
+          "margin_drivers": [
+            "operational execution",
+            "segment margins above guidance range"
+          ],
+          "risk_items": [
+            "Mobility remains in a challenging market",
+            "forward-looking statements remain subject to SEC-filed risk factors"
+          ],
+          "summary": "Management attributed Q1 performance to strong demand, order strength, backlog growth, operational execution, Electrical Americas organic growth/capacity expansion, Electrical Global outperformance, Aerospace backlog/profit growth, and Mobility spin-off progress."
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-18T20:26:41Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_orders_backlog",
+        "claim_text": "Official capture field orders_backlog is official_captured from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000010/etn03312026exhibit99.htm",
+        "source_section": "Headline bullets and segment order/backlog/book-to-bill commentary",
+        "value": {
+          "aerospace_backlog_growth_pct": 28,
+          "aerospace_book_to_bill": 1.1,
+          "aerospace_orders_growth_pct": 13,
+          "electrical_americas_backlog_growth_pct": 44,
+          "electrical_americas_orders_growth_pct": 42,
+          "electrical_businesses_book_to_bill": 1.2,
+          "electrical_global_backlog_growth_pct": 73,
+          "electrical_global_orders_growth_pct": 13,
+          "electrical_sector_backlog_growth_pct": 48
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-18T20:26:41Z",
+        "capture_status": "official_captured",
+        "reconciled": false,
+        "inferred": false
+      },
+      {
+        "claim_type": "official_capture_segment_margins",
+        "claim_text": "Official capture field segment_margins is partial from validated SEC/IR evidence.",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000010/etn03312026exhibit99.htm",
+        "source_section": "Segment commentary paragraphs",
+        "value": {
+          "aerospace_operating_margin_pct": 26.7,
+          "company_segment_margin_pct": 22.7,
+          "electrical_americas_operating_margin_pct": 25.6,
+          "electrical_global_operating_margin_pct": 19.2,
+          "mobility_operating_margin_pct": 11.7,
+          "note": "Release provides segment operating margin percentages but this capture does not build a full margin bridge by all subsegments."
+        },
+        "period": "2026-03-31",
+        "manual_capture_required": false,
+        "manual_capture_date": "2026-06-18T20:26:41Z",
+        "capture_status": "partial",
+        "reconciled": false,
+        "inferred": false
+      }
+    ],
+    "unresolved_official_fields": [],
+    "bank_native_metrics": null,
+    "sec_reconciliation_status": "matched",
+    "adjusted_eps_status": "official_captured",
+    "guidance_status": "official_captured",
+    "manual_review_required": true,
+    "blockers": [],
+    "summary": "Official earnings bridge is present as review-only context; adjusted EPS, guidance, growth bridge, segment margin, and management explanation remain manual-required until official capture.",
+    "capital_action_allowed": false,
+    "deployment_authority_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "proposed_files_to_edit": [
+    "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+    "03. Portfolio/Portfolio Snapshot.md"
+  ],
+  "rollback_or_reversal_note": "Delete or ignore this generated packet; it has no apply path and changes no canonical state. Semantic exact patch material remains preview-only until a valid standing/scoped approval artifact exists.",
+  "stop_lines_triggered": [
+    "Owner decision required before any portfolio state changes.",
+    "No canonical note, portfolio, size, sleeve, cash, or account-action mutation is authorized.",
+    "Recommendation has unresolved blockers or missing evidence."
+  ],
+  "owner_decision_required": true,
+  "owner_approval_granted": false,
+  "apply_allowed": false,
+  "canonical_mutation_allowed": false,
+  "portfolio_mutation_allowed": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "ticker": "ETN",
+  "current_lane_status_tuple": {
+    "ticker": "ETN",
+    "workflow_state": "DEPLOYED",
+    "coverage_lane": "owner-gated action",
+    "entry_policy": "band_defined",
+    "recommendation_action": "wait",
+    "review_state": "owner_review_required"
+  },
+  "proposed_lane_status_tuple": {
+    "ticker": "ETN",
+    "workflow_state": "DEPLOYED",
+    "coverage_lane": "owner-gated action",
+    "entry_policy": "band_defined",
+    "recommendation_action": "wait",
+    "review_state": "review_packet_only_no_state_change",
+    "recommendation_posture": "wait_for_band"
+  },
+  "thesis_gate": {
+    "status": "manual_review_required",
+    "summary": "intact; owner-gated action Tier 1 explicit add on 2026-05-10 after fresh band review"
+  },
+  "macro_regime_gate": {
+    "status": "review_required",
+    "summary": "CLEAN"
+  },
+  "risk_sizing_gate": {
+    "status": "review_required",
+    "summary": "Owner-gated risk envelope only; no dollar/share amount, portfolio mutation, deployment-state mutation, or owner-gated action owner-gated action authority."
+  },
+  "sector_correlation_artifact": {
+    "status": "available_review_only",
+    "fresh_artifacts": [
+      "tmp/sector-expansion-board.json",
+      "tmp/sector-correlation-check.json"
+    ],
+    "summary": "Sector/correlation context is review-only and does not grant authority."
+  },
+  "owner_conflict_check": {
+    "status": "review_required",
+    "summary": "Check owner notes before any state change."
+  },
+  "promotion_review_queue": {
+    "status": "review_only",
+    "recommended_action": "wait_for_band"
+  },
+  "current_portfolio_model": "unchanged",
+  "proposed_portfolio_model": "unchanged",
+  "current_cash_target_pct": 10,
+  "proposed_cash_target_pct": 10,
+  "sleeve_deltas": [],
+  "sector_exposure_before_after": [],
+  "correlated_sleeve_exposure_before_after": [],
+  "semantic_patch_generator": {
+    "script": "portfolio_mutation_semantic_patch_generator.py",
+    "category": "sizing",
+    "generated_at_utc": "2026-06-18T20:29:19Z",
+    "source_artifacts": [
+      "tmp/portfolio-config.json"
+    ],
+    "source_gate": {
+      "classification": "stale",
+      "explicit_blocker_or_review_required": true,
+      "manual_review_required_before_apply": true,
+      "category_preview_only": true,
+      "low_risk_apply_candidate_category": false,
+      "apply_trial_eligible_from_generator": false,
+      "reason": "sizing affects portfolio construction/risk semantics and remains preview-only until stronger owner-surface coherence proof exists."
+    }
+  },
+  "exact_patch_preview": {
+    "schema_version": 1,
+    "generated_at_utc": "2026-06-18T20:29:19Z",
+    "generator": "portfolio_mutation_semantic_patch_generator.py",
+    "generation_target": "sizing",
+    "adjustment_category": "sizing",
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "trade_or_account_action_allowed": false,
+    "main_session_final_action_required": true,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "writes_performed": false,
+    "source_gate": {
+      "classification": "stale",
+      "explicit_blocker_or_review_required": true,
+      "manual_review_required_before_apply": true,
+      "category_preview_only": true,
+      "low_risk_apply_candidate_category": false,
+      "apply_trial_eligible_from_generator": false,
+      "reason": "sizing affects portfolio construction/risk semantics and remains preview-only until stronger owner-surface coherence proof exists."
+    },
+    "apply_trial_eligible_from_generator": false,
+    "category_preview_only": true,
+    "changes": [
+      {
+        "target_file": "03. Portfolio/Portfolio Snapshot.md",
+        "operation": "exact_text_replace",
+        "old_text": "- WF64 sizing semantic sync (ETN): draft_weight=`7%`, sizing_tier=`Tier 1`; source `tmp/portfolio-config.json`; proposal `morning:ETN:capital-deployment-review:2026-06-18`; draft model only, no external-action sizing authority.",
+        "new_text": "- WF64 sizing semantic sync (ETN): draft_weight=`7%`, sizing_tier=`Tier 1`; source `tmp/portfolio-config.json`; proposal `post-close:ETN:capital-deployment-review:2026-06-18`; draft model only, no external-action sizing authority.",
+        "mutation_class": "sizing_semantic_sync",
+        "adjustment_category": "sizing",
+        "owner_surface": "portfolio_snapshot",
+        "rationale": "Synchronize sizing semantic context from current portfolio artifacts without widening external-action authority."
+      }
+    ],
+    "stop_lines": [
+      "Semantic patch material is exact-diff workspace maintenance only.",
+      "Proposal packets remain non-self-applying; write authority requires a valid standing/scoped approval artifact.",
+      "Freshness/manual-dependency and category-risk gates may keep this preview-only even when exact text validates.",
+      "No external financial action or entitlement is authorized."
+    ]
+  }
+}

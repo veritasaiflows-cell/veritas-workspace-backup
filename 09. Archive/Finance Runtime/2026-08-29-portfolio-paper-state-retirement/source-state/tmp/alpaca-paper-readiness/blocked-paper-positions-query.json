@@ -1,0 +1,43 @@
+{
+  "artifact_type": "wf67_sql_refresh_blocked_query_test_summary",
+  "authority_checks": {
+    "get_only_refresh": null,
+    "live_trade_or_account_action_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_cancel_allowed": null,
+    "paper_submit_allowed": null,
+    "review_only": true,
+    "trade_or_account_action_allowed": null
+  },
+  "expected_status": "blocked",
+  "freshness": {
+    "age_seconds": 0,
+    "generated_at_utc": "2026-05-29T00:51:39Z",
+    "last_known_positions_status": "stale_but_known",
+    "latest_successful_snapshot_at_utc": "2026-05-29T00:33:55Z",
+    "stale_threshold_seconds": 28800,
+    "status": "blocked"
+  },
+  "latest_refresh": {
+    "generated_at_utc": "2026-05-29T00:51:39Z",
+    "snapshot_id": "blocked-20260529T005139Z",
+    "status": "blocked",
+    "validation_findings": [
+      {
+        "code": "kill_switch_ttl_out_of_bounds",
+        "severity": "critical"
+      }
+    ]
+  },
+  "observed_status": "blocked",
+  "position_count": 4,
+  "scenario": "paper-positions query after forced blocked refresh",
+  "schema_version": 1,
+  "source_output_sanitized": true,
+  "symbols": [
+    "AMZN",
+    "ETN",
+    "MSFT",
+    "PH"
+  ]
+}

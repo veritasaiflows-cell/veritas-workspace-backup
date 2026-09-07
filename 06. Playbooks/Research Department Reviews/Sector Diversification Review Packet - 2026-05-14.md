@@ -1,4 +1,6 @@
-# Sector Diversification Review Packet - 2026-05-14
+# Retired Historical — Sector Diversification Review Packet - 2026-05-14
+
+Lifecycle: Retired on 2026-08-29. This dated packet is historical evidence only and is not current alert canon, recommendation state, or routing authority.
 
 ## Bottom line
 

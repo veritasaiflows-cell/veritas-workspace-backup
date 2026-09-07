@@ -1,0 +1,118 @@
+{
+  "generated_at_utc": "2026-08-28T13:24:42Z",
+  "status": "blocked",
+  "input": "tmp/portfolio-mutation-proposals/current-capital-deployment-recommendations.json",
+  "authority": {
+    "gated_portfolio_note_model_mutation_allowed": true,
+    "canonical_note_mutation_allowed": true,
+    "portfolio_mutation_allowed": true,
+    "owner_approval_granted": true,
+    "proposal_apply_allowed": false,
+    "per_packet_owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "summary": {
+    "packets_checked": 17,
+    "critical": 16,
+    "warning": 0
+  },
+  "findings": [
+    {
+      "severity": "critical",
+      "packet_index": 2,
+      "field": "official_earnings_bridge.official_evidence_posture",
+      "issue": "official evidence posture must remain manual_required or manual_confirmed, and review_only"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 2,
+      "field": "official_earnings_bridge.source_authority_level",
+      "issue": "source authority level must be metadata-only or manual-confirmed official source"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 3,
+      "field": "official_earnings_bridge.official_evidence_posture",
+      "issue": "official evidence posture must remain manual_required or manual_confirmed, and review_only"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 3,
+      "field": "official_earnings_bridge.source_authority_level",
+      "issue": "source authority level must be metadata-only or manual-confirmed official source"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 4,
+      "field": "official_earnings_bridge.official_evidence_posture",
+      "issue": "official evidence posture must remain manual_required or manual_confirmed, and review_only"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 4,
+      "field": "official_earnings_bridge.source_authority_level",
+      "issue": "source authority level must be metadata-only or manual-confirmed official source"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 6,
+      "field": "official_earnings_bridge.official_evidence_posture",
+      "issue": "official evidence posture must remain manual_required or manual_confirmed, and review_only"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 6,
+      "field": "official_earnings_bridge.source_authority_level",
+      "issue": "source authority level must be metadata-only or manual-confirmed official source"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 8,
+      "field": "official_earnings_bridge.official_evidence_posture",
+      "issue": "official evidence posture must remain manual_required or manual_confirmed, and review_only"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 8,
+      "field": "official_earnings_bridge.source_authority_level",
+      "issue": "source authority level must be metadata-only or manual-confirmed official source"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 9,
+      "field": "official_earnings_bridge.official_evidence_posture",
+      "issue": "official evidence posture must remain manual_required or manual_confirmed, and review_only"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 9,
+      "field": "official_earnings_bridge.source_authority_level",
+      "issue": "source authority level must be metadata-only or manual-confirmed official source"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 14,
+      "field": "official_earnings_bridge.official_evidence_posture",
+      "issue": "official evidence posture must remain manual_required or manual_confirmed, and review_only"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 14,
+      "field": "official_earnings_bridge.source_authority_level",
+      "issue": "source authority level must be metadata-only or manual-confirmed official source"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 15,
+      "field": "official_earnings_bridge.official_evidence_posture",
+      "issue": "official evidence posture must remain manual_required or manual_confirmed, and review_only"
+    },
+    {
+      "severity": "critical",
+      "packet_index": 15,
+      "field": "official_earnings_bridge.source_authority_level",
+      "issue": "source authority level must be metadata-only or manual-confirmed official source"
+    }
+  ]
+}

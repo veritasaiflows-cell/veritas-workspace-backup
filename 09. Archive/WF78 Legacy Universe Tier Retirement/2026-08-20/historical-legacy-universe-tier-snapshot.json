@@ -1,0 +1,1237 @@
+{
+ "schema": "veritas.legacy_universe_tier_retirement_snapshot.v1",
+ "generated_at_utc": "2026-08-20T14:04:52Z",
+ "purpose": "Immutable historical evidence of the retired legacy_universe_tier compatibility label. NEVER use for current routing, readiness, freshness, or recommendations.",
+ "authority_boundary": {
+  "historical_evidence_only": true,
+  "current_routing_authority": false,
+  "capital_or_execution_authority": false
+ },
+ "source_db": "tmp/canonical-finance-data-plane.sqlite",
+ "source_db_sha256_pre_retirement": "b04bcaf2207c5aaf49d92494f1e3ea348282b5bedd37b777e111b5d0d6864043",
+ "backup_path": "09. Archive/WF78 Legacy Universe Tier Retirement/2026-08-20\\canonical-finance-data-plane.PRE-RETIREMENT.sqlite",
+ "row_count": 300,
+ "pre_retirement_columns": [
+  "ticker",
+  "universe_scope",
+  "legacy_universe_tier",
+  "legacy_monitoring_role",
+  "production_answer_path_member",
+  "thin_monitor_row",
+  "decision_grade_eligible",
+  "promotion_required_before_action",
+  "source_open_required",
+  "owner_note_path",
+  "raw_json"
+ ],
+ "pre_retirement_table_sql": "CREATE TABLE \"universe_membership\" (ticker TEXT PRIMARY KEY REFERENCES security_master(ticker) ON DELETE CASCADE, universe_scope TEXT NOT NULL, legacy_universe_tier TEXT, legacy_monitoring_role TEXT, production_answer_path_member INTEGER NOT NULL, thin_monitor_row INTEGER NOT NULL, decision_grade_eligible INTEGER NOT NULL, promotion_required_before_action INTEGER NOT NULL, source_open_required INTEGER NOT NULL, owner_note_path TEXT, raw_json TEXT) STRICT",
+ "ticker_value_hash_sha256": "6b9748737901b4818536108bc2e856878b01cbfdbdf4fc193465d4fb665755b8",
+ "non_null_legacy_tier_count": 300,
+ "legacy_tier_value_counts": {
+  "A": 15,
+  "B": 17,
+  "C": 268
+ },
+ "historical_legacy_label": [
+  {
+   "ticker": "A",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AAPL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ABBV",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ABNB",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ABT",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ACGL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ACN",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ADBE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ADI",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ADM",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ADP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ADSK",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AEE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AEP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AES",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AFL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AIG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AIZ",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AJG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AKAM",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ALB",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ALGN",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ALL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ALLE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AMAT",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AMCR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AMD",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "AME",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AMGN",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AMP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AMT",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AMZN",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "ANET",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AON",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AOS",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "APA",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "APD",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "APH",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "APO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "APP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "APTV",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ARE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ARES",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ASML",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ATO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AVB",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AVGO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AVY",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AWK",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AXON",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AXP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "AZO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BA",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BAC",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BALL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BAX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BBY",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BDX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BEN",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BF-B",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BIIB",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BKNG",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "BKR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BLDR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BLK",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BMY",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BNY",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BRK.B",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "BRO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BSX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "BXP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "C",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CAG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CAH",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CARR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CASY",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CAT",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "CB",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CBOE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CBRE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CCI",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CCL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CDNS",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CDW",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CEG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CF",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CFG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CHD",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CHRW",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CHTR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CI",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CIEN",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CINF",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CLX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CMCSA",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CME",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "CMG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CMI",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CMS",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CNC",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CNP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "COHR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "COO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "COP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "COR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "COST",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CPB",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CPRT",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CPT",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CRH",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CRL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CRM",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CRWD",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CSCO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CSGP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CSX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CTAS",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CTSH",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CTVA",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CVNA",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CVS",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "CVX",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "D",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DAL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DASH",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DD",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DDOG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DECK",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DELL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DGX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DHI",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DHR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DIS",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DLR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DLTR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DOC",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DOV",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DOW",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DPZ",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DRI",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DTE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DUK",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DVA",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "DVN",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EA",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EBAY",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ECL",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "ED",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EFX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EIX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EME",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EMR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EOG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EQIX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EQR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EQT",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ES",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ESS",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ETN",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "ETR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EVRG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EXC",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EXE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EXPD",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EXPE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "EXR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "F",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "FANG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "FAST",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "FCX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "FE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "FFIV",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "FICO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "FLEX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "FOX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "FOXA",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "FRT",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "FSLR",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "GD",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "GE",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "GIS",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "GM",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "GOOG",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "GOOGL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "GPC",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "GRMN",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "GS",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "HAL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "HAS",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "HD",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "HON",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "HRL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "HST",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "HSY",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "IFF",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "INTU",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "INVH",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "IP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "IRM",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ISRG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ITA",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "JPM",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "KDP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "KHC",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "KMB",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "KMI",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "KTOS",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "LIN",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "LLY",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "LMT",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "LNG",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "LNT",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "LYB",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "LYV",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "MA",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "MCD",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "MCK",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "MDB",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "META",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "MLM",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "MOS",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "MPC",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "MSFT",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "MU",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "NEE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "NEM",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "NFLX",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "NI",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "NOC",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "NOW",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "NUE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "NVDA",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "NWS",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "NWSA",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "OKE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "OMC",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ORCL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "ORLY",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "OXY",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "PANW",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "PAVE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "PEP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "PG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "PH",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "PKG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "PLTR",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "PPG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "PSKY",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "PSX",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "QCOM",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "RTX",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "SAP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "SCCO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "SHOP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "SHW",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "SLB",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "SLV",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "SMCI",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "SNOW",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "SO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "STLD",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "SYK",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "T",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "TDG",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "TKO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "TLT",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "TMO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "TMUS",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "TPL",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "TRGP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "TSM",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "TTD",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "TTWO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "TXN",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "UBER",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "UNH",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "UNP",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "URI",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "V",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "VAW",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "VLO",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "VMC",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "VRT",
+   "legacy_universe_tier": "A"
+  },
+  {
+   "ticker": "VXUS",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "VZ",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "WMB",
+   "legacy_universe_tier": "B"
+  },
+  {
+   "ticker": "WMT",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "XLB",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "XLC",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "XLE",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "XLF",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "XLI",
+   "legacy_universe_tier": "C"
+  },
+  {
+   "ticker": "XOM",
+   "legacy_universe_tier": "A"
+  }
+ ]
+}
