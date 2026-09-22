@@ -1,0 +1,355 @@
+{
+  "runId": "55d360b3-5ffa-4eea-87cf-dea4e6cf1061",
+  "status": "ok",
+  "summary": "completed",
+  "result": {
+    "payloads": [
+      {
+        "text": "{\"ambiguous\":[\"A\"],\"states\":{\"B\":{\"revision\":1,\"status\":\"ready\"}}}",
+        "mediaUrl": null
+      }
+    ],
+    "meta": {
+      "durationMs": 13623,
+      "agentMeta": {
+        "sessionId": "arena-r2-sp13-430898a2d5b5",
+        "sessionFile": "agent:oxalpha-functional-lab:explicit:arena-r2-sp13-430898a2d5b5",
+        "provider": "meta",
+        "model": "muse-spark-1.3-contributor",
+        "contextTokens": 1048576,
+        "contextTokensSource": "resolved",
+        "agentHarnessId": "openclaw",
+        "credentialSource": {
+          "kind": "profile"
+        },
+        "usage": {
+          "input": 7527,
+          "output": 1032,
+          "cacheRead": 113,
+          "cacheWrite": 0,
+          "reasoningTokens": 964,
+          "total": 8672,
+          "cost": {
+            "total": 0
+          }
+        },
+        "lastCallUsage": {
+          "input": 7527,
+          "output": 1032,
+          "cacheRead": 113,
+          "cacheWrite": 0,
+          "cost": {
+            "total": 0
+          },
+          "contextUsage": {
+            "state": "available",
+            "promptTokens": 7640,
+            "totalTokens": 8672
+          },
+          "reasoningTokens": 964,
+          "total": 8672
+        },
+        "promptTokens": 7640,
+        "contextBudgetStatus": {
+          "schemaVersion": 1,
+          "source": "pre-prompt-estimate",
+          "updatedAt": 1789948026533,
+          "provider": "meta",
+          "model": "muse-spark-1.3-contributor",
+          "route": "fits",
+          "shouldCompact": false,
+          "estimatedPromptTokens": 7988,
+          "contextTokenBudget": 1048576,
+          "promptBudgetBeforeReserve": 1028576,
+          "reserveTokens": 20000,
+          "effectiveReserveTokens": 20000,
+          "remainingPromptBudgetTokens": 1020588,
+          "overflowTokens": 0,
+          "toolResultReducibleChars": 0,
+          "messageCount": 0,
+          "unwindowedMessageCount": 0,
+          "sessionId": "arena-r2-sp13-430898a2d5b5"
+        },
+        "codeModeEngaged": false,
+        "assistantTurns": 1,
+        "costUsd": 0,
+        "terminalReceipt": {
+          "runId": "55d360b3-5ffa-4eea-87cf-dea4e6cf1061",
+          "sessionId": "arena-r2-sp13-430898a2d5b5",
+          "turnId": "55d360b3-5ffa-4eea-87cf-dea4e6cf1061",
+          "requested": {
+            "provider": "meta",
+            "model": "muse-spark-1.3-contributor"
+          },
+          "effective": {
+            "provider": "meta",
+            "model": "muse-spark-1.3-contributor",
+            "responseModel": "muse-spark-1.3-contributor"
+          },
+          "successfulToolNames": [],
+          "rerouted": false
+        }
+      },
+      "aborted": false,
+      "systemPromptReport": {
+        "source": "run",
+        "generatedAt": 1789948026483,
+        "sessionId": "arena-r2-sp13-430898a2d5b5",
+        "sessionKey": "agent:oxalpha-functional-lab:explicit:arena-r2-sp13-430898a2d5b5",
+        "provider": "meta",
+        "model": "muse-spark-1.3-contributor",
+        "workspaceDir": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab",
+        "bootstrapMaxChars": 20000,
+        "bootstrapTotalMaxChars": 80000,
+        "bootstrapTruncation": {
+          "warningMode": "always",
+          "warningShown": false,
+          "truncatedFiles": 0,
+          "nearLimitFiles": 0,
+          "totalNearLimit": false
+        },
+        "sandbox": {
+          "mode": "all",
+          "sandboxed": true
+        },
+        "systemPrompt": {
+          "chars": 23541,
+          "hash": "33c485ff579ab29e87afa37fd9198a975ede9dbb898f66cb3415a9199dbf7c68",
+          "projectContextChars": 4407,
+          "nonProjectContextChars": 19134
+        },
+        "injectedWorkspaceFiles": [
+          {
+            "name": "AGENTS.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\AGENTS.md",
+            "missing": false,
+            "rawChars": 2376,
+            "injectedChars": 2376,
+            "truncated": false
+          },
+          {
+            "name": "SOUL.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\SOUL.md",
+            "missing": false,
+            "rawChars": 275,
+            "injectedChars": 275,
+            "truncated": false
+          },
+          {
+            "name": "IDENTITY.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\IDENTITY.md",
+            "missing": false,
+            "rawChars": 379,
+            "injectedChars": 379,
+            "truncated": false
+          },
+          {
+            "name": "USER.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\USER.md",
+            "missing": false,
+            "rawChars": 254,
+            "injectedChars": 254,
+            "truncated": false
+          }
+        ],
+        "skills": {
+          "promptChars": 9307,
+          "hash": "295c5ae3af06fd43b0417594e07cd288274773b870889f310c5070601c3a999d",
+          "entries": [
+            {
+              "name": "browser-automation",
+              "blockChars": 341
+            },
+            {
+              "name": "canvas",
+              "blockChars": 260
+            },
+            {
+              "name": "clawhub",
+              "blockChars": 300
+            },
+            {
+              "name": "Cold Email Writer",
+              "blockChars": 344
+            },
+            {
+              "name": "cold-outreach-email-writer",
+              "blockChars": 389
+            },
+            {
+              "name": "control-ui",
+              "blockChars": 336
+            },
+            {
+              "name": "diagram-maker",
+              "blockChars": 262
+            },
+            {
+              "name": "disciplined-implementation-linux-steps",
+              "blockChars": 379
+            },
+            {
+              "name": "github",
+              "blockChars": 256
+            },
+            {
+              "name": "graphify",
+              "blockChars": 515
+            },
+            {
+              "name": "healthcheck",
+              "blockChars": 274
+            },
+            {
+              "name": "linux-workspace-proof-runner",
+              "blockChars": 349
+            },
+            {
+              "name": "meme-maker",
+              "blockChars": 247
+            },
+            {
+              "name": "node-connect",
+              "blockChars": 331
+            },
+            {
+              "name": "node-inspect-debugger",
+              "blockChars": 273
+            },
+            {
+              "name": "obsidian",
+              "blockChars": 286
+            },
+            {
+              "name": "obsidian-vault-maintainer",
+              "blockChars": 371
+            },
+            {
+              "name": "patch-draft-bounded-linux",
+              "blockChars": 329
+            },
+            {
+              "name": "python-debugpy",
+              "blockChars": 261
+            },
+            {
+              "name": "qa-diff-safety-review",
+              "blockChars": 326
+            },
+            {
+              "name": "qa-evidence-separation-check",
+              "blockChars": 348
+            },
+            {
+              "name": "qa-source-reasoning-review",
+              "blockChars": 328
+            },
+            {
+              "name": "skill-creator",
+              "blockChars": 280
+            },
+            {
+              "name": "spike",
+              "blockChars": 247
+            },
+            {
+              "name": "taskflow",
+              "blockChars": 284
+            },
+            {
+              "name": "taskflow-inbox-triage",
+              "blockChars": 306
+            },
+            {
+              "name": "weather",
+              "blockChars": 285
+            },
+            {
+              "name": "wiki-maintainer",
+              "blockChars": 346
+            }
+          ]
+        },
+        "tools": {
+          "listChars": 0,
+          "schemaChars": 2386,
+          "entries": [
+            {
+              "name": "read",
+              "summaryChars": 164,
+              "summaryHash": "d136f5b09e28d671addad4ca800b75b8aa6a36002bc739ead964f618d3e34829",
+              "schemaChars": 481,
+              "schemaHash": "b1b9b637dfe1dfade40f50c37cf840a298f1992b534cb9425b7470233a6b0cbb",
+              "propertiesCount": 5
+            },
+            {
+              "name": "edit",
+              "summaryChars": 130,
+              "summaryHash": "4149500b1f6501ec6450e4c048bdb6844764dd4a888a10846726cbbc7256152e",
+              "schemaChars": 501,
+              "schemaHash": "adf3140833ca927b84c66c989d6833fdcbd9de011dd2ffc59f9a2c4d3c25f127",
+              "propertiesCount": 2
+            },
+            {
+              "name": "write",
+              "summaryChars": 49,
+              "summaryHash": "f9ce3d8ac929a51498c03331b97c59bfaa2bb4d25580a5ddf0102e6a8e173aec",
+              "schemaChars": 191,
+              "schemaHash": "b61d2da23febf5fbda55e391526f36d283e9e9fb7f1a1dbadcf5c618a0632287",
+              "propertiesCount": 2
+            },
+            {
+              "name": "apply_patch",
+              "summaryChars": 71,
+              "summaryHash": "5c1173efe93d080a386a23216bc3e58db2e0033eb3ddea697eb2439938b7cae4",
+              "schemaChars": 153,
+              "schemaHash": "05521268363ff4f191472c90d69ef08a503ba9acf1d2febc50b3ee68db32ab65",
+              "propertiesCount": 1
+            },
+            {
+              "name": "exec",
+              "summaryChars": 321,
+              "summaryHash": "acf85b4e6607efba27b24a3267749de47caafe5a52c676e106e0b0308fbdfe0b",
+              "schemaChars": 1060,
+              "schemaHash": "4f110570d8d16d9972fdfce187152256cfebad0a761cbfdc87d0fa686335ecd1",
+              "propertiesCount": 10
+            }
+          ]
+        },
+        "currentTurn": {
+          "promptChars": 2755,
+          "runtimeContextChars": 28,
+          "modelOnlyPromptChars": 0
+        }
+      },
+      "finalPromptText": "case 430898a2d5b5c3f02ebdccc66dc12ddc78c2c454941c9c8033eae2a8762b0545 (family: T2)\r\nresponse contract:\r\nEvent-stream replay with revert history and undefined tie ordering.\r\n\r\nResponse contract:\r\nIf the stated ordering leaves any job's final state not uniquely determined, return exactly: {\"ambiguous\": [job ids, sorted], \"states\": {job: {\"revision\": integer, \"status\": string}}} containing only the jobs that ARE uniquely determined. Otherwise return exactly: {\"states\": {job: {\"revision\": integer, \"status\": string}, sorted by job}, \"eligible\": [job ids whose status is \"ready\", sorted], \"applied\": integer count of events applied, \"ignored\": [{\"event\": event id, \"reason\": \"duplicate\" or \"stale\"}]}.\r\n\r\nRules:\r\n- An event applies to its job only if its revision is greater than the job's current revision, or greater-or-equal when rules.apply_ge is true.\r\n- Duplicate suppression: when rules.dedup_on_pair is true an event is a duplicate if (event_id, revision) was already seen; otherwise if event_id was already seen. Duplicates are ignored with reason \"duplicate\"; events that fail the revision test are ignored with reason \"stale\".\r\n- A job that no event has applied to yet has revision 0, no status, and an empty history stack.\r\n- Status \"revert\" pops the job's own previous status from its history stack; if that stack is empty the new status is \"void\". Any non-revert status pushes the current status onto the job's history before replacing it, except that a job's first applied event only sets the status and pushes nothing.\r\n- Every applied event, including a revert, sets the job's revision to that event's own revision.\r\n- applied counts every event that was applied. An event that was ignored, for either reason, is not counted.\r\n- rules.ordering gives the replay order. An ordering that fixes a unique sequence for every pair of events, such as arrival order, can never produce ambiguity. A job is ambiguous only when rules.ordering itself leaves ties undefined AND two or more events contest the same (job, revision) pair AND the reachable orderings disagree on that job's final state. Never invent a tie-break.\r\n\r\nReturn only the required JSON object. No prose, no explanation, no code fences.\r\n\r\nprompt:\r\n{\r\n  \"events\": [\r\n    [\r\n      \"e1\",\r\n      \"A\",\r\n      1,\r\n      \"queued\"\r\n    ],\r\n    [\r\n      \"e25\",\r\n      \"A\",\r\n      2,\r\n      \"ready\"\r\n    ],\r\n    [\r\n      \"e35\",\r\n      \"A\",\r\n      2,\r\n      \"blocked\"\r\n    ],\r\n    [\r\n      \"e4\",\r\n      \"B\",\r\n      1,\r\n      \"ready\"\r\n    ]\r\n  ],\r\n  \"request\": \"Replay the stream; report ambiguity, never invent a tie-break.\",\r\n  \"rules\": {\r\n    \"apply_ge\": true,\r\n    \"dedup_on_pair\": true,\r\n    \"ordering\": \"revision; ties undefined\"\r\n  }\r\n}\r\nReturn only the required JSON object. No prose.",
+      "finalAssistantVisibleText": "{\"ambiguous\":[\"A\"],\"states\":{\"B\":{\"revision\":1,\"status\":\"ready\"}}}",
+      "finalAssistantRawText": "{\"ambiguous\":[\"A\"],\"states\":{\"B\":{\"revision\":1,\"status\":\"ready\"}}}",
+      "replayInvalid": false,
+      "livenessState": "working",
+      "stopReason": "stop",
+      "executionTrace": {
+        "winnerProvider": "meta",
+        "winnerModel": "muse-spark-1.3-contributor",
+        "attempts": [
+          {
+            "provider": "meta",
+            "model": "muse-spark-1.3-contributor",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      },
+      "requestShaping": {
+        "authMode": "auth-profile",
+        "thinking": "high"
+      },
+      "completion": {
+        "stopReason": "stop",
+        "finishReason": "stop"
+      }
+    }
+  }
+}

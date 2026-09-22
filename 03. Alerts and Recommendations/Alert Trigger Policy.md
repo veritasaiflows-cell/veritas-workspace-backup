@@ -32,9 +32,10 @@ Every material signal must evaluate:
 
 - Material claims require source-open evidence and explicit timestamps.
 - Stale or missing evidence produces `Freshness decay`, never a false-ready recommendation.
+- Live numeric reference levels and invalidation thresholds are guarded SQL `reference_levels`. The markdown Alert Bands register is thesis and interpretation only.
 - Static reference levels are never re-derived merely because price moved.
-- Level changes require a documented evidence basis, source timestamp, confidence, validator proof, and owner-aware review path.
-- Conflicting owner and generated evidence fails closed to review.
+- Level changes require a documented evidence basis, source timestamp, confidence, validator proof, and owner-aware SQL apply path. Do not write live numbers into markdown.
+- Conflicting markdown snapshot and SQL evidence fails closed to SQL; do not treat the historical markdown table as the tie-breaker.
 
 ## Recommendation Contract
 

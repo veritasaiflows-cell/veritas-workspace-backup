@@ -1,0 +1,62 @@
+﻿{
+    "case":  "T2-event-state",
+    "model_id":  "glm",
+    "requested_model":  "ollama-cloud/glm-5.3-flash:cloud",
+    "repetition":  2,
+    "turn":  3,
+    "session_key":  "agent:qa-redteam:a24-glm-T2-event-state-r2-20260919",
+    "cli_exit":  0,
+    "status":  "ok",
+    "run_id":  "c05860ab-100e-49aa-ab16-9a2b0bd15311",
+    "visible_text":  "{\"states\":{\"A\":{\"revision\":5,\"status\":\"ready\"},\"B\":{\"revision\":4,\"status\":\"ready\"},\"C\":{\"revision\":2,\"status\":\"cancelled\"}},\"eligible\":[\"A\",\"B\"],\"applied\":10,\"ignored\":[{\"event\":\"e4\",\"reason\":\"stale\"},{\"event\":\"e6\",\"reason\":\"stale\"}]}",
+    "provider":  "ollama-cloud",
+    "model":  "glm-5.3-flash:cloud",
+    "execution_trace":  {
+                            "winnerProvider":  "ollama-cloud",
+                            "winnerModel":  "glm-5.3-flash:cloud",
+                            "attempts":  [
+                                             {
+                                                 "provider":  "ollama-cloud",
+                                                 "model":  "glm-5.3-flash:cloud",
+                                                 "result":  "success",
+                                                 "stage":  "assistant"
+                                             }
+                                         ],
+                            "fallbackUsed":  false,
+                            "runner":  "embedded"
+                        },
+    "receipt":  {
+                    "runId":  "c05860ab-100e-49aa-ab16-9a2b0bd15311",
+                    "sessionId":  "2d0f4508-b890-4b6c-b968-f6f5b31b2d69",
+                    "turnId":  "c05860ab-100e-49aa-ab16-9a2b0bd15311",
+                    "requested":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "glm-5.3-flash:cloud"
+                                  },
+                    "effective":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "glm-5.3-flash:cloud",
+                                      "responseModel":  "glm-5.3-flash:cloud"
+                                  },
+                    "successfulToolNames":  [
+
+                                            ],
+                    "rerouted":  false
+                },
+    "tool_summary":  null,
+    "thinking":  "high",
+    "workspace":  "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+    "injected_files":  [
+                           "AGENTS.md",
+                           "SOUL.md",
+                           "IDENTITY.md",
+                           "USER.md",
+                           "MEMORY.md"
+                       ],
+    "tool_names":  [
+                       "read",
+                       "web_search",
+                       "web_fetch"
+                   ],
+    "error_kind":  null
+}

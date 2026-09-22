@@ -89,61 +89,104 @@ def event(
 
 
 def seeded_events() -> list[dict[str, Any]]:
+    """High-impact events seeded from official release calendars.
+
+    Forward events below were verified 2026-09-12 against:
+    - FOMC: federalreserve.gov/monetarypolicy/fomccalendars.htm
+    - BLS:  bls.gov/schedule/2026/09_sched.htm and 10_sched.htm
+    - BEA:  bea.gov/news/schedule
+    Future refreshes may re-seed via fetch_next_fomc_date() in market_data_utils.py,
+    which live-parses the official Fed calendar.
+    """
     return [
+        # --- Verified forward events (official calendars, checked 2026-09-12) ---
         event(
-            event_id="2026-06-05-bls-employment-situation-may-2026",
-            date_text="2026-06-05",
-            time_et="08:30",
-            agency="BLS",
-            metric="Employment Situation",
-            period="May 2026",
-            source_url="https://www.bls.gov/cps/home.htm",
-            market_sensitivity="Labor strength, unemployment, wages, and Fed-cut timing.",
-            follow_up="Refresh labor read-through, rates reaction, risk appetite, alert evidence, and recommendation confidence after release.",
-        ),
-        event(
-            event_id="2026-06-10-bls-cpi-may-2026",
-            date_text="2026-06-10",
-            time_et="08:30",
-            agency="BLS",
-            metric="Consumer Price Index",
-            period="May 2026",
-            source_url="https://www.bls.gov/cpi/",
-            market_sensitivity="Inflation path, real yields, Fed-cut probability, duration, and no-chase discipline.",
-            follow_up="Refresh inflation posture, policy expectations, macro regime, alert states, and recommendation risks after release.",
-        ),
-        event(
-            event_id="2026-06-11-bls-ppi-may-2026",
-            date_text="2026-06-11",
-            time_et="08:30",
-            agency="BLS",
-            metric="Producer Price Index",
-            period="May 2026",
-            source_url="https://www.bls.gov/ppi/",
-            market_sensitivity="Pipeline inflation, margin pressure, rates, and sector rotation.",
-            follow_up="Refresh inflation read-through and watch for margin-sensitive sector impacts after release.",
-        ),
-        event(
-            event_id="2026-06-17-fomc-policy-decision",
-            date_text="2026-06-17",
+            event_id="2026-09-16-fomc-policy-decision",
+            date_text="2026-09-16",
             time_et="14:00",
             agency="Federal Reserve",
             metric="FOMC Policy Decision",
-            period="June 2026",
+            period="September 2026",
             source_url="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
             market_sensitivity="Policy rate path, dot-plot/readout if applicable, rates, dollar, and risk assets.",
             follow_up="Refresh policy expectations, macro regime, alert conditions, and recommendation confidence after statement/press conference.",
         ),
         event(
-            event_id="2026-06-25-bea-pce-personal-income-outlays-may-2026",
-            date_text="2026-06-25",
+            event_id="2026-09-30-bea-pce-personal-income-outlays-aug-2026",
+            date_text="2026-09-30",
             time_et="08:30",
             agency="BEA",
             metric="Personal Income and Outlays / PCE",
-            period="May 2026",
+            period="August 2026",
             source_url="https://www.bea.gov/news/schedule",
             market_sensitivity="Fed-preferred inflation, consumption, income, and growth quality.",
             follow_up="Refresh Fed-preferred inflation posture and consumer/growth thesis after release.",
+        ),
+        event(
+            event_id="2026-10-02-bls-employment-situation-sep-2026",
+            date_text="2026-10-02",
+            time_et="08:30",
+            agency="BLS",
+            metric="Employment Situation",
+            period="September 2026",
+            source_url="https://www.bls.gov/schedule/2026/10_sched.htm",
+            market_sensitivity="Labor strength, unemployment, wages, and Fed policy timing.",
+            follow_up="Refresh labor read-through, rates reaction, risk appetite, alert evidence, and recommendation confidence after release.",
+        ),
+        event(
+            event_id="2026-10-13-bls-cpi-sep-2026",
+            date_text="2026-10-13",
+            time_et="08:30",
+            agency="BLS",
+            metric="Consumer Price Index",
+            period="September 2026",
+            source_url="https://www.bls.gov/schedule/2026/10_sched.htm",
+            market_sensitivity="Inflation path, real yields, Fed policy expectations, duration, and no-chase discipline.",
+            follow_up="Refresh inflation posture, policy expectations, macro regime, alert states, and recommendation risks after release.",
+        ),
+        event(
+            event_id="2026-10-15-bls-ppi-sep-2026",
+            date_text="2026-10-15",
+            time_et="08:30",
+            agency="BLS",
+            metric="Producer Price Index",
+            period="September 2026",
+            source_url="https://www.bls.gov/schedule/2026/10_sched.htm",
+            market_sensitivity="Pipeline inflation, margin pressure, rates, and sector rotation.",
+            follow_up="Refresh inflation read-through and watch for margin-sensitive sector impacts after release.",
+        ),
+        event(
+            event_id="2026-10-27-28-fomc-policy-decision",
+            date_text="2026-10-28",
+            time_et="14:00",
+            agency="Federal Reserve",
+            metric="FOMC Policy Decision",
+            period="October 2026",
+            source_url="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+            market_sensitivity="Policy rate path, rates, dollar, and risk assets.",
+            follow_up="Refresh policy expectations, macro regime, alert conditions, and recommendation confidence after statement/press conference.",
+        ),
+        event(
+            event_id="2026-10-29-bea-gdp-advance-q3-2026",
+            date_text="2026-10-29",
+            time_et="08:30",
+            agency="BEA",
+            metric="GDP Advance Estimate",
+            period="Q3 2026",
+            source_url="https://www.bea.gov/news/schedule",
+            market_sensitivity="Growth trajectory, rates path, and risk-asset sensitivity.",
+            follow_up="Refresh growth read-through and macro regime evidence after release.",
+        ),
+        event(
+            event_id="2026-12-08-09-fomc-policy-decision",
+            date_text="2026-12-09",
+            time_et="14:00",
+            agency="Federal Reserve",
+            metric="FOMC Policy Decision",
+            period="December 2026",
+            source_url="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+            market_sensitivity="Policy rate path, rates, dollar, and risk assets.",
+            follow_up="Refresh policy expectations, macro regime, alert conditions, and recommendation confidence after statement/press conference.",
         ),
     ]
 
@@ -187,6 +230,17 @@ def build_calendar(as_of: date | None = None) -> dict[str, Any]:
             {"path": rel(ALERT_CONTROLLER), "exists": ALERT_CONTROLLER.exists(), "status": alert_controller.get("status")},
             {"path": rel(ALERT_DIGEST), "exists": ALERT_DIGEST.exists(), "status": alert_digest.get("status")},
         ],
+        "source_lineage": {
+            "seed_basis": "official_release_calendars_verified_2026-09-12",
+            "official_sources": [
+                "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+                "https://www.bls.gov/schedule/2026/09_sched.htm",
+                "https://www.bls.gov/schedule/2026/10_sched.htm",
+                "https://www.bea.gov/news/schedule",
+            ],
+            "live_fomc_check": "market_data_utils.fetch_adjacent_fomc_dates('2026-09-12') returned ('2026-07-29', '2026-09-16', None)",
+            "reseed_method": "manual_verified_seed; future refresh may re-derive via fetch_next_fomc_date()",
+        },
         "current_macro_state": {
             "macro_regime": macro_regime.get("macro_regime") or macro_regime.get("regime"),
             "macro_verdict": macro_regime.get("verdict") or macro_regime.get("summary"),
@@ -230,12 +284,20 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(events, list) or len(events) < 5:
         errors.append("expected at least five macro events")
     metrics = {str(row.get("metric")) for row in events if isinstance(row, dict)}
-    for metric in ("Employment Situation", "Consumer Price Index", "Producer Price Index", "FOMC Policy Decision", "Personal Income and Outlays / PCE"):
+    for metric in ("Employment Situation", "Consumer Price Index", "Producer Price Index", "FOMC Policy Decision", "Personal Income and Outlays / PCE", "GDP Advance Estimate"):
         if metric not in metrics:
             errors.append(f"missing required macro metric: {metric}")
     upcoming = [row for row in events if isinstance(row, dict) and row.get("status") in {"today", "upcoming"}]
     if not upcoming:
         warnings.append("no upcoming macro events remain in seeded window")
+    # Forward-window freshness: at least one FOMC decision must sit ahead of the run.
+    # The 2026-08-28 stale-zero-events failure mode was a seed window with no forward
+    # FOMC while an official meeting was days away; this check fails that closed.
+    fomc_events = [row for row in events if isinstance(row, dict) and row.get("agency") == "Federal Reserve"]
+    if not fomc_events:
+        errors.append("no FOMC Policy Decision event seeded")
+    elif not any(row.get("status") in {"today", "upcoming"} for row in fomc_events):
+        errors.append("no upcoming FOMC Policy Decision remains in seeded window")
     for row in events if isinstance(events, list) else []:
         if not isinstance(row, dict):
             errors.append("event row must be object")

@@ -1,0 +1,70 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "d23fd20c-90b7-4138-96b1-991004f2c04e",
+  "declarationKey": "finance-monday-market-hours-g6-proof-20260914",
+  "name": "Finance Monday market-hours G6 proof",
+  "required": true,
+  "owner_workflow": "Phase 3 G6 market-hours acceptance proof",
+  "contract_reason": "One-shot owner-authorized no-send market-hours validation of the accepted recurring finance path after the 2026-09-14 open. Registered so the enabled one-shot is governed by the freshness spine without asserting any artifact exists before its single run; the future receipt is declared non-blocking with honest not-yet-due semantics. The job itself, its schedule, and its authority are unchanged by this contract.",
+  "description": "One-shot no-send market-hours validation of the accepted recurring finance path; it restores shared controller/digest preimages exactly and does not change scheduler or canon.",
+  "enabled": true,
+  "deleteAfterRun": true,
+  "schedule": {
+    "kind": "at",
+    "at": "2026-09-14T13:45:00.000Z"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "At the scheduled market-open checkpoint, run exactly this no-send proof in C:\\Users\\Veritas\\.openclaw\\workspace:\npython -B tmp\\phase3-main-only-20260905\\g6_no_send_e2e_runner.py --window midday --out-dir tmp\\phase3-main-only-20260905\\g6-market-open-20260914 --require-market-hours\nRead its receipt.json. Do not alter any scheduler job, contract, finance canon, delivery configuration, or source file. Do not send any message externally. The only valid pass is receipt.status=completed with child_status=completed, zero market_hours_errors, and rollback.verified=true; otherwise preserve the receipt as the blocker evidence.",
+    "timeoutSeconds": 300
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "payload.kind",
+    "payload.message",
+    "payload.timeoutSeconds",
+    "sessionKey"
+  ],
+  "expected_artifacts": [
+    {
+      "path": "tmp/phase3-main-only-20260905/g6-e2e-20260912T202126Z/receipt.json",
+      "role": "g6_closed_market_prior_proof",
+      "required": false,
+      "blocking": false
+    },
+    {
+      "path": "tmp/phase3-main-only-20260905/g6-market-open-20260914/receipt.json",
+      "role": "g6_market_open_receipt_not_yet_due_until_run",
+      "required": false,
+      "blocking": false
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "external_delivery_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-09-14T02:02:23.372057+00:00",
+  "contract_update_reason": "Owner approved contract-only reconciliation on 2026-09-13; match verified stored job representation, preserve schedule, payload behavior, authority, and prompt budgets. No live job mutation.",
+  "sessionKey": "agent:main:dashboard:424b2823-907a-4574-a5c7-c0054e3b1b0f"
+}

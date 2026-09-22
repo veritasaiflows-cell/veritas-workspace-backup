@@ -176,10 +176,21 @@ def token_attribution_gate(packet: dict[str, Any], path: Path) -> dict[str, Any]
     validation = as_dict(packet.get("validation"))
     gap_resolution = str(summary.get("gap_resolution_status") or "")
     unclassified_supported = as_int(summary.get("unclassified_supported_runtime_gap_count"))
+    action_required = summary.get("action_required_supported_runtime_gap_count")
+    action_required_usable = isinstance(action_required, (int, float)) and not isinstance(action_required, bool)
     validation_status = validation.get("status")
     if not path.exists() or validation_status == "blocked":
         gate_status = "fail"
         reason = "Implementation token attribution bridge is missing or blocked."
+    elif action_required_usable:
+        # Prefer the action-required denominator: classified terminal-unavailable
+        # debt is audit context, not live debt.
+        if int(action_required) == 0:
+            gate_status = "pass"
+            reason = "Implementation token gaps are stamped, resolved by provider-run join, or explicitly classified unavailable; none require action."
+        else:
+            gate_status = "warning"
+            reason = "Implementation token attribution has supported runtime gaps that still require action."
     elif gap_resolution in {"complete", "classified_unavailable_only"} and unclassified_supported == 0:
         gate_status = "pass"
         reason = "Implementation token gaps are either stamped or explicitly classified unavailable."
@@ -195,6 +206,7 @@ def token_attribution_gate(packet: dict[str, Any], path: Path) -> dict[str, Any]
             "gap_resolution_status": gap_resolution,
             "implementation_token_gap_count": summary.get("implementation_token_gap_count"),
             "unclassified_supported_runtime_gap_count": unclassified_supported,
+            "action_required_supported_runtime_gap_count": action_required,
         },
     )
 

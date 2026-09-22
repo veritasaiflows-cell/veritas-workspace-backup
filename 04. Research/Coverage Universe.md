@@ -14,7 +14,7 @@ These names receive the direct quote/freshness pass used by the scheduled alerts
 
 AMD, AMZN, BKNG, BRK.B, CAT, CME, CVX, ECL, ETN, GE, GOOG, GS, ITA, JPM, KTOS, LIN, LLY, LMT, LNG, META, MSFT, NFLX, NVDA, PAVE, PH, PLTR, RTX, SLV, SMCI, TLT, TMUS, VAW, VMC, VRT, VXUS, WMB, XLB, XLC, XLE, XLF, XLI, and XOM.
 
-Exact static levels, substantive review dates, and ticker-level alert interpretation live in `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md`.
+Exact current levels live in guarded SQL `reference_levels`. Ticker-level thesis and alert interpretation live in `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md`. Do not read live numbers from the markdown snapshot table.
 
 ## Admission Contract
 
@@ -25,7 +25,7 @@ A new symbol needs:
 - thesis, principal risks, and invalidation logic
 - a named freshness owner
 - a defined alert or recommendation use case
-- guarded SQL and register reconciliation when levels are introduced
+- guarded SQL `reference_levels` apply when levels are introduced; do not treat markdown as the numeric writer
 
 Admission never creates action authority. Names may be suppressed when evidence, freshness, or signal quality is inadequate.
 

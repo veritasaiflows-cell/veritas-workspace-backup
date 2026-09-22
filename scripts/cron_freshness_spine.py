@@ -1462,6 +1462,20 @@ def schedule_expr(job: dict[str, Any]) -> str:
     return ""
 
 
+def schedule_kind(job: dict[str, Any]) -> str:
+    schedule = job.get("schedule")
+    if isinstance(schedule, dict):
+        return str(schedule.get("kind") or "")
+    if isinstance(schedule, str):
+        try:
+            parsed = json.loads(schedule)
+        except json.JSONDecodeError:
+            return ""
+        if isinstance(parsed, dict):
+            return str(parsed.get("kind") or "")
+    return ""
+
+
 def weekday_only_schedule(job: dict[str, Any]) -> bool:
     expr = schedule_expr(job)
     fields = expr.split()
@@ -1593,6 +1607,42 @@ def classify_job(job: dict[str, Any], contract: dict[str, Any] | None) -> dict[s
             "live_scheduler_consecutive_errors": live_consecutive_errors,
             "live_scheduler_last_run_exception": False,
             "live_scheduler_last_run_at": job.get("last_run_utc") or None,
+            "expected_artifacts": [],
+        }
+    if not contract and schedule_kind(job) == "at":
+        if live_last_run_exception:
+            return {
+                "id": job.get("id"),
+                "name": name,
+                "enabled": True,
+                "schedule": job.get("schedule"),
+                "owner_workflow": None,
+                "status": "one_shot_scheduler_error",
+                "signal_class": "BLOCKED",
+                "attention": "requires_main_attention",
+                "reason": "one_shot_job_last_run_failed",
+                "live_scheduler_last_status": live_last_status or None,
+                "live_scheduler_consecutive_errors": live_consecutive_errors,
+                "live_scheduler_last_run_exception": live_last_run_exception,
+                "live_scheduler_last_run_at": job.get("last_run_utc") or None,
+                "live_scheduler_last_error": live_last_error,
+                "expected_artifacts": [],
+            }
+        return {
+            "id": job.get("id"),
+            "name": name,
+            "enabled": True,
+            "schedule": job.get("schedule"),
+            "owner_workflow": None,
+            "status": "one_shot_pending",
+            "signal_class": "NO_REPLY",
+            "attention": "quiet_success",
+            "reason": "one_shot_at_job_exempt_from_standing_freshness_contract",
+            "live_scheduler_last_status": live_last_status or None,
+            "live_scheduler_consecutive_errors": live_consecutive_errors,
+            "live_scheduler_last_run_exception": live_last_run_exception,
+            "live_scheduler_last_run_at": job.get("last_run_utc") or None,
+            "live_scheduler_last_error": live_last_error,
             "expected_artifacts": [],
         }
     if not contract:
@@ -1772,6 +1822,10 @@ def next_action_for(job: dict[str, Any]) -> str:
         return "Run or repair the producer for the missing required artifact."
     if status == "unregistered":
         return "Add a freshness-spine contract before treating this enabled cron as governed."
+    if status == "one_shot_pending":
+        return "One-shot follow-up job is scheduled; no standing freshness contract applies."
+    if status == "one_shot_scheduler_error":
+        return "Inspect the failed one-shot follow-up run; it will not retry on a schedule."
     if status == "blocked":
         return "Inspect the blocked artifact and stop before further consolidation."
     if status == "needs_review":
@@ -1967,7 +2021,7 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
         job_dict = as_dict(job)
         if job_dict.get("status") == "unregistered":
             errors.append(f"enabled_job_missing_contract:{job_dict.get('name')}")
-        if not as_list(job_dict.get("expected_artifacts")):
+        if not as_list(job_dict.get("expected_artifacts")) and job_dict.get("status") not in {"one_shot_pending", "one_shot_scheduler_error"}:
             errors.append(f"enabled_job_missing_expected_artifacts:{job_dict.get('name')}")
         if job_dict.get("signal_class") not in SIGNAL_CLASSES:
             errors.append(f"bad_job_signal_class:{job_dict.get('name')}")

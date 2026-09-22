@@ -20,13 +20,31 @@ from finance_sql_canon_access import (
 )
 from dynamic_entitlement_provider_policy import load_provider_policy
 from phase3f_external_canary_approval import (
-    strict_canonical_evidence_json_object, _resolve_safe_workspace_path,
-    _exclusive_durable_json_write,
+    canonical_json_bytes, strict_canonical_evidence_json_object,
+    _resolve_safe_workspace_path, _exclusive_durable_json_write,
 )
 
 
 QUOTE_INTAKE_TIMEOUT_SECONDS = 15
 PACKAGE_LIFETIME_SECONDS = 600
+
+
+def canonicalize_quote_evidence_bytes(raw: bytes, *, maximum_bytes: int) -> bytes:
+    """Accept Windows CRLF quote-proof JSON by recanonicalizing to Phase 3F bytes."""
+    if not raw:
+        raise ValueError("recurring_quote_contract_malformed")
+    if raw.startswith(b"\xef\xbb\xbf"):
+        raw = raw[3:]
+    raw = raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    try:
+        obj = json.loads(raw.decode("utf-8"))
+        canon = canonical_json_bytes(obj)
+        strict_canonical_evidence_json_object(canon, maximum_bytes=maximum_bytes)
+    except Exception as exc:
+        raise ValueError("recurring_quote_contract_malformed") from exc
+    return canon
+
+
 # Debt is deliberately not green: incomplete evidence must not exit 0 (owner decision 2026-09-05).
 COMPLETED_STATUSES = ("completed",)
 
@@ -134,6 +152,16 @@ def dispatch(args: Any, *, components: tuple[str, ...]) -> int | None:
                 alert_quote_validation_json=intake["validation_json"],
                 delivery_intent=delivery_intent, **inputs)
             result["quote_intake"] = intake["receipt"]
+            try:
+                # Bookkeeping only. A receipt failure is reported, never
+                # allowed to fail an alerts run that already completed.
+                result["chain_receipts"] = chain.emit_recurring_chain_receipts(
+                    args.window, result, quote_snapshot_json=intake["snapshot_json"],
+                    quote_validation_json=intake["validation_json"],
+                )
+            except Exception as exc:
+                result["chain_receipts"] = {"status": "error",
+                                            "error": f"{type(exc).__name__}: {exc}"}
             print(json.dumps(result,indent=2,sort_keys=True))
             return 0 if result["status"] in COMPLETED_STATUSES else 1
         client = FinanceSqlCanonAccess()
@@ -264,13 +292,23 @@ def _automatic_quote_intake(chain: Any, policy: Any, bound: Any, run_id: str) ->
     try:
         if proc.returncode != 0 or not snap.is_file() or not val.is_file():
             raise ValueError("recurring_quote_intake_failed")
-        snapshot_json = snap.read_bytes()
-        validation_json = val.read_bytes()
-        try:
-            strict_canonical_evidence_json_object(snapshot_json, maximum_bytes=10 * 1024 * 1024)
-            strict_canonical_evidence_json_object(validation_json, maximum_bytes=2 * 1024 * 1024)
-        except Exception as exc:
-            raise ValueError("recurring_quote_contract_malformed") from exc
+        snapshot_json = canonicalize_quote_evidence_bytes(
+            snap.read_bytes(), maximum_bytes=10 * 1024 * 1024
+        )
+        validation_obj = json.loads(
+            canonicalize_quote_evidence_bytes(
+                val.read_bytes(), maximum_bytes=2 * 1024 * 1024
+            )
+        )
+        # quote_proof_is_clean binds identity to the shared quote-proof path,
+        # not the exclusive intake tempfile.
+        validation_obj["validated_artifact"] = (
+            "tmp/intraday-alerts/quote-snapshot-proof.json"
+        )
+        validation_json = canonicalize_quote_evidence_bytes(
+            json.dumps(validation_obj).encode("utf-8"),
+            maximum_bytes=2 * 1024 * 1024,
+        )
     finally:
         shutil.rmtree(workdir, ignore_errors=True)
     return {

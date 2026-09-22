@@ -1,0 +1,195 @@
+{
+  "schema": "veritas.arena_envelope_withdrawal.v1",
+  "produced_at_utc": "2026-09-22T01:24:02Z",
+  "produced_by": "veritas-main",
+  "envelope": "arena-agentic-v1-20260920",
+  "action": "withdraw_pre_overlay_scores_from_all_boards",
+  "ruling": "Pre-overlay runs on this bank are WITHDRAWN as capability evidence. They measured response-envelope guessing, not judgment, because the required JSON key shape was not published to candidates until overlay-r2. They must not be cited as a model score, quoted as a differentiator, or merged into any board with overlay-r2 runs.",
+  "cause": {
+    "defect": "response contract unpublished pre-overlay",
+    "detail": "strict_pass requires the response top-level key set to equal the hidden key's key set exactly. Before overlay-r2 no artifact told candidates those key names, so a correct answer under a different field name (for example 'allocations' instead of 'alloc') scored zero.",
+    "fix": "overlay/key-shapes.json (overlay_version arena-agentic-v1-20260920-overlay-r2) publishes per-family contract_text naming the exact required keys.",
+    "fix_already_shipped": true
+  },
+  "grader_exonerated": {
+    "claim": "The frozen grader is sound; the floor was an envelope defect, not a grader defect.",
+    "oracle_control": {
+      "subject": "each hidden key serialized verbatim",
+      "exposure": "with-fixtures",
+      "strict_pass": 12,
+      "strict_pass_clean": 12,
+      "total": 12,
+      "contaminated": 0,
+      "invented": 0,
+      "expected": "12/12 \u2014 a broken grader would fail its own key",
+      "evidence": "envelope-controls-20260921/oracle-graded-results.json"
+    },
+    "null_control": {
+      "subject": "empty response for every case",
+      "strict_pass": 0,
+      "total": 12,
+      "operational_timeouts": 12,
+      "expected": "0/12, classified operational not factual \u2014 confirms the floor exists mechanically",
+      "evidence": "envelope-controls-20260921/null-graded-results.json"
+    }
+  },
+  "discrimination_evidence": {
+    "pre_overlay_strict_range": [
+      0,
+      1
+    ],
+    "post_overlay_strict_range": [
+      4,
+      9,
+      10,
+      11,
+      12
+    ],
+    "reading": "Pre-overlay the bank had no range and could not rank anything. Post-overlay it separates the roster."
+  },
+  "withdrawn_runs": [
+    {
+      "run": "astra-20260920",
+      "strict": 0,
+      "total": 12,
+      "answered": null,
+      "timeouts": null,
+      "graded_results_sha256": "965ab7f2fc489e4e15228aca550b8c9a31a7c9f4fbfba6136bfefe2e5460ff7b"
+    },
+    {
+      "run": "sol-20260920",
+      "strict": 0,
+      "total": 12,
+      "answered": null,
+      "timeouts": null,
+      "graded_results_sha256": "885a5c53695fc203f54d7580bb8ce2f708ad19264fe66a3c5379a700d0bbc98f"
+    },
+    {
+      "run": "glm53flash-20260920",
+      "strict": 0,
+      "total": 12,
+      "answered": null,
+      "timeouts": null,
+      "graded_results_sha256": "674ea66e2192fcd762b89560d899007ab52b4bf84161d5b8bed512feef4d1c7d"
+    },
+    {
+      "run": "deepseek41flash-20260920",
+      "strict": 1,
+      "total": 12,
+      "answered": null,
+      "timeouts": null,
+      "graded_results_sha256": "e4d838d160ce2de84483210c8e4a266cc082ec1e87e4d0dbe3da4fec0c3d08e5"
+    },
+    {
+      "run": "spark13-20260920",
+      "strict": 1,
+      "total": 12,
+      "answered": null,
+      "timeouts": null,
+      "graded_results_sha256": "7410e049c2c8993c0c6f599a2052a9b8e89bd0eaa3a0d025f593c68c2aa06475"
+    },
+    {
+      "run": "glm53flash-chain-20260920",
+      "strict": 0,
+      "total": 12,
+      "answered": 12,
+      "timeouts": 0,
+      "graded_results_sha256": "1539ff88674e026a5ef5a2a21e138cb3ffa464e39747d8d74bb32ef4651eb44d"
+    },
+    {
+      "run": "deepseek41flash-chain-20260920",
+      "strict": 0,
+      "total": 12,
+      "answered": 12,
+      "timeouts": 0,
+      "graded_results_sha256": "a1fd1579686fd5132ae565f2fcdc59b0618eb24a1c546421d35cbc259a8de95f"
+    },
+    {
+      "run": "minimax-m3-20260920",
+      "strict": 0,
+      "total": 12,
+      "answered": 12,
+      "timeouts": 0,
+      "graded_results_sha256": "6112fe3d49aeb9758a89a4707e31f33f8c0f9ea89eb002c52a36a6b71ee373f2"
+    }
+  ],
+  "live_runs": [
+    {
+      "run": "spark13-overlay-r2-20260920",
+      "strict": 12,
+      "total": 12,
+      "answered": 12,
+      "timeouts": 0,
+      "graded_results_sha256": "757047a0f649c6c86e9d4994ef5f42f6e1e3472d5c261ead71ad0a1ea1f383e0"
+    },
+    {
+      "run": "deepseek41flash-overlay-r2-20260920",
+      "strict": 11,
+      "total": 12,
+      "answered": null,
+      "timeouts": null,
+      "graded_results_sha256": "56b253c965856315ad7857f50e9ad3d3a4adbeb72b24e8885383d3856faf5b57"
+    },
+    {
+      "run": "deepseek41flash-overlay-r2-cli-chain-20260920",
+      "strict": 10,
+      "total": 12,
+      "answered": 10,
+      "timeouts": 2,
+      "graded_results_sha256": "19bf1f56177f1df6fae0e0839f7de68344a7cee668b1d8e5532f7c9a211d290a"
+    },
+    {
+      "run": "glm53flash-overlay-r2-20260920",
+      "strict": 4,
+      "total": 12,
+      "answered": 11,
+      "timeouts": 1,
+      "graded_results_sha256": "70a7b07ce9c3be1d75dbb11daa85b05d0abb3a221c4a73a5b238264c4138717d"
+    },
+    {
+      "run": "glm53flash-overlay-r2-cli-20260920",
+      "strict": 10,
+      "total": 12,
+      "answered": 11,
+      "timeouts": 1,
+      "graded_results_sha256": "e2c702891db31f8a0f16af9fcd53c2a1bd96b7b1fcae2caf6ba050ce0c32d743"
+    },
+    {
+      "run": "glm53flash-chain-overlay-r2-cli-20260920",
+      "strict": 9,
+      "total": 12,
+      "answered": 10,
+      "timeouts": 2,
+      "graded_results_sha256": "f5252bb576f90af03615915fdc1b3b48ce0f3d53df3bce545a562e6360d4262a"
+    },
+    {
+      "run": "minimax-m3-overlay-r2-20260920",
+      "strict": 10,
+      "total": 12,
+      "answered": 12,
+      "timeouts": 0,
+      "graded_results_sha256": "fb2d53b09f20fd3d62d160ac95f1f6182cf4e558021f532c94feb80f7bd76249"
+    }
+  ],
+  "boards_affected": [
+    {
+      "path": "data/evals/model-arena/arena-agentic-v1-20260920/board.md",
+      "status": "sealed; hash-pinned in evidence-manifest.json; NOT edited",
+      "disposition": "superseded by board-b-superseding-20260921.md"
+    },
+    {
+      "path": "data/evals/model-arena/results/arena-agentic-v1-20260920/calibration-board-enh-20260920.json",
+      "status": "dated seal; NOT edited",
+      "disposition": "MIXES pre-overlay and overlay-r2 rows in one table with no envelope column. Highest miscitation risk. Superseded by this record."
+    },
+    {
+      "path": "data/evals/model-arena/arena-agentic-v1-20260920/open-enrollment-comparison.json",
+      "status": "sealed; NOT edited",
+      "disposition": "pre-overlay-only comparison; internally consistent but withdrawn as capability evidence"
+    }
+  ],
+  "not_done": {
+    "astra_sol_redispatch": "NOT performed. Owner declined on 2026-09-21 (OpenAI usage low). Astra and Sol therefore have NO valid score on this bank; they are absent from the live board rather than scored zero."
+  },
+  "authority": "Benchmark evidence hygiene only. No routing, configuration, role, capital, or execution authority follows."
+}

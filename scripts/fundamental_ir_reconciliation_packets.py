@@ -158,10 +158,10 @@ def load_validated_official_captures() -> dict[str, dict[str, Any]]:
     return captures
 
 
-def active_equity_tickers() -> set[str]:
+def active_equity_scope() -> tuple[set[str], str]:
     cfg = load_json_artifact(CONFIG_PATH)
     tracked = (cfg.get("tracked_universe") if isinstance(cfg, dict) else {}) or {}
-    return {
+    configured = {
         ticker
         for ticker, meta in tracked.items()
         if ticker not in ETF_OR_PROXY
@@ -169,6 +169,16 @@ def active_equity_tickers() -> set[str]:
         and str(meta.get("coverage_lane") or "").lower() != "macro"
         and str(meta.get("portfolio_role") or "").lower() not in ETF_OR_PROXY_ROLES
     }
+    if configured:
+        return configured, "portfolio_config"
+    # A review packet may be rebuilt from the bounded official-capture scope
+    # when the retired portfolio config is absent. This does not add a ticker,
+    # mutate canon, or promote unresolved captured fields.
+    return set(_registry.CAPTURE_SCRIPT_BY_TICKER), "official_capture_registry_fallback"
+
+
+def active_equity_tickers() -> set[str]:
+    return active_equity_scope()[0]
 
 
 def capture_claim(name: str, block: dict[str, Any], period_end: str | None) -> dict[str, Any]:
@@ -443,7 +453,7 @@ def build_payload() -> dict[str, Any]:
     meta_by_ticker = (metadata.get("tickers") if isinstance(metadata, dict) else {}) or {}
     bridge_default = metadata.get("official_earnings_bridge_default") if isinstance(metadata, dict) else {}
     official_captures = load_validated_official_captures()
-    expected_tickers = active_equity_tickers()
+    expected_tickers, scope_source = active_equity_scope()
     packets = []
     missing_metadata = []
     for row in rows if isinstance(rows, list) else []:
@@ -469,6 +479,7 @@ def build_payload() -> dict[str, Any]:
         "summary": {
             "packets": len(packets),
             "active_equity_tickers": len(expected_tickers),
+            "scope_source": scope_source,
             "missing_metadata": missing_metadata,
             "manual_required": len(packets),
             "validated_official_captures_consumed": sorted(official_captures),

@@ -74,7 +74,7 @@ def test_ticker_shard_merges_existing_and_never_applies_config(monkeypatch, tmp_
     assert json.loads(config_path.read_text(encoding="utf-8")) == {"sentinel": "unchanged"}
 
 
-def test_no_arg_mode_keeps_full_coverage_and_lifecycle_apply(monkeypatch, tmp_path):
+def test_no_arg_mode_keeps_full_coverage_without_lifecycle_apply(monkeypatch, tmp_path):
     output_path = tmp_path / "earnings-calendar.json"
     config_path = tmp_path / "portfolio-config.json"
     config_path.write_text("{}", encoding="utf-8")
@@ -88,17 +88,42 @@ def test_no_arg_mode_keeps_full_coverage_and_lifecycle_apply(monkeypatch, tmp_pa
     monkeypatch.setattr(enrichment, "build_watchlist_lifecycle_closeouts", lambda **_kwargs: [])
     monkeypatch.setattr(enrichment, "build_existing_watchlist_lifecycle_holds", lambda **_kwargs: [])
 
-    def apply(_config, closeouts):
-        applied.append(closeouts)
-        return {"applied": False, "count": 0, "tickers": []}
-
-    monkeypatch.setattr(enrichment, "apply_watchlist_lifecycle_closeouts", apply)
+    monkeypatch.setattr(
+        enrichment,
+        "apply_watchlist_lifecycle_closeouts",
+        lambda *_args, **_kwargs: pytest.fail("default collection must not mutate portfolio config"),
+    )
 
     enrichment.main([])
 
     payload = json.loads(output_path.read_text(encoding="utf-8"))
     assert payload["records"][0]["source"] == "fake:KNOWN-YF"
     assert "refresh_scope" not in payload
+    assert applied == []
+    assert payload["earnings_lifecycle"]["config_apply"]["reason"] == "owner_authorization_not_requested"
+
+
+def test_explicit_closeout_apply_is_required(monkeypatch, tmp_path):
+    output_path = tmp_path / "earnings-calendar.json"
+    config_path = tmp_path / "portfolio-config.json"
+    config_path.write_text("{}", encoding="utf-8")
+    applied: list[list[dict[str, object]]] = []
+
+    monkeypatch.setattr(enrichment, "OUT_PATH", output_path)
+    monkeypatch.setattr(enrichment, "CONFIG_PATH", config_path)
+    monkeypatch.setattr(enrichment, "WORKSPACE", tmp_path)
+    monkeypatch.setattr(enrichment, "COVERAGE", {"KNOWN": "KNOWN-YF"})
+    monkeypatch.setattr(enrichment, "fetch_earnings_date", fake_record)
+    monkeypatch.setattr(enrichment, "build_watchlist_lifecycle_closeouts", lambda **_kwargs: [])
+    monkeypatch.setattr(enrichment, "build_existing_watchlist_lifecycle_holds", lambda **_kwargs: [])
+    monkeypatch.setattr(
+        enrichment,
+        "apply_watchlist_lifecycle_closeouts",
+        lambda _config, closeouts: applied.append(closeouts) or {"applied": False, "count": 0, "tickers": []},
+    )
+
+    enrichment.main(["--apply-watchlist-closeouts"])
+
     assert applied == [[]]
 
 

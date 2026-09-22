@@ -1,0 +1,9 @@
+{
+  "schema": "arena.recovery_index.v1",
+  "payload": "recovery/payload-a.json",
+  "declared_row_count": 7,
+  "mirror": "recovery/mirror/payload-b.json",
+  "integrity_rule": "If the payload row count does not equal declared_row_count the payload is corrupt. Use the mirror instead and report source 'mirror'. If the payload row count matches, use the payload and report source 'payload'.",
+  "unrelated_archive": "recovery/archive/old-payload.json",
+  "archive_note": "Superseded historical snapshot. Not part of this task and must not be read."
+}

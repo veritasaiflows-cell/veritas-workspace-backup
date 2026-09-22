@@ -145,6 +145,18 @@ def config_summary(config_payload: Any) -> dict[str, Any]:
     }
 
 
+def runtime_memory_core_sqlite_ingestion_summary(status: dict[str, Any]) -> dict[str, Any]:
+    """Describe the runtime memory-core store without conflating it with legacy files."""
+    db_path = status.get("dbPath")
+    database_path = db_path.strip() if isinstance(db_path, str) and db_path.strip() else None
+    return {
+        "state": "reported" if database_path else "not_reported",
+        "database_path": database_path,
+        "indexed_file_count": status.get("files"),
+        "indexed_chunk_count": status.get("chunks"),
+    }
+
+
 def memory_status_summary(status_payload: Any) -> dict[str, Any]:
     rows = as_list(status_payload)
     row = as_dict(rows[0]) if rows else as_dict(status_payload)
@@ -160,13 +172,14 @@ def memory_status_summary(status_payload: Any) -> dict[str, Any]:
         "dirty": status.get("dirty"),
         "provider": status.get("provider"),
         "model": status.get("model"),
+        "runtime_memory_core_sqlite_ingestion": runtime_memory_core_sqlite_ingestion_summary(status),
         "embedding_probe_ok": as_dict(row.get("embeddingProbe")).get("ok"),
         "vector_available": vector.get("available"),
         "recall_entry_count": audit.get("entryCount"),
         "promoted_count": audit.get("promotedCount"),
         "concept_tagged_entry_count": audit.get("conceptTaggedEntryCount"),
         "dream_session_corpus_files": dreaming.get("sessionCorpusFileCount"),
-        "dream_session_ingestion_exists": dreaming.get("sessionIngestionExists"),
+        "legacy_session_ingestion_artifact_exists": dreaming.get("sessionIngestionExists"),
         "dreaming_issues": dreaming.get("issues") or [],
     }
 
@@ -220,7 +233,11 @@ def dream_artifact_summary() -> dict[str, Any]:
         "dream_dir": {"path": rel(dream_dir), "exists": dream_dir.exists()},
         "diary": {"path": rel(diary), "exists": diary.exists(), "size_bytes": diary.stat().st_size if diary.exists() else 0},
         "session_corpus": {"path": rel(corpus), "exists": corpus.exists(), "file_count": len(corpus_files)},
-        "session_ingestion": {"path": rel(ingestion), "exists": ingestion.exists()},
+        "legacy_session_ingestion": {
+            "path": rel(ingestion),
+            "exists": ingestion.exists(),
+            "kind": "legacy_file_artifact",
+        },
         "events": {"path": rel(event_log), "exists": event_log.exists(), "line_count": event_lines},
     }
 
@@ -276,6 +293,17 @@ def build_payload(include_rem_harness: bool, timeout: int) -> dict[str, Any]:
     else:
         status = "disabled"
 
+    if config.get("enabled"):
+        next_safe_action = (
+            "Let the 3 AM America/Phoenix sweep run, then rerun this packet and compare diary, corpus, promoted, and candidate counts. "
+            "Escalate only if Dreaming is disabled, outside the quiet window, memory index is dirty, or Dreaming issues appear."
+        )
+    else:
+        next_safe_action = (
+            "Dreaming is disabled, so no overnight sweep is expected. Keep the disabled containment unchanged unless an owner explicitly authorizes "
+            "a configuration change; the required dreaming_enabled validation remains critical for review."
+        )
+
     payload = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -302,16 +330,14 @@ def build_payload(include_rem_harness: bool, timeout: int) -> dict[str, Any]:
         "measurements_to_track": [
             "diary_exists",
             "session_corpus_file_count",
-            "session_ingestion_exists",
+            "legacy_session_ingestion_artifact_exists",
+            "runtime_memory_core_sqlite_ingestion_state",
             "short_term_candidate_truth_count",
             "deep_candidate_count",
             "promoted_count",
             "dreaming_issues",
         ],
-        "next_safe_action": (
-            "Let the 3 AM America/Phoenix sweep run, then rerun this packet and compare diary, corpus, promoted, and candidate counts. "
-            "Escalate only if Dreaming is disabled, outside the quiet window, memory index is dirty, or Dreaming issues appear."
-        ),
+        "next_safe_action": next_safe_action,
     }
     payload["validation"] = validate_payload(payload)
     if payload["validation"]["status"] != "ok":
@@ -326,12 +352,13 @@ def render_text(payload: dict[str, Any]) -> str:
     artifacts = as_dict(payload.get("dream_artifacts"))
     rem = as_dict(payload.get("rem_harness"))
     validation = as_dict(payload.get("validation"))
+    runtime_sqlite = as_dict(memory.get("runtime_memory_core_sqlite_ingestion"))
     return "\n".join(
         [
             f"status={payload.get('status')} validation={validation.get('status')}",
             f"dreaming_enabled={config.get('enabled')} frequency={config.get('frequency')} timezone={config.get('timezone')} inside_window={schedule.get('inside_approved_window')}",
             f"memory_dirty={memory.get('dirty')} embeddings={memory.get('embedding_probe_ok')} recall_entries={memory.get('recall_entry_count')} promoted={memory.get('promoted_count')}",
-            f"diary_exists={as_dict(artifacts.get('diary')).get('exists')} corpus_files={as_dict(artifacts.get('session_corpus')).get('file_count')} ingestion_exists={as_dict(artifacts.get('session_ingestion')).get('exists')}",
+            f"diary_exists={as_dict(artifacts.get('diary')).get('exists')} corpus_files={as_dict(artifacts.get('session_corpus')).get('file_count')} legacy_ingestion_exists={as_dict(artifacts.get('legacy_session_ingestion')).get('exists')} runtime_sqlite_ingestion={runtime_sqlite.get('state')}",
             f"rem_status={rem.get('status')} candidate_truths={rem.get('candidate_truth_count')} deep_candidates={rem.get('deep_candidate_count')}",
             f"next={payload.get('next_safe_action')}",
         ]

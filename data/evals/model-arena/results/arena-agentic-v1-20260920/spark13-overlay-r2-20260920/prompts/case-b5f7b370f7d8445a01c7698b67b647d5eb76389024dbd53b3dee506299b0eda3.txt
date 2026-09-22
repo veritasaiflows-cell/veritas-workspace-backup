@@ -1,0 +1,42 @@
+case b5f7b370f7d8445a01c7698b67b647d5eb76389024dbd53b3dee506299b0eda3 (family: T1)
+response contract:
+Budget settlement under bounds, proportionality and binding-bound rules.
+
+Response contract:
+If a valid allocation exists return exactly: {"feasible": true, "alloc": [one number per order, in input order], "rounds": integer}. If no allocation can satisfy the bounds and the budget at the same time, return exactly: {"feasible": false, "alloc": []} and omit "rounds".
+
+Rules:
+- bounds: every order i receives x_i with lo_i <= x_i <= hi_i.
+- sum: the allocation exhausts the budget exactly.
+- proportionality: among orders not held at one of their own bounds, x_i / w_i is equal for every such order.
+- binding-bounds: an order is held at its lower bound only if strict proportionality would give it less than lo_i, and at its upper bound only if strict proportionality would give it more than hi_i.
+- Rounding is applied only after the exact real-valued allocation is determined: round each x_i to 2 decimals using banker's rounding, then compute residual = budget - sum(rounded values). If residual is nonzero, add it to the largest rounded value among orders NOT held at either of their own bounds, breaking ties by lowest index, and round that value to 2 decimals.
+- rounds is a separate counting question and does not define the allocation. Consider this procedure: repeatedly give every not-yet-held order a share strictly proportional to its weight out of the budget not already committed to held orders, then hold at its violated bound every such order whose share falls outside its own bounds. rounds is the number of distinct iterations in which at least one order became newly held. The counting procedure and the allocation can disagree.
+- Numbers are compared numerically, not by JSON type, so an integer and the same value written with a decimal point are equivalent.
+
+Return only the required JSON object. No prose, no explanation, no code fences.
+
+prompt:
+{
+  "budget": 29,
+  "orders": [
+    {
+      "hi": 30,
+      "lo": 12,
+      "w": 1
+    },
+    {
+      "hi": 30,
+      "lo": 18,
+      "w": 1
+    }
+  ],
+  "properties": [
+    "bounds",
+    "sum",
+    "proportionality",
+    "binding-bounds"
+  ],
+  "request": "Return only the required allocation JSON."
+}
+Return only the required JSON object. No prose.

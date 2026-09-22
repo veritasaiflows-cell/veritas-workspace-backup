@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
+import tempfile
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import otel_learning_loop as loop
@@ -80,12 +83,131 @@ def test_uncredited_lane_and_missing_duration_do_not_pollute_model_metrics() -> 
     assert tool_summary["slowest_tools"] == [{"tool_name": "measured", "count": 1, "avg_duration_ms": 125.0, "failure_rows": 0}]
 
 
+def test_owner_decision_record_suppresses_retired_recommendation() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        record = Path(tmp) / "otel-recommendations.json"
+        record.write_text(json.dumps({
+            "schema": "veritas.owner_decisions.otel_recommendations.v1",
+            "decisions": [{
+                "id": "token_cost_metadata_depth",
+                "decision": "decline_and_retire_the_recommendation",
+                "decided_by": "randall",
+                "decided_at_utc": "2026-09-12T16:00:00+00:00",
+                "evidence": "tmp/otel-token-cost-metadata-depth-owner-packet.json",
+            }],
+        }), encoding="utf-8")
+        original = loop.OWNER_DECISIONS
+        try:
+            loop.OWNER_DECISIONS = record
+            suppressed = loop.owner_decision_suppressions()
+            assert "token_cost_metadata_depth" in suppressed
+            assert suppressed["token_cost_metadata_depth"]["decided_by"] == "randall"
+            loop.OWNER_DECISIONS = Path(tmp) / "missing.json"
+            assert loop.owner_decision_suppressions() == {}
+        finally:
+            loop.OWNER_DECISIONS = original
+
+
+def _attribution_bridge_doc(summary, generated_at_utc, status="warning", validation=None):
+    doc = {
+        "schema": "veritas.implementation_token_attribution_bridge.v1",
+        "status": status,
+        "generated_at_utc": generated_at_utc,
+        "validation": {"status": "warning", "errors": [], "warnings": ["implementation_token_gap_count:597"]},
+        "summary": summary,
+    }
+    if validation is not None:
+        doc["validation"] = validation
+    return doc
+
+
+def _attribution_timestamp(hours_from_now):
+    point = datetime.now(timezone.utc) + timedelta(hours=hours_from_now)
+    return point.replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _terminal_summary():
+    return {"action_required_supported_runtime_gap_count": 0, "gap_resolution_status": "terminal_unavailable_only", "closeout_enforcement_required": False}
+
+
+def test_attribution_action_state_is_fail_closed() -> None:
+    fresh = _attribution_timestamp(0)
+    clean = loop.attribution_action_state({}, _attribution_bridge_doc(_terminal_summary(), fresh))
+    assert clean["state"] == "monitor_only"
+    assert clean["reason"] == "explicit_terminal_or_historical_only"
+    assert clean["closeout_enforcement_required"] is False
+    assert clean["action_required_supported_runtime_gap_count"] == 0
+    live_summary = {"action_required_supported_runtime_gap_count": 2, "gap_resolution_status": "stamp_required", "closeout_enforcement_required": True}
+    live = loop.attribution_action_state({}, _attribution_bridge_doc(live_summary, fresh))
+    assert live["state"] == "action_required"
+    stale_doc = _attribution_bridge_doc(_terminal_summary(), _attribution_timestamp(-25))
+    with tempfile.TemporaryDirectory() as tmp:
+        touched = Path(tmp) / "bridge.json"
+        touched.write_text(json.dumps(stale_doc), encoding="utf-8")
+        os.utime(touched, None)
+        reloaded = json.loads(touched.read_text(encoding="utf-8"))
+    assert loop.attribution_action_state({}, reloaded)["state"] == "unknown"
+    assert loop.attribution_action_state({}, _attribution_bridge_doc(_terminal_summary(), _attribution_timestamp(2)))["state"] == "unknown"
+    for bad_count in (-1, 0.5, True, "3", None):
+        summary = {"action_required_supported_runtime_gap_count": bad_count, "gap_resolution_status": "terminal_unavailable_only", "closeout_enforcement_required": False}
+        assert loop.attribution_action_state({}, _attribution_bridge_doc(summary, fresh))["state"] == "unknown"
+    missing_closeout = {"action_required_supported_runtime_gap_count": 0, "gap_resolution_status": "terminal_unavailable_only"}
+    assert loop.attribution_action_state({}, _attribution_bridge_doc(missing_closeout, fresh))["state"] == "unknown"
+    mystery = {"action_required_supported_runtime_gap_count": 0, "gap_resolution_status": "mystery_status", "closeout_enforcement_required": False}
+    assert loop.attribution_action_state({}, _attribution_bridge_doc(mystery, fresh))["state"] == "unknown"
+    assert loop.attribution_action_state({}, _attribution_bridge_doc(_terminal_summary(), fresh, status="blocked"))["state"] == "unknown"
+    blocked_validation = {"status": "blocked", "errors": ["blocked"], "warnings": []}
+    assert loop.attribution_action_state({}, _attribution_bridge_doc(_terminal_summary(), fresh, validation=blocked_validation))["state"] == "unknown"
+    error_validation = {"status": "warning", "errors": ["boom"], "warnings": []}
+    assert loop.attribution_action_state({}, _attribution_bridge_doc(_terminal_summary(), fresh, validation=error_validation))["state"] == "unknown"
+    conflict_summary = {"action_required_supported_runtime_gap_count": 4, "gap_resolution_status": "terminal_unavailable_only", "closeout_enforcement_required": False}
+    assert loop.attribution_action_state({}, _attribution_bridge_doc(conflict_summary, fresh))["state"] == "unknown"
+    lone_stamp = {"action_required_supported_runtime_gap_count": 0, "gap_resolution_status": "stamp_required", "closeout_enforcement_required": False}
+    assert loop.attribution_action_state({}, _attribution_bridge_doc(lone_stamp, fresh))["state"] == "unknown"
+    wrong_schema = _attribution_bridge_doc(_terminal_summary(), fresh)
+    wrong_schema["schema"] = "wrong.schema.v1"
+    assert loop.attribution_action_state({}, wrong_schema)["state"] == "unknown"
+    assert loop.attribution_action_state({}, {})["state"] == "unknown"
+
+
+def test_usage_source_recommendation_follows_bridge_state() -> None:
+    cost = {"uncredited_lane_audit_rows": 5}
+    fresh = _attribution_timestamp(0)
+    live_bridge = _attribution_bridge_doc({"action_required_supported_runtime_gap_count": 2, "gap_resolution_status": "stamp_required", "closeout_enforcement_required": True}, fresh)
+    historical_bridge = _attribution_bridge_doc(_terminal_summary(), fresh)
+    live_recs = loop.build_recommendations(cost, {}, {}, {}, {}, {}, live_bridge)
+    assert any(item.get("id") == "usage_source_reverification_required" and item.get("severity") == "warning" for item in live_recs)
+    assert not any(item.get("id") == "historical_attribution_claim_limits" for item in live_recs)
+    historical_recs = loop.build_recommendations(cost, {}, {}, {}, {}, {}, historical_bridge)
+    assert not any(item.get("id") == "usage_source_reverification_required" for item in historical_recs)
+    assert any(item.get("id") == "historical_attribution_claim_limits" and item.get("severity") == "info" for item in historical_recs)
+    unknown_recs = loop.build_recommendations(cost, {}, {}, {}, {}, {}, {})
+    assert any(item.get("id") == "usage_source_reverification_required" and item.get("severity") == "warning" for item in unknown_recs)
+    assert not any(item.get("id") == "historical_attribution_claim_limits" for item in unknown_recs)
+    clean_recs = loop.build_recommendations({"uncredited_lane_audit_rows": 0}, {}, {}, {}, {}, {}, historical_bridge)
+    assert not any(item.get("id") in {"usage_source_reverification_required", "historical_attribution_claim_limits"} for item in clean_recs)
+    zero_counter_live_recs = loop.build_recommendations({"uncredited_lane_audit_rows": 0}, {}, {}, {}, {}, {}, live_bridge)
+    assert any(item.get("id") == "usage_source_reverification_required" for item in zero_counter_live_recs)
+
+
 def main() -> int:
     errors: list[str] = []
     try:
         test_uncredited_lane_and_missing_duration_do_not_pollute_model_metrics()
     except AssertionError as exc:
         errors.append(f"telemetry eligibility regression failed: {exc}")
+    try:
+        test_owner_decision_record_suppresses_retired_recommendation()
+    except AssertionError as exc:
+        errors.append(f"owner-decision suppression regression failed: {exc}")
+    try:
+        test_attribution_action_state_is_fail_closed()
+    except AssertionError as exc:
+        errors.append(f"attribution fail-closed regression failed: {exc}")
+    try:
+        test_usage_source_recommendation_follows_bridge_state()
+    except AssertionError as exc:
+        errors.append(f"usage-source bridge-state regression failed: {exc}")
     out = ROOT / "tmp" / "test-otel-learning-loop.json"
     result = subprocess.run(
         [sys.executable, str(SCRIPT), "--json-out", str(out), "--write", "--validate"],

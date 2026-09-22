@@ -7,7 +7,7 @@
     "recommended_cron": "52 7,14,20 * * *"
   },
   "default_model": {
-    "model": "openai/gpt-5.5",
+    "model": "ollama-cloud/glm-5.3:cloud",
     "thinking": "high",
     "role": "isolated scheduled PM implementation proof worker"
   },

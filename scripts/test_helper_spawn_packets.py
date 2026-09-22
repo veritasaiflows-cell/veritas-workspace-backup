@@ -30,10 +30,25 @@ class HelperSpawnPacketTests(unittest.TestCase):
             self.assertTrue(row["phase"])
             self.assertTrue(row["owner_workflow"])
             self.assertTrue(row["authority_class"])
-            self.assertEqual(row["model_route"]["model"], "openai/gpt-5.6-terra")
+            self.assertIn(
+                row["model_route"]["model"],
+                {
+                    packets.DEFAULT_MODEL_ROUTE["model"],
+                    packets.MATERIAL_QA_MODEL_ROUTE["model"],
+                    packets.ROUTINE_READ_MODEL_ROUTE["model"],
+                    packets.FINANCE_EVIDENCE_MODEL_ROUTE["model"],
+                    packets.DOCS_CONTINUITY_MODEL_ROUTE["model"],
+                },
+            )
+            self.assertFalse(row["model_route"]["model"].startswith("openai/"))
+            self.assertEqual(row["model_route"]["model"], packets.fleet_policy.primary_model_for(row["agent_id"]))
             self.assertEqual(row["context_budget"]["max_files"], 6)
             self.assertEqual(row["context_budget"]["max_total_bytes"], 120_000)
             self.assertTrue(row["handoff_contract"]["closeout_revalidation_before_synthesis_required"])
+            self.assertTrue(row["handoff_contract"]["policy_primary_model_match_required"])
+            self.assertTrue(row["handoff_contract"]["live_config_model_match_required"])
+            self.assertTrue(row["handoff_contract"]["sessions_spawn_dispatch_contract_required"])
+            self.assertTrue(row["handoff_contract"]["actual_model_receipt_required_at_closeout"])
             self.assertEqual(row["retry_contract"]["provisional_incident_update_sla_seconds"], 90)
             self.assertTrue(row["effort_policy"]["escalation_triggers"])
             self.assertEqual(row["read_boundary"], row["files_to_read_first"])
@@ -70,10 +85,12 @@ class HelperSpawnPacketTests(unittest.TestCase):
         row = packets.standard_packets()[0]
         del row["handoff_contract"]["actual_receiver_readback_before_dispatch_required"]
         del row["handoff_contract"]["actual_post_apply_file_hashes_required"]
+        del row["handoff_contract"]["live_config_model_match_required"]
         validation = packets.validate_payload(self.payload_for([row]))
         error_text = "\n".join(validation["errors"])
         self.assertIn("actual_receiver_readback_before_dispatch_required", error_text)
         self.assertIn("actual_post_apply_file_hashes_required", error_text)
+        self.assertIn("live_config_model_match_required", error_text)
         self.assertIn("handoff_contract_not_fail_closed", error_text)
 
     def test_legacy_packet_remains_valid_with_warning(self) -> None:
@@ -108,6 +125,13 @@ class HelperSpawnPacketTests(unittest.TestCase):
         self.assertEqual(validation["status"], "ok")
         self.assertEqual(validation["errors"], [])
         self.assertIn("legacy-helper:legacy_packet_without_assignment_contract_revision", validation["warnings"])
+
+    def test_tampered_finance_model_route_fails_policy_mismatch(self) -> None:
+        row = packets.standard_packets()[3]
+        row["model_route"] = copy.deepcopy(packets.ROUTINE_READ_MODEL_ROUTE)
+        validation = packets.validate_payload(self.payload_for([row]))
+        error_text = "\n".join(validation["errors"])
+        self.assertIn("assignment_model_route_policy_mismatch", error_text)
 
     def test_selected_action_preserves_supplied_assignment_metadata(self) -> None:
         handoff = {

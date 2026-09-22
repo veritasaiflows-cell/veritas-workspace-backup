@@ -91,15 +91,11 @@ COMPLETE_TOKEN_KEYS = (
     "total_tokens",
 )
 IMPLEMENTATION_PHASES = {"implementation", "build", "integration", "repair", "refactor"}
-ACCEPTED_MISSING_USAGE_CLASSIFICATIONS = {
-    "provider_usage_unavailable",
-    "runtime_usage_unavailable",
-    "current_chat_runtime_unavailable",
-    "unsupported_legacy_model_route",
-    "historical_pre_token_stamping_unavailable",
-    "historical_pre_token_closeout_guard_unavailable",
-    "isolated_session_usage_unavailable",
-}
+# 2026-09-18 Phase 2 (owner-directed): shared definition lives in
+# scripts/token_usage_classifications.py. This consumer is the STRICT closeout
+# gate: no lane may close on manual or self-declared totals.
+from token_usage_classifications import CLOSEOUT_GATE_MISSING_USAGE_CLASSIFICATIONS
+ACCEPTED_MISSING_USAGE_CLASSIFICATIONS = set(CLOSEOUT_GATE_MISSING_USAGE_CLASSIFICATIONS)
 NEW_ISOLATED_MISSING_USAGE_CLASSIFICATIONS = {"provider_usage_unavailable"}
 USAGE_UNAVAILABLE_REASONS = {
     "current_main_session_counters_not_job_scoped",
@@ -309,7 +305,10 @@ def validate_root_lineage(register: dict[str, Any], lane: dict[str, Any]) -> Non
             raise SystemExit("non-monotonic cumulative_retry_count")
         lane["runtime"] = runtime
         return
-    if group:
+    if group and not any(
+        str(as_dict(item.get("runtime")).get("predecessor_lane_id") or "").strip() == lane_id
+        for item in group
+    ):
         raise SystemExit("missing predecessor_lane_id for successor slice attempt")
     if runtime.get("cumulative_attempt_number") in (None, ""):
         runtime["cumulative_attempt_number"] = 1
@@ -4017,7 +4016,7 @@ def main() -> int:
     parser.add_argument("--session-label", default="", help="Human-readable helper session label, when known.")
     parser.add_argument("--task-name", default="", help="Stable OpenClaw taskName/alias for the helper lane, when known.")
     parser.add_argument("--run-id", default="", help="Stable model/runtime run id, when known.")
-    parser.add_argument("--model-path", default="", help="Model path for the lane, for example openai/gpt-5.5.")
+    parser.add_argument("--model-path", default="", help="Model path for the lane, for example ollama-cloud/glm-5.3:cloud.")
     parser.add_argument("--model-provider", default="", help="Model provider, inferred from --model-path when omitted.")
     parser.add_argument("--thinking", default="", help="Model reasoning/posture level, when exposed.")
     parser.add_argument("--expected-model-path", default="", help="Expected model path; defaults from --model-path for native rollout import.")
@@ -4215,14 +4214,42 @@ def main() -> int:
                     ],
                 }
                 lane["runtime"] = runtime
-                upsert_lane(register, lane)
+                # Lost-update guard (LANE-RACE-20260913): the outcome-surface
+                # refresh above can take up to ~90s, during which concurrent
+                # admissions may have written new lanes to the register on
+                # disk.  Re-writing our stale in-memory copy here would
+                # clobber them, so reload the fresh register and merge ONLY
+                # our own lane's outcome_refresh runtime onto it.  No lock
+                # scope change: the admission lock (when held) is still
+                # released exactly once by the finally block below; usage
+                # receipts, validators, shadow-pilot fail-open, and all
+                # authority guards are untouched.
+                fresh_register = load_register(register_path)
+                own_lane_id = lane.get("lane_id")
+                merged = False
+                for existing in as_list(fresh_register.get("lanes")):
+                    if isinstance(existing, dict) and existing.get("lane_id") == own_lane_id:
+                        existing_runtime = as_dict(existing.get("runtime"))
+                        existing_runtime["outcome_refresh"] = runtime["outcome_refresh"]
+                        existing["runtime"] = existing_runtime
+                        merged = True
+                        break
+                if not merged:
+                    # Defensive only: our lane was durably written before the
+                    # refresh, so it must still be present.  Re-upsert rather
+                    # than drop the outcome_refresh signal; never touch any
+                    # other lane.
+                    upsert_lane(fresh_register, lane)
                 refresh_summary(
-                    register,
+                    fresh_register,
                     receipt_store,
                     isolated_agent_state_root=Path(args.isolated_agent_state_root),
                     codex_sessions_root=Path(args.codex_sessions_root),
                 )
-                atomic_write_json(register_path, register)
+                atomic_write_json(register_path, fresh_register)
+                # Point the printed result at the durable merged state so the
+                # summary/validation shown to the caller match what is on disk.
+                register = fresh_register
         print_result(action_name, register, lane, post_write_refresh, lease_admission)
         if args.active_lease_safety and lease_admission and lease_admission.get("status") != "ok":
             return 1

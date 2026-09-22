@@ -72,6 +72,8 @@ CREDITABLE_ISOLATED_JOIN_STATUSES = {
     "joined_by_run_id",
     "joined_by_attempt_correlation",
 }
+LANE_RUNTIME_EVENT_PRODUCER = "concurrent_lane_runtime_metadata"
+LANE_RUNTIME_EVENT_RUN_KIND = "implementation_lane"
 EFFICIENCY_MIN_COMPARABLE_MAIN_ACCEPTED_JOBS = 10
 MAIN_ACCEPTED_OUTCOME_STATES = {
     "accepted",
@@ -87,7 +89,7 @@ UNSUPPORTED_MODEL_ROUTES = {
         "status": "unsupported_legacy",
         "active_route_countable": False,
         "reason": "Fable is no longer a supported model route; retain historical rows for audit only.",
-        "replacement_guidance": "Use openai/gpt-5.5 for main/high-stakes synthesis or an approved bounded helper route.",
+        "replacement_guidance": "Use openai/gpt-5.6-sol for main/high-stakes synthesis or an approved bounded helper route.",
     },
 }
 
@@ -193,6 +195,9 @@ def _input_fingerprint(
         }
 
     inputs: dict[str, Any] = {
+        # The builder itself is an input: without this, a code change that alters
+        # payload shape is masked by the fast path until a data input happens to change.
+        "builder_source": _file_signature(Path(__file__).resolve()),
         "ledger_jsonl": _file_signature(ledger_path),
         "model_run_ledger": _file_signature(MODEL_RUN_LEDGER),
         "lane_register": _file_signature(LANE_REGISTER),
@@ -383,6 +388,72 @@ def usage_window_summary(
         "excluded_untrusted_usage_timestamp_event_count": untrusted_timestamp_count,
         "trusted_usage_time_sources": ["entry.ts_*", "provider_timestamp", "lane_completed_at"],
         "ingestion_timestamp_used_as_usage_time": False,
+    }
+
+
+def first_ingestion_times(persisted_rows: list[dict[str, Any]]) -> dict[str, str]:
+    """Earliest persisted ``recorded_at_utc`` per event id.
+
+    The in-memory view re-derives candidate events every build and
+    ``latest_by_event_id`` keeps the newest ``recorded_at_utc``, so an event's
+    live field is re-derivation time, not when the ledger first saw it. Only the
+    append-only file preserves true first ingestion.
+    """
+    first: dict[str, str] = {}
+    for row in persisted_rows:
+        event_id = str(row.get("event_id") or "")
+        recorded = row.get("recorded_at_utc")
+        if not event_id or not isinstance(recorded, str) or parse_utc(recorded) is None:
+            continue
+        seen = first.get(event_id)
+        if seen is None or recorded < seen:
+            first[event_id] = recorded
+    return first
+
+
+def ingestion_window_summary(
+    events: list[dict[str, Any]],
+    now: datetime,
+    hours: float,
+    first_ingested_at: dict[str, str],
+) -> dict[str, Any]:
+    """Summarize events by first ledger-ingestion time as an explicitly weaker tier.
+
+    This is a visibility floor, not a usage measurement. Ingestion time is when
+    the ledger first observed a row, so it cannot support provider pace, quota,
+    or billing claims. It exists so that recent spend is not reported as zero
+    while provider timestamp coverage stays low.
+    """
+    end = now.astimezone(timezone.utc)
+    start = end - timedelta(hours=hours)
+    selected: list[dict[str, Any]] = []
+    unpersisted = 0
+    for event in events:
+        event_id = str(event.get("event_id") or "")
+        recorded = first_ingested_at.get(event_id)
+        if recorded is None:
+            unpersisted += 1
+            continue
+        observed = parse_utc(recorded)
+        if observed is not None and start <= observed <= end:
+            selected.append(event)
+    return {
+        "status": "ingestion_time_observed" if selected else "no_rows_in_window",
+        "time_basis": "first_persisted_ledger_recorded_at_utc",
+        "window_hours": hours,
+        "window_start_utc": start.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "window_end_utc": end.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "event_count": len(selected),
+        "total_tokens": sum(int(event.get("total_tokens") or 0) for event in selected),
+        "excluded_not_yet_persisted_event_count": unpersisted,
+        "ingestion_timestamp_used_as_usage_time": True,
+        "provider_pace_claim_allowed": False,
+        "quota_or_billing_claim_allowed": False,
+        "meaning": (
+            "Rows the ledger first recorded inside this window. Ingestion time may "
+            "lag or batch actual provider usage, so treat this as a lower bound on "
+            "recent observation and never as provider pace, quota, or billed cost."
+        ),
     }
 
 
@@ -1487,6 +1558,79 @@ def lane_index(register: dict[str, Any]) -> tuple[dict[str, dict[str, Any]], set
     return ({run_id: rows[0] for run_id, rows in candidates.items() if len(rows) == 1}, ambiguous)
 
 
+def is_lane_runtime_event(event: Any) -> bool:
+    """Recognize exact lane-runtime provenance without producer-only matching."""
+    return (
+        isinstance(event, dict)
+        and event.get("schema") == EVENT_SCHEMA
+        and event.get("producer") == LANE_RUNTIME_EVENT_PRODUCER
+        and event.get("run_kind") == LANE_RUNTIME_EVENT_RUN_KIND
+    )
+
+
+def creditable_candidate_run_ids(
+    model_candidate_events: list[dict[str, Any]],
+    isolated_candidate_events: list[dict[str, Any]],
+) -> set[str]:
+    """Return only independently creditable non-lane candidate identities.
+
+    Uncreditable observations remain audit evidence, but cannot suppress a
+    receipt-bound lane-runtime event.  The caller deliberately passes only
+    model and isolated-session candidates, never lane candidates themselves.
+    """
+    return {
+        str(event.get("source_run_id"))
+        for event in model_candidate_events + isolated_candidate_events
+        if event.get("source_run_id") and event.get("usage_creditable") is True
+    }
+
+
+def provider_observation_run_ids(
+    model_candidate_events: list[dict[str, Any]],
+    isolated_candidate_events: list[dict[str, Any]],
+) -> set[str]:
+    """Return all non-lane candidate identities retained for audit."""
+    return {
+        str(event.get("source_run_id"))
+        for event in model_candidate_events + isolated_candidate_events
+        if event.get("source_run_id")
+    }
+
+
+def reconcile_derived_creditable_events(
+    all_events: list[dict[str, Any]],
+    current_candidate_events: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Hide stale creditable counterparts when current evidence exists.
+
+    JSONL remains append-only.  This only reconciles the in-memory view when
+    a current build has independently creditable evidence for a run.  The
+    current event IDs supersede stale creditable counterparts from either
+    source family.  Multiple current creditable IDs remain visible: resolving
+    their relationship requires a separate binding rule and must not be
+    changed by this future-only lane reconciliation repair.
+    """
+    current_ids_by_run: dict[str, set[str]] = defaultdict(set)
+    for event in current_candidate_events:
+        if event.get("usage_creditable") is not True:
+            continue
+        run_id = str(event.get("source_run_id") or "")
+        event_id = str(event.get("event_id") or "")
+        if run_id and event_id:
+            current_ids_by_run[run_id].add(event_id)
+    reconciled: list[dict[str, Any]] = []
+    for row in all_events:
+        if row.get("usage_creditable") is not True:
+            reconciled.append(row)
+            continue
+        run_id = str(row.get("source_run_id") or "")
+        current_ids = current_ids_by_run.get(run_id)
+        if current_ids and str(row.get("event_id") or "") not in current_ids:
+            continue
+        reconciled.append(row)
+    return reconciled
+
+
 def coding_history_index(rows: list[dict[str, Any]]) -> tuple[dict[str, dict[str, Any]], set[str]]:
     candidates: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in rows:
@@ -1632,8 +1776,10 @@ def token_event(
 def lane_token_event(
     lane: dict[str, Any],
     pricing: dict[str, Any],
-    provider_run_ids: set[str],
+    provider_observation_run_ids: set[str],
     usage_receipts: list[dict[str, Any]] | None = None,
+    creditable_provider_run_ids: set[str] | None = None,
+    ambiguous_lane_run_ids: set[str] | None = None,
 ) -> dict[str, Any] | None:
     if lane.get("status") != "complete":
         return None
@@ -1660,7 +1806,7 @@ def lane_token_event(
     access_mode, access_mode_source = normalize_access_mode(runtime.get("access_mode"), runtime.get("access_mode_source"))
     speed_mode = normalize_speed_mode(runtime.get("speed_mode"))
     run_id = str(runtime.get("run_id") or lane.get("run_id") or stable_id("lane", lane.get("lane_id"), lane.get("started_at_utc"), lane.get("completed_at_utc")))
-    if run_id in provider_run_ids:
+    if run_id in (ambiguous_lane_run_ids or set()):
         return None
     model_path = runtime.get("model_path") or lane.get("model_path")
     support = model_support(model_path)
@@ -1688,6 +1834,13 @@ def lane_token_event(
         and effective_semantics_status == "valid"
         and receipt_valid
     )
+    if run_id in (creditable_provider_run_ids or set()):
+        return None
+    # Preserve the existing single-observation behavior when neither source is
+    # independently creditable.  A valid, receipt-bound lane is the only case
+    # that may coexist with an uncreditable provider observation for this run.
+    if run_id in provider_observation_run_ids and not usage_creditable:
+        return None
     attempts = lane_attempt_metadata(lane)
     event = {
         "schema": EVENT_SCHEMA,
@@ -1697,8 +1850,8 @@ def lane_token_event(
         "usage_time_source": usage_time_source,
         "source_artifact": rel(LANE_REGISTER),
         "source_run_id": run_id,
-        "producer": "concurrent_lane_runtime_metadata",
-        "run_kind": "implementation_lane",
+        "producer": LANE_RUNTIME_EVENT_PRODUCER,
+        "run_kind": LANE_RUNTIME_EVENT_RUN_KIND,
         "workflow_id": lane.get("workflow_id"),
         "cron_job_name": None,
         "lane_id": lane.get("lane_id"),
@@ -2816,14 +2969,24 @@ def build_payload(
         )
         if event is not None
     ]
-    provider_run_ids = {
-        str(event.get("source_run_id"))
-        for event in model_candidate_events + isolated_candidate_events
-        if event.get("source_run_id")
-    }
+    creditable_provider_run_ids = creditable_candidate_run_ids(
+        model_candidate_events,
+        isolated_candidate_events,
+    )
+    observed_provider_run_ids = provider_observation_run_ids(
+        model_candidate_events,
+        isolated_candidate_events,
+    )
     lane_candidate_events = [
         event for event in (
-            lane_token_event(lane, pricing, provider_run_ids, usage_receipts)
+            lane_token_event(
+                lane,
+                pricing,
+                observed_provider_run_ids,
+                usage_receipts,
+                creditable_provider_run_ids=creditable_provider_run_ids,
+                ambiguous_lane_run_ids=ambiguous_lane_run_ids,
+            )
             for lane in as_list(register.get("lanes"))
             if isinstance(lane, dict)
         )
@@ -2833,10 +2996,12 @@ def build_payload(
     new_events = [event for event in candidate_events if event.get("event_id") not in existing_ids]
     if append:
         append_jsonl(ledger_path, new_events)
+    first_ingested_at = first_ingestion_times(existing + (new_events if append else []))
     # Candidate events also form the current in-memory view so newly clarified
     # token semantics/timestamps can enrich old event IDs without rewriting the
     # append-only history. Only truly new IDs are appended above.
     all_events = latest_by_event_id([row for row in existing + candidate_events if row.get("schema") == EVENT_SCHEMA])
+    all_events = reconcile_derived_creditable_events(all_events, candidate_events)
     all_events = [
         priced_view_event(row, pricing)
         for row in all_events
@@ -2915,6 +3080,17 @@ def build_payload(
         ) if token_events else 0.0,
         "provider_quota_inferred_from_tokens": False,
         "ingestion_timestamp_used_as_usage_time": False,
+        # Separate weaker tier: keeps the trusted windows strict while preventing
+        # recent activity from reading as zero when provider timestamps are sparse.
+        "ingestion_observed_fallback": {
+            "rolling_5h": ingestion_window_summary(token_events, pace_now, 5.0, first_ingested_at),
+            "rolling_7d": ingestion_window_summary(token_events, pace_now, 168.0, first_ingested_at),
+            "reason_trusted_windows_may_read_zero": (
+                "Trusted pace windows accept only provider or lane usage timestamps; "
+                "rows carrying just ledger-ingestion time are excluded by design."
+            ),
+            "authority": "visibility_only_not_provider_pace_quota_or_billing",
+        },
     }
     summary = {
         "ledger_row_count": len(read_jsonl(ledger_path)) if append else len(all_events),

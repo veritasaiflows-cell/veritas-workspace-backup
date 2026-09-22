@@ -141,9 +141,9 @@ For WF74/WF88 learning-loop work, report whether the trace links the item to pro
 
 This contract is review/proof/routing only. It must not apply skills, mutate code without lane lease and validators, mutate cron schedules, mutate runtime/config/auth/channel state, mutate finance/canon/portfolio/cash/sizing/risk state, submit paper/live/account/brokerage actions, send external/customer output, capture raw prompt/response/tool payloads, or infer owner approval.
 
-## Prompt Book Candidate Routing
+For migrated/user-authored skills, agent-side apply may refuse `does not own this skill path`; the operator CLI works: `openclaw skills workshop apply <id>`. Judge success by the "Applied" line, not the exit code. Stale proposals are terminal — recover via `propose-update` with a merged `PROPOSAL.md`. After apply, verify containment and clean check.
 
-When WF74 sees the same internal challenge, prompt friction, helper-lane packet defect, self-prompt weakness, stop-line miss, or eval failure recur three or more times, classify it as `prompt_book_candidate` before creating a new patch lane.
+## Prompt Book Candidate Routing, prompt friction, helper-lane packet defect, self-prompt weakness, stop-line miss, or eval failure recur three or more times, classify it as `prompt_book_candidate` before creating a new patch lane.
 
 Route order:
 
@@ -158,3 +158,12 @@ Route order:
 A zero-gap prompt-book packet means fixture coverage is complete for current registry entries. It does not imply AGI/ASI capability, model training, external action, finance authority, or automatic doctrine promotion.
 
 Stop lines: no raw prompt/response/tool payload capture, no skill/doctrine auto-apply, no finance/canon/portfolio/cash/sizing/risk mutation, no paper/live/account action, no cron/runtime/config/channel mutation, no external delivery, and no owner approval inference.
+
+## Implementation Token Attribution Triage
+
+Before running any lane `--complete` stamping to close attribution gaps, classify every gap with the exact bridge logic first, then act only on the actionable class:
+
+1. Scan completed model lanes with the bridge's own functions (`token_stamp_assessment`, `inferred_missing_usage_classification`, `gap_model_capacity`, `completion_cohort`, receipt verification) and sort each gap into `stamp_missing`, `receipt_credit_blocked`, or `historical_terminal`.
+2. Leave `historical_terminal` gaps (pre-cutover, counters never existed) as audit context; never backfill or reconstruct their counters — verify the bridge still reports them classified, then stop.
+3. For `receipt_credit_blocked` gaps (valid stamp plus matching source receipt and dispatch binding, but the live session index aged out), refuse closed-lane mutation and route a receipt-anchored credit-grace or retention-extension owner packet instead of re-stamping.
+4. Stamp only `stamp_missing` lanes that carry provider-exposed counters, then rerun `token_usage_ledger.py` and `implementation_token_attribution_bridge.py` and confirm the actionable count fell with no new gaps added.

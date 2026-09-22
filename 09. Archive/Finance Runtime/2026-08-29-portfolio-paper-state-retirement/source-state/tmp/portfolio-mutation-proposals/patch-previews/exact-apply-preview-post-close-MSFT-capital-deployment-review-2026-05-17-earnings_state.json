@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-17T05:50:51Z",
+  "status": "ready_for_scoped_main_session_review",
+  "window": "post-close",
+  "input_bundle": "tmp/portfolio-mutation-proposals/semantic-patch-material/post-close-MSFT-capital-deployment-review-2026-05-17-earnings_state.json",
+  "proposal_id": "post-close:MSFT:capital-deployment-review:2026-05-17",
+  "apply_allowed": false,
+  "owner_approval_granted": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "authority": {
+    "phase": "WF56 Phase 3 dry-run scoped patch helper",
+    "dry_run_patch_preview_allowed": true,
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "main_session_final_action_required": true,
+    "write_owner_files_allowed": false,
+    "apply_allowed_by_this_helper": false,
+    "portfolio_mutation_allowed_by_this_helper": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "validation": {
+    "schema_validator_ok": true,
+    "schema_errors": [],
+    "schema_blockers": [],
+    "patch_scope_findings": [],
+    "patch_scope_critical": 0,
+    "build_errors": []
+  },
+  "summary": {
+    "requested_changes": 1,
+    "previewed_file_changes": 1,
+    "writes_performed": false,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "ready_for_main_session_portfolio_mutation_review": true
+  },
+  "file_previews": [
+    {
+      "path": "03. Portfolio/Execution Board.md",
+      "change_type": "exact_text_replace",
+      "old_text_sha256_hint": null,
+      "old_text_match_count": 1,
+      "writes_performed": false,
+      "diff": "--- a/03. Portfolio/Execution Board.md\n+++ b/03. Portfolio/Execution Board.md\n@@ -229,6 +229,7 @@\n - Invalidation logic: loses the recovery structure and fails back through the 50-day / band zone.\n - Stance: **Deployable now / owner-approved staged manual candidate**. Randall approved promotion on 2026-05-12 after MSFT / GOOG / NVDA growth review. The current artifact close is inside the working band, but the stock remains below the 200-day, so this is a staged accumulation candidate rather than a full-confidence trend-reclaim setup.\n - Entry-distance context: **inside the preferred band near the upper edge**; latest artifact close **409.43** sits **.13 / 0.8% below** the **412.56** band ceiling. Prefer a starter tranche while below the 200-day, not a full allocation.\n+- WF64 earnings-state semantic sync: next earnings `2026-07-29`; days_to_earnings=unknown; policy `block_pre_earnings`; source `tmp/earnings-calendar.json` + `tmp/portfolio-config.json`; proposal `post-close:MSFT:capital-deployment-review:2026-05-17`; review-only workspace maintenance, no external-action authority.\n - **Sequencing constraint:** direct Technology is already at the 25% cap in the draft model. MSFT deployment requires an explicit owner sequencing decision: reduce another Tech weight first, keep any MSFT tranche within verified headroom, or approve a written Tech-cap exception. No automatic sizing, sleeve, cash, or execution-entitlement change is authorized here.\n - **Consolidation resolution:** owner-approved staged setup uses 389.64-412.56 / 378.18; below-200-day repair caveat limits sizing/tranche confidence.\n \n",
+      "rationale": "Synchronize earnings_state semantic context from current portfolio artifacts without widening external-action authority."
+    }
+  ],
+  "stop_lines": [
+    "This artifact is an exact patch preview only; it does not mutate owner notes or portfolio config.",
+    "Main-session portfolio mutation still requires explicit scoped Randall approval for the proposal id and exact diff.",
+    "A clean preview does not grant owner approval, sizing, sleeve, cash, risk-rule, execution-entitlement, trade, or account authority.",
+    "Phase 4 apply mode must be a separate approval-gated path and must run the post-apply validation chain."
+  ]
+}

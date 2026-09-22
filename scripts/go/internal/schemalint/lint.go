@@ -62,6 +62,9 @@ type DBContract struct {
 	ExactRows     map[string]int
 	SupportedRows map[string][]int
 	ZeroCounts    map[string]string
+	// Retired marks a path deliberately archived by the 2026-08-29 alerts-OS
+	// pivot. For these, absence is the expected state; recreation is the defect.
+	Retired bool
 }
 
 var defaultContracts = []DBContract{
@@ -83,6 +86,7 @@ var defaultContracts = []DBContract{
 		Tables:  []string{"universe", "latest_price_technical", "entry_stop_reference", "fundamental_snapshot", "official_evidence_index", "ticker_family_status", "validation_results"},
 		Views:   []string{"current_ticker_cards", "latest_valid_entry_stop_refs", "latest_validator_status"},
 		MinRows: map[string]int{"universe": 42, "official_evidence_index": 1},
+		Retired: true,
 	},
 	{
 		Path:   "tmp/veritas-artifact-index.sqlite",
@@ -99,6 +103,7 @@ var defaultContracts = []DBContract{
 		ZeroCounts: map[string]string{
 			"canon_cache_validator_not_ok_zero": "SELECT COUNT(*) FROM canon_cache_fields WHERE validator_status != 'ok' OR reconciliation_status != 'match';",
 		},
+		Retired: true,
 	},
 	{
 		Path:    "tmp/json-sql-promotion-index.sqlite",
@@ -151,7 +156,20 @@ func Run(opts Options) Report {
 		rel := filepath.ToSlash(contract.Path)
 		dbPath := filepath.Join(root, filepath.FromSlash(rel))
 		if _, err := os.Stat(dbPath); err != nil {
+			if contract.Retired {
+				// Retired by the 2026-08-29 alerts-OS pivot and archived with rollback
+				// proof. Absence is the correct state, so it is not a defect.
+				add(rel, "retired_db_absent", "info", true, "retired path; absence is the expected state")
+				continue
+			}
 			add(rel, "db_exists", "critical", false, err.Error())
+			continue
+		}
+		if contract.Retired {
+			// Recreation is the real drift: the alerts-OS pivot validator rejects
+			// these paths on active tmp surfaces, and they must be archived out.
+			checked = append(checked, rel)
+			add(rel, "retired_db_recreated", "critical", false, "retired current-state path present on an active surface; archive it and remove it from tmp")
 			continue
 		}
 		checked = append(checked, rel)

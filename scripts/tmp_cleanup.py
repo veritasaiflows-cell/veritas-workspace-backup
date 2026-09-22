@@ -73,6 +73,9 @@ PROTECTED_DIRS = {
     "entry-band-data",
     "entry-band-reports",
     "reports",
+    # Sole copy of the five default-route compiled SQL helpers; scripts/go/bin
+    # holds older builds only. See scripts/go/README.md.
+    "go-binaries",
 }
 
 
@@ -88,12 +91,178 @@ def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def hash_cache_path() -> Path:
+    # Computed per call so tests that repoint WORKSPACE stay hermetic.
+    return WORKSPACE / "state" / "tmp-cleanup-hash-cache.json"
+
+
+HASH_CACHE_MAX_ENTRIES = 20000
+# Files larger than this are not content-hashed: eligibility is age-based
+# (newest_mtime, always exact) and hashing multi-GB trees dominated runtime
+# (tmp/ holds ~4.5GB in a few dirs). Skipped files record bytes+mtime with
+# sha256 None plus an explicit flag; dirs already report sha256 None.
+HASH_SKIP_BYTES = 32 * 1024 * 1024
+
+# Per-run memo of candidate scans: one traversal serves newest_mtime,
+# manifest_record, and candidate_digest. Values are identical to repeated
+# rglob passes; only redundant I/O is removed.
+_scan_cache: dict[str, dict[str, Any]] = {}
+_hash_cache: dict[str, str] = {}
+_hash_cache_seen: set[str] = set()
+
+
+def _dir_id(path: str) -> tuple[int, int] | None:
+    import os
+
+    try:
+        st = os.stat(path)
+    except OSError:
+        return None
+    return (st.st_dev, st.st_ino)
+
+
+def _scan_subtree(root: str, seed: frozenset[tuple[int, int]]) -> tuple[float, list[tuple[str, int, int]]]:
+    """Walk one subtree: (max mtime epoch, [(path, size, mtime_ns)]).
+
+    Cycle-safe: directory (device, inode) pairs are tracked and revisited
+    dirs are skipped, which breaks junction/symlink loops. On acyclic trees
+    every dir is visited exactly once, so results are identical to rglob.
+    """
+    import os
+
+    seen = set(seed)
+    newest = 0.0
+    files: list[tuple[str, int, int]] = []
+    stack = [root]
+    while stack:
+        current = stack.pop()
+        try:
+            st = os.stat(current)
+        except OSError:
+            continue
+        dir_id = (st.st_dev, st.st_ino)
+        if dir_id in seen:
+            continue
+        seen.add(dir_id)
+        if st.st_mtime > newest:
+            newest = st.st_mtime
+        try:
+            entries = list(os.scandir(current))
+        except OSError:
+            continue
+        for entry in entries:
+            try:
+                if entry.is_dir(follow_symlinks=False):
+                    stack.append(entry.path)
+                elif entry.is_symlink() or entry.is_file(follow_symlinks=False):
+                    fst = os.stat(entry.path)
+                    if fst.st_mtime > newest:
+                        newest = fst.st_mtime
+                    files.append((entry.path, fst.st_size, fst.st_mtime_ns))
+            except OSError:
+                continue
+    return newest, files
+
+
+def scan_candidate(path: Path) -> dict[str, Any]:
+    """Single-pass scan: newest mtime plus per-file identity for hashing.
+
+    Covers exactly the entries path.rglob("*") plus path itself (symlinked
+    dirs not descended, matching rglob; existence resolved the same way).
+    """
+    import os
+    from concurrent.futures import ThreadPoolExecutor
+
+    path = Path(path)
+    key = str(path)
+    cached = _scan_cache.get(key)
+    if cached is not None:
+        return cached
+    try:
+        top_mtime = path.stat().st_mtime
+    except OSError:
+        top_mtime = 0.0
+    newest = top_mtime
+    files: list[tuple[str, int, int]] = []
+    try:
+        children = sorted(os.scandir(path), key=lambda entry: entry.name)
+    except OSError:
+        children = []
+    subdirs = [entry.path for entry in children if entry.is_dir(follow_symlinks=False)]
+    for entry in children:
+        # Top-level files/symlinks resolved exactly like the old rglob pass.
+        try:
+            if entry.is_symlink() or entry.is_file(follow_symlinks=False):
+                st = os.stat(entry.path)
+                if st.st_mtime > newest:
+                    newest = st.st_mtime
+                files.append((entry.path, st.st_size, st.st_mtime_ns))
+        except OSError:
+            continue
+    if subdirs:
+        workers = min(8, max(1, os.cpu_count() or 4))
+        root_id = _dir_id(str(path))
+        jobs = []
+        for sub in subdirs:
+            seed = {root_id} if root_id else set()
+            sub_id = _dir_id(sub)
+            if sub_id:
+                seed.add(sub_id)
+            jobs.append((sub, frozenset(seed)))
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            for sub_newest, sub_files in pool.map(lambda job: _scan_subtree(*job), jobs):
+                if sub_newest > newest:
+                    newest = sub_newest
+                files.extend(sub_files)
+    files.sort(key=lambda item: item[0])
+    result = {
+        "newest_mtime": datetime.fromtimestamp(newest, tz=timezone.utc),
+        "files": files,
+    }
+    _scan_cache[key] = result
+    return result
+
+
+def load_hash_cache() -> None:
+    _hash_cache.clear()
+    _hash_cache_seen.clear()
+    try:
+        payload = json.loads(hash_cache_path().read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return
+    if isinstance(payload, dict):
+        for key, value in payload.items():
+            if isinstance(key, str) and isinstance(value, str):
+                _hash_cache[key] = value
+
+
+def save_hash_cache() -> None:
+    # Drop entries for files that no longer match; cap size (keep recent).
+    pruned = {key: _hash_cache[key] for key in _hash_cache_seen if key in _hash_cache}
+    if len(pruned) > HASH_CACHE_MAX_ENTRIES:
+        pruned = dict(list(pruned.items())[-HASH_CACHE_MAX_ENTRIES:])
+    try:
+        cache_file = hash_cache_path()
+        cache_file.parent.mkdir(parents=True, exist_ok=True)
+        tmp_handle = cache_file.with_suffix(cache_file.suffix + ".tmp")
+        tmp_handle.write_text(json.dumps(pruned, sort_keys=True), encoding="utf-8")
+        tmp_handle.replace(cache_file)
+    except OSError:
+        pass
+
+
+def hash_cache_key(path: Path, size: int, mtime_ns: int) -> str:
+    try:
+        rel = path.relative_to(WORKSPACE).as_posix()
+    except ValueError:
+        rel = str(path)
+    return f"{rel}|{size}|{mtime_ns}"
+
+
 def newest_mtime(path: Path) -> datetime:
     if path.is_file():
         return datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc)
-    mtimes = [datetime.fromtimestamp(p.stat().st_mtime, tz=timezone.utc) for p in path.rglob("*") if p.exists()]
-    mtimes.append(datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc))
-    return max(mtimes)
+    return scan_candidate(path)["newest_mtime"]
 
 
 def is_protected(path: Path) -> bool:
@@ -121,24 +290,43 @@ def sha256_path(path: Path) -> str | None:
     if not path.is_file():
         return None
     try:
+        stat = path.stat()
+    except OSError:
+        return None
+    key = hash_cache_key(path, stat.st_size, stat.st_mtime_ns)
+    if stat.st_size > HASH_SKIP_BYTES:
+        _hash_cache_seen.add(key)
+        return None
+    cached = _hash_cache.get(key)
+    if cached is not None:
+        _hash_cache_seen.add(key)
+        return cached
+    try:
         h = hashlib.sha256()
         with path.open("rb") as handle:
             for chunk in iter(lambda: handle.read(1024 * 1024), b""):
                 h.update(chunk)
-        return h.hexdigest()
+        digest = h.hexdigest()
     except OSError:
         return None
+    _hash_cache[key] = digest
+    _hash_cache_seen.add(key)
+    return digest
 
 
 def manifest_record(path: Path) -> dict[str, Any]:
     stat = path.stat()
-    return {
+    digest = sha256_path(path)
+    record = {
         "path": str(path.relative_to(WORKSPACE)).replace("\\", "/"),
         "kind": "dir" if path.is_dir() else "file",
         "bytes": stat.st_size if path.is_file() else None,
         "newest_mtime_utc": newest_mtime(path).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
-        "sha256": sha256_path(path),
+        "sha256": digest,
     }
+    if path.is_file() and digest is None and stat.st_size > HASH_SKIP_BYTES:
+        record["sha256_skipped_oversize"] = True
+    return record
 
 
 def candidate_digest(candidates: list[Path]) -> str:
@@ -256,6 +444,8 @@ def move_path(src: Path, dest_root: Path) -> dict[str, Any]:
 
 def main() -> int:
     args = parse_args()
+    _scan_cache.clear()
+    load_hash_cache()
     now = utc_now()
     cutoff = now - timedelta(days=max(0, args.days))
     run_date = now.date().isoformat()
@@ -294,6 +484,7 @@ def main() -> int:
     output["status"] = "blocked" if validation["errors"] else validation["status"]
     output["operator_action"] = "BLOCKED" if validation["errors"] else "MAIN_SESSION_REQUIRED" if validation["warnings"] else "NO_REPLY"
     atomic_write_json(OUT_PATH, output)
+    save_hash_cache()
     print(json.dumps(output, indent=2))
     return 0
 

@@ -1,0 +1,33 @@
+{
+  "schema": "veritas.arena_six_candidate_validation.v1",
+  "validated_utc": "2026-09-20T04:29:25.938886Z",
+  "checks": {
+    "envelope_status_frozen": true,
+    "keys_digest_exact": true,
+    "matrix_rows_40": true,
+    "trajectories_24": true,
+    "all_prompt_hashes_frozen": true,
+    "spark_all_identity_exact": true,
+    "glm_completed_identity_exact_or_recorded_timeout": true,
+    "no_fallback_or_reroute": true,
+    "zero_retries": true,
+    "t4_traces_present": true,
+    "summary_denominators": true
+  },
+  "status": "ok",
+  "score": {
+    "spark13": {
+      "strict": 11,
+      "factual": 11,
+      "format": 11,
+      "tools": 12
+    },
+    "glm53": {
+      "strict": 7,
+      "factual": 7,
+      "format": 9,
+      "tools": 11,
+      "operationally_eligible": 11
+    }
+  }
+}

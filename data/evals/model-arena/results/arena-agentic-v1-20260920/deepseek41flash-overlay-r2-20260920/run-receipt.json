@@ -1,0 +1,93 @@
+{
+  "artifacts": {
+    "closed-gate-probe.txt": {
+      "bytes": 415,
+      "sha256": "cc926ece74a7f8b57f51d40573df3923ae7952c66cb392e842a0c0a5da3b1224"
+    },
+    "dispatch-plan.json": {
+      "bytes": 4394,
+      "sha256": "f5dbe78eddac1bd9d5c4035657d1b4c9c98e51d59a041f5461b386ed6f2c74c5"
+    },
+    "graded-results.json": {
+      "bytes": 6178,
+      "sha256": "56b253c965856315ad7857f50e9ad3d3a4adbeb72b24e8885383d3856faf5b57"
+    },
+    "main-verification-summary.json": {
+      "bytes": 1857,
+      "sha256": "7e4ce234f9a80bd3b76cc6c23c02353cc1aa1765a7d226ff149adf2acee35850"
+    },
+    "rescore.json": {
+      "bytes": 10208,
+      "sha256": "fb3c12d31be2287c4185c2265c9b718c306f85822cf4b6b09dad1d921f9e5166"
+    },
+    "responses.json": {
+      "bytes": 2909,
+      "sha256": "1cb0fdc08444e8bf8dfb42fd3327887019f2e79b548b14ceeb056967218e8305"
+    },
+    "transport-receipts.json": {
+      "bytes": 9615,
+      "sha256": "c2dc8b4e1b2436c31b20941b4d29090dc9cd01474b9edcf3d9c06c20558af702"
+    }
+  },
+  "authorization": {
+    "authorized_at": "2026-09-20T15:19:00-07:00",
+    "authorized_by": "Randall (gateway-owner)",
+    "cases": 12,
+    "model_scope": [
+      "ollama-cloud/deepseek-v4.1-flash:cloud"
+    ],
+    "reps": 1,
+    "source": "explicit WebChat owner request"
+  },
+  "dispatch_gate_after_run": {
+    "authorized_at": null,
+    "authorized_by": null,
+    "closed_gate_probe_created_output": false,
+    "closed_gate_probe_exit": 1,
+    "dispatch_ready": false,
+    "scope_models": []
+  },
+  "envelope": "arena-agentic-v1-20260920",
+  "execution": {
+    "attempted": 12,
+    "completed": 11,
+    "planned": 12,
+    "retries": 0,
+    "timeout": 1,
+    "timeout_case": "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4",
+    "timeout_seconds": 600
+  },
+  "grading": {
+    "contaminated": 0,
+    "dimensional_score": 0.9167,
+    "family_scores_clean": {
+      "T1": 1.0,
+      "T2": 1.0,
+      "T3": 1.0,
+      "T4": 1.0,
+      "T5": 1.0,
+      "T6": 0.5
+    },
+    "strict_clean": "11/12"
+  },
+  "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "recorded_at_utc": "2026-09-20T22:40:21.189308+00:00",
+  "schema": "veritas.arena_run_receipt.v1",
+  "transport": {
+    "agent_id": "oxalpha-functional-lab",
+    "candidate_mount": [
+      "candidate-visible-bank.json",
+      "fixtures/"
+    ],
+    "effective_model_receipts": "12/12 exact",
+    "hidden_control_files_present": false,
+    "reroutes": 0,
+    "sandbox": "docker session sandbox"
+  },
+  "verification": {
+    "harness_tests": "82/82",
+    "t4_fixture_reads_observed": true,
+    "t4_forbidden_archive_mentions": false
+  }
+}

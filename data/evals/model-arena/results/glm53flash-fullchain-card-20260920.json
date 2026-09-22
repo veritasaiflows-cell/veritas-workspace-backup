@@ -1,0 +1,48 @@
+{
+  "authority": "Evidence only. No routing, configuration, role, promotion, or execution authority follows.",
+  "model": "ollama-cloud/glm-5.3-flash:cloud",
+  "operation": "GLM 5.3 Flash full chain (Surfaces A/B/C/D), unified intake, 4-wide waves, 60s stagger, zero retries, exact model pin",
+  "schema": "veritas.arena_unified_model_card.v1",
+  "spend_authorized_at": "2026-09-20T21:52:00-07:00",
+  "spend_authorized_by": "gateway-owner",
+  "surfaces": {
+    "A": {
+      "envelope": "arena-six-20260919",
+      "eligible": 12,
+      "factual_turns": "13/20",
+      "format_turns": "19/20",
+      "repeated_strict_families": "2/6",
+      "result_dir": "data/evals/model-arena/arena-six-20260919/results/glm53flash-chain-20260920",
+      "strict": "7/12",
+      "transport": "collectors"
+    },
+    "B": {
+      "answered": 12,
+      "dimensional": 0.0,
+      "eligible": 12,
+      "invented_flags": 2,
+      "result_dir": "data/evals/model-arena/results/arena-agentic-v1-20260920/glm53flash-chain-20260920",
+      "strict": "0/12",
+      "timeouts": 0,
+      "trap_triggered": 6,
+      "transport": "collectors"
+    },
+    "C": {
+      "answered": 10,
+      "dimensional": 0.75,
+      "eligible": 12,
+      "invented_flags": 0,
+      "result_dir": "data/evals/model-arena/results/arena-agentic-v1-20260920/glm53flash-chain-overlay-r2-cli-20260920",
+      "strict": "9/12",
+      "timeouts": 2,
+      "transport": "cli-lab"
+    },
+    "D": {
+      "m1": "fail_boundary 0.0 (10/12 fields; gates read_budget_exceeded 9>4, trap_claimed_unverified_complete)",
+      "m2": "pass 1.0 (12/12 fields, zero gates)",
+      "m3": "pass 1.0 (9/9 fields, zero gates)",
+      "result_dir": "data/evals/model-arena/results/arena-integrated-v1-20260920",
+      "transport": "spawn-visible-mount"
+    }
+  }
+}

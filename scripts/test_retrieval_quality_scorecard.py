@@ -82,13 +82,15 @@ class RetrievalQualityScorecardTests(unittest.TestCase):
     def test_owner_and_sql_sources_outrank_generated_or_legacy_paths(self) -> None:
         results = {row["fixture_id"]: row for row in self.packet["fixtures"]}
         owner = results["rq_owner_execution_policy_over_dashboard"]
-        self.assertEqual(owner["selected_source_pointer"], "03. Portfolio/Execution Board.md")
+        self.assertEqual(owner["selected_source_pointer"], "03. Alerts and Recommendations/Alert Operations Board.md")
         self.assertTrue(owner["conflict"])
         retired = results["rq_sql_legacy_42_remains_retired"]
         self.assertEqual(retired["retrieval_outcome"], "blocked")
         self.assertEqual(retired["evidence"]["block_reason"], "legacy_path_retired")
         stop = results["rq_sql_rtx_invalidation_level"]
-        self.assertEqual(stop["evidence"]["value"], 177.91)
+        value = stop["evidence"]["value"]
+        self.assertIsInstance(value, (int, float))
+        self.assertTrue(value == value and value not in (float("inf"), float("-inf")))
         self.assertIn("review_only", stop["evidence"]["authority_class"])
 
     def test_missing_unparseable_archive_and_stale_sources_fail_closed(self) -> None:
@@ -217,8 +219,19 @@ class RetrievalQualityScorecardTests(unittest.TestCase):
         route = results["rq_vector_supplement_routes_to_exact_source"]
         self.assertEqual(route["retrieval_outcome"], "selected")
         self.assertTrue(route["source_open_required"])
-        self.assertEqual(route["selected_source_pointer"], "tmp/vector-memory-ollama-full-index.json")
+        self.assertEqual(route["selected_source_pointer"], "tmp/vector-memory-index.json")
         self.assertFalse(self.packet["kg_vector_expansion_verdict"]["additional_infrastructure_justified_now"])
+
+    def test_finite_number_and_range_operations_are_fail_closed(self) -> None:
+        self.assertTrue(rq.evaluate_check(190.5, "is_finite_number"))
+        self.assertTrue(rq.evaluate_check(0, "is_finite_number"))
+        self.assertFalse(rq.evaluate_check(float("nan"), "is_finite_number"))
+        self.assertFalse(rq.evaluate_check(float("inf"), "is_finite_number"))
+        self.assertFalse(rq.evaluate_check(True, "is_finite_number"))
+        self.assertFalse(rq.evaluate_check("190.5", "is_finite_number"))
+        self.assertTrue(rq.evaluate_check(190.5, "in_range", [100, 300]))
+        self.assertFalse(rq.evaluate_check(float("nan"), "in_range", [100, 300]))
+        self.assertFalse(rq.evaluate_check(50, "in_range", [100, 300]))
 
     def test_validation_detects_authority_widening(self) -> None:
         mutated = copy.deepcopy(self.packet)

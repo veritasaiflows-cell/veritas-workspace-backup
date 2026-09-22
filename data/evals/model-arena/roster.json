@@ -1,0 +1,55 @@
+{
+ "schema": "veritas.model_arena_roster.v1",
+ "updated_phx": "2026-09-19",
+ "note": "Add a model by appending an entry here. No code change is required. model_path must be a provider/model string the gateway can resolve; verify with a single sessions_spawn probe before setting enabled=true.",
+ "models": [
+  {
+   "id": "glm-5.3-flash",
+   "model_path": "ollama-cloud/glm-5.3-flash:cloud",
+   "label": "GLM 5.3 Flash",
+   "enabled": true,
+   "dispatch_verified_phx": "2026-09-18",
+   "notes": "Probe: 2098ms, 13303 total tokens, 91 output tokens. Terse."
+  },
+  {
+   "id": "deepseek-v4.1-flash",
+   "model_path": "ollama-cloud/deepseek-v4.1-flash:cloud",
+   "label": "DeepSeek v4.1 Flash",
+   "enabled": true,
+   "dispatch_verified_phx": "2026-09-18",
+   "notes": "Probe: 7175ms, 13912 total tokens, ~1k output tokens. Verbose, more defensive code."
+  },
+  {
+   "id": "kimi-k3",
+   "model_path": "kimi/k3",
+   "label": "Kimi K3",
+   "enabled": false,
+   "dispatch_verified_phx": null,
+   "notes": "Not yet dispatch-verified. Probe once, then enable."
+  },
+  {
+   "id": "muse-spark-1.3",
+   "model_path": "meta/muse-spark-1.3-contributor",
+   "label": "Muse Spark 1.3 Contributor",
+   "enabled": false,
+   "dispatch_verified_phx": null,
+   "notes": "Not yet dispatch-verified. Probe once, then enable."
+  },
+  {
+   "id": "minimax-m3",
+   "model_path": "ollama-cloud/minimax-m3:cloud",
+   "label": "MiniMax M3",
+   "enabled": false,
+   "dispatch_verified_phx": null,
+   "notes": "Not yet dispatch-verified."
+  },
+  {
+   "id": "opus-5-reference",
+   "model_path": "anthropic/claude-opus-5",
+   "label": "Claude Opus 5 (reference ceiling)",
+   "enabled": false,
+   "dispatch_verified_phx": null,
+   "notes": "Optional frontier reference line. Expensive; enable only for calibration runs, not routine sweeps."
+  }
+ ]
+}

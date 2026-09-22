@@ -20,6 +20,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from lib.command_guard import command_is_review_only_safe, parse_command
 from market_data_utils import atomic_write_json, load_json_artifact
@@ -47,6 +48,8 @@ ALERT_QUOTE_PROOF = TMP / "intraday-alerts" / "quote-snapshot-proof.json"
 ALERT_FRESHNESS_CONTROLLER = TMP / "alert-level-freshness-controller.json"
 ALERT_RECOMMENDATIONS_DIGEST = TMP / "finance-alert-os-digest.json"
 ALERTS_OS_PIVOT_VALIDATOR = TMP / "alerts-os-pivot-validator.json"
+
+AZ = ZoneInfo("America/Phoenix")
 
 SCHEMA = "veritas.main_session_greenkeeper_controller.v1"
 
@@ -93,8 +96,23 @@ SAFE_REPAIR_COMMANDS: dict[str, tuple[list[str], int]] = {
         ["scripts\\wf74_auto_patch_proposer.py", "--write", "--validate"],
         240,
     ),
+    # Canonical flags are mandatory. Without --dynamic-entitlement-scope the
+    # chain falls back to the hard-coded 18-name ALERT_TICKERS instead of the
+    # 32-member guarded-SQL scope, silently degrading the shared quote proof and
+    # the alert-level controller. See the 2026-09-18 off-slot incident.
     "alerts_recommendations_midday_chain": (
-        ["scripts\\run_alerts_recommendations_chain.py", "midday", "--timeout-seconds", "120", "--write", "--validate"],
+        [
+            "scripts\\run_alerts_recommendations_chain.py",
+            "midday",
+            "--timeout-seconds",
+            "120",
+            "--dynamic-entitlement-scope",
+            "--recurring-reference-inputs",
+            "--scope-origin",
+            "phase3f_dynamic_entitlement",
+            "--write",
+            "--validate",
+        ],
         600,
     ),
     "alerts_os_pivot_validator": (
@@ -102,6 +120,29 @@ SAFE_REPAIR_COMMANDS: dict[str, tuple[list[str], int]] = {
         240,
     ),
 }
+
+# Commands whose output is semantically bound to a fixed local-time slot. The
+# 2026-09-18 21:31 Phoenix incident ran the midday chain three hours off its
+# 11:05 slot and overwrote shared quote and digest evidence with off-slot
+# content. Off-slot runs are skipped rather than rewritten; the scheduled job
+# owns the real slot.
+SLOT_BOUND_COMMANDS: dict[str, tuple[int, int]] = {
+    "alerts_recommendations_midday_chain": (11, 12),
+}
+
+
+def slot_bound_skip(command_id: str, now: datetime | None = None) -> str | None:
+    """Return a skip reason when a slot-bound command sits outside its local slot."""
+    window = SLOT_BOUND_COMMANDS.get(command_id)
+    if window is None:
+        return None
+    local = (now or datetime.now(timezone.utc)).astimezone(AZ)
+    if local.weekday() >= 5:
+        return "outside_slot_non_trading_day"
+    if not (window[0] <= local.hour < window[1]):
+        return "outside_slot_window"
+    return None
+
 
 SOFT_FRONTDOOR_FAILURES: set[str] = set()
 
@@ -786,6 +827,20 @@ def execute_safe_actions(actions: list[dict[str, Any]], args: argparse.Namespace
             if key in seen:
                 continue
             seen.add(key)
+            skip_reason = slot_bound_skip(command_id)
+            if skip_reason is not None:
+                results.append({
+                    "name": command_id,
+                    "command": parts,
+                    "started_at_utc": utc_now(),
+                    "completed_at_utc": utc_now(),
+                    "returncode": None,
+                    "ok": True,
+                    "skipped": True,
+                    "skip_reason": skip_reason,
+                    "slot_window_phoenix_hours": list(SLOT_BOUND_COMMANDS[command_id]),
+                })
+                continue
             results.append(run_command(command_id, parts, timeout))
     return results
 

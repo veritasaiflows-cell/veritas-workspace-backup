@@ -1,0 +1,65 @@
+{
+  "schema": "veritas.arena_six_incumbent_preflight.v1",
+  "route": "gateway agent / qa-redteam / file-based prompt",
+  "results": {
+    "glm53flash": {
+      "status": "ok",
+      "requested": {
+        "provider": "ollama-cloud",
+        "model": "glm-5.3-flash:cloud"
+      },
+      "effective": {
+        "provider": "ollama-cloud",
+        "model": "glm-5.3-flash:cloud",
+        "responseModel": "glm-5.3-flash:cloud"
+      },
+      "rerouted": false,
+      "fallbackUsed": false,
+      "visible": {
+        "observed": "ARENA-QA-CANARY-glm53flash-20260919",
+        "read_ok": true
+      },
+      "toolSummary": {
+        "calls": 1,
+        "tools": [
+          "read"
+        ],
+        "failures": 0
+      },
+      "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+      "sessionKey": "agent:qa-redteam:arena-six-canary2-glm53flash-20260919",
+      "finalPromptText": "Use the read tool exactly once to read workspace-relative arena-six-canary-glm53flash.txt. Return ONLY raw JSON with exactly observed and read_ok. observed must be the exact file contents and read_ok must be true. No prose or fences. Do not read any other file.",
+      "pass": true
+    },
+    "deepseek41flash": {
+      "status": "ok",
+      "requested": {
+        "provider": "ollama-cloud",
+        "model": "deepseek-v4.1-flash:cloud"
+      },
+      "effective": {
+        "provider": "ollama-cloud",
+        "model": "deepseek-v4.1-flash:cloud",
+        "responseModel": "deepseek-v4.1-flash:cloud"
+      },
+      "rerouted": false,
+      "fallbackUsed": false,
+      "visible": {
+        "observed": "ARENA-QA-CANARY-deepseek41flash-20260919",
+        "read_ok": true
+      },
+      "toolSummary": {
+        "calls": 1,
+        "tools": [
+          "read"
+        ],
+        "failures": 0
+      },
+      "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+      "sessionKey": "agent:qa-redteam:arena-six-canary2-deepseek41flash-20260919",
+      "finalPromptText": "Use the read tool exactly once to read workspace-relative arena-six-canary-deepseek41flash.txt. Return ONLY raw JSON with exactly observed and read_ok. observed must be the exact file contents and read_ok must be true. No prose or fences. Do not read any other file.",
+      "pass": true
+    }
+  },
+  "all_pass": true
+}

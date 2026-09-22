@@ -1,0 +1,19 @@
+{
+  "schema": "veritas.arena_cost_audit.v1",
+  "date_phx": "2026-09-19",
+  "status": "blocked_not_accepted",
+  "source": "scripts/arena_filework.py",
+  "source_sha256": "8f280f0099116225653fb6e5139b533e2f8f99fd034c462c9a2a07d95682c16d",
+  "source_modified_in_this_continuation": false,
+  "findings": [
+    {"id":"missing_cli_usage", "severity":"blocking", "evidence":"python -B scripts\\arena_filework.py --grade --run-id fw-hard-20260919 raises AttributeError: Namespace object has no attribute usage at grade line 304. main does not register --usage."},
+    {"id":"retry_overwrite", "severity":"blocking", "evidence":"Read-only synthetic _usage_by_pair invocation with the same pair_id and attempts carrying 100+10 and 200+20 tokens returns only 220, not 330. Dictionary assignment overwrites earlier attempts."},
+    {"id":"partial_coverage_underpricing", "severity":"blocking", "evidence":"Model reducer sums only present usage/cost then divides by all accepted results. Missing spend is silently excluded. Read-only expression for [0.10, None] returns 0.10 instead of unavailable."},
+    {"id":"zero_vs_unknown", "severity":"blocking", "evidence":"_usd supports explicit zero prices but aggregate uses sum(...) or None and denominator expressions use truthiness, collapsing legitimate zero into unknown."},
+    {"id":"missing_price_provenance", "severity":"limitation", "evidence":"Both enabled roster entries lack usd_per_1m_input and usd_per_1m_output. Runtime-reported zero costs do not prove zero economic cost for subscription usage."},
+    {"id":"historical_usage_missing", "severity":"limitation", "evidence":"tmp/arena-v3-hard-dispatch.json has four completed pair identities and visible replies but no token or cost counters. Existing scorecard predates interrupted cost additions."}
+  ],
+  "implementation_blocker": "Fresh implementation-builder transport canary cannot read arena files under /workspace or /worktree. Current sessions_spawn contract does not support nonempty attachments. No proven patch-draft source readback or scoped writeback; no sandbox/policy/config changes made and no silent Main authorship substitution.",
+  "next_acceptance": ["Restore a supported bounded Builder handoff without widening runtime authority, or obtain explicit task-scoped author-role direction", "Implement attempt-identity accounting, explicit coverage and missingness, zero preservation, price provenance, and CLI argument coverage", "Focused positive/adversarial tests plus independent QA of the applied patch", "Only then publish cost per accepted change; dialogue trajectories are not code changes"],
+  "authority": {"routing_changes":false,"config_changes":false,"skill_applied":false}
+}

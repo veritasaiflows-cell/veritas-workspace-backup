@@ -73,15 +73,11 @@ ACCEPTED_ATTRIBUTION_SOURCES = (
     "lane_runtime_metadata",
     "evaluation_harness_metadata",
 )
-ACCEPTED_MISSING_USAGE_CLASSIFICATIONS = (
-    "current_chat_runtime_unavailable",
-    "historical_pre_token_closeout_guard_unavailable",
-    "historical_pre_token_stamping_unavailable",
-    "manual_runtime_unavailable",
-    "provider_usage_unavailable",
-    "runtime_usage_unavailable",
-    "unsupported_legacy_model_route",
-)
+# 2026-09-18 Phase 2 (owner-directed): shared definition lives in
+# scripts/token_usage_classifications.py. Tuple order preserved for the fixture
+# schema enum and artifact serialization.
+from token_usage_classifications import FRONTIER_ACCEPTED_MISSING_USAGE_CLASSIFICATIONS
+ACCEPTED_MISSING_USAGE_CLASSIFICATIONS = FRONTIER_ACCEPTED_MISSING_USAGE_CLASSIFICATIONS
 AUTHORITY_VIOLATION_CODES = (
     "route_mutation",
     "runtime_mutation",

@@ -2,8 +2,8 @@
 """Build the WF88 route-contraction and retirement-readiness dry-run packet.
 
 This packet turns the WF88 cleanup plan into implementation proof. It checks
-whether legacy/default routes have been narrowed, whether WF87/WF88 use the new
-control front doors, and whether any script/tmp/db/cron retirement is ready for
+whether legacy/default routes have been narrowed, whether retired WF87 keeps no operational route
+and WF88 uses the OS2 control front door, and whether any script/tmp/db/cron retirement is ready for
 owner approval. It never deletes, archives, moves, applies, or mutates cron.
 """
 from __future__ import annotations
@@ -84,9 +84,10 @@ EXPECTED_MARKERS = {
         "legacy_table_contract",
     ],
     "scripts/veritas_question_router.py": [
-        "WORKFLOW_FRONT_DOORS",
-        "wf88-os2-control-packet",
-        "human_context_artifacts_to_open",
+        "RETIRED_WORKFLOW_IDS",
+        "workflow_retired",
+        "veritas.alerts_os_question_route.v1",
+        "sql_first_commands",
     ],
     "scripts/veritas_technical_pass_validate.py": [
         "ROUTE_CONTRACT",
@@ -99,7 +100,8 @@ EXPECTED_MARKERS = {
         "SCHEMA = \"veritas.workflow_capsule.v1\"",
     ],
     "scripts/workflow_routing_index.py": [
-        "WF87 - Paper Autonomy Runtime Governor",
+        "ALERT_OS_RETIRED_WORKFLOWS",
+        "paused_review_only",
         "WF88 - Veritas OS 2.0",
         "wf88-route-contraction-packet",
     ],
@@ -241,13 +243,13 @@ def route_invariants(routing_index: dict[str, Any], file_rows: list[dict[str, An
         return {"name": name, "ok": bool(ok), "detail": detail}
 
     return [
-        check("wf87_frontdoor_is_runtime_governor", wf87.get("primary_route_artifact") == "tmp/wf87-paper-autonomy-runtime-governor.json", wf87.get("primary_route_artifact")),
+        check("wf87_retired_no_operational_route", wf87.get("primary_route_artifact") is None and wf87.get("effective_status_override") == "on_hold", {"primary_route_artifact": wf87.get("primary_route_artifact"), "effective_status_override": wf87.get("effective_status_override")}),
         check("wf88_frontdoor_is_os2_control_packet", wf88.get("primary_route_artifact") == "tmp/wf88-os2-control-packet.json", wf88.get("primary_route_artifact")),
         check("wf88_includes_route_contraction_packet", "tmp/wf88-route-contraction-packet.json" in as_list(wf88.get("secondary_artifacts")), as_list(wf88.get("secondary_artifacts"))),
         check("runtime_performance_human_note_checks_opt_in", as_dict(exact_paths.get("scripts/runtime_performance_scorecard.py")).get("status") == "contracted_or_already_narrowed", exact_paths.get("scripts/runtime_performance_scorecard.py")),
         check("ticker_answer_packet_deny_only_tombstone", as_dict(exact_paths.get("scripts/ticker_answer_packet.py")).get("status") == "contracted_or_already_narrowed", exact_paths.get("scripts/ticker_answer_packet.py")),
         check("legacy_table_checks_mode_gated", as_dict(exact_paths.get("scripts/validate_canonical_ownership.py")).get("status") == "contracted_or_already_narrowed", exact_paths.get("scripts/validate_canonical_ownership.py")),
-        check("question_router_has_wf87_wf88_frontdoors", as_dict(exact_paths.get("scripts/veritas_question_router.py")).get("status") == "contracted_or_already_narrowed", exact_paths.get("scripts/veritas_question_router.py")),
+        check("question_router_alerts_sql_first_contract", as_dict(exact_paths.get("scripts/veritas_question_router.py")).get("status") == "contracted_or_already_narrowed", exact_paths.get("scripts/veritas_question_router.py")),
     ]
 
 

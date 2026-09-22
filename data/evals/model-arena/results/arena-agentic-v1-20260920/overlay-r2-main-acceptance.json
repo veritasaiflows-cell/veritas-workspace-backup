@@ -1,0 +1,46 @@
+{
+  "schema": "veritas.arena_overlay_main_acceptance.v1",
+  "envelope": "arena-agentic-v1-20260920",
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "accepted_at": "2026-09-20T14:51:00-07:00",
+  "verdict": "accepted_with_limits",
+  "main_verification": {
+    "arena_tests_passed": 82,
+    "arena_tests_failed": 0,
+    "frozen_rebuild_files_compared": 11,
+    "frozen_rebuild_hash_mismatches": 0,
+    "blind_non_file_cases_compared": 10,
+    "blind_non_file_case_mismatches": 0,
+    "inert_dispatch_gate_refused": true,
+    "inert_dispatch_gate_output_created": false
+  },
+  "independent_qa": {
+    "agent": "qa-redteam",
+    "model": "xai/grok-4.6",
+    "run_id": "df3b3800-0b0b-4e15-ab19-d5149e8c7a33",
+    "verdict": "PASS-WITH-LIMITS",
+    "material_defects": []
+  },
+  "accepted_changes": [
+    "Dispatch-plan mode requires the response-contract overlay and fixture payload source.",
+    "Authorization binds nonempty owner identity, timezone-aware authorization time, selected model, 12 cases, one repetition, envelope, overlay version, and bank hash.",
+    "Authorization is checked before the output directory or candidate mount is created.",
+    "The run contract records the enforced visible-bank-plus-fixtures mount allowlist.",
+    "Trap-detector exceptions fail closed for dimensional credit.",
+    "Rescoring reports clean strict passes separately from contaminated strict passes."
+  ],
+  "dispatch_gate": {
+    "status": "closed",
+    "dispatch_ready": false,
+    "authorized_by": null,
+    "authorized_at": null,
+    "scope_models": [],
+    "dispatch_performed": false
+  },
+  "limits": [
+    "The ten-case blind re-derivation excluded the two T4 file-recovery cases; T4 is validated through payload-only fixture mounting, deterministic grading controls, and tests.",
+    "Independent QA was a static applied-source review; Main executed the 82-test suite and deterministic rebuild/hash checks.",
+    "Pre-overlay candidate runs remain a different envelope and are not capability-comparable to any future overlay-r2 run.",
+    "No paid candidate rerun, routing change, configuration change, role change, or execution authority follows from this acceptance."
+  ]
+}

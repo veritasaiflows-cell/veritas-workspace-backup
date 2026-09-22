@@ -545,5 +545,477 @@ class RetrievalLiveEvalTests(unittest.TestCase):
             self.assertFalse(report["authority_boundary"]["provider_promotion_allowed"])
 
 
+
+
+class FrozenCorpusRecurrenceTests(unittest.TestCase):
+    """Recurrence guard for LOOP-REPAIR-20260912 step30/step35 failure.
+
+    Frozen gold bound to mutable live wiki passed once after a manual rebase,
+    then failed again when wiki regen rewrote the sources. These tests pin the
+    frozen-corpus contract: repeat validation across live-wiki mutation stays
+    green with stable identity, and every binding violation fails closed.
+    """
+
+    VERSION = "frozencorpus-test-v1"
+
+    def make_frozen(self, root: Path) -> tuple[Path, Path, Path]:
+        corp = root / "data" / "evals" / "frozen-corpus" / self.VERSION
+        corp.mkdir(parents=True, exist_ok=True)
+        (root / "data" / "evals").mkdir(parents=True, exist_ok=True)
+        (root / "tmp").mkdir(parents=True, exist_ok=True)
+        (root / "wiki").mkdir(parents=True, exist_ok=True)
+        alpha = corp / "alpha.md"
+        beta = corp / "beta.md"
+        alpha.write_text(
+            "# Alpha\n"
+            "A copper falcon routes telemetry into the review queue.\n"
+            "Only a signed review packet may promote the recommendation.\n"
+            "Weights never rewritten.\n",
+            encoding="utf-8",
+        )
+        beta.write_text(
+            "# Beta\n"
+            "A copper budget tracks routine API usage.\n"
+            "Telemetry reported, no promotion.\n"
+            "Lexical distractor.\n",
+            encoding="utf-8",
+        )
+        rel_a = alpha.relative_to(root).as_posix()
+        rel_b = beta.relative_to(root).as_posix()
+        sources = [
+            {"path": rel_a, "sha256": hashlib.sha256(alpha.read_bytes()).hexdigest()},
+            {"path": rel_b, "sha256": hashlib.sha256(beta.read_bytes()).hexdigest()},
+        ]
+        manifest = rle.manifest_hash(sources)
+        registry = {
+            "schema": "veritas.retrieval_live_source_registry.v1",
+            "status": "frozen_draft_review_required",
+            "source_manifest_sha256": manifest,
+            "frozen_corpus": {
+                "corpus_version": self.VERSION,
+                "corpus_root": corp.relative_to(root).as_posix(),
+                "created_at_utc": "2026-09-12T00:00:00Z",
+                "live_provenance": {"copied_from": ["wiki/alpha.md", "wiki/beta.md"]},
+            },
+            "chunking": {"lines_per_chunk": 4, "overlap": 0, "max_chars": 2000},
+            "providers": {
+                "hash": {"embedding_provider": "hash", "embedding_model": "hashing-vector-v0"},
+                "semantic": {"embedding_provider": "ollama", "embedding_model": "test-embed:latest"},
+                "fts_only": {"source_db": "hash", "ranking": "raw SQLite FTS5 bm25 ascending"},
+            },
+            "sources": sources,
+        }
+        registry_path = root / "data" / "evals" / "registry.json"
+        registry_path.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
+        gold = {
+            "schema": "veritas.retrieval_live_gold.v1",
+            "status": "draft_review_required",
+            "source_registry": "data/evals/registry.json",
+            "source_manifest_sha256": manifest,
+            "frozen_corpus": {"corpus_version": self.VERSION},
+            "max_k": 5,
+            "measurement_contract": {
+                "absent_posture": "abstention_uncalibrated",
+                "promotion_thresholds_defined": False,
+            },
+            "human_review": {
+                "status": "required_before_trusted_baseline",
+                "sole_relevance_review_complete": False,
+            },
+            "fixtures": [
+                {
+                    "fixture_id": "exact",
+                    "fixture_class": "exact",
+                    "query": "A copper falcon routes telemetry into the review queue.",
+                    "relevant_passages": [{"source_path": rel_a, "start_line": 2, "end_line": 2}],
+                    "distractor_passages": [],
+                    "absence_certified": False,
+                },
+                {
+                    "fixture_id": "paraphrase",
+                    "fixture_class": "paraphrase",
+                    "query": "Where is monitoring information sent into a human decision list?",
+                    "relevant_passages": [{"source_path": rel_a, "start_line": 2, "end_line": 2}],
+                    "distractor_passages": [],
+                    "absence_certified": False,
+                },
+                {
+                    "fixture_id": "distractor",
+                    "fixture_class": "distractor",
+                    "query": "Which page permits recommendation promotion only with a signed review packet?",
+                    "relevant_passages": [{"source_path": rel_a, "start_line": 3, "end_line": 3}],
+                    "distractor_passages": [{"source_path": rel_b, "start_line": 3, "end_line": 3}],
+                    "absence_certified": False,
+                },
+                {
+                    "fixture_id": "absent",
+                    "fixture_class": "absent",
+                    "query": "What Kubernetes disruption budget is approved?",
+                    "relevant_passages": [],
+                    "distractor_passages": [],
+                    "absence_certified": True,
+                },
+            ],
+        }
+        gold_path = root / "data" / "evals" / "gold.json"
+        gold_path.write_text(json.dumps(gold, indent=2) + "\n", encoding="utf-8")
+        return registry_path, gold_path, corp
+
+    def rewrite_registry(self, root: Path, registry_path: Path, mutate) -> Path:
+        registry = json.loads(registry_path.read_text(encoding="utf-8"))
+        mutate(registry)
+        registry["source_manifest_sha256"] = rle.manifest_hash(registry["sources"])
+        registry_path.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
+        gold_path = root / "data" / "evals" / "gold.json"
+        gold = json.loads(gold_path.read_text(encoding="utf-8"))
+        gold["source_manifest_sha256"] = registry["source_manifest_sha256"]
+        gold_path.write_text(json.dumps(gold, indent=2) + "\n", encoding="utf-8")
+        return gold_path
+
+    def regenerate_live_wiki(self, root: Path, generation: str) -> None:
+        (root / "wiki" / "alpha.md").write_text(f"# Live wiki {generation}\nRegenerated content {generation}.\n", encoding="utf-8")
+        (root / "wiki" / f"page-{generation}.md").write_text("New regen page.\n", encoding="utf-8")
+
+    def run_eval(self, root: Path, registry_path: Path, gold_path: Path):
+        def fake_batch(texts: list[str], *, model: str, url: str, timeout: float) -> list[list[float]]:
+            return [vmi.hash_embedding("semantic-prefix " + text) for text in texts]
+
+        def fake_one(text: str, *, model: str, url: str, timeout: float) -> list[float]:
+            return vmi.hash_embedding("semantic-prefix " + text)
+
+        with (
+            mock.patch.object(rle, "resolve_ollama_digest", return_value="digest-test"),
+            mock.patch.object(vmi, "ollama_embed_batch", side_effect=fake_batch),
+            mock.patch.object(vmi, "ollama_embed_one", side_effect=fake_one),
+        ):
+            return rle.run_evaluation(
+                root=root,
+                registry_path=registry_path,
+                gold_path=gold_path,
+                hash_db=root / "tmp" / "hash.sqlite",
+                hash_index=root / "tmp" / "hash.json",
+                semantic_db=root / "tmp" / "semantic.sqlite",
+                semantic_index=root / "tmp" / "semantic.json",
+                mutation_db=root / "tmp" / "mutation.sqlite",
+                ollama_url="http://127.0.0.1:1",
+                timeout=0.1,
+                batch_size=8,
+                history=[],
+            )
+
+    def test_frozen_recurrence_across_live_wiki_regen(self) -> None:
+        """Two successive validations across a simulated step35 wiki regen stay green."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry_path, gold_path, _ = self.make_frozen(root)
+            self.regenerate_live_wiki(root, "v1")
+            _, _, first = rle.validate_inputs(root=root, registry_path=registry_path, gold_path=gold_path)
+            self.assertEqual(first["status"], "ok", first["errors"])
+            first_manifest = first["source_manifest_sha256"]
+            first_registry_sha = first["registry_sha256"]
+            first_gold_sha = first["gold_sha256"]
+            self.regenerate_live_wiki(root, "v2")
+            _, _, second = rle.validate_inputs(root=root, registry_path=registry_path, gold_path=gold_path)
+            self.assertEqual(second["status"], "ok", second["errors"])
+            self.assertEqual(second["source_manifest_sha256"], first_manifest)
+            self.assertEqual(second["registry_sha256"], first_registry_sha)
+            self.assertEqual(second["gold_sha256"], first_gold_sha)
+            self.assertEqual(
+                (second.get("frozen_corpus") or {}).get("corpus_version"),
+                (first.get("frozen_corpus") or {}).get("corpus_version"),
+            )
+
+    def test_frozen_end_to_end_repeat_runs_share_compatibility_key(self) -> None:
+        """Two full evaluations across live-wiki drift share metrics and compat key."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry_path, gold_path, _ = self.make_frozen(root)
+            self.regenerate_live_wiki(root, "v1")
+            first = self.run_eval(root, registry_path, gold_path)
+            self.assertEqual(first["validation"]["status"], "ok", first["validation"]["errors"])
+            self.regenerate_live_wiki(root, "v2")
+            second = self.run_eval(root, registry_path, gold_path)
+            self.assertEqual(second["validation"]["status"], "ok", second["validation"]["errors"])
+            self.assertEqual(rle.compatibility_key(first), rle.compatibility_key(second))
+            for provider in ("hash_fts", "semantic_fts", "fts_only"):
+                self.assertEqual(
+                    first["providers"][provider]["evaluation"]["summary"],
+                    second["providers"][provider]["evaluation"]["summary"],
+                )
+            self.assertIn("never claim current wiki freshness", rle.render_markdown(first))
+            self.assertIn("frozen_corpus_version", rle.history_entry(first))
+
+    def test_frozen_tamper_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry_path, gold_path, corp = self.make_frozen(root)
+            (corp / "alpha.md").write_text((corp / "alpha.md").read_text(encoding="utf-8") + "tampered\n", encoding="utf-8")
+            _, _, validation = rle.validate_inputs(root=root, registry_path=registry_path, gold_path=gold_path)
+            self.assertEqual(validation["status"], "error")
+            self.assertTrue(any("source_hash_mismatch" in item for item in validation["errors"]))
+
+    def test_frozen_missing_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry_path, gold_path, corp = self.make_frozen(root)
+            (corp / "beta.md").unlink()
+            _, _, validation = rle.validate_inputs(root=root, registry_path=registry_path, gold_path=gold_path)
+            self.assertEqual(validation["status"], "error")
+            self.assertTrue(any("source_missing" in item for item in validation["errors"]))
+
+    def test_frozen_path_escape_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry_path, gold_path, _ = self.make_frozen(root)
+            live_page = root / "wiki" / "alpha.md"
+            live_page.write_text("live\n", encoding="utf-8")
+            gold_path = self.rewrite_registry(
+                root,
+                registry_path,
+                lambda registry: registry["sources"].append(
+                    {"path": "wiki/alpha.md", "sha256": hashlib.sha256(live_page.read_bytes()).hexdigest()}
+                ),
+            )
+            _, _, validation = rle.validate_inputs(root=root, registry_path=registry_path, gold_path=gold_path)
+            self.assertEqual(validation["status"], "error")
+            self.assertTrue(
+                any("frozen_corpus_source_outside_corpus_root" in item for item in validation["errors"]),
+                validation["errors"],
+            )
+
+    def test_frozen_symlink_escape_mocked_privilege_free(self) -> None:
+        """Simulate a symlink pointing outside the corpus without OS symlink privilege."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry_path, gold_path, corp = self.make_frozen(root)
+            evil = corp / "evil.md"
+            evil.write_text("in-corpus bytes\n", encoding="utf-8")
+            gold_path = self.rewrite_registry(
+                root,
+                registry_path,
+                lambda registry: registry["sources"].append(
+                    {"path": evil.relative_to(root).as_posix(), "sha256": hashlib.sha256(evil.read_bytes()).hexdigest()}
+                ),
+            )
+            outside = (root / "wiki" / "alpha.md").absolute()
+            (root / "wiki" / "alpha.md").write_text("live\n", encoding="utf-8")
+            real_resolve = Path.resolve
+
+            def fake_resolve(self, *args, **kwargs):
+                if self.name == "evil.md":
+                    return outside
+                return real_resolve(self, *args, **kwargs)
+
+            with mock.patch.object(Path, "resolve", autospec=True, side_effect=fake_resolve):
+                _, _, validation = rle.validate_inputs(root=root, registry_path=registry_path, gold_path=gold_path)
+            self.assertEqual(validation["status"], "error")
+            # A true symlink escape resolves outside the corpus, so the production
+            # first gate reports outside_corpus_root; symlink_escape remains a
+            # TOCTOU backstop. Either is fail-closed; assert the binding held.
+            self.assertTrue(
+                any(
+                    "frozen_corpus_source_outside_corpus_root" in item
+                    or "frozen_corpus_symlink_escape" in item
+                    for item in validation["errors"]
+                ),
+                validation["errors"],
+            )
+
+    def test_label_audit_requires_matching_corpus_version(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry_path, gold_path, _ = self.make_frozen(root)
+            registry = json.loads(registry_path.read_text(encoding="utf-8"))
+            gold = json.loads(gold_path.read_text(encoding="utf-8"))
+            base = {
+                "schema": rle.AUDIT_SCHEMA,
+                "status": "complete",
+                "reviewer_type": "machine",
+                "gold_sha256": hashlib.sha256(gold_path.read_bytes()).hexdigest(),
+                "source_registry_sha256": hashlib.sha256(registry_path.read_bytes()).hexdigest(),
+                "source_manifest_sha256": registry["source_manifest_sha256"],
+                "reviews": [
+                    {
+                        "fixture_id": fixture["fixture_id"],
+                        "query_sha256": rle.query_sha256(fixture["query"]),
+                        "decision": "confirmed",
+                    }
+                    for fixture in gold["fixtures"]
+                ],
+            }
+            audit_path = root / "data" / "evals" / "audit.json"
+            audit_path.write_text(json.dumps({**base}, indent=2) + "\n", encoding="utf-8")
+            missing = rle.validate_independent_label_audit(
+                root=root, audit_path=audit_path, registry_path=registry_path, gold_path=gold_path
+            )
+            self.assertEqual(missing["status"], "error")
+            self.assertTrue(any("corpus_version" in item for item in missing["errors"]), missing["errors"])
+            audit_path.write_text(json.dumps({**base, "corpus_version": "wrong-version"}, indent=2) + "\n", encoding="utf-8")
+            mismatch = rle.validate_independent_label_audit(
+                root=root, audit_path=audit_path, registry_path=registry_path, gold_path=gold_path
+            )
+            self.assertEqual(mismatch["status"], "error")
+            self.assertTrue(any("corpus_version_mismatch" in item for item in mismatch["errors"]), mismatch["errors"])
+            audit_path.write_text(json.dumps({**base, "corpus_version": self.VERSION}, indent=2) + "\n", encoding="utf-8")
+            accepted = rle.validate_independent_label_audit(
+                root=root, audit_path=audit_path, registry_path=registry_path, gold_path=gold_path
+            )
+            self.assertEqual(accepted["status"], "ok", accepted["errors"])
+            self.assertFalse(accepted["human_review_satisfied"])
+
+    def test_calibration_requires_matching_corpus_version(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry_path, gold_path, corp = self.make_frozen(root)
+            rel_a = (corp / "alpha.md").relative_to(root).as_posix()
+            rel_b = (corp / "beta.md").relative_to(root).as_posix()
+            registry = json.loads(registry_path.read_text(encoding="utf-8"))
+            base = {
+                "schema": rle.CALIBRATION_SCHEMA,
+                "status": "sealed_unrun_review_only",
+                "sealed": True,
+                "execution_status": "unrun",
+                "review_only": True,
+                "gold_sha256": hashlib.sha256(gold_path.read_bytes()).hexdigest(),
+                "source_registry_sha256": hashlib.sha256(registry_path.read_bytes()).hexdigest(),
+                "source_manifest_sha256": registry["source_manifest_sha256"],
+                "cases": [
+                    {
+                        "calibration_id": "cal_answer_weights",
+                        "case_type": "answer",
+                        "query": "Which source says the model weights remain unchanged?",
+                        "relevant_passages": [{"source_path": rel_a, "start_line": 4, "end_line": 4}],
+                    },
+                    {
+                        "calibration_id": "cal_answer_budget",
+                        "case_type": "answer",
+                        "query": "Where is routine API usage tracked by a copper budget?",
+                        "relevant_passages": [{"source_path": rel_b, "start_line": 2, "end_line": 2}],
+                    },
+                    {
+                        "calibration_id": "cal_abstain_moonbase",
+                        "case_type": "abstain",
+                        "query": "What lunar base staffing policy applies?",
+                        "relevant_passages": [],
+                        "absence_certified": True,
+                    },
+                    {
+                        "calibration_id": "cal_abstain_humidity",
+                        "case_type": "abstain",
+                        "query": "What humidity threshold triggers a warehouse alarm?",
+                        "relevant_passages": [],
+                        "absence_certified": True,
+                    },
+                ],
+            }
+            calibration_path = root / "data" / "evals" / "calibration.json"
+            calibration_path.write_text(json.dumps({**base}, indent=2) + "\n", encoding="utf-8")
+            missing = rle.validate_sealed_abstention_calibration(
+                root=root, calibration_path=calibration_path, registry_path=registry_path, gold_path=gold_path
+            )
+            self.assertEqual(missing["status"], "error")
+            self.assertTrue(any("corpus_version" in item for item in missing["errors"]), missing["errors"])
+            calibration_path.write_text(json.dumps({**base, "corpus_version": "wrong-version"}, indent=2) + "\n", encoding="utf-8")
+            mismatch = rle.validate_sealed_abstention_calibration(
+                root=root, calibration_path=calibration_path, registry_path=registry_path, gold_path=gold_path
+            )
+            self.assertEqual(mismatch["status"], "error")
+            self.assertTrue(any("corpus_version_mismatch" in item for item in mismatch["errors"]), mismatch["errors"])
+
+    def test_live_registry_warns_not_repeatable(self) -> None:
+        """Pre-snapshot live binding keeps prior behavior plus an explicit warning."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry_path, gold_path = RetrievalLiveEvalTests().make_inputs(root)
+            _, _, validation = rle.validate_inputs(root=root, registry_path=registry_path, gold_path=gold_path)
+            self.assertEqual(validation["status"], "ok")
+            self.assertIn("live_wiki_binding_not_repeatable", validation["warnings"])
+
+
+
+class FrozenCorpusIntegrityTests(unittest.TestCase):
+    """B1/B2 adversarial guards (LOOP-REPAIR-20260912 design QA).
+
+    A declared-but-corrupt frozen_corpus block must fail closed, never
+    downgrade to live semantics; corpus_root resolving to the workspace root
+    must be rejected. Key-absent legacy live mode is unchanged.
+    """
+
+    def base(self, root: Path):
+        return FrozenCorpusRecurrenceTests().make_frozen(root)
+
+    def write_registry(self, registry_path: Path, registry: dict) -> None:
+        registry_path.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
+
+    def write_gold(self, gold_path: Path, gold: dict) -> None:
+        gold_path.write_text(json.dumps(gold, indent=2) + "\n", encoding="utf-8")
+
+    def test_registry_block_malformed_string_list_null(self) -> None:
+        import tempfile as _tf
+        for bad in ("frozen-v1", [1, 2], None):
+            with _tf.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                registry_path, gold_path, _ = self.base(root)
+                registry = json.loads(registry_path.read_text(encoding="utf-8"))
+                registry["frozen_corpus"] = bad
+                self.write_registry(registry_path, registry)
+                _, _, validation = rle.validate_inputs(root=root, registry_path=registry_path, gold_path=gold_path)
+                self.assertEqual(validation["status"], "error", repr(bad))
+                self.assertIn("frozen_corpus_block_malformed", validation["errors"], repr(bad))
+                self.assertNotIn("live_wiki_binding_not_repeatable", validation["warnings"], repr(bad))
+                self.assertIsNone(validation.get("frozen_corpus"), repr(bad))
+
+    def test_gold_block_malformed_string_list_null_no_toplevel_fallback(self) -> None:
+        import tempfile as _tf
+        for bad in ("junk", ["v1"], None):
+            with _tf.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                registry_path, gold_path, _ = self.base(root)
+                gold = json.loads(gold_path.read_text(encoding="utf-8"))
+                gold["frozen_corpus"] = bad
+                gold["corpus_version"] = FrozenCorpusRecurrenceTests.VERSION
+                self.write_gold(gold_path, gold)
+                _, _, validation = rle.validate_inputs(root=root, registry_path=registry_path, gold_path=gold_path)
+                self.assertEqual(validation["status"], "error", repr(bad))
+                self.assertIn("gold_frozen_corpus_block_malformed", validation["errors"], repr(bad))
+
+    def test_gold_block_absent_errors(self) -> None:
+        import tempfile as _tf
+        with _tf.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry_path, gold_path, _ = self.base(root)
+            gold = json.loads(gold_path.read_text(encoding="utf-8"))
+            del gold["frozen_corpus"]
+            self.write_gold(gold_path, gold)
+            _, _, validation = rle.validate_inputs(root=root, registry_path=registry_path, gold_path=gold_path)
+            self.assertEqual(validation["status"], "error")
+            self.assertIn("gold_frozen_corpus_version_missing", validation["errors"])
+
+    def test_corpus_root_dot_and_dotslash_rejected(self) -> None:
+        import tempfile as _tf
+        for bad_root in (".", "./"):
+            with _tf.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                registry_path, gold_path, _ = self.base(root)
+                registry = json.loads(registry_path.read_text(encoding="utf-8"))
+                registry["frozen_corpus"]["corpus_root"] = bad_root
+                self.write_registry(registry_path, registry)
+                _, _, validation = rle.validate_inputs(root=root, registry_path=registry_path, gold_path=gold_path)
+                self.assertEqual(validation["status"], "error", repr(bad_root))
+                self.assertIn("frozen_corpus_root_is_workspace_root", validation["errors"], repr(bad_root))
+                self.assertIsNone(validation.get("frozen_corpus"), repr(bad_root))
+
+    def test_corpus_root_subdir_control_ok(self) -> None:
+        import tempfile as _tf
+        with _tf.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry_path, gold_path, _ = self.base(root)
+            _, _, validation = rle.validate_inputs(root=root, registry_path=registry_path, gold_path=gold_path)
+            self.assertEqual(validation["status"], "ok", validation["errors"])
+            self.assertEqual(
+                (validation.get("frozen_corpus") or {}).get("corpus_version"),
+                FrozenCorpusRecurrenceTests.VERSION,
+            )
+
 if __name__ == "__main__":
     unittest.main()

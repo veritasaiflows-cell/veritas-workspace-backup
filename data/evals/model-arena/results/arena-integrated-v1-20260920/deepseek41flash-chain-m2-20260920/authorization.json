@@ -1,0 +1,12 @@
+{
+ "schema": "veritas.arena_mission_authorization.v1",
+ "mission": "mission-2",
+ "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+ "authorized_by": "gateway-owner",
+ "authorized_at": "2026-09-20T20:58:00-07:00",
+ "budgets": {
+  "seconds_per_turn": 600,
+  "retries": 0
+ },
+ "note": "Run-scoped release for DeepSeek full-chain Surface D mission 2 only."
+}

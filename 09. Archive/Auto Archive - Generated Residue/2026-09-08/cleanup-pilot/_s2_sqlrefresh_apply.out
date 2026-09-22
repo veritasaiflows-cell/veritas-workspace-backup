@@ -1,0 +1,11 @@
+{
+  "after_diff_count": 0,
+  "db_apply_performed": true,
+  "errors": [],
+  "pre_apply_diff_count": 40,
+  "reference_levels_preserved": true,
+  "status": "ok",
+  "written": [
+    "tmp/sql-canon-tier-routing-refresh.json"
+  ]
+}

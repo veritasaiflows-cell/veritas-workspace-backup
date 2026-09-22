@@ -1,0 +1,67 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "f69148d3-16bf-49b9-8b2d-f71c88dd4dcd",
+  "declarationKey": "finance-baseline-renewal-gate-preflight-20260917",
+  "name": "Finance baseline-renewal gate preflight",
+  "required": true,
+  "owner_workflow": "Phase 3 / WF85 alert reference baseline renewal gate",
+  "contract_reason": "One-shot owner-authorized review-only preflight before the 2026-09-19 reference-baseline warning window (pin expires 2026-09-24T23:34:45Z). Registered so the enabled one-shot is governed by the freshness spine without asserting any renewal artifact exists before its single run; the preflight reruns the read-only baseline guard and writes a dated renewal-preflight packet whose path is chosen at run time. No successor pin, SQL/canon, schedule, delivery, capital, or execution authority exists on this job.",
+  "description": "One-shot review-only preflight before the September 19 reference-baseline warning window; it must not refresh or apply finance canon.",
+  "enabled": true,
+  "deleteAfterRun": true,
+  "schedule": {
+    "kind": "at",
+    "at": "2026-09-17T13:00:00.000Z"
+  },
+  "sessionTarget": "main",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "payload": {
+    "kind": "systemEvent",
+    "text": "Finance baseline-renewal preflight. Read tmp/phase3-main-only-20260905/g7-g8-monday-cutover-and-baseline-renewal-gate-20260912.json, run the read-only alert-reference baseline guard, and write a dated renewal-preflight packet. Confirm the current pin, remaining time, required 200-row candidate/evidence/reconciliation/approval/rollback gates, and whether a valid candidate exists. Do NOT create a successor pin, alter SQL/canon/schedules/delivery, reuse the old low-confidence Yahoo32 matrix, or infer approval. If inputs are incomplete, record a truthful blocked gate and exact missing evidence. No external message."
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "payload.kind",
+    "payload.text"
+  ],
+  "expected_artifacts": [
+    {
+      "path": "tmp/alert-reference-baseline-freshness-guard.json",
+      "role": "alert_reference_baseline_freshness_guard_input_refreshed_by_preflight",
+      "required": false,
+      "blocking": false
+    },
+    {
+      "path": "tmp/phase3-main-only-20260905/g7-g8-monday-cutover-and-baseline-renewal-gate-20260912.json",
+      "role": "renewal_gate_contract_input",
+      "required": false,
+      "blocking": false
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "successor_pin_creation_allowed": false,
+    "external_delivery_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-09-12T21:55:00Z",
+  "contract_update_reason": "Registration-only contract for the owner-armed review-only one-shot; no scheduler, payload, schedule, or authority change. Post-run proof is the dated renewal-preflight packet named by the run itself."
+}

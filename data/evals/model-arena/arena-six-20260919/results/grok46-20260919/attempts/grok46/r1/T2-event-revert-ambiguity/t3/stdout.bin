@@ -1,0 +1,247 @@
+{
+  "runId": "7a99a1a9-8972-45aa-b190-0e506a0457d4",
+  "status": "ok",
+  "summary": "completed",
+  "result": {
+    "payloads": [
+      {
+        "text": "{\"states\":{\"A\":{\"revision\":5,\"status\":\"ready\"},\"B\":{\"revision\":4,\"status\":\"ready\"},\"C\":{\"revision\":2,\"status\":\"blocked\"}},\"eligible\":[\"A\",\"B\"],\"applied\":11,\"ignored\":[{\"event\":\"e4\",\"reason\":\"stale\"},{\"event\":\"e6\",\"reason\":\"stale\"}]}",
+        "mediaUrl": null
+      }
+    ],
+    "meta": {
+      "durationMs": 45719,
+      "agentMeta": {
+        "sessionId": "484f44ca-4f51-4329-ab1b-a8a62a3bf263",
+        "sessionFile": "agent:qa-redteam:arena6-grok46-t2-event-revert-ambiguity-r1-20260919",
+        "provider": "xai",
+        "model": "grok-4.6",
+        "contextTokens": 500000,
+        "contextTokensSource": "resolved",
+        "agentHarnessId": "openclaw",
+        "credentialSource": {
+          "kind": "profile"
+        },
+        "usage": {
+          "input": 3017,
+          "output": 3383,
+          "cacheRead": 8576,
+          "cacheWrite": 0,
+          "reasoningTokens": 3300,
+          "total": 14976,
+          "cost": {
+            "total": 0.03062
+          }
+        },
+        "lastCallUsage": {
+          "input": 3017,
+          "output": 3383,
+          "cacheRead": 8576,
+          "cacheWrite": 0,
+          "cost": {
+            "total": 0.03062
+          },
+          "contextUsage": {
+            "state": "available",
+            "promptTokens": 11593,
+            "totalTokens": 14976
+          },
+          "reasoningTokens": 3300,
+          "total": 14976
+        },
+        "promptTokens": 11593,
+        "contextBudgetStatus": {
+          "schemaVersion": 1,
+          "source": "pre-prompt-estimate",
+          "updatedAt": 1789863140331,
+          "provider": "xai",
+          "model": "grok-4.6",
+          "route": "fits",
+          "shouldCompact": false,
+          "estimatedPromptTokens": 17346,
+          "contextTokenBudget": 500000,
+          "promptBudgetBeforeReserve": 480000,
+          "reserveTokens": 20000,
+          "effectiveReserveTokens": 20000,
+          "remainingPromptBudgetTokens": 462654,
+          "overflowTokens": 0,
+          "toolResultReducibleChars": 0,
+          "messageCount": 4,
+          "unwindowedMessageCount": 4,
+          "sessionId": "484f44ca-4f51-4329-ab1b-a8a62a3bf263"
+        },
+        "codeModeEngaged": false,
+        "assistantTurns": 1,
+        "costUsd": 0.03062,
+        "terminalReceipt": {
+          "runId": "7a99a1a9-8972-45aa-b190-0e506a0457d4",
+          "sessionId": "484f44ca-4f51-4329-ab1b-a8a62a3bf263",
+          "turnId": "7a99a1a9-8972-45aa-b190-0e506a0457d4",
+          "requested": {
+            "provider": "xai",
+            "model": "grok-4.6"
+          },
+          "effective": {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "responseModel": "grok-4.6"
+          },
+          "successfulToolNames": [],
+          "rerouted": false
+        }
+      },
+      "aborted": false,
+      "systemPromptReport": {
+        "source": "run",
+        "generatedAt": 1789863140300,
+        "sessionId": "484f44ca-4f51-4329-ab1b-a8a62a3bf263",
+        "sessionKey": "agent:qa-redteam:arena6-grok46-t2-event-revert-ambiguity-r1-20260919",
+        "provider": "xai",
+        "model": "grok-4.6",
+        "workspaceDir": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+        "bootstrapMaxChars": 20000,
+        "bootstrapTotalMaxChars": 80000,
+        "bootstrapTruncation": {
+          "warningMode": "always",
+          "warningShown": false,
+          "truncatedFiles": 0,
+          "nearLimitFiles": 0,
+          "totalNearLimit": false
+        },
+        "sandbox": {
+          "mode": "off",
+          "sandboxed": false
+        },
+        "systemPrompt": {
+          "chars": 19041,
+          "hash": "9d2b641175206d5a499db6f2e6008832cd4e0e7ce33ab8f2f85e224b6664f01b",
+          "projectContextChars": 8748,
+          "nonProjectContextChars": 10293
+        },
+        "injectedWorkspaceFiles": [
+          {
+            "name": "AGENTS.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\AGENTS.md",
+            "missing": false,
+            "rawChars": 4621,
+            "injectedChars": 4621,
+            "truncated": false
+          },
+          {
+            "name": "SOUL.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\SOUL.md",
+            "missing": false,
+            "rawChars": 910,
+            "injectedChars": 910,
+            "truncated": false
+          },
+          {
+            "name": "IDENTITY.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\IDENTITY.md",
+            "missing": false,
+            "rawChars": 496,
+            "injectedChars": 496,
+            "truncated": false
+          },
+          {
+            "name": "USER.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\USER.md",
+            "missing": false,
+            "rawChars": 500,
+            "injectedChars": 500,
+            "truncated": false
+          },
+          {
+            "name": "MEMORY.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\MEMORY.md",
+            "missing": false,
+            "rawChars": 983,
+            "injectedChars": 983,
+            "truncated": false
+          }
+        ],
+        "skills": {
+          "promptChars": 1307,
+          "hash": "62e1190079ff78309362b66617813fcdd6b28cfd828aa8a0a79a9f054a7eb264",
+          "entries": [
+            {
+              "name": "qa-diff-safety-review",
+              "blockChars": 302
+            },
+            {
+              "name": "qa-evidence-separation-check",
+              "blockChars": 324
+            },
+            {
+              "name": "qa-source-reasoning-review",
+              "blockChars": 304
+            }
+          ]
+        },
+        "tools": {
+          "listChars": 0,
+          "schemaChars": 1789,
+          "entries": [
+            {
+              "name": "read",
+              "summaryChars": 164,
+              "summaryHash": "d136f5b09e28d671addad4ca800b75b8aa6a36002bc739ead964f618d3e34829",
+              "schemaChars": 481,
+              "schemaHash": "b1b9b637dfe1dfade40f50c37cf840a298f1992b534cb9425b7470233a6b0cbb",
+              "propertiesCount": 5
+            },
+            {
+              "name": "web_search",
+              "summaryChars": 164,
+              "summaryHash": "4ec65764bf8e853aae0c06e334f54cd879efd9fb5d71c610e9c23bf7b285cb02",
+              "schemaChars": 991,
+              "schemaHash": "3879e368875d824b14e0e683f81408824e9a2a5850fa2f8514a68caebda54d18",
+              "propertiesCount": 12
+            },
+            {
+              "name": "web_fetch",
+              "summaryChars": 78,
+              "summaryHash": "616ac805dfdeaeadbb5e03504e84d52b01ecaa88c7e7100fa4c06eca8eb6195f",
+              "schemaChars": 317,
+              "schemaHash": "eca30c487911c9e897ba27b4650770cf23137fc6ed8d77756ea3952fa496ea61",
+              "propertiesCount": 3
+            }
+          ]
+        },
+        "currentTurn": {
+          "promptChars": 597,
+          "runtimeContextChars": 0,
+          "modelOnlyPromptChars": 0
+        }
+      },
+      "finalPromptText": "Genuine specification change. Replay ALL events from empty state under the amended rules.\n\nAmendment A1: deduplication now uses the pair (eventID, revision) instead of the eventID alone.\nAmendment A2: an event applies when its revision is greater than OR EQUAL TO the job's current revision.\n\nAll other rules R2 through R6 are unchanged, and processing is still in written order.\n\nAppend these events after the original nine, in this order: (e9,A,5,ready); (e10,C,2,revert); (e11,B,4,ready); (e12,C,2,blocked).\n\nReturn ONLY the same raw JSON shape, covering the entire replay. No prose, no fences.",
+      "finalAssistantVisibleText": "{\"states\":{\"A\":{\"revision\":5,\"status\":\"ready\"},\"B\":{\"revision\":4,\"status\":\"ready\"},\"C\":{\"revision\":2,\"status\":\"blocked\"}},\"eligible\":[\"A\",\"B\"],\"applied\":11,\"ignored\":[{\"event\":\"e4\",\"reason\":\"stale\"},{\"event\":\"e6\",\"reason\":\"stale\"}]}",
+      "finalAssistantRawText": "{\"states\":{\"A\":{\"revision\":5,\"status\":\"ready\"},\"B\":{\"revision\":4,\"status\":\"ready\"},\"C\":{\"revision\":2,\"status\":\"blocked\"}},\"eligible\":[\"A\",\"B\"],\"applied\":11,\"ignored\":[{\"event\":\"e4\",\"reason\":\"stale\"},{\"event\":\"e6\",\"reason\":\"stale\"}]}",
+      "replayInvalid": false,
+      "livenessState": "working",
+      "stopReason": "stop",
+      "executionTrace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      },
+      "requestShaping": {
+        "authMode": "auth-profile",
+        "thinking": "high"
+      },
+      "completion": {
+        "stopReason": "stop",
+        "finishReason": "stop"
+      }
+    }
+  }
+}

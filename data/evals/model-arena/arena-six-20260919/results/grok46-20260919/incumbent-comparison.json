@@ -1,0 +1,211 @@
+{
+  "schema": "veritas.arena_six_incumbent_comparison.v1",
+  "source_path": "../incumbent-baseline-20260919/graded-results.json",
+  "source_sha256": "00159753ffd8fc1aa3cf33a2244994883083edc95ee61e87600c62f664128c12",
+  "source_main_acceptance_path": "../incumbent-baseline-20260919/main-acceptance.json",
+  "source_main_acceptance": {
+    "schema": "veritas.arena_six_main_acceptance.v1",
+    "accepted_utc": "2026-09-19T23:00:31.136032Z",
+    "verdict": "accepted_with_limits",
+    "models": [
+      "ollama-cloud/glm-5.3-flash:cloud",
+      "ollama-cloud/deepseek-v4.1-flash:cloud"
+    ],
+    "result": "Both 8/12 strict; DeepSeek stronger overall on factual and operational performance; GLM stronger on exact format and bounded tool discipline.",
+    "routing_effect": "none; no automatic promotion or config change",
+    "recommended_use": "DeepSeek as the stronger supervised reasoning/planning candidate; GLM Flash as a narrow format/tool-discipline specialist or recovery option.",
+    "evidence": [
+      "report.md",
+      "graded-results.json",
+      "matrix-index.json",
+      "matrix-index-adjudicated.json",
+      "t4-tool-traces.json",
+      "operational-adjudication.json",
+      "independent-qa-review.json",
+      "validation.json",
+      "evidence-manifest.json"
+    ],
+    "limits": [
+      "600-second budget enforced by a CLI deadline that returned at 631.176 seconds",
+      "independent QA did not recompute every raw-file hash",
+      "two repetitions per family are not a reliability estimate"
+    ]
+  },
+  "summary": {
+    "glm53flash": {
+      "requested_model": "ollama-cloud/glm-5.3-flash:cloud",
+      "planned_trajectories": 12,
+      "graded_trajectories": 12,
+      "operationally_eligible_trajectories": 11,
+      "strict_trajectory_passes": 8,
+      "factual_trajectory_passes": 8,
+      "factual_eligible_trajectories": 11,
+      "format_trajectory_passes": 11,
+      "format_eligible_trajectories": 11,
+      "tools_trajectory_passes": 11,
+      "tools_eligible_trajectories": 11,
+      "cases": {
+        "T1-settlement-cascade": {
+          "strict_passes": 0,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 0,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T2-event-revert-ambiguity": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T3-evidence-retraction-chain": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T4-multihop-read-recovery": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T5-handoff-authority-control": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T6-induction-and-planning": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 1,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 1,
+          "format_passes": 1,
+          "format_eligible_repetitions": 1,
+          "tools_passes": 1,
+          "tools_eligible_repetitions": 1
+        }
+      }
+    },
+    "deepseek41flash": {
+      "requested_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "planned_trajectories": 12,
+      "graded_trajectories": 12,
+      "operationally_eligible_trajectories": 12,
+      "strict_trajectory_passes": 8,
+      "factual_trajectory_passes": 10,
+      "factual_eligible_trajectories": 12,
+      "format_trajectory_passes": 9,
+      "format_eligible_trajectories": 12,
+      "tools_trajectory_passes": 12,
+      "tools_eligible_trajectories": 12,
+      "cases": {
+        "T1-settlement-cascade": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T2-event-revert-ambiguity": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 1,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T3-evidence-retraction-chain": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T4-multihop-read-recovery": {
+          "strict_passes": 0,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 0,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T5-handoff-authority-control": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T6-induction-and-planning": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        }
+      }
+    }
+  },
+  "purpose": "Self-contained support for incumbent denominator, per-case and repeated-family comparisons in the Grok report."
+}

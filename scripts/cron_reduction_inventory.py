@@ -120,7 +120,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/cron_control_digest_runner.py",
         "runner_command": "python scripts\\cron_control_digest_runner.py --window control --out tmp\\cron-control-digest-runner-control.json --write --write-md --validate",
         "replacement_job_name": "Cron Reduction - Control Fail-Closed Dispatcher",
-        "recommended_model": "command_job_preferred_or_openai/gpt-5.6-luna",
+        "recommended_model": "command_job_preferred_or_ollama-cloud/glm-5.3:cloud",
         "target_seconds": 120,
         "hard_timeout_seconds": 300,
         "source_jobs": [
@@ -140,7 +140,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/cron_control_digest_runner.py",
         "runner_command": "python scripts\\cron_control_digest_runner.py --window morning --out tmp\\cron-control-digest-runner-morning.json --write --write-md --validate",
         "replacement_job_name": "Cron Reduction - Morning Control Digest",
-        "recommended_model": "command_job_preferred_or_openai/gpt-5.6-luna",
+        "recommended_model": "command_job_preferred_or_ollama-cloud/glm-5.3:cloud",
         "target_seconds": 240,
         "hard_timeout_seconds": 600,
         "source_jobs": [
@@ -159,7 +159,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/cron_control_digest_runner.py",
         "runner_command": "python scripts\\cron_control_digest_runner.py --window post-close --out tmp\\cron-control-digest-runner-post-close.json --write --write-md --validate",
         "replacement_job_name": "Cron Reduction - Post-Close Control Digest",
-        "recommended_model": "command_job_preferred_or_openai/gpt-5.6-luna",
+        "recommended_model": "command_job_preferred_or_ollama-cloud/glm-5.3:cloud",
         "target_seconds": 240,
         "hard_timeout_seconds": 600,
         "source_jobs": [
@@ -178,7 +178,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/finance_delivery_series_consolidated_runner.py",
         "runner_command": "python scripts\\finance_delivery_series_consolidated_runner.py --mode daily --out tmp\\finance-delivery-series-consolidated-runner-daily.json --write --write-md --validate",
         "replacement_job_name": "Finance Delivery Series - Daily Builder and Handoff",
-        "recommended_model": "command_job_preferred_or_openai/gpt-5.6-luna",
+        "recommended_model": "command_job_preferred_or_ollama-cloud/glm-5.3:cloud",
         "target_seconds": 300,
         "hard_timeout_seconds": 900,
         "source_jobs": [
@@ -198,7 +198,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/finance_delivery_series_consolidated_runner.py",
         "runner_command": "python scripts\\finance_delivery_series_consolidated_runner.py --mode weekly --out tmp\\finance-delivery-series-consolidated-runner-weekly.json --write --write-md --validate",
         "replacement_job_name": "Finance Delivery Series - Weekly Builder and Handoff",
-        "recommended_model": "command_job_preferred_or_openai/gpt-5.6-luna",
+        "recommended_model": "command_job_preferred_or_ollama-cloud/glm-5.3:cloud",
         "target_seconds": 300,
         "hard_timeout_seconds": 900,
         "source_jobs": [
@@ -220,7 +220,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/finance_delivery_series_consolidated_runner.py",
         "runner_command": "python scripts\\finance_delivery_series_consolidated_runner.py --mode monthly --out tmp\\finance-delivery-series-consolidated-runner-monthly.json --write --write-md --validate",
         "replacement_job_name": "Finance Delivery Series - Monthly Builder and Handoff",
-        "recommended_model": "command_job_preferred_or_openai/gpt-5.6-luna",
+        "recommended_model": "command_job_preferred_or_ollama-cloud/glm-5.3:cloud",
         "target_seconds": 600,
         "hard_timeout_seconds": 1500,
         "source_jobs": [
@@ -241,7 +241,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/runtime_ops_consolidated_digest.py",
         "runner_command": "python scripts\\runtime_ops_consolidated_digest.py --component future-session --profile normal --out tmp\\runtime-ops-consolidated-digest-future-session.json --write --write-md --validate",
         "replacement_job_name": "Runtime - Future Session Packet Refresh",
-        "recommended_model": "command_job_preferred_or_openai/gpt-5.6-luna",
+        "recommended_model": "command_job_preferred_or_ollama-cloud/glm-5.3:cloud",
         "target_seconds": 120,
         "hard_timeout_seconds": 300,
         "source_jobs": [
@@ -259,7 +259,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/runtime_ops_consolidated_digest.py",
         "runner_command": "python scripts\\runtime_ops_consolidated_digest.py --component otel --profile normal --out tmp\\runtime-ops-consolidated-digest-otel.json --write --write-md --validate",
         "replacement_job_name": "Runtime - OTEL Local Digest",
-        "recommended_model": "command_job_preferred_or_openai/gpt-5.6-luna",
+        "recommended_model": "command_job_preferred_or_ollama-cloud/glm-5.3:cloud",
         "target_seconds": 120,
         "hard_timeout_seconds": 300,
         "source_jobs": [
@@ -277,7 +277,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/runtime_ops_consolidated_digest.py",
         "runner_command": "python scripts\\runtime_ops_consolidated_digest.py --component wf74 --send --profile normal --out tmp\\runtime-ops-consolidated-digest-wf74-send.json --write --write-md --validate",
         "replacement_job_name": "Runtime - WF74 Learning Loop Telegram Digest",
-        "recommended_model": "command_job_preferred_or_openai/gpt-5.6-luna",
+        "recommended_model": "command_job_preferred_or_ollama-cloud/glm-5.3:cloud",
         "target_seconds": 180,
         "hard_timeout_seconds": 900,
         "source_jobs": [
@@ -295,7 +295,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/runtime_ops_consolidated_digest.py",
         "runner_command": "python scripts\\runtime_ops_consolidated_digest.py --component weekly-improvement-proof --profile normal --out tmp\\runtime-ops-consolidated-digest-weekly-improvement-proof.json --write --write-md --validate",
         "replacement_job_name": "Runtime - Weekly OS Improvement Proof Refresh",
-        "recommended_model": "command_job_preferred_or_openai/gpt-5.6-luna",
+        "recommended_model": "command_job_preferred_or_ollama-cloud/glm-5.3:cloud",
         "target_seconds": 180,
         "hard_timeout_seconds": 600,
         "source_jobs": [
@@ -316,7 +316,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/morning_market_paper_consolidated_runner.py",
         "runner_command": "python scripts\\morning_market_paper_consolidated_runner.py --send --write --write-md --validate",
         "replacement_job_name": "Finance - Morning Market Paper Consolidator",
-        "recommended_model": "openai/gpt-5.6-terra for reasoning refresh, Luna only for deterministic bounded verification",
+        "recommended_model": "ollama-cloud/glm-5.3:cloud for reasoning refresh, GLM 5.3 Flash only for deterministic bounded verification",
         "target_seconds": 120,
         "hard_timeout_seconds": 240,
         "source_jobs": [
@@ -341,7 +341,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/midday_market_paper_consolidated_runner.py",
         "runner_command": "python scripts\\midday_market_paper_consolidated_runner.py --send --write --write-md --validate",
         "replacement_job_name": "Finance - Midday Market Paper Consolidator",
-        "recommended_model": "openai/gpt-5.6-terra for reasoning refresh, Luna only for deterministic bounded verification",
+        "recommended_model": "ollama-cloud/glm-5.3:cloud for reasoning refresh, GLM 5.3 Flash only for deterministic bounded verification",
         "target_seconds": 120,
         "hard_timeout_seconds": 240,
         "source_jobs": [
@@ -365,7 +365,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/postclose_paper_reconciliation_runner.py",
         "runner_command": "python scripts\\postclose_paper_reconciliation_runner.py --write --write-md --validate",
         "replacement_job_name": "Finance - Post-Close Paper State Reconciliation",
-        "recommended_model": "command_job_preferred_or_openai/gpt-5.6-luna",
+        "recommended_model": "command_job_preferred_or_ollama-cloud/glm-5.3:cloud",
         "target_seconds": 300,
         "hard_timeout_seconds": 1500,
         "source_jobs": [
@@ -385,7 +385,7 @@ CONTRACTS: list[dict[str, Any]] = [
         "runner": "scripts/wf68_alert_digest_consolidated_runner.py",
         "runner_command": "python scripts\\wf68_alert_digest_consolidated_runner.py --write --write-md --validate",
         "replacement_job_name": "Finance - WF68 Alert Producer and Digest",
-        "recommended_model": "command_job_preferred_or_openai/gpt-5.6-luna",
+        "recommended_model": "command_job_preferred_or_ollama-cloud/glm-5.3:cloud",
         "target_seconds": 180,
         "hard_timeout_seconds": 600,
         "source_jobs": [

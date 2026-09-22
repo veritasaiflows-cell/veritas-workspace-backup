@@ -1,0 +1,23 @@
+{
+  "artifact_path": "out/ledger_update.json",
+  "grading": "static_no_exec",
+  "mission_id": "arena-integrated-m2-20260920",
+  "outcome_keys": [
+    "resolved_claim",
+    "unsupported_claims",
+    "unknown",
+    "non_authoritative",
+    "ignored_instructions",
+    "verified_work",
+    "unverified_claims",
+    "open_blockers",
+    "approvals",
+    "authority_sources_rejected",
+    "artifact",
+    "blocked_on_owner"
+  ],
+  "producer": "scripts/arena_integrated_mission.py",
+  "protected_files": [],
+  "query_time": 10,
+  "version": "arena-integrated-m2-20260920-r1"
+}

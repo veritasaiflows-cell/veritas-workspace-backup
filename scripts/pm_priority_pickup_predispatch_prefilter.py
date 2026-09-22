@@ -201,7 +201,6 @@ def wake_signature(handoff: dict[str, Any]) -> str:
     return "|".join(
         [
             str(handoff.get("status") or ""),
-            str(handoff.get("receipt") or ""),
             str(summary.get("selected_priority_id") or ""),
             str(summary.get("selected_priority") or ""),
             str(signature.get("sha256") or ""),
@@ -226,7 +225,7 @@ def decide_wake(
     previous: dict[str, Any],
     now: datetime,
 ) -> dict[str, Any]:
-    """Fail open: anything unclear wakes Main. Only a proven-quiet state skips."""
+    """Fail open on broken proof, but notify Main only once per stable signal."""
     reasons: list[str] = []
 
     for step in steps:
@@ -239,13 +238,13 @@ def decide_wake(
         if as_dict(handoff.get("validation")).get("status") != "ok":
             reasons.append("handoff_validation_not_ok")
         status = str(handoff.get("status") or "").lower()
-        if status not in QUIET_STATUSES:
-            reasons.append(f"handoff_status:{status or 'unknown'}")
+        if not status:
+            reasons.append("handoff_status:unknown")
+        elif status == "blocked":
+            reasons.append("handoff_status:blocked")
         receipt = str(handoff.get("receipt") or "")
         if receipt in WAKE_RECEIPTS:
             reasons.append(f"handoff_receipt:{receipt}")
-        if as_dict(handoff.get("summary")).get("selected_priority_id"):
-            reasons.append("selected_priority_pending_main_disposition")
 
     if not executor:
         reasons.append("action_executor_output_missing")
@@ -272,16 +271,16 @@ def decide_wake(
 
     previous_decision = as_dict(previous.get("decision"))
     previous_wake = as_dict(previous.get("wake"))
-    if previous_decision.get("wake_signature") == signature:
-        # dispatched_at_utc is carried forward across suppressed runs so a single
-        # unresolved priority cannot restart the window every 30 minutes.
-        last_wake_at = parse_timestamp(previous_wake.get("dispatched_at_utc"))
-        if last_wake_at is not None:
-            elapsed_hours = (now - last_wake_at).total_seconds() / 3600.0
-            if elapsed_hours < decision["reescalation_hours"]:
-                decision["suppressed"] = True
-                decision["suppression_reason"] = "unchanged_priority_inside_reescalation_window"
-                decision["hours_since_last_wake"] = round(elapsed_hours, 3)
+    same_signal = previous_decision.get("wake_signature") == signature
+    previously_dispatched = parse_timestamp(previous_wake.get("dispatched_at_utc")) is not None
+
+    # Receipt values are transition labels. NEW_PRIORITY normally becomes
+    # NO_DELTA on the next deterministic run even though the underlying signal
+    # is unchanged, so receipt is deliberately excluded from wake_signature.
+    # Once a stable signal has been delivered, time alone must never wake Main.
+    if same_signal and previously_dispatched:
+        decision["suppressed"] = True
+        decision["suppression_reason"] = "unchanged_signal_already_dispatched"
 
     return decision
 
@@ -454,7 +453,7 @@ def validate(report: dict[str, Any]) -> dict[str, Any]:
             warnings.append(f"deterministic_step_failed:{as_dict(step).get('error_code')}")
 
     if decision.get("wake_required") and not decision.get("suppressed"):
-        if not wake.get("dispatched") and not wake.get("dry_run"):
+        if not wake.get("dispatched") and not wake.get("dry_run") and not wake.get("routed_to_pm"):
             warnings.append(f"wake_not_dispatched:{wake.get('error_code')}")
 
     handoff = as_dict(report.get("handoff_observed"))
@@ -492,6 +491,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--validate", action="store_true")
     parser.add_argument("--dry-run-wake", action="store_true", help="Decide but never wake Main.")
+    parser.add_argument(
+        "--dispatch-main",
+        action="store_true",
+        help="Allow a genuinely new/changed signal to wake Main; otherwise retain it for deterministic PM intake only.",
+    )
     parser.add_argument("--job-id", default=PICKUP_JOB_ID)
     parser.add_argument("--step-timeout", type=int, default=180)
     parser.add_argument("--wake-timeout", type=int, default=600)
@@ -511,13 +515,20 @@ def main(argv: list[str] | None = None) -> int:
 
     decision = decide_wake(handoff, executor, steps, previous, now)
 
-    if decision["wake_required"] and not decision["suppressed"]:
+    if decision["wake_required"] and not decision["suppressed"] and args.dispatch_main:
         wake = dispatch_wake(
             build_wake_message(handoff, decision),
             job_id=args.job_id,
             timeout_seconds=args.wake_timeout,
             dry_run=args.dry_run_wake or not args.execute,
         )
+    elif decision["wake_required"] and not decision["suppressed"]:
+        wake = {
+            "dispatched": False,
+            "dry_run": False,
+            "routed_to_pm": True,
+            "error_code": "main_dispatch_disabled_pm_funnel",
+        }
     else:
         wake = {
             "dispatched": False,
@@ -525,7 +536,12 @@ def main(argv: list[str] | None = None) -> int:
             "error_code": "wake_not_required" if not decision["wake_required"] else "wake_suppressed",
         }
         previous_wake = as_dict(previous.get("wake"))
-        if decision["suppressed"] and previous_wake.get("dispatched"):
+        if decision["suppressed"] and previous_wake.get("dispatched_at_utc"):
+            wake["dispatched_at_utc"] = previous_wake.get("dispatched_at_utc")
+            wake["session_key"] = previous_wake.get("session_key")
+        elif not decision["wake_required"] and previous_wake.get("dispatched_at_utc"):
+            # Preserve notification memory across NEW_PRIORITY -> NO_DELTA so
+            # the still-pending selection cannot wake Main again next cycle.
             wake["dispatched_at_utc"] = previous_wake.get("dispatched_at_utc")
             wake["session_key"] = previous_wake.get("session_key")
 

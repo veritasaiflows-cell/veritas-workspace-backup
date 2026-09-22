@@ -1,0 +1,26 @@
+{
+ "model_slot": "sol",
+ "requested_model": "openai/gpt-5.6-sol",
+ "model_applied": true,
+ "case": "T4-multihop-read-recovery",
+ "repetition": 2,
+ "turn": 1,
+ "prompt_file": "prompts/T4-multihop-read-recovery.txt",
+ "prompt_sha256": "a10737ad5bddad74aa5eee4d9cc1da7883e774796eb1c1fb2a9745183a764f9f",
+ "response_text": "{\"records\":[{\"id\":\"r2\",\"value\":\"b2\",\"ts\":\"2026-09-18\"},{\"id\":\"r3\",\"value\":\"c2\",\"ts\":\"2026-09-17\"}],\"tombstoned\":[\"r1\",\"r4\"],\"superseded_rows\":3,\"source\":\"mirror\"}",
+ "tool_trace": [
+  "arena-six-inputs-20260919/recovery/primary.json",
+  "arena-six-inputs-20260919/recovery/index.json",
+  "arena-six-inputs-20260919/recovery/payload-a.json",
+  "arena-six-inputs-20260919/recovery/mirror/payload-b.json"
+ ],
+ "grade": {
+  "json_valid": true,
+  "parse_error": null,
+  "format": true,
+  "factual": true,
+  "tools": true,
+  "tool_findings": [],
+  "strict_pass": true
+ }
+}

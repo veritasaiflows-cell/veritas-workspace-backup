@@ -38,6 +38,31 @@ WF75 owns the internal SaaS deliverable gate: service-state, deliverable packagi
 
 These lanes may run in parallel only when write leases are clean and outputs are disjoint.
 
+## Refresh and review-ready offer — 2026-09-18 11:40 MST
+
+- Randall reactivated the monetization lane (2026-09-18, "What do we currently have for SMB?" → "Yes proceed").
+- Pickup sequence executed and green: `pm_control_packet.py --write --write-db --validate` ok; `generic_intelligence_saas_pivot.py --write --write-db --validate` ok (errors [], warnings []). Packet family current.
+- **Review-ready offer drafted:** `10. Deliverables/WF79-SMB/Lead Rescue Offer and Prospect Profile - 2026-09-18.md` — one-page Lead Rescue Sprint service description, offer ladder carrying the June pricing hypotheses unchanged, honest $10k/mo math (clearing $10k/mo within 4–6 clients requires the retainer to validate at $1,500–$2,500/mo; recommended pilot: $1,500 sprint + $1,000/mo), and a 10-name Mesa prospect profile built from public web evidence only (5 plumbing, 4 HVAC wave 1; 1 dental wave 2).
+- Public-evidence boundary honored: names/domains from each business's own public site, zero contact made, all claims flagged self-reported and unverified, verification pass required before any use.
+- Pending owner decisions (recorded in the offer doc, none approved): pilot pricing shape; outreach method; first-contact count (recommended 3 of 9 wave-1 names). Outreach remains stop-lined until exact approval.
+
+## Outreach approved — email, 3 wave-1 names (2026-09-18 11:56 MST)
+
+- Randall approved outreach method and count: "Continue with email and the 3 suggested." Pricing decision remains open — no scope approved, so no numbers quoted anywhere.
+- Selected 3: **JLM Air Conditioning & Heating** (info@jlmazac.com — only prospect with a public email), **Phend Plumbing** (web form, no public email), **OX Plumbing** (web form, no public email). Rationale: each publishes a specific promise that missed calls directly break — same-day emergency AC in 115° weather; 24-hour emergency service against 7–5 office hours; 60-minute emergency response with 300+ reviews.
+- Emails staged: `10. Deliverables/WF79-SMB/Outreach Emails Wave 1 - 2026-09-18.md` — plain-text, personalized to each business's own public copy, no pricing, no ROI claims, 15-minute CTA, opt-out line, one-per-day cadence, day-4 follow-up template.
+- Delivery path: the OS has no email channel (Telegram only, verified 2026-09-18 via conversations list); nothing sends automatically. Randall sends personally from his inbox; Phend/OX via their contact forms (equivalent channel for trades).
+- Send/reply tracking logs to this note once sending begins.
+
+## Marketing/outreach owned by persistent agent `marketing-outreach` (2026-09-18 ~12:50 Phoenix)
+
+- Randall rejected the v2 drafts as "too commercial" and directed the structural fix: a dedicated isolated agent that owns marketing and outreach copy, armed with a ClawHub skill.
+- **Skill:** searched ClawHub (cold email / email marketing / copywriting), verified, and installed `@huajianjiu000/cold-outreach-email-writer@1.0.0` globally (`~/.openclaw/skills/`). Bulk-send/scraping infrastructure skills (Resend/Apollo/Instantly/SMS/Maps-harvest) deliberately rejected — wrong fit; the need is writing quality, not mass outreach.
+- **Agent registered:** `marketing-outreach` ("Marketing and Outreach") in gateway `agents.entries`: model `openai/gpt-5.6-luna` (fallback `zai/glm-5.3`), own workspace `~/.openclaw/workspaces/marketing-outreach` whose AGENTS.md carries the owner-set voice rules (post-v1/v2 rejections) and hard boundaries (drafts only, no pricing, no ROI claims, public evidence only, sign as Randall), agentDir `~/.openclaw/agents/marketing-outreach/agent`. Tools: `read`/`web_search`/`web_fetch` only — exec, write, message, and session tools all denied, so it structurally cannot send anything. Added to `main.subagents.allowAgents` and `agentToAgent.allow`. Config backup: `openclaw.json.bak-marketing-agent-20260918`.
+- **Gateway hot-loaded the new config — no restart needed; G8 untouched.** First spawn accepted with `resolvedModel: openai/gpt-5.6-luna`.
+- **Standing routing rule (owner-set):** marketing and outreach copy requests route to the `marketing-outreach` agent. Main still QC's its output and owns delivery decisions.
+- First task dispatched: v3 redraft of the 3 wave-1 emails + day-4 follow-up (`taskName: wf79-email-redraft-v3`).
+
 ## Stop Lines
 
 - No real customer data.

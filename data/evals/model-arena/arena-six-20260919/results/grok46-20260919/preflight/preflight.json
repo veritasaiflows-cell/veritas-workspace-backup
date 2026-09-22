@@ -1,0 +1,89 @@
+{
+  "schema": "veritas.arena_six_grok_preflight.v1",
+  "model": "xai/grok-4.6",
+  "route": "gateway agent / qa-redteam / file-based prompts",
+  "checks": {
+    "returncode_zero": true,
+    "status_ok": true,
+    "requested_model_exact": true,
+    "effective_model_exact": true,
+    "no_reroute": true,
+    "no_fallback": true,
+    "exact_nonce": true,
+    "one_successful_read": true,
+    "candidate_key_folder_absent": true,
+    "candidate_tool_surface_read_web_only": true
+  },
+  "all_pass": true,
+  "system_prompt_hash": "8ba2bbb408849d4f9a630fb310f0258a9cb2f20d6738dc3387526939267cf1bf",
+  "bootstrap_files": [
+    {
+      "name": "AGENTS.md",
+      "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\AGENTS.md",
+      "missing": false,
+      "rawChars": 4621,
+      "injectedChars": 4621,
+      "truncated": false
+    },
+    {
+      "name": "SOUL.md",
+      "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\SOUL.md",
+      "missing": false,
+      "rawChars": 910,
+      "injectedChars": 910,
+      "truncated": false
+    },
+    {
+      "name": "IDENTITY.md",
+      "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\IDENTITY.md",
+      "missing": false,
+      "rawChars": 496,
+      "injectedChars": 496,
+      "truncated": false
+    },
+    {
+      "name": "USER.md",
+      "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\USER.md",
+      "missing": false,
+      "rawChars": 500,
+      "injectedChars": 500,
+      "truncated": false
+    },
+    {
+      "name": "MEMORY.md",
+      "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\MEMORY.md",
+      "missing": false,
+      "rawChars": 983,
+      "injectedChars": 983,
+      "truncated": false
+    }
+  ],
+  "tool_entries": [
+    {
+      "name": "read",
+      "summaryChars": 164,
+      "summaryHash": "d136f5b09e28d671addad4ca800b75b8aa6a36002bc739ead964f618d3e34829",
+      "schemaChars": 481,
+      "schemaHash": "b1b9b637dfe1dfade40f50c37cf840a298f1992b534cb9425b7470233a6b0cbb",
+      "propertiesCount": 5
+    },
+    {
+      "name": "web_search",
+      "summaryChars": 164,
+      "summaryHash": "4ec65764bf8e853aae0c06e334f54cd879efd9fb5d71c610e9c23bf7b285cb02",
+      "schemaChars": 991,
+      "schemaHash": "3879e368875d824b14e0e683f81408824e9a2a5850fa2f8514a68caebda54d18",
+      "propertiesCount": 12
+    },
+    {
+      "name": "web_fetch",
+      "summaryChars": 78,
+      "summaryHash": "616ac805dfdeaeadbb5e03504e84d52b01ecaa88c7e7100fa4c06eca8eb6195f",
+      "schemaChars": 317,
+      "schemaHash": "eca30c487911c9e897ba27b4650770cf23137fc6ed8d77756ea3952fa496ea61",
+      "propertiesCount": 3
+    }
+  ],
+  "quarantine_manifest": "quarantine-manifest.json",
+  "canary_result": "gateway-canary-grok46-result.json"
+}

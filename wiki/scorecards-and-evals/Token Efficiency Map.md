@@ -19,20 +19,20 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 
 - Token usage ledger status: `warning`.
 - Token efficiency scorecard status: `warning`.
-- Token events observed: `927`.
-- Total observed tokens: `49288324`.
-- API-equivalent token benchmark (not an invoice): `13.453455` (`partial_unknown_input_semantics_or_missing_rate`; `191/927` events priced).
-- Estimated ChatGPT credits (not an observed debit): `307.998645` (`partial_separate_no_public_rate_or_missing_rate`; `191/927` events priced).
-- Rolling 5h / observed 7d tokens: `0` / `348982`; usage timestamp coverage `20.0647`%.
+- Token events observed: `1165`.
+- Total observed tokens: `68367111`.
+- API-equivalent token benchmark (not an invoice): `14.925727` (`partial_unknown_input_semantics_or_missing_rate`; `200/1165` events priced).
+- Estimated ChatGPT credits (not an observed debit): `338.593006` (`partial_separate_no_public_rate_or_missing_rate`; `200/1165` events priced).
+- Rolling 5h / observed 7d tokens: `0` / `0`; usage timestamp coverage `15.9657`%.
 - Actual billed cost (owner-entered only): `None`.
 - OAuth quota state / remaining / days to reset: `stale` / `58.0` / `0.0`.
 - Cron token events: `735`.
-- Implementation token events: `1`.
-- Implementation token gaps: `598`.
-- API-call reduction candidates: `5`.
-- Prompt-compression candidates: `3`.
-- Failure-cost candidates: `1`.
-- Top token candidate: `Runtime - Status Card Freshness Refresh`.
+- Implementation token events: `3`.
+- Implementation token gaps: `597`.
+- API-call reduction candidates: `0`.
+- Prompt-compression candidates: `0`.
+- Failure-cost candidates: `0`.
+- Top token candidate: `None`.
 
 ## What this proves
 

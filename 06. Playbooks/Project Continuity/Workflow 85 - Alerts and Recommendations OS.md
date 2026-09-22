@@ -8,6 +8,8 @@ Primary P0 finance lane. It produces alerts and non-executing recommendations fr
 
 Turn current, source-backed market evidence into concise review states and recommendations while keeping freshness, confidence, uncertainty, and invalidation visible.
 
+This is a fidelity objective and is currently met. It is not the program's outcome objective. The stated outcome objective — scale, entry quality, long-term return, and alignment to thesis, leadership, and environment — lives in `Alerts OS Unified Objective - 2026-09-17.md`, which also measures the current system against it and names what is missing.
+
 ## Decision States
 
 - Recommendation review
@@ -77,6 +79,7 @@ Current state:
 - Analyst consensus is quarantined to a four-field evidence-only projection. Local tier/confidence/queue truth is removed, quarantine targets moved `2 -> 0`, the weekly 18-name provider workload is unchanged, and all 32 Tier A+B cards validate read-only.
 - Current inventory remains truthful at zero errors, zero quarantine targets, 42 consolidation targets, and 44 unexplained residual-sweep hits.
 - Phase 3 is not ready. The live alert chain and weekly analyst contract still own 18-name external workloads.
+- Phase 4 (guarded-SQL tier transactions) has a Main-owned design record at [Phase 4 Tier Promotion and Demotion Design - 2026-09-07](Phase%204%20Tier%20Promotion%20and%20Demotion%20Design%20-%202026-09-07.md). It is a design record only: no tier write, canon mutation, schedule change, or activation authority. It recommends deferring implementation until after Phase 3 G9, because a tier change alters the entitlement scope that G8's five-session observation exists to measure.
 
 Acceptance gate: do not execute Phase 3 until the Phase 2 external cutover is measured and explicitly approved, the hash-bound approval packet still matches its sources, and the existing freshness/pivot baseline blockers are either cleared or formally accepted as external residue.
 

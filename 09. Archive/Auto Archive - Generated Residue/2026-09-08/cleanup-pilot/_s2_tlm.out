@@ -1,0 +1,33 @@
+{
+  "status": "ok",
+  "out": "tmp/wf78-truth-layer-map.json",
+  "summary": {
+    "status": "ok",
+    "layer_count": 10,
+    "category_counts": {
+      "current_authority": 2,
+      "repair_readiness": 3,
+      "audit_only": 2,
+      "retired_archive_proof": 2,
+      "execution_guardrail": 1
+    },
+    "current_tier_authority": "tmp/wf78-auto-tier-routing.json",
+    "model_safe_answer_surface": "tmp/wf78-clean-tier-roster.json",
+    "true_tier_a_count": 12,
+    "true_tier_b_count": 46,
+    "true_tier_c_count": 242,
+    "tier_state_substate_count": 8,
+    "not_current_tier_authority_layer_count": 8,
+    "paper_readiness_json_file_count": 201,
+    "source_router_sha256": "9a310a9fdc996ed6c917a488d0be0af7846fa7057d58c340180b9e76d9da33bd",
+    "source_router_generated_at_utc": "2026-08-21T00:08:48Z",
+    "clean_roster_router_lineage_matches_live_router": true,
+    "capital_deployment_approved_count": 0,
+    "trade_or_execution_approved_count": 0,
+    "next_safe_action": "Run the tier semantics guard after this map; consumers should read the map before any WF78 tier answer or cleanup decision."
+  },
+  "validation": {
+    "status": "ok",
+    "errors": 0
+  }
+}

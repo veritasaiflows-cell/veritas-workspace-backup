@@ -1,0 +1,26 @@
+{
+  "schema": "veritas.arena_six_quarantine_restore.v1",
+  "restored_utc": "2026-09-20T04:29:25.938266Z",
+  "items": [
+    {
+      "name": "arena-agentic-plan-followup-20260919",
+      "status": "restored",
+      "dest": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\arena-agentic-plan-followup-20260919"
+    },
+    {
+      "name": "arena-six-baseline-review-20260919",
+      "status": "restored",
+      "dest": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\arena-six-baseline-review-20260919"
+    },
+    {
+      "name": "arena-six-grok46-review-20260919",
+      "status": "restored",
+      "dest": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\arena-six-grok46-review-20260919"
+    },
+    {
+      "name": "arena-six-grok46-review2-20260919",
+      "status": "restored",
+      "dest": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\arena-six-grok46-review2-20260919"
+    }
+  ]
+}

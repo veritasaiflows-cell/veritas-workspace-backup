@@ -1,0 +1,29 @@
+{
+  "status": "complete",
+  "owner": "Main",
+  "skill_applied": true,
+  "proposal_id": "model-capability-bench-authoring-20260919-6450e6bdb3",
+  "contract": "contract.json",
+  "preflight": "preflight.json",
+  "processes": {},
+  "expected_response_files": 42,
+  "independent_oracle_review": {
+    "run_id": "b24e80b7-cfc0-4f79-a0f4-fbe48cfe8b91",
+    "session_key": "agent:main:subagent:5c2ce4da-cbb3-473d-bac0-6981042dbf43",
+    "completion": "announced",
+    "status": "timed_out_no_verdict"
+  },
+  "tool_trace_checks_completed": [
+    "glm-T4-r1",
+    "glm-T4-r2",
+    "glm-T4-r3",
+    "ds-T4-r1",
+    "ds-T4-r2",
+    "ds-T4-r3"
+  ],
+  "next": "No active work. Preserve regression suite. Future expansion requires a new bounded task contract, not additional calls in this batch.",
+  "completed_candidate_task_attempts": 30,
+  "capability_eligible_trajectories": 24,
+  "result": "results.json",
+  "results_sha256": "7494596755b25a5bbf1ec00be9a85e78c947f65eabfde9be0d038d965209862c"
+}

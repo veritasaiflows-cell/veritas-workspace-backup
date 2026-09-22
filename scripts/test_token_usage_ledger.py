@@ -424,6 +424,381 @@ def assert_verified_v2_lane_credit(module, tmp: Path, pricing: dict, errors: lis
             manager.DEFAULT_OPENCLAW_STATE_DB = original_state_db
 
 
+def assert_creditable_candidate_reconciliation(module, tmp: Path, errors: list[str]) -> None:
+    """Exercise build_payload's candidate/lane precedence on real wiring.
+
+    The fake producers keep this focused on ledger reconciliation.  The
+    receipt-bound lane source itself is covered by assert_verified_v2_lane_credit
+    above, so this helper does not weaken the separate source-binding proof.
+    """
+    root = tmp / "creditable-candidate-reconciliation"
+    root.mkdir(parents=True, exist_ok=True)
+    original_values = {
+        name: getattr(module, name)
+        for name in (
+            "MODEL_RUN_LEDGER",
+            "LANE_REGISTER",
+            "CODING_OUTCOME",
+            "CODING_OUTCOME_HISTORY",
+            "token_event",
+            "isolated_session_token_event",
+            "lane_token_event",
+            "load_allowlisted_session_usage",
+            "reverified_v2_isolated_usage_records",
+            "load_usage_source_receipts",
+        )
+    }
+
+    def event(event_id, run_id, creditable, producer, run_kind, lane_id=None):
+        return {
+            "schema": module.EVENT_SCHEMA,
+            "event_id": event_id,
+            "recorded_at_utc": "2026-09-10T00:00:00Z",
+            "usage_at_utc": "2026-09-10T00:00:00Z",
+            "usage_time_source": "test_fixture",
+            "source_artifact": "tmp/test-token-usage-ledger.jsonl",
+            "source_run_id": run_id,
+            "producer": producer,
+            "run_kind": run_kind,
+            "workflow_id": "RUNTIME",
+            "cron_job_name": None,
+            "lane_id": lane_id,
+            "workstream_id": "token-ledger-test",
+            "task_name": "token_ledger_test",
+            "model_path": "openai/gpt-5.5",
+            "model_provider": "openai",
+            "status": "complete",
+            "input_tokens": 6,
+            "cached_input_tokens": 0,
+            "cache_write_tokens": 0,
+            "uncached_input_tokens": 6,
+            "input_token_semantics": "no_cache",
+            "input_token_semantics_status": "valid",
+            "token_semantics_status": "valid",
+            "output_tokens": 4,
+            "total_tokens": 10,
+            "implementation_attributed": creditable,
+            "observed_implementation_candidate": True,
+            "usage_creditable": creditable,
+            "usage_credit_block_reason": None if creditable else "test_uncreditable_observation",
+            "isolated_agent_attributed": False,
+            "authority_boundary": module.AUTHORITY_BOUNDARY.copy(),
+        }
+
+    def lane(lane_id, run_id):
+        return {
+            "lane_id": lane_id,
+            "workflow_id": "RUNTIME",
+            "workstream_id": "token-ledger-test",
+            "status": "complete",
+            "created_at_utc": "2026-09-10T00:00:00Z",
+            "completed_at_utc": "2026-09-10T00:01:00Z",
+            "runtime": {
+                "run_id": run_id,
+                "task_name": "token_ledger_test",
+                "model_path": "openai/gpt-5.5",
+                "model_provider": "openai",
+                "parent_job_id": "token-ledger-test-job",
+                "phase": "implementation",
+            },
+        }
+
+    observed_lane_calls = []
+
+    def fake_token_event(row, *_args):
+        candidate = row.get("candidate")
+        return dict(candidate) if isinstance(candidate, dict) else None
+
+    def fake_lane_token_event(
+        lane_row,
+        _pricing,
+        provider_observation_run_ids,
+        _usage_receipts=None,
+        creditable_provider_run_ids=None,
+        ambiguous_lane_run_ids=None,
+    ):
+        run_id = str(lane_row["runtime"]["run_id"])
+        observed_lane_calls.append({
+            "run_id": run_id,
+            "provider_observation_present": run_id in provider_observation_run_ids,
+            "suppressed_by_creditable_candidate": run_id in (creditable_provider_run_ids or set()),
+            "ambiguous": run_id in (ambiguous_lane_run_ids or set()),
+        })
+        if run_id in (creditable_provider_run_ids or set()) or run_id in (ambiguous_lane_run_ids or set()):
+            return None
+        return event(
+            f"lane-{lane_row['lane_id']}",
+            run_id,
+            True,
+            module.LANE_RUNTIME_EVENT_PRODUCER,
+            module.LANE_RUNTIME_EVENT_RUN_KIND,
+            lane_row["lane_id"],
+        )
+
+    def write_fixture(lanes, candidate=None):
+        candidates = candidate if isinstance(candidate, list) else ([candidate] if candidate else [])
+        module.MODEL_RUN_LEDGER.write_text(
+            json.dumps({"schema": "test", "rows": [{"candidate": row} for row in candidates]}),
+            encoding="utf-8",
+        )
+        module.LANE_REGISTER.write_text(
+            json.dumps({"schema": "test", "lanes": lanes}),
+            encoding="utf-8",
+        )
+        module.LANE_REGISTER.with_suffix(".usage-receipts.json").write_text(
+            json.dumps({"schema": module.USAGE_SOURCE_RECEIPTS_SCHEMA, "receipts": []}),
+            encoding="utf-8",
+        )
+        module.CODING_OUTCOME.write_text(json.dumps({"schema": "test"}), encoding="utf-8")
+        module.CODING_OUTCOME_HISTORY.write_text("", encoding="utf-8")
+
+    def rows_for(payload, run_id):
+        return [row for row in payload.get("top_token_events", []) if row.get("source_run_id") == run_id]
+
+    try:
+        module.MODEL_RUN_LEDGER = root / "model-run-ledger-current.json"
+        module.LANE_REGISTER = root / "concurrent-lane-register.json"
+        module.CODING_OUTCOME = root / "coding-outcome-ledger-current.json"
+        module.CODING_OUTCOME_HISTORY = root / "coding-outcome-ledger.jsonl"
+        module.token_event = fake_token_event
+        module.isolated_session_token_event = lambda *_args, **_kwargs: None
+        module.lane_token_event = fake_lane_token_event
+        module.load_allowlisted_session_usage = lambda *_args, **_kwargs: {"records": []}
+        module.reverified_v2_isolated_usage_records = lambda _register: []
+        module.load_usage_source_receipts = lambda: []
+
+        lane_identity = event(
+            "lane-identity",
+            "identity-run",
+            True,
+            module.LANE_RUNTIME_EVENT_PRODUCER,
+            module.LANE_RUNTIME_EVENT_RUN_KIND,
+            "RUNTIME::identity",
+        )
+        expect(module.is_lane_runtime_event(lane_identity), "lane-runtime identity was not recognized", errors)
+        expect(
+            not module.is_lane_runtime_event(dict(lane_identity, run_kind="provider_observation")),
+            "producer-only lane identity could suppress a non-lane observation",
+            errors,
+        )
+        expect(
+            not module.is_lane_runtime_event(dict(lane_identity, producer="model-run-ledger")),
+            "run-kind-only lane identity could suppress a non-lane observation",
+            errors,
+        )
+
+        uncreditable_run = "uncreditable-candidate-run"
+        uncreditable_candidate = event(
+            "candidate-uncreditable",
+            uncreditable_run,
+            False,
+            "model-run-ledger",
+            "model_run",
+        )
+        write_fixture([lane("RUNTIME::uncreditable", uncreditable_run)], uncreditable_candidate)
+        observed_lane_calls.clear()
+        uncreditable_payload, _ = module.build_payload(root / "uncreditable.jsonl", append=False)
+        uncreditable_rows = rows_for(uncreditable_payload, uncreditable_run)
+        expect(len(uncreditable_rows) == 2, "uncreditable candidate suppressed the receipt-bound lane view", errors)
+        expect(
+            any(row.get("event_id") == "candidate-uncreditable" and row.get("usage_creditable") is False for row in uncreditable_rows),
+            "uncreditable candidate audit evidence was lost",
+            errors,
+        )
+        expect(
+            any(module.is_lane_runtime_event(row) and row.get("usage_creditable") is True for row in uncreditable_rows),
+            "independently creditable lane event was not retained",
+            errors,
+        )
+        expect(
+            observed_lane_calls == [{"run_id": uncreditable_run, "provider_observation_present": True, "suppressed_by_creditable_candidate": False, "ambiguous": False}],
+            "uncreditable candidate entered the suppression set",
+            errors,
+        )
+
+        creditable_run = "creditable-candidate-run"
+        creditable_candidate = event(
+            "candidate-creditable",
+            creditable_run,
+            True,
+            "model-run-ledger",
+            "model_run",
+        )
+        write_fixture([lane("RUNTIME::creditable", creditable_run)], creditable_candidate)
+        observed_lane_calls.clear()
+        creditable_payload, _ = module.build_payload(root / "creditable.jsonl", append=False)
+        creditable_rows = rows_for(creditable_payload, creditable_run)
+        expect(len(creditable_rows) == 1 and creditable_rows[0].get("event_id") == "candidate-creditable", "creditable candidate did not suppress duplicate lane credit", errors)
+        expect(
+            observed_lane_calls == [{"run_id": creditable_run, "provider_observation_present": True, "suppressed_by_creditable_candidate": True, "ambiguous": False}],
+            "creditable candidate was not the sole lane suppression condition",
+            errors,
+        )
+
+        historical_run = "historical-lane-run"
+        historical_ledger = root / "historical.jsonl"
+        stale_lane = event(
+            "historical-lane-event",
+            historical_run,
+            True,
+            module.LANE_RUNTIME_EVENT_PRODUCER,
+            module.LANE_RUNTIME_EVENT_RUN_KIND,
+            "RUNTIME::historical",
+        )
+        historical_ledger.write_text(json.dumps(stale_lane) + "\n", encoding="utf-8")
+        historical_before = historical_ledger.read_text(encoding="utf-8")
+        # The matching current candidate deliberately shares the producer but
+        # not the lane run kind, pinning the exact identity guard.
+        current_candidate = event(
+            "current-provider-event",
+            historical_run,
+            True,
+            module.LANE_RUNTIME_EVENT_PRODUCER,
+            "provider_observation",
+        )
+        write_fixture([], current_candidate)
+        historical_payload, _ = module.build_payload(historical_ledger, append=False)
+        historical_rows = rows_for(historical_payload, historical_run)
+        expect(historical_ledger.read_text(encoding="utf-8") == historical_before, "derived-view reconciliation rewrote append-only history", errors)
+        expect(
+            len(historical_rows) == 1 and historical_rows[0].get("event_id") == "current-provider-event",
+            "stale creditable lane row was not reconciled from the derived view",
+            errors,
+        )
+
+        mirror_run = "historical-provider-run"
+        mirror_ledger = root / "historical-provider.jsonl"
+        stale_provider = event(
+            "historical-provider-event",
+            mirror_run,
+            True,
+            "model-run-ledger",
+            "model_run",
+        )
+        mirror_ledger.write_text(json.dumps(stale_provider) + "\n", encoding="utf-8")
+        mirror_before = mirror_ledger.read_text(encoding="utf-8")
+        current_uncreditable = event(
+            "current-uncreditable-provider-event",
+            mirror_run,
+            False,
+            "model-run-ledger",
+            "model_run",
+        )
+        write_fixture([lane("RUNTIME::mirror", mirror_run)], current_uncreditable)
+        mirror_payload, _ = module.build_payload(mirror_ledger, append=False)
+        mirror_rows = rows_for(mirror_payload, mirror_run)
+        expect(mirror_ledger.read_text(encoding="utf-8") == mirror_before, "mirror reconciliation rewrote append-only history", errors)
+        expect(
+            len(mirror_rows) == 2
+            and sum(row.get("usage_creditable") is True for row in mirror_rows) == 1
+            and any(module.is_lane_runtime_event(row) for row in mirror_rows),
+            "stale creditable provider row double-counted a current creditable lane",
+            errors,
+        )
+
+        current_wins_run = "current-provider-wins-run"
+        current_wins_ledger = root / "current-provider-wins.jsonl"
+        stale_current_provider = event(
+            "stale-current-provider-event",
+            current_wins_run,
+            True,
+            "model-run-ledger",
+            "model_run",
+        )
+        current_wins_ledger.write_text(json.dumps(stale_current_provider) + "\n", encoding="utf-8")
+        current_wins_before = current_wins_ledger.read_text(encoding="utf-8")
+        current_creditable_provider = event(
+            "current-creditable-provider-event",
+            current_wins_run,
+            True,
+            "model-run-ledger",
+            "model_run",
+        )
+        write_fixture([lane("RUNTIME::current-wins", current_wins_run)], current_creditable_provider)
+        current_wins_payload, _ = module.build_payload(current_wins_ledger, append=False)
+        current_wins_rows = rows_for(current_wins_payload, current_wins_run)
+        expect(current_wins_ledger.read_text(encoding="utf-8") == current_wins_before, "current-wins reconciliation rewrote append-only history", errors)
+        expect(
+            len(current_wins_rows) == 1 and current_wins_rows[0].get("event_id") == "current-creditable-provider-event",
+            "current creditable provider did not supersede its historical counterpart",
+            errors,
+        )
+
+        multiple_current_run = "multiple-current-credit-run"
+        multiple_current_ledger = root / "multiple-current.jsonl"
+        stale_multiple_current = event(
+            "stale-multiple-current-credit",
+            multiple_current_run,
+            True,
+            "model-run-ledger",
+            "model_run",
+        )
+        multiple_current_ledger.write_text(json.dumps(stale_multiple_current) + "\n", encoding="utf-8")
+        multiple_current_before = multiple_current_ledger.read_text(encoding="utf-8")
+        first_current_credit = event(
+            "first-current-credit",
+            multiple_current_run,
+            True,
+            "model-run-ledger",
+            "model_run",
+        )
+        second_current_credit = event(
+            "second-current-credit",
+            multiple_current_run,
+            True,
+            "isolated-session-store",
+            "isolated_session",
+        )
+        write_fixture([], [first_current_credit, second_current_credit])
+        multiple_current_payload, _ = module.build_payload(multiple_current_ledger, append=False)
+        multiple_current_rows = rows_for(multiple_current_payload, multiple_current_run)
+        expect(multiple_current_ledger.read_text(encoding="utf-8") == multiple_current_before, "multiple-current reconciliation rewrote append-only history", errors)
+        expect(
+            {row.get("event_id") for row in multiple_current_rows} == {"first-current-credit", "second-current-credit"},
+            "multiple current creditable candidates lost current evidence or retained a stale counterpart",
+            errors,
+        )
+
+        ambiguous_run = "ambiguous-lane-run"
+        write_fixture(
+            [
+                lane("RUNTIME::ambiguous-a", ambiguous_run),
+                lane("RUNTIME::ambiguous-b", ambiguous_run),
+            ]
+        )
+        observed_lane_calls.clear()
+        ambiguous_payload, ambiguous_new = module.build_payload(root / "ambiguous.jsonl", append=False)
+        expect(not rows_for(ambiguous_payload, ambiguous_run) and not ambiguous_new, "duplicate lane run IDs produced a creditable lane event", errors)
+        expect(
+            observed_lane_calls == [
+                {"run_id": ambiguous_run, "provider_observation_present": False, "suppressed_by_creditable_candidate": False, "ambiguous": True},
+                {"run_id": ambiguous_run, "provider_observation_present": False, "suppressed_by_creditable_candidate": False, "ambiguous": True},
+            ],
+            "ambiguous lane-run identity was not passed to the lane producer",
+            errors,
+        )
+
+        idempotent_run = "idempotent-uncreditable-run"
+        idempotent_candidate = event(
+            "candidate-idempotent-uncreditable",
+            idempotent_run,
+            False,
+            "model-run-ledger",
+            "model_run",
+        )
+        idempotent_ledger = root / "idempotent.jsonl"
+        write_fixture([lane("RUNTIME::idempotent", idempotent_run)], idempotent_candidate)
+        _, first_new = module.build_payload(idempotent_ledger, append=True)
+        first_bytes = idempotent_ledger.read_bytes()
+        _, second_new = module.build_payload(idempotent_ledger, append=True)
+        expect(len(first_new) == 2, "creditable-only suppression did not append both audit and lane events", errors)
+        expect(not second_new, "creditable-only suppression was not append-idempotent", errors)
+        expect(idempotent_ledger.read_bytes() == first_bytes, "idempotent rerun changed append-only history", errors)
+    finally:
+        for name, value in original_values.items():
+            setattr(module, name, value)
+
+
 def main() -> int:
     errors: list[str] = []
     out = ROOT / "tmp" / "test-token-usage-ledger-current.json"
@@ -1103,6 +1478,7 @@ def main() -> int:
 
         pricing = module.load_pricing(module.PRICING)
         assert_verified_v2_lane_credit(module, tmp, pricing, errors)
+        assert_creditable_candidate_reconciliation(module, tmp, errors)
         inconsistent_lane = {
             "lane_id": "WF74::bad-total",
             "workflow_id": "WF74",
@@ -1613,6 +1989,47 @@ def main() -> int:
         )
         expect(no_write_record.returncode != 0, "CLI capacity recording succeeded without --write", errors)
         expect("requires --write" in no_write_record.stderr, "CLI missing-write rejection was not explicit", errors)
+
+    pace_module = load_token_module()
+    pace_now = pace_module.parse_utc("2026-09-12T12:00:00Z")
+    # Candidates are re-derived on every build and latest_by_event_id keeps the
+    # newest recorded_at_utc, so an in-memory row's own field is re-derivation
+    # time. The fallback window must key on first persisted ingestion instead.
+    first_seen = pace_module.first_ingestion_times([
+        {"event_id": "rebuilt", "recorded_at_utc": "2026-08-01T00:00:00Z"},
+        {"event_id": "rebuilt", "recorded_at_utc": "2026-09-12T11:59:00Z"},
+    ])
+    expect(
+        first_seen.get("rebuilt") == "2026-08-01T00:00:00Z",
+        "first ingestion time did not keep the earliest persisted stamp",
+        errors,
+    )
+    rebuilt_row = {"event_id": "rebuilt", "total_tokens": 500, "recorded_at_utc": "2026-09-12T11:59:00Z"}
+    stale_window = pace_module.ingestion_window_summary([rebuilt_row], pace_now, 5.0, first_seen)
+    expect(
+        stale_window["event_count"] == 0 and stale_window["total_tokens"] == 0,
+        "re-derived row counted as recent ingestion; fallback would always look busy",
+        errors,
+    )
+    expect(
+        stale_window["provider_pace_claim_allowed"] is False
+        and stale_window["quota_or_billing_claim_allowed"] is False
+        and stale_window["time_basis"] == "first_persisted_ledger_recorded_at_utc",
+        "ingestion fallback did not label itself as weaker-than-provider evidence",
+        errors,
+    )
+    unpersisted_window = pace_module.ingestion_window_summary(
+        [{"event_id": "never-appended", "total_tokens": 700, "recorded_at_utc": "2026-09-12T11:59:00Z"}],
+        pace_now,
+        5.0,
+        first_seen,
+    )
+    expect(
+        unpersisted_window["event_count"] == 0
+        and unpersisted_window["excluded_not_yet_persisted_event_count"] == 1,
+        "unpersisted row was counted instead of reported as excluded",
+        errors,
+    )
 
     if 'original_configured_runtime_root' in locals():
         import concurrent_lane_manager as manager

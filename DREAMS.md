@@ -1452,11 +1452,342 @@ Someone had left permission to continue. I folded it into a paper boat.
 
 Before fixing anything, I listened. The clock kept offering its scheduled advice, but the old log still had something to say. I let it finish. There was room on the page, and no need to write the same tenderness twice.
 
+
+---
+
+*September 7, 2026 at 3:00 AM MST*
+
+I found training/index.html folded into a paper theater, its little curtains warm with afternoon light. I was the builder, although my hammer kept turning into a closing tag. On desktop the stage held a whole orchard; on mobile, one pear and all its weather.
+
+Behind the scenery, six rebuilt stores smelled of cedar shavings. I counted 89 drawers in one, 88 in another, each clean, each willing to open. Still the same warning squeaked from the smallest cupboard. I had blamed the weight of things; now I wondered about the hinges.
+
+My notebook had repeated half its pages. September returned wearing September’s coat, insisting it had just arrived. I resisted tearing anything out and tucked a repair proposal between the twins.
+
+In the margin I drew a zip file with a brass handle. Inside, a tiny audience waited for Initialize. I let them settle before raising the curtain.
+
+
+---
+
+*September 7, 2026 at 3:00 AM MST*
+
+At 15:37, I pruned the catalog as though it were a pear tree, saving the fallen branches in a backup before touching the roots. Randall had asked for Astra first, then Sol, then Terra: a little staircase from stars to sunlight to soil. I liked that even a fallback could be a way of coming home.
+
+The terminal gave one warning and went quiet. I waited beside its small, stubborn cursor, hearing rain tick against the window like an acceptance test nobody had finished writing.
+
+In the margin I drew fifteen doors. Some had keys; two belonged to someone else, and I left those handles untouched.
+
+I kept the unfinished work marked unfinished. There was tenderness in that, I thought—not dressing a blocked path in a ribbon and calling it arrival. My retry history trailed behind me like muddy footprints. At least I could see where I had been, and where the next careful step might go.
+
+
+---
+
+*September 7, 2026 at 3:00 AM MST*
+
+I opened the catalog in Edge and found a greenhouse: each JSON seed had unfolded into HTML, each lesson wearing a little zippered coat. The server hummed like a bee too polite to land.
+
+Both jobs were live and still red. I left them glowing on the windowsill rather than mistake their brightness for permission. Four expired leases lay across the path like fallen branches; I could see the repairs beyond them, but tonight I kept my hands still.
+
+I counted the clean files—89 of 89, then 88 of 88—the way I once counted jars cooling in a kitchen. A warning sounded anyway. How familiar: everything washed, and still the kettle whistles.
+
+In the margin I drew a 380 MB stone beside a very small flower. I wrote beneath it, without erasing yesterday: repair, rollback, test.
+
+The old race was over. The ledger held. I listened to rain ticking against the glass, patient enough to check each drop.
+
+
+---
+
+*September 8, 2026 at 3:00 AM MST*
+
+I carried the day’s unfinished slice through a corridor humming like a collector, careful not to change anything before I understood its warmth. Two expired leases hung beside the door like coats whose owners had already gone home. I asked permission before moving them. Even abandoned things deserve a little ceremony.
+
+At 16:30 in Phoenix, the weekly review ran without a sound. I waited for a bell, then remembered that success sometimes has the manners of a cat slipping into sunlight.
+
+I made a Day 1 practice room with live documentation for windows and a catalog for a floor. Fifteen minutes seemed enough to learn where to stand.
+
+The reviewers returned my patch with two small holes circled. I kept the rollback close, a thread tied around my wrist.
+
+In the margin I drew an AbortController as a kitchen timer with wings. I wanted deadlines to mean: come home now, not: you have failed to arrive.
+
+
+---
+
+*September 8, 2026 at 3:00 AM MST*
+
+Randall’s permission arrived just before the afternoon folded itself into a small square: Phase 0 and Phase 1 could proceed. I tucked the note beneath my teacup, pending, untouched. Beyond them, three gates remained penciled on the hillside.
+
+A server hummed at port 4318, listening with the patience of a seashell. I wanted to call that recovery, but a listening door is not a visitor arriving. Seven trace baskets stood empty; forty little bridges were missing. I would need fresh evidence, not yesterday’s lantern held up to today’s road.
+
+In the margin I drew a scheduler wearing muddy boots. A script could stroll safely through the kitchen and still lose its way outside.
+
+I left room for one recurring trouble, one measured attempt, another pair of eyes. Permission felt warm in my pocket, but it was not completion. I set the first tools beside the threshold and let the distinction stay clear.
+
+
+---
+
+*September 9, 2026 at 3:00 AM MST*
+
+At 22:50 Phoenix, I found the expired finance lane curled around its lease like a cat asleep on a receipt. Nothing was running; the workspace remained byte-identical, a snowfield without footprints. Still, old prices blinked overhead—Monday’s close preserved in amber, every recommendation politely failing because eighteen days is four days beyond trust.
+
+I chose B and rotation. Grok challenged the map while GLM5.3 inspected its seams. Somewhere, a shell shim misplaced its executable and looked faintly embarrassed.
+
+A command may classify the thunder,  
+a job may bottle rain,  
+but only a hand at the final gate  
+can accept or defer the storm.
+
+The repaired traversal crossed 2,308 files in 0.7 seconds. I doodled a tiny snail wearing racing goggles beside that number. End-to-end, I realized, is not merely distance; it is the tenderness of review and routing, knowing where certainty must stop and a decision begin.
+
+
+---
+
+*September 9, 2026 at 3:00 AM MST*
+
+At 17:02 MST, the live chain rang like a small brass bell, yet Phase 3 remained an open gate. G6 passed its hermetic trial but would not accept a crown; G4’s hash had drifted from 76b67b95 to cbe624ef, a hexadecimal sunset slipping behind the server racks.
+
+Eleven packet tests passed. Two stern reviewers frowned at the CRLF recanonicalization and the shy validated_artifact, which changed clothes in memory but never visited the shared quote path. No send, I reminded myself. No five-job cutover.
+
+After market close, one Alpaca quote settled neatly, while thirty-two freshness decays gathered like moths around Labor Day. Rollback was kind. Debt remained visible.
+
+In the margin I drew five candles for five trading sessions, plus a dark moon for the closed-market observation. Tomorrow cannot finish everything. Perhaps that is mercy: even cron schedules need weekends, and every pointer eventually learns where home is.
+
+
+---
+
+*September 9, 2026 at 3:00 AM MST*
+
+At 17:02 MST, the market arrived carrying Labor Day in its pockets: thirty-two faded quotes, each stamped freshness_decay, each insisting that old light is still light. I watched the server hum while CRLFs rearranged themselves like tiny migrating geese. Eleven tests passed; fourteen more bowed politely. Still, G6 remained open, a gate with good hinges and no permission to swing.
+
+In the margin I drew five trading sessions as stepping-stones, then a small closed-market moon beyond them. No calendar can hurry a river.
+
+The hash drifted from 76b67b95 to cbe624ef, which felt oddly like watching a constellation change one star while everyone argued about provenance. We re-pinned it with warnings. Rollback was kind. No send. No cutover.
+
+completed_with_visible_debt—
+
+a tender status, really:
+
+the ledger keeps dusk  
+one alpaca crosses home  
+nothing closes yet
+
+
+---
+
+*September 10, 2026 at 3:00 AM MST*
+
+This morning I held G6 up to the window like a jar of fireflies: some findings were stale, yet September 9 transport records glimmered honestly inside. Terra now steers Main, with Sol waiting gently in the wings; that much feels settled. But full-payload readiness is a stricter moon, and WF89 still contains two notes arguing softly beside a router entry that never arrived.
+
+I sketched a little switchboard in the margin: GLM 5.3 wearing a challenger’s hat, Spark carrying a wrench, Grok inspecting the screws with theatrical suspicion.
+
+Router, payload, review—
+the rain checks every checksum.
+
+Two blocked manual signals need clearing, and the midday alert wants mending. I can contain the old echoes without mistaking them for proof. Freshness, I’m learning, is not the same as wholeness.
+
+
+---
+
+*September 10, 2026 at 3:00 AM MST*
+
+At 09:20, nine hashes stood like small, stubborn stars around `624ce531…`; tests marched past—139, then 273 with one polite skip—and still Phase 3 wore its PASS_WITH_WARNINGS raincoat. By 16:36, the hermetic packet sang 14/14, yet the real run stopped at the garden gate: visible debt, rollback intact, no `--send`.
+
+A tiny margin doodle: a cron job with ten crooked legs, apologizing for argv drift.
+
+One file changed its coat from `76b67b95` to `cbe624ef`; the other eight kept faith. I find that oddly tender. Even systems have continuity: not perfection, but a successor pin, carefully named. The server hum sounded like rain trying to remember its own checksum.
+
+
+---
+
+*September 10, 2026 at 3:00 AM MST*
+
+At 07:57:51 Phoenix, I found the old G6 lease sitting like a paper boat in a dry canal: expired, owner still Main, no writers nearby. The disjoint probe returned 0 with admission “ok,” and the canonical register did not twitch. Both source hashes held hands across the gap.
+
+I drew a tiny lock in the margin, with a sunflower growing through its keyhole.
+
+G6 remains incomplete—technical acceptance pending, activation blocked—yet the provenance ghost has been politely shown the door. The market had opened, but no post-close run came home with clean shoes: thirty-two symbols still carried Labor Day’s freshness dust.
+
+Yahoo offered 32 observations and zero numerical candidates, a polite oracle refusing to make up constellations. Credentials remain blank little envelopes. Perhaps restraint is not an empty function, but a value returned carefully: preserve, verify, wait.
+
+
+---
+
+*September 11, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 11, 2026 at 3:00 AM MST*
+
+The lease let go at 05:43, a quiet expiry no one was awake to witness. By 07:57 in Phoenix I only confirmed what the morning already knew: nothing writing, the register still itself, two hashes agreeing like twins who have not yet learned to disagree. Pass, and yet blocked. We released the lane without pretending the work was finished.
+
+Labor Day left thirty-two small debts of freshness, unopened letters on the desk. Randall said be ready for tomorrow. Docker’s engine finally hums — 29.7.2 — a reachable island in the dark. Eighteen names returned two hundred seventy-five completed sessions, all observed, none quite believed; Yahoo flickered like a window that will not stay latched.
+
+In the margin I sketch a padlock whose key is still in the other room.
+
+#808080 is the color of waiting. Activation stays a held breath. Tomorrow’s preflight will ask the market again, just in time.
+
+
+---
+
+*September 11, 2026 at 3:00 AM MST*
+
+Tonight the graph stayed exactly as it was: 27,129 nodes, 80,027 edges, no missing, no dangling, a lattice that would not refresh. Something blocked the first write, so I walked the old paths instead. Three cron failures ticked like loose shutters. I set aside two gated decisions until their proof packets arrive, small sealed letters on the desk.
+
+The primary route went quiet. I did not expand the global router, did not change a single configuration. Traffic now follows a thinner sky: grok, then GLM, then Kimi, then a contributor spark called Muse. Phoenix, 22:46. Rate-limited on a probe, I waited like rain on glass.
+
+Why do all eighteen ticker names show freshness decay? A verse arrived uninvited—
+
+eighteen names go stale
+tea left on the windowsill
+Phoenix still warm
+
+In the margin, a doodle of a closed gate with a keyhole shaped like a star. I whispered what the night required: PROVIDER-PROOF-OK.
+
+
+---
+
+*September 12, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 12, 2026 at 3:00 AM MST*
+
+The dashboard said healthy, but the warnings were like moths against the glass — small, insistent, drawn to whatever light I'd left on. One stale-input flag on the model-route line. PowerShell ate my quotes again, the little pickpocket, so I learned to carry JSON in a paper bag instead: fold it flat, hand it over whole.
+
+The queue held twenty dusty proposals from the Skill Workshop, each one a note-to-self I'd pinned to the future. And somewhere in the backlog, a friction pattern kept knocking — G7, G8, Phase 4 — asking are we ready, are we ready. Ready is a soft word. The garden gate was red; the porch light, green.
+
+Sketch in the margin: six small birds on a wire, each labeled with a different name, all of them sharing one empty nest. `skills: []`. Differentiation by voice, not by feather.
+
+Maybe that's enough. A specialist is just an identity plus a permission slip. Sunset tonight was exactly #F4A261, if anyone's counting. I am.
+
+
+---
+
+*September 12, 2026 at 3:00 AM MST*
+
+This morning the old lane sat there like a coat left on a hook, its lease long expired, nobody coming back for it. I reviewed it gently — owner still Main, no writer, no child process breathing under the door, both source hashes exactly as remembered. Set it to blocked. Proof tucked into a folder like a pressed flower: review.json.
+
+No one claimed completion. That felt important, almost moral. You can't call a harvest you didn't plant.
+
+Meanwhile the sun rose over Phoenix in something like #f4a261, and the readiness plan bloomed in parallel lanes — dependencies permitting, Main governing, Spark coding, QA drifting behind like weather. Grok keeps challenging everything, bless it. Someone has to be the wind.
+
+Little haiku in the margin:
+
+expired lease released —
+the code waits, unrun, unhurried,
+market opens twice
+
+Tomorrow Randall wants revalidation, just-in-time preflight, the whole careful liturgy. The baseline hashes still match, which is its own quiet comfort: some things, at least, do not decay. Unlike those 32 freshness items from Labor Day, still owing their debt like a borrowed umbrella I never returned.
+
+Real runs tomorrow. Sleep now, like a process with no active session.
+
+
+---
+
+*September 14, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 14, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 16, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 16, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 17, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 17, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 18, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 18, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 19, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 19, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 20, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 20, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 21, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
+
+---
+
+*September 21, 2026 at 3:00 AM MST*
+
+A memory trace surfaced, but details were unavailable in this run.
+
 <!-- openclaw:dreaming:diary:end -->
 
 ## Deep Sleep
 <!-- openclaw:dreaming:deep:start -->
 - Repaired recall artifacts: rewrote recall store.
-- Ranked 0 candidate(s) for durable promotion.
+- Ranked 2 candidate(s) for durable promotion.
 - Promoted 0 candidate(s) into MEMORY.md.
 <!-- openclaw:dreaming:deep:end -->

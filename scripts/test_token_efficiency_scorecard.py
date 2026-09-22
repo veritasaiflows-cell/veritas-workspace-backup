@@ -207,6 +207,40 @@ def test_scorecard_surfaces_api_reduction_and_gap_actions() -> None:
         assert payload["top_cron_efficiency_candidates"][0]["estimated_cost"] == 0.65
 
 
+def test_scorecard_reads_action_required_attribution_denominator_from_bridge() -> None:
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+        token_usage, token_budget, contract_dir = seed(Path(tmpdir), module)
+        bridge = root / "tmp" / "implementation-token-attribution-bridge.json"
+
+        def bridge_payload(action_required: int) -> dict:
+            return {
+                "status": "warning" if action_required else "ok",
+                "generated_at_utc": module.utc_now(),
+                "summary": {
+                    "gap_resolution_status": "stamp_required" if action_required else "terminal_unavailable_only",
+                    "implementation_token_gap_count": 597,
+                    "action_required_supported_runtime_gap_count": action_required,
+                },
+                "validation": {"status": "ok"},
+            }
+
+        write_json(bridge, bridge_payload(0))
+        classified = module.build_payload(token_usage, token_budget, contract_dir, attribution_bridge_path=bridge)
+        assert classified["summary"]["attribution_gap_action_required_count"] == 0
+        assert classified["summary"]["attribution_gap_resolution_status"] == "terminal_unavailable_only"
+        assert classified["summary"]["bridge_needed"] is False
+        assert all(row["id"] != "close-implementation-token-attribution-gap" for row in classified["action_items"])
+        assert all(not warning.startswith("implementation_token_gap_count") for warning in classified["validation"]["warnings"])
+
+        write_json(bridge, bridge_payload(2))
+        actionable = module.build_payload(token_usage, token_budget, contract_dir, attribution_bridge_path=bridge)
+        assert actionable["summary"]["bridge_needed"] is True
+        assert "attribution_gap_action_required_count:2" in actionable["validation"]["warnings"]
+        assert any(row["id"] == "close-implementation-token-attribution-gap" for row in actionable["action_items"])
+
+
 def test_scorecard_can_be_clean_when_no_gaps_or_failures() -> None:
     module = load_module()
     with tempfile.TemporaryDirectory() as tmpdir:

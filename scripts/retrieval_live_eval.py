@@ -147,6 +147,82 @@ def is_within(path: Path, parent: Path) -> bool:
         return False
 
 
+def frozen_corpus_errors(
+    *,
+    root: Path,
+    registry: dict[str, Any],
+    gold: dict[str, Any],
+    seen_paths: set[str],
+) -> tuple[list[str], list[str], dict[str, Any] | None]:
+    """Validate frozen-corpus binding without weakening any hash/stale/schema guard.
+
+    Fail-closed on: missing/invalid version, corpus root escape, source outside
+    corpus root, symlink escape, gold version mismatch. Live registries (no
+    block) keep prior behavior plus a non-repeatability warning.
+    """
+    errors: list[str] = []
+    warnings: list[str] = []
+    if "frozen_corpus" not in registry:
+        warnings.append("live_wiki_binding_not_repeatable")
+        return errors, warnings, None
+    block = registry.get("frozen_corpus")
+    if not isinstance(block, dict):
+        errors.append("frozen_corpus_block_malformed")
+        return errors, warnings, None
+    version = block.get("corpus_version")
+    corpus_root_raw = block.get("corpus_root")
+    if not isinstance(version, str) or not version.strip():
+        errors.append("frozen_corpus_version_missing_or_invalid")
+    if not isinstance(corpus_root_raw, str) or not corpus_root_raw.strip():
+        errors.append("frozen_corpus_root_missing_or_invalid")
+        return errors, warnings, None
+    if Path(corpus_root_raw).is_absolute():
+        errors.append("frozen_corpus_root_outside_root")
+        return errors, warnings, None
+    corpus_dir = resolve_under(root, corpus_root_raw)
+    if not is_within(corpus_dir, root):
+        errors.append("frozen_corpus_root_outside_root")
+        return errors, warnings, None
+    try:
+        corpus_resolved = corpus_dir.resolve()
+    except OSError:
+        errors.append("frozen_corpus_root_unresolvable")
+        return errors, warnings, None
+    if corpus_resolved == root.resolve():
+        errors.append("frozen_corpus_root_is_workspace_root")
+        return errors, warnings, None
+    for source_path in sorted(seen_paths):
+        resolved = resolve_under(root, source_path)
+        if not is_within(resolved, corpus_dir):
+            errors.append(f"frozen_corpus_source_outside_corpus_root:{source_path}")
+            continue
+        try:
+            real = resolved.resolve()
+        except OSError:
+            errors.append(f"frozen_corpus_source_unresolvable:{source_path}")
+            continue
+        if not is_within(real, root) or not is_within(real, corpus_dir):
+            errors.append(f"frozen_corpus_symlink_escape:{source_path}")
+    if "frozen_corpus" not in gold:
+        errors.append("gold_frozen_corpus_version_missing")
+    elif not isinstance(gold.get("frozen_corpus"), dict):
+        errors.append("gold_frozen_corpus_block_malformed")
+    else:
+        gold_version = gold.get("frozen_corpus").get("corpus_version")
+        if not gold_version:
+            errors.append("gold_frozen_corpus_version_missing")
+        elif gold_version != version:
+            errors.append("gold_frozen_corpus_version_mismatch")
+    descriptor = {
+        "corpus_version": version if isinstance(version, str) else None,
+        "corpus_root": corpus_root_raw if isinstance(corpus_root_raw, str) else None,
+        "snapshot_manifest_sha256": str(registry.get("source_manifest_sha256") or ""),
+        "live_provenance": block.get("live_provenance") if isinstance(block.get("live_provenance"), dict) else None,
+        "created_at_utc": block.get("created_at_utc"),
+    }
+    return errors, warnings, descriptor
+
+
 def reset_sqlite_artifacts(path: Path) -> None:
     """Remove only exact, named evaluator outputs before an isolated rebuild."""
     for candidate in (path, Path(str(path) + "-wal"), Path(str(path) + "-shm")):
@@ -205,6 +281,11 @@ def validate_inputs(
     declared_registry = str(gold.get("source_registry") or "")
     if declared_registry and resolve_under(root, declared_registry).resolve() != registry_path.resolve():
         errors.append("gold_source_registry_path_mismatch")
+    corpus_errors, corpus_warnings, corpus_descriptor = frozen_corpus_errors(
+        root=root, registry=registry, gold=gold, seen_paths=seen_paths,
+    )
+    errors.extend(corpus_errors)
+    warnings.extend(corpus_warnings)
 
     fixtures_raw = gold.get("fixtures")
     fixtures = fixtures_raw if isinstance(fixtures_raw, list) else []
@@ -257,7 +338,11 @@ def validate_inputs(
                 if not isinstance(start_line, int) or not isinstance(end_line, int) or start_line < 1 or end_line < start_line:
                     errors.append(f"{role}_passage_range_invalid:{fixture_id}:{source_path}")
                     continue
-                line_count = len(resolve_under(root, source_path).read_text(encoding="utf-8", errors="replace").splitlines())
+                resolved_passage = resolve_under(root, source_path)
+                if not resolved_passage.is_file():
+                    errors.append(f"{role}_passage_source_missing:{fixture_id}:{source_path}")
+                    continue
+                line_count = len(resolved_passage.read_text(encoding="utf-8", errors="replace").splitlines())
                 if end_line > line_count:
                     errors.append(f"{role}_passage_range_out_of_bounds:{fixture_id}:{source_path}")
     for required_class, count in class_counts.items():
@@ -274,6 +359,7 @@ def validate_inputs(
         "status": "ok" if not errors else "error",
         "errors": errors,
         "warnings": warnings,
+        "frozen_corpus": corpus_descriptor,
         "source_count": len(verified_sources),
         "fixture_count": len(fixtures),
         "fixture_class_counts": class_counts,
@@ -359,6 +445,10 @@ def _artifact_reference_binding(
         "registry_sha256": ("source_registry_sha256", "registry_sha256"),
         "source_manifest_sha256": ("source_manifest_sha256",),
     }
+    if str(expected.get("corpus_version") or ""):
+        # Frozen corpora must bind the exact corpus version; live registries
+        # carry no version and keep prior supplemental-artifact behavior.
+        aliases["corpus_version"] = ("corpus_version",)
     for expected_key, field_names in aliases.items():
         values = [
             str(container.get(field_name) or "")
@@ -377,11 +467,15 @@ def _artifact_reference_binding(
 
 
 def _reference_hashes(preflight: dict[str, Any]) -> dict[str, str]:
-    return {
+    binding: dict[str, str] = {
         "gold_sha256": str(preflight.get("gold_sha256") or ""),
         "registry_sha256": str(preflight.get("registry_sha256") or ""),
         "source_manifest_sha256": str(preflight.get("source_manifest_sha256") or ""),
     }
+    corpus = preflight.get("frozen_corpus")
+    if isinstance(corpus, dict) and corpus.get("corpus_version"):
+        binding["corpus_version"] = str(corpus.get("corpus_version") or "")
+    return binding
 
 
 def _validate_independent_label_audit_artifact(
@@ -1329,7 +1423,10 @@ def run_mutation_self_tests(
 
 def compatibility_key(report: dict[str, Any]) -> str:
     providers = report.get("providers") or {}
+    frozen_inputs = (report.get("inputs") or {}).get("frozen_corpus") or {}
     material = {
+        "corpus_version": frozen_inputs.get("corpus_version"),
+        "corpus_root": frozen_inputs.get("corpus_root"),
         "source_manifest_sha256": (report.get("inputs") or {}).get("source_manifest_sha256"),
         "gold_sha256": (report.get("inputs") or {}).get("gold_sha256"),
         "chunk_snapshot_sha256": (report.get("index_contract") or {}).get("chunk_snapshot_sha256"),
@@ -1351,6 +1448,7 @@ def history_entry(report: dict[str, Any]) -> dict[str, Any]:
         "recorded_at_utc": utc_now(),
         "report_generated_at_utc": report.get("generated_at_utc"),
         "status": report.get("status"),
+        "frozen_corpus_version": ((report.get("inputs") or {}).get("frozen_corpus") or {}).get("corpus_version"),
         "compatibility_key": compatibility_key(report),
         "source_manifest_sha256": (report.get("inputs") or {}).get("source_manifest_sha256"),
         "gold_sha256": (report.get("inputs") or {}).get("gold_sha256"),
@@ -1662,6 +1760,7 @@ def run_evaluation(
             ],
             "does_not_measure": [
                 "production-corpus retrieval quality",
+                "current live wiki freshness (frozen corpus only; live-wiki drift never affects this score)",
                 "calibrated abstention quality",
                 "investment skill, answer quality, or execution readiness",
             ],
@@ -1669,6 +1768,7 @@ def run_evaluation(
         "inputs": {
             "registry_path": rel(root, registry_path),
             "gold_path": rel(root, gold_path),
+            "frozen_corpus": preflight.get("frozen_corpus"),
             "source_manifest_sha256": expected_manifest,
             "registry_sha256": preflight.get("registry_sha256"),
             "gold_sha256": preflight.get("gold_sha256"),
@@ -1750,6 +1850,9 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- Generated: `{report.get('generated_at_utc')}`",
         f"- Validation: `{(report.get('validation') or {}).get('status')}`",
         f"- Gold review: `{(report.get('human_review') or {}).get('status')}`",
+        f"- Frozen corpus: `{((report.get('inputs') or {}).get('frozen_corpus') or {}).get('corpus_version')}` "
+        f"(`{((report.get('inputs') or {}).get('frozen_corpus') or {}).get('corpus_root')}`); "
+        "scores on this frozen snapshot never claim current wiki freshness.",
         f"- Provider promotion allowed: `{(report.get('authority_boundary') or {}).get('provider_promotion_allowed')}`",
     ]
     if label_audit:

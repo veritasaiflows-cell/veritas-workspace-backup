@@ -20,7 +20,6 @@ Run these from the workspace root before updating notes:
 
 ```text
 python scripts/technical_refresh.py
-python scripts/market_state_refresh.py          # when macro, rates, energy, or tape context matters
 python scripts/earnings_calendar_enrichment.py  # when the earnings-date map may have shifted
 python scripts/deployment_check.py
 python scripts/trigger_sheet_refresh.py

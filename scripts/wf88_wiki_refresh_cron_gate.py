@@ -6,6 +6,16 @@ stops. This gate checks only the conditions that decide whether the daily
 outcome-grading/wiki refresh can quietly complete: outcome grades exist, the
 recommendation leak guard is clean, and no auto-apply/execution authority leaked
 into the refreshed surfaces.
+
+Producer-evidence honesty (fail-closed allowlist): the gate verifies the wiki
+packet's embedded producer evidence (retrieval, decision-compiler, RSI
+outcome) is fresh AND healthy. A fresh wiki packet timestamp alone never
+greens the gate: each descriptor must declare present=true, a non-blank
+string status with no failure markers (blocked/fail_closed/fail_open/failed/
+critical/error), and validation status exactly ok-or-warning. Missing, blank,
+or failure-marked evidence blocks. Review-only warnings (RSI maturity,
+decision-compiler review-only state, unexecuted owner-gated pilots) stay
+warnings and never become hard failures.
 """
 from __future__ import annotations
 
@@ -28,6 +38,14 @@ WF88_WIKI = TMP / "wf88-wiki-synthesis-packet.json"
 OUT = TMP / "wf88-wiki-refresh-cron-gate.json"
 
 SCHEMA = "veritas.wf88_wiki_refresh_cron_gate.v1"
+
+PRODUCER_EVIDENCE = {
+    "retrieval_quality_scorecard": {"max_age_hours": 168},
+    "wf88_decision_compiler": {"max_age_hours": 24},
+    "rsi_outcome_scorecard": {"max_age_hours": 24},
+}
+
+EVIDENCE_VALIDATION_ALLOWLIST = {"ok", "warning"}
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -55,6 +73,21 @@ def as_dict(value: Any) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
+def parse_utc(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    text = value.strip()
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
 def rel(path: Path) -> str:
     try:
         return path.resolve().relative_to(ROOT.resolve()).as_posix()
@@ -74,6 +107,59 @@ def int_value(value: Any) -> int:
         return 0
 
 
+def blocked_text(value: Any) -> bool:
+    text = str(value or "").lower()
+    return (
+        ("blocked" in text)
+        or ("fail_closed" in text)
+        or ("fail_open" in text)
+        or ("failed" in text)
+        or ("critical" in text)
+        or ("error" in text)
+    )
+
+
+PRODUCER_STATUS_ALLOWLIST = frozenset({"ok", "warning", "decision_objects_warning_review_only", "wiki_synthesis_warning_no_apply_authority"})
+
+
+def valid_evidence_status(value: Any) -> bool:
+    """Explicit allowlist for producer-evidence statuses.
+
+    Enumerated from test_gate_accepts_known_review_only_statuses and exact
+    current producer descriptors (ok / decision_objects_warning_review_only /
+    warning). Unknown/banana/hyphenated fail-open/fail-closed and non-string
+    types reject; legitimate review-only states still pass.
+    """
+    return isinstance(value, str) and value.strip() in PRODUCER_STATUS_ALLOWLIST
+
+
+def producer_evidence_healthy(descriptor: dict[str, Any]) -> bool:
+    """Fail-closed health allowlist for one embedded producer descriptor."""
+    if descriptor.get("present") is not True:
+        return False
+    if descriptor.get("validation_status") not in EVIDENCE_VALIDATION_ALLOWLIST:
+        return False
+    return valid_evidence_status(descriptor.get("status"))
+
+
+def producer_evidence_freshness(descriptor: dict[str, Any], *, max_age_hours: float) -> tuple[bool, str, float | None]:
+    """Check embedded producer evidence without trusting packet timestamps.
+
+    Recomputes age from the descriptor's generated_at_utc against the producer
+    contract window. Missing or unparseable timestamps can never count as
+    fresh evidence.
+    """
+    if not descriptor:
+        return False, "missing_evidence_descriptor", None
+    generated = parse_utc(descriptor.get("generated_at_utc"))
+    if generated is None:
+        return False, "unknown_generated_at", None
+    age_hours = round((datetime.now(timezone.utc) - generated).total_seconds() / 3600, 2)
+    if age_hours < 0 or age_hours > float(max_age_hours):
+        return False, f"stale_age_hours_{age_hours}_max_{max_age_hours}", age_hours
+    return True, "fresh", age_hours
+
+
 def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
     grading = load(paths["grading"])
     recommendation = load(paths["recommendation_ledger"])
@@ -87,6 +173,8 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
     wiki_summary = as_dict(wiki.get("summary"))
     leak_guard = as_dict(wiki.get("recommendation_leak_guard"))
     digest_wf55 = as_dict(digest.get("wf55_recommendation_outcomes"))
+    if not digest_wf55:
+        digest_wf55 = as_dict(digest.get("recommendation_outcomes"))
 
     hard_checks = {
         "grading_validation_ok": as_dict(grading.get("validation")).get("status") == "ok",
@@ -99,7 +187,28 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
         "recommendation_leak_guard_pass": leak_guard.get("pass") is True,
         "open_unrouted_recommendation_count_zero": int_value(leak_guard.get("open_unrouted_recommendation_count")) == 0,
         "auto_apply_count_zero": int_value(leak_guard.get("auto_apply_count")) == 0,
+        "decision_compiler_leak_guard_pass": wiki_summary.get("decision_compiler_leak_guard_pass") is True,
     }
+    producer_evidence: dict[str, Any] = {}
+    wiki_inputs = as_dict(wiki.get("inputs"))
+    for evidence_key, contract in PRODUCER_EVIDENCE.items():
+        descriptor = as_dict(wiki_inputs.get(evidence_key))
+        fresh, detail, age_hours = producer_evidence_freshness(
+            descriptor, max_age_hours=contract["max_age_hours"]
+        )
+        healthy = fresh and producer_evidence_healthy(descriptor)
+        producer_evidence[evidence_key] = {
+            "fresh": fresh,
+            "healthy": healthy,
+            "detail": detail,
+            "age_hours": age_hours,
+            "max_age_hours": contract["max_age_hours"],
+            "present": descriptor.get("present"),
+            "status": descriptor.get("status"),
+            "validation_status": descriptor.get("validation_status"),
+        }
+        hard_checks[f"producer_evidence_fresh:{evidence_key}"] = fresh
+        hard_checks[f"producer_evidence_healthy:{evidence_key}"] = healthy
     errors = [name for name, passed in hard_checks.items() if not passed]
     warnings: list[str] = []
     wiki_validation_status = as_dict(wiki.get("validation")).get("status")
@@ -108,6 +217,15 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
         warnings.append(f"wiki_validation_status:{wiki_validation_status}")
     if os2_validation_status not in (None, "ok"):
         warnings.append(f"os2_validation_status:{os2_validation_status}")
+    # Review-only operational signals stay warnings: RSI later-outcome maturity
+    # and the decision-compiler review-only state describe unexecuted or
+    # immature evidence, not runner failure, and must never flip the gate
+    # to blocked on their own.
+    if wiki_summary.get("rsi_outcome_mature") is not True:
+        warnings.append("rsi_outcome_maturity_not_met")
+    compiler_status = wiki_summary.get("decision_compiler_status")
+    if isinstance(compiler_status, str) and "warning" in compiler_status.lower():
+        warnings.append("decision_compiler_upstream_warning_visible")
 
     payload = {
         "schema": SCHEMA,
@@ -124,7 +242,10 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
             "auto_apply_count": int_value(leak_guard.get("auto_apply_count")),
             "wiki_validation_status": wiki_validation_status,
             "os2_validation_status": os2_validation_status,
+            "decision_compiler_leak_guard_pass": wiki_summary.get("decision_compiler_leak_guard_pass"),
+            "rsi_outcome_mature": wiki_summary.get("rsi_outcome_mature"),
         },
+        "producer_evidence": producer_evidence,
         "inputs": {key: rel(path) for key, path in paths.items()},
         "validation": {
             "status": "ok" if not errors else "blocked",

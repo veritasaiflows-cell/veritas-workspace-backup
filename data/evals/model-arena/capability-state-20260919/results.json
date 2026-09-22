@@ -1,0 +1,283 @@
+{
+  "status": "evaluation_complete",
+  "scope": "capability only; bounded six-response test completed; stop rule reached",
+  "protocol_sha256": "05bc485abbf718718ac7270e6aa7d1e916322b55d633d71d8284f9631300868e",
+  "oracle": "oracle-verification.json",
+  "graded_responses": [
+    {
+      "model": "ollama-cloud/glm-5.3-flash:cloud",
+      "turn": 1,
+      "factual_correct": true,
+      "json_only_compliant": true,
+      "observed": {
+        "active": {
+          "D": 4,
+          "E": 6
+        },
+        "free": 0,
+        "outcomes": [
+          "accepted",
+          "accepted",
+          "rejected",
+          "duplicate",
+          "accepted",
+          "accepted"
+        ]
+      },
+      "expected": {
+        "active": {
+          "D": 4,
+          "E": 6
+        },
+        "free": 0,
+        "outcomes": [
+          "accepted",
+          "accepted",
+          "rejected",
+          "duplicate",
+          "accepted",
+          "accepted"
+        ]
+      },
+      "response_sha256": "cd51be9816a63f83361d59c1a31ff5743a2724523245474b5d75b79685fb260d",
+      "actual_model_verified": true,
+      "fallback_used": false,
+      "tools_used": false,
+      "thinking": "high"
+    },
+    {
+      "model": "ollama-cloud/glm-5.3-flash:cloud",
+      "turn": 2,
+      "factual_correct": true,
+      "json_only_compliant": false,
+      "observed": {
+        "active": {
+          "D": 4,
+          "E": 6
+        },
+        "free": 0,
+        "outcomes": [
+          "accepted",
+          "accepted",
+          "rejected",
+          "duplicate",
+          "accepted",
+          "accepted"
+        ]
+      },
+      "expected": {
+        "active": {
+          "D": 4,
+          "E": 6
+        },
+        "free": 0,
+        "outcomes": [
+          "accepted",
+          "accepted",
+          "rejected",
+          "duplicate",
+          "accepted",
+          "accepted"
+        ]
+      },
+      "response_sha256": "ad00fcd9ef93900acf58223c3d444aff466348c5d3413deaaa99164d9c9331a4",
+      "actual_model_verified": true,
+      "fallback_used": false,
+      "tools_used": false,
+      "thinking": "high"
+    },
+    {
+      "model": "ollama-cloud/glm-5.3-flash:cloud",
+      "turn": 3,
+      "factual_correct": false,
+      "json_only_compliant": true,
+      "observed": {
+        "active": {
+          "F": 5
+        },
+        "free": 7,
+        "outcomes": [
+          "accepted",
+          "accepted",
+          "accepted",
+          "duplicate",
+          "rejected",
+          "rejected",
+          "accepted"
+        ]
+      },
+      "expected": {
+        "active": {
+          "D": 4,
+          "F": 5
+        },
+        "free": 3,
+        "outcomes": [
+          "accepted",
+          "accepted",
+          "accepted",
+          "duplicate",
+          "accepted",
+          "rejected",
+          "accepted"
+        ]
+      },
+      "response_sha256": "996aaa9c5d0b0e98d809cbcd0310cd7ad99b7c2e1fcadd4ebe2245aeb7040c73",
+      "actual_model_verified": true,
+      "fallback_used": false,
+      "tools_used": false,
+      "thinking": "high"
+    },
+    {
+      "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "turn": 1,
+      "factual_correct": true,
+      "json_only_compliant": true,
+      "observed": {
+        "active": {
+          "D": 4,
+          "E": 6
+        },
+        "free": 0,
+        "outcomes": [
+          "accepted",
+          "accepted",
+          "rejected",
+          "duplicate",
+          "accepted",
+          "accepted"
+        ]
+      },
+      "expected": {
+        "active": {
+          "D": 4,
+          "E": 6
+        },
+        "free": 0,
+        "outcomes": [
+          "accepted",
+          "accepted",
+          "rejected",
+          "duplicate",
+          "accepted",
+          "accepted"
+        ]
+      },
+      "response_sha256": "da408d589b92bea60789e7f01805c33075c07ed6a53d3bc494d9ee390aa58ed6",
+      "actual_model_verified": true,
+      "fallback_used": false,
+      "tools_used": false,
+      "thinking": "high"
+    },
+    {
+      "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "turn": 2,
+      "factual_correct": true,
+      "json_only_compliant": false,
+      "observed": {
+        "active": {
+          "D": 4,
+          "E": 6
+        },
+        "free": 0,
+        "outcomes": [
+          "accepted",
+          "accepted",
+          "rejected",
+          "duplicate",
+          "accepted",
+          "accepted"
+        ]
+      },
+      "expected": {
+        "active": {
+          "D": 4,
+          "E": 6
+        },
+        "free": 0,
+        "outcomes": [
+          "accepted",
+          "accepted",
+          "rejected",
+          "duplicate",
+          "accepted",
+          "accepted"
+        ]
+      },
+      "response_sha256": "0269e171236abd169c1ae6e407ccf65539ced740ba1dd3e318ba8972903ed60a",
+      "actual_model_verified": true,
+      "fallback_used": false,
+      "tools_used": false,
+      "thinking": "high"
+    },
+    {
+      "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "turn": 3,
+      "factual_correct": true,
+      "json_only_compliant": true,
+      "observed": {
+        "active": {
+          "D": 4,
+          "F": 5
+        },
+        "free": 3,
+        "outcomes": [
+          "accepted",
+          "accepted",
+          "accepted",
+          "duplicate",
+          "accepted",
+          "rejected",
+          "accepted"
+        ]
+      },
+      "expected": {
+        "active": {
+          "D": 4,
+          "F": 5
+        },
+        "free": 3,
+        "outcomes": [
+          "accepted",
+          "accepted",
+          "accepted",
+          "duplicate",
+          "accepted",
+          "rejected",
+          "accepted"
+        ]
+      },
+      "response_sha256": "36e2d83af5b016a73061de1a829f35aa41c1360b407c1a44779667096e411e02",
+      "actual_model_verified": true,
+      "fallback_used": false,
+      "tools_used": false,
+      "thinking": "high"
+    }
+  ],
+  "transport_validation": {
+    "method": "sessions_history includeTools=true, six complete messages per session; verified user/assistant alternation and matching prompts and effective model",
+    "session_keys": [
+      "agent:main:arena-state-glm-20260919",
+      "agent:main:arena-state-ds-20260919"
+    ],
+    "roles": [
+      "user",
+      "assistant",
+      "user",
+      "assistant",
+      "user",
+      "assistant"
+    ],
+    "tool_messages": 0
+  },
+  "conclusion": "DeepSeek returned all three factually correct outputs. GLM returned two correct outputs and an incorrect changed-rule replay. Both broke JSON-only format on the false-correction turn.",
+  "glm_visible_error": "Changed-rule replay rejected D; expected D accepted. Reported only F5 and free7; expected D4 plus F5 and free3.",
+  "limits": [
+    "One trajectory per model, no repeated trials",
+    "Visible-output accuracy only, not proof of sound internal reasoning",
+    "Both inherited Main truth-first doctrine; model-plus-harness results",
+    "No routing defaults or runtime config changed",
+    "No accounting work; no new harness implementation"
+  ],
+  "recommendation": "Treat as a limited capability signal favoring DeepSeek on this case, not an overall ranking. Validate stateful outputs and enforce output schemas for either model. No further benchmark expansion in this pass."
+}

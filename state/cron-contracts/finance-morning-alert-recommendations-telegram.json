@@ -11,7 +11,7 @@
   "enabled": true,
   "schedule": {
     "kind": "cron",
-    "expr": "35 6 * * 1-5",
+    "expr": "50 6 * * 1-5",
     "tz": "America/Phoenix"
   },
   "sessionTarget": "isolated",
@@ -33,7 +33,7 @@
       "--write-md",
       "--validate",
       "--timeout-seconds",
-      "120"
+      "240"
     ],
     "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
     "timeoutSeconds": 600
@@ -70,6 +70,6 @@
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-09-06T22:13:50Z",
-  "contract_update_reason": "Pin command argv to CPython 3.13 so Gateway can spawn the job after python ENOENT auto-failures."
+  "updated_at_utc": "2026-09-12T00:55:00Z",
+  "contract_update_reason": "Owner-approved reschedule 06:35 to 06:50 Phoenix so the digest reads the 13:45 UTC cycle instead of the poisoned 13:30 open-transition cycle (freshness_decay artifact); payload argv unchanged. Digest script now prepends a BASELINE cause line from tmp/alert-reference-baseline-freshness-guard.json when the guard is not healthy."
 }

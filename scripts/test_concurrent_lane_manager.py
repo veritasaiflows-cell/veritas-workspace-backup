@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 import argparse
+import copy
+import tempfile
+from pathlib import Path
 
 import concurrent_lane_manager as lanes
 
@@ -468,6 +471,198 @@ def test_active_admission_keeps_terminal_route_and_proof_debt_visible() -> None:
     expect(admission["status"] == "ok", "terminal debt must not block an otherwise empty active projection")
 
 
+def _race_lane(lane_id: str, status: str = "complete") -> dict:
+    return {
+        "lane_id": lane_id,
+        "workflow_id": "WF88",
+        "workstream_id": lane_id.split("::", 1)[1] if "::" in lane_id else lane_id,
+        "owner": "unit-test",
+        "status": status,
+        "runtime": {"outcome_event_kind": "terminal_closeout"},
+    }
+
+
+def _race_register(lane_rows: list) -> dict:
+    register = lanes.empty_register()
+    register["lanes"] = lane_rows
+    return register
+
+
+def _apply_patched_second_write(register_path: Path, lane: dict, outcome_status: str, tmp_root: Path) -> dict:
+    """Replay the patched closeout second-write tail from main() verbatim
+    (LANE-RACE-20260913): reload fresh, merge ONLY own outcome_refresh,
+    re-validate the fresh copy, write once.  Uses only real module
+    primitives against a throwaway register file."""
+    runtime = lanes.as_dict(lane.get("runtime"))
+    runtime["outcome_refresh"] = {"status": outcome_status}
+    lane["runtime"] = runtime
+    fresh_register = lanes.load_register(register_path)
+    own_lane_id = lane.get("lane_id")
+    merged = False
+    for existing in lanes.as_list(fresh_register.get("lanes")):
+        if isinstance(existing, dict) and existing.get("lane_id") == own_lane_id:
+            existing_runtime = lanes.as_dict(existing.get("runtime"))
+            existing_runtime["outcome_refresh"] = runtime["outcome_refresh"]
+            existing["runtime"] = existing_runtime
+            merged = True
+            break
+    if not merged:
+        lanes.upsert_lane(fresh_register, lane)
+    lanes.refresh_summary(
+        fresh_register,
+        None,
+        isolated_agent_state_root=tmp_root,
+        codex_sessions_root=tmp_root,
+    )
+    lanes.atomic_write_json(register_path, fresh_register)
+    return fresh_register
+
+
+def test_closeout_second_write_preserves_concurrent_lanes() -> None:
+    with tempfile.TemporaryDirectory() as tmpname:
+        root = Path(tmpname)
+        register_path = root / "lane-register.test.json"
+        own_id = "WF88::unit-closeout-own"
+        new_id = "WF88::unit-closeout-newcomer"
+        lanes.atomic_write_json(register_path, _race_register([_race_lane(own_id)]))
+        own_lane = copy.deepcopy(lanes.load_register(register_path)["lanes"][0])
+        # Concurrent admission lands mid-refresh: load fresh, upsert, write.
+        concurrent = lanes.load_register(register_path)
+        lanes.upsert_lane(concurrent, _race_lane(new_id, status="leased"))
+        lanes.atomic_write_json(register_path, concurrent)
+        merged = _apply_patched_second_write(register_path, own_lane, "ok", root)
+        on_disk = lanes.load_register(register_path)
+        disk_ids = {
+            row.get("lane_id") for row in lanes.as_list(on_disk.get("lanes")) if isinstance(row, dict)
+        }
+        expect(new_id in disk_ids, "patched second write must preserve the concurrent lane (LANE-RACE-20260913)")
+        expect(own_id in disk_ids, "patched second write must keep the own lane")
+        own_row = next(
+            row for row in on_disk["lanes"]
+            if isinstance(row, dict) and row.get("lane_id") == own_id
+        )
+        expect(
+            lanes.as_dict(own_row.get("runtime")).get("outcome_refresh") == {"status": "ok"},
+            "own outcome_refresh must be recorded on the fresh copy",
+        )
+        newcomer = next(
+            row for row in on_disk["lanes"]
+            if isinstance(row, dict) and row.get("lane_id") == new_id
+        )
+        expect(
+            "outcome_refresh" not in lanes.as_dict(newcomer.get("runtime")),
+            "merge must not touch any other lane",
+        )
+        expect(merged["summary"]["lane_count"] == 2, "merged register must carry a recomputed summary")
+
+
+def test_closeout_merge_preserves_concurrent_same_lane_updates() -> None:
+    with tempfile.TemporaryDirectory() as tmpname:
+        root = Path(tmpname)
+        register_path = root / "lane-register.test.json"
+        own_id = "WF88::unit-closeout-own"
+        lanes.atomic_write_json(register_path, _race_register([_race_lane(own_id)]))
+        own_lane = copy.deepcopy(lanes.load_register(register_path)["lanes"][0])
+        # Concurrent writer updates the OWN row mid-refresh.
+        concurrent = lanes.load_register(register_path)
+        for row in lanes.as_list(concurrent.get("lanes")):
+            if isinstance(row, dict) and row.get("lane_id") == own_id:
+                row["status"] = "blocked"
+                lanes.as_dict(row["runtime"])["note"] = "concurrent-writer"
+        lanes.atomic_write_json(register_path, concurrent)
+        _apply_patched_second_write(register_path, own_lane, "ok", root)
+        on_disk = lanes.load_register(register_path)
+        row = next(
+            item for item in on_disk["lanes"]
+            if isinstance(item, dict) and item.get("lane_id") == own_id
+        )
+        expect(row.get("status") == "blocked", "concurrent status update to own row must survive the merge")
+        expect(
+            lanes.as_dict(row["runtime"]).get("note") == "concurrent-writer",
+            "concurrent runtime update to own row must survive the merge",
+        )
+        expect(
+            lanes.as_dict(row["runtime"]).get("outcome_refresh") == {"status": "ok"},
+            "outcome_refresh must still be recorded",
+        )
+
+
+def test_not_triggered_path_writes_nothing() -> None:
+    with tempfile.TemporaryDirectory() as tmpname:
+        root = Path(tmpname)
+        register_path = root / "lane-register.test.json"
+        own_id = "WF88::unit-closeout-own"
+        new_id = "WF88::unit-closeout-newcomer"
+        lanes.atomic_write_json(register_path, _race_register([_race_lane(own_id)]))
+        bytes_before = register_path.read_bytes()
+        post_write_refresh = {"status": "not_triggered"}
+        if post_write_refresh.get("status") != "not_triggered":
+            raise AssertionError("should not reach second write")
+        concurrent = lanes.load_register(register_path)
+        lanes.upsert_lane(concurrent, _race_lane(new_id, status="leased"))
+        lanes.atomic_write_json(register_path, concurrent)
+        on_disk = lanes.load_register(register_path)
+        disk_ids = {
+            row.get("lane_id") for row in lanes.as_list(on_disk.get("lanes")) if isinstance(row, dict)
+        }
+        expect(new_id in disk_ids and own_id in disk_ids, "not_triggered path must leave both lanes intact")
+        expect(register_path.read_bytes() != bytes_before, "exactly the admission write must have landed")
+        own_row = next(
+            row for row in on_disk["lanes"]
+            if isinstance(row, dict) and row.get("lane_id") == own_id
+        )
+        expect(
+            "outcome_refresh" not in lanes.as_dict(own_row.get("runtime")),
+            "not_triggered path must record no outcome_refresh",
+        )
+
+
+def root_slice_lane(lane_id: str, predecessor: str | None = None) -> dict:
+    runtime = {
+        "root_objective_id": "LOOP-REPAIR-20260912",
+        "objective_slice_id": "control-qa-final",
+    }
+    if predecessor is not None:
+        runtime["predecessor_lane_id"] = predecessor
+    return {"lane_id": lane_id, "runtime": runtime}
+
+
+def test_root_attempt_with_referencing_successor_does_not_raise() -> None:
+    lane_a = root_slice_lane("WF88::loop-control-qa-final-20260913")
+    lane_b = root_slice_lane(
+        "WF88::loop-control-qa-retry-20260913",
+        predecessor="WF88::loop-control-qa-final-20260913",
+    )
+    register = lanes.empty_register()
+    register["lanes"] = [lane_a, lane_b]
+    lanes.validate_root_lineage(register, lane_a)
+    expect(True, "root attempt referenced by its successor must close without lineage error")
+
+
+def test_unparented_sibling_still_raises_missing_predecessor() -> None:
+    lane_a = root_slice_lane("WF88::loop-control-qa-final-20260913")
+    lane_b = root_slice_lane("WF88::loop-control-qa-retry-20260913")
+    register = lanes.empty_register()
+    register["lanes"] = [lane_a, lane_b]
+    try:
+        lanes.validate_root_lineage(register, lane_a)
+    except SystemExit as exc:
+        expect(
+            "missing predecessor_lane_id for successor slice attempt" in str(exc),
+            "unreferenced lane with siblings must still fail closed",
+        )
+        return
+    raise AssertionError("unreferenced lane with siblings should raise SystemExit")
+
+
+def test_lone_root_attempt_without_siblings_does_not_raise() -> None:
+    lane_a = root_slice_lane("WF88::loop-control-qa-final-20260913")
+    register = lanes.empty_register()
+    register["lanes"] = [lane_a]
+    lanes.validate_root_lineage(register, lane_a)
+    expect(True, "lone root attempt with no siblings must not raise")
+
+
 def main() -> None:
     test_completed_model_lane_warns_without_token_closeout()
     test_historical_pre_guard_lane_does_not_warn()
@@ -489,6 +684,12 @@ def main() -> None:
     test_post_cutover_missing_proof_fails_closed()
     test_blocked_route_mismatch_is_warning_incident()
     test_active_admission_keeps_terminal_route_and_proof_debt_visible()
+    test_closeout_second_write_preserves_concurrent_lanes()
+    test_closeout_merge_preserves_concurrent_same_lane_updates()
+    test_not_triggered_path_writes_nothing()
+    test_root_attempt_with_referencing_successor_does_not_raise()
+    test_unparented_sibling_still_raises_missing_predecessor()
+    test_lone_root_attempt_without_siblings_does_not_raise()
     print("concurrent lane token closeout tests passed")
 
 

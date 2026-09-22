@@ -69,7 +69,6 @@ def test_new_priority_wakes_main():
     decision = decide(active_handoff())
     assert decision["wake_required"] is True
     assert "handoff_receipt:NEW_PRIORITY" in decision["wake_reasons"]
-    assert "selected_priority_pending_main_disposition" in decision["wake_reasons"]
     assert decision["suppressed"] is False
 
 
@@ -95,7 +94,7 @@ def test_gate_fails_open_on_every_unclear_state():
     assert "action_executor_validation_not_ok" in reasons
 
 
-def test_unchanged_priority_is_suppressed_inside_the_reescalation_window():
+def test_unchanged_priority_is_suppressed_after_successful_dispatch():
     handoff = active_handoff("P1")
     first = decide(handoff)
     previous = {
@@ -106,20 +105,19 @@ def test_unchanged_priority_is_suppressed_inside_the_reescalation_window():
     decision = decide(handoff, previous=previous)
     assert decision["wake_required"] is True
     assert decision["suppressed"] is True
-    assert decision["suppression_reason"] == "unchanged_priority_inside_reescalation_window"
+    assert decision["suppression_reason"] == "unchanged_signal_already_dispatched"
     assert decision["reescalation_hours"] == 8.0
 
 
-def test_suppression_expires_and_p0_uses_the_shorter_window():
+def test_time_alone_never_rewakes_an_unchanged_signal():
     handoff = active_handoff("P0")
     previous = {
         "decision": decide(handoff),
         "wake": {"dispatched": True, "dispatched_at_utc": "2026-08-30T12:30:00Z"},
     }
-    # 4.5h elapsed against a 4h P0 window.
-    decision = decide(handoff, previous=previous)
+    decision = decide(handoff, previous=previous, now=NOW + timedelta(days=7))
     assert decision["reescalation_hours"] == 4.0
-    assert decision["suppressed"] is False
+    assert decision["suppressed"] is True
 
 
 def test_a_changed_priority_breaks_suppression_immediately():
@@ -134,22 +132,42 @@ def test_a_changed_priority_breaks_suppression_immediately():
     assert decision["suppressed"] is False
 
 
-def test_suppressed_runs_do_not_restart_the_window():
+def test_new_priority_then_no_delta_does_not_rewake():
     handoff = active_handoff("P1")
     first = decide(handoff)
     dispatched_at = "2026-08-30T15:00:00Z"
     previous = {"decision": first, "wake": {"dispatched": True, "dispatched_at_utc": dispatched_at}}
 
-    # Simulate the carry-forward main() performs on a suppressed run.
+    no_delta = active_handoff("P1")
+    no_delta["receipt"] = "NO_DELTA"
+    quiet = decide(no_delta, previous=previous)
+    assert quiet["wake_required"] is False
+    assert quiet["wake_signature"] == first["wake_signature"]
+
+
+def test_failed_dispatch_retries_same_signal():
+    handoff = active_handoff("P1")
+    previous = {
+        "decision": decide(handoff),
+        "wake": {"dispatched": False, "error_code": "wake_dispatch_failed"},
+    }
+    retry = decide(handoff, previous=previous)
+    assert retry["wake_required"] is True
+    assert retry["suppressed"] is False
+
+
+def test_suppressed_runs_keep_notification_memory_indefinitely():
+    handoff = active_handoff("P1")
+    first = decide(handoff)
+    dispatched_at = "2026-08-30T15:00:00Z"
+    previous = {"decision": first, "wake": {"dispatched": True, "dispatched_at_utc": dispatched_at}}
     suppressed = decide(handoff, previous=previous)
-    assert suppressed["suppressed"] is True
     carried = {
         "decision": suppressed,
         "wake": {"dispatched": False, "dispatched_at_utc": dispatched_at},
     }
-    # 8.5h after the original wake, the window must have expired, not reset.
-    later = decide(handoff, previous=carried, now=NOW + timedelta(hours=6, minutes=30))
-    assert later["suppressed"] is False
+    later = decide(handoff, previous=carried, now=NOW + timedelta(days=30))
+    assert later["suppressed"] is True
 
 
 def test_wake_message_carries_boundaries_and_no_rerun_instruction():
@@ -210,19 +228,35 @@ def test_failed_step_is_a_warning_not_a_silent_pass():
     assert "deterministic_step_failed:step_nonzero_exit" in result["warnings"]
 
 
+def test_pm_funnel_is_valid_without_main_dispatch():
+    handoff = active_handoff()
+    decision = decide(handoff)
+    wake = {
+        "dispatched": False,
+        "dry_run": False,
+        "routed_to_pm": True,
+        "error_code": "main_dispatch_disabled_pm_funnel",
+    }
+    report = module.build_report(OK_STEPS, handoff, OK_EXECUTOR, decision, wake, now=NOW, job_id=module.PICKUP_JOB_ID)
+    assert module.validate(report)["status"] == "ok"
+
+
 def main() -> int:
     test_quiet_state_does_not_wake_main()
     test_new_priority_wakes_main()
     test_gate_fails_open_on_every_unclear_state()
-    test_unchanged_priority_is_suppressed_inside_the_reescalation_window()
-    test_suppression_expires_and_p0_uses_the_shorter_window()
+    test_unchanged_priority_is_suppressed_after_successful_dispatch()
+    test_time_alone_never_rewakes_an_unchanged_signal()
     test_a_changed_priority_breaks_suppression_immediately()
-    test_suppressed_runs_do_not_restart_the_window()
+    test_new_priority_then_no_delta_does_not_rewake()
+    test_failed_dispatch_retries_same_signal()
+    test_suppressed_runs_keep_notification_memory_indefinitely()
     test_wake_message_carries_boundaries_and_no_rerun_instruction()
     test_dispatch_is_inert_in_dry_run()
     test_wake_session_key_is_attributable_by_the_usage_extractor()
     test_validate_rejects_an_ungrounded_or_mutated_report()
     test_failed_step_is_a_warning_not_a_silent_pass()
+    test_pm_funnel_is_valid_without_main_dispatch()
     print("pm priority pickup predispatch prefilter tests passed")
     return 0
 

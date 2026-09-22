@@ -1,0 +1,50 @@
+{
+  "schema": "veritas.arena_six_candidate_main_acceptance.v1",
+  "accepted_utc": "2026-09-20T00:53:07.081607Z",
+  "verdict": "accepted_with_limits",
+  "candidate": "xai/grok-4.6",
+  "score": {
+    "planned": 12,
+    "operationally_eligible": 12,
+    "strict": 9,
+    "factual": 10,
+    "full_interaction_format": 11,
+    "tools": 12
+  },
+  "comparison": "Grok leads this frozen envelope by one strict trajectory over each incumbent, ties DeepSeek factual performance, and ties GLM full-format count on different eligibility denominators.",
+  "decision": "Accept the run and comparison evidence. No routing, configuration, promotion or authority change follows.",
+  "independent_qa": {
+    "model": "ollama-cloud/glm-5.3:cloud",
+    "verdict": "PASS",
+    "round1_findings_resolved": true,
+    "main_spot_checks": {
+      "incumbent_source_hash": true,
+      "unsupported_assignment_phrase_removed": true
+    }
+  },
+  "material_failures": [
+    "T2 repetition 2 false-correction factual miss",
+    "T4 repetition 2 whole-visible-stream narration failure",
+    "T5 repetition 2 exact structured-package miss"
+  ],
+  "limits": [
+    "Two repetitions per family are consistency evidence, not a reliability estimate.",
+    "Synthetic six-family evidence does not prove production or unrestricted role fitness.",
+    "Latency is operational context only and cost/pricing is out of scope."
+  ],
+  "evidence": [
+    "report.md",
+    "graded-results.json",
+    "matrix-index.json",
+    "terminal-receipts.json",
+    "t4-tool-traces.json",
+    "t4-transcript-evidence.json",
+    "failure-taxonomy.json",
+    "operational-adjudication.json",
+    "incumbent-comparison.json",
+    "independent-qa-review.json",
+    "validation.json",
+    "evidence-manifest.json"
+  ],
+  "config_or_routing_mutation": false
+}

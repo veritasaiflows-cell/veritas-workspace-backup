@@ -7,7 +7,7 @@
   "required": true,
   "owner_workflow": "RUNTIME",
   "contract_reason": "Refresh the bounded operational scripts graph once weekly after the memory dream jobs, using Graphify's local no-LLM updater and only when code-source drift is present.",
-  "description": "Weekly local-only Graphify incremental refresh of the existing scripts code graph. It runs only when code-source drift is detected, updates scripts/graphify-out with Graphify's no-LLM updater, writes tmp/operational-graph-maintenance.json, and never changes configuration, canon, or external delivery.",
+  "description": "Weekly local-only Graphify incremental refresh of the existing scripts code graph. It runs only when code-source drift is detected, publishes bounded catch-up batches (up to 8 per run within --max-seconds) through Graphify's no-LLM owner, writes tmp/operational-graph-maintenance.json and the dedicated tmp/operational-graph-refresh.json packet, and never changes configuration, canon, or external delivery.",
   "enabled": true,
   "schedule": {
     "kind": "cron",
@@ -24,12 +24,14 @@
   "payload": {
     "kind": "command",
     "argv": [
-      "python",
-      "scripts/memory_graph_maintenance.py",
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts\\memory_graph_maintenance.py",
       "--mode",
       "refresh",
       "--max-seconds",
       "600",
+      "--max-batches",
+      "8",
       "--write",
       "--validate"
     ],
@@ -54,6 +56,7 @@
   ],
   "expected_artifacts": [
     "tmp/operational-graph-maintenance.json",
+    "tmp/operational-graph-refresh.json",
     "scripts/graphify-out/graph.json",
     "scripts/graphify-out/manifest.json"
   ],
@@ -76,5 +79,5 @@
     "No cron schedule mutation from this contract artifact."
   ],
   "created_at_utc": "2026-08-31T18:08:00Z",
-  "contract_update_reason": "Initial approved weekly bounded scripts-graph incremental refresh."
+  "contract_update_reason": "Initial approved weekly bounded scripts-graph incremental refresh. 2026-09-14: owner 0.4.0 three-layer merge fix (shared stubs, extract() duplicate collapse, unresolvable external endpoint drop), bounded multi-batch catch-up (--max-batches 6), single overall --max-seconds deadline, dedicated refresh packet artifact, per-failure alert route."
 }

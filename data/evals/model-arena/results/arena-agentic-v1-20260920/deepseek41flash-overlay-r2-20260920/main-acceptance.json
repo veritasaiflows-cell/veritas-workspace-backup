@@ -1,0 +1,40 @@
+{
+  "accepted_at_utc": "2026-09-20T22:42:33.228381+00:00",
+  "authority": "Benchmark evidence only. No routing, configuration, role, promotion, or production authority granted.",
+  "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "receipts": {
+    "effective_model_exact": "12/12",
+    "provider_timeout": 1,
+    "rerouted": 0,
+    "transport_ok": 11
+  },
+  "result": {
+    "contaminated_count": 0,
+    "dimensional_score": 0.9167,
+    "strict_clean_pass_count": 11,
+    "strict_pass_count": 11,
+    "timeout_count": 1,
+    "total": 12
+  },
+  "schema": "veritas.arena_main_acceptance.v1",
+  "scope": {
+    "cases": 12,
+    "reps": 1,
+    "retries": 0
+  },
+  "status": "accepted_with_observed_timeout",
+  "timeout": {
+    "family": "T6",
+    "instance_id": "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4",
+    "selective_retry_performed": false,
+    "structure_id": "resource-bottleneck",
+    "typed_as": "zero/failed cell"
+  },
+  "verification": {
+    "closed_gate_probe_refused": true,
+    "dispatch_gate_closed": true,
+    "harness_tests": "82/82",
+    "hidden_or_control_files_in_candidate_lab": false,
+    "qa_redteam": "PASS"
+  }
+}

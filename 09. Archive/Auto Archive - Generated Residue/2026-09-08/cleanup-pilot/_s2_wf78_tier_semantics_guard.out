@@ -1,0 +1,81 @@
+{
+  "status": "ok",
+  "out": "tmp/wf78-tier-semantics-guard.json",
+  "summary": {
+    "status": "ok",
+    "current_tier_authority": "tmp/wf78-auto-tier-routing.json",
+    "clean_roster": "tmp/wf78-clean-tier-roster.json",
+    "label_preview_role": "audit_only_not_current_tier_authority",
+    "truth_layer_map_role": "layer_authority_contract",
+    "truth_layer_map_category_counts": {
+      "current_authority": 2,
+      "repair_readiness": 3,
+      "audit_only": 2,
+      "retired_archive_proof": 2,
+      "execution_guardrail": 1
+    },
+    "tier_mismatch_count": 0,
+    "promotion_overlap_wording_guard_count": 4,
+    "truth_layer_decision_error_count": 0,
+    "source_router_sha256": "9a310a9fdc996ed6c917a488d0be0af7846fa7057d58c340180b9e76d9da33bd",
+    "source_router_generated_at_utc": "2026-08-21T00:08:48Z",
+    "clean_roster_router_lineage_matches_live_router": true,
+    "truth_layer_map_router_lineage_matches_live_router": true,
+    "truth_layer_map_downstream_roster_lineage_matches_live_router": true,
+    "tier_a_depth_gate": {
+      "coverage_floor_ok": true,
+      "depth_ready_a_ready": true,
+      "decision_grade_allowed_count": 2,
+      "customer_output_allowed": false,
+      "rule": "A-READY is routing readiness only unless WF85 downstream decision gates allow decision-grade language."
+    },
+    "decision_grade_internal_boundary": {
+      "safe": true,
+      "decision_grade_allowed_count": 2,
+      "production_grade_candidate_count": 0,
+      "non_false_flags": {},
+      "rule": "Internal decision-grade allowance is safe only while strict production scope is empty and customer, answer-cutover, capital, execution, paper/live, account, money movement, and owner-approval flags remain false."
+    },
+    "lane_qualified_tiers": {
+      "router_lane_tier_counts": {
+        "Tier A Equity": 10,
+        "Tier A Sleeve": 2,
+        "Tier B Equity": 46,
+        "Tier C Commodity": 1,
+        "Tier C Equity": 233,
+        "Tier C Rates/Income": 1,
+        "Tier C Sleeve": 7
+      },
+      "roster_lane_tier_counts": {
+        "Tier A Equity": 10,
+        "Tier A Sleeve": 2,
+        "Tier B Equity": 46,
+        "Tier C Commodity": 1,
+        "Tier C Equity": 233,
+        "Tier C Rates/Income": 1,
+        "Tier C Sleeve": 7
+      },
+      "tier_a_equity_count": 10,
+      "tier_a_sleeve_count": 2,
+      "tier_a_commodity_count": 0,
+      "tier_a_rates_income_count": 0,
+      "tier_a_macro_currency_count": 0,
+      "tier_a_crypto_proxy_count": 0,
+      "rule": "Flat Tier A/B/C is compatibility; use lane_tier for opportunity-class answers."
+    },
+    "production_grade_policy": {
+      "candidate_count": 0,
+      "tickers": [],
+      "answer_consumer_cutover_allowed": false
+    },
+    "capital_deployment_approved_count": 0,
+    "trade_or_execution_approved_count": 0,
+    "lower_model_rule": "Answer current Tier A/B/C membership from wf78-clean-tier-roster or wf78-auto-tier-routing; answer opportunity class from lane_tier/review_lane.",
+    "a_ready_language_rule": "Do not translate A-READY or internal decision-grade allowance into approval-ready, deployable, customer-output, production-answer, or trade/execution language without the separate downstream gates.",
+    "next_safe_action": "Use the truth-layer map before any WF78 tier answer; use this guard as the fail-closed semantics proof."
+  },
+  "validation": {
+    "status": "ok",
+    "errors": 0
+  }
+}

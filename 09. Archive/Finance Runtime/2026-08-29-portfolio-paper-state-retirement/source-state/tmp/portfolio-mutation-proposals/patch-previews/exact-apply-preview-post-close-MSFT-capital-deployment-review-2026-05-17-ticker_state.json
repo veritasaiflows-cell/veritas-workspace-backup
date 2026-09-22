@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-17T05:50:51Z",
+  "status": "ready_for_scoped_main_session_review",
+  "window": "post-close",
+  "input_bundle": "tmp/portfolio-mutation-proposals/semantic-patch-material/post-close-MSFT-capital-deployment-review-2026-05-17-ticker_state.json",
+  "proposal_id": "post-close:MSFT:capital-deployment-review:2026-05-17",
+  "apply_allowed": false,
+  "owner_approval_granted": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "authority": {
+    "phase": "WF56 Phase 3 dry-run scoped patch helper",
+    "dry_run_patch_preview_allowed": true,
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "main_session_final_action_required": true,
+    "write_owner_files_allowed": false,
+    "apply_allowed_by_this_helper": false,
+    "portfolio_mutation_allowed_by_this_helper": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "validation": {
+    "schema_validator_ok": true,
+    "schema_errors": [],
+    "schema_blockers": [],
+    "patch_scope_findings": [],
+    "patch_scope_critical": 0,
+    "build_errors": []
+  },
+  "summary": {
+    "requested_changes": 1,
+    "previewed_file_changes": 1,
+    "writes_performed": false,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "ready_for_main_session_portfolio_mutation_review": true
+  },
+  "file_previews": [
+    {
+      "path": "03. Portfolio/Execution Board.md",
+      "change_type": "exact_text_replace",
+      "old_text_sha256_hint": null,
+      "old_text_match_count": 1,
+      "writes_performed": false,
+      "diff": "--- a/03. Portfolio/Execution Board.md\n+++ b/03. Portfolio/Execution Board.md\n@@ -219,6 +219,7 @@\n \n ### MSFT\n - Close: **409.43** *(technical refresh; 2026-05-14 close; current artifact layer)*\n+- WF64 ticker-state semantic sync: workflow_state=`DEPLOYED`, coverage_lane=`execution`, thesis_status=`intact; owner-recorded promotion to deployable-now on 2026-05-12 after MSFT/GOOG/NVDA growth review`; source `tmp/portfolio-config.json`; proposal `post-close:MSFT:capital-deployment-review:2026-05-17`; no external action entitlement.\n - 20 / 50 / 200-day: **417.45 / 398.84 / 462.35**\n - MA posture: **above the 50-day, but below the 20-day and 200-day**. Recovery is intact enough for the staged setup, but long-term repair is still incomplete.\n - Support: **398.84-389.64** (50-day / lower working band), then **378.18** (explicit stop)\n",
+      "rationale": "Synchronize ticker_state semantic context from current portfolio artifacts without widening external-action authority."
+    }
+  ],
+  "stop_lines": [
+    "This artifact is an exact patch preview only; it does not mutate owner notes or portfolio config.",
+    "Main-session portfolio mutation still requires explicit scoped Randall approval for the proposal id and exact diff.",
+    "A clean preview does not grant owner approval, sizing, sleeve, cash, risk-rule, execution-entitlement, trade, or account authority.",
+    "Phase 4 apply mode must be a separate approval-gated path and must run the post-apply validation chain."
+  ]
+}

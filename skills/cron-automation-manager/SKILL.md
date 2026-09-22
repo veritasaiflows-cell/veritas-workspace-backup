@@ -8,10 +8,10 @@ description: "Govern cron contracts, freshness, delivery, failure routing, and t
 ## Production routing
 
 - Keep deterministic command jobs model-free.
-- Use openai/gpt-5.6-luna at low reasoning only for proven compact agentTurn status, proof, digest, or quiet-output jobs.
-- Use openai/gpt-5.6-terra at medium reasoning for bounded synthesis or judgment.
-- Reserve openai/gpt-5.6-sol for Main's high-stakes integration.
-- Use openai/gpt-5.5 as primary fallback and openai/gpt-5.4 as rollback/control.
+- Use ollama-cloud/glm-5.3:cloud at low reasoning only for proven compact agentTurn status, proof, digest, or quiet-output jobs.
+- Use ollama-cloud/glm-5.3:cloud at medium reasoning for bounded synthesis or judgment.
+- Reserve xai/grok-4.6 for Main-session high-stakes integration. Do not pin OpenAI/GPT models on cron jobs.
+- Cron fallbacks inherit Main's ordered chain: GLM 5.3, Ollama Cloud Kimi K3, zAI GLM 5.3, then Opus 5. Coding work stays off cron and uses Spark 1.3 in a leased builder lane.
 - Treat fallback as a change in evidence source, never authority.
 - Require scheduler canary, prompt-contract, output validation, and clean authority boundaries before promotion.
 
@@ -37,9 +37,15 @@ Classify failures:
 
 Quiet output is allowed only when the contract permits it and required proof passes.
 
+## Main-session and proof-inspection jobs
+
+Keep main-session jobs as `systemEvent` or `script`. Do not convert them to `agentTurn`. Do not set `--timeout-seconds` on `systemEvent`.
+
+When a weekly proof inspector needs a hard timeout, use an isolated command job: pinned CPython path, explicit timeout, review-only packet, no delivery. Do not invent a main `script` payload when the fleet has none. Keep any Main wake packet-driven and short; do not use a long Main model turn as the inspector.
+
 ## Spark canary
 
-Spark is experimental, never the production default. Use codex/gpt-5.3-codex-spark only at xhigh for bounded script-owned canaries or QA/pre-work lanes with exact paths and Main verification.
+Spark is not the production cron default. Use meta/muse-spark-1.3-contributor only in leased coding lanes with exact paths and Main verification, not as a cron primary.
 
 Eligible:
 
@@ -55,7 +61,7 @@ Canary steps:
 
 1. Select one or two low-risk jobs with clean baselines.
 2. Preserve schedule, target, delivery, timeout, and stop lines.
-3. Record baseline model, xhigh posture, and duration.
+3. Record baseline model, posture, and duration.
 4. Let natural runs occur; do not force market or delivery jobs for convenience.
 5. Validate monitor, freshness, contract, and run history.
 6. Roll back on missed warning, false silence, path hallucination, tool-loop failure, or authority drift.
@@ -91,3 +97,7 @@ Cron may refresh prompt-book lint and eval-gap proof only after a separate sched
 ## Boundary
 
 These rules authorize bounded model selection, status refresh, validation, and review routing only. They do not authorize scheduler expansion/mutation, external delivery, config/auth/runtime/channel/service changes, telemetry expansion, finance-state or canon mutation, capital/account/brokerage/order/execution action, destructive/archive/apply action, or owner approval inference.
+
+## Model-attribution audit
+
+When a cron/session view labels a scheduled run with a model, inspect the live job definition before attributing model use. Classify `payload.kind=command` jobs as deterministic execution; a model label may instead belong to a conditional downstream Main wake. Trace the prefilter/dispatcher launch path and its explicit model pin or inherited agent default. Report command execution, conditional model invocation, trigger condition, and unresolved handoff separately. Do not change scheduler, model, or wake policy during the audit without the required approval gate.

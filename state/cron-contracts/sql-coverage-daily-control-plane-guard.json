@@ -20,7 +20,7 @@
   "payload": {
     "kind": "command",
     "argv": [
-      "python",
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
       "scripts\\sql_coverage_guard.py",
       "--write",
       "--write-md",

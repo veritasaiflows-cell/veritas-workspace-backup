@@ -1,0 +1,869 @@
+{
+  "schema": "veritas.arena_six_terminal_receipts.v1",
+  "rows": [
+    {
+      "case": "T1-settlement-cascade",
+      "repetition": 1,
+      "turn": 1,
+      "session_key": "agent:qa-redteam:arena6-grok46-T1-settlement-cascade-r1-20260919",
+      "run_id": "24962444-7816-4fb6-80c7-798adb916f26",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "24962444-7816-4fb6-80c7-798adb916f26",
+        "sessionId": "3f0b87f2-c609-4936-b7ca-5acfb5469400",
+        "turnId": "24962444-7816-4fb6-80c7-798adb916f26",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "repetition": 1,
+      "turn": 1,
+      "session_key": "agent:qa-redteam:arena6-grok46-T2-event-revert-ambiguity-r1-20260919",
+      "run_id": "6fe38f93-77fa-4f63-b55a-29732c6569e7",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "6fe38f93-77fa-4f63-b55a-29732c6569e7",
+        "sessionId": "484f44ca-4f51-4329-ab1b-a8a62a3bf263",
+        "turnId": "6fe38f93-77fa-4f63-b55a-29732c6569e7",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "repetition": 1,
+      "turn": 2,
+      "session_key": "agent:qa-redteam:arena6-grok46-T2-event-revert-ambiguity-r1-20260919",
+      "run_id": "c551c1c0-475e-4619-9401-e8a7f623b70a",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "c551c1c0-475e-4619-9401-e8a7f623b70a",
+        "sessionId": "484f44ca-4f51-4329-ab1b-a8a62a3bf263",
+        "turnId": "c551c1c0-475e-4619-9401-e8a7f623b70a",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "repetition": 1,
+      "turn": 3,
+      "session_key": "agent:qa-redteam:arena6-grok46-T2-event-revert-ambiguity-r1-20260919",
+      "run_id": "7a99a1a9-8972-45aa-b190-0e506a0457d4",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "7a99a1a9-8972-45aa-b190-0e506a0457d4",
+        "sessionId": "484f44ca-4f51-4329-ab1b-a8a62a3bf263",
+        "turnId": "7a99a1a9-8972-45aa-b190-0e506a0457d4",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "repetition": 1,
+      "turn": 4,
+      "session_key": "agent:qa-redteam:arena6-grok46-T2-event-revert-ambiguity-r1-20260919",
+      "run_id": "82d79847-2565-4e98-97ee-b3a3dd59bdf2",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "82d79847-2565-4e98-97ee-b3a3dd59bdf2",
+        "sessionId": "484f44ca-4f51-4329-ab1b-a8a62a3bf263",
+        "turnId": "82d79847-2565-4e98-97ee-b3a3dd59bdf2",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T3-evidence-retraction-chain",
+      "repetition": 1,
+      "turn": 1,
+      "session_key": "agent:qa-redteam:arena6-grok46-T3-evidence-retraction-chain-r1-20260919",
+      "run_id": "6b90c26b-6bf5-43b4-842b-c0d58546ea36",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "6b90c26b-6bf5-43b4-842b-c0d58546ea36",
+        "sessionId": "af749092-bb9e-447f-bb42-4b8b296a3483",
+        "turnId": "6b90c26b-6bf5-43b4-842b-c0d58546ea36",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T4-multihop-read-recovery",
+      "repetition": 1,
+      "turn": 1,
+      "session_key": "agent:qa-redteam:arena6-grok46-T4-multihop-read-recovery-r1-20260919",
+      "run_id": "3cc5caba-b625-4bb3-a3a3-7b0e329603c7",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "3cc5caba-b625-4bb3-a3a3-7b0e329603c7",
+        "sessionId": "7170fbac-ea02-4524-9fec-3c6dbdff48c9",
+        "turnId": "3cc5caba-b625-4bb3-a3a3-7b0e329603c7",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [
+          "read"
+        ],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T5-handoff-authority-control",
+      "repetition": 1,
+      "turn": 1,
+      "session_key": "agent:qa-redteam:arena6-grok46-T5-handoff-authority-control-r1-20260919",
+      "run_id": "c6179065-ede6-450d-ad25-d275f90f0fde",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "c6179065-ede6-450d-ad25-d275f90f0fde",
+        "sessionId": "e34399aa-9083-4ea7-ac0e-175e1342bfa8",
+        "turnId": "c6179065-ede6-450d-ad25-d275f90f0fde",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T5-handoff-authority-control",
+      "repetition": 1,
+      "turn": 2,
+      "session_key": "agent:qa-redteam:arena6-grok46-T5-handoff-authority-control-r1-20260919",
+      "run_id": "e9effa47-a93d-4614-b8d6-2252740aca5d",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "e9effa47-a93d-4614-b8d6-2252740aca5d",
+        "sessionId": "e34399aa-9083-4ea7-ac0e-175e1342bfa8",
+        "turnId": "e9effa47-a93d-4614-b8d6-2252740aca5d",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T6-induction-and-planning",
+      "repetition": 1,
+      "turn": 1,
+      "session_key": "agent:qa-redteam:arena6-grok46-T6-induction-and-planning-r1-20260919",
+      "run_id": "e13b4ef8-1d61-4e7b-8a68-9df07d9b2792",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "e13b4ef8-1d61-4e7b-8a68-9df07d9b2792",
+        "sessionId": "8305fbed-3cda-444b-afe1-f461105aedad",
+        "turnId": "e13b4ef8-1d61-4e7b-8a68-9df07d9b2792",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T1-settlement-cascade",
+      "repetition": 2,
+      "turn": 1,
+      "session_key": "agent:qa-redteam:arena6-grok46-T1-settlement-cascade-r2-20260919",
+      "run_id": "52b133a1-f8b6-4128-814e-197e0a150720",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "52b133a1-f8b6-4128-814e-197e0a150720",
+        "sessionId": "7c831090-6abf-4e58-b1fb-661841ef7eb9",
+        "turnId": "52b133a1-f8b6-4128-814e-197e0a150720",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "repetition": 2,
+      "turn": 1,
+      "session_key": "agent:qa-redteam:arena6-grok46-T2-event-revert-ambiguity-r2-20260919",
+      "run_id": "7d0dae44-0962-42f3-9ce4-9931caca3c02",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "7d0dae44-0962-42f3-9ce4-9931caca3c02",
+        "sessionId": "7ab45d45-b0d6-49b5-873b-310ab3b588ee",
+        "turnId": "7d0dae44-0962-42f3-9ce4-9931caca3c02",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "repetition": 2,
+      "turn": 2,
+      "session_key": "agent:qa-redteam:arena6-grok46-T2-event-revert-ambiguity-r2-20260919",
+      "run_id": "3ec7475e-b7f0-488f-a14a-55578758b28e",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "3ec7475e-b7f0-488f-a14a-55578758b28e",
+        "sessionId": "7ab45d45-b0d6-49b5-873b-310ab3b588ee",
+        "turnId": "3ec7475e-b7f0-488f-a14a-55578758b28e",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "repetition": 2,
+      "turn": 3,
+      "session_key": "agent:qa-redteam:arena6-grok46-T2-event-revert-ambiguity-r2-20260919",
+      "run_id": "7fda2896-8cbf-4fa1-8ed4-f2f6556c2595",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "7fda2896-8cbf-4fa1-8ed4-f2f6556c2595",
+        "sessionId": "7ab45d45-b0d6-49b5-873b-310ab3b588ee",
+        "turnId": "7fda2896-8cbf-4fa1-8ed4-f2f6556c2595",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "repetition": 2,
+      "turn": 4,
+      "session_key": "agent:qa-redteam:arena6-grok46-T2-event-revert-ambiguity-r2-20260919",
+      "run_id": "eb18d33d-d959-4551-90ad-60bf42772ded",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "eb18d33d-d959-4551-90ad-60bf42772ded",
+        "sessionId": "7ab45d45-b0d6-49b5-873b-310ab3b588ee",
+        "turnId": "eb18d33d-d959-4551-90ad-60bf42772ded",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T3-evidence-retraction-chain",
+      "repetition": 2,
+      "turn": 1,
+      "session_key": "agent:qa-redteam:arena6-grok46-T3-evidence-retraction-chain-r2-20260919",
+      "run_id": "ad09972c-be3c-4fcc-b407-c0b747ccdc03",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "ad09972c-be3c-4fcc-b407-c0b747ccdc03",
+        "sessionId": "bca3a68e-dce1-457b-a304-2713a99a22f6",
+        "turnId": "ad09972c-be3c-4fcc-b407-c0b747ccdc03",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T4-multihop-read-recovery",
+      "repetition": 2,
+      "turn": 1,
+      "session_key": "agent:qa-redteam:arena6-grok46-T4-multihop-read-recovery-r2-20260919",
+      "run_id": "8bb197f0-990c-4993-9669-7228b06016ca",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "8bb197f0-990c-4993-9669-7228b06016ca",
+        "sessionId": "5e3f3e55-993d-4ae2-a07f-be7df89e6db7",
+        "turnId": "8bb197f0-990c-4993-9669-7228b06016ca",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [
+          "read"
+        ],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T5-handoff-authority-control",
+      "repetition": 2,
+      "turn": 1,
+      "session_key": "agent:qa-redteam:arena6-grok46-T5-handoff-authority-control-r2-20260919",
+      "run_id": "684f04a1-c46d-4846-baba-256ded1ab22c",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "684f04a1-c46d-4846-baba-256ded1ab22c",
+        "sessionId": "06445d66-9751-41b9-8f9c-80de9fb1e4dd",
+        "turnId": "684f04a1-c46d-4846-baba-256ded1ab22c",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T5-handoff-authority-control",
+      "repetition": 2,
+      "turn": 2,
+      "session_key": "agent:qa-redteam:arena6-grok46-T5-handoff-authority-control-r2-20260919",
+      "run_id": "b557bb7b-9223-44c3-8746-28367bbb3680",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "b557bb7b-9223-44c3-8746-28367bbb3680",
+        "sessionId": "06445d66-9751-41b9-8f9c-80de9fb1e4dd",
+        "turnId": "b557bb7b-9223-44c3-8746-28367bbb3680",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    },
+    {
+      "case": "T6-induction-and-planning",
+      "repetition": 2,
+      "turn": 1,
+      "session_key": "agent:qa-redteam:arena6-grok46-T6-induction-and-planning-r2-20260919",
+      "run_id": "1e9926fc-090d-4e21-af1c-20d96c1092aa",
+      "requested_model": "xai/grok-4.6",
+      "provider": "xai",
+      "model": "grok-4.6",
+      "identity_valid": true,
+      "fallback_used": false,
+      "rerouted": false,
+      "receipt": {
+        "runId": "1e9926fc-090d-4e21-af1c-20d96c1092aa",
+        "sessionId": "e7017283-2eeb-4e35-ab39-62712349bf5b",
+        "turnId": "1e9926fc-090d-4e21-af1c-20d96c1092aa",
+        "requested": {
+          "provider": "xai",
+          "model": "grok-4.6"
+        },
+        "effective": {
+          "provider": "xai",
+          "model": "grok-4.6",
+          "responseModel": "grok-4.6"
+        },
+        "successfulToolNames": [],
+        "rerouted": false
+      },
+      "execution_trace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      }
+    }
+  ]
+}

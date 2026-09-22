@@ -105,11 +105,38 @@ def finance_sql_canon_access_health() -> dict:
 
 
 def iter_markdown(root: Path) -> Iterable[Path]:
-    for path in root.rglob("*.md"):
-        rel_parts = path.relative_to(root).parts
-        if any(part in EXCLUDED_DIRS for part in rel_parts):
+    """Yield included *.md files, pruning excluded dirs before descending.
+
+    Pruning is exactly equivalent to the old filter-after-rglob: a path is
+    excluded iff any of its parts is in EXCLUDED_DIRS, and pruning skips
+    descending into such dirs at every level. File names can never equal a
+    bare EXCLUDED_DIRS entry under the *.md pattern, so no file is lost.
+    This avoids walking .git, tmp, backups, archives, and other heavy trees."""
+    import os
+
+    root = root.resolve()
+    stack = [root]
+    while stack:
+        current = stack.pop()
+        try:
+            entries = sorted(os.scandir(current), key=lambda entry: entry.name)
+        except OSError:
             continue
-        yield path
+        for entry in entries:
+            try:
+                if entry.is_symlink():
+                    # Match rglob: yield name-matching symlinks, never descend into them.
+                    if entry.name.endswith(".md"):
+                        yield Path(entry.path)
+                    continue
+                if entry.is_dir(follow_symlinks=False):
+                    if entry.name in EXCLUDED_DIRS:
+                        continue
+                    stack.append(Path(entry.path))
+                elif entry.is_file(follow_symlinks=False) and entry.name.endswith(".md"):
+                    yield Path(entry.path)
+            except OSError:
+                continue
 
 
 def iter_artifacts(root: Path) -> Iterable[Path]:

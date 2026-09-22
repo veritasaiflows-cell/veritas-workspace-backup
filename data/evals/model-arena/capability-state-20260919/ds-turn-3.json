@@ -1,0 +1,42 @@
+﻿{
+    "turn":  3,
+    "session_key":  "agent:main:arena-state-ds-20260919",
+    "requested_model":  "ollama-cloud/deepseek-v4.1-flash:cloud",
+    "provider":  "ollama-cloud",
+    "model":  "deepseek-v4.1-flash:cloud",
+    "visible_text":  "{\"active\":{\"D\":4,\"F\":5},\"free\":3,\"outcomes\":[\"accepted\",\"accepted\",\"accepted\",\"duplicate\",\"accepted\",\"rejected\",\"accepted\"]}",
+    "execution_trace":  {
+                            "winnerProvider":  "ollama-cloud",
+                            "winnerModel":  "deepseek-v4.1-flash:cloud",
+                            "attempts":  [
+                                             {
+                                                 "provider":  "ollama-cloud",
+                                                 "model":  "deepseek-v4.1-flash:cloud",
+                                                 "result":  "success",
+                                                 "stage":  "assistant"
+                                             }
+                                         ],
+                            "fallbackUsed":  false,
+                            "runner":  "embedded"
+                        },
+    "receipt":  {
+                    "runId":  "0e63d028-19be-4c9d-897a-a61f75230da5",
+                    "sessionId":  "a82be278-ae66-4f5c-9490-406cf480c30a",
+                    "turnId":  "0e63d028-19be-4c9d-897a-a61f75230da5",
+                    "requested":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "deepseek-v4.1-flash:cloud"
+                                  },
+                    "effective":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "deepseek-v4.1-flash:cloud",
+                                      "responseModel":  "deepseek-v4.1-flash:cloud"
+                                  },
+                    "successfulToolNames":  [
+
+                                            ],
+                    "rerouted":  false
+                },
+    "thinking":  "high",
+    "tool_summary":  null
+}

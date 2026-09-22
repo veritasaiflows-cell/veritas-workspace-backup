@@ -1,6 +1,6 @@
 ---
-name: openclaw-troubleshooter
-description: Diagnose OpenClaw runtime, config, skills, plugin, and Windows-environment problems. Use when the gateway, memory, skills, startup files, or local service behavior is broken, stale, or inconsistent with expected state.
+name: "openclaw-troubleshooter"
+description: "Diagnose OpenClaw runtime, config, skills, plugin, and Windows-environment problems. Use when the gateway, memory, skills, startup files, or local service behav"
 ---
 
 # OpenClaw Troubleshooter
@@ -107,7 +107,20 @@ Treat reinstall recovery as incomplete until binaries, skills, retrieval tools, 
    - cron/scheduled job survival and next-run proof
    - finance-chain smoke proof before acting on stale artifacts
    - continuity/control-surface updates for any changed job IDs, tool paths, or trust limits
-16. Record the real lesson in the correct file.
+16. After an OpenClaw update from a live gateway session:
+   - prove with `openclaw doctor --lint`, `openclaw config validate`, `openclaw gateway status --deep`, `openclaw skills check`, and `openclaw security audit`
+   - leave `openclaw doctor --fix` and `openclaw gateway install --force` for an owner-run external PowerShell; they stop or rewrite the service
+   - treat `cron: job interrupted by gateway restart` on the first post-update run as expected
+   - for Windows `fs.*.perms_writable`: confirm `whoami` versus the extra ACE with `Get-LocalUser`; if it is a separate enabled account, grant only the current user and SYSTEM on `~\.openclaw`, `openclaw.json`, `credentials`, and `agents\*\agent\openclaw-agent.sqlite*`; do not `icacls /reset /T` the whole state tree
+17. For Windows notifications that contain only the first line:
+   - Open the exact saved message preview and delivery receipt, then inspect the sender's resolved launcher. Separate complete message generation from complete delivery; exit code zero and a sent/dedupe marker do not prove the body survived.
+   - If multiline text is passed through a `.cmd` shim using `%*`, reproduce the argv handoff locally with synthetic first/middle/final lines and a receiver that prints JSON argv. Compare the shim against a direct executable invocation without invoking OpenClaw or sending a message. Check exact received text as well as exit codes: the shim can truncate at the first newline while returning zero.
+   - Use the result to localize the fault before changing channel limits or scheduler settings. A passing direct-executable probe proves only local argument preservation, not a production repair. Verify the final line through the permitted delivery route before claiming full delivery; use first-class messaging tools for any authorized resend.
+18. Record the real lesson in the correct file.
+19. When the real failure point is in OpenClaw itself rather than in local config, environment, or user setup:
+   - do not patch `node_modules` locally; an `openclaw update` destroys it and an unversioned edit misrepresents the finding
+   - follow `06. Playbooks/Operating Procedures/Upstream Escalation and Community Contribution Procedure.md`; the duplicate check comes before drafting, and filing is an owner-approved public action
+   - record the filed issue in `06. Playbooks/Project Continuity/Upstream Escalation Register.md` and name a re-test trigger
 
 When the issue has a safe non-destructive forward fix:
 - take that step before ending at diagnosis

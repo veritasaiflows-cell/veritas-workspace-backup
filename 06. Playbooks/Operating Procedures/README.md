@@ -36,6 +36,7 @@ If a note is mostly tool doctrine, keep it in the owning playbook or skill inste
 - `Portfolio Truth Surface Ownership Procedure.md`
 - `Subagent Load Budget and Staff Handoff Standard.md`
 - `Veritas Encounter Contract.md`
+- `Upstream Escalation and Community Contribution Procedure.md` (tracked in `06. Playbooks/Project Continuity/Upstream Escalation Register.md`)
 
 ## Current gaps to fill next
 - startup / session-opening operating checklist (covered by Startup Truth Index plus `Veritas Encounter Contract.md`)
@@ -43,6 +44,7 @@ If a note is mostly tool doctrine, keep it in the owning playbook or skill inste
 - routine morning closeout / post-close review checklist
 - incident / degraded-run response procedure
 - cron proof / promotion review procedure
+- Windows/runtime portability watchlist (findings measured here but owned upstream; route through `Upstream Escalation and Community Contribution Procedure.md`)
 - repository maintenance procedure once the index/classification layer proves stable
 
 ## Status posture

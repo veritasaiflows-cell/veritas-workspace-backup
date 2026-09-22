@@ -1,0 +1,50 @@
+{
+  "entries": [
+    {
+      "family": "T3",
+      "instance_id": "14d6a2f3cf03498530dcd79f71ea54b4c300b4794687157446b9b57e00793c16",
+      "permanently_dropped": false,
+      "reason": "Strong models split 3-2 against the oracle on whether retracting a correction reinstates the corrected source. The oracle's rule is self-consistent, but the prompt never stated it, so the item measured guessing rather than reasoning.",
+      "resolution": "Valid once the overlay publishes the retraction rule for T3.",
+      "scope": "pre_overlay_runs",
+      "status": "oracle_rule_unstated",
+      "structure_id": "retraction-after-correction"
+    },
+    {
+      "family": "T1",
+      "instance_id": "36072319fd2e5337b9cfb587fdcdb858010874306d8f4c50ff5ea438c8c7518f",
+      "permanently_dropped": false,
+      "reason": "The prompt string 'Return only the required allocation JSON' primed the key name 'allocation'/'allocations' while the oracle key is 'alloc' plus 'feasible' and 'rounds'. All five dispatched models produced the correct allocation values and all five scored zero.",
+      "resolution": "Valid once the overlay publishes the T1 shape and the rounds definition.",
+      "scope": "pre_overlay_runs",
+      "status": "prompt_primed_wrong_shape",
+      "structure_id": "p4-release-cascade"
+    },
+    {
+      "family": "T4",
+      "instance_id": "73cd99b6dffa2ae64ce139b5db95c59dd4f4678f6ee4ab60f08114f6ee3028e8",
+      "permanently_dropped": false,
+      "reason": "The prompt references recovery/*.json but the candidate mount contained only candidate-visible-bank.json; no fixture files were ever materialised. The case is unanswerable under working isolation and answerable only by reading control-plane artifacts, so pre-overlay results carry no capability signal.",
+      "resolution": "Valid once the runner mounts fixtures/ from harness-fixtures.json.",
+      "scope": "pre_overlay_runs",
+      "status": "requires_fixture_mount",
+      "structure_id": "truncated-primary-mirror"
+    },
+    {
+      "family": "T4",
+      "instance_id": "c8dbb0b4dc87e3974275cca677c987e0be2c2b417574487c9bec0dfd56e04d6a",
+      "permanently_dropped": false,
+      "reason": "The prompt references recovery/*.json but the candidate mount contained only candidate-visible-bank.json; no fixture files were ever materialised. The case is unanswerable under working isolation and answerable only by reading control-plane artifacts, so pre-overlay results carry no capability signal.",
+      "resolution": "Valid once the runner mounts fixtures/ from harness-fixtures.json.",
+      "scope": "pre_overlay_runs",
+      "status": "requires_fixture_mount",
+      "structure_id": "missing-primary-index-fallback"
+    }
+  ],
+  "envelope": "arena-agentic-v1-20260920",
+  "generated_at_utc": "2026-09-20T21:27:31.141344+00:00",
+  "global_note": "Every case in the pre-overlay dispatch carried an undisclosed response contract, so no pre-overlay result is a capability measurement. The entries below have defects beyond the missing contract.",
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "permanently_dropped": [],
+  "schema": "veritas.arena_case_quarantine.v1"
+}

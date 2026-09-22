@@ -28,10 +28,13 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from official_capture_period_registry import CAPTURE_SCRIPT_BY_TICKER
+
 WORKSPACE = Path(__file__).resolve().parents[1]
 TMP = WORKSPACE / "tmp"
 CONFIG_PATH = TMP / "portfolio-config.json"
 EARNINGS_PATH = TMP / "earnings-calendar.json"
+IR_METADATA_PATH = WORKSPACE / "data" / "fundamentals" / "company-ir-metadata.json"
 BROWSER_CONFIRMATION_PATH = TMP / "earnings-date-browser-confirmation.json"
 OUT_JSON = TMP / "earnings-date-source-confidence.json"
 OUT_MD = OUT_JSON.with_suffix(".md")
@@ -123,21 +126,37 @@ def parse_iso_date(value: Any) -> date | None:
         return None
 
 
-def load_watchlist(config: dict[str, Any]) -> dict[str, dict[str, Any]]:
+def load_watchlist(config: dict[str, Any], earnings: dict[str, Any]) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
     raw = config.get(WATCHLIST_CONFIG_FIELD)
-    if not isinstance(raw, dict):
-        return {}
-
     out: dict[str, dict[str, Any]] = {}
-    for ticker, value in raw.items():
-        if not isinstance(ticker, str) or not ticker.strip():
-            continue
-        clean = ticker.strip().upper()
-        if isinstance(value, dict):
-            out[clean] = dict(value)
-        else:
-            out[clean] = {"date": value}
-    return out
+    if isinstance(raw, dict):
+        for ticker, value in raw.items():
+            if not isinstance(ticker, str) or not ticker.strip():
+                continue
+            clean = ticker.strip().upper()
+            if isinstance(value, dict):
+                out[clean] = dict(value)
+            else:
+                out[clean] = {"date": value}
+    if out:
+        return out, {"source": "portfolio_config_watchlist", "fallback_used": False}
+
+    # The legacy config is retired.  Keep timing coverage reviewable by using
+    # the bounded official-capture scope and provider date only as the target
+    # to verify; no provider date is promoted to primary confirmation.
+    records = earnings_records_by_ticker(earnings)
+    for ticker in sorted(CAPTURE_SCRIPT_BY_TICKER):
+        provider = records.get(ticker, {})
+        out[ticker] = {
+            "date": provider.get("next_earnings_date"),
+            "primary_confirmed": False,
+            "scope_source": "official_capture_registry_fallback",
+        }
+    return out, {
+        "source": "official_capture_registry_fallback",
+        "fallback_used": True,
+        "ticker_count": len(out),
+    }
 
 
 def earnings_records_by_ticker(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -194,8 +213,42 @@ def browser_confirms_target_date(record: dict[str, Any] | None, target_date: dat
     return True
 
 
-def verification_sites_for_ticker(ticker: str) -> list[dict[str, str]]:
-    return DEFAULT_VERIFICATION_SITES.get(ticker, GENERIC_VERIFICATION_SITES)
+def metadata_by_ticker(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    rows = payload.get("tickers") if isinstance(payload.get("tickers"), dict) else {}
+    return {
+        str(ticker).upper(): value
+        for ticker, value in rows.items()
+        if isinstance(value, dict)
+    }
+
+
+def verification_sites_for_ticker(ticker: str, metadata: dict[str, Any] | None = None) -> list[dict[str, str]]:
+    sites = list(DEFAULT_VERIFICATION_SITES.get(ticker, []))
+    metadata = metadata if isinstance(metadata, dict) else {}
+    for key, label in (
+        ("ir_home_url", "Company investor relations"),
+        ("earnings_url", "Company quarterly earnings"),
+        ("guidance_url", "Company guidance / investor relations"),
+    ):
+        url = str(metadata.get(key) or "").strip()
+        if url and url.startswith("https://") and not any(site.get("url") == url for site in sites):
+            sites.append({"label": label, "url": url, "source_type": "company_ir"})
+    return sites or GENERIC_VERIFICATION_SITES
+
+
+def primary_probes_for_ticker(ticker: str, metadata: dict[str, Any] | None = None) -> list[dict[str, str]]:
+    probes = list(PRIMARY_SOURCE_PROBES.get(ticker, []))
+    metadata = metadata if isinstance(metadata, dict) else {}
+    for key, label in (("earnings_url", "company_earnings"), ("ir_home_url", "company_ir")):
+        url = str(metadata.get(key) or "").strip()
+        if url and url.startswith("https://") and not any(probe.get("url") == url for probe in probes):
+            probes.append({
+                "id": f"{ticker.lower()}_{label}",
+                "source_type": "company_ir",
+                "url": url,
+                "note": "Maintained official IR metadata; confirm only an explicit matching earnings date.",
+            })
+    return probes
 
 
 def fetch_url(url: str) -> dict[str, Any]:
@@ -251,8 +304,7 @@ def body_mentions_target_date(body: str, target: date) -> bool:
     return any(term in lowered for term in context_terms)
 
 
-def classify_primary_probes(ticker: str, target_date: date | None) -> tuple[str, list[dict[str, Any]], list[str]]:
-    probes = PRIMARY_SOURCE_PROBES.get(ticker, [])
+def classify_primary_probes(ticker: str, target_date: date | None, probes: list[dict[str, str]]) -> tuple[str, list[dict[str, Any]], list[str]]:
     probe_results: list[dict[str, Any]] = []
     warnings: list[str] = []
     if not probes:
@@ -295,22 +347,25 @@ def classify_primary_probes(ticker: str, target_date: date | None) -> tuple[str,
     return "primary_unconfirmed", probe_results, warnings
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--write-md", action="store_true", help="Also write optional Markdown digest.")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     config = load_json(CONFIG_PATH)
     earnings = load_json(EARNINGS_PATH)
+    ir_metadata = load_json(IR_METADATA_PATH)
     browser_confirmation = load_json(BROWSER_CONFIRMATION_PATH) if BROWSER_CONFIRMATION_PATH.exists() else {}
-    watchlist = load_watchlist(config)
+    watchlist, scope = load_watchlist(config, earnings)
     earnings_records = earnings_records_by_ticker(earnings)
     browser_records = browser_records_by_ticker(browser_confirmation)
+    metadata_records = metadata_by_ticker(ir_metadata)
 
     records: list[dict[str, Any]] = []
     warnings: list[str] = []
     for ticker, entry in sorted(watchlist.items()):
         configured_date = parse_iso_date(entry.get("date"))
         provider_record = earnings_records.get(ticker, {})
+        ticker_metadata = metadata_records.get(ticker, {})
         provider_date = parse_iso_date(provider_record.get("next_earnings_date"))
         browser_record = browser_records.get(ticker)
         browser_primary_confirmed = browser_confirms_target_date(browser_record, configured_date)
@@ -325,7 +380,11 @@ def main() -> None:
             probe_results = []
             probe_warnings = []
         else:
-            primary_status, probe_results, probe_warnings = classify_primary_probes(ticker, configured_date)
+            primary_status, probe_results, probe_warnings = classify_primary_probes(
+                ticker,
+                configured_date,
+                primary_probes_for_ticker(ticker, ticker_metadata),
+            )
         warnings.extend(probe_warnings)
 
         provider_matches_config = bool(configured_date and provider_date and configured_date == provider_date)
@@ -354,7 +413,7 @@ def main() -> None:
             "provider_source": provider_record.get("source"),
             "provider_fetched_at_utc": provider_record.get("fetched_at_utc"),
             "provider_matches_config": provider_matches_config,
-            "verification_sites": verification_sites_for_ticker(ticker),
+            "verification_sites": verification_sites_for_ticker(ticker, ticker_metadata),
             "browser_confirmation": browser_record,
             "browser_primary_confirmed": browser_primary_confirmed,
             "source_confidence": confidence,
@@ -367,6 +426,8 @@ def main() -> None:
             "authority": "review_only_no_canonical_mutation",
         })
 
+    if scope.get("fallback_used"):
+        warnings.append("portfolio-config watchlist unavailable; using the bounded official-capture scope for review-only date coverage")
     status = "ok" if not warnings else "partial"
     payload = {
         "generated_at_utc": utc_now_iso(),
@@ -380,6 +441,18 @@ def main() -> None:
             "browser_confirmation": str(BROWSER_CONFIRMATION_PATH.relative_to(WORKSPACE)) if BROWSER_CONFIRMATION_PATH.exists() else None,
             "browser_confirmation_generated_at_utc": browser_confirmation.get("generated_at_utc"),
             "earnings_generated_at_utc": earnings.get("generated_at_utc"),
+            "company_ir_metadata": (
+                str(IR_METADATA_PATH.relative_to(WORKSPACE))
+                if IR_METADATA_PATH.is_relative_to(WORKSPACE)
+                else str(IR_METADATA_PATH)
+            ),
+        },
+        "scope": scope,
+        "summary": {
+            "ticker_count": len(records),
+            "primary_confirmed_count": sum(1 for row in records if row.get("source_confidence") == "primary_confirmed"),
+            "primary_unconfirmed_count": sum(1 for row in records if row.get("source_confidence") != "primary_confirmed"),
+            "missing_provider_date_count": sum(1 for row in records if row.get("source_confidence") == "missing_provider_date"),
         },
         "warnings": warnings,
         "records": records,

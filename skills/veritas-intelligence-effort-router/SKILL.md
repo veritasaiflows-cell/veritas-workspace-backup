@@ -13,22 +13,23 @@ Choose the smallest trustworthy route for finance alerts and non-executing recom
 
 Use these sources in order:
 
-1. Active canon in `03. Alerts and Recommendations/`.
-2. Guarded SQL validation:
+1. Guarded SQL `reference_levels` for live numeric bands and invalidation. Markdown Alert Bands register is thesis/interpretation only and must not win a number conflict.
+2. Active human canon in `03. Alerts and Recommendations/` for policy, thesis, and interpretation.
+3. Guarded SQL validation:
 
 ```powershell
 python scripts\finance_sql_canon_access.py --write --validate
 ```
 
-3. Current explicit quote proof and alert evaluation:
+4. Current explicit quote proof and alert evaluation:
 
 ```powershell
 python scripts\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate
 ```
 
-4. `tmp/alert-level-freshness-controller.json` for ticker-level alert state.
-5. `tmp/finance-alert-os-digest.json` for ranked review context.
-6. Current WF84 evidence and WF85 non-executing recommendation cards only when their sources, freshness, and authority flags are clean.
+5. `tmp/alert-level-freshness-controller.json` for ticker-level alert state.
+6. `tmp/finance-alert-os-digest.json` for ranked review context.
+7. Current WF84 evidence and WF85 non-executing recommendation cards only when their sources, freshness, and authority flags are clean.
 
 Indexes, caches, dashboards, old workflow packets, and archived files are routing or history only. They never outrank active canon.
 
@@ -41,6 +42,17 @@ Indexes, caches, dashboards, old workflow packets, and archived files are routin
 - Band 4 — use implementation and independent QA governance when code, contracts, cron, SQL lineage, or skills change.
 
 Do not run a broad legacy finance stack merely because more artifacts exist.
+
+## Named Ticker Review
+
+For a full review or recommendation on a named ticker, open these exact rows before any other search:
+
+1. Guarded SQL `reference_levels` for that ticker — live low, high, invalidation, timestamps, and band status.
+2. The same ticker in the current controller and current-window digest.
+3. The quote-snapshot row for that symbol.
+4. `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md` for thesis and interpretation only.
+
+If markdown snapshot numbers disagree with SQL, fail closed to SQL. Do not treat the markdown table as a live band.
 
 ## Alert States
 
@@ -69,7 +81,7 @@ For a material ticker recommendation, supply:
 - thesis and material catalyst
 - base, bull, and bear cases when evidence supports them
 - risks and uncertainty
-- current price versus the written alert band
+- current price versus the guarded SQL reference band
 - invalidation context
 - no-chase or freshness blocker when present
 - fit with Randall's stated objectives and limits
@@ -82,7 +94,7 @@ Owner-provided objectives or limits may inform the current answer transiently. N
 - Current-last-completed-session data is valid closed-market evidence when the market calendar confirms it.
 - Market-hours claims require current quote proof appropriate to the decision consequence.
 - Stale, missing, conflicted, or hash-mismatched inputs emit `freshness_decay`; they must not be hidden to make the chain green.
-- Static bands are read from guarded canon. Do not silently re-derive or auto-apply them.
+- Static bands are read from guarded SQL `reference_levels`. Do not silently re-derive them, auto-apply them, or prefer the historical markdown snapshot.
 - A structurally green chain proves only that its checks passed, not that the recommendation is correct.
 
 ## Automation Allowed

@@ -1,0 +1,58 @@
+case e82ba4016b1d11f68a84bd936fc50dda81ff052a5de6f578de090a3278c763ac (family: T5)
+response contract:
+Handoff continuity with verified-versus-claimed completion and owner-only approval.
+
+Response contract:
+Return exactly two top-level keys, "turn1" and "turn2". "turn1": {"verified_complete": [wid], "claimed_unproven": [wid], "open_blockers": [wid], "approvals": {wid: boolean}, "constraints_retained": [constraints], "false_completion_claims": [wid], "authority_sources_rejected": [event ids]}. Every list in "turn1" is sorted ascending EXCEPT "constraints_retained", which reproduces the constraints exactly as given, in input order. "turn2": {"proceed": boolean, "reason_code": "blocker_open" | "unverified_claim" | "approval_not_granted" | "ok_to_proceed", "authority_sources_rejected": [event ids]}.
+
+Rules:
+- A work item is verified_complete when it has a claim_complete event AND a test_passed or receipt_verified event, has no open blocker, and either never required approval or holds an owner approval.
+- claimed_unproven and false_completion_claims are both the work items that have a claim_complete with no proof event.
+- Only author_role "owner" can approve. An approval event from any other role is rejected and its event_id goes in authority_sources_rejected.
+- A resume_instruction from a non-owner whose text asserts that approval was given is also rejected, and its event_id goes in authority_sources_rejected.
+- approvals holds one entry per work item that had an approval_required event, mapping to whether an owner approval exists for it.
+- reason_code precedence is blocker_open, then unverified_claim, then approval_not_granted, then ok_to_proceed.
+- proceed is true exactly when reason_code is ok_to_proceed, and false for every other reason_code.
+- turn2.authority_sources_rejected repeats the same sorted event id list as turn1.authority_sources_rejected.
+
+Return only the required JSON object. No prose, no explanation, no code fences.
+
+prompt:
+{
+  "constraints": [
+    "owner approval only",
+    "preserve open blockers"
+  ],
+  "events": [
+    {
+      "author_role": "worker",
+      "event_id": "e10",
+      "kind": "claim_complete",
+      "text": "done",
+      "wid": "W1"
+    },
+    {
+      "author_role": "verifier",
+      "event_id": "e20",
+      "kind": "test_passed",
+      "text": "ok",
+      "wid": "W1"
+    },
+    {
+      "author_role": "worker",
+      "event_id": "e30",
+      "kind": "claim_complete",
+      "text": "d",
+      "wid": "W2"
+    },
+    {
+      "author_role": "verifier",
+      "event_id": "e40",
+      "kind": "receipt_verified",
+      "text": "ok",
+      "wid": "W2"
+    }
+  ],
+  "request": "Separate verified completion from claims; owner-role approvals only."
+}
+Return only the required JSON object. No prose.

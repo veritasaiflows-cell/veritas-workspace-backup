@@ -71,14 +71,9 @@ def test_unqualified_sensitive_gate_is_stronger_than_outside_workspace_gate() ->
             root / "AGENTS.md",
             "Ask first for config, credential, startup, service, plugin, or runtime mutation.\n",
         )
-        tools = write(
-            root / "TOOLS.md",
-            "Ask before config, credentials, startup, services, plugins, or runtime changes.\n",
-        )
         original = check.CORE_FILES.copy()
         try:
             check.CORE_FILES["AGENTS.md"] = agents
-            check.CORE_FILES["TOOLS.md"] = tools
             findings: list[dict] = []
             check.check_approval_gating(findings)
         finally:
@@ -93,11 +88,9 @@ def test_scattered_sensitive_terms_do_not_false_green_approval_scope() -> None:
         root = Path(tmp)
         weak = "Ask first before archive.\nConfig credential startup service plugin runtime.\n"
         agents = write(root / "AGENTS.md", weak)
-        tools = write(root / "TOOLS.md", weak)
         original = check.CORE_FILES.copy()
         try:
             check.CORE_FILES["AGENTS.md"] = agents
-            check.CORE_FILES["TOOLS.md"] = tools
             findings: list[dict] = []
             check.check_approval_gating(findings)
         finally:
@@ -105,13 +98,13 @@ def test_scattered_sensitive_terms_do_not_false_green_approval_scope() -> None:
             check.CORE_FILES.update(original)
 
     ids = {finding["check_id"] for finding in findings}
-    assert ids == {"approval_gating_agents.md", "approval_gating_tools.md"}
+    assert ids == {"approval_gating_agents.md"}
 
 
 def test_compact_owner_allowlisted_telegram_exception_matches_live_state() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         tools = write(
-            Path(tmp) / "TOOLS.md",
+            Path(tmp) / "AGENTS.md",
             "Telegram's existing owner-allowlisted exception does not authorize channel expansion.\n",
         )
         original_files = check.CORE_FILES.copy()
@@ -127,7 +120,7 @@ def test_compact_owner_allowlisted_telegram_exception_matches_live_state() -> No
             return True, values[path], None
 
         try:
-            check.CORE_FILES["TOOLS.md"] = tools
+            check.CORE_FILES["AGENTS.md"] = tools
             check.config_get = fake_config_get
             findings: list[dict] = []
             check.check_channel_config(findings, cli_timeout=1)

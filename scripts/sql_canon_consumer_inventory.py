@@ -33,6 +33,19 @@ SCAN_ROOTS = [
 
 EXTENSIONS = {".py", ".ts", ".tsx", ".js", ".jsx", ".json"}
 
+# Generated trees are not finance-state consumers. Scanning them made every
+# routine graph refresh or npm install rewrite the backlog and red-light the
+# finance-canon lineage guard.
+EXCLUDED_DIR_NAMES = {
+    ".git",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "graphify-out",
+    "node_modules",
+}
+
 P0_ANSWER_PATH_FILES = {
     "finance_intelligence_state.py",
     "finance_answer_contract.py",
@@ -210,13 +223,17 @@ def write_json(path: Path, payload: dict[str, Any]) -> None:
     atomic_write_json(path, payload)
 
 
+def is_excluded(path: Path) -> bool:
+    return any(part in EXCLUDED_DIR_NAMES for part in path.parts)
+
+
 def iter_files() -> list[Path]:
     files: list[Path] = []
     for root in SCAN_ROOTS:
         if not root.exists():
             continue
         for path in root.rglob("*"):
-            if path.is_file() and path.suffix.lower() in EXTENSIONS:
+            if path.is_file() and path.suffix.lower() in EXTENSIONS and not is_excluded(path):
                 files.append(path)
     return sorted(set(files))
 

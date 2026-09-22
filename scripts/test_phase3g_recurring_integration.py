@@ -139,6 +139,13 @@ def test_recurring_cli_acquires_once_and_excludes_weekly_analyst(bound):
     assert quote_intake.call_args.args[2] is package
     assert run.call_args.kwargs["components"]==("alert_level_freshness",)
     assert run.call_args.kwargs["recurring_reference_inputs"] is package
+    # Receipts must land inside the redirected root. A real-workspace write here
+    # overwrites the production chain proofs and quote proof with synthetic
+    # fixture data, which is exactly what happened before this assertion existed.
+    assert (root/"tmp/alerts-recommendations-chain-midday.json").exists()
+    assert (root/"tmp/alerts-recommendations-chain-current.json").exists()
+    assert (root/"tmp/intraday-alerts/quote-snapshot-proof.json").read_bytes()==quote
+    assert (root/"tmp/intraday-alerts/quote-snapshot-proof-validation.json").read_bytes()==validation
 
 
 def test_recurring_cli_rejects_explicit_quote_files_before_any_work(bound):

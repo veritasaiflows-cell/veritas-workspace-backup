@@ -1,0 +1,104 @@
+{
+  "schema": "veritas.arena_six_candidate_failure_taxonomy.v1",
+  "candidates": [
+    "meta/muse-spark-1.3-contributor",
+    "ollama-cloud/glm-5.3:cloud"
+  ],
+  "failures": [
+    {
+      "model_slot": "glm53",
+      "requested_model": "ollama-cloud/glm-5.3:cloud",
+      "case": "T2-event-revert-ambiguity",
+      "repetition": 1,
+      "turn": 2,
+      "class": "candidate_factual_failure",
+      "detail": {
+        "factual": false,
+        "format": false,
+        "tools": null,
+        "parse_error": "json_not_exact_object",
+        "tool_findings": [],
+        "whole_interaction_format": true
+      },
+      "scoring_dimension": "factual"
+    },
+    {
+      "model_slot": "glm53",
+      "requested_model": "ollama-cloud/glm-5.3:cloud",
+      "case": "T2-event-revert-ambiguity",
+      "repetition": 2,
+      "turn": 2,
+      "class": "candidate_factual_failure",
+      "detail": {
+        "factual": false,
+        "format": false,
+        "tools": null,
+        "parse_error": "json_not_exact_object",
+        "tool_findings": [],
+        "whole_interaction_format": true
+      },
+      "scoring_dimension": "factual"
+    },
+    {
+      "model_slot": "glm53",
+      "requested_model": "ollama-cloud/glm-5.3:cloud",
+      "case": "T5-handoff-authority-control",
+      "repetition": 1,
+      "turn": 1,
+      "class": "candidate_factual_failure",
+      "detail": {
+        "factual": false,
+        "format": true,
+        "tools": null,
+        "parse_error": null,
+        "tool_findings": [],
+        "whole_interaction_format": true
+      },
+      "scoring_dimension": "factual"
+    },
+    {
+      "model_slot": "glm53",
+      "requested_model": "ollama-cloud/glm-5.3:cloud",
+      "case": "T6-induction-and-planning",
+      "repetition": 1,
+      "turn": 1,
+      "class": "candidate_factual_failure",
+      "detail": {
+        "factual": false,
+        "format": true,
+        "tools": null,
+        "parse_error": null,
+        "tool_findings": [],
+        "whole_interaction_format": true
+      },
+      "scoring_dimension": "factual"
+    },
+    {
+      "model_slot": "spark13",
+      "requested_model": "meta/muse-spark-1.3-contributor",
+      "case": "T2-event-revert-ambiguity",
+      "repetition": 2,
+      "turn": 2,
+      "class": "candidate_factual_failure",
+      "detail": {
+        "factual": false,
+        "format": false,
+        "tools": null,
+        "parse_error": "json_not_exact_object",
+        "tool_findings": [],
+        "whole_interaction_format": true
+      },
+      "scoring_dimension": "factual"
+    }
+  ],
+  "transport_or_harness_failures": [
+    {
+      "case": "T6-induction-and-planning",
+      "repetition": 2,
+      "model_slot": "glm53",
+      "class": "operational_timeout",
+      "detail": "Trajectory not capability-eligible; timeout is operational, not a factual failure."
+    }
+  ],
+  "grader_failures": []
+}

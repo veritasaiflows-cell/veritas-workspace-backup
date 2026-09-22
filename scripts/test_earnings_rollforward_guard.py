@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from official_earnings_source_discovery import discover_from_sec_payload
-from earnings_rollforward_guard import build_guard
+from earnings_rollforward_guard import build_guard, tracked_universe
 from official_earnings_auto_capture import (
     _etn_matching_period_10q_bridge,
     _status,
@@ -180,6 +180,12 @@ def test_guard_treats_clean_q2_as_current() -> None:
     assert result["summary"]["current_count"] == 1
 
 
+def test_missing_portfolio_config_falls_back_to_official_capture_scope() -> None:
+    tracked = tracked_universe({}, priority_only=True)
+    assert tracked
+    assert all(row["scope_source"] == "official_capture_registry_fallback" for row in tracked.values())
+
+
 def test_guard_treats_source_verified_capture_as_reconciliation_debt_not_outage() -> None:
     registry = {
         "latest_by_ticker": {
@@ -260,6 +266,7 @@ if __name__ == "__main__":
     test_generic_capture_is_evidence_bearing_and_never_guesses_values()
     test_guard_emits_one_idempotent_catchup_row_without_editing_q1()
     test_guard_treats_clean_q2_as_current()
+    test_missing_portfolio_config_falls_back_to_official_capture_scope()
     test_guard_treats_source_verified_capture_as_reconciliation_debt_not_outage()
     test_etn_matching_period_10q_bridge_requires_current_and_prior_contexts()
     test_chain_inserts_guard_before_official_capture()

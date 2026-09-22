@@ -1,0 +1,172 @@
+{
+  "status": "ok",
+  "generated_at_utc": "2026-09-09T00:47:12Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "apply",
+  "input": "tmp/cleanup-infrastructure-20260908/archive-pilot-input.json",
+  "moves_performed": true,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 17,
+    "skipped": 0,
+    "blocked": 0
+  },
+  "moved": [
+    {
+      "path": "tmp/_canon.log",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_canon.log",
+      "sha256_before": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+      "sha256_after": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb"
+    },
+    {
+      "path": "tmp/_cronlist.err",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_cronlist.err",
+      "sha256_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sha256_after": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tmp/_fsep.log",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_fsep.log",
+      "sha256_before": "cd89c46f4f0cf64ec9930148d6bec5699fe1fc2aeb822294cee13a298647a8fe",
+      "sha256_after": "cd89c46f4f0cf64ec9930148d6bec5699fe1fc2aeb822294cee13a298647a8fe"
+    },
+    {
+      "path": "tmp/_newjob.err",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_newjob.err",
+      "sha256_before": "b903d348b29d4cce503178d8543e6cb3dc2393d16a65f35b44e2c2bb0ba19bec",
+      "sha256_after": "b903d348b29d4cce503178d8543e6cb3dc2393d16a65f35b44e2c2bb0ba19bec"
+    },
+    {
+      "path": "tmp/_s2_guard2.out",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_guard2.out",
+      "sha256_before": "782f0247ee409796dcb13118d514440219c69efed2ff7eae2ae8eea7101a45f9",
+      "sha256_after": "782f0247ee409796dcb13118d514440219c69efed2ff7eae2ae8eea7101a45f9"
+    },
+    {
+      "path": "tmp/_s2_roster.out",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_roster.out",
+      "sha256_before": "af3a71e35bfa29ab8b41f45c32a48fffcd96770fc3d9a92771d3ef2fdbe32f4c",
+      "sha256_after": "af3a71e35bfa29ab8b41f45c32a48fffcd96770fc3d9a92771d3ef2fdbe32f4c"
+    },
+    {
+      "path": "tmp/_s2_sqlguard.out",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_sqlguard.out",
+      "sha256_before": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+      "sha256_after": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb"
+    },
+    {
+      "path": "tmp/_s2_sqlrefresh_apply.out",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_sqlrefresh_apply.out",
+      "sha256_before": "d4f3efe2ea0c796739e6bfc03bca147909d290b259c5f0d2bb362a53b08d7dca",
+      "sha256_after": "d4f3efe2ea0c796739e6bfc03bca147909d290b259c5f0d2bb362a53b08d7dca"
+    },
+    {
+      "path": "tmp/_s2_sqlrefresh_dry.out",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_sqlrefresh_dry.out",
+      "sha256_before": "c74b0d1266da2d9517315e192ae6b8c4ab3353e51123809cc8377d46f103380f",
+      "sha256_after": "c74b0d1266da2d9517315e192ae6b8c4ab3353e51123809cc8377d46f103380f"
+    },
+    {
+      "path": "tmp/_s2_tlm.out",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_tlm.out",
+      "sha256_before": "809a44203a1f6c688cbb4a978afc50765f659ff42592a1812e8a9879ab521b3f",
+      "sha256_after": "809a44203a1f6c688cbb4a978afc50765f659ff42592a1812e8a9879ab521b3f"
+    },
+    {
+      "path": "tmp/_s2_wf78_legacy_label_retirement_guard.out",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_wf78_legacy_label_retirement_guard.out",
+      "sha256_before": "c054d90508373a8fb04ff9f5f630cc6400087603767a33fe1b8734b2b33dfe30",
+      "sha256_after": "c054d90508373a8fb04ff9f5f630cc6400087603767a33fe1b8734b2b33dfe30"
+    },
+    {
+      "path": "tmp/_s2_wf78_tier_capacity_policy_gate.out",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_wf78_tier_capacity_policy_gate.out",
+      "sha256_before": "8e5f3209a8a18c82536c014f09ce4c62d18f181ba22ce046712fc3d9dffb5e3d",
+      "sha256_after": "8e5f3209a8a18c82536c014f09ce4c62d18f181ba22ce046712fc3d9dffb5e3d"
+    },
+    {
+      "path": "tmp/_s2_wf78_tier_semantics_guard.out",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_wf78_tier_semantics_guard.out",
+      "sha256_before": "fa350321bdb739f129709dd543d02bc0811633598a8c5ebeef76f8b539c76dc9",
+      "sha256_after": "fa350321bdb739f129709dd543d02bc0811633598a8c5ebeef76f8b539c76dc9"
+    },
+    {
+      "path": "tmp/_s2_wf85.out",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_wf85.out",
+      "sha256_before": "ff9ea3e953128d0b8bbe9393a3ad152092ca19ad2afe12dc64e2b3d60a60e4f8",
+      "sha256_after": "ff9ea3e953128d0b8bbe9393a3ad152092ca19ad2afe12dc64e2b3d60a60e4f8"
+    },
+    {
+      "path": "tmp/gatefix-run.log",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/gatefix-run.log",
+      "sha256_before": "109c935cc6d3ee65f9d88050c1cf3bee870948462403f24b587130092ac3bc11",
+      "sha256_after": "109c935cc6d3ee65f9d88050c1cf3bee870948462403f24b587130092ac3bc11"
+    },
+    {
+      "path": "tmp/memory-compounding-probe.err",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/memory-compounding-probe.err",
+      "sha256_before": "8f006ae9fbcf2bec95b74174aa8bf3d5c195824684b9735f39a3e4cd30dd17c4",
+      "sha256_after": "8f006ae9fbcf2bec95b74174aa8bf3d5c195824684b9735f39a3e4cd30dd17c4"
+    },
+    {
+      "path": "tmp/rb-apply.out",
+      "kind": "deprecated_scratch",
+      "status": "moved",
+      "reason": null,
+      "destination": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/rb-apply.out",
+      "sha256_before": "5aeb95b9d08f04c753e20a4c93e264c439ce35b32cd7bcb766544c247e56f151",
+      "sha256_after": "5aeb95b9d08f04c753e20a4c93e264c439ce35b32cd7bcb766544c247e56f151"
+    }
+  ],
+  "skipped": [],
+  "blocked": [],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; explicit apply_allowed suggestions can move only with zero references, the WF72 adjacent-JSON historical-reference-only exception, or the WF72 adjacent-JSON script-output-constant exception"
+}

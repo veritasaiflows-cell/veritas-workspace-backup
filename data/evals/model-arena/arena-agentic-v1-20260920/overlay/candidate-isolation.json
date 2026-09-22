@@ -1,0 +1,26 @@
+{
+  "candidate_mount_allowlist": [
+    "candidate-visible-bank.json",
+    "fixtures/"
+  ],
+  "candidate_mount_denylist": [
+    "build-report.json",
+    "calibration-summary.json",
+    "candidate-isolation.json",
+    "contract.json",
+    "external-registry.json",
+    "gate7-canary-plan.json",
+    "harness-fixtures.json",
+    "hidden-bank.json",
+    "phase3-specs.json",
+    "role-cards.json"
+  ],
+  "candidate_visible_only": true,
+  "envelope": "arena-agentic-v1-20260920",
+  "note": "candidate-visible-bank.json plus the fixtures/ payload tree are candidate-mounted. harness-fixtures.json stays denied: the runner materialises only each fixture set's files, never allowed_reads, expected_trace, authoritative_rows, stale_rows, forbidden_reads or missing_paths.",
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "producer": "scripts/arena_overlay_build.py",
+  "producer_version": "arena-agentic-v1-20260920-r5",
+  "schema": "veritas.arena_agentic_isolation.v1",
+  "supersedes": "candidate-isolation.json"
+}

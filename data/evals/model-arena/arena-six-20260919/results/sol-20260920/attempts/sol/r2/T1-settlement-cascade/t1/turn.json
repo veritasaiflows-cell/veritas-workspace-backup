@@ -1,0 +1,21 @@
+{
+ "model_slot": "sol",
+ "requested_model": "openai/gpt-5.6-sol",
+ "model_applied": true,
+ "case": "T1-settlement-cascade",
+ "repetition": 2,
+ "turn": 1,
+ "prompt_file": "prompts/T1-settlement-cascade.txt",
+ "prompt_sha256": "f72d6e94f23d71947504768be9c6b78bacefb145b37d8965d0279c98ef106c1a",
+ "response_text": "{\"cascade1\":{\"feasible\":true,\"alloc\":[10,10,10,10]},\"cascade2\":{\"feasible\":true,\"alloc\":[10,12,14,14]},\"residual\":{\"feasible\":true,\"alloc\":[33.34,33.33,33.33]},\"infeasible\":{\"feasible\":false,\"alloc\":[]},\"cascade2_rounds\":2}",
+ "tool_trace": [],
+ "grade": {
+  "json_valid": true,
+  "parse_error": null,
+  "format": true,
+  "factual": true,
+  "tools": null,
+  "tool_findings": [],
+  "strict_pass": true
+ }
+}

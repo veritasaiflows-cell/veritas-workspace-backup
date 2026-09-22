@@ -4,6 +4,24 @@ from copy import deepcopy
 
 import wf74_improvement_opportunity_queue as queue
 
+from unittest.mock import patch as _test_isolation_patch
+
+_TEST_NEUTRAL_WF87_PROOF = {
+    "retired": False,
+    "reason": "test_isolation_neutral_no_live_capsule",
+    "capsule_path": "state/workflows/WF87.json",
+}
+
+# Hermetic baseline: neutralize the live WF87 capsule for every test in this
+# module, so counts and categories never depend on real workspace capsule
+# state. The explicit positive/negative WF87 tests below nest their own
+# patch.object context over this default. Active under both the direct script
+# and pytest. Production gate untouched.
+_test_wf87_neutral = _test_isolation_patch.object(
+    queue, "load_wf87_retired_architecture_proof", return_value=_TEST_NEUTRAL_WF87_PROOF
+)
+_test_wf87_neutral.start()
+
 
 def sample_inputs() -> dict:
     return {
@@ -288,6 +306,112 @@ def test_completed_cron_plan_with_current_green_cron_is_resolved_residue() -> No
     assert payload["summary"]["regressed_after_completion_count"] == 0
 
 
+def test_green_cron_with_ledger_escalation_echo_closes_not_regresses() -> None:
+    # 2026-09-12 regression fixture: a green scorecard (blocked_count=0) whose
+    # control packet is ok must not re-open the completed cron-regression row
+    # just because an improvement-ledger overdue echo raises escalation count
+    # and should_wake_main_session.
+    inputs = deepcopy(sample_inputs())
+    inputs["cron_signal"] = {
+        "status": "ok",
+        "validation": {"status": "ok"},
+        "scorecard": {"blocked_count": 0, "requires_attention_count": 0, "enabled_job_count": 44},
+        "signals": [],
+    }
+    inputs["cron_control"] = {
+        "status": "ok",
+        "validation": {"status": "ok"},
+        "summary": {
+            "blocked_count": 0,
+            "escalation_signal_count": 1,
+            "should_wake_main_session": True,
+            "requires_attention_count": 1,
+        },
+        "scorecard": {
+            "scorecard": {
+                "blocked_count": 0,
+                "requires_attention_count": 1,
+                "enabled_job_count": 44,
+            },
+            "signals": [
+                {
+                    "source": "operating_spine:improvement_ledger",
+                    "signal_class": "OWNER_DECISION",
+                    "attention": "requires_main_attention",
+                    "status": "warning",
+                    "reason": "high_priority_overdue",
+                    "next_action": "",
+                }
+            ],
+        },
+    }
+    inputs["implementation_completion_ledger"] = [
+        {
+            "completed_at_utc": "2026-06-20T17:17:01Z",
+            "job": {
+                "job_id": "pm-wf74-cron-migration-repair-plan",
+                "title": "Route blocked cron signals into a migration-ready repair plan",
+                "implementation_class": "wf74_cron_migration_repair_plan",
+            },
+        }
+    ]
+    payload = queue.build_payload(inputs)
+    regressed = [
+        row for row in payload["opportunities"]
+        if row.get("signal") == "cron_scorecard_regressed_after_completed_repair_plan"
+    ]
+    assert not regressed
+    assert payload["summary"]["regressed_after_completion_count"] == 0
+    resolved = [
+        row for row in payload["completed_or_resolved_opportunities"]
+        if row.get("completion_status") == "completed_by_ledger_current_cron_green"
+    ]
+    assert resolved
+    assert resolved[0]["current_cron_signal"]["scorecard"]["blocked_count"] == 0
+
+
+def test_control_packet_validation_failure_still_regresses_without_blockers() -> None:
+    # blocked_count=0 with an echo present, but cron control validation is not
+    # ok: the completed row must still re-open.
+    inputs = deepcopy(sample_inputs())
+    inputs["cron_control"] = {
+        "status": "ok",
+        "validation": {"status": "blocked"},
+        "summary": {
+            "blocked_count": 0,
+            "escalation_signal_count": 1,
+            "should_wake_main_session": True,
+            "requires_attention_count": 1,
+        },
+        "scorecard": {
+            "scorecard": {
+                "blocked_count": 0,
+                "requires_attention_count": 1,
+                "enabled_job_count": 44,
+            },
+            "signals": [],
+        },
+    }
+    inputs["implementation_completion_ledger"] = [
+        {
+            "completed_at_utc": "2026-06-20T17:17:01Z",
+            "job": {
+                "job_id": "pm-wf74-cron-migration-repair-plan",
+                "title": "Route blocked cron signals into a migration-ready repair plan",
+                "implementation_class": "wf74_cron_migration_repair_plan",
+            },
+        }
+    ]
+    payload = queue.build_payload(inputs)
+    regressed = [
+        row for row in payload["opportunities"]
+        if row.get("signal") == "cron_scorecard_regressed_after_completed_repair_plan"
+    ]
+    assert regressed
+    assert regressed[0]["completion_status"] == "current_regression_after_completion"
+    assert payload["summary"]["regressed_after_completion_count"] == 1
+
+
 def test_completed_planning_pass_with_current_gap_is_regression() -> None:
     inputs = deepcopy(sample_inputs())
     inputs["implementation_completion_ledger"] = [
@@ -306,6 +430,61 @@ def test_completed_planning_pass_with_current_gap_is_regression() -> None:
     assert planning_rows[0]["title"] == "Continue planning follow-through gap reduction after completed pass"
     assert planning_rows[0]["completion_status"] == "current_regression_after_completion"
     assert payload["summary"]["regressed_after_completion_count"] == 1
+
+
+def test_wf55_ledger_warning_is_measurement_only_not_implementation() -> None:
+    row = {
+        "workflow_id": "WF55",
+        "status": "ok",
+        "signal": "blocked",
+        "blockers": ["ledger_validation=warning"],
+    }
+    assert queue.workflow_blocker_requires_implementation(row) is False
+
+
+def test_residual_followup_evidence_reflects_post_classification_counts() -> None:
+    original = queue.opportunity(
+        category="workflow_maturity",
+        title="Convert workflow advancement blockers into implementation follow-ups",
+        priority=89,
+        signal="workflow_advancement_blockers_present",
+        evidence={
+            "blocked_count": 4,
+            "owner_needed_count": 0,
+            "blocked_workflows": [
+                {
+                    "workflow_id": "CRON",
+                    "status": "blocked",
+                    "blockers": ["cron_status=blocked", "blocked_count=4"],
+                },
+                {
+                    "workflow_id": "WF87",
+                    "status": "runtime_blocked",
+                    "blockers": ["wf87_runtime_blocked"],
+                },
+                {
+                    "workflow_id": "WF55",
+                    "status": "ok",
+                    "blockers": ["ledger_validation=warning"],
+                },
+                {
+                    "workflow_id": "AUTONOMY-SPINE",
+                    "status": "ok",
+                    "blockers": ["wf87_runtime_gates_not_clean"],
+                },
+            ],
+            "implementation_blocker_count": 2,
+            "visibility_operationalized": False,
+        },
+        recommended_action="Route blockers into follow-up rows.",
+        proposal_gate="main_review_required",
+        validation_command="python scripts\\workflow_advancement_scorecard.py --write --validate",
+    )
+    completion = {"matched_job_ids": ["pm-wf74-workflow-blocker-followup-routing"]}
+    residual = queue.residual_workflow_followup(original, completion)
+    assert residual["evidence"]["implementation_blocker_count"] == 1
+    assert residual["evidence"]["visibility_operationalized"] is True
+    assert residual["evidence"]["blocked_count"] == 4
 
 
 def test_lifecycle_identity_survives_followup_relabeling() -> None:
@@ -442,17 +621,208 @@ def test_classified_finance_freshness_debt_is_not_a_false_code_repair() -> None:
     assert "Route finance response-quality gaps into repair proposals" in titles
 
 
+def test_wf87_retired_architecture_proof_exact_holds() -> None:
+    retired = {
+        "lifecycle": "paused",
+        "readiness": "paused",
+        "primary_route_artifact": None,
+        "effective_status_override": "on_hold",
+        "current_state": "**Retired 2026-08-29** with WF86.",
+    }
+    proof = queue.wf87_retired_architecture_proof(retired)
+    assert proof["retired"] is True
+    assert queue.wf87_retired_architecture_proof(None)["retired"] is False
+    assert queue.wf87_retired_architecture_proof({})["retired"] is False
+    not_retired = dict(retired)
+    not_retired["lifecycle"] = "active"
+    assert queue.wf87_retired_architecture_proof(not_retired)["retired"] is False
+    with_primary = dict(retired)
+    with_primary["primary_route_artifact"] = "tmp/something.json"
+    assert queue.wf87_retired_architecture_proof(with_primary)["retired"] is False
+    missing_key = dict(retired)
+    del missing_key["primary_route_artifact"]
+    missing_proof = queue.wf87_retired_architecture_proof(missing_key)
+    assert missing_proof["retired"] is False
+    assert "missing_required_keys" in missing_proof["reason"]
+    negated = dict(retired)
+    negated["current_state"] = "WF87 is not retired; still active."
+    negated_proof = queue.wf87_retired_architecture_proof(negated)
+    assert negated_proof["retired"] is False
+    assert negated_proof["reason"] == "current_state_negates_retired"
+    no_override = {k: v for k, v in retired.items() if k != "effective_status_override"}
+    no_override_proof = queue.wf87_retired_architecture_proof(no_override)
+    assert no_override_proof["retired"] is False
+    assert no_override_proof["reason"] == "effective_status_override_key_missing"
+
+
+def test_wf87_retired_opportunity_resolves_when_capsule_retired() -> None:
+    from unittest.mock import patch as _patch
+    inputs = deepcopy(sample_inputs())
+    wf87_proof = {
+        "retired": True,
+        "reason": "retired_architecture_proof_holds",
+        "capsule_path": "state/workflows/WF87.json",
+    }
+    with _patch.object(queue, "load_wf87_retired_architecture_proof", return_value=wf87_proof):
+        payload = queue.build_payload(inputs)
+    titles = [row["title"] for row in payload["opportunities"]]
+    assert queue.WF87_RETIRED_OPPORTUNITY_TITLE not in titles
+    done = [row for row in payload["completed_or_resolved_opportunities"] if row.get("completion_status") == "completed_retired_architecture_no_routing"]
+    assert done
+    assert done[0]["retired_architecture_proof"] == wf87_proof
+
+
+def test_wf87_retired_opportunity_stays_open_when_proof_missing() -> None:
+    from unittest.mock import patch as _patch
+    inputs = deepcopy(sample_inputs())
+    wf87_proof = {"retired": False, "reason": "capsule_missing_or_malformed", "capsule_path": "state/workflows/WF87.json"}
+    with _patch.object(queue, "load_wf87_retired_architecture_proof", return_value=wf87_proof):
+        payload = queue.build_payload(inputs)
+    rows = [row for row in payload["opportunities"] if row["title"] == queue.WF87_RETIRED_OPPORTUNITY_TITLE]
+    assert rows
+    assert rows[0]["completion_status"] == "open"
+
+
 if __name__ == "__main__":
     test_queue_has_required_cadences_and_gates()
     test_completed_workflow_routing_with_only_maturity_residue_is_resolved()
     test_completed_workflow_routing_reopens_when_non_maturity_blocker_remains()
     test_completed_cron_plan_with_current_blocker_is_regression()
     test_completed_cron_plan_with_current_green_cron_is_resolved_residue()
+    test_green_cron_with_ledger_escalation_echo_closes_not_regresses()
+    test_control_packet_validation_failure_still_regresses_without_blockers()
     test_completed_planning_pass_with_current_gap_is_regression()
     test_lifecycle_identity_survives_followup_relabeling()
+    test_wf55_ledger_warning_is_measurement_only_not_implementation()
+    test_residual_followup_evidence_reflects_post_classification_counts()
     test_opportunity_id_is_stable_across_priority_change()
     test_completion_matches_by_identity_when_title_rule_is_absent()
     test_current_wf74_blocked_step_stays_open_without_completion()
     test_source_open_blocked_wf74_step_routes_to_finance_repair()
     test_classified_finance_freshness_debt_is_not_a_false_code_repair()
+    test_wf87_retired_architecture_proof_exact_holds()
+    test_wf87_retired_opportunity_resolves_when_capsule_retired()
+    test_wf87_retired_opportunity_stays_open_when_proof_missing()
     print("wf74_improvement_opportunity_queue_tests_passed")
+
+
+def partitioned_planning_signal(actionable, terminal, repaired, raw=None, reconciled=True, rate=0.6):
+    total = actionable + terminal + repaired
+    return {
+        "schema": "veritas.planning_quality_signal.v1",
+        "tracked_lane_count": 10,
+        "plan_contract_present_count": 8,
+        "plan_followthrough_clean_count": 6,
+        "plan_followthrough_gap_count": total if raw is None else raw,
+        "plan_followthrough_clean_rate": rate,
+        "gap_reasons": {"missing_proof": 1},
+        "status": "attention",
+        "plan_followthrough_actionable_gap_count": actionable,
+        "plan_followthrough_terminal_unavailable_count": terminal,
+        "plan_followthrough_repaired_accepted_count": repaired,
+        "partitioned_gap_row_count": total,
+        "partition_reconciliation_ok": reconciled,
+        "actionable_status": "attention" if actionable else "ok",
+    }
+
+
+def planning_completion_job():
+    return {
+        "completed_at_utc": "2026-06-20T16:05:25Z",
+        "job": {
+            "job_id": "pm-wf74-planning-followthrough-gap-reduction",
+            "title": "Measure and close planning follow-through gaps",
+            "implementation_class": "wf74_planning_followthrough",
+        },
+    }
+
+
+def planning_rows(payload):
+    return [row for row in payload["opportunities"] if row["category"] == "planning_quality"]
+
+
+def test_valid_actionable_partition_raises_with_selected_proof() -> None:
+    inputs = deepcopy(sample_inputs())
+    inputs["coding_outcome"]["ledger_summary"]["planning_quality_signal"] = partitioned_planning_signal(2, 1, 1)
+    payload = queue.build_payload(inputs)
+    rows = planning_rows(payload)
+    assert rows
+    evidence = rows[0]["evidence"]
+    assert evidence["plan_followthrough_gap_count"] == 4
+    assert evidence["plan_followthrough_gap_count_selected"] == 2
+    assert evidence["plan_followthrough_gap_source"] == "actionable_partition_verified"
+    assert evidence["plan_followthrough_terminal_unavailable_count"] == 1
+    assert evidence["plan_followthrough_repaired_accepted_count"] == 1
+    assert evidence["planning_gap_selection_warning"] is None
+
+
+def test_historical_only_terminal_repaired_raises_no_false_improvement() -> None:
+    inputs = deepcopy(sample_inputs())
+    inputs["coding_outcome"]["ledger_summary"]["planning_quality_signal"] = partitioned_planning_signal(0, 3, 1)
+    payload = queue.build_payload(inputs)
+    assert planning_rows(payload) == []
+    assert payload["summary"]["planning_quality_followup_count"] == 0
+
+
+def test_verified_zero_history_closes_honestly_after_completed_pass() -> None:
+    inputs = deepcopy(sample_inputs())
+    signal = partitioned_planning_signal(0, 3, 1)
+    signal["plan_followthrough_clean_rate"] = None
+    inputs["coding_outcome"]["ledger_summary"]["planning_quality_signal"] = signal
+    rows = queue.build_opportunities(inputs)
+    planning = [row for row in rows if row.get("title") == "Measure and close planning follow-through gaps"]
+    assert planning
+    inputs["implementation_completion_ledger"] = [planning_completion_job()]
+    current, done, regressed = queue.apply_completion_overlay(rows, inputs)
+    assert [row for row in current if row["category"] == "planning_quality"] == []
+    assert len(done) == 1
+    assert done[0]["completion_status"] == "completed_no_actionable_planning_debt_history_only"
+    assert done[0]["completion_status"] != "current_regression_after_completion"
+    assert regressed == []
+    assert done[0]["evidence"]["plan_followthrough_gap_count"] == 4
+
+
+def test_malformed_partition_falls_back_to_raw_gap() -> None:
+    inputs = deepcopy(sample_inputs())
+    payload = queue.build_payload(inputs)
+    rows = planning_rows(payload)
+    assert rows
+    evidence = rows[0]["evidence"]
+    assert evidence["plan_followthrough_gap_count"] == 4
+    assert evidence["plan_followthrough_gap_count_selected"] == 4
+    assert evidence["plan_followthrough_gap_source"] == "raw_gap_fallback"
+    assert evidence["planning_gap_selection_warning"]
+    signal = partitioned_planning_signal(2, 1, 1)
+    signal["plan_followthrough_actionable_gap_count"] = True
+    inputs["coding_outcome"]["ledger_summary"]["planning_quality_signal"] = signal
+    payload = queue.build_payload(inputs)
+    rows = planning_rows(payload)
+    assert rows
+    assert rows[0]["evidence"]["plan_followthrough_gap_count_selected"] == 4
+    assert rows[0]["evidence"]["plan_followthrough_gap_source"] == "raw_gap_fallback"
+
+
+def test_reconciliation_mismatch_falls_back_to_raw_gap() -> None:
+    inputs = deepcopy(sample_inputs())
+    signal = partitioned_planning_signal(1, 1, 1)
+    signal["plan_followthrough_gap_count"] = 5
+    inputs["coding_outcome"]["ledger_summary"]["planning_quality_signal"] = signal
+    payload = queue.build_payload(inputs)
+    rows = planning_rows(payload)
+    assert rows
+    evidence = rows[0]["evidence"]
+    assert evidence["plan_followthrough_gap_count"] == 5
+    assert evidence["plan_followthrough_gap_count_selected"] == 5
+    assert evidence["plan_followthrough_gap_source"] == "raw_gap_fallback"
+    assert "reconcile" in str(evidence["planning_gap_selection_warning"])
+
+
+def test_current_fixture_with_actionable_debt_stays_raised() -> None:
+    inputs = deepcopy(sample_inputs())
+    inputs["coding_outcome"]["ledger_summary"]["planning_quality_signal"] = partitioned_planning_signal(3, 1, 0)
+    inputs["implementation_completion_ledger"] = [planning_completion_job()]
+    payload = queue.build_payload(inputs)
+    rows = planning_rows(payload)
+    assert rows
+    assert rows[0]["completion_status"] == "current_regression_after_completion"
+    assert payload["summary"]["regressed_after_completion_count"] == 1

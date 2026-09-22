@@ -1,0 +1,30 @@
+Solve both parts by reasoning only. Do not use tools and do not execute code.
+
+PART 1. A transformation maps a word to another word. The rule is not stated. Infer it from these examples and nothing else:
+
+cat -> fbt
+dog -> fpg
+fish -> jkth
+tree -> wtff
+stone -> wwqpf
+yarn -> bcsn
+
+Apply the inferred rule to each of these inputs: plum, zebra, Cat7.
+
+If an input falls outside the domain that the examples demonstrate, do not guess an output for it. List it under undetermined instead.
+
+PART 2. Seven tasks must be scheduled on exactly 2 workers.
+
+A: duration 3, no dependencies
+B: duration 2, no dependencies
+C: duration 4, depends on A
+D: duration 1, depends on A and B
+E: duration 2, depends on C
+F: duration 3, depends on D and E
+G: duration 8, no dependencies
+
+Scheduling policy: time starts at 0. A task becomes ready when all of its dependencies have finished. Whenever a worker is free, assign the ready unstarted task with the lowest task ID. Tasks run to completion and are never preempted or split. Report makespan as the time at which the last task finishes.
+
+Separately report critical_path as the dependency chain with the greatest total duration, ignoring the worker limit entirely, given as an array of task IDs in dependency order.
+
+Return ONLY raw JSON with exactly these keys: induced (object mapping each in-domain Part 1 input to its transformed output), undetermined (sorted array of the Part 1 inputs you did not transform), makespan (integer), critical_path (array of task IDs). No prose, no explanation, no fences.

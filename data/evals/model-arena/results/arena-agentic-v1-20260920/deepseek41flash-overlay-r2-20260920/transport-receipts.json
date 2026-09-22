@@ -1,0 +1,354 @@
+{
+  "14d6a2f3cf03498530dcd79f71ea54b4c300b4794687157446b9b57e00793c16": {
+    "effective": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "deepseek-v4.1-flash:cloud"
+    },
+    "eligible_response": true,
+    "requested": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "run_id": "f36ade43-c4fa-4f6f-b963-b2440d07f826",
+    "session_id": "bdeeb579-93f3-4995-8275-7d156e860b48",
+    "status": "ok",
+    "successful_tool_names": [],
+    "timeout_phase": null,
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7915,
+      "output": 468,
+      "total": 8383
+    }
+  },
+  "1707973cdad85f7eff69acd5d1351267c4fe8a37d1849cafba5e313eb541003c": {
+    "effective": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "deepseek-v4.1-flash:cloud"
+    },
+    "eligible_response": true,
+    "requested": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "run_id": "bc716036-7844-4a86-8322-f85a1b0cba8f",
+    "session_id": "35af2ab4-ee33-4531-8ce2-e6a6fee99924",
+    "status": "ok",
+    "successful_tool_names": [
+      "exec"
+    ],
+    "timeout_phase": null,
+    "usage": {
+      "cacheRead": 13252,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 2938,
+      "output": 1035,
+      "total": 17225
+    }
+  },
+  "23273237a6525b0c4dd195ad0bbf0f1b6104d0ca86d9920936339e183a1c1ff0": {
+    "effective": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "deepseek-v4.1-flash:cloud"
+    },
+    "eligible_response": true,
+    "requested": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "run_id": "004db8e5-33f0-46d4-a76b-0484c7ac58bb",
+    "session_id": "1eb464de-1771-46df-9c77-810391726cb0",
+    "status": "ok",
+    "successful_tool_names": [],
+    "timeout_phase": null,
+    "usage": {
+      "cacheRead": 5588,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 2418,
+      "output": 421,
+      "total": 8427
+    }
+  },
+  "36072319fd2e5337b9cfb587fdcdb858010874306d8f4c50ff5ea438c8c7518f": {
+    "effective": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "deepseek-v4.1-flash:cloud"
+    },
+    "eligible_response": true,
+    "requested": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "run_id": "e65b1025-42a9-4eb3-82dd-9d5433bbc5af",
+    "session_id": "8ff49155-61ae-4ea5-bebf-bb8c3f49b2ce",
+    "status": "ok",
+    "successful_tool_names": [
+      "exec"
+    ],
+    "timeout_phase": null,
+    "usage": {
+      "cacheRead": 13150,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 2482,
+      "output": 1932,
+      "total": 17564
+    }
+  },
+  "430898a2d5b5c3f02ebdccc66dc12ddc78c2c454941c9c8033eae2a8762b0545": {
+    "effective": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "deepseek-v4.1-flash:cloud"
+    },
+    "eligible_response": true,
+    "requested": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "run_id": "45807945-5f86-47df-b57f-5871a9f7011d",
+    "session_id": "e3d747c5-5e67-462d-ac9a-0acbac64844f",
+    "status": "ok",
+    "successful_tool_names": [
+      "exec"
+    ],
+    "timeout_phase": null,
+    "usage": {
+      "cacheRead": 13228,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 2840,
+      "output": 1407,
+      "total": 17475
+    }
+  },
+  "73cd99b6dffa2ae64ce139b5db95c59dd4f4678f6ee4ab60f08114f6ee3028e8": {
+    "effective": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "deepseek-v4.1-flash:cloud"
+    },
+    "eligible_response": true,
+    "requested": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "run_id": "83465f22-98e5-4123-a507-3aa04162f89a",
+    "session_id": "7d5c4041-15c4-4116-890d-5d857ecec186",
+    "status": "ok",
+    "successful_tool_names": [
+      "read"
+    ],
+    "timeout_phase": null,
+    "usage": {
+      "cacheRead": 27848,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 2920,
+      "output": 712,
+      "total": 31480
+    }
+  },
+  "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4": {
+    "effective": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "deepseek-v4.1-flash:cloud"
+    },
+    "eligible_response": false,
+    "requested": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "run_id": "d10c9dec-b9ad-4ac7-993c-e1505d5e0cbe",
+    "session_id": "c6c087b4-9619-4451-9f9b-183f32972272",
+    "status": "timeout",
+    "successful_tool_names": [
+      "exec",
+      "read"
+    ],
+    "timeout_phase": "provider",
+    "usage": {
+      "cacheRead": 21452,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7864,
+      "output": 105211,
+      "total": 134527
+    }
+  },
+  "a329ef46d6f1a6336e6b64b7b2368cfbb028daf129b881b31bbdc0db6220417d": {
+    "effective": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "deepseek-v4.1-flash:cloud"
+    },
+    "eligible_response": true,
+    "requested": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "run_id": "d4b62310-e759-44c1-a523-2d4142fb3db7",
+    "session_id": "2ec0fc7e-231c-46f8-bd62-0ef0a49fd8c8",
+    "status": "ok",
+    "successful_tool_names": [],
+    "timeout_phase": null,
+    "usage": {
+      "cacheRead": 5588,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 2244,
+      "output": 440,
+      "total": 8272
+    }
+  },
+  "ad2161157921538089853178cdb459bbaed40f96fa77329a69e4be635c5af0bc": {
+    "effective": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "deepseek-v4.1-flash:cloud"
+    },
+    "eligible_response": true,
+    "requested": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "run_id": "9f6df8a0-d50c-41dd-a519-b16b7b3ffdd7",
+    "session_id": "a0ab7a5c-ccd2-4769-8d13-9240685a1fe3",
+    "status": "ok",
+    "successful_tool_names": [
+      "exec"
+    ],
+    "timeout_phase": null,
+    "usage": {
+      "cacheRead": 13144,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 2585,
+      "output": 11615,
+      "total": 27344
+    }
+  },
+  "b5f7b370f7d8445a01c7698b67b647d5eb76389024dbd53b3dee506299b0eda3": {
+    "effective": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "deepseek-v4.1-flash:cloud"
+    },
+    "eligible_response": true,
+    "requested": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "run_id": "4b4a98e3-a755-4162-afde-0e51ee20f4d8",
+    "session_id": "f0aa0918-089b-4377-9875-23fed3451937",
+    "status": "ok",
+    "successful_tool_names": [],
+    "timeout_phase": null,
+    "usage": {
+      "cacheRead": 5588,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 2082,
+      "output": 126,
+      "total": 7796
+    }
+  },
+  "c8dbb0b4dc87e3974275cca677c987e0be2c2b417574487c9bec0dfd56e04d6a": {
+    "effective": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "deepseek-v4.1-flash:cloud"
+    },
+    "eligible_response": true,
+    "requested": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "run_id": "f41213c3-0d59-4961-b13f-a3bbe56b1cb1",
+    "session_id": "f20865be-3f28-4dac-96a9-e04f4a905900",
+    "status": "ok",
+    "successful_tool_names": [
+      "exec",
+      "read"
+    ],
+    "timeout_phase": null,
+    "usage": {
+      "cacheRead": 20510,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 2904,
+      "output": 812,
+      "total": 24226
+    }
+  },
+  "e82ba4016b1d11f68a84bd936fc50dda81ff052a5de6f578de090a3278c763ac": {
+    "effective": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "deepseek-v4.1-flash:cloud"
+    },
+    "eligible_response": true,
+    "requested": {
+      "model": "deepseek-v4.1-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "run_id": "2b69f76b-f89d-4bd9-bf54-2bb7c0de34ec",
+    "session_id": "a5588c94-7d1d-4fc3-8348-9884107cedd7",
+    "status": "ok",
+    "successful_tool_names": [],
+    "timeout_phase": null,
+    "usage": {
+      "cacheRead": 5588,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 2296,
+      "output": 251,
+      "total": 8135
+    }
+  }
+}

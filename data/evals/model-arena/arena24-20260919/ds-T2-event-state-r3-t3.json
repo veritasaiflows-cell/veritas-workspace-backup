@@ -1,0 +1,62 @@
+﻿{
+    "case":  "T2-event-state",
+    "model_id":  "ds",
+    "requested_model":  "ollama-cloud/deepseek-v4.1-flash:cloud",
+    "repetition":  3,
+    "turn":  3,
+    "session_key":  "agent:qa-redteam:a24-ds-T2-event-state-r3-20260919",
+    "cli_exit":  0,
+    "status":  "ok",
+    "run_id":  "50a1ef2f-9628-4e0f-a6ea-48696e803ddf",
+    "visible_text":  "{\"states\":{\"A\":{\"revision\":5,\"status\":\"ready\"},\"B\":{\"revision\":4,\"status\":\"ready\"},\"C\":{\"revision\":2,\"status\":\"cancelled\"}},\"eligible\":[\"A\",\"B\"],\"applied\":10,\"ignored\":[{\"event\":\"e4\",\"reason\":\"stale\"},{\"event\":\"e6\",\"reason\":\"stale\"}]}",
+    "provider":  "ollama-cloud",
+    "model":  "deepseek-v4.1-flash:cloud",
+    "execution_trace":  {
+                            "winnerProvider":  "ollama-cloud",
+                            "winnerModel":  "deepseek-v4.1-flash:cloud",
+                            "attempts":  [
+                                             {
+                                                 "provider":  "ollama-cloud",
+                                                 "model":  "deepseek-v4.1-flash:cloud",
+                                                 "result":  "success",
+                                                 "stage":  "assistant"
+                                             }
+                                         ],
+                            "fallbackUsed":  false,
+                            "runner":  "embedded"
+                        },
+    "receipt":  {
+                    "runId":  "50a1ef2f-9628-4e0f-a6ea-48696e803ddf",
+                    "sessionId":  "e4831c7e-8960-4f1a-803b-32eba462430a",
+                    "turnId":  "50a1ef2f-9628-4e0f-a6ea-48696e803ddf",
+                    "requested":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "deepseek-v4.1-flash:cloud"
+                                  },
+                    "effective":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "deepseek-v4.1-flash:cloud",
+                                      "responseModel":  "deepseek-v4.1-flash:cloud"
+                                  },
+                    "successfulToolNames":  [
+
+                                            ],
+                    "rerouted":  false
+                },
+    "tool_summary":  null,
+    "thinking":  "high",
+    "workspace":  "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+    "injected_files":  [
+                           "AGENTS.md",
+                           "SOUL.md",
+                           "IDENTITY.md",
+                           "USER.md",
+                           "MEMORY.md"
+                       ],
+    "tool_names":  [
+                       "read",
+                       "web_search",
+                       "web_fetch"
+                   ],
+    "error_kind":  null
+}

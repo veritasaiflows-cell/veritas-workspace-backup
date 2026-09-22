@@ -1,0 +1,9 @@
+status=warning validation=warning wf74=ok pm=ok cron=ok escalation_consumer=warning
+  [warning] stale artifact: tmp/finance-evidence-warning-router.json age_hours=17.73 max_age_hours=12
+  [warning] high-priority improvement is overdue
+  [warning] main-session escalation consumer has unresolved residue
+  [warning] main-session escalation consumer has repeated blocker residue
+  [warning] WF88 wiki synthesis has visible follow-up warnings
+  [warning] WF88 wiki bootstrap proof has classified warnings
+  [warning] interruption recovery release contract validation is not ok
+  [warning] finance evidence warning router has blocking sections

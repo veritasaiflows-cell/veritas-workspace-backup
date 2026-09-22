@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
 import re
 import sqlite3
 import shutil
@@ -366,6 +367,361 @@ def _safe_invalid_record(agent_id: str, session_key: Any, entry: Any, errors: li
     }
 
 
+_CANONICAL_DB_SUBPATH = ("agent", "openclaw-agent.sqlite")
+_CANONICAL_NODE_TABLE = "session_nodes"
+_CANONICAL_WINDOW_TABLE = "session_windows"
+_SQLITE_SCAN_BOUND = 512
+_SQLITE_EXACT_LIMIT = 4
+_SQLITE_BUSY_TIMEOUT_MS = 5000
+_MAX_SCALAR_LEN = 512
+# Only fields already consumed by extract_session_usage (usage scalars,
+# provenance identity, correlation inputs). Never raw content, prompts,
+# auth, delivery, labels, sessionFile, transcript or account identifiers.
+_ALLOWLISTED_JSON_FIELDS = (
+    "status",
+    "totalTokensFresh",
+    "sessionId",
+    "modelProvider",
+    "model",
+    "thinkingLevel",
+    "startedAt",
+    "endedAt",
+    "runtimeMs",
+    "inputTokens",
+    "cacheRead",
+    "cacheWrite",
+    "outputTokens",
+    "totalTokens",
+    "estimatedCostUsd",
+    "parent_job_id",
+    "lane_id",
+    "phase",
+    "attempt_id",
+    "retry_count",
+)
+_ALLOWLISTED_JSON_PATHS = tuple(f"$.{name}" for name in _ALLOWLISTED_JSON_FIELDS)
+_REQUIRED_NODE_COLUMNS = {
+    "session_key": "TEXT",
+    "current_session_id": "TEXT",
+    "entry_json": "TEXT",
+    "entry_valid": "INTEGER",
+}
+_REQUIRED_WINDOW_COLUMNS = {
+    "session_id": "TEXT",
+    "session_key": "TEXT",
+    "started_at": "INTEGER",
+    "ended_at": "INTEGER",
+    "status": "TEXT",
+}
+
+
+class _CanonicalAbsent(Exception):
+    pass
+
+
+class _CanonicalUnreadable(Exception):
+    pass
+
+
+class _CanonicalIncompatible(Exception):
+    pass
+
+
+def _realpath_str(path: Path) -> str:
+    return os.path.realpath(os.fspath(path))
+
+
+def _resolve_owned_paths(
+    root: Path, agent_id: str
+) -> tuple[str, str, str, str] | None:
+    """Resolve agent root, canonical DB and legacy JSON inside one owning root.
+
+    Returns (root_real, agent_real, db_real, legacy_real) or None when any
+    reparse/symlink/junction redirects outside the exact owning agent root,
+    including sibling-agent redirection. Fleet-root containment alone is
+    never sufficient.
+    """
+    root_real = _realpath_str(root)
+    agent_real = _realpath_str(root / agent_id)
+    if os.path.basename(agent_real) != agent_id:
+        return None
+    if os.path.dirname(agent_real) != root_real:
+        return None
+    db_real = _realpath_str(root / agent_id / _CANONICAL_DB_SUBPATH[0] / _CANONICAL_DB_SUBPATH[1])
+    legacy_real = _realpath_str(root / agent_id / "sessions" / "sessions.json")
+    expected_db = os.path.join(agent_real, _CANONICAL_DB_SUBPATH[0], _CANONICAL_DB_SUBPATH[1])
+    expected_legacy = os.path.join(agent_real, "sessions", "sessions.json")
+    if db_real != expected_db or legacy_real != expected_legacy:
+        return None
+    return (root_real, agent_real, db_real, legacy_real)
+
+
+def _open_canonical_readonly(db_real: str) -> sqlite3.Connection:
+    uri = Path(db_real).as_uri() + "?mode=ro"
+    connection = sqlite3.connect(uri, uri=True, timeout=5.0)
+    try:
+        connection.execute("PRAGMA query_only = ON")
+        connection.execute(f"PRAGMA busy_timeout = {_SQLITE_BUSY_TIMEOUT_MS}")
+        connection.execute("PRAGMA trusted_schema = OFF")
+    except sqlite3.Error:
+        connection.close()
+        raise
+    return connection
+
+
+def _check_canonical_schema(connection: sqlite3.Connection) -> None:
+    tables = {
+        row[0]
+        for row in connection.execute(
+            "SELECT name FROM sqlite_master WHERE type = 'table'"
+        ).fetchall()
+    }
+    if _CANONICAL_NODE_TABLE not in tables or _CANONICAL_WINDOW_TABLE not in tables:
+        raise _CanonicalIncompatible("canonical_schema_mismatch")
+    node_info = connection.execute(
+        f'PRAGMA table_info("{_CANONICAL_NODE_TABLE}")'
+    ).fetchall()
+    window_info = connection.execute(
+        f'PRAGMA table_info("{_CANONICAL_WINDOW_TABLE}")'
+    ).fetchall()
+    node_cols = {row[1]: row for row in node_info}
+    window_cols = {row[1]: row for row in window_info}
+    for name in _REQUIRED_NODE_COLUMNS:
+        if name not in node_cols:
+            raise _CanonicalIncompatible("canonical_schema_mismatch")
+    for name in _REQUIRED_WINDOW_COLUMNS:
+        if name not in window_cols:
+            raise _CanonicalIncompatible("canonical_schema_mismatch")
+    # Structural PK uniqueness: session_key and session_id must be the
+    # single-column primary keys, not merely indexed columns.
+    node_pk = sorted(row[1] for row in node_info if len(row) > 5 and row[5] > 0)
+    window_pk = sorted(row[1] for row in window_info if len(row) > 5 and row[5] > 0)
+    if node_pk != ["session_key"] or window_pk != ["session_id"]:
+        raise _CanonicalIncompatible("canonical_schema_mismatch")
+
+
+def _decode_bounded_scalar(raw: Any) -> Any:
+    """Decode one ``->`` projected JSON value; reject containers/unbounded text."""
+    if raw is None:
+        return None
+    if not isinstance(raw, str):
+        raise ValueError("non_text_projection")
+    if len(raw) > _MAX_SCALAR_LEN + 32:
+        raise ValueError("scalar_too_long")
+    try:
+        value = json.loads(raw)
+    except (json.JSONDecodeError, ValueError):
+        raise ValueError("malformed_scalar")
+    if isinstance(value, (dict, list)):
+        raise ValueError("non_scalar_value")
+    if isinstance(value, str) and len(value) > _MAX_SCALAR_LEN:
+        raise ValueError("scalar_too_long")
+    return value
+
+
+def _canonical_projection_select() -> str:
+    parts = [
+        'n.session_key AS node_key',
+        'n.current_session_id AS node_current_id',
+        'n.entry_valid AS node_valid',
+        'w.session_id AS window_id',
+        'w.session_key AS window_key',
+        'w.status AS window_status',
+        'w.started_at AS window_started',
+        'w.ended_at AS window_ended',
+    ]
+    for index in range(len(_ALLOWLISTED_JSON_FIELDS)):
+        # json_valid guards one malformed document from aborting the whole
+        # bounded read; malformed rows project as NULL and are rejected
+        # per-row in Python without raw leakage.
+        parts.append(
+            f'CASE WHEN json_valid(n.entry_json) THEN n.entry_json -> ? ELSE NULL END AS f{index}'
+        )
+    return ', '.join(parts)
+
+
+def _query_canonical_rows(
+    connection: sqlite3.Connection,
+    *,
+    session_key: str | None = None,
+    session_id: str | None = None,
+    scan_limit: int = _SQLITE_SCAN_BOUND + 1,
+) -> list[tuple]:
+    """Select the current-window join with caller filters applied pre-bound.
+
+    The node/window join is performed inside SQLite so a target beyond 512
+    rows is still found when the caller supplies its exact key/ID. The
+    node and window tables are never LIMITed independently. A LEFT JOIN
+    keeps nodes with missing/mismatched windows visible as invalid rows;
+    an inner join must never turn them into a clean empty ok source.
+    """
+    select_list = _canonical_projection_select()
+    clauses: list[str] = []
+    params: list[Any] = list(_ALLOWLISTED_JSON_PATHS)
+    if session_key is not None:
+        clauses.append('n.session_key = ?')
+        params.append(session_key)
+    if session_id is not None:
+        clauses.append('n.current_session_id = ?')
+        params.append(session_id)
+    where = f"WHERE {' AND '.join(clauses)}" if clauses else ''
+    params.append(int(scan_limit))
+    rows = connection.execute(
+        f"""
+        SELECT {select_list}
+        FROM session_nodes AS n
+        LEFT JOIN session_windows AS w
+          ON w.session_id = n.current_session_id
+         AND w.session_key = n.session_key
+        {where}
+        ORDER BY n.session_key ASC
+        LIMIT ?
+        """,
+        params,
+    ).fetchall()
+    return rows
+
+
+def _canonical_row_to_entry(
+    agent_id: str, row: tuple
+) -> tuple[str, Any, str | None]:
+    """Return (session_key, entry_dict, failure_label) without raw leakage."""
+    node_key, node_current_id, node_valid = row[0], row[1], row[2]
+    window_id, window_key, window_status = row[3], row[4], row[5]
+    window_started, window_ended = row[6], row[7]
+    raw_fields = row[8:]
+    if not isinstance(node_key, str) or not node_key or len(node_key) > _MAX_SCALAR_LEN:
+        return ('', None, 'canonical_identity_invalid')
+    if (
+        not isinstance(node_current_id, str)
+        or not node_current_id
+        or len(node_current_id) > _MAX_SCALAR_LEN
+    ):
+        return (node_key, None, 'canonical_identity_invalid')
+    # entry_valid must be exactly integer 1; booleans, strings, nulls and
+    # 0 are never current, even when the joined window looks terminal.
+    if type(node_valid) is not int or node_valid != 1:
+        return (node_key, None, 'canonical_entry_not_current')
+    # Current-window identity: LEFT JOIN keeps orphaned nodes visible, so
+    # re-verify exact typed node/window key identity here. Missing, null,
+    # unbounded or mismatched windows never become a clean empty source.
+    if (
+        not isinstance(window_id, str)
+        or not window_id
+        or len(window_id) > _MAX_SCALAR_LEN
+        or not isinstance(window_key, str)
+        or not window_key
+        or len(window_key) > _MAX_SCALAR_LEN
+    ):
+        return (node_key, None, 'canonical_window_identity_mismatch')
+    if window_id != node_current_id or window_key != node_key:
+        return (node_key, None, 'canonical_window_identity_mismatch')
+    if window_status not in TERMINAL_SESSION_STATUSES:
+        return (node_key, None, 'canonical_window_lifecycle_invalid')
+    # Window lifecycle scalars: strict nonnegative integers, ordered, and
+    # exactly equal to the entry interval. No tolerance is approved: stale,
+    # retired, reset, null, boolean or float windows are rejected even when
+    # the entry timestamps fit the dispatch reservation/terminal bounds.
+    if type(window_started) is not int or window_started < 0:
+        return (node_key, None, 'canonical_window_time_mismatch')
+    if type(window_ended) is not int or window_ended < 0:
+        return (node_key, None, 'canonical_window_time_mismatch')
+    if window_ended < window_started:
+        return (node_key, None, 'canonical_window_time_mismatch')
+    try:
+        decoded = [_decode_bounded_scalar(raw) for raw in raw_fields]
+    except ValueError:
+        return (node_key, None, 'canonical_entry_malformed')
+    entry = dict(zip(_ALLOWLISTED_JSON_FIELDS, decoded))
+    # Token scalars must be strict numbers; JSON true/false must not pass
+    # as 1/0 and arrays/objects are already rejected above.
+    for token_field in TOKEN_FIELDS:
+        token_value = entry.get(token_field)
+        if isinstance(token_value, bool) or not isinstance(token_value, int):
+            return (node_key, None, 'canonical_entry_malformed')
+    freshness = entry.get('totalTokensFresh')
+    if freshness is not True:
+        return (node_key, None, 'canonical_entry_not_fresh')
+    if entry.get('status') != 'done':
+        return (node_key, None, 'canonical_entry_lifecycle_invalid')
+    # Contradictory entry/current identity: the entry sessionId must be a
+    # typed nonempty bounded value equal to BOTH node.current_session_id
+    # AND the current window.session_id. Checked on every path even when
+    # the caller omits key/ID filters.
+    entry_session_id = entry.get('sessionId')
+    if (
+        not isinstance(entry_session_id, str)
+        or not entry_session_id
+        or len(entry_session_id) > _MAX_SCALAR_LEN
+    ):
+        return (node_key, None, 'canonical_window_identity_mismatch')
+    if entry_session_id != node_current_id or entry_session_id != window_id:
+        return (node_key, None, 'canonical_window_identity_mismatch')
+    # Exact window/entry time consistency.
+    entry_started = entry.get('startedAt')
+    entry_ended = entry.get('endedAt')
+    if type(entry_started) is not int or type(entry_ended) is not int:
+        return (node_key, None, 'canonical_window_time_mismatch')
+    if window_started != entry_started or window_ended != entry_ended:
+        return (node_key, None, 'canonical_window_time_mismatch')
+    return (node_key, entry, None)
+
+
+def _read_canonical_store(
+    *,
+    agent_id: str,
+    root: Path,
+    session_key: str | None = None,
+    session_id: str | None = None,
+    bulk: bool = False,
+) -> tuple[str, list[tuple[str, Any]], bool, str | None]:
+    """Open the canonical SQLite store read-only; never fall back silently.
+
+    Returns (kind, entries, partial, error_label) where kind is one of
+    'absent', 'ok', 'unreadable', 'incompatible'. 'absent' is the only
+    state that permits legacy JSON fallback.
+    """
+    resolved = _resolve_owned_paths(root, agent_id)
+    if resolved is None:
+        raise ValueError('session store escaped configured agent state root')
+    _, _, db_real, _ = resolved
+    if not os.path.lexists(db_real):
+        return ('absent', [], False, None)
+    if os.path.isdir(db_real) or not os.path.isfile(db_real):
+        return ('incompatible', [], False, 'canonical_store_not_file')
+    connection: sqlite3.Connection | None = None
+    try:
+        connection = _open_canonical_readonly(db_real)
+        _check_canonical_schema(connection)
+        if bulk:
+            rows = _query_canonical_rows(connection)
+            partial = len(rows) > _SQLITE_SCAN_BOUND
+            rows = rows[:_SQLITE_SCAN_BOUND]
+        else:
+            rows = _query_canonical_rows(
+                connection,
+                session_key=session_key,
+                session_id=session_id,
+                scan_limit=_SQLITE_EXACT_LIMIT,
+            )
+            partial = False
+    except _CanonicalIncompatible:
+        return ('incompatible', [], False, 'canonical_store_incompatible')
+    except (sqlite3.Error, OSError, ValueError):
+        return ('unreadable', [], False, 'canonical_store_unreadable')
+    finally:
+        if connection is not None:
+            try:
+                connection.close()
+            except sqlite3.Error:
+                pass
+    decoded: list[tuple[str, Any]] = []
+    for row in rows:
+        node_key, entry, _failure = _canonical_row_to_entry(agent_id, row)
+        decoded.append((node_key, entry))
+    return ('ok', decoded, partial, None)
+
+
 def load_allowlisted_session_usage(
     agent_ids: Iterable[str] = CONFIGURED_ISOLATED_AGENT_IDS,
     agent_state_root: Path = DEFAULT_AGENT_STATE_ROOT,
@@ -375,16 +731,17 @@ def load_allowlisted_session_usage(
     if unknown:
         raise ValueError(f"agent ids are not allowlisted: {', '.join(unknown)}")
 
-    root = Path(agent_state_root).resolve()
+    root = Path(agent_state_root).expanduser()
+    root_real = _realpath_str(root)
     records_by_run: dict[str, dict[str, Any]] = {}
     invalid_records: list[dict[str, Any]] = []
     source_status: list[dict[str, Any]] = []
     for agent_id in requested:
-        store = (root / agent_id / "sessions" / "sessions.json").resolve()
-        try:
-            store.relative_to(root)
-        except ValueError as exc:
-            raise ValueError("session store escaped configured agent state root") from exc
+        resolved = _resolve_owned_paths(root, agent_id)
+        if resolved is None:
+            raise ValueError("session store escaped configured agent state root")
+        _, _, db_real, legacy_real = resolved
+        store = Path(legacy_real)
         status: dict[str, Any] = {
             "agent_id": agent_id,
             "agent_role": CONFIGURED_ISOLATED_AGENT_ROLES[agent_id],
@@ -392,7 +749,45 @@ def load_allowlisted_session_usage(
             "present": store.is_file(),
             "valid_record_count": 0,
             "invalid_record_count": 0,
+            "partial": False,
         }
+        # Bounded read-only canonical loader first. Legacy JSON is used
+        # only on genuine canonical absence; a present-but-unreadable,
+        # corrupt, incompatible, non-file or escaped store never
+        # downgrades to a possibly stale favorable JSON file.
+        kind, canonical_entries, partial, error_label = _read_canonical_store(
+            agent_id=agent_id, root=root, bulk=True
+        )
+        if kind != 'absent':
+            status["present"] = os.path.lexists(db_real)
+            status["partial"] = partial
+            if kind != 'ok':
+                status["status"] = "canonical_unreadable" if kind == 'unreadable' else "canonical_incompatible"
+                status["invalid_record_count"] = 1
+                invalid_records.append({"agent_id": agent_id, "session_ref_hash": None, "errors": [error_label or "canonical_store_unreadable"]})
+                source_status.append(status)
+                continue
+            for session_key, entry in canonical_entries:
+                if entry is None:
+                    invalid_records.append(_safe_invalid_record(agent_id, session_key, {}, ["canonical_entry_invalid"]))
+                    status["invalid_record_count"] += 1
+                    continue
+                record, errors = extract_session_usage(agent_id, session_key, entry)
+                if record is None:
+                    invalid_records.append(_safe_invalid_record(agent_id, session_key, entry, errors))
+                    status["invalid_record_count"] += 1
+                    continue
+                run_id = str(record["run_id"])
+                previous = records_by_run.get(run_id)
+                if previous is None or int(record["ended_at_epoch_ms"]) >= int(previous["ended_at_epoch_ms"]):
+                    records_by_run[run_id] = record
+                status["valid_record_count"] += 1
+            if partial:
+                status["status"] = "partial"
+            else:
+                status["status"] = "ok" if status["invalid_record_count"] == 0 else "warning"
+            source_status.append(status)
+            continue
         if not store.is_file():
             status["status"] = "missing"
             source_status.append(status)
@@ -608,33 +1003,62 @@ def load_verified_isolated_session_usage_for_binding(
     if binding is None:
         return None, binding_errors
     try:
-        root = Path(agent_state_root).expanduser().resolve()
-        store = (root / agent_id / "sessions" / "sessions.json").resolve()
-        store.relative_to(root)
-    except (OSError, ValueError):
+        root = Path(agent_state_root).expanduser()
+        resolved = _resolve_owned_paths(root, agent_id)
+        if resolved is None:
+            return None, ["dispatch_binding_session_index_unavailable"]
+        _, _, db_real, legacy_real = resolved
+        store = Path(legacy_real)
+    except OSError:
         return None, ["dispatch_binding_session_index_unavailable"]
-    if not store.is_file():
-        return None, ["dispatch_binding_session_index_unavailable"]
-    try:
-        raw = json.loads(store.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError):
-        return None, ["dispatch_binding_session_index_unreadable"]
-    if not isinstance(raw, dict):
-        return None, ["dispatch_binding_session_index_invalid"]
 
     requested_session_id = session_id if isinstance(session_id, str) and session_id else None
     requested_session_key = session_key if isinstance(session_key, str) and session_key else None
     matches: list[dict[str, Any]] = []
     matched_binding_session = False
     invalid_binding_session = False
-    for raw_session_key, entry in raw.items():
+    unresolved_partial = False
+    # Canonical SQLite path: exact caller filters are applied before the
+    # bound so a target beyond 512 rows is still found via the joined
+    # current-window query. Without caller identity the bounded hash scan
+    # reports partial/unresolved instead of false not-found or credit.
+    canonical_present = os.path.lexists(db_real)
+    if canonical_present:
+        kind, canonical_entries, partial, error_label = _read_canonical_store(
+            agent_id=agent_id,
+            root=root,
+            session_key=requested_session_key,
+            session_id=requested_session_id,
+            bulk=(requested_session_key is None and requested_session_id is None),
+        )
+        if kind != 'ok':
+            return None, ["dispatch_binding_session_index_unavailable"]
+        # Bounded hash scan without caller identity cannot credit: a target
+        # inside the first 512 and a target beyond 512 both stay unresolved.
+        if partial and requested_session_key is None and requested_session_id is None:
+            return None, ["dispatch_binding_session_index_unresolved"]
+        candidates: list[tuple[Any, Any]] = list(canonical_entries)
+    else:
+        if not store.is_file():
+            return None, ["dispatch_binding_session_index_unavailable"]
+        try:
+            raw = json.loads(store.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            return None, ["dispatch_binding_session_index_unreadable"]
+        if not isinstance(raw, dict):
+            return None, ["dispatch_binding_session_index_invalid"]
+        candidates = list(raw.items())
+    for raw_session_key, entry in candidates:
         if full_hash_reference(raw_session_key) != binding["child_session_key_hash"]:
             continue
         matched_binding_session = True
+        if not isinstance(entry, dict):
+            invalid_binding_session = True
+            continue
         if requested_session_key is not None and raw_session_key != requested_session_key:
             continue
         if requested_session_id is not None:
-            entry_id = entry.get("sessionId") if isinstance(entry, dict) else None
+            entry_id = entry.get("sessionId")
             if entry_id != requested_session_id:
                 continue
         record, errors = extract_session_usage(agent_id, raw_session_key, entry)
@@ -671,6 +1095,8 @@ def load_verified_isolated_session_usage_for_binding(
 
     if len(matches) == 1:
         return matches[0], []
+    if len(matches) > 1:
+        return None, ["dispatch_binding_session_key_not_found"]
     if invalid_binding_session:
         return None, ["dispatch_binding_session_lifecycle_invalid"]
     if matched_binding_session:

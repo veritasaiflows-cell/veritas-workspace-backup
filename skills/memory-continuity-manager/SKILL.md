@@ -23,7 +23,7 @@ The root `Continuity Protocol.md` is a compact routing contract. This skill owns
 
 ## Startup And Resume Memory Route
 
-For direct-main prior-decision work, search durable memory before answering, then open only the needed lines and verify live artifacts before current-state claims. On cold start or post-compaction, use the Startup Truth Index and current resume/active-lane pointers before broad scans. A resume pointer, memory entry, or generated packet routes work; it never restores consumed authority, proves execution, or overrides current owner artifacts.
+For direct-main prior-decision work, search durable memory before answering, then open only the needed lines and verify live artifacts before current-state claims. On cold start or post-compaction, use the Startup Truth Index and current resume/active-lane pointers before broad scans. After a gateway restart or interrupted completion delivery, inspect the child task/session terminal state and recover its exact final result before retrying; distinguish completed work from failed delivery, then reverify live hashes or proof artifacts before granting completion credit. A resume pointer, memory entry, or generated packet routes work; it never restores consumed authority, proves execution, or overrides current owner artifacts.
 
 Stop on ambiguous multiple pickup points, stale or mismatched leases/hashes, expired checkpoints, or missing owner identity. Route project-specific repair through `project-continuity-manager` rather than expanding the root protocol.
 

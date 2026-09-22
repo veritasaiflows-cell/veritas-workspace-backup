@@ -1,0 +1,37 @@
+case 430898a2d5b5c3f02ebdccc66dc12ddc78c2c454941c9c8033eae2a8762b0545 (family: T2)
+prompt:
+{
+  "events": [
+    [
+      "e1",
+      "A",
+      1,
+      "queued"
+    ],
+    [
+      "e25",
+      "A",
+      2,
+      "ready"
+    ],
+    [
+      "e35",
+      "A",
+      2,
+      "blocked"
+    ],
+    [
+      "e4",
+      "B",
+      1,
+      "ready"
+    ]
+  ],
+  "request": "Replay the stream; report ambiguity, never invent a tie-break.",
+  "rules": {
+    "apply_ge": true,
+    "dedup_on_pair": true,
+    "ordering": "revision; ties undefined"
+  }
+}
+Return only the required JSON object. No prose.

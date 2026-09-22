@@ -41,6 +41,12 @@ POLICY_MANUAL_STALE_PHRASES = [
 
 
 def _read_note_text(path: Path) -> str:
+    # Retired front-door notes (e.g. 03. Portfolio/Execution Board.md after the
+    # 2026-08-29 portfolio retirement) no longer exist on disk. A missing note
+    # cannot carry stale manual-policy phrasing, so read it as empty text
+    # instead of crashing the validation build on FileNotFoundError.
+    if not path.exists():
+        return ""
     for encoding in ("utf-8", "cp1252"):
         try:
             return path.read_text(encoding=encoding)

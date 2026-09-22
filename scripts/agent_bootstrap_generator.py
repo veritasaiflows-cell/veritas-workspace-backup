@@ -37,7 +37,6 @@ _REQUIRED_FLEET_POLICY_ATTRS = (
     "SPECIALIST_RECOVERY",
     "automatic_fallbacks_for",
     "MAIN_MODEL",
-    "MAIN_FALLBACKS",
 )
 _missing_policy_attrs = [name for name in _REQUIRED_FLEET_POLICY_ATTRS if not hasattr(fleet_policy, name)]
 if _missing_policy_attrs:
@@ -46,7 +45,6 @@ if _missing_policy_attrs:
     )
 
 MAIN_MODEL = str(fleet_policy.MAIN_MODEL)
-MAIN_FALLBACKS = [str(item) for item in (fleet_policy.MAIN_FALLBACKS or [])]
 
 
 def fleet_policy_ids() -> list[str]:
@@ -262,7 +260,7 @@ FLEET_OPERATING_MODEL = {
     "general_route": [
         "model_free_command when deterministic proof is complete",
         "codex_native_subagent when explicitly eligible for bounded work",
-        "main on Sol for a quick bounded fix, final integration, or authority-sensitive judgment",
+        "main for a quick bounded fix, final integration, or authority-sensitive judgment",
         "persistent isolated specialist on its exact configured role model with fresh strict context transport proof",
         "risk-budgeted QA when required",
         "main acceptance and closeout",
@@ -406,8 +404,8 @@ PROFILES: dict[str, dict[str, Any]] = {
         "department": "research",
         "authority_class": "workspace_read_mostly",
         "owner_workflow": DEFAULT_OWNER_ROUTE,
-        "default_model": "xai/grok-4.6",
-        "upgrade_model": "xai/grok-4.6",
+        "default_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+        "upgrade_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
         "runtime_tool_posture": READ_ONLY_TOOL_POSTURE,
         "role": (
             "Public-source AI, technology, business, and market-context research; return dated sources, "
@@ -522,8 +520,8 @@ PROFILES: dict[str, dict[str, Any]] = {
         "department": "continuity",
         "authority_class": "docs_memory_playbook_scoped",
         "owner_workflow": DEFAULT_OWNER_ROUTE,
-        "default_model": "openai/gpt-5.6-luna",
-        "upgrade_model": "openai/gpt-5.6-luna",
+        "default_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+        "upgrade_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
         "runtime_tool_posture": WORKSPACE_ONLY_TOOL_POSTURE,
         "role": (
             "Synchronize accepted-proof documentation and continuity; no provisional-to-accepted "
@@ -564,8 +562,8 @@ PROFILES: dict[str, dict[str, Any]] = {
         "department": "finance-source-scout",
         "authority_class": "finance_sensitive_review_only",
         "owner_workflow": "WF78",
-        "default_model": "openai/gpt-5.6-terra",
-        "upgrade_model": "openai/gpt-5.6-terra",
+        "default_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+        "upgrade_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
         "runtime_tool_posture": READ_ONLY_TOOL_POSTURE,
         "role": (
             "Official-source finance evidence, earnings, catalysts, freshness, and traceable calculations; "
@@ -647,8 +645,8 @@ PROFILES: dict[str, dict[str, Any]] = {
         "department": "finance-data-steward",
         "authority_class": "finance_sensitive_read_only",
         "owner_workflow": "WF84",
-        "default_model": "openai/gpt-5.6-terra",
-        "upgrade_model": "openai/gpt-5.6-terra",
+        "default_model": "ollama-cloud/glm-5.3-flash:cloud",
+        "upgrade_model": "ollama-cloud/glm-5.3-flash:cloud",
         "runtime_tool_posture": READ_ONLY_TOOL_POSTURE,
         "role": "SQL/JSON finance data-plane parity review, stale-packet detection, and metadata-only repair planning.",
         "tools_allowed": [
@@ -679,8 +677,8 @@ PROFILES: dict[str, dict[str, Any]] = {
         "department": "portfolio-proposal-analyst",
         "authority_class": "owner_gated_finance_proposal_only",
         "owner_workflow": "WF64/WF56",
-        "default_model": "openai/gpt-5.6-terra",
-        "upgrade_model": "openai/gpt-5.6-terra",
+        "default_model": "ollama-cloud/glm-5.3-flash:cloud",
+        "upgrade_model": "ollama-cloud/glm-5.3-flash:cloud",
         "runtime_tool_posture": READ_ONLY_TOOL_POSTURE,
         "role": "Portfolio-change proposal drafting, sizing/staggering review, and entry-band proposal critique.",
         "tools_allowed": [
@@ -1194,7 +1192,7 @@ def profile_for(agent: dict[str, Any], owner_workflow: str, concept: str | None)
     agent_id = str(agent.get("id") or agent.get("name"))
     base = dict(PROFILES.get(agent_id, {}))
     if not base:
-        model = agent.get("model") or "openai/gpt-5.6-terra"
+        model = agent.get("model") or fleet_policy.MAIN_PRIMARY
         base = {
             "department": "custom",
             "authority_class": "workspace_scoped",
@@ -1331,7 +1329,6 @@ def build_manifest(
             "recovery_candidates": fleet_recovery_for(agent_id),
             "recovery_is_non_executing_option": True,
             "main_model": MAIN_MODEL,
-            "main_fallbacks": list(MAIN_FALLBACKS),
             "upgrade_when": [
                 "increase the configured role model's thinking only when the validated route requires it",
                 "split or return cross-owner final judgment to Veritas main",
@@ -1484,7 +1481,7 @@ def build_bootstrap_markdown(manifest: dict[str, Any], delta: list[dict[str, Any
         "",
         "- Main remains the routing, final-QC, sole-acceptance, and final-judgment owner.",
         f"- Configured fleet: Main plus `{len(manifest['fleet_operating_model']['configured_isolated_agent_ids'])}` isolated agents.",
-        "- Route: model-free first; explicit bounded native when eligible; Main/Sol for bounded integration or judgment; otherwise the persistent specialist's exact configured role model with transport proof; risk-budgeted QA; Main acceptance.",
+        "- Route: model-free first; explicit bounded native when eligible; Main for bounded integration or judgment; otherwise the persistent specialist's exact configured role model with transport proof; risk-budgeted QA; Main acceptance.",
         "- Finance route: Main -> Finance Source when needed -> Main analysis -> Finance Red-Team -> Main judgment.",
         "- Isolated output is unaccepted until Main verifies and accepts it.",
         "",

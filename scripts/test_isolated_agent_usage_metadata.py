@@ -15,6 +15,9 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import isolated_agent_usage_metadata as module
 
 
+SKIPS: list[str] = []
+
+
 def session_entry(**overrides) -> dict:
     base = {
         "status": "done",
@@ -524,6 +527,601 @@ def test_gateway_usage_cost_is_mocked_sanitized_and_cache_gated() -> None:
     assert "must not escape either" not in json.dumps(blocked)
 
 
+def write_canonical_db(db_path: Path, rows: list[tuple]) -> None:
+    """Build a synthetic canonical SQLite store (no agent-state reads)."""
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    connection = sqlite3.connect(db_path)
+    try:
+        connection.executescript(
+            """
+            CREATE TABLE session_nodes (
+              session_key TEXT PRIMARY KEY,
+              current_session_id TEXT NOT NULL,
+              entry_json TEXT NOT NULL,
+              entry_valid INTEGER NOT NULL
+            );
+            CREATE TABLE session_windows (
+              session_id TEXT PRIMARY KEY,
+              session_key TEXT NOT NULL,
+              started_at INTEGER,
+              ended_at INTEGER,
+              status TEXT
+            );
+            """
+        )
+        for item in rows:
+            session_key, session_id, entry, valid, window_status = item
+            entry_text = entry if isinstance(entry, str) else json.dumps(entry)
+            started = entry.get("startedAt") if isinstance(entry, dict) else 1_786_272_000_000
+            ended = entry.get("endedAt") if isinstance(entry, dict) else 1_786_272_003_000
+            connection.execute(
+                "INSERT INTO session_nodes VALUES (?, ?, ?, ?)",
+                (session_key, session_id, entry_text, valid),
+            )
+            connection.execute(
+                "INSERT INTO session_windows VALUES (?, ?, ?, ?, ?)",
+                (session_id, session_key, started, ended, window_status),
+            )
+        connection.commit()
+    finally:
+        connection.close()
+
+
+def canonical_paths(state_root: Path, agent_id: str) -> Path:
+    return state_root / agent_id / "agent" / "openclaw-agent.sqlite"
+
+
+def test_canonical_bulk_and_exact_succeed() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        entry = session_entry(sessionId="canon-session-1")
+        write_canonical_db(
+            canonical_paths(state_root, "implementation-builder"),
+            [("agent:implementation-builder:canon-1", "canon-session-1", entry, 1, "done")],
+        )
+        payload = module.load_allowlisted_session_usage(["implementation-builder"], state_root)
+        assert payload["summary"]["valid_record_count"] == 1
+        record = payload["records"][0]
+        assert record["model_path"] == "openai/gpt-5.6-terra"
+        assert record["total_tokens"] == 16259
+        assert payload["source_status"][0]["partial"] is False
+        serialized = json.dumps(payload, sort_keys=True)
+        assert "private-session-id" not in serialized
+        assert "canon-session-1" not in serialized
+
+
+def test_sibling_root_escape_denied() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        real_dir = state_root / "research-scout"
+        real_dir.mkdir(parents=True)
+        entry = session_entry()
+        write_canonical_db(
+            canonical_paths(state_root, "research-scout"),
+            [("agent:research-scout:real", "real-session", entry, 1, "done")],
+        )
+        # Sibling-agent redirection: owning agent root is a symlink to a sibling.
+        link = state_root / "implementation-builder"
+        try:
+            link.symlink_to(real_dir, target_is_directory=True)
+        except OSError:
+            SKIPS.append("test_sibling_root_escape_denied:host_symlink_unsupported")
+            return
+        rejected = False
+        try:
+            module.load_allowlisted_session_usage(["implementation-builder"], state_root)
+        except ValueError:
+            rejected = True
+        assert rejected
+
+
+def test_legacy_symlink_escape_denied() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        outside = Path(tmpdir) / "outside" / "sessions.json"
+        outside.parent.mkdir(parents=True)
+        outside.write_text(json.dumps({"k": session_entry()}), encoding="utf-8")
+        target = state_root / "qa-redteam" / "sessions"
+        target.mkdir(parents=True)
+        try:
+            (target / "sessions.json").symlink_to(outside)
+        except OSError:
+            SKIPS.append("test_legacy_symlink_escape_denied:host_symlink_unsupported")
+            return
+        rejected = False
+        try:
+            module.load_allowlisted_session_usage(["qa-redteam"], state_root)
+        except ValueError:
+            rejected = True
+        assert rejected
+
+
+def test_nonfile_no_downgrade() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        # Present-but-directory canonical store plus a favorable legacy file.
+        canonical_paths(state_root, "qa-redteam").mkdir(parents=True)
+        write_store(state_root, "qa-redteam", {"private-session-key": session_entry()})
+        payload = module.load_allowlisted_session_usage(["qa-redteam"], state_root)
+        assert payload["records"] == []
+        assert payload["summary"]["valid_record_count"] == 0
+        assert payload["source_status"][0]["status"] == "canonical_incompatible"
+
+
+def test_corrupt_no_downgrade() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        db_path = canonical_paths(state_root, "qa-redteam")
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+        db_path.write_bytes(b"not a sqlite database at all")
+        write_store(state_root, "qa-redteam", {"private-session-key": session_entry()})
+        payload = module.load_allowlisted_session_usage(["qa-redteam"], state_root)
+        assert payload["records"] == []
+        assert payload["source_status"][0]["status"] in ("canonical_unreadable", "canonical_incompatible")
+
+
+def test_beyond512_exact_and_partial() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        rows = []
+        for index in range(600):
+            key = f"agent:implementation-builder:bulk-{index:04d}"
+            sid = f"bulk-session-{index:04d}"
+            rows.append((key, sid, session_entry(sessionId=sid), 1, "done"))
+        write_canonical_db(canonical_paths(state_root, "implementation-builder"), rows)
+        # Bulk scan without caller identity is bounded and explicitly partial.
+        payload = module.load_allowlisted_session_usage(["implementation-builder"], state_root)
+        assert payload["source_status"][0]["status"] == "partial"
+        assert payload["source_status"][0]["partial"] is True
+        assert payload["summary"]["valid_record_count"] == 512
+        run_ids = [row["run_id"] for row in payload["records"]]
+        assert run_ids == sorted(run_ids)
+        # Exact-bound verified path with caller key beyond row 512 succeeds.
+        db_path = Path(tmpdir) / "openclaw.sqlite"
+        correlation = module.build_attempt_correlation_key(
+            parent_job_id="job", lane_id="lane", phase="implementation", retry_count=0
+        )
+        assert correlation is not None
+        target_key = "agent:implementation-builder:bulk-0599"
+        binding_hash = write_terminal_dispatch_binding(
+            db_path,
+            agent_id="implementation-builder",
+            session_key=target_key,
+            attempt_hash=correlation["key_hash"],
+            reserved_at_ms=1_786_271_999_000,
+            accepted_at_ms=1_786_272_000_500,
+            terminal_at_ms=1_786_272_003_500,
+        )
+        record, errors = module.load_verified_isolated_session_usage_for_binding(
+            agent_id="implementation-builder",
+            expected_binding_token_hash=binding_hash,
+            agent_state_root=state_root,
+            state_db_path=db_path,
+            session_key=target_key,
+        )
+        assert errors == []
+        assert record is not None
+        assert record["token_attribution_source"] == "openclaw_isolated_session_store_v2"
+        # No caller identity over an over-bound store: unresolved, never credit.
+        naked, naked_errors = module.load_verified_isolated_session_usage_for_binding(
+            agent_id="implementation-builder",
+            expected_binding_token_hash=binding_hash,
+            agent_state_root=state_root,
+            state_db_path=db_path,
+        )
+        assert naked is None
+        assert naked_errors == ["dispatch_binding_session_index_unresolved"]
+
+
+def test_wrong_schema_malformed_ambiguous_identity() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        # Wrong schema: missing window table.
+        db_path = canonical_paths(state_root, "research-scout")
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+        connection = sqlite3.connect(db_path)
+        connection.execute("CREATE TABLE session_nodes (session_key TEXT, entry_json TEXT)")
+        connection.commit()
+        connection.close()
+        write_store(state_root, "research-scout", {"k": session_entry()})
+        payload = module.load_allowlisted_session_usage(["research-scout"], state_root)
+        assert payload["records"] == []
+        assert payload["source_status"][0]["status"] == "canonical_incompatible"
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        # Malformed entry_json and bool token trap.
+        write_canonical_db(
+            canonical_paths(state_root, "research-scout"),
+            [
+                ("agent:research-scout:bad-json", "bad-session", "{not valid json", 1, "done"),
+                ("agent:research-scout:bool-token", "bool-session",
+                 session_entry(sessionId="bool-session", inputTokens=True), 1, "done"),
+            ],
+        )
+        payload = module.load_allowlisted_session_usage(["research-scout"], state_root)
+        assert payload["records"] == []
+        assert payload["summary"]["invalid_record_count"] == 2
+    # Ambiguous companion identifiers must not resolve.
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        write_store(
+            state_root,
+            "docs-continuity-editor",
+            {
+                "key-a": session_entry(sessionId="id-a"),
+                "key-b": session_entry(sessionId="id-b"),
+            },
+        )
+        payload = module.load_allowlisted_session_usage(["docs-continuity-editor"], state_root)
+        assert module.find_session_usage_record(
+            payload, agent_id="docs-continuity-editor", session_id="id-a", session_key="key-b"
+        ) is None
+
+
+def test_scalar_privacy_traps() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        trap = session_entry(sessionId="trap-session")
+        trap["status"] = ["done"]
+        trap["model"] = {"nested": "must-never-appear"}
+        trap["systemPromptReport"] = {"rawPrompt": "must-never-appear-raw"}
+        write_canonical_db(
+            canonical_paths(state_root, "finance-redteam"),
+            [("agent:finance-redteam:trap", "trap-session", trap, 1, "done")],
+        )
+        payload = module.load_allowlisted_session_usage(["finance-redteam"], state_root)
+        assert payload["records"] == []
+        assert payload["summary"]["invalid_record_count"] == 1
+        serialized = json.dumps(payload, sort_keys=True)
+        assert "must-never-appear" not in serialized
+        assert "rawPrompt" not in serialized
+        assert "systemPromptReport" not in serialized
+
+
+def test_lifecycle_and_wrong_binding() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        base = Path(tmpdir)
+        state_root = base / "agents"
+        db_path = base / "openclaw.sqlite"
+        agent_id = "research-scout"
+        session_key = "agent:research-scout:lifecycle-child"
+        session_id = "lifecycle-session"
+        # Window lifecycle mismatch: entry done but window running.
+        write_canonical_db(
+            canonical_paths(state_root, agent_id),
+            [(session_key, session_id, session_entry(sessionId=session_id), 1, "running")],
+        )
+        correlation = module.build_attempt_correlation_key(
+            parent_job_id="job", lane_id="lane", phase="implementation", retry_count=0
+        )
+        assert correlation is not None
+        binding_hash = write_terminal_dispatch_binding(
+            db_path,
+            agent_id=agent_id,
+            session_key=session_key,
+            attempt_hash=correlation["key_hash"],
+            reserved_at_ms=1_786_271_999_000,
+            accepted_at_ms=1_786_272_000_500,
+            terminal_at_ms=1_786_272_003_500,
+        )
+        rejected, errors = module.load_verified_isolated_session_usage_for_binding(
+            agent_id=agent_id,
+            expected_binding_token_hash=binding_hash,
+            agent_state_root=state_root,
+            state_db_path=db_path,
+            session_key=session_key,
+        )
+        assert rejected is None
+        assert errors == ["dispatch_binding_session_lifecycle_invalid"]
+        # Wrong binding token never credits.
+        other, other_errors = module.load_verified_isolated_session_usage_for_binding(
+            agent_id=agent_id,
+            expected_binding_token_hash="b" * 64,
+            agent_state_root=state_root,
+            state_db_path=db_path,
+            session_key=session_key,
+        )
+        assert other is None
+        assert other_errors == ["dispatch_binding_missing_or_ambiguous"]
+
+
+def test_entry_window_identity_mismatch_bulk_and_bound() -> None:
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        agent_id = "implementation-builder"
+        key = "agent:implementation-builder:identity-child"
+        # Entry sessionId contradicts node current/window identity.
+        write_canonical_db(
+            canonical_paths(state_root, agent_id),
+            [(key, "canon-session-1", session_entry(sessionId="other-session"), 1, "done")],
+        )
+        payload = module.load_allowlisted_session_usage([agent_id], state_root)
+        assert payload["records"] == []
+        assert payload["summary"]["invalid_record_count"] == 1
+        assert payload["source_status"][0]["status"] != "ok"
+        serialized = json.dumps(payload, sort_keys=True)
+        assert "other-session" not in serialized
+        db_path = Path(tmpdir) / "openclaw.sqlite"
+        correlation = module.build_attempt_correlation_key(
+            parent_job_id="job", lane_id="lane", phase="implementation", retry_count=0
+        )
+        assert correlation is not None
+        binding_hash = write_terminal_dispatch_binding(
+            db_path, agent_id=agent_id, session_key=key,
+            attempt_hash=correlation["key_hash"],
+            reserved_at_ms=1_786_271_999_000,
+            accepted_at_ms=1_786_272_000_500,
+            terminal_at_ms=1_786_272_003_500,
+        )
+        for kwargs in ({"session_key": key}, {"session_id": "canon-session-1"},
+                       {"session_key": key, "session_id": "canon-session-1"}):
+            rejected, errors = module.load_verified_isolated_session_usage_for_binding(
+                agent_id=agent_id, expected_binding_token_hash=binding_hash,
+                agent_state_root=state_root, state_db_path=db_path, **kwargs)
+            assert rejected is None, kwargs
+            assert errors == ["dispatch_binding_session_lifecycle_invalid"], (kwargs, errors)
+        # Conflicting caller IDs never credit.
+        conflict, conflict_errors = module.load_verified_isolated_session_usage_for_binding(
+            agent_id=agent_id, expected_binding_token_hash=binding_hash,
+            agent_state_root=state_root, state_db_path=db_path,
+            session_key=key, session_id="wrong-session")
+        assert conflict is None
+        assert conflict_errors in (["dispatch_binding_session_key_not_found"],
+                                   ["dispatch_binding_requested_session_mismatch"],
+                                   ["dispatch_binding_session_lifecycle_invalid"])
+
+
+def test_missing_window_is_invalid_not_clean_ok() -> None:
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        agent_id = "qa-redteam"
+        key = "agent:qa-redteam:orphan-child"
+        sid = "orphan-session"
+        entry = session_entry(sessionId=sid)
+        db_path = canonical_paths(state_root, agent_id)
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+        connection = sqlite3.connect(db_path)
+        try:
+            connection.executescript(
+                """
+                CREATE TABLE session_nodes (
+                  session_key TEXT PRIMARY KEY,
+                  current_session_id TEXT NOT NULL,
+                  entry_json TEXT NOT NULL,
+                  entry_valid INTEGER NOT NULL
+                );
+                CREATE TABLE session_windows (
+                  session_id TEXT PRIMARY KEY,
+                  session_key TEXT NOT NULL,
+                  started_at INTEGER,
+                  ended_at INTEGER,
+                  status TEXT
+                );
+                """)
+            connection.execute("INSERT INTO session_nodes VALUES (?, ?, ?, ?)",
+                               (key, sid, json.dumps(entry), 1))
+            connection.commit()
+        finally:
+            connection.close()
+        payload = module.load_allowlisted_session_usage([agent_id], state_root)
+        assert payload["records"] == []
+        assert payload["summary"]["invalid_record_count"] == 1
+        assert payload["source_status"][0]["status"] != "ok"
+        assert "orphan-session" not in json.dumps(payload, sort_keys=True)
+        ledger = Path(tmpdir) / "openclaw.sqlite"
+        correlation = module.build_attempt_correlation_key(
+            parent_job_id="job", lane_id="lane", phase="implementation", retry_count=0)
+        assert correlation is not None
+        binding_hash = write_terminal_dispatch_binding(
+            ledger, agent_id=agent_id, session_key=key,
+            attempt_hash=correlation["key_hash"],
+            reserved_at_ms=1_786_271_999_000,
+            accepted_at_ms=1_786_272_000_500,
+            terminal_at_ms=1_786_272_003_500)
+        rejected, errors = module.load_verified_isolated_session_usage_for_binding(
+            agent_id=agent_id, expected_binding_token_hash=binding_hash,
+            agent_state_root=state_root, state_db_path=ledger, session_key=key)
+        assert rejected is None
+        assert errors == ["dispatch_binding_session_lifecycle_invalid"]
+
+
+def test_window_time_mismatch_reversed_and_impostors() -> None:
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        agent_id = "research-scout"
+        key = "agent:research-scout:time-child"
+        sid = "time-session"
+        base_entry = session_entry(sessionId=sid)
+        # Stale window: exact inequality denied even though entry fits dispatch bounds.
+        write_canonical_db(canonical_paths(state_root, agent_id),
+                           [(key, sid, base_entry, 1, "done")])
+        connection = sqlite3.connect(canonical_paths(state_root, agent_id))
+        try:
+            connection.execute("UPDATE session_windows SET started_at = started_at + 1000 WHERE session_id = ?", (sid,))
+            connection.commit()
+        finally:
+            connection.close()
+        payload = module.load_allowlisted_session_usage([agent_id], state_root)
+        assert payload["records"] == [] and payload["summary"]["invalid_record_count"] == 1
+        ledger = Path(tmpdir) / "openclaw.sqlite"
+        correlation = module.build_attempt_correlation_key(
+            parent_job_id="job", lane_id="lane", phase="implementation", retry_count=0)
+        assert correlation is not None
+        binding_hash = write_terminal_dispatch_binding(
+            ledger, agent_id=agent_id, session_key=key,
+            attempt_hash=correlation["key_hash"],
+            reserved_at_ms=1_786_271_999_000,
+            accepted_at_ms=1_786_272_000_500,
+            terminal_at_ms=1_786_272_003_500)
+        rejected, errors = module.load_verified_isolated_session_usage_for_binding(
+            agent_id=agent_id, expected_binding_token_hash=binding_hash,
+            agent_state_root=state_root, state_db_path=ledger, session_key=key)
+        assert rejected is None and errors == ["dispatch_binding_session_lifecycle_invalid"]
+    # Reversed, null, text and float windows each independently invalid.
+    for label, started, ended in (("reversed", 1_786_272_003_000, 1_786_272_000_000),
+                                  ("null", None, 1_786_272_003_000),
+                                  ("text", "stale-window-text", 1_786_272_003_000),
+                                  ("float", 1_786_272_000_000.5, 1_786_272_003_000)):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            state_root = Path(tmpdir) / "agents"
+            write_canonical_db(canonical_paths(state_root, "finance-redteam"),
+                               [(f"agent:finance-redteam:{label}", f"{label}-session",
+                                 session_entry(sessionId=f"{label}-session"), 1, "done")])
+            connection = sqlite3.connect(canonical_paths(state_root, "finance-redteam"))
+            try:
+                connection.execute("UPDATE session_windows SET started_at = ?, ended_at = ? WHERE session_id = ?",
+                                   (started, ended, f"{label}-session"))
+                connection.commit()
+            finally:
+                connection.close()
+            payload = module.load_allowlisted_session_usage(["finance-redteam"], state_root)
+            assert payload["records"] == [], label
+            assert payload["summary"]["invalid_record_count"] == 1, label
+
+
+def test_entry_valid_typing_rejected() -> None:
+    import tempfile
+    for label, valid in (("zero", 0), ("two", 2), ("null", None), ("text", "one"), ("real", 1.5)):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            state_root = Path(tmpdir) / "agents"
+            db_path = canonical_paths(state_root, "qa-redteam")
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+            connection = sqlite3.connect(db_path)
+            try:
+                connection.executescript(
+                    """
+                    CREATE TABLE session_nodes (
+                      session_key TEXT PRIMARY KEY,
+                      current_session_id TEXT NOT NULL,
+                      entry_json TEXT NOT NULL,
+                      entry_valid INTEGER
+                    );
+                    CREATE TABLE session_windows (
+                      session_id TEXT PRIMARY KEY,
+                      session_key TEXT NOT NULL,
+                      started_at INTEGER,
+                      ended_at INTEGER,
+                      status TEXT
+                    );
+                    """)
+                entry = session_entry(sessionId="v-session")
+                connection.execute("INSERT INTO session_nodes VALUES (?, ?, ?, ?)",
+                                   ("agent:qa-redteam:v", "v-session", json.dumps(entry), valid))
+                connection.execute("INSERT INTO session_windows VALUES (?, ?, ?, ?, ?)",
+                                   ("v-session", "agent:qa-redteam:v", entry["startedAt"], entry["endedAt"], "done"))
+                connection.commit()
+            finally:
+                connection.close()
+            payload = module.load_allowlisted_session_usage(["qa-redteam"], state_root)
+            assert payload["records"] == [], label
+            assert payload["summary"]["invalid_record_count"] == 1, label
+
+
+def test_status_and_model_containers_independent() -> None:
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        write_canonical_db(canonical_paths(state_root, "finance-redteam"),
+                           [("agent:finance-redteam:status-list", "s1",
+                             session_entry(sessionId="s1", status=["done"]), 1, "done")])
+        payload = module.load_allowlisted_session_usage(["finance-redteam"], state_root)
+        assert payload["records"] == [] and payload["summary"]["invalid_record_count"] == 1
+        assert "done" not in json.dumps(payload) or '"status": "ok"' in json.dumps(payload)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        write_canonical_db(canonical_paths(state_root, "finance-redteam"),
+                           [("agent:finance-redteam:model-dict", "s2",
+                             session_entry(sessionId="s2", model={"nested": "x"}), 1, "done")])
+        payload = module.load_allowlisted_session_usage(["finance-redteam"], state_root)
+        assert payload["records"] == [] and payload["summary"]["invalid_record_count"] == 1
+        assert "nested" not in json.dumps(payload)
+
+
+def test_missing_cache_and_bool_tokens_independent() -> None:
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        missing = session_entry(sessionId="m1")
+        missing.pop("cacheRead")
+        write_canonical_db(canonical_paths(state_root, "research-scout"),
+                           [("agent:research-scout:missing-cache", "m1", missing, 1, "done")])
+        payload = module.load_allowlisted_session_usage(["research-scout"], state_root)
+        assert payload["records"] == [] and payload["summary"]["invalid_record_count"] == 1
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        write_canonical_db(canonical_paths(state_root, "research-scout"),
+                           [("agent:research-scout:bool-token", "b1",
+                             session_entry(sessionId="b1", cacheWrite=True), 1, "done")])
+        payload = module.load_allowlisted_session_usage(["research-scout"], state_root)
+        assert payload["records"] == [] and payload["summary"]["invalid_record_count"] == 1
+
+
+def test_partial_no_identity_inside512_unresolved() -> None:
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_root = Path(tmpdir) / "agents"
+        rows = [(f"agent:implementation-builder:bulk-{i:04d}", f"bulk-session-{i:04d}",
+                 session_entry(sessionId=f"bulk-session-{i:04d}"), 1, "done") for i in range(600)]
+        write_canonical_db(canonical_paths(state_root, "implementation-builder"), rows)
+        ledger = Path(tmpdir) / "openclaw.sqlite"
+        correlation = module.build_attempt_correlation_key(
+            parent_job_id="job", lane_id="lane", phase="implementation", retry_count=0)
+        assert correlation is not None
+        inner_key = "agent:implementation-builder:bulk-0001"
+        inner_hash = write_terminal_dispatch_binding(
+            ledger, agent_id="implementation-builder", session_key=inner_key,
+            attempt_hash=correlation["key_hash"],
+            reserved_at_ms=1_786_271_999_000,
+            accepted_at_ms=1_786_272_000_500,
+            terminal_at_ms=1_786_272_003_500)
+        naked, naked_errors = module.load_verified_isolated_session_usage_for_binding(
+            agent_id="implementation-builder", expected_binding_token_hash=inner_hash,
+            agent_state_root=state_root, state_db_path=ledger)
+        assert naked is None and naked_errors == ["dispatch_binding_session_index_unresolved"]
+        exact, exact_errors = module.load_verified_isolated_session_usage_for_binding(
+            agent_id="implementation-builder", expected_binding_token_hash=inner_hash,
+            agent_state_root=state_root, state_db_path=ledger, session_key=inner_key)
+        assert exact is not None and exact_errors == []
+
+
+def test_caller_id_variants_match_and_conflict() -> None:
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        base = Path(tmpdir)
+        state_root = base / "agents"
+        ledger = base / "openclaw.sqlite"
+        agent_id = "implementation-builder"
+        key = "agent:implementation-builder:caller-child"
+        sid = "caller-session"
+        write_canonical_db(canonical_paths(state_root, agent_id),
+                           [(key, sid, session_entry(sessionId=sid), 1, "done")])
+        correlation = module.build_attempt_correlation_key(
+            parent_job_id="job", lane_id="lane", phase="implementation", retry_count=0)
+        assert correlation is not None
+        binding_hash = write_terminal_dispatch_binding(
+            ledger, agent_id=agent_id, session_key=key,
+            attempt_hash=correlation["key_hash"],
+            reserved_at_ms=1_786_271_999_000,
+            accepted_at_ms=1_786_272_000_500,
+            terminal_at_ms=1_786_272_003_500)
+        for kwargs in ({"session_key": key}, {"session_id": sid},
+                       {"session_key": key, "session_id": sid}):
+            record, errors = module.load_verified_isolated_session_usage_for_binding(
+                agent_id=agent_id, expected_binding_token_hash=binding_hash,
+                agent_state_root=state_root, state_db_path=ledger, **kwargs)
+            assert record is not None and errors == [], kwargs
+        for kwargs in ({"session_key": key, "session_id": "wrong"},
+                       {"session_key": "agent:implementation-builder:wrong", "session_id": sid}):
+            rejected, errors = module.load_verified_isolated_session_usage_for_binding(
+                agent_id=agent_id, expected_binding_token_hash=binding_hash,
+                agent_state_root=state_root, state_db_path=ledger, **kwargs)
+            assert rejected is None, kwargs
+            assert errors != [], (kwargs, errors)
+
+
 def main() -> int:
     test_exact_mapping_and_privacy()
     test_stale_malformed_and_partial_records_are_rejected()
@@ -535,7 +1133,28 @@ def main() -> int:
     test_terminal_dispatch_binding_is_opaque_reopenable_and_fail_closed()
     test_allowlist_and_exact_match()
     test_gateway_usage_cost_is_mocked_sanitized_and_cache_gated()
+    test_canonical_bulk_and_exact_succeed()
+    test_sibling_root_escape_denied()
+    test_legacy_symlink_escape_denied()
+    test_nonfile_no_downgrade()
+    test_corrupt_no_downgrade()
+    test_beyond512_exact_and_partial()
+    test_wrong_schema_malformed_ambiguous_identity()
+    test_scalar_privacy_traps()
+    test_lifecycle_and_wrong_binding()
+    test_entry_window_identity_mismatch_bulk_and_bound()
+    test_missing_window_is_invalid_not_clean_ok()
+    test_window_time_mismatch_reversed_and_impostors()
+    test_entry_valid_typing_rejected()
+    test_status_and_model_containers_independent()
+    test_missing_cache_and_bool_tokens_independent()
+    test_partial_no_identity_inside512_unresolved()
+    test_caller_id_variants_match_and_conflict()
     print("isolated agent usage metadata tests passed")
+    if SKIPS:
+        print("skips:" + ",".join(SKIPS))
+    else:
+        print("skips:none")
     return 0
 
 

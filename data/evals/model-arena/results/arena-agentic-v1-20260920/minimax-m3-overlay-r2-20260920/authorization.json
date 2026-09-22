@@ -1,0 +1,16 @@
+{
+  "schema": "veritas.arena_dispatch_authorization.v1",
+  "envelope": "arena-agentic-v1-20260920",
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "dispatch_ready": true,
+  "authorized_by": "gateway-owner",
+  "authorized_at": "2026-09-20T17:12:25.434280-07:00",
+  "note": "Run-scoped owner release for MiniMax M3 overlay-r2 12-case run only. Canonical overlay/dispatch-authorization.json left INERT.",
+  "scope": {
+    "models": [
+      "ollama-cloud/minimax-m3:cloud"
+    ],
+    "cases": 12,
+    "reps": 1
+  }
+}

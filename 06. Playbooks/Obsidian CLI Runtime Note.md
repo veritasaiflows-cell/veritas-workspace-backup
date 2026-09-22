@@ -10,7 +10,8 @@ Use Obsidian CLI for local note discovery, inspection, and link navigation. It i
 |---|---|
 | Alert preferences and review posture | `03. Alerts and Recommendations/Investor Profile.md` |
 | Generic alert conditions and states | `03. Alerts and Recommendations/Alert Trigger Policy.md` |
-| Ticker bands, invalidation, thesis, and freshness context | `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md` |
+| Ticker thesis and alert interpretation | `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md` |
+| Live numeric bands and invalidation | guarded SQL `reference_levels` / `tmp/alert-level-freshness-controller.json` |
 | Read-only operations and proof routes | `03. Alerts and Recommendations/Alert Operations Board.md` |
 | Recommendation risk doctrine | `07. Risk/Risk Rules.md` |
 

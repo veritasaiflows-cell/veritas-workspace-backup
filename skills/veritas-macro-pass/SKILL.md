@@ -13,6 +13,28 @@ Describe the current macro regime, what changed, evidence quality, and implicati
 
 Start with the current macro metrics, signal spine, judgment draft, official releases, and the current alerts digest. Treat slow-moving valuation indicators as backdrop, not timing proof. Identify manual, partial, stale, or conflicting inputs explicitly.
 
+## Evidence Refresh Chain
+
+For FOMC and macro review refreshes, refresh live macro evidence in dependency order:
+
+```powershell
+python scripts\policy_expectations_refresh.py
+python scripts\credit_spread_refresh.py
+python scripts\breadth_refresh.py
+python scripts\macro_regime_refresh.py
+```
+
+- `macro_regime_refresh.py` does not read market state (docstring reference only); it needs current credit and breadth and reuses existing macro metrics and signal-spine artifacts.
+- Macro ingest and signal-spine consumers degrade gracefully without market state and label any proxy fallback explicitly.
+
+Never run `scripts/market_state_refresh.py` and never recreate `tmp/market-state.json`: it is a retired portal/paper current-state path (2026-08-29 finance runtime retirement), and `scripts/alerts_os_pivot_validator.py` treats any recreated copy as a retired-state error that cascades blocked status into cron jobs. After any manual macro refresh, verify:
+
+```powershell
+python scripts\alerts_os_pivot_validator.py --write --validate
+```
+
+If a retired path was recreated, quarantine it (precedent: `tmp/quarantine/2026-09-20-cron-repair/`) and rerun the validator until clean.
+
 ## Required Analysis
 
 - regime label and timeframe

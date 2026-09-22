@@ -12,9 +12,10 @@ Prevent alert, recommendation, evidence, freshness, and workflow truth from frag
 |---|---|
 | `03. Alerts and Recommendations/Investor Profile.md` | Owner objectives and alert/recommendation preferences |
 | `03. Alerts and Recommendations/Alert Trigger Policy.md` | Generic signal conditions and alert-state definitions |
-| `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md` | Ticker-level thesis, bands, invalidation, evidence date, freshness, and confidence |
+| `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md` | Ticker-level thesis and alert interpretation only |
 | `03. Alerts and Recommendations/Alert Operations Board.md` | Read-only routes, validation, and governance boundaries |
-| Guarded SQL and generated proofs | Structured evidence and derivation only; never human authority or approval |
+| Guarded SQL `reference_levels` | Live numeric bands, invalidation, level timestamps, and band status |
+| Guarded SQL and generated proofs | Structured evidence and derivation; never approval, account, or execution authority |
 
 ## Resolution rule
 

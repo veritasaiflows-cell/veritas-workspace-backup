@@ -17,22 +17,34 @@
   "primary_owner_lane": "main-session-veritas",
   "secondary_consumers": [],
   "human_approval_owner": "Randall",
-  "proof_artifact": "tmp/autonomy-spine-readiness-rollup.json",
+  "proof_artifact": "tmp/wf74-improvement-opportunity-queue.json",
   "freshness_sla": {
     "primary_artifact_max_age_hours": 72.0,
     "owner_context_max_age_hours": 72.0,
     "material_owner_context_required": true
   },
-  "blockers": [],
+  "blockers": [
+    "WF74 queue: 2 regressed-after-completion opportunities open; repair regressed signals before claiming green",
+    "WF74 docket: 7 fix-now actions open; repair the failing proof surface first",
+    "WF74 router: cron repair plan blocked; inspect the blocked cron artifacts first",
+    "WF74 router: 2 high-priority overdue improvements; clear overdue debt first",
+    "WF74 ledger: 3 overdue open improvements; clear overdue debt first"
+  ],
+  "claim_limits": [
+    "WF74 queue: 1 high-priority opportunities queued for proposal routing (claim/queue depth and routing posture, not broken operation)"
+  ],
   "stop_lines": [
     "No base-model self-modification, self-preservation/replication, autonomous authority expansion, second memory tree, owner-approval inference, portfolio/trade/account/paper/live authority, or RSI theater."
   ],
   "continuity_note": "06. Playbooks/Project Continuity/Workflow 74 - Veritas Recursive Self-Improvement Loop.md",
-  "primary_route_artifact": "tmp/autonomy-spine-readiness-rollup.json",
+  "primary_route_artifact": "tmp/wf74-improvement-opportunity-queue.json",
   "secondary_artifacts": [
-    "tmp/wf55-autonomy-outcome-ledger.json",
-    "tmp/wf74-improvement-opportunity-queue.json",
     "tmp/wf74-decision-docket.json",
+    "tmp/wf74-autonomy-work-router.json",
+    "tmp/improvement-ledger-current.json",
+    "tmp/otel-ops-control.json",
+    "tmp/otel-ops-window-summary.json",
+    "tmp/wf55-autonomy-outcome-ledger.json",
     "tmp/retrieval-live-eval.json",
     "data/state-history/retrieval-live-eval.jsonl",
     "tmp/wf88-os2-control-packet.json",
@@ -47,7 +59,7 @@
     "python scripts\\retrieval_live_eval.py --write --write-md --validate",
     "python scripts\\test_retrieval_live_eval.py",
     "python scripts\\wf74_rsi.py --outcome-eval-v2",
-    "python scripts\\autonomy_spine_readiness_rollup.py --write --validate",
+    "python scripts\\otel_ops_control.py --write --write-db --multi-window --validate",
     "python scripts\\wf74_rsi.py --validate-only"
   ],
   "default_resume_command": null,

@@ -31,7 +31,7 @@ Do not rebuild PM, cron, workflows, memory, lanes, gateway, or runtime for a sha
 
 1. read only the relevant owner surfaces
 2. inspect live state before claiming it
-3. check the concurrent lane register before writes
+3. check the concurrent lane register before writes; `--lease` replaces lane fields instead of merging, so pass `--owner` with all `--allowed-write` values in one call and re-verify admission
 4. separate doctrine from procedure
 5. use the smallest exact command
 6. validate proportionally
@@ -43,6 +43,10 @@ Runtime session visibility is advisory; the durable lane register owns write-col
 ## Discovery
 
 External skills are pattern sources only. Do not install or activate one without exact approval and security/governance review.
+
+## Provider Model Registration
+
+When a user explicitly approves adding a provider model after completing authentication, inspect the provider profile, model definition, and global model allowlist before changing anything. Register only the missing model or policy entry; never alter authentication material. Validate the effective OpenClaw configuration afterward, and report whether a gateway restart is actually required rather than assuming one.
 
 ## Post-Update Recovery
 
@@ -63,6 +67,15 @@ Stop for lane collision, destructive scope without authorization, active-referen
 ## Fleet
 
 Main remains router, final QC, acceptance, judgment, and user-facing owner. Helper lanes are bounded and untrusted until verified. A model label is not proof of the actual route. Sandbox, bindings, config, and runtime changes require explicit approval.
+
+## Skill Workshop Proposal Queue
+
+When applying or rejecting skill proposals:
+
+- Agent-side `skill_workshop apply` may refuse migrated or user-authored skills with `does not own this skill path`; the operator CLI is the working route: `openclaw skills workshop apply <proposal-id>` (same for reject).
+- Proposals are hash-bound: a live-skill rewrite after proposal creation marks the proposal `stale` at apply, and stale is terminal. Recover still-wanted content by extracting a merged `PROPOSAL.md` and recreating it with `openclaw skills workshop propose-update <skill> --proposal <path>`, then apply the fresh proposal and verify the changed sections plus a clean `openclaw skills check`.
+- Judge propose/apply/reject success by the `Applied` or `pending` output line, never the exit code; these CLI calls may exit nonzero on unrelated warnings (plugin chatter, SQLite hold notes).
+- Count queue entries by matching the status token (`" pending "`) or `--json` output, never by output line count: wrapped list entries (for example `[previous workspace]` tags) double-count lines.
 
 ## Closeout
 

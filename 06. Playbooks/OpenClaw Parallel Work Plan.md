@@ -383,14 +383,14 @@ This keeps the queue stable enough to trust while still allowing evidence-driven
 For the daily queue/orchestration control plane:
 - low-effort control-plane fixes stay in the main session
 - medium-effort detached work should use an approved live default model with a tighter scope rather than a removed cheap helper model
-- substantial or high-effort detached work uses `openai/gpt-5.5` through the Codex runtime with high-thinking posture after preflight review clears the contract
+- substantial or high-effort detached work uses `ollama-cloud/glm-5.3:cloud` with high-thinking posture after preflight review clears the contract, and `meta/muse-spark-1.3-contributor` when the lane authors code
 - default detached posture is one worker at a time, bounded task, no silent canonical finance note mutation, and no auth/config/network escalation without approval
 - if the blocker is judgment rather than labor, stop and record the blocker instead of spawning theater
 
 ## Next concrete moves
 
 1. keep the main session as live truth surface, orchestrator, QC owner, and final integrator
-2. use spawned `openai/gpt-5.5` Codex-runtime high-thinking subagents for substantial bounded workspace work when available
+2. use spawned `ollama-cloud/glm-5.3:cloud` high-thinking subagents for substantial bounded workspace work when available
 3. reserve Claude for contract/judgment-heavy reviews
 4. use Gemini Flash only as a cheap bounded audit helper
 5. keep active serious parallel load capped at two substantive lanes plus one helper lane

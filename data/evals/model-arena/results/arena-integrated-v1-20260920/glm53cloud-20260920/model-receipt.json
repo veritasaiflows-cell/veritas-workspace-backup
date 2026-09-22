@@ -1,0 +1,14 @@
+{
+  "attempts": 1,
+  "child_session_key": "agent:main:dashboard:8ece9e62-ad79-45df-bc8d-221dcc61ad0d",
+  "evidence": "child session pinned ollama-cloud/glm-5.3:cloud; every assistant turn in the run transcript records provider ollama-cloud / model glm-5.3:cloud",
+  "fallback_applied": false,
+  "model_applied": true,
+  "provider": "ollama-cloud",
+  "requested_model": "ollama-cloud/glm-5.3:cloud",
+  "rerouted": false,
+  "resolved_model": "ollama-cloud/glm-5.3:cloud",
+  "retries": 0,
+  "run_id": "90342912-4432-4ece-8bd1-30a1bce4f2b8",
+  "schema": "veritas.arena_model_receipt.v1"
+}

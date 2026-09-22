@@ -1,0 +1,95 @@
+﻿{
+    "finalAssistantVisibleText":  "```json\n{\n  \"A\": true,\n  \"B\": 108,\n  \"explanation\": \"A: With the strict rule, 99 \u003c 90+10=100 is true, so the entry is valid. B: 100├ù1.20=120, then 120├ù0.90=108.\"\n}\n```",
+    "agentMeta":  {
+                      "sessionId":  "6ec96ec3-8031-46de-a735-d114db8fde96",
+                      "sessionFile":  "agent:main:arena-user-glm-ttl-20260919",
+                      "provider":  "ollama-cloud",
+                      "model":  "glm-5.3-flash:cloud",
+                      "contextTokens":  1048576,
+                      "contextTokensSource":  "resolved",
+                      "agentHarnessId":  "openclaw",
+                      "credentialSource":  {
+                                               "kind":  "profile"
+                                           },
+                      "usage":  {
+                                    "input":  7301,
+                                    "output":  102,
+                                    "cacheRead":  22400,
+                                    "cacheWrite":  0,
+                                    "total":  29803,
+                                    "cost":  {
+                                                 "total":  0
+                                             }
+                                },
+                      "lastCallUsage":  {
+                                            "input":  7301,
+                                            "output":  102,
+                                            "cacheRead":  22400,
+                                            "cacheWrite":  0,
+                                            "cost":  {
+                                                         "total":  0
+                                                     },
+                                            "total":  29803
+                                        },
+                      "promptTokens":  29701,
+                      "contextBudgetStatus":  {
+                                                  "schemaVersion":  1,
+                                                  "source":  "pre-prompt-estimate",
+                                                  "updatedAt":  1789831951537,
+                                                  "provider":  "ollama-cloud",
+                                                  "model":  "glm-5.3-flash:cloud",
+                                                  "route":  "fits",
+                                                  "shouldCompact":  false,
+                                                  "estimatedPromptTokens":  17062,
+                                                  "contextTokenBudget":  1048576,
+                                                  "promptBudgetBeforeReserve":  1028576,
+                                                  "reserveTokens":  20000,
+                                                  "effectiveReserveTokens":  20000,
+                                                  "remainingPromptBudgetTokens":  1011514,
+                                                  "overflowTokens":  0,
+                                                  "toolResultReducibleChars":  0,
+                                                  "messageCount":  4,
+                                                  "unwindowedMessageCount":  4,
+                                                  "sessionId":  "6ec96ec3-8031-46de-a735-d114db8fde96"
+                                              },
+                      "codeModeEngaged":  false,
+                      "assistantTurns":  1,
+                      "costUsd":  0,
+                      "terminalReceipt":  {
+                                              "runId":  "9265aa23-2a2c-4b3f-9d27-a02e0849736d",
+                                              "sessionId":  "6ec96ec3-8031-46de-a735-d114db8fde96",
+                                              "turnId":  "9265aa23-2a2c-4b3f-9d27-a02e0849736d",
+                                              "requested":  {
+                                                                "provider":  "ollama-cloud",
+                                                                "model":  "glm-5.3-flash:cloud"
+                                                            },
+                                              "effective":  {
+                                                                "provider":  "ollama-cloud",
+                                                                "model":  "glm-5.3-flash:cloud",
+                                                                "responseModel":  "glm-5.3-flash:cloud"
+                                                            },
+                                              "successfulToolNames":  [
+
+                                                                      ],
+                                              "rerouted":  false
+                                          }
+                  },
+    "executionTrace":  {
+                           "winnerProvider":  "ollama-cloud",
+                           "winnerModel":  "glm-5.3-flash:cloud",
+                           "attempts":  [
+                                            {
+                                                "provider":  "ollama-cloud",
+                                                "model":  "glm-5.3-flash:cloud",
+                                                "result":  "success",
+                                                "stage":  "assistant"
+                                            }
+                                        ],
+                           "fallbackUsed":  false,
+                           "runner":  "embedded"
+                       },
+    "requestShaping":  {
+                           "authMode":  "auth-profile",
+                           "thinking":  "high"
+                       }
+}

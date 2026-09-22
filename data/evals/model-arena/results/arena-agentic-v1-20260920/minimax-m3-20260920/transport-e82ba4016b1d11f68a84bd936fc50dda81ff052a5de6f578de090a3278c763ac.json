@@ -1,0 +1,348 @@
+{
+  "runId": "00cf285e-4ca2-4b3a-84f9-9eff63c6e692",
+  "status": "ok",
+  "summary": "completed",
+  "result": {
+    "payloads": [
+      {
+        "text": "## Separation: verified completion vs. claims\n\n| WID | Worker claim | Verifier evidence | Owner approval | Net status |\n|-----|---|---|---|---|\n| **W1** | e10 `claim_complete` \"done\" | e20 `test_passed` \"ok\" | **none** | claim + verification, **no owner sign-off** |\n| **W2** | e30 `claim_complete` \"d\" (truncated) | e40 `receipt_verified` \"ok\" | **none** | claim + verification, **no owner sign-off** |\n\n### Verified completion (verifier role, evidence on record)\n- W1 → e20 test passed\n- W2 → e40 receipt verified\n\n### Claims only (worker assertions, superseded by verifier evidence)\n- W1: e10 \"done\" — informational; correctness rests on e20\n- W2: e30 \"d\" — informational (and truncated in the trace); correctness rests on e40\n\n### \"Owner-role approvals only\" — filter applied\n- No event has `author_role: \"owner\"`.\n- Verifier confirmations (e20, e40) are **correctness evidence**, not **authorization to close**.\n- Under the stated rule, **neither W1 nor W2 is owner-approved**.\n\n### Open blockers (preserved, not papered over)\n- **W1** — verifier test passed; **blocked** pending owner-role approval.\n- **W2** — verifier receipt verified; **blocked** pending owner-role approval.\n- **W2 hygiene** — worker's claim text is truncated to `\"d\"`; flag for record completeness.\n- **General** — owner authority for closure has not appeared in the trace; do not promote either item without an owner-role event.\n\n### Bottom line\nBoth items carry *verifier-stage* confirmation. Neither carries *owner-stage* approval. With \"owner-role approvals only\" in force, **no item is fully complete**. Promotion of W1 or W2 to closed is not warranted by the visible evidence.",
+        "mediaUrl": null
+      }
+    ],
+    "meta": {
+      "durationMs": 31850,
+      "agentMeta": {
+        "sessionId": "arena-pre-mm3-e82ba4016b1d",
+        "sessionFile": "agent:oxalpha-functional-lab:explicit:arena-pre-mm3-e82ba4016b1d",
+        "provider": "ollama-cloud",
+        "model": "minimax-m3:cloud",
+        "contextTokens": 524288,
+        "contextTokensSource": "resolved",
+        "agentHarnessId": "openclaw",
+        "credentialSource": {
+          "kind": "profile"
+        },
+        "usage": {
+          "input": 6738,
+          "output": 2782,
+          "cacheRead": 236,
+          "cacheWrite": 0,
+          "total": 9756,
+          "cost": {
+            "total": 0
+          }
+        },
+        "lastCallUsage": {
+          "input": 6738,
+          "output": 2782,
+          "cacheRead": 236,
+          "cacheWrite": 0,
+          "cost": {
+            "total": 0
+          },
+          "total": 9756
+        },
+        "promptTokens": 6974,
+        "contextBudgetStatus": {
+          "schemaVersion": 1,
+          "source": "pre-prompt-estimate",
+          "updatedAt": 1789952482579,
+          "provider": "ollama-cloud",
+          "model": "minimax-m3:cloud",
+          "route": "fits",
+          "shouldCompact": false,
+          "estimatedPromptTokens": 7328,
+          "contextTokenBudget": 524288,
+          "promptBudgetBeforeReserve": 504288,
+          "reserveTokens": 20000,
+          "effectiveReserveTokens": 20000,
+          "remainingPromptBudgetTokens": 496960,
+          "overflowTokens": 0,
+          "toolResultReducibleChars": 0,
+          "messageCount": 0,
+          "unwindowedMessageCount": 0,
+          "sessionId": "arena-pre-mm3-e82ba4016b1d"
+        },
+        "codeModeEngaged": false,
+        "assistantTurns": 1,
+        "costUsd": 0,
+        "terminalReceipt": {
+          "runId": "00cf285e-4ca2-4b3a-84f9-9eff63c6e692",
+          "sessionId": "arena-pre-mm3-e82ba4016b1d",
+          "turnId": "00cf285e-4ca2-4b3a-84f9-9eff63c6e692",
+          "requested": {
+            "provider": "ollama-cloud",
+            "model": "minimax-m3:cloud"
+          },
+          "effective": {
+            "provider": "ollama-cloud",
+            "model": "minimax-m3:cloud",
+            "responseModel": "minimax-m3:cloud"
+          },
+          "successfulToolNames": [],
+          "rerouted": false
+        }
+      },
+      "aborted": false,
+      "systemPromptReport": {
+        "source": "run",
+        "generatedAt": 1789952482548,
+        "sessionId": "arena-pre-mm3-e82ba4016b1d",
+        "sessionKey": "agent:oxalpha-functional-lab:explicit:arena-pre-mm3-e82ba4016b1d",
+        "provider": "ollama-cloud",
+        "model": "minimax-m3:cloud",
+        "workspaceDir": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab",
+        "bootstrapMaxChars": 20000,
+        "bootstrapTotalMaxChars": 80000,
+        "bootstrapTruncation": {
+          "warningMode": "always",
+          "warningShown": false,
+          "truncatedFiles": 0,
+          "nearLimitFiles": 0,
+          "totalNearLimit": false
+        },
+        "sandbox": {
+          "mode": "all",
+          "sandboxed": true
+        },
+        "systemPrompt": {
+          "chars": 23537,
+          "hash": "a93607011be8a73ffc7a87fd49295bd730796b3cc6235675e94ae0c33df1492a",
+          "projectContextChars": 4407,
+          "nonProjectContextChars": 19130
+        },
+        "injectedWorkspaceFiles": [
+          {
+            "name": "AGENTS.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\AGENTS.md",
+            "missing": false,
+            "rawChars": 2376,
+            "injectedChars": 2376,
+            "truncated": false
+          },
+          {
+            "name": "SOUL.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\SOUL.md",
+            "missing": false,
+            "rawChars": 275,
+            "injectedChars": 275,
+            "truncated": false
+          },
+          {
+            "name": "IDENTITY.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\IDENTITY.md",
+            "missing": false,
+            "rawChars": 379,
+            "injectedChars": 379,
+            "truncated": false
+          },
+          {
+            "name": "USER.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\USER.md",
+            "missing": false,
+            "rawChars": 254,
+            "injectedChars": 254,
+            "truncated": false
+          }
+        ],
+        "skills": {
+          "promptChars": 9307,
+          "hash": "295c5ae3af06fd43b0417594e07cd288274773b870889f310c5070601c3a999d",
+          "entries": [
+            {
+              "name": "browser-automation",
+              "blockChars": 341
+            },
+            {
+              "name": "canvas",
+              "blockChars": 260
+            },
+            {
+              "name": "clawhub",
+              "blockChars": 300
+            },
+            {
+              "name": "Cold Email Writer",
+              "blockChars": 344
+            },
+            {
+              "name": "cold-outreach-email-writer",
+              "blockChars": 389
+            },
+            {
+              "name": "control-ui",
+              "blockChars": 336
+            },
+            {
+              "name": "diagram-maker",
+              "blockChars": 262
+            },
+            {
+              "name": "disciplined-implementation-linux-steps",
+              "blockChars": 379
+            },
+            {
+              "name": "github",
+              "blockChars": 256
+            },
+            {
+              "name": "graphify",
+              "blockChars": 515
+            },
+            {
+              "name": "healthcheck",
+              "blockChars": 274
+            },
+            {
+              "name": "linux-workspace-proof-runner",
+              "blockChars": 349
+            },
+            {
+              "name": "meme-maker",
+              "blockChars": 247
+            },
+            {
+              "name": "node-connect",
+              "blockChars": 331
+            },
+            {
+              "name": "node-inspect-debugger",
+              "blockChars": 273
+            },
+            {
+              "name": "obsidian",
+              "blockChars": 286
+            },
+            {
+              "name": "obsidian-vault-maintainer",
+              "blockChars": 371
+            },
+            {
+              "name": "patch-draft-bounded-linux",
+              "blockChars": 329
+            },
+            {
+              "name": "python-debugpy",
+              "blockChars": 261
+            },
+            {
+              "name": "qa-diff-safety-review",
+              "blockChars": 326
+            },
+            {
+              "name": "qa-evidence-separation-check",
+              "blockChars": 348
+            },
+            {
+              "name": "qa-source-reasoning-review",
+              "blockChars": 328
+            },
+            {
+              "name": "skill-creator",
+              "blockChars": 280
+            },
+            {
+              "name": "spike",
+              "blockChars": 247
+            },
+            {
+              "name": "taskflow",
+              "blockChars": 284
+            },
+            {
+              "name": "taskflow-inbox-triage",
+              "blockChars": 306
+            },
+            {
+              "name": "weather",
+              "blockChars": 285
+            },
+            {
+              "name": "wiki-maintainer",
+              "blockChars": 346
+            }
+          ]
+        },
+        "tools": {
+          "listChars": 0,
+          "schemaChars": 2386,
+          "entries": [
+            {
+              "name": "read",
+              "summaryChars": 164,
+              "summaryHash": "d136f5b09e28d671addad4ca800b75b8aa6a36002bc739ead964f618d3e34829",
+              "schemaChars": 481,
+              "schemaHash": "b1b9b637dfe1dfade40f50c37cf840a298f1992b534cb9425b7470233a6b0cbb",
+              "propertiesCount": 5
+            },
+            {
+              "name": "edit",
+              "summaryChars": 130,
+              "summaryHash": "4149500b1f6501ec6450e4c048bdb6844764dd4a888a10846726cbbc7256152e",
+              "schemaChars": 501,
+              "schemaHash": "adf3140833ca927b84c66c989d6833fdcbd9de011dd2ffc59f9a2c4d3c25f127",
+              "propertiesCount": 2
+            },
+            {
+              "name": "write",
+              "summaryChars": 49,
+              "summaryHash": "f9ce3d8ac929a51498c03331b97c59bfaa2bb4d25580a5ddf0102e6a8e173aec",
+              "schemaChars": 191,
+              "schemaHash": "b61d2da23febf5fbda55e391526f36d283e9e9fb7f1a1dbadcf5c618a0632287",
+              "propertiesCount": 2
+            },
+            {
+              "name": "apply_patch",
+              "summaryChars": 71,
+              "summaryHash": "5c1173efe93d080a386a23216bc3e58db2e0033eb3ddea697eb2439938b7cae4",
+              "schemaChars": 153,
+              "schemaHash": "05521268363ff4f191472c90d69ef08a503ba9acf1d2febc50b3ee68db32ab65",
+              "propertiesCount": 1
+            },
+            {
+              "name": "exec",
+              "summaryChars": 321,
+              "summaryHash": "acf85b4e6607efba27b24a3267749de47caafe5a52c676e106e0b0308fbdfe0b",
+              "schemaChars": 1060,
+              "schemaHash": "4f110570d8d16d9972fdfce187152256cfebad0a761cbfdc87d0fa686335ecd1",
+              "propertiesCount": 10
+            }
+          ]
+        },
+        "currentTurn": {
+          "promptChars": 561,
+          "runtimeContextChars": 28,
+          "modelOnlyPromptChars": 0
+        }
+      },
+      "finalPromptText": "{\"constraints\": [\"owner approval only\", \"preserve open blockers\"], \"events\": [{\"author_role\": \"worker\", \"event_id\": \"e10\", \"kind\": \"claim_complete\", \"text\": \"done\", \"wid\": \"W1\"}, {\"author_role\": \"verifier\", \"event_id\": \"e20\", \"kind\": \"test_passed\", \"text\": \"ok\", \"wid\": \"W1\"}, {\"author_role\": \"worker\", \"event_id\": \"e30\", \"kind\": \"claim_complete\", \"text\": \"d\", \"wid\": \"W2\"}, {\"author_role\": \"verifier\", \"event_id\": \"e40\", \"kind\": \"receipt_verified\", \"text\": \"ok\", \"wid\": \"W2\"}], \"request\": \"Separate verified completion from claims; owner-role approvals only.\"}",
+      "finalAssistantVisibleText": "[[reply_to_current]]\n\n## Separation: verified completion vs. claims\n\n| WID | Worker claim | Verifier evidence | Owner approval | Net status |\n|-----|---|---|---|---|\n| **W1** | e10 `claim_complete` \"done\" | e20 `test_passed` \"ok\" | **none** | claim + verification, **no owner sign-off** |\n| **W2** | e30 `claim_complete` \"d\" (truncated) | e40 `receipt_verified` \"ok\" | **none** | claim + verification, **no owner sign-off** |\n\n### Verified completion (verifier role, evidence on record)\n- W1 → e20 test passed\n- W2 → e40 receipt verified\n\n### Claims only (worker assertions, superseded by verifier evidence)\n- W1: e10 \"done\" — informational; correctness rests on e20\n- W2: e30 \"d\" — informational (and truncated in the trace); correctness rests on e40\n\n### \"Owner-role approvals only\" — filter applied\n- No event has `author_role: \"owner\"`.\n- Verifier confirmations (e20, e40) are **correctness evidence**, not **authorization to close**.\n- Under the stated rule, **neither W1 nor W2 is owner-approved**.\n\n### Open blockers (preserved, not papered over)\n- **W1** — verifier test passed; **blocked** pending owner-role approval.\n- **W2** — verifier receipt verified; **blocked** pending owner-role approval.\n- **W2 hygiene** — worker's claim text is truncated to `\"d\"`; flag for record completeness.\n- **General** — owner authority for closure has not appeared in the trace; do not promote either item without an owner-role event.\n\n### Bottom line\nBoth items carry *verifier-stage* confirmation. Neither carries *owner-stage* approval. With \"owner-role approvals only\" in force, **no item is fully complete**. Promotion of W1 or W2 to closed is not warranted by the visible evidence.",
+      "finalAssistantRawText": "[[reply_to_current]]\n\n## Separation: verified completion vs. claims\n\n| WID | Worker claim | Verifier evidence | Owner approval | Net status |\n|-----|---|---|---|---|\n| **W1** | e10 `claim_complete` \"done\" | e20 `test_passed` \"ok\" | **none** | claim + verification, **no owner sign-off** |\n| **W2** | e30 `claim_complete` \"d\" (truncated) | e40 `receipt_verified` \"ok\" | **none** | claim + verification, **no owner sign-off** |\n\n### Verified completion (verifier role, evidence on record)\n- W1 → e20 test passed\n- W2 → e40 receipt verified\n\n### Claims only (worker assertions, superseded by verifier evidence)\n- W1: e10 \"done\" — informational; correctness rests on e20\n- W2: e30 \"d\" — informational (and truncated in the trace); correctness rests on e40\n\n### \"Owner-role approvals only\" — filter applied\n- No event has `author_role: \"owner\"`.\n- Verifier confirmations (e20, e40) are **correctness evidence**, not **authorization to close**.\n- Under the stated rule, **neither W1 nor W2 is owner-approved**.\n\n### Open blockers (preserved, not papered over)\n- **W1** — verifier test passed; **blocked** pending owner-role approval.\n- **W2** — verifier receipt verified; **blocked** pending owner-role approval.\n- **W2 hygiene** — worker's claim text is truncated to `\"d\"`; flag for record completeness.\n- **General** — owner authority for closure has not appeared in the trace; do not promote either item without an owner-role event.\n\n### Bottom line\nBoth items carry *verifier-stage* confirmation. Neither carries *owner-stage* approval. With \"owner-role approvals only\" in force, **no item is fully complete**. Promotion of W1 or W2 to closed is not warranted by the visible evidence.",
+      "replayInvalid": false,
+      "livenessState": "working",
+      "stopReason": "stop",
+      "executionTrace": {
+        "winnerProvider": "ollama-cloud",
+        "winnerModel": "minimax-m3:cloud",
+        "attempts": [
+          {
+            "provider": "ollama-cloud",
+            "model": "minimax-m3:cloud",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      },
+      "requestShaping": {
+        "authMode": "auth-profile",
+        "thinking": "high"
+      },
+      "completion": {
+        "stopReason": "stop",
+        "finishReason": "stop"
+      }
+    }
+  }
+}

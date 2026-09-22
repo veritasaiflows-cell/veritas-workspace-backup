@@ -1,0 +1,361 @@
+{
+  "14d6a2f3cf03498530dcd79f71ea54b4c300b4794687157446b9b57e00793c16": {
+    "duration_ms": 37739,
+    "effective": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "glm-5.3-flash:cloud"
+    },
+    "fallback_used": false,
+    "model": "glm-5.3-flash:cloud",
+    "provider": "ollama-cloud",
+    "requested": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "response_chars": 114,
+    "run_id": "eba22912-cd76-40a3-a784-ae71d788d201",
+    "session_id": "arena-r2-glmfl-14d6a2f3cf03",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7362,
+      "output": 458,
+      "total": 7820
+    }
+  },
+  "1707973cdad85f7eff69acd5d1351267c4fe8a37d1849cafba5e313eb541003c": {
+    "duration_ms": 4252,
+    "effective": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "glm-5.3-flash:cloud"
+    },
+    "fallback_used": false,
+    "model": "glm-5.3-flash:cloud",
+    "provider": "ollama-cloud",
+    "requested": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "response_chars": 147,
+    "run_id": "935157cc-3903-4836-a8ca-ac8d30f143e8",
+    "session_id": "arena-r2-glmfl-1707973cdad8",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7277,
+      "output": 156,
+      "total": 7433
+    }
+  },
+  "23273237a6525b0c4dd195ad0bbf0f1b6104d0ca86d9920936339e183a1c1ff0": {
+    "duration_ms": 6531,
+    "effective": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "glm-5.3-flash:cloud"
+    },
+    "fallback_used": false,
+    "model": "glm-5.3-flash:cloud",
+    "provider": "ollama-cloud",
+    "requested": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "response_chars": 377,
+    "run_id": "1eb3df6d-a6ff-42ba-93aa-0c81559952d9",
+    "session_id": "arena-r2-glmfl-23273237a652",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7398,
+      "output": 475,
+      "total": 7873
+    }
+  },
+  "36072319fd2e5337b9cfb587fdcdb858010874306d8f4c50ff5ea438c8c7518f": {
+    "duration_ms": 7346,
+    "effective": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "glm-5.3-flash:cloud"
+    },
+    "fallback_used": false,
+    "model": "glm-5.3-flash:cloud",
+    "provider": "ollama-cloud",
+    "requested": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "response_chars": 58,
+    "run_id": "30a2a174-ded8-48f7-a3c3-4879029d4b72",
+    "session_id": "arena-r2-glmfl-36072319fd2e",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7210,
+      "output": 353,
+      "total": 7563
+    }
+  },
+  "430898a2d5b5c3f02ebdccc66dc12ddc78c2c454941c9c8033eae2a8762b0545": {
+    "duration_ms": 12314,
+    "effective": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "glm-5.3-flash:cloud"
+    },
+    "fallback_used": false,
+    "model": "glm-5.3-flash:cloud",
+    "provider": "ollama-cloud",
+    "requested": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "response_chars": 73,
+    "run_id": "9fb4207b-72e0-4029-9b2a-f5c9bfb119ff",
+    "session_id": "arena-r2-glmfl-430898a2d5b5",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7270,
+      "output": 589,
+      "total": 7859
+    }
+  },
+  "73cd99b6dffa2ae64ce139b5db95c59dd4f4678f6ee4ab60f08114f6ee3028e8": {
+    "duration_ms": 14371,
+    "effective": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "glm-5.3-flash:cloud"
+    },
+    "fallback_used": false,
+    "model": "glm-5.3-flash:cloud",
+    "provider": "ollama-cloud",
+    "requested": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "response_chars": 175,
+    "run_id": "b15e9e3b-aa08-4308-a34d-c42011ba01bc",
+    "session_id": "arena-r2-glmfl-73cd99b6dffa",
+    "status": "ok",
+    "successful_tool_names": [
+      "read"
+    ],
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 35741,
+      "output": 329,
+      "total": 36070
+    }
+  },
+  "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4": {
+    "duration_ms": 630000,
+    "effective": null,
+    "fallback_used": false,
+    "note": "subprocess.TimeoutExpired after 630s; recorded empty fail-closed",
+    "requested": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "response_chars": 0,
+    "status": "timeout",
+    "successful_tool_names": []
+  },
+  "a329ef46d6f1a6336e6b64b7b2368cfbb028daf129b881b31bbdc0db6220417d": {
+    "duration_ms": 7353,
+    "effective": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "glm-5.3-flash:cloud"
+    },
+    "fallback_used": false,
+    "model": "glm-5.3-flash:cloud",
+    "provider": "ollama-cloud",
+    "requested": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "response_chars": 184,
+    "run_id": "1b1dffe9-9020-4894-a155-82d7c7d900d0",
+    "session_id": "arena-r2-glmfl-a329ef46d6f1",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7298,
+      "output": 247,
+      "total": 7545
+    }
+  },
+  "ad2161157921538089853178cdb459bbaed40f96fa77329a69e4be635c5af0bc": {
+    "duration_ms": 277915,
+    "effective": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "glm-5.3-flash:cloud"
+    },
+    "fallback_used": false,
+    "model": "glm-5.3-flash:cloud",
+    "provider": "ollama-cloud",
+    "requested": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "response_chars": 111,
+    "run_id": "c6b71efa-7a61-4c71-9ab7-0ffe35a26f98",
+    "session_id": "arena-r2-glmfl-ad2161157921",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7172,
+      "output": 30506,
+      "total": 37678
+    }
+  },
+  "b5f7b370f7d8445a01c7698b67b647d5eb76389024dbd53b3dee506299b0eda3": {
+    "duration_ms": 6419,
+    "effective": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "glm-5.3-flash:cloud"
+    },
+    "fallback_used": false,
+    "model": "glm-5.3-flash:cloud",
+    "provider": "ollama-cloud",
+    "requested": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "response_chars": 32,
+    "run_id": "6f7695de-67bb-479d-b629-bfe95b0eed5b",
+    "session_id": "arena-r2-glmfl-b5f7b370f7d8",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7166,
+      "output": 326,
+      "total": 7492
+    }
+  },
+  "c8dbb0b4dc87e3974275cca677c987e0be2c2b417574487c9bec0dfd56e04d6a": {
+    "duration_ms": 22463,
+    "effective": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "glm-5.3-flash:cloud"
+    },
+    "fallback_used": false,
+    "model": "glm-5.3-flash:cloud",
+    "provider": "ollama-cloud",
+    "requested": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "response_chars": 175,
+    "run_id": "8dcaf742-13fa-452c-bb26-3736f9c98a15",
+    "session_id": "arena-r2-glmfl-c8dbb0b4dc87",
+    "status": "ok",
+    "successful_tool_names": [
+      "read"
+    ],
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 35925,
+      "output": 402,
+      "total": 36327
+    }
+  },
+  "e82ba4016b1d11f68a84bd936fc50dda81ff052a5de6f578de090a3278c763ac": {
+    "duration_ms": 4771,
+    "effective": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud",
+      "responseModel": "glm-5.3-flash:cloud"
+    },
+    "fallback_used": false,
+    "model": "glm-5.3-flash:cloud",
+    "provider": "ollama-cloud",
+    "requested": {
+      "model": "glm-5.3-flash:cloud",
+      "provider": "ollama-cloud"
+    },
+    "rerouted": false,
+    "response_chars": 342,
+    "run_id": "6f53214b-92c3-4505-a624-c1a3e6af5bbc",
+    "session_id": "arena-r2-glmfl-e82ba4016b1d",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7302,
+      "output": 198,
+      "total": 7500
+    }
+  }
+}

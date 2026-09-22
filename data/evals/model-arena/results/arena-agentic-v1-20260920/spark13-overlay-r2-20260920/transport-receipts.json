@@ -1,0 +1,394 @@
+{
+  "14d6a2f3cf03498530dcd79f71ea54b4c300b4794687157446b9b57e00793c16": {
+    "duration_ms": 7742,
+    "effective": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "fallback_used": false,
+    "model": "muse-spark-1.3-contributor",
+    "provider": "meta",
+    "requested": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta"
+    },
+    "rerouted": false,
+    "response_chars": 114,
+    "run_id": "385a76b3-aac2-4c5f-ab22-7acd5df23c1b",
+    "session_id": "arena-r2-sp13-14d6a2f3cf03",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 113,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7628,
+      "output": 551,
+      "reasoningTokens": 489,
+      "total": 8292
+    }
+  },
+  "1707973cdad85f7eff69acd5d1351267c4fe8a37d1849cafba5e313eb541003c": {
+    "duration_ms": 9324,
+    "effective": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "fallback_used": false,
+    "model": "muse-spark-1.3-contributor",
+    "provider": "meta",
+    "requested": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta"
+    },
+    "rerouted": false,
+    "response_chars": 130,
+    "run_id": "058c975c-e86c-498c-9b15-4a33aab77b11",
+    "session_id": "arena-r2-sp13-1707973cdad8",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 6641,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 1015,
+      "output": 577,
+      "reasoningTokens": 514,
+      "total": 8233
+    }
+  },
+  "23273237a6525b0c4dd195ad0bbf0f1b6104d0ca86d9920936339e183a1c1ff0": {
+    "duration_ms": 11787,
+    "effective": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "fallback_used": false,
+    "model": "muse-spark-1.3-contributor",
+    "provider": "meta",
+    "requested": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta"
+    },
+    "rerouted": false,
+    "response_chars": 352,
+    "run_id": "02a72203-fb4a-47b1-aebb-6716799ff7b0",
+    "session_id": "arena-r2-sp13-23273237a652",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 113,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7676,
+      "output": 817,
+      "reasoningTokens": 679,
+      "total": 8606
+    }
+  },
+  "36072319fd2e5337b9cfb587fdcdb858010874306d8f4c50ff5ea438c8c7518f": {
+    "duration_ms": 29922,
+    "effective": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "fallback_used": false,
+    "model": "muse-spark-1.3-contributor",
+    "provider": "meta",
+    "requested": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta"
+    },
+    "rerouted": false,
+    "response_chars": 58,
+    "run_id": "f937227f-17d5-45b8-96ff-296ab6bc9ed6",
+    "session_id": "arena-r2-sp13-36072319fd2e",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 113,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7457,
+      "output": 1399,
+      "reasoningTokens": 1318,
+      "total": 8969
+    }
+  },
+  "430898a2d5b5c3f02ebdccc66dc12ddc78c2c454941c9c8033eae2a8762b0545": {
+    "duration_ms": 13623,
+    "effective": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "fallback_used": false,
+    "model": "muse-spark-1.3-contributor",
+    "provider": "meta",
+    "requested": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta"
+    },
+    "rerouted": false,
+    "response_chars": 66,
+    "run_id": "55d360b3-5ffa-4eea-87cf-dea4e6cf1061",
+    "session_id": "arena-r2-sp13-430898a2d5b5",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 113,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7527,
+      "output": 1032,
+      "reasoningTokens": 964,
+      "total": 8672
+    }
+  },
+  "73cd99b6dffa2ae64ce139b5db95c59dd4f4678f6ee4ab60f08114f6ee3028e8": {
+    "duration_ms": 20385,
+    "effective": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "fallback_used": false,
+    "model": "muse-spark-1.3-contributor",
+    "provider": "meta",
+    "requested": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta"
+    },
+    "rerouted": false,
+    "response_chars": 175,
+    "run_id": "6b6eda26-be2d-42a4-a039-94e75856c1c1",
+    "session_id": "arena-r2-sp13-73cd99b6dffa",
+    "status": "ok",
+    "successful_tool_names": [
+      "exec",
+      "read"
+    ],
+    "usage": {
+      "cacheRead": 15428,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 17832,
+      "output": 1052,
+      "reasoningTokens": 533,
+      "total": 34312
+    }
+  },
+  "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4": {
+    "duration_ms": 131629,
+    "effective": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "fallback_used": false,
+    "model": "muse-spark-1.3-contributor",
+    "provider": "meta",
+    "requested": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta"
+    },
+    "rerouted": false,
+    "response_chars": 116,
+    "run_id": "3aa38873-9e3d-4de7-adbd-2fd4df160719",
+    "session_id": "arena-r2-sp13-75c25de61ca1",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 113,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7526,
+      "output": 11395,
+      "reasoningTokens": 11120,
+      "total": 19034
+    }
+  },
+  "a329ef46d6f1a6336e6b64b7b2368cfbb028daf129b881b31bbdc0db6220417d": {
+    "duration_ms": 7535,
+    "effective": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "fallback_used": false,
+    "model": "muse-spark-1.3-contributor",
+    "provider": "meta",
+    "requested": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta"
+    },
+    "rerouted": false,
+    "response_chars": 184,
+    "run_id": "fd5e13d4-805f-4d21-8b94-5c94f93e7cf9",
+    "session_id": "arena-r2-sp13-a329ef46d6f1",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 113,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7549,
+      "output": 531,
+      "reasoningTokens": 436,
+      "total": 8193
+    }
+  },
+  "ad2161157921538089853178cdb459bbaed40f96fa77329a69e4be635c5af0bc": {
+    "duration_ms": 161052,
+    "effective": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "fallback_used": false,
+    "model": "muse-spark-1.3-contributor",
+    "provider": "meta",
+    "requested": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta"
+    },
+    "rerouted": false,
+    "response_chars": 111,
+    "run_id": "3d5fa64b-2c83-41f8-9dc8-6f3019003e4c",
+    "session_id": "arena-r2-sp13-ad2161157921",
+    "status": "ok",
+    "successful_tool_names": [
+      "exec"
+    ],
+    "usage": {
+      "cacheRead": 226,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 22781,
+      "output": 13119,
+      "reasoningTokens": 12515,
+      "total": 36126
+    }
+  },
+  "b5f7b370f7d8445a01c7698b67b647d5eb76389024dbd53b3dee506299b0eda3": {
+    "duration_ms": 9299,
+    "effective": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "fallback_used": false,
+    "model": "muse-spark-1.3-contributor",
+    "provider": "meta",
+    "requested": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta"
+    },
+    "rerouted": false,
+    "response_chars": 32,
+    "run_id": "2e25274a-125f-4585-8e8b-32542c3ceb67",
+    "session_id": "arena-r2-sp13-b5f7b370f7d8",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 113,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7406,
+      "output": 377,
+      "reasoningTokens": 338,
+      "total": 7896
+    }
+  },
+  "c8dbb0b4dc87e3974275cca677c987e0be2c2b417574487c9bec0dfd56e04d6a": {
+    "duration_ms": 22803,
+    "effective": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "fallback_used": false,
+    "model": "muse-spark-1.3-contributor",
+    "provider": "meta",
+    "requested": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta"
+    },
+    "rerouted": false,
+    "response_chars": 175,
+    "run_id": "1026d4b2-ece2-406e-9a3b-bf46f1df58d3",
+    "session_id": "arena-r2-sp13-c8dbb0b4dc87",
+    "status": "ok",
+    "successful_tool_names": [
+      "exec",
+      "read"
+    ],
+    "usage": {
+      "cacheRead": 22980,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 9442,
+      "output": 1157,
+      "reasoningTokens": 766,
+      "total": 33579
+    }
+  },
+  "e82ba4016b1d11f68a84bd936fc50dda81ff052a5de6f578de090a3278c763ac": {
+    "duration_ms": 8640,
+    "effective": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "fallback_used": false,
+    "model": "muse-spark-1.3-contributor",
+    "provider": "meta",
+    "requested": {
+      "model": "muse-spark-1.3-contributor",
+      "provider": "meta"
+    },
+    "rerouted": false,
+    "response_chars": 319,
+    "run_id": "bc79418c-8c82-461b-bede-cf6e9c31e784",
+    "session_id": "arena-r2-sp13-e82ba4016b1d",
+    "status": "ok",
+    "successful_tool_names": [],
+    "usage": {
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "cost": {
+        "total": 0
+      },
+      "input": 7681,
+      "output": 776,
+      "reasoningTokens": 674,
+      "total": 8457
+    }
+  }
+}

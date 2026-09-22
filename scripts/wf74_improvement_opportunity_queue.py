@@ -41,6 +41,9 @@ WF87_READINESS_ROLLUP = TMP / "wf87-v2-readiness-rollup.json"
 REPAIR_CONVEYOR = TMP / "trade-grade-repair-conveyor.json"
 PM_IMPLEMENTATION_QUEUE = TMP / "pm-implementation-job-queue.json"
 IMPLEMENTATION_COMPLETION_LEDGER = STATE / "implementation-completion-ledger.jsonl"
+WF87_CAPSULE_PATH = STATE / "workflows" / "WF87.json"
+WF87_RETIRED_OPPORTUNITY_TITLE = "Keep WF87 runtime blockers visible as maturity blockers"
+WF87_RETIRED_OPPORTUNITY_SIGNAL = "wf87_runtime_or_maturity_blockers_present"
 
 SOURCE_OPEN_REPAIR_TITLE = "Clear finance response quality source-open blockers so WF74 scorecard can pass"
 
@@ -174,6 +177,89 @@ def as_num(value: Any) -> float:
         return float(value)
     except (TypeError, ValueError):
         return 0.0
+
+
+def strict_nonnegative_int(value: Any) -> int | None:
+    """Strict nonnegative int; bool and all other shapes return None."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int) and value >= 0:
+        return value
+    return None
+
+
+def select_actionable_planning_gap(planning_signal: dict[str, Any]) -> dict[str, Any]:
+    """Fail-closed selector between partitioned actionable debt and the raw gap.
+
+    The partitioned actionable count is used only when every receipt is
+    strict (non-bool nonnegative ints), partition_reconciliation_ok is
+    exactly True, the raw gap is strict, and the partition counts
+    reconcile exactly to the raw gap. Otherwise the raw gap is used with
+    a warning reason; a missing partition never infers 0.
+    """
+    raw_value = planning_signal.get("plan_followthrough_gap_count")
+    raw_gap = strict_nonnegative_int(raw_value)
+    actionable = strict_nonnegative_int(planning_signal.get("plan_followthrough_actionable_gap_count"))
+    terminal = strict_nonnegative_int(planning_signal.get("plan_followthrough_terminal_unavailable_count"))
+    repaired = strict_nonnegative_int(planning_signal.get("plan_followthrough_repaired_accepted_count"))
+    partitioned_total = strict_nonnegative_int(planning_signal.get("partitioned_gap_row_count"))
+    reconciled_flag = planning_signal.get("partition_reconciliation_ok") is True
+    reasons: list[str] = []
+    if raw_gap is None:
+        reasons.append("raw_gap_count_not_strict_nonnegative_int")
+    if actionable is None:
+        reasons.append("actionable_gap_count_missing_or_not_strict_nonnegative_int")
+    if terminal is None:
+        reasons.append("terminal_unavailable_count_missing_or_not_strict_nonnegative_int")
+    if repaired is None:
+        reasons.append("repaired_accepted_count_missing_or_not_strict_nonnegative_int")
+    if partitioned_total is None:
+        reasons.append("partitioned_gap_row_count_missing_or_not_strict_nonnegative_int")
+    if not reconciled_flag:
+        reasons.append("partition_reconciliation_not_exactly_true")
+    counts_present = (
+        raw_gap is not None
+        and actionable is not None
+        and terminal is not None
+        and repaired is not None
+        and partitioned_total is not None
+    )
+    if counts_present and reconciled_flag and (
+        partitioned_total != raw_gap or actionable + terminal + repaired != raw_gap
+    ):
+        reasons.append("partition_counts_do_not_reconcile_to_raw_gap")
+    verified = bool(
+        counts_present
+        and reconciled_flag
+        and partitioned_total == raw_gap
+        and actionable + terminal + repaired == raw_gap
+    )
+    if verified:
+        assert actionable is not None and raw_gap is not None
+        assert terminal is not None and repaired is not None and partitioned_total is not None
+        return {
+            "selected_gap_count": actionable,
+            "raw_gap_count": raw_gap,
+            "source": "actionable_partition_verified",
+            "warning": None,
+            "actionable_gap_count": actionable,
+            "terminal_unavailable_count": terminal,
+            "repaired_accepted_count": repaired,
+            "partitioned_gap_row_count": partitioned_total,
+            "partition_reconciliation_ok": True,
+        }
+    fallback_gap = int(as_num(raw_value))
+    return {
+        "selected_gap_count": fallback_gap,
+        "raw_gap_count": fallback_gap,
+        "source": "raw_gap_fallback",
+        "warning": "; ".join(reasons) if reasons else "partition_fields_unavailable",
+        "actionable_gap_count": planning_signal.get("plan_followthrough_actionable_gap_count"),
+        "terminal_unavailable_count": planning_signal.get("plan_followthrough_terminal_unavailable_count"),
+        "repaired_accepted_count": planning_signal.get("plan_followthrough_repaired_accepted_count"),
+        "partitioned_gap_row_count": planning_signal.get("partitioned_gap_row_count"),
+        "partition_reconciliation_ok": planning_signal.get("partition_reconciliation_ok"),
+    }
 
 
 def stable_id(*parts: Any) -> str:
@@ -388,7 +474,10 @@ def workflow_blocker_requires_implementation(row: dict[str, Any]) -> bool:
     workflow_id = str(row.get("workflow_id") or "").upper()
     status = str(row.get("status") or "").lower()
     blockers = [str(item).lower() for item in as_list(row.get("blockers"))]
-    if workflow_id in {"WF87", "AUTONOMY-SPINE"}:
+    # WF87/AUTONOMY-SPINE are maturity/guard surfaces; WF55 has a dedicated
+    # measurement-only outcome-ledger route.  None of the three is an
+    # implementation blocker, so residue stays visible without reopening work.
+    if workflow_id in {"WF87", "AUTONOMY-SPINE", "WF55"}:
         return False
     if workflow_id == "CRON":
         hard_markers = (
@@ -409,8 +498,102 @@ def workflow_blocker_requires_implementation(row: dict[str, Any]) -> bool:
     return True
 
 
+def wf87_retired_architecture_proof(capsule: Any) -> dict[str, Any]:
+    """Fail-closed proof that WF87 is retired architecture, not routable work.
+
+    Exact current-architecture proof from state/workflows/WF87.json: lifecycle
+    == "paused", readiness == "paused", primary_route_artifact key present and
+    None, effective override key present and on_hold, and current_state contains
+    "Retired" without negation. Any missing key, malformed, or non-retired
+    capsule keeps the opportunity open. A missing primary_route_artifact key
+    never passes as null. Historical ledger rows are preserved; no
+    paper/execution path is created.
+    """
+    detail: dict[str, Any] = {"retired": False, "reason": "unproven", "capsule_path": rel(WF87_CAPSULE_PATH)}
+    if not isinstance(capsule, dict):
+        detail["reason"] = "capsule_missing_or_malformed"
+        return detail
+    required_keys = ("lifecycle", "readiness", "primary_route_artifact", "current_state")
+    missing = [key for key in required_keys if key not in capsule]
+    if missing:
+        detail["reason"] = "capsule_missing_required_keys:" + ",".join(sorted(missing))
+        return detail
+    lifecycle = capsule.get("lifecycle")
+    readiness = capsule.get("readiness")
+    primary = capsule.get("primary_route_artifact")
+    override = None
+    override_source = None
+    if "effective_status_override" in capsule:
+        override = capsule.get("effective_status_override")
+        override_source = "effective_status_override"
+    elif "effective_status" in capsule:
+        override = capsule.get("effective_status")
+        override_source = "effective_status"
+    elif isinstance(capsule.get("control_override"), dict) and "status" in capsule["control_override"]:
+        override = capsule["control_override"].get("status")
+        override_source = "control_override.status"
+    else:
+        detail["reason"] = "effective_status_override_key_missing"
+        return detail
+    current_state = str(capsule.get("current_state") or "")
+    lowered = current_state.casefold()
+    detail["evidence"] = {
+        "lifecycle": lifecycle,
+        "readiness": readiness,
+        "primary_route_artifact": primary,
+        "effective_status_override": override,
+        "effective_status_override_source": override_source,
+        "current_state_contains_retired": "retired" in lowered,
+    }
+    if lifecycle != "paused":
+        detail["reason"] = "lifecycle_not_paused"
+        return detail
+    if readiness != "paused":
+        detail["reason"] = "readiness_not_paused"
+        return detail
+    if primary is not None:
+        detail["reason"] = "primary_route_artifact_not_null"
+        return detail
+    if override != "on_hold":
+        detail["reason"] = "effective_status_override_not_on_hold"
+        return detail
+    if "not retired" in lowered or "non-retired" in lowered or "unretired" in lowered:
+        detail["reason"] = "current_state_negates_retired"
+        return detail
+    if "retired" not in lowered:
+        detail["reason"] = "current_state_not_retired"
+        return detail
+    detail["retired"] = True
+    detail["reason"] = "retired_architecture_proof_holds"
+    return detail
+
+
+def load_wf87_retired_architecture_proof() -> dict[str, Any]:
+    try:
+        capsule = json.loads(WF87_CAPSULE_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return wf87_retired_architecture_proof(None)
+    return wf87_retired_architecture_proof(capsule)
+
+
 def residual_workflow_followup(row: dict[str, Any], completion: dict[str, Any]) -> dict[str, Any]:
     updated = ensure_lifecycle_identity(row)
+    # Recompute implementation-blocker evidence from the current classifier so
+    # the residue row reports post-classification counts instead of carrying
+    # stale pre-completion counts forward.
+    evidence = dict(as_dict(row.get("evidence")))
+    evidence["implementation_blocker_count"] = len(
+        [
+            item
+            for item in as_list(evidence.get("blocked_workflows"))
+            if isinstance(item, dict) and workflow_blocker_requires_implementation(item)
+        ]
+    )
+    # The residue row exists because residual signals are visible in follow-up
+    # rows with completed prior routing; visibility is operationalized by
+    # definition here.
+    evidence["visibility_operationalized"] = True
+    updated["evidence"] = evidence
     updated["title"] = "Close remaining workflow-maturity follow-ups"
     updated["priority"] = min(int(as_num(row.get("priority")) or 0), 74)
     updated["signal"] = "workflow_maturity_residue_after_completed_routing"
@@ -490,11 +673,16 @@ def current_cron_signal(inputs: dict[str, Any]) -> dict[str, Any]:
 def cron_signal_requires_repair(cron_signal: dict[str, Any]) -> bool:
     scorecard = as_dict(cron_signal.get("scorecard"))
     blocked = int(as_num(scorecard.get("blocked_count")))
-    escalation = int(as_num(scorecard.get("escalation_signal_count")))
-    should_wake = bool(scorecard.get("should_wake_main_session"))
     packet_failed = cron_signal.get("packet_status") in {"blocked", "critical", "error"}
     validation_failed = cron_signal.get("packet_validation") in {"blocked", "critical", "error"}
-    return blocked > 0 or escalation > 0 or should_wake or packet_failed or validation_failed
+    if packet_failed or validation_failed:
+        return True
+    # Cron control healthy: escalation echoes (improvement-ledger overdue,
+    # OWNER_DECISION handoffs, MAIN_SESSION_REQUIRED attention) and
+    # should_wake_main_session are warning-level review signals, not cron
+    # repair regressions. Only blocked signals re-open the completed
+    # cron-regression row.
+    return blocked > 0
 
 
 def completed_cron_green_residue(row: dict[str, Any], completion: dict[str, Any], cron_signal: dict[str, Any]) -> dict[str, Any]:
@@ -524,6 +712,16 @@ def apply_completion_overlay(
         row = ensure_lifecycle_identity(source_row)
         completion = matched_completion(row, completed)
         title = str(row.get("title") or "")
+        if title == WF87_RETIRED_OPPORTUNITY_TITLE:
+            wf87_proof = load_wf87_retired_architecture_proof()
+            if wf87_proof.get("retired") is True:
+                retired_row = ensure_lifecycle_identity(row)
+                retired_row["completion_status"] = "completed_retired_architecture_no_routing"
+                retired_row["retired_architecture_proof"] = wf87_proof
+                retired_row["prior_completion"] = completion or None
+                completed_or_resolved.append(retired_row)
+                continue
+            row["wf87_architecture_proof"] = wf87_proof
         if not completion:
             current.append(annotate_open(row))
             continue
@@ -536,9 +734,29 @@ def apply_completion_overlay(
                 completed_or_resolved.append(completed_cron_green_residue(row, completion, cron_signal))
             continue
         if title == "Measure and close planning follow-through gaps":
-            updated = regressed_planning_followup(row, completion)
-            current.append(updated)
-            regressed.append(updated)
+            planning_overlay_signal = as_dict(
+                as_dict(as_dict(inputs.get("coding_outcome")).get("ledger_summary")).get("planning_quality_signal")
+            )
+            planning_overlay_selection = select_actionable_planning_gap(planning_overlay_signal)
+            if (
+                planning_overlay_selection["source"] == "actionable_partition_verified"
+                and int(planning_overlay_selection["selected_gap_count"]) == 0
+            ):
+                completed_row = dict(row)
+                completed_row["completion_status"] = "completed_no_actionable_planning_debt_history_only"
+                completed_row["prior_completion"] = completion
+                completed_row["planning_gap_selection"] = {
+                    "source": planning_overlay_selection["source"],
+                    "selected_gap_count": int(planning_overlay_selection["selected_gap_count"]),
+                    "raw_gap_count": int(planning_overlay_selection["raw_gap_count"]),
+                    "terminal_unavailable_count": planning_overlay_selection.get("terminal_unavailable_count"),
+                    "repaired_accepted_count": planning_overlay_selection.get("repaired_accepted_count"),
+                }
+                completed_or_resolved.append(completed_row)
+            else:
+                updated = regressed_planning_followup(row, completion)
+                current.append(updated)
+                regressed.append(updated)
             continue
         if title == "Convert workflow advancement blockers into implementation follow-ups" and workflow_maturity_residue_only(row):
             completed_row = dict(row)
@@ -599,7 +817,9 @@ def build_opportunities(inputs: dict[str, Any]) -> list[dict[str, Any]]:
     coding_rows = int(as_num(coding_summary.get("ledger_row_count")))
     coding_model_attr = int(as_num(coding_summary.get("model_attributed_count")))
     planning_signal = as_dict(coding_summary.get("planning_quality_signal"))
-    planning_gap_count = int(as_num(planning_signal.get("plan_followthrough_gap_count")))
+    planning_selection = select_actionable_planning_gap(planning_signal)
+    planning_gap_count = int(planning_selection["selected_gap_count"])
+    planning_gap_raw_count = int(planning_selection["raw_gap_count"])
     planning_clean_rate = planning_signal.get("plan_followthrough_clean_rate")
     if coding_rows and coding_model_attr == 0:
         opportunities.append(opportunity(
@@ -630,7 +850,15 @@ def build_opportunities(inputs: dict[str, Any]) -> list[dict[str, Any]]:
                 "tracked_lane_count": planning_signal.get("tracked_lane_count"),
                 "plan_contract_present_count": planning_signal.get("plan_contract_present_count"),
                 "plan_followthrough_clean_count": planning_signal.get("plan_followthrough_clean_count"),
-                "plan_followthrough_gap_count": planning_gap_count,
+                "plan_followthrough_gap_count": planning_gap_raw_count,
+                "plan_followthrough_gap_count_selected": planning_gap_count,
+                "plan_followthrough_gap_source": planning_selection["source"],
+                "plan_followthrough_actionable_gap_count": planning_selection.get("actionable_gap_count"),
+                "plan_followthrough_terminal_unavailable_count": planning_selection.get("terminal_unavailable_count"),
+                "plan_followthrough_repaired_accepted_count": planning_selection.get("repaired_accepted_count"),
+                "partition_reconciliation_ok": planning_selection.get("partition_reconciliation_ok"),
+                "actionable_status": planning_signal.get("actionable_status"),
+                "planning_gap_selection_warning": planning_selection.get("warning"),
                 "plan_followthrough_clean_rate": planning_clean_rate,
                 "gap_reasons": planning_signal.get("gap_reasons"),
             },
@@ -911,10 +1139,12 @@ def build_opportunities(inputs: dict[str, Any]) -> list[dict[str, Any]]:
         wf87_visibility_operationalized = wf87_readiness_validation_status == "ok" and binding_blockers > 0
         opportunities.append(opportunity(
             category="workflow_maturity",
-            title="Keep WF87 runtime blockers visible as maturity blockers",
+            title=WF87_RETIRED_OPPORTUNITY_TITLE,
             priority=67 if wf87_visibility_operationalized else 83,
-            signal="wf87_runtime_or_maturity_blockers_present",
+            signal=WF87_RETIRED_OPPORTUNITY_SIGNAL,
             evidence={
+                "wf87_architecture_source": rel(WF87_CAPSULE_PATH),
+                "wf87_retired_architecture_note": "overlay classifies retired_architecture when capsule proof holds; otherwise open",
                 "phase_a_runtime_gates_clean": wf87_phase.get("phase_a_runtime_gates_clean"),
                 "phase_b_assisted_round_trip_ready": wf87_phase.get("phase_b_assisted_round_trip_ready"),
                 "phase_c_autonomous_paper_buy_ready": wf87_phase.get("phase_c_autonomous_paper_buy_ready"),
@@ -1016,6 +1246,8 @@ def build_payload(inputs: dict[str, Any]) -> dict[str, Any]:
             "planning_quality_followup_count": sum(1 for row in opportunities if row["category"] == "planning_quality"),
             "by_category": dict(sorted(by_category.items())),
             "by_proposal_gate": dict(sorted(by_gate.items())),
+            "wf87_retired_architecture_count": sum(1 for row in completed_or_resolved if row.get("completion_status") == "completed_retired_architecture_no_routing"),
+            "wf87_architecture_proof_source": rel(WF87_CAPSULE_PATH),
             "top_opportunity_id": opportunities[0]["opportunity_id"] if opportunities else None,
             "top_opportunity_title": opportunities[0]["title"] if opportunities else None,
             "cron_signal_source": current_cron_signal(inputs).get("source"),

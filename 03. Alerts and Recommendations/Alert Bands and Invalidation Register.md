@@ -2,22 +2,20 @@
 
 ## Purpose
 
-Own the human thesis, static alert thresholds, and alert-interpretation register for tracked names. Guarded SQL is the exact machine mirror used by the fast path.
+Own the human thesis and alert-interpretation register for tracked names. Live numeric reference levels, invalidation thresholds, level timestamps, and band status live in guarded SQL `reference_levels`. This file does not own live numbers.
 
 ## Current-Level Contract
 
-- Human canonical source: this register.
-- Machine-readable mirror: `state/finance/finance-canon.sqlite` field family `reference_levels`.
+- Live numeric source: `state/finance/finance-canon.sqlite` field family `reference_levels` (current baseline pin via finance-state meta / alert-reference baseline).
 - Typed access guard: `python scripts\finance_sql_canon_access.py --write --validate`.
-- Current alert-level proof: `python scripts\alert_level_freshness_controller.py --write --validate`.
-- Exact level claims must include source timestamp, quote timestamp, freshness state, validation state, and confidence.
-- If any required field is stale, missing, or conflicted, emit a freshness or invalidation review alert and do not represent the recommendation as current.
+- Current alert-level proof: `python scripts\alert_level_freshness_controller.py --write --validate` and `tmp/alert-level-freshness-controller.json`.
+- This markdown file is not writable numeric canon. G6 (2026-09-10 owner approval; closed 2026-09-11) retired Markdown as a writable reference-level surface (`markdown_canon_write_allowed=false`). Do not copy SQL numbers back into this file and do not prefer this file over SQL when they disagree.
+- Exact level claims must come from SQL/controller and include source timestamp, quote timestamp, freshness state, validation state, and confidence.
+- If SQL, quote, timestamp, or lineage is stale, missing, or conflicted, emit a freshness or invalidation review alert. Do not fall back to the historical table below.
 
-The table below is the source for the mirrored numeric thresholds. A mirror is current only when its source path, artifact hash, values, and source timestamp reconcile to this file. Moving a threshold into this register does not refresh its underlying market judgment; `level_as_of` remains the last substantive review date.
+## Historical Numeric Snapshot (Not Live)
 
-## Static Alert Thresholds
-
-These values were migrated without numeric change during the 2026-08-29 portfolio-management retirement. `State` is an observation label, not an order or holding state. Blank state means no current classification was preserved.
+The table below is the 2026-08-21 migration snapshot retained for audit. It is not current alert canon. G6 applied successor pin `1d8da081…` to SQL on 2026-09-10 without rewriting this file. `State` is an observation label, not an order or holding state. Blank state means no classification was preserved in that snapshot.
 
 | Ticker | Alert low | Alert high | Invalidation threshold | State | Level as of |
 |---|---:|---:|---:|---|---|

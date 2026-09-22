@@ -70,6 +70,21 @@ var defaultDBFiles = []string{
 	"tmp/finance-intelligence-state.sqlite",
 }
 
+// retiredDBFiles are paths deliberately archived by the 2026-08-29 alerts-OS
+// pivot (owner-authorized; archived with rollback proof). For these, absence is
+// the expected state and recreation on an active surface is the real drift.
+var retiredDBFiles = map[string]bool{
+	"tmp/veritas-canon-cache.sqlite":        true,
+	"tmp/finance-intelligence-state.sqlite": true,
+}
+
+// retiredJSONFiles are proof paths retired by the 2026-08-29 alerts-OS pivot
+// (owner-authorized; archived with rollback proof). Absence is expected;
+// recreation on an active surface is the drift.
+var retiredJSONFiles = map[string]bool{
+	"tmp/capital-deployment-recommendation-validation.json": true,
+}
+
 var forbiddenTruthyKeys = map[string]bool{
 	"proposal_apply_allowed":                      true,
 	"per_packet_owner_approval_inferred":          true,
@@ -156,6 +171,11 @@ func scanJSON(root string, files []string, add func(string, string, string, bool
 		path := filepath.Join(root, filepath.FromSlash(rel))
 		bytes, err := os.ReadFile(path)
 		if err != nil {
+			if retiredJSONFiles[filepath.ToSlash(rel)] {
+				// Retired by the 2026-08-29 alerts-OS pivot; absence is correct.
+				add(rel, "retired_json_absent", "info", true, "retired path; absence is the expected state")
+				continue
+			}
 			add(rel, "json_exists", "critical", false, err.Error())
 			continue
 		}
@@ -270,7 +290,19 @@ func scanDBs(root string, files []string, sqlitePath string, add func(string, st
 	for _, rel := range files {
 		path := filepath.Join(root, filepath.FromSlash(rel))
 		if _, err := os.Stat(path); err != nil {
+			if retiredDBFiles[filepath.ToSlash(rel)] {
+				// Archived by the 2026-08-29 alerts-OS pivot; absence is correct.
+				add(rel, "retired_db_absent", "info", true, "retired path; absence is the expected state")
+				continue
+			}
 			add(rel, "db_exists", "critical", false, err.Error())
+			continue
+		}
+		if retiredDBFiles[filepath.ToSlash(rel)] {
+			// Recreation is the drift: the alerts-OS pivot validator rejects these
+			// paths on active tmp surfaces.
+			checked = append(checked, filepath.ToSlash(rel))
+			add(rel, "retired_db_recreated", "critical", false, "retired current-state path present on an active surface; archive it and remove it from tmp")
 			continue
 		}
 		checked = append(checked, filepath.ToSlash(rel))

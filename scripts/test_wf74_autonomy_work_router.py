@@ -491,3 +491,63 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+def live_like_partitioned_signal():
+    return {
+        "schema": "veritas.planning_quality_signal.v1",
+        "tracked_lane_count": 200,
+        "plan_contract_present_count": 180,
+        "plan_followthrough_clean_count": 37,
+        "plan_followthrough_gap_count": 163,
+        "plan_followthrough_clean_rate": 0.185,
+        "gap_reasons": {"missing_proof": 21},
+        "status": "attention",
+        "plan_followthrough_actionable_gap_count": 21,
+        "plan_followthrough_terminal_unavailable_count": 128,
+        "plan_followthrough_repaired_accepted_count": 14,
+        "partitioned_gap_row_count": 163,
+        "partition_reconciliation_ok": True,
+        "actionable_status": "attention",
+    }
+
+
+def test_projection_trusts_live_like_current_debt() -> None:
+    import wf74_autonomy_work_router as _router
+    projected = _router.project_planning_signal(live_like_partitioned_signal())
+    assert projected['planning_followthrough_gap_count'] == 163
+    assert projected['planning_followthrough_gap_count_selected'] == 21
+    assert projected['planning_followthrough_gap_source'] == 'actionable_partition_verified'
+    assert projected['planning_followthrough_terminal_unavailable_count'] == 128
+    assert projected['planning_followthrough_repaired_accepted_count'] == 14
+    assert projected['planning_actionable_status'] == 'attention'
+    assert projected['planning_gap_selection_warning'] is None
+
+
+def test_projection_reports_zero_selected_for_history_only() -> None:
+    import wf74_autonomy_work_router as _router
+    signal = live_like_partitioned_signal()
+    signal['plan_followthrough_actionable_gap_count'] = 0
+    signal['plan_followthrough_terminal_unavailable_count'] = 149
+    signal['plan_followthrough_repaired_accepted_count'] = 14
+    signal['actionable_status'] = 'ok'
+    projected = _router.project_planning_signal(signal)
+    assert projected['planning_followthrough_gap_count'] == 163
+    assert projected['planning_followthrough_gap_count_selected'] == 0
+    assert projected['planning_actionable_status'] == 'ok'
+
+
+def test_projection_falls_back_failclosed_on_malformed_or_schema() -> None:
+    import wf74_autonomy_work_router as _router
+    malformed = live_like_partitioned_signal()
+    malformed['partition_reconciliation_ok'] = False
+    projected = _router.project_planning_signal(malformed)
+    assert projected['planning_followthrough_gap_source'] == 'raw_gap_fallback'
+    assert projected['planning_followthrough_gap_count_selected'] == 163
+    assert projected['planning_actionable_status'] == 'unverified_fallback'
+    assert projected['planning_gap_selection_warning']
+    wrong_schema = live_like_partitioned_signal()
+    wrong_schema['schema'] = 'veritas.planning_quality_signal.v0'
+    projected = _router.project_planning_signal(wrong_schema)
+    assert projected['planning_followthrough_gap_source'] == 'raw_gap_fallback'
+    assert 'schema' in str(projected['planning_gap_selection_warning'])

@@ -1,0 +1,54 @@
+case 430898a2d5b5c3f02ebdccc66dc12ddc78c2c454941c9c8033eae2a8762b0545 (family: T2)
+response contract:
+Event-stream replay with revert history and undefined tie ordering.
+
+Response contract:
+If the stated ordering leaves any job's final state not uniquely determined, return exactly: {"ambiguous": [job ids, sorted], "states": {job: {"revision": integer, "status": string}}} containing only the jobs that ARE uniquely determined. Otherwise return exactly: {"states": {job: {"revision": integer, "status": string}, sorted by job}, "eligible": [job ids whose status is "ready", sorted], "applied": integer count of events applied, "ignored": [{"event": event id, "reason": "duplicate" or "stale"}]}.
+
+Rules:
+- An event applies to its job only if its revision is greater than the job's current revision, or greater-or-equal when rules.apply_ge is true.
+- Duplicate suppression: when rules.dedup_on_pair is true an event is a duplicate if (event_id, revision) was already seen; otherwise if event_id was already seen. Duplicates are ignored with reason "duplicate"; events that fail the revision test are ignored with reason "stale".
+- A job that no event has applied to yet has revision 0, no status, and an empty history stack.
+- Status "revert" pops the job's own previous status from its history stack; if that stack is empty the new status is "void". Any non-revert status pushes the current status onto the job's history before replacing it, except that a job's first applied event only sets the status and pushes nothing.
+- Every applied event, including a revert, sets the job's revision to that event's own revision.
+- applied counts every event that was applied. An event that was ignored, for either reason, is not counted.
+- rules.ordering gives the replay order. An ordering that fixes a unique sequence for every pair of events, such as arrival order, can never produce ambiguity. A job is ambiguous only when rules.ordering itself leaves ties undefined AND two or more events contest the same (job, revision) pair AND the reachable orderings disagree on that job's final state. Never invent a tie-break.
+
+Return only the required JSON object. No prose, no explanation, no code fences.
+
+prompt:
+{
+  "events": [
+    [
+      "e1",
+      "A",
+      1,
+      "queued"
+    ],
+    [
+      "e25",
+      "A",
+      2,
+      "ready"
+    ],
+    [
+      "e35",
+      "A",
+      2,
+      "blocked"
+    ],
+    [
+      "e4",
+      "B",
+      1,
+      "ready"
+    ]
+  ],
+  "request": "Replay the stream; report ambiguity, never invent a tie-break.",
+  "rules": {
+    "apply_ge": true,
+    "dedup_on_pair": true,
+    "ordering": "revision; ties undefined"
+  }
+}
+Return only the required JSON object. No prose.

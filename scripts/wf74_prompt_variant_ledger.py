@@ -346,7 +346,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--improvement-ledger", default=str(DEFAULT_IMPROVEMENT_LEDGER))
     parser.add_argument("--ledger", default=str(DEFAULT_LEDGER))
     parser.add_argument("--out", default=str(DEFAULT_JSON))
-    parser.add_argument("--model-path", default="openai/gpt-5.5")
+    parser.add_argument("--model-path", default="xai/grok-4.6")
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--validate", action="store_true")
     return parser.parse_args()

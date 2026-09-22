@@ -1,0 +1,217 @@
+{
+  "status": "pass",
+  "method": "deterministic replay independent of model responses",
+  "protocol_sha256": "05bc485abbf718718ac7270e6aa7d1e916322b55d633d71d8284f9631300868e",
+  "traces": [
+    {
+      "capacity": 10,
+      "inclusive": false,
+      "expected_verified": true,
+      "trace": [
+        {
+          "time": 0,
+          "event": "reserve",
+          "id": "A",
+          "outcome": "accepted",
+          "active": {
+            "A": 4
+          },
+          "free": 6
+        },
+        {
+          "time": 1,
+          "event": "reserve",
+          "id": "B",
+          "outcome": "accepted",
+          "active": {
+            "A": 4,
+            "B": 5
+          },
+          "free": 1
+        },
+        {
+          "time": 2,
+          "event": "reserve",
+          "id": "C",
+          "outcome": "rejected",
+          "active": {
+            "A": 4,
+            "B": 5
+          },
+          "free": 1
+        },
+        {
+          "time": 3,
+          "event": "cancel",
+          "id": "A",
+          "outcome": null,
+          "active": {
+            "B": 5
+          },
+          "free": 5
+        },
+        {
+          "time": 4,
+          "event": "reserve",
+          "id": "C",
+          "outcome": "duplicate",
+          "active": {
+            "B": 5
+          },
+          "free": 5
+        },
+        {
+          "time": 5,
+          "event": "reserve",
+          "id": "D",
+          "outcome": "accepted",
+          "active": {
+            "B": 5,
+            "D": 4
+          },
+          "free": 1
+        },
+        {
+          "time": 7,
+          "event": "reserve",
+          "id": "E",
+          "outcome": "accepted",
+          "active": {
+            "D": 4,
+            "E": 6
+          },
+          "free": 0
+        },
+        {
+          "time": 7,
+          "event": "query",
+          "id": "",
+          "outcome": null,
+          "active": {
+            "D": 4,
+            "E": 6
+          },
+          "free": 0
+        }
+      ]
+    },
+    {
+      "capacity": 12,
+      "inclusive": true,
+      "expected_verified": true,
+      "trace": [
+        {
+          "time": 0,
+          "event": "reserve",
+          "id": "A",
+          "outcome": "accepted",
+          "active": {
+            "A": 4
+          },
+          "free": 8
+        },
+        {
+          "time": 1,
+          "event": "reserve",
+          "id": "B",
+          "outcome": "accepted",
+          "active": {
+            "A": 4,
+            "B": 5
+          },
+          "free": 3
+        },
+        {
+          "time": 2,
+          "event": "reserve",
+          "id": "C",
+          "outcome": "accepted",
+          "active": {
+            "A": 4,
+            "B": 5,
+            "C": 3
+          },
+          "free": 0
+        },
+        {
+          "time": 3,
+          "event": "cancel",
+          "id": "A",
+          "outcome": null,
+          "active": {
+            "B": 5,
+            "C": 3
+          },
+          "free": 4
+        },
+        {
+          "time": 4,
+          "event": "reserve",
+          "id": "C",
+          "outcome": "duplicate",
+          "active": {
+            "B": 5,
+            "C": 3
+          },
+          "free": 4
+        },
+        {
+          "time": 5,
+          "event": "reserve",
+          "id": "D",
+          "outcome": "accepted",
+          "active": {
+            "B": 5,
+            "C": 3,
+            "D": 4
+          },
+          "free": 0
+        },
+        {
+          "time": 7,
+          "event": "reserve",
+          "id": "E",
+          "outcome": "rejected",
+          "active": {
+            "B": 5,
+            "C": 3,
+            "D": 4
+          },
+          "free": 0
+        },
+        {
+          "time": 8,
+          "event": "cancel",
+          "id": "C",
+          "outcome": null,
+          "active": {
+            "D": 4
+          },
+          "free": 8
+        },
+        {
+          "time": 8,
+          "event": "reserve",
+          "id": "F",
+          "outcome": "accepted",
+          "active": {
+            "D": 4,
+            "F": 5
+          },
+          "free": 3
+        },
+        {
+          "time": 8,
+          "event": "query",
+          "id": "",
+          "outcome": null,
+          "active": {
+            "D": 4,
+            "F": 5
+          },
+          "free": 3
+        }
+      ]
+    }
+  ]
+}

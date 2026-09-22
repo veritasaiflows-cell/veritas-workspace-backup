@@ -449,6 +449,166 @@ def test_parent_aggregation_preserves_handoff_and_excludes_incidents_from_denomi
     assert missing["route_attribution"]["handoff_context_tokens"] is None
 
 
+def actionable_routed_lane(lane_id: str) -> dict:
+    attributed = routed_lane(lane_id)
+    attributed["runtime"].update({
+        "parent_job_id": "PM::history-partition",
+        "phase": "implementation",
+        "attempt_id": f"attempt-{lane_id}",
+        "main_acceptance_status": "accepted",
+    })
+    return attributed
+
+
+def test_recent_unresolved_gap_stays_actionable() -> None:
+    unresolved = ledger.build_record(actionable_routed_lane("WF87::history-recent"), {"status": "ok", "summary": {}})
+    unresolved["coding_outcome"]["proof_attached"] = False
+    unresolved["proof_artifact_count"] = 0
+    summary = ledger.summarize_rows([unresolved])
+    planning = summary["planning_quality_signal"]
+    assert planning["plan_followthrough_gap_count"] == 1
+    assert planning["plan_followthrough_actionable_gap_count"] == 1
+    assert planning["plan_followthrough_terminal_unavailable_count"] == 0
+    assert planning["plan_followthrough_repaired_accepted_count"] == 0
+    assert planning["gap_partitions"]["actionable_unresolved"]["row_count"] == 1
+    assert planning["partition_reconciliation_ok"] is True
+
+
+def test_historical_terminal_unavailable_partitions_out_of_actionable() -> None:
+    legacy_input = lane("WF87::history-legacy")
+    legacy_input["runtime"].pop("retry_count")
+    historical = ledger.build_record(legacy_input, {"status": "ok", "summary": {}})
+    assert historical["route_attribution"]["route_conformance"] == "unavailable_legacy"
+    assert historical["coding_outcome"]["retry_count"] is None
+    summary = ledger.summarize_rows([historical])
+    planning = summary["planning_quality_signal"]
+    # Raw totals preserved: the unavailable-retry event still counts raw.
+    assert planning["plan_followthrough_gap_count"] == 1
+    assert planning["gap_reasons"].get("retry_count_unavailable") == 1
+    assert planning["plan_followthrough_terminal_unavailable_count"] == 1
+    assert planning["plan_followthrough_actionable_gap_count"] == 0
+    assert planning["gap_partitions"]["terminal_known_unavailable"]["row_count"] == 1
+    assert planning["partition_reconciliation_ok"] is True
+
+
+def test_accepted_after_retry_partitions_as_repaired_with_raw_totals_retained() -> None:
+    record = ledger.build_record(actionable_routed_lane("WF87::history-repaired"), {"status": "ok", "summary": {}})
+    record["coding_outcome"]["retry_count"] = 2
+    assert record["coding_outcome"]["proof_attached"] is True
+    assert record["route_attribution"]["main_accepted"] is True
+    assert ledger.explicit_main_acceptance(record) is True
+    summary = ledger.summarize_rows([record])
+    planning = summary["planning_quality_signal"]
+    assert planning["plan_followthrough_gap_count"] == 1
+    assert planning["gap_reasons"].get("retry_required") == 1
+    assert summary["total_retry_count"] == 2
+    assert planning["plan_followthrough_repaired_accepted_count"] == 1
+    assert planning["plan_followthrough_actionable_gap_count"] == 0
+    assert planning["gap_partitions"]["repaired_accepted_retry"]["row_count"] == 1
+    assert planning["partition_reconciliation_ok"] is True
+
+
+def test_partition_reconciliation_across_mixed_history() -> None:
+    recent = ledger.build_record(actionable_routed_lane("WF87::history-mix-recent"), {"status": "ok", "summary": {}})
+    recent["coding_outcome"]["proof_attached"] = False
+    recent["proof_artifact_count"] = 0
+    legacy_input = lane("WF87::history-mix-legacy")
+    legacy_input["runtime"].pop("retry_count")
+    legacy = ledger.build_record(legacy_input, {"status": "ok", "summary": {}})
+    fixed = ledger.build_record(actionable_routed_lane("WF87::history-mix-fixed"), {"status": "ok", "summary": {}})
+    fixed["coding_outcome"]["retry_count"] = 1
+    summary = ledger.summarize_rows([recent, legacy, fixed])
+    planning = summary["planning_quality_signal"]
+    assert planning["plan_followthrough_gap_count"] == 3
+    assert planning["partitioned_gap_row_count"] == 3
+    assert planning["partition_reconciliation_ok"] is True
+    assert planning["plan_followthrough_actionable_gap_count"] == 1
+    assert planning["plan_followthrough_terminal_unavailable_count"] == 1
+    assert planning["plan_followthrough_repaired_accepted_count"] == 1
+    # Compatible raw fields unchanged in meaning.
+    assert planning["hard_gap_count"] == 3
+    assert planning["status"] == "attention"
+    assert planning["actionable_status"] == "attention"
+
+
+def test_malformed_unknown_history_fails_closed_as_actionable() -> None:
+    # Retry required WITHOUT proof: must never partition as repaired.
+    unproven = ledger.build_record(actionable_routed_lane("WF87::history-unproven"), {"status": "ok", "summary": {}})
+    unproven["coding_outcome"]["retry_count"] = 3
+    unproven["coding_outcome"]["proof_attached"] = False
+    unproven["proof_artifact_count"] = 0
+    assert ledger.planning_history_partition(unproven) == "actionable_unresolved"
+    # Missing retry on a conformant current-shape row: actionable, not terminal.
+    conformant_missing = ledger.build_record(actionable_routed_lane("WF87::history-conformant-missing"), {"status": "ok", "summary": {}})
+    conformant_missing["coding_outcome"]["retry_count"] = None
+    assert conformant_missing["route_attribution"]["route_conformance"] == "conformant"
+    assert ledger.planning_history_partition(conformant_missing) == "actionable_unresolved"
+    # Unknown/malformed retry value with otherwise-clean content: actionable.
+    malformed = ledger.build_record(actionable_routed_lane("WF87::history-malformed"), {"status": "ok", "summary": {}})
+    malformed["coding_outcome"]["retry_count"] = "1"
+    assert ledger.planning_gap_reasons_for_row(malformed) == ["retry_count_unavailable"] or "retry_count_unavailable" in ledger.planning_gap_reasons_for_row(malformed)
+    assert ledger.planning_history_partition(malformed) == "actionable_unresolved"
+    summary = ledger.summarize_rows([unproven, conformant_missing, malformed])
+    planning = summary["planning_quality_signal"]
+    assert planning["plan_followthrough_gap_count"] == 3
+    assert planning["plan_followthrough_actionable_gap_count"] == 3
+    assert planning["plan_followthrough_terminal_unavailable_count"] == 0
+    assert planning["plan_followthrough_repaired_accepted_count"] == 0
+    assert planning["partition_reconciliation_ok"] is True
+
+
+def test_pre_cutover_uninstrumented_missing_retry_is_terminal() -> None:
+    base = lane("WF87::history-precutover")
+    base["runtime"].pop("retry_count")
+    row = ledger.build_record(base, {"status": "ok", "summary": {}})
+    row["route_attribution"] = {}
+    assert ledger.history_pre_cutover_uninstrumented(row) is True
+    assert ledger.planning_history_partition(row) == "terminal_known_unavailable"
+    summary = ledger.summarize_rows([row])
+    planning = summary["planning_quality_signal"]
+    assert planning["plan_followthrough_gap_count"] == 1
+    assert planning["gap_reasons"].get("retry_count_unavailable") == 1
+    assert planning["plan_followthrough_terminal_unavailable_count"] == 1
+    assert planning["plan_followthrough_actionable_gap_count"] == 0
+    assert planning["partition_reconciliation_ok"] is True
+
+
+def test_post_cutover_missing_route_stays_actionable() -> None:
+    row = {
+        "created_at_utc": "2026-09-10T05:00:00Z",
+        "completed_at_utc": "2026-09-10T05:06:00Z",
+        "route_attribution": {},
+        "coding_outcome": {
+            "implementation_completed": True,
+            "acceptance_commands_declared": True,
+            "proof_attached": True,
+            "validator_proxy_passed": True,
+            "retry_count": None,
+        },
+    }
+    assert ledger.history_pre_cutover_uninstrumented(row) is False
+    assert ledger.planning_gap_reasons_for_row(row) == ["retry_count_unavailable"]
+    assert ledger.planning_history_partition(row) == "actionable_unresolved"
+
+
+def test_malformed_timestamp_missing_retry_stays_actionable() -> None:
+    row = {
+        "created_at_utc": "not-a-timestamp",
+        "completed_at_utc": "also-bad",
+        "route_attribution": {},
+        "coding_outcome": {
+            "implementation_completed": True,
+            "acceptance_commands_declared": True,
+            "proof_attached": True,
+            "validator_proxy_passed": True,
+            "retry_count": None,
+        },
+    }
+    assert ledger.history_pre_cutover_uninstrumented(row) is False
+    assert ledger.planning_gap_reasons_for_row(row) == ["retry_count_unavailable"]
+    assert ledger.planning_history_partition(row) == "actionable_unresolved"
+
+
 def test_parent_aggregation_uses_phase_status_aware_denominators() -> None:
     implementation = routed_lane("WF87::multi-implementation")
     implementation["runtime"].update({"parent_job_id": "PM::multi-phase", "phase": "implementation", "attempt_id": "impl", "main_acceptance_status": "accepted"})
@@ -605,6 +765,14 @@ if __name__ == "__main__":
     test_undocumented_later_retouch_stays_a_gap()
     test_legacy_validator_unknown_is_attention_not_hard_gap()
     test_legacy_proof_remediation_closes_known_historical_missing_proof()
+    test_recent_unresolved_gap_stays_actionable()
+    test_historical_terminal_unavailable_partitions_out_of_actionable()
+    test_accepted_after_retry_partitions_as_repaired_with_raw_totals_retained()
+    test_partition_reconciliation_across_mixed_history()
+    test_malformed_unknown_history_fails_closed_as_actionable()
+    test_pre_cutover_uninstrumented_missing_retry_is_terminal()
+    test_post_cutover_missing_route_stays_actionable()
+    test_malformed_timestamp_missing_retry_stays_actionable()
     test_post_cutover_missing_or_forged_receipt_cannot_enter_efficiency_metrics()
     test_post_cutover_declared_false_cannot_restore_historical_efficiency_credit()
     test_route_mismatch_fails_closed_and_legacy_is_unavailable()

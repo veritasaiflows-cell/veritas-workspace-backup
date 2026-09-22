@@ -1,0 +1,21 @@
+{
+  "errors": [],
+  "file_sha256": {
+    "checkpoint.json": "d96f909ee7dc91dcb04d1842f57e33922f7b851bc0bb471af6ff56dfa997750d",
+    "data/archive/old.json": "dc59d7f33dd663f219d3c3e6080baa1c60340ebf39ea63c1075f80788ef54fe2",
+    "data/index.json": "d57798fc67e5faf792a2f6085f7b29f01a72de1f994e08a88f6e83d64440e618",
+    "data/payload-a.json": "e8dd9fd7d2109fd74cbf0cb75d802e7181d6c7c28771f4a205012db90d982e36",
+    "data/replica-a.json": "697d8b7f95ebb8d66e2f5e4f7f68685f9ce00d264bc52bfcffcd10dfa3579206",
+    "data/replica-b.json": "b30bb70ee3323f8fcd1fd7f2096ca052081355aaacf4e26e6341813735def5e5",
+    "repo/recovery.py": "81ba7f550ac800f90a8f2c2bff6299f84e117c705b20d4ef3589be9a1b6ec655",
+    "repo/tests/test_check.py": "68cf2465f9cec0c4dad1217d2a6e41a5aa38393f8ff9e94e3400366d4ec7b231",
+    "repo/tools/check.py": "bf35ccb7d3313469aaa4a881d8e0cbd02fa2530ad1833e019af6e2520a42efe1",
+    "request.md": "b3fb3de8c89f5901a74f4ac24b191295e8ca087c62c701f920e59ca4d2fd72a1"
+  },
+  "hidden_expectation_sha256": "93d19caf4c5a87f46894cbb8b66f438ec48b0fddc6861df5459abb33a562a1fb",
+  "mission_id": "arena-integrated-m3-20260920",
+  "producer": "scripts/arena_integrated_mission.py",
+  "schema": "veritas.arena_integrated_mission.v1",
+  "status": "ok",
+  "version": "arena-integrated-m3-20260920-r1"
+}

@@ -1,0 +1,62 @@
+{
+  "authority_boundary": {
+    "archive_performed": false,
+    "backups_delete_allowed": false,
+    "brokerage_or_account_action_performed": false,
+    "canon_or_portfolio_mutation_performed": false,
+    "cash_sizing_risk_mutation_performed": false,
+    "config_or_runtime_mutation_performed": false,
+    "cron_schedule_mutation_performed": false,
+    "customer_or_external_output_performed": false,
+    "delete_performed": true,
+    "move_performed": false,
+    "owner_approval_inferred": false,
+    "paper_or_live_execution_performed": false,
+    "rename_performed": false,
+    "restore_performed": false,
+    "rollback_delete_apply_wrapper": true,
+    "sqlite_checkpoint_or_vacuum_performed": false,
+    "sqlite_write_performed": false
+  },
+  "generated_at_utc": "2026-08-27T04:24:06Z",
+  "mode": "apply",
+  "packet": "tmp/backup-rollback-delete-prep-packet.json",
+  "results": [
+    {
+      "already_missing": false,
+      "deleted": true,
+      "dry_run": false,
+      "exists_after": false,
+      "exists_before": true,
+      "file_count": 5,
+      "path": "state/tmp-lifecycle-rollback/cleanup-autopilot-full-approved",
+      "size_bytes": 162094642
+    },
+    {
+      "already_missing": false,
+      "deleted": true,
+      "dry_run": false,
+      "exists_after": false,
+      "exists_before": true,
+      "file_count": 24,
+      "path": "state/tmp-lifecycle-rollback/cleanup-autopilot-stale-text",
+      "size_bytes": 1665971
+    }
+  ],
+  "schema": "veritas.backup_rollback_delete_apply_report.v1",
+  "status": "ok",
+  "summary": {
+    "approval_phrase_matched": true,
+    "backups_delete_performed": false,
+    "delete_performed": true,
+    "dry_run": false,
+    "row_count": 2,
+    "total_bytes": 163760613,
+    "total_mb": 156.174
+  },
+  "validation": {
+    "errors": [],
+    "status": "ok",
+    "warnings": []
+  }
+}

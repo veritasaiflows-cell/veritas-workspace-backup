@@ -966,6 +966,117 @@ def explicit_main_acceptance(row: dict[str, Any]) -> bool:
     return route.get("main_acceptance_status") is not None or isinstance(route.get("main_accepted"), bool)
 
 
+HISTORY_TERMINAL_UNAVAILABLE_ROUTE_STATES = frozenset({"unavailable_legacy", "unavailable_actual_route"})
+HISTORY_ACTIONABLE_CONTENT_GAPS = frozenset({
+    "not_completed",
+    "missing_acceptance_commands",
+    "missing_proof",
+    "validator_not_clean",
+    "later_rework",
+    "later_regression",
+})
+
+
+def planning_gap_reasons_for_row(row: dict[str, Any]) -> list[str]:
+    """Single-source planning-gap reasons for history partitioning.
+
+    Mirrors the raw gap rules in summarize_rows without replacing them:
+    the two loops inside summarize_rows remain the raw-total authority.
+    Any content gap keeps the row actionable; only exact known terminal
+    metadata shapes may partition elsewhere, fail-closed otherwise.
+    """
+    outcome = as_dict(row.get("coding_outcome"))
+    reasons: list[str] = []
+    if outcome.get("implementation_completed") is not True:
+        reasons.append("not_completed")
+    if outcome.get("acceptance_commands_declared") is not True:
+        reasons.append("missing_acceptance_commands")
+    if outcome.get("proof_attached") is not True:
+        reasons.append("missing_proof")
+    if validator_state(row) == "failed":
+        reasons.append("validator_not_clean")
+    observed_retry_count = strict_nonnegative_int(outcome.get("retry_count"))
+    if observed_retry_count is None:
+        reasons.append("retry_count_unavailable")
+    elif observed_retry_count > 0:
+        reasons.append("retry_required")
+    if outcome.get("rework_required") is True:
+        reasons.append("later_rework")
+    if outcome.get("regression_observed") is True:
+        reasons.append("later_regression")
+    return reasons
+
+
+def planning_history_partition(row: dict[str, Any], reasons: list[str] | None = None) -> str:
+    """Partition a quality row into actionable / terminal / repaired history.
+
+    - actionable_unresolved: any content gap, or anything malformed/unknown
+      (fail closed: unknown or missing receipts are never success).
+    - terminal_known_unavailable: the ONLY gap is retry_count_unavailable
+      AND the row carries an exact known historical route shape
+      (unavailable_legacy / unavailable_actual_route). No age filter.
+    - repaired_accepted_retry: the ONLY gap is retry_required AND strict
+      proof-present + Main-accepted terminal state holds (proof attached,
+      explicit Main acceptance true, validator not failed, no later
+      regression/rework). Raw retry_required totals are preserved; this
+      only partitions the row out of actionable debt.
+    """
+    gap = list(reasons) if reasons is not None else planning_gap_reasons_for_row(row)
+    if not gap:
+        return "clean"
+    if any(reason in HISTORY_ACTIONABLE_CONTENT_GAPS for reason in gap):
+        return "actionable_unresolved"
+    outcome = as_dict(row.get("coding_outcome"))
+    route = as_dict(row.get("route_attribution"))
+    if set(gap) == {"retry_required"}:
+        repaired = (
+            strict_nonnegative_int(outcome.get("retry_count")) not in (None, 0)
+            and outcome.get("proof_attached") is True
+            and route.get("main_accepted") is True
+            and explicit_main_acceptance(row) is True
+            and validator_state(row) != "failed"
+            and outcome.get("regression_observed") is not True
+            and outcome.get("rework_required") is not True
+        )
+        if repaired:
+            return "repaired_accepted_retry"
+        return "actionable_unresolved"
+    if set(gap) == {"retry_count_unavailable"}:
+        if route.get("route_conformance") in HISTORY_TERMINAL_UNAVAILABLE_ROUTE_STATES:
+            return "terminal_known_unavailable"
+        if history_pre_cutover_uninstrumented(row):
+            return "terminal_known_unavailable"
+        return "actionable_unresolved"
+    # Multiple residual metadata gaps or anything unrecognized: fail closed.
+    return "actionable_unresolved"
+
+
+def history_pre_cutover_uninstrumented(row: dict[str, Any]) -> bool:
+    """Schema-cutover terminal test for missing retry metadata.
+
+    Uses the existing parse_utc contract and STRICT_TELEMETRY_CUTOVER_UTC:
+    a schema cutover, not an arbitrary age filter. The row must be provably
+    pre-cutover with no route/attempt instrumentation, while all other
+    content and proof requirements are already clean (only-gap premise at
+    the call site). Malformed or missing timestamps fail closed to
+    actionable; post-cutover rows with missing route stay actionable.
+    Terminal means the metadata predates the schema and can never be
+    repaired; it never implies success or Main acceptance.
+    """
+    cutoff = parse_utc(STRICT_TELEMETRY_CUTOVER_UTC)
+    observed = parse_utc(row.get("created_at_utc")) or parse_utc(row.get("completed_at_utc"))
+    if cutoff is None or observed is None or observed >= cutoff:
+        return False
+    route = as_dict(row.get("route_attribution"))
+    if route.get("route_conformance") is not None:
+        return False
+    if row.get("attempt_correlation") is not None:
+        return False
+    if row.get("parent_job_id") or row.get("attempt_id"):
+        return False
+    return True
+
+
 def categorical_summary(rows: list[dict[str, Any]], field: str) -> dict[str, int]:
     values: dict[str, int] = {}
     for row in rows:
@@ -1146,6 +1257,34 @@ def summarize_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         if not reasons:
             planning_clean.append(row)
     planning_gap_count = len(quality_rows) - len(planning_clean)
+    # History partition: raw gap count above is retained verbatim for
+    # wf74 queue/router/triage compatibility. The partitions below only
+    # separate actionable current debt from terminal historical metadata
+    # and already-accepted repaired retry history.
+    partition_buckets: dict[str, list[dict[str, Any]]] = {
+        "actionable_unresolved": [],
+        "terminal_known_unavailable": [],
+        "repaired_accepted_retry": [],
+    }
+    for row in quality_rows:
+        gap = planning_gap_reasons_for_row(row)
+        if not gap:
+            continue
+        partition_buckets[planning_history_partition(row, gap)].append(row)
+    def _partition_reason_counts(bucket: list[dict[str, Any]]) -> dict[str, int]:
+        counts: dict[str, int] = {}
+        for row in bucket:
+            for reason in planning_gap_reasons_for_row(row):
+                counts[reason] = counts.get(reason, 0) + 1
+        return dict(sorted(counts.items()))
+    planning_partitions = {
+        name: {"row_count": len(bucket), "reasons": _partition_reason_counts(bucket)}
+        for name, bucket in partition_buckets.items()
+    }
+    partitioned_gap_row_count = sum(item["row_count"] for item in planning_partitions.values())
+    planning_actionable_count = planning_partitions["actionable_unresolved"]["row_count"]
+    planning_terminal_count = planning_partitions["terminal_known_unavailable"]["row_count"]
+    planning_repaired_count = planning_partitions["repaired_accepted_retry"]["row_count"]
     planning_signal = {
         "schema": "veritas.planning_quality_signal.v1",
         "tracked_lane_count": len(quality_rows),
@@ -1155,6 +1294,19 @@ def summarize_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "plan_followthrough_clean_rate": round(len(planning_clean) / len(quality_rows), 4) if quality_rows else None,
         "gap_reasons": dict(sorted(planning_gap_reasons.items())),
         "hard_gap_count": planning_gap_count,
+        "plan_followthrough_actionable_gap_count": planning_actionable_count,
+        "plan_followthrough_terminal_unavailable_count": planning_terminal_count,
+        "plan_followthrough_repaired_accepted_count": planning_repaired_count,
+        "gap_partitions": planning_partitions,
+        "partitioned_gap_row_count": partitioned_gap_row_count,
+        "partition_reconciliation_ok": partitioned_gap_row_count == planning_gap_count,
+        "actionable_status": "attention" if planning_actionable_count else "ok",
+        "partition_notes": [
+            "Raw plan_followthrough_gap_count / gap_reasons / hard_gap_count are retained verbatim for wf74 queue/router/triage compatibility.",
+            "Partitions separate actionable current debt from terminal known-unavailable historical metadata and already-accepted repaired retry history.",
+            "Strict proof-present + explicit Main-accepted terminal state is the only retry-resolution path; unknown/missing receipts stay actionable, never success.",
+            "Terminal_known_unavailable never implies success or Main acceptance; validator-unknown and claim-gate limits are preserved verbatim.",
+        ],
         "legacy_validator_unknown_count": planning_gap_reasons.get("validator_unknown_legacy", 0),
         "documented_later_followup_count": planning_gap_reasons.get("documented_later_followup", 0),
         "status": "attention" if planning_gap_count else "ok",

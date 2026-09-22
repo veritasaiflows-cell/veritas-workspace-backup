@@ -1,0 +1,8 @@
+Review this Python function; do not execute code or use tools. Contract: items is a nonempty list of nonnegative (quantity, unit_value) pairs and cap is nonnegative. Compute each q*p. If their total is zero, return zeros. Otherwise allocate cap proportionally, round each result to 2 decimals using Python round, then set the LAST result to round(cap-sum(all earlier rounded results),2). Buggy code:
+def prorate(items,cap):
+ total=0
+ for q,p in items:
+  total+=q*p
+ share=[t/total*cap for q,p in items for t in [q*p]]
+ return [round(s,2) for s in share]
+Choose the complete repair: A adds only a zero-total guard returning zeros; B adds only the last-element residual adjustment after rounding; C adds both. Compute outputs under the correct repair for normal=[(2,10),(1,30)] cap=45; zero=[(0,5),(0,4)] cap=12; drift=[(1,1),(1,1),(1,1)] cap=0.05. Return ONLY raw JSON with keys choice (A/B/C), normal, zero, drift (numeric arrays); no prose or fences.

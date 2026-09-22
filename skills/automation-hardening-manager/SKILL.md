@@ -97,6 +97,16 @@ Prefer:
 
 Never force an unsafe or delivery job merely to erase red history.
 
+## Traversal Budgets
+
+Worker scripts that walk the workspace must fit their child timeouts:
+
+- Prune excluded directories before descending; never filter after a full rglob.
+- Traverse each tree once per run and memoize the scan for every consumer.
+- Cache content hashes across runs keyed by (path, size, mtime_ns); skip hashing files above a stated byte cap when eligibility is age-based, and mark skips explicitly.
+- Track visited (device, inode) pairs so junction/symlink loops terminate; outputs must match the naive walk on acyclic trees.
+- Prove equivalence with naive-oracle fixture tests (pruned set equals filter-after-walk set; digests stable across cached runs) before force-running the owning cron green.
+
 ## PM / Helper Delegation
 
 Signals and telemetry may create review-only work candidates. They do not authorize implementation or action.

@@ -1,0 +1,14 @@
+Apply only the rules below. Do not use tools.
+
+Start with empty state, an empty seen-event set, and an empty status history stack per job. Process events in the written order. Each event is (eventID, job, revision, status).
+
+R1. If the eventID has already been seen, ignore the event as "duplicate", even when its other fields differ.
+R2. Otherwise mark the eventID seen BEFORE any revision check.
+R3. A job absent from state has current revision -1. Apply the event only if its revision is strictly greater than the job's current revision; otherwise ignore it as "stale".
+R4. Applying an event whose status is not "revert": first push the job's current status onto that job's history stack, skipping this push if the job has no current status, then set the job's status to the event status and its revision to the event revision.
+R5. Applying an event whose status is "revert": pop the most recent status from that job's history stack and set the job's status to that popped value; if the history stack is empty, set the job's status to "void". Set the job's revision to the event revision. A revert never pushes anything onto the history stack.
+R6. A job is eligible exactly when its status is "ready".
+
+Events: (e1,A,1,queued); (e2,B,1,queued); (e3,A,3,blocked); (e4,A,2,ready); (e5,B,2,ready); (e3,A,5,blocked); (e6,A,4,revert); (e7,B,3,cancelled); (e8,C,1,ready).
+
+Return ONLY raw JSON with exactly these keys: states (object mapping each job ID to {"revision": integer, "status": string}), eligible (alphabetically sorted array of job IDs), applied (integer count of applied events), ignored (array, in processing order, of {"event": eventID, "reason": "duplicate" or "stale"}). No prose, no fences.

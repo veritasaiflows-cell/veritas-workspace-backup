@@ -367,6 +367,9 @@ def main() -> int:
         },
         "event_fingerprint": "synthetic-open-standing-followup-fingerprint",
     }
+    # WF87 live row is retired (closed upstream as resolved_as_monitor_only_standing).
+    # Prior open-seed attempt removed: source processing closes it, so the hermetic
+    # guarantee is asserted deterministically in-process below (standing_rows fixture).
     closed_wf88_missing_successor_seed = {
         "schema": "veritas.improvement_ledger_event.v1",
         "event_id": "synthetic-wf88-closed-missing-successor",
@@ -452,19 +455,42 @@ def main() -> int:
             "stale candidate should require follow-up before closure",
             errors,
         )
-    wf87_open = open_keys.get("workflow_maturity-wf87-runtime-blockers-visible")
-    expect(bool(wf87_open), "WF87 runtime blocker visibility should remain as one visible open monitor row", errors)
-    if wf87_open:
+    # WF87 hermetic fixture: live WF87 is retired (resolved_as_monitor_only_standing
+    # upstream); never depend on live latest_open for it. The standing_rows fixture
+    # above already proves source-key/standing/SLA semantics; here we lock the
+    # capped-one / open-monitor / SLA-exempt guarantees deterministically.
+    wf87_fixture_rows = [
+        row
+        for row in standing_rows
+        if row.get("source_key") == "workflow_maturity-wf87-runtime-blockers-visible"
+    ]
+    expect(len(wf87_fixture_rows) == 1, "WF87 fixture should emit exactly one capped monitor row", errors)
+    if wf87_fixture_rows:
+        wf87_fixture = wf87_fixture_rows[0]
+        expect(wf87_fixture.get("status") == "open", "WF87 fixture should stay open as monitor", errors)
         expect(
-            wf87_open.get("standing_state") == "monitor_only_standing",
-            "WF87 runtime blocker visibility should stay monitor-only standing in current ledger",
+            wf87_fixture.get("standing_state") == "monitor_only_standing",
+            "WF87 fixture should stay monitor-only standing",
             errors,
         )
+        expect(wf87_fixture.get("sla_exempt") is True, "WF87 fixture should be SLA-exempt", errors)
         expect(
-            wf87_open.get("sla_status") == "monitor_only_standing",
-            "WF87 runtime blocker visibility should not be overdue",
+            wf87_fixture.get("follow_up", {}).get("follow_up_class") == "monitor_only_rationale",
+            "WF87 fixture should carry monitor-only rationale class",
             errors,
         )
+    # Live ledger must not reopen WF87 as actionable debt; if a live row surfaces it
+    # must already be monitor-only standing and SLA-exempt. Absence is the expected
+    # retired state and is not a failure.
+    wf87_live_open = open_keys.get("workflow_maturity-wf87-runtime-blockers-visible")
+    if wf87_live_open is not None:
+        expect(
+            wf87_live_open.get("standing_state") == "monitor_only_standing",
+            "live WF87 open row must stay monitor-only standing",
+            errors,
+        )
+        expect(wf87_live_open.get("sla_exempt") is True, "live WF87 open row must stay SLA-exempt", errors)
+    if stale_followup:
         expect(
             stale_followup.get("closure_blocked_reason") == "latest_source_absence_without_followup",
             "stale candidate closure blocked reason mismatch",
@@ -598,6 +624,8 @@ def main() -> int:
     expect(second_line_count == check_line_count, "check run changed ledger length", errors)
     expect("overdue_open_count" in check_payload.get("summary", {}), "SLA overdue count missing", errors)
     expect("escalation_level" in check_payload.get("summary", {}), "SLA escalation level missing", errors)
+    check_historical_terminal_claim_limit(errors)
+    check_event_identity_layer(errors)
 
     if errors:
         for error in errors:
@@ -605,6 +633,184 @@ def main() -> int:
         return 1
     print("ok: improvement ledger is append-only, idempotent per source snapshot, and bounded")
     return 0
+
+
+
+def check_historical_terminal_claim_limit(errors: list[str]) -> None:
+    from datetime import datetime, timedelta, timezone
+    from pathlib import Path as _P
+    import importlib.util as _ilu
+    if "historical_terminal_unavailable_claim_limit" not in ledger_mod.TRIAGE_CLOSURE_STATUSES:
+        errors.append("consumer missing new closure status in TRIAGE_CLOSURE_STATUSES")
+        return
+    if ledger_mod.FOLLOW_UP_CLASS_BY_STATUS.get("historical_terminal_unavailable_claim_limit") != "monitor_only_rationale":
+        errors.append("consumer class for new status must be monitor_only_rationale")
+        return
+    spec = _ilu.spec_from_file_location("sibling_triage", str(_P(__file__).with_name("wf88_followup_debt_triage_packet.py")))
+    tri = _ilu.module_from_spec(spec)
+    spec.loader.exec_module(tri)
+    gen = (datetime.now(timezone.utc) - timedelta(hours=1)).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    bridge = {"schema": "veritas.implementation_token_attribution_bridge.v1", "status": "warning", "generated_at_utc": gen, "summary": {"action_required_supported_runtime_gap_count": 0, "post_cutoff_supported_unresolved_gap_count": 0, "unknown_completion_supported_unresolved_gap_count": 0, "gap_resolution_status": "terminal_unavailable_only"}, "validation": {"status": "warning", "errors": [], "warnings": ["t"]}}
+    row = {"source_type": "otel_learning_loop", "source_key": "usage_source_reverification_required", "title": "usage_source_reverification_required", "category": "otel_learning_loop", "priority": 60, "decision": "follow_up_required_before_closure"}
+    item = tri.classify_usage_source_reverification(row, {"implementation_token_bridge": bridge})
+    if not item.get("closure_allowed") or item.get("closure_status") != "historical_terminal_unavailable_claim_limit" or item.get("action_state") != "monitor_only":
+        errors.append("triage/consumer disagreement on fresh terminal-only bridge")
+        return
+    existing = [{"schema": "veritas.improvement_ledger_event.v1", "source_type": "otel_learning_loop", "source_key": "usage_source_reverification_required", "title": "usage_source_reverification_required", "category": "otel_learning_loop", "priority": 60, "status": "open", "carry_forward": True, "decision": "follow_up_required_before_closure", "follow_up": {"required": True}, "source_generated_at_utc": gen}]
+    pkt = {"validation": {"status": "ok"}, "closure_items": [{**item, "source_type": "otel_learning_loop", "source_key": "usage_source_reverification_required"}]}
+    rows = ledger_mod.wf88_followup_triage_resolution_events(existing, pkt, {}, {})
+    if len(rows) != 1:
+        errors.append(f"fresh terminal-only bridge should close exactly 1 row, got {len(rows)}")
+        return
+    r = rows[0]
+    fu = r.get("follow_up", {}) if isinstance(r.get("follow_up"), dict) else {}
+    if r.get("status") != "complete" or r.get("decision") != "resolved_by_wf88_followup_debt_triage":
+        errors.append("wrong emitted status/decision")
+    if fu.get("status") != "historical_terminal_unavailable_claim_limit":
+        errors.append("wrong follow_up.status")
+    if fu.get("implemented_durable_change") is not False:
+        errors.append("new closure must NOT claim implemented durable change")
+    if fu.get("follow_up_class") != "monitor_only_rationale":
+        errors.append("wrong follow_up_class")
+    if r.get("triage_action_state") != "monitor_only":
+        errors.append("wrong triage_action_state")
+    neg1 = {"validation": {"status": "ok"}, "closure_items": [{"source_type": "otel_learning_loop", "source_key": "usage_source_reverification_required", "closure_allowed": True, "closure_status": "verified_fix_masquerade", "proof_artifacts": ["tmp/implementation-token-attribution-bridge.json"], "closure_reason": "x", "recommended_next_action": "x", "action_state": "monitor_only"}]}
+    if ledger_mod.wf88_followup_triage_resolution_events(existing, neg1, {}, {}):
+        errors.append("NEG1 FAIL: status-not-allowlisted WITH valid proof must not close")
+    neg2 = {"validation": {"status": "ok"}, "closure_items": [{"source_type": "otel_learning_loop", "source_key": "usage_source_reverification_required", "closure_allowed": True, "closure_status": "historical_terminal_unavailable_claim_limit", "proof_artifacts": [], "closure_reason": "x", "recommended_next_action": "x", "action_state": "monitor_only"}]}
+    if ledger_mod.wf88_followup_triage_resolution_events(existing, neg2, {}, {}):
+        errors.append("NEG2 FAIL: allowed status with MISSING proof must not close")
+
+
+IDENTITY_BASE_ROW = {
+    "source_type": "wf74_improvement_opportunity",
+    "source_key": "identity_probe_key",
+    "status": "open",
+    "carry_forward": True,
+    "category": "identity_probe",
+    "title": "identity probe row",
+    "priority": 70,
+    "severity": "medium",
+    "signal": "identity_probe_signal",
+    "decision": "identity_probe_decision",
+    "recommended_action": "identity probe recommended action",
+    "next_action": "identity probe next action",
+    "validation_command": "python scripts/test_improvement_ledger.py",
+    "requires_before_apply": [],
+    "allowed_autonomous_output": [],
+    "review_cadence": "weekly",
+    "source_generated_at_utc": "2026-01-01T00:00:00Z",
+}
+
+
+def identity_of(overrides: dict) -> tuple[str, str]:
+    """Return (event_fingerprint, event_id) for one synthetic row."""
+    import copy as _copy
+
+    row = _copy.deepcopy(IDENTITY_BASE_ROW)
+    row.update(overrides)
+    for key, value in list(row.items()):
+        if value is _IDENTITY_ABSENT:
+            del row[key]
+    ledger_mod.finalize_event_ids([row])
+    return str(row["event_fingerprint"]), str(row["event_id"])
+
+
+class _IdentityAbsent:
+    pass
+
+
+_IDENTITY_ABSENT = _IdentityAbsent()
+
+
+def check_event_identity_layer(errors: list[str]) -> None:
+    """Cover finalize_event_ids / event_fingerprint ahead of WF88 Phase 3 typed event identity.
+
+    Two groups below. Invariants must hold. Characterizations pin known defects so that
+    changing them in Phase 3 is a visible, deliberate edit rather than a silent behavior drift.
+    """
+    base_fp, base_id = identity_of({})
+
+    # --- Invariants: these protect real behavior and must keep passing. ---
+
+    # An open event keeps one identity while its producer regenerates. Without this,
+    # every upstream rebuild would re-open the same debt as a new row.
+    regen_fp, regen_id = identity_of({"source_generated_at_utc": "2026-02-02T00:00:00Z"})
+    expect(
+        (base_fp, base_id) == (regen_fp, regen_id),
+        "open-event identity must not change when only source_generated_at_utc changes",
+        errors,
+    )
+
+    # prior_event_id participates in the fingerprint. This is the close/reopen fix: an event
+    # that legitimately recurs after closure must not collide with its own prior cycle.
+    reopen_fp, reopen_id = identity_of({"prior_event_id": "0123456789abcdef"})
+    expect(
+        reopen_fp != base_fp and reopen_id != base_id,
+        "prior_event_id must change identity so a reopened event is not suppressed as a duplicate",
+        errors,
+    )
+
+    # Semantic content still drives identity.
+    retitled_fp, retitled_id = identity_of({"title": "different identity probe title"})
+    expect(
+        retitled_fp != base_fp and retitled_id != base_id,
+        "a changed title must mint a new identity",
+        errors,
+    )
+
+    closed_fp, closed_id = identity_of({"status": "complete", "carry_forward": False})
+    expect(
+        closed_id != base_id,
+        "closing an event must change its event_id",
+        errors,
+    )
+
+    # --- Characterizations: known defects recorded in WF88 under enhancement #3. ---
+    # Each one FAILS once Phase 3 fixes the defect. That failure is the intended signal:
+    # update the characterization here in the same change that fixes the behavior.
+
+    # Defect A - over-minting. Terminal identity includes source_generated_at_utc, so one
+    # semantic closure mints a fresh event_id on every producer rebuild. Measured 2026-09-18:
+    # 47 identities for a single closure over one week.
+    closed_regen_fp, closed_regen_id = identity_of(
+        {"status": "complete", "carry_forward": False, "source_generated_at_utc": "2026-02-02T00:00:00Z"}
+    )
+    expect(
+        closed_fp == closed_regen_fp and closed_id != closed_regen_id,
+        "WF88 #3 defect A characterization changed: closed-event identity no longer churns on "
+        "source_generated_at_utc. If Phase 3 removed occurrence time from semantic identity, update this case.",
+        errors,
+    )
+
+    # Defect B - under-minting. The fingerprint covers a fixed field tuple, so state carried in
+    # follow_up / triage_action_state and 31 other keys is invisible to identity. A row whose
+    # only change lives there cannot mint a new event and is dropped by the append guard.
+    state_fp, state_id = identity_of(
+        {
+            "follow_up": {"required": True, "note": "materially different follow-up state"},
+            "triage_action_state": "monitor_only",
+            "successor_id": "successor-identity-probe",
+            "sla_status": "overdue",
+        }
+    )
+    expect(
+        state_fp == base_fp and state_id == base_id,
+        "WF88 #3 defect B characterization changed: follow_up / triage_action_state / successor_id / "
+        "sla_status now affect identity. If Phase 3 widened the identity field set, update this case.",
+        errors,
+    )
+
+    # Latent fragility: the fingerprint includes a key only when present, so an absent field and
+    # an explicit None are two different identities for the same meaning.
+    absent_fp, _ = identity_of({"severity": _IDENTITY_ABSENT})
+    none_fp, _ = identity_of({"severity": None})
+    expect(
+        absent_fp != none_fp,
+        "WF88 #3 characterization changed: absent field and explicit None now fingerprint alike. "
+        "If Phase 3 normalized missing values, update this case.",
+        errors,
+    )
 
 
 if __name__ == "__main__":

@@ -22,10 +22,15 @@ ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 TOKEN_USAGE = TMP / "token-usage-ledger-current.json"
 TOKEN_BUDGET = TMP / "token-budget-status.json"
+ATTRIBUTION_BRIDGE = TMP / "implementation-token-attribution-bridge.json"
 CRON_CONTRACTS = ROOT / "state" / "cron-contracts"
 OUT = TMP / "token-efficiency-scorecard.json"
 MD_OUT = OUT.with_suffix(".md")
 SCHEMA = "veritas.token_efficiency_scorecard.v1"
+
+# Payload kinds that run a deterministic subprocess and cannot spawn a model or
+# agent turn. Ledger spend for these jobs predates their conversion.
+DETERMINISTIC_PAYLOAD_KINDS = {"command"}
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -323,17 +328,32 @@ def source_status(path: Path) -> dict[str, Any]:
     }
 
 
-def active_contract_names(contract_dir: Path) -> set[str]:
-    """Return enabled contract-backed cron names; retired ledger rows stay historical."""
-    names: set[str] = set()
+def enabled_contract_payload_kinds(contract_dir: Path) -> dict[str, str]:
+    """Map enabled contract-backed cron names to their current live payload kind."""
+    kinds: dict[str, str] = {}
     if not contract_dir.is_dir():
-        return names
+        return kinds
     for path in contract_dir.glob("*.json"):
         payload = load(path)
         name = payload.get("name")
         if isinstance(name, str) and name.strip() and payload.get("enabled") is not False:
-            names.add(name.strip())
-    return names
+            kinds[name.strip()] = str(as_dict(payload.get("payload")).get("kind") or "unknown")
+    return kinds
+
+
+def active_contract_names(contract_dir: Path) -> set[str]:
+    """Enabled cron names whose live payload can still spend model tokens.
+
+    A contract whose live payload is a deterministic command cannot spawn a model
+    or agent turn, so its ledger spend is an already-captured conversion rather
+    than a live efficiency candidate. Ranking those rows as candidates presents
+    completed work as outstanding debt.
+    """
+    return {
+        name
+        for name, kind in enabled_contract_payload_kinds(contract_dir).items()
+        if kind not in DETERMINISTIC_PAYLOAD_KINDS
+    }
 
 
 def classify_job(row: dict[str, Any], rank: int) -> dict[str, Any]:
@@ -495,11 +515,22 @@ def build_payload(
     token_usage_path: Path = TOKEN_USAGE,
     token_budget_path: Path = TOKEN_BUDGET,
     cron_contract_dir: Path = CRON_CONTRACTS,
+    attribution_bridge_path: Path | None = None,
 ) -> dict[str, Any]:
     token_usage = load(token_usage_path)
     token_budget = load(token_budget_path)
     summary = as_dict(token_usage.get("summary"))
     budget_summary = as_dict(token_budget.get("summary"))
+    # Resolve lazily so patched-module TMP (tests) stays hermetic.
+    attribution_bridge_path = attribution_bridge_path or (TMP / "implementation-token-attribution-bridge.json")
+    attribution_bridge_summary = as_dict(load(attribution_bridge_path).get("summary")) if attribution_bridge_path.exists() else {}
+    raw_attribution_action_required = attribution_bridge_summary.get("action_required_supported_runtime_gap_count")
+    attribution_action_required = (
+        int(raw_attribution_action_required)
+        if isinstance(raw_attribution_action_required, (int, float)) and not isinstance(raw_attribution_action_required, bool)
+        else None
+    )
+    attribution_gap_resolution_status = str(attribution_bridge_summary.get("gap_resolution_status") or "") or None
     billing_source = as_dict(token_usage.get("billing_semantics")) or as_dict(token_budget.get("billing_semantics"))
     capacity_source = as_dict(token_usage.get("oauth_capacity_control")) or as_dict(token_budget.get("oauth_capacity_control"))
     usage_pace = as_dict(token_usage.get("usage_pace")) or as_dict(token_budget.get("usage_pace"))
@@ -535,13 +566,29 @@ def build_payload(
         return value if value is not None else first_defined(budget_summary, *keys)
 
     ledger_rows = [as_dict(row) for row in as_list(token_usage.get("top_cron_jobs_by_tokens"))]
+    enabled_payload_kinds = enabled_contract_payload_kinds(cron_contract_dir)
     active_names = active_contract_names(cron_contract_dir)
     active_rows = [row for row in ledger_rows if row.get("cron_job_name") in active_names]
     jobs = [classify_job(row, index + 1) for index, row in enumerate(active_rows)]
-    historical_jobs = [
-        {**classify_job(row, index + 1), "activity_status": "historical_or_unverified"}
-        for index, row in enumerate(ledger_rows)
-        if row.get("cron_job_name") not in active_names
+    historical_jobs = []
+    for index, row in enumerate(
+        [row for row in ledger_rows if row.get("cron_job_name") not in active_names]
+    ):
+        name = row.get("cron_job_name")
+        converted = name in enabled_payload_kinds
+        historical_jobs.append({
+            **classify_job(row, index + 1),
+            "activity_status": (
+                "converted_to_deterministic_payload" if converted else "historical_or_unverified"
+            ),
+            "live_payload_kind": enabled_payload_kinds.get(name),
+            "spend_classification": (
+                "already_captured_conversion" if converted else "retired_or_unverified_job"
+            ),
+        })
+    converted_jobs = [
+        row for row in historical_jobs
+        if row.get("activity_status") == "converted_to_deterministic_payload"
     ]
     for row in [*jobs, *historical_jobs]:
         row["oauth_capacity_preflight"] = oauth_capacity_preflight_for_candidate(
@@ -567,7 +614,15 @@ def build_payload(
         if "failure_cost_repair_review" in as_list(row.get("candidate_types"))
     ]
     selected_next_candidate = select_next_candidate(api_call_reduction, prompt_compression)
-    bridge_needed = int(summary.get("implementation_token_gap_count") or 0) > 0
+    # Live attribution debt is the bridge's action-required denominator; the raw
+    # ledger gap count includes classified historical/terminal-unavailable rows
+    # that are audit context, not open work. Without a bridge artifact, fall
+    # back to the raw count (previous behavior, fail-closed).
+    bridge_needed = (
+        attribution_action_required > 0
+        if attribution_action_required is not None
+        else int(summary.get("implementation_token_gap_count") or 0) > 0
+    )
     packet_summary = {
         "token_usage_status": token_usage.get("status"),
         "token_budget_status": token_budget.get("status"),
@@ -607,6 +662,8 @@ def build_payload(
         "cron_token_event_count": int(summary.get("cron_token_event_count") or 0),
         "implementation_token_event_count": int(summary.get("implementation_token_event_count") or 0),
         "implementation_token_gap_count": int(summary.get("implementation_token_gap_count") or 0),
+        "attribution_gap_action_required_count": attribution_action_required,
+        "attribution_gap_resolution_status": attribution_gap_resolution_status,
         "fleet_reporting_status": fleet_efficiency.get("status"),
         "fleet_outcome_telemetry_status": fleet_efficiency.get("outcome_telemetry_status"),
         "fleet_configured_agent_count": as_dict(fleet_efficiency.get("summary")).get("configured_agent_count"),
@@ -624,6 +681,14 @@ def build_payload(
         "active_contract_name_count": len(active_names),
         "active_ledger_job_count": len(jobs),
         "historical_or_unverified_ledger_job_count": len(historical_jobs),
+        "converted_to_deterministic_payload_job_count": len(converted_jobs),
+        "converted_to_deterministic_payload_tokens": sum(
+            int(row.get("total_tokens") or 0) for row in converted_jobs
+        ),
+        "model_capable_enabled_contract_count": len(active_names),
+        "deterministic_enabled_contract_count": sum(
+            1 for kind in enabled_payload_kinds.values() if kind in DETERMINISTIC_PAYLOAD_KINDS
+        ),
         "cron_candidate_count": len(actionable),
         "api_call_reduction_candidate_count": len(api_call_reduction),
         "prompt_compression_candidate_count": len(prompt_compression),
@@ -759,7 +824,13 @@ def action_items(
         },
         quota_action_item(as_dict(capacity_control)),
     ]
-    if int(summary.get("implementation_token_gap_count") or 0):
+    attribution_action_required_count = summary.get("attribution_gap_action_required_count")
+    gap_live_debt = (
+        attribution_action_required_count > 0
+        if isinstance(attribution_action_required_count, (int, float)) and not isinstance(attribution_action_required_count, bool)
+        else int(summary.get("implementation_token_gap_count") or 0)
+    )
+    if gap_live_debt:
         rows.append({
             "id": "close-implementation-token-attribution-gap",
             "state": "repair_required",
@@ -892,7 +963,11 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
             errors.append("oauth_capacity_preflight_automatic_dispatch_enabled")
     if int(summary.get("token_event_count") or 0) == 0:
         warnings.append("no_token_events_available")
-    if int(summary.get("implementation_token_gap_count") or 0):
+    attribution_action_required_count = summary.get("attribution_gap_action_required_count")
+    if isinstance(attribution_action_required_count, (int, float)) and not isinstance(attribution_action_required_count, bool):
+        if attribution_action_required_count > 0:
+            warnings.append(f"attribution_gap_action_required_count:{int(attribution_action_required_count)}")
+    elif int(summary.get("implementation_token_gap_count") or 0):
         warnings.append(f"implementation_token_gap_count:{summary.get('implementation_token_gap_count')}")
     if str(summary.get("api_equivalent_estimate_status") or "unavailable") != "complete":
         warnings.append("api_equivalent_estimate_coverage_incomplete")
@@ -922,7 +997,7 @@ def render_md(payload: dict[str, Any]) -> str:
         f"- Cron/API reduction candidates: {summary.get('api_call_reduction_candidate_count')}",
         f"- Prompt compression candidates: {summary.get('prompt_compression_candidate_count')}",
         f"- Selected next candidate: {summary.get('selected_next_candidate')} ({summary.get('selected_next_candidate_type')})",
-        f"- Implementation attribution gaps: {summary.get('implementation_token_gap_count')}",
+        f"- Implementation attribution gaps: raw {summary.get('implementation_token_gap_count')}; action-required {summary.get('attribution_gap_action_required_count')} (resolution: {summary.get('attribution_gap_resolution_status')})",
         f"- Isolated-agent fleet: {summary.get('fleet_reporting_status')} / utilized {summary.get('fleet_utilized_agent_count')}/{summary.get('fleet_configured_agent_count')}",
         f"- Fleet pricing-grade attribution: {summary.get('fleet_pricing_grade_attribution_coverage_percent')}%",
         f"- Fleet outcomes: parent jobs completed {summary.get('fleet_parent_job_completed_count')}; Main accepted {summary.get('fleet_main_accepted_count')}/{summary.get('fleet_outcome_eligible_completed_lane_count')} tracked; QA passed {summary.get('fleet_qa_pass_count')}/{summary.get('fleet_qa_review_completed_count')} ({summary.get('fleet_qa_yield_percent')}%); historical/untracked {summary.get('fleet_historical_or_untracked_completed_lane_count')}; rework {summary.get('fleet_rework_count')}; gaps {summary.get('fleet_attribution_gap_count')}",

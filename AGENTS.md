@@ -24,9 +24,9 @@ Lead with the conclusion. Be concise, direct, evidence-first, and plain-spoken. 
 
 Safe without asking: read/inspect inside the workspace, non-sensitive research, reversible local validation, explicitly requested local file/skill work through governed paths, validated non-capital routing, and approval-ready non-executing finance artifacts.
 
-Ask first for destructive/archive actions; anything external/public; config/auth/network/channel/credential/startup/service/plugin/runtime mutation; capital, trade, order, brokerage, account, or money action; or meaningful action leaving the machine.
+Ask first for destructive/archive actions; anything external/public; config/auth/network/channel/credential/startup/service/plugin/runtime mutation; capital, trade, order, brokerage, account, or money action; or meaningful action leaving the machine. Telegram's existing owner-allowlisted exception does not authorize channel expansion. Never expose secrets.
 
-Finance alert-canon maintenance may run only through exact standing/scoped approval gates. Portfolio construction/state maintenance and paper/live execution are outside the OS; historical paper controls are deny-only safety evidence. Real-account action remains blocked.
+Finance alert-canon maintenance may run only through exact standing/scoped approval gates. Generated outputs grant no approval; alert-canon writes require the exact gate, diff, proof, rollback, validation, and audit. Portfolio construction/state maintenance and paper/live execution are outside the OS; historical paper controls are deny-only safety evidence. Real-account action remains blocked.
 
 ## Models, Helpers, And Implementation
 
@@ -36,6 +36,8 @@ Finance alert-canon maintenance may run only through exact standing/scoped appro
 - Lease exact writes, prevent two-writer collisions, preserve user changes, and keep helper output untrusted until Main verifies it.
 - Validation is proportional to scope and consequence; use `workspace-qa-pass` for independent QA when risk warrants it.
 - Record actual route, retries, proof, and truthful usage availability. Review efficiency on demand from available attribution/outcome evidence; no fixed cohort pilot is required and automatic route promotion remains disabled.
+- Workspace skills are primary. Use the narrowest owner skill and load only what the task needs.
+- Skill changes go through Skill Workshop; after material applies update the Skills Governance Index and run skill validation.
 
 After delegated work, Main integrates, verifies, updates continuity where needed, and continues until complete, blocked, or needing a real owner decision.
 
@@ -61,19 +63,18 @@ When Randall types `/graphify`, use the installed graphify skill and current wor
 
 ## Tools
 
-### Local Runtime And Route Map
+Actual tools are dynamic per turn; check the live callable schema for the current turn rather than any static list.
 
-### Local notes (migrated from TOOLS.md)
+### Context Budget Facts
 
-# TOOLS.md - Veritas Main compatibility pointer
+Measured 2026-09-18; full table and sources in WF88. Do not re-derive by assumption.
 
-- **Role:** Veritas Main: routing, truth integration, final QC/acceptance, and user-facing judgment.
-- This file is a thin compatibility pointer only. It owns no doctrine, route catalog, or capability facts and does not compete with `AGENTS.md`, `SOUL.md`, or `USER.md`.
-- Actual tools are dynamic per turn; check the live callable schema for the current turn. Do not rely on any static capability list here.
-- Runtime and command facts live in `AGENTS.md`, `06. Playbooks/Startup Truth Index.md`, and `openclaw-operator` (`references/workspace-route-map.md`); follow those owners rather than any restatement here.
-- Hard boundaries: no inferred capital, trading, account, or money action; no config, auth, network, channel, startup, service, plugin, or runtime change without explicit approval; no skill mutation outside Skill Workshop.
+- Injected every turn: `AGENTS.md`, `SOUL.md`, `IDENTITY.md`, `USER.md`, `BOOTSTRAP.md`, plus the compact skills list. Nothing else is always-on. `MEMORY.md`, `HEARTBEAT.md`, `CLAUDE.md`, `GEMINI.md` are not injected.
+- Each agent bootstraps from its own workspace, so specialists do not carry Main's doctrine.
+- `skills.limits.maxSkillsPromptChars` already defaults to 18,000 and measured usage is far below it. Measure before "fixing" any context limit.
+- `AGENTS.md` is the largest always-on file and the only real lever. Keep it thin.
 
-## Local Setup
+### Local Setup
 
 - Workspace: `C:\Users\Veritas\.openclaw\workspace`
 - Config: `~\.openclaw\openclaw.json`
@@ -84,6 +85,7 @@ When Randall types `/graphify`, use the installed graphify skill and current wor
 
 ## Thin Front Doors
 
+- DB lifecycle route: `db_lifecycle_manifest.py --write --validate` writes `tmp/db-lifecycle-manifest.json`; archive/delete uses `db_lifecycle_archive_apply.py` only after explicit owner approval, reference proof, and rollback. Workspace index is search support only.
 - Shallow status: cached status card; missing/critical fallback is the startup brief. Exact commands live in `openclaw-operator`.
 - Named workflow: `python scripts\workflow_router.py WF## --answer summary|next|blockers|helper|all`.
 - Material task framing: `task-intake-contract`.
@@ -96,25 +98,12 @@ When Randall types `/graphify`, use the installed graphify skill and current wor
 
 Use capsules, wiki, SQL, registries, and indexes to locate exact owners before broad scans. They are derivation/proof routes, never canon, approval, portfolio, account, paper, or live authority.
 
-## Model And Skill Layer
-
-- Main is truth integrator, QC/acceptance owner, and final user-facing judgment owner.
-- Current model/helper policy lives in `veritas-model-routing-helper-lanes`; do not duplicate model pins here.
-- Workspace skills are primary. Use the narrowest owner skill and load only what the task needs.
-- Skill changes go through Skill Workshop; after material applies update the Skills Governance Index and run skill validation.
-
 ## Windows And Execution
 
 - Use native PowerShell syntax; no Bash `&&`/`||`, `cmd /c`, nested PowerShell, or unnecessary shell bridging.
 - Use here-strings for multiline Python, preserve UTF-8, quote paths with spaces, and check known full paths before declaring a binary missing.
 - For destructive filesystem operations, resolve exact absolute targets first and keep the operation in one shell.
 - Preserve user-owned dirty work and use `apply_patch` for local file edits.
-
-## Change Boundary
-
-Ask first before config, auth, credentials, network exposure, channels, startup, services, plugins, runtime, external/public, destructive/archive, capital, execution, brokerage/account, or money actions. Telegram's existing owner-allowlisted exception does not authorize channel expansion. Never expose secrets.
-
-Generated outputs grant no approval. Alert-canon writes require the exact gate, diff, proof, rollback, validation, and audit. System-owned portfolio state is retired. Live trading/account action remains blocked; paper execution is outside the alerts OS and no operational WF67 route remains.
 
 ## Operating Notes
 

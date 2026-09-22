@@ -172,3 +172,184 @@ def test_runner_does_not_consume_retired_trade_grade_repair_artifact() -> None:
     assert "trade-grade-repair-conveyor" not in source
     payload = runner.build_payload([])
     assert not any(key.startswith("finance_repair_conveyor_") for key in payload["summary"])
+
+
+def live_like_partitioned_signal():
+    return {
+        "schema": "veritas.planning_quality_signal.v1",
+        "tracked_lane_count": 200,
+        "plan_followthrough_gap_count": 163,
+        "plan_followthrough_clean_rate": 0.185,
+        "status": "attention",
+        "plan_followthrough_actionable_gap_count": 21,
+        "plan_followthrough_terminal_unavailable_count": 128,
+        "plan_followthrough_repaired_accepted_count": 14,
+        "partitioned_gap_row_count": 163,
+        "partition_reconciliation_ok": True,
+        "actionable_status": "attention",
+    }
+
+
+def test_runner_distinguishes_operational_status_from_raw_history() -> None:
+    projected = runner.project_planning_quality(live_like_partitioned_signal())
+    assert projected['planning_quality_gap_count_raw'] == 163
+    assert projected['planning_quality_gap_count_selected'] == 21
+    assert projected['planning_quality_gap_source'] == 'actionable_partition_verified'
+    assert projected['planning_quality_actionable_status'] == 'attention'
+    assert projected['planning_gap_selection_warning'] is None
+
+
+def test_runner_history_only_reports_zero_actionable_without_clean_claim() -> None:
+    signal = live_like_partitioned_signal()
+    signal['plan_followthrough_actionable_gap_count'] = 0
+    signal['plan_followthrough_terminal_unavailable_count'] = 149
+    signal['plan_followthrough_repaired_accepted_count'] = 14
+    signal['actionable_status'] = 'ok'
+    projected = runner.project_planning_quality(signal)
+    assert projected['planning_quality_gap_count_raw'] == 163
+    assert projected['planning_quality_gap_count_selected'] == 0
+    assert projected['planning_quality_actionable_status'] == 'ok'
+
+
+def test_runner_malformed_partition_falls_back_without_clean_claim() -> None:
+    signal = live_like_partitioned_signal()
+    signal['plan_followthrough_actionable_gap_count'] = True
+    projected = runner.project_planning_quality(signal)
+    assert projected['planning_quality_gap_source'] == 'raw_gap_fallback'
+    assert projected['planning_quality_gap_count_selected'] == 163
+    assert projected['planning_quality_actionable_status'] == 'unverified_fallback'
+    assert projected['planning_gap_selection_warning']
+
+
+def _patched_sleep_collector():
+    return []
+
+
+def test_blocking_step_nonzero_failure_is_retried_once() -> None:
+    """A blocking step that fails once with a nonzero code gets exactly one retry."""
+    calls: list[str] = []
+
+    def fake_run_step(name, command, timeout, step_index=None):
+        calls.append(name)
+        if len(calls) == 1:
+            return {
+                "step_index": step_index,
+                "name": name,
+                "command": command,
+                "status": "blocked",
+                "blocking": True,
+                "returncode": 1,
+                "failure_kind": "nonzero_returncode",
+                "timeout_seconds": timeout,
+            }
+        return {
+            "step_index": step_index,
+            "name": name,
+            "command": command,
+            "status": "ok",
+            "blocking": True,
+            "returncode": 0,
+            "failure_kind": None,
+            "timeout_seconds": timeout,
+        }
+
+    sleeps: list[float] = []
+    orig_run_step = runner.run_step
+    orig_sleep = runner.time.sleep
+    runner.run_step = fake_run_step
+    runner.time.sleep = sleeps.append
+    try:
+        steps = runner.execute_plan(False)
+    finally:
+        runner.run_step = orig_run_step
+        runner.time.sleep = orig_sleep
+
+    # The plan continues through all 36 steps after a recovered retry.
+    assert len(steps) == len(runner.command_plan(False))
+    step = steps[0]
+    assert step["retry_attempted"] is True
+    assert step["status"] == "ok"
+    assert step["first_attempt_returncode"] == 1
+    assert sleeps == [runner.BLOCKING_STEP_RETRY_WAIT_SECONDS]
+
+    payload = runner.build_payload(steps)
+    assert payload["summary"]["steps_ok"] == len(runner.command_plan(False))
+    assert payload["summary"]["steps_blocked"] == 0
+    assert payload["summary"]["steps_retried"] == 1
+    assert payload["summary"]["steps_recovered_after_retry"] == 1
+
+
+def test_blocking_step_timeout_is_not_retried() -> None:
+    """A timeout failure blocks immediately without retry."""
+    calls: list[str] = []
+
+    def fake_run_step(name, command, timeout, step_index=None):
+        calls.append(name)
+        return {
+            "step_index": step_index,
+            "name": name,
+            "command": command,
+            "status": "blocked",
+            "blocking": True,
+            "returncode": None,
+            "failure_kind": "timeout",
+            "timeout_seconds": timeout,
+        }
+
+    sleeps: list[float] = []
+    orig_run_step = runner.run_step
+    orig_sleep = runner.time.sleep
+    runner.run_step = fake_run_step
+    runner.time.sleep = sleeps.append
+    try:
+        steps = runner.execute_plan(False)
+    finally:
+        runner.run_step = orig_run_step
+        runner.time.sleep = orig_sleep
+
+    assert len(calls) == 1
+    assert sleeps == []
+    assert steps[0]["status"] == "blocked"
+    assert "retry_attempted" not in steps[0]
+
+
+def test_persistent_blocking_failure_still_blocks_after_retry() -> None:
+    """A failure that survives its retry still blocks the run with preserved evidence."""
+    calls: list[str] = []
+
+    def fake_run_step(name, command, timeout, step_index=None):
+        calls.append(name)
+        return {
+            "step_index": step_index,
+            "name": name,
+            "command": command,
+            "status": "blocked",
+            "blocking": True,
+            "returncode": 1,
+            "failure_kind": "nonzero_returncode",
+            "stdout_tail": "stubbed failure",
+            "timeout_seconds": timeout,
+        }
+
+    sleeps: list[float] = []
+    orig_run_step = runner.run_step
+    orig_sleep = runner.time.sleep
+    runner.run_step = fake_run_step
+    runner.time.sleep = sleeps.append
+    try:
+        steps = runner.execute_plan(False)
+    finally:
+        runner.run_step = orig_run_step
+        runner.time.sleep = orig_sleep
+
+    assert len(calls) == 2
+    assert sleeps == [runner.BLOCKING_STEP_RETRY_WAIT_SECONDS]
+    assert steps[0]["status"] == "blocked"
+    assert steps[0]["retry_attempted"] is True
+    assert steps[0]["first_attempt_returncode"] == 1
+
+    payload = runner.build_payload(steps)
+    assert payload["status"] == "blocked"
+    assert payload["summary"]["steps_blocked"] == 1
+    assert payload["summary"]["steps_retried"] == 1
+    assert payload["summary"]["steps_recovered_after_retry"] == 0

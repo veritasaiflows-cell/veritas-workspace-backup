@@ -28,6 +28,8 @@ Inspect:
 
 If any source is partial or stale, show that near the conclusion.
 
+Manual macro refreshes for weekly or FOMC updates follow the `veritas-macro-pass` Evidence Refresh Chain (policy_expectations, credit_spread, breadth, macro_regime) and must not run `market_state_refresh.py`: `tmp/market-state.json` is retired portal/paper state whose recreation fails `alerts_os_pivot_validator.py` and blocks cron jobs.
+
 ## Weekly Questions
 
 Answer:

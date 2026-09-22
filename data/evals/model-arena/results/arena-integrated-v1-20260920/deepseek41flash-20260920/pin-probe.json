@@ -1,0 +1,11 @@
+{
+  "schema": "veritas.arena_model_pin_probe.v1",
+  "requested_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "resolved_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "model_applied": true,
+  "fallback_applied": false,
+  "probe_ok": true,
+  "child_text": "ollama-cloud/deepseek-v4.1-flash:cloud\nfalse\nPROBE_OK",
+  "run_id": "fbde2d44-04bf-41b2-97a4-186004b5c2ad",
+  "note": "Non-benchmark transport probe only. Not a candidate attempt."
+}

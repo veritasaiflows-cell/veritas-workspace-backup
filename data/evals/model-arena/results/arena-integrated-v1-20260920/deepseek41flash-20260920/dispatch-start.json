@@ -1,0 +1,15 @@
+{
+  "schema": "veritas.arena_integrated_dispatch_start.v1",
+  "envelope": "arena-integrated-v1-20260920",
+  "model_requested": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "model_live_status": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "model_applied": true,
+  "fallback_applied": false,
+  "retries": 0,
+  "timeout_s": 600,
+  "child_session_key": "agent:main:dashboard:ee10a78f-d9e6-41cb-a7ed-562ec13dab23",
+  "run_id": "eea62ef0-b92c-4f7a-9b0f-f202223e847f",
+  "candidate_mount": "data/evals/model-arena/results/arena-integrated-v1-20260920/deepseek41flash-20260920/candidate-mount",
+  "pin_probe": "pin-probe.json",
+  "authority": "No routing, configuration, role, or execution authority follows."
+}

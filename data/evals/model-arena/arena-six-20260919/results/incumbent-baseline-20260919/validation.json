@@ -1,0 +1,21 @@
+{
+  "schema": "veritas.arena_six_main_validation.v2",
+  "validated_utc": "2026-09-19T23:00:31.136032Z",
+  "status": "pass",
+  "frozen_hashes_verified": 17,
+  "matrix_turns": 40,
+  "trajectories": 24,
+  "completed_ok_turns": 39,
+  "operational_timeouts": 1,
+  "identity_and_prompt_exact_on_completed": true,
+  "t4_traces_verified": 4,
+  "forbidden_t4_reads": 0,
+  "grade_reproduction_sha256": "00159753ffd8fc1aa3cf33a2244994883083edc95ee61e87600c62f664128c12",
+  "qa_verdict": "pass_with_limits",
+  "qa_blocking_findings": 0,
+  "known_limits": [
+    "600-second budget enforced by a CLI deadline that returned at 631.176 seconds",
+    "independent QA did not recompute every raw-file hash",
+    "two repetitions per family are not a reliability estimate"
+  ]
+}

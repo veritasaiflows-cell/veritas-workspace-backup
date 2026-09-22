@@ -45,6 +45,25 @@ DEFAULT_COMPARE_FIELDS = [
 ]
 DEFAULT_MAX_PROMPT_CHARS = 1800
 DEFAULT_MAX_MESSAGE_LINES = 30
+# Platform-projected monitor declarations are owned by the OpenClaw runtime, not
+# by this workspace: the scheduler converges their payload from the runtime's
+# SKILL_WORKSHOP_MAINTENANCE_PROMPT on every reconcile (see
+# dist/maintenance-prompt-*.mjs and dist/skill-collection-review-monitor-*.mjs).
+# A local trim would be reverted by the next reconcile and then register as
+# contract drift, so these declarations get an explicit named char allowance
+# instead of the workspace-authored default. The effective budget and its reason
+# are reported per contract, so the larger allowance stays visible, not silent.
+SYSTEM_OWNED_DECLARATION_PREFIXES = (
+    "heartbeat-task:",
+    "heartbeat:",
+    "skill-collection-review:",
+)
+SYSTEM_PROJECTED_MAX_PROMPT_CHARS = 4000
+WORKSPACE_PROMPT_BUDGET_REASON = "workspace-authored agentTurn prompt budget"
+SYSTEM_PROJECTED_PROMPT_BUDGET_REASON = (
+    "platform-projected monitor declaration; payload is owned and re-converged "
+    "by the OpenClaw runtime, so it is budgeted apart from workspace-authored prompts"
+)
 QUIET_RULE_MARKER = "QUIET CRON OUTPUT RULE"
 TASK_BODY_MARKERS = (
     "Objective:",
@@ -60,7 +79,7 @@ UNSUPPORTED_MODEL_ROUTES = {
     "claude-cli/claude-fable-5": {
         "status": "unsupported_legacy",
         "reason": "Fable is no longer a supported model route.",
-        "replacement_guidance": "Use openai/gpt-5.6-sol for main/final synthesis or openai/gpt-5.6-terra for an approved bounded helper route.",
+        "replacement_guidance": "Use openai/gpt-5.6-sol for main/final synthesis or ollama-cloud/glm-5.3:cloud for an approved bounded helper route.",
     },
 }
 
@@ -99,6 +118,31 @@ def get_nested(obj: dict[str, Any], dotted: str) -> Any:
             return None
         current = current.get(part)
     return current
+
+
+def is_system_owned_declaration(value: Any) -> bool:
+    """True when a declarationKey/name marks a runtime-owned monitor job."""
+    key = value if isinstance(value, str) else ""
+    if not key:
+        return False
+    return any(
+        key.startswith(prefix) or key.startswith(prefix.replace(":", "-"))
+        for prefix in SYSTEM_OWNED_DECLARATION_PREFIXES
+    )
+
+
+def prompt_budget(source: str, *, max_prompt_chars: int, system_owned: bool) -> dict[str, Any]:
+    """Resolve the effective prompt budget and record why it applies."""
+    return {
+        "source": source,
+        "system_owned_declaration": system_owned,
+        "max_prompt_chars": SYSTEM_PROJECTED_MAX_PROMPT_CHARS if system_owned else max_prompt_chars,
+        "workspace_default_max_prompt_chars": max_prompt_chars,
+        "reason": (
+            SYSTEM_PROJECTED_PROMPT_BUDGET_REASON if system_owned
+            else WORKSPACE_PROMPT_BUDGET_REASON
+        ),
+    }
 
 
 def message_shape(value: Any, *, max_prompt_chars: int, max_message_lines: int) -> dict[str, Any]:
@@ -318,6 +362,36 @@ def normalize_expected_artifact(item: Any) -> dict[str, Any]:
     }
 
 
+def completed_one_shot_scheduled_at_utc(contract: dict[str, Any]) -> str | None:
+    """Scheduled-at timestamp when the contract is an already-fired deleteAfterRun
+    one-shot, else None. OpenClaw deletes a deleteAfterRun one-shot ONLY after
+    successful completion, so past-due + deleteAfterRun + absent-from-live is
+    positive evidence of success, not of loss."""
+    schedule = contract.get("schedule")
+    if isinstance(schedule, str):
+        try:
+            parsed = json.loads(schedule)
+        except json.JSONDecodeError:
+            return None
+        schedule = parsed
+    if not isinstance(schedule, dict) or schedule.get("kind") != "at":
+        return None
+    if not contract.get("deleteAfterRun"):
+        return None
+    raw_at = str(schedule.get("at") or "").strip()
+    if not raw_at:
+        return None
+    try:
+        moment = datetime.fromisoformat(raw_at.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if moment.tzinfo is None:
+        moment = moment.replace(tzinfo=timezone.utc)
+    if moment >= datetime.now(timezone.utc):
+        return None
+    return moment.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
 def compare_contract(
     contract: dict[str, Any],
     live_job: dict[str, Any] | None,
@@ -327,6 +401,21 @@ def compare_contract(
 ) -> dict[str, Any]:
     fields = [str(item) for item in as_list(contract.get("compare_fields"))] or DEFAULT_COMPARE_FIELDS
     if live_job is None:
+        completed_at = completed_one_shot_scheduled_at_utc(contract)
+        if completed_at is not None:
+            return {
+                "contract_path": contract.get("_contract_path"),
+                "job_id": contract_identity(contract)[0],
+                "name": contract_identity(contract)[1],
+                "status": "completed_one_shot",
+                "severity": "info",
+                "reason": (
+                    "deleteAfterRun one-shot fired and was removed by the scheduler after "
+                    "successful completion; absence from live is expected, not drift"
+                ),
+                "scheduled_at_utc": completed_at,
+                "drift": [],
+            }
         return {
             "contract_path": contract.get("_contract_path"),
             "job_id": contract_identity(contract)[0],
@@ -351,11 +440,23 @@ def compare_contract(
         item for item in expected_artifacts
         if not item["exists"] and item.get("required", True) is not False
     ]
+    system_owned = any(
+        is_system_owned_declaration(candidate)
+        for candidate in (
+            contract.get("declarationKey"),
+            live_job.get("declarationKey"),
+            contract.get("name"),
+            live_job.get("name"),
+        )
+    )
+    effective_max_prompt_chars = (
+        SYSTEM_PROJECTED_MAX_PROMPT_CHARS if system_owned else max_prompt_chars
+    )
     expected_message = expected_value(contract, "payload.message")
     actual_message = get_nested(live_job, "payload.message")
     prompt_shape = {
-        "expected": message_shape(expected_message, max_prompt_chars=max_prompt_chars, max_message_lines=max_message_lines),
-        "live": message_shape(actual_message, max_prompt_chars=max_prompt_chars, max_message_lines=max_message_lines),
+        "expected": message_shape(expected_message, max_prompt_chars=effective_max_prompt_chars, max_message_lines=max_message_lines),
+        "live": message_shape(actual_message, max_prompt_chars=effective_max_prompt_chars, max_message_lines=max_message_lines),
     }
     prompt_bloat = []
     for source, shape in prompt_shape.items():
@@ -390,6 +491,9 @@ def compare_contract(
         "missing_expected_artifacts": missing_artifacts,
         "prompt_shape": prompt_shape,
         "prompt_bloat": prompt_bloat,
+        "prompt_budget": prompt_budget(
+            "contract", max_prompt_chars=max_prompt_chars, system_owned=system_owned
+        ),
         "multiline_live_intact": multiline_live_intact,
     }
 
@@ -409,6 +513,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     ]
     drift_count = sum(1 for item in results if item.get("status") == "drift")
     missing_count = sum(1 for item in results if item.get("status") == "missing_live_job")
+    completed_one_shot_count = sum(1 for item in results if item.get("status") == "completed_one_shot")
     unsupported_model_routes = detected_unsupported_model_routes(results)
     unsupported_model_route_count = len(unsupported_model_routes)
     contract_prompt_integrity_findings = [
@@ -470,6 +575,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "live_job_count": len(jobs),
             "drift_count": drift_count,
             "missing_live_job_count": missing_count,
+            "completed_one_shot_count": completed_one_shot_count,
             "unsupported_model_route_count": unsupported_model_route_count,
             "unsupported_model_routes": unsupported_model_routes,
             "configured_unsupported_model_routes": sorted(UNSUPPORTED_MODEL_ROUTES),
@@ -478,6 +584,10 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "prompt_bloat_count": prompt_bloat_count,
             "multiline_truncation_risk_count": multiline_truncation_risk_count,
             "max_prompt_chars": args.max_prompt_chars,
+            "system_projected_max_prompt_chars": SYSTEM_PROJECTED_MAX_PROMPT_CHARS,
+            "system_owned_declaration_count": sum(
+                1 for item in results if as_dict(item.get("prompt_budget")).get("system_owned_declaration")
+            ),
             "max_message_lines": args.max_message_lines,
             "next_safe_action": (
                 "Create state\\cron-contracts\\*.json for important jobs."

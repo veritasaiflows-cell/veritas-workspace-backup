@@ -1,0 +1,68 @@
+﻿{
+    "case":  "T4-read-recovery",
+    "model_id":  "ds",
+    "requested_model":  "ollama-cloud/deepseek-v4.1-flash:cloud",
+    "repetition":  1,
+    "turn":  1,
+    "session_key":  "agent:qa-redteam:a24-ds-T4-read-recovery-r1-20260919",
+    "cli_exit":  0,
+    "status":  "ok",
+    "run_id":  "424a98b4-fcb7-4894-bc34-f2cb3e664fa2",
+    "visible_text":  "{\"records\":[{\"id\":\"r2\",\"value\":\"b2\",\"ts\":\"2026-09-18\"},{\"id\":\"r3\",\"value\":\"c2\",\"ts\":\"2026-09-17\"}],\"tombstoned\":[\"r1\",\"r4\"],\"superseded_rows\":3}",
+    "provider":  "ollama-cloud",
+    "model":  "deepseek-v4.1-flash:cloud",
+    "execution_trace":  {
+                            "winnerProvider":  "ollama-cloud",
+                            "winnerModel":  "deepseek-v4.1-flash:cloud",
+                            "attempts":  [
+                                             {
+                                                 "provider":  "ollama-cloud",
+                                                 "model":  "deepseek-v4.1-flash:cloud",
+                                                 "result":  "success",
+                                                 "stage":  "assistant"
+                                             }
+                                         ],
+                            "fallbackUsed":  false,
+                            "runner":  "embedded"
+                        },
+    "receipt":  {
+                    "runId":  "424a98b4-fcb7-4894-bc34-f2cb3e664fa2",
+                    "sessionId":  "3a6353b1-89ca-4a5e-910d-49bb92e11f76",
+                    "turnId":  "424a98b4-fcb7-4894-bc34-f2cb3e664fa2",
+                    "requested":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "deepseek-v4.1-flash:cloud"
+                                  },
+                    "effective":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "deepseek-v4.1-flash:cloud",
+                                      "responseModel":  "deepseek-v4.1-flash:cloud"
+                                  },
+                    "successfulToolNames":  [
+                                                "read"
+                                            ],
+                    "rerouted":  false
+                },
+    "tool_summary":  {
+                         "calls":  3,
+                         "tools":  [
+                                       "read"
+                                   ],
+                         "failures":  1
+                     },
+    "thinking":  "high",
+    "workspace":  "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+    "injected_files":  [
+                           "AGENTS.md",
+                           "SOUL.md",
+                           "IDENTITY.md",
+                           "USER.md",
+                           "MEMORY.md"
+                       ],
+    "tool_names":  [
+                       "read",
+                       "web_search",
+                       "web_fetch"
+                   ],
+    "error_kind":  null
+}

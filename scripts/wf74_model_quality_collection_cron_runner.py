@@ -18,6 +18,54 @@ from typing import Any
 
 from lib.pm_control_reader import pm_implementation_job_queue
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
+from wf74_improvement_opportunity_queue import select_actionable_planning_gap
+
+
+def project_planning_quality(planning_signal: dict[str, Any]) -> dict[str, Any]:
+    """Project raw planning history separately from operational actionable debt.
+
+    Raw history is preserved verbatim; the operational actionable status is
+    trusted only when the signal schema is exact, counts are strict non-bool
+    ints, and reconciliation is exact, otherwise fail closed to raw with a
+    warning and never a clean quality/performance claim.
+    Single source of selector meaning: wf74_improvement_opportunity_queue.
+    """
+    # Schema-exact trust: only veritas.planning_quality_signal.v1 may project a verified partition.
+    # Single source of meaning for the fail-closed selector: wf74_improvement_opportunity_queue.
+    selection = select_actionable_planning_gap(planning_signal)
+    if planning_signal.get("schema") != "veritas.planning_quality_signal.v1":
+        raw_gap = int(selection["raw_gap_count"])
+        warning = str(selection.get("warning") or "partition_fields_unavailable")
+        selection = {
+            "selected_gap_count": raw_gap,
+            "raw_gap_count": raw_gap,
+            "source": "raw_gap_fallback",
+            "warning": "planning_signal_schema_not_exact; " + warning,
+            "actionable_gap_count": planning_signal.get("plan_followthrough_actionable_gap_count"),
+            "terminal_unavailable_count": planning_signal.get("plan_followthrough_terminal_unavailable_count"),
+            "repaired_accepted_count": planning_signal.get("plan_followthrough_repaired_accepted_count"),
+            "partitioned_gap_row_count": planning_signal.get("partitioned_gap_row_count"),
+            "partition_reconciliation_ok": planning_signal.get("partition_reconciliation_ok"),
+        }
+    if selection["source"] == "actionable_partition_verified":
+        operational_status: Any = planning_signal.get("actionable_status") or (
+            "attention" if int(selection["selected_gap_count"]) else "ok"
+        )
+    else:
+        operational_status = "unverified_fallback"
+    return {
+        "planning_quality_gap_count_raw": int(selection["raw_gap_count"]),
+        "planning_quality_gap_count_selected": int(selection["selected_gap_count"]),
+        "planning_quality_gap_source": selection["source"],
+        "planning_quality_actionable_gap_count": selection.get("actionable_gap_count"),
+        "planning_quality_terminal_unavailable_count": selection.get("terminal_unavailable_count"),
+        "planning_quality_repaired_accepted_count": selection.get("repaired_accepted_count"),
+        "planning_quality_partitioned_gap_row_count": selection.get("partitioned_gap_row_count"),
+        "planning_quality_partition_reconciliation_ok": selection.get("partition_reconciliation_ok"),
+        "planning_quality_actionable_status": operational_status,
+        "planning_quality_signal_schema": planning_signal.get("schema"),
+        "planning_gap_selection_warning": selection.get("warning"),
+    }
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -56,6 +104,13 @@ NON_BLOCKING_STEP_NAMES = {
 DOMAIN_ATTENTION_STEP_NAMES: set[str] = set()
 
 DOMAIN_NONFATAL_CRITICAL_DETAILS: set[str] = set()
+
+# Transient-collision retry: scheduled bursts can overlap artifact writers,
+# making an otherwise-green validation step read a mid-rewrite artifact once.
+# One bounded retry (with a short wait) absorbs that class; persistent
+# failures still block. Timeouts are never retried so the cron budget holds.
+BLOCKING_STEP_RETRY_WAIT_SECONDS = 15.0
+BLOCKING_STEP_RETRY_LIMIT = 1
 
 
 def utc_now() -> str:
@@ -333,11 +388,43 @@ def artifact_status(path: str) -> dict[str, Any]:
     }
 
 
+def execute_plan(include_harness: bool) -> list[dict[str, Any]]:
+    """Run the command plan with one bounded retry per blocking step.
+
+    A blocking step that fails with a nonzero returncode gets exactly
+    BLOCKING_STEP_RETRY_LIMIT retries after BLOCKING_STEP_RETRY_WAIT_SECONDS.
+    The first attempt's evidence is preserved on the retried step record.
+    Timeout failures are not retried; they block immediately.
+    """
+    steps: list[dict[str, Any]] = []
+    for index, (name, command, timeout) in enumerate(command_plan(include_harness), start=1):
+        step = run_step(name, command, timeout, index)
+        if (
+            is_blocking_step_failure(step)
+            and step.get("failure_kind") == "nonzero_returncode"
+            and BLOCKING_STEP_RETRY_LIMIT > 0
+        ):
+            time.sleep(BLOCKING_STEP_RETRY_WAIT_SECONDS)
+            retry = run_step(name, command, timeout, index)
+            retry["retry_attempted"] = True
+            retry["retry_wait_seconds"] = BLOCKING_STEP_RETRY_WAIT_SECONDS
+            retry["first_attempt_returncode"] = step.get("returncode")
+            retry["first_attempt_stdout_tail"] = step.get("stdout_tail")
+            retry["first_attempt_stderr_tail"] = step.get("stderr_tail")
+            step = retry
+        steps.append(step)
+        if is_blocking_step_failure(step):
+            break
+    return steps
+
+
 def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
     blocked = [step for step in steps if is_blocking_step_failure(step)]
     attention = [step for step in steps if step.get("status") != "ok" and step.get("blocking") is False]
     domain_attention = [step for step in attention if step.get("attention_class") == "domain_quality"]
     diagnostic_attention = [step for step in attention if step.get("attention_class") != "domain_quality"]
+    retried_steps = [step for step in steps if step.get("retry_attempted")]
+    recovered_steps = [step for step in retried_steps if step.get("status") == "ok"]
     timed_out = [step for step in steps if step.get("failure_kind") == "timeout"]
     completed_steps = [step for step in steps if step.get("status") == "ok"]
     last_completed_step = completed_steps[-1] if completed_steps else None
@@ -427,6 +514,7 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
     coding_runtime_kpis = as_dict(coding_runtime_probe.get("kpis"))
     coding_outcome_summary = as_dict(coding_outcome.get("ledger_summary"))
     planning_signal = as_dict(coding_outcome_summary.get("planning_quality_signal"))
+    planning_projection = project_planning_quality(planning_signal)
     opportunity_summary = as_dict(opportunity_queue.get("summary"))
     improvement_ledger_summary = as_dict(improvement_ledger.get("summary"))
     improvement_kpis = as_dict(improvement_ledger.get("learning_loop_kpis"))
@@ -491,6 +579,10 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
         "model_attribution_status": "partial" if model_summary.get("model_attribution_coverage") else "missing",
         "coding_ex_post_status": "graded" if coding_outcome_summary.get("ex_post_graded_count") else "pending",
         "planning_quality_status": planning_signal.get("status") or "missing",
+        "planning_actionable_status": planning_projection["planning_quality_actionable_status"],
+        "planning_actionable_gap_count": planning_projection["planning_quality_actionable_gap_count"],
+        "planning_gap_source": planning_projection["planning_quality_gap_source"],
+        "planning_gap_selection_warning": planning_projection["planning_gap_selection_warning"],
         "decision_quality_status": decision_quality_status,
         "semantic_outcome_claim_status": (
             "maturity_gated"
@@ -514,6 +606,8 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
             "steps_ok": len([step for step in steps if step.get("status") == "ok"]),
             "steps_blocked": len(blocked),
             "steps_attention": len(attention),
+            "steps_retried": len(retried_steps),
+            "steps_recovered_after_retry": len(recovered_steps),
             "non_blocking_attention_steps": [step.get("name") for step in attention],
             "blocking_step_names": [step.get("name") for step in blocked],
             "technical_blocking_steps": [step.get("name") for step in blocked if step.get("attention_class") != "domain_quality"],
@@ -598,6 +692,12 @@ def build_payload(steps: list[dict[str, Any]]) -> dict[str, Any]:
             "planning_quality_followthrough_clean_count": planning_signal.get("plan_followthrough_clean_count"),
             "planning_quality_followthrough_gap_count": planning_signal.get("plan_followthrough_gap_count"),
             "planning_quality_followthrough_clean_rate": planning_signal.get("plan_followthrough_clean_rate"),
+            "planning_quality_actionable_gap_count": planning_projection["planning_quality_actionable_gap_count"],
+            "planning_quality_gap_count_selected": planning_projection["planning_quality_gap_count_selected"],
+            "planning_quality_gap_source": planning_projection["planning_quality_gap_source"],
+            "planning_quality_actionable_status": planning_projection["planning_quality_actionable_status"],
+            "planning_quality_terminal_unavailable_count": planning_projection["planning_quality_terminal_unavailable_count"],
+            "planning_quality_repaired_accepted_count": planning_projection["planning_quality_repaired_accepted_count"],
             "improvement_opportunity_queue_status": opportunity_queue.get("status"),
             "improvement_opportunity_count": opportunity_summary.get("opportunity_count"),
             "improvement_high_priority_count": opportunity_summary.get("high_priority_count"),
@@ -876,6 +976,7 @@ def render_md(payload: dict[str, Any]) -> str:
         f"- Generated: {payload.get('generated_at_utc')}",
         f"- Status: {payload.get('status')}",
         f"- Steps ok/blocked/attention: {summary.get('steps_ok')} / {summary.get('steps_blocked')} / {summary.get('steps_attention')}",
+        f"- Step retries: {summary.get('steps_retried')} / recovered {summary.get('steps_recovered_after_retry')}",
         f"- Model attribution coverage: {summary.get('model_attribution_coverage')}",
         f"- Session attribution coverage: {summary.get('session_attribution_coverage')}",
         f"- Token usage: {summary.get('token_usage_total_tokens')} tokens / events {summary.get('token_usage_event_count')} / pricing {summary.get('token_usage_pricing_status')}",
@@ -915,12 +1016,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    steps: list[dict[str, Any]] = []
-    for index, (name, command, timeout) in enumerate(command_plan(args.include_harness), start=1):
-        step = run_step(name, command, timeout, index)
-        steps.append(step)
-        if is_blocking_step_failure(step):
-            break
+    steps = execute_plan(args.include_harness)
 
     payload = build_payload(steps)
     validation = validate(payload)

@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-08-28T20:20:06.880115+00:00",
-  "as_of_date": "2026-08-28",
+  "generated_at_utc": "2026-09-20T00:01:09.249303+00:00",
+  "as_of_date": "2026-09-19",
   "status": "ok",
   "stale_after_days": 7,
   "expected_update_window": "Refresh weekly, before event-calendar maintenance, and when major earnings windows approach or resolve.",
@@ -14,7 +14,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:02.499752+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:05.537479+00:00",
       "error": null
     },
     {
@@ -23,7 +23,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:02.821303+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:05.840522+00:00",
       "error": null
     },
     {
@@ -32,7 +32,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:02.906332+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:05.919581+00:00",
       "error": null
     },
     {
@@ -41,7 +41,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:02.986111+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.001449+00:00",
       "error": null
     },
     {
@@ -50,7 +50,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:03.062177+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.078301+00:00",
       "error": null
     },
     {
@@ -59,7 +59,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:03.139435+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.152813+00:00",
       "error": null
     },
     {
@@ -68,7 +68,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:03.223438+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.224102+00:00",
       "error": null
     },
     {
@@ -77,7 +77,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:03.301704+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.299314+00:00",
       "error": null
     },
     {
@@ -86,7 +86,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:03.386913+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.373019+00:00",
       "error": null
     },
     {
@@ -95,7 +95,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:03.464104+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.448720+00:00",
       "error": null
     },
     {
@@ -104,7 +104,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:03.609006+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.525184+00:00",
       "error": null
     },
     {
@@ -113,7 +113,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:03.751323+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.602086+00:00",
       "error": null
     },
     {
@@ -122,7 +122,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:03.830900+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.679156+00:00",
       "error": null
     },
     {
@@ -131,7 +131,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:03.915278+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.755876+00:00",
       "error": null
     },
     {
@@ -140,7 +140,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:03.992965+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.830312+00:00",
       "error": null
     },
     {
@@ -149,7 +149,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:04.072541+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.904542+00:00",
       "error": null
     },
     {
@@ -158,7 +158,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:04.150343+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:06.981579+00:00",
       "error": null
     },
     {
@@ -167,29 +167,17 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:04.238281+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:07.057804+00:00",
       "error": null
     },
     {
       "ticker": "NVDA",
-      "next_earnings_date": null,
-      "source": "post_earnings_lifecycle_closeout",
-      "date_source_class": "post_earnings_lifecycle_closeout",
+      "next_earnings_date": "2026-11-17",
+      "source": "yfinance",
+      "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:04.381186+00:00",
-      "error": null,
-      "lifecycle": {
-        "status": "post_event_review_confirmed_next_date_pending",
-        "closed_watchlist_date": "2026-05-20",
-        "provider_date_before_closeout": "2026-11-17",
-        "reason": "event date elapsed and tracked_universe confirms post-earnings review at/after the event",
-        "evidence": {
-          "last_earnings_date": "2026-05-20",
-          "post_earnings_review_date": "2026-05-20",
-          "post_earnings_review_confirmed": true,
-          "closed_at_utc": "2026-05-23T19:50:12Z"
-        }
-      }
+      "fetched_at_utc": "2026-09-20T00:01:07.133866+00:00",
+      "error": null
     },
     {
       "ticker": "ETN",
@@ -197,7 +185,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:04.525390+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:07.208013+00:00",
       "error": null
     },
     {
@@ -206,7 +194,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:04.605077+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:07.282341+00:00",
       "error": null
     },
     {
@@ -215,7 +203,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:04.683490+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:07.369358+00:00",
       "error": null
     },
     {
@@ -224,7 +212,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:04.760395+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:07.512030+00:00",
       "error": null
     },
     {
@@ -233,7 +221,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:04.840703+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:07.586663+00:00",
       "error": null
     },
     {
@@ -242,7 +230,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:04.918860+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:07.662491+00:00",
       "error": null
     },
     {
@@ -251,7 +239,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:04.997133+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:07.739431+00:00",
       "error": null
     },
     {
@@ -260,7 +248,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:05.073574+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:07.821102+00:00",
       "error": null
     },
     {
@@ -269,7 +257,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:05.157751+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:07.899442+00:00",
       "error": null
     },
     {
@@ -278,7 +266,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:05.234464+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:07.977080+00:00",
       "error": null
     },
     {
@@ -287,7 +275,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:05.324683+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:08.058715+00:00",
       "error": null
     },
     {
@@ -296,7 +284,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:05.464035+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:08.133858+00:00",
       "error": null
     },
     {
@@ -305,7 +293,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:05.544043+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:08.213592+00:00",
       "error": null
     },
     {
@@ -314,7 +302,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:05.626984+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:08.293297+00:00",
       "error": null
     },
     {
@@ -323,7 +311,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:05.706758+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:08.368322+00:00",
       "error": null
     },
     {
@@ -332,7 +320,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:05.783559+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:08.444141+00:00",
       "error": null
     },
     {
@@ -341,7 +329,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:05.861398+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:08.521298+00:00",
       "error": null
     },
     {
@@ -350,7 +338,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:06.011885+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:08.597981+00:00",
       "error": null
     },
     {
@@ -359,7 +347,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:06.154084+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:08.675737+00:00",
       "error": null
     },
     {
@@ -368,7 +356,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:06.232871+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:08.789126+00:00",
       "error": null
     },
     {
@@ -377,16 +365,16 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:06.310712+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:08.868447+00:00",
       "error": null
     },
     {
       "ticker": "TMUS",
-      "next_earnings_date": "2026-10-22",
+      "next_earnings_date": "2026-10-28",
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:06.385397+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:08.944303+00:00",
       "error": null
     },
     {
@@ -395,7 +383,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:06.471819+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:09.019996+00:00",
       "error": null
     },
     {
@@ -404,7 +392,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:06.573080+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:09.094536+00:00",
       "error": null
     },
     {
@@ -413,7 +401,7 @@
       "source": "yfinance",
       "date_source_class": "provider_estimate",
       "primary_confirmed": false,
-      "fetched_at_utc": "2026-08-28T20:20:06.798896+00:00",
+      "fetched_at_utc": "2026-09-20T00:01:09.171529+00:00",
       "error": null
     }
   ],
@@ -423,32 +411,12 @@
   "earnings_lifecycle": {
     "schema_version": 1,
     "closeouts": [],
-    "active_holds": [
-      {
-        "ticker": "NVDA",
-        "watchlist_date": "2026-05-20",
-        "provider_date_before_closeout": "2026-11-17",
-        "status": "watchlist_already_closed",
-        "reason": "event date elapsed and tracked_universe confirms post-earnings review at/after the event",
-        "evidence": {
-          "last_earnings_date": "2026-05-20",
-          "post_earnings_review_date": "2026-05-20",
-          "post_earnings_review_confirmed": true,
-          "closed_at_utc": "2026-05-23T19:50:12Z"
-        },
-        "authority": {
-          "review_only": true,
-          "portfolio_mutation_allowed": false,
-          "canonical_note_mutation_allowed": false,
-          "trade_or_account_action_allowed": false,
-          "owner_approval_inferred": false
-        }
-      }
-    ],
+    "active_holds": [],
     "config_apply": {
       "applied": false,
       "count": 0,
-      "tickers": []
+      "tickers": [],
+      "reason": "owner_authorization_not_requested"
     },
     "authority": {
       "review_only": true,

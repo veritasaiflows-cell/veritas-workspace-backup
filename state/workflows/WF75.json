@@ -57,18 +57,19 @@
     "resume_condition": "Resume only when Randall explicitly resumes WF75.",
     "aliases": [
       "retail_investor_finance_intelligence_saas",
-      "workflow_75"
+      "workflow_75",
+      "wf75_service_state"
     ],
     "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
   },
   "pm_action": {
-    "action_id": "wf75_service_state-refresh_artifact",
-    "action_type": "refresh_artifact",
-    "description": "Refresh WF75 service state and readiness plan, then rerun validation.",
+    "action_id": "wf75_service_state-hold",
+    "action_type": "hold",
+    "description": "Do not advance this workflow. Preserve artifacts and boundary proof only.",
     "lane_id": "wf75_service_state",
     "authority": "review_only",
     "inline_execution_allowed": false,
-    "helper_lane_allowed_from_main_session": true,
+    "helper_lane_allowed_from_main_session": false,
     "heartbeat_may_execute": false,
     "stop_lines": [
       "no customer data",
@@ -76,26 +77,11 @@
       "no public launch"
     ],
     "lane_status": "on_hold",
-    "readiness_score": 45,
-    "rank": 9,
-    "pm_packet_only": true,
-    "source_lane_status": "stale",
-    "superseded_by_route_contract": true
+    "readiness_score": 40,
+    "rank": 18,
+    "pm_packet_only": true
   },
-  "pm_job": {
-    "job_id": "pm-wf75-service-state-refresh-artifact",
-    "status": "ready_for_main_or_helper",
-    "validation_budget": {
-      "budget": "narrow",
-      "description": "One owner plus one adjacent consumer or validator.",
-      "closeout_mode": "pm_state",
-      "proof_command_count": 1,
-      "max_default_proof_commands": 3,
-      "phase_count": 3
-    },
-    "closeout_mode": "pm_state",
-    "collision_group": "wf75_service_state"
-  },
+  "pm_job": null,
   "sources": {
     "route_index": "tmp\\workflow-routing-index.json",
     "canonical_control": [

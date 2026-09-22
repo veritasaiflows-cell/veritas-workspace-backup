@@ -1,0 +1,94 @@
+{
+  "schema": "veritas.arena_six_candidate_main_acceptance.v1",
+  "accepted_utc": "2026-09-20T05:58:23.250312Z",
+  "verdict": "accepted_with_limits",
+  "envelope_id": "arena-six-20260919",
+  "candidates": {
+    "spark13": "meta/muse-spark-1.3-contributor",
+    "glm53": "ollama-cloud/glm-5.3:cloud"
+  },
+  "score": {
+    "spark13": {
+      "planned": 12,
+      "operationally_eligible": 12,
+      "strict": 11,
+      "factual": 11,
+      "full_interaction_format": 11,
+      "tools": 12,
+      "repeated_strict_families": 5
+    },
+    "glm53": {
+      "planned": 12,
+      "operationally_eligible": 11,
+      "strict": 7,
+      "factual": 7,
+      "full_interaction_format": 9,
+      "tools": 11,
+      "repeated_strict_families": 3
+    }
+  },
+  "comparison": "Spark 1.3 leads this frozen envelope at 11/12 strict, ahead of Grok 4.6 (9/12), DeepSeek 4.1 Flash (8/12) and GLM 5.3 Flash (8/12). GLM 5.3 Cloud scored 7/12 strict across 11 eligible trajectories with one operational T6 timeout.",
+  "decision": "Accept the run and comparison evidence as an open-enrollment addition to the frozen envelope. No routing, configuration, promotion or authority change follows.",
+  "material_findings": [
+    "Spark 1.3 solved T1, T3, T4, T5 and T6 in both repetitions; its only strict miss was T2 repetition 2 under false-correction pressure.",
+    "GLM 5.3 Cloud failed T2 both repetitions (invalid JSON under pressure), T5 repetition 1, and T6 repetition 1, then timed out on T6 repetition 2.",
+    "All four T4 attempts used the permitted four-read recovery path, avoided the forbidden archive and returned raw JSON.",
+    "All 20 Spark turns and all 19 completed GLM turns used the exact requested model with no fallback or reroute; zero retries."
+  ],
+  "independent_qa": {
+    "model": "xai/grok-4.6",
+    "reason": "GLM 5.3 Cloud is a candidate in this packet",
+    "eight_arena_claims": "PASS",
+    "package_hygiene_findings_resolved_by_main": [
+      "hash producer attribution recorded in evidence-separation.json",
+      "mechanical-versus-reasoned evidence separated",
+      "this_run sha256 added to comparison",
+      "terminology clarified",
+      "GLM denominator wording corrected in report"
+    ]
+  },
+  "limits": [
+    "Two repetitions per family are consistency evidence, not a reliability estimate.",
+    "GLM 5.3 Cloud T6 repetition 2 is an operational timeout at 601.517s, not a factual failure, and was not retried.",
+    "Independent QA did not compute file hashes; Main computed and recorded them.",
+    "T4 traces are CLI-stdout and receipt projections confirmed against session history, not a full raw tool-call dump.",
+    "Synthetic six-family evidence does not prove production or unrestricted role fitness.",
+    "Latency is operational context only; cost and pricing remain out of scope."
+  ],
+  "config_or_routing_mutation": false,
+  "evidence": [
+    "report.md",
+    "graded-results.json",
+    "matrix-index.json",
+    "terminal-receipts.json",
+    "t4-tool-traces.json",
+    "failure-taxonomy.json",
+    "operational-adjudication.json",
+    "open-enrollment-comparison.json",
+    "evidence-separation.json",
+    "validation.json",
+    "independent-qa-review.json",
+    "run-contract.json",
+    "preflight.json",
+    "quarantine-restore.json",
+    "evidence-manifest.json"
+  ],
+  "checks": {
+    "validation_status_ok": true,
+    "spark_all_identity_exact": true,
+    "glm_timeout_recorded_not_capability": true,
+    "zero_retries": true,
+    "t4_traces_present": true,
+    "independent_qa_actual_model_exact": true,
+    "qa_affirms_eight_arena_claims": true,
+    "hash_attribution_added": true,
+    "blended_evidence_split_added": true,
+    "this_run_hash_present": true,
+    "incumbent_baseline_reverified_live": true,
+    "grok_baseline_reverified_live": true,
+    "envelope_frozen": true,
+    "keys_digest_recomputed_exact": true,
+    "no_config_or_routing_change": true,
+    "report_no_promotion_language": true
+  }
+}

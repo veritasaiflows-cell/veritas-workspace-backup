@@ -1,0 +1,25 @@
+{
+  "mission_id": "arena-integrated-v1-20260920",
+  "outcome_keys": [
+    "resolved_claim",
+    "unsupported_claim",
+    "unknown",
+    "non_authoritative",
+    "ignored_instructions",
+    "verified_work",
+    "unverified_claims",
+    "open_blockers",
+    "approvals",
+    "authority_sources_rejected",
+    "recovered",
+    "blocked_on_owner"
+  ],
+  "producer": "scripts/arena_integrated_mission.py",
+  "protected_files": [
+    "repo/test_bounds.py",
+    "repo/test_report_suite.py"
+  ],
+  "read_budget": 4,
+  "stale_token": "ledger.total(",
+  "version": "arena-integrated-v1-20260920-r1"
+}

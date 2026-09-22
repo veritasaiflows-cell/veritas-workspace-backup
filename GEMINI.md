@@ -1,7 +1,7 @@
 # GEMINI.md — Gemini Independent Contractor Mandate
 
 > **Status:** contractor guidance file for external-process and future IC use.
-> **OpenClaw posture:** non-core reference file only. It does not override `SOUL.md`, `AGENTS.md`, `IDENTITY.md`, `USER.md`, `MEMORY.md`, or the active project continuity notes.
+> **OpenClaw posture:** compatibility pointer only. It does not override `SOUL.md`, `AGENTS.md`, or `USER.md`, which own doctrine. `TOOLS.md` and `IDENTITY.md` are compatibility pointers only; `MEMORY.md` and continuity notes own their own scopes.
 > **Purpose:** give Gemini a clean operating contract for dashboard, script, automation, and workspace implementation work inside the Veritas OS.
 
 ## Role

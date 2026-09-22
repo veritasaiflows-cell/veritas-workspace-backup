@@ -1,0 +1,95 @@
+{
+  "collision_summary": {
+    "colliding_group_count": 1,
+    "collisions": {
+      "cron_scheduler": [
+        "cron-12-repair-before-next-run",
+        "cron-13-repair-before-next-run",
+        "cron-14-repair-before-next-run",
+        "cron-11-repair-before-next-run"
+      ]
+    },
+    "group_count": 18,
+    "rule": "Do not run two implementation jobs in the same collision group at the same time."
+  },
+  "out": "tmp/pm-implementation-job-queue.json",
+  "sqlite": null,
+  "status": "ok",
+  "summary": {
+    "active_job_count": 10,
+    "allowed_execution_mode_counts": {
+      "completed_by_ledger_resolved": 11,
+      "main_or_helper_plan_only": 2,
+      "main_review_only_proof_refresh": 3,
+      "main_session_review": 1,
+      "owner_gated_review": 4
+    },
+    "auto_cron_executable_job_count": 0,
+    "auto_heartbeat_executable_job_count": 0,
+    "auto_main_executable_job_count": 3,
+    "blocked_job_count": 1,
+    "bounded_patch_allowed_job_count": 2,
+    "closeout_mode_counts": {
+      "handoff": 4,
+      "integration": 1,
+      "pm_state": 15,
+      "queue_only": 1
+    },
+    "completed_by_ledger_job_count": 11,
+    "cron_decision_job_count": 4,
+    "cron_graduation_required_job_count": 2,
+    "cron_graduation_satisfied_job_count": 0,
+    "cron_proof_refresh_candidate_count": 2,
+    "department_counts": {
+      "cron": 6,
+      "finance_wf78_wf84_wf85": 3,
+      "pm": 3,
+      "product_wf75_wf79": 2,
+      "qa": 2,
+      "runtime_ops": 5
+    },
+    "department_ready_counts": {
+      "cron": 0,
+      "finance_wf78_wf84_wf85": 0,
+      "pm": 1,
+      "product_wf75_wf79": 2,
+      "qa": 1,
+      "runtime_ops": 1
+    },
+    "helper_lane_allowed_job_count": 4,
+    "job_count": 21,
+    "owner_decision_job_count": 4,
+    "owner_gate_required_job_count": 4,
+    "pm_action_job_count": 10,
+    "ready_job_count": 5,
+    "top_completed_job_id": "pm-wf74-cron-migration-regression-repair",
+    "top_completed_job_source_priority_score": 92.0,
+    "top_completed_job_title": "Repair regressed cron signals after completed migration plan",
+    "top_job_id": "pm-wf74-code-mutation-code-mutation-a70ae9987e25",
+    "top_job_source_priority_score": 72.0,
+    "top_job_title": "Reduce validator drag for normal implementation passes",
+    "top_ready_job_id": "pm-wf74-code-mutation-code-mutation-a70ae9987e25",
+    "top_ready_job_source_priority_score": 72.0,
+    "top_ready_job_title": "Reduce validator drag for normal implementation passes",
+    "validation_budget_counts": {
+      "major": 1,
+      "micro": 1,
+      "narrow": 15,
+      "shared": 4
+    },
+    "wf74_high_priority_overdue_count": 2,
+    "wf74_planning_followthrough_clean_rate": 0.9024,
+    "wf74_recommendation_to_route_conversion_rate": 1.0,
+    "wf74_route_to_pm_job_conversion_rate": 1.0,
+    "wf74_router_job_count": 7,
+    "wf74_router_pm_job_candidate_count": 7
+  },
+  "validation": {
+    "errors": [],
+    "status": "ok",
+    "warnings": [
+      "one_or_more_collision_groups_have_multiple_candidate_jobs",
+      "owner_decision_jobs_present"
+    ]
+  }
+}

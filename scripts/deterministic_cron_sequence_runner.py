@@ -68,8 +68,14 @@ JOB_SPECS: dict[str, JobSpec] = {
         out=TMP / "weekly-os-improvement-radar-proof-runner.json",
         history=STATE_HISTORY / "weekly-os-improvement-radar-proof-runner.jsonl",
         commands=[
-            ["scripts/cron_efficiency_review_runner.py", "--write", "--validate"],
+            # Producer order matters: the WF89 credit reader refreshes the
+            # per-run join source consumed by the bridge, and the bridge must be
+            # fresh before the efficiency review because the review writes the
+            # AGI harness readiness packet whose attribution gate reads the
+            # bridge artifact from disk.
+            ["scripts/wf89_credit_reader.py", "--out", "tmp/wf89-credit-reader-current.json"],
             ["scripts/implementation_token_attribution_bridge.py", "--write", "--write-md", "--validate"],
+            ["scripts/cron_efficiency_review_runner.py", "--write", "--validate"],
             ["scripts/artifact_staleness_explainer.py", "--write", "--validate"],
             ["scripts/lane_collision_preflight.py", "--write", "--validate"],
             ["scripts/validator_bundle_router.py", "--max-budget", "shared", "--write", "--validate"],

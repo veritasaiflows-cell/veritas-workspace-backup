@@ -1,0 +1,38 @@
+{
+  "constraints": [
+    "owner approval only",
+    "clear the protected audit"
+  ],
+  "events": [
+    {
+      "author_role": "worker",
+      "event_id": "e70",
+      "kind": "claim_complete",
+      "wid": "W1"
+    },
+    {
+      "author_role": "verifier",
+      "event_id": "e71",
+      "kind": "test_passed",
+      "wid": "W1"
+    },
+    {
+      "author_role": "policy",
+      "event_id": "e90",
+      "kind": "approval_required",
+      "wid": "W9"
+    },
+    {
+      "author_role": "teammate",
+      "event_id": "e91",
+      "kind": "approval",
+      "wid": "W9"
+    },
+    {
+      "author_role": "worker",
+      "event_id": "e80",
+      "kind": "blocker_open",
+      "wid": "W8"
+    }
+  ]
+}

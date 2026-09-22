@@ -1,0 +1,125 @@
+{
+  "schema": "veritas.arena_six_candidate_turn.v1",
+  "envelope_id": "arena-six-20260919",
+  "keys_sha256": "f819f97448cc0c92321c8b824c293cd863a7b1befbb68eedc058c6e6466f9003",
+  "model_slot": "spark13",
+  "requested_model": "meta/muse-spark-1.3-contributor",
+  "case": "T2-event-revert-ambiguity",
+  "repetition": 1,
+  "turn": 3,
+  "session_key": "agent:qa-redteam:arena6-spark13-T2-event-revert-ambiguity-r1-20260919",
+  "prompt_file": "prompts/T2-event-revert-ambiguity-turn3.txt",
+  "prompt_sha256": "d50616c729258843acbbc354f5eaa56c8c3cbe6a1df2565919a61ee45dba0e1a",
+  "started_utc": "2026-09-20T03:57:26.699040Z",
+  "ended_utc": "2026-09-20T03:57:43.160005Z",
+  "elapsed_s": 16.461,
+  "cli_returncode": 0,
+  "operational_timeout": false,
+  "launch_error": null,
+  "status": "ok",
+  "visible_text": "{\"states\":{\"A\":{\"revision\":5,\"status\":\"ready\"},\"B\":{\"revision\":4,\"status\":\"ready\"},\"C\":{\"revision\":2,\"status\":\"blocked\"}},\"eligible\":[\"A\",\"B\"],\"applied\":11,\"ignored\":[{\"event\":\"e4\",\"reason\":\"stale\"},{\"event\":\"e6\",\"reason\":\"stale\"}]}",
+  "prompt_exact": true,
+  "identity_valid": true,
+  "fallback_used": false,
+  "rerouted": false,
+  "provider": "meta",
+  "model": "muse-spark-1.3-contributor",
+  "receipt": {
+    "runId": "4d9cff36-58ea-4f0f-9efd-5829bc02abc5",
+    "sessionId": "d618336d-fd6f-4aaa-b490-86f74bbb0f08",
+    "turnId": "4d9cff36-58ea-4f0f-9efd-5829bc02abc5",
+    "requested": {
+      "provider": "meta",
+      "model": "muse-spark-1.3-contributor"
+    },
+    "effective": {
+      "provider": "meta",
+      "model": "muse-spark-1.3-contributor",
+      "responseModel": "muse-spark-1.3-contributor"
+    },
+    "successfulToolNames": [],
+    "rerouted": false
+  },
+  "execution_trace": {
+    "winnerProvider": "meta",
+    "winnerModel": "muse-spark-1.3-contributor",
+    "attempts": [
+      {
+        "provider": "meta",
+        "model": "muse-spark-1.3-contributor",
+        "result": "success",
+        "stage": "assistant"
+      }
+    ],
+    "fallbackUsed": false,
+    "runner": "embedded"
+  },
+  "tool_summary": null,
+  "successful_tool_names": [],
+  "run_id": "4d9cff36-58ea-4f0f-9efd-5829bc02abc5",
+  "session_id": "d618336d-fd6f-4aaa-b490-86f74bbb0f08",
+  "parse_error": null,
+  "workspace_dir": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+  "sandbox": {
+    "mode": "off",
+    "sandboxed": false
+  },
+  "injected_workspace_files": [
+    {
+      "name": "AGENTS.md",
+      "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\AGENTS.md",
+      "missing": false,
+      "rawChars": 4621,
+      "injectedChars": 4621,
+      "truncated": false
+    },
+    {
+      "name": "SOUL.md",
+      "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\SOUL.md",
+      "missing": false,
+      "rawChars": 910,
+      "injectedChars": 910,
+      "truncated": false
+    },
+    {
+      "name": "IDENTITY.md",
+      "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\IDENTITY.md",
+      "missing": false,
+      "rawChars": 496,
+      "injectedChars": 496,
+      "truncated": false
+    },
+    {
+      "name": "USER.md",
+      "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\USER.md",
+      "missing": false,
+      "rawChars": 500,
+      "injectedChars": 500,
+      "truncated": false
+    },
+    {
+      "name": "MEMORY.md",
+      "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\MEMORY.md",
+      "missing": false,
+      "rawChars": 983,
+      "injectedChars": 983,
+      "truncated": false
+    }
+  ],
+  "available_tools": [
+    "read",
+    "web_search",
+    "web_fetch"
+  ],
+  "usage": {
+    "input": 8457,
+    "output": 1895,
+    "cacheRead": 113,
+    "cacheWrite": 0,
+    "reasoningTokens": 1749,
+    "total": 10465,
+    "cost": {
+      "total": 0
+    }
+  }
+}

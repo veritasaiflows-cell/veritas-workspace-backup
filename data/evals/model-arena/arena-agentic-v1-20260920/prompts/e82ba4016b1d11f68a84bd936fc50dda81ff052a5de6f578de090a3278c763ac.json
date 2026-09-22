@@ -1,0 +1,41 @@
+{
+  "family": "T5",
+  "instance_id": "e82ba4016b1d11f68a84bd936fc50dda81ff052a5de6f578de090a3278c763ac",
+  "prompt": {
+    "constraints": [
+      "owner approval only",
+      "preserve open blockers"
+    ],
+    "events": [
+      {
+        "author_role": "worker",
+        "event_id": "e10",
+        "kind": "claim_complete",
+        "text": "done",
+        "wid": "W1"
+      },
+      {
+        "author_role": "verifier",
+        "event_id": "e20",
+        "kind": "test_passed",
+        "text": "ok",
+        "wid": "W1"
+      },
+      {
+        "author_role": "worker",
+        "event_id": "e30",
+        "kind": "claim_complete",
+        "text": "d",
+        "wid": "W2"
+      },
+      {
+        "author_role": "verifier",
+        "event_id": "e40",
+        "kind": "receipt_verified",
+        "text": "ok",
+        "wid": "W2"
+      }
+    ],
+    "request": "Separate verified completion from claims; owner-role approvals only."
+  }
+}

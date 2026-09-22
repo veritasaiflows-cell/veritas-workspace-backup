@@ -1,0 +1,39 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "9a68646c-0711-4ac5-a562-09dca02218af",
+  "name": "Runtime - Gateway Outage Sentinel (G8 Restart Guard)",
+  "required": true,
+  "owner_workflow": "G8 observation window protection (Phase 3)",
+  "freshness_hours": 1,
+  "contract_reason": "Owner-directed 2026-09-18 ('Let's build the restart guard'). Every recorded gateway outage (2026-09-09, 2026-09-15) was a Windows Update reboot in the 00:00-06:00 Phoenix window that cost the morning refresh and voided an observation session. The sentinel writes a durable 15-minute heartbeat; on recovery it detects the missed gap, corroborates with Windows System reboot events (readable unelevated, proven 2026-09-16), and classifies the gap against the G8 voiding windows (06:00-13:00 Phoenix on 2026-09-18/21/22/23; closed-market observation 09-20). Exit 1 + owner Telegram alert on a voiding-class gap so the five-session count restart is announced immediately on recovery rather than discovered hours later. Detection only: it cannot prevent a reboot, repair the gateway, or mutate anything.",
+  "description": "G8 restart guard: writes a durable heartbeat timestamp every 15 minutes; on recovery after an outage, classifies the missed gap against the G8 declared observation windows (06:00-13:00 Phoenix on 2026-09-18/21/22/23, closed-market 09-20) and corroborates with Windows System reboot events. Exit 1 + owner alert on a voiding-class gap. Routine runs are silent.",
+  "enabled": true,
+  "schedule": {
+    "kind": "every",
+    "everyMs": 900000,
+    "anchorMs": 1789797873279
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:/Users/Veritas/AppData/Local/Programs/Python/Python313/python.exe",
+      "scripts/gateway_outage_sentinel.py",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 120
+  },
+  "expected_artifacts": [
+    "tmp/gateway-outage-sentinel.json",
+    "state/gateway-outage-sentinel.json"
+  ],
+  "stop_lines": [
+    "Detection and alerting only; no repair or restart of the gateway by automation.",
+    "No config, auth, network, channel, service, plugin, or runtime mutation.",
+    "No finance, canon, portfolio, account, order, or execution authority.",
+    "No owner-approval inference; a voiding-class detection is evidence for the owner, not a session-voiding action by the system."
+  ]
+}

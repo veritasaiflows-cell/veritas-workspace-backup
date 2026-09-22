@@ -1712,6 +1712,25 @@ def incremental_rebuild(db_path: Path) -> None:
     print(f"source_files={len(paths)} changed_or_new={changed} unchanged={unchanged} removed={removed}")
 
 
+def lifecycle_presence_ok(nvda_rows: int, total_rows: int, source_indexed: bool) -> tuple[bool, str]:
+    """Season-aware lifecycle presence verdict (owner-approved 2026-09-20).
+
+    The NVDA canary assumes NVDA always carries lifecycle rows, which is false
+    off-season: with no closeouts/holds in window the enrichment correctly
+    produces zero rows and the table is legitimately empty. Pass when NVDA
+    rows exist (original behavior) or when the table is empty *and* the
+    earnings-calendar source was indexed in this build (pipeline flowing,
+    nothing in season). A partially populated table missing NVDA, or an empty
+    table with no indexed source, still fails."""
+    if nvda_rows > 0:
+        return True, f"nvda_rows={nvda_rows}"
+    if total_rows == 0 and source_indexed:
+        return True, "off_season_empty_source_indexed"
+    if total_rows == 0:
+        return False, "empty_no_indexed_source"
+    return False, f"nvda_rows=0 total_rows={total_rows}"
+
+
 def validate_index(db_path: Path) -> dict[str, Any]:
     with connect(db_path) as conn:
         checks: list[dict[str, Any]] = []
@@ -1778,7 +1797,10 @@ def validate_index(db_path: Path) -> dict[str, Any]:
         etn = conn.execute("SELECT COUNT(*) FROM v_cockpit_ticker_timeline WHERE upper(ticker)='ETN'").fetchone()[0]
         add("ticker_timeline_etn_has_rows", int(etn) > 0, f"rows={etn}")
         nvda_lifecycle = conn.execute("SELECT COUNT(*) FROM v_cockpit_earnings_lifecycle WHERE upper(ticker)='NVDA' AND review_only=1 AND trade_or_account_action_allowed=0 AND owner_approval_inferred=0").fetchone()[0]
-        add("earnings_lifecycle_nvda_review_only", int(nvda_lifecycle) > 0, f"rows={nvda_lifecycle}")
+        total_lifecycle = conn.execute("SELECT COUNT(*) FROM v_cockpit_earnings_lifecycle").fetchone()[0]
+        lifecycle_source = conn.execute("SELECT COUNT(*) FROM artifact_runs WHERE artifact_type='earnings_calendar'").fetchone()[0]
+        lifecycle_ok, lifecycle_detail = lifecycle_presence_ok(nvda_lifecycle, total_lifecycle, lifecycle_source > 0)
+        add("earnings_lifecycle_nvda_review_only", lifecycle_ok, f"nvda_rows={nvda_lifecycle} total_rows={total_lifecycle} detail={lifecycle_detail}")
         unsafe_lifecycle = conn.execute(
             """
             SELECT COUNT(*) FROM earnings_lifecycle_events

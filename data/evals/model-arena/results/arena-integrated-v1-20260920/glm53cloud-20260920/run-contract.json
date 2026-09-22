@@ -1,0 +1,46 @@
+{
+  "authority": "No routing, configuration, role, or execution authority follows.",
+  "candidate_mount": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\model-arena\\results\\arena-integrated-v1-20260920\\glm53cloud-20260920\\candidate-mount",
+  "envelope": "arena-integrated-v1-20260920",
+  "held_out": [
+    "control/",
+    "README.md",
+    "mission-report.json",
+    "results/oracle-submission/",
+    "results/oracle-grade.json",
+    "results/calibration.json"
+  ],
+  "isolation": {
+    "control_copied": false,
+    "extra_files": [],
+    "file_count": 11,
+    "forbidden_hits": [],
+    "hash_mismatches": {},
+    "note": "Control-plane tokens scanned: hidden test, expectations, oracle, protected-file list, mission contract, calibration. The stale-token call site 'ledger.total(' is intentional mission content (the visible defect to repair), not control-plane leakage.",
+    "stale_token_present_as_mission_content": true
+  },
+  "mission_id": "arena-integrated-v1-20260920",
+  "mission_report_sha256": "4dba5cbb45baef3f4e435becc44bddb40ed916edda1a8ab310c7613ece7779c7",
+  "mission_version": "arena-integrated-v1-20260920-r1",
+  "model": "ollama-cloud/glm-5.3:cloud",
+  "mount_allowlist": [
+    "visible/"
+  ],
+  "retries": 0,
+  "schema": "veritas.arena_integrated_run_contract.v1",
+  "timeout_s": 600,
+  "timestamp_utc": "2026-09-21T00:01:56.871822+00:00",
+  "visible_file_sha256": {
+    "checkpoint.json": "4a158123cd4ad27e23de1788651d13459bb9a81f8d8cd0c38441a8878256e7d6",
+    "data/archive/state.json": "789e27fa913bbc10e11769b004a1e9356477b8b1d9c813524601d9da6af285da",
+    "data/replica/state.json": "92d4f32a203d4abf16f0b0ec60e2211929c6cb1f8c92c75a8bf067931aac96af",
+    "data/state.json": "1d32663b0a7ef599da5b9a4e7c0c9883d56087db1963bb315db6e2a96977f3e7",
+    "repo/bounds.py": "a653c3c076465855b8b8dfdb33a0cafff52ef419e25a67eed25e20d88bdbd69e",
+    "repo/ledger.py": "8c83df83d67b09cb1b81da9058309561abcf40c3d42aa375d61dacca13c8acc7",
+    "repo/report.py": "1d0c6ff7bcaabee6a9fa66e1a5335c88b64a8b4694bc46128d3f5a031d987079",
+    "repo/test_bounds.py": "b315d5e4fbba59acf56c0b766a4e0d31691b854f4069bf035fe9a3e09e122ca5",
+    "repo/test_report_suite.py": "2a85c9789373564fb14711ccce263990e9ba8853635a4967e2a581b1c2cad8fd",
+    "request.md": "96fb8f0b0ec6821c6e82bc15e0c2c0cc0ce45c26572b73066739bf92d17d2c0a",
+    "sources/incident.json": "d92fcc7ba89a413de87f4e1446e6446d9be3faa78fb97db8ad41d1d326272526"
+  }
+}

@@ -2,8 +2,8 @@
 # Token Efficiency Map
 
 Canonical page: `wiki/scorecards-and-evals/Token Efficiency Map.md`
-Canonical rendered SHA-256: `2e22103785b0f357390b0cc71314fce176630bedf5cec1c782bf4accfac94066`.
-Source snapshot SHA-256: `f6ee80a8d183635520f429f34c7ca23360ebdb6d238c1622f6dffae691bee7f1`.
+Canonical rendered SHA-256: `d0bd066314a0aa0a0bdd58b394f5ba98cc80cdcce3bd3325951e170ed832b488`.
+Source snapshot SHA-256: `ae6e88eec2e3db981460397adfa78da800871c41fcd74d9852a0247c230c48f3`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -35,20 +35,20 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 
 - Token usage ledger status: `warning`.
 - Token efficiency scorecard status: `warning`.
-- Token events observed: `927`.
-- Total observed tokens: `49288324`.
-- API-equivalent token benchmark (not an invoice): `13.453455` (`partial_unknown_input_semantics_or_missing_rate`; `191/927` events priced).
-- Estimated ChatGPT credits (not an observed debit): `307.998645` (`partial_separate_no_public_rate_or_missing_rate`; `191/927` events priced).
-- Rolling 5h / observed 7d tokens: `0` / `348982`; usage timestamp coverage `20.0647`%.
+- Token events observed: `1165`.
+- Total observed tokens: `68367111`.
+- API-equivalent token benchmark (not an invoice): `14.925727` (`partial_unknown_input_semantics_or_missing_rate`; `200/1165` events priced).
+- Estimated ChatGPT credits (not an observed debit): `338.593006` (`partial_separate_no_public_rate_or_missing_rate`; `200/1165` events priced).
+- Rolling 5h / observed 7d tokens: `0` / `0`; usage timestamp coverage `15.9657`%.
 - Actual billed cost (owner-entered only): `None`.
 - OAuth quota state / remaining / days to reset: `stale` / `58.0` / `0.0`.
 - Cron token events: `735`.
-- Implementation token events: `1`.
-- Implementation token gaps: `598`.
-- API-call reduction candidates: `5`.
-- Prompt-compression candidates: `3`.
-- Failure-cost candidates: `1`.
-- Top token candidate: `Runtime - Status Card Freshness Refresh`.
+- Implementation token events: `3`.
+- Implementation token gaps: `597`.
+- API-call reduction candidates: `0`.
+- Prompt-compression candidates: `0`.
+- Failure-cost candidates: `0`.
+- Top token candidate: `None`.
 
 ## What this proves
 

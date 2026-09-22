@@ -1,0 +1,10 @@
+{
+  "authorized_at": null,
+  "authorized_by": null,
+  "checked_path": "data/evals/model-arena/arena-agentic-v1-20260920/overlay/dispatch-authorization.json",
+  "dispatch_ready": false,
+  "note": "Run-scoped authorization lived only in the GLM Cloud run dir. Canonical gate untouched.",
+  "result": "INERT - canonical overlay spend gate was never flipped for this run",
+  "schema": "veritas.arena_closed_gate_probe.v1",
+  "scope_models": []
+}

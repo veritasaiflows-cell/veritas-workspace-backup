@@ -2,8 +2,8 @@
 # Frontier Capability Eval
 
 Canonical page: `wiki/scorecards-and-evals/Frontier Capability Eval.md`
-Canonical rendered SHA-256: `a698fed4f9476d44807e9db22f58f138074da7f7dc92847c3e9da9a9ba1458df`.
-Source snapshot SHA-256: `f6ee80a8d183635520f429f34c7ca23360ebdb6d238c1622f6dffae691bee7f1`.
+Canonical rendered SHA-256: `9361ae59c74a2f686c596857d273cb37cf936b9f1f0cd69f084894e5cde142e6`.
+Source snapshot SHA-256: `ae6e88eec2e3db981460397adfa78da800871c41fcd74d9852a0247c230c48f3`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -37,7 +37,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - Trusted execution/output/grader attestations: `False` / `False` / `False`.
 - Cross-model ranking allowed: `False`.
 - Promotion action allowed: `False`.
-- Recent attribution coverage: `0.8557`; provider-run join ready: `False`.
+- Recent attribution coverage: `0.0`; provider-run join ready: `False`.
 
 ## Interpretation
 

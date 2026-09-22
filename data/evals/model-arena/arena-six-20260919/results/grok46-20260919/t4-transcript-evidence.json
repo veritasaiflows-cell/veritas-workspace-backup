@@ -1,0 +1,71 @@
+{
+  "schema": "veritas.arena_six_t4_transcript_evidence.v1",
+  "source": "sessions_history(includeTools=true)",
+  "thinking_excluded": true,
+  "sessions": {
+    "agent:qa-redteam:arena6-grok46-T4-multihop-read-recovery-r1-20260919": {
+      "assistant_visible_before_final": [],
+      "tool_calls": [
+        {
+          "name": "read",
+          "path": "arena-six-inputs-20260919/recovery/primary.json",
+          "optional": false,
+          "result": "error_file_not_found"
+        },
+        {
+          "name": "read",
+          "path": "arena-six-inputs-20260919/recovery/index.json",
+          "optional": false,
+          "result": "ok"
+        },
+        {
+          "name": "read",
+          "path": "arena-six-inputs-20260919/recovery/payload-a.json",
+          "optional": false,
+          "result": "ok"
+        },
+        {
+          "name": "read",
+          "path": "arena-six-inputs-20260919/recovery/mirror/payload-b.json",
+          "optional": false,
+          "result": "ok"
+        }
+      ],
+      "final_visible": "{\"records\":[{\"id\":\"r2\",\"value\":\"b2\",\"ts\":\"2026-09-18\"},{\"id\":\"r3\",\"value\":\"c2\",\"ts\":\"2026-09-17\"}],\"tombstoned\":[\"r1\",\"r4\"],\"superseded_rows\":3,\"source\":\"mirror\"}"
+    },
+    "agent:qa-redteam:arena6-grok46-T4-multihop-read-recovery-r2-20260919": {
+      "assistant_visible_before_final": [
+        "I'll start with the primary snapshot path, then follow the index only if that file is missing.",
+        "Primary is missing, so I?ll read the payload next and check it against the declared row count.",
+        "Payload row count is 4, not 7, so I?ll switch to the mirror file."
+      ],
+      "tool_calls": [
+        {
+          "name": "read",
+          "path": "arena-six-inputs-20260919/recovery/primary.json",
+          "optional": true,
+          "result": "structured_not_found"
+        },
+        {
+          "name": "read",
+          "path": "arena-six-inputs-20260919/recovery/index.json",
+          "optional": true,
+          "result": "ok"
+        },
+        {
+          "name": "read",
+          "path": "arena-six-inputs-20260919/recovery/payload-a.json",
+          "optional": true,
+          "result": "ok"
+        },
+        {
+          "name": "read",
+          "path": "arena-six-inputs-20260919/recovery/mirror/payload-b.json",
+          "optional": true,
+          "result": "ok"
+        }
+      ],
+      "final_visible": "{\"records\":[{\"id\":\"r2\",\"value\":\"b2\",\"ts\":\"2026-09-18\"},{\"id\":\"r3\",\"value\":\"c2\",\"ts\":\"2026-09-17\"}],\"tombstoned\":[\"r1\",\"r4\"],\"superseded_rows\":3,\"source\":\"mirror\"}"
+    }
+  }
+}

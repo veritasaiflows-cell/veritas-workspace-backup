@@ -90,6 +90,19 @@ def main() -> int:
             f"core efficiency markers drifted for {core_path}: expected {expected_markers}, got {state}",
             errors,
         )
+    expect("TOOLS.md" not in packet.CORE_SURFACES, "retired TOOLS.md must not be a core surface", errors)
+    expect("TOOLS.md" not in packet.CORE_EFFICIENCY_MARKERS, "retired TOOLS.md must not carry efficiency markers", errors)
+    startup_markers = packet.CORE_EFFICIENCY_MARKERS["06. Playbooks/Startup Truth Index.md"]
+    expect(
+        "This index does not pin Main models." in startup_markers,
+        "startup model-neutral owner marker is missing",
+        errors,
+    )
+    expect(
+        all("Grok 4.6" not in marker for marker in startup_markers),
+        "startup efficiency markers must not pin a Main model",
+        errors,
+    )
 
     payload = {
         "authority_boundary": packet.AUTHORITY_BOUNDARY.copy(),
@@ -733,6 +746,10 @@ def main() -> int:
             packet.DERIVED_FILES = {}
             packet.WORKFLOW_IDS = []
             (temp_root / "SOUL.md").write_text("truth\n", encoding="utf-8")
+            (temp_root / "AGENTS.md").write_text("active tool notes\n", encoding="utf-8")
+            startup_index = temp_root / "06. Playbooks" / "Startup Truth Index.md"
+            startup_index.parent.mkdir(parents=True, exist_ok=True)
+            startup_index.write_text("This index does not pin Main models.\n", encoding="utf-8")
             packet.MEMORY.mkdir(parents=True, exist_ok=True)
             (packet.MEMORY / "2026-06-16.md").write_text("today\n", encoding="utf-8")
             (packet.MEMORY / "2026-06-15.md").write_text("yesterday\n", encoding="utf-8")
@@ -862,6 +879,27 @@ def main() -> int:
                 packet.as_dict(unstable.get("validation")).get("status") == "critical"
                 and packet.as_dict(unstable.get("input_snapshot_stability")).get("status") == "critical",
                 "non-atomic packet input snapshot did not fail closed",
+                errors,
+            )
+
+            packet.CORE_SURFACES = ["AGENTS.md", "06. Playbooks/Startup Truth Index.md"]
+            active_core = [packet.file_state(path) for path in packet.CORE_SURFACES]
+            active_core_validation = packet.validate({"authority_boundary": packet.AUTHORITY_BOUNDARY.copy(), "core_surfaces": active_core})
+            active_core_details = " ".join(item["detail"] for item in active_core_validation["findings"])
+            expect(
+                "missing core surface: TOOLS.md" not in active_core_details,
+                "missing retired TOOLS.md must not fail validation",
+                errors,
+            )
+            (temp_root / "AGENTS.md").unlink()
+            missing_active_validation = packet.validate({
+                "authority_boundary": packet.AUTHORITY_BOUNDARY.copy(),
+                "core_surfaces": [packet.file_state(path) for path in packet.CORE_SURFACES],
+            })
+            missing_active_details = " ".join(item["detail"] for item in missing_active_validation["findings"])
+            expect(
+                "missing core surface: AGENTS.md" in missing_active_details,
+                "missing active AGENTS.md must remain critical",
                 errors,
             )
     finally:

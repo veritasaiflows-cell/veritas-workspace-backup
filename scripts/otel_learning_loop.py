@@ -37,6 +37,8 @@ CHANGED_FILE_ROUTER = TMP / "changed-file-validator-router.json"
 WF74_OPPORTUNITY_QUEUE = TMP / "wf74-improvement-opportunity-queue.json"
 CRON_SIGNAL_SCORECARD = TMP / "cron-signal-scorecard.json"
 WORKFLOW_ADVANCEMENT = TMP / "workflow-advancement-scorecard.json"
+OWNER_DECISIONS = ROOT / "state" / "owner-decisions" / "otel-recommendations.json"
+ATTRIBUTION_BRIDGE = TMP / "implementation-token-attribution-bridge.json"
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -280,10 +282,55 @@ def tool_latency_summary(tool_workflow: dict[str, Any], validator_timing: dict[s
     }
 
 
-def otel_health_summary(otel: dict[str, Any], windows: dict[str, Any]) -> dict[str, Any]:
+def _tel_strict_bool(value):
+    return isinstance(value, bool)
+
+def _tel_finite_nonneg(value):
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0 and value == value and value not in (float("inf"), float("-inf"))
+
+def revalidate_telemetry_context(embedded):
+    base = {"present": False, "fresh": False, "valid": False, "reason": "unknown"}
+    if not isinstance(embedded, dict) or not embedded:
+        return dict(base, reason="missing")
+    probe = embedded.get("runtime_probe") if isinstance(embedded.get("runtime_probe"), dict) else None
+    depth = embedded.get("token_depth") if isinstance(embedded.get("token_depth"), dict) else None
+    if probe is None or depth is None:
+        return dict(base, reason="malformed")
+    for label, row in (("runtime_probe", probe), ("token_depth", depth)):
+        ts = row.get("generated_at_utc")
+        try:
+            from datetime import datetime as _dt
+            d = _dt.fromisoformat(str(ts).replace("Z", "+00:00"))
+            if d.tzinfo is None:
+                from datetime import timezone as _tz2
+                d = d.replace(tzinfo=_tz2.utc)
+            from datetime import datetime as _dt2, timezone as _tz
+            age = (_dt2.now(_tz.utc) - d).total_seconds() / 3600.0
+        except Exception:
+            return dict(base, reason="learning_" + label + "_timestamp_malformed")
+        if age < 0 or age > 24.0:
+            return dict(base, reason="learning_" + label + "_stale")
+    scalars = as_dict(probe.get("scalars")) if isinstance(probe.get("scalars"), dict) else {}
+    for k in ("runtime_metadata_observed", "metadata_depth_approved_enabled", "file_exporter_observed", "debug_log_observed", "runtime_metadata_learning_ready"):
+        if not _tel_strict_bool(scalars.get(k)):
+            return dict(base, reason="learning_whitelist_type_invalid:" + k)
+    v = scalars.get("allowed_field_count")
+    if not (isinstance(v, int) and not isinstance(v, bool) and v >= 0):
+        return dict(base, reason="learning_whitelist_type_invalid:allowed_field_count")
+    for k in ("raw_content_marker_count", "secret_or_header_marker_count"):
+        vv = scalars.get(k)
+        if not _tel_finite_nonneg(vv) or vv != 0:
+            return dict(base, reason="learning_raw_or_secret_marker_positive")
+    if depth.get("status") != "owner_decision_pending" or depth.get("owner_gated") is not True:
+        return dict(base, reason="learning_depth_not_owner_gated")
+    return {"present": True, "fresh": True, "valid": True, "reason": "fresh_valid", "runtime_metadata_observed": scalars.get("runtime_metadata_observed"), "allowed_field_count": scalars.get("allowed_field_count"), "owner_gated_depth": True}
+
+def otel_health_summary(otel: dict[str, Any], windows: dict[str, Any], telemetry_context: dict[str, Any] | None = None) -> dict[str, Any]:
     drift = as_dict(otel.get("drift"))
     summary = as_dict(otel.get("summary"))
     trend = as_dict(windows.get("trend_indicators"))
+    embedded = telemetry_context if isinstance(telemetry_context, dict) else as_dict(otel.get("telemetry_context"))
+    reval = revalidate_telemetry_context(embedded) if embedded else {"present": False, "fresh": False, "valid": False, "reason": "missing"}
     return {
         "collector_health": as_dict(otel.get("collector_health")).get("status"),
         "collector_loopback": as_dict(otel.get("collector_config")).get("binds_loopback_4318"),
@@ -296,6 +343,11 @@ def otel_health_summary(otel: dict[str, Any], windows: dict[str, Any]) -> dict[s
         "drift_status": drift.get("status"),
         "drift_reasons": drift.get("drift_reasons"),
         "weekly_warning_or_error_count": trend.get("weekly_warning_or_error_count"),
+        "telemetry_status": reval.get("reason"),
+        "telemetry_fresh_valid": bool(reval.get("valid")),
+        "telemetry_runtime_observed": reval.get("runtime_metadata_observed"),
+        "telemetry_allowed_fields": reval.get("allowed_field_count"),
+        "telemetry_owner_gated_depth": reval.get("owner_gated_depth", False),
     }
 
 
@@ -351,12 +403,166 @@ def operational_friction_summary(
     }
 
 
+def owner_decision_suppressions() -> dict[str, dict[str, Any]]:
+    """Recommendation ids retired by an explicit owner decision record.
+
+    Missing/unreadable record means no suppression (fail-open to the
+    pre-decision behavior), never a blanket retirement.
+    """
+    try:
+        record = as_dict(load_json_artifact(OWNER_DECISIONS))
+    except Exception:
+        return {}
+    suppressed: dict[str, dict[str, Any]] = {}
+    for row in as_list(record.get("decisions")):
+        if not isinstance(row, dict):
+            continue
+        rec_id = row.get("id")
+        if rec_id and row.get("decision") == "decline_and_retire_the_recommendation":
+            suppressed[str(rec_id)] = {
+                "id": rec_id,
+                "decision": row.get("decision"),
+                "decided_by": row.get("decided_by"),
+                "decided_at_utc": row.get("decided_at_utc"),
+                "evidence": row.get("evidence"),
+            }
+    return suppressed
+
+
+ATTRIBUTION_BRIDGE_SCHEMA = "veritas.implementation_token_attribution_bridge.v1"
+# Freshness SLA reuses this packet's own carry-forward contract
+# (carry_forward_contract.stale_after_hours = 24): a bridge producer
+# timestamp older than 24h is stale. Only the producer's generated_at_utc
+# counts; filesystem mtime is never consulted.
+ATTRIBUTION_BRIDGE_FRESHNESS_SLA_HOURS = 24
+ATTRIBUTION_BRIDGE_OK_STATUSES = {"ok", "warning"}
+ATTRIBUTION_BRIDGE_TERMINAL_RESOLUTIONS = {
+    "complete",
+    "terminal_unavailable_only",
+    "historical_or_classified_unavailable_only",
+}
+
+
+def _strict_nonnegative_int(value: Any) -> int | None:
+    """Accept only true ints >= 0. Bool, float, str, and None are malformed."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int) and value >= 0:
+        return value
+    return None
+
+
+def _parse_bridge_timestamp(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def attribution_action_state(
+    model_run: dict[str, Any],
+    bridge: dict[str, Any],
+    now_utc: datetime | None = None,
+) -> dict[str, Any]:
+    """Partition live actionable attribution debt from historical terminal metadata.
+
+    Uses only the attribution bridge owner's exact action-required signals
+    (action_required_supported_runtime_gap_count, gap_resolution_status,
+    closeout_enforcement_required) guarded by exact schema/status/validation
+    shape and a fresh producer timestamp; never a time-only filter. Missing,
+    blank, unknown, future, stale, error, or conflicting signals yield
+    unknown, which callers must surface as a warning, never as monitor_only.
+    """
+    model_summary = as_dict(model_run.get("summary")) if isinstance(model_run, dict) else {}
+    recent_coverage = as_dict(model_summary.get("model_attribution_recent_window")).get("coverage")
+    source = bridge if isinstance(bridge, dict) else {}
+    base = {
+        "bridge_status": source.get("status"),
+        "bridge_generated_at_utc": source.get("generated_at_utc"),
+        "model_attribution_recent_coverage": recent_coverage,
+    }
+
+    def unknown(reason: str, required_count: Any = None, gap_resolution: Any = None, closeout_required: Any = None) -> dict[str, Any]:
+        return {
+            "state": "unknown",
+            "reason": reason,
+            "action_required_supported_runtime_gap_count": required_count,
+            "gap_resolution_status": gap_resolution,
+            "closeout_enforcement_required": closeout_required,
+            **base,
+        }
+
+    def decided(state: str, reason: str, required_count: int, gap_resolution: str, closeout_required: bool) -> dict[str, Any]:
+        return {
+            "state": state,
+            "reason": reason,
+            "action_required_supported_runtime_gap_count": required_count,
+            "gap_resolution_status": gap_resolution,
+            "closeout_enforcement_required": closeout_required,
+            **base,
+        }
+
+    if not isinstance(bridge, dict) or not bridge:
+        return unknown("bridge_missing_or_blank")
+    if bridge.get("schema") != ATTRIBUTION_BRIDGE_SCHEMA:
+        return unknown("bridge_schema_mismatch")
+    if bridge.get("status") not in ATTRIBUTION_BRIDGE_OK_STATUSES:
+        return unknown("bridge_status_not_ok")
+    validation = bridge.get("validation")
+    if not isinstance(validation, dict):
+        return unknown("bridge_validation_missing")
+    if validation.get("status") not in ATTRIBUTION_BRIDGE_OK_STATUSES:
+        return unknown("bridge_validation_not_ok")
+    if validation.get("errors"):
+        return unknown("bridge_validation_errors")
+    now = now_utc if now_utc is not None else datetime.now(timezone.utc)
+    generated = _parse_bridge_timestamp(bridge.get("generated_at_utc"))
+    if generated is None:
+        return unknown("bridge_timestamp_missing_or_malformed")
+    if generated > now:
+        return unknown("bridge_timestamp_in_future")
+    if (now - generated).total_seconds() / 3600.0 > ATTRIBUTION_BRIDGE_FRESHNESS_SLA_HOURS:
+        return unknown("bridge_stale")
+    summary = bridge.get("summary")
+    if not isinstance(summary, dict):
+        return unknown("bridge_summary_missing")
+    gap_resolution = summary.get("gap_resolution_status")
+    closeout_required = summary.get("closeout_enforcement_required")
+    required_count = _strict_nonnegative_int(summary.get("action_required_supported_runtime_gap_count"))
+    if required_count is None:
+        return unknown("bridge_required_count_malformed", gap_resolution=gap_resolution, closeout_required=closeout_required)
+    if closeout_required is not True and closeout_required is not False:
+        return unknown("bridge_closeout_absent_or_malformed", required_count=required_count, gap_resolution=gap_resolution)
+    if not isinstance(gap_resolution, str) or not gap_resolution:
+        return unknown("bridge_gap_resolution_unknown", required_count=required_count, closeout_required=closeout_required)
+    actionable = required_count > 0 or closeout_required is True or gap_resolution == "stamp_required"
+    if actionable:
+        conflict = (
+            (required_count > 0 and (closeout_required is False or gap_resolution in ATTRIBUTION_BRIDGE_TERMINAL_RESOLUTIONS))
+            or (closeout_required is True and (required_count == 0 or gap_resolution in ATTRIBUTION_BRIDGE_TERMINAL_RESOLUTIONS))
+            or (gap_resolution == "stamp_required" and (required_count == 0 or closeout_required is False))
+        )
+        if conflict:
+            return unknown("bridge_signals_conflict", required_count=required_count, gap_resolution=gap_resolution, closeout_required=closeout_required)
+        return decided("action_required", "explicit_bridge_action_signal", required_count, gap_resolution, closeout_required)
+    if required_count == 0 and closeout_required is False and gap_resolution in ATTRIBUTION_BRIDGE_TERMINAL_RESOLUTIONS:
+        return decided("monitor_only", "explicit_terminal_or_historical_only", required_count, gap_resolution, closeout_required)
+    return unknown("bridge_gap_resolution_unknown", required_count=required_count, gap_resolution=gap_resolution, closeout_required=closeout_required)
+
+
 def build_recommendations(
     cost: dict[str, Any],
     latency: dict[str, Any],
     health: dict[str, Any],
     queue: dict[str, Any],
     friction: dict[str, Any],
+    model_run: dict[str, Any],
+    bridge: dict[str, Any],
 ) -> list[dict[str, Any]]:
     recommendations: list[dict[str, Any]] = []
     token_ratio = cost.get("token_coverage_ratio")
@@ -370,14 +576,33 @@ def build_recommendations(
             "blocked_capture": ["raw prompts", "raw responses", "tool payloads", "system prompts", "secrets", "headers"],
             "next_action": "If approved later, add local-only token/cost metadata capture with redaction validation and rollback.",
         })
-    if as_float(cost.get("uncredited_lane_audit_rows")) > 0:
-        recommendations.append({
-            "id": "usage_source_reverification_required",
-            "severity": "warning",
-            "decision": "block_model_economics_claims_for_uncredited_lanes",
-            "rationale": "One or more completed model lanes are audit-visible but lack an independently reverified source-to-lane usage join.",
-            "next_action": "Repair the protected dispatch/source correlation path; do not use these lanes for performance, cost, latency, reliability, or savings comparisons.",
-        })
+    action_state = attribution_action_state(model_run, bridge).get("state")
+    live_debt_visible = as_float(cost.get("uncredited_lane_audit_rows")) > 0
+    if live_debt_visible or action_state == "action_required":
+        if action_state == "monitor_only":
+            recommendations.append({
+                "id": "historical_attribution_claim_limits",
+                "severity": "info",
+                "decision": "limit_model_economics_claims_to_supported_reverified_windows",
+                "rationale": "Uncredited lanes are audit-visible but the attribution bridge classifies the remaining supported-runtime gap as historical or terminal-unavailable; no live stamping action is required.",
+                "next_action": "Keep historical economics and model-performance limits visible as claim boundaries; do not use these lanes for performance, cost, latency, reliability, or savings comparisons.",
+            })
+        elif action_state == "action_required":
+            recommendations.append({
+                "id": "usage_source_reverification_required",
+                "severity": "warning",
+                "decision": "block_model_economics_claims_for_uncredited_lanes",
+                "rationale": "The attribution bridge reports live action-required supported-runtime gaps that lack an independently reverified source-to-lane usage join.",
+                "next_action": "Repair the protected dispatch/source correlation path; do not use these lanes for performance, cost, latency, reliability, or savings comparisons.",
+            })
+        else:
+            recommendations.append({
+                "id": "usage_source_reverification_required",
+                "severity": "warning",
+                "decision": "block_model_economics_claims_for_uncredited_lanes",
+                "rationale": "Uncredited lanes are audit-visible but the attribution bridge action-required signals are missing, stale, or malformed, so zero live debt cannot be assumed.",
+                "next_action": "Restore a fresh, schema-valid attribution bridge packet, then repair the protected dispatch/source correlation path; do not use these lanes for performance, cost, latency, reliability, or savings comparisons.",
+            })
     if latency.get("validator_slow") or as_float(latency.get("validator_elapsed_seconds")) > as_float(latency.get("validator_target_seconds"), 999999):
         recommendations.append({
             "id": "validator_latency_optimization",
@@ -420,6 +645,11 @@ def build_recommendations(
             "rationale": "Workflow advancement blockers should create implementation or owner-decision follow-ups, not disappear after a status packet.",
             "next_action": "Rank blocked workflows in the WF74 opportunity queue and open narrow lanes only when write surfaces are clear.",
         })
+    _tel_ok = bool(health.get("telemetry_fresh_valid"))
+    if not _tel_ok:
+        recommendations.append({"id": "otel_telemetry_stale_or_missing", "severity": "warning", "decision": "treat_telemetry_counts_fail_closed", "rationale": "Telemetry summary is not fresh/valid at consume time; use collector err-log health only.", "next_action": "Refresh runtime probe summary; do not infer model, finance, or execution readiness."})
+    if health.get("telemetry_owner_gated_depth"):
+        recommendations.append({"id": "otel_token_depth_owner_gated", "severity": "info", "decision": "keep_token_depth_owner_gated_no_approval", "rationale": "Token-depth packet is owner_decision_pending with validation warning; evidence only, not approval.", "next_action": "Await explicit owner decision; no capture, billing, allocation, or promotion claim."})
     recommendations.append({
         "id": "content_capture_boundary",
         "severity": "policy",
@@ -576,12 +806,20 @@ def build_payload() -> dict[str, Any]:
     queue = as_dict(load_json_artifact(WF74_OPPORTUNITY_QUEUE))
     cron_signal = as_dict(load_json_artifact(CRON_SIGNAL_SCORECARD))
     workflow_advancement = as_dict(load_json_artifact(WORKFLOW_ADVANCEMENT))
+    bridge = as_dict(load_json_artifact(ATTRIBUTION_BRIDGE))
 
     cost = model_cost_summary(model_run)
     latency = tool_latency_summary(tool_workflow, validator_timing, coding_runtime)
-    health = otel_health_summary(otel, windows)
+    health = otel_health_summary(otel, windows, as_dict(otel.get("telemetry_context")))
     friction = operational_friction_summary(cron_signal, workflow_advancement)
-    recommendations = build_recommendations(cost, latency, health, queue, friction)
+    recommendations = build_recommendations(cost, latency, health, queue, friction, model_run, bridge)
+    suppressions = owner_decision_suppressions()
+    if suppressions:
+        recommendations = [
+            rec
+            for rec in recommendations
+            if not (isinstance(rec, dict) and rec.get("id") in suppressions)
+        ]
     carry_forward = build_carry_forward_contract(cost, health, recommendations)
     auto_router = build_auto_implementation_router(recommendations, queue)
     payload: dict[str, Any] = {
@@ -602,6 +840,7 @@ def build_payload() -> dict[str, Any]:
             source_status(WF74_OPPORTUNITY_QUEUE),
             source_status(CRON_SIGNAL_SCORECARD),
             source_status(WORKFLOW_ADVANCEMENT),
+            source_status(ATTRIBUTION_BRIDGE),
         ],
         "redaction_policy": {
             "allowed": [
@@ -627,10 +866,12 @@ def build_payload() -> dict[str, Any]:
                 "customer/account/brokerage data",
             ],
         },
+        "owner_decision_suppressions": list(suppressions.values()),
         "learning_summaries": {
             "otel_health": health,
             "token_cost": cost,
             "tool_latency": latency,
+            "attribution_action_state": attribution_action_state(model_run, bridge),
             "learning_ledger": {
                 "status": learning.get("status"),
                 "summary": as_dict(learning.get("summary")),

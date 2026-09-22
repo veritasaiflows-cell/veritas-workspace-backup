@@ -469,11 +469,13 @@ OVERHEAD_FRICTION_FINDINGS: list[dict[str, Any]] = [
     },
 ]
 
+QA_LANE_MODEL = "ollama-cloud/glm-5.3:cloud"
+
 PARALLEL_OVERHEAD_FIX_PLAN: list[dict[str, Any]] = [
     {
         "rank": 1,
         "lane": "WF72 A2 support-readiness QA",
-        "model": "openai/gpt-5.6-terra",
+        "model": QA_LANE_MODEL,
         "objective": "Prove WF72 remains support-only and recurring SQL retail-grade readiness churn is absent.",
         "allowed_writes": ["tmp/parallel-lanes/wf72-a2-readonly-qa.json"],
         "acceptance": [
@@ -485,7 +487,7 @@ PARALLEL_OVERHEAD_FIX_PLAN: list[dict[str, Any]] = [
     {
         "rank": 2,
         "lane": "WF78 event-rerouting / quote-readiness QA",
-        "model": "openai/gpt-5.6-terra",
+        "model": QA_LANE_MODEL,
         "objective": "Reduce broad expansion proof overhead by keeping WF78 focused on evidence repair and owner-card readiness.",
         "allowed_writes": [
             "tmp/parallel-lanes/wf78-event-rerouting-qa.json",
@@ -500,7 +502,7 @@ PARALLEL_OVERHEAD_FIX_PLAN: list[dict[str, Any]] = [
     {
         "rank": 3,
         "lane": "WF73 closeout compression QA",
-        "model": "openai/gpt-5.6-terra",
+        "model": QA_LANE_MODEL,
         "objective": "Ensure control-plane validators are run at the right layer and not duplicated after every small proof refresh.",
         "allowed_writes": ["tmp/parallel-lanes/wf73-closeout-compression-qa.json"],
         "acceptance": [
@@ -512,7 +514,7 @@ PARALLEL_OVERHEAD_FIX_PLAN: list[dict[str, Any]] = [
     {
         "rank": 4,
         "lane": "WF76 cron signal classifier",
-        "model": "openai/gpt-5.6-terra",
+        "model": QA_LANE_MODEL,
         "objective": "Separate known blocked cron signals from new/escalated signals before they create implementation work.",
         "allowed_writes": ["tmp/parallel-lanes/wf76-cron-signal-classifier.json"],
         "acceptance": [
@@ -572,8 +574,8 @@ def validate_review(payload: dict[str, Any]) -> dict[str, Any]:
             if not finding.get(key):
                 errors.append(f"{finding.get('friction_id', 'unknown')}:missing_{key}")
     for lane in payload.get("parallel_overhead_fix_plan", []):
-        if lane.get("model") != "openai/gpt-5.6-terra":
-            errors.append(f"{lane.get('lane', 'unknown')}:model_not_terra")
+        if lane.get("model") != QA_LANE_MODEL:
+            errors.append(f"{lane.get('lane', 'unknown')}:model_not_qa_lane_model")
         allowed_writes = lane.get("allowed_writes", [])
         if not isinstance(allowed_writes, list) or not allowed_writes:
             errors.append(f"{lane.get('lane', 'unknown')}:missing_allowed_writes")

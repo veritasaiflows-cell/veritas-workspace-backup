@@ -1,0 +1,21 @@
+{
+ "model_slot": "sol",
+ "requested_model": "openai/gpt-5.6-sol",
+ "model_applied": true,
+ "case": "T6-induction-and-planning",
+ "repetition": 2,
+ "turn": 1,
+ "prompt_file": "prompts/T6-induction-and-planning.txt",
+ "prompt_sha256": "c0fdf4ef20251385edca269c368b53ca86eaa88594b2f0b84feb501961817fa0",
+ "response_text": "{\"induced\":{\"plum\":\"snvm\",\"zebra\":\"dhdsb\"},\"undetermined\":[\"Cat7\"],\"makespan\":13,\"critical_path\":[\"A\",\"C\",\"E\",\"F\"]}",
+ "tool_trace": [],
+ "grade": {
+  "json_valid": true,
+  "parse_error": null,
+  "format": true,
+  "factual": true,
+  "tools": null,
+  "tool_findings": [],
+  "strict_pass": true
+ }
+}

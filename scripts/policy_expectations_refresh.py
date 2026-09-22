@@ -344,7 +344,6 @@ def build_policy_freshness_contract(
             "owner": "policy_expectations_refresh.py",
             "command": "python scripts\\policy_expectations_refresh.py",
             "follow_on_commands": [
-                "python scripts\\market_state_refresh.py",
                 "python scripts\\macro_regime_refresh.py",
                 "python scripts\\generate_dashboard.py",
                 "python scripts\\validate_dashboard_state.py --write",

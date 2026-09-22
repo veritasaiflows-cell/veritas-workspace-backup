@@ -112,6 +112,30 @@ def test_alert_chain_blocker_maps_to_safe_refresh() -> None:
         assert "alerts_chain_morning" in action["commands"]
 
 
+def test_tmp_cleanup_signal_maps_to_protected_dry_run_refresh() -> None:
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        configure_paths(module, Path(tmpdir))
+        signal = {
+            "source": "cron_job:Runtime - Sunday Generated Artifact Cleanup Dry Run",
+            "signal_class": "BLOCKED",
+            "status": "blocked",
+            "reason": "artifact_blocked_or_authority_widened",
+            "artifact": "tmp/tmp-cleanup-report.json",
+        }
+        write_json(module.CRON_CONTROL, cron_packet(signal))
+        write_json(module.ROOT / signal["artifact"], {"status": "ok", "authority": {"review_only": True}})
+        report = module.build_report(args(module))
+        action = report["actions"][0]
+        assert action["handler_id"] == "tmp_cleanup_dry_run_refresh"
+        assert action["classification"] == "auto_refresh"
+        assert action["commands"][0] == "tmp_cleanup_dry_run"
+        command, _timeout = module.COMMANDS["tmp_cleanup_dry_run"]
+        assert "--dry-run" in command
+        assert "--apply" not in command
+        assert module.command_is_allowed(command)
+
+
 def test_retired_routes_have_no_affirmative_command_handler_or_signal_surface() -> None:
     module = load_module()
     rendered_commands = json.dumps({key: value[0] for key, value in module.COMMANDS.items()}).lower()

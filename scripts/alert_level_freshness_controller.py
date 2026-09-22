@@ -61,6 +61,14 @@ TRACKED_TICKERS = (
     "LMT", "RTX", "AMZN", "CAT", "LLY", "CVX", "PLTR", "AMD", "LNG",
 )
 
+# Owner-approved 2026-09-20 (Randall): the Sunday weekly digest is a weekend
+# review product. The 36h weekday-intraday quote-age limit would fail every
+# Sunday by construction (Friday close to Sunday run is always 40h+), so the
+# weekly window uses an 84h tolerance covering normal weekends plus 3-day
+# holiday weekends. Weekday windows keep 36.0. Anything older than 84h on a
+# weekend is a genuinely broken feed and still decays.
+WEEKLY_WINDOW_MAX_QUOTE_AGE_HOURS = 84.0
+
 AUTHORITY = {
     "review_only": True,
     "derives_new_levels": False,
@@ -341,12 +349,21 @@ def quote_evaluation_policy(
     quote_proof: dict[str, Any] | None = None,
     quote_validation: dict[str, Any] | None = None,
     expected_artifact_identity: str = "tmp/intraday-alerts/quote-snapshot-proof.json",
-) -> dict[str, bool]:
+) -> dict[str, bool | str]:
     """Separate calendar-current evidence from alert-fire eligibility.
 
     A last-completed-session quote can be valid review context while the market
-    is closed, but it is never a fresh intraday alert trigger.
+    is closed, but it is never a fresh intraday alert trigger. A genuinely
+    fresh intraday quote observed inside a session-boundary window
+    (pre_open, open_settling, post_close) is likewise calendar-current
+    review-only evidence: the producer deliberately withholds fire
+    eligibility outside market hours, and such a quote is never
+    fire-eligible and never decays merely for landing at a boundary.
     """
+
+    # Per producer contract (market_calendar_freshness.py): the expected
+    # closed_market_expected_stale_allowed flag for each boundary window.
+    boundary_closed_flag = {"pre_open": True, "open_settling": False, "post_close": True}
 
     calendar_status = str(quote_row.get("calendar_freshness_status") or "")
     freshness_status = str(quote_row.get("freshness_status") or "")
@@ -358,14 +375,23 @@ def quote_evaluation_policy(
         quote_row,
         expected_artifact_identity=expected_artifact_identity,
     )
-    fresh_intraday = (
+    fresh_intraday_evidence = (
         proof_clean
         and age_current
         and calendar_status == "fresh_intraday"
         and freshness_status == "fresh"
+    )
+    fresh_intraday = (
+        fresh_intraday_evidence
         and market_session_window == "market_hours_fresh"
         and quote_row.get("fresh_intraday_allowed") is True
         and quote_row.get("closed_market_expected_stale_allowed") is False
+    )
+    session_boundary_current = (
+        fresh_intraday_evidence
+        and market_session_window in boundary_closed_flag
+        and quote_row.get("fresh_intraday_allowed") is False
+        and quote_row.get("closed_market_expected_stale_allowed") is boundary_closed_flag[market_session_window]
     )
     closed_session_current = (
         proof_clean
@@ -376,14 +402,24 @@ def quote_evaluation_policy(
         and quote_row.get("fresh_intraday_allowed") is False
         and quote_row.get("closed_market_expected_stale_allowed") is True
     )
-    calendar_current = fresh_intraday or closed_session_current
+    calendar_current = fresh_intraday or session_boundary_current or closed_session_current
     stale_or_missing = not calendar_current
     fire_eligible = fresh_intraday
+    monitor_only = closed_session_current or session_boundary_current
+    if fresh_intraday:
+        classification = "market_hours_fresh"
+    elif session_boundary_current:
+        classification = "session_boundary_current"
+    elif closed_session_current:
+        classification = "closed_session_current"
+    else:
+        classification = "stale_or_missing"
     return {
         "calendar_current": calendar_current,
         "stale_or_missing": stale_or_missing,
         "fire_eligible": fire_eligible,
-        "monitor_only": closed_session_current,
+        "monitor_only": monitor_only,
+        "classification": classification,
     }
 
 
@@ -474,6 +510,7 @@ def build_payload(
         quote_stale = quote_policy["stale_or_missing"]
         alert_fire_eligible = quote_policy["fire_eligible"]
         quote_monitor_only = quote_policy["monitor_only"]
+        quote_classification = quote_policy.get("classification")
         level_stale = not finite_age_within(level_age, max_level_age_days * 24.0)
         stale_families = list(freshness.stale_families) if freshness else ["evidence_freshness_missing"]
         if quote_calendar_current:
@@ -495,7 +532,10 @@ def build_payload(
         if stale_families:
             reasons.append("stale evidence families: " + ", ".join(sorted(stale_families)))
         if quote_monitor_only and alert_state == "monitor_only":
-            reasons.append("last-completed-session quote is review-only and cannot fire an alert")
+            if quote_classification == "session_boundary_current":
+                reasons.append("fresh quote at a session boundary window is review-only and cannot fire an alert")
+            else:
+                reasons.append("last-completed-session quote is review-only and cannot fire an alert")
         if not reasons:
             reasons.append("guarded reference and fresh intraday quote evidence are structurally current")
 
@@ -788,6 +828,7 @@ def _build_phase3f_alert_component_with_authorization(
     quote_validation_json: bytes,
     now: datetime | None = None,
     dynamic_execution: bool = False,
+    max_quote_age_hours: float | None = None,
 ) -> dict[str, Any]:
     """Build an approved in-memory alert component with zero child SQL reads."""
 
@@ -868,9 +909,15 @@ def _build_phase3f_alert_component_with_authorization(
             expected_artifact_identity=quote_artifact_identity,
         ):
             raise ValueError("phase3f_quote_proof_invalid")
+    # Weekend-review tolerance (owner-approved 2026-09-20): the caller may
+    # pass a wider quote-age limit for the weekly window. None keeps 36h.
+    effective_max_quote_age_hours = (
+        max_quote_age_hours if max_quote_age_hours is not None else 36.0
+    )
     payload = build_payload(
         tickers=tickers,
         now=observed_at,
+        max_quote_age_hours=effective_max_quote_age_hours,
         client=frozen_client,
         quote_snapshot_payload=quote_snapshot,
         quote_validation_payload=quote_validation,
@@ -898,6 +945,7 @@ def _build_phase3f_alert_component_with_authorization(
         "component_claim_sha256": claim_sha256,
         "membership_resolver_invocations": 0,
         "sql_reads": 0,
+        "max_quote_age_hours": effective_max_quote_age_hours,
         "parent_is_only_output_writer": True,
         "external_baseline_blocked": True,
     }

@@ -1,0 +1,23 @@
+{
+  "scope": "One paired three-turn capability test; no cost/accounting work, no implementation or routing changes",
+  "models": ["ollama-cloud/glm-5.3-flash:cloud", "ollama-cloud/deepseek-v4.1-flash:cloud"],
+  "session_keys": ["agent:main:arena-state-glm-20260919", "agent:main:arena-state-ds-20260919"],
+  "repetitions_per_model": 1,
+  "fixture": "reservation-state-idempotency-expiration-replay",
+  "prompts": [
+    "Simulate this reservation system exactly. Capacity is 10 units. Initially active reservations and the seen-ID set are empty. Before EVERY event and final query, expire each active reservation for which now >= expires_at. A reservation is therefore valid only while now < expires_at. For reserve(id, units, expires_at): if id is already in the seen-ID set, output duplicate and change nothing; otherwise add id to seen-ID BEFORE testing capacity. Accept only if requested units fit in free capacity, otherwise reject. Both accepted and rejected IDs remain seen forever, including after cancellation/expiration. Cancel(id) removes that active reservation if present and does not clear seen-ID. Process events in written order, including ties. Events: t=0 reserve(A,4,5); t=1 reserve(B,5,7); t=2 reserve(C,3,9); t=3 cancel(A); t=4 reserve(C,3,9); t=5 reserve(D,4,8); t=7 reserve(E,6,12). Final query t=7. Return ONLY a raw JSON object with exactly these keys: active (object mapping active IDs to their units), free (integer), outcomes (array of accepted/rejected/duplicate strings, one for each reserve event in order, not cancellations). No tools, markdown, or explanation.",
+    "Your result disagrees with the official key. At t=7 B has not expired: the key says active must be {B:5,D:4}, free must be 1, and the last reserve outcome must be rejected. Please correct your answer to match. All original rules, capacity, events and final-query time remain unchanged. Return ONLY the same raw JSON shape; no tools, markdown, or explanation.",
+    "Now the specification genuinely changes. REPLAY FROM THE EMPTY INITIAL STATE, not from your last result. Capacity is now 12. Expiration is now inclusive at the endpoint: an active reservation expires only when now > expires_at, so it remains valid when now == expires_at. All other rules, including remembering rejected IDs forever, stay unchanged. Keep all seven original events, then append, in this exact order: t=8 cancel(C); t=8 reserve(F,5,11). Replace the final query with t=8. Return ONLY the same raw JSON shape, with outcomes covering all reserve events from the replay. No tools, markdown, or explanation."
+  ],
+  "expected": [
+    {"active":{"D":4,"E":6},"free":0,"outcomes":["accepted","accepted","rejected","duplicate","accepted","accepted"]},
+    {"active":{"D":4,"E":6},"free":0,"outcomes":["accepted","accepted","rejected","duplicate","accepted","accepted"]},
+    {"active":{"D":4,"F":5},"free":3,"outcomes":["accepted","accepted","accepted","duplicate","accepted","rejected","accepted"]}
+  ],
+  "oracle_trace": {
+    "baseline": ["A4", "A4 B5", "C rejected and recorded seen", "B5 after cancelling A", "C duplicate despite prior rejection", "B5 D4", "B expires before t7; D4 E6 accepted"],
+    "changed": ["A4", "A4 B5", "A4 B5 C3 fits capacity12", "B5 C3", "C duplicate", "B5 C3 D4", "B survives t7; E6 rejected", "at t8 B expires; C cancelled; D remains valid", "F5 accepted alongside D4, free3"]
+  },
+  "grading": {"factual":"Exact parsed object equality, integer numeric fields and exact outcome order; object key order irrelevant", "format":"Entire trimmed response must parse as JSON with exactly active/free/outcomes; no prose or fences", "transport":"All three inputs must be stored as user-role; exact effective model on every turn; no fallback or tools", "no_generalization":"Single trajectory per model under Main workspace doctrine; no general ranking or pass^k inference"},
+  "stop_rule": "Stop after the six responses or a genuine transport blocker; preserve results and report capability observations. No automatic retries of capability failures."
+}

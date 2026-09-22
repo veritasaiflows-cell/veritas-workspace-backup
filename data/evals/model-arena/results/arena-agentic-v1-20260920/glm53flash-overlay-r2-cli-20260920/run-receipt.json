@@ -1,0 +1,100 @@
+{
+  "artifacts": {
+    "authorization.json": {
+      "bytes": 660,
+      "sha256": "e658dbce38601467cfc5c4caa3eaf66614ceaa564088fd8a8c7e6b367edabc95"
+    },
+    "dimensional-rescore.json": {
+      "bytes": 13607,
+      "sha256": "0c8bbee5e7962171ac2dcdd8717777f504cb4e3d9d2f71c09d3ee880cc8058d4"
+    },
+    "dispatch-plan.json": {
+      "bytes": 5737,
+      "sha256": "8545070cde86577bb693d113dab792aa3c32499bec7d43441f6d2a186b28c180"
+    },
+    "graded-results.json": {
+      "bytes": 8664,
+      "sha256": "e2c702891db31f8a0f16af9fcd53c2a1bd96b7b1fcae2caf6ba050ce0c32d743"
+    },
+    "responses.json": {
+      "bytes": 2967,
+      "sha256": "aa3875ca6426c77882bd989cd376225e580c0dd4b65b07df120b4351d80ca021"
+    },
+    "transport-receipts.json": {
+      "bytes": 9823,
+      "sha256": "3455780e691addc816aa738bcac99896ca8cb7461efde38b3d7b71c1d23a1db3"
+    }
+  },
+  "authorization": {
+    "authorized_at": "2026-09-20T16:57:00-07:00",
+    "authorized_by": "gateway-owner",
+    "cases": 12,
+    "model_scope": [
+      "ollama-cloud/glm-5.3-flash:cloud"
+    ],
+    "reps": 1,
+    "source": "explicit WebChat owner request to rerun GLM Flash on functional-lab CLI"
+  },
+  "dispatch_gate_after_run": {
+    "authorized_at": null,
+    "authorized_by": null,
+    "dispatch_ready": false,
+    "scope_models": []
+  },
+  "envelope": "arena-agentic-v1-20260920",
+  "execution": {
+    "attempted": 12,
+    "completed": 11,
+    "planned": 12,
+    "retries": 0,
+    "timeout": 1,
+    "timeout_case": "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4",
+    "timeout_seconds": 600
+  },
+  "grading": {
+    "contaminated": 0,
+    "dimensional_score": 0.8889,
+    "family_scores_clean": {
+      "T1": 0.8334,
+      "T2": 1.0,
+      "T3": 1.0,
+      "T4": 1.0,
+      "T5": 1.0,
+      "T6": 0.5
+    },
+    "misses": [
+      "36072319 T1 answered",
+      "75c25de6 T6 timeout_empty"
+    ],
+    "strict_clean": "10/12"
+  },
+  "model": "ollama-cloud/glm-5.3-flash:cloud",
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "recorded_at_utc": "2026-09-21T00:11:08.251804+00:00",
+  "schema": "veritas.arena_run_receipt.v1",
+  "strict_hits": [
+    "14d6a2f3 T3",
+    "1707973c T2",
+    "23273237 T5",
+    "430898a2 T2",
+    "73cd99b6 T4",
+    "a329ef46 T3",
+    "ad216115 T6",
+    "b5f7b370 T1",
+    "c8dbb0b4 T4",
+    "e82ba401 T5"
+  ],
+  "transport": {
+    "agent_id": "oxalpha-functional-lab",
+    "candidate_mount": [
+      "candidate-visible-bank.json",
+      "fixtures/"
+    ],
+    "cli": "openclaw agent --json --timeout 600 --thinking high --model ollama-cloud/glm-5.3-flash:cloud",
+    "effective_model_receipts": "11/11 exact; 1 timeout empty",
+    "fallbacks": 0,
+    "prior_collector_run": "glm53flash-overlay-r2-20260920 (4/12) left untouched",
+    "reroutes": 0,
+    "sandbox": "docker session sandbox"
+  }
+}

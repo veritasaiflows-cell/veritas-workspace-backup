@@ -451,6 +451,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Preserve unrefreshed records from the existing output artifact.",
     )
+    parser.add_argument(
+        "--apply-watchlist-closeouts",
+        action="store_true",
+        help="Apply eligible watchlist closeouts to portfolio-config.json; requires explicit owner authorization.",
+    )
     args = parser.parse_args(argv)
     if args.merge_existing and not args.tickers:
         parser.error("--merge-existing requires --tickers")
@@ -558,7 +563,18 @@ def main(argv: list[str] | None = None) -> None:
         lifecycle_closeouts = build_watchlist_lifecycle_closeouts(config=config, records=records, today=today)
         lifecycle_holds = lifecycle_closeouts + build_existing_watchlist_lifecycle_holds(config=config, records=records, today=today)
         apply_closeout_hold_to_records(records, lifecycle_holds)
-        lifecycle_apply = apply_watchlist_lifecycle_closeouts(config, lifecycle_closeouts)
+        # Collection is review-only by default. An earnings refresh may not
+        # silently mutate the legacy watchlist/configuration surface.
+        lifecycle_apply = (
+            apply_watchlist_lifecycle_closeouts(config, lifecycle_closeouts)
+            if args.apply_watchlist_closeouts
+            else {
+                "applied": False,
+                "count": 0,
+                "tickers": [],
+                "reason": "owner_authorization_not_requested",
+            }
+        )
 
     existing_payload = load_existing_payload() if shard_mode and args.merge_existing else {}
     existing_records = existing_payload.get("records") if isinstance(existing_payload.get("records"), list) else []

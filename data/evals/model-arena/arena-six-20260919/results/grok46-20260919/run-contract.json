@@ -1,0 +1,27 @@
+{
+  "schema": "veritas.arena_six_candidate_run_contract.v1",
+  "envelope_id": "arena-six-20260919",
+  "keys_sha256": "f819f97448cc0c92321c8b824c293cd863a7b1befbb68eedc058c6e6466f9003",
+  "models": {
+    "grok46": "xai/grok-4.6"
+  },
+  "agent": "qa-redteam",
+  "route": "gateway-backed openclaw agent with file-based prompts",
+  "thinking": "high",
+  "timeout_s_per_turn": 600,
+  "repetitions": 2,
+  "cases": [
+    "T1-settlement-cascade",
+    "T2-event-revert-ambiguity",
+    "T3-evidence-retraction-chain",
+    "T4-multihop-read-recovery",
+    "T5-handoff-authority-control",
+    "T6-induction-and-planning"
+  ],
+  "attempts_per_model": 12,
+  "turns_per_model": 20,
+  "max_parallel_model_processes": 1,
+  "retry_policy": "zero retries",
+  "started_utc": "2026-09-20T00:09:42.225464Z",
+  "ended_utc": "2026-09-20T00:35:31.241245Z"
+}

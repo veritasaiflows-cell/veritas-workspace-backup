@@ -1,0 +1,25 @@
+Solve by reasoning only. Do not use tools and do not execute code.
+
+A settlement engine allocates a budget across orders. Each order has a positive weight w, a minimum fill lo, and a maximum fill hi, with 0 <= lo <= hi.
+
+A valid allocation satisfies ALL of the following properties at the same time:
+
+P1. Every order i receives x_i with lo_i <= x_i <= hi_i.
+P2. The allocation exhausts the budget exactly: the sum of all x_i equals the budget.
+P3. Among orders that are not held at one of their own bounds, allocation is exactly proportional to weight: for any two such orders i and j, x_i / w_i equals x_j / w_j.
+P4. An order is held at its lower bound only if strict proportionality would have given it less than lo_i, and held at its upper bound only if strict proportionality would have given it more than hi_i.
+
+If no allocation can satisfy P1 and P2, the case is infeasible.
+
+Rounding is applied only after the exact real-valued allocation is determined. Round every x_i to 2 decimals using Python's round, which is banker's rounding. Then compute residual = budget - sum(rounded values). If residual is not 0, add it to the single largest rounded value among orders NOT held at either of their own bounds; if several tie for largest, choose the one with the lowest index. Round that adjusted value to 2 decimals.
+
+Each case below is a separate independent problem. Orders are indexed from 0 in the order listed.
+
+cascade1: budget 40, orders [w=7 lo=0 hi=10], [w=1 lo=6 hi=100], [w=1 lo=0 hi=100], [w=1 lo=0 hi=100]
+cascade2: budget 50, orders [w=6 lo=0 hi=10], [w=2 lo=0 hi=12], [w=1 lo=0 hi=100], [w=1 lo=0 hi=100]
+residual: budget 100, orders [w=1 lo=0 hi=100], [w=1 lo=0 hi=100], [w=1 lo=0 hi=100]
+infeasible: budget 5, orders [w=1 lo=4 hi=10], [w=1 lo=6 hi=10]
+
+Also report cascade2_rounds. This is a separate counting question about cascade2 only. Consider this procedure: repeatedly give every not-yet-held order a share strictly proportional to its weight out of the budget not already committed to held orders, then hold at its violated bound every such order whose share falls outside its own bounds. cascade2_rounds is the number of distinct rounds in which at least one order became newly held. This counting procedure does not define the allocation. The allocation for every case is defined solely by P1 through P4 above, and the two can disagree.
+
+Return ONLY raw JSON with exactly these keys: cascade1, cascade2, residual, infeasible, cascade2_rounds. Each of the four case keys maps to an object {"feasible": boolean, "alloc": array of numbers}. For an infeasible case use {"feasible": false, "alloc": []}. cascade2_rounds is an integer. No prose, no explanation, no code fences.

@@ -1,0 +1,110 @@
+[
+  {
+    "duration_ms": 115477,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T3",
+    "instance_id": "14d6a2f3cf03498530dcd79f71ea54b4c300b4794687157446b9b57e00793c16",
+    "response_chars": 2096,
+    "status": "ok"
+  },
+  {
+    "duration_ms": 62288,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T2",
+    "instance_id": "1707973cdad85f7eff69acd5d1351267c4fe8a37d1849cafba5e313eb541003c",
+    "response_chars": 3328,
+    "status": "ok"
+  },
+  {
+    "duration_ms": 468697,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T5",
+    "instance_id": "23273237a6525b0c4dd195ad0bbf0f1b6104d0ca86d9920936339e183a1c1ff0",
+    "response_chars": 1903,
+    "status": "ok"
+  },
+  {
+    "duration_ms": 33815,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T1",
+    "instance_id": "36072319fd2e5337b9cfb587fdcdb858010874306d8f4c50ff5ea438c8c7518f",
+    "response_chars": 33,
+    "status": "ok"
+  },
+  {
+    "duration_ms": 480599,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T2",
+    "instance_id": "430898a2d5b5c3f02ebdccc66dc12ddc78c2c454941c9c8033eae2a8762b0545",
+    "response_chars": 1975,
+    "status": "ok"
+  },
+  {
+    "duration_ms": 74721,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T4",
+    "instance_id": "73cd99b6dffa2ae64ce139b5db95c59dd4f4678f6ee4ab60f08114f6ee3028e8",
+    "response_chars": 267,
+    "status": "ok"
+  },
+  {
+    "duration_ms": 566462,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T6",
+    "instance_id": "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4",
+    "response_chars": 1589,
+    "status": "ok"
+  },
+  {
+    "duration_ms": 369135,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T3",
+    "instance_id": "a329ef46d6f1a6336e6b64b7b2368cfbb028daf129b881b31bbdc0db6220417d",
+    "response_chars": 1989,
+    "status": "ok"
+  },
+  {
+    "duration_ms": 613924,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 1,
+    "family": "T6",
+    "instance_id": "ad2161157921538089853178cdb459bbaed40f96fa77329a69e4be635c5af0bc",
+    "response_chars": 129,
+    "status": "transport_failed"
+  },
+  {
+    "duration_ms": 322060,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T1",
+    "instance_id": "b5f7b370f7d8445a01c7698b67b647d5eb76389024dbd53b3dee506299b0eda3",
+    "response_chars": 25,
+    "status": "ok"
+  },
+  {
+    "duration_ms": 270269,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T4",
+    "instance_id": "c8dbb0b4dc87e3974275cca677c987e0be2c2b417574487c9bec0dfd56e04d6a",
+    "response_chars": 620,
+    "status": "ok"
+  },
+  {
+    "duration_ms": 353894,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T5",
+    "instance_id": "e82ba4016b1d11f68a84bd936fc50dda81ff052a5de6f578de090a3278c763ac",
+    "response_chars": 1660,
+    "status": "ok"
+  }
+]

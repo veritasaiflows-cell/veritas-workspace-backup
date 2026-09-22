@@ -19,7 +19,10 @@
   },
   "failureAlert": {
     "after": 1,
-    "mode": "announce"
+    "mode": "announce",
+    "channel": "telegram",
+    "to": "telegram:8650152206",
+    "accountId": "default"
   },
   "payload": {
     "kind": "command",
@@ -46,12 +49,37 @@
     "payload.timeoutSeconds"
   ],
   "expected_artifacts": [
-    {"path": "tmp/token-usage-ledger-current.json", "role": "token_usage_warning_evidence", "required": true, "blocking": false},
-    {"path": "tmp/token-budget-status.json", "role": "token_budget_warning_evidence", "required": true, "blocking": false},
-    {"path": "tmp/token-efficiency-scorecard.json", "role": "token_efficiency_warning_evidence", "required": true, "blocking": false},
-    {"path": "tmp/token-efficiency-review-packet.json", "role": "token_review_warning_evidence", "required": true, "blocking": false},
+    {
+      "path": "tmp/token-usage-ledger-current.json",
+      "role": "token_usage_warning_evidence",
+      "required": true,
+      "blocking": false
+    },
+    {
+      "path": "tmp/token-budget-status.json",
+      "role": "token_budget_warning_evidence",
+      "required": true,
+      "blocking": false
+    },
+    {
+      "path": "tmp/token-efficiency-scorecard.json",
+      "role": "token_efficiency_warning_evidence",
+      "required": true,
+      "blocking": false
+    },
+    {
+      "path": "tmp/token-efficiency-review-packet.json",
+      "role": "token_review_warning_evidence",
+      "required": true,
+      "blocking": false
+    },
     "tmp/cron-predispatch-efficiency-plan.json",
-    {"path": "tmp/agi-os-eval-gate-packet.json", "role": "agi_eval_warning_evidence", "required": true, "blocking": false},
+    {
+      "path": "tmp/agi-os-eval-gate-packet.json",
+      "role": "agi_eval_warning_evidence",
+      "required": true,
+      "blocking": false
+    },
     {
       "path": "tmp/agi-harness-readiness-packet.json",
       "role": "agi_harness_readiness_evidence",
@@ -75,7 +103,12 @@
     "tmp/prompt-book-pm-job-packet.md",
     "tmp/cron-contract-validator.json",
     "tmp/cron-efficiency-review-runner.json",
-    {"path": "tmp/veritas-status-card.json", "role": "status_card_warning_evidence", "required": true, "blocking": false}
+    {
+      "path": "tmp/veritas-status-card.json",
+      "role": "status_card_warning_evidence",
+      "required": true,
+      "blocking": false
+    }
   ],
   "authority_boundary": {
     "review_only": true,

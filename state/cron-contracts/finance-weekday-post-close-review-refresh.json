@@ -21,18 +21,23 @@
   },
   "failureAlert": {
     "after": 1,
-    "mode": "announce"
+    "mode": "announce",
+    "channel": "telegram",
+    "to": "telegram:8650152206",
+    "accountId": "default"
   },
   "payload": {
     "kind": "command",
     "argv": [
-      "python",
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
       "scripts\\run_alerts_recommendations_chain.py",
       "post-close",
-      "--timeout-seconds",
-      "120",
+      "--dynamic-entitlement-scope",
+      "--recurring-reference-inputs",
       "--write",
-      "--validate"
+      "--validate",
+      "--scope-origin",
+      "phase3f_dynamic_entitlement"
     ],
     "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
     "timeoutSeconds": 600
@@ -72,6 +77,6 @@
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-08-30T02:07:00Z",
-  "contract_update_reason": "Replaced the legacy deployment/trade-grade post-close launcher with the bounded alerts-and-recommendations chain; schedule and failure alert remain unchanged."
+  "updated_at_utc": "2026-09-14T20:55:00Z",
+  "contract_update_reason": "G7 Path A: argv-only cutover to dynamic entitlement + recurring reference inputs; schedule, delivery, failureAlert, and timeoutSeconds unchanged. No --send."
 }

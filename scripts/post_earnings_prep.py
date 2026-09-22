@@ -41,6 +41,8 @@ DEPLOY_PATH = TMP / "deployment-check.json"
 TRIGGER_PATH = TMP / "trigger-sheet.json"
 EARNINGS_PATH = TMP / "earnings-calendar.json"
 STATE_PATH = TMP / "market-state.json"
+OFFICIAL_BRIDGE_PATH = TMP / "official-earnings-bridge.json"
+ALERT_CONTROLLER_PATH = TMP / "alert-level-freshness-controller.json"
 OUT_PATH = TMP / "post-earnings-prep.json"
 STALE_HOURS = 24
 # Trading-day back-window. 7 trading days ≈ 9-11 calendar days, which keeps the
@@ -340,17 +342,72 @@ def infer_phase(days_to_earnings: int | None) -> str:
     return "pre_earnings"
 
 
+def bridges_by_ticker(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    return {
+        str(row.get("ticker") or "").upper(): row
+        for row in payload.get("bridges", []) or []
+        if isinstance(row, dict) and str(row.get("ticker") or "").strip()
+    }
+
+
+def alerts_by_ticker(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    return {
+        str(row.get("ticker") or "").upper(): row
+        for row in payload.get("rows", []) or []
+        if isinstance(row, dict) and str(row.get("ticker") or "").strip()
+    }
+
+
+def reconciliation_requirements(
+    *,
+    phase: str,
+    bridge: dict[str, Any],
+    alert: dict[str, Any],
+) -> dict[str, Any]:
+    """Describe post-print review work without mutating notes or alert canon."""
+    official = bridge.get("official_earnings_bridge") if isinstance(bridge.get("official_earnings_bridge"), dict) else {}
+    post_earnings = phase == "post_earnings"
+    return {
+        "review_only": True,
+        "scorecard_required": post_earnings,
+        "thesis_reassessment_required": post_earnings,
+        "catalyst_reconciliation_required": post_earnings,
+        "alert_reconciliation_required": post_earnings,
+        "official_evidence": {
+            "source": "tmp/official-earnings-bridge.json",
+            "available": bool(bridge),
+            "status": bridge.get("status") if bridge else "unavailable",
+            "evidence_status": official.get("official_evidence_status") if official else "unavailable",
+            "period_end": bridge.get("period_end") if bridge else None,
+        },
+        "alert_context": {
+            "source": "tmp/alert-level-freshness-controller.json",
+            "available": bool(alert),
+            "alert_state": alert.get("alert_state") if alert else "unavailable",
+            "signal_state": alert.get("signal_state") if alert else "unavailable",
+            "freshness_status": alert.get("freshness_status") if alert else "unavailable",
+        },
+        "automatic_note_or_alert_mutation_allowed": False,
+    }
+
+
 def main() -> None:
-    tech = load_json(TECH_PATH, required=True)
-    deploy = load_json(DEPLOY_PATH, required=True)
-    trigger = load_json(TRIGGER_PATH, required=True)
+    tech = load_json(TECH_PATH, required=False) or {}
+    # deployment-check is a retired compatibility surface. A missing copy may
+    # not prevent the review-only earnings queue from being built.
+    deploy = load_json(DEPLOY_PATH, required=False) or {}
+    trigger = load_json(TRIGGER_PATH, required=False) or {}
     earnings = load_json(EARNINGS_PATH, required=True)
     state = load_json(STATE_PATH, required=False)
+    official_bridge = load_json(OFFICIAL_BRIDGE_PATH, required=False) or {}
+    alert_controller = load_json(ALERT_CONTROLLER_PATH, required=False) or {}
 
     tech_map = {rec["ticker"]: rec for rec in tech.get("records", []) or []}
     deploy_map = {rec["ticker"]: rec for rec in deploy.get("records", []) or []}
     trigger_map = {rec["ticker"]: rec for rec in trigger.get("records", []) or []}
     earnings_map = {rec["ticker"]: rec for rec in earnings.get("records", []) or []}
+    bridge_map = bridges_by_ticker(official_bridge)
+    alert_map = alerts_by_ticker(alert_controller)
     earnings_lifecycle = earnings.get("earnings_lifecycle") if isinstance(earnings.get("earnings_lifecycle"), dict) else {}
     lifecycle_closeouts = earnings_lifecycle.get("closeouts") if isinstance(earnings_lifecycle.get("closeouts"), list) else []
 
@@ -378,12 +435,13 @@ def main() -> None:
         trigger_rec = trigger_map.get(ticker, {})
         tech_rec = tech_map.get(ticker, {})
         deploy_rec = deploy_map.get(ticker, {})
+        phase = infer_phase(days_to)
 
         packet = {
             "ticker": ticker,
             "priority": cfg.get("priority", "monitor"),
             "stage": infer_stage(days_to),
-            "phase": infer_phase(days_to),
+            "phase": phase,
             "days_to_or_from_earnings": days_to,
             "next_earnings_date": next_earnings,
             "source_class": earnings_rec.get("date_source_class"),
@@ -392,7 +450,11 @@ def main() -> None:
             "fallback_config": bool(cfg.get("generated_from_fallback")),
             "watch_items": cfg.get("watch_items", []),
             "sector_read_through": cfg.get("sector_read_through"),
-            "note_targets": cfg.get("note_targets", []),
+            "note_targets": [
+                target
+                for target in cfg.get("note_targets", [])
+                if not str(target).startswith("03. Portfolio/")
+            ],
             "technical_context": {
                 "close": tech_rec.get("close"),
                 "ma_posture": tech_rec.get("ma_posture"),
@@ -403,6 +465,7 @@ def main() -> None:
             "deployment_context": {
                 "action_state": legacy_state(deploy_rec, "action_state"),
                 "reason": deploy_rec.get("reason"),
+                "source": "tmp/deployment-check.json" if deploy else "unavailable_uses_trigger_context",
             },
             "trigger_context": {
                 "action_state": legacy_state(trigger_rec, "action_state"),
@@ -418,6 +481,11 @@ def main() -> None:
                 "what_we_do_now": None,
                 "evidence_status": "pending post-earnings evidence" if days_to >= 0 else "needs post-report review",
             },
+            "reconciliation": reconciliation_requirements(
+                phase=phase,
+                bridge=bridge_map.get(ticker, {}),
+                alert=alert_map.get(ticker, {}),
+            ),
         }
         packets.append(packet)
 
@@ -429,6 +497,16 @@ def main() -> None:
         warnings.extend(trigger.get("warnings", []))
     if earnings.get("warnings"):
         warnings.extend(earnings.get("warnings", []))
+    if not tech:
+        warnings.append("technical-refresh.json unavailable; earnings packet omits technical context")
+    if not trigger:
+        warnings.append("trigger-sheet.json unavailable; earnings packet omits legacy trigger context")
+    if not deploy:
+        warnings.append("deployment-check.json unavailable; prep uses trigger-sheet context only and does not infer deployment state")
+    if not official_bridge:
+        warnings.append("official-earnings-bridge.json unavailable; post-earnings evidence remains source-open")
+    if not alert_controller:
+        warnings.append("alert-level-freshness-controller.json unavailable; alert reconciliation remains pending")
     near_fallbacks = sorted([p["ticker"] for p in packets if p.get("fallback_config")])
     if near_fallbacks:
         warnings.append("Generic fallback post-earnings config used for: " + ", ".join(near_fallbacks) + ". Add ticker-specific watch items if this is a material tracked name.")
@@ -450,6 +528,35 @@ def main() -> None:
     status = "ok"
     if trigger.get("status") != "ok" or earnings.get("status") != "ok" or trigger_stale or earnings_stale:
         status = "partial"
+    if not official_bridge or not alert_controller:
+        status = "partial"
+
+    warning_queue = [
+        {
+            "ticker": packet["ticker"],
+            "priority": packet["priority"],
+            "next_earnings_date": packet["next_earnings_date"],
+            "days_to_earnings": packet["days_to_or_from_earnings"],
+            "primary_confirmed": packet["primary_confirmed"],
+            "source_class": packet["source_class"],
+            "queue_reason": "primary_confirmation_needed" if not packet["primary_confirmed"] else "near_earnings_review",
+            "review_only": True,
+        }
+        for packet in packets
+        if packet["phase"] in {"pre_earnings", "reporting_today"}
+    ]
+    reconciliation_queue = [
+        {
+            "ticker": packet["ticker"],
+            "priority": packet["priority"],
+            "next_earnings_date": packet["next_earnings_date"],
+            "required_reviews": ["scorecard", "thesis", "catalyst", "alert"],
+            "review_only": True,
+            "automatic_mutation_allowed": False,
+        }
+        for packet in packets
+        if packet["phase"] == "post_earnings"
+    ]
 
     payload = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -481,6 +588,11 @@ def main() -> None:
             "forward_days": WINDOW_FORWARD_DAYS,
         },
         "warnings": warnings,
+        "input_status": {
+            "deployment_check": "available" if deploy else "unavailable_uses_trigger_context",
+            "official_earnings_bridge": "available" if official_bridge else "unavailable",
+            "alert_level_freshness_controller": "available" if alert_controller else "unavailable",
+        },
         "earnings_lifecycle": {
             "source": "tmp/earnings-calendar.json",
             "closeouts": lifecycle_closeouts,
@@ -494,6 +606,8 @@ def main() -> None:
         },
         "fallback_config_tickers": near_fallbacks,
         "packets": packets,
+        "near_earnings_warning_queue": warning_queue,
+        "post_earnings_reconciliation_queue": reconciliation_queue,
     }
 
     OUT_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")

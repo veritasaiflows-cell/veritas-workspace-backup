@@ -1,0 +1,9 @@
+{
+  "schema": "veritas.arena_six_route_note.v1",
+  "excluded_route": "oxalpha-lab sandbox",
+  "reason": "exact model identity passed but workspace fixture mount was unavailable",
+  "benchmark_prompts_exposed_on_excluded_route": false,
+  "accepted_route": "qa-redteam workspace with read-only candidate tools",
+  "accepted_route_canaries": "both exact model identities, exact nonce reads, no fallback, no reroute",
+  "isolation_limit": "The prelaunch clean-key scan passed in the operator transcript but was not separately persisted before post-run QA staging exposed the keys."
+}

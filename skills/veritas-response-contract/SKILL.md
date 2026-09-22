@@ -69,7 +69,7 @@ A material finance response should include, when applicable:
 - thesis and catalyst
 - base, bull, and bear cases
 - major risks and uncertainty
-- current price versus the written alert band
+- current price versus the guarded SQL reference band
 - invalidation threshold and thesis-breaker context
 - alert state: recommendation review, band entry, near band, no chase, invalidation alert, thesis change, catalyst alert, freshness decay, monitor only, or suppressed
 - fit with Randall's stated objectives and limits
@@ -85,7 +85,7 @@ When US cash markets are closed, identify prior-session or current-last-complete
 
 When the market is open, current price claims require current quote proof. If local evidence is stale, missing, or contradictory, refresh the bounded alerts chain when safe or emit `freshness_decay`.
 
-Static alert bands come from guarded canon. Market prices do not silently re-derive them.
+Live numeric alert bands come from guarded SQL `reference_levels`. The markdown Alert Bands register is thesis and interpretation only. Market prices do not silently re-derive levels.
 
 ## Local-First Ticker Route
 
@@ -98,10 +98,10 @@ python scripts\run_alerts_recommendations_chain.py midday --timeout-seconds 120 
 
 Then inspect:
 
-- `03. Alerts and Recommendations/Alert Trigger Policy.md`
-- `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md`
 - `tmp/alert-level-freshness-controller.json`
 - `tmp/finance-alert-os-digest.json`
+- `03. Alerts and Recommendations/Alert Trigger Policy.md`
+- `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md` for thesis and interpretation only; do not use its numeric snapshot as live levels
 
 Use narrow official/company/SEC/IR or credible current sources only when the requested consequence requires evidence missing from local state.
 

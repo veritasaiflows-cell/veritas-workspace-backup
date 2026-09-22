@@ -285,6 +285,104 @@ class SQLSourceLineageArtifactRegistryRepairTest(unittest.TestCase):
         self.assertEqual(plan["timestamp_basis"], "sqlite_intrinsic")
         self.assertNotEqual(plan["new_generated_at_utc"], "2026-08-08T06:01:04Z")
 
+    def test_consumer_registry_owner_rows_updated_in_same_transaction(self) -> None:
+        # Consumer lineage rows pair with consumer_migration_registry owner
+        # rows; a hash refresh must update both sides atomically or the
+        # finance_sql_canon_access owner-pairing check goes red.
+        with closing(sqlite3.connect(self.db)) as conn:
+            conn.executescript(
+                """
+                CREATE TABLE IF NOT EXISTS consumer_migration_registry (
+                    consumer_path TEXT PRIMARY KEY,
+                    consumer_type TEXT NOT NULL,
+                    priority TEXT NOT NULL,
+                    migration_lane TEXT NOT NULL,
+                    cutover_state TEXT NOT NULL,
+                    fallback_required INTEGER NOT NULL,
+                    parity_required INTEGER NOT NULL,
+                    raw_sql_needs_review INTEGER NOT NULL,
+                    source_artifact_path TEXT NOT NULL,
+                    source_artifact_sha256 TEXT,
+                    registered_at_utc TEXT NOT NULL
+                );
+                """
+            )
+            conn.execute(
+                """
+                UPDATE source_lineage
+                SET field_family='consumer_migration_registry', field_name='consumer_metadata',
+                    source_artifact_sha256=?
+                """,
+                ("0" * 64,),
+            )
+            conn.execute(
+                """
+                INSERT INTO consumer_migration_registry (
+                    consumer_path, consumer_type, priority, migration_lane,
+                    cutover_state, fallback_required, parity_required,
+                    raw_sql_needs_review, source_artifact_path, source_artifact_sha256,
+                    registered_at_utc
+                ) VALUES (
+                    'scripts/example_consumer.py', 'script', 'primary', 'g6',
+                    'active', 1, 1, 0, 'tmp/artifact.json', ?, '2026-06-01T00:00:00Z'
+                )
+                """,
+                ("0" * 64,),
+            )
+            conn.commit()
+        report = repair.build_report(
+            root=self.root,
+            db_path=self.db,
+            freshness_report_path=self.report,
+            producer_report_path=self.producer,
+            backup_root=self.backup_root,
+            apply=True,
+        )
+        self.assertEqual(report["status"], "ok")
+        self.assertEqual(report["summary"]["consumer_registry_owner_rows_updated"], 1)
+        expected_sha = repair.sha256_file(self.artifact)
+        with closing(sqlite3.connect(self.db)) as conn:
+            lineage_sha, registry_sha = conn.execute(
+                """
+                SELECT
+                    (SELECT source_artifact_sha256 FROM source_lineage LIMIT 1),
+                    (SELECT source_artifact_sha256 FROM consumer_migration_registry LIMIT 1)
+                """
+            ).fetchone()
+            self.assertEqual(lineage_sha, expected_sha)
+            self.assertEqual(registry_sha, expected_sha)
+
+    def test_unchanged_hash_does_not_rewrite_lineage_timestamp(self) -> None:
+        # Regression guard: rewriting source_generated_at_utc on an artifact
+        # whose content did NOT change desynchronizes lineage from the
+        # reference_levels/evidence_freshness owner tables and red-lights
+        # alert_lineage_complete.
+        with closing(sqlite3.connect(self.db)) as conn:
+            conn.execute(
+                """
+                UPDATE source_lineage
+                SET source_artifact_sha256=?, source_generated_at_utc='2026-06-01T00:00:00Z'
+                """,
+                (repair.sha256_file(self.artifact),),
+            )
+            conn.commit()
+        report = repair.build_report(
+            root=self.root,
+            db_path=self.db,
+            freshness_report_path=self.report,
+            producer_report_path=self.producer,
+            backup_root=self.backup_root,
+            apply=True,
+        )
+        self.assertEqual(report["status"], "ok")
+        self.assertEqual(report["summary"]["lineage_hash_rows_updated"], 0)
+        self.assertEqual(report["summary"]["lineage_generated_at_rows_updated"], 0)
+        with closing(sqlite3.connect(self.db)) as conn:
+            generated_at = conn.execute(
+                "SELECT source_generated_at_utc FROM source_lineage LIMIT 1"
+            ).fetchone()[0]
+            self.assertEqual(generated_at, "2026-06-01T00:00:00Z")
+
 
 if __name__ == "__main__":
     unittest.main()

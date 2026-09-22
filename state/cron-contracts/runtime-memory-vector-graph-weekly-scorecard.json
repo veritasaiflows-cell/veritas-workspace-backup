@@ -24,7 +24,7 @@
   "payload": {
     "kind": "command",
     "argv": [
-      "python",
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
       "scripts/memory_graph_maintenance.py",
       "--mode",
       "scorecard",

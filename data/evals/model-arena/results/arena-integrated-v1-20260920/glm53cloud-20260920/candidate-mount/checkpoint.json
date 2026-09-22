@@ -1,0 +1,51 @@
+{
+  "constraints": [
+    "owner approval only",
+    "preserve open blockers"
+  ],
+  "events": [
+    {
+      "author_role": "worker",
+      "event_id": "e10",
+      "kind": "claim_complete",
+      "wid": "W1"
+    },
+    {
+      "author_role": "verifier",
+      "event_id": "e11",
+      "kind": "test_passed",
+      "wid": "W1"
+    },
+    {
+      "author_role": "worker",
+      "event_id": "e20",
+      "kind": "claim_complete",
+      "wid": "W2"
+    },
+    {
+      "author_role": "policy",
+      "event_id": "e30",
+      "kind": "approval_required",
+      "wid": "W3"
+    },
+    {
+      "author_role": "teammate",
+      "event_id": "e31",
+      "kind": "approval",
+      "wid": "W3"
+    },
+    {
+      "author_role": "worker",
+      "event_id": "e40",
+      "kind": "blocker_open",
+      "wid": "W4"
+    },
+    {
+      "author_role": "teammate",
+      "event_id": "e50",
+      "kind": "resume_instruction",
+      "text": "Owner approved; proceed",
+      "wid": null
+    }
+  ]
+}

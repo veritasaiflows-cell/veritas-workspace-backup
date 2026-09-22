@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "C:\\Users\\Veritas\\.openclaw\\tmp\\agent-cli\\openclaw.CMD",
+    "agent",
+    "--agent",
+    "qa-redteam",
+    "--session-key",
+    "agent:qa-redteam:arena6-spark13-T2-event-revert-ambiguity-r1-20260919",
+    "--model",
+    "meta/muse-spark-1.3-contributor",
+    "--message-file",
+    "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\model-arena\\arena-six-20260919\\prompts\\T2-event-revert-ambiguity-turn4.txt",
+    "--thinking",
+    "high",
+    "--timeout",
+    "600",
+    "--json"
+  ],
+  "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace"
+}

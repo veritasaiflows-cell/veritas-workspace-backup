@@ -1,0 +1,78 @@
+{
+  "authority_boundary": {
+    "agent_turn_model_spawn_required": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "command_payload": true,
+    "config_auth_runtime_mutation_allowed": false,
+    "cron_contract_only": true,
+    "delivery_mutation_allowed": false,
+    "enable_disable_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "owner_workflow": "WF85 alerts-and-recommendations baseline freshness detection",
+    "paper_or_live_execution_allowed": false,
+    "payload_restore_only": true,
+    "review_only": true,
+    "schedule_mutation_allowed": false
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.bestEffort",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "contract_reason": "Detection layer for the 2026-09-04 to 2026-09-10 silent alerts-OS outage. Conflicted reference_levels provenance produced freshness_decay on 18 of 18 tickers for six trading days while every chain stage returned rc=0 and status ok, so a silent OS was indistinguishable from a healthy one. This guard makes pin expiry, provenance conflict, pin integrity failure, and a silently non-actionable OS observable on a daily cadence.",
+  "deleteAfterRun": false,
+  "delivery": {
+    "bestEffort": true,
+    "mode": "none"
+  },
+  "description": "Deterministic daily read-only guard on the alerts-OS reference baseline. Detects pin expiry, conflicted reference_levels provenance (the 2026-09-04 to 2026-09-10 six-day silent-outage condition), baseline pin integrity failure, and a silently non-actionable alerts OS. Reports only. No canon mutation, capital, orders, accounts, external delivery, or execution authority.",
+  "enabled": true,
+  "expected_artifacts": [
+    "tmp/alert-reference-baseline-freshness-guard.json",
+    "tmp/alert-reference-baseline-freshness-guard.md"
+  ],
+  "job_id": "43426b0e-d272-473c-beae-7ce58c2e9099",
+  "name": "Finance - Daily Alert Reference Baseline Freshness Guard",
+  "owner_workflow": "WF85 alerts-and-recommendations baseline freshness detection",
+  "payload": {
+    "argv": [
+      "C:/Users/Veritas/AppData/Local/Programs/Python/Python313/python.exe",
+      "scripts/alert_reference_baseline_freshness_guard.py",
+      "--write",
+      "--write-md",
+      "--validate"
+    ],
+    "cwd": "C:/Users/Veritas/.openclaw/workspace",
+    "kind": "command",
+    "timeoutSeconds": 300
+  },
+  "proof": {
+    "acceptance_command": "python scripts/test_alert_reference_baseline_freshness_guard.py",
+    "acceptance_result": "27 passed, 0 failed (2026-09-11)",
+    "chain_run_recency": "silent_os also warns when the newest chain run exceeds --max-chain-run-age-hours (default 120.0, above the ~113h holiday-weekend gap), covering the case where the chain stops writing entirely and the stale files still parse as healthy",
+    "false_negative_replay": "check_silent_os replayed against 70 real chain-run files from the 2026-09-08/09 outage window returns warn with silent_run_count 4, all freshness_decay dominant, triggered by the silent-window rule rather than recency",
+    "false_positive_replay": "check_silent_os against the real 2026-09-11 post-close window (4 consecutive monitor_only 18 runs) returns ok",
+    "live_run": "status ok, all four checks ok, pin 12.97 days remaining",
+    "read_only_enforcement": "sqlite3.connect(file:...?mode=ro, uri=True); a write attempt raises sqlite3.OperationalError and is asserted in the test suite"
+  },
+  "required": true,
+  "schedule": {
+    "expr": "45 5 * * *",
+    "kind": "cron",
+    "tz": "America/Phoenix"
+  },
+  "schema": "veritas.cron_contract.v1",
+  "sessionTarget": "isolated",
+  "updated_at_utc": "2026-09-12T00:20:54Z",
+  "wakeMode": "now"
+}

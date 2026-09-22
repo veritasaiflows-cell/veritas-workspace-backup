@@ -19,6 +19,7 @@ It exists so the right control surface can be found without scanning the whole p
 | use SQL/SQLite retrieval without canon-shadowing | `06. Playbooks/Operating Procedures/SQLite Retrieval Index Procedure.md` | `06. Playbooks/Project Continuity/Workflow 36 - Workspace Retrieval Index and SQLite Knowledge Layer.md`, `scripts/README.md` |
 | add retrieval/status/archive metadata to major notes | `06. Playbooks/Operating Procedures/Retrieval Metadata and Notes Field Standard.md` | `06. Playbooks/Workspace Structure Protocol.md`, `skills/workspace-governor/references/workspace-standards.md` |
 | recover after OpenClaw reinstall/update/restart | `06. Playbooks/Operating Procedures/OpenClaw Reinstall Recovery Checklist.md` | `skills/openclaw-troubleshooter/SKILL.md`, `TOOLS.md` |
+| escalate a verified local OpenClaw finding upstream | `06. Playbooks/Operating Procedures/Upstream Escalation and Community Contribution Procedure.md` | `06. Playbooks/Project Continuity/Upstream Escalation Register.md`, `skills/openclaw-troubleshooter/SKILL.md` |
 | inspect finance alert evidence, freshness, and recommendation review posture | `03. Alerts and Recommendations/Alert Operations Board.md` | `03. Alerts and Recommendations/Alert Trigger Policy.md`, `06. Playbooks/Deployment Readiness Helper Packet Contract.md` (retitled alert-evidence replacement) |
 | understand parallel-lane / IC posture | `06. Playbooks/Independent Contractor Workflow.md` | `06. Playbooks/OpenClaw Parallel Work Plan.md`, `06. Playbooks/OpenClaw Model Deployment Plan.md`, `06. Playbooks/IC Model Routing Policy.md` |
 | govern reusable prompts and internal challenge-solving loops | `06. Playbooks/Veritas Prompt Book.md` | `06. Playbooks/Model Prompt Operations.md`, `tmp/prompt-book-registry.json`, `tmp/prompt-book-eval-gap-packet.json` |
@@ -34,6 +35,8 @@ It exists so the right control surface can be found without scanning the whole p
 - `06. Playbooks/Operating Procedures/SQLite Retrieval Index Procedure.md` - operator procedure for SQL retrieval use, proof, and stop lines
 - `06. Playbooks/Operating Procedures/Retrieval Metadata and Notes Field Standard.md` - lightweight metadata block for audits, workflows, research notes, and archive posture
 - `06. Playbooks/Operating Procedures/OpenClaw Reinstall Recovery Checklist.md` - return-to-service checklist after reinstall/update/restart
+- `06. Playbooks/Operating Procedures/Upstream Escalation and Community Contribution Procedure.md` - turn a verified local finding into an upstream issue; duplicate-check, severity frame, stop lines
+- `06. Playbooks/Project Continuity/Upstream Escalation Register.md` - tracking surface for filed upstream issues and closed-by-upstream predecessor work
 - `06. Playbooks/Automation Orchestration Protocol.md` - orchestration, categorization, status, and queue-movement rules
 - `06. Playbooks/Cron Run Ledger.md` - proof surface for live scheduled windows
 - `06. Playbooks/Workspace Structure Protocol.md` - root structure and folder-boundary rules

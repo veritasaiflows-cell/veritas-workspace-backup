@@ -1,100 +1,61 @@
 {
   "summary": {
-    "passed": 29,
-    "failed": 1,
-    "total": 30,
+    "passed": 24,
+    "failed": 3,
+    "total": 27,
     "all_passed": false
   },
   "results": [
     {
-      "name": "missing_market_field",
+      "name": "missing_credit_required_field",
       "passed": true,
       "errors": [],
-      "exec_freshness": "partial",
+      "exec_freshness": "missing",
       "validation": {
-        "critical": 14,
-        "warning": 0,
-        "info": 1
+        "critical": 1,
+        "warning": 9,
+        "info": 0
       },
-      "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
+      "trust_summary": "Execution context is missing one or more critical inputs. Do not trust the dashboard as healthy."
     },
     {
-      "name": "partial_macro_feed",
+      "name": "partial_upstream_feed",
       "passed": true,
       "errors": [],
-      "exec_freshness": "partial",
+      "exec_freshness": "missing",
       "validation": {
-        "critical": 14,
-        "warning": 0,
-        "info": 1
+        "critical": 1,
+        "warning": 10,
+        "info": 0
       },
-      "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
+      "trust_summary": "Execution context is missing one or more critical inputs. Do not trust the dashboard as healthy."
     },
     {
-      "name": "market_sectors_invalid_shape",
+      "name": "stale_credit_source",
       "passed": true,
       "errors": [],
-      "exec_freshness": "partial",
+      "exec_freshness": "missing",
       "validation": {
-        "critical": 14,
-        "warning": 2,
-        "info": 1
+        "critical": 1,
+        "warning": 10,
+        "info": 0
       },
-      "trust_summary": "Execution context is partial. Some critical inputs are degraded or incomplete."
-    },
-    {
-      "name": "stale_market_source",
-      "passed": true,
-      "errors": [],
-      "exec_freshness": "stale",
-      "validation": {
-        "critical": 14,
-        "warning": 0,
-        "info": 1
-      },
-      "trust_summary": "Execution context is stale. Refresh before relying on execution signals."
-    },
-    {
-      "name": "contradiction_entry_band",
-      "passed": true,
-      "errors": [],
-      "exec_freshness": "usable_with_caution",
-      "validation": {
-        "critical": 14,
-        "warning": 0,
-        "info": 1
-      },
-      "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible."
+      "trust_summary": "Execution context is missing one or more critical inputs. Do not trust the dashboard as healthy."
     },
     {
       "name": "earnings_date_change_visibility",
       "passed": true,
       "errors": [],
-      "exec_freshness": "usable_with_caution",
+      "exec_freshness": "missing",
       "validation": {
-        "critical": 14,
-        "warning": 1,
-        "info": 1
+        "critical": 1,
+        "warning": 10,
+        "info": 0
       },
-      "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible."
+      "trust_summary": "Execution context is missing one or more critical inputs. Do not trust the dashboard as healthy."
     },
     {
-      "name": "state_transition_in_band_ready",
-      "passed": false,
-      "errors": [
-        "coherent state transition should not create critical contradiction"
-      ],
-      "exec_freshness": "usable_with_caution",
-      "validation": {
-        "critical": 13,
-        "warning": 2,
-        "info": 1
-      },
-      "trust_summary": "Execution context is usable with caution. Manual or unconfirmed dependencies remain visible.",
-      "producer_output_tail": "generate_dashboard.py v5, assembling payload \u2026\n"
-    },
-    {
-      "name": "market_state_missing_policy_artifact",
+      "name": "missing_policy_artifact_blocks_macro_regime",
       "passed": true,
       "errors": [],
       "exec_freshness": null,
@@ -191,11 +152,74 @@
     },
     {
       "name": "fundamental_trend_panel_review_only",
-      "passed": true,
-      "errors": [],
+      "passed": false,
+      "errors": [
+        "fundamental_trends.rows should populate dashboard trend panel",
+        "fundamental trend row missing ticker: {}",
+        "fundamental trend row missing quality: {}",
+        "fundamental trend row missing secStatus: {}",
+        "fundamental trend row missing irStatus: {}",
+        "fundamental trend row missing irPacketStatus: {}",
+        "fundamental trend row missing adjustedEpsStatus: {}",
+        "fundamental trend row missing guidanceStatus: {}",
+        "fundamental trend row missing officialEarningsBridgeStatus: {}",
+        "fundamental trend row missing officialEarningsBridgeReviewOnly: {}",
+        "fundamental trend row missing officialEarningsBridgeManualRequired: {}",
+        "fundamental trend row missing officialAdjustedEpsBridgeStatus: {}",
+        "fundamental trend row missing officialGuidanceBridgeStatus: {}",
+        "fundamental trend row missing officialEarningsReleaseUrl: {}",
+        "fundamental trend row missing earningsUrl: {}",
+        "fundamental trend row missing epsYoY: {}",
+        "fundamental trend row missing revenueYoY: {}",
+        "fundamental trend row missing netIncomeYoY: {}",
+        "fundamental trend row missing dilutedSharesYoY: {}",
+        "fundamental trend row missing fcfInterpretation: {}",
+        "fundamental trend row missing fcfInterpretationNote: {}",
+        "fundamental trend row missing fcfPerShare: {}",
+        "fundamental trend row missing fcfPerShareYoY: {}",
+        "fundamental trend row missing fcfPerShareYoYBase: {}",
+        "fundamental trend row missing buybackYield: {}",
+        "fundamental trend row missing netShareRepurchases: {}",
+        "fundamental trend row missing sbcPctRevenue: {}",
+        "fundamental trend row missing sbcPctFcf: {}",
+        "fundamental trend row missing capitalReturnToFcf: {}",
+        "fundamental trend row missing netDebtIssued: {}",
+        "fundamental trend row missing netDebtInterpretation: {}",
+        "fundamental trend row missing shareholderYield: {}",
+        "fundamental trend row missing shareholderYieldPeriod: {}",
+        "fundamental trend row missing fcfYield: {}",
+        "fundamental trend row missing roicProxy: {}",
+        "fundamental trend row missing valuationContext: {}",
+        "fundamental trend row missing capitalAllocationQuality: {}",
+        "fundamental trend row missing capitalAllocationAnomalies: {}",
+        "fundamental trend row missing wf65BankNativeVersion: {}",
+        "fundamental trend row missing bankNativeStatus: {}",
+        "fundamental trend row missing bankNativeSecStatus: {}",
+        "fundamental trend row missing cet1Ratio: {}",
+        "fundamental trend row missing cet1RatioTrust: {}",
+        "fundamental trend row missing cet1RatioStandardized: {}",
+        "fundamental trend row missing cet1RatioAdvanced: {}",
+        "fundamental trend row missing cet1RatioBasis: {}",
+        "fundamental trend row missing tier1Ratio: {}",
+        "fundamental trend row missing tier1RatioTrust: {}",
+        "fundamental trend row missing tier1RatioStandardized: {}",
+        "fundamental trend row missing tier1RatioAdvanced: {}",
+        "fundamental trend row missing tier1RatioBasis: {}",
+        "fundamental trend row missing riskBasedCapitalSourceUrl: {}",
+        "fundamental trend row missing riskBasedCapitalNoDerivedRatio: {}",
+        "fundamental trend row missing tier1LeverageRatio: {}",
+        "fundamental trend row missing tier1LeverageRatioNote: {}",
+        "fundamental trend row missing tbvPerShare: {}",
+        "fundamental trend row missing tbvPerShareTrust: {}",
+        "fundamental trend row missing priceToTbv: {}",
+        "fundamental trend row missing tone: {}",
+        "official earnings bridge must render as review-only: {}",
+        "official earnings bridge must remain manual-required: {}"
+      ],
       "exec_freshness": null,
       "validation": {},
-      "trust_summary": null
+      "trust_summary": null,
+      "producer_output_tail": "  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\market-state.json not found, section will show incomplete\n  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\portfolio-config.json not found, section will show incomplete\ngenerate_dashboard.py v5, assembling payload \u2026\n  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\alpaca-paper-readiness\\wf63-readiness-report.json not found, section will show incomplete\n  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\alpaca-paper-readiness\\phase-0-policy.json not found, section will show incomplete\n  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\alpaca-paper-readiness\\paper-pilot-status-surface.json not found, section will show incomplete\n"
     },
     {
       "name": "deployment_readiness_source_conflict_guard",
@@ -239,11 +263,36 @@
     },
     {
       "name": "workflow8_command_center_alignment",
-      "passed": true,
-      "errors": [],
+      "passed": false,
+      "errors": [
+        "ETN in-band owner-approved setup should be DEPLOYABLE NOW, got BENCH",
+        "ETN in-band owner-approved setup should be DEPLOYABLE, got BENCH",
+        "JPM technical row should mirror machine band 304.96\u2013315.95, got TBD",
+        "JPM technical row should mirror machine stop 296.21, got TBD",
+        "today_action.actionable alias should match clean deployable ETN state {'ETN'}, got [{'ticker': 'LMT', 'state': 'DEPLOYABLE', 'close': '$563.85', 'entryBand': 'TBD', 'referenceBand': {'low': 546.27, 'high': 576.91, 'stop': 529.25, 'label': '$546.27\u2013$576.91', 'stopLabel': '$529.25', 'method': 'KELTNER_PRIMARY', 'status': 'IN_BAND', 'dataDate': '2026-08-28', 'canonicalApplyEligible': False, 'authorityLabel': 'reference only / no execution entitlement \u2014 repair_mode, REPAIR', 'authority': {'referenceOnly': True, 'executionBandMutationAllowed': False, 'capitalActionAllowed': False, 'ownerApprovalInferred': False, 'tradeOrAccountAuthority': False, 'sizingSleeveCashRiskRuleAuthority': False}}, 'executionBand': {'low': None, 'high': None, 'stop': None, 'label': 'TBD', 'stopLabel': 'TBD', 'lastSet': None}, 'stop': 'TBD', 'posture': 'above 50d and 200d, below 20d', 'displaySubState': None, 'almostSubState': None, 'proseConflict': False, 'proseConflictSource': None, 'conflictMachineState': None, 'conflictProseState': None, 'reviewOnlyNoApplyArtifact': True, 'earningsDateConfirmed': False, 'bandGap': 'Band undefined', 'bandGapPct': '\u2014', 'bandStatus': 'IN BAND', 'stopDist': '\u2014', 'earnings': '2026-10-20 (53d)', 'daysToEarnings': 53, 'sqlCanonProofMetadata': None, 'sourceArtifactPath': 'tmp/technical-refresh.json + tmp/deployment-check.json', 'sourceGeneratedAtUtc': '2026-09-20T16:32:00.195260+00:00', 'researchArtifactPath': 'tmp/research-freshness-opportunity-review.json', 'researchGeneratedAtUtc': '2026-08-28T21:05:20Z', 'bandStale': False, 'overrideRule': None, 'overrideReason': None, 'triggerLabel': 'Wait for better price or cleaner setup'}, {'ticker': 'XOM', 'state': 'DEPLOYABLE', 'close': '$156.71', 'entryBand': 'TBD', 'referenceBand': {'low': 151.45, 'high': 159.26, 'stop': 147.11, 'label': '$151.45\u2013$159.26', 'stopLabel': '$147.11', 'method': 'KELTNER_PRIMARY', 'status': 'IN_BAND', 'dataDate': '2026-08-28', 'canonicalApplyEligible': False, 'authorityLabel': 'reference only / no execution entitlement \u2014 conditional_requalify, REPAIR', 'authority': {'referenceOnly': True, 'executionBandMutationAllowed': False, 'capitalActionAllowed': False, 'ownerApprovalInferred': False, 'tradeOrAccountAuthority': False, 'sizingSleeveCashRiskRuleAuthority': False}}, 'executionBand': {'low': None, 'high': None, 'stop': None, 'label': 'TBD', 'stopLabel': 'TBD', 'lastSet': None}, 'stop': 'TBD', 'posture': 'above 50d and 200d, below 20d', 'displaySubState': None, 'almostSubState': None, 'proseConflict': False, 'proseConflictSource': None, 'conflictMachineState': None, 'conflictProseState': None, 'reviewOnlyNoApplyArtifact': True, 'earningsDateConfirmed': False, 'bandGap': 'Band undefined', 'bandGapPct': '\u2014', 'bandStatus': 'IN BAND', 'stopDist': '\u2014', 'earnings': '2026-10-30 (63d)', 'daysToEarnings': 63, 'sqlCanonProofMetadata': None, 'sourceArtifactPath': 'tmp/technical-refresh.json + tmp/deployment-check.json', 'sourceGeneratedAtUtc': '2026-09-20T16:32:00.195260+00:00', 'researchArtifactPath': 'tmp/research-freshness-opportunity-review.json', 'researchGeneratedAtUtc': '2026-08-28T21:05:20Z', 'bandStale': False, 'overrideRule': None, 'overrideReason': None, 'triggerLabel': 'Wait for better price or cleaner setup'}, {'ticker': 'AMZN', 'state': 'DEPLOYABLE', 'close': '$266.43', 'entryBand': 'TBD', 'referenceBand': {'low': 252.64, 'high': 262.67, 'stop': 244.25, 'label': '$252.64\u2013$262.67', 'stopLabel': '$244.25', 'method': 'KELTNER_MA_CONSTRAINED', 'status': 'NEAR_BAND', 'dataDate': '2026-08-28', 'canonicalApplyEligible': False, 'authorityLabel': 'reference only / no execution entitlement \u2014 watch/reference lane, underdefined, WATCH', 'authority': {'referenceOnly': True, 'executionBandMutationAllowed': False, 'capitalActionAllowed': False, 'ownerApprovalInferred': False, 'tradeOrAccountAuthority': False, 'sizingSleeveCashRiskRuleAuthority': False}}, 'executionBand': {'low': None, 'high': None, 'stop': None, 'label': 'TBD', 'stopLabel': 'TBD', 'lastSet': None}, 'stop': 'TBD', 'posture': 'above 50d and 200d, below 20d', 'displaySubState': None, 'almostSubState': None, 'proseConflict': False, 'proseConflictSource': None, 'conflictMachineState': None, 'conflictProseState': None, 'reviewOnlyNoApplyArtifact': True, 'earningsDateConfirmed': False, 'bandGap': 'Band undefined', 'bandGapPct': '\u2014', 'bandStatus': 'IN BAND', 'stopDist': '\u2014', 'earnings': '2026-10-29 (62d)', 'daysToEarnings': 62, 'sqlCanonProofMetadata': None, 'sourceArtifactPath': 'tmp/technical-refresh.json + tmp/deployment-check.json', 'sourceGeneratedAtUtc': '2026-09-20T16:32:00.195260+00:00', 'researchArtifactPath': 'tmp/research-freshness-opportunity-review.json', 'researchGeneratedAtUtc': '2026-08-28T21:05:20Z', 'bandStale': False, 'overrideRule': None, 'overrideReason': None, 'triggerLabel': 'Wait for better price or cleaner setup'}]",
+        "GOOG outside band should stay ALMOST DEPLOYABLE",
+        "GOOG outside band should stay ALMOST",
+        "deployment_summary.deployable should include in-band ETN, got ['LMT', 'XOM', 'AMZN', 'WMB']",
+        "deployment_summary.almost should include out-of-band GOOG, got ['JPM', 'MSFT', 'BRK.B', 'NVDA', 'BKNG', 'RTX', 'CVX', 'PLTR', 'LNG', 'LIN', 'ECL', 'PH', 'CME', 'XLB', 'XLC', 'XLF', 'XLE', 'VAW', 'VXUS']",
+        "today_action.deployable should render in-band ETN exactly once, got []",
+        "LMT above stop but repair-gated should be BENCH/DO NOT TOUCH, got DEPLOYABLE NOW",
+        "BRK.B should stay BENCH",
+        "XOM should stay BENCH / repair, got DEPLOYABLE NOW",
+        "XOM reason should preserve repair/do-not-touch posture, got 'close 156.71 is within entry band'",
+        "VRT coverageLane should be execution, got None",
+        "CVX coverageLane should be watch, got None",
+        "CVX reason should explain the lane constraint, got 'close 201.86 -- posture constructive but not yet in band'",
+        "PLTR coverageLane should be watch, got None",
+        "PLTR reason should explain the lane constraint, got 'close 186.29 -- posture constructive but not yet in band'",
+        "LNG coverageLane should be watch, got None",
+        "LNG reason should explain the lane constraint, got 'close 282.33 -- posture constructive but not yet in band'",
+        "RTX coverageLane should be watch, got None",
+        "RTX reason should keep explicit lane language even below stop, got 'close 211.71 -- posture constructive but not yet in band'"
+      ],
       "exec_freshness": null,
       "validation": {},
-      "trust_summary": null
+      "trust_summary": null,
+      "producer_output_tail": "  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\market-state.json not found, section will show incomplete\n  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\portfolio-config.json not found, section will show incomplete\ngenerate_dashboard.py v5, assembling payload \u2026\n  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\alpaca-paper-readiness\\wf63-readiness-report.json not found, section will show incomplete\n  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\alpaca-paper-readiness\\phase-0-policy.json not found, section will show incomplete\n  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\alpaca-paper-readiness\\paper-pilot-status-surface.json not found, section will show incomplete\n"
     },
     {
       "name": "generic_authority_conflict_guard",
@@ -263,11 +312,14 @@
     },
     {
       "name": "wf63_command_center_readiness_only",
-      "passed": true,
-      "errors": [],
+      "passed": false,
+      "errors": [
+        "rendered HTML missing 'NO ORDER SUBMIT'"
+      ],
       "exec_freshness": null,
       "validation": {},
-      "trust_summary": null
+      "trust_summary": null,
+      "producer_output_tail": "  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\market-state.json not found, section will show incomplete\n  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\portfolio-config.json not found, section will show incomplete\ngenerate_dashboard.py v5, assembling payload \u2026\n  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\alpaca-paper-readiness\\wf63-readiness-report.json not found, section will show incomplete\n  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\alpaca-paper-readiness\\phase-0-policy.json not found, section will show incomplete\n  WARN: C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\alpaca-paper-readiness\\paper-pilot-status-surface.json not found, section will show incomplete\n"
     },
     {
       "name": "wf63_validator_fails_on_misleading_language",

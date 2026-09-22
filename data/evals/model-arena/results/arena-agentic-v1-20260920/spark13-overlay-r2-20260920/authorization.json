@@ -1,0 +1,16 @@
+{
+  "authorized_at": "2026-09-20T16:39:00-07:00",
+  "authorized_by": "gateway-owner",
+  "dispatch_ready": true,
+  "envelope": "arena-agentic-v1-20260920",
+  "note": "Run-scoped release for Spark 1.3 overlay-r2 12-case run only. Owner authorized via explicit WebChat request 2026-09-20 to continue overlay-r2 tests using the CLI script. Canonical overlay/dispatch-authorization.json left INERT false.",
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "schema": "veritas.arena_dispatch_authorization.v1",
+  "scope": {
+    "cases": 12,
+    "models": [
+      "meta/muse-spark-1.3-contributor"
+    ],
+    "reps": 1
+  }
+}

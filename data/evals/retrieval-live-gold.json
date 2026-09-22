@@ -3,7 +3,7 @@
   "status": "draft_review_required",
   "purpose": "Pilot gold set for live hash+FTS, semantic+FTS, and FTS-only retrieval discrimination.",
   "source_registry": "data/evals/retrieval-live-source-registry.json",
-  "source_manifest_sha256": "d1d35ee1a2b5da71a4097134068204db666e450b64862c986adf9216168644cc",
+  "source_manifest_sha256": "c244018665ec8d2c9b5b1a08623351acc3a8f2c8d4c97ea05c3c41f8c2764ae4",
   "max_k": 5,
   "required_fixture_classes": [
     "exact",
@@ -28,7 +28,8 @@
     "status": "required_before_trusted_baseline",
     "sole_relevance_review_complete": false,
     "review_rule": "Rewrite or remove any fixture where reviewers disagree that the labeled passage is the sole correct answer within the frozen corpus.",
-    "absent_calibration_rule": "Use a separate sealed calibration set; never tune abstention thresholds on these evaluation fixtures."
+    "absent_calibration_rule": "Use a separate sealed calibration set; never tune abstention thresholds on these evaluation fixtures.",
+    "frozen_corpus_review_required": "frozencorpus-20260912-r1"
   },
   "fixtures": [
     {
@@ -38,9 +39,9 @@
       "query": "Long-work next safe action: No resumable long jobs are waiting.",
       "relevant_passages": [
         {
-          "source_path": "wiki/os2/OTEL To Proposal Route.md",
-          "start_line": 41,
-          "end_line": 41
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/os2/OTEL To Proposal Route.md",
+          "start_line": 42,
+          "end_line": 42
         }
       ],
       "distractor_passages": [],
@@ -54,9 +55,9 @@
       "query": "These scorecards prove routing, regression behavior, and cost-attribution targets, not investment skill, model performance, or execution readiness.",
       "relevant_passages": [
         {
-          "source_path": "wiki/scorecards-and-evals/Current Map.md",
-          "start_line": 50,
-          "end_line": 52
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/scorecards-and-evals/Current Map.md",
+          "start_line": 57,
+          "end_line": 57
         }
       ],
       "distractor_passages": [],
@@ -70,9 +71,9 @@
       "query": "Any API-call reduction must pass a separate regression harness before changing cron commands or model routing.",
       "relevant_passages": [
         {
-          "source_path": "wiki/scorecards-and-evals/Token Efficiency Map.md",
-          "start_line": 36,
-          "end_line": 38
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/scorecards-and-evals/Token Efficiency Map.md",
+          "start_line": 61,
+          "end_line": 61
         }
       ],
       "distractor_passages": [],
@@ -86,9 +87,9 @@
       "query": "A recommendation is not action until it is routed into WF74 docket, PM job, owner packet, Skill Workshop proposal, validator patch, or monitor-only state with proof.",
       "relevant_passages": [
         {
-          "source_path": "wiki/recommendations/Action Promotion Map.md",
-          "start_line": 36,
-          "end_line": 38
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/recommendations/Action Promotion Map.md",
+          "start_line": 60,
+          "end_line": 60
         }
       ],
       "distractor_passages": [],
@@ -102,9 +103,9 @@
       "query": "Which page says recursive improvement may evaluate and route changes but cannot rewrite the underlying model weights?",
       "relevant_passages": [
         {
-          "source_path": "wiki/self-improvement/RSI Control Loop.md",
-          "start_line": 40,
-          "end_line": 42
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/self-improvement/RSI Control Loop.md",
+          "start_line": 43,
+          "end_line": 43
         }
       ],
       "distractor_passages": [],
@@ -118,9 +119,9 @@
       "query": "Where are unresolved improvement items counted, with their leading destination named as the WF74 decision docket?",
       "relevant_passages": [
         {
-          "source_path": "wiki/gaps/Open Follow Up Debt.md",
-          "start_line": 15,
-          "end_line": 24
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/gaps/Open Follow Up Debt.md",
+          "start_line": 16,
+          "end_line": 26
         }
       ],
       "distractor_passages": [],
@@ -134,9 +135,9 @@
       "query": "Which map only points readers to exact evidence and says material claims still require opening the original source?",
       "relevant_passages": [
         {
-          "source_path": "wiki/source-map/WF88 Wiki Source Map.md",
-          "start_line": 73,
-          "end_line": 73
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/source-map/WF88 Wiki Source Map.md",
+          "start_line": 76,
+          "end_line": 76
         }
       ],
       "distractor_passages": [],
@@ -150,7 +151,7 @@
       "query": "Which workflow checkpoint definition first seeds WF88 OS2 control, then renders the wiki, then rebuilds the final control packet?",
       "relevant_passages": [
         {
-          "source_path": "data/workflow-checkpoints/wf74-wf88.json",
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/data/workflow-checkpoints/wf74-wf88.json",
           "start_line": 77,
           "end_line": 96
         }
@@ -166,7 +167,7 @@
       "query": "Which checkpoint definition closes implementation work by running changed-file validation, bundle validation, and finally the blocking release contract?",
       "relevant_passages": [
         {
-          "source_path": "data/workflow-checkpoints/implementation-closeout.json",
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/data/workflow-checkpoints/implementation-closeout.json",
           "start_line": 56,
           "end_line": 75
         }
@@ -182,9 +183,9 @@
       "query": "Which landing page navigates across telemetry routing, evaluation scorecards, token efficiency, recursive improvement, action promotion, unresolved debt, and the source map?",
       "relevant_passages": [
         {
-          "source_path": "wiki/index.md",
-          "start_line": 12,
-          "end_line": 23
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/index.md",
+          "start_line": 13,
+          "end_line": 27
         }
       ],
       "distractor_passages": [],
@@ -198,14 +199,14 @@
       "query": "Where is the warning that reducing token or API usage says nothing about response quality or model competence and cannot establish investment or execution readiness?",
       "relevant_passages": [
         {
-          "source_path": "wiki/scorecards-and-evals/Token Efficiency Map.md",
-          "start_line": 32,
-          "end_line": 38
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/scorecards-and-evals/Token Efficiency Map.md",
+          "start_line": 61,
+          "end_line": 61
         }
       ],
       "distractor_passages": [
         {
-          "source_path": "wiki/scorecards-and-evals/Current Map.md",
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/scorecards-and-evals/Current Map.md",
           "start_line": 50,
           "end_line": 52
         }
@@ -220,14 +221,14 @@
       "query": "What page turns a positive auto_apply_count into a hard stop before health may be advertised on startup or status surfaces?",
       "relevant_passages": [
         {
-          "source_path": "wiki/recommendations/Action Promotion Map.md",
-          "start_line": 29,
-          "end_line": 34
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/recommendations/Action Promotion Map.md",
+          "start_line": 35,
+          "end_line": 35
         }
       ],
       "distractor_passages": [
         {
-          "source_path": "wiki/os2/OTEL To Proposal Route.md",
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/os2/OTEL To Proposal Route.md",
           "start_line": 33,
           "end_line": 44
         }
@@ -242,14 +243,14 @@
       "query": "Where does OTEL telemetry become metadata-safe learning input before entering a WF74 improvement-opportunity queue?",
       "relevant_passages": [
         {
-          "source_path": "wiki/os2/OTEL To Proposal Route.md",
-          "start_line": 20,
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/os2/OTEL To Proposal Route.md",
+          "start_line": 21,
           "end_line": 24
         }
       ],
       "distractor_passages": [
         {
-          "source_path": "wiki/self-improvement/RSI Control Loop.md",
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/self-improvement/RSI Control Loop.md",
           "start_line": 15,
           "end_line": 22
         }
@@ -264,14 +265,14 @@
       "query": "Where are artifacts paired with freshness and status labels such as ready_to_collect and fixture_ready_no_execution_authority?",
       "relevant_passages": [
         {
-          "source_path": "wiki/source-map/WF88 Wiki Source Map.md",
-          "start_line": 40,
-          "end_line": 61
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/source-map/WF88 Wiki Source Map.md",
+          "start_line": 42,
+          "end_line": 63
         }
       ],
       "distractor_passages": [
         {
-          "source_path": "wiki/scorecards-and-evals/Current Map.md",
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/wiki/scorecards-and-evals/Current Map.md",
           "start_line": 21,
           "end_line": 30
         }
@@ -286,14 +287,14 @@
       "query": "Which checkpoint config runs agent_message_ledger_packet before agi_os_eval_gate_packet?",
       "relevant_passages": [
         {
-          "source_path": "data/workflow-checkpoints/implementation-closeout.json",
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/data/workflow-checkpoints/implementation-closeout.json",
           "start_line": 28,
           "end_line": 45
         }
       ],
       "distractor_passages": [
         {
-          "source_path": "data/workflow-checkpoints/wf74-wf88.json",
+          "source_path": "data/evals/frozen-corpus/frozencorpus-20260912-r1/data/workflow-checkpoints/wf74-wf88.json",
           "start_line": 27,
           "end_line": 60
         }
@@ -352,5 +353,8 @@
     "paper_or_live_execution_allowed": false,
     "external_delivery_allowed": false,
     "owner_approval_inferred": false
+  },
+  "frozen_corpus": {
+    "corpus_version": "frozencorpus-20260912-r1"
   }
 }

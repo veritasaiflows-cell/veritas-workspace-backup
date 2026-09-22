@@ -118,7 +118,7 @@ Role-effort matrix:
 | Implementation, validator/script edits, workflow artifact production | medium | repeated test failures, shared-contract drift, or unclear downstream consumers |
 | Hard debugging, runtime failures, auth/config diagnosis, false-green/false-red residue, trust adjudication | high | already high; narrow scope before increasing runtime |
 
-Use `scripts/project_implementation_router.py` as route authority and `skills/veritas-model-routing-helper-lanes/SKILL.md` as the human procedure. Model-free remains model-free; bounded native and persistent helpers use Terra; Main/Terra is the default integrator; Sol is Main-only and requires an explicit escalation, challenger, or QA use case plus reason. `openai/gpt-5.6-luna` remains restricted to proven deterministic scheduled proof/status work, `openai/gpt-5.5` is fallback, and `openai/gpt-5.4` is rollback/control.
+Use `scripts/project_implementation_router.py` as route authority and `skills/veritas-model-routing-helper-lanes/SKILL.md` as the human procedure. Model-free remains model-free; `xai/grok-4.6` is Main and the default integrator; bounded helper and QA lanes use `ollama-cloud/glm-5.3:cloud`; code authoring uses `meta/muse-spark-1.3-contributor`; `ollama-cloud/glm-5.3-flash:cloud` is restricted to deterministic scheduled proof/status and bounded evidence work. Main's fallback order is GLM 5.3, Kimi K3, Muse Spark 1.3, then Opus 5. The OpenAI/Codex routes are retired and unavailable.
 
 Use `06. Playbooks/Subagent Spawn Handoff Template.md` for the copyable packet.
 

@@ -1,0 +1,29 @@
+{
+ "status": "ok",
+ "out": "tmp/wf78-legacy-label-retirement-guard.json",
+ "summary": {
+  "current_tier_authority": "tmp/wf78-auto-tier-routing.json",
+  "active_legacy_label_refs": 0,
+  "retired_field_in_schema": false,
+  "ticker_count": 300,
+  "legacy_seeded_tier_count": 0,
+  "legacy_seeded_tier_counts": {},
+  "legacy_seeded_tickers": [],
+  "router_ahead_of_owner_approved_label_count": 4,
+  "router_ahead_of_owner_approved_label_tickers": [
+   "BKNG",
+   "CVX",
+   "LLY",
+   "XLB"
+  ],
+  "seed_retirement_owner_gated": true,
+  "seed_owner_script": "scripts/wf78_auto_tier_router.py",
+  "headline": "active_legacy_label_refs=0 (target 0); legacy_seeded_tier_count=0 (target 0, owner-gated).",
+  "next_safe_action": "Zero refs means the label stays retired. To drive the seed count to zero, run an owner-approved shadow diff of the router with the legacy seed disabled and review the tier deltas before applying."
+ },
+ "validation": {
+  "status": "ok",
+  "errors": 0,
+  "warnings": 0
+ }
+}

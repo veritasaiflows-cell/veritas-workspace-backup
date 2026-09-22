@@ -472,10 +472,10 @@ def build_runtime_posture(token_summary: dict[str, Any], token_budget: dict[str,
     )
     fleet = status_fleet_view(token_budget)
     return {
-        "model": "openai/gpt-5.6-terra",
+        "model": implementation_router.MAIN_MODEL,
         "expected_route": {
             "execution_backend": "main",
-            "model_path": "openai/gpt-5.6-terra",
+            "model_path": implementation_router.MAIN_MODEL,
             "thinking": None,
         },
         "actual_route": {
@@ -1514,7 +1514,7 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
         errors.append("operating_posture.gateway_missing")
     expected_route = as_dict(operating.get("expected_route"))
     actual_route = as_dict(operating.get("actual_route"))
-    if expected_route.get("execution_backend") != "main" or expected_route.get("model_path") != "openai/gpt-5.6-terra":
+    if expected_route.get("execution_backend") != "main" or expected_route.get("model_path") != implementation_router.MAIN_MODEL:
         errors.append("operating_posture.expected_route_invalid")
     if actual_route.get("status") == "unavailable_to_workspace_script":
         if operating.get("model_route_match") is not None or operating.get("route_conformance") != "unavailable":

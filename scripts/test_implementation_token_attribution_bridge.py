@@ -511,6 +511,62 @@ def test_timestampless_complete_model_lane_cannot_be_historical_or_ready() -> No
         assert payload["summary"]["closeout_enforcement_required"] is True
 
 
+def test_bridge_credit_reader_join_resolves_a_supported_gap() -> None:
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+        token_usage, register, coding = seed(root, module, gap_count=2, stamped=False)
+        # Give the unstamped lane a provider run id: exactly the case the WF89
+        # credit reader can resolve deterministically.
+        data = json.loads(register.read_text(encoding="utf-8"))
+        data["lanes"][0]["runtime"]["run_id"] = "run-credit-1"
+        register.write_text(json.dumps(data), encoding="utf-8")
+        credit = root / "tmp" / "wf89-credit-reader-current.json"
+        write_json(credit, {
+            "schema": "veritas.wf89_credit_reader.v1",
+            "total_scanned": 2,
+            "counts": {"CREDITABLE": 1},
+            "records": [{
+                "task_id": "t1",
+                "run_id": "run-credit-1",
+                "label": "wf88-one",
+                "status": "succeeded",
+                "state": "CREDITABLE",
+                "verified": True,
+                "usage": {"input": 100, "output": 40, "total": 140, "cost_total": 0.02},
+                "usage_event_count": 1,
+            }],
+        })
+
+        payload = module.build_payload(token_usage, register, coding, credit_reader_path=credit)
+
+        assert payload["summary"]["credit_reader_status"] == "ok"
+        assert payload["summary"]["credit_reader_creditable_run_count"] == 1
+        assert payload["summary"]["credit_reader_resolved_runtime_gap_count"] == 1
+        assert payload["summary"]["credit_reader_matched_usage_totals"]["total"] == 140
+        assert all(row.get("lane_id") != "WF88::one" for row in payload["runtime_gap_samples"])
+
+
+def test_bridge_stays_fail_closed_when_credit_reader_artifact_is_missing_or_invalid() -> None:
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+        token_usage, register, coding = seed(root, module, gap_count=2, stamped=False)
+
+        missing = module.build_payload(token_usage, register, coding, credit_reader_path=root / "tmp" / "absent.json")
+        assert missing["summary"]["credit_reader_status"] == "unavailable"
+        assert missing["summary"]["credit_reader_resolved_runtime_gap_count"] == 0
+        assert missing["summary"]["runtime_gap_total_count"] >= 1
+
+        bad = root / "tmp" / "bad.json"
+        write_json(bad, {"schema": "some.other.schema"})
+        invalid = module.build_payload(token_usage, register, coding, credit_reader_path=bad)
+        assert invalid["summary"]["credit_reader_status"] == "schema_mismatch"
+        assert "credit_reader_artifact_schema_mismatch" in invalid["validation"]["warnings"]
+        # Reader problems are warnings only; they never create errors or widen authority.
+        assert all(not error.startswith("credit_reader") for error in invalid["validation"]["errors"])
+
+
 if __name__ == "__main__":
     test_bridge_blocks_on_missing_post_cutoff_implementation_token_stamps()
     test_bridge_rejects_self_consistent_codex_receipt_without_protected_dispatch_binding()
@@ -529,4 +585,6 @@ if __name__ == "__main__":
     test_phase_null_provider_unavailable_rows_are_terminal_but_visible()
     test_cache_write_usage_is_exact_but_rate_unavailable()
     test_timestampless_complete_model_lane_cannot_be_historical_or_ready()
+    test_bridge_credit_reader_join_resolves_a_supported_gap()
+    test_bridge_stays_fail_closed_when_credit_reader_artifact_is_missing_or_invalid()
     print("implementation token attribution bridge tests passed")

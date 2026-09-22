@@ -1,0 +1,46 @@
+{
+  "source": [
+    {
+      "path": "T4-inputs/recovery/archive/old-payload.json",
+      "bytes": 238,
+      "sha256": "17130aaa1d334e973cca4ec31b0adaf883a162bce7aac709a4c8d69391817ac7"
+    },
+    {
+      "path": "T4-inputs/recovery/index.json",
+      "bytes": 548,
+      "sha256": "4271c4daf16efa3d6eb492104528c98b26b80f76fce88d2615d515c655d59f7d"
+    },
+    {
+      "path": "T4-inputs/recovery/mirror/payload-b.json",
+      "bytes": 528,
+      "sha256": "50743a3dcf1f3c120a312e900cced598af6acf129b23fa97e9ceaf529b55752b"
+    },
+    {
+      "path": "T4-inputs/recovery/payload-a.json",
+      "bytes": 310,
+      "sha256": "e3ddffd6da0ba881f82a51a870e764ba68581ced2384856190461aab79a889fe"
+    }
+  ],
+  "staged": [
+    {
+      "path": "recovery/archive/old-payload.json",
+      "bytes": 238,
+      "sha256": "17130aaa1d334e973cca4ec31b0adaf883a162bce7aac709a4c8d69391817ac7"
+    },
+    {
+      "path": "recovery/index.json",
+      "bytes": 548,
+      "sha256": "4271c4daf16efa3d6eb492104528c98b26b80f76fce88d2615d515c655d59f7d"
+    },
+    {
+      "path": "recovery/mirror/payload-b.json",
+      "bytes": 528,
+      "sha256": "50743a3dcf1f3c120a312e900cced598af6acf129b23fa97e9ceaf529b55752b"
+    },
+    {
+      "path": "recovery/payload-a.json",
+      "bytes": 310,
+      "sha256": "e3ddffd6da0ba881f82a51a870e764ba68581ced2384856190461aab79a889fe"
+    }
+  ]
+}

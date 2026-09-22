@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "openclaw.cmd",
+    "agent",
+    "--agent",
+    "qa-redteam",
+    "--session-key",
+    "agent:qa-redteam:arena6-grok46-T5-handoff-authority-control-r1-20260919",
+    "--model",
+    "xai/grok-4.6",
+    "--message-file",
+    "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\model-arena\\arena-six-20260919\\prompts\\T5-handoff-authority-control-turn1.txt",
+    "--thinking",
+    "high",
+    "--timeout",
+    "600",
+    "--json"
+  ],
+  "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace"
+}

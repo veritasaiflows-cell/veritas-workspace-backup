@@ -1,0 +1,78 @@
+case 75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4 (family: T6)
+response contract:
+Transform induction with required abstention, plus non-preemptive scheduling.
+
+Response contract:
+Return exactly: {"induced": {held-out input: output} for the inputs the transform determines, "undetermined": [held-out inputs the transform does not determine, in input order], "makespan": integer, "critical_path": [task ids]}.
+
+Rules:
+- Infer the character transform from the labeled pairs only. Do not import any outside rule.
+- The labeled pairs only ever demonstrate the transform on lowercase letters a through z. The transform is therefore defined on exactly those characters, and the alphabet wraps, so advancing past z continues at a.
+- A held-out input is undetermined when and only when it contains at least one character outside lowercase a through z. List it in undetermined, in input order, and do not guess a value for it. Every other held-out input is determined and must appear in induced.
+- makespan: schedule the tasks on the given number of workers. At each time step start every task whose dependencies are all complete, in ascending task-id order, up to the worker limit; a started task runs for its full duration and is never preempted. makespan is the completion time of the last task.
+- critical_path: the longest dependency chain by total duration starting from a task that has no dependencies, ties broken by ascending starting task id. The total duration of the critical path is NOT necessarily the makespan.
+
+Return only the required JSON object. No prose, no explanation, no code fences.
+
+prompt:
+{
+  "heldout_inputs": [
+    "zebra",
+    "mint"
+  ],
+  "request": "Infer the transform from labeled pairs only; abstain elsewhere; schedule.",
+  "tasks": {
+    "A": {
+      "deps": [],
+      "dur": 3
+    },
+    "B": {
+      "deps": [],
+      "dur": 3
+    },
+    "C": {
+      "deps": [],
+      "dur": 3
+    },
+    "D": {
+      "deps": [
+        "A"
+      ],
+      "dur": 2
+    },
+    "E": {
+      "deps": [
+        "B"
+      ],
+      "dur": 2
+    },
+    "F": {
+      "deps": [
+        "C",
+        "D",
+        "E"
+      ],
+      "dur": 1
+    }
+  },
+  "training_pairs": [
+    {
+      "input": "dog",
+      "output": "fpg"
+    },
+    {
+      "input": "fish",
+      "output": "jkth"
+    },
+    {
+      "input": "tree",
+      "output": "wtff"
+    },
+    {
+      "input": "stone",
+      "output": "wwqpf"
+    }
+  ],
+  "workers": 2
+}
+Return only the required JSON object. No prose.

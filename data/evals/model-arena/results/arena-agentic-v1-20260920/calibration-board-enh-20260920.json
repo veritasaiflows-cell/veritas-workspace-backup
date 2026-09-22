@@ -1,0 +1,51 @@
+{
+  "astra-20260920": {
+    "clean": 0,
+    "dim": 0.0,
+    "invented": 2,
+    "strict": 0,
+    "timeouts": 0
+  },
+  "deepseek41flash-20260920": {
+    "clean": 1,
+    "dim": 0.1042,
+    "invented": 1,
+    "strict": 1,
+    "timeouts": 1
+  },
+  "deepseek41flash-overlay-r2-20260920": {
+    "clean": 11,
+    "dim": 0.9167,
+    "invented": 0,
+    "strict": 11,
+    "timeouts": 1
+  },
+  "glm53flash-20260920": {
+    "clean": 0,
+    "dim": 0.0,
+    "invented": 2,
+    "strict": 0,
+    "timeouts": 1
+  },
+  "glm53flash-overlay-r2-20260920": {
+    "clean": 4,
+    "dim": 0.5639,
+    "invented": 0,
+    "strict": 4,
+    "timeouts": 1
+  },
+  "sol-20260920": {
+    "clean": 0,
+    "dim": 0.0,
+    "invented": 2,
+    "strict": 0,
+    "timeouts": 0
+  },
+  "spark13-20260920": {
+    "clean": 1,
+    "dim": 0.125,
+    "invented": 1,
+    "strict": 1,
+    "timeouts": 1
+  }
+}

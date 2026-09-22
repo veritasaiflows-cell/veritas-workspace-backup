@@ -23,6 +23,17 @@ Prefer `rg` for search. Known wrappers may live under `C:\Users\Veritas\AppData\
 
 Inspect exact resolved paths first. Use `apply_patch` for file edits. Keep destructive move/delete work in one PowerShell process, use literal paths, and prove every target is inside the authorized workspace or exact destination. Do not mutate config, credentials, startup, services, plugins, or runtime without explicit approval.
 
+### Git Batch Staging
+
+To stage thousands of paths, build the list from `git ls-files -o --exclude-standard`, filter it in PowerShell, and write a NUL-separated ASCII file; `Set-Content` adds CRLF endings that append `\r` to every path and make `git add --pathspec-from-file` match nothing. Stage with both flags:
+
+```powershell
+[System.IO.File]::WriteAllText($tmpf, ($paths -join "`0") + "`0", [System.Text.Encoding]::ASCII)
+git add --pathspec-from-file="$tmpf" --pathspec-file-nul
+```
+
+Filter out paths git cannot address (long-path residue under `.openclaw\`, deeply nested archive trees) before staging; one unmatchable path aborts the whole batch with `fatal: pathspec ... did not match`. Then compare the staged count from `git diff --cached --name-only` against the input count — a mismatch means the add failed silently. For batch checkpoints, stage only files up to ~10 MB, keep large binaries out of history because GitHub rejects pushes above 100 MB and history bloat is permanent, and name the exclusions in the commit message and closeout.
+
 ## Validation
 
 Use the smallest honest gate:

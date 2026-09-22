@@ -1,0 +1,58 @@
+{
+  "schema": "veritas.workflow_capsule.v1",
+  "workflow_id": "WF89",
+  "display_name": "Isolated Agent Specialization and Fleet Efficiency Contract",
+  "tier": "P1",
+  "priority": "P1",
+  "lifecycle": "active",
+  "readiness": "refresh_required",
+  "effective_status": "refresh_required",
+  "current_state": "A1 reader slice accepted 2026-09-10 with explicit limits; broader efficiency work authorized and open. No whole-fleet readiness, no successful live credited attribution, no accounting/activation completion.",
+  "next_action": "Minimize handoff/context waste, assess tool-compatible specialization, and prepare explicit decisions before config, skills, defaults or agent retirement.",
+  "authoritative_next_action": "Minimize handoff/context waste, assess tool-compatible specialization, and prepare explicit decisions before config, skills, defaults or agent retirement.",
+  "helper_safe": false,
+  "owner_action_required": true,
+  "authority_boundary": "review-only; read-only routing/support, no approval/execution/mutation authority",
+  "authority_class": "owner_gated_review_only",
+  "primary_owner_lane": "main-session-veritas",
+  "secondary_consumers": [],
+  "human_approval_owner": "Randall",
+  "proof_artifact": "tmp/wf89-fleet-20260909/a1-main-acceptance.json",
+  "freshness_sla": {
+    "primary_artifact_max_age_hours": 72.0,
+    "owner_context_max_age_hours": 72.0,
+    "material_owner_context_required": true
+  },
+  "blockers": [
+    "No successful live credited attribution (dispatch_binding_missing_or_ambiguous)",
+    "Windows directory-junction proof dated 2026-09-10: four native junction cases deny escape (see tmp/wf89-fleet-20260909/broader/windows-junction-proof.json); positive controls pass; file-symlink coverage remains partial/unavailable, no universal reparse/race/OS claim",
+    "Historical accounting not green (2026-08-24 canary isolated_source_reverification_mismatch); current active admission has zero errors"
+  ],
+  "claim_limits": [],
+  "stop_lines": [
+    "Index is a derived route map; Active Workflows and exact continuity notes stay authority. No canon/portfolio/ticker-card/SQL-canon mutation, no paper/live/brokerage/account action, no cron/config/runtime mutation, no owner-approval inference from any route row.",
+    "No capital/config/execution authority; read-only routing/support only; no whole-workflow-complete inference from A1 acceptance."
+  ],
+  "continuity_note": "06. Playbooks/Project Continuity/Workflow 89 - Isolated Agent Specialization and Fleet Efficiency Contract.md",
+  "primary_route_artifact": "tmp/wf89-fleet-20260909/a1-main-acceptance.json",
+  "secondary_artifacts": [
+    "tmp/wf89-fleet-20260909/current-handoff.json",
+    "tmp/wf89-fleet-20260909/a1-grok-applied-qa-result.json"
+  ],
+  "validator_commands": [
+    "python scripts\\test_workflow_routing_index.py",
+    "python scripts\\workflow_router.py WF89 --answer all"
+  ],
+  "default_resume_command": "python scripts\\workflow_router.py WF89 --answer all",
+  "control_override": null,
+  "pm_action": null,
+  "pm_job": null,
+  "sources": {
+    "route_index": "tmp\\workflow-routing-index.json",
+    "canonical_control": [
+      "06. Playbooks\\Active Workflows.md",
+      "state\\workflow-control-overrides.json"
+    ],
+    "pm_control_packet": "tmp/pm-control-packet.json"
+  }
+}

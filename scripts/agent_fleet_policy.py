@@ -2,6 +2,25 @@
 """Shared agent-fleet role/model/recovery policy DATA (non-executing).
 
 Owner approval: FLEET-ALIGNMENT-20260905 (Randall, 2026-09-05 23:46 MST).
+Owner change: FLASH-PRIMARY-20260919 (Randall, 2026-09-19 10:36 MST):
+DeepSeek 4.1 Flash primary for finance-source-scout and docs-continuity-editor;
+GLM 5.3 Flash first Main-selected recovery option. Automatic fallbacks stay empty.
+Owner change: OPENAI-ROUTING-REMOVAL-20260910 (Randall, 2026-09-10): the
+OpenAI account is out of quota, so Astra/Sol/Terra/Luna are retired from
+every primary, fallback, and recovery position. Main primary Grok 4.6
+with GLM 5.3 / Kimi K3 / Muse Spark 1.3 fallbacks; Terra and
+Luna specialist roles move to GLM 5.3 Flash. Opus remains Main-spawn
+on-demand only and is not an automatic fallback.
+Owner change: SOL-PRIMARY-REALIGN-20260919 (Randall, 2026-09-19 23:24 MST):
+the 2026-09-10 out-of-quota premise no longer holds (OpenAI routes complete
+successfully), so this policy is realigned to live routing. Main primary is
+now Sol; the live chain is Z.AI GLM 5.3, then Opus 5, then Ollama Cloud GLM
+5.3; Kimi K3 leaves the chain. Sol is removed from LEGACY_DENIED_MODELS
+because it is the live Main primary; the other retired OpenAI refs stay
+denied in persistent specialist scope. research-scout moves from Grok to
+DeepSeek 4.1 Flash. Grok is retained as a recovery candidate only.
+Opus 5 sits in Main's owner-directed chain but is still never a persistent
+specialist primary or specialist automatic fallback (see OPUS_ADVISORY).
 Recommended fleet roles/models/display-names alignment. Muse Spark 1.3
 Contributor and Grok task helpers explicitly permitted. Opus excluded
 from persistent roles and automatic fallbacks (Main on-demand spawn
@@ -22,31 +41,39 @@ from typing import Any
 SCHEMA = "veritas.agent_fleet_policy.v1"
 RECOVERY_OPTIONS_SCHEMA = "veritas.role_recovery_options.v1"
 
-MAIN_MODEL = "openai/gpt-6-astra"
-SOL_MODEL = "openai/gpt-5.6-sol"
-TERRA_MODEL = "openai/gpt-5.6-terra"
-LUNA_MODEL = "openai/gpt-5.6-luna"
 GROK_MODEL = "xai/grok-4.6"
 GLM_MODEL = "ollama-cloud/glm-5.3:cloud"
+GLM_FLASH_MODEL = "ollama-cloud/glm-5.3-flash:cloud"
+DEEPSEEK_FLASH_MODEL = "ollama-cloud/deepseek-v4.1-flash:cloud"
+KIMI_MODEL = "ollama-cloud/kimi-k3:cloud"
 BUILDER_MODEL = "meta/muse-spark-1.3-contributor"
 OPUS_MODEL = "anthropic/claude-opus-5"
+SOL_MODEL = "openai/gpt-5.6-sol"
+ZAI_MODEL = "zai/glm-5.3"
+MAIN_MODEL = SOL_MODEL
 
+# Retired OpenAI refs denied in PERSISTENT SPECIALIST scope only. Sol is no
+# longer listed: it is the live Main primary. Persistent specialists never use
+# an OpenAI model regardless, and Opus is denied separately below.
 LEGACY_DENIED_MODELS = frozenset({
+    "openai/gpt-6-astra",
+    "openai/gpt-5.6-terra",
+    "openai/gpt-5.6-luna",
     "openai/gpt-5.5",
     "openai/gpt-5.4",
     "openai/gpt-5.4-mini",
 })
 
-MAIN_PRIMARY = MAIN_MODEL
-MAIN_FALLBACKS = [SOL_MODEL]
+MAIN_PRIMARY = SOL_MODEL
+MAIN_FALLBACKS = [ZAI_MODEL, OPUS_MODEL, GLM_MODEL]
 
 SPECIALIST_PRIMARY: dict[str, str] = {
-    "research-scout": GROK_MODEL,
-    "finance-source-scout": TERRA_MODEL,
+    "research-scout": DEEPSEEK_FLASH_MODEL,
+    "finance-source-scout": DEEPSEEK_FLASH_MODEL,
     "finance-redteam": GLM_MODEL,
     "qa-redteam": GLM_MODEL,
     "implementation-builder": BUILDER_MODEL,
-    "docs-continuity-editor": LUNA_MODEL,
+    "docs-continuity-editor": DEEPSEEK_FLASH_MODEL,
 }
 
 SPECIALIST_DISPLAY: dict[str, str] = {
@@ -59,19 +86,31 @@ SPECIALIST_DISPLAY: dict[str, str] = {
 }
 
 SPECIALIST_RECOVERY: dict[str, list[str]] = {
-    "research-scout": [TERRA_MODEL, GLM_MODEL],
-    "finance-source-scout": [GROK_MODEL, GLM_MODEL],
-    "finance-redteam": [SOL_MODEL],
-    "qa-redteam": [SOL_MODEL],
-    "implementation-builder": [SOL_MODEL, TERRA_MODEL],
-    "docs-continuity-editor": [TERRA_MODEL, GLM_MODEL],
+    "research-scout": [GLM_MODEL],
+    "finance-source-scout": [GLM_FLASH_MODEL, GROK_MODEL, GLM_MODEL],
+    "finance-redteam": [GROK_MODEL],
+    "qa-redteam": [GROK_MODEL],
+    "implementation-builder": [GLM_MODEL],
+    "docs-continuity-editor": [GLM_FLASH_MODEL, GLM_MODEL],
 }
 
-ON_DEMAND_ARCHITECTURE = {"primary": SOL_MODEL, "recovery_models": [MAIN_MODEL]}
+SIX_FAMILY_BENCHMARK_ACCEPTANCE_20260919: dict[str, object] = {
+    "evidence_path": "data/evals/model-arena/arena-six-20260919/results/incumbent-baseline-20260919/main-acceptance.json",
+    "decision": "deepseek41flash_stronger_overall_glm53flash_format_tool_specialist",
+    "auto_promote": False,
+    "config_change_authorized": False,
+    "note": "informational metadata only; assignments do not auto-promote/change config",
+}
+
+ON_DEMAND_ARCHITECTURE = {"primary": GLM_MODEL, "recovery_models": [GROK_MODEL]}
 OPUS_ADVISORY = {
     "requested_model": OPUS_MODEL,
+    # Never a persistent specialist primary.
     "main_spawn_only": True,
+    # Never a specialist automatic fallback; specialists keep fallbacks: [].
     "automatic_fallback": False,
+    # Owner-directed 2026-09-19: present in Main's live fallback chain only.
+    "main_chain_fallback": True,
     "requires_actual_runtime_model_verification": True,
 }
 

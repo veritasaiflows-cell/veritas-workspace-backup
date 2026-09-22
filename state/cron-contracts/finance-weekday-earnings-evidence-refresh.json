@@ -1,0 +1,92 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "c40e2fd8-46c9-4b8a-9aac-bda8b7eb6a92",
+  "declarationKey": "finance-weekday-earnings-evidence-refresh-v1",
+  "name": "Finance - Weekday Earnings Evidence Refresh",
+  "required": true,
+  "owner_workflow": "WF70 official earnings evidence / alerts-and-recommendations OS",
+  "contract_reason": "Weekday review-only refresh of earnings timing, official IR/SEC capture, reconciliation, and near/post-earnings queues over the bounded 31-name registry.",
+  "description": "Deterministic review-only earnings evidence pipeline over 31 official-capture names. Refreshes timing evidence, supported additive IR/SEC capture, official reconciliation and bridge validation, and near-earnings/post-print review queues. No watchlist closeouts, canon/portfolio/alert mutation, delivery, capital, account, order, or execution authority. Natural runs are held until the G8 register records G8 closed.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "15 6 * * 1-5",
+    "tz": "America/Phoenix",
+    "staggerMs": 0
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts\\earnings_evidence_cron_runner.py",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 1800
+  },
+  "trigger": {
+    "script": "const command = '\"C:\\\\Users\\\\Veritas\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python313\\\\python.exe\" -c \"import json,pathlib; p=pathlib.Path(r\\'C:\\\\Users\\\\Veritas\\\\.openclaw\\\\workspace\\\\tmp\\\\phase3-main-only-20260905\\\\g9-reconciliation-register-20260916.json\\'); d=json.loads(p.read_text(encoding=\\'utf-8\\')); s=str(d.get(\\'gate_state\\',{}).get(\\'G8\\',{}).get(\\'status\\',\\'\\')).upper(); print(json.dumps({\\'status\\':s,\\'closed\\':s in {\\'CLOSED\\',\\'PASS\\',\\'PASSED\\',\\'ACCEPTED\\',\\'COMPLETE\\',\\'COMPLETED\\'}}))\"';\nlet raw = '';\ntry {\n  const result = await exec({command});\n  raw = (result && typeof result === 'object') ? (result.stdout || result.output || result.text || '') : String(result || '');\n} catch (error) {\n  return {fire: false, state: {g8Status: 'READ_ERROR', held: true}};\n}\nlet parsed = null;\ntry {\n  const lines = String(raw).trim().split(/\\r?\\n/).filter(Boolean);\n  parsed = JSON.parse(lines[lines.length - 1]);\n} catch (error) {\n  return {fire: false, state: {g8Status: 'PARSE_ERROR', held: true}};\n}\nif (parsed && parsed.closed === true) {\n  return {fire: true, state: {g8Status: parsed.status, held: false}};\n}\nreturn {fire: false, state: {g8Status: (parsed && parsed.status) || 'UNKNOWN', held: true}};"
+  },
+  "failureAlert": false,
+  "delivery": {
+    "mode": "none",
+    "channel": "last",
+    "bestEffort": true
+  },
+  "compare_fields": [
+    "name",
+    "description",
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "delivery.bestEffort",
+    "failureAlert",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds",
+    "trigger.script"
+  ],
+  "expected_artifacts": [
+    "tmp/earnings-evidence-cron-runner.json",
+    "tmp/earnings-calendar.json",
+    "tmp/earnings-date-source-confidence.json",
+    "tmp/earnings-rollforward-guard.json",
+    "tmp/wf70-official-capture-period-registry.json",
+    "tmp/fundamental-ir-reconciliation-packets.json",
+    "tmp/fundamental-ir-reconciliation-validation.json",
+    "tmp/official-earnings-bridge.json",
+    "tmp/official-earnings-bridge-validation.json",
+    "tmp/post-earnings-prep.json",
+    "tmp/post-earnings-note-targets.json"
+  ],
+  "g8_hold": {
+    "active_until": "tmp/phase3-main-only-20260905/g9-reconciliation-register-20260916.json gate_state.G8.status is closed/accepted",
+    "current_observed_status": "NOT_STARTED",
+    "behavior": "fire_false_without_payload_run_while_open_or_unreadable"
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "trigger_script_reads_only": true,
+    "watchlist_closeout_allowed": false,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "alert_canon_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-09-20T00:03:00Z",
+  "contract_update_reason": "Initial owner-approved creation after a clean forced canary; G8 read-only hold prevents natural payload runs until the G8 register closes."
+}

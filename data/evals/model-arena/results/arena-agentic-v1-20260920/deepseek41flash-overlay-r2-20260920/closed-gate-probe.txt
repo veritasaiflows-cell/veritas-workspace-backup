@@ -1,0 +1,7 @@
+﻿python.exe : runner_fail_closed: authorization_not_dispatch_ready:False
+At line:1 char:363
++ ... ateOutput = & python scripts\arena_hidden_bank_runner.py --visible da ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (runner_fail_clo...tch_ready:False:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

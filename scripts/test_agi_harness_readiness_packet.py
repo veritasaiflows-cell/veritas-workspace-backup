@@ -113,6 +113,48 @@ class AgiHarnessReadinessPacketTests(unittest.TestCase):
             self.assertIn("cron_otel_operations_gate", payload["validation"]["warnings"])
             self.assertFalse(payload["authority_boundary"]["runtime_config_mutation_allowed"])
 
+    def test_attribution_gate_passes_terminal_unavailable_only_when_zero_action_required(self) -> None:
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paths = self.paths_for(module, root)
+            self.write_ready_sources(paths)
+            write_json(
+                paths["implementation_token_attribution"],
+                {
+                    "status": "ok",
+                    "validation": {"status": "ok"},
+                    "summary": {
+                        "gap_resolution_status": "terminal_unavailable_only",
+                        "implementation_token_gap_count": 597,
+                        "unclassified_supported_runtime_gap_count": 2,
+                        "action_required_supported_runtime_gap_count": 0,
+                    },
+                },
+            )
+
+            payload = module.build_payload(root, paths)
+
+            self.assertEqual(payload["validation"]["status"], "ok")
+            self.assertEqual(payload["readiness_state"], "ready_review_only")
+
+            write_json(
+                paths["implementation_token_attribution"],
+                {
+                    "status": "ok",
+                    "validation": {"status": "ok"},
+                    "summary": {
+                        "gap_resolution_status": "stamp_required",
+                        "action_required_supported_runtime_gap_count": 2,
+                    },
+                },
+            )
+
+            payload = module.build_payload(root, paths)
+
+            self.assertEqual(payload["validation"]["status"], "warning")
+            self.assertIn("implementation_token_attribution_gate", payload["validation"]["warnings"])
+
     def test_missing_eval_packet_blocks_readiness(self) -> None:
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:

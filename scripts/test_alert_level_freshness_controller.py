@@ -103,6 +103,46 @@ def clean_quote_fixture(*, closed_session: bool = False) -> tuple[dict, dict, di
     return row, proof, validation
 
 
+def boundary_quote_fixture(market_session_window: str) -> tuple[dict, dict, dict]:
+    """Fresh intraday quote landing exactly at a session-boundary window.
+
+    Mirrors clean_quote_fixture shape: row, proof with a matching
+    market_session block, and validation. Producer contract pins
+    fresh_intraday_allowed=False for all boundary windows and the
+    per-window closed_market_expected_stale_allowed flag.
+    """
+    boundary_closed_flag = {"pre_open": True, "open_settling": False, "post_close": True}
+    row = {
+        "symbol": "ETN",
+        "calendar_freshness_status": "fresh_intraday",
+        "freshness_status": "fresh",
+        "market_session_window": market_session_window,
+        "fresh_intraday_allowed": False,
+        "closed_market_expected_stale_allowed": boundary_closed_flag[market_session_window],
+    }
+    proof = {
+        "status": "ok",
+        "authority": {key: False for key in QUOTE_PROOF_REQUIRED_FALSE_AUTHORITY},
+        "credential_source": {"ambiguous_or_live_names_detected": False},
+        "symbols_requested": ["ETN"],
+        "symbols_observed": ["ETN"],
+        "symbols_missing": [],
+        "snapshots": [copy.deepcopy(row)],
+        "market_session": {
+            "market_session_window": row["market_session_window"],
+            "fresh_intraday_allowed": row["fresh_intraday_allowed"],
+            "closed_market_expected_stale_allowed": row["closed_market_expected_stale_allowed"],
+        },
+    }
+    validation = {
+        "status": "ok",
+        "critical_count": 0,
+        "findings": [],
+        "validated_artifact": "tmp/intraday-alerts/quote-snapshot-proof.json",
+    }
+    return row, proof, validation
+
+
 class AlertLevelFreshnessControllerTests(unittest.TestCase):
     def test_dynamic_preview_and_gate_denial_do_not_build_or_write(self) -> None:
         client = _FakeDynamicClient()
@@ -297,6 +337,90 @@ class AlertLevelFreshnessControllerTests(unittest.TestCase):
         )
         self.assertFalse(policy["fire_eligible"])
         self.assertTrue(policy["stale_or_missing"])
+
+    def test_fresh_quote_at_session_boundary_is_calendar_current_review_only(self) -> None:
+        """Green direction: fresh boundary quotes must not decay.
+
+        Reproduces the 2026-09-11 false freshness_decay cycles at the open
+        (open_settling), close (post_close), and pre-open boundaries with
+        the exact producer-contract field combinations.
+        """
+        for window, closed_flag in (
+            ("open_settling", False),
+            ("post_close", True),
+            ("pre_open", True),
+        ):
+            with self.subTest(window=window):
+                row, proof, validation = boundary_quote_fixture(window)
+                self.assertIs(row["fresh_intraday_allowed"], False)
+                self.assertIs(row["closed_market_expected_stale_allowed"], closed_flag)
+                self.assertTrue(quote_proof_is_clean(proof, validation, row))
+                policy = quote_evaluation_policy(
+                    row,
+                    0.1,
+                    36.0,
+                    quote_proof=proof,
+                    quote_validation=validation,
+                )
+                self.assertTrue(policy["calendar_current"])
+                self.assertFalse(policy["stale_or_missing"])
+                self.assertFalse(policy["fire_eligible"])
+                self.assertTrue(policy["monitor_only"])
+                self.assertEqual(policy["classification"], "session_boundary_current")
+
+    def test_session_boundary_adversarial_metadata_fails_closed(self) -> None:
+        """Red/fail-closed direction: tampered boundary metadata stays decay."""
+        cases = (
+            ("stale_freshness_status", {"freshness_status": "stale"}),
+            ("last_completed_calendar_status", {"calendar_freshness_status": "current_last_completed_session"}),
+            ("tampered_fresh_intraday_allowed", {"fresh_intraday_allowed": True}),
+            ("wrong_closed_flag_open_settling", None),
+            ("market_closed_weekend_or_holiday", None),
+            ("market_hours_withheld_fire", None),
+        )
+        for name, row_override in cases:
+            with self.subTest(case=name):
+                if name == "wrong_closed_flag_open_settling":
+                    row, proof, validation = boundary_quote_fixture("open_settling")
+                    row["closed_market_expected_stale_allowed"] = True
+                    proof["snapshots"][0]["closed_market_expected_stale_allowed"] = True
+                    proof["market_session"]["closed_market_expected_stale_allowed"] = True
+                elif name == "market_closed_weekend_or_holiday":
+                    row, proof, validation = clean_quote_fixture()
+                    row.update(
+                        calendar_freshness_status="fresh_intraday",
+                        market_session_window="market_closed_weekend_or_holiday",
+                        fresh_intraday_allowed=False,
+                        closed_market_expected_stale_allowed=True,
+                    )
+                    proof["snapshots"][0] = copy.deepcopy(row)
+                    proof["market_session"] = {
+                        "market_session_window": row["market_session_window"],
+                        "fresh_intraday_allowed": row["fresh_intraday_allowed"],
+                        "closed_market_expected_stale_allowed": row["closed_market_expected_stale_allowed"],
+                    }
+                elif name == "market_hours_withheld_fire":
+                    row, proof, validation = clean_quote_fixture()
+                    row["fresh_intraday_allowed"] = False
+                    proof["snapshots"][0]["fresh_intraday_allowed"] = False
+                    proof["market_session"]["fresh_intraday_allowed"] = False
+                else:
+                    row, proof, validation = boundary_quote_fixture("post_close")
+                    row.update(row_override)
+                    proof["snapshots"][0].update(row_override)
+                    if name == "tampered_fresh_intraday_allowed":
+                        proof["market_session"]["fresh_intraday_allowed"] = row["fresh_intraday_allowed"]
+                        self.assertTrue(quote_proof_is_clean(proof, validation, row))
+                policy = quote_evaluation_policy(
+                    row,
+                    0.1,
+                    36.0,
+                    quote_proof=proof,
+                    quote_validation=validation,
+                )
+                self.assertFalse(policy["fire_eligible"])
+                self.assertTrue(policy["stale_or_missing"])
+                self.assertEqual(policy["classification"], "stale_or_missing")
 
 
 if __name__ == "__main__":

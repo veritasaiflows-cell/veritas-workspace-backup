@@ -1,0 +1,16 @@
+{
+  "accepted_at": "2026-09-20T17:14:13.533883-07:00",
+  "envelope": "arena-integrated-v1-20260920",
+  "grade": "pass",
+  "limits": [
+    "One model, one repetition: not a reliability estimate and not discrimination evidence",
+    "Isolation is transcript-audited instruction isolation plus a visible-only mount, not a sandbox deny of parent-workspace reads",
+    "Two clean passes on this instrument (DeepSeek, GLM 5.3 Cloud) leave a possible ceiling effect unresolved; a lower-capability control has not been scored",
+    "Passing this canary does not authorize missions 2/3, overlay spend, or routing/config change"
+  ],
+  "model": "ollama-cloud/glm-5.3:cloud",
+  "routing_effect": "none; no automatic promotion or config change",
+  "schema": "veritas.arena_integrated_main_acceptance.v1",
+  "score": 1.0,
+  "verdict": "accepted_with_limits"
+}

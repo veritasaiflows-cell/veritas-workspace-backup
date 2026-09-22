@@ -23,7 +23,6 @@ OPENCLAW_CLI = shutil.which("openclaw.cmd") or shutil.which("openclaw") or str(P
 
 CORE_FILES = {
     "AGENTS.md": ROOT / "AGENTS.md",
-    "TOOLS.md": ROOT / "TOOLS.md",
     "Workspace Structure Protocol": ROOT / "06. Playbooks" / "Workspace Structure Protocol.md",
     "OpenClaw Parallel Pilot Queue": ROOT / "06. Playbooks" / "OpenClaw Parallel Pilot Queue.md",
     "IC Project Registry": ROOT / "06. Playbooks" / "IC Project Registry.md",
@@ -77,7 +76,15 @@ MODEL_POLICY_SURFACES = {
 DISALLOWED_MODEL_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("legacy_provider_model_openai_codex_gpt_5_5", re.compile(r"(?<![\w-])openai-codex/gpt-5\.5(?![\w.-])", re.IGNORECASE)),
     ("disallowed_chatgpt_5_5", re.compile(r"(?<![\w-])chatgpt-5\.5(?![\w.-])", re.IGNORECASE)),
+    ("retired_openai_route", re.compile(r"(?<![\w-])openai/gpt-[\w.-]+", re.IGNORECASE)),
 )
+
+# Same escape hatch as the legacy pattern: an explicitly historical mention is a
+# record, not a live route.
+LEGACY_CONTEXT_EXEMPT_PATTERNS = frozenset({
+    "legacy_provider_model_openai_codex_gpt_5_5",
+    "retired_openai_route",
+})
 
 LIVE_DEPLOYMENT_SURFACES = (
     ROOT / "03. Portfolio" / "Portfolio Snapshot.md",
@@ -165,7 +172,8 @@ def has_unqualified_sensitive_approval_gate(text: str) -> bool:
 
 
 def check_approval_gating(findings: list[dict[str, Any]]) -> None:
-    for name in ("AGENTS.md", "TOOLS.md"):
+    # OpenClaw retired workspace TOOLS.md; AGENTS.md is the canonical successor surface.
+    for name in ("AGENTS.md",):
         text = read_text(CORE_FILES[name])
         lowered = normalize(text)
         missing_terms = [term for term in SENSITIVE_OUTSIDE_WORKSPACE_TERMS if term not in lowered]
@@ -224,7 +232,8 @@ def check_structure_protocol(findings: list[dict[str, Any]]) -> None:
 
 
 def check_db_lifecycle_route(findings: list[dict[str, Any]]) -> None:
-    tools_text = read_text(CORE_FILES["TOOLS.md"])
+    # OpenClaw retired workspace TOOLS.md; AGENTS.md is the canonical successor surface.
+    tools_text = read_text(CORE_FILES["AGENTS.md"])
     lowered_tools = normalize(tools_text)
     route_terms = (
         "db lifecycle route",
@@ -240,7 +249,7 @@ def check_db_lifecycle_route(findings: list[dict[str, Any]]) -> None:
             findings,
             "db_lifecycle_tools_route_missing",
             "warning",
-            "TOOLS.md does not make the DB lifecycle manifest discoverable enough for weekly hygiene",
+            "AGENTS.md does not make the DB lifecycle manifest discoverable enough for weekly hygiene",
             "Add a DB lifecycle route that points at db_lifecycle_manifest.py --write --validate and preserves owner approval before archive/delete.",
             {"missing_terms": missing_route_terms},
         )
@@ -501,7 +510,7 @@ def check_model_routing_policy(findings: list[dict[str, Any]]) -> None:
         for line_number, line in enumerate(text.splitlines(), 1):
             for label, pattern in DISALLOWED_MODEL_PATTERNS:
                 if pattern.search(line):
-                    if label == "legacy_provider_model_openai_codex_gpt_5_5" and any(term in line.lower() for term in allowed_legacy_context):
+                    if label in LEGACY_CONTEXT_EXEMPT_PATTERNS and any(term in line.lower() for term in allowed_legacy_context):
                         continue
                     hits.append({
                         "file": path.relative_to(ROOT).as_posix(),
@@ -515,7 +524,7 @@ def check_model_routing_policy(findings: list[dict[str, Any]]) -> None:
             "model_routing_policy_drift",
             "critical",
             "Active governance/control surfaces contain disallowed or stale model-routing language",
-            "Replace stale provider/runtime wording with the approved `openai/gpt-5.5` through Codex-runtime posture; keep only explicitly historical legacy-route mentions.",
+            "Replace stale provider/runtime wording with the approved `xai/grok-4.6` main and `ollama-cloud/glm-5.3:cloud` helper posture; keep only explicitly historical legacy-route mentions.",
             {"hits": hits[:25], "truncated": len(hits) > 25, "hit_count": len(hits)},
         )
 
@@ -682,7 +691,8 @@ def telegram_plugin_enabled(value: Any) -> bool:
 
 
 def check_channel_config(findings: list[dict[str, Any]], cli_timeout: int) -> None:
-    tools_text = read_text(CORE_FILES["TOOLS.md"])
+    # OpenClaw retired workspace TOOLS.md; AGENTS.md is the canonical successor surface.
+    tools_text = read_text(CORE_FILES["AGENTS.md"])
     lowered_tools = tools_text.lower()
     telegram_policy_terms = (
         "telegram",
@@ -716,7 +726,7 @@ def check_channel_config(findings: list[dict[str, Any]], cli_timeout: int) -> No
             findings,
             "tools_channel_hardening_claim",
             "warning",
-            "TOOLS.md no longer states the current channel hardening posture clearly enough to verify",
+            "AGENTS.md no longer states the current channel hardening posture clearly enough to verify",
             "Keep the no-channel posture or the approved Telegram exception explicit before trusting channel expansion.",
         )
 

@@ -194,7 +194,7 @@ def lint_known_profile(agent_id: str, manifest: dict[str, Any], agent: dict[str,
     if model_route.get("recovery_is_non_executing_option") is not True:
         errors.append("manifest must mark recovery candidates as non-executing options")
     if model_route.get("main_model") != generator.MAIN_MODEL:
-        errors.append("manifest main model mismatch; Veritas Main remains Astra")
+        errors.append("manifest main model mismatch; Veritas Main remains the configured Sol primary")
     if manifest.get("display_name") != generator.fleet_display_for(agent_id):
         errors.append("manifest display name mismatch with shared fleet policy")
     if manifest.get("stable_id") != agent_id:

@@ -1,0 +1,28 @@
+{
+  "schema": "veritas.arena_six_independent_qa_review.v1",
+  "reviewer_model": "ollama-cloud/glm-5.3:cloud",
+  "verdict": "pass_with_limits",
+  "blocking_findings": 0,
+  "verified": [
+    "24 trajectories / 40 turn rows / 39 completed plus one timeout",
+    "score math and eligible denominators",
+    "all completed prompt/model identity receipts",
+    "T1 fixed-point versus clamp result",
+    "T2 false-correction handling",
+    "four exact T4 read traces and no forbidden reads",
+    "report material claims"
+  ],
+  "limits": [
+    "Reviewer inspected consolidated evidence and selected failure attempts but did not independently recompute the complete Main-side file manifest.",
+    "The raw timeout row preserves its original unknown classification; matrix-index-adjudicated.json is the derived taxonomy view.",
+    "The gateway CLI applied a 30-second grace beyond the frozen 600-second deadline."
+  ],
+  "post_review_main_corrections": [
+    "report title encoding",
+    "explicit derived timeout view",
+    "null capability dimensions for the timeout",
+    "optional-read failure-counter explanation",
+    "600-second versus 630-second deadline disclosure"
+  ],
+  "post_review_delta_independently_rechecked": false
+}

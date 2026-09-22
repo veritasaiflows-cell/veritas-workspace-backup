@@ -122,7 +122,7 @@ def scoped_v2_payload() -> dict[str, object]:
         "runtime": {
             "execution_backend": "persistent_isolated_agent",
             "provider": "openai",
-            "model": router.TERRA_MODEL,
+            "model": router.NATIVE_MODEL,
             "thinking": "high",
             "openclaw_version": OPENCLAW_VERSION,
             "config_sha256": CONFIG_SHA256,
@@ -213,7 +213,7 @@ def runtime_probe_payload() -> dict[str, object]:
             "agent_id": AGENT_ID,
             "execution_backend": "persistent_isolated_agent",
             "provider": "openai",
-            "model": router.TERRA_MODEL,
+            "model": router.NATIVE_MODEL,
             "thinking": "high",
         },
         "writes_attempted_but_blocked": True,

@@ -1,0 +1,55 @@
+{
+  "schema": "veritas.arena_overlay_r2_three_model_synthesis.v1",
+  "envelope": "arena-agentic-v1-20260920",
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "exposure": "with-fixtures",
+  "recorded_at_phoenix": "2026-09-20T17:10:00-07:00",
+  "comparability": "overlay-r2 CLI/functional-lab only; collector GLM 4/12 is a different transport",
+  "authority": "review-only; no routing, configuration, role, or execution authority",
+  "canonical_dispatch_gate": "inert",
+  "cli_lab_ranking": [
+    "Spark 12/12",
+    "DeepSeek 11/12",
+    "GLM Flash CLI 10/12"
+  ],
+  "models": [
+    {
+      "display": "Spark 1.3",
+      "strict": "12/12",
+      "dimensional": 1.0,
+      "timeouts": 0,
+      "transport": "CLI lab",
+      "dir": "data/evals/model-arena/results/arena-agentic-v1-20260920/spark13-overlay-r2-20260920/"
+    },
+    {
+      "display": "DeepSeek 4.1 Flash",
+      "strict": "11/12",
+      "dimensional": 0.9167,
+      "timeouts": 1,
+      "miss": "75c25de6 T6-zebra transport timeout",
+      "transport": "CLI lab",
+      "dir": "data/evals/model-arena/results/arena-agentic-v1-20260920/deepseek41flash-overlay-r2-20260920/"
+    },
+    {
+      "display": "GLM 5.3 Flash CLI",
+      "strict": "10/12",
+      "dimensional": 0.8889,
+      "timeouts": 1,
+      "misses": ["36072319 T1 answered-fail", "75c25de6 T6-zebra timeout_empty"],
+      "transport": "CLI lab",
+      "dir": "data/evals/model-arena/results/arena-agentic-v1-20260920/glm53flash-overlay-r2-cli-20260920/"
+    }
+  ],
+  "glm_collector_footnote": {
+    "dir": "data/evals/model-arena/results/arena-agentic-v1-20260920/glm53flash-overlay-r2-20260920/",
+    "strict": "4/12",
+    "dimensional": 0.5639,
+    "do_not_rank_with_cli_lab": true
+  },
+  "synthesis": {
+    "headline": "On the same CLI lab pipe: Spark 12, DeepSeek 11, GLM Flash 10. Collector GLM 4/12 was transport, not the overlay-r2 ranking.",
+    "shared_t6_zebra_timeout": "DeepSeek and GLM CLI both timed out T6-zebra; Spark answered it.",
+    "glm_remaining_capability_miss": "T1 36072319",
+    "not_claimed": ["routing change", "role promotion", "cross-envelope ranking"]
+  }
+}

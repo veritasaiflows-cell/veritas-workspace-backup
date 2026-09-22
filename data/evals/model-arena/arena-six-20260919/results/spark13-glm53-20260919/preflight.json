@@ -1,0 +1,39 @@
+{
+  "schema": "veritas.arena_six_spark_glm_preflight.v1",
+  "envelope_id": "arena-six-20260919",
+  "keys_sha256": "f819f97448cc0c92321c8b824c293cd863a7b1befbb68eedc058c6e6466f9003",
+  "route": "gateway agent / qa-redteam / file-based prompts",
+  "thinking": "high",
+  "timeout_s_per_turn": 600,
+  "models": {
+    "spark13": "meta/muse-spark-1.3-contributor",
+    "glm53": "ollama-cloud/glm-5.3:cloud"
+  },
+  "identity_canaries": {
+    "spark13": {
+      "requested_exact": true,
+      "effective_exact": true,
+      "no_fallback": true,
+      "no_reroute": true,
+      "one_successful_read": true,
+      "nonce_representation": "JSON-escaped trailing newline; nonce payload present"
+    },
+    "glm53": {
+      "requested_exact": true,
+      "effective_exact": true,
+      "no_fallback": true,
+      "no_reroute": true,
+      "one_successful_read": true,
+      "nonce_representation": "trailing newline stripped; nonce payload present"
+    }
+  },
+  "identity_transport_pass": true,
+  "scored_canary_limit": "exact_nonce byte-in-final-text failed because Spark JSON-escaped the newline and GLM stripped it; identity and read transport still proved. Canaries were not retried.",
+  "isolation": {
+    "candidate_key_leaks_after_quarantine": [],
+    "quarantine_manifest": "quarantine-manifest.json",
+    "t4_fixtures_staged": true
+  },
+  "retry_policy": "zero retries",
+  "config_or_routing_change": false
+}

@@ -1,0 +1,13 @@
+{
+  "status": "six_T1_trials_invalid_transport",
+  "observed": "All six stored user messages end at Buggy code:; source, alternatives, test vectors and JSON contract never arrived. Both models reported the missing artifact. CLI exit zero did not prove complete prompt delivery.",
+  "cause_status": "Exact loss layer not established; multiline command-argument transport failed. Use documented --message-file and verify exact prompt readback.",
+  "original_trial_files_preserved": true,
+  "invalid_trial_count": 6,
+  "valid_other_task_runs": 18,
+  "repair_scope": "Only six incomplete T1 trials, new sessions and repair-prefixed artifacts. Same original frozen prompt and answer key; no completed valid trial rerun.",
+  "attempt_accounting": "24 original attempts plus six separately labelled transport-repair attempts; original invalid attempts remain operational failures, excluded only from capability score with transcript evidence.",
+  "prompt_sha256": "c605ee9a87a0b9872647af990adb9a122e32006b3176722ed7e5f289bda4aefe",
+  "visible_observation_by_trial": "All six candidates correctly identified missing code; not credited as code-review capability success.",
+  "independent_oracle_reviewer": "timed out without verdict; not credited as independent reviewer pass. Main deterministic oracle checks remain valid."
+}

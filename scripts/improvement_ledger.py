@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -45,6 +46,7 @@ TRIAGE_CLOSURE_STATUSES = {
     "superseded_by_open_improvement",
     "owner_packet_ready_not_applied",
     "monitor_only_drift_currently_absent",
+    "historical_terminal_unavailable_claim_limit",
 }
 
 FOLLOW_UP_CLASS_BY_STATUS = {
@@ -54,6 +56,7 @@ FOLLOW_UP_CLASS_BY_STATUS = {
     "superseded_by_open_improvement": "successor_item",
     "owner_packet_ready_not_applied": "owner_gated_packet",
     "monitor_only_drift_currently_absent": "monitor_only_rationale",
+    "historical_terminal_unavailable_claim_limit": "monitor_only_rationale",
     "standing_policy": "standing_policy",
     "monitor_only_standing": "monitor_only_rationale",
     "owner_decision_pending": "owner_gated_packet",
@@ -120,6 +123,8 @@ CANONICAL_SOURCE_KEYS = {
 
 OTEL_STANDING_RECOMMENDATIONS = {
     "content_capture_boundary": "standing_policy",
+    # Permanent claim boundary emitted at severity info, not implementation debt.
+    "historical_attribution_claim_limits": "standing_policy",
     "token_cost_metadata_depth": "owner_decision_pending",
     "cron_signal_learning_input": "monitor_only_standing",
     "workflow_advancement_learning_input": "monitor_only_standing",
@@ -234,6 +239,9 @@ def event_fingerprint(row: dict[str, Any]) -> str:
             "allowed_autonomous_output",
             "review_cadence",
             "resolution_reason",
+            # Without this, an event that legitimately recurs after a close/reopen cycle
+            # collides with its own prior-cycle fingerprint and is suppressed forever.
+            "prior_event_id",
         )
         if key in row
     }
@@ -859,6 +867,52 @@ def skill_workshop_manifest() -> dict[str, Any]:
     return as_dict(load_json_artifact(SKILL_WORKSHOP_MANIFEST))
 
 
+def skill_workshop_source_status() -> dict[str, Any]:
+    status = source_status(SKILL_WORKSHOP_MANIFEST)
+    if not SKILL_WORKSHOP_MANIFEST.exists() and PROPOSALS_DIR.is_dir():
+        status["exists"] = True
+        status["fallback"] = str(PROPOSALS_DIR)
+        status["detail"] = "Legacy manifest removed by per-proposal directory migration; proposal lookups fall back to skill-workshop/proposals/."
+    return status
+
+
+PROPOSALS_DIR = SKILL_WORKSHOP_MANIFEST.parent / "proposals"
+
+
+def _implementation_friction_proposal_from_dir() -> dict[str, Any] | None:
+    """Fallback proposal lookup for the post-2026-09 Skill Workshop storage.
+
+    The legacy proposals.json manifest was removed when proposals moved to
+    one directory per proposal under skill-workshop/proposals/. A directory
+    whose PROPOSAL.md frontmatter still names implementation-friction-closeout
+    proves that proposal exists; directory names sort by creation date, so the
+    last matching entry is the newest proposal.
+    """
+    if not PROPOSALS_DIR.is_dir():
+        return None
+    for entry in sorted(PROPOSALS_DIR.glob("implementation-friction-closeout-*"), reverse=True):
+        proposal_md = entry / "PROPOSAL.md"
+        if not entry.is_dir() or not proposal_md.is_file():
+            continue
+        try:
+            head = proposal_md.read_text(encoding="utf-8", errors="replace").splitlines()[:15]
+        except OSError:
+            continue
+        name: str | None = None
+        status: str | None = None
+        for line in head:
+            name_match = re.match(r'^name:\s*"?([^"\r\n]+?)"?\s*$', line.strip())
+            if name_match:
+                name = name_match.group(1).strip()
+            status_match = re.match(r'^status:\s*"?([^"\r\n]+?)"?\s*$', line.strip())
+            if status_match:
+                status = status_match.group(1).strip()
+        if name != "implementation-friction-closeout":
+            continue
+        return {"id": entry.name, "skillKey": name, "status": status or "proposal", "scanState": None}
+    return None
+
+
 def implementation_friction_proposal_exists(manifest: dict[str, Any]) -> dict[str, Any] | None:
     for proposal in as_list(manifest.get("proposals")):
         if not isinstance(proposal, dict):
@@ -870,7 +924,7 @@ def implementation_friction_proposal_exists(manifest: dict[str, Any]) -> dict[st
         if proposal.get("scanState") not in {None, "clean"}:
             continue
         return proposal
-    return None
+    return _implementation_friction_proposal_from_dir()
 
 
 def skill_proposal_audit(manifest: dict[str, Any]) -> dict[str, Any]:
@@ -1077,6 +1131,7 @@ def followup_required_event(old: dict[str, Any], queue: dict[str, Any], otel: di
         "carry_forward": True,
         "closure_blocked_reason": "latest_source_absence_without_followup",
         "prior_resolution_reason": old.get("resolution_reason"),
+        "prior_event_id": old.get("event_id"),
         "follow_up": {
             "status": "missing_followup",
             "required": True,
@@ -1422,6 +1477,10 @@ def wf88_followup_triage_resolution_events(
             "status": "complete",
             "carry_forward": False,
             "resolution_reason": "wf88_followup_debt_triage",
+            # A row closed here, later reopened, and re-closed produces an otherwise identical
+            # event; without this the second closure is suppressed as a duplicate and renders
+            # in the packet while never reaching the append-only ledger.
+            "prior_event_id": old.get("event_id"),
             "follow_up": with_follow_up_class({
                 "status": status,
                 "required": False,
@@ -1755,7 +1814,7 @@ def build_payload(ledger_path: Path, append: bool) -> tuple[dict[str, Any], list
             source_status(FINANCE_RESPONSE_QUALITY_REPAIR_LOOP),
             source_status(WF85_SOURCE_OPEN_RECONCILIATION),
             source_status(WF88_OS2_CONTROL),
-            source_status(SKILL_WORKSHOP_MANIFEST),
+            skill_workshop_source_status(),
             source_status(WF88_FOLLOWUP_TRIAGE),
         ],
         "summary": {

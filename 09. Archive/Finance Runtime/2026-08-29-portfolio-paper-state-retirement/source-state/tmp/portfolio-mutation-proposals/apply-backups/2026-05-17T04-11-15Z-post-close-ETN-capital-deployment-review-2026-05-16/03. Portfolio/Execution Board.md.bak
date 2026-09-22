@@ -1,0 +1,520 @@
+# Execution Board
+
+## Purpose and ownership boundary
+
+This is the consolidated execution surface for the finance canon. It combines the pre-consolidation technical-entry and deployment-trigger layers into one parser-compatible note.
+
+Owns:
+- live action state and operational blocker / condition
+- execution bands, stops, support/resistance, repair state, and invalidation logic
+- explicit authority notes for owner approval, manual-only constraints, and no-automatic-execution limits
+
+Does **not** own:
+- durable company thesis and coverage membership; see [[04. Research/Coverage and Watchlist]]
+- portfolio weights / sleeve sizing; see [[03. Portfolio/Portfolio Snapshot]] and [[07. Risk/Risk Rules]]
+- automatic trading authority; this board is manual and owner-gated
+
+## State vocabulary and rules
+
+- **Deployable now** - gates line up on paper, price is in the approved zone, and owner/manual constraints are explicit.
+- **Almost deployable** - thesis and structure are constructive, but one or more promotion, pullback, sizing, or timing conditions remain.
+- **Wait / no chase** - quality may be intact, but entry is extended or timing-sensitive.
+- **Watch-only** - tracked for thesis, sector, or read-through value; no execution entitlement.
+- **Repair / do not touch** - prior setup failed or price is below stop / below key structure; new action requires reclaim plus fresh review.
+- **Blocked** - a catalyst, earnings window, data-quality problem, or regime issue prevents normal action.
+
+Rules:
+- In-band does not equal deployable by itself.
+- Owner approval does not override a broken stop, stale band, or near-term catalyst blocker.
+- Reference bands refresh chart context only; they do not create trade, sizing, sleeve, approval, or execution authority.
+- Watch-lane names cannot be silently promoted into execution-lane candidates.
+- All execution remains manual-only unless Randall separately authorizes otherwise.
+
+## Current execution table
+
+| Ticker | Lane | Action state | Close/date | Band | Stop | Technical posture | Blocker/condition | Authority note | Source/freshness |
+|---|---|---|---|---|---|---|---|---|---|
+| ETN | Execution | **Deployable now** | 399.44 / 2026-05-15 | 369.08-410.06 | 350.45 | above 50d and 200d, below 20d | Manual-only; no chase above approved band; AI-power/correlation sizing discipline remains. | Owner-approved Tier 1 explicit add; manual-only, no automatic execution. | tmp/technical-refresh.json + tmp/portfolio-config.json 2026-05-15 |
+| JPM | Execution | **Approval recorded / trigger not live** | 297.81 / 2026-05-15 | **Authoritative trigger review: 306.82-318.12**; legacy parser band 294.57-308.54 is non-authoritative | **301.17 near-term invalidation/reference stop** | below authoritative trigger band; below 20d/50d/200d; near invalidation | Manual-only; do not treat as deployable-now or active trigger-monitoring candidate until reclaim of 306.82-318.12 or a later explicit owner-approved band review; WF65 industrial-FCF false-positive is fixed and V1.5 official bank-capital supplement now has manual-confirmed risk-based capital evidence (CET1 14.1% Advanced / 14.3% Standardized; Tier 1 15.1% Advanced / 15.2% Standardized) plus official TBV/share 108.87, but broader ROTCE/NIM/deposit/funding/credit-quality review remains required if future entry is reconsidered. | Prior owner approval remains recorded, but current trigger is not live; no automatic execution, no inferred approval, no sizing authority. | Randall owner resolution 2026-05-16 + tmp/technical-refresh.json 2026-05-15 + WF65 bank-specific review gate 2026-05-16 |
+| NVDA | Execution | **Wait / no chase** | 235.74 / 2026-05-14 | 197.01-210.84 | 190.10 | above all MAs -- bullish 20>50>200 stack | Above written band; May 20 earnings is primary-confirmed by NVIDIA IR; event-risk freeze and crowding/timing caveats. | No deployable-now authority; bounded review kept band frozen. | tmp/technical-refresh.json + tmp/band-proposals.json 2026-05-14; Event Calendar/NVIDIA IR confirmation |
+| GOOG | Execution | **Almost deployable** | 397.17 / 2026-05-14 | 341.96-362.08 | 331.90 | above all MAs -- bullish 20>50>200 stack | Needs pullback/revalidation into written band and explicit promotion. | Promotion still required. | tmp/technical-refresh.json 2026-05-14 + archived pre-consolidation levels |
+| MSFT | Execution | **Deployable now / staged manual** | 409.43 / 2026-05-14 | 389.64-412.56 | 378.18 | above 50d, below 20d and 200d | Owner-approved; starter-tranche discipline while below 200-day / repair not fully reclaimed; direct Tech is at cap, so deployment sequencing needs explicit owner decision. | Owner-approved 2026-05-12 staged manual candidate; no automatic execution or sizing authority. | tmp/technical-refresh.json 2026-05-14 + archived pre-consolidation levels |
+| AMZN | Watch | **Watch-only / bench** | 270.13 / 2026-05-13 | 252.27-267.19 | 244.81 | above all MAs -- bullish 20>50>200 stack | Secondary large-cap platform read; above refreshed watch band; no daily execution entitlement. | Watch lane only. | tmp/technical-refresh.json + tmp/band-proposals.json 2026-05-13 |
+| VRT | Watch/research | **Watch / research needed** | 369.99 / 2026-05-13 | 306.85-338.33 | 291.11 | above all MAs -- bullish 20>50>200 stack | ETN remains primary AI-power execution name; needs research/promotion. | No quiet promotion. | tmp/technical-refresh.json 2026-05-13 + archived pre-consolidation levels |
+| CAT | Watch | **Watch-only / post-print monitor** | 902.3 / 2026-05-13 | 811.65-866.48 | 784.25 | above all MAs -- bullish 20>50>200 stack | Industrial read-through only; extended/no promotion. | Watch lane only. | tmp/technical-refresh.json 2026-05-13 + archived pre-consolidation levels |
+| LLY | Watch | **Watch-only / sector monitor** | 1015.75 / 2026-05-13 | 907.64-969.88 | 876.52 | above all MAs | Healthcare diversification monitor only; no explicit promotion. | Watch lane only. | tmp/technical-refresh.json 2026-05-13 + archived pre-consolidation levels |
+| GS | Execution | **Almost deployable** | 955.42 / 2026-05-13 | 886.29-923.51 | 858.76 | above all MAs -- bullish 20>50>200 stack | Above band; secondary to JPM until promoted/sized; WF65 industrial-FCF false-positive is fixed and V1.5 official bank-capital supplement now has manual-confirmed risk-based capital evidence (CET1 12.5% Standardized / 13.3% Advanced; Tier 1 14.1% Standardized / 15.1% Advanced). Tier 1 leverage 5.9% remains separate and **NOT risk-based**. Broader ROTCE/NIM/funding/liquidity/credit-quality review remains required before any Financials execution promotion. | Promotion and sizing review required; no automatic execution, no inferred approval, no sizing authority. | tmp/technical-refresh.json 2026-05-13 + archived pre-consolidation levels + WF65 bank-specific review gate 2026-05-16 |
+| BRK.B | Execution repair | **Repair / do not touch below stop** | 482.40 / 2026-05-14 | 489.78-498.19 reclaim-only | 483.05 | above 20d and 50d, below 200d | Below explicit stop; do not touch until it reclaims the 483.05 stop and then the 200D / reclaim band. | Owner-approved band refresh for monitoring only; no execution entitlement. | tmp/board-canon-guardrail.json + tmp/band-proposals.json 2026-05-14 |
+| XOM | Execution repair | **Do not touch / repair review** | 151.57 / 2026-05-13 | 150.24-158.44 | 146.14 | above 20d and 200d, below 50d | Repair review remains active despite in-band close; prior May 11 stop test must be resolved. | Repair state overrides band location. | tmp/technical-refresh.json 2026-05-13 + archived pre-consolidation levels |
+| LMT | Execution repair | **Do not touch / below-stop repair** | 520.41 / 2026-05-14 | 548.51-582.27 | 531.63 | below all MAs | Below stop and below major MAs; setup failed; Defense draft-weight gap requires owner decision. | No re-entry case yet; do not treat 10% draft weight as deployable. | tmp/technical-refresh.json 2026-05-14 + archived pre-consolidation levels |
+| RTX | Watch repair | **Watch-only / repair** | 178.11 / 2026-05-13 | 183.01-193.23 | 177.91 | below all MAs | Below band and near stop; repair monitor. | Watch lane only. | tmp/technical-refresh.json + tmp/band-proposals.json 2026-05-13 |
+| CVX | Watch | **Watch-only / bench** | 186.0 / 2026-05-13 | 186.91-196.41 | 182.16 | above 200d, below 20d and 50d | Secondary energy read-through; not hidden XOM substitute. | Watch lane only. | tmp/technical-refresh.json 2026-05-13 + archived pre-consolidation levels |
+| PLTR | Watch/speculative | **Watch-only / below-stop repair** | 130.05 / 2026-05-13 | 137.37-149.53 | 131.29 | below all MAs | Higher-risk narrative name; below stop and below longer MAs / watch lane repair. | Watch lane only; no execution entitlement. | tmp/technical-refresh.json + tmp/band-proposals.json 2026-05-13 |
+| AMD | Watch | **Watch-only / do not chase** | 445.5 / 2026-05-13 | 295.33-342.53 | 271.73 | above all MAs -- bullish 20>50>200 stack | Strong but materially extended above refreshed watch band; post-earnings read-through only. | Watch lane only. | tmp/technical-refresh.json + tmp/band-proposals.json 2026-05-13 |
+| LNG | Watch repair | **Do not touch / watch-lane repair** | 239.38 / 2026-05-13 | 260.82-275.56 | 253.45 | above 200d, below 20d and 50d | Below stop; old watch-lane band is repair/reference only. | No execution-board entitlement. | tmp/technical-refresh.json 2026-05-13 + archived pre-consolidation levels |
+| BKNG | Watch repair | **Watch-only / below-stop repair** | 155.03 / 2026-05-13 | 164.05-170.91 | 155.97 | below all MAs | Repair mode below stop and below major MAs; no deployable setup. | Watch lane only; repair blocker accepted. | tmp/technical-refresh.json + tmp/band-proposals.json 2026-05-13 |
+| LIN | Portfolio review / watch lane | **Portfolio-review only / defined setup** | 506.11 / 2026-05-15 | 497.11-506.11 | 487.17 | above all MAs -- bullish 20>50>200 stack | Owner-approved for portfolio review only; premium valuation and entry discipline remain blockers before any deployment proposal. | Review-only; no sizing, sleeve, cash, deployment, paper/live order, or trade authority. | Randall approval 2026-05-15 23:37 + portfolio-review packet + tmp/technical-refresh.json |
+| ECL | Watch / sector monitor | **Watch-only / research monitor** | 271.22-278.98 | 265.01 | Underdefined | Below stop / repair reference: current close is below the newly defined stop; no deployment proposal until reclaim and fresh review. | Reference-only; stop-breached/repair context; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | tmp/technical-refresh.json + Coverage and Watchlist 2026-05-15 |
+| VMC | Watch / sector monitor | **Watch-only / research monitor** | 291.87-300.98 | 284.58 | Underdefined | Below stop / repair reference: current close is below the newly defined stop; no deployment proposal until reclaim and fresh review. | Reference-only; stop-breached/repair context; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | tmp/technical-refresh.json + Coverage and Watchlist 2026-05-15 |
+| META | Portfolio review / watch lane | **Portfolio-review only / underdefined repair setup** | 672.6-693.91 | 655.55 | Underdefined | Below stop / repair reference: current close is below the newly defined stop; no deployment proposal until reclaim and fresh review. | Reference-only; stop-breached/repair context; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | Randall approval 2026-05-15 23:37 + portfolio-review packet + tmp/technical-refresh.json |
+| NFLX | Watch / sector monitor | **Watch-only / research monitor** | 102.56-105.46 | 100.24 | Underdefined | Below stop / repair reference: current close is below the newly defined stop; no deployment proposal until reclaim and fresh review. | Reference-only; stop-breached/repair context; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | tmp/technical-refresh.json + Coverage and Watchlist 2026-05-15 |
+| TMUS | Watch / sector monitor | **Watch-only / research monitor** | 213.01-220.38 | 207.11 | Underdefined | Below stop / repair reference: current close is below the newly defined stop; no deployment proposal until reclaim and fresh review. | Reference-only; stop-breached/repair context; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | tmp/technical-refresh.json + Coverage and Watchlist 2026-05-15 |
+| PH | Portfolio review / watch lane | **Portfolio-review only / underdefined wait setup** | 851.36-908.98 | 819.35 | Underdefined | above 200d, below 20d and 50d | Owner-approved for portfolio review only; needs support/resistance, entry band, stop, and valuation discipline before deployment proposal. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | Randall approval 2026-05-15 23:37 + portfolio-review packet + tmp/technical-refresh.json |
+| GE | Watch / sector monitor | **Watch-only / research monitor** | 299.03-311.84 | 288.78 | Underdefined | Below stop / repair reference: current close is below the newly defined stop; no deployment proposal until reclaim and fresh review. | Reference-only; stop-breached/repair context; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | tmp/technical-refresh.json + Coverage and Watchlist 2026-05-15 |
+| CME | Portfolio review / watch lane | **Portfolio-review only / defined setup** | 298.86 / 2026-05-15 | 287.74-298.86 | 276.68 | above all MAs | Owner-approved for portfolio review only; valuation and rate/volatility regime fit remain blockers before any deployment proposal. | Review-only; no sizing, sleeve, cash, deployment, paper/live order, or trade authority. | Randall approval 2026-05-15 23:37 + portfolio-review packet + tmp/technical-refresh.json |
+| WMB | Watch / sector monitor | **Watch-only / pullback setup; promotion review required** | 77.72 / 2026-05-15 | 73.25-75.50 | 70.32 | above all MAs -- bullish 20>50>200 stack | Above preferred pullback band; no chase; rate-sensitivity, project/regulatory, income-sleeve review and owner promotion still required. | Watch lane only; defined levels do not grant deployment, sizing, sleeve, cash, or trade authority. | tmp/technical-refresh.json + Coverage and Watchlist 2026-05-15; Veritas level pass 2026-05-15 |
+| XLI | ETF monitor | **Watch-only / ETF technical monitor** | 166.78-173.4 | 163.1 | Underdefined | Reference levels now defined; still requires review/promotion discipline before any deployment proposal. | Broad industrial/cyclical ETF monitor; needs fresh ETF technicals before promotion review. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | ETF Coverage Promotion Review 2026-05-15 |
+| XLB | ETF monitor | **Watch-only / ETF technical monitor** | 49.84-51.68 | 48.81 | Underdefined | Reference levels now defined; still requires review/promotion discipline before any deployment proposal. | Materials ETF monitor; holdings concentration and technical levels required before promotion review. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | ETF Coverage Promotion Review 2026-05-15 |
+| XLC | ETF monitor | **Watch-only / ETF technical monitor** | 114.31-116.55 | 112.71 | Underdefined | Reference levels now defined; still requires review/promotion discipline before any deployment proposal. | Communication Services ETF monitor; Alphabet/META overlap and concentration review required. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | ETF Coverage Promotion Review 2026-05-15 |
+| PAVE | ETF monitor | **Watch-only / ETF technical monitor** | 53.94-56.28 | 52.64 | Underdefined | Reference levels now defined; still requires review/promotion discipline before any deployment proposal. | Infrastructure/capex ETF monitor; fee/valuation/holdings review required. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | ETF Coverage Promotion Review 2026-05-15 |
+| XLF | ETF monitor | **Watch-only / ETF technical monitor** | 52.26-53.07 | 51.61 | Underdefined | Below stop / repair reference: current close is below the newly defined stop; no deployment proposal until reclaim and fresh review. | Reference-only; stop-breached/repair context; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | ETF Coverage Promotion Review 2026-05-15 |
+| XLE | ETF monitor | **Watch-only / ETF technical monitor** | 56.35-58.04 | 54.83 | Underdefined | Reference levels now defined; still requires review/promotion discipline before any deployment proposal. | Energy/inflation ETF monitor; Exxon/Chevron concentration and commodity-risk review required. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | ETF Coverage Promotion Review 2026-05-15 |
+| ITA | ETF monitor | **Watch-only / ETF technical monitor** | 212.15-223.44 | 205.88 | Underdefined | Reference levels now defined; still requires review/promotion discipline before any deployment proposal. | Aerospace/defense gap monitor while LMT/RTX remain repair/watch. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | ETF Coverage Promotion Review 2026-05-15 |
+| VAW | ETF monitor | **Watch-only / ETF technical monitor** | 225.44-233.7 | 220.85 | Underdefined | Reference levels now defined; still requires review/promotion discipline before any deployment proposal. | Broad Materials ETF alternative to XLB; needs fresh technicals and holdings review. | tmp/portfolio-config.json + band-proposals/Veritas level pass 2026-05-15 | ETF Coverage Promotion Review 2026-05-15 |
+| KTOS | Speculative / watch lane | **Watch-only / reference band defined** | 52.09 / 2026-05-15 | 80.79-85.2 | 77.27 | below reclaim structure | Speculative defense-tech monitor; current close is below reclaim band, so this is repair/reclaim context only. | Reference-only; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority. | tmp/portfolio-config.json + Veritas level pass 2026-05-15 |
+| SLV | Speculative / macro watch | **Watch-only / reference band defined** | 69.04 / 2026-05-15 | 64.07-72.34 | 60.31 | mixed / macro-linked | Macro metals hedge monitor; band is reference context and requires macro confirmation before any action proposal. | Reference-only; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority. | tmp/portfolio-config.json + Veritas level pass 2026-05-15 |
+| TLT | Macro watch | **Watch-only / reclaim reference** | 83.66 / 2026-05-15 | 86.6-87.41 | 85.96 | below reclaim structure | Duration/macro monitor; below reclaim band, rate-regime confirmation required before any action proposal. | Reference-only; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority. | tmp/portfolio-config.json + Veritas level pass 2026-05-15 |
+| SMCI | Speculative / watch lane | **Watch-only / reference band defined** | 31.04 / 2026-05-15 | 24.92-30.93 | 22.19 | volatile / below 200-day context | Speculative AI-infrastructure monitor; high volatility and below-200-day context keep it non-deployable without fresh review. | Reference-only; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority. | tmp/portfolio-config.json + Veritas level pass 2026-05-15 |
+
+## Parser-compatible technical sections
+
+### ECL
+- Close: **247.62** *(technical refresh; 2026-05-15 close)*
+- 20 / 50 / 200-day: **260.21 / 265.76 / 271.22**
+- MA posture: **below all MAs**.
+- Reference entry band: **271.22 to 278.98** *(reference/reclaim band only; applied 2026-05-15)*
+- Explicit stop / invalidation: **265.01**
+- Stance: **Do not touch / stop-breached repair context**. Current close is below the newly defined stop, so this reference band is not deployable and cannot be treated as an entry signal.
+- Authority: reference-only; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority.
+
+---
+### VMC
+- Close: **267.83** *(technical refresh; 2026-05-15 close)*
+- 20 / 50 / 200-day: **288.27 / 280.34 / 291.87**
+- MA posture: **below all MAs**.
+- Reference entry band: **291.87 to 300.98** *(reference/reclaim band only; applied 2026-05-15)*
+- Explicit stop / invalidation: **284.58**
+- Stance: **Do not touch / stop-breached repair context**. Current close is below the newly defined stop, so this reference band is not deployable and cannot be treated as an entry signal.
+- Authority: reference-only; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority.
+
+---
+### META
+- Close: **614.23** *(technical refresh; 2026-05-15 close)*
+- 20 / 50 / 200-day: **634.71 / 621.8 / 672.6**
+- MA posture: **below all MAs**.
+- Reference entry band: **672.6 to 693.91** *(reference/reclaim band only; applied 2026-05-15)*
+- Explicit stop / invalidation: **655.55**
+- Stance: **Do not touch / stop-breached repair context**. Current close is below the newly defined stop, so this reference band is not deployable and cannot be treated as an entry signal.
+- Authority: reference-only; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority.
+
+---
+### NFLX
+- Close: **87.02** *(technical refresh; 2026-05-15 close)*
+- 20 / 50 / 200-day: **90.24 / 94.45 / 102.56**
+- MA posture: **below all MAs**.
+- Reference entry band: **102.56 to 105.46** *(reference/reclaim band only; applied 2026-05-15)*
+- Explicit stop / invalidation: **100.24**
+- Stance: **Do not touch / stop-breached repair context**. Current close is below the newly defined stop, so this reference band is not deployable and cannot be treated as an entry signal.
+- Authority: reference-only; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority.
+
+---
+### TMUS
+- Close: **185.22** *(technical refresh; 2026-05-15 close)*
+- 20 / 50 / 200-day: **192.17 / 200.74 / 213.01**
+- MA posture: **below all MAs**.
+- Reference entry band: **213.01 to 220.38** *(reference/reclaim band only; applied 2026-05-15)*
+- Explicit stop / invalidation: **207.11**
+- Stance: **Do not touch / stop-breached repair context**. Current close is below the newly defined stop, so this reference band is not deployable and cannot be treated as an entry signal.
+- Authority: reference-only; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority.
+
+---
+### GE
+- Close: **281.53** *(technical refresh; 2026-05-15 close)*
+- 20 / 50 / 200-day: **290.31 / 296.5 / 299.03**
+- MA posture: **below all MAs**.
+- Reference entry band: **299.03 to 311.84** *(reference/reclaim band only; applied 2026-05-15)*
+- Explicit stop / invalidation: **288.78**
+- Stance: **Do not touch / stop-breached repair context**. Current close is below the newly defined stop, so this reference band is not deployable and cannot be treated as an entry signal.
+- Authority: reference-only; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority.
+
+---
+### XLF
+- Close: **51.1** *(technical refresh; 2026-05-15 close)*
+- 20 / 50 / 200-day: **51.7 / 50.6 / 52.26**
+- MA posture: **above 50d, below 20d and 200d**.
+- Reference entry band: **52.26 to 53.07** *(reference/reclaim band only; applied 2026-05-15)*
+- Explicit stop / invalidation: **51.61**
+- Stance: **Do not touch / stop-breached repair context**. Current close is below the newly defined stop, so this reference band is not deployable and cannot be treated as an entry signal.
+- Authority: reference-only; no sizing, sleeve, cash, deployment, paper/live order, brokerage, account, or trade authority.
+
+---
+
+### ETN
+- Close: **399.44** *(technical refresh; 2026-05-15 close; current artifact layer)*
+- 20 / 50 / 200-day: **412.65 / 386.35 / 361.79**
+- MA posture: **above the 50-day and 200-day, but below the 20-day**. The owner-approved setup remains inside the approved band, but the short-term trend is no longer a clean above-all-MAs chase setup.
+- Support: **386.35?399.44** (50-day / current pullback zone inside the preferred band), then **350.45** (explicit stop)
+- Resistance: **410.06?412.65** (top of preferred band / 20-day reclaim / no-chase ceiling)
+- Preferred entry band: **369.08 to 410.06** (auto-applied band maintenance 2026-05-15; KELTNER_PRIMARY / IN_BAND)
+- Reference band: **368.42 to 410.79** / reference stop **349.15** (weekly reference refresh 2026-05-12; KELTNER_PRIMARY / IN_BAND; data as of 2026-05-12)
+- Explicit stop: **350.45**
+- Invalidation logic: loses the preferred band / 50-day support zone and ultimately fails the explicit 350.45 stop.
+- Stance: **Deployable now / owner-approved Tier 1 explicit add, with manual-only execution discipline**. Randall approved Tier 1 explicit-add status on 2026-05-10; the current artifact close remains inside the approved band at 399.44, still below the no-chase ceiling. Manual-only deployment authority: no automatic execution, no chase above 410.06?412.65, and sizing stays governed by broader AI-power/correlation warnings.
+- Entry-distance context: **inside the preferred band, near the upper/no-chase zone**.
+- **POST-EARNINGS FOLLOW-UP.** The pre-print blocker has passed and owner promotion has landed. ETN is still the first capital-deployment priority in the review stack, but execution remains manual-only: no automatic execution and no chase above the written band.
+- **Automated band maintenance:** 2026-05-15 eligible proposal applied: prior **369.08–410.06 / stop 350.45** → new **369.08–410.06 / stop 350.45**. This updates technical maintenance levels only; it does not create trade, sizing, sleeve, approval, or execution authority.
+- **Consolidation resolution:** latest applied execution band is 369.08-410.06 with 350.45 stop.
+
+---
+
+### JPM
+- Close: **297.81** *(research freshness handoff; 2026-05-15 close)*
+- 20 / 50 / 200-day: **308.21 / 299.68 / 302.93** *(technical-refresh context from 2026-05-15)*
+- MA posture: **below all key moving averages**. Current chart posture supports fail-closed treatment; the prior green machine read must not override the owner-resolved trigger band.
+- Support: **301.17** (near-term invalidation/reference stop), then **286.81** (legacy/parser explicit stop retained only as non-authoritative context)
+- Resistance / trigger zone: **306.82 to 318.12** is the owner-resolved authoritative JPM trigger-review band. Older parser band **294.57 to 308.54** is legacy/non-authoritative and must not be treated as deployable-now by itself.
+- Preferred entry band: **not live** until JPM reclaims **306.82 to 318.12** or a later explicit owner-approved band review replaces it.
+- Reference band: **306.82 to 318.12** authoritative trigger-review context; parser band **294.57 to 308.54 / 286.81** remains legacy machine context only.
+- Explicit stop / invalidation logic: use **301.17** as the near-term invalidation/reference stop; below that, JPM stays fail-closed pending fresh review.
+- Stance: **Approval recorded / trigger not live, manual-only**. Prior owner approval remains recorded, but current evidence says do not treat JPM as deployable-now until reclaim of the authoritative trigger band or a later explicit owner-approved band review. No automatic execution, no inferred owner approval, and no sizing/capital allocation authority.
+- Entry-distance context: **below authoritative trigger band / near invalidation**.
+- Earnings: **July 14 (Q2 2026)**; no near-term earnings block, but the technical trigger is not live.
+- **Consolidation resolution:** Randall resolved on 2026-05-16 that **306.82-318.12** is authoritative for JPM right now, with **301.17** as near-term invalidation/reference stop. Dashboard/deployment surfaces must not render JPM deployable from the lower parser band.
+
+---
+
+### NVDA
+- Close: **235.74** *(technical refresh; 2026-05-14 close; current artifact layer)*
+- 20 / 50 / 200-day: **209.12 / 192.23 / 185.73**
+- MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**. AI leadership intact, but crowding and event risk still matter.
+- Support: **209.12** (20-day / band-top area), then **192.23-185.73** (50-day / 200-day cluster)
+- Resistance: **235.74** current extension zone, then any post-earnings higher-high attempt.
+- Preferred entry band: **197.01 to 210.84** (band updated 2026-05-06; bounded review 2026-05-13 kept band frozen)
+- Reference band: **192.25 to 206.67** / reference stop **183.72** (weekly reference refresh 2026-05-12; KELTNER_MA_CONSTRAINED / ABOVE_BAND_WAIT; data as of 2026-05-12)
+- Explicit stop: **190.10**
+- Invalidation logic: loses 190.10 and the MA cluster, then slips back under the breakout zone.
+- Stance: **Wait / no chase / earnings-frozen**; bounded review found the current artifact still does **not** support deployable-now status because price is materially above the written band and earnings are imminent.
+- Entry-distance context: **+.90 / +11.8% above the top of the preferred band**; 	mp/band-proposals.json also flags close materially above midpoint, EARNINGS_IMMINENT, and non-applyable status.
+- Earnings: **May 20 is primary-confirmed from official NVIDIA IR evidence.** Event Calendar records May 20, 2026 2:00 PM PT - NVIDIA 1st Quarter FY27 Financial Results from NVIDIA Investor Relations; keep the earnings freeze active and do not treat the primary-confirmed date as deployment approval.
+
+---
+
+### GOOG
+- Close: **397.17** *(technical refresh; 2026-05-14 close; current artifact layer)*
+- 20 / 50 / 200-day: **367.49 / 328.93 / 290.03**
+- MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**. Trend remains strong after the print.
+- Support: **367.49-362.08** (20-day / top of the written band / first disciplined pullback zone), then **328.93** (50-day)
+- Resistance: **397.17** current extension zone, then fresh post-print highs.
+- Preferred entry band: **352.95 to 374.93** (auto-applied band maintenance 2026-05-15; KELTNER_MA_CONSTRAINED / NEAR_BAND)
+- Reference band: **345.91 to 366.43** / reference stop **325.43** (weekly reference refresh 2026-05-12; KELTNER_MA_CONSTRAINED / NEAR_BAND; data as of 2026-05-12)
+- Explicit stop: **330.94**
+- Invalidation logic: loses the post-print breakout shelf and falls back under the 20-day / band support zone.
+- Stance: **Almost deployable**, but only on pullback / revalidation into the written band and explicit promotion.
+- Entry-distance context: **+.09 / +9.7% above the top of the preferred band** — materially extended, no chase.
+- **Automated band maintenance:** 2026-05-15 eligible proposal applied: prior **352.95–374.93 / stop 330.94** → new **352.95–374.93 / stop 330.94**. This updates technical maintenance levels only; it does not create trade, sizing, sleeve, approval, or execution authority.
+
+---
+
+### MSFT
+- Close: **409.43** *(technical refresh; 2026-05-14 close; current artifact layer)*
+- 20 / 50 / 200-day: **417.45 / 398.84 / 462.35**
+- MA posture: **above the 50-day, but below the 20-day and 200-day**. Recovery is intact enough for the staged setup, but long-term repair is still incomplete.
+- Support: **398.84-389.64** (50-day / lower working band), then **378.18** (explicit stop)
+- Resistance: **412.56-417.45** (band ceiling / 20-day reclaim zone), then **462.35** (200-day)
+- Preferred entry band: **389.64 to 412.56** (working post-print owner-approved band)
+- Reference band: **463.38 to 477.95** / reference stop **451.72** (weekly reference refresh 2026-05-12; DUAL_MA_RECLAIM / BELOW_STOP; data as of 2026-05-12)
+- Explicit stop: **378.18**
+- Invalidation logic: loses the recovery structure and fails back through the 50-day / band zone.
+- Stance: **Deployable now / owner-approved staged manual candidate**. Randall approved promotion on 2026-05-12 after MSFT / GOOG / NVDA growth review. The current artifact close is inside the working band, but the stock remains below the 200-day, so this is a staged accumulation candidate rather than a full-confidence trend-reclaim setup.
+- Entry-distance context: **inside the preferred band near the upper edge**; latest artifact close **409.43** sits **.13 / 0.8% below** the **412.56** band ceiling. Prefer a starter tranche while below the 200-day, not a full allocation.
+- **Sequencing constraint:** direct Technology is already at the 25% cap in the draft model. MSFT deployment requires an explicit owner sequencing decision: reduce another Tech weight first, keep any MSFT tranche within verified headroom, or approve a written Tech-cap exception. No automatic sizing, sleeve, cash, or execution-entitlement change is authorized here.
+- **Consolidation resolution:** owner-approved staged setup uses 389.64-412.56 / 378.18; below-200-day repair caveat limits sizing/tranche confidence.
+
+---
+
+### AMZN
+- Close: **268.26** *(band-sync refresh; 2026-05-01 close)*
+- 20 / 50 / 200-day: **247.37 / 224.80 / 227.38**
+- MA posture: **above all three MAs**. Trend is constructive.
+- Support: **247** (20-day), then **227** (200-day)
+- Resistance: prior highs (confirm via chart)
+- Preferred entry band: **252.27 to 267.19** (bounded note sync 2026-05-13; current fresh band from `tmp/band-proposals.json`)
+- Reference band: **246.35 to 261.56** / reference stop **233.13** (weekly reference refresh 2026-05-12; KELTNER_MA_CONSTRAINED / NEAR_BAND; data as of 2026-05-12)
+- Explicit stop: **244.81**
+- Invalidation logic: loses the 200-day and fails to recover.
+- Stance: **Watch-only / bench**. Broad quality is intact, but this remains a secondary large-cap platform read rather than a daily execution-board candidate.
+- Entry-distance context: **+$2.94 / +1.1% above the top of the refreshed preferred band**.
+- **Lane note:** keep AMZN technically visible for post-earnings follow-through, but it no longer owns weekday deployment-board cost while GOOG and MSFT already cover the large-cap quality sleeve.
+- Earnings: **July 30 (Q2 2026 per yfinance; treat as provisional until company IR confirms).**
+
+---
+
+### VRT
+- Close: **358.92** *(WF38 canonical-note sync; 2026-05-06 close)*
+- 20 / 50 / 200-day: **314.72 / 281.57 / 195.15**
+- MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**. Clean leadership structure.
+- Support: **315** (20-day), then **282** (50-day)
+- Resistance: confirm via chart
+- Preferred entry band: **306.85 to 338.33**
+- Reference band: **286.19 to 331.95** / reference stop **265.39** (weekly reference refresh 2026-05-12; KELTNER_MA_CONSTRAINED / ABOVE_BAND_WAIT; data as of 2026-05-12)
+- Explicit stop: **291.11**
+- Invalidation logic: loses the 20-day and breaks the uptrend structure.
+- Stance: **Watch / research needed** — thesis confirmed by Apr 22 beat-and-raise, but the name remains watch-lane until intentionally promoted.
+- Entry-distance context: **+$20.59 / +6.1% above the top of the preferred band**.
+- Earnings: **July 29 (Q2 2026 per yfinance; treat as provisional until company IR confirms).**
+
+---
+
+### CAT
+- Close: **895.69** *(WF38 review-prep sync; 2026-05-07 close)*
+- 20 / 50 / 200-day: **830.87 / 760.37 / 598.58**
+- MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**.
+- Support: **831** (20-day), then **760** (50-day)
+- Resistance: prior high
+- Preferred entry band: **811.65 to 866.48** (band updated 2026-05-01)
+- Reference band: **799.68 to 863.94** / reference stop **750.78** (weekly reference refresh 2026-05-12; KELTNER_MA_CONSTRAINED / ABOVE_BAND_WAIT; data as of 2026-05-12)
+- Explicit stop: **784.25**
+- Invalidation logic: loses the 50-day and breaks the uptrend.
+- Stance: **Watch-only / post-print monitor**. The industrial read-through is useful, but ETN remains the primary execution name for this sleeve.
+- Entry-distance context: **+$29.21 / +3.4% above the top of the preferred band**.
+- **Lane note:** CAT keeps technical visibility for post-print follow-through and sector read-through, but it no longer earns weekday execution-board ownership.
+- Earnings: **August 4 (Q2 2026 per yfinance; treat as provisional until company IR confirms).**
+
+---
+
+### LLY
+- Close: **974.96** *(WF38 review-prep sync; 2026-05-07 close)*
+- 20 / 50 / 200-day: **924.19 / 943.25 / 913.91**
+- MA posture: **above all three MAs**, but the **20-day still sits below the 50-day**, so this is not a clean 20 > 50 > 200 trend-stack breakout.
+- Support: **970** (top of the written band), then **943** (50-day)
+- Resistance: prior high / confirm via chart
+- Preferred entry band: **907.64 to 969.88** (band updated 2026-05-06)
+- Reference band: **881.41 to 952.98** / reference stop **841.65** (weekly reference refresh 2026-05-12; KELTNER_PRIMARY / NEAR_BAND; data as of 2026-05-12)
+- Explicit stop: **876.52**
+- Invalidation logic: loses the written stop and fails the current healthcare watch-lane base.
+- Stance: **Watch-only / sector-expansion candidate**. Defined levels now exist in the owner layer, but the name remains watch-lane only until explicit promotion and sizing review.
+- Entry-distance context: **+$5.08 / +0.5% above the top of the preferred band**.
+- **Lane note:** LLY now has explicit owner-layer technical levels for review-only competition against other diversification candidates, not deployable authority.
+- Earnings: **August 5 (Q2 2026 per yfinance; treat as provisional until company IR confirms).**
+
+---
+
+### GS
+- Close: **944.86** *(band-sync refresh; 2026-05-11 close from `tmp/band-proposals.json`)*
+- 20 / 50 / 200-day: **924.03 / 873.36 / 832.38**
+- MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**.
+- Support: **924** (20-day / refreshed band top zone), then **873** (50-day)
+- Resistance: current extension zone above the refreshed band top at **923.51**
+- Preferred entry band: **894.64 to 935.77** (auto-applied band maintenance 2026-05-15; KELTNER_MA_CONSTRAINED / NEAR_BAND)
+- Reference band: **888.11 to 926.22** / reference stop **860.36** (weekly reference refresh 2026-05-12; KELTNER_MA_CONSTRAINED / NEAR_BAND; data as of 2026-05-12)
+- Explicit stop: **866.76**
+- Invalidation logic: loses the 50-day and breaks the uptrend; do not chase while price remains above the refreshed band.
+- Stance: **Almost deployable / no-chase**; GS is now machine-applied to the refreshed eligible band, but the close remains above the preferred zone and still requires explicit owner promotion/sizing review. WF65 has official CET1/Tier 1 risk-based evidence confirmed, with Tier 1 leverage kept separate as NOT risk-based; broader ROTCE/NIM/funding/liquidity/credit-quality review still must clear before any Financials portfolio change.
+- Entry-distance context: **+$21.35 / +2.3% above the top of the refreshed preferred band**.
+- Earnings: **July 14 (Q2 2026 provider-estimate calendar date)** — no near-term earnings risk, but cross-check company IR before treating as primary-confirmed.
+- **Automated band maintenance:** 2026-05-15 eligible proposal applied: prior **886.29–923.51 / stop 858.76** → new **894.64–935.77 / stop 866.76**. This updates technical maintenance levels only; it does not create trade, sizing, sleeve, approval, or execution authority.
+
+---
+
+### BRK.B
+- Close: **485.52** *(technical refresh / band proposal; 2026-05-13 close)*
+- 20 / 50 / 200-day: **473.67 / 479.58 / 489.78**
+- MA posture: **above the 20-day and 50-day, still below the 200-day**. Ballast profile intact, but chart remains in repair until the 200-day is reclaimed and held.
+- Support: **483.05** (reclaim-band stop), then **479.58** (50-day), then prior repair stop zone near **465.81**
+- Resistance: **489.78** (200-day / reclaim trigger), then **498.19** (top of reclaim band)
+- Preferred entry band: **489.78 to 498.19** (owner-approved bounded refresh 2026-05-13; DUAL_MA_RECLAIM / RECLAIM_ONLY)
+- Reference band: **489.78 to 498.19** / reference stop **483.05** (`tmp/band-proposals.json`; DUAL_MA_RECLAIM / RECLAIM_ONLY; data as of 2026-05-13)
+- Explicit stop: **483.05** for the reclaim setup; prior **465.81** remains the deeper repair failure reference.
+- Invalidation logic: fails to reclaim/hold the 200-day or loses **483.05** after reclaim attempt; deeper weakness below **465.81** confirms continued repair.
+- Stance: **Repair / 200D reclaim watch — not deployable yet**. Randall approved refreshing the band and monitoring the 200-day reclaim, but this does not grant trade, sizing, sleeve, cash, risk-rule, execution-entitlement, or deployable-now authority.
+- Entry-distance context: latest close **485.52** is **$4.26 / 0.9% below** the reclaim band low / 200-day trigger.
+
+---
+
+### XOM
+- Close: **149.68** *(source-confirmed May 11 close; Exxon IR / LSEG and `tmp/technical-refresh.json`)*
+- 20 / 50 / 200-day: **150.01 / 154.84 / 128.04**
+- MA posture: **above the 200-day, below the 20-day and 50-day**. The chart failed the refreshed band and remains below the short/intermediate trend stack.
+- Support: **146.14** (explicit stop / urgent review line), then **141.97–143.92** (recent low zone / monthly artifact low)
+- Resistance: **150.24** (bottom of refreshed band), then **154.84–158.44** (50-day / top of refreshed band)
+- Preferred entry band: **150.24 to 158.44** (band updated 2026-05-01)
+- Reference band: **142.96 to 152.14** / reference stop **137.86** (weekly reference refresh 2026-05-12; KELTNER_PRIMARY / IN_BAND; data as of 2026-05-12)
+- Explicit stop: **146.14**
+- Invalidation logic: loses the refreshed band and fails back below 146.14, or fails another 50-day reclaim with oil context rolling over. **May 11 produced an intraday stop breach and close-back-above-stop, so this must be treated as a formal repair review item before any oil-supported thesis refresh.**
+- Stance: **Repair / do not touch**. The close did **not** finish below the explicit stop, but the intraday stop breach means “bench” language alone understates the technical risk.
+- Entry-distance context: **$0.56 / 0.4% below the preferred band low and $3.54 / 2.4% above the explicit stop on a closing basis**; intraday low was **$0.14 below** the stop.
+
+---
+
+### LMT
+- Close: **520.41** *(technical refresh; 2026-05-14 close; current artifact layer)*
+- 20 / 50 / 200-day: **527.21 / 588.84 / 524.03**
+- MA posture: **below all three MAs**. The chart is broken — price is below every major MA and below the explicit stop.
+- Support: confirm fresh support only after a new base forms.
+- Resistance: **524.03-527.21** (200-day / 20-day reclaim zone), then **548.51** (bottom of written band) and **588.84** (50-day)
+- Preferred entry band: **548.51 to 582.27** (mechanical reference only, not a live setup)
+- Reference band: **569.12 to 587.87** / reference stop **554.12** (weekly reference refresh 2026-05-12; DUAL_MA_RECLAIM / BELOW_STOP; data as of 2026-05-12)
+- Explicit stop: **531.63**
+- Invalidation logic: prior setup already failed; no new long thesis trigger until price rebuilds support and reclaims key MAs.
+- Stance: **Repair mode / do not touch / below stop**.
+- Entry-distance context: **-$28.10 / -5.1% below the preferred band low** and **-$11.22 / -2.1% below the explicit stop**.
+- **Defense-sector gap:** LMT's 10% draft weight is suspended while in repair. Owner decision required: reduce it to a holding placeholder and earmark the remainder for a future defense candidate, or formally accept KTOS-only 2% Defense exposure until LMT heals.
+- **Consolidation resolution:** below-stop repair/do-not-touch state controls until stop reclaim and fresh base/review.
+
+---
+
+### RTX
+- Close: **173.99** *(band-sync refresh; 2026-05-01 close)*
+- 20 / 50 / 200-day: **189.44 / 196.23 / 177.95**
+- MA posture: **below all three MAs**. Below the 200-day — structural weakness.
+- Support: weak; needs to reclaim 185 area first
+- Resistance: **178** (200-day), then **189–196** (20/50 cluster)
+- Preferred entry band: **183.01 to 193.23** (bounded note sync 2026-05-13; current fresh band from `tmp/band-proposals.json`, mechanically)
+- Reference band: **171.11 to 182.09** / reference stop **165.01** (weekly reference refresh 2026-05-12; KELTNER_PRIMARY / IN_BAND; data as of 2026-05-12)
+- Explicit stop: **177.91**
+- Invalidation logic: name is below band and only marginally above the refreshed stop; prior setup remains in repair.
+- Stance: **Watch-only / repair**. Still below band and only marginally above the refreshed stop; this remains a repair monitor rather than an execution-board candidate.
+- Entry-distance context: **-$4.90 / -2.7% below the bottom of the refreshed preferred band** and **$0.20 / 0.1% above the explicit stop**.
+- **Lane note:** RTX stays tracked for defense-sector read-through and possible later repair, but not for default weekday deployment upkeep.
+
+---
+
+### CVX
+- Close: **190.63** *(manual watch-lane parity pass; 2026-05-01 close)*
+- 20 / 50 / 200-day: **189.29 / 192.94 / 164.49**
+- MA posture: **above the 20-day and 200-day, still below the 50-day**. Better than a broken chart, not a clean trend reclaim.
+- Support: **189** (20-day), then **186.91** (bottom of preferred band)
+- Resistance: **193** (50-day), then **196.41** (top of preferred band)
+- Preferred entry band: **186.91 to 196.41** (band updated 2026-05-01)
+- Reference band: **178.95 to 189.21** / reference stop **173.25** (weekly reference refresh 2026-05-12; KELTNER_PRIMARY / IN_BAND; data as of 2026-05-12)
+- Explicit stop: **182.16**
+- Invalidation logic: loses 182.16 and breaks back below the band / 20-day support cluster.
+- Stance: **Watch-only / bench**. Price is inside the preferred band, but this remains a secondary energy read-through name and is **not** on the execution board.
+- Entry-distance context: **inside the preferred band**.
+- **Lane note:** use CVX for oil-major read-through versus XOM, not as a hidden second-energy promotion while XOM is still benched.
+- Earnings: **July 31** *(next provider date after the May 1 print; treat as provisional until company IR confirms).*
+
+---
+
+### PLTR
+- Close: **144.07** *(manual watch-lane parity pass; 2026-05-01 close)*
+- 20 / 50 / 200-day: **141.56 / 145.18 / 164.30**
+- MA posture: **above the 20-day, below the 50-day and 200-day**. Short-term bounce, longer-term repair is still incomplete.
+- Support: **141.56** (20-day), then **138.60** (bottom of preferred band)
+- Resistance: **145.18** (50-day), then **150.44** (top of preferred band)
+- Preferred entry band: **137.37 to 149.53** (bounded note sync 2026-05-13; current fresh band from `tmp/band-proposals.json`)
+- Reference band: **163.73 to 171.22** / reference stop **157.74** (weekly reference refresh 2026-05-12; DUAL_MA_RECLAIM / BELOW_STOP; data as of 2026-05-12)
+- Explicit stop: **131.29**
+- Invalidation logic: loses 131.29 and fails the current rebound attempt.
+- Stance: **Watch-only / below-stop repair**. Price is below the refreshed preferred band and explicit stop; the setup is still below all major MAs and remains a higher-risk narrative name.
+- Entry-distance context: **-$7.32 / -5.3% below the bottom of the refreshed preferred band** and **-$1.24 / -0.9% below the explicit stop**.
+- **Lane note:** do not treat in-band status as deployment permission. This is a watch-lane name and post-May 4 earnings monitor.
+- **Post-earnings status:** reported May 4; use it as read-through evidence only unless a later owner review promotes the setup.
+
+---
+
+### AMD
+- Close: **360.54** *(manual watch-lane parity pass; 2026-05-01 close)*
+- 20 / 50 / 200-day: **284.89 / 235.38 / 211.38**
+- MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**. Strong structure, but far above the written zone.
+- Support: **311.80** (top of preferred band / first disciplined pullback zone), then **284.89** (20-day)
+- Resistance: **current extension zone / recent highs** *(exact upside shelf is not pinned from this artifact layer)*
+- Preferred entry band: **295.33 to 342.53** (bounded note sync 2026-05-13; current fresh band from `tmp/band-proposals.json`)
+- Reference band: **298.49 to 364.13** / reference stop **259.21** (weekly reference refresh 2026-05-12; KELTNER_MA_CONSTRAINED / ABOVE_BAND_WAIT; data as of 2026-05-12)
+- Explicit stop: **271.73**
+- Invalidation logic: loses the pullback zone and breaks back through 271.73 after the earnings window.
+- Stance: **Watch-only / do not chase**. The MA stack is strong, but this remains a non-daily watch-lane name and price is too extended for a disciplined fresh entry.
+- Entry-distance context: **+$102.97 / +30.1% above the top of the refreshed preferred band**.
+- **Lane note:** treat this as a post-earnings tactical monitor that informs the AI sleeve, not as a quiet execution-board promotion.
+- **Post-earnings status:** reported May 5; use the scorecard / read-through layer for interpretation and do not promote from watch-lane without owner review.
+
+---
+
+### LNG
+- Close: **240.70** *(technical refresh; 2026-05-11 close; current artifact layer)*
+- 20 / 50 / 200-day: **259.26 / 264.88 / 229.19**
+- MA posture: **above the 200-day, but below the 20-day and 50-day**. The May 1 constructive setup is no longer intact.
+- Support: no live support from the old band; next repair reference is the **229.19** 200-day after the stop breach.
+- Resistance: **253.45** (lost stop / first repair line), then **260.82** (bottom of the old preferred band), then **275.56** (top of the old band)
+- Preferred entry band: **260.82 to 275.56** (band updated 2026-05-01; now stale as a live setup and review-only until rebuilt)
+- Reference band: **241.62 to 259.80** / reference stop **231.52** (weekly reference refresh 2026-05-12; KELTNER_PRIMARY / IN_BAND; data as of 2026-05-12)
+- Explicit stop: **253.45**
+- Invalidation logic: the 2026-05-11 close below 253.45 invalidates the prior watch-lane setup. Any future setup requires a stop reclaim and fresh band review, not automatic reuse of the old band.
+- Stance: **Watch-only / do not touch — stop breached**. LNG remains a watch-lane energy read-through name, but it is no longer a timing-sensitive in-band watch.
+- Entry-distance context: **$12.75 / 5.0% below the explicit stop and $20.12 / 7.7% below the preferred band low**.
+- **Lane note:** useful for LNG-complex read-through and sector timing, but keep it separate from the XOM decision lane and do not promote from this state without explicit owner review.
+- Earnings: provider-estimated next print **2026-08-06** in current artifacts; not primary-confirmed.
+- **Consolidation resolution:** below-stop repair/do-not-touch state controls until stop reclaim and fresh base/review.
+
+---
+
+### BKNG
+- Close: **165.93** *(artifact-confirmed repair-mode sync; 2026-05-08 close)*
+- 20 / 50 / 200-day: **177.08 / 174.19 / 198.30**
+- MA posture: **below all three major moving averages**. This is repair mode, not an entry setup.
+- Support: **164.05–170.91** (watch/rebuild zone only), then **161–164** (manual support area from BKNG review)
+- Resistance: **174–177** (repair/reclaim zone), then **198.30** (200-day / machine reclaim reference)
+- Preferred entry band: **164.05 to 170.91** (bounded note sync 2026-05-13; watch/rebuild only, not deployable and not auto-applyable)
+- Reference band: **197.65 to 205.78** / reference stop **191.15** (weekly reference refresh 2026-05-12; DUAL_MA_RECLAIM / BELOW_STOP; data as of 2026-05-12)
+- Explicit stop: **155.97**
+- Invalidation logic: fails the 155.97 explicit stop or loses the 161–164 support area without reclaiming 174–177.
+- Stance: **Watch-only / below-stop repair — not deployable**. Fundamentals justify promotion-review monitoring, but the technical gate fails closed while BKNG is below all major MAs and below the refreshed stop in the band proposal artifact.
+- Entry-distance context: **-$9.02 / -5.5% below the watch/rebuild band low** and **-$0.94 / -0.6% below the explicit stop**; in-band language is not valid while repair-mode, below-stop, and watch-lane status remain active.
+- **Catalyst state:** earnings state is now **CLEAR** in `tmp/band-proposals.json` (`days_to_earnings=80`) from a **2026-07-29 provider estimate** in `tmp/earnings-calendar.json`; this is not primary-confirmed.
+- **Lane note:** BKNG is an accepted repair-mode blocker / manual wait-state. Do not apply the machine-suggested reclaim band as a live execution band and do not promote without explicit owner review.
+
+### LIN
+- Close: **506.11** *(technical refresh; 2026-05-15 close; current artifact layer)*
+- 20 / 50 / 200-day: **503.14 / 497.11 / 461.42**
+- MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**. Structure is constructive, but this is still a newly promoted sector monitor, not an execution-lane name.
+- Support: **503.14-497.11** (20/50-day pullback cluster), then **461.42** (200-day / deeper trend support)
+- Resistance: **506.11** (current close / near-term high reference), then **515** *(round-number extension reference; confirm on next chart refresh)*
+- Preferred entry band: **497.11 to 506.11** (initial Veritas watch-lane technical setup; pullback/hold of 20/50-day cluster)
+- Explicit stop: **487.17**
+- Invalidation logic: loses the 50-day support zone and fails below 487.17; deeper failure toward the 200-day would reset the setup to repair/watch-only.
+- Stance: **Watch-only / defined setup; promotion review required**. LIN has the cleanest Materials-quality chart candidate among the new monitors, but still needs a fundamental packet, valuation review, risk-rule check, and owner promotion before any active coverage or deployment entitlement.
+- Entry-distance context: **inside the preferred reference band, near the upper edge**; do not treat in-band status as deployable authority.
+- Promotion review: **Positive technical screen, not promoted**. Best of the three for core-quality Materials diversification, but premium-valuation risk must be proven acceptable before it competes for capital.
+- Authority: levels are for review only; no deployment, sizing, sleeve, cash, execution-entitlement, account, or trade authority.
+
+---
+
+### CME
+- Close: **298.86** *(technical refresh; 2026-05-15 close; current artifact layer)*
+- 20 / 50 / 200-day: **287.74 / 296.93 / 276.68**
+- MA posture: **above all three major MAs**. Constructive, though not a clean 20 > 50 > 200 stack because the 20-day sits below the 50-day.
+- Support: **296.93** (50-day / near-term support), then **287.74** (20-day / lower band reference), then **276.68** (200-day)
+- Resistance: **298.86-300** (current close / round-number test), then **305** *(extension reference; confirm on next chart refresh)*
+- Preferred entry band: **287.74 to 298.86** (initial Veritas watch-lane technical setup; in-band only if support holds)
+- Explicit stop: **276.68**
+- Invalidation logic: loses the 20-day/50-day cluster and fails the 200-day at 276.68.
+- Stance: **Watch-only / defined setup; promotion review required**. CME is technically acceptable for further work, but Financials already include JPM/GS exposure; valuation and rate/volatility regime fit must justify any promotion.
+- Entry-distance context: **inside the preferred reference band at the upper edge**; no chase above 300 without a fresh band review.
+- Promotion review: **Technically eligible for deeper review, not promoted**. Treat as a financial-infrastructure diversifier candidate, not a hidden third Financials allocation.
+- Authority: levels are for review only; no deployment, sizing, sleeve, cash, execution-entitlement, account, or trade authority.
+
+---
+
+### WMB
+- Close: **77.72** *(technical refresh; 2026-05-15 close; current artifact layer)*
+- 20 / 50 / 200-day: **73.82 / 73.25 / 64.18**
+- MA posture: **above all three MAs with a bullish 20 > 50 > 200 stack**. Trend is strong, but price is already extended above the preferred pullback zone.
+- Support: **73.82-73.25** (20/50-day pullback cluster), then **64.18** (200-day / deep trend support)
+- Resistance: **77.72** (current extension zone), then **80** *(round-number extension reference; confirm on next chart refresh)*
+- Preferred entry band: **73.25 to 75.50** (initial Veritas watch-lane pullback setup; avoid chasing above band)
+- Explicit stop: **70.32**
+- Invalidation logic: loses the 20/50-day support cluster and fails below 70.32; deeper failure toward the 200-day would reset the setup to repair/watch-only.
+- Stance: **Watch-only / pullback setup; promotion review required**. WMB has the cleanest trend of the three but is not an entry-now setup because price is above the preferred band.
+- Entry-distance context: **$2.22 / 2.9% above** the top of the preferred band; wait for pullback or fresh base.
+- Promotion review: **Constructive but not promoted**. Energy infrastructure could diversify XOM spot-beta exposure, but rate sensitivity, project/regulatory risk, income-sleeve fit, and owner promotion are required first.
+- Authority: levels are for review only; no deployment, sizing, sleeve, cash, execution-entitlement, account, or trade authority.
+
+---
+
+## Freshness and migration note
+
+- Created: **2026-05-13** as Phase 1 consolidation.
+- Source notes copied unchanged to `09. Archive/Finance Canon/2026-05-13 pre-consolidation/` before consolidation.
+- Old Technical Entry / Deployment Trigger / Watchlist / Coverage Universe notes are now redirect stubs after WF62 consumer migration.
+- Live script ownership now expects `03. Portfolio/Execution Board.md` for execution/action/technical state and `04. Research/Coverage and Watchlist.md` for universe/thesis/watchlist state.
+- Bounded band/status sync applied **2026-05-13** for AMZN, RTX, PLTR, AMD, BKNG and bounded NVDA review; this did not grant trade, sizing, sleeve, cash, risk-rule, execution-entitlement, or owner-approval authority.

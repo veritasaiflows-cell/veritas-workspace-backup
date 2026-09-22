@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.arena_dispatch_authorization.v1",
+  "envelope": "arena-agentic-v1-20260920",
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "dispatch_ready": false,
+  "authorized_by": null,
+  "authorized_at": null,
+  "note": "INERT. The runner refuses --dispatch-plan while dispatch_ready is false. Randall sets dispatch_ready to true and fills authorized_by/authorized_at to release the spend gate. Veritas must not flip this field.",
+  "scope": {
+    "models": [],
+    "cases": 12,
+    "reps": 1
+  }
+}

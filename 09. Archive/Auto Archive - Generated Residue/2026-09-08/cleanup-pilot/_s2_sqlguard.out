@@ -1,0 +1,7 @@
+{
+  "status": "ok",
+  "sample_ticker": "NVDA",
+  "written": [
+    "tmp/finance-sql-canon-access-validation.json"
+  ]
+}

@@ -198,6 +198,7 @@ def py_cmd(*parts: str) -> list[str]:
 
 
 COMMANDS: dict[str, tuple[list[str], int]] = {
+    "tmp_cleanup_dry_run": (py_cmd("scripts\\tmp_cleanup.py", "--dry-run"), 900),
     "cron_operator_ledger": (py_cmd("scripts\\cron_operator_ledger.py", "--write", "--write-md", "--validate"), 240),
     "cron_freshness_spine": (py_cmd("scripts\\cron_freshness_spine.py", "--write", "--validate"), 240),
     "cron_signal_scorecard": (py_cmd("scripts\\cron_signal_scorecard.py", "--write", "--validate"), 240),
@@ -243,6 +244,13 @@ POST_ACTION_REFRESH_COMMAND_IDS = [
 ]
 
 HANDLERS = [
+    {
+        "id": "tmp_cleanup_dry_run_refresh",
+        "classification": "auto_refresh",
+        "match_artifacts": ["tmp/tmp-cleanup-report.json"],
+        "commands": ["tmp_cleanup_dry_run", *POST_ACTION_REFRESH_COMMAND_IDS],
+        "next_action": "Rerun the protected generated-artifact cleanup dry run and recompute cron control; archive and deletion remain unavailable.",
+    },
     {
         "id": "cron_operator_ledger_refresh",
         "classification": "auto_refresh",

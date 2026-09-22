@@ -1,7 +1,7 @@
 # CLAUDE.md - Compatibility Route
 
 > Status: retained only because an external process expects this path.
-> Authority: none. `SOUL.md`, `AGENTS.md`, `USER.md`, and `TOOLS.md` are the active Veritas doctrine.
+> Authority: none. `SOUL.md`, `AGENTS.md`, and `USER.md` own active Veritas doctrine. `TOOLS.md` and `IDENTITY.md` are compatibility pointers only.
 
 Claude is an optional independent review and implementation lane. It may inspect evidence, challenge conclusions, and perform explicitly scoped workspace work. It must follow the active workspace doctrine and the exact task boundary.
 

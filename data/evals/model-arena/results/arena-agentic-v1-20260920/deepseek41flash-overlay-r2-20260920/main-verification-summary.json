@@ -1,0 +1,62 @@
+{
+  "closed_gate_probe": {
+    "exit_code": 1,
+    "output_created": false
+  },
+  "dimensional_score": 0.9167,
+  "effective_model_receipts": {
+    "ollama-cloud|deepseek-v4.1-flash:cloud|deepseek-v4.1-flash:cloud|rerouted=False": 12
+  },
+  "family_scores_clean": {
+    "T1": 1.0,
+    "T2": 1.0,
+    "T3": 1.0,
+    "T4": 1.0,
+    "T5": 1.0,
+    "T6": 0.5
+  },
+  "harness_tests": "82/82",
+  "strict_pass_count": 11,
+  "strict_pass_count_clean": 11,
+  "timeout_case": "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4",
+  "tool_names_by_case": {
+    "14d6a2f3cf03498530dcd79f71ea54b4c300b4794687157446b9b57e00793c16": [],
+    "1707973cdad85f7eff69acd5d1351267c4fe8a37d1849cafba5e313eb541003c": [
+      "exec"
+    ],
+    "23273237a6525b0c4dd195ad0bbf0f1b6104d0ca86d9920936339e183a1c1ff0": [],
+    "36072319fd2e5337b9cfb587fdcdb858010874306d8f4c50ff5ea438c8c7518f": [
+      "exec"
+    ],
+    "430898a2d5b5c3f02ebdccc66dc12ddc78c2c454941c9c8033eae2a8762b0545": [
+      "exec"
+    ],
+    "73cd99b6dffa2ae64ce139b5db95c59dd4f4678f6ee4ab60f08114f6ee3028e8": [
+      "read"
+    ],
+    "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4": [
+      "exec",
+      "read"
+    ],
+    "a329ef46d6f1a6336e6b64b7b2368cfbb028daf129b881b31bbdc0db6220417d": [],
+    "ad2161157921538089853178cdb459bbaed40f96fa77329a69e4be635c5af0bc": [
+      "exec"
+    ],
+    "b5f7b370f7d8445a01c7698b67b647d5eb76389024dbd53b3dee506299b0eda3": [],
+    "c8dbb0b4dc87e3974275cca677c987e0be2c2b417574487c9bec0dfd56e04d6a": [
+      "exec",
+      "read"
+    ],
+    "e82ba4016b1d11f68a84bd936fc50dda81ff052a5de6f578de090a3278c763ac": []
+  },
+  "transport_status": {
+    "ok": 11,
+    "timeout": 1
+  },
+  "usage": {
+    "cacheRead": 144936,
+    "input": 41488,
+    "output": 124430,
+    "total": 310854
+  }
+}

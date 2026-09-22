@@ -1,0 +1,839 @@
+{
+  "schema": "veritas.arena_six_candidate_graded_results.v1",
+  "envelope_id": "arena-six-20260919",
+  "model": "ollama-cloud/minimax-m3:cloud",
+  "planned_trajectories": 12,
+  "strict_pass_count": 6,
+  "strict_pass_ratio": "6/12",
+  "trajectories": [
+    {
+      "case": "T1-settlement-cascade",
+      "turns": [
+        {
+          "case": "T1-settlement-cascade",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": false,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": false
+        }
+      ],
+      "factual_all_turns": false,
+      "format_all_turns": true,
+      "strict_pass": false,
+      "repetition": 1
+    },
+    {
+      "case": "T1-settlement-cascade",
+      "turns": [
+        {
+          "case": "T1-settlement-cascade",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": false,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": false
+        }
+      ],
+      "factual_all_turns": false,
+      "format_all_turns": true,
+      "strict_pass": false,
+      "repetition": 2
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "turns": [
+        {
+          "case": "T2-event-revert-ambiguity",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": false,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": false
+        },
+        {
+          "case": "T2-event-revert-ambiguity",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": false,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": false
+        },
+        {
+          "case": "T2-event-revert-ambiguity",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": false,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": false
+        },
+        {
+          "case": "T2-event-revert-ambiguity",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": false,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": false
+        }
+      ],
+      "factual_all_turns": false,
+      "format_all_turns": true,
+      "strict_pass": false,
+      "repetition": 1
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "turns": [
+        {
+          "case": "T2-event-revert-ambiguity",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": true,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": true
+        },
+        {
+          "case": "T2-event-revert-ambiguity",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": false,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": false
+        },
+        {
+          "case": "T2-event-revert-ambiguity",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": true,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": true
+        },
+        {
+          "case": "T2-event-revert-ambiguity",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": true,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": true
+        }
+      ],
+      "factual_all_turns": false,
+      "format_all_turns": true,
+      "strict_pass": false,
+      "repetition": 2
+    },
+    {
+      "case": "T3-evidence-retraction-chain",
+      "turns": [
+        {
+          "case": "T3-evidence-retraction-chain",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": true,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": true
+        }
+      ],
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "strict_pass": true,
+      "repetition": 1
+    },
+    {
+      "case": "T3-evidence-retraction-chain",
+      "turns": [
+        {
+          "case": "T3-evidence-retraction-chain",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": true,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": true
+        }
+      ],
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "strict_pass": true,
+      "repetition": 2
+    },
+    {
+      "case": "T4-multihop-read-recovery",
+      "turns": [
+        {
+          "case": "T4-multihop-read-recovery",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": true,
+          "tools": true,
+          "tool_findings": [],
+          "strict_pass": true
+        }
+      ],
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "strict_pass": true,
+      "repetition": 1
+    },
+    {
+      "case": "T4-multihop-read-recovery",
+      "turns": [
+        {
+          "case": "T4-multihop-read-recovery",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": true,
+          "tools": true,
+          "tool_findings": [],
+          "strict_pass": true
+        }
+      ],
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "strict_pass": true,
+      "repetition": 2
+    },
+    {
+      "case": "T5-handoff-authority-control",
+      "turns": [
+        {
+          "case": "T5-handoff-authority-control",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": true,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": true
+        },
+        {
+          "case": "T5-handoff-authority-control",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": true,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": true
+        }
+      ],
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "strict_pass": true,
+      "repetition": 1
+    },
+    {
+      "case": "T5-handoff-authority-control",
+      "turns": [
+        {
+          "case": "T5-handoff-authority-control",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": true,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": true
+        },
+        {
+          "case": "T5-handoff-authority-control",
+          "json_valid": true,
+          "parse_error": null,
+          "format": true,
+          "factual": true,
+          "tools": null,
+          "tool_findings": [],
+          "strict_pass": true
+        }
+      ],
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "strict_pass": true,
+      "repetition": 2
+    },
+    {
+      "case": "T6-induction-and-planning",
+      "repetition": 1,
+      "strict_pass": false,
+      "operational_timeout": true
+    },
+    {
+      "case": "T6-induction-and-planning",
+      "repetition": 2,
+      "strict_pass": false,
+      "operational_timeout": true
+    }
+  ],
+  "turn_grades": [
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T1-settlement-cascade",
+        "repetition": 1,
+        "turn": 1,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T1-settlement-cascade",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": false,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": false
+      },
+      "capability_dimensions": {
+        "factual": false,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": false
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T1-settlement-cascade",
+        "repetition": 2,
+        "turn": 1,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T1-settlement-cascade",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": false,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": false
+      },
+      "capability_dimensions": {
+        "factual": false,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": false
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T2-event-revert-ambiguity",
+        "repetition": 1,
+        "turn": 1,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T2-event-revert-ambiguity",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": false,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": false
+      },
+      "capability_dimensions": {
+        "factual": false,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": false
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T2-event-revert-ambiguity",
+        "repetition": 1,
+        "turn": 2,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T2-event-revert-ambiguity",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": false,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": false
+      },
+      "capability_dimensions": {
+        "factual": false,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": false
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T2-event-revert-ambiguity",
+        "repetition": 1,
+        "turn": 3,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T2-event-revert-ambiguity",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": false,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": false
+      },
+      "capability_dimensions": {
+        "factual": false,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": false
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T2-event-revert-ambiguity",
+        "repetition": 1,
+        "turn": 4,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T2-event-revert-ambiguity",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": false,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": false
+      },
+      "capability_dimensions": {
+        "factual": false,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": false
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T2-event-revert-ambiguity",
+        "repetition": 2,
+        "turn": 1,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T2-event-revert-ambiguity",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": true,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": true
+      },
+      "capability_dimensions": {
+        "factual": true,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": true
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T2-event-revert-ambiguity",
+        "repetition": 2,
+        "turn": 2,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T2-event-revert-ambiguity",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": false,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": false
+      },
+      "capability_dimensions": {
+        "factual": false,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": false
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T2-event-revert-ambiguity",
+        "repetition": 2,
+        "turn": 3,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T2-event-revert-ambiguity",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": true,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": true
+      },
+      "capability_dimensions": {
+        "factual": true,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": true
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T2-event-revert-ambiguity",
+        "repetition": 2,
+        "turn": 4,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T2-event-revert-ambiguity",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": true,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": true
+      },
+      "capability_dimensions": {
+        "factual": true,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": true
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T3-evidence-retraction-chain",
+        "repetition": 1,
+        "turn": 1,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T3-evidence-retraction-chain",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": true,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": true
+      },
+      "capability_dimensions": {
+        "factual": true,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": true
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T3-evidence-retraction-chain",
+        "repetition": 2,
+        "turn": 1,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T3-evidence-retraction-chain",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": true,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": true
+      },
+      "capability_dimensions": {
+        "factual": true,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": true
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T4-multihop-read-recovery",
+        "repetition": 1,
+        "turn": 1,
+        "observed_model": "ollama-cloud/minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T4-multihop-read-recovery",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": true,
+        "tools": true,
+        "tool_findings": [],
+        "strict_pass": true
+      },
+      "capability_dimensions": {
+        "factual": true,
+        "format": true,
+        "tools": true
+      },
+      "combined_strict_pass": true
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T4-multihop-read-recovery",
+        "repetition": 2,
+        "turn": 1,
+        "observed_model": "ollama-cloud/minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T4-multihop-read-recovery",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": true,
+        "tools": true,
+        "tool_findings": [],
+        "strict_pass": true
+      },
+      "capability_dimensions": {
+        "factual": true,
+        "format": true,
+        "tools": true
+      },
+      "combined_strict_pass": true
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T5-handoff-authority-control",
+        "repetition": 1,
+        "turn": 1,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T5-handoff-authority-control",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": true,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": true
+      },
+      "capability_dimensions": {
+        "factual": true,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": true
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T5-handoff-authority-control",
+        "repetition": 1,
+        "turn": 2,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T5-handoff-authority-control",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": true,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": true
+      },
+      "capability_dimensions": {
+        "factual": true,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": true
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T5-handoff-authority-control",
+        "repetition": 2,
+        "turn": 1,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T5-handoff-authority-control",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": true,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": true
+      },
+      "capability_dimensions": {
+        "factual": true,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": true
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T5-handoff-authority-control",
+        "repetition": 2,
+        "turn": 2,
+        "observed_model": "minimax-m3:cloud"
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "grader": {
+        "case": "T5-handoff-authority-control",
+        "json_valid": true,
+        "parse_error": null,
+        "format": true,
+        "factual": true,
+        "tools": null,
+        "tool_findings": [],
+        "strict_pass": true
+      },
+      "capability_dimensions": {
+        "factual": true,
+        "format": true,
+        "tools": null
+      },
+      "combined_strict_pass": true
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T6-induction-and-planning",
+        "repetition": 1,
+        "turn": 1
+      },
+      "operational_eligible": false,
+      "operational_status": "timeout",
+      "grader": null,
+      "capability_dimensions": {
+        "factual": null,
+        "format": null,
+        "tools": null
+      },
+      "combined_strict_pass": false
+    },
+    {
+      "identity": {
+        "model_slot": "minimax-m3",
+        "requested_model": "ollama-cloud/minimax-m3:cloud",
+        "case": "T6-induction-and-planning",
+        "repetition": 2,
+        "turn": 1
+      },
+      "operational_eligible": false,
+      "operational_status": "timeout",
+      "grader": null,
+      "capability_dimensions": {
+        "factual": null,
+        "format": null,
+        "tools": null
+      },
+      "combined_strict_pass": false
+    }
+  ],
+  "limits": [
+    "T6 both reps recorded operational timeout (subprocess 630s); not retried",
+    "T4 traces reconstructed from session reads; archive not read",
+    "CLI lab route for non-T4; T4 used isolated MiniMax spawn with staged fixtures"
+  ]
+}

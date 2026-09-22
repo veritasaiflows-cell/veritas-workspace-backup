@@ -1,0 +1,18 @@
+[
+  {
+    "duration_ms": 414824,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T6",
+    "instance_id": "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4",
+    "status": "ok"
+  },
+  {
+    "duration_ms": 500342,
+    "effective_model": "minimax-m3:cloud",
+    "exit_code": 0,
+    "family": "T6",
+    "instance_id": "ad2161157921538089853178cdb459bbaed40f96fa77329a69e4be635c5af0bc",
+    "status": "ok"
+  }
+]

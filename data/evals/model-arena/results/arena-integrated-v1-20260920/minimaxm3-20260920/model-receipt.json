@@ -1,0 +1,15 @@
+{
+  "attempts": 1,
+  "child_session_key": "agent:main:dashboard:89a431c8-325c-4676-8401-d338e89001ed",
+  "evidence": "child session pinned ollama-cloud/minimax-m3:cloud; every assistant turn in the run transcript records provider ollama-cloud / model minimax-m3:cloud",
+  "fallback_applied": false,
+  "model_applied": true,
+  "provider": "ollama-cloud",
+  "requested_model": "ollama-cloud/minimax-m3:cloud",
+  "rerouted": false,
+  "resolved_model": "ollama-cloud/minimax-m3:cloud",
+  "retries": 0,
+  "roster_note": "M3 was not previously dispatch-verified in roster.json; this probe is the first exact-model proof.",
+  "run_id": "02406f6a-5c7d-41a0-8233-f222fadbd078",
+  "schema": "veritas.arena_model_receipt.v1"
+}

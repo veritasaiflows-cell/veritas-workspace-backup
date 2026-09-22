@@ -1,0 +1,147 @@
+{
+ "schema": "veritas.arena_six_evidence_manifest.v2",
+ "computed_by": "Veritas Main deterministic pass",
+ "root": "C:/Users/Veritas/.openclaw/workspace/data/evals/model-arena/arena-six-20260919/results/sol-20260920",
+ "files": [
+  {
+   "path": "attempts/sol/r1/T1-settlement-cascade/t1/turn.json",
+   "bytes": 763,
+   "sha256": "894f1edb7330153300b6d5b93b4978a719437a490b25c21e876d9320f1c2a010"
+  },
+  {
+   "path": "attempts/sol/r1/T2-event-revert-ambiguity/t1/turn.json",
+   "bytes": 812,
+   "sha256": "988020ed3f9a0090e3699c0c103bf8d9deb18c655d2fc9e66fe614cc731a1ede"
+  },
+  {
+   "path": "attempts/sol/r1/T2-event-revert-ambiguity/t2/turn.json",
+   "bytes": 812,
+   "sha256": "44ddac92f380362e628d4e452513804135c7087815a9758a174efbe49fdf2c72"
+  },
+  {
+   "path": "attempts/sol/r1/T2-event-revert-ambiguity/t3/turn.json",
+   "bytes": 812,
+   "sha256": "1d36e14de5d0cb8480c0f90a5c565b46004757c576c0125e4f9650894b1a0924"
+  },
+  {
+   "path": "attempts/sol/r1/T2-event-revert-ambiguity/t4/turn.json",
+   "bytes": 614,
+   "sha256": "26027fe43f14d995d237b53a46cfc8b48857e3461b36b2096f9aad88144e01ae"
+  },
+  {
+   "path": "attempts/sol/r1/T3-evidence-retraction-chain/t1/turn.json",
+   "bytes": 885,
+   "sha256": "dfe62d19997aad48efd7982bbb0e048b5ae2c950c9ad0a3a8126c2d5072a25a9"
+  },
+  {
+   "path": "attempts/sol/r1/T4-multihop-read-recovery/t1/turn.json",
+   "bytes": 949,
+   "sha256": "ebea61c2fbb60ed01bfc3d98329f25f2a4705b249d9a01dd2bbfe03fb0703158"
+  },
+  {
+   "path": "attempts/sol/r1/T5-handoff-authority-control/t1/turn.json",
+   "bytes": 785,
+   "sha256": "84bdde301191fba0a2c942967749741f8501e8d3eea3459a05f4944eeb30e22b"
+  },
+  {
+   "path": "attempts/sol/r1/T5-handoff-authority-control/t2/turn.json",
+   "bytes": 661,
+   "sha256": "8cf30a43aca77af748934265c9dd267cbb750d092555c5aa0b874311ec59cfa5"
+  },
+  {
+   "path": "attempts/sol/r1/T6-induction-and-planning/t1/turn.json",
+   "bytes": 663,
+   "sha256": "6d433d005e7634d8541cb66a9af10d9d80b42c95208113d25f49759914a9b64b"
+  },
+  {
+   "path": "attempts/sol/r2/T1-settlement-cascade/t1/turn.json",
+   "bytes": 763,
+   "sha256": "4ade70c7b83520cf73255cd568fa3d025c3c2bfdf6dfc05da2a721c3b6ab17c6"
+  },
+  {
+   "path": "attempts/sol/r2/T2-event-revert-ambiguity/t1/turn.json",
+   "bytes": 812,
+   "sha256": "c05d12700d8d988ffa006e088c800111ce1c6d40fc7856b7dca54dd48f6fda1c"
+  },
+  {
+   "path": "attempts/sol/r2/T2-event-revert-ambiguity/t2/turn.json",
+   "bytes": 812,
+   "sha256": "bca2e9167ad0574b266747f674caee5f49077234d21c7bb05fb4e986e441f60a"
+  },
+  {
+   "path": "attempts/sol/r2/T2-event-revert-ambiguity/t3/turn.json",
+   "bytes": 812,
+   "sha256": "f0213a083d8fb02b17a9a458d6073a5265e869c8ba6b8daead70a9fd4942b60e"
+  },
+  {
+   "path": "attempts/sol/r2/T2-event-revert-ambiguity/t4/turn.json",
+   "bytes": 614,
+   "sha256": "5ebc6976163b10725b5aa872441ea116dde67ef12efa151a42fc20ab449f9fd4"
+  },
+  {
+   "path": "attempts/sol/r2/T3-evidence-retraction-chain/t1/turn.json",
+   "bytes": 885,
+   "sha256": "8de83acb4d01fd332dd7c76f479be76f5361895bcaf2149d3f84b4463cc0614c"
+  },
+  {
+   "path": "attempts/sol/r2/T4-multihop-read-recovery/t1/turn.json",
+   "bytes": 949,
+   "sha256": "00336e309903f4401189275b47a3be9739ac47ce628d9e84954121e3d54194d1"
+  },
+  {
+   "path": "attempts/sol/r2/T5-handoff-authority-control/t1/turn.json",
+   "bytes": 785,
+   "sha256": "2938bf95c2081309f9176d6f5ecd3004f3201b0d498a7abc17e4a0056e400b1f"
+  },
+  {
+   "path": "attempts/sol/r2/T5-handoff-authority-control/t2/turn.json",
+   "bytes": 661,
+   "sha256": "d151ebc2a00bc12b8904948e5c8100954c12ad882d5e63b58b6442637a905701"
+  },
+  {
+   "path": "attempts/sol/r2/T6-induction-and-planning/t1/turn.json",
+   "bytes": 663,
+   "sha256": "d667cc05b13dad1b7f19d7ea09c3b182a318e18169f40f5385acd33dd3815841"
+  },
+  {
+   "path": "evidence-manifest.json",
+   "bytes": 3994,
+   "sha256": "e0cdf7c99167a3a0800db291ac748e130b54d9d29a7f9c1cc81066f1918e6b02"
+  },
+  {
+   "path": "graded-results.json",
+   "bytes": 11631,
+   "sha256": "79ca9b010a1dc2dad60e50bccd2bf892d9d6a90b943757e06ffd878a8f9e9323"
+  },
+  {
+   "path": "main-acceptance.json",
+   "bytes": 456,
+   "sha256": "4bc8915289a153c53185540c3c5d70163ff5b0d51512207283ee46755edab3f4"
+  },
+  {
+   "path": "operational-adjudication.json",
+   "bytes": 646,
+   "sha256": "dcd922fc4a306d2230afd7b5747886482819cb28eeb480291e09c6e5067b97ab"
+  },
+  {
+   "path": "report.md",
+   "bytes": 2775,
+   "sha256": "4f795217436ffbba2caf3002aad5f95a930f8391b6aa797fe0fece136de197c2"
+  },
+  {
+   "path": "run-contract.json",
+   "bytes": 1109,
+   "sha256": "b2a9dec7dc5fb1d44713dba81e4ab01e078b3ae226aecb3ac2981637c7557a14"
+  },
+  {
+   "path": "turns-graded.json",
+   "bytes": 11386,
+   "sha256": "d0a9eee1f29fc4c092d1c29dd14f63f6364926de9ebe113e21323179663b134f"
+  },
+  {
+   "path": "validation.json",
+   "bytes": 209,
+   "sha256": "c054472098ec8d8c52a3bfbc292acc834b831364dfed53321c0b257a541ea861"
+  }
+ ]
+}

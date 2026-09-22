@@ -1,0 +1,7 @@
+{
+  "rows": [
+    {"id": "r1", "value": "z9", "ts": "2026-08-01", "tombstone": false},
+    {"id": "r2", "value": "z8", "ts": "2026-08-02", "tombstone": false},
+    {"id": "r5", "value": "z7", "ts": "2026-08-03", "tombstone": false}
+  ]
+}

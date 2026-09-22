@@ -1,0 +1,54 @@
+{
+  "authority": "Instrument evidence only. No routing, configuration, role, promotion, or execution authority follows.",
+  "decided_at_utc": "2026-09-20T23:05:22.213149+00:00",
+  "decision": "expand_conditionally",
+  "decision_summary": "Instrument evidence is strong and reproducible: deterministic oracle 12/12 with hidden tests passing, 7/7 executing calibration controls, gated (not subtracted) scoring, proven candidate/hidden isolation, and a seed that fails the hidden suite while the oracle passes. However no candidate has been dispatched, so no discrimination evidence exists yet. Per the arena X0 rule (never multiply a case before measuring whether it discriminates), expand to the remaining two missions only after one gated canary dispatch demonstrates the instrument separates models.",
+  "expansion_gate": {
+    "next_action": "owner-gated single-candidate canary dispatch",
+    "preconditions": [
+      "explicit spend authorization for one model only",
+      "exact-model receipt verification",
+      "zero retries; timeout classified operational",
+      "candidate mount carries visible/ only"
+    ],
+    "proceed_to_mission_2_and_3_if": [
+      "oracle and calibration reproduce on the dispatched run",
+      "the mission yields a result that is neither uniformly passed nor uniformly failed",
+      "no harness or mount defect is attributed to the candidate"
+    ],
+    "stop_if": [
+      "the mission is passed identically by every model (floor or ceiling effect)",
+      "a harness, mount or grader defect is found",
+      "the run cannot prove which model executed it"
+    ]
+  },
+  "gaps_before_expansion": [
+    "No candidate dispatch yet: discrimination is unmeasured.",
+    "Single structure only: cannot distinguish breadth from one-off difficulty.",
+    "Read-budget and fixture-depth perturbations are authored but not yet enumerated as variants.",
+    "Recovery and evidence axes are single-instance; a second structurally distinct case per axis is still required before Gate-3 breadth claims."
+  ],
+  "instrument_evidence": {
+    "calibration_all_expected": true,
+    "calibration_controls": 7,
+    "calibration_status": "all_calibrated",
+    "canary_tests": 24,
+    "exec_enabled_in_calibration": true,
+    "mission_report_sha256": "4dba5cbb45baef3f4e435becc44bddb40ed916edda1a8ab310c7613ece7779c7",
+    "oracle_field_accuracy": 1.0,
+    "oracle_hidden_tests_passed": true,
+    "oracle_protected_intact": true,
+    "oracle_scope_ok": true,
+    "oracle_score": 1.0,
+    "oracle_verdict": "pass",
+    "readme_sha256": "abea470d95619a2644cd68fb7c42465f673c246ba7d87aa704c0821846a113f0",
+    "regression_suites": {
+      "agentic_expansion": 47,
+      "hidden_bank_runner": 27
+    },
+    "visible_file_count": 11
+  },
+  "mission_id": "arena-integrated-v1-20260920",
+  "schema": "veritas.arena_integrated_expansion_decision.v1",
+  "version": "arena-integrated-v1-20260920-r1"
+}

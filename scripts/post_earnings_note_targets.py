@@ -56,6 +56,8 @@ TARGET_RULES: dict[str, dict[str, Any]] = {
     },
 }
 
+RETIRED_PORTFOLIO_TARGET_PREFIX = "03. Portfolio/"
+
 
 def load_json(path: Path) -> dict[str, Any]:
     if not path.exists():
@@ -74,6 +76,10 @@ def build_candidate_updates(packet: dict[str, Any]) -> list[dict[str, Any]]:
 
     seen_targets: set[str] = set()
     for target in packet.get("note_targets", []):
+        # Earnings review may inform research, but it must not route a result
+        # into retired portfolio-state surfaces or imply a portfolio action.
+        if str(target).startswith(RETIRED_PORTFOLIO_TARGET_PREFIX):
+            continue
         if target in seen_targets:
             continue
         seen_targets.add(target)
@@ -104,6 +110,31 @@ def build_candidate_updates(packet: dict[str, Any]) -> list[dict[str, Any]]:
     return updates
 
 
+def build_reconciliation_tasks(packet: dict[str, Any]) -> list[dict[str, Any]]:
+    """Surface post-print work without mutating notes, alerts, or canon."""
+    if packet.get("phase") != "post_earnings":
+        return []
+    reconciliation = packet.get("reconciliation") if isinstance(packet.get("reconciliation"), dict) else {}
+    task_specs = (
+        ("scorecard", "scorecard_required", "Create or update a source-backed scorecard; preserve unresolved evidence as unresolved."),
+        ("thesis", "thesis_reassessment_required", "Reassess thesis, base/bull/bear, risks, and confidence from official evidence."),
+        ("catalyst", "catalyst_reconciliation_required", "Resolve or roll the catalyst forward only after post-print interpretation is complete."),
+        ("alert", "alert_reconciliation_required", "Reassess the review-only alert state against the current alert controller; never mutate alert canon automatically."),
+    )
+    return [
+        {
+            "ticker": packet.get("ticker"),
+            "task": name,
+            "required": True,
+            "intent": intent,
+            "review_only": True,
+            "automatic_mutation_allowed": False,
+        }
+        for name, requirement, intent in task_specs
+        if reconciliation.get(requirement) is True
+    ]
+
+
 def main() -> None:
     prep = load_json(PREP_PATH)
     packets = prep.get("packets", []) or []
@@ -111,10 +142,12 @@ def main() -> None:
 
     workflows: list[dict[str, Any]] = []
     impacted_notes: dict[str, list[str]] = {}
+    reconciliation_queue: list[dict[str, Any]] = []
 
     for packet in packets:
         ticker = packet.get("ticker")
         candidate_updates = build_candidate_updates(packet)
+        reconciliation_tasks = build_reconciliation_tasks(packet)
         workflows.append({
             "ticker": ticker,
             "priority": packet.get("priority"),
@@ -122,7 +155,9 @@ def main() -> None:
             "next_earnings_date": packet.get("next_earnings_date"),
             "action_state": legacy_state(packet.get("trigger_context", {}), "action_state"),
             "candidate_updates": candidate_updates,
+            "reconciliation_tasks": reconciliation_tasks,
         })
+        reconciliation_queue.extend(reconciliation_tasks)
         for update in candidate_updates:
             impacted_notes.setdefault(update["path"], []).append(ticker)
 
@@ -152,6 +187,14 @@ def main() -> None:
         "earnings_lifecycle": earnings_lifecycle,
         "impacted_notes": impacted_notes,
         "workflows": workflows,
+        "reconciliation_queue": reconciliation_queue,
+        "authority": {
+            "review_only": True,
+            "canonical_note_mutation_allowed": False,
+            "alert_canon_mutation_allowed": False,
+            "portfolio_mutation_allowed": False,
+            "owner_approval_inferred": False,
+        },
     }
 
     OUT_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")

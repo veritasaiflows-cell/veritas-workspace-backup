@@ -197,3 +197,22 @@ tmp/**
 !tmp/workspace-governance-truth-check.json
 !tmp/workspace-index-report.json
 !tmp/workspace-organization-auto-archive-audit.md
+
+# Large generated/reproducible artifacts and local runtime state.
+# Excluded from checkpoints: GitHub rejects blobs over 100 MB, and these are
+# regenerable outputs (graph builds, downloaded collector binaries, bulk data
+# extracts, long-work chunk dumps) rather than source. Already-tracked paths are
+# unaffected; gitignore only stops new untracked files from being added.
+tools/otelcol/otelcol.exe
+tools/otelcol/opentelemetry-collector-releases_otelcol_windows_amd64.tar.gz
+tools/otelcol/*.tar.gz
+data/fundamentals/fundamentals-quarterly-v1.jsonl
+graphify-out/graph.json
+scripts/graphify-out/graph.json
+scripts/graphify-out/*/graph.json
+state/long-work-jobs/*/chunks.jsonl
+.openclaw/attachments/
+.openclaw/workspace-state.json*
+
+# Nested Claude Code worktrees are local scratch checkouts, not workspace content.
+.claude/worktrees/

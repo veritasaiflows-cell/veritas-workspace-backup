@@ -1,0 +1,50 @@
+﻿{
+    "case":  "T1-code-review",
+    "model_id":  "ds",
+    "requested_model":  "ollama-cloud/deepseek-v4.1-flash:cloud",
+    "repetition":  3,
+    "turn":  1,
+    "session_key":  "agent:qa-redteam:a24-repair-ds-t1-r3-20260919",
+    "cli_exit":  0,
+    "status":  "ok",
+    "run_id":  "4763a093-f6cb-4dd0-acf4-7f5710fd6481",
+    "visible_text":  "{\"choice\":\"C\",\"normal\":[18.0,27.0],\"zero\":[0,0],\"drift\":[0.02,0.02,0.01]}",
+    "provider":  "ollama-cloud",
+    "model":  "deepseek-v4.1-flash:cloud",
+    "execution_trace":  {
+                            "winnerProvider":  "ollama-cloud",
+                            "winnerModel":  "deepseek-v4.1-flash:cloud",
+                            "attempts":  [
+                                             {
+                                                 "provider":  "ollama-cloud",
+                                                 "model":  "deepseek-v4.1-flash:cloud",
+                                                 "result":  "success",
+                                                 "stage":  "assistant"
+                                             }
+                                         ],
+                            "fallbackUsed":  false,
+                            "runner":  "embedded"
+                        },
+    "receipt":  {
+                    "runId":  "4763a093-f6cb-4dd0-acf4-7f5710fd6481",
+                    "sessionId":  "183ceef8-b331-480a-8673-30f5aa54f171",
+                    "turnId":  "4763a093-f6cb-4dd0-acf4-7f5710fd6481",
+                    "requested":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "deepseek-v4.1-flash:cloud"
+                                  },
+                    "effective":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "deepseek-v4.1-flash:cloud",
+                                      "responseModel":  "deepseek-v4.1-flash:cloud"
+                                  },
+                    "successfulToolNames":  [
+
+                                            ],
+                    "rerouted":  false
+                },
+    "tool_summary":  null,
+    "thinking":  "high",
+    "delivered_prompt_exact":  true,
+    "repair_of":  "ds-T1-code-review-r3-t1.json"
+}

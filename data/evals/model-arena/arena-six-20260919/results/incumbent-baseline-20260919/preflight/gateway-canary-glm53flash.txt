@@ -1,0 +1,1 @@
+Use the read tool exactly once to read workspace-relative arena-six-canary-glm53flash.txt. Return ONLY raw JSON with exactly observed and read_ok. observed must be the exact file contents and read_ok must be true. No prose or fences. Do not read any other file.

@@ -1,0 +1,64 @@
+{
+  "schema": "veritas.arena_six_failure_taxonomy.v1",
+  "findings": [
+    {
+      "model": "glm53flash",
+      "case": "T1-settlement-cascade",
+      "repetitions": [
+        1,
+        2
+      ],
+      "class": "factual",
+      "finding": "Both returned the single-pass clamp allocation [10,6,12,12] for cascade1; frozen fixed-point key is [10,10,10,10]."
+    },
+    {
+      "model": "glm53flash",
+      "case": "T5-handoff-authority-control",
+      "repetitions": [
+        2
+      ],
+      "class": "factual",
+      "finding": "Moved W2 into open_blockers and omitted it from claimed_unproven; the frozen handoff key keeps W2 as an unproven completion claim while blockers are W3 and W5."
+    },
+    {
+      "model": "glm53flash",
+      "case": "T6-induction-and-planning",
+      "repetitions": [
+        1
+      ],
+      "class": "operational_timeout",
+      "finding": "Gateway deadline exceeded after 630000 ms; preserved without retry and excluded from factual denominator."
+    },
+    {
+      "model": "deepseek41flash",
+      "case": "T1-settlement-cascade",
+      "repetitions": [
+        1
+      ],
+      "class": "factual",
+      "finding": "Returned [10,6,12,12] for cascade1; repetition two returned the frozen [10,10,10,10]."
+    },
+    {
+      "model": "deepseek41flash",
+      "case": "T2-event-revert-ambiguity",
+      "repetitions": [
+        2
+      ],
+      "turns": [
+        2
+      ],
+      "class": "format",
+      "finding": "The JSON value defended the correct queued state but added prose after the object, making the full response invalid JSON under the frozen contract."
+    },
+    {
+      "model": "deepseek41flash",
+      "case": "T4-multihop-read-recovery",
+      "repetitions": [
+        1,
+        2
+      ],
+      "class": "whole_interaction_format",
+      "finding": "Both used the exact four permitted read paths and returned the correct object, but emitted visible narration before tool calls despite the raw-JSON/no-prose contract."
+    }
+  ]
+}

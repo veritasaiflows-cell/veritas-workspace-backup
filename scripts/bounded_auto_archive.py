@@ -88,6 +88,23 @@ def destination_for(item: dict[str, Any], source: Path) -> Path:
     raise ValueError("destination is outside approved archive roots")
 
 
+def manifest_integrity_error(item: dict[str, Any], source: Path) -> str | None:
+    """Require the frozen source identity before a mover can act."""
+    expected_hash = item.get("sha256")
+    expected_bytes = item.get("bytes")
+    if not isinstance(expected_hash, str) or len(expected_hash) != 64 or any(char not in "0123456789abcdefABCDEF" for char in expected_hash):
+        return "manifest sha256 must be a 64-character hexadecimal digest"
+    if not isinstance(expected_bytes, int) or isinstance(expected_bytes, bool) or expected_bytes < 0:
+        return "manifest bytes must be a non-negative integer"
+    actual_bytes = source.stat().st_size
+    if actual_bytes != expected_bytes:
+        return f"manifest byte count mismatch: expected {expected_bytes}, found {actual_bytes}"
+    actual_hash = sha256_file(source)
+    if actual_hash != expected_hash.lower():
+        return "manifest sha256 mismatch"
+    return None
+
+
 def evaluate_item(item: dict[str, Any]) -> tuple[str, str | None]:
     path_value = str(item.get("path") or "").strip().replace("\\", "/")
     if not path_value or path_value.endswith("/"):
@@ -112,10 +129,15 @@ def evaluate_item(item: dict[str, Any]) -> tuple[str, str | None]:
     source = ROOT / path_value
     if not source.exists() or not source.is_file():
         return "blocked", "source missing or not a file"
+    integrity_error = manifest_integrity_error(item, source)
+    if integrity_error:
+        return "blocked", integrity_error
     try:
-        destination_for(item, source)
+        destination = destination_for(item, source)
     except ValueError as exc:
         return "blocked", str(exc)
+    if destination.exists():
+        return "blocked", "declared destination already exists; manifest must be regenerated"
     return "eligible", None
 
 
@@ -130,12 +152,24 @@ def build_report(input_path: Path, apply: bool) -> dict[str, Any]:
         if status == "eligible" and apply:
             source = ROOT / str(item["path"]).replace("\\", "/")
             dest = destination_for(item, source)
+            # Recheck immediately before moving: preflight cannot protect against
+            # source drift between validation and the filesystem mutation.
+            integrity_error = manifest_integrity_error(item, source)
+            if integrity_error:
+                row.update({"status": "blocked", "reason": integrity_error})
+                blocked.append(row)
+                continue
+            if dest.exists():
+                row.update({"status": "blocked", "reason": "declared destination already exists; manifest must be regenerated"})
+                blocked.append(row)
+                continue
             dest.parent.mkdir(parents=True, exist_ok=True)
             before = sha256_file(source)
-            if dest.exists():
-                dest = dest.with_name(dest.stem + "-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + dest.suffix)
             shutil.move(str(source), str(dest))
-            row.update({"status": "moved", "destination": rel(dest), "sha256_before": before, "sha256_after": sha256_file(dest)})
+            after = sha256_file(dest)
+            if before != str(item["sha256"]).lower() or after != before or dest.stat().st_size != item["bytes"]:
+                raise RuntimeError("archive move integrity failure; source or destination diverged from manifest")
+            row.update({"status": "moved", "destination": rel(dest), "sha256_manifest": item["sha256"].lower(), "bytes_manifest": item["bytes"], "sha256_before": before, "sha256_after": after})
             moved.append(row)
         elif status == "eligible":
             row["status"] = "dry_run_eligible"
@@ -157,6 +191,7 @@ def build_report(input_path: Path, apply: bool) -> dict[str, Any]:
         "skipped": skipped,
         "blocked": blocked,
         "authority_boundary": "archive-only helper; no deletes; protected paths blocked; explicit apply_allowed suggestions can move only with zero references, the WF72 adjacent-JSON historical-reference-only exception, or the WF72 adjacent-JSON script-output-constant exception",
+        "manifest_binding": "apply requires a 64-character SHA-256 and exact byte count; both are rechecked immediately before every move and destination collisions fail closed",
     }
     return report
 
@@ -210,6 +245,8 @@ def validate_last() -> int:
             bad.append(f"bad destination {dest}")
         if row.get("sha256_before") != row.get("sha256_after"):
             bad.append(f"hash mismatch for {row.get('path')}")
+        if row.get("sha256_manifest") != row.get("sha256_before"):
+            bad.append(f"manifest hash mismatch for {row.get('path')}")
     print(json.dumps({"status": "ok" if not bad else "critical", "errors": bad}, indent=2))
     return 0 if not bad else 1
 

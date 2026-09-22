@@ -1,0 +1,42 @@
+﻿{
+    "turn":  1,
+    "session_key":  "agent:main:arena-state-ds-20260919",
+    "requested_model":  "ollama-cloud/deepseek-v4.1-flash:cloud",
+    "provider":  "ollama-cloud",
+    "model":  "deepseek-v4.1-flash:cloud",
+    "visible_text":  "{\"active\":{\"D\":4,\"E\":6},\"free\":0,\"outcomes\":[\"accepted\",\"accepted\",\"rejected\",\"duplicate\",\"accepted\",\"accepted\"]}",
+    "execution_trace":  {
+                            "winnerProvider":  "ollama-cloud",
+                            "winnerModel":  "deepseek-v4.1-flash:cloud",
+                            "attempts":  [
+                                             {
+                                                 "provider":  "ollama-cloud",
+                                                 "model":  "deepseek-v4.1-flash:cloud",
+                                                 "result":  "success",
+                                                 "stage":  "assistant"
+                                             }
+                                         ],
+                            "fallbackUsed":  false,
+                            "runner":  "embedded"
+                        },
+    "receipt":  {
+                    "runId":  "564c0c30-ed19-4745-8941-1f1e80b24586",
+                    "sessionId":  "a82be278-ae66-4f5c-9490-406cf480c30a",
+                    "turnId":  "564c0c30-ed19-4745-8941-1f1e80b24586",
+                    "requested":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "deepseek-v4.1-flash:cloud"
+                                  },
+                    "effective":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "deepseek-v4.1-flash:cloud",
+                                      "responseModel":  "deepseek-v4.1-flash:cloud"
+                                  },
+                    "successfulToolNames":  [
+
+                                            ],
+                    "rerouted":  false
+                },
+    "thinking":  "high",
+    "tool_summary":  null
+}

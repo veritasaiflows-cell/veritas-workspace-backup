@@ -1,0 +1,62 @@
+{
+  "schema": "veritas.arena_six_candidate_operational_adjudication.v1",
+  "models": {
+    "spark13": "meta/muse-spark-1.3-contributor",
+    "glm53": "ollama-cloud/glm-5.3:cloud"
+  },
+  "planned_trajectories_per_model": 12,
+  "planned_turns_per_model": 20,
+  "completed_turns_total": 40,
+  "timeouts_total": 1,
+  "duration_s_all": {
+    "min": 2.346,
+    "median": 16.059,
+    "max": 601.517,
+    "total": 1524.147
+  },
+  "by_model": {
+    "spark13": {
+      "requested_model": "meta/muse-spark-1.3-contributor",
+      "planned_trajectories": 12,
+      "planned_turns": 20,
+      "completed_turns": 20,
+      "ok_turns": 20,
+      "timeouts": 0,
+      "identity_failures": 0,
+      "fallback_or_reroute_rows": 0,
+      "prompt_mismatches": 0,
+      "parse_failures": 0,
+      "duration_s": {
+        "min": 10.658,
+        "median": 18.37,
+        "max": 95.525,
+        "total": 521.845
+      }
+    },
+    "glm53": {
+      "requested_model": "ollama-cloud/glm-5.3:cloud",
+      "planned_trajectories": 12,
+      "planned_turns": 20,
+      "completed_turns": 20,
+      "ok_turns": 19,
+      "timeouts": 1,
+      "identity_failures": 0,
+      "fallback_or_reroute_rows": 0,
+      "prompt_mismatches": 0,
+      "parse_failures": 0,
+      "duration_s": {
+        "min": 2.346,
+        "median": 7.15,
+        "max": 601.517,
+        "total": 1002.302
+      }
+    }
+  },
+  "classification": "GLM 5.3 Cloud T6 repetition 2 timed out at the 600s operational ceiling and is not capability-eligible. All other completed turns are capability-eligible. Latency is operational context only.",
+  "retry_policy_honored": true,
+  "terminology": {
+    "completed_turns_total": "recorded slot count including typed operational failures",
+    "ok_turns": "turns with CLI status ok",
+    "parse_failures": "counts only unparseable CLI envelopes, not candidate JSON-format misses; candidate misses appear as grader json_valid=false"
+  }
+}

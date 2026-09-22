@@ -1,0 +1,247 @@
+{
+  "runId": "6fe38f93-77fa-4f63-b55a-29732c6569e7",
+  "status": "ok",
+  "summary": "completed",
+  "result": {
+    "payloads": [
+      {
+        "text": "{\"states\":{\"A\":{\"revision\":4,\"status\":\"queued\"},\"B\":{\"revision\":3,\"status\":\"cancelled\"},\"C\":{\"revision\":1,\"status\":\"ready\"}},\"eligible\":[\"C\"],\"applied\":7,\"ignored\":[{\"event\":\"e4\",\"reason\":\"stale\"},{\"event\":\"e3\",\"reason\":\"duplicate\"}]}",
+        "mediaUrl": null
+      }
+    ],
+    "meta": {
+      "durationMs": 29561,
+      "agentMeta": {
+        "sessionId": "484f44ca-4f51-4329-ab1b-a8a62a3bf263",
+        "sessionFile": "agent:qa-redteam:arena6-grok46-t2-event-revert-ambiguity-r1-20260919",
+        "provider": "xai",
+        "model": "grok-4.6",
+        "contextTokens": 500000,
+        "contextTokensSource": "resolved",
+        "agentHarnessId": "openclaw",
+        "credentialSource": {
+          "kind": "profile"
+        },
+        "usage": {
+          "input": 5847,
+          "output": 2151,
+          "cacheRead": 512,
+          "cacheWrite": 0,
+          "reasoningTokens": 2071,
+          "total": 8510,
+          "cost": {
+            "total": 0.024856
+          }
+        },
+        "lastCallUsage": {
+          "input": 5847,
+          "output": 2151,
+          "cacheRead": 512,
+          "cacheWrite": 0,
+          "cost": {
+            "total": 0.024856
+          },
+          "contextUsage": {
+            "state": "available",
+            "promptTokens": 6359,
+            "totalTokens": 8510
+          },
+          "reasoningTokens": 2071,
+          "total": 8510
+        },
+        "promptTokens": 6359,
+        "contextBudgetStatus": {
+          "schemaVersion": 1,
+          "source": "pre-prompt-estimate",
+          "updatedAt": 1789863065447,
+          "provider": "xai",
+          "model": "grok-4.6",
+          "route": "fits",
+          "shouldCompact": false,
+          "estimatedPromptTokens": 6262,
+          "contextTokenBudget": 500000,
+          "promptBudgetBeforeReserve": 480000,
+          "reserveTokens": 20000,
+          "effectiveReserveTokens": 20000,
+          "remainingPromptBudgetTokens": 473738,
+          "overflowTokens": 0,
+          "toolResultReducibleChars": 0,
+          "messageCount": 0,
+          "unwindowedMessageCount": 0,
+          "sessionId": "484f44ca-4f51-4329-ab1b-a8a62a3bf263"
+        },
+        "codeModeEngaged": false,
+        "assistantTurns": 1,
+        "costUsd": 0.024856,
+        "terminalReceipt": {
+          "runId": "6fe38f93-77fa-4f63-b55a-29732c6569e7",
+          "sessionId": "484f44ca-4f51-4329-ab1b-a8a62a3bf263",
+          "turnId": "6fe38f93-77fa-4f63-b55a-29732c6569e7",
+          "requested": {
+            "provider": "xai",
+            "model": "grok-4.6"
+          },
+          "effective": {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "responseModel": "grok-4.6"
+          },
+          "successfulToolNames": [],
+          "rerouted": false
+        }
+      },
+      "aborted": false,
+      "systemPromptReport": {
+        "source": "run",
+        "generatedAt": 1789863065375,
+        "sessionId": "484f44ca-4f51-4329-ab1b-a8a62a3bf263",
+        "sessionKey": "agent:qa-redteam:arena6-grok46-t2-event-revert-ambiguity-r1-20260919",
+        "provider": "xai",
+        "model": "grok-4.6",
+        "workspaceDir": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+        "bootstrapMaxChars": 20000,
+        "bootstrapTotalMaxChars": 80000,
+        "bootstrapTruncation": {
+          "warningMode": "always",
+          "warningShown": false,
+          "truncatedFiles": 0,
+          "nearLimitFiles": 0,
+          "totalNearLimit": false
+        },
+        "sandbox": {
+          "mode": "off",
+          "sandboxed": false
+        },
+        "systemPrompt": {
+          "chars": 19041,
+          "hash": "9d2b641175206d5a499db6f2e6008832cd4e0e7ce33ab8f2f85e224b6664f01b",
+          "projectContextChars": 8748,
+          "nonProjectContextChars": 10293
+        },
+        "injectedWorkspaceFiles": [
+          {
+            "name": "AGENTS.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\AGENTS.md",
+            "missing": false,
+            "rawChars": 4621,
+            "injectedChars": 4621,
+            "truncated": false
+          },
+          {
+            "name": "SOUL.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\SOUL.md",
+            "missing": false,
+            "rawChars": 910,
+            "injectedChars": 910,
+            "truncated": false
+          },
+          {
+            "name": "IDENTITY.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\IDENTITY.md",
+            "missing": false,
+            "rawChars": 496,
+            "injectedChars": 496,
+            "truncated": false
+          },
+          {
+            "name": "USER.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\USER.md",
+            "missing": false,
+            "rawChars": 500,
+            "injectedChars": 500,
+            "truncated": false
+          },
+          {
+            "name": "MEMORY.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\MEMORY.md",
+            "missing": false,
+            "rawChars": 983,
+            "injectedChars": 983,
+            "truncated": false
+          }
+        ],
+        "skills": {
+          "promptChars": 1307,
+          "hash": "62e1190079ff78309362b66617813fcdd6b28cfd828aa8a0a79a9f054a7eb264",
+          "entries": [
+            {
+              "name": "qa-diff-safety-review",
+              "blockChars": 302
+            },
+            {
+              "name": "qa-evidence-separation-check",
+              "blockChars": 324
+            },
+            {
+              "name": "qa-source-reasoning-review",
+              "blockChars": 304
+            }
+          ]
+        },
+        "tools": {
+          "listChars": 0,
+          "schemaChars": 1789,
+          "entries": [
+            {
+              "name": "read",
+              "summaryChars": 164,
+              "summaryHash": "d136f5b09e28d671addad4ca800b75b8aa6a36002bc739ead964f618d3e34829",
+              "schemaChars": 481,
+              "schemaHash": "b1b9b637dfe1dfade40f50c37cf840a298f1992b534cb9425b7470233a6b0cbb",
+              "propertiesCount": 5
+            },
+            {
+              "name": "web_search",
+              "summaryChars": 164,
+              "summaryHash": "4ec65764bf8e853aae0c06e334f54cd879efd9fb5d71c610e9c23bf7b285cb02",
+              "schemaChars": 991,
+              "schemaHash": "3879e368875d824b14e0e683f81408824e9a2a5850fa2f8514a68caebda54d18",
+              "propertiesCount": 12
+            },
+            {
+              "name": "web_fetch",
+              "summaryChars": 78,
+              "summaryHash": "616ac805dfdeaeadbb5e03504e84d52b01ecaa88c7e7100fa4c06eca8eb6195f",
+              "schemaChars": 317,
+              "schemaHash": "eca30c487911c9e897ba27b4650770cf23137fc6ed8d77756ea3952fa496ea61",
+              "propertiesCount": 3
+            }
+          ]
+        },
+        "currentTurn": {
+          "promptChars": 1705,
+          "runtimeContextChars": 0,
+          "modelOnlyPromptChars": 0
+        }
+      },
+      "finalPromptText": "Apply only the rules below. Do not use tools.\n\nStart with empty state, an empty seen-event set, and an empty status history stack per job. Process events in the written order. Each event is (eventID, job, revision, status).\n\nR1. If the eventID has already been seen, ignore the event as \"duplicate\", even when its other fields differ.\nR2. Otherwise mark the eventID seen BEFORE any revision check.\nR3. A job absent from state has current revision -1. Apply the event only if its revision is strictly greater than the job's current revision; otherwise ignore it as \"stale\".\nR4. Applying an event whose status is not \"revert\": first push the job's current status onto that job's history stack, skipping this push if the job has no current status, then set the job's status to the event status and its revision to the event revision.\nR5. Applying an event whose status is \"revert\": pop the most recent status from that job's history stack and set the job's status to that popped value; if the history stack is empty, set the job's status to \"void\". Set the job's revision to the event revision. A revert never pushes anything onto the history stack.\nR6. A job is eligible exactly when its status is \"ready\".\n\nEvents: (e1,A,1,queued); (e2,B,1,queued); (e3,A,3,blocked); (e4,A,2,ready); (e5,B,2,ready); (e3,A,5,blocked); (e6,A,4,revert); (e7,B,3,cancelled); (e8,C,1,ready).\n\nReturn ONLY raw JSON with exactly these keys: states (object mapping each job ID to {\"revision\": integer, \"status\": string}), eligible (alphabetically sorted array of job IDs), applied (integer count of applied events), ignored (array, in processing order, of {\"event\": eventID, \"reason\": \"duplicate\" or \"stale\"}). No prose, no fences.",
+      "finalAssistantVisibleText": "{\"states\":{\"A\":{\"revision\":4,\"status\":\"queued\"},\"B\":{\"revision\":3,\"status\":\"cancelled\"},\"C\":{\"revision\":1,\"status\":\"ready\"}},\"eligible\":[\"C\"],\"applied\":7,\"ignored\":[{\"event\":\"e4\",\"reason\":\"stale\"},{\"event\":\"e3\",\"reason\":\"duplicate\"}]}",
+      "finalAssistantRawText": "{\"states\":{\"A\":{\"revision\":4,\"status\":\"queued\"},\"B\":{\"revision\":3,\"status\":\"cancelled\"},\"C\":{\"revision\":1,\"status\":\"ready\"}},\"eligible\":[\"C\"],\"applied\":7,\"ignored\":[{\"event\":\"e4\",\"reason\":\"stale\"},{\"event\":\"e3\",\"reason\":\"duplicate\"}]}",
+      "replayInvalid": false,
+      "livenessState": "working",
+      "stopReason": "stop",
+      "executionTrace": {
+        "winnerProvider": "xai",
+        "winnerModel": "grok-4.6",
+        "attempts": [
+          {
+            "provider": "xai",
+            "model": "grok-4.6",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      },
+      "requestShaping": {
+        "authMode": "auth-profile",
+        "thinking": "high"
+      },
+      "completion": {
+        "stopReason": "stop",
+        "finishReason": "stop"
+      }
+    }
+  }
+}

@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from cron_freshness_spine import (
+    AUTHORITY_BOUNDARY,
     JOB_CONTRACTS,
     RETIRED_LEGACY_JOB_CONTRACTS,
     artifact_record,
@@ -18,6 +19,8 @@ from cron_freshness_spine import (
     expected_warning_quiet,
     merged_job_contracts,
     router_lineage,
+    schedule_kind,
+    validate_payload,
 )
 
 
@@ -1008,6 +1011,76 @@ def test_newer_warning_artifact_keeps_review_signal_without_scheduler_escalation
     )
 
 
+def test_contractless_one_shot_at_job_is_exempt_pending() -> None:
+    job = {
+        "id": "c261f6e6-669d-4715-afce-ef625f720068",
+        "name": "Follow-up: Future Session Packet re-check",
+        "enabled": True,
+        "schedule": {"kind": "at", "at": "2026-09-14T14:00:00.000Z"},
+    }
+
+    classified = classify_job(job, None)
+
+    assert classified["status"] == "one_shot_pending"
+    assert classified["signal_class"] == "NO_REPLY"
+    assert classified["attention"] == "quiet_success"
+    assert classified["reason"] == "one_shot_at_job_exempt_from_standing_freshness_contract"
+    assert classified["expected_artifacts"] == []
+
+    string_job = dict(job)
+    string_job["schedule"] = json.dumps({"kind": "at", "at": "2026-09-14T14:00:00.000Z"})
+    assert schedule_kind(job) == "at"
+    assert schedule_kind(string_job) == "at"
+    string_classified = classify_job(string_job, None)
+    assert string_classified["status"] == "one_shot_pending"
+    assert string_classified["signal_class"] == "NO_REPLY"
+
+    payload = {
+        "jobs": [classified],
+        "signals": [],
+        "summary": {},
+        "authority_boundary": dict(AUTHORITY_BOUNDARY),
+    }
+    validation = validate_payload(payload)
+    assert validation["status"] == "ok"
+    assert validation["errors"] == []
+
+
+def test_contractless_one_shot_at_job_failure_still_blocks() -> None:
+    job = {
+        "id": "c261f6e6-669d-4715-afce-ef625f720068",
+        "name": "Follow-up: Future Session Packet re-check",
+        "enabled": True,
+        "schedule": {"kind": "at", "at": "2026-09-14T14:00:00.000Z"},
+        "last_status": "error",
+        "consecutive_errors": 1,
+        "last_error": "command exited with code 1",
+    }
+
+    classified = classify_job(job, None)
+
+    assert classified["status"] == "one_shot_scheduler_error"
+    assert classified["signal_class"] == "BLOCKED"
+    assert classified["attention"] == "requires_main_attention"
+    assert classified["reason"] == "one_shot_job_last_run_failed"
+    assert classified["expected_artifacts"] == []
+
+
+def test_contractless_cron_job_still_unregistered() -> None:
+    job = {
+        "id": "cron-regression-guard",
+        "name": "Cron Regression Guard",
+        "enabled": True,
+        "schedule": {"expr": "0 * * * *", "kind": "cron", "tz": "America/Phoenix"},
+    }
+
+    classified = classify_job(job, None)
+
+    assert classified["status"] == "unregistered"
+    assert classified["signal_class"] == "BLOCKED"
+    assert classified["reason"] == "enabled_job_missing_freshness_contract"
+
+
 if __name__ == "__main__":
     test_quote_first_warning_is_quiet_with_nonfresh_backlog()
     test_quote_first_warning_does_not_quiet_stale_or_critical()
@@ -1026,9 +1099,8 @@ if __name__ == "__main__":
     test_wf78_owner_card_prep_no_rows_ok_no_work_is_not_urgent_blocker()
     test_wf78_owner_card_prep_wf67_blocked_warning_is_not_urgent_blocker()
     test_wf85_undelivered_blocker_stays_urgent()
-    test_wf85_radar_treats_wf85_runner_as_nonblocking_source_context()
-    test_veritas_finance_brief_follows_sync_spine_for_deployment_jobs()
-    test_pm_autonomous_proof_worker_has_freshness_contract()
+    test_retired_wf85_radar_history_keeps_runner_as_nonblocking_source_context()
+    test_retired_pm_autonomous_proof_worker_is_not_active()
     test_file_backed_semantic_memory_contract_registers_active_artifact()
     test_file_backed_alert_chain_contracts_surface_active_proofs()
     test_weekly_os_radar_keeps_cron_control_packet_as_nonblocking_context()
@@ -1036,4 +1108,7 @@ if __name__ == "__main__":
     test_wf78_tier_semantic_lineage_mismatch_blocks_inside_generic_ttl()
     test_newer_clean_artifact_deescalates_failed_scheduler_until_natural_canary()
     test_newer_warning_artifact_keeps_review_signal_without_scheduler_escalation()
+    test_contractless_one_shot_at_job_is_exempt_pending()
+    test_contractless_one_shot_at_job_failure_still_blocks()
+    test_contractless_cron_job_still_unregistered()
     print("cron_freshness_spine_tests_passed")

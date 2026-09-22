@@ -313,6 +313,78 @@ def test_required_missing_input_still_forces_repeated_run() -> None:
         ]
 
 
+def test_retired_tools_absence_does_not_block_valid_manifest() -> None:
+    assert "TOOLS.md" not in gate.STATIC_INPUT_SOURCES
+    assert "TOOLS.md" not in gate.REQUIRED_INPUT_SOURCES
+    with tempfile.TemporaryDirectory() as raw:
+        root = Path(raw)
+        proof = root / "prefilter.json"
+        runner = root / "runner.json"
+        source_paths = ["AGENTS.md"]
+        (root / "AGENTS.md").write_text("active control owner", encoding="utf-8")
+
+        first = gate.build_prefilter_report(
+            root=root,
+            now=NOW,
+            proof_path=proof,
+            runner_path=runner,
+            source_paths=source_paths,
+            required_source_paths=source_paths,
+        )
+        assert first["input_signature"]["required_source_problem_count"] == 0
+        assert not any(record["path"] == "TOOLS.md" for record in first["input_signature"]["sources"])
+        successful_runner(runner)
+        first["status"] = "runner_executed"
+        first["last_success_signature"] = first["input_signature"]["hash"]
+        proof.write_text(json.dumps(first), encoding="utf-8")
+
+        unchanged = gate.build_prefilter_report(
+            root=root,
+            now=NOW + timedelta(minutes=10),
+            proof_path=proof,
+            runner_path=runner,
+            source_paths=source_paths,
+            required_source_paths=source_paths,
+        )
+        assert unchanged["status"] == "skipped_unchanged"
+        assert not unchanged["prefilter"]["force_run_warnings"]
+
+
+def test_missing_agents_md_still_forces_repeated_run() -> None:
+    with tempfile.TemporaryDirectory() as raw:
+        root = Path(raw)
+        proof = root / "prefilter.json"
+        runner = root / "runner.json"
+        source_paths = ["AGENTS.md"]
+
+        first = gate.build_prefilter_report(
+            root=root,
+            now=NOW,
+            proof_path=proof,
+            runner_path=runner,
+            source_paths=source_paths,
+            required_source_paths=source_paths,
+        )
+        successful_runner(runner)
+        first["status"] = "runner_executed"
+        first["last_success_signature"] = first["input_signature"]["hash"]
+        proof.write_text(json.dumps(first), encoding="utf-8")
+
+        repeated = gate.build_prefilter_report(
+            root=root,
+            now=NOW + timedelta(minutes=10),
+            proof_path=proof,
+            runner_path=runner,
+            source_paths=source_paths,
+            required_source_paths=source_paths,
+        )
+        assert repeated["status"] == "run_required"
+        assert repeated["prefilter"]["reason"] == "required_source_missing_force_run_required"
+        assert repeated["prefilter"]["force_run_warnings"] == [
+            "required_source_missing_force_run_required"
+        ]
+
+
 def test_missing_input_forces_run_and_authority_is_review_only() -> None:
     with tempfile.TemporaryDirectory() as raw:
         root = Path(raw)
@@ -529,6 +601,8 @@ def main() -> int:
     test_runner_success_requires_exact_step_counters()
     test_optional_missing_input_is_visible_but_does_not_repeat_run()
     test_required_missing_input_still_forces_repeated_run()
+    test_retired_tools_absence_does_not_block_valid_manifest()
+    test_missing_agents_md_still_forces_repeated_run()
     test_missing_input_forces_run_and_authority_is_review_only()
     test_custom_runner_output_is_forwarded_and_launch_failures_are_structured()
     test_finalize_records_post_run_signature_and_rejects_invalid_output()

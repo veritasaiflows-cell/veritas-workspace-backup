@@ -1,0 +1,80 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "098ca69c-4d89-43d9-b3b7-5ccd72b5ed11",
+  "name": "Runtime - OTEL Collector Metrics Retention",
+  "required": true,
+  "owner_workflow": "Runtime observability hygiene",
+  "freshness_hours": 30,
+  "contract_reason": "tmp/otel-collector/metrics.jsonl had no retention route: otel_log_retention.py defaults cover collector.err.log and collector.out.log only. The file reached 1174.5 MB (39.4% of tmp) and grows at a measured 588 MB/day. The adjacent stderr-log retention contract made the gap easy to miss, so this route is registered with drift checking rather than left implicit.",
+  "description": "Daily local-only retention for tmp/otel-collector/metrics.jsonl. Rotates the live file when it exceeds 256 MB, gzips archives (measured 13.19x on real data), prunes by a 60-day window with a 4096 MB hard budget, and restarts the local loopback collector to release its file handle. Peak live file is ~844 MB at the measured rate; 60-day compressed history is ~2.6 GB. No collector-config mutation, external export, raw content capture, cron/schedule mutation, finance/canon/capital, or execution authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "45 3 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts\\otel_metrics_retention.py",
+      "--restart",
+      "--write",
+      "--validate",
+      "--max-mb",
+      "256",
+      "--keep-days",
+      "60",
+      "--max-total-mb",
+      "4096"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 900
+  },
+  "delivery": {
+    "mode": "none",
+    "bestEffort": true
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "compare_fields": [
+    "name",
+    "description",
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds",
+    "delivery.mode",
+    "failureAlert.after",
+    "failureAlert.mode"
+  ],
+  "expected_artifacts": [
+    "tmp/otel-metrics-retention.json"
+  ],
+  "authority_boundary": {
+    "local_runtime_hygiene_only": true,
+    "cron_contract_only": true,
+    "collector_config_mutation_allowed": false,
+    "collector_restart_allowed_with_flag": true,
+    "external_export_allowed": false,
+    "raw_content_capture_allowed": false,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-09-21T04:40:00Z",
+  "contract_update_reason": "Initial registration after owner-approved retention. Owner approved daily cadence, gzip archives, and a 60-day window after measurement showed the original weekly proposal could not hold target size at 588 MB/day (weekly peak would have been ~4.4 GB). Records the live job as created; adds no scheduler, config, or runtime mutation beyond the approved job itself."
+}

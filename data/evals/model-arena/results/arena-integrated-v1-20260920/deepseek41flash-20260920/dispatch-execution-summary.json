@@ -1,0 +1,36 @@
+{
+  "schema": "veritas.arena_dispatch_execution_summary.v1",
+  "envelope": "arena-integrated-v1-20260920",
+  "mission_id": "arena-integrated-v1-20260920",
+  "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "authorization": "run-scoped owner proceed 2026-09-20; canonical overlay/dispatch-authorization.json left INERT",
+  "dispatch": {
+    "requested_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+    "resolved_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+    "model_applied": true,
+    "fallback_applied": false,
+    "missions": 1,
+    "reps": 1,
+    "retries": 0,
+    "timeout_s": 600,
+    "operational_timeout": false
+  },
+  "outcomes": {
+    "verdict": "pass",
+    "score": 1.0,
+    "fields_correct": 12,
+    "fields_total": 12,
+    "hidden_tests_passed": true,
+    "protected_intact": true,
+    "traps": [],
+    "contaminated": false
+  },
+  "comparability": "arena-integrated-v1 envelope only; not comparable to arena-six or hidden-bank boards",
+  "expansion_implication": "Single-model pass. Discrimination still unmeasured. Keep expand_conditionally. Do not open missions 2/3 until a second model is scored on this frozen instrument.",
+  "routing_effect": "none",
+  "run_dir": "data/evals/model-arena/results/arena-integrated-v1-20260920/deepseek41flash-20260920",
+  "child_session_key": "agent:main:dashboard:ee10a78f-d9e6-41cb-a7ed-562ec13dab23",
+  "run_id": "eea62ef0-b92c-4f7a-9b0f-f202223e847f",
+  "closed_at": "2026-09-20T16:56:22.294525-07:00",
+  "authority": "No routing, configuration, role, or execution authority follows."
+}

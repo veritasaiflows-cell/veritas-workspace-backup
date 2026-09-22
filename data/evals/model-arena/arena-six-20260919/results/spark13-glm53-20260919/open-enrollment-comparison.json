@@ -1,0 +1,461 @@
+{
+  "schema": "veritas.arena_six_open_enrollment_comparison.v1",
+  "envelope_id": "arena-six-20260919",
+  "keys_sha256": "f819f97448cc0c92321c8b824c293cd863a7b1befbb68eedc058c6e6466f9003",
+  "sources": {
+    "incumbent": {
+      "path": "../incumbent-baseline-20260919/graded-results.json",
+      "sha256": "00159753ffd8fc1aa3cf33a2244994883083edc95ee61e87600c62f664128c12"
+    },
+    "grok46": {
+      "path": "../grok46-20260919/graded-results.json",
+      "sha256": "b934212abda7b77c4c8594f44d299906be3948339f94c154b0fa21ec12c17aa7"
+    },
+    "this_run": {
+      "path": "graded-results.json",
+      "sha256": "3daa8e438e1f264c1c1d0e27b817085c69abca98aff84c7dcf93dbbf2031f187"
+    }
+  },
+  "summary": {
+    "glm53flash": {
+      "requested_model": "ollama-cloud/glm-5.3-flash:cloud",
+      "planned_trajectories": 12,
+      "graded_trajectories": 12,
+      "operationally_eligible_trajectories": 11,
+      "strict_trajectory_passes": 8,
+      "factual_trajectory_passes": 8,
+      "factual_eligible_trajectories": 11,
+      "format_trajectory_passes": 11,
+      "format_eligible_trajectories": 11,
+      "tools_trajectory_passes": 11,
+      "tools_eligible_trajectories": 11,
+      "cases": {
+        "T1-settlement-cascade": {
+          "strict_passes": 0,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 0,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T2-event-revert-ambiguity": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T3-evidence-retraction-chain": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T4-multihop-read-recovery": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T5-handoff-authority-control": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T6-induction-and-planning": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 1,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 1,
+          "format_passes": 1,
+          "format_eligible_repetitions": 1,
+          "tools_passes": 1,
+          "tools_eligible_repetitions": 1
+        }
+      }
+    },
+    "deepseek41flash": {
+      "requested_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "planned_trajectories": 12,
+      "graded_trajectories": 12,
+      "operationally_eligible_trajectories": 12,
+      "strict_trajectory_passes": 8,
+      "factual_trajectory_passes": 10,
+      "factual_eligible_trajectories": 12,
+      "format_trajectory_passes": 9,
+      "format_eligible_trajectories": 12,
+      "tools_trajectory_passes": 12,
+      "tools_eligible_trajectories": 12,
+      "cases": {
+        "T1-settlement-cascade": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T2-event-revert-ambiguity": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 1,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T3-evidence-retraction-chain": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T4-multihop-read-recovery": {
+          "strict_passes": 0,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 0,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T5-handoff-authority-control": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T6-induction-and-planning": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        }
+      }
+    },
+    "grok46": {
+      "requested_model": "xai/grok-4.6",
+      "planned_trajectories": 12,
+      "graded_trajectories": 12,
+      "operationally_eligible_trajectories": 12,
+      "strict_trajectory_passes": 9,
+      "factual_trajectory_passes": 10,
+      "factual_eligible_trajectories": 12,
+      "format_trajectory_passes": 11,
+      "format_eligible_trajectories": 12,
+      "tools_trajectory_passes": 12,
+      "tools_eligible_trajectories": 12,
+      "cases": {
+        "T1-settlement-cascade": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T2-event-revert-ambiguity": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T3-evidence-retraction-chain": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T4-multihop-read-recovery": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 1,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T5-handoff-authority-control": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T6-induction-and-planning": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        }
+      }
+    },
+    "spark13": {
+      "requested_model": "meta/muse-spark-1.3-contributor",
+      "planned_trajectories": 12,
+      "graded_trajectories": 12,
+      "operationally_eligible_trajectories": 12,
+      "strict_trajectory_passes": 11,
+      "factual_trajectory_passes": 11,
+      "factual_eligible_trajectories": 12,
+      "format_trajectory_passes": 11,
+      "format_eligible_trajectories": 12,
+      "tools_trajectory_passes": 12,
+      "tools_eligible_trajectories": 12,
+      "cases": {
+        "T1-settlement-cascade": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T2-event-revert-ambiguity": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 1,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T3-evidence-retraction-chain": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T4-multihop-read-recovery": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T5-handoff-authority-control": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T6-induction-and-planning": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        }
+      }
+    },
+    "glm53": {
+      "requested_model": "ollama-cloud/glm-5.3:cloud",
+      "planned_trajectories": 12,
+      "graded_trajectories": 12,
+      "operationally_eligible_trajectories": 11,
+      "strict_trajectory_passes": 7,
+      "factual_trajectory_passes": 7,
+      "factual_eligible_trajectories": 11,
+      "format_trajectory_passes": 9,
+      "format_eligible_trajectories": 11,
+      "tools_trajectory_passes": 11,
+      "tools_eligible_trajectories": 11,
+      "cases": {
+        "T1-settlement-cascade": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T2-event-revert-ambiguity": {
+          "strict_passes": 0,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 0,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 0,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T3-evidence-retraction-chain": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T4-multihop-read-recovery": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T5-handoff-authority-control": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T6-induction-and-planning": {
+          "strict_passes": 0,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 1,
+          "pass_both_repetitions": false,
+          "factual_passes": 0,
+          "factual_eligible_repetitions": 1,
+          "format_passes": 1,
+          "format_eligible_repetitions": 1,
+          "tools_passes": 1,
+          "tools_eligible_repetitions": 1
+        }
+      }
+    }
+  },
+  "source_disposition": {
+    "this_run": "computed by Main from the local result root at acceptance",
+    "incumbent": "copied hash of ../incumbent-baseline-20260919/graded-results.json as recorded at that accepted run; re-verified by Main against the live file",
+    "grok46": "copied hash of ../grok46-20260919/graded-results.json as recorded at that accepted run; re-verified by Main against the live file"
+  }
+}

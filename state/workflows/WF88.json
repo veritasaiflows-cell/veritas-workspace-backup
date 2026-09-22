@@ -24,20 +24,18 @@
     "material_owner_context_required": true
   },
   "blockers": [
-    "Formal Call Log intake is not current for recent finance stances",
-    "Recommendation outcome grading has started, but the graded row count is still an early sample and not a model-performance claim",
-    "WF87 runtime governor is fail-closed and owner-gated; it is not a performance or autonomy claim",
-    "WF67 paper manager remains the execution guardrail and currently surfaces blocked/ready card state only; WF88 may route that state but cannot execute or approve",
-    "Improvement-ledger overdue follow-up debt remains open",
-    "WF88 retrieval proof is split honestly: the 42-case/10-class compatibility corpus measures source-selection contracts, while the 19-case isolated live pilot currently shows zero semantic lift on six paraphrases and exact aggregate parity between semantic+FTS and FTS-only; gold review and separate abstention calibration remain open, so provider promotion is blocked",
-    "The matched frontier spine has 100 frozen source-identical cases and blind scorer aliases, but 0 result rows and 0 trusted execution/output/grader attestations; local labels and unkeyed hashes are integrity-only, so model comparison and route promotion remain blocked until independently attested results and confidence gates pass",
-    "The RSI outcome scorecard is review-only and not mature: current live rows lack enough stable, uniquely correlated later-outcome evidence for a recursive-improvement claim",
-    "Six advanced-capability pilots have official API request templates and isolated runner requirements, including an explicit-cache breakpoint/key/minimum-prefix/two-request usage-measurement contract, but 0 pilot calls have run and 0 promotions are allowed",
-    "Token efficiency scorecard is active and metadata-only; it currently surfaces API-call reduction and prompt-compression candidates but does not authorize cron/model/runtime changes",
-    "Implementation token closeout bridge is active: future lanes can stamp run id/token metadata through concurrent_lane_manager, but historical/current lanes without exposed token counts remain gaps; do not claim cost per implementation lane until gaps are reduced or provider-missing classifications are explicit",
-    "Skill Workshop body-replacement prevention is routed through the existing skill_workshop_body_guard.py surface; do not create duplicate guards for that failure mode",
-    "Database-facing script duplication audit is now partially consolidated; DB sidecar orphan proof and cron retired-job rollback export are review-only",
-    "Deletion approval prep packet is current: the approved disabled-cron delete microbatch has already been applied (6 rows) and approved tmp cleanup already applied 2 files; new destructive approval packets are now 0-ready; script deletion and DB archive/delete remain 0-ready; script refs are explicitly retained migration/route-contract surfaces with 0 exact active blockers and 0 basename-only active reviews; 34 disabled cron rows still have active code/control refs and 11 review refs"
+    "WF88: producer status reports failure (tmp/wf88-os2-control-packet.json status='control_packet_warning_no_apply_authority')",
+    "WF88 control: 1 stale inputs (recommendation_digest); refresh stale proof before claiming green",
+    "WF88 control: 4 blocked/follow-up canonical actions open; clear them first",
+    "WF88 upstream: WF74 live proof blocked (5 actionable); clear WF74 blockers first"
+  ],
+  "claim_limits": [
+    "WF88 control: model-performance claim not allowed on current graded evidence; do not promote providers or models",
+    "WF88 control: frontier spine has 0 result rows; model comparison and route promotion remain blocked",
+    "WF88 control: 0 advanced-pilot calls executed; promotions remain blocked",
+    "WF88 control: RSI outcome evidence not mature; no recursive-improvement claim",
+    "WF88 control: 7 open improvements queued (monitor-only standing included; operational blockers track overdue/follow-up only)",
+    "WF88 control: live retrieval discrimination not proven -- semantic lift unobserved and human gold review incomplete (tmp/retrieval-live-eval.json); provider promotion blocked (claim limit, not broken operation)"
   ],
   "stop_lines": [
     "Learning, evaluation, routing, and proposal output only. No retired finance producer, canon apply, schedule/runtime mutation, account, order, execution, external delivery, or owner-approval inference."
@@ -53,7 +51,8 @@
     "tmp/retrieval-quality-scorecard.json",
     "tmp/wf88-decision-compiler.json",
     "tmp/rsi-outcome-scorecard.json",
-    "tmp/cron-control-packet.json"
+    "tmp/cron-control-packet.json",
+    "tmp/wf88-route-contraction-packet.json"
   ],
   "validator_commands": [
     "python scripts\\wf88_wiki_synthesis_packet.py --write --write-md --write-wiki --validate",
@@ -63,6 +62,7 @@
     "python scripts\\wf88_decision_compiler.py --write --write-md --validate",
     "python scripts\\rsi_outcome_scorecard.py --write --write-md --validate",
     "python scripts\\wf88_os2_control_packet.py --write --write-md --validate",
+    "python scripts\\wf88_route_contraction_packet.py --write --write-md --validate",
     "python scripts\\workflow_router.py WF88 --answer all --write-capsules --validate"
   ],
   "default_resume_command": null,

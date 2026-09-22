@@ -117,7 +117,8 @@ def seed_workspace(root: Path, module) -> None:
         "routes": [
             {
                 "workflow_id": "WF87",
-                "primary_route_artifact": "tmp/wf87-paper-autonomy-runtime-governor.json",
+                "primary_route_artifact": None,
+                "effective_status_override": "on_hold",
                 "secondary_artifacts": [],
             },
             {
@@ -212,8 +213,37 @@ def test_retirement_plan_cannot_treat_historical_snapshots_as_current_replacemen
     assert "retired_answer_packet_family_has_no_active_writer_or_current_replacement" in error_names
 
 
+def test_markers_match_current_source_architecture() -> None:
+    module = load_module()
+    here_root = Path(__file__).resolve().parents[1]
+    for file_path, markers in module.EXPECTED_MARKERS.items():
+        text = (here_root / file_path).read_text(encoding="utf-8", errors="replace")
+        for marker in markers:
+            assert marker in text, (file_path, marker)
+    flat = [marker for markers in module.EXPECTED_MARKERS.values() for marker in markers]
+    for stale in ("WORKFLOW_FRONT_DOORS", "human_context_artifacts_to_open", "WF87 - Paper Autonomy Runtime Governor", "tmp/wf87-paper-autonomy-runtime-governor.json"):
+        assert stale not in flat, stale
+
+
+def test_stale_paper_governor_wf87_shape_fails_retired_invariant() -> None:
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        seed_workspace(Path(tmpdir), module)
+        index = json.loads(module.ROUTING_INDEX.read_text(encoding="utf-8"))
+        for row in index["routes"]:
+            if row.get("workflow_id") == "WF87":
+                row["primary_route_artifact"] = "tmp/wf87-paper-autonomy-runtime-governor.json"
+                row.pop("effective_status_override", None)
+        write_json(module.ROUTING_INDEX, index)
+        packet = module.build_packet()
+        assert packet["validation"]["status"] == "blocked"
+        assert "route_invariant_failed:wf87_retired_no_operational_route" in packet["validation"]["errors"]
+
+
 if __name__ == "__main__":
     test_route_contraction_packet_never_grants_destructive_authority()
     test_ticker_answer_packet_is_deterministic_zero_write_tombstone()
     test_retirement_plan_cannot_treat_historical_snapshots_as_current_replacement()
+    test_markers_match_current_source_architecture()
+    test_stale_paper_governor_wf87_shape_fails_retired_invariant()
     print("wf88 route contraction packet tests passed")

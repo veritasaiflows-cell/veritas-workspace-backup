@@ -17,12 +17,12 @@ Apply this order before spawning or implementing:
 
 1. `model_free_command` — use when an explicit deterministic command and proof are both available. Model is null; thinking is `none`.
 2. `codex_native_subagent` — opt-in only for bounded read-only work that is neither code implementation nor independent QA; use Terra low.
-3. `main` — use explicitly configured Astra for integration, acceptance, and authority-sensitive judgment; Sol is Main's backup. Main does not author implementation code or substitute for independent QA.
-4. `persistent_isolated_agent` — resolve stable IDs through `scripts/agent_fleet_policy.py` and the router: Opportunity Intelligence/Grok 4.6, Engineering QA/GLM 5.3, Finance Evidence/Terra, Finance Risk Challenger/GLM 5.3, Engineering Builder/Muse Spark 1.3 Contributor, Knowledge and Continuity/Luna. Require fresh strict agent-matched transport proof; writes additionally require scoped-writeback proof.
+3. `main` — use explicitly configured Sol for integration, acceptance, and authority-sensitive judgment; Ollama Cloud GLM 5.3 is the last-resort chain entry. Main does not author implementation code or substitute for independent QA.
+4. `persistent_isolated_agent` — resolve stable IDs, exact primaries and closed recovery lists only through `scripts/agent_fleet_policy.py`, live config and the router; never hardcode an older role map in a spawn prompt. The accepted six-family baseline at `data/evals/model-arena/arena-six-20260919/results/incumbent-baseline-20260919/main-acceptance.json` records DeepSeek 4.1 Flash as the stronger overall supervised-agent candidate and GLM 5.3 Flash as the stronger exact-format/tool specialist; this is role-rationale evidence, not automatic promotion or config authority. Require fresh strict agent-matched transport proof; writes additionally require scoped-writeback proof.
 
-Keep IDs/workspace/auth/history stable; use display names in prose. Specialist automatic fallbacks stay empty. The shared policy owns closed recovery lists. Main may select one listed backup only in a NEW clean-context attempt from a verified checkpoint, preserving role/scope and reacquiring model/runtime/transport/lease proof when changed or stale. Review cannot use the patch-author model. Options and structural checks prove no readiness or dispatch/write authority. Unproven recovery stays blocked; never silently substitute Main.
+Keep IDs/workspace/auth/history stable; use display names in prose. Specialist automatic fallbacks stay empty. The shared policy owns closed recovery lists. Build production spawn arguments only through `sessions_spawn_dispatch_contract`; require policy primary and live config to match before dispatch, and verify the actual model receipt at closeout. Main may select one listed backup only in a NEW clean-context attempt from a verified checkpoint, preserving role/scope and reacquiring model/runtime/transport/lease proof when changed or stale. Review cannot use the patch-author model. Options and structural checks prove no readiness or dispatch/write authority. Unproven recovery stays blocked; never silently substitute Main.
 
-Main alone may dispatch Sol architecture or Opus 5 advisory work on demand. Opus is never a persistent primary or automatic/recovery fallback. For Opus 5, keep the canonical ref `anthropic/claude-opus-5`, pin a dedicated session, and wait until live runtime is `claude-cli` before the role's work. Do not isolated-spawn Opus 5 from an Astra/Codex parent, pass `runtime: claude-cli` to `sessions_spawn`, or use a `claude-cli/` model prefix. Verify actual model/runtime per task; aliases are not provenance. Command-backed deterministic work stays model-free.
+Main alone may dispatch Opus 5 advisory work on demand. Opus is never a persistent primary or a specialist automatic fallback. Grok 4.6 remains an approved Main-selected recovery candidate for several specialist roles, and is never an automatic fallback. For Opus 5, keep the canonical ref `anthropic/claude-opus-5`, pin a dedicated session, and wait until live runtime is `claude-cli` before the role's work. Do not isolated-spawn Opus 5 from an Astra/Codex parent, pass `runtime: claude-cli` to `sessions_spawn`, or use a `claude-cli/` model prefix. Verify actual model/runtime per task; aliases are not provenance. Command-backed deterministic work stays model-free.
 
 ## Route Eligibility
 
@@ -32,7 +32,7 @@ Relevant command and proof must both be explicit. A declaration does not prove c
 
 ### Codex-native
 
-Codex-native must be explicitly allowed and bounded read-only. Code implementation belongs to Muse Builder, including one-file fixes; independent QA belongs to GLM 5.3. Multi-file writes, broad work, sensitive authority, and ambiguous scope are ineligible. Deterministic commands may verify artifacts but do not grant code-authoring, acceptance, or unattended-repair authority.
+Codex-native must be explicitly allowed and bounded read-only. Code implementation belongs to Muse Spark 1.3 Contributor, including one-file fixes; independent QA belongs to GLM 5.3. Multi-file writes, broad work, sensitive authority, and ambiguous scope are ineligible. Deterministic commands may verify artifacts but do not grant code-authoring, acceptance, or unattended-repair authority.
 
 The requested and actual backend/model/thinking must be captured. Native rollout provenance must remain `codex_native_subagent`; a later update cannot relabel it.
 
@@ -42,7 +42,7 @@ Require both an explicit readiness expectation and a workspace-relative strict J
 
 ### Main exception
 
-Main is not the default broad implementation lane. Record why Main is the smallest reliable route. Main/Astra owns final integration and authority-sensitive judgment; Muse authors implementation code and GLM 5.3 performs independent QA. A helper blockage does not authorize silent fallback to Main or model substitution.
+Main is not the default broad implementation lane. Record why Main is the smallest reliable route. Main/Sol owns final integration and authority-sensitive judgment; Muse Spark 1.3 Contributor authors implementation code and GLM 5.3 performs independent QA. A helper blockage does not authorize silent fallback to Main or model substitution.
 
 ### Owner-directed same-session model roles
 

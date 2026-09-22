@@ -1,0 +1,794 @@
+{
+  "schema_version": 2,
+  "artifact_type": "wf77_ticker_intelligence_card",
+  "generated_at_utc": "2026-09-19T04:37:23Z",
+  "ticker": "DG",
+  "review_only": true,
+  "instrument_type": "equity",
+  "universe_metadata": {
+    "active": true,
+    "authority_boundary": {
+      "capital_or_order_authority": false,
+      "execution_allowed": false,
+      "maintains_account_or_capital_state": false,
+      "owner_approval_inferred": false,
+      "posture": "alerts_and_non_executing_recommendations_universe_registry",
+      "review_only": true,
+      "writes_finance_canon": false
+    },
+    "coverage_reason": {
+      "alert_evidence_route": "guarded_sql_and_source_open",
+      "fundamental_row_present": true,
+      "wf77_current_coverage": true
+    },
+    "data_requirements": {
+      "analyst_consensus": "weekly_required",
+      "authority_guardrails": "required",
+      "fundamentals": "weekly_required",
+      "official_evidence": "source_open_required",
+      "price_band_stop": "daily_required",
+      "risk_register": "required",
+      "technical_posture": "daily_required"
+    },
+    "decision_grade_eligible": false,
+    "demotion_triggers": [
+      "breaks_stop_or_invalidation",
+      "source_freshness_or_validator_status_blocks_claims",
+      "thesis_evidence_deteriorates_or_conflicts_with_canon",
+      "owner_demotes_or_removes_from_active_monitoring"
+    ],
+    "industry": "Consumer Staples Merchandise Retail",
+    "instrument_type": "operating_company",
+    "mirrored_at_utc": "2026-08-30T02:09:23Z",
+    "monitoring_cadence": {
+      "analyst": "weekly",
+      "fundamentals": "weekly",
+      "official_evidence": "event_driven_source_open",
+      "price_technical": "daily"
+    },
+    "monitoring_role": "tier_c_review_monitor_breadth_only",
+    "name": "Dollar General",
+    "pilot_scope": false,
+    "production_scope": false,
+    "promotion_required_before_action": true,
+    "promotion_triggers": [
+      "enters_or_reclaims_written_entry_band",
+      "fresh_official_or_fundamental_catalyst_improves_thesis",
+      "technical_relative_strength_or_sector_leadership_improves",
+      "owner_promotes_from_monitor_to_decision_queue"
+    ],
+    "sector": "Consumer Staples",
+    "source_artifact_path": "data/finance/universe-v1.json",
+    "source_artifact_sha256": "90e2db4b0fa355278a38a19df15d8f00d0d62fec89e5b9416da25dada46a0d49",
+    "source_open_required": true,
+    "source_symbols": {
+      "yfinance": "DG",
+      "sec_cik": "29534",
+      "company_ir": null
+    },
+    "ticker": "DG",
+    "tier": "C",
+    "universe_scope": "review_100_monitor",
+    "coverage_obligation_tier": "C",
+    "sql_tier": "Tier C",
+    "sql_tier_state": "sql_first_wait_for_routing",
+    "tier_decision_scope": "tier_c_sql_first_review_scope",
+    "review_100_monitor": true,
+    "identity_scope_tier_authority_source": "state/finance/finance-canon.sqlite:universe_membership"
+  },
+  "durable_sql_canon_state": {
+    "ticker": "DG",
+    "name": "Dollar General",
+    "instrument_type": "operating_company",
+    "sector": "Consumer Staples",
+    "industry": "Consumer Staples Merchandise Retail",
+    "universe_scope": "review_100_monitor",
+    "legacy_tier": "C",
+    "legacy_production_42": false,
+    "production_scope_member": false,
+    "production_scope_source": null,
+    "tier_ab_decision_scope": null,
+    "compatibility_reason": null,
+    "sql_tier": "Tier C",
+    "sql_tier_state": "sql_first_wait_for_routing",
+    "tier_decision_scope": "tier_c_sql_first_review_scope",
+    "auto_tier": null,
+    "auto_state": null,
+    "answer_scope": "alert_recommendation_review",
+    "production_card_generation_allowed": false,
+    "has_production_card": false,
+    "provider_status": null
+  },
+  "wf78_auto_tier_routing": {
+    "ticker": "DG",
+    "name": "Dollar General",
+    "sector": "Consumer Staples",
+    "instrument_type": "operating_company",
+    "asset_class": "equity",
+    "instrument_class": "operating_company",
+    "exposure_type": "single_company_equity",
+    "review_lane": "equity_depth",
+    "deployment_role": "company_specific_growth_quality_income_or_turnaround",
+    "opportunity_tier": "Tier C",
+    "lane_tier": "Tier C Equity",
+    "lane_tier_label": "Tier C Equity",
+    "tier_seeded_from_legacy_label": false,
+    "legacy_monitoring_role": "tier_c_review_monitor_breadth_only",
+    "auto_tier": "Tier C",
+    "auto_state": "sql_first_wait_for_routing",
+    "route_reason": "default_breadth_monitor",
+    "route_priority": 50,
+    "data_confidence_rating": null,
+    "fundamentals_confidence": null,
+    "tier_a_confidence_status": null,
+    "tier_a_confidence_promotion_effect": null,
+    "tier_a_confidence_source": null,
+    "critical_data_conflict_count": null,
+    "tier_a_packet_freshness_status": null,
+    "tier_a_packet_stale_reasons": [],
+    "tier_a_packet_age_hours": null,
+    "tier_a_packet_quote_age_hours": null,
+    "tier_a_packet_ttl_hours": null,
+    "tier_a_packet_quote_ttl_hours": null,
+    "phase2_validated_tier_b": false,
+    "tier_c_attention_score": null,
+    "tier_c_attention_next_action": null,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "requires_separate_capital_or_execution_approval": true,
+    "would_mutate_universe": false,
+    "tier_decision_scope": "tier_c_sql_first_review_scope",
+    "monitoring_role": "tier_c_review_monitor_breadth_only",
+    "decision_grade_eligible": false,
+    "source_open_required": true,
+    "promotion_required_before_action": true,
+    "identity_scope_tier_authority_source": "state/finance/finance-canon.sqlite:universe_membership"
+  },
+  "latest_known_price": null,
+  "price_band_stop": {
+    "latest_known_price": null,
+    "price_source": null,
+    "entry_band_low": null,
+    "entry_band_high": null,
+    "stop_or_invalidation": null,
+    "band_status": null,
+    "band_source": null,
+    "stop_source": null,
+    "fresh_quote_required": false,
+    "staleness_note": null,
+    "reference_band_refresh_required": false,
+    "sql_canon_reference": null
+  },
+  "entry_stop_reference_metadata": {
+    "schema_version": "wf72_entry_stop_reference_metadata.v1",
+    "status": "fallback_required",
+    "ticker": "DG",
+    "authority_boundary": "wf72_entry_stop_reference_metadata_exact_key_gated_no_execution_authority",
+    "sql_cache_path": "state/finance/finance-canon.sqlite",
+    "sql_read_mode": "sqlite_uri_mode_ro",
+    "approved_row_family": "durable_finance_canon_reference_level_compatibility_projection",
+    "approved_fields": [
+      "reference_price_low",
+      "reference_price_high",
+      "reference_invalidation_level",
+      "reference_level_source_timestamp",
+      "reference_level_source_sha256",
+      "reference_level_owner_source_path"
+    ],
+    "row_keys": [],
+    "values": {},
+    "source_lineage": {
+      "owner_source_path": null,
+      "source_timestamp": null,
+      "source_sha256": null
+    },
+    "source_rows": [],
+    "missing_fields": [
+      "reference_price_low",
+      "reference_price_high",
+      "reference_invalidation_level",
+      "reference_level_source_timestamp",
+      "reference_level_source_sha256",
+      "reference_level_owner_source_path"
+    ],
+    "issues": [
+      "durable_reference_record_missing"
+    ],
+    "notes": [
+      "Reference metadata only; does not replace price_band_stop fallback values.",
+      "No recommendation, deployment/action state, approval, portfolio mutation, or execution authority."
+    ],
+    "display_reference_only": true,
+    "fallback_required": true,
+    "recommendation_allowed": false,
+    "deployment_or_action_state_change_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "markdown_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "proposal_apply_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "paper_trade_authority_allowed": false,
+    "live_trade_authority_allowed": false,
+    "money_movement_allowed": false
+  },
+  "thesis_bull_bear_entry_context": {
+    "status": "synthesized_review_only_source_backed",
+    "thesis": "Dollar General has a review-only synthesized Tier A thesis from local sourced artifacts: revenue YoY 3.36%, EPS YoY 12.36%, FCF YoY -34.45%. Entry posture is unknown band status; 2 evidence/freshness gaps still require review before decision-grade use.",
+    "bull_case_inputs": [
+      "latest_earnings_performance",
+      "key_financial_metrics",
+      "official_capture_developments_orders_backlog",
+      "current_sector_performance",
+      "technical_posture"
+    ],
+    "bear_case_inputs": [
+      "risk_register",
+      "missing_or_stale_evidence",
+      "valuation",
+      "price_band_stop"
+    ],
+    "entry_context": {
+      "latest_known_price": null,
+      "price_source": null,
+      "entry_band_low": null,
+      "entry_band_high": null,
+      "stop_or_invalidation": null,
+      "band_status": null,
+      "band_source": null,
+      "stop_source": null,
+      "fresh_quote_required": false,
+      "staleness_note": null,
+      "reference_band_refresh_required": false,
+      "sql_canon_reference": null
+    },
+    "synthesis_evidence": [
+      {
+        "label": "fundamental_snapshot",
+        "summary": "revenue YoY 3.36%, EPS YoY 12.36%, FCF YoY -34.45%",
+        "source_artifact": "tmp\\fundamental-metrics-current.json",
+        "period_end": "2026-04-30",
+        "source_tier": "aggregator_secondary"
+      },
+      {
+        "label": "sector_proxy_context",
+        "summary": "Consumer Staples via XLP versus SPY; leadership=deteriorating",
+        "source_artifact": "tmp\\sector-expansion-board.json",
+        "as_of": "2026-08-28",
+        "match_basis": "exact"
+      }
+    ],
+    "source_open_required": true,
+    "limits": [
+      "Review-only synthesis generated from existing local sourced artifacts.",
+      "This does not clear owner approval, capital deployment, paper/live execution, or final recommendation authority."
+    ]
+  },
+  "latest_earnings_performance": {
+    "status": "available",
+    "period_type": "quarterly",
+    "period_end": "2026-04-30",
+    "comparison_period_end": "2025-04-30",
+    "revenue": 10786965000.0,
+    "revenue_yoy_pct": 3.36,
+    "net_income": 444127000.0,
+    "net_income_yoy_pct": 13.32,
+    "diluted_eps": 2.0,
+    "eps_yoy_pct": 12.36,
+    "free_cash_flow": 364583000.0,
+    "free_cash_flow_yoy_pct": -34.45,
+    "official_adjusted_eps": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "official_growth_bridge": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "official_guidance": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "management_explanation": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "period_alignment": {
+      "status": "aligned",
+      "latest_official_period_end": null,
+      "normalized_metrics_period_end": "2026-04-30",
+      "normalized_metrics_stale": false,
+      "source_url": null,
+      "withheld_fields": []
+    },
+    "source_open_required": true
+  },
+  "key_financial_metrics": {
+    "status": "available",
+    "period_end": "2026-04-30",
+    "growth": {
+      "revenue_yoy_pct": 3.36,
+      "net_income_yoy_pct": 13.32,
+      "eps_yoy_pct": 12.36,
+      "free_cash_flow_yoy_pct": -34.45
+    },
+    "profitability": {
+      "gross_margin_pct": 31.62,
+      "operating_margin_pct": 5.92,
+      "net_margin_pct": 4.12,
+      "roic_proxy_pct": 8.66
+    },
+    "cash_flow": {
+      "operating_cash_flow": 716188000.0,
+      "free_cash_flow": 364583000.0,
+      "fcf_per_share": 1.6455,
+      "fcf_yield_pct": 1.34
+    },
+    "balance_sheet": {
+      "cash_and_equivalents": 1353113000.0,
+      "total_debt": 15798401000.0,
+      "net_debt": 14445288000.0,
+      "debt_to_annualized_ebitda": 4.34
+    },
+    "valuation": {
+      "market_cap": 27111597188.45,
+      "enterprise_value": 41955598336.0,
+      "trailing_pe": 15.96,
+      "forward_pe": 15.02,
+      "price_to_sales": 0.62,
+      "price_to_book": 3.07,
+      "ev_to_ebitda_proxy": 11.53,
+      "ev_to_fcf_proxy": 28.77,
+      "earnings_yield_pct": 1.64
+    },
+    "capital_returns": {
+      "buyback_yield_pct": null,
+      "dividend_yield_pct": 0.48,
+      "shareholder_yield_pct": 0.48,
+      "capital_return_to_fcf_pct": 35.7
+    },
+    "data_quality": "clean",
+    "period_alignment": {
+      "status": "aligned",
+      "latest_official_period_end": null,
+      "normalized_metrics_period_end": "2026-04-30",
+      "normalized_metrics_stale": false,
+      "source_url": null,
+      "withheld_fields": []
+    },
+    "source_open_required": true
+  },
+  "valuation": {
+    "valuation_context": "available",
+    "market_cap": 27111597188.45,
+    "enterprise_value": 41955598336.0,
+    "trailing_pe": 15.96,
+    "forward_pe": 15.02,
+    "fcf_yield_pct": 1.34,
+    "earnings_yield_pct": 1.64,
+    "price_to_sales": 0.62,
+    "price_to_book": 3.07,
+    "ev_to_ebitda_proxy": 11.53,
+    "ev_to_fcf_proxy": 28.77
+  },
+  "official_fundamentals": {
+    "source": "yfinance",
+    "source_tier": "aggregator_secondary",
+    "period_type": "quarterly",
+    "period_end": "2026-04-30",
+    "comparison_period_end": "2025-04-30",
+    "revenue": 10786965000.0,
+    "revenue_yoy_pct": 3.36,
+    "net_income": 444127000.0,
+    "net_income_yoy_pct": 13.32,
+    "diluted_eps": 2.0,
+    "eps_yoy_pct": 12.36,
+    "gross_margin_pct": 31.62,
+    "operating_margin_pct": 5.92,
+    "net_margin_pct": 4.12,
+    "operating_cash_flow": 716188000.0,
+    "free_cash_flow": 364583000.0,
+    "free_cash_flow_yoy_pct": -34.45,
+    "fcf_per_share": 1.6455,
+    "fcf_per_share_yoy_pct": -34.88,
+    "cash_and_equivalents": 1353113000.0,
+    "total_debt": 15798401000.0,
+    "net_debt": 14445288000.0,
+    "debt_to_annualized_ebitda": 4.34,
+    "roic_proxy_pct": 8.66,
+    "data_quality": "clean"
+  },
+  "fundamental_period_alignment": {
+    "status": "aligned",
+    "latest_official_period_end": null,
+    "normalized_metrics_period_end": "2026-04-30",
+    "normalized_metrics_stale": false,
+    "source_url": null,
+    "withheld_fields": []
+  },
+  "fundamental_reconciliation": {
+    "sec_status": "matched_via_period_alias",
+    "sec_source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000029534.json",
+    "company_ir_status": "manual_required",
+    "company_ir_source_url": null,
+    "quality_notes": [],
+    "period_alignment": {
+      "status": "aligned",
+      "latest_official_period_end": null,
+      "normalized_metrics_period_end": "2026-04-30",
+      "normalized_metrics_stale": false,
+      "source_url": null,
+      "withheld_fields": []
+    }
+  },
+  "analyst_consensus_ratings_targets": {
+    "source_status": "unavailable",
+    "as_of": null,
+    "source_lineage": {},
+    "cross_check_conflict": "unavailable"
+  },
+  "competitive_moat": {
+    "status": "partially_structured_source_backed_review_required",
+    "summary": "Dollar General has preliminary moat evidence from profitability, official operating commentary, demand/activity signals, or sector proxy context; this is not a final competitive-position conclusion.",
+    "evidence": [
+      {
+        "label": "profitability_quality",
+        "summary": "operating margin 5.92%, net margin 4.12%, ROIC proxy 8.66%",
+        "source_artifact": "tmp\\fundamental-metrics-current.json",
+        "period_end": "2026-04-30",
+        "source_tier": "aggregator_secondary"
+      },
+      {
+        "label": "sector_proxy_position",
+        "summary": "Consumer Staples proxy XLP leadership=deteriorating",
+        "source_artifact": "tmp\\sector-expansion-board.json",
+        "as_of": "2026-08-28",
+        "match_basis": "exact"
+      }
+    ],
+    "source_open_required": true,
+    "limits": [
+      "Evidence supports structured review coverage, not a final moat grade.",
+      "Peer comparison and source-open competitive research remain required before decision-grade use."
+    ]
+  },
+  "recent_developments": {
+    "status": "missing_manual_required",
+    "value": null,
+    "source_url": null,
+    "source_section": null,
+    "manual_capture_required": true,
+    "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+  },
+  "orders_backlog_book_to_bill": {
+    "status": "missing_manual_required",
+    "value": null,
+    "source_url": null,
+    "source_section": null,
+    "manual_capture_required": true,
+    "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+  },
+  "official_capture_developments_orders_backlog": {
+    "management_explanation": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "acquisition_debt_notes": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "orders_backlog": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "source_open_required": true
+  },
+  "current_sector_performance": {
+    "status": "available",
+    "sector": "Consumer Staples",
+    "sector_query": "Consumer Staples",
+    "sector_match_basis": "exact",
+    "sector_proxy_ticker": "XLP",
+    "as_of": "2026-08-28",
+    "relative_strength_vs_spy": {
+      "1d": 0.6618,
+      "5d": -1.1021,
+      "20d": -2.5175
+    },
+    "sector_returns_pct": {
+      "1d": 0.4349,
+      "5d": -0.628,
+      "20d": 0.4703
+    },
+    "spy_returns_pct": {
+      "1d": -0.2269,
+      "5d": 0.4741,
+      "20d": 2.9878
+    },
+    "relative_labels": {
+      "1d": "outperforming",
+      "5d": "underperforming",
+      "20d": "underperforming"
+    },
+    "leadership_status": "deteriorating",
+    "portfolio_exposure": {
+      "draft_weight_pct": 0,
+      "tickers": [],
+      "status": "unrepresented"
+    },
+    "underexposed": true,
+    "owner_gated_next_review_action": "Underexposed/unrepresented: monitor for quality candidates and require explicit promotion review before any lane change."
+  },
+  "etf_or_macro_proxy_profile": null,
+  "catalyst_earnings_state": {
+    "workflow_state": "tier_c_review_monitor_breadth_only",
+    "surface_state": null,
+    "days_to_earnings": null,
+    "earnings_date_confirmed": null,
+    "last_earnings_date": null,
+    "post_earnings_review_confirmed": null
+  },
+  "technical_posture": {
+    "band_status": null,
+    "latest_close": null,
+    "ma20": null,
+    "ma50": null,
+    "ma200": null,
+    "ma_posture": null,
+    "above_ma20": null,
+    "above_ma50": null,
+    "above_ma200": null,
+    "data_date": null,
+    "deployment_surface_state": null,
+    "macro_gate": null,
+    "near_earnings_caution": null,
+    "why": null
+  },
+  "portfolio_fit_concentration": {
+    "sector": "Consumer Staples",
+    "wf78_tier": "C",
+    "sql_canon_legacy_tier": "C",
+    "sql_canon_universe_scope": "review_100_monitor",
+    "sql_canon_production_answer_path_member": false,
+    "wf78_auto_tier": "Tier C",
+    "wf78_auto_state": "sql_first_wait_for_routing",
+    "wf78_monitoring_role": "tier_c_review_monitor_breadth_only",
+    "wf78_decision_grade_eligible": false,
+    "wf78_promotion_required_before_action": true,
+    "coverage_tier": "C",
+    "portfolio_role": "tier_c_review_monitor_breadth_only",
+    "coverage_lane": "review_100_monitor",
+    "readiness_tier": null,
+    "recommended_starter_notional": null,
+    "recommended_target_notional": null,
+    "decision_note": null,
+    "prepared_order_card_path": null
+  },
+  "capital_allocation_quality": {
+    "quality": "caution",
+    "anomalies": [
+      {
+        "code": "eps_fcf_per_share_divergence",
+        "severity": "warning",
+        "message": "EPS grew while FCF/share declined materially; earnings quality needs review."
+      },
+      {
+        "code": "leverage_elevated",
+        "severity": "warning",
+        "message": "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context."
+      }
+    ],
+    "notes": [
+      "EPS grew while FCF/share declined materially; earnings quality needs review.",
+      "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context."
+    ]
+  },
+  "risk_register": [
+    {
+      "category": "capital_allocation",
+      "severity": "warning",
+      "detail": "EPS grew while FCF/share declined materially; earnings quality needs review."
+    },
+    {
+      "category": "capital_allocation",
+      "severity": "warning",
+      "detail": "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context."
+    },
+    {
+      "category": "evidence_gap",
+      "severity": "context",
+      "detail": "Ticker not present in current deployment-readiness surface groups",
+      "family": "deployment_readiness_surface"
+    },
+    {
+      "category": "evidence_gap",
+      "severity": "context",
+      "detail": "Analyst evidence is lineage-only and cannot affect completeness, confidence, bands, invalidation, thesis, or recommendation posture.",
+      "family": "analyst_consensus_ratings_targets"
+    }
+  ],
+  "recommendation_support": {
+    "posture": "watch only",
+    "posture_key": "watch_only",
+    "deployment_contract": {
+      "deployment_status": "WATCH",
+      "status_reason": "watch_research_needed",
+      "display_label": "watch / research needed",
+      "raw_context": {
+        "workflow_state": null,
+        "machine_state": null,
+        "action_state": null,
+        "surface_state": null,
+        "base_surface_state": null,
+        "band_status": null,
+        "below_stop": false
+      },
+      "authority": {
+        "review_only": true,
+        "paper_order_execution_allowed": false,
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false
+      }
+    },
+    "support_level": "review_context_only",
+    "state_source": null,
+    "readiness_state_source": null,
+    "deployment_surface_state_source": null,
+    "band_status": null,
+    "fresh_quote_required": false,
+    "prepared_order_card_present": false,
+    "actionability": "review_only_owner_gated",
+    "blockers_or_gates": [
+      "card itself grants no paper/live execution authority and infers no approval"
+    ],
+    "notes": [
+      "This is recommendation support, not a black-box buy/sell engine.",
+      "Open source artifacts before final readiness, recommendation, approval, or action claims."
+    ]
+  },
+  "missing_or_stale_evidence": [
+    {
+      "family": "deployment_readiness_surface",
+      "severity": "context",
+      "status": "missing",
+      "detail": "Ticker not present in current deployment-readiness surface groups"
+    },
+    {
+      "family": "analyst_consensus_ratings_targets",
+      "severity": "context",
+      "status": "analyst_quarantined",
+      "detail": "Analyst evidence is lineage-only and cannot affect completeness, confidence, bands, invalidation, thesis, or recommendation posture."
+    }
+  ],
+  "source_artifacts": [
+    {
+      "path": "tmp\\fundamental-metrics-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T20:20:09Z",
+      "status": null
+    },
+    {
+      "path": "tmp\\deployment-readiness-surface.json",
+      "exists": false,
+      "generated_at_utc": null,
+      "status": null
+    },
+    {
+      "path": "tmp\\position-sizing-readiness-current.json",
+      "exists": false,
+      "generated_at_utc": null,
+      "status": null
+    },
+    {
+      "path": "tmp\\analyst-consensus-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-09-14T22:30:04Z",
+      "status": "placeholder_manual_required"
+    },
+    {
+      "path": "tmp\\official-earnings-bridge.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T20:28:47Z",
+      "status": "manual_confirmed_partial"
+    },
+    {
+      "path": "tmp\\sector-expansion-board.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T21:05:19Z",
+      "status": "degraded"
+    },
+    {
+      "path": "tmp\\technical-refresh.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T21:43:58.075260+00:00",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\portfolio-config.json",
+      "exists": false,
+      "generated_at_utc": null,
+      "status": null
+    },
+    {
+      "path": "tmp\\post-close-final-quote-ledger.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T21:43:49Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\finance-decision-sync-spine.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T13:25:27Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\wf78-capital-review-queue.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T13:24:42Z",
+      "status": "ok"
+    },
+    {
+      "path": "data\\finance\\universe-v1.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-30T02:00:25Z",
+      "status": "wf78_tier_c_scaleout_monitor_ready"
+    },
+    {
+      "path": "tmp\\wf78-auto-tier-routing.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T21:43:51Z",
+      "status": "ok"
+    },
+    {
+      "path": "state\\finance\\finance-canon.sqlite",
+      "exists": true,
+      "generated_at_utc": null,
+      "status": "ok"
+    }
+  ],
+  "authority_boundary": {
+    "artifact_role": "derived_review_and_question_routing_surface_only",
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "sizing_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed_by_card": false,
+    "paper_order_cancel_allowed_by_card": false,
+    "durable_sql_canon_current_state_allowed": true,
+    "sql_canon_mutation_allowed": false,
+    "live_trade_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "source_open_required_before_final_recommendation_or_action_claim": true
+  }
+}

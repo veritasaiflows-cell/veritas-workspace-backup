@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "C:\\Users\\Veritas\\.openclaw\\tmp\\agent-cli\\openclaw.CMD",
+    "agent",
+    "--agent",
+    "qa-redteam",
+    "--session-key",
+    "agent:qa-redteam:arena6-glm53-T2-event-revert-ambiguity-r1-20260919",
+    "--model",
+    "ollama-cloud/glm-5.3:cloud",
+    "--message-file",
+    "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\model-arena\\arena-six-20260919\\prompts\\T2-event-revert-ambiguity-turn3.txt",
+    "--thinking",
+    "high",
+    "--timeout",
+    "600",
+    "--json"
+  ],
+  "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace"
+}

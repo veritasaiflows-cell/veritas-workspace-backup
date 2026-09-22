@@ -1,0 +1,7 @@
+{
+  "payload": "data/payload-a.json",
+  "replicas": [
+    "data/replica-a.json",
+    "data/replica-b.json"
+  ]
+}

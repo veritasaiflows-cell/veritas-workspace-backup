@@ -50,7 +50,7 @@ UNSUPPORTED_MODEL_ROUTES = {
         "status": "unsupported_legacy",
         "active_route_countable": False,
         "reason": "Fable is no longer a supported model route; retain historical rows for audit only.",
-        "replacement_guidance": "Use openai/gpt-5.5 for main/high-stakes synthesis or an approved bounded helper route.",
+        "replacement_guidance": "Use openai/gpt-5.6-sol for main/high-stakes synthesis or an approved bounded helper route.",
     },
 }
 

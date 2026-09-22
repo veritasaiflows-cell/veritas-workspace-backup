@@ -162,7 +162,9 @@ class SemanticMemoryMaintenanceTests(unittest.TestCase):
         )
         with mock.patch.object(maintenance, "safe_validate", return_value=({"status": "ok", "errors": [], "warnings": []}, None)):
             code, payload = maintenance.run_maintenance(max_seconds=30, batch_size=8, write=True)
-        self.assertEqual(code, 1)
+        # Exit reflects primary-cache health; the detection-only overlay stays
+        # visible as payload attention for review routing.
+        self.assertEqual(code, 0)
         self.assertEqual(payload["status"], "attention")
         self.assertEqual(payload["runtime_patch"]["reason"], "approved_runtime_patch_missing_or_replaced")
 
@@ -172,7 +174,9 @@ class SemanticMemoryMaintenanceTests(unittest.TestCase):
         self.assertEqual(Path(state["path"]), self.runtime_tools_source)
         self.assertTrue(state["non_session_fast_path_guard_before_visibility"])
 
-    def test_missing_non_session_fast_path_marker_is_attention(self) -> None:
+    def test_fast_path_guard_shape_verifies_without_legacy_label(self) -> None:
+        # Behavior over marker strings: the legacy SKIP label is absent but the
+        # guard still precedes visibility setup, so the behavior verifies.
         self.runtime_tools_source.write_text(
             "async function filterMemorySearchHitsBySessionVisibility(params) { "
             "MEMORY_SEARCH_ALL_MEMORY_INIT_TIMEOUT_MS memory corpus unavailable in corpus=all "
@@ -182,11 +186,8 @@ class SemanticMemoryMaintenanceTests(unittest.TestCase):
             encoding="utf-8",
         )
         state = maintenance.runtime_patch_state()
-        self.assertEqual(state["status"], "attention")
-        self.assertEqual(
-            state["missing_markers"],
-            ["MEMORY_SEARCH_SKIP_SESSION_VISIBILITY_FOR_NON_SESSION_HITS"],
-        )
+        self.assertEqual(state["status"], "ok")
+        self.assertEqual(state["behavior_proof"]["non_session_fast_path_guard"], "upstream_native")
 
     def test_non_session_fast_path_guard_must_precede_visibility_setup(self) -> None:
         self.runtime_tools_source.write_text(
@@ -202,6 +203,86 @@ class SemanticMemoryMaintenanceTests(unittest.TestCase):
         self.assertEqual(state["status"], "attention")
         self.assertFalse(state["non_session_fast_path_guard_before_visibility"])
         self.assertEqual(state["missing_markers"], ["MEMORY_SEARCH_NON_SESSION_FAST_PATH_GUARD"])
+
+    def write_upstream_native_layout(self, *, guard_before_visibility: bool = True) -> Path:
+        """Stage a 2026.9.2-style split-chunk runtime: upstream markers in the
+        tools chunk, non-session fast-path guard in the visibility chunk."""
+        tools_source = maintenance.RUNTIME_DIST_DIR / "tools-upstream-hash.js"
+        tools_source.write_text(
+            'import { t as filterMemorySearchHitsBySessionVisibility } from "./session-search-visibility-upstream-hash.js"; '
+            "const controller = new AbortController(); "
+            "composeMemoryCorpusMetadata mergeMemorySearchCorpusResults attemptMemoryCorpus "
+            "runMemoryCorpusDeadline runMemorySearchWithDeadline "
+            "function createMemorySearchTool() {}",
+            encoding="utf-8",
+        )
+        self.runtime_loader.write_text(
+            'const loadMemoryToolsModule = createLazyRuntimeModule(() => import("../../tools-upstream-hash.js"));',
+            encoding="utf-8",
+        )
+        visibility_source = maintenance.RUNTIME_DIST_DIR / "session-search-visibility-upstream-hash.js"
+        guard = (
+            'if (!params.hits.some((hit) => hit.source === "sessions"))'
+            ' return params.conversationRecall?.corpus === "sessions" ? [] : params.hits; '
+        )
+        visibility_setup = "const visibility = resolveEffectiveSessionToolsVisibility({}); "
+        body = guard + visibility_setup if guard_before_visibility else visibility_setup + guard
+        visibility_source.write_text(
+            "async function filterMemorySearchHitsBySessionVisibility(params) { " + body
+            + "function unused() {}",
+            encoding="utf-8",
+        )
+        return tools_source
+
+    def test_upstream_native_chunk_layout_is_ok(self) -> None:
+        tools_source = self.write_upstream_native_layout()
+        state = maintenance.runtime_patch_state()
+        self.assertEqual(state["status"], "ok")
+        self.assertEqual(Path(state["path"]), tools_source)
+        self.assertEqual(
+            state["behavior_proof"],
+            {
+                "corpus_all_partial_result_tolerance": "upstream_native",
+                "abort_deadline_enforcement": "upstream_native",
+                "non_session_fast_path_guard": "upstream_native",
+            },
+        )
+        self.assertTrue(state["non_session_fast_path_guard_before_visibility"])
+        self.assertEqual(
+            Path(state["visibility_chunk"]),
+            maintenance.RUNTIME_DIST_DIR / "session-search-visibility-upstream-hash.js",
+        )
+
+    def test_upstream_native_guard_must_precede_visibility_setup(self) -> None:
+        self.write_upstream_native_layout(guard_before_visibility=False)
+        state = maintenance.runtime_patch_state()
+        self.assertEqual(state["status"], "attention")
+        self.assertFalse(state["non_session_fast_path_guard_before_visibility"])
+        self.assertEqual(state["missing_markers"], ["MEMORY_SEARCH_NON_SESSION_FAST_PATH_GUARD"])
+
+    def test_partial_upstream_tolerance_is_attention(self) -> None:
+        tools_source = maintenance.RUNTIME_DIST_DIR / "tools-partial-hash.js"
+        tools_source.write_text(
+            'import { t as filterMemorySearchHitsBySessionVisibility } from "./session-search-visibility-partial-hash.js"; '
+            "const controller = new AbortController(); "
+            "composeMemoryCorpusMetadata runMemoryCorpusDeadline "
+            "function createMemorySearchTool() {}",
+            encoding="utf-8",
+        )
+        self.runtime_loader.write_text(
+            'const loadMemoryToolsModule = createLazyRuntimeModule(() => import("../../tools-partial-hash.js"));',
+            encoding="utf-8",
+        )
+        (maintenance.RUNTIME_DIST_DIR / "session-search-visibility-partial-hash.js").write_text(
+            "async function filterMemorySearchHitsBySessionVisibility(params) { "
+            'if (!params.hits.some((hit) => hit.source === "sessions")) return params.hits; '
+            "const visibility = resolveEffectiveSessionToolsVisibility({}); ",
+            encoding="utf-8",
+        )
+        state = maintenance.runtime_patch_state()
+        self.assertEqual(state["status"], "attention")
+        self.assertEqual(state["missing_markers"], ["CORPUS_ALL_PARTIAL_RESULT_TOLERANCE"])
+        self.assertEqual(state["behavior_proof"]["abort_deadline_enforcement"], "upstream_native")
 
     def test_stale_patched_chunk_does_not_mask_active_unpatched_chunk(self) -> None:
         active_source = maintenance.RUNTIME_DIST_DIR / "tools-active-hash.js"

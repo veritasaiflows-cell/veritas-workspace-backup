@@ -35,8 +35,9 @@ def main() -> int:
     ):
         expect(boundary.get(flag) is False, f"boundary must stay false: {flag}", errors)
     policy = payload.get("policy", {})
-    expect(policy.get("openai/gpt-5.6-luna") == "low for proven deterministic agentTurn cron/status/proof jobs", "Luna policy should be low and deterministic-only", errors)
-    expect(policy.get("openai/gpt-5.6-terra") == "medium for reasoning or tool-heavy cron helpers", "Terra cron-helper policy should be medium", errors)
+    expect(policy.get("ollama-cloud/glm-5.3-flash:cloud") == "low for proven deterministic agentTurn cron/status/proof jobs", "GLM 5.3 Flash policy should be low and deterministic-only", errors)
+    expect(policy.get("ollama-cloud/glm-5.3:cloud") == "medium for reasoning or tool-heavy cron helpers", "GLM 5.3 cron-helper policy should be medium", errors)
+    expect(not any(key.startswith("openai/") for key in policy), "cron cadence policy must carry no OpenAI routes", errors)
     expect(payload.get("summary", {}).get("live_job_count", 0) > 0, "expected live jobs", errors)
     expect(isinstance(payload.get("effort_patches"), list), "effort patches should be a list", errors)
     expect(isinstance(payload.get("non_agent_jobs_to_preserve"), list), "non-agent preservation list missing", errors)

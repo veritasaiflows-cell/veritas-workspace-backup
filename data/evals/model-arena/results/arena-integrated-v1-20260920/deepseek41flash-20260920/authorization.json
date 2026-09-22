@@ -1,0 +1,19 @@
+{
+  "schema": "veritas.arena_dispatch_authorization.v1",
+  "envelope": "arena-integrated-v1-20260920",
+  "mission_id": "arena-integrated-v1-20260920",
+  "mission_version": "arena-integrated-v1-20260920-r1",
+  "dispatch_ready": true,
+  "authorized_by": "gateway-owner",
+  "authorized_at": "2026-09-20T16:52:35.080769-07:00",
+  "note": "Run-scoped owner release for DeepSeek 4.1 Flash integrated-mission canary only. Canonical overlay/dispatch-authorization.json left INERT. No routing/config change.",
+  "scope": {
+    "models": [
+      "ollama-cloud/deepseek-v4.1-flash:cloud"
+    ],
+    "missions": 1,
+    "reps": 1,
+    "retries": 0,
+    "timeout_s": 600
+  }
+}

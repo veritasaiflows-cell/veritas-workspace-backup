@@ -1,0 +1,61 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "57a8288e-ff3c-416f-b79c-ef4dc0b24e49",
+  "declarationKey": "finance-conditional-g7-cutover-handoff-20260914",
+  "name": "Finance conditional G7 cutover handoff",
+  "required": true,
+  "owner_workflow": "Phase 3 G7 recurring cutover and G8 observation declaration",
+  "contract_reason": "One-shot owner-authorized conditional gate executor for the Phase 3 G7 payload cutover and G8 observation declaration. Randall authorized the conditional sequence on 2026-09-12 (Path A disposition recorded in the gate packet). This contract registers the enabled one-shot for freshness governance only; the binding execution contract is tmp/phase3-main-only-20260905/g7-g8-monday-cutover-and-baseline-renewal-gate-20260912.json, and the job makes no scheduler change unless the market-hours G6 receipt passes exactly. The dated G7/G8 result packet path is chosen at run time and is therefore not predeclared as a blocking artifact.",
+  "description": "After the no-send Monday market-hours proof, conditionally apply the approved recurring payload cutover and declare the observation window; otherwise preserve the blocker with no mutation.",
+  "enabled": true,
+  "deleteAfterRun": true,
+  "schedule": {
+    "kind": "at",
+    "at": "2026-09-14T13:55:00.000Z"
+  },
+  "sessionTarget": "main",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "systemEvent",
+    "text": "Finance Phase 3 conditional handoff. Read tmp/phase3-main-only-20260905/g7-g8-monday-cutover-and-baseline-renewal-gate-20260912.json and tmp/phase3-main-only-20260905/g6-market-open-20260914/receipt.json. Randall explicitly authorized this conditional sequence: ONLY if receipt.status=completed, child_status=completed, market_hours_errors=[], and rollback.verified=true, first re-read the four named live jobs/contracts, snapshot exact before payloads/config revisions and contract bytes to a dated rollback record, then change ONLY payload.argv for job IDs 63512442-b4cf-4c9c-a704-158e6bc36a9b, 47b3a105-b0c7-4f34-b93b-3db1da1b22c5, 58fc5f27-4cc1-470f-8af5-eba29327a0d5, and 1d3355fd-a322-455e-a3e9-19393652c837 to the per-window template. Preserve schedule/timezone/enabled/target/delivery/timeout/unrelated jobs; do not modify analyst job 95da55c1-5288-4aab-972e-b730ad140c55. Update only corresponding four contract argv, then validate. A global control error blocks cutover only if it is new or tied to a named finance target; retain but do not repair/clear these pre-existing unrelated exceptions: missing `memory-dreaming-promotion` live job, unregistered `runtime-heartbeat-1315-check`, and heartbeat-main timeout P1. Write a dated G7/G8 result declaring the observation window and restart rules. G7 result packet must record the 2026-09-12 owner disposition: Path A four-job cutover accepted with analyst job unchanged-by-design, and session-boundary defect fix deferred to post-G9 per the same disposition. No --send, external delivery, finance-canon, capital, account, or execution action. If any gate fails, make no mutation and write a blocked result."
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.text"
+  ],
+  "expected_artifacts": [
+    {
+      "path": "tmp/phase3-main-only-20260905/g7-g8-monday-cutover-and-baseline-renewal-gate-20260912.json",
+      "role": "g7_g8_gate_contract_input",
+      "required": false,
+      "blocking": false
+    },
+    {
+      "path": "tmp/phase3-main-only-20260905/g6-market-open-20260914/receipt.json",
+      "role": "g6_market_open_precondition_not_yet_due_until_run",
+      "required": false,
+      "blocking": false
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "conditional_g7_payload_cutover_only_per_gate_packet": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "external_delivery_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-09-12T21:55:00Z",
+  "contract_update_reason": "Registration-only contract for the owner-armed conditional one-shot; no scheduler, payload, schedule, or authority change. Cutover authority lives in the gate packet and Randall's 2026-09-12 authorization, not in this file. Deviation note: delivery compare_fields omitted because the live job carries no delivery block after the 2026-09-12 payload-text update; a delivery restore attempt did not persist (configRevision unchanged). Consequence is bounded to completion routing of the run result into the owning internal dashboard session; the no-external-delivery authority is enforced by the payload text itself (No --send, no external delivery) and the internal webchat/main route. Escalate to owner before any attempt to re-pin delivery on the armed job."
+}

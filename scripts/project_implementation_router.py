@@ -24,12 +24,17 @@ from typing import Any
 
 import agent_fleet_policy as fleet_policy
 import long_work_packet_linter
+import main_model_selection as main_model_selection
 import measurement_cohort_transport_binding as measurement_binding
 from market_data_utils import atomic_write_json, load_json_artifact
 try:
     import task_scoped_model_role_contract as task_role_contract
 except ImportError:  # Contract module absent: default routes unchanged.
     task_role_contract = None  # type: ignore[assignment]
+try:
+    import wf89_task_qa_exception as wf89_task_qa_exception
+except ImportError:  # WF89 QA exception helper absent: default QA gate unchanged.
+    wf89_task_qa_exception = None  # type: ignore[assignment]
 from lib.terminal_outcome import contract_block as terminal_outcome_contract_block
 
 
@@ -70,14 +75,17 @@ VALIDATION_BUDGETS = {"micro", "narrow", "shared", "major"}
 WRITE_MODES = {"read_only", "leased", "distinct_output"}
 EXECUTION_BACKENDS = {"model_free_command", "persistent_isolated_agent", "codex_native_subagent", "main"}
 THINKING_LEVELS = {"none", "low", "medium", "high"}
-TERRA_MODEL = "openai/gpt-5.6-terra"
-MAIN_MODEL = "openai/gpt-6-astra"
-SOL_MODEL = "openai/gpt-5.6-sol"
-LUNA_MODEL = "openai/gpt-5.6-luna"
-BUILDER_MODEL = "meta/muse-spark-1.3-contributor"
-QA_MODEL = "ollama-cloud/glm-5.3:cloud"
+# Codex-native runs on the OpenAI Codex backend. Terra stays retired for
+# persistent/native lanes (see LEGACY_DENIED_MODELS): no fresh capability proof
+# exists, so the lane fails closed at inspect_native_dispatch_proof rather than
+# silently rerouting.
+NATIVE_MODEL = "openai/gpt-5.6-terra"
+MAIN_MODEL = fleet_policy.MAIN_PRIMARY
+BUILDER_MODEL = fleet_policy.BUILDER_MODEL
+QA_MODEL = fleet_policy.GLM_MODEL
 GROK_MODEL = fleet_policy.GROK_MODEL
-DOCS_MODEL = fleet_policy.LUNA_MODEL
+RESEARCH_MODEL = fleet_policy.SPECIALIST_PRIMARY["research-scout"]
+DOCS_MODEL = fleet_policy.SPECIALIST_PRIMARY["docs-continuity-editor"]
 PERSISTENT_AGENT_MODELS = dict(fleet_policy.SPECIALIST_PRIMARY)
 # Approved FLEET-ALIGNMENT-20260905: six-role primaries are owned by
 # agent_fleet_policy (required import; missing module fails closed).
@@ -122,7 +130,7 @@ EFFICIENCY_POLICY = {
         {
             "execution_backend": "codex_native_subagent",
             "when": "explicitly opted in, narrowly eligible bounded non-QA read-only review, and backed by a fresh capability proof for model, thinking, backend, and fork controls",
-            "expected_model_path": TERRA_MODEL,
+            "expected_model_path": NATIVE_MODEL,
             "expected_thinking": "low_or_medium",
             "fresh_dispatch_capability_proof_required": True,
             "required_fork_policy": "none",
@@ -809,7 +817,10 @@ def text_list(value: Any) -> list[str]:
 
 
 def live_configured_agent_model(agent_id: str) -> str | None:
-    """Live keyed primary model for one agent. A present `agents.entries` key is authoritative: a non-dict entries value, or a missing/malformed agent/model entry, fails closed with no fleet-default fallback, so a matching default never proves Main ownership. Legacy defaults apply only when the entries key is absent."""
+    """Live keyed primary model for one agent. The Main agent resolves through the shared narrow owner (main_model_selection); every other agent keeps the original path and gates below untouched."""
+    if agent_id == "main":
+        return main_model_selection.resolve_configured(PERSISTENT_TRANSPORT_CONFIG_PATH).get("model")
+
     def _primary(value: Any) -> str | None:
         if isinstance(value, str):
             return value.strip() or None
@@ -2218,7 +2229,7 @@ def inspect_native_dispatch_proof(proof_reference: str | None) -> dict[str, Any]
     model_paths = payload.get("model_paths")
     thinking_levels = payload.get("thinking_levels")
     fork_policies = payload.get("fork_policies")
-    if model_paths != [TERRA_MODEL]:
+    if model_paths != [NATIVE_MODEL]:
         result["code"] = "native_dispatch_model_capability_missing"
         return result
     if not isinstance(thinking_levels, list) or not {"low", "medium"} <= set(thinking_levels) or set(thinking_levels) - {"low", "medium", "high"}:
@@ -2253,7 +2264,7 @@ def inspect_native_dispatch_proof(proof_reference: str | None) -> dict[str, Any]
         "reference": relative,
         "observed_at_utc": payload["observed_at_utc"],
         "execution_backend": "codex_native_subagent",
-        "model_paths": [TERRA_MODEL],
+        "model_paths": [NATIVE_MODEL],
         "thinking_levels": sorted(thinking_levels),
         "fork_policies": ["none"],
         "capabilities": {name: True for name in sorted(required_capabilities)},
@@ -2287,7 +2298,7 @@ def select_execution_route(
 
     The ordering is deliberate: a fully explicit deterministic command/proof
     contract is model-free; a deliberately requested cheap native contract is
-    narrowly eligible; Main uses its configured Astra route; all remaining
+    narrowly eligible; Main uses its configured primary route; all remaining
     helper work uses the selected persistent agent's exact role-bound model.
     A blocked helper never becomes Main and no route may silently substitute
     another role's model.
@@ -2355,7 +2366,7 @@ def select_execution_route(
     if native_eligible:
         return {
             "execution_backend": "codex_native_subagent",
-            "expected_model_path": TERRA_MODEL,
+            "expected_model_path": NATIVE_MODEL,
             "expected_thinking": "medium" if native_one_file_eligible else "low",
             "context_budget": "isolated" if native_one_file_eligible else "light",
             "route_reason": "explicit_cheaper_one_file_implementation_contract" if native_one_file_eligible else "explicit_cheaper_read_only_review_contract",
@@ -2533,7 +2544,7 @@ def default_model_route(execution_route: dict[str, Any]) -> dict[str, Any]:
                 else "Deterministic work uses no model."
             )
             if backend != "main"
-            else "Astra is the configured Main route for bounded fixes, final integration, and authority-sensitive judgment."
+            else "Main uses its resolved configured or session-selected model for bounded fixes, final integration, and authority-sensitive judgment."
         ),
         "main_model_exception": execution_route.get("main_model_exception"),
     }
@@ -2564,6 +2575,7 @@ def sessions_spawn_dispatch_contract(
     expected_model = str(route.get("expected_model_path") or "").strip()
     expected_thinking = str(route.get("expected_thinking") or "").strip()
     proof_check = as_dict(route.get("persistent_transport_proof_check"))
+    live_configured_model = live_configured_agent_model(normalized_agent)
     blockers: list[str] = []
 
     if route.get("execution_backend") != "persistent_isolated_agent":
@@ -2582,6 +2594,10 @@ def sessions_spawn_dispatch_contract(
         blockers.append("persistent_agent_id_unconfigured")
     if expected_model != PERSISTENT_AGENT_MODELS.get(normalized_agent):
         blockers.append("persistent_agent_model_mismatch")
+    if not live_configured_model:
+        blockers.append("persistent_live_config_model_missing")
+    elif live_configured_model != PERSISTENT_AGENT_MODELS.get(normalized_agent):
+        blockers.append("persistent_live_config_model_mismatch")
     if expected_thinking not in {"low", "medium", "high"}:
         blockers.append("explicit_helper_thinking_missing_or_invalid")
     if re.fullmatch(r"[a-z][a-z0-9_-]{0,95}", normalized_task_name) is None:
@@ -2606,6 +2622,7 @@ def sessions_spawn_dispatch_contract(
         "thinking": expected_thinking or None,
         "context": "isolated",
         "light_context": True,
+        "live_configured_model": live_configured_model or None,
     }
     ready = not blockers
     spawn_args: dict[str, Any] = {}
@@ -2807,22 +2824,22 @@ def validate_project(project: dict[str, Any], *, stage: str = "preflight") -> di
             finding("critical", "model_free_route_invalid", "Model-free routes must not declare a model or model effort.")
     elif not isinstance(expected_model_path, str) or not expected_model_path.strip():
         finding("critical", "expected_model_path_missing", "Model-backed routes require an expected model path.")
-    if execution_backend != "main" and expected_model_path in (MAIN_MODEL, SOL_MODEL):
-        finding("critical", "implicit_sol_helper_route", "Astra/Sol may be used only by an explicit Main route.")
-    if execution_backend == "main" and expected_model_path != MAIN_MODEL:
-        finding("critical", "main_model_invalid", "Main routes must use the configured Astra model.")
+    # Persistent routes carry their own agent-model and live-model equality checks
+    # below, and Main's model is now also a specialist primary, so this guard only
+    # covers the backends that have no agent-scoped cross-check.
+    if execution_backend == "codex_native_subagent" and expected_model_path == MAIN_MODEL:
+        finding("critical", "implicit_main_helper_route", "The Main model may be used only by an explicit Main route.")
     if execution_backend == "main":
-        live_main_model = live_configured_agent_model("main")
-        if live_main_model is None:
-            finding("critical", "main_live_model_unreadable", "The live Main model could not be read from OpenClaw configuration.")
-        elif expected_model_path != live_main_model:
+        for _selection_finding in main_model_selection.validate_main_route(
+            model_route, PERSISTENT_TRANSPORT_CONFIG_PATH
+        ):
             finding(
-                "critical",
-                "main_live_model_mismatch",
-                "The routed Main model must equal the live configured Main model.",
-                expected_model_path=expected_model_path,
-                live_model_path=live_main_model,
+                _selection_finding["severity"],
+                _selection_finding["code"],
+                _selection_finding["message"],
+                **_selection_finding.get("detail", {}),
             )
+
 
     policy = as_dict(project.get("execution_route_policy"))
     binding_reference_any_route = str(policy.get("measurement_cohort_binding") or "").strip()
@@ -2859,12 +2876,18 @@ def validate_project(project: dict[str, Any], *, stage: str = "preflight") -> di
         finding("critical", "main_only_reason_invalid", "Main-only routing requires final-integration or authority-sensitive reason.")
     main_exception = as_dict(policy.get("main_model_exception"))
     if main_exception:
-        finding("critical", "deprecated_main_sol_exception", "Astra is the configured Main default; exception metadata is no longer accepted.")
+        finding("critical", "deprecated_main_sol_exception", "Main uses its configured primary model; exception metadata is no longer accepted.")
     if str(model_route.get("deprecated_main_terra_approval_ref") or "").strip():
-        finding("critical", "deprecated_main_terra_approval_ref", "The Terra approval-reference flag is deprecated; Main uses Astra.")
+        finding("critical", "deprecated_main_terra_approval_ref", "The Terra approval-reference flag is deprecated; Terra is retired.")
     if execution_backend == "persistent_isolated_agent":
         if classification.get("task_shape") == "qa" and expected_model_path != QA_MODEL:
-            finding("critical", "qa_route_requires_glm", "Declared QA routes require the independent GLM QA model.")
+            _wf89_exception = (
+                wf89_task_qa_exception.wf89_task_qa_exception_applies(project, root=ROOT)
+                if wf89_task_qa_exception is not None
+                else {"applies": False}
+            )
+            if not _wf89_exception.get("applies"):
+                finding("critical", "qa_route_requires_glm", "Declared QA routes require the independent GLM QA model.")
         persistent_agent_id = str(policy.get("persistent_agent_id") or "")
         live_persistent_model = live_configured_agent_model(persistent_agent_id)
         if expected_model_path != PERSISTENT_AGENT_MODELS.get(persistent_agent_id):
@@ -3359,7 +3382,18 @@ def build_project(args: argparse.Namespace) -> dict[str, Any]:
         validation_budget=validation_budget,
         measurement_cohort_binding=getattr(args, "measurement_cohort_binding", None),
     )
+    if execution_route.get("execution_backend") == "main":
+        _main_selection = main_model_selection.resolve_effective(
+            PERSISTENT_TRANSPORT_CONFIG_PATH,
+            session_key=getattr(args, "main_session_key", None),
+            session_id=getattr(args, "main_session_id", None),
+        )
+        execution_route["expected_model_path"] = _main_selection.get("effective", {}).get("model")
     model_route = default_model_route(execution_route)
+    if execution_route.get("execution_backend") == "main":
+        model_route["model_selection"] = _main_selection
+        model_route["caller_model_claim_ignored"] = bool(getattr(args, "model", None))
+
     model_route["caller_route_override"] = {
         "model_path": args.model if args.model is not None else None,
         "thinking": getattr(args, "expected_thinking", None),
@@ -3533,11 +3567,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--allow-codex-native", action="store_true")
     parser.add_argument("--native-dispatch-proof", help="Fresh strict proof that native spawn exposes explicit model, thinking, backend, and fork controls.")
     parser.add_argument("--main-only-reason")
-    parser.add_argument("--main-sol-use-case", choices=sorted(MAIN_SOL_USE_CASES), help="Deprecated compatibility flag. Main now uses Astra by default.")
-    parser.add_argument("--main-sol-reason", help="Deprecated compatibility flag. Main now uses Astra by default.")
+    parser.add_argument("--main-sol-use-case", choices=sorted(MAIN_SOL_USE_CASES), help="Deprecated compatibility flag. Main now uses its configured primary by default.")
+    parser.add_argument("--main-sol-reason", help="Deprecated compatibility flag. Main now uses its configured primary by default.")
     parser.add_argument(
         "--main-terra-approval-ref",
-        help="Deprecated compatibility flag. Main now uses Astra; model changes require a separately approved configuration update.",
+        help="Deprecated compatibility flag. Terra is retired; model changes require a separately approved configuration update.",
     )
     parser.add_argument("--persistent-transport-ready", action="store_true", help="Caller expectation that a persistent specialist transport is ready; a verified proof is still required.")
     parser.add_argument("--persistent-transport-proof", help="Workspace-relative JSON capability proof for the selected persistent specialist.")
@@ -3577,6 +3611,8 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Mark Main acceptance; Docs routing also requires --main-verified and --proof-artifact.",
     )
+    parser.add_argument("--main-session-key", default=None, help="Fixed-DB Main session key; valid only together with --main-session-id. Never authorizes a model pin by itself.")
+    parser.add_argument("--main-session-id", default=None, help="Current window session id bound to --main-session-key; read read-only from the fixed session database.")
     parser.add_argument("--packet-stage", choices=("preflight", "spawn", "closeout"), default="preflight")
     parser.add_argument("--out", type=Path)
     parser.add_argument("--example", action="store_true")
@@ -3588,9 +3624,9 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     if args.main_terra_approval_ref:
-        raise SystemExit("--main-terra-approval-ref is deprecated; Main now uses Astra.")
+        raise SystemExit("--main-terra-approval-ref is deprecated; Terra is retired.")
     if args.main_sol_use_case or args.main_sol_reason:
-        raise SystemExit("--main-sol-use-case and --main-sol-reason are deprecated because Main now uses Astra by default.")
+        raise SystemExit("--main-sol-use-case and --main-sol-reason are deprecated because Sol is retired.")
     if args.example:
         args.title = args.title or DEFAULT_TITLE
         args.description = args.description or DEFAULT_DESCRIPTION

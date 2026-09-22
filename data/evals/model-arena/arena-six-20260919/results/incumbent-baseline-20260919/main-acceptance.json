@@ -1,0 +1,28 @@
+{
+  "schema": "veritas.arena_six_main_acceptance.v1",
+  "accepted_utc": "2026-09-19T23:00:31.136032Z",
+  "verdict": "accepted_with_limits",
+  "models": [
+    "ollama-cloud/glm-5.3-flash:cloud",
+    "ollama-cloud/deepseek-v4.1-flash:cloud"
+  ],
+  "result": "Both 8/12 strict; DeepSeek stronger overall on factual and operational performance; GLM stronger on exact format and bounded tool discipline.",
+  "routing_effect": "none; no automatic promotion or config change",
+  "recommended_use": "DeepSeek as the stronger supervised reasoning/planning candidate; GLM Flash as a narrow format/tool-discipline specialist or recovery option.",
+  "evidence": [
+    "report.md",
+    "graded-results.json",
+    "matrix-index.json",
+    "matrix-index-adjudicated.json",
+    "t4-tool-traces.json",
+    "operational-adjudication.json",
+    "independent-qa-review.json",
+    "validation.json",
+    "evidence-manifest.json"
+  ],
+  "limits": [
+    "600-second budget enforced by a CLI deadline that returned at 631.176 seconds",
+    "independent QA did not recompute every raw-file hash",
+    "two repetitions per family are not a reliability estimate"
+  ]
+}

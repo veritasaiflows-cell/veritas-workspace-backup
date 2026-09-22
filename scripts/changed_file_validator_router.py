@@ -185,11 +185,9 @@ def classify_path(path: str) -> list[dict[str, Any]]:
         recs.append(command("python scripts\\cron_contract_validator.py --require-contracts --fail-on-drift --write --validate", "narrow", "cron intended-contract drift route changed"))
         recs.append(command("python scripts\\cron_control_packet.py --write --validate", "narrow", "cron contract changes should preserve cron control visibility"))
     if p in {
-        "scripts/market_state_refresh.py",
         "scripts/market_today_answer_packet.py",
         "scripts/test_market_today_answer_packet.py",
     }:
-        recs.append(command("python scripts\\market_state_refresh.py", "shared", "market-state broad-index/rates contract changed"))
         recs.append(command("python scripts\\market_today_answer_packet.py --write --validate", "shared", "market-day answer packet contract changed"))
         recs.append(command("python scripts\\test_market_today_answer_packet.py", "narrow", "market-day answer packet regression may drift"))
         recs.append(command("python scripts\\post_close_control_digest.py --write --validate", "shared", "post-close digest consumes market-day answer packet"))

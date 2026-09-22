@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -76,6 +77,62 @@ def test_compare_contract_reports_prompt_bloat() -> None:
     contract = {"name": "Ops - Sample", "payload": {"message": "x" * 10}}
     result = ccv.compare_contract(contract, job, max_prompt_chars=5)
     assert result["status"] == "ok"
+    assert result["prompt_bloat"][0]["source"] == "expected"
+
+
+def test_system_owned_declaration_detection() -> None:
+    assert ccv.is_system_owned_declaration("skill-collection-review:main") is True
+    assert ccv.is_system_owned_declaration("skill-collection-review-main") is True
+    assert ccv.is_system_owned_declaration("heartbeat:main") is True
+    assert ccv.is_system_owned_declaration("Ops - Sample") is False
+    assert ccv.is_system_owned_declaration(None) is False
+
+
+def test_system_projected_prompt_uses_named_allowance_not_workspace_budget() -> None:
+    """A runtime-projected monitor prompt over the workspace budget must not
+    register as bloat, and the effective budget must stay reported."""
+    prompt = "y" * 3199
+    job = sample_job()
+    job["name"] = "skill-collection-review-main"
+    job["declarationKey"] = "skill-collection-review:main"
+    job["payload"]["message"] = prompt
+    contract = {
+        "name": "skill-collection-review-main",
+        "declarationKey": "skill-collection-review:main",
+        "payload": {"message": prompt},
+    }
+    result = ccv.compare_contract(contract, job)
+    assert result["prompt_bloat"] == []
+    assert result["prompt_budget"]["system_owned_declaration"] is True
+    assert result["prompt_budget"]["max_prompt_chars"] == ccv.SYSTEM_PROJECTED_MAX_PROMPT_CHARS
+    assert result["prompt_budget"]["workspace_default_max_prompt_chars"] == ccv.DEFAULT_MAX_PROMPT_CHARS
+    assert result["prompt_shape"]["expected"]["over_char_budget"] is False
+
+
+def test_workspace_prompt_keeps_default_budget() -> None:
+    """The allowance must stay scoped to platform-projected declarations."""
+    prompt = "y" * 3199
+    job = sample_job()
+    job["payload"]["message"] = prompt
+    contract = {"name": "Ops - Sample", "payload": {"message": prompt}}
+    result = ccv.compare_contract(contract, job)
+    assert result["prompt_bloat"][0]["source"] == "expected"
+    assert result["prompt_budget"]["system_owned_declaration"] is False
+    assert result["prompt_budget"]["max_prompt_chars"] == ccv.DEFAULT_MAX_PROMPT_CHARS
+
+
+def test_system_projected_prompt_still_flags_true_oversize() -> None:
+    """The larger allowance is a budget, not an exemption: a genuinely
+    oversized projected prompt must still surface as bloat."""
+    prompt = "z" * (ccv.SYSTEM_PROJECTED_MAX_PROMPT_CHARS + 1)
+    job = sample_job()
+    job["declarationKey"] = "skill-collection-review:main"
+    job["payload"]["message"] = prompt
+    contract = {
+        "declarationKey": "skill-collection-review:main",
+        "payload": {"message": prompt},
+    }
+    result = ccv.compare_contract(contract, job)
     assert result["prompt_bloat"][0]["source"] == "expected"
 
 
@@ -161,6 +218,54 @@ def test_object_expected_artifact_path_is_normalized_and_metadata_preserved() ->
         assert empty_object in result["missing_expected_artifacts"]
 
 
+def past_utc_iso(hours: float) -> str:
+    return (datetime.now(timezone.utc) + timedelta(hours=hours)).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def test_completed_one_shot_past_due_delete_after_run() -> None:
+    contract = {
+        "name": "Finance - Monday Market Hours G6 Proof",
+        "schedule": {"kind": "at", "at": past_utc_iso(-2)},
+        "deleteAfterRun": True,
+    }
+    result = ccv.compare_contract(contract, None)
+    assert result["status"] == "completed_one_shot"
+    assert result["severity"] == "info"
+    assert result["drift"] == []
+    assert result["scheduled_at_utc"] == contract["schedule"]["at"]
+
+
+def test_future_one_shot_delete_after_run_stays_missing() -> None:
+    contract = {
+        "name": "Finance - Baseline Renewal Gate Preflight",
+        "schedule": {"kind": "at", "at": past_utc_iso(48)},
+        "deleteAfterRun": True,
+    }
+    result = ccv.compare_contract(contract, None)
+    assert result["status"] == "missing_live_job"
+    assert result["severity"] == "error"
+
+
+def test_past_due_one_shot_without_delete_after_run_stays_missing() -> None:
+    contract = {
+        "name": "Follow-up: Future Session Packet re-check",
+        "schedule": {"kind": "at", "at": past_utc_iso(-2)},
+    }
+    result = ccv.compare_contract(contract, None)
+    assert result["status"] == "missing_live_job"
+    assert result["severity"] == "error"
+
+
+def test_recurring_cron_without_live_job_stays_missing() -> None:
+    contract = {
+        "name": "Ops - Sample",
+        "schedule": {"kind": "cron", "expr": "0 * * * *"},
+    }
+    result = ccv.compare_contract(contract, None)
+    assert result["status"] == "missing_live_job"
+    assert result["severity"] == "error"
+
+
 def build_args(contract_dir: Path, live_file: Path) -> argparse.Namespace:
     return argparse.Namespace(
         contract_dir=contract_dir,
@@ -243,6 +348,10 @@ if __name__ == "__main__":
     test_missing_live_job_respects_required_flag()
     test_find_live_job_by_name()
     test_compare_contract_reports_prompt_bloat()
+    test_system_owned_declaration_detection()
+    test_system_projected_prompt_uses_named_allowance_not_workspace_budget()
+    test_workspace_prompt_keeps_default_budget()
+    test_system_projected_prompt_still_flags_true_oversize()
     test_compare_contract_detects_multiline_truncation()
     test_compare_contract_blocks_unsupported_fable_route()
     test_compare_contract_blocks_quiet_only_agentturn_prompt()
@@ -250,4 +359,8 @@ if __name__ == "__main__":
     test_object_expected_artifact_path_is_normalized_and_metadata_preserved()
     test_summary_reports_detected_routes_separately_from_configured_denylist()
     test_contract_prompt_integrity_error_makes_validation_non_ok()
+    test_completed_one_shot_past_due_delete_after_run()
+    test_future_one_shot_delete_after_run_stays_missing()
+    test_past_due_one_shot_without_delete_after_run_stays_missing()
+    test_recurring_cron_without_live_job_stays_missing()
     print("ok")

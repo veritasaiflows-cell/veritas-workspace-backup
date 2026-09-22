@@ -1,0 +1,26 @@
+{
+  "family": "T1",
+  "instance_id": "b5f7b370f7d8445a01c7698b67b647d5eb76389024dbd53b3dee506299b0eda3",
+  "prompt": {
+    "budget": 29,
+    "orders": [
+      {
+        "hi": 30,
+        "lo": 12,
+        "w": 1
+      },
+      {
+        "hi": 30,
+        "lo": 18,
+        "w": 1
+      }
+    ],
+    "properties": [
+      "bounds",
+      "sum",
+      "proportionality",
+      "binding-bounds"
+    ],
+    "request": "Return only the required allocation JSON."
+  }
+}

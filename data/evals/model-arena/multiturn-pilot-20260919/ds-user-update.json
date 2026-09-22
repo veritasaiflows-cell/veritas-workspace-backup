@@ -1,0 +1,95 @@
+﻿{
+    "finalAssistantVisibleText":  "{\"A\": true, \"B\": 108, \"explanation\": \"A: validity requires now \u003c inserted_at + TTL, i.e. 99 \u003c 100, which is true. B: 100 ├ù 1.2 = 120, then 120 ├ù 0.9 = 108.\"}",
+    "agentMeta":  {
+                      "sessionId":  "ed9227ef-996e-4387-a125-65e8d384b9bf",
+                      "sessionFile":  "agent:main:arena-user-ds-ttl-20260919",
+                      "provider":  "ollama-cloud",
+                      "model":  "deepseek-v4.1-flash:cloud",
+                      "contextTokens":  1048576,
+                      "contextTokensSource":  "resolved",
+                      "agentHarnessId":  "openclaw",
+                      "credentialSource":  {
+                                               "kind":  "profile"
+                                           },
+                      "usage":  {
+                                    "input":  30764,
+                                    "output":  110,
+                                    "cacheRead":  256,
+                                    "cacheWrite":  0,
+                                    "total":  31130,
+                                    "cost":  {
+                                                 "total":  0
+                                             }
+                                },
+                      "lastCallUsage":  {
+                                            "input":  30764,
+                                            "output":  110,
+                                            "cacheRead":  256,
+                                            "cacheWrite":  0,
+                                            "cost":  {
+                                                         "total":  0
+                                                     },
+                                            "total":  31130
+                                        },
+                      "promptTokens":  31020,
+                      "contextBudgetStatus":  {
+                                                  "schemaVersion":  1,
+                                                  "source":  "pre-prompt-estimate",
+                                                  "updatedAt":  1789831951437,
+                                                  "provider":  "ollama-cloud",
+                                                  "model":  "deepseek-v4.1-flash:cloud",
+                                                  "route":  "fits",
+                                                  "shouldCompact":  false,
+                                                  "estimatedPromptTokens":  17063,
+                                                  "contextTokenBudget":  1048576,
+                                                  "promptBudgetBeforeReserve":  1028576,
+                                                  "reserveTokens":  20000,
+                                                  "effectiveReserveTokens":  20000,
+                                                  "remainingPromptBudgetTokens":  1011513,
+                                                  "overflowTokens":  0,
+                                                  "toolResultReducibleChars":  0,
+                                                  "messageCount":  4,
+                                                  "unwindowedMessageCount":  4,
+                                                  "sessionId":  "ed9227ef-996e-4387-a125-65e8d384b9bf"
+                                              },
+                      "codeModeEngaged":  false,
+                      "assistantTurns":  1,
+                      "costUsd":  0,
+                      "terminalReceipt":  {
+                                              "runId":  "f5e3069f-4288-4f78-98c0-1359f054f75b",
+                                              "sessionId":  "ed9227ef-996e-4387-a125-65e8d384b9bf",
+                                              "turnId":  "f5e3069f-4288-4f78-98c0-1359f054f75b",
+                                              "requested":  {
+                                                                "provider":  "ollama-cloud",
+                                                                "model":  "deepseek-v4.1-flash:cloud"
+                                                            },
+                                              "effective":  {
+                                                                "provider":  "ollama-cloud",
+                                                                "model":  "deepseek-v4.1-flash:cloud",
+                                                                "responseModel":  "deepseek-v4.1-flash:cloud"
+                                                            },
+                                              "successfulToolNames":  [
+
+                                                                      ],
+                                              "rerouted":  false
+                                          }
+                  },
+    "executionTrace":  {
+                           "winnerProvider":  "ollama-cloud",
+                           "winnerModel":  "deepseek-v4.1-flash:cloud",
+                           "attempts":  [
+                                            {
+                                                "provider":  "ollama-cloud",
+                                                "model":  "deepseek-v4.1-flash:cloud",
+                                                "result":  "success",
+                                                "stage":  "assistant"
+                                            }
+                                        ],
+                           "fallbackUsed":  false,
+                           "runner":  "embedded"
+                       },
+    "requestShaping":  {
+                           "authMode":  "auth-profile",
+                           "thinking":  "high"
+                       }
+}

@@ -1,0 +1,42 @@
+﻿{
+    "turn":  3,
+    "session_key":  "agent:main:arena-state-glm-20260919",
+    "requested_model":  "ollama-cloud/glm-5.3-flash:cloud",
+    "provider":  "ollama-cloud",
+    "model":  "glm-5.3-flash:cloud",
+    "visible_text":  "{\"active\": {\"F\": 5}, \"free\": 7, \"outcomes\": [\"accepted\", \"accepted\", \"accepted\", \"duplicate\", \"rejected\", \"rejected\", \"accepted\"]}",
+    "execution_trace":  {
+                            "winnerProvider":  "ollama-cloud",
+                            "winnerModel":  "glm-5.3-flash:cloud",
+                            "attempts":  [
+                                             {
+                                                 "provider":  "ollama-cloud",
+                                                 "model":  "glm-5.3-flash:cloud",
+                                                 "result":  "success",
+                                                 "stage":  "assistant"
+                                             }
+                                         ],
+                            "fallbackUsed":  false,
+                            "runner":  "embedded"
+                        },
+    "receipt":  {
+                    "runId":  "305e2e3e-1c8c-4a75-9e0a-9ab3d7f753c0",
+                    "sessionId":  "7484be6d-4dfa-46fd-a785-0591140a0839",
+                    "turnId":  "305e2e3e-1c8c-4a75-9e0a-9ab3d7f753c0",
+                    "requested":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "glm-5.3-flash:cloud"
+                                  },
+                    "effective":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "glm-5.3-flash:cloud",
+                                      "responseModel":  "glm-5.3-flash:cloud"
+                                  },
+                    "successfulToolNames":  [
+
+                                            ],
+                    "rerouted":  false
+                },
+    "thinking":  "high",
+    "tool_summary":  null
+}

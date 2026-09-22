@@ -1,0 +1,15 @@
+{
+  "schema": "veritas.owner_decisions.otel_recommendations.v1",
+  "decisions": [
+    {
+      "id": "token_cost_metadata_depth",
+      "decision": "decline_and_retire_the_recommendation",
+      "decided_by": "randall",
+      "decided_at_utc": "2026-09-12T15:17:06+00:00",
+      "authority": "webchat ask_user gateway-owner answer 2026-09-12",
+      "evidence": "tmp/otel-token-cost-metadata-depth-owner-packet.json",
+      "because": "Collector already captures 919 token-bearing spans with 16 token attributes; the coverage warning computes from tmp/model-run-ledger-current.json (2 rows, 0.0 coverage) and never reads OTEL, so no collector change can clear it as framed.",
+      "effect": "Learning loop suppresses the recommendation; improvement-ledger row closes by source absence; re-raise deliberately if coverage semantics change."
+    }
+  ]
+}

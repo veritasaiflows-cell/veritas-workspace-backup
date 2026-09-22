@@ -1,0 +1,22 @@
+{
+  "schema": "veritas.arena_six_operational_adjudication.v1",
+  "preserved_matrix_status": "unknown",
+  "adjudicated_class": "operational_timeout",
+  "model_slot": "glm53flash",
+  "case": "T6-induction-and-planning",
+  "repetition": 1,
+  "turn": 1,
+  "elapsed_s": 631.176,
+  "cli_returncode": 1,
+  "cli_error": {
+    "type": "cli_error",
+    "message": "gateway timeout after 630000ms\nGateway target: ws://127.0.0.1:18789\nSource: local loopback\nConfig: C:\\Users\\Veritas\\.openclaw\\openclaw.json\nBind: loopback"
+  },
+  "retry_performed": false,
+  "scoring": "not capability-eligible; not counted as a factual failure",
+  "note": "The one-off dispatcher preserved the structured CLI error but normalized its status as unknown. This adjudication fixes the taxonomy only; it does not alter the raw attempt, candidate output or frozen grade.",
+  "frozen_per_turn_wall_clock_s": 600,
+  "gateway_cli_deadline_ms": 630000,
+  "deadline_variance": "The CLI added a 30-second grace beyond the frozen 600-second budget; this is an execution-contract limit, not candidate capability evidence.",
+  "future_rule": "Enforce the 600-second host deadline directly; do not rely on the CLI grace."
+}

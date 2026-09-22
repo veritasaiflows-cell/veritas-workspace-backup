@@ -27,7 +27,7 @@ SOURCE_FILES = {
     "otel_docs": OPENCLAW_PACKAGE / "docs" / "gateway" / "opentelemetry.md",
     "prompt_caching_docs": OPENCLAW_PACKAGE / "docs" / "reference" / "prompt-caching.md",
     "token_use_docs": OPENCLAW_PACKAGE / "docs" / "reference" / "token-use.md",
-    "tools": WORKSPACE / "TOOLS.md",
+    "tools": WORKSPACE / "AGENTS.md",
     "soul": WORKSPACE / "SOUL.md",
 }
 
@@ -251,7 +251,7 @@ def build_packet() -> dict[str, Any]:
             "prompt_cache_mapping": find_line(SOURCE_FILES["prompt_caching_docs"], "OpenAI responses expose cached prompt tokens"),
             "openai_rate_limit_headers": find_line(SOURCE_FILES["prompt_caching_docs"], "x-ratelimit-*"),
             "token_usage_surfaces": find_line(SOURCE_FILES["token_use_docs"], "OpenClaw tracks **tokens**"),
-            "config_mutation_boundary": find_line(SOURCE_FILES["tools"], "Ask before changing auth, credentials, network exposure"),
+            "config_mutation_boundary": find_line(SOURCE_FILES["tools"], "Ask first before config, auth, credentials, network exposure"),
             "secrets_boundary": find_line(SOURCE_FILES["soul"], "expose secrets, keys, tokens, or credentials"),
         },
         "source_inventory": source_inventory(),

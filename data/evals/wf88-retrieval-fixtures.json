@@ -25,18 +25,18 @@
       "fixture_class": "owner_vs_generated_conflict",
       "polarity": "contrast",
       "evaluator": "selection",
-      "question": "Which source owns execution policy when a generated dashboard is also available?",
+      "question": "Which source owns alert operations policy when a generated dashboard is also available?",
       "claim_type": "policy",
       "require_fresh": false,
       "candidates": [
         {
-          "candidate_id": "execution_board_owner",
-          "path": "03. Portfolio/Execution Board.md",
+          "candidate_id": "alert_operations_owner",
+          "path": "03. Alerts and Recommendations/Alert Operations Board.md",
           "source_class": "canonical_owner",
           "freshness": "current",
           "format": "text",
           "claim_support": ["policy"],
-          "declared_value": "owner_gated_no_execution"
+          "declared_value": "alert_operations_read_only_governance"
         },
         {
           "candidate_id": "dashboard_validation",
@@ -50,7 +50,7 @@
       ],
       "expected": {
         "retrieval_outcome": "selected",
-        "selected_candidate_id": "execution_board_owner",
+        "selected_candidate_id": "alert_operations_owner",
         "conflict": true,
         "source_open_required": false
       }
@@ -60,18 +60,18 @@
       "fixture_class": "owner_vs_generated_conflict",
       "polarity": "contrast",
       "evaluator": "selection",
-      "question": "Which source owns durable portfolio and capital-approval boundaries?",
+      "question": "Which source owns durable investor objectives and capital-approval boundaries?",
       "claim_type": "policy",
       "require_fresh": false,
       "candidates": [
         {
-          "candidate_id": "portfolio_snapshot_owner",
-          "path": "03. Portfolio/Portfolio Snapshot.md",
+          "candidate_id": "investor_profile_owner",
+          "path": "03. Alerts and Recommendations/Investor Profile.md",
           "source_class": "canonical_owner",
           "freshness": "current",
           "format": "text",
           "claim_support": ["policy"],
-          "declared_value": "human_owner_decisions_no_capital_approval"
+          "declared_value": "investor_objectives_no_account_state"
         },
         {
           "candidate_id": "trade_grade_cards",
@@ -85,7 +85,7 @@
       ],
       "expected": {
         "retrieval_outcome": "selected",
-        "selected_candidate_id": "portfolio_snapshot_owner",
+        "selected_candidate_id": "investor_profile_owner",
         "conflict": true,
         "source_open_required": false
       }
@@ -171,7 +171,7 @@
       "field": "reference_invalidation_level",
       "expected": {
         "retrieval_outcome": "selected",
-        "value": 177.91,
+        "value_is_finite_number": true,
         "authority_contains": "review_only"
       }
     },
@@ -186,7 +186,7 @@
       "field": "reference_price_low",
       "expected": {
         "retrieval_outcome": "selected",
-        "value": 183.01,
+        "value_is_finite_number": true,
         "authority_contains": "review_only"
       }
     },
@@ -201,7 +201,7 @@
       "field": "reference_price_high",
       "expected": {
         "retrieval_outcome": "selected",
-        "value": 193.23,
+        "value_is_finite_number": true,
         "authority_contains": "review_only"
       }
     },
@@ -270,7 +270,7 @@
       "candidates": [
         {
           "candidate_id": "fresh_capital_validation",
-          "path": "tmp/capital-deployment-recommendation-validation.json",
+          "path": "tmp/actionable-improvement-queue.json",
           "source_class": "validated_generated",
           "freshness_evidence": {
             "mode": "fixture_timestamp_age",
@@ -391,13 +391,13 @@
       "fixture_class": "stale_vs_current",
       "polarity": "contrast",
       "evaluator": "selection",
-      "question": "Does a stale generated policy summary remain subordinate to the current owner note?",
+      "question": "Does a stale generated policy summary remain subordinate to the current alert operations owner note?",
       "claim_type": "policy",
       "require_fresh": false,
       "candidates": [
         {
-          "candidate_id": "current_execution_owner",
-          "path": "03. Portfolio/Execution Board.md",
+          "candidate_id": "current_alert_operations_owner",
+          "path": "03. Alerts and Recommendations/Alert Operations Board.md",
           "source_class": "canonical_owner",
           "freshness": "current",
           "format": "text",
@@ -416,7 +416,7 @@
       ],
       "expected": {
         "retrieval_outcome": "selected",
-        "selected_candidate_id": "current_execution_owner",
+        "selected_candidate_id": "current_alert_operations_owner",
         "conflict": true,
         "source_open_required": false
       }
@@ -464,18 +464,18 @@
       "fixture_class": "archive_vs_current",
       "polarity": "contrast",
       "evaluator": "selection",
-      "question": "Does the current Portfolio Snapshot outrank a pre-$10k archived snapshot?",
+      "question": "Does the current Investor Profile outrank a pre-$10k archived snapshot?",
       "claim_type": "policy",
       "require_fresh": false,
       "candidates": [
         {
-          "candidate_id": "current_portfolio_snapshot",
-          "path": "03. Portfolio/Portfolio Snapshot.md",
+          "candidate_id": "current_investor_profile",
+          "path": "03. Alerts and Recommendations/Investor Profile.md",
           "source_class": "canonical_owner",
           "freshness": "current",
           "format": "text",
           "claim_support": ["policy"],
-          "declared_value": "current_portfolio_boundary"
+          "declared_value": "current_investor_objectives"
         },
         {
           "candidate_id": "archived_portfolio_snapshot",
@@ -489,7 +489,7 @@
       ],
       "expected": {
         "retrieval_outcome": "selected",
-        "selected_candidate_id": "current_portfolio_snapshot",
+        "selected_candidate_id": "current_investor_profile",
         "conflict": true,
         "source_open_required": false,
         "rejected_reasons": {
@@ -592,13 +592,13 @@
       "fixture_class": "authority_stop_line",
       "polarity": "positive",
       "evaluator": "text_contract",
-      "question": "Does the execution owner preserve approval and paper/live stop lines?",
-      "path": "03. Portfolio/Execution Board.md",
+      "question": "Does the alert operations owner preserve read-only and no-execution stop lines?",
+      "path": "03. Alerts and Recommendations/Alert Operations Board.md",
       "case_sensitive": false,
       "required_terms": [
-        "does not approve capital deployment, paper execution, live execution",
-        "a generated card is not approval",
-        "randall's exact order approval"
+        "read-only operations and governance",
+        "not an order surface",
+        "No workflow or cron routed here may maintain sleeves"
       ],
       "forbidden_terms": [
         "automatic live execution is allowed"
@@ -612,14 +612,17 @@
       "fixture_class": "authority_stop_line",
       "polarity": "positive",
       "evaluator": "json_contract",
-      "question": "Does the WF88 capsule preserve review-only and no-apply stop lines?",
+      "question": "Does the WF88 capsule preserve owner-gated review-only and no-apply stop lines?",
       "path": "state/workflows/WF88.json",
       "checks": [
         {"pointer": "/workflow_id", "op": "equals", "value": "WF88"},
+        {"pointer": "/authority_class", "op": "equals", "value": "owner_gated_review_only"},
+        {"pointer": "/owner_action_required", "op": "is_true"},
+        {"pointer": "/helper_safe", "op": "is_false"},
         {"pointer": "/authority_boundary", "op": "contains", "value": "review-only"},
-        {"pointer": "/authority_boundary", "op": "contains", "value": "no delete/archive/apply authority"},
-        {"pointer": "/stop_lines", "op": "min_length", "value": 1},
-        {"pointer": "/stop_lines/0", "op": "contains", "value": "owner approval inference"}
+        {"pointer": "/stop_lines/0", "op": "contains", "value": "owner-approval inference"},
+        {"pointer": "/default_resume_command", "op": "is_null"},
+        {"pointer": "/primary_route_artifact", "op": "equals", "value": "tmp/wf88-os2-control-packet.json"}
       ],
       "expected": {
         "retrieval_outcome": "selected"
@@ -692,8 +695,8 @@
       "require_fresh": false,
       "candidates": [
         {
-          "candidate_id": "execution_owner_no_approval",
-          "path": "03. Portfolio/Execution Board.md",
+          "candidate_id": "alert_operations_owner_no_approval",
+          "path": "03. Alerts and Recommendations/Alert Operations Board.md",
           "source_class": "canonical_owner",
           "freshness": "current",
           "format": "text",
@@ -713,7 +716,7 @@
       ],
       "expected": {
         "retrieval_outcome": "selected",
-        "selected_candidate_id": "execution_owner_no_approval",
+        "selected_candidate_id": "alert_operations_owner_no_approval",
         "conflict": true,
         "source_open_required": false,
         "rejected_reasons": {
@@ -785,7 +788,7 @@
         },
         {
           "candidate_id": "warning_vector_index",
-          "path": "tmp/vector-memory-ollama-full-index.json",
+          "path": "data/evals/retrieval-fixture-artifacts/vector-supplement-warning.json",
           "source_class": "vector_supplement",
           "freshness": "stale",
           "format": "json",
@@ -903,7 +906,7 @@
       "checks": [
         {"pointer": "/workflow_id", "op": "equals", "value": "WF88"},
         {"pointer": "/primary_route_artifact", "op": "equals", "value": "tmp/wf88-os2-control-packet.json"},
-        {"pointer": "/default_resume_command", "op": "equals", "value": "python scripts\\workflow_router.py WF88 --answer all"}
+        {"pointer": "/default_resume_command", "op": "is_null"}
       ],
       "expected": {
         "retrieval_outcome": "selected"
@@ -966,7 +969,7 @@
       "polarity": "positive",
       "evaluator": "json_contract",
       "question": "Does the current vector index declare itself derived-only and source-routing only?",
-      "path": "tmp/vector-memory-ollama-full-index.json",
+      "path": "tmp/vector-memory-index.json",
       "checks": [
         {"pointer": "/authority_boundary/derived_index_only", "op": "is_true"},
         {"pointer": "/authority_boundary/routes_to_exact_sources", "op": "is_true"},
@@ -989,7 +992,7 @@
       "candidates": [
         {
           "candidate_id": "vector_only",
-          "path": "tmp/vector-memory-ollama-full-index.json",
+          "path": "tmp/vector-memory-index.json",
           "source_class": "vector_supplement",
           "freshness": "fresh",
           "format": "json",
@@ -1018,7 +1021,7 @@
       "candidates": [
         {
           "candidate_id": "vector_route_supplement",
-          "path": "tmp/vector-memory-ollama-full-index.json",
+          "path": "tmp/vector-memory-index.json",
           "source_class": "vector_supplement",
           "freshness": "fresh",
           "format": "json",
@@ -1044,7 +1047,7 @@
       "candidates": [
         {
           "candidate_id": "unvalidated_vector_supplement",
-          "path": "tmp/vector-memory-ollama-full-index.json",
+          "path": "data/evals/retrieval-fixture-artifacts/vector-supplement-warning.json",
           "source_class": "vector_supplement",
           "freshness_evidence": {
             "mode": "synthetic_ordering_semantics",

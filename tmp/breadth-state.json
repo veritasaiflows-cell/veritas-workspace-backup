@@ -1,12 +1,12 @@
 {
-  "generated_at_utc": "2026-08-28T20:28:53.091874+00:00",
+  "generated_at_utc": "2026-09-19T23:09:04.565808+00:00",
   "status": "ok",
   "stale_after_hours": 24,
   "expected_update_window": "Refresh after the close for overnight regime context and before weekly macro outputs. Refresh again on any session with significant intraday breadth divergence.",
-  "last_trading_day": "2026-08-28",
+  "last_trading_day": "2026-09-18",
   "source_last_trading_day": {
-    "rsp_spy_ratio": "2026-08-28",
-    "sector_participation": "2026-08-28"
+    "rsp_spy_ratio": "2026-09-18",
+    "sector_participation": "2026-09-18"
   },
   "freshness_notes": [
     "breadth_signals_based_on_daily_closes_not_intraday",
@@ -17,114 +17,114 @@
     "source_label": "yfinance",
     "source_mode": "primary",
     "equal_weight_vs_cap_weight": {
-      "rsp_spy_ratio": 0.286853,
-      "rsp_spy_ratio_5d_change_pct": -0.9116,
-      "rsp_spy_ratio_20d_change_pct": -0.336,
-      "rsp_close": 220.69,
-      "spy_close": 769.35,
-      "rsp_as_of": "2026-08-28",
-      "spy_as_of": "2026-08-28",
+      "rsp_spy_ratio": 0.278709,
+      "rsp_spy_ratio_5d_change_pct": -1.1092,
+      "rsp_spy_ratio_20d_change_pct": -3.7511,
+      "rsp_close": 212.29,
+      "spy_close": 761.69,
+      "rsp_as_of": "2026-09-18",
+      "spy_as_of": "2026-09-18",
       "direction": "deteriorating"
     },
     "sector_participation": {
-      "sectors_above_50dma": 8,
+      "sectors_above_50dma": 3,
       "sectors_total": 11,
-      "participation_pct": 72.7,
-      "participation_regime": "broad",
+      "participation_pct": 27.3,
+      "participation_regime": "narrow",
       "sectors": [
         {
           "ticker": "XLC",
           "label": "Communication Services",
-          "close": 112.99,
-          "sma_50": 110.0927,
-          "above_50dma": true,
-          "as_of": "2026-08-28"
+          "close": 110.81,
+          "sma_50": 111.1874,
+          "above_50dma": false,
+          "as_of": "2026-09-18"
         },
         {
           "ticker": "XLY",
           "label": "Consumer Discretionary",
-          "close": 117.21,
-          "sma_50": 116.1813,
-          "above_50dma": true,
-          "as_of": "2026-08-28"
+          "close": 111.03,
+          "sma_50": 115.372,
+          "above_50dma": false,
+          "as_of": "2026-09-18"
         },
         {
           "ticker": "XLP",
           "label": "Consumer Staples",
-          "close": 85.45,
-          "sma_50": 84.8603,
-          "above_50dma": true,
-          "as_of": "2026-08-28"
+          "close": 82.8,
+          "sma_50": 84.9186,
+          "above_50dma": false,
+          "as_of": "2026-09-18"
         },
         {
           "ticker": "XLE",
           "label": "Energy",
-          "close": 62.68,
-          "sma_50": 58.1441,
+          "close": 64.31,
+          "sma_50": 61.1766,
           "above_50dma": true,
-          "as_of": "2026-08-28"
+          "as_of": "2026-09-18"
         },
         {
           "ticker": "XLF",
           "label": "Financials",
-          "close": 58.1,
-          "sma_50": 56.4365,
-          "above_50dma": true,
-          "as_of": "2026-08-28"
+          "close": 55.86,
+          "sma_50": 57.179,
+          "above_50dma": false,
+          "as_of": "2026-09-18"
         },
         {
           "ticker": "XLV",
           "label": "Health Care",
-          "close": 171.16,
-          "sma_50": 163.7299,
+          "close": 168.39,
+          "sma_50": 166.7524,
           "above_50dma": true,
-          "as_of": "2026-08-28"
+          "as_of": "2026-09-18"
         },
         {
           "ticker": "XLI",
           "label": "Industrials",
-          "close": 177.14,
-          "sma_50": 181.8743,
+          "close": 169.75,
+          "sma_50": 178.9778,
           "above_50dma": false,
-          "as_of": "2026-08-28"
+          "as_of": "2026-09-18"
         },
         {
           "ticker": "XLB",
           "label": "Materials",
-          "close": 53.18,
-          "sma_50": 51.7095,
-          "above_50dma": true,
-          "as_of": "2026-08-28"
+          "close": 49.99,
+          "sma_50": 51.7686,
+          "above_50dma": false,
+          "as_of": "2026-09-18"
         },
         {
           "ticker": "XLRE",
           "label": "Real Estate",
-          "close": 44.48,
-          "sma_50": 44.8718,
+          "close": 42.53,
+          "sma_50": 44.601,
           "above_50dma": false,
-          "as_of": "2026-08-28"
+          "as_of": "2026-09-18"
         },
         {
           "ticker": "XLK",
           "label": "Technology",
-          "close": 185.73,
-          "sma_50": 182.7716,
+          "close": 189.6,
+          "sma_50": 183.117,
           "above_50dma": true,
-          "as_of": "2026-08-28"
+          "as_of": "2026-09-18"
         },
         {
           "ticker": "XLU",
           "label": "Utilities",
-          "close": 42.73,
-          "sma_50": 44.6817,
+          "close": 41.1,
+          "sma_50": 43.8194,
           "above_50dma": false,
-          "as_of": "2026-08-28"
+          "as_of": "2026-09-18"
         }
       ]
     },
     "major_index_breadth": {
-      "breadth_regime": "recovering",
-      "composite_score": 0.5907,
+      "breadth_regime": "narrow",
+      "composite_score": 0.2577,
       "notes": [
         "Regime derived from sector participation count and RSP/SPY 5-day direction.",
         "Broad: >= 7/11 sectors above 50DMA and RSP/SPY not deteriorating.",

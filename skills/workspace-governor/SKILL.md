@@ -66,3 +66,7 @@ Use direct inspection plus the smallest relevant validator. Run `openclaw skills
 ## Closeout
 
 State the governance decision, changed placement, active owner, preserved history, proof, rollback, unresolved blocker, and next safe action.
+
+## Manifest-Bound Archive Microbatches
+
+For a generated-residue archive microbatch, freeze each proposed row with its source path, SHA-256, exact byte count, destination, original restore target, reference result, and retention status. Make the mover verify the declared hash and byte count during preflight and again immediately before the filesystem move; reject an existing destination rather than renaming or overwriting it. Record matching manifest, source, and destination hashes after each move. Before any retention packet is accepted, complete one byte-identical drill from archive to its original restore target and back to the identical archive path. Classify the packet as retention-ready—not delete-ready—until per-file origin/replacement proof, an applicable integrity rule, a retention rule, a frozen deletion manifest, and a separate exact deletion approval exist.

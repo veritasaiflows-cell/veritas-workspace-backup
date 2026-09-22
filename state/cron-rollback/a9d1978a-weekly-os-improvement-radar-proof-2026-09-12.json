@@ -1,0 +1,11 @@
+{
+  "schema": "veritas.cron_job_rollback_record.v1",
+  "captured_at_utc": "2026-09-12T16:10:00Z",
+  "job_id": "a9d1978a-7d52-4790-bfe4-ab211e49f560",
+  "previous_job": {
+    "name": "Runtime - Weekly OS Improvement Radar Proof Refresh",
+    "description": "Weekly model-free OS improvement radar proof refresh. A declared command sequence in scripts/deterministic_cron_sequence_runner.py runs the nine proof scripts in order and writes tmp/weekly-os-improvement-radar-proof-runner.json. Main is woken only when a step fails. The runner composes no commands and carries no repair, cron, config, runtime, canon, capital, execution, account, or external-delivery authority. Rollback: state/cron-rollback/a9d1978a-weekly-os-improvement-radar-proof-2026-08-30.json"
+  },
+  "reason": "Owner-approved (webchat ask_user 2026-09-12, gateway-owner answer) prose-only drift fix: the declared sequence now runs ten proof scripts after the WF89 credit-reader refresh step was added on 2026-09-12; the description still said 'nine'. No schedule, payload, sessionTarget, or authority change is involved.",
+  "rollback_instruction": "Restore the previous description above via cron update on job a9d1978a-7d52-4790-bfe4-ab211e49f560 and revert the description/updated_at_utc/contract_update_reason fields in state/cron-contracts/runtime-weekly-os-improvement-radar-proof-refresh.json. No config, auth, channel, or schedule change exists in either direction; schedule expr '10 16 * * 0 America/Phoenix' is unchanged by this edit."
+}

@@ -26,10 +26,10 @@ Use `veritas.execution_efficiency_policy.v1` in this order:
 
 1. deterministic model-free command;
 2. explicit eligible read-only Codex-native route, not code authorship or independent QA;
-3. Main/Astra for integration, acceptance and authority-sensitive judgment;
+3. Main/Sol for integration, acceptance and authority-sensitive judgment;
 4. the selected persistent role on its exact configured model with fresh strict transport proof.
 
-Resolve exact primaries through `scripts/agent_fleet_policy.py` and live config: Opportunity Intelligence/Grok 4.6, Engineering QA/GLM 5.3, Finance Evidence/Terra, Finance Risk Challenger/GLM 5.3, Engineering Builder/Muse Spark 1.3 Contributor, Knowledge and Continuity/Luna. Default code authorship is Muse; default independent QA is GLM 5.3. Randall accepted Sol as final QA for the generated bootstrap diff on this closeout. Model routing grants no unattended-repair or runtime/config authority. Require the expected model to match the selected agent's live configured model exactly. Do not silently use Main or substitute another model when persistent transport is unavailable. Do not select an isolated agent merely because parallelism is possible; the lane must be independently bounded and lower-cost or higher-quality than Main doing the same work.
+Resolve exact primaries and closed recovery lists through `scripts/agent_fleet_policy.py`, live config and `veritas-model-routing-helper-lanes`; never preserve an older role map in this skill or a spawn prompt. Treat `data/evals/model-arena/arena-six-20260919/results/incumbent-baseline-20260919/main-acceptance.json` as bounded role-rationale evidence only: DeepSeek 4.1 Flash was stronger overall for supervised reasoning/planning, while GLM 5.3 Flash was stronger for exact-format/tool recovery; neither result grants automatic promotion or config change. Default code authorship is Muse; default independent QA is GLM 5.3. Model routing grants no unattended-repair or runtime/config authority. Require `sessions_spawn_dispatch_contract` to produce production spawn arguments only after the policy primary matches live config, then require the actual model receipt at closeout. Do not silently use Main or substitute another model when persistent transport is unavailable. Do not select an isolated agent merely because parallelism is possible; the lane must be independently bounded and lower-cost or higher-quality than Main doing the same work.
 
 ## Persistent Context-Transport Gate
 
@@ -115,7 +115,7 @@ Retries are never reported as first-pass success. A patch draft is not an applie
 
 ## Codex-Native Eligibility And Provenance
 
-Codex-native is opt-in for bounded read-only work at Terra low, excluding independent QA. Route all implementation code, including one-file fixes, to Muse Builder; route all independent QA to GLM 5.3.
+Codex-native is opt-in for bounded read-only work at Terra low, excluding independent QA. Route all implementation code, including one-file fixes, to Muse Spark 1.3 Contributor; route all independent QA to GLM 5.3.
 
 Reject multi-file, forbidden-path, shared-contract, broad, finance-sensitive, runtime/config/auth, external, destructive, or ambiguous implementation. Actual JSONL rollout import must consume only allowlisted metadata, require a unique safe completed subagent rollout, reconcile inclusive-cache usage, and preserve reasoning separately from total tokens.
 
@@ -150,7 +150,7 @@ Generated agent bootstraps must project:
 - current profile revision;
 - Main as sole router, final QC, acceptance, judgment, and user-facing integration owner;
 - the versioned efficiency policy;
-- Main on its explicit keyed Astra model (Sol backup) and each specialist on its exact role primary from `scripts/agent_fleet_policy.py`; Muse authors code by default, GLM 5.3 performs independent QA by default, and silent model substitution remains disabled;
+- Main on its explicit configured Sol primary and each specialist on its exact role primary from `scripts/agent_fleet_policy.py`; Muse Spark 1.3 Contributor authors code by default, GLM 5.3 performs independent QA by default, and silent model substitution remains disabled;
 - exact transport and handoff requirements;
 - role-specific read/write/tool boundaries;
 - the wiki context-supply route, including truthful direct-retrieval capability;

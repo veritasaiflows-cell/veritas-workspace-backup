@@ -1,0 +1,16 @@
+{
+  "authorized_at": "2026-09-20T23:02:09.591771+00:00",
+  "authorized_by": "gateway-owner",
+  "dispatch_ready": true,
+  "envelope": "arena-agentic-v1-20260920",
+  "note": "Run-scoped release for GLM 5.3 Flash overlay-r2 12-case run only. Owner authorized via ask_user gate_release 2026-09-20. Canonical overlay/dispatch-authorization.json left INERT false.",
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "schema": "veritas.arena_dispatch_authorization.v1",
+  "scope": {
+    "cases": 12,
+    "models": [
+      "ollama-cloud/glm-5.3-flash:cloud"
+    ],
+    "reps": 1
+  }
+}

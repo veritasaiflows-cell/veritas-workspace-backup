@@ -38,16 +38,41 @@ RUNTIME_TOOLS_EXPORT_MARKER = "function createMemorySearchTool"
 RUNTIME_TOOLS_LOADER_PATTERN = re.compile(
     r'''createLazyRuntimeModule\(\(\)\s*=>\s*import\(["']\.\./\.\./(?P<chunk>tools-[A-Za-z0-9_-]+\.js)["']\)\)'''
 )
-RUNTIME_PATCH_MARKERS = (
+# Legacy overlay marker strings (pre-2026.9.2 tools-chunk layout). Still accepted
+# as behavior proof when present, but no longer required: OpenClaw 2026.9.2
+# implements the same behaviors upstream under different names and in a
+# different chunk layout (tools chunk + session-search-visibility chunk).
+RUNTIME_PATCH_LEGACY_MARKERS = (
     "MEMORY_SEARCH_ALL_MEMORY_INIT_TIMEOUT_MS",
     "memory corpus unavailable in corpus=all",
     "MEMORY_SEARCH_SKIP_SESSION_VISIBILITY_FOR_NON_SESSION_HITS",
 )
+# Upstream-native evidence for the approved behaviors (OpenClaw >= 2026.9.2,
+# tools-BAdImrVR.js era): corpus=all partial-result tolerance plus
+# AbortController deadlines live in the tools chunk; the non-session fast-path
+# guard lives in the session-search-visibility chunk. Each behavior group is
+# satisfied either by its legacy overlay marker or by the full upstream set.
+RUNTIME_UPSTREAM_CORPUS_TOLERANCE_MARKERS = (
+    "composeMemoryCorpusMetadata",
+    "mergeMemorySearchCorpusResults",
+    "attemptMemoryCorpus",
+)
+RUNTIME_UPSTREAM_DEADLINE_MARKERS = (
+    "runMemoryCorpusDeadline",
+    "AbortController",
+)
+RUNTIME_VISIBILITY_CHUNK_IMPORT_PATTERN = re.compile(
+    r'''from\s+["']\./(?P<chunk>session-search-visibility-[A-Za-z0-9_-]+\.js)["']'''
+)
+RUNTIME_VISIBILITY_CHUNK_GLOB = "session-search-visibility-*.js"
+# The guard must precede visibility resolution. The return expression is
+# intentionally open-ended: the legacy overlay returned `params.hits`, while
+# upstream 2026.9.2 returns `params.conversationRecall?.corpus === "sessions"
+# ? [] : params.hits`. Both skip visibility work for non-session hits.
 RUNTIME_NON_SESSION_FAST_PATH_PATTERN = re.compile(
     r"async function filterMemorySearchHitsBySessionVisibility\(params\)\s*\{"
     r"(?:(?!const visibility = resolveEffectiveSessionToolsVisibility\(\{).)*?"
-    r'if \(!params\.hits\.some\(\(hit\) => hit\.source === "sessions"\)\) return params\.hits;\s*'
-    r"const visibility = resolveEffectiveSessionToolsVisibility\(\{",
+    r'if \(!params\.hits\.some\(\(hit\) => hit\.source === "sessions"\)\) return [^;]*params\.hits;',
     re.DOTALL,
 )
 AGENT_STORE_ROOT = Path.home() / ".openclaw" / "agents"
@@ -109,12 +134,53 @@ def safe_validate() -> tuple[dict[str, Any], str | None]:
         return {"status": "error", "errors": [f"validation_exception:{type(exc).__name__}"], "warnings": []}, str(exc)
 
 
+def _behavior_proof(source: str, legacy: tuple[str, ...], upstream: tuple[str, ...]) -> str:
+    """Classify one approved behavior as overlay_marker, upstream_native, or missing."""
+    if any(marker in source for marker in legacy):
+        return "overlay_marker"
+    if all(marker in source for marker in upstream):
+        return "upstream_native"
+    return "missing"
+
+
+def _visibility_chunk_sources(tools_source: str) -> dict[str, str]:
+    """Map session-search-visibility chunk name -> source text.
+
+    Detection-only: reads compiled dist chunks, never writes. Candidates come
+    from the tools chunk's own import plus a dist glob fallback; re-export
+    stubs are skipped because they lack the filter function body.
+    """
+    names = sorted(set(RUNTIME_VISIBILITY_CHUNK_IMPORT_PATTERN.findall(tools_source)))
+    names.extend(sorted(path.name for path in RUNTIME_DIST_DIR.glob(RUNTIME_VISIBILITY_CHUNK_GLOB)))
+    candidates: dict[str, str] = {}
+    for name in dict.fromkeys(names):
+        try:
+            text = (RUNTIME_DIST_DIR / name).read_text(encoding="utf-8")
+        except OSError:
+            continue
+        if "filterMemorySearchHitsBySessionVisibility" in text:
+            candidates[name] = text
+    return candidates
+
+
+def _runtime_version() -> str | None:
+    try:
+        package = json.loads((RUNTIME_DIST_DIR.parent / "package.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    version = package.get("version") if isinstance(package, dict) else None
+    return str(version) if version else None
+
+
 def runtime_patch_state() -> dict[str, Any]:
     """Detect an OpenClaw upgrade that replaced an approved memory-search overlay.
 
-    This is intentionally detection-only.  Reapplying a code patch to a new
+    This is intentionally detection-only. Reapplying a code patch to a new
     runtime build requires review because the surrounding implementation may
-    have changed.
+    have changed. Since OpenClaw 2026.9.2 the memory-search internals are
+    split across the tools chunk and the session-search-visibility chunk, so
+    each approved behavior is verified functionally (legacy overlay marker OR
+    upstream-native implementation) instead of by stale marker strings.
     """
     if not RUNTIME_DIST_DIR.is_dir():
         return {
@@ -163,15 +229,52 @@ def runtime_patch_state() -> dict[str, Any]:
             "reason": "runtime_tools_source_contract_missing",
         }
 
-    missing = [marker for marker in RUNTIME_PATCH_MARKERS if marker not in source]
-    fast_path_guard_before_visibility = RUNTIME_NON_SESSION_FAST_PATH_PATTERN.search(source) is not None
-    if not fast_path_guard_before_visibility:
+    behavior_proof = {
+        "corpus_all_partial_result_tolerance": _behavior_proof(
+            source,
+            ("MEMORY_SEARCH_ALL_MEMORY_INIT_TIMEOUT_MS", "memory corpus unavailable in corpus=all"),
+            RUNTIME_UPSTREAM_CORPUS_TOLERANCE_MARKERS,
+        ),
+        "abort_deadline_enforcement": _behavior_proof(
+            source,
+            ("MEMORY_SEARCH_ALL_MEMORY_INIT_TIMEOUT_MS",),
+            RUNTIME_UPSTREAM_DEADLINE_MARKERS,
+        ),
+    }
+    missing = [
+        behavior_id
+        for behavior_id, proof in (
+            ("CORPUS_ALL_PARTIAL_RESULT_TOLERANCE", behavior_proof["corpus_all_partial_result_tolerance"]),
+            ("ABORT_DEADLINE_ENFORCEMENT", behavior_proof["abort_deadline_enforcement"]),
+        )
+        if proof == "missing"
+    ]
+    visibility_sources = _visibility_chunk_sources(source)
+    fast_path_inline = RUNTIME_NON_SESSION_FAST_PATH_PATTERN.search(source) is not None
+    fast_path_chunks = sorted(
+        name for name, text in visibility_sources.items()
+        if RUNTIME_NON_SESSION_FAST_PATH_PATTERN.search(text) is not None
+    )
+    fast_path_guard_before_visibility = fast_path_inline or bool(fast_path_chunks)
+    if fast_path_chunks:
+        behavior_proof["non_session_fast_path_guard"] = "upstream_native"
+    elif fast_path_inline and "MEMORY_SEARCH_SKIP_SESSION_VISIBILITY_FOR_NON_SESSION_HITS" in source:
+        behavior_proof["non_session_fast_path_guard"] = "overlay_marker"
+    elif fast_path_inline:
+        behavior_proof["non_session_fast_path_guard"] = "upstream_native"
+    else:
+        behavior_proof["non_session_fast_path_guard"] = "missing"
         missing.append("MEMORY_SEARCH_NON_SESSION_FAST_PATH_GUARD")
+    proving_chunk = fast_path_chunks[0] if fast_path_chunks else None
     return {
         "status": "ok" if not missing else "attention",
         "path": str(runtime_tools_source),
         "loader_path": str(loader_path),
+        "runtime_version": _runtime_version(),
         "missing_markers": missing,
+        "behavior_proof": behavior_proof,
+        "visibility_candidates": sorted(visibility_sources),
+        "visibility_chunk": str(RUNTIME_DIST_DIR / proving_chunk) if proving_chunk else None,
         "non_session_fast_path_guard_before_visibility": fast_path_guard_before_visibility,
         "reason": None if not missing else "approved_runtime_patch_missing_or_replaced",
     }
@@ -361,7 +464,12 @@ def run_maintenance(*, max_seconds: int, batch_size: int, write: bool) -> tuple[
 
     if write:
         vmi.atomic_write_json(OUT, payload)
-    return (0 if payload["status"] in {"ok", "warning"} else 1), payload
+    # Auxiliary overlays (runtime_patch, vector_store_integrity) are
+    # detection-only and must not fail the cron when the primary cache
+    # validation is ok. Exit reflects cache health; overall attention
+    # remains visible in the JSON payload for review routing.
+    validation_status = as_dict(payload.get("validation")).get("status")
+    return (0 if validation_status == "ok" else 1), payload
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:

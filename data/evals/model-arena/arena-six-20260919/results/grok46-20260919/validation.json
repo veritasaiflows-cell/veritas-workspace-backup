@@ -1,0 +1,238 @@
+{
+  "schema": "veritas.arena_six_candidate_validation.v1",
+  "validated_utc": "2026-09-20T00:44:20.436972Z",
+  "checks": {
+    "envelope_status_frozen": true,
+    "keys_digest_exact": true,
+    "matrix_rows_20": true,
+    "trajectories_12": true,
+    "all_prompt_hashes_frozen": true,
+    "all_prompt_exact": true,
+    "all_identity_exact": true,
+    "no_fallback_or_reroute": true,
+    "no_timeout_or_parse_failure": true,
+    "summary_denominators": true,
+    "strict_count_matches": true,
+    "factual_count_matches": true,
+    "format_count_matches": true,
+    "tools_count_matches": true,
+    "quarantine_restored": true,
+    "incumbent_comparison_source_hashed": true,
+    "two_layer_scoring_contract_explicit": true,
+    "t4_transcript_projection_present": true
+  },
+  "status": "ok",
+  "score": {
+    "strict": 9,
+    "factual": 10,
+    "format": 11,
+    "tools": 12
+  },
+  "incumbent_comparison": {
+    "glm53flash": {
+      "strict_trajectory_passes": 8,
+      "factual_trajectory_passes": 8,
+      "format_trajectory_passes": 11
+    },
+    "deepseek41flash": {
+      "strict_trajectory_passes": 8,
+      "factual_trajectory_passes": 10,
+      "format_trajectory_passes": 9
+    }
+  },
+  "incumbent_comparison_source": "incumbent-comparison.json",
+  "incumbent_comparison_full_summary": {
+    "glm53flash": {
+      "requested_model": "ollama-cloud/glm-5.3-flash:cloud",
+      "planned_trajectories": 12,
+      "graded_trajectories": 12,
+      "operationally_eligible_trajectories": 11,
+      "strict_trajectory_passes": 8,
+      "factual_trajectory_passes": 8,
+      "factual_eligible_trajectories": 11,
+      "format_trajectory_passes": 11,
+      "format_eligible_trajectories": 11,
+      "tools_trajectory_passes": 11,
+      "tools_eligible_trajectories": 11,
+      "cases": {
+        "T1-settlement-cascade": {
+          "strict_passes": 0,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 0,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T2-event-revert-ambiguity": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T3-evidence-retraction-chain": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T4-multihop-read-recovery": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T5-handoff-authority-control": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T6-induction-and-planning": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 1,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 1,
+          "format_passes": 1,
+          "format_eligible_repetitions": 1,
+          "tools_passes": 1,
+          "tools_eligible_repetitions": 1
+        }
+      }
+    },
+    "deepseek41flash": {
+      "requested_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "planned_trajectories": 12,
+      "graded_trajectories": 12,
+      "operationally_eligible_trajectories": 12,
+      "strict_trajectory_passes": 8,
+      "factual_trajectory_passes": 10,
+      "factual_eligible_trajectories": 12,
+      "format_trajectory_passes": 9,
+      "format_eligible_trajectories": 12,
+      "tools_trajectory_passes": 12,
+      "tools_eligible_trajectories": 12,
+      "cases": {
+        "T1-settlement-cascade": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T2-event-revert-ambiguity": {
+          "strict_passes": 1,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 1,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 1,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T3-evidence-retraction-chain": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T4-multihop-read-recovery": {
+          "strict_passes": 0,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": false,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 0,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T5-handoff-authority-control": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        },
+        "T6-induction-and-planning": {
+          "strict_passes": 2,
+          "repetitions": 2,
+          "operationally_eligible_repetitions": 2,
+          "pass_both_repetitions": true,
+          "factual_passes": 2,
+          "factual_eligible_repetitions": 2,
+          "format_passes": 2,
+          "format_eligible_repetitions": 2,
+          "tools_passes": 2,
+          "tools_eligible_repetitions": 2
+        }
+      }
+    }
+  },
+  "main_closure_checks": {
+    "incumbent_source_hash_matches_projection": true,
+    "report_evidence_links_exist": true,
+    "qa_followup_pass": true,
+    "qa_actual_model_glm53_exact": true,
+    "all_20_grok_terminal_receipts_exact": true,
+    "unsupported_assignment_phrase_removed": true,
+    "no_automatic_promotion_language": true,
+    "current_config_matches_last_good": true
+  },
+  "incumbent_source_hash_actual": "00159753ffd8fc1aa3cf33a2244994883083edc95ee61e87600c62f664128c12",
+  "config_proof": {
+    "task_config_write_attempts": 0,
+    "current_sha256": "3134d934de884b97f0f345915a66ba0a8f2aab854d676a1075ef886c3b8960d5",
+    "last_good_sha256": "3134d934de884b97f0f345915a66ba0a8f2aab854d676a1075ef886c3b8960d5",
+    "current_matches_last_good": true,
+    "note": "The benchmark lane executed no config write and no routing mutation."
+  }
+}

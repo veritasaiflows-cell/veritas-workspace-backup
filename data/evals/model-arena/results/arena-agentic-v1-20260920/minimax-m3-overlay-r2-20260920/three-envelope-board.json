@@ -1,0 +1,38 @@
+{
+  "schema": "veritas.arena_minimax_m3_three_envelope.v1",
+  "model": "ollama-cloud/minimax-m3:cloud",
+  "model_applied": true,
+  "fallback_applied": false,
+  "closed_at": "2026-09-20T18:21:56.203078-07:00",
+  "envelopes": {
+    "arena-six-20260919": {
+      "strict": "6/12",
+      "note": "T3/T4/T5 both reps pass; T1 and T2 fail both; T6 both operational timeout not retried"
+    },
+    "arena-agentic-v1-pre-overlay": {
+      "strict": "0/12",
+      "json_valid": null,
+      "dimensional": 0.0,
+      "note": "visible-only floor; not comparable to overlay-r2"
+    },
+    "arena-agentic-v1-overlay-r2": {
+      "strict": "10/12",
+      "dimensional": 0.8889,
+      "family_scores": {
+        "T1": 0.8334,
+        "T2": 1.0,
+        "T3": 1.0,
+        "T4": 1.0,
+        "T5": 0.5,
+        "T6": 1.0
+      },
+      "misses": [
+        "T1 36072319",
+        "T5 23273237"
+      ],
+      "note": "not comparable to pre-overlay or arena-six"
+    }
+  },
+  "routing_effect": "none",
+  "authority": "No routing, configuration, role, or execution authority follows."
+}

@@ -16,6 +16,53 @@ from typing import Any
 
 from lib.command_guard import command_is_review_only_safe
 from market_data_utils import atomic_write_json, load_json_artifact
+from wf74_improvement_opportunity_queue import select_actionable_planning_gap
+
+
+def project_planning_signal(planning_signal: dict[str, Any]) -> dict[str, Any]:
+    """Project raw planning history separately from trusted actionable debt.
+
+    Raw history (raw163-scale totals) is preserved verbatim; the partition is
+    trusted only when the signal schema is exact, counts are strict non-bool
+    ints, and reconciliation is exact, otherwise fail closed to raw with a
+    warning. Single source of selector meaning: wf74_improvement_opportunity_queue.
+    """
+    # Schema-exact trust: only veritas.planning_quality_signal.v1 may project a verified partition.
+    # Single source of meaning for the fail-closed selector: wf74_improvement_opportunity_queue.
+    selection = select_actionable_planning_gap(planning_signal)
+    if planning_signal.get("schema") != "veritas.planning_quality_signal.v1":
+        raw_gap = int(selection["raw_gap_count"])
+        warning = str(selection.get("warning") or "partition_fields_unavailable")
+        selection = {
+            "selected_gap_count": raw_gap,
+            "raw_gap_count": raw_gap,
+            "source": "raw_gap_fallback",
+            "warning": "planning_signal_schema_not_exact; " + warning,
+            "actionable_gap_count": planning_signal.get("plan_followthrough_actionable_gap_count"),
+            "terminal_unavailable_count": planning_signal.get("plan_followthrough_terminal_unavailable_count"),
+            "repaired_accepted_count": planning_signal.get("plan_followthrough_repaired_accepted_count"),
+            "partitioned_gap_row_count": planning_signal.get("partitioned_gap_row_count"),
+            "partition_reconciliation_ok": planning_signal.get("partition_reconciliation_ok"),
+        }
+    if selection["source"] == "actionable_partition_verified":
+        operational_status: Any = planning_signal.get("actionable_status") or (
+            "attention" if int(selection["selected_gap_count"]) else "ok"
+        )
+    else:
+        operational_status = "unverified_fallback"
+    return {
+        "planning_followthrough_gap_count": int(selection["raw_gap_count"]),
+        "planning_followthrough_gap_count_selected": int(selection["selected_gap_count"]),
+        "planning_followthrough_gap_source": selection["source"],
+        "planning_followthrough_actionable_gap_count": selection.get("actionable_gap_count"),
+        "planning_followthrough_terminal_unavailable_count": selection.get("terminal_unavailable_count"),
+        "planning_followthrough_repaired_accepted_count": selection.get("repaired_accepted_count"),
+        "planning_partitioned_gap_row_count": selection.get("partitioned_gap_row_count"),
+        "planning_partition_reconciliation_ok": selection.get("partition_reconciliation_ok"),
+        "planning_actionable_status": operational_status,
+        "planning_signal_schema": planning_signal.get("schema"),
+        "planning_gap_selection_warning": selection.get("warning"),
+    }
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -1428,6 +1475,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         cron_repair_plan_count = 1
     improvement_summary = as_dict(improvement_ledger.get("summary"))
     planning_signal = as_dict(as_dict(coding_outcome.get("ledger_summary")).get("planning_quality_signal"))
+    planning_projection = project_planning_signal(planning_signal)
     pm_summary = as_dict(pm_control.get("summary"))
     payload = {
         "schema": SCHEMA,
@@ -1496,7 +1544,17 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "high_priority_overdue_count": improvement_summary.get("high_priority_overdue_open_count"),
             "top_improvement_age_hours": improvement_summary.get("top_improvement_age_hours"),
             "planning_followthrough_clean_rate": planning_signal.get("plan_followthrough_clean_rate"),
-            "planning_followthrough_gap_count": planning_signal.get("plan_followthrough_gap_count"),
+            "planning_followthrough_gap_count": planning_projection["planning_followthrough_gap_count"],
+            "planning_followthrough_gap_count_selected": planning_projection["planning_followthrough_gap_count_selected"],
+            "planning_followthrough_gap_source": planning_projection["planning_followthrough_gap_source"],
+            "planning_followthrough_actionable_gap_count": planning_projection["planning_followthrough_actionable_gap_count"],
+            "planning_followthrough_terminal_unavailable_count": planning_projection["planning_followthrough_terminal_unavailable_count"],
+            "planning_followthrough_repaired_accepted_count": planning_projection["planning_followthrough_repaired_accepted_count"],
+            "planning_partitioned_gap_row_count": planning_projection["planning_partitioned_gap_row_count"],
+            "planning_partition_reconciliation_ok": planning_projection["planning_partition_reconciliation_ok"],
+            "planning_actionable_status": planning_projection["planning_actionable_status"],
+            "planning_signal_schema": planning_projection["planning_signal_schema"],
+            "planning_gap_selection_warning": planning_projection["planning_gap_selection_warning"],
             "pm_auto_main_executable_job_count_before_router": pm_summary.get("pm_implementation_queue_summary", {}).get("auto_main_executable_job_count")
             if isinstance(pm_summary.get("pm_implementation_queue_summary"), dict)
             else None,
@@ -1512,6 +1570,10 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             if (len(routed_opportunity_routes) + len(workflow_followups))
             else 1.0,
             "pm_job_closure_rate_source": "pm implementation completion ledger",
+            "planning_followthrough_gap_count_selected": planning_projection["planning_followthrough_gap_count_selected"],
+            "planning_followthrough_gap_source": planning_projection["planning_followthrough_gap_source"],
+            "planning_followthrough_actionable_gap_count": planning_projection["planning_followthrough_actionable_gap_count"],
+            "planning_actionable_status": planning_projection["planning_actionable_status"],
             "planning_followthrough_clean_rate": planning_signal.get("plan_followthrough_clean_rate"),
             "high_priority_overdue_count": improvement_summary.get("high_priority_overdue_open_count"),
             "average_age_of_top_open_improvement_hours": improvement_summary.get("top_improvement_age_hours"),

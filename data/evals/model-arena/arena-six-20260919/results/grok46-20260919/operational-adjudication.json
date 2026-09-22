@@ -1,0 +1,20 @@
+{
+  "schema": "veritas.arena_six_candidate_operational_adjudication.v1",
+  "model": "xai/grok-4.6",
+  "planned_trajectories": 12,
+  "planned_turns": 20,
+  "completed_turns": 20,
+  "operationally_eligible_trajectories": 12,
+  "timeouts": 0,
+  "identity_failures": 0,
+  "fallback_or_reroute_rows": 0,
+  "prompt_mismatches": 0,
+  "parse_failures": 0,
+  "duration_s": {
+    "min": 19.867,
+    "median": 49.598,
+    "max": 332.117,
+    "total": 1548.923
+  },
+  "classification": "All completed turns are capability-eligible. Latency is operational context only and is not included in capability scoring."
+}

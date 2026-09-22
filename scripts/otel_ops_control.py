@@ -36,6 +36,13 @@ DEFAULT_WINDOW_SUMMARY = TMP / "otel-ops-window-summary.json"
 DEFAULT_LEGACY_CONTROL_LOOP = TMP / "otel" / "control-loop.json"
 DEFAULT_FIELD_DEPTH_PACKET = TMP / "otel-field-depth-limited-owner-packet.json"
 DEFAULT_TOOL_WORKFLOW_METADATA = TMP / "otel-tool-workflow-metadata.json"
+DEFAULT_RUNTIME_PROBE_SUMMARY = TMP / "otel-runtime-metadata-probe.json"
+DEFAULT_TOKEN_DEPTH_SUMMARY = TMP / "otel-token-cost-metadata-depth-owner-packet.json"
+TELEMETRY_SUMMARY_FRESHNESS_SLA_HOURS = 24.0
+TELEMETRY_SUMMARY_MAX_BYTES = 262144
+TELEMETRY_SUMMARY_SCHEMAS = {"runtime_probe": "veritas.otel_runtime_metadata_probe.v1", "token_depth": "veritas.otel_token_cost_metadata_depth_owner_packet.v1"}
+RUNTIME_PROBE_BOOL_WHITELIST = ("runtime_metadata_observed", "metadata_depth_approved_enabled", "file_exporter_observed", "debug_log_observed", "runtime_metadata_learning_ready")
+RUNTIME_PROBE_COUNT_WHITELIST = ("allowed_field_count", "raw_content_marker_count", "secret_or_header_marker_count")
 
 # Randall approved this exact local-only collector depth configuration on
 # 2026-06-19. Similar keys in an arbitrary alternate config prove observation,
@@ -144,6 +151,117 @@ def parse_iso_utc(value: Any) -> datetime | None:
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)
     return dt.astimezone(timezone.utc)
+
+def _is_strict_bool(value):
+    return isinstance(value, bool)
+
+def _is_finite_nonneg_number(value):
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0 and value == value and value not in (float("inf"), float("-inf"))
+
+def _is_finite_nonneg_int(value):
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 0
+
+def _bounded_read_text(path, limit):
+    """Genuinely bounded stream read: request exactly limit+1 bytes, never whole file."""
+    with open(path, "rb") as fh:
+        data = fh.read(limit + 1)
+    if len(data) > limit:
+        return None, "oversize"
+    return data, None
+
+def load_telemetry_summary(path, expected_schema, sla_hours=TELEMETRY_SUMMARY_FRESHNESS_SLA_HOURS):
+    base = {"present": False, "fresh": False, "valid": False, "reason": "unknown"}
+    try:
+        p = Path(path)
+    except Exception:
+        return dict(base, reason="malformed_path")
+    try:
+        if not p.exists():
+            return dict(base, reason="missing")
+        if not p.is_file():
+            return dict(base, reason="malformed")
+        raw_bytes, over = _bounded_read_text(p, TELEMETRY_SUMMARY_MAX_BYTES)
+        if over == "oversize" or raw_bytes is None:
+            return dict(base, present=True, reason="oversize_not_consumed")
+        text = raw_bytes.decode("utf-8")
+        raw = json.loads(text)
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return dict(base, reason="malformed")
+    if not isinstance(raw, dict):
+        return dict(base, present=True, reason="malformed")
+    base["present"] = True
+    if raw.get("schema") != expected_schema:
+        return dict(base, present=True, reason="schema_mismatch")
+    dt = parse_iso_utc(raw.get("generated_at_utc"))
+    if dt is None:
+        return dict(base, present=True, reason="timestamp_malformed")
+    from datetime import datetime, timezone as _tz
+    age_hours = (datetime.now(_tz.utc) - dt).total_seconds() / 3600.0
+    if age_hours < 0 or age_hours > sla_hours:
+        return dict(base, present=True, reason="stale", generated_at_utc=raw.get("generated_at_utc"), age_hours=round(age_hours, 3), status=raw.get("status") if isinstance(raw.get("status"), str) else None)
+    status = raw.get("status")
+    if not isinstance(status, str) or not status:
+        return dict(base, present=True, reason="status_invalid")
+    validation = raw.get("validation") if isinstance(raw.get("validation"), dict) else None
+    if expected_schema == TELEMETRY_SUMMARY_SCHEMAS["runtime_probe"]:
+        if status != "ok":
+            return dict(base, present=True, reason="status_not_ok", status=status)
+        if validation is None or validation.get("status") != "ok":
+            return dict(base, present=True, reason="validation_not_ok", status=status)
+        if isinstance(raw.get("forbidden_findings"), list) and len(raw.get("forbidden_findings")) > 0:
+            return dict(base, present=True, reason="forbidden_findings_present", status=status)
+        blocked = raw.get("blocked_markers") if isinstance(raw.get("blocked_markers"), dict) else {}
+        for _k, _v in blocked.items():
+            if isinstance(_v, int) and _v > 0:
+                return dict(base, present=True, reason="blocked_marker_positive", status=status)
+        summary = raw.get("summary") if isinstance(raw.get("summary"), dict) else None
+        if summary is None:
+            return dict(base, present=True, reason="summary_missing", status=status)
+        out = {}
+        for k in RUNTIME_PROBE_BOOL_WHITELIST:
+            v = summary.get(k)
+            if not _is_strict_bool(v):
+                return dict(base, present=True, reason="whitelist_type_invalid:" + k, status=status)
+            out[k] = v
+        for k in RUNTIME_PROBE_COUNT_WHITELIST:
+            v = summary.get(k)
+            if k == "allowed_field_count":
+                if not _is_finite_nonneg_int(v):
+                    return dict(base, present=True, reason="whitelist_type_invalid:" + k, status=status)
+            else:
+                if not _is_finite_nonneg_number(v):
+                    return dict(base, present=True, reason="whitelist_type_invalid:" + k, status=status)
+                if v != 0:
+                    return dict(base, present=True, reason="raw_or_secret_marker_positive", status=status)
+            out[k] = v
+        for k in ("collector_log_age_hours", "freshest_evidence_age_hours"):
+            if k in summary:
+                v = summary[k]
+                if not _is_finite_nonneg_number(v):
+                    return dict(base, present=True, reason="whitelist_type_invalid:" + k, status=status)
+                out[k] = float(v)
+        return {"present": True, "fresh": True, "valid": True, "reason": "fresh_valid", "generated_at_utc": raw.get("generated_at_utc"), "age_hours": round(age_hours, 3), "status": status, "scalars": out}
+    else:
+        if "summary" in raw and isinstance(raw.get("summary"), dict) and len(raw.get("summary")) > 0:
+            return dict(base, present=True, reason="depth_summary_unexpected", status=status)
+        if status != "owner_decision_pending":
+            return dict(base, present=True, reason="depth_status_not_owner_gated", status=status)
+        if validation is None or validation.get("status") != "warning":
+            return dict(base, present=True, reason="depth_validation_not_warning", status=status)
+        cov = raw.get("patch_would_change_token_or_cost_coverage")
+        if not _is_strict_bool(cov):
+            return dict(base, present=True, reason="depth_coverage_type_invalid", status=status)
+        return {"present": True, "fresh": True, "valid": True, "reason": "fresh_valid_owner_gated", "generated_at_utc": raw.get("generated_at_utc"), "age_hours": round(age_hours, 3), "status": status, "scalars": {"patch_would_change_token_or_cost_coverage": cov}, "owner_gated": True}
+
+def build_telemetry_context(probe_path=DEFAULT_RUNTIME_PROBE_SUMMARY, depth_path=DEFAULT_TOKEN_DEPTH_SUMMARY):
+    probe = load_telemetry_summary(probe_path, TELEMETRY_SUMMARY_SCHEMAS["runtime_probe"])
+    depth = load_telemetry_summary(depth_path, TELEMETRY_SUMMARY_SCHEMAS["token_depth"])
+    warnings = []
+    for label, row in (("runtime_probe", probe), ("token_depth", depth)):
+        if not row.get("valid"):
+            warnings.append(str(label) + "_" + str(row.get("reason")))
+    ok = not warnings
+    return {"status": "ok" if ok else "warning", "runtime_probe": probe, "token_depth": depth, "warnings": warnings, "limits": ["counts/coverage/freshness only; no model ranking, finance correctness, or execution readiness claims", "metadata-only summaries; no raw spans/prompts/content/secrets; no full JSONL scan"]}
 
 
 def safe_json_from_line(line: str) -> dict[str, Any]:
@@ -697,7 +815,8 @@ def volume_normalization_recommendation(summary: dict[str, Any], drift: dict[str
     }
 
 
-def build_window_summary(events: list[dict[str, Any]], health: dict[str, Any], config: dict[str, Any]) -> dict[str, Any]:
+def build_window_summary(events: list[dict[str, Any]], health: dict[str, Any], config: dict[str, Any], telemetry: dict[str, Any] | None = None) -> dict[str, Any]:
+    telemetry = telemetry if isinstance(telemetry, dict) else build_telemetry_context()
     windows: list[dict[str, Any]] = []
     for spec in WINDOW_SPECS:
         summary = summarize_events(events, float(spec["window_hours"]))
@@ -752,6 +871,7 @@ def build_window_summary(events: list[dict[str, Any]], health: dict[str, Any], c
         "weekly_daily_buckets_utc": daily_buckets(events, 168.0),
         "trend_indicators": trend_indicators,
         "drift": drift,
+        "telemetry_context": {"status": telemetry.get("status"), "warnings": list(telemetry.get("warnings", [])), "runtime_probe": {"present": bool(as_dict(telemetry.get("runtime_probe")).get("present")), "fresh": bool(as_dict(telemetry.get("runtime_probe")).get("fresh")), "valid": bool(as_dict(telemetry.get("runtime_probe")).get("valid")), "reason": str(as_dict(telemetry.get("runtime_probe")).get("reason")), "scalars": dict(as_dict(as_dict(telemetry.get("runtime_probe")).get("scalars"))), "generated_at_utc": as_dict(telemetry.get("runtime_probe")).get("generated_at_utc")}, "token_depth": {"present": bool(as_dict(telemetry.get("token_depth")).get("present")), "fresh": bool(as_dict(telemetry.get("token_depth")).get("fresh")), "valid": bool(as_dict(telemetry.get("token_depth")).get("valid")), "reason": str(as_dict(telemetry.get("token_depth")).get("reason")), "status": as_dict(telemetry.get("token_depth")).get("status"), "owner_gated": True}},
         "next_safe_action": (
             "Keep 24h as the cron/PM control packet; use intraday windows manually after changes, "
             "use weekly trend for repeated friction, and use monthly baseline only for capacity/noise drift."
@@ -873,9 +993,18 @@ def field_depth_config_approval_identity(config: dict[str, Any]) -> dict[str, An
     }
 
 
-def build_actions(summary: dict[str, Any], config: dict[str, Any], health: dict[str, Any], drift: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+def build_actions(summary: dict[str, Any], config: dict[str, Any], health: dict[str, Any], drift: dict[str, Any] | None = None, telemetry: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     actions: list[dict[str, Any]] = []
     depth_identity = field_depth_config_approval_identity(config)
+    telemetry = telemetry if isinstance(telemetry, dict) else {"status": "warning", "warnings": ["telemetry_not_evaluated"], "runtime_probe": {"valid": False}, "token_depth": {"valid": False}}
+    if telemetry.get("status") != "ok":
+        actions.append({"id": "otel_telemetry_summary_stale_or_missing", "severity": "warning", "action_type": "operator_review", "owner": "openclaw-operator / WF74", "rationale": "Agent-telemetry summary is missing/stale/malformed (" + ", ".join(str(w) for w in as_dict(telemetry).get("warnings", []) if isinstance(w, str)) + "); counts are fail-closed, collector err-log health remains the separate signal.", "recommended_command": "python scripts\\otel_runtime_metadata_probe.py --write --write-md --validate", "status": "review"})
+    else:
+        probe_row = as_dict(telemetry.get("runtime_probe"))
+        scalars = as_dict(probe_row.get("scalars"))
+        depth_row = as_dict(telemetry.get("token_depth"))
+        depth_note = "owner_gated_depth_no_approval" if depth_row.get("owner_gated") else "depth_unexpected"
+        actions.append({"id": "otel_telemetry_summary_fresh", "severity": "info", "action_type": "cron_digest", "owner": "cron-automation-manager", "rationale": "Fresh runtime metadata observed=" + str(scalars.get("runtime_metadata_observed")) + " allowed_fields=" + str(scalars.get("allowed_field_count")) + " depth=" + depth_note + "; operational freshness/coverage only.", "recommended_command": "python scripts\\otel_ops_control.py --write --write-db --multi-window --validate", "status": "ready"})
     if health.get("status") != "ok":
         actions.append({
             "id": "otel_collector_not_listening",
@@ -1059,7 +1188,8 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     health = collector_health()
     config = collector_config_posture(args.collector_config)
     drift = drift_summary(events)
-    actions = build_actions(summary, config, health, drift)
+    telemetry = build_telemetry_context(args.runtime_probe_summary, args.token_depth_summary)
+    actions = build_actions(summary, config, health, drift, telemetry)
     tool_workflow_metadata = as_dict(load_json_artifact(args.tool_workflow_metadata))
     tool_workflow_summary = as_dict(tool_workflow_metadata.get("summary"))
     sqlite_summary: dict[str, Any] = {}
@@ -1164,6 +1294,8 @@ def main() -> int:
     parser.add_argument("--legacy-control-loop-out", type=Path, default=DEFAULT_LEGACY_CONTROL_LOOP)
     parser.add_argument("--field-depth-packet-out", type=Path, default=DEFAULT_FIELD_DEPTH_PACKET)
     parser.add_argument("--tool-workflow-metadata", type=Path, default=DEFAULT_TOOL_WORKFLOW_METADATA)
+    parser.add_argument("--runtime-probe-summary", type=Path, default=DEFAULT_RUNTIME_PROBE_SUMMARY)
+    parser.add_argument("--token-depth-summary", type=Path, default=DEFAULT_TOKEN_DEPTH_SUMMARY)
     parser.add_argument("--window-hours", type=float, default=24.0)
     parser.add_argument("--multi-window", action="store_true", help="also write the 1h/6h/24h/7d/30d operational window summary")
     parser.add_argument("--write", action="store_true")
@@ -1181,6 +1313,7 @@ def main() -> int:
             all_events,
             payload.get("collector_health", {}),
             payload.get("collector_config", {}),
+            build_telemetry_context(args.runtime_probe_summary, args.token_depth_summary),
         )
     compat_payload = build_control_loop_compat(payload, window_payload)
     if args.write:

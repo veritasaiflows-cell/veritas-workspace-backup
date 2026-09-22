@@ -6,7 +6,7 @@ This directory is the active human-readable finance canon.
 
 - `Investor Profile.md` owns Randall's finance-intelligence preferences, risk context, cadence, and decision boundaries.
 - `Alert Trigger Policy.md` owns generic alert states, trigger logic, freshness rules, and recommendation requirements.
-- `Alert Bands and Invalidation Register.md` owns the tracked-name thesis register and routes exact current levels to guarded SQL evidence.
+- `Alert Bands and Invalidation Register.md` owns tracked-name thesis and alert interpretation only. Exact current levels and invalidation thresholds live in guarded SQL `reference_levels`; the markdown numeric table is a historical snapshot, not live canon.
 - `Alert Operations Board.md` owns the read-only operating routes and acceptance checks.
 
 Guarded SQL current state owns machine-readable ticker identity, routing tier, evidence freshness, source lineage, and reference-level values. Markdown owns human policy, thesis context, and alert interpretation. Generated packets are evidence, never approval.

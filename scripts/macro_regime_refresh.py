@@ -14,7 +14,7 @@ Output:
 
 Chain placement:
     After: policy_expectations_refresh.py, credit_spread_refresh.py,
-           breadth_refresh.py, market_state_refresh.py
+           breadth_refresh.py
     Before: regime_scoring_refresh.py
 
 Usage:

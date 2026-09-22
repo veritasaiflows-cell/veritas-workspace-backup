@@ -35,10 +35,26 @@ REVIEW_EVENT_SCHEMA = "veritas.wf88_wiki_review_events.v1"
 REVIEW_EVENT_FILENAME = "wf88-wiki-review-events.json"
 STARTUP_EFFICIENCY_SEMANTIC_SCHEMA = implementation_router.EFFICIENCY_SEMANTIC_CONTRACT_SCHEMA
 
+# SOURCES membership rule (2026-09-18 owner decision, Randall):
+# an entry belongs here only if it backs a claim_index claim via source_refs, supplies substantive
+# rendered page content, or is advertised as a source artifact in a page_header list. An entry
+# doing none of those is read, hashed, and discarded every build while implying the wiki is derived
+# from it.
+#
+# Two traps when applying this rule, both hit on 2026-09-18:
+#   1. page_header() source lists are hard-coded path strings, NOT derived from SOURCES. Grep the
+#      path ("tmp/foo.json"), never the key ("foo"), or a live reference reads as dead. This is why
+#      route_efficiency_scorecard stays: Current Map.md advertises its path at the page_header call.
+#   2. "Output unchanged" is not the test. Every entry's path is rendered into the Source Map page
+#      and into page_header lists, so removing any entry always shrinks those pages. That delta is
+#      self-referential and proves nothing about whether the source did work.
+#
+# Removed under this rule: otel_ops_window_summary, veritas_harness_scorecard -- each referenced
+# nowhere in this file but its own declaration, by key or by path. Both remain produced and consumed
+# by other scripts; only their unused wiki-packet declaration is gone. Re-adding is one line.
 SOURCES = {
     "wf88_os2_control": {"path": "tmp/wf88-os2-control-packet.json", "required": True, "max_age_hours": 24},
     "otel_ops_control": {"path": "tmp/otel-ops-control.json", "required": True, "max_age_hours": 24},
-    "otel_ops_window_summary": {"path": "tmp/otel-ops-window-summary.json", "required": False, "max_age_hours": 24},
     "model_learning_metadata_ledger": {"path": "tmp/model-learning-metadata-ledger.json", "required": True, "max_age_hours": 24},
     "wf74_improvement_opportunity_queue": {"path": "tmp/wf74-improvement-opportunity-queue.json", "required": True, "max_age_hours": 24},
     "wf74_reflection_to_proposal_autopilot": {"path": "tmp/wf74-reflection-to-proposal-autopilot.json", "required": True, "max_age_hours": 24},
@@ -50,12 +66,17 @@ SOURCES = {
     "wf74_learning_loop_eval_harness": {"path": "tmp/wf74-learning-loop-eval-harness.json", "required": True, "max_age_hours": 72},
     "wf74_outcome_eval_suite_v2": {"path": "tmp/wf74-outcome-eval-suite-v2.json", "required": True, "max_age_hours": 168},
     "model_quality_scorecard": {"path": "tmp/model-quality-scorecard.json", "required": True, "max_age_hours": 72},
-    "veritas_harness_scorecard": {"path": "tmp/veritas-harness-scorecard.json", "required": False, "max_age_hours": 168},
     "retrieval_quality_scorecard": {"path": "tmp/retrieval-quality-scorecard.json", "required": True, "max_age_hours": 168},
-    "frontier_capability_eval_spine": {"path": "tmp/frontier-capability-eval-spine.json", "required": True, "max_age_hours": 168},
+    # 2026-09-18 owner decision (Randall): demoted from required. Fixture-only sources with zero
+    # executed results; they keep running and their zero-evidence warnings stay visible, but the
+    # wiki no longer asserts currency it cannot back. Reversible by restoring required: True.
+    "frontier_capability_eval_spine": {"path": "tmp/frontier-capability-eval-spine.json", "required": False, "max_age_hours": 168},
     "wf88_decision_compiler": {"path": "tmp/wf88-decision-compiler.json", "required": True, "max_age_hours": 24},
     "rsi_outcome_scorecard": {"path": "tmp/rsi-outcome-scorecard.json", "required": True, "max_age_hours": 24},
-    "advanced_capability_pilot_packet": {"path": "tmp/advanced-capability-pilot-packet.json", "required": True, "max_age_hours": 168},
+    "advanced_capability_pilot_packet": {"path": "tmp/advanced-capability-pilot-packet.json", "required": False, "max_age_hours": 168},
+    # Keep: advertised as a source artifact on wiki/scorecards-and-evals/Current Map.md via a
+    # hard-coded path string, not via this key. Removing it here would leave that page claiming an
+    # input the packet no longer opens, freshness-checks, or hashes.
     "route_efficiency_scorecard": {"path": "tmp/route-efficiency-scorecard.json", "required": False, "max_age_hours": 24},
     "token_usage_ledger": {"path": "tmp/token-usage-ledger-current.json", "required": False, "max_age_hours": 24},
     "token_budget_status": {"path": "tmp/token-budget-status.json", "required": False, "max_age_hours": 24},

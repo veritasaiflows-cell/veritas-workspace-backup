@@ -9,7 +9,7 @@ Usage:
     python scripts/deployment_check.py
 
 No network calls. Reads only from the tmp/ cache files written by
-technical_refresh.py and market_state_refresh.py.
+technical_refresh.py; the market-state source is retired and optional.
 
 Outputs:
     tmp/deployment-check.json   -- structured deployment-state summary
@@ -269,7 +269,7 @@ def main() -> None:
     if state_age is not None:
         state_age_str = "Market-state data: " + fmt_age(state_age)
         if state_stale:
-            state_age_str += "  *** STALE -- run market_state_refresh.py ***"
+            state_age_str += "  *** STALE -- market-state source is retired ***"
         print("  " + state_age_str)
     elif state_warning:
         print("  Market-state data: unavailable -- " + state_warning)

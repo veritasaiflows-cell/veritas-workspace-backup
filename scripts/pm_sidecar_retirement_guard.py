@@ -128,6 +128,26 @@ def is_tmp_lifecycle_rollback_proof(path: str) -> bool:
     return path.startswith("state/tmp-lifecycle-rollback/")
 
 
+def is_generated_cleanup_hash_cache(path: str) -> bool:
+    return path == "state/tmp-cleanup-hash-cache.json"
+
+
+def classify_finding(path: str, sidecar: str) -> tuple[str, str | None]:
+    if is_current_derived_pm_surface(sidecar):
+        return "allowed", "current derived PM lookup, not retired sidecar"
+    if path in ALLOWED_FILES or is_generated_capsule(path):
+        return "allowed", "legacy producer/fallback or generated capsule"
+    if is_completion_ledger_proof(path):
+        return "allowed", "historical completion-ledger proof snapshot, not active PM consumer"
+    if is_tmp_lifecycle_rollback_proof(path):
+        return "allowed", "historical tmp lifecycle rollback proof, not active PM consumer"
+    if is_generated_cleanup_hash_cache(path):
+        return "allowed", "generated cleanup hash cache inventory, not active PM consumer"
+    if path in WARNING_ONLY_FILES:
+        return "warning", "documentation/source-registry cleanup pending"
+    return "error", None
+
+
 def build_report() -> dict[str, Any]:
     findings: list[dict[str, Any]] = []
     for path in source_files():
@@ -138,16 +158,11 @@ def build_report() -> dict[str, Any]:
     for finding in findings:
         path = str(finding.get("path"))
         sidecar = str(finding.get("sidecar") or "")
-        if is_current_derived_pm_surface(sidecar):
-            allowed.append({**finding, "reason": "current derived PM lookup, not retired sidecar"})
-        elif path in ALLOWED_FILES or is_generated_capsule(path):
-            allowed.append({**finding, "reason": "legacy producer/fallback or generated capsule"})
-        elif is_completion_ledger_proof(path):
-            allowed.append({**finding, "reason": "historical completion-ledger proof snapshot, not active PM consumer"})
-        elif is_tmp_lifecycle_rollback_proof(path):
-            allowed.append({**finding, "reason": "historical tmp lifecycle rollback proof, not active PM consumer"})
-        elif path in WARNING_ONLY_FILES:
-            warnings.append({**finding, "reason": "documentation/source-registry cleanup pending"})
+        bucket, reason = classify_finding(path, sidecar)
+        if bucket == "allowed":
+            allowed.append({**finding, "reason": reason})
+        elif bucket == "warning":
+            warnings.append({**finding, "reason": reason})
         else:
             errors.append(finding)
     return {

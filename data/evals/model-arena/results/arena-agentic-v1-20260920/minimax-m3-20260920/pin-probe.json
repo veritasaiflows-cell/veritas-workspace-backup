@@ -1,0 +1,9 @@
+{
+  "schema": "veritas.arena_model_pin_probe.v1",
+  "requested_model": "ollama-cloud/minimax-m3:cloud",
+  "resolved_model": "ollama-cloud/minimax-m3:cloud",
+  "model_applied": true,
+  "fallback_applied": false,
+  "probe_ok": true,
+  "run_id": "d4c0bffe-fff7-45ee-8fd6-0fe7f2e98098"
+}

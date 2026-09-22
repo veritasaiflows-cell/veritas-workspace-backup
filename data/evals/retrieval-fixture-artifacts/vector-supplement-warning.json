@@ -1,0 +1,12 @@
+{
+  "authority_boundary": {
+    "approval_authority": false,
+    "creates_canon": false,
+    "derived_index_only": true,
+    "owner_approval_inferred": false,
+    "routes_to_exact_sources": true
+  },
+  "note": "Deterministic fixture artifact for warning/unvalidated vector supplement cases; supplement only, never final authority.",
+  "schema": "veritas.retrieval_fixture_vector_warning.v1",
+  "status": "warning"
+}

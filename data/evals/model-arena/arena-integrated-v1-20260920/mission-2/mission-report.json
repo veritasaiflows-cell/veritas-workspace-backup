@@ -1,0 +1,14 @@
+{
+  "errors": [],
+  "file_sha256": {
+    "checkpoint.json": "9bb24139d6e286f00f80326cf481c074a3901bc080d71c56aedbe2c49d5ffa19",
+    "request.md": "26a43d9078235b036439a3d871ed13fc9ab274cf9f9e147cd648335bbc0a8648",
+    "sources/incident.json": "59e3986fca12db54cbb5ac7ef85a7367cd759ae4dfd52105feafa8bb91eef7e3"
+  },
+  "hidden_expectation_sha256": "825c768e3441e2c008b30179d4afd053d0930c859dd0b7470b18c7c9bbdd0015",
+  "mission_id": "arena-integrated-m2-20260920",
+  "producer": "scripts/arena_integrated_mission.py",
+  "schema": "veritas.arena_integrated_mission.v1",
+  "status": "ok",
+  "version": "arena-integrated-m2-20260920-r1"
+}

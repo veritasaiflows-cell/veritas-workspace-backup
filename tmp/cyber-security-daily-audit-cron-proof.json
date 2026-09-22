@@ -1,36 +1,33 @@
 {
-  "status": "blocked",
-  "generated_at_utc": "2026-09-07T00:12:03Z",
-  "proof_status": "blocked",
-  "runner_started_at_utc": "2026-09-07T00:10:00Z",
-  "runner_finished_at_utc": "2026-09-07T00:12:03Z",
+  "status": "ok",
+  "generated_at_utc": "2026-09-22T00:14:26Z",
+  "proof_status": "ok",
+  "runner_started_at_utc": "2026-09-22T00:10:00Z",
+  "runner_finished_at_utc": "2026-09-22T00:14:26Z",
   "command": "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe C:\\Users\\Veritas\\.openclaw\\workspace\\scripts\\cyber_security_daily_audit.py",
-  "audit_exit_code": 1,
+  "audit_exit_code": 0,
   "audit_timed_out": false,
   "audit_artifact": "tmp\\cyber-security-daily-audit.json",
-  "audit_generated_at_utc": "2026-09-07T00:12:03Z",
+  "audit_generated_at_utc": "2026-09-22T00:14:25Z",
   "artifact_fresh_for_runner": true,
-  "audit_status": "critical",
-  "audit_stop_line": true,
+  "audit_status": "warning",
+  "audit_stop_line": false,
   "operator_action_required": true,
-  "next_action": "Inspect the attached findings before trusting the workspace posture.",
-  "operator_action": "BLOCKED",
-  "errors": [
-    "audit script exited nonzero: 1",
-    "audit stop line active: status='critical' stop_line=True"
-  ],
-  "stdout_tail": "everity\": \"warning\",\n          \"issue\": \"Workspace Structure Protocol no longer states that a root 00/ layer is disallowed\",\n          \"recommendation\": \"Restore the no-root-00 rule or document the approved structural change.\"\n        },\n        {\n          \"check_id\": \"db_lifecycle_tools_route_missing\",\n          \"severity\": \"warning\",\n          \"issue\": \"TOOLS.md does not make the DB lifecycle manifest discoverable enough for weekly hygiene\",\n          \"recommendation\": \"Add a DB lifecycle route that points at db_lifecycle_manifest.py --write --validate and preserves owner approval before archive/delete.\",\n          \"evidence\": {\n            \"missing_terms\": [\n              \"db lifecycle route\",\n              \"db_lifecycle_manifest.py\",\n              \"tmp/db-lifecycle-manifest.json\",\n              \"db_lifecycle_archive_apply.py\",\n              \"explicit owner approval\",\n              \"delete\"\n            ]\n          }\n        },\n        {\n          \"check_id\": \"db_lifecycle_archive_ready_owner_decision\",\n          \"severity\": \"warning\",\n          \"issue\": \"DB lifecycle manifest has archive-ready candidates awaiting owner decision\",\n          \"recommendation\": \"Review the manifest and use db_lifecycle_archive_apply.py only after explicit owner approval.\",\n          \"evidence\": {\n            \"archive_ready_count\": 2\n          }\n        },\n        {\n          \"check_id\": \"db_lifecycle_finance_snapshot_missing\",\n          \"severity\": \"warning\",\n          \"issue\": \"finance-stack-snapshot.sqlite is not represented in the DB lifecycle manifest\",\n          \"recommendation\": \"Regenerate the manifest or update lifecycle rules if the snapshot was intentionally archived.\"\n        },\n        {\n          \"check_id\": \"tools_channel_hardening_claim\",\n          \"severity\": \"warning\",\n          \"issue\": \"TOOLS.md no longer states the current channel hardening posture clearly enough to verify\",\n          \"recommendation\": \"Keep the no-channel posture or the approved Telegram exception explicit before trusting channel expansion.\"\n        },\n        {\n          \"check_id\": \"chat_channel_enabled\",\n          \"severity\": \"critical\",\n          \"issue\": \"An enabled chat channel appears in config without a matching approved exception\",\n          \"recommendation\": \"Disable the channel again or update TOOLS.md only after intentional operator approval.\",\n          \"evidence\": {\n            \"channel\": \"telegram\"\n          }\n        },\n        {\n          \"check_id\": \"telegram_plugin_enabled\",\n          \"severity\": \"critical\",\n          \"issue\": \"Telegram plugin appears enabled without a matching approved exception\",\n          \"recommendation\": \"Disable Telegram plugin again or update TOOLS.md only after intentional operator approval.\"\n        },\n        {\n          \"check_id\": \"telegram_owner_allow_present\",\n          \"severity\": \"critical\",\n          \"issue\": \"Telegram owner allow entries appear without a matching approved exception\",\n          \"recommendation\": \"Remove stale Telegram owner authority or document the approved policy change.\"\n        }\n      ]\n    },\n    {\n      \"severity\": \"info\",\n      \"source\": \"windows_firewall\",\n      \"message\": \"All Windows Firewall profiles are enabled.\",\n      \"evidence\": [\n        {\n          \"Name\": \"Domain\",\n          \"Enabled\": 1,\n          \"DefaultInboundAction\": 0,\n          \"DefaultOutboundAction\": 0\n        },\n        {\n          \"Name\": \"Private\",\n          \"Enabled\": 1,\n          \"DefaultInboundAction\": 0,\n          \"DefaultOutboundAction\": 0\n        },\n        {\n          \"Name\": \"Public\",\n          \"Enabled\": 1,\n          \"DefaultInboundAction\": 0,\n          \"DefaultOutboundAction\": 0\n        }\n      ]\n    },\n    {\n      \"severity\": \"info\",\n      \"source\": \"windows_antivirus\",\n      \"message\": \"A third-party antivirus product is registered while Defender realtime protection is off.\",\n      \"evidence\": {\n        \"products\": [\n          \"Windows Defender\",\n          \"McAfee\"\n        ]\n      }\n    }\n  ]\n}\n",
+  "next_action": "Keep browser disabled and off the allowlist unless interactive automation is intentionally needed.",
+  "operator_action": "NO_REPLY",
+  "errors": [],
+  "stdout_tail": "nfo\",\n          \"issue\": \"Python runtime cache; non-canonical debris\",\n          \"recommended_action\": \"keep ignored or remove when safe; never treat as operating evidence\"\n        },\n        {\n          \"path\": \"scripts/lib/__pycache__/\",\n          \"severity\": \"info\",\n          \"issue\": \"Python runtime cache; non-canonical debris\",\n          \"recommended_action\": \"keep ignored or remove when safe; never treat as operating evidence\"\n        },\n        {\n          \"path\": \"scripts/operators/__pycache__/\",\n          \"severity\": \"info\",\n          \"issue\": \"Python runtime cache; non-canonical debris\",\n          \"recommended_action\": \"keep ignored or remove when safe; never treat as operating evidence\"\n        },\n        {\n          \"path\": \"tmp/workspace-index.sqlite\",\n          \"severity\": \"info\",\n          \"issue\": \"generated SQLite retrieval cache\",\n          \"recommended_action\": \"retain ignored; source Markdown remains canonical\"\n        },\n        {\n          \"path\": \"tmp/veritas-command-center.last-good.html\",\n          \"severity\": \"info\",\n          \"issue\": \"last-known-good dashboard fallback generated by finance chain\",\n          \"recommended_action\": \"retain while run_finance_refresh_chain.py references it as fallback\"\n        }\n      ]\n    },\n    {\n      \"severity\": \"info\",\n      \"source\": \"dashboard_truth_lint\",\n      \"message\": \"dashboard_truth_lint passed cleanly.\",\n      \"evidence\": {\n        \"findings\": 1,\n        \"warnings\": 0,\n        \"info\": 1\n      }\n    },\n    {\n      \"severity\": \"warning\",\n      \"source\": \"workspace_governance_truth_check\",\n      \"message\": \"workspace_governance_truth_check returned warning-grade output.\",\n      \"remediation\": \"Review the listed findings and decide whether cleanup or documentation is needed.\",\n      \"evidence\": [\n        {\n          \"check_id\": \"wf40_residual_proof_exception_active\",\n          \"severity\": \"info\",\n          \"issue\": \"WF40 is intentionally left as residual scheduled-proof watch while another approved workflow remains active\",\n          \"recommendation\": \"Keep this confirmation watch documented until one ordinary scheduled WF40 proof is clean, then record the confirmation explicitly.\",\n          \"evidence\": {\n            \"active_workflow_found\": \"88\",\n            \"wf40_registry_row_found\": true\n          }\n        },\n        {\n          \"check_id\": \"db_lifecycle_archive_ready_owner_decision\",\n          \"severity\": \"warning\",\n          \"issue\": \"DB lifecycle manifest has archive-ready candidates awaiting owner decision\",\n          \"recommendation\": \"Review the manifest and use db_lifecycle_archive_apply.py only after explicit owner approval.\",\n          \"evidence\": {\n            \"archive_ready_count\": 2\n          }\n        },\n        {\n          \"check_id\": \"db_lifecycle_finance_snapshot_missing\",\n          \"severity\": \"warning\",\n          \"issue\": \"finance-stack-snapshot.sqlite is not represented in the DB lifecycle manifest\",\n          \"recommendation\": \"Regenerate the manifest or update lifecycle rules if the snapshot was intentionally archived.\"\n        }\n      ]\n    },\n    {\n      \"severity\": \"info\",\n      \"source\": \"windows_firewall\",\n      \"message\": \"All Windows Firewall profiles are enabled.\",\n      \"evidence\": [\n        {\n          \"Name\": \"Domain\",\n          \"Enabled\": 1,\n          \"DefaultInboundAction\": 0,\n          \"DefaultOutboundAction\": 0\n        },\n        {\n          \"Name\": \"Private\",\n          \"Enabled\": 1,\n          \"DefaultInboundAction\": 0,\n          \"DefaultOutboundAction\": 0\n        },\n        {\n          \"Name\": \"Public\",\n          \"Enabled\": 1,\n          \"DefaultInboundAction\": 0,\n          \"DefaultOutboundAction\": 0\n        }\n      ]\n    },\n    {\n      \"severity\": \"info\",\n      \"source\": \"windows_antivirus\",\n      \"message\": \"A third-party antivirus product is registered while Defender realtime protection is off.\",\n      \"evidence\": {\n        \"products\": [\n          \"Windows Defender\",\n          \"McAfee\"\n        ]\n      }\n    }\n  ]\n}\n",
   "stderr_tail": "",
   "input_signature": {
     "algorithm": "sha256",
-    "hash": "394e7ff1873e164ba8749fddc63fa1fd9bba6cb7d4b1b3e09b0a1066e43dce09",
+    "hash": "7747deb8fff442f0e915cc3611f86db88f7d19827e48bb511a76d37dc2cd1bb4",
     "source_count": 7,
     "sources": [
       {
         "label": "openclaw_config",
         "path": "C:/Users/Veritas/.openclaw/openclaw.json",
         "exists": true,
-        "sha256": "606753134602fcdef01efffec9461f8ec1a0f95a1ba316a850a9f07c5f840154"
+        "sha256": "e62615617a8bee4bef6c7206331d9106aa085283c734c1b73fe2c6e6afa11f2d"
       },
       {
         "label": "exec_approvals",
@@ -66,7 +63,7 @@
         "label": "workspace_governance_truth_check",
         "path": "scripts/workspace_governance_truth_check.py",
         "exists": true,
-        "sha256": "32a7b44374160383fd864a0fbc17c51f88904485e9c7c503e838d7648e794955"
+        "sha256": "10ad1e906e3c49f0a435098dbaeb0fdfc36490f642fc51a3764dcbbd528465ca"
       }
     ]
   },
@@ -77,17 +74,17 @@
     "source_unchanged": false,
     "previous_proof_exists": true,
     "previous_audit_exists": true,
-    "previous_proof_age_hours": 71.925,
-    "previous_audit_age_hours": 71.925,
+    "previous_proof_age_hours": 23.94,
+    "previous_audit_age_hours": 23.94,
     "max_age_hours": 30.0,
     "unchanged_warning_max_age_hours": 96.0,
-    "previous_proof_status": "blocked",
-    "previous_audit_status": "critical",
-    "previous_audit_stop_line": true,
-    "previous_input_hash": "fbdcca5159f806efa2b4d54e2b10b1bd1cdeefbfba2098a9a080fbcf3ca68eda",
-    "current_input_hash": "394e7ff1873e164ba8749fddc63fa1fd9bba6cb7d4b1b3e09b0a1066e43dce09",
-    "previous_audit_input_hash_without_runner": "f7e229b936b2c99fe3aa5c0a3ecb8b12cc48007f0f87f2001b992f8d2d69bdd9",
-    "current_audit_input_hash_without_runner": "1d7541fc184bbe6192d07d368b45a07ae036a4c97e626966e4fb31b2bd8d7e67",
+    "previous_proof_status": "ok",
+    "previous_audit_status": "warning",
+    "previous_audit_stop_line": false,
+    "previous_input_hash": "f2dc5409b6751f2090f298c511b957be4a66c48352d573b669d3a27dc7042f23",
+    "current_input_hash": "7747deb8fff442f0e915cc3611f86db88f7d19827e48bb511a76d37dc2cd1bb4",
+    "previous_audit_input_hash_without_runner": "ae8626d5abe29118b146a45e5c8ad57a74bb1d725f40a91eca7937b5310fc449",
+    "current_audit_input_hash_without_runner": "fc2969777d777ae52f7565973696917acde45fa3f51a04e655a28bff885380ed",
     "meaning": "Reuse is allowed when security inputs are unchanged and prior proof/audit are non-critical, using a longer warning-only TTL to avoid rerunning unchanged audits into scheduler timeouts."
   }
 }

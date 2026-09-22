@@ -20,7 +20,8 @@
       "resume_condition": "Resume only when Randall explicitly resumes WF75.",
       "aliases": [
         "retail_investor_finance_intelligence_saas",
-        "workflow_75"
+        "workflow_75",
+        "wf75_service_state"
       ],
       "next_action": "Do not advance this workflow. Preserve artifacts and boundary proof only."
     },
@@ -159,7 +160,7 @@
       "set_at_utc": "2026-08-30T03:50:00Z",
       "reason": "Retired by Randall's alerts-and-recommendations OS pivot because WF78 maintained tier, sizing, deployment, and promotion state.",
       "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
-      "aliases": ["workflow_78"],
+      "aliases": ["workflow_78", "wf78_scaleout"],
       "next_action": "Preserve historical proof only; use guarded SQL, explicit quote proof, the alert controller, WF84, and WF85."
     },
     "wf79": {

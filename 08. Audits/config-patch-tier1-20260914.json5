@@ -1,0 +1,28 @@
+// Tier 1 config proposal — companion to
+// "Tooling Capability and Efficiency Opportunity Audit - 2026-09-14.md"
+//
+// Apply with:   openclaw config patch --file "08. Audits\config-patch-tier1-20260914.json5"
+// Preview with: openclaw config patch --file "08. Audits\config-patch-tier1-20260914.json5" --dry-run
+//
+// Scope is deliberately TWO keys. See the audit's revised Tier 1 section for why
+// toolSearch and compaction were dropped from this patch.
+{
+  agents: {
+    defaults: {
+      // Pruning is OFF for non-Anthropic providers, which includes our primary
+      // route openai/gpt-6-astra. This turns it on.
+      //
+      // ttl is set EXPLICITLY to "1h" on purpose. Authoring contextPruning.mode
+      // stops the bundled Anthropic plugin from seeding its own defaults, and an
+      // unset ttl would then fall back to 5m — tighter than the 1h the Anthropic
+      // routes get today. "1h" preserves current Anthropic behavior while
+      // extending pruning to the Astra route.
+      contextPruning: { mode: "cache-ttl", ttl: "1h" },
+
+      // Anthropic direct is seeded "short" (5m) today; OpenAI gets no explicit
+      // marker. "long" requests a 1h TTL on Anthropic and prompt_cache_options
+      // ttl 30m on GPT-5.6+ (our gpt-6-astra qualifies).
+      params: { cacheRetention: "long" },
+    },
+  },
+}

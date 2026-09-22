@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import agent_fleet_policy as fleet_policy
 from lib.pm_control_reader import main_session_handoff
 from market_data_utils import atomic_write_json, load_json_artifact
 
@@ -22,21 +23,31 @@ DEFAULT_HANDOFF = TMP / "pm-control-packet.json"
 DEFAULT_OUT = TMP / "helper-spawn-packets.json"
 
 SCHEMA = "veritas.helper_spawn_packets.v3"
-ASSIGNMENT_CONTRACT_REVISION = "2026-08-12.schema-bound-post-apply-qa.v3"
+ASSIGNMENT_CONTRACT_REVISION = "2026-09-19.live-model-spawn-conformance.v4"
 DEFAULT_MODEL_ROUTE = {
-    "model": "openai/gpt-5.6-terra",
+    "model": fleet_policy.BUILDER_MODEL,
     "reasoning": "medium",
     "role": "bounded_implementation",
 }
 MATERIAL_QA_MODEL_ROUTE = {
-    "model": "openai/gpt-5.6-terra",
+    "model": fleet_policy.GLM_MODEL,
     "reasoning": "high",
     "role": "material_independent_qa",
 }
 ROUTINE_READ_MODEL_ROUTE = {
-    "model": "openai/gpt-5.6-terra",
+    "model": fleet_policy.GLM_MODEL,
     "reasoning": "low",
     "role": "bounded_read_only_helper",
+}
+FINANCE_EVIDENCE_MODEL_ROUTE = {
+    "model": fleet_policy.primary_model_for("finance-source-scout"),
+    "reasoning": "low",
+    "role": "bounded_finance_evidence_helper",
+}
+DOCS_CONTINUITY_MODEL_ROUTE = {
+    "model": fleet_policy.primary_model_for("docs-continuity-editor"),
+    "reasoning": "low",
+    "role": "bounded_docs_continuity_helper",
 }
 DEFAULT_CONTEXT_BUDGET = {
     "max_files": 6,
@@ -68,6 +79,10 @@ REQUIRED_HANDOFF_CONTRACT_FLAGS = {
     "hash_matched_qa_result_and_output_artifacts_required",
     "main_applied_diff_and_qa_before_acceptance_required",
     "closeout_revalidation_before_synthesis_required",
+    "policy_primary_model_match_required",
+    "live_config_model_match_required",
+    "sessions_spawn_dispatch_contract_required",
+    "actual_model_receipt_required_at_closeout",
 }
 
 AUTHORITY_BOUNDARY = {
@@ -205,6 +220,10 @@ def packet(
             "hash_matched_qa_result_and_output_artifacts_required": True,
             "main_applied_diff_and_qa_before_acceptance_required": True,
             "closeout_revalidation_before_synthesis_required": True,
+            "policy_primary_model_match_required": True,
+            "live_config_model_match_required": True,
+            "sessions_spawn_dispatch_contract_required": True,
+            "actual_model_receipt_required_at_closeout": True,
         },
         "retry_contract": {
             "attempt_number_and_attempt_id_required": True,
@@ -310,7 +329,7 @@ def standard_packets() -> list[dict[str, Any]]:
             phase="finance_evidence",
             owner_workflow="WF78",
             authority_class="finance_sensitive_review_only",
-            model_route=ROUTINE_READ_MODEL_ROUTE,
+            model_route=FINANCE_EVIDENCE_MODEL_ROUTE,
             deliverable="review-only official-source finance evidence packet",
         ),
         packet(
@@ -326,7 +345,7 @@ def standard_packets() -> list[dict[str, Any]]:
             parent_job_id="template::pm-service-packet-helper",
             phase="continuity_review",
             authority_class="docs_memory_playbook_scoped",
-            model_route=ROUTINE_READ_MODEL_ROUTE,
+            model_route=DOCS_CONTINUITY_MODEL_ROUTE,
             deliverable="review-only service packet or continuity patch proposal",
         ),
     ]
@@ -471,6 +490,9 @@ def validate_payload(payload: dict[str, Any]) -> dict[str, Any]:
             model_route = as_dict(item.get("model_route"))
             if not model_route.get("model") or not model_route.get("reasoning"):
                 errors.append(f"{item.get('packet_id')}:assignment_model_route_incomplete")
+            policy_primary = fleet_policy.primary_model_for(str(item.get("agent_id") or ""))
+            if policy_primary and model_route.get("model") != policy_primary:
+                errors.append(f"{item.get('packet_id')}:assignment_model_route_policy_mismatch")
             reasoning = str(model_route.get("reasoning") or "")
             phase = str(item.get("phase") or "")
             scope_class = str(item.get("scope_class") or "")

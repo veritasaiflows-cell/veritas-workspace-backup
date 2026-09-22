@@ -315,12 +315,17 @@ def build_packet(scorecard_path: Path = SCORECARD) -> dict[str, Any]:
     failure_candidates = as_list(scorecard.get("failure_cost_candidates"))
     action_items = [as_dict(row) for row in as_list(scorecard.get("action_items"))]
     implementation_gap_count = int(summary.get("implementation_token_gap_count") or 0)
+    attribution_action_required_count = summary.get("attribution_gap_action_required_count")
+    attribution_action_required_usable = isinstance(attribution_action_required_count, (int, float)) and not isinstance(attribution_action_required_count, bool)
     failure_count = int(summary.get("failure_cost_candidate_count") or len(failure_candidates))
 
     warnings: list[str] = []
     if not scorecard_path.exists():
         warnings.append("scorecard_missing")
-    if implementation_gap_count:
+    if attribution_action_required_usable:
+        if attribution_action_required_count > 0:
+            warnings.append(f"attribution_gap_action_required_count:{int(attribution_action_required_count)}")
+    elif implementation_gap_count:
         warnings.append(f"implementation_token_gap_count:{implementation_gap_count}")
     if failure_count:
         warnings.append(f"failure_cost_candidate_count:{failure_count}")
@@ -401,6 +406,8 @@ def build_packet(scorecard_path: Path = SCORECARD) -> dict[str, Any]:
             "prompt_compression_candidate_count": summary.get("prompt_compression_candidate_count"),
             "failure_cost_candidate_count": failure_count,
             "implementation_token_gap_count": implementation_gap_count,
+            "attribution_gap_action_required_count": attribution_action_required_count if attribution_action_required_usable else None,
+            "attribution_gap_resolution_status": summary.get("attribution_gap_resolution_status"),
             "top_candidate": summary.get("top_candidate"),
             "changed_only_prefilter_review_count": len(changed_only),
             "promotion_ready_count": len(promotion_ready),
@@ -458,7 +465,7 @@ def render_md(payload: dict[str, Any]) -> str:
         f"- API-call reduction candidates: {summary.get('api_call_reduction_candidate_count')}",
         f"- Prompt-compression candidates: {summary.get('prompt_compression_candidate_count')}",
         f"- Failure-cost candidates: {summary.get('failure_cost_candidate_count')}",
-        f"- Implementation token gaps: {summary.get('implementation_token_gap_count')}",
+        f"- Implementation attribution gaps: raw {summary.get('implementation_token_gap_count')}; action-required {summary.get('attribution_gap_action_required_count')} (resolution: {summary.get('attribution_gap_resolution_status')})",
         f"- Promotion-ready proof candidates: {summary.get('promotion_ready_count')}",
         f"- Promotion-incomplete proof candidates: {summary.get('promotion_incomplete_count')}",
         f"- Next safe action: {summary.get('next_safe_action')}",

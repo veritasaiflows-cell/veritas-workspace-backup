@@ -113,6 +113,46 @@ class TokenEfficiencyReviewPacketTests(unittest.TestCase):
             self.assertFalse(packet["authority_boundary"]["code_mutation_allowed"])
             self.assertEqual(packet["top_api_call_reduction_candidates"][0]["cron_job_name"], "PM - Proof Worker")
 
+    def test_review_packet_reads_action_required_attribution_denominator(self) -> None:
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            scorecard = root / "token-efficiency-scorecard.json"
+
+            def write_scorecard(action_required: int) -> None:
+                scorecard.write_text(json.dumps({
+                    "status": "warning",
+                    "generated_at_utc": "2026-09-12T00:00:00Z",
+                    "summary": {
+                        "token_event_count": 10,
+                        "total_tokens": 1000,
+                        "api_equivalent_cost_usd": 1.25,
+                        "api_equivalent_estimate_status": "complete",
+                        "api_equivalent_cost_rows": 10,
+                        "api_equivalent_cost_event_coverage_percent": 100.0,
+                        "api_call_reduction_candidate_count": 0,
+                        "prompt_compression_candidate_count": 0,
+                        "failure_cost_candidate_count": 0,
+                        "implementation_token_gap_count": 597,
+                        "attribution_gap_action_required_count": action_required,
+                        "attribution_gap_resolution_status": (
+                            "terminal_unavailable_only" if action_required == 0 else "stamp_required"
+                        ),
+                    },
+                    "validation": {"status": "ok"},
+                }), encoding="utf-8")
+
+            write_scorecard(0)
+            classified = module.build_packet(scorecard)
+            self.assertEqual(classified["summary"]["attribution_gap_action_required_count"], 0)
+            self.assertEqual(classified["summary"]["attribution_gap_resolution_status"], "terminal_unavailable_only")
+            self.assertNotIn("implementation_token_gap_count:597", classified["validation"]["warnings"])
+            self.assertNotIn("attribution_gap_action_required_count:0", classified["validation"]["warnings"])
+
+            write_scorecard(2)
+            actionable = module.build_packet(scorecard)
+            self.assertIn("attribution_gap_action_required_count:2", actionable["validation"]["warnings"])
+
     def test_review_packet_marks_candidate_promotion_ready_from_regression_proof(self) -> None:
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:

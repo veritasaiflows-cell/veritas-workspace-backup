@@ -17,6 +17,8 @@ if str(ROOT / "scripts") not in sys.path:
 import long_work_packet_linter  # noqa: E402
 import project_implementation_router as router  # noqa: E402
 
+RETIRED_SOL_MODEL = "openai/gpt-5.6-sol"
+
 
 TEMP_PROOF_DIR: Path | None = None
 PROOF_SEQUENCE = 0
@@ -57,7 +59,7 @@ def native_dispatch_proof(*, payload: dict | None = None, raw: str | None = None
             "status": "ok",
             "observed_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "execution_backend": "codex_native_subagent",
-            "model_paths": [router.TERRA_MODEL],
+            "model_paths": [router.NATIVE_MODEL],
             "thinking_levels": ["low", "medium", "high"],
             "fork_policies": ["none"],
             "capabilities": {
@@ -174,7 +176,7 @@ def test_execution_efficiency_policy_contract(errors: list[str]) -> None:
     backends = [row["execution_backend"] for row in policy["route_order"]]
     expect(backends == ["model_free_command", "codex_native_subagent", "main", "persistent_isolated_agent"], "route order should match enforced selection precedence", errors)
     main_row = next(row for row in policy["route_order"] if row["execution_backend"] == "main")
-    expect(main_row["expected_model_path"] == router.MAIN_MODEL, "Astra should be the configured Main integrator", errors)
+    expect(main_row["expected_model_path"] == router.MAIN_MODEL, "Sol should be the configured Main integrator", errors)
     persistent_row = next(row for row in policy["route_order"] if row["execution_backend"] == "persistent_isolated_agent")
     expect(persistent_row["expected_model_path"] is None, "fleet policy should defer model selection to the exact role", errors)
     expect(persistent_row["role_model_paths"] == router.PERSISTENT_AGENT_MODELS, "persistent policy should publish the exact role-model map", errors)
@@ -324,6 +326,26 @@ def test_sessions_spawn_contract_pins_route_and_fails_closed(errors: list[str]) 
     expect(spawn_args.get("thinking") == "low", "spawn args must pin thinking", errors)
     expect(ready["same_inference_model_switching"] is False, "dispatch must represent a separate inference, not an in-inference switch", errors)
 
+    _original_live_model_fn = router.live_configured_agent_model
+    try:
+        router.live_configured_agent_model = lambda agent_id: "mismatched/live-model"
+        live_mismatch = router.sessions_spawn_dispatch_contract(route, agent_id=str(route["persistent_agent_id"]), task_name="read-core-files", label="Read core files", task="Read core files.")
+        expect(live_mismatch.get("status") == "blocked", "mismatched live config must be blocked", errors)
+        expect("persistent_live_config_model_mismatch" in live_mismatch.get("blockers", []), "mismatched live config model must block", errors)
+        expect(live_mismatch["spawn_args"] == {}, "mismatched live config must emit no spawn_args", errors)
+    finally:
+        router.live_configured_agent_model = _original_live_model_fn
+
+    _original_live_model_fn_missing = router.live_configured_agent_model
+    try:
+        router.live_configured_agent_model = lambda agent_id: None
+        live_missing = router.sessions_spawn_dispatch_contract(route, agent_id=str(route["persistent_agent_id"]), task_name="read-core-files", label="Read core files", task="Read core files.")
+        expect(live_missing.get("status") == "blocked", "missing live config must be blocked", errors)
+        expect("persistent_live_config_model_missing" in live_missing.get("blockers", []), "missing live config model must block", errors)
+        expect(live_missing["spawn_args"] == {}, "missing live config must emit no spawn_args", errors)
+    finally:
+        router.live_configured_agent_model = _original_live_model_fn_missing
+
     blocked_route = dict(route)
     blocked_route["persistent_dispatch_ready"] = False
     blocked = router.sessions_spawn_dispatch_contract(
@@ -393,17 +415,17 @@ def test_role_model_effort_is_bounded_and_risk_aware(errors: list[str]) -> None:
         )
 
     bounded = route_for(description="Review bounded workspace evidence", task_shape="audit", authority_class="review_only")
-    expect(bounded["expected_model_path"] == router.GROK_MODEL, "Research Scout should use Grok 4.6 for low-risk read-only audits", errors)
+    expect(bounded["expected_model_path"] == router.RESEARCH_MODEL, "Research Scout must use its configured research primary for low-risk read-only audits", errors)
 
     implementation = route_for(description="Implement a patch draft after inspection", task_shape="implementation", authority_class="review_only")
-    expect(implementation["expected_model_path"] == router.GROK_MODEL, "read-only implementation planning must use Grok 4.6", errors)
+    expect(implementation["expected_model_path"] == router.RESEARCH_MODEL, "read-only implementation planning must use the configured research primary", errors)
 
     finance = route_for(description="Audit finance-sensitive evidence", task_shape="audit", authority_class="finance_sensitive")
-    expect(finance["expected_model_path"] == router.GROK_MODEL, "finance-sensitive research-scout review must use Grok 4.6", errors)
+    expect(finance["expected_model_path"] == router.RESEARCH_MODEL, "finance-sensitive research-scout review must use the configured research primary", errors)
     expect(finance["expected_thinking"] == "high", "finance-sensitive review should use high thinking", errors)
 
     shared_qa = route_for(description="QA review of shared contract", task_shape="qa", authority_class="review_only", validation_budget="shared")
-    expect(shared_qa["expected_model_path"] == router.GROK_MODEL, "shared-budget research-scout QA review must use Grok 4.6", errors)
+    expect(shared_qa["expected_model_path"] == router.RESEARCH_MODEL, "shared-budget research-scout QA review must use the configured research primary", errors)
     expect(shared_qa["expected_thinking"] == "high", "shared-budget QA should use high thinking", errors)
 
     traversal_write = route_for(
@@ -413,17 +435,17 @@ def test_role_model_effort_is_bounded_and_risk_aware(errors: list[str]) -> None:
         leased_paths=["tmp/../scripts/escape.py"],
         write_mode="distinct_output",
     )
-    expect(traversal_write["expected_model_path"] == router.GROK_MODEL, "write-capable traversal path must use the pinned research-scout model, never Luna", errors)
+    expect(traversal_write["expected_model_path"] == router.RESEARCH_MODEL, "write-capable traversal path must use the pinned research-scout model, never Luna", errors)
     expect(router.is_safe_tmp_output_path("tmp/../scripts/escape.py") is False, "tmp traversal must fail exact containment", errors)
 
 
 def test_fleet_alignment_primary_map(errors: list[str]) -> None:
     expect(router.GROK_MODEL == "xai/grok-4.6", "Grok model id must be exact", errors)
-    expect(router.DOCS_MODEL == router.LUNA_MODEL, "docs-continuity-editor must use Luna", errors)
+    expect(router.DOCS_MODEL == "ollama-cloud/deepseek-v4.1-flash:cloud", "docs-continuity-editor must use DeepSeek 4.1 Flash", errors)
     expect(router.PERSISTENT_AGENT_MODELS == {
-        "research-scout": router.GROK_MODEL,
+        "research-scout": router.RESEARCH_MODEL,
         "qa-redteam": router.QA_MODEL,
-        "finance-source-scout": router.TERRA_MODEL,
+        "finance-source-scout": router.DOCS_MODEL,
         "finance-redteam": router.QA_MODEL,
         "implementation-builder": router.BUILDER_MODEL,
         "docs-continuity-editor": router.DOCS_MODEL,
@@ -431,7 +453,7 @@ def test_fleet_alignment_primary_map(errors: list[str]) -> None:
     import agent_fleet_policy as fleet_policy_check
     expect(fleet_policy_check.validate_policy_maps(router_primary=router.PERSISTENT_AGENT_MODELS)["status"] == "ok", "router map must validate against the fleet owner", errors)
     tampered = dict(router.PERSISTENT_AGENT_MODELS)
-    tampered["research-scout"] = router.TERRA_MODEL
+    tampered["research-scout"] = router.NATIVE_MODEL
     expect(fleet_policy_check.validate_policy_maps(router_primary=tampered)["status"] == "mismatch", "tampered router map must mismatch", errors)
 
 
@@ -495,7 +517,7 @@ def test_persistent_transport_gate_and_native_fallback(errors: list[str]) -> Non
             "status": "ok",
             "observed_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "execution_backend": "codex_native_subagent",
-            "model_paths": [router.TERRA_MODEL],
+            "model_paths": [router.NATIVE_MODEL],
             "thinking_levels": ["low", "medium"],
             "fork_policies": ["all"],
             "capabilities": {
@@ -530,7 +552,7 @@ def test_persistent_live_model_requires_explicit_agent_entry(errors: list[str]) 
     config_path.write_text(
         json.dumps({
             "agents": {
-                "defaults": {"model": {"primary": router.TERRA_MODEL}},
+                "defaults": {"model": {"primary": router.NATIVE_MODEL}},
                 "entries": {},
             }
         }),
@@ -550,7 +572,7 @@ def test_deprecated_main_sol_cli_flags_rejected(errors: list[str]) -> None:
         check=False,
     )
     expect(completed.returncode != 0, "deprecated Sol exception flags must be rejected", errors)
-    expect("deprecated because Main now uses Astra by default" in (completed.stderr + completed.stdout), "deprecated Sol flag rejection must explain the current Main default", errors)
+    expect("deprecated because Sol is retired" in (completed.stderr + completed.stdout), "deprecated Sol flag rejection must explain the current Main default", errors)
 
 
 def test_deterministic_and_effort_routes(errors: list[str]) -> None:
@@ -598,7 +620,7 @@ def test_measurement_cohort_low_exception_and_qa_escalation(errors: list[str]) -
         "calibration_allowed_write_paths": list(paths),
         "route": {
             "execution_backend": "persistent_isolated_agent",
-            "model_path": router.TERRA_MODEL,
+            "model_path": router.NATIVE_MODEL,
             "thinking": "low",
             "agent_id": "implementation-builder",
             "persistent_lane_mode": "scoped_worktree_implementation",
@@ -733,24 +755,24 @@ def test_native_and_main_exceptions_are_explicit(errors: list[str]) -> None:
         allow_codex_native=True,
     ))
     expect(native["model_route"]["execution_backend"] == "codex_native_subagent", "explicit eligible narrow native route should be selected", errors)
-    expect(native["model_route"]["expected_model_path"] == router.TERRA_MODEL, "native helper must still expect Terra", errors)
+    expect(native["model_route"]["expected_model_path"] == router.NATIVE_MODEL, "native helper must still expect the retired native model", errors)
 
     ineligible = router.build_project(args(allow_codex_native=True))
     expect(ineligible["model_route"]["execution_backend"] != "codex_native_subagent", "native route must not be selected without narrow eligibility", errors)
 
     main = router.build_project(args(main_only_reason="final integration of accepted patches"))
     expect(main["model_route"]["execution_backend"] == "main", "Main route needs an explicit exception reason", errors)
-    expect(main["model_route"]["expected_model_path"] == router.MAIN_MODEL, "Astra must be the configured Main integrator", errors)
-    expect(router.validate_project(main, stage="preflight")["status"] == "ok", "default Astra Main route should validate", errors)
+    expect(main["model_route"]["expected_model_path"] == router.MAIN_MODEL, "Sol must be the configured Main integrator", errors)
+    expect(router.validate_project(main, stage="preflight")["status"] == "ok", "default Sol Main route should validate", errors)
 
     sol_main = router.build_project(args(
         main_only_reason="final integration of accepted runtime patch",
         model=router.MAIN_MODEL,
     ))
-    expect(sol_main["model_route"]["execution_backend"] == "main", "matching Astra override must remain a Main route", errors)
-    expect(sol_main["model_route"]["expected_model_path"] == router.MAIN_MODEL, "matching Astra route must record Astra honestly", errors)
-    expect(sol_main["model_route"]["main_model_exception"] is None, "Astra default must not project stale exception metadata", errors)
-    expect(router.validate_project(sol_main, stage="preflight")["status"] == "ok", "matching Astra Main route should validate", errors)
+    expect(sol_main["model_route"]["execution_backend"] == "main", "matching Sol override must remain a Main route", errors)
+    expect(sol_main["model_route"]["expected_model_path"] == router.MAIN_MODEL, "matching Main route must record the Main model honestly", errors)
+    expect(sol_main["model_route"]["main_model_exception"] is None, "Sol default must not project stale exception metadata", errors)
+    expect(router.validate_project(sol_main, stage="preflight")["status"] == "ok", "matching Sol Main route should validate", errors)
 
 
 def test_route_policy_rejects_caller_overrides(errors: list[str]) -> None:
@@ -760,7 +782,7 @@ def test_route_policy_rejects_caller_overrides(errors: list[str]) -> None:
     ))
     native_codes = {item["code"] for item in router.validate_project(native, stage="preflight")["errors"]}
     expect("caller_route_override_mismatch" in native_codes, "native Kimi/high override must fail closed", errors)
-    expect(native["model_route"]["expected_model_path"] == router.TERRA_MODEL and native["model_route"]["expected_thinking"] == "low", "native route must remain Terra-low after rejected override", errors)
+    expect(native["model_route"]["expected_model_path"] == router.NATIVE_MODEL and native["model_route"]["expected_thinking"] == "low", "native route must remain native-low after rejected override", errors)
 
     matching = router.build_project(args(model=router.BUILDER_MODEL, expected_thinking="high"))
     expect(router.validate_project(matching, stage="preflight")["status"] == "ok", "matching persistent override should pass", errors)
@@ -780,8 +802,8 @@ def test_route_policy_rejects_caller_overrides(errors: list[str]) -> None:
 
     mismatch_cases = [
         (args(model="kimi/k2"), "persistent"),
-        (args(main_only_reason="final integration", model=router.TERRA_MODEL), "main"),
-        (args(write_mode="read_only", leased_path=[], model_free_command=["python scripts\\test_project_implementation_router.py"], model_free_proof=["tmp/proof/router.json"], model=router.TERRA_MODEL, expected_thinking="low"), "model-free"),
+        (args(main_only_reason="final integration", model=router.NATIVE_MODEL), "main"),
+        (args(write_mode="read_only", leased_path=[], model_free_command=["python scripts\\test_project_implementation_router.py"], model_free_proof=["tmp/proof/router.json"], model=router.NATIVE_MODEL, expected_thinking="low"), "model-free"),
     ]
     for project_args, label in mismatch_cases:
         project = router.build_project(project_args)
@@ -835,7 +857,7 @@ def test_explicit_one_file_native_implementation_contract(errors: list[str]) -> 
 
 def test_route_closeout_mismatch_fails_closed(errors: list[str]) -> None:
     project = router.build_project(args(
-        actual_model_path=router.TERRA_MODEL,
+        actual_model_path=router.NATIVE_MODEL,
         actual_thinking="medium",
         actual_execution_backend="persistent_isolated_agent",
         actual_route_verified=True,
@@ -1160,13 +1182,16 @@ def test_efficiency_observation_ingests_on_demand_evidence(errors: list[str]) ->
 
 def test_main_live_model_drift_rejected(errors: list[str]) -> None:
     assert TEMP_PROOF_DIR is not None
+    stale_project = router.build_project(args(main_only_reason="final integration of accepted patches"))
+    expect(stale_project["model_route"]["expected_model_path"] == router.MAIN_MODEL, "packet built under the original fixture routes the configured Main model", errors)
     drifted = TEMP_PROOF_DIR / "openclaw-drift.json"
-    drifted.write_text(json.dumps({"agents": {"entries": {"main": {"model": router.SOL_MODEL}}}}), encoding="utf-8")
+    drifted.write_text(json.dumps({"agents": {"entries": {"main": {"model": RETIRED_SOL_MODEL}}}}), encoding="utf-8")
     with patch.object(router, "PERSISTENT_TRANSPORT_CONFIG_PATH", drifted):
-        project = router.build_project(args(main_only_reason="final integration of accepted patches"))
-        expect(project["model_route"]["expected_model_path"] == router.MAIN_MODEL, "routed Main model must stay Astra under drift", errors)
-        codes = {item["code"] for item in router.validate_project(project, stage="preflight")["errors"]}
-        expect("main_live_model_mismatch" in codes, "drifted live Main model must fail closed", errors)
+        codes = {item["code"] for item in router.validate_project(stale_project, stage="preflight")["errors"]}
+        expect("main_selection_config_drift" in codes, "drifted live Main model must fail closed", errors)
+        rebuilt = router.build_project(args(main_only_reason="final integration of accepted patches"))
+        expect(rebuilt["model_route"]["expected_model_path"] == RETIRED_SOL_MODEL, "a freshly rebuilt packet follows the new configured model", errors)
+
 
 
 def test_main_entry_precedence_matrix(errors: list[str]) -> None:
@@ -1176,9 +1201,9 @@ def test_main_entry_precedence_matrix(errors: list[str]) -> None:
         matrix_path.write_text(json.dumps(payload), encoding="utf-8")
         with patch.object(router, "PERSISTENT_TRANSPORT_CONFIG_PATH", matrix_path):
             return router.live_configured_agent_model(agent)
-    present = {"research-scout": {"model": router.TERRA_MODEL}}
-    expect(live({"agents": {"defaults": {"model": router.SOL_MODEL}, "entries": dict(present, main={"model": router.MAIN_MODEL})}}) == router.MAIN_MODEL, "string Astra must beat conflicting defaults", errors)
-    expect(live({"agents": {"defaults": {"model": router.SOL_MODEL}, "entries": dict(present, main={"model": {"primary": router.MAIN_MODEL}})}}) == router.MAIN_MODEL, "object Astra must beat conflicting defaults", errors)
+    present = {"research-scout": {"model": router.NATIVE_MODEL}}
+    expect(live({"agents": {"defaults": {"model": RETIRED_SOL_MODEL}, "entries": dict(present, main={"model": router.MAIN_MODEL})}}) == router.MAIN_MODEL, "string Main model must beat conflicting defaults", errors)
+    expect(live({"agents": {"defaults": {"model": RETIRED_SOL_MODEL}, "entries": dict(present, main={"model": {"primary": router.MAIN_MODEL}})}}) == router.MAIN_MODEL, "object Main model must beat conflicting defaults", errors)
     expect(live({"agents": {"defaults": {"model": router.MAIN_MODEL}, "list": [{"id": "main", "model": router.MAIN_MODEL}], "entries": dict(present)}}) is None, "missing Main must not inherit matching defaults or stale list", errors)
     expect(live({"agents": {"entries": dict(present, main="openai/gpt-6-astra")}}) is None, "non-dict Main entry must fail closed", errors)
     expect(live({"agents": {"entries": dict(present, main={"model": 123})}}) is None, "numeric Main model must fail closed", errors)
@@ -1189,8 +1214,8 @@ def test_main_entry_precedence_matrix(errors: list[str]) -> None:
     expect(live({"agents": {"entries": None}}) is None, "null entries must fail closed", errors)
     expect(live(["agents"]) is None, "non-dict payload must fail closed", errors)
     expect(live({"agents": "entries"}) is None, "non-dict agents must fail closed", errors)
-    expect(live({"agents": {"defaults": {"model": {"primary": router.TERRA_MODEL}}}}) == router.TERRA_MODEL, "absent entries keeps legacy Main default fallback", errors)
-    expect(live({"agents": {"defaults": {"model": router.TERRA_MODEL}}}, agent="research-scout") is None, "absent entries keeps specialist explicit-entry gate", errors)
+    expect(live({"agents": {"defaults": {"model": {"primary": router.NATIVE_MODEL}}}}) == router.NATIVE_MODEL, "absent entries keeps legacy Main default fallback", errors)
+    expect(live({"agents": {"defaults": {"model": router.NATIVE_MODEL}}}, agent="research-scout") is None, "absent entries keeps specialist explicit-entry gate", errors)
 
 
 def main() -> int:
@@ -1238,14 +1263,16 @@ def main() -> int:
         hermetic_config = Path(temp_dir) / "hermetic-openclaw.json"
         hermetic_config.write_text(json.dumps({"agents": {"entries": {
             "main": {"model": router.MAIN_MODEL},
-            "research-scout": {"model": router.GROK_MODEL},
+            "research-scout": {"model": router.RESEARCH_MODEL},
             "qa-redteam": {"model": router.QA_MODEL},
-            "finance-source-scout": {"model": router.TERRA_MODEL},
+            "finance-source-scout": {"model": router.DOCS_MODEL},
             "finance-redteam": {"model": router.QA_MODEL},
             "implementation-builder": {"model": router.BUILDER_MODEL},
             "docs-continuity-editor": {"model": router.DOCS_MODEL},
         }}}), encoding="utf-8")
-        with patch.object(router, "PERSISTENT_TRANSPORT_CONFIG_PATH", hermetic_config):
+        with patch.object(router, "PERSISTENT_TRANSPORT_CONFIG_PATH", hermetic_config), patch.object(
+            router.main_model_selection, "DEFAULT_CONFIG_PATH", hermetic_config
+        ):
             for test in tests:
                 try:
                     test(errors)

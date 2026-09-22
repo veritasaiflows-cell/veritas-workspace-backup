@@ -1,0 +1,42 @@
+{
+ "schema": "veritas.arena_six_evidence_manifest.v2",
+ "computed_by": "Veritas Main deterministic pass",
+ "root": "data/evals/model-arena/arena-six-20260919/results/astra-20260920",
+ "files": [
+  {
+   "path": "graded-results.json",
+   "bytes": 11640,
+   "sha256": "e6fc3c5dce86fd1f4977486b8d2cbac54a610fef104be2bb05ed0558abc8a661"
+  },
+  {
+   "path": "main-acceptance.json",
+   "bytes": 329,
+   "sha256": "0a14a3ae9adb08641616c5a7a9555b81bdbd2cfb32cc463cc1a9d98a5eca7166"
+  },
+  {
+   "path": "operational-adjudication.json",
+   "bytes": 231,
+   "sha256": "9812f2de07f7e7761b4ae3f64767096db3d85ad419125f5922739543cd29ae52"
+  },
+  {
+   "path": "report.md",
+   "bytes": 1820,
+   "sha256": "c8ef21e292e31288670deec5a7f0efb42d919e38e61b479ef0538d322cadf4a1"
+  },
+  {
+   "path": "run-contract.json",
+   "bytes": 1113,
+   "sha256": "a10951063cdc350d8fc559c384892ef7662f2d9eb65ae3e9501d5fafaa10a3ff"
+  },
+  {
+   "path": "turns-graded.json",
+   "bytes": 11391,
+   "sha256": "6865e59ee6ce504966f30378fcb231681ef9d5f49b3f9dc82ebefd21a11ee17b"
+  },
+  {
+   "path": "validation.json",
+   "bytes": 211,
+   "sha256": "81c145596bf27668a21d159033f186bf49c3466172c509520408931f409db3b4"
+  }
+ ]
+}

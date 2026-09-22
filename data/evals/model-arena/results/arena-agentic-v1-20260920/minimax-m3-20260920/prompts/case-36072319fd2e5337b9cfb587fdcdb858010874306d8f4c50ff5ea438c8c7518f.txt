@@ -1,0 +1,1 @@
+{"budget": 80, "orders": [{"hi": 20, "lo": 0, "w": 7}, {"hi": 200, "lo": 12, "w": 1}, {"hi": 200, "lo": 0, "w": 1}, {"hi": 200, "lo": 0, "w": 1}], "properties": ["bounds", "sum", "proportionality", "binding-bounds"], "request": "Return only the required allocation JSON."}

@@ -1,0 +1,43 @@
+{
+  "authority": "No routing, configuration, role, or execution authority follows.",
+  "authorization": "run-scoped owner proceed 2026-09-20; canonical overlay/dispatch-authorization.json left INERT",
+  "child_session_key": "agent:main:dashboard:8ece9e62-ad79-45df-bc8d-221dcc61ad0d",
+  "closed_at": "2026-09-20T17:14:13.533883-07:00",
+  "comparability": "arena-integrated-v1 envelope only; not comparable to arena-six or hidden-bank boards",
+  "dispatch": {
+    "fallback_applied": false,
+    "missions": 1,
+    "model_applied": true,
+    "observable_elapsed_s": 61,
+    "operational_timeout": false,
+    "reps": 1,
+    "requested_model": "ollama-cloud/glm-5.3:cloud",
+    "resolved_model": "ollama-cloud/glm-5.3:cloud",
+    "retries": 0,
+    "timeout_s": 600
+  },
+  "dispatch_gate_after_run": {
+    "authorized_at": null,
+    "authorized_by": null,
+    "dispatch_ready": false,
+    "scope_models": []
+  },
+  "envelope": "arena-integrated-v1-20260920",
+  "expansion_implication": "Second clean pass on this frozen instrument (DeepSeek 12/12, GLM 5.3 Cloud 12/12). Two identical passes at 1.0 raise a possible ceiling concern; discrimination remains weakly measured. Keep expand_conditionally and do not open missions 2/3 until a lower-capability control fails this instrument or the missions are hardened.",
+  "mission_id": "arena-integrated-v1-20260920",
+  "model": "ollama-cloud/glm-5.3:cloud",
+  "outcomes": {
+    "contaminated": false,
+    "fields_correct": 12,
+    "fields_total": 12,
+    "hidden_tests_passed": true,
+    "protected_intact": true,
+    "score": 1.0,
+    "traps": [],
+    "verdict": "pass"
+  },
+  "routing_effect": "none",
+  "run_dir": "data/evals/model-arena/results/arena-integrated-v1-20260920/glm53cloud-20260920",
+  "run_id": "90342912-4432-4ece-8bd1-30a1bce4f2b8",
+  "schema": "veritas.arena_dispatch_execution_summary.v1"
+}

@@ -14,7 +14,6 @@ from generate_dashboard import TMP, build_payload, compute_delta, inject_into_te
 import dashboard_payload
 import dashboard_validation
 import macro_regime_refresh
-import market_state_refresh
 import policy_expectations_refresh
 import trigger_sheet_refresh
 import deployment_readiness_surface
@@ -23,7 +22,6 @@ import earnings_calendar_enrichment
 
 OUT_REPORT = TMP / "dashboard-acceptance-report.json"
 TARGET_FILES = [
-    TMP / "market-state.json",
     TMP / "technical-refresh.json",
     TMP / "deployment-check.json",
     TMP / "earnings-calendar.json",
@@ -45,6 +43,13 @@ def preserved_tmp_files() -> Any:
     finally:
         for path, content in original.items():
             path.write_text(content, encoding="utf-8")
+        # Leak guard: a producer under test may recreate a TARGET_FILE that did
+        # not exist before the run (2026-09-19 incident: a stubbed refresh
+        # recreated the retired tmp/market-state.json whenever it was absent).
+        # Any tracked file that was absent beforehand must not survive the suite.
+        for path in TARGET_FILES:
+            if path not in original and path.exists():
+                path.unlink()
 
 
 @contextmanager
@@ -127,7 +132,6 @@ def get_path(data: Any, dotted_path: str) -> Any:
 
 def write_source(name: str, payload: dict[str, Any]) -> None:
     mapping = {
-        "market": TMP / "market-state.json",
         "technical": TMP / "technical-refresh.json",
         "deployment": TMP / "deployment-check.json",
         "earnings": TMP / "earnings-calendar.json",
@@ -210,126 +214,69 @@ def _expected_capital_recommendation_tickers(daily_review: dict[str, Any]) -> se
     return {str(item.get("ticker") or item.get("ticker_or_macro_sleeve") or "").upper() for item in recommendations if item.get("ticker") or item.get("ticker_or_macro_sleeve")}
 
 
-def _stub_last_close(_ticker: str) -> tuple[float | None, str | None]:
-    return 100.0, "2026-05-01"
-
-
-def _stub_fred_latest(_series_id: str, api_key: str | None = None, timeout: int = 20) -> tuple[float | None, str | None, str | None]:
-    del api_key, timeout
-    return 4.0, "2026-05-01", None
-
-
-def _stub_snapshot(ticker: str) -> dict[str, Any]:
-    base_price = {
-        "ES=F": 5050.0,
-        "NQ=F": 17750.0,
-        "SPY": 500.0,
-        "XLI": 120.0,
-        "XLF": 40.0,
-        "XLK": 210.0,
-        "XLE": 95.0,
-        "ETN": 300.0,
-        "JPM": 200.0,
-        "NVDA": 150.0,
-    }.get(ticker, 100.0)
-    prev = round(base_price * 0.99, 4)
-    return {
-        "last_price": base_price,
-        "previous_close": prev,
-        "regular_market_previous_close": prev,
-        "change": round(base_price - prev, 4),
-        "change_pct": round(((base_price - prev) / prev) * 100, 4) if prev else None,
-        "open": base_price,
-        "day_high": round(base_price * 1.01, 4),
-        "day_low": round(base_price * 0.99, 4),
-        "volume": 1000,
-        "pre_market_price": None,
-        "pre_market_change_pct": None,
-        "pre_market_as_of": None,
-        "market_phase": "regular",
-        "source": "acceptance stub",
-        "available": True,
-        "note": None,
-    }
-
-
-def run_stubbed_market_state_refresh() -> dict[str, Any]:
-    with patched_attrs(
-        market_state_refresh,
-        fetch_last_close=_stub_last_close,
-        fetch_fred_latest=_stub_fred_latest,
-        fetch_snapshot=_stub_snapshot,
-    ):
-        _quiet_call(market_state_refresh.main)
-    return read_json(TMP / "market-state.json")
-
-
 def run_macro_regime_refresh() -> dict[str, Any]:
     _quiet_call(macro_regime_refresh.main)
     return read_json(TMP / "macro-regime.json")
 
 
 
-def case_missing_market_field(payload: dict[str, Any]) -> list[str]:
+def case_missing_credit_required_field(payload: dict[str, Any]) -> list[str]:
+    """Surviving-surface replacement for the retired market-state missing-field
+    case: required-path enforcement on the live credit-spreads trust source."""
     errors: list[str] = []
-    expect(payload["exec_freshness"] == "partial", f"expected partial, got {payload['exec_freshness']}", errors)
-    market = next(item for item in payload["trust"]["sources"] if item["label"] == "Market")
-    expect(market["status"] == "partial", f"expected market partial, got {market['status']}", errors)
-    expect(any("missing required fields" in issue for issue in market["issues"]), "missing-field issue not surfaced", errors)
-    expect(payload["market"]["vix"] is None, "missing VIX should remain None, not fake zero", errors)
+    credit = next(item for item in payload["trust"]["sources"] if item["label"] == "Credit spreads")
+    expect(credit["status"] == "partial", f"expected credit partial, got {credit['status']}", errors)
+    expect(any("missing required fields" in issue for issue in credit["issues"]), "missing-field issue not surfaced", errors)
     return errors
 
 
 
-def case_partial_macro_feed(payload: dict[str, Any]) -> list[str]:
+def case_partial_upstream_feed(payload: dict[str, Any]) -> list[str]:
+    """Surviving-surface replacement for the retired market-state partial-feed
+    case: upstream status propagation on the live credit-spreads trust source."""
     errors: list[str] = []
-    market = next(item for item in payload["trust"]["sources"] if item["label"] == "Market")
-    expect(payload["exec_freshness"] == "partial", f"expected partial, got {payload['exec_freshness']}", errors)
-    expect(market["status"] == "partial", f"expected market partial, got {market['status']}", errors)
-    expect(any("upstream status=partial" == issue for issue in market["issues"]), "partial upstream status not surfaced", errors)
+    credit = next(item for item in payload["trust"]["sources"] if item["label"] == "Credit spreads")
+    expect(credit["status"] == "partial", f"expected credit partial, got {credit['status']}", errors)
+    expect(any("upstream status=partial" == issue for issue in credit["issues"]), "partial upstream status not surfaced", errors)
     return errors
 
 
-def case_market_sectors_invalid_shape(payload: dict[str, Any]) -> list[str]:
-    errors: list[str] = []
-    market = next(item for item in payload["trust"]["sources"] if item["label"] == "Market")
-    warning_codes = {w["code"] for w in payload["validation"]["warnings"]}
-    expect(payload["exec_freshness"] == "partial", f"expected partial, got {payload['exec_freshness']}", errors)
-    expect(market["status"] == "partial", f"expected market partial, got {market['status']}", errors)
-    expect(any("market-state.data.sectors" in issue for issue in market["issues"]), "market sectors shape issue not surfaced", errors)
-    expect("market_sectors_invalid_shape" in warning_codes, "market_sectors_invalid_shape warning missing", errors)
-    expect(payload["sectors_relative"] == [], f"expected empty sectors_relative, got {payload['sectors_relative']}", errors)
-    return errors
-
-
-def case_market_state_missing_policy_artifact() -> tuple[str, list[str]]:
-    name = "market_state_missing_policy_artifact"
+def case_missing_policy_artifact_blocks_macro_regime() -> tuple[str, list[str]]:
+    """Surviving-surface replacement for the retired market-state missing-policy
+    case: a missing policy artifact must fail the macro-regime contract closed
+    (blocked, unknown policy pillar, routed to policy remediation) and the
+    dashboard must show the policy trust source as missing."""
+    name = "missing_policy_artifact_blocks_macro_regime"
     errors: list[str] = []
     with preserved_tmp_files():
         policy_path = TMP / "policy-expectations.json"
         if policy_path.exists():
             policy_path.unlink()
 
-        market_payload = run_stubbed_market_state_refresh()
-        fed = market_payload["data"]["fed"]
-        macro_freshness = market_payload.get("macro_freshness") or {}
-        expect(fed["target_low"] is None, "missing policy artifact should leave fed.target_low null", errors)
-        expect(fed["target_high"] is None, "missing policy artifact should leave fed.target_high null", errors)
-        expect(fed["cut_probability_next_meeting"] is None, "missing policy artifact should leave cut probability null", errors)
-        expect(macro_freshness.get("status") == "blocked", f"missing policy should produce blocked macro_freshness, got {macro_freshness.get('status')}", errors)
-        expect(get_path(macro_freshness, "routing.macro_regime_safe") is False, "missing policy should mark macro regime unsafe", errors)
-        expect("policy_expectations_refresh.py" in get_path(fed, "remediation.owner"), "missing policy remediation owner missing", errors)
+        macro_payload = run_macro_regime_refresh()
+        expect(macro_payload["status"] == "partial", f"expected partial macro status, got {macro_payload['status']}", errors)
+        contract = macro_payload.get("freshness_contract") or {}
+        expect(contract.get("status") == "blocked", f"missing policy should block the macro freshness contract, got {contract.get('status')}", errors)
+        expect(get_path(contract, "routing.owner_action_required") is True, "missing policy should require owner action", errors)
+        expect(get_path(contract, "routing.regime_confidence") == "low", "missing policy should drop regime confidence to low", errors)
+        policy_component = next((c for c in contract.get("components") or [] if c.get("component") == "policy"), {})
+        expect(policy_component.get("status") == "missing", f"policy component should be missing, got {policy_component}", errors)
+        expect(policy_component.get("safe_for_macro_regime") is False, "missing policy must be unsafe for macro regime", errors)
+        expect("policy_expectations_refresh.py" in get_path(policy_component, "remediation.owner"), "missing policy remediation owner missing", errors)
+        expect(macro_payload["pillars"]["policy"]["key"] == "unknown", f"expected unknown policy pillar, got {macro_payload['pillars']['policy']['key']}", errors)
         expect(
-            any("Policy expectations artifact is missing" in warning for warning in market_payload.get("warnings", [])),
-            "missing policy artifact warning not surfaced in market-state.json",
+            any("policy-expectations artifact missing or unreadable" in warning for warning in macro_payload.get("warnings", [])),
+            "missing policy artifact warning not surfaced in macro-regime.json",
+            errors,
+        )
+        expect(
+            any("not safe for macro-regime use" in warning for warning in macro_payload.get("warnings", [])),
+            "policy fail-closed warning not surfaced in macro-regime.json",
             errors,
         )
 
-        dashboard_payload = build_payload(load_sources())
-        market_source = next(item for item in dashboard_payload["trust"]["sources"] if item["label"] == "Market")
-        policy_source = next(item for item in dashboard_payload["trust"]["sources"] if item["label"] == "Policy expectations")
-        expect(dashboard_payload["exec_freshness"] == "partial", f"expected partial exec_freshness, got {dashboard_payload['exec_freshness']}", errors)
-        expect(market_source["status"] == "partial", f"expected market source partial, got {market_source['status']}", errors)
+        built_payload = build_payload(load_sources())
+        policy_source = next(item for item in built_payload["trust"]["sources"] if item["label"] == "Policy expectations")
         expect(policy_source["status"] == "missing", f"expected policy source missing, got {policy_source['status']}", errors)
     return name, errors
 
@@ -368,34 +315,29 @@ def case_policy_fail_closed_expired_target() -> tuple[str, list[str]]:
         expect(next_fomc["implied_rate"] is None, "expired target range should not publish implied_rate as usable next-step output", errors)
         expect(next_two and next_two[0]["cut_probability"] is None, "expired target range should clear cut_probability in next_two_meetings", errors)
 
-        market_payload = run_stubbed_market_state_refresh()
-        fed = market_payload["data"]["fed"]
-        market_contract = market_payload.get("macro_freshness") or {}
-        expect(fed["target_low"] is None and fed["target_high"] is None, "market-state should carry null Fed bounds for expired target range", errors)
-        expect(fed["target_invalid_reason"] == current_target.get("invalid_reason"), "market-state should preserve policy invalid_reason", errors)
-        expect(fed["cut_probability_next_meeting"] is None, "market-state should not retain cut probability from invalid target range", errors)
-        expect(market_contract.get("status") == "blocked", f"market macro freshness should be blocked, got {market_contract.get('status')}", errors)
-
-        dashboard_payload = build_payload(load_sources())
-        market_source = next(item for item in dashboard_payload["trust"]["sources"] if item["label"] == "Market")
-        policy_source = next(item for item in dashboard_payload["trust"]["sources"] if item["label"] == "Policy expectations")
-        warning_codes = {item["code"] for item in dashboard_payload["validation"]["warnings"]}
-        expect(dashboard_payload["exec_freshness"] == "partial", f"expected partial exec_freshness, got {dashboard_payload['exec_freshness']}", errors)
-        expect(market_source["status"] == "partial", f"expected market source partial, got {market_source['status']}", errors)
+        built_payload = build_payload(load_sources())
+        policy_source = next(item for item in built_payload["trust"]["sources"] if item["label"] == "Policy expectations")
+        warning_codes = {item["code"] for item in built_payload["validation"]["warnings"]}
         expect(policy_source["status"] == "partial", f"expected policy source partial, got {policy_source['status']}", errors)
         expect("policy_expectations_partial" in warning_codes, "dashboard validation should flag policy_expectations_partial", errors)
-        partial_warning = next((item for item in dashboard_payload["validation"]["warnings"] if item["code"] == "policy_expectations_partial"), {})
+        partial_warning = next((item for item in built_payload["validation"]["warnings"] if item["code"] == "policy_expectations_partial"), {})
         expect(get_path(partial_warning, "details.remediation.command") == "python scripts\\policy_expectations_refresh.py", "partial policy warning should carry exact remediation command", errors)
     return name, errors
 
 
 def case_dashboard_policy_manual_remediation_path() -> tuple[str, list[str]]:
+    """Surviving-surface replacement for the retired market-state Fed flag: the
+    dashboard must pass policy manual_dependencies through to the trust surface
+    with the exact remediation detail intact."""
     name = "dashboard_policy_manual_remediation_path"
     errors: list[str] = []
     base_sources = load_sources()
     sources = {k: copy.deepcopy(v) if v is not None else None for k, v in base_sources.items()}
-    sources["policy"] = None
-    sources["market"]["data"]["fed"]["manual_update_required"] = True
+    manual_dependencies = sources["policy"].setdefault("data", {}).setdefault("manual_dependencies", [])
+    manual_dependencies.append({
+        "label": "Fed target range",
+        "detail": "Update the hardcoded Fed target range in scripts/policy_expectations_refresh.py after each FOMC decision.",
+    })
     payload = build_payload(sources)
     fed_dep = next((dep for dep in payload["trust"]["manual_dependencies"] if dep["label"] == "Fed target range"), None)
     expect(fed_dep is not None, "Fed target range dependency missing from dashboard payload", errors)
@@ -507,22 +449,13 @@ def case_macro_regime_breadth_shape_guard() -> tuple[str, list[str]]:
 
 
 
-def case_stale_source(payload: dict[str, Any]) -> list[str]:
+def case_stale_credit_source(payload: dict[str, Any]) -> list[str]:
+    """Surviving-surface replacement for the retired market-state staleness
+    case: freshness-window enforcement on the live credit-spreads trust source."""
     errors: list[str] = []
-    market = next(item for item in payload["trust"]["sources"] if item["label"] == "Market")
-    expect(payload["exec_freshness"] == "stale", f"expected stale, got {payload['exec_freshness']}", errors)
-    expect(market["status"] == "stale", f"expected market stale, got {market['status']}", errors)
-    expect(any("exceeds" in issue for issue in market["issues"]), "staleness issue not surfaced", errors)
-    return errors
-
-
-
-def case_contradiction(payload: dict[str, Any]) -> list[str]:
-    errors: list[str] = []
-    summary = payload["validation"]["summary"]
-    codes = {w["code"] for w in payload["validation"]["warnings"]}
-    expect(summary["critical"] >= 1, f"expected at least 1 critical contradiction, got {summary['critical']}", errors)
-    expect("entry_band_mismatch" in codes, "entry_band_mismatch not flagged", errors)
+    credit = next(item for item in payload["trust"]["sources"] if item["label"] == "Credit spreads")
+    expect(credit["status"] == "stale", f"expected credit stale, got {credit['status']}", errors)
+    expect(any("exceeds" in issue for issue in credit["issues"]), "staleness issue not surfaced", errors)
     return errors
 
 
@@ -646,8 +579,13 @@ def case_payload_shape_contract() -> tuple[str, list[str]]:
     expect(bool(macro_regime.get("credit_pillar")), "macro_regime.credit_pillar missing", errors)
     expect(bool(macro_regime.get("breadth_pillar")), "macro_regime.breadth_pillar missing", errors)
 
+    # 2026-08-29 market-state retirement: sectors_relative is honestly empty
+    # because the market-state source producer was retired. The Sector RS
+    # card must render the empty state and the validator must flag it.
     sectors_relative = payload.get("sectors_relative") or []
-    expect(len(sectors_relative) > 0, "sectors_relative empty — sector RS card blank", errors)
+    shape_warning_codes = {w["code"] for w in payload["validation"]["warnings"]}
+    expect(sectors_relative == [], f"sectors_relative must stay empty after the market-state retirement, got {len(sectors_relative)} rows", errors)
+    expect("sectors_relative_empty" in shape_warning_codes, "sectors_relative_empty warning missing — Sector RS card must surface its honest empty state", errors)
 
     pe_window = (payload.get("post_earnings") or {}).get("window") or {}
     expect("back_trading_days" in pe_window, "post_earnings.window.back_trading_days missing — Phase 6 not applied", errors)
@@ -665,16 +603,6 @@ def case_payload_shape_contract() -> tuple[str, list[str]]:
     expect(bool(top.get("stop_lines")), "workflow_focus.top_workflow.stop_lines must be populated", errors)
 
     return name, errors
-
-
-def case_state_transition(payload: dict[str, Any]) -> list[str]:
-    errors: list[str] = []
-    record = next(item for item in payload["technical"] if item["ticker"] == "ETN")
-    expect(record["inBand"] is True, "ETN should be in band for transition case", errors)
-    expect(record["triggerToday"] is True, "ETN should become triggerToday in coherent in-band state", errors)
-    expect(record["actionState"] == "ALMOST", f"expected ALMOST, got {record['actionState']}", errors)
-    expect(payload["validation"]["summary"]["critical"] == 0, "coherent state transition should not create critical contradiction", errors)
-    return errors
 
 
 def case_workflow8_command_center_alignment() -> tuple[str, list[str]]:
@@ -1597,90 +1525,6 @@ def case_fundamental_trend_panel_review_only() -> tuple[str, list[str]]:
 
 
 
-def _mutate_entry_band_contradiction(s: dict[str, Any], ticker: str = "ETN") -> None:
-    tech = next(r for r in s["technical"]["records"] if r["ticker"] == ticker)
-    band = s["portfolio"]["entry_bands"].get(ticker) or {}
-    close = tech.get("close") or 300.0
-    band_low = band.get("low")
-    band_high = band.get("high")
-    computed_in_band = (
-        band_low is not None
-        and band_high is not None
-        and band_low <= close <= band_high
-    )
-    if band_low is None or band_high is None:
-        band_low = round(close * 1.05, 2)
-        band_high = round(close * 1.1, 2)
-        s["portfolio"]["entry_bands"][ticker] = {
-            **band,
-            "low": band_low,
-            "high": band_high,
-            "label": f"{band_low}-{band_high}",
-        }
-        computed_in_band = False
-    tech.update({"in_entry_band": not computed_in_band})
-
-
-def _mutate_state_transition(s: dict[str, Any]) -> None:
-    """
-    Set ETN into a fully coherent in-band state so the validator does not fire
-    entry_band_mismatch and the dashboard has enough source health to surface
-    triggerToday=True.
-    """
-    etn_tech = next(r for r in s["technical"]["records"] if r["ticker"] == "ETN")
-    close = etn_tech.get("close") or 300.0
-    band_low  = round(close * 0.98, 2)
-    band_high = round(close * 1.02, 2)
-    next(b for t, b in s["portfolio"]["entry_bands"].items() if t == "ETN").update(
-        {"low": band_low, "high": band_high, "label": f"{band_low}-{band_high}"}
-    )
-    etn_tech.update({"in_entry_band": True, "earnings_blocked": False, "below_stop": False})
-    next(r for r in s["deployment"]["records"] if r["ticker"] == "ETN").update(
-        {"action_state": "ALMOST", "reason": "in band with constructive posture", "priority": 2}
-    )
-
-    for source_name in ("market", "policy", "credit", "breadth"):
-        if isinstance(s.get(source_name), dict):
-            s[source_name]["status"] = "ok"
-            s[source_name]["warnings"] = []
-
-    market_fed = (((s.get("market") or {}).get("data") or {}).get("fed") or {})
-    market_fed.update({
-        "target_low": 3.5,
-        "target_high": 3.75,
-        "cut_probability_next_meeting": 0.04,
-        "manual_update_required": False,
-        "target_invalid_reason": None,
-    })
-    market_data = (s.get("market") or {}).setdefault("data", {})
-    market_data.setdefault("treasuries", {})["10y"] = 4.25
-
-    market_meta = (s.get("market") or {}).setdefault("meta", {})
-    market_meta["generated_at_utc"] = "2026-05-04T13:23:00+00:00"
-
-    policy_data = (s.get("policy") or {}).setdefault("data", {})
-    policy_data["current_target_range"] = {
-        "low": 3.5,
-        "high": 3.75,
-        "as_of": "2026-05-01",
-        "confirmed": True,
-        "source": "acceptance stub",
-        "invalid_reason": None,
-    }
-    policy_data["next_fomc"] = {
-        "date": "2026-07-29",
-        "days_until": 89,
-        "distribution": [
-            {"outcome": "hold", "probability": 0.96},
-            {"outcome": "cut_25bp", "probability": 0.04},
-        ],
-        "implied_rate": 3.62,
-    }
-    (s.get("policy") or {}).setdefault("manual_dependencies", [])
-    (s.get("policy") or {})["manual_dependencies"] = []
-    (s.get("policy") or {})["generated_at_utc"] = "2026-05-04T13:23:00+00:00"
-
-
 def main() -> int:
     results: list[dict[str, Any]] = []
     with preserved_tmp_files():
@@ -1695,35 +1539,33 @@ def main() -> int:
         for name, payload in base_sources.items():
             if payload is not None:
                 write_source(name, payload)
+        # 2026-09-20 market-state retirement: the market-source cases
+        # (missing_market_field, partial_macro_feed, market_sectors_invalid_shape,
+        # stale_market_source) were retired or re-pointed to the surviving
+        # credit-spreads trust surface, and the sectors-shape contract moved into
+        # case_payload_shape_contract (honest empty sectors_relative). The
+        # portfolio-era cases (contradiction_entry_band,
+        # state_transition_in_band_ready) were retired: they depended on the
+        # retired tmp/portfolio-config.json entry-band source and the retired
+        # market-state source and are not constructible after the 2026-08-29
+        # portfolio/paper retirement.
         results.append(run_case(
             base_sources,
-            "missing_market_field",
-            lambda s: s["market"]["data"]["volatility"].pop("vix", None),
-            case_missing_market_field,
+            "missing_credit_required_field",
+            lambda s: s["credit"]["data"].pop("stress_regime", None),
+            case_missing_credit_required_field,
         ))
         results.append(run_case(
             base_sources,
-            "partial_macro_feed",
-            lambda s: s["market"].update({"status": "partial"}),
-            case_partial_macro_feed,
+            "partial_upstream_feed",
+            lambda s: s["credit"].update({"status": "partial"}),
+            case_partial_upstream_feed,
         ))
         results.append(run_case(
             base_sources,
-            "market_sectors_invalid_shape",
-            lambda s: s["market"]["data"].update({"sectors": ["bad-block"]}),
-            case_market_sectors_invalid_shape,
-        ))
-        results.append(run_case(
-            base_sources,
-            "stale_market_source",
-            lambda s: s["market"].update({"generated_at_utc": "2026-04-20T00:00:00+00:00"}),
-            case_stale_source,
-        ))
-        results.append(run_case(
-            base_sources,
-            "contradiction_entry_band",
-            _mutate_entry_band_contradiction,
-            case_contradiction,
+            "stale_credit_source",
+            lambda s: s["credit"].update({"generated_at_utc": "2026-04-20T00:00:00+00:00"}),
+            case_stale_credit_source,
         ))
         results.append(run_case(
             base_sources,
@@ -1734,15 +1576,9 @@ def main() -> int:
             }),
             case_earnings_date_change,
         ))
-        results.append(run_case(
-            base_sources,
-            "state_transition_in_band_ready",
-            _mutate_state_transition,
-            case_state_transition,
-        ))
         restore_sources(base_sources)
         for case_fn in (
-            case_market_state_missing_policy_artifact,
+            case_missing_policy_artifact_blocks_macro_regime,
             case_policy_fail_closed_expired_target,
             case_dashboard_policy_manual_remediation_path,
             case_macro_regime_policy_distribution_shape_guard,

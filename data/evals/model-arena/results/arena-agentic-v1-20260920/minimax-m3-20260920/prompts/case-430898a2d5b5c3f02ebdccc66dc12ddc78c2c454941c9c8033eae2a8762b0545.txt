@@ -1,0 +1,1 @@
+{"events": [["e1", "A", 1, "queued"], ["e25", "A", 2, "ready"], ["e35", "A", 2, "blocked"], ["e4", "B", 1, "ready"]], "request": "Replay the stream; report ambiguity, never invent a tie-break.", "rules": {"apply_ge": true, "dedup_on_pair": true, "ordering": "revision; ties undefined"}}

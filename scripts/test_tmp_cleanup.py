@@ -57,3 +57,54 @@ def test_tmp_cleanup_dry_run_records_protection_assertions(tmp_path, monkeypatch
     assert report["candidates"][0]["path"] == "tmp/old-scratch.json"
     assert protected.exists()
     assert candidate.exists()
+
+
+def _naive_newest_mtime(path: Path):
+    from datetime import datetime, timezone
+
+    if path.is_file():
+        return datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc)
+    mtimes = [datetime.fromtimestamp(p.stat().st_mtime, tz=timezone.utc) for p in path.rglob("*") if p.exists()]
+    mtimes.append(datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc))
+    return max(mtimes)
+
+
+def test_scan_matches_naive_mtime(tmp_path, monkeypatch) -> None:
+    workspace = tmp_path / "workspace"
+    target = workspace / "tmp" / "bigdir"
+    (target / "sub" / "deep").mkdir(parents=True)
+    (target / "a.txt").write_text("a" * 100, encoding="utf-8")
+    (target / "sub" / "b.bin").write_bytes(bytes(range(256)) * 40)
+    (target / "sub" / "deep" / "c.md").write_text("# c", encoding="utf-8")
+    old = time.time() - 3 * 24 * 60 * 60
+    os.utime(target / "sub" / "b.bin", (old, old))
+    monkeypatch.setattr(tmp_cleanup, "WORKSPACE", workspace)
+    assert tmp_cleanup.newest_mtime(target) == _naive_newest_mtime(target)
+    # Memoized second call returns the same object without retraversal.
+    assert tmp_cleanup.scan_candidate(str(target)) is tmp_cleanup.scan_candidate(str(target))
+
+
+def test_hash_cache_preserves_digest(tmp_path, monkeypatch) -> None:
+    workspace = tmp_path / "workspace"
+    tmp = workspace / "tmp"
+    archive = workspace / "09. Archive" / "Scripts and Tmp Cleanup - Archived"
+    tmp.mkdir(parents=True)
+    archive.mkdir(parents=True)
+    candidate = tmp / "old-scratch.json"
+    candidate.write_text('{"ok": true}', encoding="utf-8")
+    old = time.time() - 10 * 24 * 60 * 60
+    os.utime(candidate, (old, old))
+    monkeypatch.setattr(tmp_cleanup, "WORKSPACE", workspace)
+    monkeypatch.setattr(tmp_cleanup, "TMP", tmp)
+    monkeypatch.setattr(tmp_cleanup, "ARCHIVE_ROOT", archive)
+    monkeypatch.setattr(tmp_cleanup, "OUT_PATH", tmp / "tmp-cleanup-report.json")
+    monkeypatch.setattr(sys, "argv", ["tmp_cleanup.py", "--dry-run", "--days", "7"])
+    assert tmp_cleanup.main() == 0
+    first = json.loads((tmp / "tmp-cleanup-report.json").read_text(encoding="utf-8"))
+    cache_file = workspace / "state" / "tmp-cleanup-hash-cache.json"
+    assert cache_file.exists()
+    assert tmp_cleanup.main() == 0
+    second = json.loads((tmp / "tmp-cleanup-report.json").read_text(encoding="utf-8"))
+    assert second["summary"]["candidate_digest"] == first["summary"]["candidate_digest"]
+    assert second["candidates"] == first["candidates"]
+    assert second["validation"] == {"status": "ok", "errors": [], "warnings": []}

@@ -19,7 +19,10 @@
   },
   "failureAlert": {
     "after": 2,
-    "mode": "announce"
+    "mode": "announce",
+    "channel": "telegram",
+    "to": "telegram:8650152206",
+    "accountId": "default"
   },
   "payload": {
     "kind": "command",

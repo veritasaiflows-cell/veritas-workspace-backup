@@ -1,0 +1,19 @@
+{
+  "authorized_at": "2026-09-20T19:07:28.227855-07:00",
+  "authorized_by": "gateway-owner",
+  "dispatch_ready": true,
+  "envelope": "arena-integrated-v1-20260920",
+  "mission_id": "arena-integrated-v1-20260920",
+  "mission_version": "arena-integrated-v1-20260920-r1",
+  "note": "Run-scoped owner release for MiniMax M3 integrated-mission canary only. Canonical overlay/dispatch-authorization.json left INERT. No routing/config change.",
+  "schema": "veritas.arena_dispatch_authorization.v1",
+  "scope": {
+    "missions": 1,
+    "models": [
+      "ollama-cloud/minimax-m3:cloud"
+    ],
+    "reps": 1,
+    "retries": 0,
+    "timeout_s": 600
+  }
+}

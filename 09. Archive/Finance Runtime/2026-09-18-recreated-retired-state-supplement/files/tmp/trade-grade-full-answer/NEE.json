@@ -1,0 +1,1681 @@
+{
+  "schema": "veritas.trade_grade_full_answer_assembler.v1",
+  "generated_at_utc": "2026-09-19T04:37:27Z",
+  "workflow_ids": [
+    "WF84",
+    "WF85"
+  ],
+  "status": "ok",
+  "ticker": "NEE",
+  "review_only": true,
+  "canonical_full_answer_contract": {
+    "required_sections": [
+      "thesis",
+      "business_quality_moat",
+      "bull_case",
+      "bear_case",
+      "earnings_guidance",
+      "financial_metrics",
+      "valuation",
+      "technical_setup",
+      "catalyst_news_macro",
+      "risk_invalidation",
+      "portfolio_fit",
+      "entry_stop_sizing",
+      "decision_state",
+      "trade_grade",
+      "owner_action",
+      "authority_approval_status",
+      "evidence_freshness_confidence"
+    ],
+    "machine_state_fields_separated": true,
+    "answer_packet_role": "compatibility_snapshot_only",
+    "source_open_required_before_material_claims": true
+  },
+  "source_artifacts": {
+    "wf84_db": "tmp/canonical-finance-data-plane.sqlite",
+    "wf85_cards": "tmp/trade-grade-decision-cards.json",
+    "ticker_intelligence_card": "tmp/ticker-intelligence-cards/NEE.current.json",
+    "post_close_ledger": "tmp/post-close-final-quote-ledger.json",
+    "macro_metrics": "tmp/macro-metrics-current.json",
+    "macro_judgment": "tmp/macro-judgment-draft.json",
+    "market_today_answer_packet": "tmp/market-today-answer-packet.json"
+  },
+  "identity": {
+    "ticker": "NEE",
+    "name": "NextEra Energy, Inc.",
+    "instrument_type": "equity",
+    "research_tier": "Tier C"
+  },
+  "machine_state": {
+    "research_tier": "Tier C",
+    "decision_state": null,
+    "primary_state": null,
+    "queue_state": null,
+    "decision_grade_gate": {
+      "decision_grade_claim_allowed": false,
+      "decision_grade_status": "not_decision_grade_yet",
+      "specific_repair_required": "not_review_ready",
+      "blockers": [
+        "decision_state=missing"
+      ],
+      "may_use_approval_ready_language": false,
+      "owner_approval_required_before_action": true,
+      "capital_or_execution_authority": false
+    },
+    "trade_grade": {
+      "grade": "D",
+      "conviction": "low",
+      "time_horizon": "not_structured",
+      "research_tier": "Tier C",
+      "actionability": "blocked_or_unknown",
+      "decision_state": null,
+      "trade_grade_is_not_owner_approval": true
+    },
+    "execution_eligibility": {
+      "status": "not_eligible",
+      "paper_trade_allowed": false,
+      "live_trade_allowed": false,
+      "requires_exact_owner_approval": true
+    },
+    "owner_action": {
+      "owner_action": "monitor_only_no_owner_action",
+      "owner_action_required": false,
+      "execution_authorized": false,
+      "paper_trade_allowed": false,
+      "live_trade_allowed": false,
+      "approval_status": "not_approved",
+      "not_approved_stamp": "NOT APPROVED - Randall exact approval required"
+    }
+  },
+  "sections": {
+    "thesis": {
+      "section_id": "thesis",
+      "title": "Thesis",
+      "status": "available",
+      "confidence": "medium",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [
+        "Review-only synthesis generated from existing local sourced artifacts.",
+        "This does not clear owner approval, capital deployment, paper/live execution, or final recommendation authority.",
+        "current_sector_performance",
+        "key_financial_metrics",
+        "latest_earnings_performance",
+        "missing_or_stale_evidence",
+        "official_capture_developments_orders_backlog",
+        "price_band_stop",
+        "risk_register",
+        "technical_posture",
+        "valuation"
+      ],
+      "raw": {
+        "status": "synthesized_review_only_source_backed",
+        "thesis": "NextEra Energy, Inc. has a review-only synthesized Tier A thesis from local sourced artifacts: revenue YoY 12.45%, EPS YoY 53.06%, FCF YoY 61.16%. Entry posture is unknown band status; 2 evidence/freshness gaps still require review before decision-grade use.",
+        "bull_case_inputs": [
+          "latest_earnings_performance",
+          "key_financial_metrics",
+          "official_capture_developments_orders_backlog",
+          "current_sector_performance",
+          "technical_posture"
+        ],
+        "bear_case_inputs": [
+          "risk_register",
+          "missing_or_stale_evidence",
+          "valuation",
+          "price_band_stop"
+        ],
+        "entry_context": {
+          "latest_known_price": null,
+          "price_source": null,
+          "entry_band_low": null,
+          "entry_band_high": null,
+          "stop_or_invalidation": null,
+          "band_status": null,
+          "band_source": null,
+          "stop_source": null,
+          "fresh_quote_required": false,
+          "staleness_note": null,
+          "reference_band_refresh_required": false,
+          "sql_canon_reference": null
+        },
+        "synthesis_evidence": [
+          {
+            "label": "fundamental_snapshot",
+            "summary": "revenue YoY 12.45%, EPS YoY 53.06%, FCF YoY 61.16%",
+            "source_artifact": "tmp\\fundamental-metrics-current.json",
+            "period_end": "2026-06-30",
+            "source_tier": "aggregator_secondary"
+          },
+          {
+            "label": "sector_proxy_context",
+            "summary": "Utilities via XLU versus SPY; leadership=deteriorating",
+            "source_artifact": "tmp\\sector-expansion-board.json",
+            "as_of": "2026-08-28",
+            "match_basis": "exact"
+          }
+        ],
+        "source_open_required": true,
+        "limits": [
+          "Review-only synthesis generated from existing local sourced artifacts.",
+          "This does not clear owner approval, capital deployment, paper/live execution, or final recommendation authority."
+        ]
+      }
+    },
+    "business_quality_moat": {
+      "section_id": "business_quality_moat",
+      "title": "Business / Moat / Quality",
+      "status": "available",
+      "confidence": "medium",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [
+        "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context.",
+        "Evidence supports structured review coverage, not a final moat grade.",
+        "Peer comparison and source-open competitive research remain required before decision-grade use.",
+        "ROIC proxy is low; reinvestment/capital-allocation quality needs review.",
+        "Stock issuance exceeded repurchases in the latest cash-flow period.",
+        "breaks_stop_or_invalidation",
+        "data/finance/universe-v1.json",
+        "enters_or_reclaims_written_entry_band",
+        "fresh_official_or_fundamental_catalyst_improves_thesis",
+        "owner_demotes_or_removes_from_active_monitoring",
+        "owner_promotes_from_monitor_to_decision_queue",
+        "source_freshness_or_validator_status_blocks_claims",
+        "technical_relative_strength_or_sector_leadership_improves",
+        "thesis_evidence_deteriorates_or_conflicts_with_canon"
+      ],
+      "raw": {
+        "universe_metadata": {
+          "active": true,
+          "authority_boundary": {
+            "capital_or_order_authority": false,
+            "execution_allowed": false,
+            "maintains_account_or_capital_state": false,
+            "owner_approval_inferred": false,
+            "posture": "alerts_and_non_executing_recommendations_universe_registry",
+            "review_only": true,
+            "writes_finance_canon": false
+          },
+          "coverage_reason": {
+            "alert_evidence_route": "guarded_sql_and_source_open",
+            "fundamental_row_present": true,
+            "wf77_current_coverage": true
+          },
+          "data_requirements": {
+            "analyst_consensus": "weekly_required",
+            "authority_guardrails": "required",
+            "fundamentals": "weekly_required",
+            "official_evidence": "source_open_required",
+            "price_band_stop": "daily_required",
+            "risk_register": "required",
+            "technical_posture": "daily_required"
+          },
+          "decision_grade_eligible": false,
+          "demotion_triggers": [
+            "breaks_stop_or_invalidation",
+            "source_freshness_or_validator_status_blocks_claims",
+            "thesis_evidence_deteriorates_or_conflicts_with_canon",
+            "owner_demotes_or_removes_from_active_monitoring"
+          ],
+          "industry": "Utilities",
+          "instrument_type": "operating_company",
+          "mirrored_at_utc": "2026-08-30T02:09:23Z",
+          "monitoring_cadence": {
+            "analyst": "weekly",
+            "fundamentals": "weekly",
+            "official_evidence": "event_driven_source_open",
+            "price_technical": "daily"
+          },
+          "monitoring_role": "review_100_thin_monitor",
+          "name": "NextEra Energy, Inc.",
+          "pilot_scope": false,
+          "production_scope": false,
+          "promotion_required_before_action": true,
+          "promotion_triggers": [
+            "enters_or_reclaims_written_entry_band",
+            "fresh_official_or_fundamental_catalyst_improves_thesis",
+            "technical_relative_strength_or_sector_leadership_improves",
+            "owner_promotes_from_monitor_to_decision_queue"
+          ],
+          "sector": "Utilities",
+          "source_artifact_path": "data/finance/universe-v1.json",
+          "source_artifact_sha256": "90e2db4b0fa355278a38a19df15d8f00d0d62fec89e5b9416da25dada46a0d49",
+          "source_open_required": true,
+          "source_symbols": {
+            "yfinance": "NEE",
+            "sec_cik": null,
+            "company_ir": null
+          },
+          "ticker": "NEE",
+          "tier": "C",
+          "universe_scope": "review_100_monitor",
+          "coverage_obligation_tier": "C",
+          "sql_tier": "Tier C",
+          "sql_tier_state": "sql_first_wait_for_routing",
+          "tier_decision_scope": "tier_c_sql_first_review_scope",
+          "review_100_monitor": true,
+          "identity_scope_tier_authority_source": "state/finance/finance-canon.sqlite:universe_membership"
+        },
+        "competitive_moat": {
+          "status": "partially_structured_source_backed_review_required",
+          "summary": "NextEra Energy, Inc. has preliminary moat evidence from profitability, official operating commentary, demand/activity signals, or sector proxy context; this is not a final competitive-position conclusion.",
+          "evidence": [
+            {
+              "label": "profitability_quality",
+              "summary": "operating margin 30.22%, net margin 41.73%, ROIC proxy 4.38%",
+              "source_artifact": "tmp\\fundamental-metrics-current.json",
+              "period_end": "2026-06-30",
+              "source_tier": "aggregator_secondary"
+            },
+            {
+              "label": "sector_proxy_position",
+              "summary": "Utilities proxy XLU leadership=deteriorating",
+              "source_artifact": "tmp\\sector-expansion-board.json",
+              "as_of": "2026-08-28",
+              "match_basis": "exact"
+            }
+          ],
+          "source_open_required": true,
+          "limits": [
+            "Evidence supports structured review coverage, not a final moat grade.",
+            "Peer comparison and source-open competitive research remain required before decision-grade use."
+          ]
+        },
+        "capital_allocation_quality": {
+          "quality": "caution",
+          "anomalies": [
+            {
+              "code": "net_share_issuance",
+              "severity": "warning",
+              "message": "Stock issuance exceeded repurchases in the latest cash-flow period."
+            },
+            {
+              "code": "leverage_elevated",
+              "severity": "warning",
+              "message": "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context."
+            },
+            {
+              "code": "low_roic_proxy",
+              "severity": "warning",
+              "message": "ROIC proxy is low; reinvestment/capital-allocation quality needs review."
+            }
+          ],
+          "notes": [
+            "Stock issuance exceeded repurchases in the latest cash-flow period.",
+            "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context.",
+            "ROIC proxy is low; reinvestment/capital-allocation quality needs review."
+          ]
+        },
+        "tier_a_fundamental_enrichment": {}
+      }
+    },
+    "bull_case": {
+      "section_id": "bull_case",
+      "title": "Bull Case",
+      "status": "available",
+      "confidence": "medium",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [
+        "current_sector_performance",
+        "key_financial_metrics",
+        "latest_earnings_performance",
+        "official_capture_developments_orders_backlog",
+        "technical_posture"
+      ],
+      "raw": {
+        "bull_case": [
+          "latest_earnings_performance",
+          "key_financial_metrics",
+          "official_capture_developments_orders_backlog",
+          "current_sector_performance",
+          "technical_posture"
+        ],
+        "wf85_bull_case": null
+      }
+    },
+    "bear_case": {
+      "section_id": "bear_case",
+      "title": "Bear Case",
+      "status": "available",
+      "confidence": "medium",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [
+        "missing_or_stale_evidence",
+        "price_band_stop",
+        "risk_register",
+        "valuation"
+      ],
+      "raw": {
+        "bear_case": [
+          "risk_register",
+          "missing_or_stale_evidence",
+          "valuation",
+          "price_band_stop"
+        ],
+        "wf85_bear_case": null,
+        "risks": [
+          {
+            "category": "capital_allocation",
+            "severity": "warning",
+            "detail": "Stock issuance exceeded repurchases in the latest cash-flow period."
+          },
+          {
+            "category": "capital_allocation",
+            "severity": "warning",
+            "detail": "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context."
+          },
+          {
+            "category": "capital_allocation",
+            "severity": "warning",
+            "detail": "ROIC proxy is low; reinvestment/capital-allocation quality needs review."
+          },
+          {
+            "category": "evidence_gap",
+            "severity": "context",
+            "detail": "Ticker not present in current deployment-readiness surface groups",
+            "family": "deployment_readiness_surface"
+          },
+          {
+            "category": "evidence_gap",
+            "severity": "context",
+            "detail": "Analyst evidence is lineage-only and cannot affect completeness, confidence, bands, invalidation, thesis, or recommendation posture.",
+            "family": "analyst_consensus_ratings_targets"
+          }
+        ]
+      }
+    },
+    "earnings_guidance": {
+      "section_id": "earnings_guidance",
+      "title": "Earnings + Guidance",
+      "status": "available",
+      "confidence": "medium",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [],
+      "raw": {
+        "latest_earnings": {
+          "status": "available",
+          "period_type": "quarterly",
+          "period_end": "2026-06-30",
+          "comparison_period_end": "2025-06-30",
+          "revenue": 7534000000.0,
+          "revenue_yoy_pct": 12.45,
+          "net_income": 3144000000.0,
+          "net_income_yoy_pct": 55.03,
+          "diluted_eps": 1.5,
+          "eps_yoy_pct": 53.06,
+          "free_cash_flow": 1805000000.0,
+          "free_cash_flow_yoy_pct": 61.16,
+          "official_adjusted_eps": {
+            "status": "missing_manual_required",
+            "value": null,
+            "source_url": null,
+            "source_section": null,
+            "manual_capture_required": true,
+            "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+          },
+          "official_growth_bridge": {
+            "status": "missing_manual_required",
+            "value": null,
+            "source_url": null,
+            "source_section": null,
+            "manual_capture_required": true,
+            "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+          },
+          "official_guidance": {
+            "status": "missing_manual_required",
+            "value": null,
+            "source_url": null,
+            "source_section": null,
+            "manual_capture_required": true,
+            "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+          },
+          "management_explanation": {
+            "status": "missing_manual_required",
+            "value": null,
+            "source_url": null,
+            "source_section": null,
+            "manual_capture_required": true,
+            "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+          },
+          "period_alignment": {
+            "status": "aligned",
+            "latest_official_period_end": null,
+            "normalized_metrics_period_end": "2026-06-30",
+            "normalized_metrics_stale": false,
+            "source_url": null,
+            "withheld_fields": []
+          },
+          "source_open_required": true
+        },
+        "catalyst_earnings_state": {
+          "workflow_state": "review_100_thin_monitor",
+          "surface_state": null,
+          "days_to_earnings": null,
+          "earnings_date_confirmed": null,
+          "last_earnings_date": null,
+          "post_earnings_review_confirmed": null
+        },
+        "official_capture_summary": null
+      }
+    },
+    "financial_metrics": {
+      "section_id": "financial_metrics",
+      "title": "Financial Metrics",
+      "status": "available",
+      "confidence": "medium",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [
+        "yfinance"
+      ],
+      "raw": {
+        "key_financial_metrics": {
+          "status": "available",
+          "period_end": "2026-06-30",
+          "growth": {
+            "revenue_yoy_pct": 12.45,
+            "net_income_yoy_pct": 55.03,
+            "eps_yoy_pct": 53.06,
+            "free_cash_flow_yoy_pct": 61.16
+          },
+          "profitability": {
+            "gross_margin_pct": 62.4,
+            "operating_margin_pct": 30.22,
+            "net_margin_pct": 41.73,
+            "roic_proxy_pct": 4.38
+          },
+          "cash_flow": {
+            "operating_cash_flow": 4662000000.0,
+            "free_cash_flow": 1805000000.0,
+            "fcf_per_share": 0.8622,
+            "fcf_yield_pct": 1.06
+          },
+          "balance_sheet": {
+            "cash_and_equivalents": 2866000000.0,
+            "total_debt": 110197000000.0,
+            "net_debt": 107331000000.0,
+            "debt_to_annualized_ebitda": 5.62
+          },
+          "valuation": {
+            "market_cap": 170685934861.01,
+            "enterprise_value": 292465999872.0,
+            "trailing_pe": 18.39,
+            "forward_pe": 18.65,
+            "price_to_sales": 5.95,
+            "price_to_book": 2.99,
+            "ev_to_ebitda_proxy": 14.92,
+            "ev_to_fcf_proxy": 40.51,
+            "earnings_yield_pct": 1.84
+          },
+          "capital_returns": {
+            "buyback_yield_pct": null,
+            "dividend_yield_pct": 0.76,
+            "shareholder_yield_pct": 0.76,
+            "capital_return_to_fcf_pct": 71.97
+          },
+          "data_quality": "clean",
+          "period_alignment": {
+            "status": "aligned",
+            "latest_official_period_end": null,
+            "normalized_metrics_period_end": "2026-06-30",
+            "normalized_metrics_stale": false,
+            "source_url": null,
+            "withheld_fields": []
+          },
+          "source_open_required": true
+        },
+        "official_fundamentals": {
+          "source": "yfinance",
+          "source_tier": "aggregator_secondary",
+          "period_type": "quarterly",
+          "period_end": "2026-06-30",
+          "comparison_period_end": "2025-06-30",
+          "revenue": 7534000000.0,
+          "revenue_yoy_pct": 12.45,
+          "net_income": 3144000000.0,
+          "net_income_yoy_pct": 55.03,
+          "diluted_eps": 1.5,
+          "eps_yoy_pct": 53.06,
+          "gross_margin_pct": 62.4,
+          "operating_margin_pct": 30.22,
+          "net_margin_pct": 41.73,
+          "operating_cash_flow": 4662000000.0,
+          "free_cash_flow": 1805000000.0,
+          "free_cash_flow_yoy_pct": 61.16,
+          "fcf_per_share": 0.8622,
+          "fcf_per_share_yoy_pct": 58.7,
+          "cash_and_equivalents": 2866000000.0,
+          "total_debt": 110197000000.0,
+          "net_debt": 107331000000.0,
+          "debt_to_annualized_ebitda": 5.62,
+          "roic_proxy_pct": 4.38,
+          "data_quality": "clean"
+        },
+        "fundamental_reconciliation": {
+          "sec_status": "sec_lag_wait",
+          "sec_source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000753308.json",
+          "company_ir_status": "manual_required",
+          "company_ir_source_url": null,
+          "quality_notes": [],
+          "period_alignment": {
+            "status": "aligned",
+            "latest_official_period_end": null,
+            "normalized_metrics_period_end": "2026-06-30",
+            "normalized_metrics_stale": false,
+            "source_url": null,
+            "withheld_fields": []
+          }
+        },
+        "tier_a_fundamental_enrichment": {}
+      }
+    },
+    "valuation": {
+      "section_id": "valuation",
+      "title": "Valuation",
+      "status": "available",
+      "confidence": "medium",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [],
+      "raw": {
+        "card_valuation": {
+          "valuation_context": "available",
+          "market_cap": 170685934861.01,
+          "enterprise_value": 292465999872.0,
+          "trailing_pe": 18.39,
+          "forward_pe": 18.65,
+          "fcf_yield_pct": 1.06,
+          "earnings_yield_pct": 1.84,
+          "price_to_sales": 5.95,
+          "price_to_book": 2.99,
+          "ev_to_ebitda_proxy": 14.92,
+          "ev_to_fcf_proxy": 40.51
+        },
+        "derived_book_value": null,
+        "field_availability": null
+      }
+    },
+    "technical_setup": {
+      "section_id": "technical_setup",
+      "title": "Technical Setup",
+      "status": "source_open_required",
+      "confidence": "low",
+      "freshness_status": "source_open_required",
+      "source_open_required": true,
+      "source_paths": [],
+      "raw": {
+        "status": "source_open_required"
+      }
+    },
+    "catalyst_news_macro": {
+      "section_id": "catalyst_news_macro",
+      "title": "Catalyst / News / Macro Sensitivity",
+      "status": "available",
+      "confidence": "medium",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [
+        "BLS CPI news release",
+        "https://www.bls.gov/news.release/cpi.nr0.htm",
+        "official Treasury daily yield curve XML",
+        "tmp/macro-judgment-draft.json",
+        "tmp/macro-metrics-current.json",
+        "tmp/macro-regime.json",
+        "tmp/market-state.json:data.broad_indices",
+        "tmp/market-state.json:data.energy",
+        "tmp/market-state.json:data.sectors",
+        "tmp/market-state.json:data.sectors.xle",
+        "tmp/market-today-answer-packet.json",
+        "yfinance ^TNX",
+        "yfinance daily history ^DJI",
+        "yfinance daily history ^GSPC",
+        "yfinance daily history ^IXIC",
+        "yfinance daily history ^NDX",
+        "yfinance daily history ^RUT"
+      ],
+      "raw": {
+        "recent_developments": {
+          "status": "missing_manual_required",
+          "value": null,
+          "source_url": null,
+          "source_section": null,
+          "manual_capture_required": true,
+          "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+        },
+        "sector_performance": {
+          "status": "available",
+          "sector": "Utilities",
+          "sector_query": "Utilities",
+          "sector_match_basis": "exact",
+          "sector_proxy_ticker": "XLU",
+          "as_of": "2026-08-28",
+          "relative_strength_vs_spy": {
+            "1d": -0.8152,
+            "5d": -0.5676,
+            "20d": -6.6406
+          },
+          "sector_returns_pct": {
+            "1d": -1.0421,
+            "5d": -0.0935,
+            "20d": -3.6528
+          },
+          "spy_returns_pct": {
+            "1d": -0.2269,
+            "5d": 0.4741,
+            "20d": 2.9878
+          },
+          "relative_labels": {
+            "1d": "underperforming",
+            "5d": "underperforming",
+            "20d": "underperforming"
+          },
+          "leadership_status": "deteriorating",
+          "portfolio_exposure": {
+            "draft_weight_pct": 0,
+            "tickers": [],
+            "status": "unrepresented"
+          },
+          "underexposed": true,
+          "owner_gated_next_review_action": "Underexposed/unrepresented: monitor for quality candidates and require explicit promotion review before any lane change."
+        },
+        "etf_or_macro_proxy_profile": null,
+        "orders_backlog_book_to_bill": {
+          "status": "missing_manual_required",
+          "value": null,
+          "source_url": null,
+          "source_section": null,
+          "manual_capture_required": true,
+          "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+        },
+        "macro_risk_context": {
+          "status": "available",
+          "review_only": true,
+          "source_artifacts": [
+            {
+              "path": "tmp/macro-metrics-current.json",
+              "status": "warning",
+              "generated_at_utc": "2026-09-18T12:35:02Z"
+            },
+            {
+              "path": "tmp/macro-judgment-draft.json",
+              "status": "ok",
+              "generated_at_utc": "2026-09-18T12:36:08Z"
+            },
+            {
+              "path": "tmp/market-today-answer-packet.json",
+              "status": "warning",
+              "generated_at_utc": "2026-08-13T23:37:39Z"
+            }
+          ],
+          "macro_metrics_status": "warning",
+          "macro_judgment_status": "ok",
+          "macro_judgment_validation_status": "ok",
+          "market_today_status": "warning",
+          "market_today_validation_status": "ok",
+          "market_tape_context": {
+            "can_answer_full_market_close_recap_without_web": true,
+            "missing_for_web_free_full_recap": [],
+            "local_answer_summary": "Local workspace data supports a post-close market read: S&P 500 7798.99 (+0.65%), VIX 14.63; sector tape: XLK +1.01%, XLI -0.05%, XLF +0.59%, XLE +0.05%; CPI 3.4% YoY / core 2.5% YoY; Brent $86.98, WTI $81.18. full broad-index close/change and source-backed driver digest available locally.",
+            "broad_index_daily_change_table": [
+              {
+                "key": "spx_cash",
+                "normalized_symbol": "SPX",
+                "symbol": "^GSPC",
+                "label": "S&P 500 cash",
+                "close": 7798.99,
+                "point_change": 50.49,
+                "percent_change": 0.65,
+                "as_of": "2026-08-13",
+                "source": "yfinance daily history ^GSPC",
+                "available": true,
+                "proxy": false,
+                "missing_reason": null
+              },
+              {
+                "key": "dow_cash",
+                "normalized_symbol": "DOW",
+                "symbol": "^DJI",
+                "label": "Dow Jones Industrial Average",
+                "close": 53839.99,
+                "point_change": 69.72,
+                "percent_change": 0.13,
+                "as_of": "2026-08-13",
+                "source": "yfinance daily history ^DJI",
+                "available": true,
+                "proxy": false,
+                "missing_reason": null
+              },
+              {
+                "key": "nasdaq_composite_cash",
+                "normalized_symbol": "NASDAQ_COMPOSITE",
+                "symbol": "^IXIC",
+                "label": "Nasdaq Composite",
+                "close": 26803.03,
+                "point_change": 214.54,
+                "percent_change": 0.81,
+                "as_of": "2026-08-13",
+                "source": "yfinance daily history ^IXIC",
+                "available": true,
+                "proxy": false,
+                "missing_reason": null
+              },
+              {
+                "key": "nasdaq_100_trend",
+                "normalized_symbol": "NASDAQ_100",
+                "symbol": "^NDX",
+                "label": "Nasdaq 100",
+                "close": 30084.5,
+                "point_change": 341.9,
+                "percent_change": 1.15,
+                "as_of": "2026-08-13",
+                "source": "yfinance daily history ^NDX",
+                "available": true,
+                "proxy": false,
+                "missing_reason": null
+              },
+              {
+                "key": "russell_2000_trend",
+                "normalized_symbol": "RUSSELL_2000",
+                "symbol": "^RUT",
+                "label": "Russell 2000",
+                "close": 3052.85,
+                "point_change": 7.37,
+                "percent_change": 0.24,
+                "as_of": "2026-08-13",
+                "source": "yfinance daily history ^RUT",
+                "available": true,
+                "proxy": false,
+                "missing_reason": null
+              }
+            ],
+            "rates": {
+              "treasury_2y_pct": 4.15,
+              "treasury_2y_as_of": "2026-08-13",
+              "treasury_2y_source": "official Treasury daily yield curve XML",
+              "treasury_10y_pct": 4.641,
+              "curve_2s10s_bps": 49.1,
+              "brent": 86.98,
+              "wti": 81.18
+            },
+            "source_backed_market_driver_digest": [
+              {
+                "driver_id": "cpi_monthly_contained",
+                "driver_type": "macro_release",
+                "summary": "Latest monthly headline and core CPI are contained; energy/gasoline are not adding monthly headline pressure.",
+                "evidence": {
+                  "headline_mom_pct": 0.1,
+                  "headline_yoy_pct": 3.4,
+                  "core_mom_pct": 0.2,
+                  "core_yoy_pct": 2.5,
+                  "energy_mom_pct": -1.5,
+                  "gasoline_mom_pct": -2.9
+                },
+                "source_refs": [
+                  "https://www.bls.gov/news.release/cpi.nr0.htm"
+                ],
+                "confidence": "high",
+                "claim_boundary": "source-backed macro input; not a single-cause explanation for the full market move"
+              },
+              {
+                "driver_id": "oil_and_energy_relative_strength",
+                "driver_type": "cross_asset_tape",
+                "summary": "Oil is elevated and energy outperformed the tracked sector tape.",
+                "evidence": {
+                  "brent": 86.98,
+                  "wti": 81.18,
+                  "xle_change_pct": 0.05,
+                  "xle_relative_label": "weak vs SPY"
+                },
+                "source_refs": [
+                  "tmp/market-state.json:data.energy",
+                  "tmp/market-state.json:data.sectors.xle"
+                ],
+                "confidence": "medium",
+                "claim_boundary": "observed tape/rates context; does not prove causality by itself"
+              },
+              {
+                "driver_id": "growth_and_cyclical_pressure",
+                "driver_type": "market_tape",
+                "summary": "Tech/industrial weakness and Nasdaq/SPX changes define the equity-tape risk context.",
+                "evidence": {
+                  "spx_percent_change": 0.65,
+                  "nasdaq_composite_percent_change": 0.81,
+                  "xlk_change_pct": 1.01,
+                  "xli_change_pct": -0.05
+                },
+                "source_refs": [
+                  "tmp/market-state.json:data.broad_indices",
+                  "tmp/market-state.json:data.sectors"
+                ],
+                "confidence": "medium",
+                "claim_boundary": "observed market tape; narrative attribution requires source-open news review"
+              },
+              {
+                "driver_id": "rates_sensitivity_window",
+                "driver_type": "rates",
+                "summary": "2Y/10Y rates and the coming FOMC window keep duration and growth-stock sensitivity elevated.",
+                "evidence": {
+                  "treasury_2y_pct": 4.15,
+                  "treasury_2y_as_of": "2026-08-13",
+                  "treasury_10y_pct": 4.641,
+                  "treasury_10y_as_of": "2026-08-13",
+                  "curve_2s10s_bps": 49.1
+                },
+                "source_refs": [
+                  "official Treasury daily yield curve XML",
+                  "yfinance ^TNX"
+                ],
+                "confidence": "medium",
+                "claim_boundary": "rates context only; no Fed decision prediction"
+              }
+            ],
+            "claim_boundary": "market tape context is evidence burden and risk framing only; it does not prove single-name causality or approve action"
+          },
+          "inflation_posture": "headline_and_core_hot",
+          "cpi_driver": "energy_gasoline_headline_pressure",
+          "cpi_release_detail": {
+            "status": "warning",
+            "source": "BLS CPI news release",
+            "source_url": "https://www.bls.gov/news.release/cpi.nr0.htm",
+            "source_mode": "live_fetch",
+            "release_period": "August 2026",
+            "release_date_text": "8:30 a.m. (ET) Friday, September 11, 2026",
+            "all_items": {
+              "latest_mom_pct": 0.4,
+              "previous_mom_pct": 0.1,
+              "yoy_pct": 3.4
+            },
+            "core": {
+              "latest_mom_pct": 0.3,
+              "previous_mom_pct": 0.2,
+              "yoy_pct": 2.4
+            },
+            "energy": {
+              "latest_mom_pct": 2.1,
+              "previous_mom_pct": -1.5,
+              "yoy_pct": 16.3
+            },
+            "gasoline": {
+              "latest_mom_pct": 3.9,
+              "previous_mom_pct": -2.9,
+              "yoy_pct": 27.4
+            },
+            "shelter": {
+              "latest_mom_pct": 0.3,
+              "previous_mom_pct": 0.1,
+              "yoy_pct": 3.0
+            },
+            "rent": {
+              "latest_mom_pct": null,
+              "previous_mom_pct": null,
+              "yoy_pct": null
+            },
+            "owners_equivalent_rent": {
+              "latest_mom_pct": 0.2,
+              "previous_mom_pct": null,
+              "yoy_pct": null
+            }
+          },
+          "macro_pulse_read": {
+            "text": "inflation pressure is re-accelerating enough to keep rate sensitivity high. CPI/core/PCE remain the key pressure points; payroll growth is still positive, but claims direction keeps labor risk on watch. GDP is not signaling a collapse, so this is selective-risk-on rather than broad all-clear. Latest BLS CPI detail shows headline 0.40% MoM / 3.40% YoY, core 0.30% MoM / 2.40% YoY; energy 2.10% MoM / 16.30% YoY, gasoline 3.90% MoM / 27.40% YoY, shelter 0.30% MoM / 3.00% YoY, rent n/a MoM, OER 0.20% MoM.",
+            "confidence": "low",
+            "source_basis": [
+              "tmp/macro-metrics-current.json",
+              "tmp/macro-regime.json"
+            ]
+          },
+          "ticker_use": {
+            "risk_effect": "adjust evidence burden, broad tape awareness, rate sensitivity, valuation discipline, and no-chase language",
+            "action_effect": "review context only; does not approve capital, sizing, paper, live, brokerage, account, or portfolio action",
+            "capital_deployment_approved": false,
+            "trade_or_execution_approved": false,
+            "owner_approval_inferred": false
+          }
+        },
+        "official_capture_summary": null
+      }
+    },
+    "risk_invalidation": {
+      "section_id": "risk_invalidation",
+      "title": "Risk + Invalidation",
+      "status": "available",
+      "confidence": "medium",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [
+        "BLS CPI news release",
+        "https://www.bls.gov/news.release/cpi.nr0.htm",
+        "official Treasury daily yield curve XML",
+        "tmp/macro-judgment-draft.json",
+        "tmp/macro-metrics-current.json",
+        "tmp/macro-regime.json",
+        "tmp/market-state.json:data.broad_indices",
+        "tmp/market-state.json:data.energy",
+        "tmp/market-state.json:data.sectors",
+        "tmp/market-state.json:data.sectors.xle",
+        "tmp/market-today-answer-packet.json",
+        "yfinance ^TNX",
+        "yfinance daily history ^DJI",
+        "yfinance daily history ^GSPC",
+        "yfinance daily history ^IXIC",
+        "yfinance daily history ^NDX",
+        "yfinance daily history ^RUT"
+      ],
+      "raw": {
+        "risk_register": [
+          {
+            "category": "capital_allocation",
+            "severity": "warning",
+            "detail": "Stock issuance exceeded repurchases in the latest cash-flow period."
+          },
+          {
+            "category": "capital_allocation",
+            "severity": "warning",
+            "detail": "Debt to annualized EBITDA proxy is elevated; capital returns need leverage context."
+          },
+          {
+            "category": "capital_allocation",
+            "severity": "warning",
+            "detail": "ROIC proxy is low; reinvestment/capital-allocation quality needs review."
+          },
+          {
+            "category": "evidence_gap",
+            "severity": "context",
+            "detail": "Ticker not present in current deployment-readiness surface groups",
+            "family": "deployment_readiness_surface"
+          },
+          {
+            "category": "evidence_gap",
+            "severity": "context",
+            "detail": "Analyst evidence is lineage-only and cannot affect completeness, confidence, bands, invalidation, thesis, or recommendation posture.",
+            "family": "analyst_consensus_ratings_targets"
+          }
+        ],
+        "wf85_key_risks": null,
+        "counterargument": null,
+        "stop_or_invalidation": null,
+        "macro_risk_context": {
+          "status": "available",
+          "review_only": true,
+          "source_artifacts": [
+            {
+              "path": "tmp/macro-metrics-current.json",
+              "status": "warning",
+              "generated_at_utc": "2026-09-18T12:35:02Z"
+            },
+            {
+              "path": "tmp/macro-judgment-draft.json",
+              "status": "ok",
+              "generated_at_utc": "2026-09-18T12:36:08Z"
+            },
+            {
+              "path": "tmp/market-today-answer-packet.json",
+              "status": "warning",
+              "generated_at_utc": "2026-08-13T23:37:39Z"
+            }
+          ],
+          "macro_metrics_status": "warning",
+          "macro_judgment_status": "ok",
+          "macro_judgment_validation_status": "ok",
+          "market_today_status": "warning",
+          "market_today_validation_status": "ok",
+          "market_tape_context": {
+            "can_answer_full_market_close_recap_without_web": true,
+            "missing_for_web_free_full_recap": [],
+            "local_answer_summary": "Local workspace data supports a post-close market read: S&P 500 7798.99 (+0.65%), VIX 14.63; sector tape: XLK +1.01%, XLI -0.05%, XLF +0.59%, XLE +0.05%; CPI 3.4% YoY / core 2.5% YoY; Brent $86.98, WTI $81.18. full broad-index close/change and source-backed driver digest available locally.",
+            "broad_index_daily_change_table": [
+              {
+                "key": "spx_cash",
+                "normalized_symbol": "SPX",
+                "symbol": "^GSPC",
+                "label": "S&P 500 cash",
+                "close": 7798.99,
+                "point_change": 50.49,
+                "percent_change": 0.65,
+                "as_of": "2026-08-13",
+                "source": "yfinance daily history ^GSPC",
+                "available": true,
+                "proxy": false,
+                "missing_reason": null
+              },
+              {
+                "key": "dow_cash",
+                "normalized_symbol": "DOW",
+                "symbol": "^DJI",
+                "label": "Dow Jones Industrial Average",
+                "close": 53839.99,
+                "point_change": 69.72,
+                "percent_change": 0.13,
+                "as_of": "2026-08-13",
+                "source": "yfinance daily history ^DJI",
+                "available": true,
+                "proxy": false,
+                "missing_reason": null
+              },
+              {
+                "key": "nasdaq_composite_cash",
+                "normalized_symbol": "NASDAQ_COMPOSITE",
+                "symbol": "^IXIC",
+                "label": "Nasdaq Composite",
+                "close": 26803.03,
+                "point_change": 214.54,
+                "percent_change": 0.81,
+                "as_of": "2026-08-13",
+                "source": "yfinance daily history ^IXIC",
+                "available": true,
+                "proxy": false,
+                "missing_reason": null
+              },
+              {
+                "key": "nasdaq_100_trend",
+                "normalized_symbol": "NASDAQ_100",
+                "symbol": "^NDX",
+                "label": "Nasdaq 100",
+                "close": 30084.5,
+                "point_change": 341.9,
+                "percent_change": 1.15,
+                "as_of": "2026-08-13",
+                "source": "yfinance daily history ^NDX",
+                "available": true,
+                "proxy": false,
+                "missing_reason": null
+              },
+              {
+                "key": "russell_2000_trend",
+                "normalized_symbol": "RUSSELL_2000",
+                "symbol": "^RUT",
+                "label": "Russell 2000",
+                "close": 3052.85,
+                "point_change": 7.37,
+                "percent_change": 0.24,
+                "as_of": "2026-08-13",
+                "source": "yfinance daily history ^RUT",
+                "available": true,
+                "proxy": false,
+                "missing_reason": null
+              }
+            ],
+            "rates": {
+              "treasury_2y_pct": 4.15,
+              "treasury_2y_as_of": "2026-08-13",
+              "treasury_2y_source": "official Treasury daily yield curve XML",
+              "treasury_10y_pct": 4.641,
+              "curve_2s10s_bps": 49.1,
+              "brent": 86.98,
+              "wti": 81.18
+            },
+            "source_backed_market_driver_digest": [
+              {
+                "driver_id": "cpi_monthly_contained",
+                "driver_type": "macro_release",
+                "summary": "Latest monthly headline and core CPI are contained; energy/gasoline are not adding monthly headline pressure.",
+                "evidence": {
+                  "headline_mom_pct": 0.1,
+                  "headline_yoy_pct": 3.4,
+                  "core_mom_pct": 0.2,
+                  "core_yoy_pct": 2.5,
+                  "energy_mom_pct": -1.5,
+                  "gasoline_mom_pct": -2.9
+                },
+                "source_refs": [
+                  "https://www.bls.gov/news.release/cpi.nr0.htm"
+                ],
+                "confidence": "high",
+                "claim_boundary": "source-backed macro input; not a single-cause explanation for the full market move"
+              },
+              {
+                "driver_id": "oil_and_energy_relative_strength",
+                "driver_type": "cross_asset_tape",
+                "summary": "Oil is elevated and energy outperformed the tracked sector tape.",
+                "evidence": {
+                  "brent": 86.98,
+                  "wti": 81.18,
+                  "xle_change_pct": 0.05,
+                  "xle_relative_label": "weak vs SPY"
+                },
+                "source_refs": [
+                  "tmp/market-state.json:data.energy",
+                  "tmp/market-state.json:data.sectors.xle"
+                ],
+                "confidence": "medium",
+                "claim_boundary": "observed tape/rates context; does not prove causality by itself"
+              },
+              {
+                "driver_id": "growth_and_cyclical_pressure",
+                "driver_type": "market_tape",
+                "summary": "Tech/industrial weakness and Nasdaq/SPX changes define the equity-tape risk context.",
+                "evidence": {
+                  "spx_percent_change": 0.65,
+                  "nasdaq_composite_percent_change": 0.81,
+                  "xlk_change_pct": 1.01,
+                  "xli_change_pct": -0.05
+                },
+                "source_refs": [
+                  "tmp/market-state.json:data.broad_indices",
+                  "tmp/market-state.json:data.sectors"
+                ],
+                "confidence": "medium",
+                "claim_boundary": "observed market tape; narrative attribution requires source-open news review"
+              },
+              {
+                "driver_id": "rates_sensitivity_window",
+                "driver_type": "rates",
+                "summary": "2Y/10Y rates and the coming FOMC window keep duration and growth-stock sensitivity elevated.",
+                "evidence": {
+                  "treasury_2y_pct": 4.15,
+                  "treasury_2y_as_of": "2026-08-13",
+                  "treasury_10y_pct": 4.641,
+                  "treasury_10y_as_of": "2026-08-13",
+                  "curve_2s10s_bps": 49.1
+                },
+                "source_refs": [
+                  "official Treasury daily yield curve XML",
+                  "yfinance ^TNX"
+                ],
+                "confidence": "medium",
+                "claim_boundary": "rates context only; no Fed decision prediction"
+              }
+            ],
+            "claim_boundary": "market tape context is evidence burden and risk framing only; it does not prove single-name causality or approve action"
+          },
+          "inflation_posture": "headline_and_core_hot",
+          "cpi_driver": "energy_gasoline_headline_pressure",
+          "cpi_release_detail": {
+            "status": "warning",
+            "source": "BLS CPI news release",
+            "source_url": "https://www.bls.gov/news.release/cpi.nr0.htm",
+            "source_mode": "live_fetch",
+            "release_period": "August 2026",
+            "release_date_text": "8:30 a.m. (ET) Friday, September 11, 2026",
+            "all_items": {
+              "latest_mom_pct": 0.4,
+              "previous_mom_pct": 0.1,
+              "yoy_pct": 3.4
+            },
+            "core": {
+              "latest_mom_pct": 0.3,
+              "previous_mom_pct": 0.2,
+              "yoy_pct": 2.4
+            },
+            "energy": {
+              "latest_mom_pct": 2.1,
+              "previous_mom_pct": -1.5,
+              "yoy_pct": 16.3
+            },
+            "gasoline": {
+              "latest_mom_pct": 3.9,
+              "previous_mom_pct": -2.9,
+              "yoy_pct": 27.4
+            },
+            "shelter": {
+              "latest_mom_pct": 0.3,
+              "previous_mom_pct": 0.1,
+              "yoy_pct": 3.0
+            },
+            "rent": {
+              "latest_mom_pct": null,
+              "previous_mom_pct": null,
+              "yoy_pct": null
+            },
+            "owners_equivalent_rent": {
+              "latest_mom_pct": 0.2,
+              "previous_mom_pct": null,
+              "yoy_pct": null
+            }
+          },
+          "macro_pulse_read": {
+            "text": "inflation pressure is re-accelerating enough to keep rate sensitivity high. CPI/core/PCE remain the key pressure points; payroll growth is still positive, but claims direction keeps labor risk on watch. GDP is not signaling a collapse, so this is selective-risk-on rather than broad all-clear. Latest BLS CPI detail shows headline 0.40% MoM / 3.40% YoY, core 0.30% MoM / 2.40% YoY; energy 2.10% MoM / 16.30% YoY, gasoline 3.90% MoM / 27.40% YoY, shelter 0.30% MoM / 3.00% YoY, rent n/a MoM, OER 0.20% MoM.",
+            "confidence": "low",
+            "source_basis": [
+              "tmp/macro-metrics-current.json",
+              "tmp/macro-regime.json"
+            ]
+          },
+          "ticker_use": {
+            "risk_effect": "adjust evidence burden, broad tape awareness, rate sensitivity, valuation discipline, and no-chase language",
+            "action_effect": "review context only; does not approve capital, sizing, paper, live, brokerage, account, or portfolio action",
+            "capital_deployment_approved": false,
+            "trade_or_execution_approved": false,
+            "owner_approval_inferred": false
+          }
+        }
+      }
+    },
+    "portfolio_fit": {
+      "section_id": "portfolio_fit",
+      "title": "Portfolio Fit",
+      "status": "available",
+      "confidence": "medium",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [],
+      "raw": {
+        "sector": "Utilities",
+        "wf78_tier": "C",
+        "sql_canon_legacy_tier": "C",
+        "sql_canon_universe_scope": "review_100_monitor",
+        "sql_canon_production_answer_path_member": false,
+        "wf78_auto_tier": "Tier C",
+        "wf78_auto_state": "sql_first_wait_for_routing",
+        "wf78_monitoring_role": "review_100_thin_monitor",
+        "wf78_decision_grade_eligible": false,
+        "wf78_promotion_required_before_action": true,
+        "coverage_tier": "C",
+        "portfolio_role": "review_100_thin_monitor",
+        "coverage_lane": "review_100_monitor",
+        "readiness_tier": null,
+        "recommended_starter_notional": null,
+        "recommended_target_notional": null,
+        "decision_note": null,
+        "prepared_order_card_path": null,
+        "route_readiness": {
+          "routing_tier": null,
+          "routing_state": null,
+          "timing_state": "quote_or_band_status_unknown",
+          "decision_state": null,
+          "trade_readiness_state": "not_trade_ready_unknown_or_blocked",
+          "authority_state": "review_only_no_capital_or_execution_authority",
+          "band_status": null,
+          "quote_freshness_status": null,
+          "review_only": true,
+          "requires_exact_owner_approval_before_capital_or_execution": true,
+          "authority": {},
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "owner_approval_inferred": false,
+          "next_route_action": "Monitor under current review-only route."
+        },
+        "timing_state": "quote_or_band_status_unknown",
+        "trade_readiness_state": "not_trade_ready_unknown_or_blocked",
+        "authority_state": "review_only_no_capital_or_execution_authority",
+        "route_next_action": "Monitor under current review-only route."
+      }
+    },
+    "entry_stop_sizing": {
+      "section_id": "entry_stop_sizing",
+      "title": "Entry / Stop / Sizing",
+      "status": "source_open_required",
+      "confidence": "low",
+      "freshness_status": "source_open_required",
+      "source_open_required": true,
+      "source_paths": [],
+      "raw": {
+        "status": "source_open_required"
+      }
+    },
+    "decision_state": {
+      "section_id": "decision_state",
+      "title": "Decision State",
+      "status": "available",
+      "confidence": "high",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [
+        "decision_state=missing"
+      ],
+      "raw": {
+        "research_tier": "Tier C",
+        "decision_state": null,
+        "primary_state": null,
+        "queue_state": null,
+        "auto_state": null,
+        "decision_state_reason": null,
+        "decision_grade_gate": {
+          "decision_grade_claim_allowed": false,
+          "decision_grade_status": "not_decision_grade_yet",
+          "specific_repair_required": "not_review_ready",
+          "blockers": [
+            "decision_state=missing"
+          ],
+          "may_use_approval_ready_language": false,
+          "owner_approval_required_before_action": true,
+          "capital_or_execution_authority": false
+        }
+      }
+    },
+    "trade_grade": {
+      "section_id": "trade_grade",
+      "title": "Trade Grade",
+      "status": "available",
+      "confidence": "high",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [
+        "decision_state=missing"
+      ],
+      "raw": {
+        "grade": "D",
+        "conviction": "low",
+        "time_horizon": "not_structured",
+        "research_tier": "Tier C",
+        "actionability": "blocked_or_unknown",
+        "decision_state": null,
+        "trade_grade_is_not_owner_approval": true,
+        "decision_grade_gate": {
+          "decision_grade_claim_allowed": false,
+          "decision_grade_status": "not_decision_grade_yet",
+          "specific_repair_required": "not_review_ready",
+          "blockers": [
+            "decision_state=missing"
+          ],
+          "may_use_approval_ready_language": false,
+          "owner_approval_required_before_action": true,
+          "capital_or_execution_authority": false
+        }
+      }
+    },
+    "owner_action": {
+      "section_id": "owner_action",
+      "title": "Owner Action",
+      "status": "available",
+      "confidence": "high",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [
+        "decision_state=missing"
+      ],
+      "raw": {
+        "owner_action": "monitor_only_no_owner_action",
+        "owner_action_required": false,
+        "execution_authorized": false,
+        "paper_trade_allowed": false,
+        "live_trade_allowed": false,
+        "approval_status": "not_approved",
+        "not_approved_stamp": "NOT APPROVED - Randall exact approval required",
+        "decision_grade_gate": {
+          "decision_grade_claim_allowed": false,
+          "decision_grade_status": "not_decision_grade_yet",
+          "specific_repair_required": "not_review_ready",
+          "blockers": [
+            "decision_state=missing"
+          ],
+          "may_use_approval_ready_language": false,
+          "owner_approval_required_before_action": true,
+          "capital_or_execution_authority": false
+        }
+      }
+    },
+    "authority_approval_status": {
+      "section_id": "authority_approval_status",
+      "title": "Authority / Approval Status",
+      "status": "available",
+      "confidence": "high",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [],
+      "raw": {
+        "wf85_authority_boundary": null,
+        "assembler_authority_boundary": {
+          "review_only": true,
+          "report_only": true,
+          "artifact_role": "wf85_full_answer_assembler_review_only",
+          "generated_answer_is_canon": false,
+          "canonical_note_mutation_allowed": false,
+          "portfolio_mutation_allowed": false,
+          "cash_sizing_or_risk_rule_mutation_allowed": false,
+          "capital_deployment_allowed": false,
+          "capital_deployment_approved": false,
+          "trade_or_execution_approved": false,
+          "paper_or_live_execution_allowed": false,
+          "paper_order_execution_allowed": false,
+          "paper_order_submit_allowed": false,
+          "paper_order_cancel_allowed": false,
+          "live_trade_allowed": false,
+          "brokerage_or_account_action_allowed": false,
+          "live_brokerage_or_account_action_allowed": false,
+          "money_movement_allowed": false,
+          "archive_allowed": false,
+          "delete_allowed": false,
+          "apply_allowed": false,
+          "owner_approval_inferred": false,
+          "source_open_required_before_material_finance_claims": true
+        }
+      }
+    },
+    "evidence_freshness_confidence": {
+      "section_id": "evidence_freshness_confidence",
+      "title": "Evidence / Freshness / Confidence",
+      "status": "available",
+      "confidence": "high",
+      "freshness_status": "mapped",
+      "source_open_required": true,
+      "source_paths": [],
+      "raw": {
+        "source_freshness": null,
+        "evidence_family_status": null,
+        "wf84_drillback_count": 0
+      }
+    }
+  },
+  "section_order": [
+    "thesis",
+    "business_quality_moat",
+    "bull_case",
+    "bear_case",
+    "earnings_guidance",
+    "financial_metrics",
+    "valuation",
+    "technical_setup",
+    "catalyst_news_macro",
+    "risk_invalidation",
+    "portfolio_fit",
+    "entry_stop_sizing",
+    "decision_state",
+    "trade_grade",
+    "owner_action",
+    "authority_approval_status",
+    "evidence_freshness_confidence"
+  ],
+  "answer_confidence": {
+    "overall_level": "low",
+    "overall_label": "low_for_trade_grade_review",
+    "score": 0.3,
+    "decision_relevant_level": "low",
+    "decision_relevant_score": 0.3,
+    "peripheral_context_level": "low",
+    "peripheral_context_score": 0.45,
+    "reasons": [
+      "decision domains include action_state, price_band_stop, recommendation, and source_freshness",
+      "low/none domains: action_state, price_band_stop, technical, analyst, recommendation, source_freshness"
+    ]
+  },
+  "confidence_by_domain": {
+    "action_state": {
+      "level": "low",
+      "score": 0.3,
+      "reasons": [
+        "decision_state=None"
+      ]
+    },
+    "price_band_stop": {
+      "level": "low",
+      "score": 0.3,
+      "reasons": [
+        "band_status=None",
+        "source_freshness=None"
+      ]
+    },
+    "technical": {
+      "level": "low",
+      "score": 0.3,
+      "reasons": [
+        "technical_status=source_open_required",
+        "repair_required=None"
+      ]
+    },
+    "official_earnings": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "earnings_status=available"
+      ]
+    },
+    "analyst": {
+      "level": "low",
+      "score": 0.3,
+      "reasons": [
+        "analyst_status=None",
+        "provider=None",
+        "card_confidence=None"
+      ]
+    },
+    "sector_context": {
+      "level": "high",
+      "score": 0.9,
+      "reasons": [
+        "sector_status=available"
+      ]
+    },
+    "recommendation": {
+      "level": "low",
+      "score": 0.3,
+      "reasons": [
+        "wf85_state=None"
+      ]
+    },
+    "source_freshness": {
+      "level": "low",
+      "score": 0.3,
+      "reasons": [
+        "freshness=None"
+      ]
+    }
+  },
+  "source_count": 17,
+  "source_lineage": [
+    {
+      "kind": "wf85_decision_card",
+      "path": "tmp/trade-grade-decision-cards.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "ticker_intelligence_card",
+      "path": "tmp/ticker-intelligence-cards/NEE.current.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "wf84_canonical_data_plane",
+      "path": "tmp/canonical-finance-data-plane.sqlite",
+      "authority": "derived_read_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/fundamental-metrics-current.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/deployment-readiness-surface.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/position-sizing-readiness-current.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/analyst-consensus-current.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/official-earnings-bridge.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/sector-expansion-board.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/technical-refresh.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/portfolio-config.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/post-close-final-quote-ledger.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/finance-decision-sync-spine.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/wf78-capital-review-queue.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "data/finance/universe-v1.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "tmp/wf78-auto-tier-routing.json",
+      "authority": "derived_review_only"
+    },
+    {
+      "kind": "card_source_artifact",
+      "path": "state/finance/finance-canon.sqlite",
+      "authority": "derived_review_only"
+    }
+  ],
+  "human_answer_text": "NEE Trade-Grade Full Answer\nDecision state: None\nDecision-grade gate: not_decision_grade_yet / repair: not_review_ready\nTrade grade: D / actionability: blocked_or_unknown\nOwner action: monitor_only_no_owner_action\nAuthority: review-only; no trade, capital, account, or approval authority.\n\nThesis: thesis: NextEra Energy, Inc. has a review-only synthesized Tier A thesis from local sourced artifacts: revenue YoY 12.45%, EPS YoY 53.06%, FCF YoY 61.16%. Entry posture is unknown band status; 2 evidence/freshness gaps still require review before decision-grade use.\nBusiness / Moat / Quality: mapped fields: universe_metadata, competitive_moat, capital_allocation_quality\nBull Case: mapped fields: bull_case\nBear Case: mapped fields: bear_case, risks\nEarnings + Guidance: mapped fields: latest_earnings, catalyst_earnings_state\nFinancial Metrics: mapped fields: key_financial_metrics, official_fundamentals, fundamental_reconciliation\nValuation: mapped fields: card_valuation\nTechnical Setup: source-open required\nCatalyst / News / Macro Sensitivity: mapped fields: recent_developments, sector_performance, orders_backlog_book_to_bill, macro_risk_context\nRisk + Invalidation: mapped fields: risk_register, macro_risk_context\nPortfolio Fit: route: Tier C / sql_first_wait_for_routing; timing: quote_or_band_status_unknown; decision: unknown; trade readiness: not_trade_ready_unknown_or_blocked; authority: review_only_no_capital_or_execution_authority\nEntry / Stop / Sizing: source-open required\nDecision State: decision-grade gate: not_decision_grade_yet; repair: not_review_ready\nTrade Grade: decision-grade gate: not_decision_grade_yet; repair: not_review_ready\nOwner Action: decision-grade gate: not_decision_grade_yet; repair: not_review_ready\nAuthority / Approval Status: mapped fields: assembler_authority_boundary\nEvidence / Freshness / Confidence: mapped fields: wf84_drillback_count",
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "warnings": [
+      "section_source_open_required:technical_setup",
+      "section_source_open_required:entry_stop_sizing"
+    ],
+    "missing_sections": [
+      "technical_setup",
+      "entry_stop_sizing"
+    ],
+    "forbidden_authority": []
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "report_only": true,
+    "artifact_role": "wf85_full_answer_assembler_review_only",
+    "generated_answer_is_canon": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "cash_sizing_or_risk_rule_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "paper_or_live_execution_allowed": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed": false,
+    "paper_order_cancel_allowed": false,
+    "live_trade_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "archive_allowed": false,
+    "delete_allowed": false,
+    "apply_allowed": false,
+    "owner_approval_inferred": false,
+    "source_open_required_before_material_finance_claims": true
+  },
+  "stop_lines": [
+    "Generated answer is review-only and not canon.",
+    "No paper/live order, capital deployment, account action, money movement, or owner approval inference.",
+    "Legacy answer packets generated from this assembler are compatibility snapshots only."
+  ]
+}

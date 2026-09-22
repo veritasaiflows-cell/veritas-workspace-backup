@@ -20,10 +20,10 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
         "required": {
             "deployment_surface": TMP / "deployment-readiness-surface.json",
             "dashboard_validation": TMP / "dashboard-validation.json",
-            "market_state": TMP / "market-state.json",
             "band_proposals": TMP / "band-proposals.json",
         },
         "optional": {
+            "market_state": TMP / "market-state.json",
             "earnings_calendar": TMP / "earnings-calendar.json",
             "post_earnings_prep": TMP / "post-earnings-prep.json",
             "fundamental_metrics": TMP / "fundamental-metrics-current.json",
@@ -36,10 +36,10 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
         "required": {
             "deployment_surface": TMP / "deployment-readiness-surface.json",
             "dashboard_validation": TMP / "dashboard-validation.json",
-            "market_state": TMP / "market-state.json",
             "band_proposals": TMP / "band-proposals.json",
         },
         "optional": {
+            "market_state": TMP / "market-state.json",
             "earnings_calendar": TMP / "earnings-calendar.json",
             "post_earnings_prep": TMP / "post-earnings-prep.json",
             "fundamental_metrics": TMP / "fundamental-metrics-current.json",
@@ -68,10 +68,10 @@ WINDOW_SPECS: dict[str, dict[str, Any]] = {
         "required": {
             "deployment_surface": TMP / "deployment-readiness-surface.json",
             "dashboard_validation": TMP / "dashboard-validation.json",
-            "market_state": TMP / "market-state.json",
             "band_proposals": TMP / "band-proposals.json",
         },
         "optional": {
+            "market_state": TMP / "market-state.json",
             "earnings_calendar": TMP / "earnings-calendar.json",
             "post_earnings_prep": TMP / "post-earnings-prep.json",
             "fundamental_metrics": TMP / "fundamental-metrics-current.json",
@@ -718,7 +718,7 @@ def build_packet(window: str) -> dict[str, Any]:
     required = {name: load_json(path, required=True) for name, path in spec["required"].items()}
     optional = {name: load_json(path, required=False) for name, path in spec["optional"].items()}
 
-    ref_date = as_of_date(required.get("market_state"), optional.get("earnings_calendar"), required.get("deployment_surface"))
+    ref_date = as_of_date(required.get("market_state") or optional.get("market_state"), optional.get("earnings_calendar"), required.get("deployment_surface"))
     events: list[dict[str, Any]] = []
     events.extend(dashboard_events(window, required["dashboard_validation"], required["deployment_surface"]))
     events.extend(macro_events(window, required.get("market_state") or optional.get("market_state")))

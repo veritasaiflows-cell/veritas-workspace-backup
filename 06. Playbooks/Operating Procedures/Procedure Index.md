@@ -28,6 +28,7 @@ Provide one operator-facing map of the procedure repository without pretending e
 - `06. Playbooks/Automation Run Summary Contract.md`
 - `06. Playbooks/Continuity Stewardship Protocol.md`
 - `06. Playbooks/Operating Procedures/OpenClaw Reinstall Recovery Checklist.md`
+- `06. Playbooks/Operating Procedures/Upstream Escalation and Community Contribution Procedure.md`
 
 ### 04. Workspace / notes / structure governance
 - `06. Playbooks/Workspace Structure Protocol.md`
@@ -52,6 +53,7 @@ Provide one operator-facing map of the procedure repository without pretending e
 
 ### 08. Active project continuity procedures
 - `06. Playbooks/Project Continuity/`
+- `06. Playbooks/Project Continuity/Upstream Escalation Register.md`
 
 ### 09. Audits / validation artifacts
 - `08. Audits/`
@@ -62,6 +64,7 @@ Provide one operator-facing map of the procedure repository without pretending e
 - `06. Playbooks/Operating Procedures/SQLite Retrieval Index Procedure.md`
 - `06. Playbooks/Operating Procedures/Retrieval Metadata and Notes Field Standard.md`
 - `06. Playbooks/Operating Procedures/OpenClaw Reinstall Recovery Checklist.md`
+- `06. Playbooks/Operating Procedures/Upstream Escalation and Community Contribution Procedure.md`
 - `06. Playbooks/Operating Procedures/Portfolio Truth Surface Ownership Procedure.md`
 - `06. Playbooks/Cron Job Protocol.md`
 - `06. Playbooks/Automation Orchestration Protocol.md`

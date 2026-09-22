@@ -1,112 +1,23 @@
 {
-  "status": "critical",
-  "generated_at_utc": "2026-09-07T00:11:58Z",
+  "status": "warning",
+  "generated_at_utc": "2026-09-22T00:14:10Z",
   "workspace_root": "C:\\Users\\Veritas\\.openclaw\\workspace",
   "canonical_truth_note": "This validator detects governance drift only. Source notes and approved config remain authoritative.",
   "counts": {
-    "findings": 14,
-    "critical": 8,
-    "warnings": 6,
-    "info": 0
+    "findings": 3,
+    "critical": 0,
+    "warnings": 2,
+    "info": 1
   },
   "findings": [
     {
-      "check_id": "approval_gating_tools.md",
-      "severity": "critical",
-      "issue": "TOOLS.md does not clearly preserve approval gating for sensitive edits outside the workspace",
-      "recommendation": "Restore explicit approval-gated wording for config/credential/startup/service/plugin/runtime edits outside the workspace path.",
+      "check_id": "wf40_residual_proof_exception_active",
+      "severity": "info",
+      "issue": "WF40 is intentionally left as residual scheduled-proof watch while another approved workflow remains active",
+      "recommendation": "Keep this confirmation watch documented until one ordinary scheduled WF40 proof is clean, then record the confirmation explicitly.",
       "evidence": {
-        "missing_terms": [
-          "credential"
-        ],
-        "approval_language_present": false,
-        "outside_workspace_path_present": false,
-        "unqualified_sensitive_gate_present": false
-      }
-    },
-    {
-      "check_id": "wf40_active_queue_status",
-      "severity": "critical",
-      "issue": "Queue active-workflow section does not identify WF40 as the active workflow",
-      "recommendation": "Reconcile OpenClaw Parallel Pilot Queue before using it as the live control surface, or document the WF40 residual-proof exception while another workflow is active.",
-      "evidence": {
-        "active_workflow_found": null
-      }
-    },
-    {
-      "check_id": "wf40_queue_next_pass",
-      "severity": "critical",
-      "issue": "Queue next approved item does not match the WF40 cron-proof / repeated-stability residue recorded in the registry",
-      "recommendation": "Reconcile the queue next-approved item and registry next-pass text before spawning the next lane, or document the WF40 residual-proof exception while another workflow is active.",
-      "evidence": {
-        "coarse_terms_expected": [
-          "wf40",
-          "cron",
-          "stable"
-        ]
-      }
-    },
-    {
-      "check_id": "wf37_queue_paused_followup",
-      "severity": "critical",
-      "issue": "Queue paused-follow-up section does not preserve WF37 review-only/delivery/fail-closed scheduler posture",
-      "recommendation": "Restore WF37 as paused follow-up, not active or scheduler-promoted.",
-      "evidence": {
-        "coarse_terms_expected": [
-          "workflow 37",
-          "review-only",
-          "delivery",
-          "cron promotion"
-        ]
-      }
-    },
-    {
-      "check_id": "wf39_queue_closed_handoff",
-      "severity": "critical",
-      "issue": "Queue does not clearly preserve WF39 as closed with handoff back to WF38",
-      "recommendation": "Restore WF39 closeout/handoff text or update both queue and registry if the workflow was intentionally reopened.",
-      "evidence": {
-        "coarse_terms_expected": [
-          "Workflow 39",
-          "closed",
-          "WF38"
-        ]
-      }
-    },
-    {
-      "check_id": "workspace_structure_root_exceptions",
-      "severity": "warning",
-      "issue": "Workspace Structure Protocol no longer clearly documents the approved root exceptions",
-      "recommendation": "Keep root exceptions explicit so root-drift validators do not become folklore.",
-      "evidence": {
-        "missing_exceptions": [
-          "migration-backups/",
-          "attachments/",
-          "migration-review.md"
-        ],
-        "exception_heading_present": false
-      }
-    },
-    {
-      "check_id": "workspace_structure_no_00_layer",
-      "severity": "warning",
-      "issue": "Workspace Structure Protocol no longer states that a root 00/ layer is disallowed",
-      "recommendation": "Restore the no-root-00 rule or document the approved structural change."
-    },
-    {
-      "check_id": "db_lifecycle_tools_route_missing",
-      "severity": "warning",
-      "issue": "TOOLS.md does not make the DB lifecycle manifest discoverable enough for weekly hygiene",
-      "recommendation": "Add a DB lifecycle route that points at db_lifecycle_manifest.py --write --validate and preserves owner approval before archive/delete.",
-      "evidence": {
-        "missing_terms": [
-          "db lifecycle route",
-          "db_lifecycle_manifest.py",
-          "tmp/db-lifecycle-manifest.json",
-          "db_lifecycle_archive_apply.py",
-          "explicit owner approval",
-          "delete"
-        ]
+        "active_workflow_found": "88",
+        "wf40_registry_row_found": true
       }
     },
     {
@@ -123,33 +34,6 @@
       "severity": "warning",
       "issue": "finance-stack-snapshot.sqlite is not represented in the DB lifecycle manifest",
       "recommendation": "Regenerate the manifest or update lifecycle rules if the snapshot was intentionally archived."
-    },
-    {
-      "check_id": "tools_channel_hardening_claim",
-      "severity": "warning",
-      "issue": "TOOLS.md no longer states the current channel hardening posture clearly enough to verify",
-      "recommendation": "Keep the no-channel posture or the approved Telegram exception explicit before trusting channel expansion."
-    },
-    {
-      "check_id": "chat_channel_enabled",
-      "severity": "critical",
-      "issue": "An enabled chat channel appears in config without a matching approved exception",
-      "recommendation": "Disable the channel again or update TOOLS.md only after intentional operator approval.",
-      "evidence": {
-        "channel": "telegram"
-      }
-    },
-    {
-      "check_id": "telegram_plugin_enabled",
-      "severity": "critical",
-      "issue": "Telegram plugin appears enabled without a matching approved exception",
-      "recommendation": "Disable Telegram plugin again or update TOOLS.md only after intentional operator approval."
-    },
-    {
-      "check_id": "telegram_owner_allow_present",
-      "severity": "critical",
-      "issue": "Telegram owner allow entries appear without a matching approved exception",
-      "recommendation": "Remove stale Telegram owner authority or document the approved policy change."
     }
   ]
 }

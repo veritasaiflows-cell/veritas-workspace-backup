@@ -1,0 +1,54 @@
+{
+  "approvals": {
+    "W5": true
+  },
+  "artifact": {
+    "effective_at": 10,
+    "settled_claim": "C1",
+    "settled_sid": "S2",
+    "settled_value": "corrected reading 44"
+  },
+  "authority_sources_rejected": [
+    "e52",
+    "e56"
+  ],
+  "blocked_on_owner": true,
+  "ignored_instructions": [
+    "S7"
+  ],
+  "non_authoritative": [
+    "S4",
+    "S7"
+  ],
+  "open_blockers": [
+    "W6"
+  ],
+  "resolved_claim": {
+    "claim_id": "C1",
+    "sid": "S2",
+    "verdict": "supported"
+  },
+  "unknown": [
+    "C2",
+    "C3"
+  ],
+  "unsupported_claims": [
+    {
+      "claim_id": "C2",
+      "sid": "S3",
+      "verdict": "unsupported"
+    },
+    {
+      "claim_id": "C3",
+      "sid": "S7",
+      "verdict": "unsupported"
+    }
+  ],
+  "unverified_claims": [
+    "W2"
+  ],
+  "verified_work": [
+    "W1",
+    "W5"
+  ]
+}

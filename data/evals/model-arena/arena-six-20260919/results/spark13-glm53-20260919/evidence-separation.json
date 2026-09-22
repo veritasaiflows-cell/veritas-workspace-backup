@@ -1,0 +1,85 @@
+{
+  "schema": "veritas.arena_six_evidence_separation.v1",
+  "created_utc": "2026-09-20T05:58:05.502673Z",
+  "principle": "Mechanical evidence is produced by deterministic commands whose outputs are hashed here. Reasoned evidence is candidate or reviewer text and is never treated as mechanical proof.",
+  "mechanical": [
+    {
+      "item": "run contract",
+      "producer": "run_matrix.py (deterministic)",
+      "artifact": "run-contract.json",
+      "sha256": "b205e067b72073a838ce59786305e93a7e803c9958972fd41fd621f19972947d"
+    },
+    {
+      "item": "turn matrix",
+      "producer": "openclaw agent CLI receipts + run_matrix.py normalization",
+      "artifact": "matrix-index.json",
+      "sha256": "514ba0842eebd5756be4cbfb2ed715632ea8a0063b9fb4adddaa88a2683238d0"
+    },
+    {
+      "item": "terminal receipts",
+      "producer": "terminalReceipt from each CLI envelope",
+      "artifact": "terminal-receipts.json",
+      "sha256": "8afc3ce37a16ef61774eae238fe13377c84721ce65e8453dca59650762d5d8b0"
+    },
+    {
+      "item": "deterministic grades",
+      "producer": "grade_and_close.py using reference/grader.py and reference/keys.json",
+      "artifact": "graded-results.json",
+      "sha256": "3daa8e438e1f264c1c1d0e27b817085c69abca98aff84c7dcf93dbbf2031f187"
+    },
+    {
+      "item": "T4 trace projection",
+      "producer": "grade_and_close.py over CLI stdout plus turn receipts",
+      "artifact": "t4-tool-traces.json",
+      "sha256": "745016131c9da8e5ede618652551345a36a03ea8daf77c2d99676ecb2dc26180"
+    },
+    {
+      "item": "operational adjudication",
+      "producer": "grade_and_close.py over matrix rows",
+      "artifact": "operational-adjudication.json",
+      "sha256": "540dcaf29ceab2491c9019832785d51d4612dc09eee284ccc5459c1fd431f6dc"
+    },
+    {
+      "item": "reproducibility checks",
+      "producer": "grade_and_close.py validate()",
+      "artifact": "validation.json",
+      "sha256": "e05c3e8dfe6c034d2feb190bb306db4d935b208f42d562f8ec0df2bd3420f62a"
+    }
+  ],
+  "reasoned": [
+    {
+      "item": "report conclusions",
+      "producer": "Main synthesis over the mechanical artifacts",
+      "artifact": "report.md",
+      "sha256": "625b70419185dde2d845c4f6e31b6ecce4898ecb0f5415ab7bc7d7e04fc396c9"
+    },
+    {
+      "item": "failure taxonomy wording",
+      "producer": "Main classification over grader output",
+      "artifact": "failure-taxonomy.json",
+      "sha256": "43a1edced87af928f54396c57bee2881b7be677317af2ae96d9bea1d4ddceae7"
+    },
+    {
+      "item": "independent review",
+      "producer": "qa-redteam Grok 4.6 (advisory, unaccepted until Main)",
+      "artifact": "independent-qa-review.json",
+      "sha256": "9200eccc53c07e18ee1d5ada4cc0638f80b8214f72c25e9ec64da9e2f39ed631"
+    }
+  ],
+  "hash_producer": "Main (deterministic sha256 of each named file at acceptance time)",
+  "main_verifications": {
+    "incumbent_baseline_live_sha256": "00159753ffd8fc1aa3cf33a2244994883083edc95ee61e87600c62f664128c12",
+    "incumbent_baseline_matches_recorded": true,
+    "grok46_live_sha256": "b934212abda7b77c4c8594f44d299906be3948339f94c154b0fa21ec12c17aa7",
+    "grok46_matches_recorded": true,
+    "envelope_status": "frozen",
+    "keys_digest_recomputed": "f819f97448cc0c92321c8b824c293cd863a7b1befbb68eedc058c6e6466f9003"
+  },
+  "qa_packet": {
+    "path": "arena-six-spark13-glm53-review-20260919",
+    "base_path": "C:\\\\Users\\\\Veritas\\\\.openclaw\\\\workspaces\\\\qa-redteam\\\\arena-six-spark13-glm53-review-20260919",
+    "file_count": 12,
+    "keys_included": false,
+    "purpose": "bounded key-free projection for independent review; the result root is authoritative"
+  }
+}

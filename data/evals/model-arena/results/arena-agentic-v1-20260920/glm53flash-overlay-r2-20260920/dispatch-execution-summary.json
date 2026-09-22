@@ -1,0 +1,39 @@
+{
+  "authorization": "run-scoped authorization.json (owner ask_user release 2026-09-20; canonical INERT file untouched)",
+  "caveats": [
+    "T5-W3 child failed structured_output; graded from transcribed raw text (wrong-shape either way; strict fail unaffected, dimensional detail provisional)",
+    "T6-zebra child failed structured_output; graded from its raw JSON text",
+    "Pre-overlay 0/12 and overlay-r2 4/12 are different envelopes (T4 fixtures in-task vs unmounted); NOT a capability improvement claim"
+  ],
+  "comparability": "overlay-r2 envelope only; not comparable to pre-overlay runs",
+  "dispatch": {
+    "all_modelApplied": true,
+    "all_resolved_model": "ollama-cloud/glm-5.3-flash:cloud",
+    "cases": 12,
+    "reps": 1,
+    "retries": 0,
+    "timeout_s": 600
+  },
+  "envelope": "arena-agentic-v1-20260920",
+  "model": "ollama-cloud/glm-5.3-flash:cloud",
+  "outcomes": {
+    "answered": 11,
+    "contaminated": 0,
+    "dimensional": 0.5639,
+    "invented": 0,
+    "operational_timeouts": 1,
+    "strict": 4,
+    "strict_clean": 4,
+    "timeout_case": "ad2161157921538089853178cdb459bbaed40f96fa77329a69e4be635c5af0bc (T6-plum, run killed)"
+  },
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "run_dir": "data/evals/model-arena/results/arena-agentic-v1-20260920/glm53flash-overlay-r2-20260920",
+  "schema": "veritas.arena_dispatch_execution_summary.v1",
+  "strict_hits": [
+    "14d6a2f3 T3-claim-A",
+    "73cd99b6 T4-A",
+    "b5f7b370 T1-29",
+    "c8dbb0b4 T4-B"
+  ],
+  "tainted_take1": "12 spawns without model pin resolved to openai/gpt-5.6-sol; 11 cancelled, 1 terminal Sol result discarded ungraded. NOT part of this run."
+}

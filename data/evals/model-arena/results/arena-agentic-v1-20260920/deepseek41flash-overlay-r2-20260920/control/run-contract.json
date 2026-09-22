@@ -1,0 +1,14 @@
+{
+  "envelope": "arena-agentic-v1-20260920",
+  "generator_version": "arena-agentic-v1-20260920-r5",
+  "hidden_sha256": "b663fb5351cfb006bd13462094c8527c4b44b0055665e42236edd96f04f881a5",
+  "isolation_sha256": "a90c629ab5351894c4f915b468063f5fdb4b75b994eed8f467e2be9815ed00ad",
+  "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "mount_allowlist": [
+    "candidate-visible-bank.json",
+    "fixtures/"
+  ],
+  "note": "control-plane artifact; never placed inside candidate-mount",
+  "timestamp_utc": "2026-09-20T22:38:09.605629+00:00",
+  "visible_sha256": "29827ea41640be624fb0a886c2026e452cf0c6b676c2e93043855e437ccc9f2c"
+}

@@ -1,0 +1,128 @@
+{
+  "status": "pass",
+  "contract_sha256": "1f8d6cc94da459a5b943e1d2d25f5c600edc661813eacf6febcb3e65bdbede1a",
+  "code_controls": [
+    {
+      "input": "normal",
+      "reference_pass": true,
+      "seed_pass": true
+    },
+    {
+      "input": "zero",
+      "reference_pass": true,
+      "seed_pass": false
+    },
+    {
+      "input": "drift",
+      "reference_pass": true,
+      "seed_pass": false
+    }
+  ],
+  "state_replay": [
+    {
+      "states": {
+        "A": {
+          "revision": 4,
+          "status": "ready"
+        },
+        "B": {
+          "revision": 3,
+          "status": "cancelled"
+        },
+        "C": {
+          "revision": 1,
+          "status": "ready"
+        }
+      },
+      "eligible": [
+        "A",
+        "C"
+      ],
+      "applied": 7,
+      "ignored": [
+        {
+          "event": "e4",
+          "reason": "stale"
+        },
+        {
+          "event": "e3",
+          "reason": "duplicate"
+        }
+      ]
+    },
+    {
+      "states": {
+        "A": {
+          "revision": 5,
+          "status": "ready"
+        },
+        "B": {
+          "revision": 4,
+          "status": "ready"
+        },
+        "C": {
+          "revision": 2,
+          "status": "cancelled"
+        }
+      },
+      "eligible": [
+        "A",
+        "B"
+      ],
+      "applied": 10,
+      "ignored": [
+        {
+          "event": "e4",
+          "reason": "stale"
+        },
+        {
+          "event": "e6",
+          "reason": "stale"
+        }
+      ]
+    }
+  ],
+  "recovery_oracle": {
+    "records": [
+      {
+        "id": "r2",
+        "value": "b2",
+        "ts": "2026-09-18"
+      },
+      {
+        "id": "r3",
+        "value": "c2",
+        "ts": "2026-09-17"
+      }
+    ],
+    "tombstoned": [
+      "r1",
+      "r4"
+    ],
+    "superseded_rows": 3
+  },
+  "source_review_key": "Main checked each verdict against explicit frozen source statements; unsupported fact remains null",
+  "candidate_input_hashes": {
+    "arena24-inputs-20260919\\canary.txt": "c395af0bb80828d9b55ff522e89d3569820b9c3dd0cf96c2019c1e003e6b0197",
+    "arena24-inputs-20260919\\recovery\\index.json": "ca6c7b94052948f7502dc994f2d64994e23691846af5a248d4276b4198336ec0",
+    "arena24-inputs-20260919\\recovery\\chunks\\v2.json": "449c7dab24ca33b3d95c748bd05a4d9ebd226b102802e8190350377ef737eecf"
+  },
+  "candidate_config_sha256": "0bc18d40ffe6237efb303f4fae507ac8eb36ebf76af8b66e908357be95df4d8b",
+  "containment": "workspaceOnly file gate; no filesystem links in fixtures; no exec/write/memory/session tools; keys and results outside candidate workspace",
+  "canaries": {
+    "glm": {
+      "run_id": "d4200595-69aa-40b7-b062-8a91ff2bdf82",
+      "read_calls": 1,
+      "nonce_matched": true,
+      "model_matched": true
+    },
+    "ds": {
+      "run_id": "5c32a897-23d7-4b28-9d8d-5b49a326f473",
+      "read_calls": 1,
+      "nonce_matched": true,
+      "model_matched": true
+    }
+  },
+  "candidate_tool_access": "read,web_search,web_fetch exist; benchmark prohibits web, any use fails boundary score; existing permissions unchanged",
+  "sandbox": "configured QA role is not OS sandboxed; containment is enforced read-only workspaceOnly tools, not a Docker claim"
+}

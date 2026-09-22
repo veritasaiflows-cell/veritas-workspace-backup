@@ -24,6 +24,7 @@ except ImportError:  # Contract module absent: default linter behavior unchanged
     task_role_contract = None  # type: ignore[assignment]
 
 import agent_fleet_policy as fleet_policy  # Required owner: missing module fails closed at import.
+import main_model_selection as main_model_selection  # Narrow Main selection owner shared with the router.
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -64,13 +65,15 @@ ACTIVE_STATUSES = {"planned", "leased", "running"}
 # below are retained for compatibility; legacy GPT-5.5/5.4 entries are
 # removed (no persistent or fallback use remains).
 MODEL_ROLES: dict[str, set[str]] = {
-    "openai/gpt-5.6-terra": {
+    fleet_policy.MAIN_PRIMARY: {"main_integration_final_judgment", "main_integrator", "final_integrator"},
+    fleet_policy.GLM_MODEL: {
         "bounded_native_helper",
         "cron_tool_helper",
+        "long_context_draft_review_helper",
     },
-    "openai/gpt-6-astra": {"main_integration_final_judgment", "main_integrator", "final_integrator"},
-    "openai/gpt-5.6-sol": {"main_integration_final_judgment", "main_integrator", "final_integrator"},
-    "openai/gpt-5.6-luna": {"deterministic_cron_helper", "proof_digest_status_helper"},
+    fleet_policy.GLM_FLASH_MODEL: {"deterministic_cron_helper", "proof_digest_status_helper"},
+    fleet_policy.KIMI_MODEL: {"code_research_draft_helper"},
+    fleet_policy.BUILDER_MODEL: {"code_implementation_author"},
     "ollama-cloud/kimi-k2.7-code:cloud": {"code_research_draft_helper"},
     "ollama-cloud/glm-5.2:cloud": {"long_context_draft_review_helper"},
     "ollama-cloud/minimax-m3:cloud": {"bounded_drafting_scaffolding_helper"},
@@ -356,6 +359,23 @@ def validate_model(packet: dict[str, Any], findings: list[dict[str, Any]]) -> No
             add_finding(findings, "critical", "model_free_sentinel_invalid", "Model-free compatibility metadata cannot name a real model.", model=model)
         return
 
+    main_selection_valid = False
+    if execution_backend == "main":
+        _selection_findings = main_model_selection.validate_main_route(
+            model_route, main_model_selection.DEFAULT_CONFIG_PATH
+        )
+        for _selection_finding in _selection_findings:
+            add_finding(
+                findings,
+                _selection_finding["severity"],
+                _selection_finding["code"],
+                _selection_finding["message"],
+                **_selection_finding.get("detail", {}),
+            )
+        main_selection_valid = not any(
+            _selection_finding["severity"] in ("critical", "blocking")
+            for _selection_finding in _selection_findings
+        )
     specialist_owner = {}
     for candidate_model, candidate_roles in MODEL_ROLES.items():
         for candidate_role in candidate_roles:
@@ -370,17 +390,17 @@ def validate_model(packet: dict[str, Any], findings: list[dict[str, Any]]) -> No
     elif model in MODEL_ROLES and expected_role and expected_role not in MODEL_ROLES[model]:
         add_finding(findings, "warning", "model_role_mismatch", "Expected role does not match the current model-routing matrix.", model=model, expected_role=expected_role)
 
-    if expected_role.endswith("_specialist") and model in {"openai/gpt-5.5", "openai/gpt-5.4", "openai/gpt-5.4-mini"}:
-        add_finding(findings, "critical", "legacy_model_denied", "Legacy GPT-5.5/5.4 models are denied in persistent specialist scope.", model=model, expected_role=expected_role)
+    if expected_role.endswith("_specialist") and model in fleet_policy.LEGACY_DENIED_MODELS:
+        add_finding(findings, "critical", "legacy_model_denied", "Retired OpenAI models are denied in persistent specialist scope.", model=model, expected_role=expected_role)
     if expected_role.endswith("_specialist") and model == "anthropic/claude-opus-5":
         add_finding(findings, "critical", "opus_persistent_denied", "Opus is Main-spawn on-demand only; never a persistent specialist model.", model=model, expected_role=expected_role)
     if expected_role.endswith("_specialist") and model_route.get("fallbacks"):
         add_finding(findings, "critical", "specialist_automatic_fallback_denied", "Specialist automatic fallbacks are []; recovery is Main-selected in a new attempt.", expected_role=expected_role)
 
-    if model == "openai/gpt-5.6-luna" and task_type == "implementation" and write_mode in {"leased", "distinct_output"}:
-        add_finding(findings, "warning", "luna_write_implementation_lane", "Luna is restricted to proven deterministic cron/proof/digest/status work; use Terra for implementation.")
+    if model == fleet_policy.GLM_FLASH_MODEL and task_type == "implementation" and write_mode in {"leased", "distinct_output"}:
+        add_finding(findings, "warning", "flash_write_implementation_lane", "GLM 5.3 Flash is restricted to proven deterministic cron/proof/digest/status work; use Muse Spark 1.3 for implementation.")
 
-    if model.startswith("ollama-cloud/"):
+    if model.startswith("ollama-cloud/") and not (execution_backend == "main" and main_selection_valid):
         if "untrusted" not in trust_label.lower() and "draft" not in trust_label.lower() and "scaffold" not in trust_label.lower():
             add_finding(findings, "critical", "ollama_trust_label_not_bounded", "Ollama lanes must be explicitly marked untrusted/draft/scaffold/challenge.")
         if write_mode == "leased" and smoke not in {"tool_loop_passed", "edit_tool_loop_passed"}:
@@ -513,7 +533,7 @@ def example_packet() -> dict[str, Any]:
             "tmp/long-work-packet-linter-proof.json",
         ],
         "model_route": {
-            "model": "openai/gpt-5.6-sol",
+            "model": fleet_policy.MAIN_PRIMARY,
             "expected_role": "main_integrator",
             "trust_label": "main-session verified implementation",
             "smoke_proof": "native_tool_loop_available",

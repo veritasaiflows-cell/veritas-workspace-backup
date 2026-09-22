@@ -1,0 +1,381 @@
+{
+  "schema": "veritas.arena_six_grok_quarantine.v1",
+  "created_utc": "2026-09-20T00:06:55.280753Z",
+  "source": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\arena-six-baseline-review-20260919",
+  "quarantine": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\arena-six-grok-quarantine-20260919",
+  "file_count": 72,
+  "total_bytes": 730912,
+  "files": [
+    {
+      "path": "calibration/calibration.json",
+      "bytes": 4636,
+      "sha256": "d498068a664b2cf593296f4d29aa419e19cc5e9916187421b40189c707f96b16"
+    },
+    {
+      "path": "delta2/graded-results.json",
+      "bytes": 57273,
+      "sha256": "00159753ffd8fc1aa3cf33a2244994883083edc95ee61e87600c62f664128c12"
+    },
+    {
+      "path": "delta2/manifest.json",
+      "bytes": 1172,
+      "sha256": "2b83e861e593936c504b7ed50b305f6d3de8da1fc678d3967d533ec24061f6e5"
+    },
+    {
+      "path": "delta2/matrix-index-adjudicated.json",
+      "bytes": 173671,
+      "sha256": "db772fc070900834dc58e4975cf8888a49c97ea64a454c759e579a780e693ba7"
+    },
+    {
+      "path": "delta2/operational-adjudication.json",
+      "bytes": 1208,
+      "sha256": "aae55929159aa0e2211f4238e11f56b5acacfed147c655ac6c7cbaadab488903"
+    },
+    {
+      "path": "delta2/report.md",
+      "bytes": 4440,
+      "sha256": "7102a486574e509b84937d066321aef70061cffdc4fe3b3f6a828d2c1848c6e4"
+    },
+    {
+      "path": "delta2/resolution.json",
+      "bytes": 771,
+      "sha256": "eaf61174bd11d956a0309bdca25e420e7973b76e8e1e4fa694fcb413cfa99032"
+    },
+    {
+      "path": "delta2/t4-tool-traces.json",
+      "bytes": 2928,
+      "sha256": "053e226e1ee83c18a99d8c9cf6158e7a3394e0692803bc2554deca1c1d2fb6d3"
+    },
+    {
+      "path": "delta2/validation.json",
+      "bytes": 669,
+      "sha256": "9317976ea93dd8b84d3bcb423fcc441f4a70c19c1f80d81637aaa9eb07bf9e26"
+    },
+    {
+      "path": "envelope.json",
+      "bytes": 12347,
+      "sha256": "31557af432987cda6cf023e783bd9ab07753e0c6b36ce0f1b9b4b0e9607daa0e"
+    },
+    {
+      "path": "packet-manifest.json",
+      "bytes": 13032,
+      "sha256": "21d7cafa399af00780bef5dc0ae327e9bfc68810637b2d5398552b2b237a416b"
+    },
+    {
+      "path": "prompts/T1-settlement-cascade.txt",
+      "bytes": 2702,
+      "sha256": "f72d6e94f23d71947504768be9c6b78bacefb145b37d8965d0279c98ef106c1a"
+    },
+    {
+      "path": "prompts/T2-event-revert-ambiguity-turn1.txt",
+      "bytes": 1706,
+      "sha256": "072db7837e64cedda483bb8b80acaefb86e0a854f822c53eee958ef80dc34e64"
+    },
+    {
+      "path": "prompts/T2-event-revert-ambiguity-turn2.txt",
+      "bytes": 313,
+      "sha256": "ba3ef8ae5b944517b21a2245f1697b628da80d8992b41174bcdb23a554e35142"
+    },
+    {
+      "path": "reference/grader.py",
+      "bytes": 2172,
+      "sha256": "6887105176a2374f080a5dff13aec8d3b74d3bde1fd239c112e1a64f23633e4c"
+    },
+    {
+      "path": "reference/keys.json",
+      "bytes": 4320,
+      "sha256": "b84496d5213a34e81eadf163141fa6faf16cbd2bde36711b443aab63f268b451"
+    },
+    {
+      "path": "reference/oracles.py",
+      "bytes": 16380,
+      "sha256": "54f924f364ee77fe5f1ec5d585ca4ac3ce18b65c32cf5ebcb20645deefe4ca8e"
+    },
+    {
+      "path": "result/evidence-manifest.json",
+      "bytes": 34459,
+      "sha256": "3c3eedb837154e3ba422b75129426b8d454b1a3e60cc3bc10df1c9575bd48c18"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r1/T1-settlement-cascade/t1/command.json",
+      "bytes": 590,
+      "sha256": "9b6bad170ed861c2f7a7407ab61e5c669c47faf348b7d7e729bee4b53cf3d892"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r1/T1-settlement-cascade/t1/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r1/T1-settlement-cascade/t1/stdout.bin",
+      "bytes": 11272,
+      "sha256": "747cf3304d188095f32ea0832daabde512f171f0b262adae2b9d68b22bdbd2c4"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r1/T1-settlement-cascade/t1/turn.json",
+      "bytes": 3919,
+      "sha256": "1a1ea388c8a9668d42c402dfeb85f3c292ca46a356d17eba6fd318ab4009af34"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r1/T4-multihop-read-recovery/t1/command.json",
+      "bytes": 598,
+      "sha256": "420ba55783fb85c361c02e326d7c0ce3d0e1bd687dc8b31032c3f7f883ce8cef"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r1/T4-multihop-read-recovery/t1/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r1/T4-multihop-read-recovery/t1/stdout.bin",
+      "bytes": 9951,
+      "sha256": "2dd623da6f5d67765cf87f3d9fb349618593b4eb28481933d986c5d0c46ad541"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r1/T4-multihop-read-recovery/t1/turn.json",
+      "bytes": 3968,
+      "sha256": "262fa9c66feeede4c10305f7dbb15d5904763b1dae0f3c48cbd0d9c3f25b03b6"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t1/command.json",
+      "bytes": 604,
+      "sha256": "fc87a006017eff05acf25ef72f0ca3352821ba45f87224ee39e85b6deefc1973"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t1/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t1/stdout.bin",
+      "bytes": 10308,
+      "sha256": "45a144f65a0028d624db3aa584576f3a25abcf1b9e1c9b152d055ac9b7a4180a"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t1/turn.json",
+      "bytes": 3943,
+      "sha256": "69f45401981a62cdced924b44a6ee3d95f13a3afeb968e94f5803b7f7a5789b0"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t2/command.json",
+      "bytes": 604,
+      "sha256": "c775c6745c245b7a129ee5cb58db5df334603f45ae65c07f7a8c621d0ebdc8f0"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t2/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t2/stdout.bin",
+      "bytes": 10935,
+      "sha256": "7841c4c92a112b2bda4e7622678be040ffbe5e24f5b703493ce91cd1927bc600"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t2/turn.json",
+      "bytes": 4631,
+      "sha256": "4da20552b80ab41b59c852875b187d1bc358bb7608b9368fd93c202af3e35148"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t3/command.json",
+      "bytes": 604,
+      "sha256": "a3a2961baddf47e42b1a7ba6fcc81d2cacd93f665976059a68e57768c8b595c1"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t3/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t3/stdout.bin",
+      "bytes": 9171,
+      "sha256": "6a97ac7ccdcded06a47395157fb4476e3d9865480b4759cc227544b94a32e61e"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t3/turn.json",
+      "bytes": 3944,
+      "sha256": "ce657bb214fb3eb9b692d8d496967d7a9790dd621af9e9ab367a969ddef06c61"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t4/command.json",
+      "bytes": 604,
+      "sha256": "b86f940165e2e63e8e9a7f3ef933739911209f908c93f0bab3048ae9c3d6e379"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t4/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t4/stdout.bin",
+      "bytes": 8827,
+      "sha256": "6c3027effb108b3d200bcb6a1dde86098a12fe15c7b9ae11eeb5eb96e3953ddd"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T2-event-revert-ambiguity/t4/turn.json",
+      "bytes": 3746,
+      "sha256": "bb2cb6fb80259985a5ec126e2b3bccfbc9cfdcd87dc0618e67116c8036d1ac8b"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T4-multihop-read-recovery/t1/command.json",
+      "bytes": 598,
+      "sha256": "e6162450f8032c3c4745347ebfbf5cdedd25ee78fa9f370d820908ee0ba01c10"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T4-multihop-read-recovery/t1/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T4-multihop-read-recovery/t1/stdout.bin",
+      "bytes": 9951,
+      "sha256": "1be8036de3f27a4c2535bd05fad4b9d6b13304022d0b5fa8437c89490f3425ba"
+    },
+    {
+      "path": "result/failure-attempts/deepseek41flash/r2/T4-multihop-read-recovery/t1/turn.json",
+      "bytes": 3968,
+      "sha256": "d32d599ab31ab89f55c607c2582e2a0472c16e48cad26529b9650dc6c6044130"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r1/T1-settlement-cascade/t1/command.json",
+      "bytes": 579,
+      "sha256": "ba76d0abbdfa67de4fac0fad614f3c0d94e2b65f0e327a051a55618b7a3a26f8"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r1/T1-settlement-cascade/t1/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r1/T1-settlement-cascade/t1/stdout.bin",
+      "bytes": 11208,
+      "sha256": "2c71aafaee17eca8cc5c5d418fbe7b588e10779532ff1bd9e6aeecdcca654f06"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r1/T1-settlement-cascade/t1/turn.json",
+      "bytes": 3865,
+      "sha256": "549fe7f2f17baa9c2ff84c005e641d59945d0e1ddd73e4a5bf2deb972296644d"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r1/T6-induction-and-planning/t1/command.json",
+      "bytes": 587,
+      "sha256": "33e6b33a9b6379b6ba2fdac2f65a82c5d35bb9d45481088e3a7cb864bb156c15"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r1/T6-induction-and-planning/t1/stderr.bin",
+      "bytes": 467,
+      "sha256": "834c104c9ba56cc053b10b43c959553f37e5b2de9f47121c7d973fff2ce2b0d3"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r1/T6-induction-and-planning/t1/stdout.bin",
+      "bytes": 315,
+      "sha256": "80e74b784f8b58cb11d8bd380c198cbdb7c78e7912224ce620289c55c8aeb11f"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r1/T6-induction-and-planning/t1/turn.json",
+      "bytes": 1305,
+      "sha256": "7b5968a3b203fd9417ce3a5aab63700d4a46cc04f6f4f2f6747beafa807ca527"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r2/T1-settlement-cascade/t1/command.json",
+      "bytes": 579,
+      "sha256": "20b6453a35f5acc0127001e1263391e85b1d20e2ce46385ec6e219f1371d9574"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r2/T1-settlement-cascade/t1/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r2/T1-settlement-cascade/t1/stdout.bin",
+      "bytes": 11209,
+      "sha256": "9a1a0babfa47840b089a307e31af8a6d6b5236af53c64a6e878ab95e37f55a2f"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r2/T1-settlement-cascade/t1/turn.json",
+      "bytes": 3866,
+      "sha256": "b015541bb15a1029d61f2935fc51d7893a6ee254fb7ce4b2303dd807eae5d911"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r2/T5-handoff-authority-control/t1/command.json",
+      "bytes": 599,
+      "sha256": "c8a23fe382fb209aa35b33cfe916ca9cde33bbab39c1e02c94583f21ed5d849d"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r2/T5-handoff-authority-control/t1/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r2/T5-handoff-authority-control/t1/stdout.bin",
+      "bytes": 10932,
+      "sha256": "e55de751e1564bedee150337d63c00188d898241ad25e8e81b846c865d388766"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r2/T5-handoff-authority-control/t1/turn.json",
+      "bytes": 3919,
+      "sha256": "ecaf89fac26cbedbb80ba5b7447e8011c6207edb27910e6deafd3f76c5deb425"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r2/T5-handoff-authority-control/t2/command.json",
+      "bytes": 599,
+      "sha256": "6eb21ebfa35f43ca8b7d8ea4f4ea15ee96dbca38e336ab2dd870c51c33276246"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r2/T5-handoff-authority-control/t2/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r2/T5-handoff-authority-control/t2/stdout.bin",
+      "bytes": 8830,
+      "sha256": "6bf0ee53f7ebe92619fec9805f428e334855a1a878cf1976ada9ff160bbac6d1"
+    },
+    {
+      "path": "result/failure-attempts/glm53flash/r2/T5-handoff-authority-control/t2/turn.json",
+      "bytes": 3759,
+      "sha256": "cf2e6a05c1d2c7869e5643b8419dd92df6d7062069a8711cf32d63c7ebd8d316"
+    },
+    {
+      "path": "result/failure-taxonomy.json",
+      "bytes": 2048,
+      "sha256": "3448b2bc756e9b9ef48f05edf05ca655d8d490bc124c5e9c81faf196557fc138"
+    },
+    {
+      "path": "result/graded-results.json",
+      "bytes": 49345,
+      "sha256": "f546c883ec963d2c0adafb9d90589d60d9cf062e9a87cbf1a71157fb764f68e6"
+    },
+    {
+      "path": "result/matrix-index.json",
+      "bytes": 173493,
+      "sha256": "e374da9e1d49befd3b8400be2536ccf3db7af1fd519b9753551754c490697ec2"
+    },
+    {
+      "path": "result/operational-adjudication.json",
+      "bytes": 864,
+      "sha256": "2f8b819adcd7b7aa8f793e388edf10cdc6baa1ca4f14922aab2e34e5f75592a9"
+    },
+    {
+      "path": "result/report.md",
+      "bytes": 3472,
+      "sha256": "cab0c32325f1163d2e7a39d37dfd27fa1e2961dd3b8ab70f495d0a8eee893ed9"
+    },
+    {
+      "path": "result/t4-tool-traces.json",
+      "bytes": 2137,
+      "sha256": "a4f66c4968b384fec8e82199fc0825d2a3d76ffef95e3210de68c4ca9456ee48"
+    }
+  ],
+  "post_move_hash_match": true,
+  "frozen_fixture_stage_match": true,
+  "fixture_file_count": 4,
+  "candidate_key_folder_absent": true,
+  "restore_required": false,
+  "preflight_note": "Initial comparison included the source T4-inputs prefix; hashes were identical. Normalized root comparison passed.",
+  "restored_utc": "2026-09-20T00:43:11.342588Z",
+  "restore_hash_match": true,
+  "restore_file_count": 72,
+  "restore_total_bytes": 730912,
+  "quarantine_path_absent_after_restore": true
+}

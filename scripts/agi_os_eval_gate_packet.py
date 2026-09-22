@@ -268,16 +268,28 @@ def build_packet(root: Path = ROOT, inputs: dict[str, Path] | None = None) -> di
     attribution_summary = as_dict(loaded["implementation_token_attribution"].get("summary"))
     gap_resolution_status = str(attribution_summary.get("gap_resolution_status") or "")
     unclassified_supported_gap_count = int(attribution_summary.get("unclassified_supported_runtime_gap_count") or 0)
+    attribution_action_required = attribution_summary.get("action_required_supported_runtime_gap_count")
+    attribution_action_required_usable = (
+        isinstance(attribution_action_required, (int, float)) and not isinstance(attribution_action_required, bool)
+    )
     attribution_packet = loaded["implementation_token_attribution"]
     attribution_validation_status = as_dict(attribution_packet.get("validation")).get("status")
     attribution_source_status = attribution_packet.get("status")
-    attribution_pass = (
+    attribution_common_pass = (
         input_paths["implementation_token_attribution"].exists()
         and attribution_source_status == "ok"
         and attribution_validation_status == "ok"
-        and gap_resolution_status in {"complete", "classified_unavailable_only"}
-        and unclassified_supported_gap_count == 0
     )
+    if attribution_action_required_usable:
+        # Prefer the action-required denominator: classified terminal-unavailable
+        # debt is audit context, not live debt.
+        attribution_pass = attribution_common_pass and int(attribution_action_required) == 0
+    else:
+        attribution_pass = (
+            attribution_common_pass
+            and gap_resolution_status in {"complete", "classified_unavailable_only"}
+            and unclassified_supported_gap_count == 0
+        )
     gates.append(
         gate(
             "implementation_token_attribution_gate",
@@ -288,6 +300,7 @@ def build_packet(root: Path = ROOT, inputs: dict[str, Path] | None = None) -> di
                 "implementation_token_gap_count": attribution_summary.get("implementation_token_gap_count"),
                 "gap_resolution_status": gap_resolution_status,
                 "unclassified_supported_runtime_gap_count": unclassified_supported_gap_count,
+                "action_required_supported_runtime_gap_count": attribution_action_required,
                 "provider_run_join_ready": attribution_summary.get("provider_run_join_ready"),
                 "source_status": attribution_source_status,
                 "validation_status": attribution_validation_status,

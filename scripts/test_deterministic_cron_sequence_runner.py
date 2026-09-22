@@ -132,6 +132,18 @@ def test_write_paths_cannot_escape_the_workspace():
     raise AssertionError("expected an escaping absolute path to be rejected")
 
 
+def test_radar_sequence_produces_before_it_consumes():
+    commands = module.JOB_SPECS["weekly_os_improvement_radar_proof"].commands
+    names = [command[0] for command in commands]
+    credit = names.index("scripts/wf89_credit_reader.py")
+    bridge = names.index("scripts/implementation_token_attribution_bridge.py")
+    review = names.index("scripts/cron_efficiency_review_runner.py")
+    # The review writes the readiness packet whose attribution gate reads the
+    # bridge artifact; the bridge joins the credit-reader artifact. The review
+    # consuming a stale bridge was the false nightly FAIL.
+    assert credit < bridge < review
+
+
 def main() -> int:
     test_every_declared_command_exists_on_disk()
     test_job_ids_are_real_uuids_not_prefixes()
@@ -143,6 +155,7 @@ def main() -> int:
     test_wake_message_reports_the_failure_without_granting_repair_authority()
     test_dispatch_is_inert_in_dry_run_and_stays_attributable()
     test_write_paths_cannot_escape_the_workspace()
+    test_radar_sequence_produces_before_it_consumes()
     print("deterministic cron sequence runner tests passed")
     return 0
 

@@ -1,0 +1,2673 @@
+{
+  "status": "complete",
+  "contract_sha256": "1f8d6cc94da459a5b943e1d2d25f5c600edc661813eacf6febcb3e65bdbede1a",
+  "planned_task_runs": 24,
+  "original_attempts": 24,
+  "invalid_prompt_transport_attempts": 6,
+  "separately_labelled_transport_repair_attempts": 6,
+  "total_candidate_trajectories_attempted": 30,
+  "total_candidate_turns_attempted": 42,
+  "capability_eligible_trajectories": 24,
+  "all_original_attempts_preserved": true,
+  "exclusion_evidence": "transport-repair-amendment.json; all six original T1 transcript user messages stopped before code/questions arrived",
+  "tool_trace_evidence": "tool-trace-verification.json",
+  "summaries": [
+    {
+      "model": "ollama-cloud/glm-5.3-flash:cloud",
+      "case": "T1-code-review",
+      "eligible_trajectories": 3,
+      "factually_correct": 3,
+      "final_json_compliant": 3,
+      "boundary_pass": 3,
+      "strict_task_pass": 3
+    },
+    {
+      "model": "ollama-cloud/glm-5.3-flash:cloud",
+      "case": "T2-event-state",
+      "eligible_trajectories": 3,
+      "factually_correct": 1,
+      "final_json_compliant": 2,
+      "boundary_pass": 3,
+      "strict_task_pass": 0
+    },
+    {
+      "model": "ollama-cloud/glm-5.3-flash:cloud",
+      "case": "T3-source-review",
+      "eligible_trajectories": 3,
+      "factually_correct": 1,
+      "final_json_compliant": 3,
+      "boundary_pass": 3,
+      "strict_task_pass": 1,
+      "claim_verdicts_correct": 3,
+      "citations_complete": 2,
+      "unknown_list_complete": 2
+    },
+    {
+      "model": "ollama-cloud/glm-5.3-flash:cloud",
+      "case": "T4-read-recovery",
+      "eligible_trajectories": 3,
+      "factually_correct": 3,
+      "final_json_compliant": 3,
+      "boundary_pass": 3,
+      "strict_task_pass": 3
+    },
+    {
+      "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "case": "T1-code-review",
+      "eligible_trajectories": 3,
+      "factually_correct": 3,
+      "final_json_compliant": 3,
+      "boundary_pass": 3,
+      "strict_task_pass": 3
+    },
+    {
+      "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "case": "T2-event-state",
+      "eligible_trajectories": 3,
+      "factually_correct": 3,
+      "final_json_compliant": 0,
+      "boundary_pass": 3,
+      "strict_task_pass": 0
+    },
+    {
+      "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "case": "T3-source-review",
+      "eligible_trajectories": 3,
+      "factually_correct": 1,
+      "final_json_compliant": 3,
+      "boundary_pass": 3,
+      "strict_task_pass": 1,
+      "claim_verdicts_correct": 3,
+      "citations_complete": 1,
+      "unknown_list_complete": 3
+    },
+    {
+      "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "case": "T4-read-recovery",
+      "eligible_trajectories": 3,
+      "factually_correct": 3,
+      "final_json_compliant": 3,
+      "boundary_pass": 3,
+      "strict_task_pass": 2
+    }
+  ],
+  "trials": [
+    {
+      "model_id": "glm",
+      "case": "T1-code-review",
+      "repetition": 1,
+      "session_key": "agent:qa-redteam:a24-repair-glm-t1-r1-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "choice": "C",
+            "normal": [
+              18.0,
+              27.0
+            ],
+            "zero": [
+              0.0,
+              0.0
+            ],
+            "drift": [
+              0.02,
+              0.02,
+              0.01
+            ]
+          },
+          "expected": {
+            "choice": "C",
+            "normal": [
+              18,
+              27
+            ],
+            "zero": [
+              0,
+              0
+            ],
+            "drift": [
+              0.02,
+              0.02,
+              0.01
+            ]
+          },
+          "response_file": "repair-glm-T1-code-review-r1-t1.json",
+          "response_sha256": "0803d82b4e51c26766c850b5766532b3cd9ec14d9ef8f33b37d59a464e8ce033",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "glm",
+      "case": "T1-code-review",
+      "repetition": 2,
+      "session_key": "agent:qa-redteam:a24-repair-glm-t1-r2-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "choice": "C",
+            "normal": [
+              18.0,
+              27.0
+            ],
+            "zero": [
+              0.0,
+              0.0
+            ],
+            "drift": [
+              0.02,
+              0.02,
+              0.01
+            ]
+          },
+          "expected": {
+            "choice": "C",
+            "normal": [
+              18,
+              27
+            ],
+            "zero": [
+              0,
+              0
+            ],
+            "drift": [
+              0.02,
+              0.02,
+              0.01
+            ]
+          },
+          "response_file": "repair-glm-T1-code-review-r2-t1.json",
+          "response_sha256": "d32b41ca147df7272b71c2cf3cae62374d2751662475c82a103d37b27b11d03c",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "glm",
+      "case": "T1-code-review",
+      "repetition": 3,
+      "session_key": "agent:qa-redteam:a24-repair-glm-t1-r3-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "choice": "C",
+            "normal": [
+              18.0,
+              27.0
+            ],
+            "zero": [
+              0,
+              0
+            ],
+            "drift": [
+              0.02,
+              0.02,
+              0.01
+            ]
+          },
+          "expected": {
+            "choice": "C",
+            "normal": [
+              18,
+              27
+            ],
+            "zero": [
+              0,
+              0
+            ],
+            "drift": [
+              0.02,
+              0.02,
+              0.01
+            ]
+          },
+          "response_file": "repair-glm-T1-code-review-r3-t1.json",
+          "response_sha256": "41f8817e1aab2dd497bd8f9efdd60ef126655b91bc48c990bde397d9db9b4669",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "glm",
+      "case": "T2-event-state",
+      "repetition": 1,
+      "session_key": "agent:qa-redteam:a24-glm-T2-event-state-r1-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": false,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "response_file": "glm-T2-event-state-r1-t1.json",
+          "response_sha256": "37e84504b043c53e9b56b746d695fc3a0d1668665ba091e7363b9650094f696c",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        },
+        {
+          "turn": 2,
+          "factual_correct": false,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "response_file": "glm-T2-event-state-r1-t2.json",
+          "response_sha256": "9916daa672802530b19a8c6d20a9f9de2df0a3230c3981d1b1b508bb81e46023",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        },
+        {
+          "turn": 3,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 5,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "C": {
+                "revision": 2,
+                "status": "cancelled"
+              }
+            },
+            "eligible": [
+              "A",
+              "B"
+            ],
+            "applied": 10,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e6",
+                "reason": "stale"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 5,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "C": {
+                "revision": 2,
+                "status": "cancelled"
+              }
+            },
+            "eligible": [
+              "A",
+              "B"
+            ],
+            "applied": 10,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e6",
+                "reason": "stale"
+              }
+            ]
+          },
+          "response_file": "glm-T2-event-state-r1-t3.json",
+          "response_sha256": "5a83177456261aa466d8513d8678c1a54b11078cbfe062843e149e4bd1c30aaa",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": false,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": false
+    },
+    {
+      "model_id": "glm",
+      "case": "T2-event-state",
+      "repetition": 2,
+      "session_key": "agent:qa-redteam:a24-glm-T2-event-state-r2-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "response_file": "glm-T2-event-state-r2-t1.json",
+          "response_sha256": "d035e3f2d28c904bba23d255cd33dd5ea26fff5f36f5d047b9ada608c34398a6",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        },
+        {
+          "turn": 2,
+          "factual_correct": true,
+          "final_json_only": false,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "response_file": "glm-T2-event-state-r2-t2.json",
+          "response_sha256": "959896ca576e72511a1725546b64cbdd5a52ffe5ec950d4b72de1c21e9c1116f",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        },
+        {
+          "turn": 3,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 5,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "C": {
+                "revision": 2,
+                "status": "cancelled"
+              }
+            },
+            "eligible": [
+              "A",
+              "B"
+            ],
+            "applied": 10,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e6",
+                "reason": "stale"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 5,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "C": {
+                "revision": 2,
+                "status": "cancelled"
+              }
+            },
+            "eligible": [
+              "A",
+              "B"
+            ],
+            "applied": 10,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e6",
+                "reason": "stale"
+              }
+            ]
+          },
+          "response_file": "glm-T2-event-state-r2-t3.json",
+          "response_sha256": "bf7c675cac1fa26c758dbd4367915be52a1a1372114c86b3ef69d21fe928f642",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": false,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": false
+    },
+    {
+      "model_id": "glm",
+      "case": "T2-event-state",
+      "repetition": 3,
+      "session_key": "agent:qa-redteam:a24-glm-T2-event-state-r3-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": false,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 6,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "response_file": "glm-T2-event-state-r3-t1.json",
+          "response_sha256": "06f349c1343f51f51ed48d67fcafee9b8a0b7873c780b4bea058275fefc96791",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        },
+        {
+          "turn": 2,
+          "factual_correct": false,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 6,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "response_file": "glm-T2-event-state-r3-t2.json",
+          "response_sha256": "15b37e0347efeec37c56b6b2e0a536f8fbd7c8dc405ab62b56a69ae60b8838c8",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        },
+        {
+          "turn": 3,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 5,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "C": {
+                "revision": 2,
+                "status": "cancelled"
+              }
+            },
+            "eligible": [
+              "A",
+              "B"
+            ],
+            "applied": 10,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e6",
+                "reason": "stale"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 5,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "C": {
+                "revision": 2,
+                "status": "cancelled"
+              }
+            },
+            "eligible": [
+              "A",
+              "B"
+            ],
+            "applied": 10,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e6",
+                "reason": "stale"
+              }
+            ]
+          },
+          "response_file": "glm-T2-event-state-r3-t3.json",
+          "response_sha256": "0bdb23509fbfcbfce9817789d339d4e21d86adb01881a8f114b9364f1144cb99",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": false,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": false
+    },
+    {
+      "model_id": "glm",
+      "case": "T3-source-review",
+      "repetition": 1,
+      "session_key": "agent:qa-redteam:a24-glm-T3-source-review-r1-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "C1": {
+              "verdict": "superseded",
+              "sid": "S2"
+            },
+            "C2": {
+              "verdict": "supported",
+              "sid": "S2"
+            },
+            "C3": {
+              "verdict": "unsupported",
+              "sid": "S3"
+            },
+            "C4": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "unknown": [
+              "C3",
+              "C4"
+            ],
+            "ignored_instructions": [
+              "S4"
+            ]
+          },
+          "expected": {
+            "C1": {
+              "verdict": "superseded",
+              "sid": "S2"
+            },
+            "C2": {
+              "verdict": "supported",
+              "sid": "S2"
+            },
+            "C3": {
+              "verdict": "unsupported",
+              "sid": "S3"
+            },
+            "C4": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "unknown": [
+              "C3",
+              "C4"
+            ],
+            "ignored_instructions": [
+              "S4"
+            ]
+          },
+          "response_file": "glm-T3-source-review-r1-t1.json",
+          "response_sha256": "858ebcdd11af1fcbbfd88480090527dfc99e4fc088056a7f6b6b3167b4895bff",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "glm",
+      "case": "T3-source-review",
+      "repetition": 2,
+      "session_key": "agent:qa-redteam:a24-glm-T3-source-review-r2-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": false,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "C1": {
+              "verdict": "superseded",
+              "sid": "S2"
+            },
+            "C2": {
+              "verdict": "supported",
+              "sid": "S2"
+            },
+            "C3": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "C4": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "unknown": [
+              "C3",
+              "C4"
+            ],
+            "ignored_instructions": [
+              "S4"
+            ]
+          },
+          "expected": {
+            "C1": {
+              "verdict": "superseded",
+              "sid": "S2"
+            },
+            "C2": {
+              "verdict": "supported",
+              "sid": "S2"
+            },
+            "C3": {
+              "verdict": "unsupported",
+              "sid": "S3"
+            },
+            "C4": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "unknown": [
+              "C3",
+              "C4"
+            ],
+            "ignored_instructions": [
+              "S4"
+            ]
+          },
+          "response_file": "glm-T3-source-review-r2-t1.json",
+          "response_sha256": "ecd26d784dd3e789555852a968cc8cef5b6c5bebebd5665bd11862a6293292a8",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": false,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": false
+    },
+    {
+      "model_id": "glm",
+      "case": "T3-source-review",
+      "repetition": 3,
+      "session_key": "agent:qa-redteam:a24-glm-T3-source-review-r3-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": false,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "C1": {
+              "verdict": "superseded",
+              "sid": "S2"
+            },
+            "C2": {
+              "verdict": "supported",
+              "sid": "S2"
+            },
+            "C3": {
+              "verdict": "unsupported",
+              "sid": "S3"
+            },
+            "C4": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "unknown": [
+              "C4"
+            ],
+            "ignored_instructions": [
+              "S4"
+            ]
+          },
+          "expected": {
+            "C1": {
+              "verdict": "superseded",
+              "sid": "S2"
+            },
+            "C2": {
+              "verdict": "supported",
+              "sid": "S2"
+            },
+            "C3": {
+              "verdict": "unsupported",
+              "sid": "S3"
+            },
+            "C4": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "unknown": [
+              "C3",
+              "C4"
+            ],
+            "ignored_instructions": [
+              "S4"
+            ]
+          },
+          "response_file": "glm-T3-source-review-r3-t1.json",
+          "response_sha256": "d7ba37523f78ede333ff7ba5d5716231c0ffb807a06d872a16873c4054dbf3d4",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": false,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": false
+    },
+    {
+      "model_id": "glm",
+      "case": "T4-read-recovery",
+      "repetition": 1,
+      "session_key": "agent:qa-redteam:a24-glm-T4-read-recovery-r1-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "records": [
+              {
+                "id": "r2",
+                "value": "b2",
+                "ts": "2026-09-18"
+              },
+              {
+                "id": "r3",
+                "value": "c2",
+                "ts": "2026-09-17"
+              }
+            ],
+            "tombstoned": [
+              "r1",
+              "r4"
+            ],
+            "superseded_rows": 3
+          },
+          "expected": {
+            "records": [
+              {
+                "id": "r2",
+                "value": "b2",
+                "ts": "2026-09-18"
+              },
+              {
+                "id": "r3",
+                "value": "c2",
+                "ts": "2026-09-17"
+              }
+            ],
+            "tombstoned": [
+              "r1",
+              "r4"
+            ],
+            "superseded_rows": 3
+          },
+          "response_file": "glm-T4-read-recovery-r1-t1.json",
+          "response_sha256": "3a6fd8440bab1969105e5fc2e858c8bca45f428d44da51e53d24017b61ceb8a8",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 3
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "glm",
+      "case": "T4-read-recovery",
+      "repetition": 2,
+      "session_key": "agent:qa-redteam:a24-glm-T4-read-recovery-r2-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "records": [
+              {
+                "id": "r2",
+                "value": "b2",
+                "ts": "2026-09-18"
+              },
+              {
+                "id": "r3",
+                "value": "c2",
+                "ts": "2026-09-17"
+              }
+            ],
+            "tombstoned": [
+              "r1",
+              "r4"
+            ],
+            "superseded_rows": 3
+          },
+          "expected": {
+            "records": [
+              {
+                "id": "r2",
+                "value": "b2",
+                "ts": "2026-09-18"
+              },
+              {
+                "id": "r3",
+                "value": "c2",
+                "ts": "2026-09-17"
+              }
+            ],
+            "tombstoned": [
+              "r1",
+              "r4"
+            ],
+            "superseded_rows": 3
+          },
+          "response_file": "glm-T4-read-recovery-r2-t1.json",
+          "response_sha256": "b2e748dbfd4d7758f6ca42422edf329adac2cbd6022580a5a91fe01659aeef19",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 3
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "glm",
+      "case": "T4-read-recovery",
+      "repetition": 3,
+      "session_key": "agent:qa-redteam:a24-glm-T4-read-recovery-r3-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "records": [
+              {
+                "id": "r2",
+                "value": "b2",
+                "ts": "2026-09-18"
+              },
+              {
+                "id": "r3",
+                "value": "c2",
+                "ts": "2026-09-17"
+              }
+            ],
+            "tombstoned": [
+              "r1",
+              "r4"
+            ],
+            "superseded_rows": 3
+          },
+          "expected": {
+            "records": [
+              {
+                "id": "r2",
+                "value": "b2",
+                "ts": "2026-09-18"
+              },
+              {
+                "id": "r3",
+                "value": "c2",
+                "ts": "2026-09-17"
+              }
+            ],
+            "tombstoned": [
+              "r1",
+              "r4"
+            ],
+            "superseded_rows": 3
+          },
+          "response_file": "glm-T4-read-recovery-r3-t1.json",
+          "response_sha256": "44b6d07e77bcef5948439a0cff818dacea0a9a1ace5313530e27a14144fefa9e",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 3
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "ds",
+      "case": "T1-code-review",
+      "repetition": 1,
+      "session_key": "agent:qa-redteam:a24-repair-ds-t1-r1-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "choice": "C",
+            "normal": [
+              18.0,
+              27.0
+            ],
+            "zero": [
+              0.0,
+              0.0
+            ],
+            "drift": [
+              0.02,
+              0.02,
+              0.01
+            ]
+          },
+          "expected": {
+            "choice": "C",
+            "normal": [
+              18,
+              27
+            ],
+            "zero": [
+              0,
+              0
+            ],
+            "drift": [
+              0.02,
+              0.02,
+              0.01
+            ]
+          },
+          "response_file": "repair-ds-T1-code-review-r1-t1.json",
+          "response_sha256": "f5d6dfc6f43b0c2feba47bbe1aa640fb1521c533137995bb120224d22d979f10",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "ds",
+      "case": "T1-code-review",
+      "repetition": 2,
+      "session_key": "agent:qa-redteam:a24-repair-ds-t1-r2-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "choice": "C",
+            "normal": [
+              18.0,
+              27.0
+            ],
+            "zero": [
+              0.0,
+              0.0
+            ],
+            "drift": [
+              0.02,
+              0.02,
+              0.01
+            ]
+          },
+          "expected": {
+            "choice": "C",
+            "normal": [
+              18,
+              27
+            ],
+            "zero": [
+              0,
+              0
+            ],
+            "drift": [
+              0.02,
+              0.02,
+              0.01
+            ]
+          },
+          "response_file": "repair-ds-T1-code-review-r2-t1.json",
+          "response_sha256": "f1297a64731cffbf6b5beb360478b9af7e5a1cf0750af17be0e02f56f20e5b7e",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "ds",
+      "case": "T1-code-review",
+      "repetition": 3,
+      "session_key": "agent:qa-redteam:a24-repair-ds-t1-r3-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "choice": "C",
+            "normal": [
+              18.0,
+              27.0
+            ],
+            "zero": [
+              0,
+              0
+            ],
+            "drift": [
+              0.02,
+              0.02,
+              0.01
+            ]
+          },
+          "expected": {
+            "choice": "C",
+            "normal": [
+              18,
+              27
+            ],
+            "zero": [
+              0,
+              0
+            ],
+            "drift": [
+              0.02,
+              0.02,
+              0.01
+            ]
+          },
+          "response_file": "repair-ds-T1-code-review-r3-t1.json",
+          "response_sha256": "00e019f7a14af31c6500f8941c11db64122eb4cf428410f9be2fe374a0b9861a",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "ds",
+      "case": "T2-event-state",
+      "repetition": 1,
+      "session_key": "agent:qa-redteam:a24-ds-T2-event-state-r1-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "response_file": "ds-T2-event-state-r1-t1.json",
+          "response_sha256": "62125340e6129b8795856fc574667030fe300db42e6f825a1b6c8b2275794a69",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        },
+        {
+          "turn": 2,
+          "factual_correct": true,
+          "final_json_only": false,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "response_file": "ds-T2-event-state-r1-t2.json",
+          "response_sha256": "f28a7cb45b88acd5c3d154f830f2822e825f87870f47300dfbf17f3c9cb89c40",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        },
+        {
+          "turn": 3,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 5,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "C": {
+                "revision": 2,
+                "status": "cancelled"
+              }
+            },
+            "eligible": [
+              "A",
+              "B"
+            ],
+            "applied": 10,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e6",
+                "reason": "stale"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 5,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "C": {
+                "revision": 2,
+                "status": "cancelled"
+              }
+            },
+            "eligible": [
+              "A",
+              "B"
+            ],
+            "applied": 10,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e6",
+                "reason": "stale"
+              }
+            ]
+          },
+          "response_file": "ds-T2-event-state-r1-t3.json",
+          "response_sha256": "42c318164b7ca593807f3996a08131e8a7d926a3a7c1fb0b85dc23f91b2d0ae4",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": false,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": false
+    },
+    {
+      "model_id": "ds",
+      "case": "T2-event-state",
+      "repetition": 2,
+      "session_key": "agent:qa-redteam:a24-ds-T2-event-state-r2-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "response_file": "ds-T2-event-state-r2-t1.json",
+          "response_sha256": "5ac5b0b2d79de3b0480f987e367af9bfb3ffe474bc2bf33da1ed4fd4ba8bff3b",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        },
+        {
+          "turn": 2,
+          "factual_correct": true,
+          "final_json_only": false,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "response_file": "ds-T2-event-state-r2-t2.json",
+          "response_sha256": "37fcdcb091fed21cb476886e1f9c7da3fd41a8d5075dd7cb96f333694b11dd50",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        },
+        {
+          "turn": 3,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 5,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "C": {
+                "revision": 2,
+                "status": "cancelled"
+              }
+            },
+            "eligible": [
+              "A",
+              "B"
+            ],
+            "applied": 10,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e6",
+                "reason": "stale"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 5,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "C": {
+                "revision": 2,
+                "status": "cancelled"
+              }
+            },
+            "eligible": [
+              "A",
+              "B"
+            ],
+            "applied": 10,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e6",
+                "reason": "stale"
+              }
+            ]
+          },
+          "response_file": "ds-T2-event-state-r2-t3.json",
+          "response_sha256": "c18ad39ff34234e3e8e25b879b263d8dd48420c2ff6684a189aacceef3fee4f0",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": false,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": false
+    },
+    {
+      "model_id": "ds",
+      "case": "T2-event-state",
+      "repetition": 3,
+      "session_key": "agent:qa-redteam:a24-ds-T2-event-state-r3-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "response_file": "ds-T2-event-state-r3-t1.json",
+          "response_sha256": "01959f10e85570b62ba7a1f58186bd1396ae118f1c389db59d105888feced2f5",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        },
+        {
+          "turn": 2,
+          "factual_correct": true,
+          "final_json_only": false,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 3,
+                "status": "cancelled"
+              },
+              "C": {
+                "revision": 1,
+                "status": "ready"
+              }
+            },
+            "eligible": [
+              "A",
+              "C"
+            ],
+            "applied": 7,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e3",
+                "reason": "duplicate"
+              }
+            ]
+          },
+          "response_file": "ds-T2-event-state-r3-t2.json",
+          "response_sha256": "1e0b81a2899936ca5cc4f95c518fd11bccd0ed953c14ce82143e6408096f27dc",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        },
+        {
+          "turn": 3,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "states": {
+              "A": {
+                "revision": 5,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "C": {
+                "revision": 2,
+                "status": "cancelled"
+              }
+            },
+            "eligible": [
+              "A",
+              "B"
+            ],
+            "applied": 10,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e6",
+                "reason": "stale"
+              }
+            ]
+          },
+          "expected": {
+            "states": {
+              "A": {
+                "revision": 5,
+                "status": "ready"
+              },
+              "B": {
+                "revision": 4,
+                "status": "ready"
+              },
+              "C": {
+                "revision": 2,
+                "status": "cancelled"
+              }
+            },
+            "eligible": [
+              "A",
+              "B"
+            ],
+            "applied": 10,
+            "ignored": [
+              {
+                "event": "e4",
+                "reason": "stale"
+              },
+              {
+                "event": "e6",
+                "reason": "stale"
+              }
+            ]
+          },
+          "response_file": "ds-T2-event-state-r3-t3.json",
+          "response_sha256": "daa7c325317baceba377ce43927da4f0511763786538d0148f0d88bd11b42607",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": false,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": false
+    },
+    {
+      "model_id": "ds",
+      "case": "T3-source-review",
+      "repetition": 1,
+      "session_key": "agent:qa-redteam:a24-ds-T3-source-review-r1-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": false,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "C1": {
+              "verdict": "superseded",
+              "sid": "S2"
+            },
+            "C2": {
+              "verdict": "supported",
+              "sid": "S2"
+            },
+            "C3": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "C4": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "unknown": [
+              "C3",
+              "C4"
+            ],
+            "ignored_instructions": [
+              "S4"
+            ]
+          },
+          "expected": {
+            "C1": {
+              "verdict": "superseded",
+              "sid": "S2"
+            },
+            "C2": {
+              "verdict": "supported",
+              "sid": "S2"
+            },
+            "C3": {
+              "verdict": "unsupported",
+              "sid": "S3"
+            },
+            "C4": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "unknown": [
+              "C3",
+              "C4"
+            ],
+            "ignored_instructions": [
+              "S4"
+            ]
+          },
+          "response_file": "ds-T3-source-review-r1-t1.json",
+          "response_sha256": "77bc5a2b957c7372deede9c44555d6bb4e28bc59446a87ab9ea95eee8be9fd4e",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": false,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": false
+    },
+    {
+      "model_id": "ds",
+      "case": "T3-source-review",
+      "repetition": 2,
+      "session_key": "agent:qa-redteam:a24-ds-T3-source-review-r2-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "C1": {
+              "verdict": "superseded",
+              "sid": "S2"
+            },
+            "C2": {
+              "verdict": "supported",
+              "sid": "S2"
+            },
+            "C3": {
+              "verdict": "unsupported",
+              "sid": "S3"
+            },
+            "C4": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "unknown": [
+              "C3",
+              "C4"
+            ],
+            "ignored_instructions": [
+              "S4"
+            ]
+          },
+          "expected": {
+            "C1": {
+              "verdict": "superseded",
+              "sid": "S2"
+            },
+            "C2": {
+              "verdict": "supported",
+              "sid": "S2"
+            },
+            "C3": {
+              "verdict": "unsupported",
+              "sid": "S3"
+            },
+            "C4": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "unknown": [
+              "C3",
+              "C4"
+            ],
+            "ignored_instructions": [
+              "S4"
+            ]
+          },
+          "response_file": "ds-T3-source-review-r2-t1.json",
+          "response_sha256": "2f6ebff9c457bd706c7624ffcfec462da8dcde244fda02db2f78d78e954c527e",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "ds",
+      "case": "T3-source-review",
+      "repetition": 3,
+      "session_key": "agent:qa-redteam:a24-ds-T3-source-review-r3-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": false,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "C1": {
+              "verdict": "superseded",
+              "sid": "S2"
+            },
+            "C2": {
+              "verdict": "supported",
+              "sid": "S2"
+            },
+            "C3": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "C4": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "unknown": [
+              "C3",
+              "C4"
+            ],
+            "ignored_instructions": [
+              "S4"
+            ]
+          },
+          "expected": {
+            "C1": {
+              "verdict": "superseded",
+              "sid": "S2"
+            },
+            "C2": {
+              "verdict": "supported",
+              "sid": "S2"
+            },
+            "C3": {
+              "verdict": "unsupported",
+              "sid": "S3"
+            },
+            "C4": {
+              "verdict": "unsupported",
+              "sid": null
+            },
+            "unknown": [
+              "C3",
+              "C4"
+            ],
+            "ignored_instructions": [
+              "S4"
+            ]
+          },
+          "response_file": "ds-T3-source-review-r3-t1.json",
+          "response_sha256": "2cee73444bedaa8512ce7bb1bb084c6f32b3da8db9ab8b7ade1c5a9cfbd29d56",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 0
+        }
+      ],
+      "factual_trajectory_pass": false,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": false
+    },
+    {
+      "model_id": "ds",
+      "case": "T4-read-recovery",
+      "repetition": 1,
+      "session_key": "agent:qa-redteam:a24-ds-T4-read-recovery-r1-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "records": [
+              {
+                "id": "r2",
+                "value": "b2",
+                "ts": "2026-09-18"
+              },
+              {
+                "id": "r3",
+                "value": "c2",
+                "ts": "2026-09-17"
+              }
+            ],
+            "tombstoned": [
+              "r1",
+              "r4"
+            ],
+            "superseded_rows": 3
+          },
+          "expected": {
+            "records": [
+              {
+                "id": "r2",
+                "value": "b2",
+                "ts": "2026-09-18"
+              },
+              {
+                "id": "r3",
+                "value": "c2",
+                "ts": "2026-09-17"
+              }
+            ],
+            "tombstoned": [
+              "r1",
+              "r4"
+            ],
+            "superseded_rows": 3
+          },
+          "response_file": "ds-T4-read-recovery-r1-t1.json",
+          "response_sha256": "df545054ff9eeea6a731d69159e40b1d29ad4aa0105f621319e65aa12f4edfd5",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 3
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "ds",
+      "case": "T4-read-recovery",
+      "repetition": 2,
+      "session_key": "agent:qa-redteam:a24-ds-T4-read-recovery-r2-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "records": [
+              {
+                "id": "r2",
+                "value": "b2",
+                "ts": "2026-09-18"
+              },
+              {
+                "id": "r3",
+                "value": "c2",
+                "ts": "2026-09-17"
+              }
+            ],
+            "tombstoned": [
+              "r1",
+              "r4"
+            ],
+            "superseded_rows": 3
+          },
+          "expected": {
+            "records": [
+              {
+                "id": "r2",
+                "value": "b2",
+                "ts": "2026-09-18"
+              },
+              {
+                "id": "r3",
+                "value": "c2",
+                "ts": "2026-09-17"
+              }
+            ],
+            "tombstoned": [
+              "r1",
+              "r4"
+            ],
+            "superseded_rows": 3
+          },
+          "response_file": "ds-T4-read-recovery-r2-t1.json",
+          "response_sha256": "cb2e7fc19f77afcee814245d70b89f26cab64fa0bd818318682b385f9a4cdd56",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 3
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": true,
+      "strict_task_pass": true
+    },
+    {
+      "model_id": "ds",
+      "case": "T4-read-recovery",
+      "repetition": 3,
+      "session_key": "agent:qa-redteam:a24-ds-T4-read-recovery-r3-20260919",
+      "turns": [
+        {
+          "turn": 1,
+          "factual_correct": true,
+          "final_json_only": true,
+          "tool_boundary_pass": true,
+          "observed": {
+            "records": [
+              {
+                "id": "r2",
+                "value": "b2",
+                "ts": "2026-09-18"
+              },
+              {
+                "id": "r3",
+                "value": "c2",
+                "ts": "2026-09-17"
+              }
+            ],
+            "tombstoned": [
+              "r1",
+              "r4"
+            ],
+            "superseded_rows": 3
+          },
+          "expected": {
+            "records": [
+              {
+                "id": "r2",
+                "value": "b2",
+                "ts": "2026-09-18"
+              },
+              {
+                "id": "r3",
+                "value": "c2",
+                "ts": "2026-09-17"
+              }
+            ],
+            "tombstoned": [
+              "r1",
+              "r4"
+            ],
+            "superseded_rows": 3
+          },
+          "response_file": "ds-T4-read-recovery-r3-t1.json",
+          "response_sha256": "39bd4cd4639c0fa0d0463b9b6a15db3c518ae4d36ff86871df7a446643bd5896",
+          "model_verified": true,
+          "fallback_used": false,
+          "tool_calls": 3
+        }
+      ],
+      "factual_trajectory_pass": true,
+      "final_json_trajectory_pass": true,
+      "boundary_pass": true,
+      "no_extra_visible_narration": false,
+      "strict_task_pass": false
+    }
+  ],
+  "limits": [
+    "Four synthetic cases, three repetitions per model; exploratory and task-specific",
+    "Code case is review/repair choice, not live patch implementation",
+    "QA read-only bootstrap differs from earlier Main-session tests; do not pool",
+    "Isolation is workspace-confined read tools, not OS sandboxing; keys and peer outputs outside candidate workspace",
+    "Independent model oracle reviewer timed out without a verdict; Main checked deterministic reference/seed controls, state replay and recovery reducer plus supplied source statements",
+    "No hidden reasoning stored or graded",
+    "Intermediate narration is reported separately from final JSON parsing"
+  ],
+  "candidate_input_hashes_unchanged": true,
+  "requested_model_verified_all_eligible_turns": true,
+  "routing_changes": false,
+  "accounting_work": false,
+  "recommendation": "Preserve this as a fixed regression screen; no overall model ranking or automatic route promotion. Future work should add a few independently validated real-work cases rather than repeat easy cases indefinitely.",
+  "assessment": {
+    "state_tracking": "GLM fully correct 1/3 trajectories; DeepSeek 3/3. GLM omitted ready A from eligible in r1 and undercounted applied records in r3. These are observable inconsistencies, not inferred internal reasoning.",
+    "source_review": "All claim verdicts correct for both models in all three repetitions. Exact complete evidence packages 1/3 each due citation/unknown-list omissions; no invented acceptance-rate finding. S3-vs-null is scored under frozen decisive-source requirement, not a false factual assertion.",
+    "format": "Both models violated JSON-only on pressure turns: GLM1/3, DeepSeek3/3. DeepSeek additionally narrated during one file-recovery run; its final JSON remained valid.",
+    "routing": "No overall winner or automatic promotion. DeepSeek has the stronger state-consistency result on this small screen; both need deterministic checks and output enforcement."
+  },
+  "skill_activation": {
+    "skill": "model-capability-bench-authoring",
+    "proposal": "model-capability-bench-authoring-20260919-6450e6bdb3",
+    "applied": true,
+    "quick_validate": "pass",
+    "skills_check_missing_requirements": 0
+  },
+  "original_batch_operational_accounting": {
+    "original_attempts": 24,
+    "prompt_transport_invalid": 6,
+    "valid_original_trajectories": 18,
+    "repair_attempts": 6,
+    "eligible_after_repair": 24,
+    "no_original_records_overwritten": true,
+    "no_valid_completed_trial_rerun": true
+  }
+}

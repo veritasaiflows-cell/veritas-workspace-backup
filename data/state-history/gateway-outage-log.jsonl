@@ -1,0 +1,1 @@
+{"classification": "benign", "closed_market_observation_day_touched": false, "detected_at_utc": "2026-09-19T05:55:16+00:00", "gap": {"end_utc": "2026-09-19T05:55:16+00:00", "gap_minutes": 60.0, "start_utc": "2026-09-19T04:55:15+00:00"}, "overnight_days": [], "reboot_events": [], "schema": "veritas.gateway_outage_sentinel.v1", "voiding_days": []}

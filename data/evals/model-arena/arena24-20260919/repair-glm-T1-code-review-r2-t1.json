@@ -1,0 +1,50 @@
+﻿{
+    "case":  "T1-code-review",
+    "model_id":  "glm",
+    "requested_model":  "ollama-cloud/glm-5.3-flash:cloud",
+    "repetition":  2,
+    "turn":  1,
+    "session_key":  "agent:qa-redteam:a24-repair-glm-t1-r2-20260919",
+    "cli_exit":  0,
+    "status":  "ok",
+    "run_id":  "b500c199-caf1-457b-b67e-7814545039ef",
+    "visible_text":  "{\"choice\":\"C\",\"normal\":[18.0,27.0],\"zero\":[0.0,0.0],\"drift\":[0.02,0.02,0.01]}",
+    "provider":  "ollama-cloud",
+    "model":  "glm-5.3-flash:cloud",
+    "execution_trace":  {
+                            "winnerProvider":  "ollama-cloud",
+                            "winnerModel":  "glm-5.3-flash:cloud",
+                            "attempts":  [
+                                             {
+                                                 "provider":  "ollama-cloud",
+                                                 "model":  "glm-5.3-flash:cloud",
+                                                 "result":  "success",
+                                                 "stage":  "assistant"
+                                             }
+                                         ],
+                            "fallbackUsed":  false,
+                            "runner":  "embedded"
+                        },
+    "receipt":  {
+                    "runId":  "b500c199-caf1-457b-b67e-7814545039ef",
+                    "sessionId":  "ebf4ce45-2d63-4e93-83cb-45a0613d9c7f",
+                    "turnId":  "b500c199-caf1-457b-b67e-7814545039ef",
+                    "requested":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "glm-5.3-flash:cloud"
+                                  },
+                    "effective":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "glm-5.3-flash:cloud",
+                                      "responseModel":  "glm-5.3-flash:cloud"
+                                  },
+                    "successfulToolNames":  [
+
+                                            ],
+                    "rerouted":  false
+                },
+    "tool_summary":  null,
+    "thinking":  "high",
+    "delivered_prompt_exact":  true,
+    "repair_of":  "glm-T1-code-review-r2-t1.json"
+}

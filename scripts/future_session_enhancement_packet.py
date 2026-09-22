@@ -72,7 +72,6 @@ CORE_SURFACES = [
     "SOUL.md",
     "AGENTS.md",
     "USER.md",
-    "TOOLS.md",
     "06. Playbooks/Startup Truth Index.md",
     "06. Playbooks/Active Workflows.md",
     "MEMORY.md",
@@ -84,15 +83,10 @@ CORE_EFFICIENCY_MARKERS = {
         "veritas-model-routing-helper-lanes",
         "concurrent lane register",
     ],
-    "TOOLS.md": [
-        "thin compatibility pointer",
-        "Runtime and command facts live",
-        "Hard boundaries",
-    ],
     "06. Playbooks/Startup Truth Index.md": [
         "project_implementation_router.py",
         "Prefer deterministic model-free work.",
-        "Main uses explicitly configured Astra",
+        "This index does not pin Main models.",
         "No fixed cohort pilot is required",
     ],
 }
@@ -129,6 +123,19 @@ ARTIFACTS = {
     "wiki_bootstrap_proof": "tmp/wiki-bootstrap-proof.json",
     "coding_outcome_ledger": "tmp/coding-outcome-ledger-current.json",
 }
+
+# Terminal digest statuses the digest producer itself accepts under --validate
+# (scripts/finance_alert_os_digest.py `acceptable`). The recommendations digest
+# legitimately leaves "ok" after any send-mode run (sent / duplicate_quiet /
+# weekend_quiet / send_unconfirmed); only send_failed (or a non-ok validation)
+# means the proof chain is actually blocked.
+ALERT_RECOMMENDATIONS_DIGEST_ACCEPTABLE_STATUSES = frozenset({
+    "ok",
+    "weekend_quiet",
+    "duplicate_quiet",
+    "sent",
+    "send_unconfirmed",
+})
 
 DERIVED_FILES = {
     "artifact_index_sqlite": "tmp/veritas-artifact-index.sqlite",
@@ -639,7 +646,12 @@ def extract_alerts_os_summary() -> dict[str, Any]:
         path_text = ARTIFACTS[label]
         payload = as_dict(load_json_artifact(ROOT / path_text))
         validation_status = as_dict(payload.get("validation")).get("status")
-        ok = bool(payload) and payload.get("status") == "ok" and validation_status in {None, "ok"}
+        acceptable_statuses = (
+            ALERT_RECOMMENDATIONS_DIGEST_ACCEPTABLE_STATUSES
+            if label == "alert_recommendations_digest"
+            else {"ok"}
+        )
+        ok = bool(payload) and payload.get("status") in acceptable_statuses and validation_status in {None, "ok"}
         if not ok:
             blocked.append(label)
         summary = as_dict(payload.get("summary"))
@@ -1026,7 +1038,7 @@ def startup_recall_relationship_tool_route() -> dict[str, Any]:
         "tool_references": [
             {
                 "scope": "workspace command routing",
-                "owner": "TOOLS.md and openclaw-operator",
+                "owner": "AGENTS.md and openclaw-operator",
                 "reference": "skills/openclaw-operator/references/workspace-route-map.md",
             },
             {
@@ -1392,11 +1404,11 @@ def build_payload(
             "schema": "wf74.rsi_observation.v1",
             "source": "future_session_enhancement_packet",
             "lesson_type": "daily_context",
-            "owner_surface": "Startup Truth Index / TOOLS.md / WF74",
+            "owner_surface": "Startup Truth Index / AGENTS.md / WF74",
             "what_changed": "Future-session startup context was compressed into one packet with PM, cron, WF74, workflow, memory, route, and stop-line state.",
             "warnings_or_blockers": [],
             "future_session_lesson": "Open this packet first after compaction/new-session handoff, then drill into exact owner artifacts only for the active request.",
-            "recommended_destination": "memory/YYYY-MM-DD.md for daily deltas; promote only repeated startup failures to skill or TOOLS.md.",
+            "recommended_destination": "memory/YYYY-MM-DD.md for daily deltas; promote only repeated startup failures to skill or AGENTS.md.",
             "actionability": "use_as_startup_route",
         },
         "next_safe_action": "Open this packet first, then drill into exact owner artifacts only for the active request.",

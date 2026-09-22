@@ -1,0 +1,50 @@
+{
+  "schema": "veritas.arena_agentic_main_acceptance.v1",
+  "envelope": "arena-agentic-v1-20260920",
+  "producer_version": "arena-agentic-v1-20260920-r5",
+  "accepted_utc": "2026-09-20T17:54:30Z",
+  "verdict": "accepted_with_limits",
+  "reviewer": {
+    "agent": "qa-redteam",
+    "model": "xai/grok-4.6",
+    "run_id": "24ee286f-ef74-4813-9bd2-65d3c30e2192",
+    "packet": "arena-phase234-qa5-20260920",
+    "qa_verdict": "PASS-WITH-LIMITS"
+  },
+  "main_verification": {
+    "tests": 47,
+    "tests_status": "ok",
+    "build_status": "ok",
+    "validate_status": "ok",
+    "script_sha256": "75b97a53f8809eacb56c4e232339267e292284df2a36957bfb7507331442c51a",
+    "tests_sha256": "f4e2a511b9ac74b892e54ad88d176de3e897bf624757fa1eaa05a654b569f3b9",
+    "build_report_sha256": "de77b4e9cf7292d15f9a30c983b01fbb80ffc2806b32c53f2799e3a0e14f39cc",
+    "qa5_manifest_sha256": "6e6b546f2d0c2cb281f6977ddda2f1777bec54887d0f6e41fcbb42362f8e056d"
+  },
+  "imported_paths": [
+    "scripts/arena_agentic_expansion.py",
+    "tests/test_arena_agentic_expansion.py",
+    "data/evals/model-arena/arena-agentic-v1-20260920/"
+  ],
+  "gate7": {
+    "status": "not_run",
+    "dispatch_evidence": [],
+    "dispatch_ready": false
+  },
+  "routing_effect": "none; no automatic promotion or config change",
+  "authority": "No routing, configuration, role, or execution authority follows.",
+  "limits": [
+    "X4 inventory stores assembled-row count only; silent-wrong replica path does not bind primary.json content; failure_machine call indexes are unused",
+    "T4 calibration invalid proposal currently uses read_budget != 6 rather than a fixture/index inconsistency",
+    "X6 submission replay binds declared turn deltas, not observation text",
+    "Independent QA did not recompute packet hashes; Main attributed and then independently rebuilt/hashed canonical output",
+    "DeepSeek 12/12 eligibility is source-linked accepted-with-limits; other role-card operational figures remain historical attributed claims",
+    "Gate 7 plan is complete and not_run; this acceptance does not authorize dispatch"
+  ],
+  "evidence": [
+    "tmp/arena-phase234-qa5-grok-verdict.md",
+    "data/evals/model-arena/arena-agentic-v1-20260920/build-report.json",
+    "C:/Users/Veritas/.openclaw/workspaces/qa-redteam/arena-phase234-qa5-20260920/QA-MANIFEST.json",
+    "tmp/arena-phase234-repair5-close-proof.json"
+  ]
+}

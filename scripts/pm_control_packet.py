@@ -47,6 +47,31 @@ ALERT_QUOTE_PROOF = TMP / "intraday-alerts" / "quote-snapshot-proof.json"
 ALERT_FRESHNESS_CONTROLLER = TMP / "alert-level-freshness-controller.json"
 ALERT_RECOMMENDATIONS_DIGEST = TMP / "finance-alert-os-digest.json"
 ALERTS_OS_PIVOT_VALIDATOR = TMP / "alerts-os-pivot-validator.json"
+# Age thresholds for the alerts-OS proof artifacts (hours). A structurally
+# valid but stale proof must block, not pass: a dead producer that leaves
+# yesterday's artifact behind is not current evidence.
+ALERTS_OS_PROOF_MAX_AGE_HOURS: dict[str, float] = {
+    "sql_guard": 36.0,
+    "quote_snapshot": 30.0,
+    "freshness_controller": 30.0,
+    "pivot_validator": 30.0,
+}
+# Intraday-chain proofs pause on weekends, market holidays, and before the
+# weekday market refresh; their age thresholds are suppressed in those windows
+# so the guard does not demand proofs the schedule would not have produced.
+ALERTS_OS_PROOF_MARKET_GRACE_NAMES = {"sql_guard", "quote_snapshot", "freshness_controller"}
+# Scheduled digest modes (Phoenix wall time) from the finance digest cron
+# contracts. Each due mode must produce its own per-mode proof because the
+# global digest file is last-writer-wins and can mask a failed mode.
+DIGEST_MODE_SCHEDULES: dict[str, tuple[str, time]] = {
+    "morning": ("weekday", time(6, 5)),
+    "recommendations": ("weekday", time(6, 50)),
+    "midday": ("weekday", time(11, 5)),
+    "post-close": ("weekday", time(13, 20)),
+    "weekly": ("sunday", time(8, 0)),
+}
+DIGEST_MODE_GRACE_HOURS = 1.0
+ALERTS_OS_DIGEST_ACCEPTABLE_STATUSES = {"ok", "weekend_quiet", "duplicate_quiet", "sent"}
 PM_COCKPIT_SOURCE_REGISTRY = ROOT / "state" / "pm-cockpit-source-registry.json"
 GREENKEEPER = TMP / "main-session-greenkeeper-controller.json"
 ESCALATION_CONSUMER = TMP / "main-session-escalation-consumer.json"
@@ -476,8 +501,76 @@ def wf74_learning_kpis() -> dict[str, Any]:
     }
 
 
+def due_digest_mode_slots(now: datetime) -> dict[str, datetime]:
+    """Scheduled digest slots (Phoenix wall time) whose run plus grace passed.
+
+    Weekday modes are checked only on weekdays and the weekly mode only on
+    Sundays, matching the finance digest cron contracts, so the checks never
+    demand proofs the schedule would not have produced.
+    """
+    local = now.astimezone(AZ)
+    due: dict[str, datetime] = {}
+    for mode, (cadence, slot_time) in DIGEST_MODE_SCHEDULES.items():
+        if cadence == "weekday":
+            if local.weekday() >= 5:
+                continue
+        elif cadence == "sunday":
+            if local.weekday() != 6:
+                continue
+        slot = datetime.combine(local.date(), slot_time, tzinfo=AZ)
+        if local >= slot + timedelta(hours=DIGEST_MODE_GRACE_HOURS):
+            due[mode] = slot
+    return due
+
+
+def digest_mode_proof_health(now: datetime) -> tuple[list[dict[str, Any]], list[str]]:
+    """Validate each due digest mode against its own per-mode proof artifact."""
+    findings: list[dict[str, Any]] = []
+    blocked_modes: list[str] = []
+    for mode, slot in due_digest_mode_slots(now).items():
+        path = TMP / f"finance-alert-os-{mode}-digest.json"
+        payload = load_json(path)
+        validation = as_dict(payload.get("validation"))
+        status = payload.get("status")
+        written_after_slot = False
+        if path.exists():
+            try:
+                written_at = datetime.fromtimestamp(path.stat().st_mtime, timezone.utc)
+            except OSError:
+                written_at = None
+            written_after_slot = bool(
+                written_at is not None and written_at >= slot.astimezone(timezone.utc)
+            )
+        proof_ok = (
+            written_after_slot
+            and status in ALERTS_OS_DIGEST_ACCEPTABLE_STATUSES
+            and validation.get("status") in {None, "ok"}
+        )
+        findings.append(
+            {
+                "mode": mode,
+                "path": rel(path),
+                "slot_local": slot.isoformat(),
+                "present": bool(payload),
+                "status": status,
+                "validation_status": validation.get("status"),
+                "written_after_slot": written_after_slot,
+                "proof_ok": proof_ok,
+            }
+        )
+        if not proof_ok:
+            blocked_modes.append(mode)
+    return findings, blocked_modes
+
+
 def alerts_os_health(now: datetime | None = None) -> dict[str, Any]:
-    """Summarize only the active alerts-and-recommendations finance proofs."""
+    """Summarize only the active alerts-and-recommendations finance proofs.
+
+    Proof health is three-layered: structural validity (status plus
+    validation), artifact age against per-source thresholds (with market-window
+    grace for weekday intraday-chain proofs), and per-mode digest proofs so a
+    later digest mode cannot overwrite and hide an earlier mode's failure.
+    """
     now = now or datetime.now(timezone.utc)
     sources = {
         "sql_guard": FINANCE_SQL_GUARD,
@@ -488,12 +581,38 @@ def alerts_os_health(now: datetime | None = None) -> dict[str, Any]:
     }
     proofs: dict[str, dict[str, Any]] = {}
     blocked: list[str] = []
+    # Terminal success states per proof. The recommendations digest producer
+    # (finance_alert_os_digest.py) defines its own acceptable set: ok plus
+    # weekend_quiet / duplicate_quiet / sent, all with validation ok. A sent
+    # (delivered, validated) digest is proof, not a failure. send_failed
+    # and blocked stay blocking. All other proofs accept ok only.
+    acceptable_statuses = {
+        "recommendations_digest": {"ok", "weekend_quiet", "duplicate_quiet", "sent"},
+    }
+    market = market_window(now)
     for name, path in sources.items():
         payload = load_json(path)
         validation = as_dict(payload.get("validation"))
         status = payload.get("status")
         validation_status = validation.get("status")
-        proof_ok = bool(payload) and status == "ok" and validation_status in {None, "ok"}
+        allowed = acceptable_statuses.get(name, {"ok"})
+        age_hours = hours_since_mtime(path, now) if path.exists() else None
+        max_age_hours = ALERTS_OS_PROOF_MAX_AGE_HOURS.get(name)
+        grace_suppressed = bool(
+            name in ALERTS_OS_PROOF_MARKET_GRACE_NAMES and market["closed_market_grace_active"]
+        )
+        age_stale = bool(
+            max_age_hours is not None
+            and age_hours is not None
+            and age_hours > max_age_hours
+            and not grace_suppressed
+        )
+        proof_ok = (
+            bool(payload)
+            and status in allowed
+            and validation_status in {None, "ok"}
+            and not age_stale
+        )
         if not proof_ok:
             blocked.append(name)
         summary = as_dict(payload.get("summary"))
@@ -503,15 +622,27 @@ def alerts_os_health(now: datetime | None = None) -> dict[str, Any]:
             "status": status,
             "validation_status": validation_status,
             "generated_at_utc": payload.get("generated_at_utc"),
-            "age_hours": hours_since_mtime(path, now) if path.exists() else None,
+            "age_hours": age_hours,
+            "max_age_hours": max_age_hours,
+            "age_stale": age_stale,
+            "age_grace_suppressed": grace_suppressed,
             "ticker_count": summary.get("ticker_count"),
             "alert_state_counts": summary.get("alert_state_counts"),
         }
+    # The global digest proof is last-writer-wins: a later mode (for example
+    # a successful midday send) can overwrite the file and hide an earlier
+    # mode's failed delivery (for example the 2026-09-14 morning Telegram
+    # digest). Each scheduled mode must therefore show its own per-mode proof,
+    # written after its slot, with an acceptable status.
+    digest_modes, blocked_digest_modes = digest_mode_proof_health(now)
+    blocked.extend(f"digest_mode_{mode}" for mode in blocked_digest_modes)
     controller_summary = as_dict(load_json(ALERT_FRESHNESS_CONTROLLER).get("summary"))
     digest_summary = as_dict(load_json(ALERT_RECOMMENDATIONS_DIGEST).get("summary"))
     return {
         "status": "ok" if not blocked else "blocked",
         "blocked_proofs": blocked,
+        "blocked_digest_modes": blocked_digest_modes,
+        "digest_modes": digest_modes,
         "proofs": proofs,
         "ticker_count": digest_summary.get("ticker_count") or controller_summary.get("ticker_count"),
         "alert_state_counts": digest_summary.get("alert_state_counts") or controller_summary.get("alert_state_counts"),

@@ -1,0 +1,16 @@
+{
+ "schema": "veritas.arena_dispatch_authorization.v1",
+ "envelope": "arena-agentic-v1-20260920",
+ "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+ "dispatch_ready": true,
+ "authorized_by": "gateway-owner",
+ "authorized_at": "2026-09-20T20:58:00-07:00",
+ "note": "Run-scoped release for DeepSeek full-chain Surface C only. Owner authorized via explicit WebChat request 2026-09-20 20:58 MST. Canonical overlay/dispatch-authorization.json left INERT.",
+ "scope": {
+  "cases": 12,
+  "models": [
+   "ollama-cloud/deepseek-v4.1-flash:cloud"
+  ],
+  "reps": 1
+ }
+}

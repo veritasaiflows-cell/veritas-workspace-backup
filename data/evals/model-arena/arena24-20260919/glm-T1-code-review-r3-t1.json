@@ -1,0 +1,11 @@
+﻿{
+    "case":  "T1-code-review",
+    "model_id":  "glm",
+    "requested_model":  "ollama-cloud/glm-5.3-flash:cloud",
+    "repetition":  3,
+    "turn":  1,
+    "session_key":  "agent:qa-redteam:a24-glm-T1-code-review-r3-20260919",
+    "cli_exit":  0,
+    "status":  "unparseable_gateway_result",
+    "visible_text":  null
+}

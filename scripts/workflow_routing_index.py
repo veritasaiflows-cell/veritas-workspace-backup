@@ -1,4 +1,4 @@
-"""Workflow routing index (derived, review-only route map).
+﻿"""Workflow routing index (derived, review-only route map).
 
 Mirrors the P0/P1/P2 active/monitor rows and P3 paused rows in
 `06. Playbooks/Active Workflows.md` into a single derived route object so a new
@@ -89,8 +89,8 @@ REQUIRED_FIELDS = (
     "authoritative_next_action",
 )
 
-EXPECTED_ROUTE_COUNT = 43
-EXPECTED_TIER_COUNTS = {"P0": 2, "P1": 11, "P2": 8, "P3": 15, "P4": 7}
+EXPECTED_ROUTE_COUNT = 44
+EXPECTED_TIER_COUNTS = {"P0": 2, "P1": 12, "P2": 8, "P3": 15, "P4": 7}
 FRESHNESS_SCORES = {"fresh", "aging", "stale", "missing", "n/a"}
 HANDOFF_MODES = {"Spawn read-only", "Main-session only"}
 LIFECYCLES = {"active", "paused", "monitor", "gated"}
@@ -117,6 +117,370 @@ ALERT_OS_RETIRED_WORKFLOWS = {
 }
 ALERT_OS_DENY_ONLY_WORKFLOWS = {"WF63", "WF67"}
 FRESHNESS_SLA_HOURS = 72.0
+
+# LOOP-REPAIR-20260912: computed live-proof blockers for WF74/WF88.
+# WF74's retired autonomy-spine rollup primary and WF88's 14 literal historical
+# blockers hid stale/missing/failed proof behind static text. The constants below
+# name the current owner proof; compute_wf74/wf88_blockers() derives actionable
+# blockers from missing/stale artifacts, producer validation/status, and
+# proof-summary counts at build time. Scope disclaimers and history stay in
+# stop_lines/authority_boundary/current_state -- blockers[] carries only what
+# must clear before green. Canonical holds, approval gates, and stop lines are
+# untouched by this projection.
+WF74_PRIMARY_PROOF = "tmp/wf74-improvement-opportunity-queue.json"
+WF74_LIVE_PROOFS = (
+    "tmp/wf74-improvement-opportunity-queue.json",
+    "tmp/wf74-decision-docket.json",
+    "tmp/wf74-autonomy-work-router.json",
+    "tmp/improvement-ledger-current.json",
+)
+WF74_OTEL_PROOFS = (
+    "tmp/otel-ops-control.json",
+    "tmp/otel-ops-window-summary.json",
+)
+WF88_PRIMARY_PROOF = "tmp/wf88-os2-control-packet.json"
+WF88_LIVE_PROOFS = (
+    "tmp/wf88-os2-control-packet.json",
+    "tmp/improvement-ledger-current.json",
+    "tmp/retrieval-live-eval.json",
+)
+LOOP_PROOF_SLA_HOURS = 72.0
+LOOP_PROOF_FUTURE_SKEW_SECONDS = 3600.0
+# F-A1 allowlist: explicit legitimate vocabularies from the frozen producer
+# descriptors (finding.json current_producer_descriptors). Producer statuses
+# {ok, control_packet_ready_no_apply_authority, draft_review_required, warning} and
+# validation statuses {ok, warning} green the route; every other value --
+# missing/None/non-string/empty/unknown, including hyphenated fail spellings
+# such as fail-closed -- fails closed. Review-only producer statuses stay green.
+_LOOP_PRODUCER_OK_STATUSES = frozenset({
+    "ok",
+    "control_packet_ready_no_apply_authority",
+    "draft_review_required",
+    "warning",
+})
+_LOOP_VALIDATION_OK_STATUSES = frozenset({
+    "ok",
+    "warning",
+})
+
+
+def _loop_generated_at(payload: dict[str, Any]) -> datetime | None:
+    """Finite declared proof timestamp. Filesystem mtime is never proof freshness."""
+    raw = payload.get("generated_at_utc")
+    if not isinstance(raw, str) or not raw.strip():
+        return None
+    try:
+        moment = datetime.fromisoformat(raw.strip().replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if moment.tzinfo is None:
+        moment = moment.replace(tzinfo=timezone.utc)
+    try:
+        stamp = moment.timestamp()
+    except (OverflowError, OSError, ValueError):
+        return None
+    if stamp != stamp or stamp in (float("inf"), float("-inf")):
+        return None
+    return moment
+
+
+def _loop_as_int(value: Any) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _loop_load_json(rel: str | None) -> dict[str, Any] | None:
+    if not rel:
+        return None
+    try:
+        with (ROOT / rel).open(encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except (OSError, ValueError):
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def _loop_status_failed(status: Any) -> bool:
+    """Fail-closed producer-status check (F-A1 allowlist)."""
+    if not isinstance(status, str):
+        return True
+    return status.strip().casefold() not in _LOOP_PRODUCER_OK_STATUSES
+
+
+def _loop_validation_failed(status: Any) -> bool:
+    """Fail-closed validation-status check (F-A1 allowlist)."""
+    if not isinstance(status, str):
+        return True
+    return status.strip().casefold() not in _LOOP_VALIDATION_OK_STATUSES
+
+
+def _loop_proof_blockers(rel: str, label: str) -> list[str]:
+    """Missing/stale/invalid/failed live proof blocks operational green.
+
+    Freshness comes from the producer-declared generated_at_utc against the
+    declared SLA, never filesystem mtime: touching or copying a file must not
+    green stale evidence. Missing/unusable/future generated_at_utc and a missing
+    validation section fail closed.
+    """
+    if not exists_on_disk(rel):
+        return [f"{label}: live proof missing ({rel}); refresh the owner producer before claiming green"]
+    payload = _loop_load_json(rel)
+    if payload is None:
+        return [f"{label}: live proof unreadable ({rel}); repair or refresh the producer"]
+    found: list[str] = []
+    moment = _loop_generated_at(payload)
+    if moment is None:
+        found.append(
+            f"{label}: live proof has no usable generated_at_utc ({rel}); "
+            "refresh the owner producer before claiming green"
+        )
+    else:
+        skew = (moment - datetime.now(timezone.utc)).total_seconds()
+        if skew > LOOP_PROOF_FUTURE_SKEW_SECONDS:
+            found.append(
+                f"{label}: live proof generated_at_utc is in the future ({rel}); "
+                "fail closed until the producer timestamp is trustworthy"
+            )
+        else:
+            age_hours = round(-skew / 3600.0, 1)
+            if age_hours > LOOP_PROOF_SLA_HOURS:
+                found.append(
+                    f"{label}: live proof stale by producer clock "
+                    f"({age_hours}h > {LOOP_PROOF_SLA_HOURS}h: {rel}); refresh before claiming green"
+                )
+    if _loop_status_failed(payload.get("status")):
+        found.append(f"{label}: producer status reports failure ({rel} status={payload.get('status')!r})")
+    validation = payload.get("validation")
+    if not isinstance(validation, dict):
+        found.append(
+            f"{label}: live proof has no validation section ({rel}); "
+            "fail closed until the producer reports validation"
+        )
+    else:
+        if _loop_validation_failed(validation.get("status")):
+            found.append(
+                f"{label}: producer validation reports failure ({rel} validation={validation.get('status')!r})"
+            )
+        errors = validation.get("errors")
+        if isinstance(errors, list):
+            for error in errors[:5]:
+                found.append(f"{label}: producer validation error ({rel}): {error}")
+    found.extend(_loop_declared_blockers(payload, label, rel))
+    return found
+
+
+def _loop_declared_blockers(payload: dict[str, Any], label: str, rel: str) -> list[str]:
+    """Propagate proof-declared summary.blockers entries verbatim (capped)."""
+    summary = payload.get("summary")
+    if not isinstance(summary, dict):
+        return []
+    declared = summary.get("blockers")
+    if not isinstance(declared, list):
+        return []
+    return [f"{label} proof declares blocker ({rel}): {entry}" for entry in declared[:5]]
+
+
+def _wf74_operational_blockers() -> list[str]:
+    """WF74 defects that break review operation: regressed/fix-now/blocked plans,
+    overdue actionable debt, and required follow-ups. Queue depth and claim
+    limits live in _wf74_claim_limits and never block operational health."""
+    found: list[str] = []
+    queue = _loop_load_json(WF74_PRIMARY_PROOF) or {}
+    queue_summary = queue.get("summary")
+    if isinstance(queue_summary, dict):
+        regressed = _loop_as_int(queue_summary.get("regressed_after_completion_count"))
+        if regressed > 0:
+            found.append(
+                f"WF74 queue: {regressed} regressed-after-completion opportunities open; "
+                "repair regressed signals before claiming green"
+            )
+    docket = _loop_load_json("tmp/wf74-decision-docket.json") or {}
+    docket_summary = docket.get("summary")
+    if isinstance(docket_summary, dict):
+        fix_now = _loop_as_int(docket_summary.get("fix_now_count"))
+        if fix_now > 0:
+            found.append(
+                f"WF74 docket: {fix_now} fix-now actions open; repair the failing proof surface first"
+            )
+    router = _loop_load_json("tmp/wf74-autonomy-work-router.json") or {}
+    router_summary = router.get("summary")
+    if isinstance(router_summary, dict):
+        cron_blocked = _loop_as_int(router_summary.get("cron_blocked_count"))
+        if cron_blocked > 0:
+            found.append(
+                "WF74 router: cron repair plan blocked; inspect the blocked cron artifacts first"
+            )
+        overdue = _loop_as_int(router_summary.get("high_priority_overdue_count"))
+        if overdue > 0:
+            found.append(
+                f"WF74 router: {overdue} high-priority overdue improvements; clear overdue debt first"
+            )
+    ledger = _loop_load_json("tmp/improvement-ledger-current.json") or {}
+    ledger_summary = ledger.get("summary")
+    if isinstance(ledger_summary, dict):
+        overdue_open = _loop_as_int(ledger_summary.get("overdue_open_count"))
+        if overdue_open > 0:
+            found.append(
+                f"WF74 ledger: {overdue_open} overdue open improvements; clear overdue debt first"
+            )
+        followup = _loop_as_int(ledger_summary.get("followup_required_open_count"))
+        if followup > 0:
+            found.append(
+                f"WF74 ledger: {followup} open improvements require follow-up; close the loop first"
+            )
+    return found
+
+
+def _wf74_claim_limits() -> list[str]:
+    """WF74 claim/promotion limits: queue depth and routing posture, not broken operation."""
+    queue = _loop_load_json(WF74_PRIMARY_PROOF) or {}
+    queue_summary = queue.get("summary")
+    if not isinstance(queue_summary, dict):
+        return []
+    high = _loop_as_int(queue_summary.get("high_priority_count"))
+    if high > 0:
+        return [
+            f"WF74 queue: {high} high-priority opportunities queued for proposal routing "
+            "(claim/queue depth and routing posture, not broken operation)"
+        ]
+    return []
+
+
+def _wf88_operational_blockers() -> list[str]:
+    found: list[str] = []
+    packet = _loop_load_json(WF88_PRIMARY_PROOF) or {}
+    summary = packet.get("summary")
+    if not isinstance(summary, dict):
+        return ["WF88 control: control-packet summary unreadable; refresh the OS 2.0 control packet"]
+    stale_inputs = summary.get("stale_inputs") or []
+    stale_count = _loop_as_int(summary.get("stale_input_count"))
+    if stale_count > 0 or stale_inputs:
+        names = ", ".join(str(name) for name in list(stale_inputs)[:7]) or "see summary.stale_inputs"
+        count = stale_count if stale_count > 0 else len(stale_inputs)
+        found.append(
+            f"WF88 control: {count} stale inputs ({names}); refresh stale proof before claiming green"
+        )
+    blocked_followup = _loop_as_int(summary.get("blocked_or_followup_action_count"))
+    if blocked_followup > 0:
+        found.append(
+            f"WF88 control: {blocked_followup} blocked/follow-up canonical actions open; clear them first"
+        )
+    if str(summary.get("route_contraction_validation_status") or "") == "blocked":
+        found.append("WF88 control: route-contraction validation blocked; narrow the open routes first")
+    return found
+
+
+def _wf88_claim_limits() -> list[str]:
+    """WF88 claim/promotion limits: what the evidence does not license.
+
+    These constrain performance, comparison, promotion, and improvement claims.
+    They never block review operation; overdue/follow-up/un-routed/no-proof
+    defects live in _wf88_operational_blockers.
+    """
+    found: list[str] = []
+    packet = _loop_load_json(WF88_PRIMARY_PROOF) or {}
+    summary = packet.get("summary")
+    if not isinstance(summary, dict):
+        return ["WF88 control: control-packet summary unreadable; refresh the OS 2.0 control packet"]
+    if summary.get("model_performance_claim_allowed_now") is False:
+        found.append(
+            "WF88 control: model-performance claim not allowed on current graded evidence; "
+            "do not promote providers or models"
+        )
+    if _loop_as_int(summary.get("wiki_frontier_result_row_count")) == 0:
+        found.append(
+            "WF88 control: frontier spine has 0 result rows; model comparison and route promotion remain blocked"
+        )
+    if _loop_as_int(summary.get("wiki_advanced_pilot_executed_count")) == 0:
+        found.append(
+            "WF88 control: 0 advanced-pilot calls executed; promotions remain blocked"
+        )
+    if summary.get("wiki_rsi_outcome_mature") is False:
+        found.append(
+            "WF88 control: RSI outcome evidence not mature; no recursive-improvement claim"
+        )
+    open_improvements = _loop_as_int(summary.get("improvement_open_count"))
+    if open_improvements > 0:
+        found.append(
+            f"WF88 control: {open_improvements} open improvements queued "
+            "(monitor-only standing included; operational blockers track overdue/follow-up only)"
+        )
+    retrieval = _loop_load_json("tmp/retrieval-live-eval.json") or {}
+    human_review = retrieval.get("human_review")
+    human_complete = (
+        isinstance(human_review, dict)
+        and human_review.get("sole_relevance_review_complete") is True
+    )
+    validation = retrieval.get("validation")
+    warnings = (
+        list(validation.get("warnings", []))
+        if isinstance(validation, dict) and isinstance(validation.get("warnings"), list)
+        else []
+    )
+    no_discrimination = "semantic_hash_paraphrase_discrimination_not_observed" in warnings
+    if str(retrieval.get("status") or "") != "ok" or not human_complete or no_discrimination:
+        found.append(
+            "WF88 control: live retrieval discrimination not proven -- semantic lift unobserved "
+            "and human gold review incomplete (tmp/retrieval-live-eval.json); "
+            "provider promotion blocked (claim limit, not broken operation)"
+        )
+    return found
+
+
+def compute_wf74_blockers() -> list[str]:
+    """Actionable WF74 operational blockers derived from current owner proof."""
+    found: list[str] = []
+    for rel in WF74_LIVE_PROOFS:
+        found.extend(_loop_proof_blockers(rel, "WF74"))
+    for rel in WF74_OTEL_PROOFS:
+        found.extend(_loop_proof_blockers(rel, "WF74 OTEL"))
+    found.extend(_wf74_operational_blockers())
+    return list(dict.fromkeys(found))
+
+
+def compute_wf74_claim_limits() -> list[str]:
+    """WF74 claim/promotion limits. Never operational blockers."""
+    return list(dict.fromkeys(_wf74_claim_limits()))
+
+
+def compute_wf88_blockers() -> list[str]:
+    """Actionable WF88 operational blockers from live proof, control summaries, and WF74 upstream state."""
+    found: list[str] = []
+    for rel in WF88_LIVE_PROOFS:
+        found.extend(_loop_proof_blockers(rel, "WF88"))
+    found.extend(_wf88_operational_blockers())
+    upstream = compute_wf74_blockers()
+    if upstream:
+        found.append(
+            f"WF88 upstream: WF74 live proof blocked ({len(upstream)} actionable); clear WF74 blockers first"
+        )
+    return list(dict.fromkeys(found))
+
+
+def compute_wf88_claim_limits() -> list[str]:
+    """WF88 claim/promotion limits. Never operational blockers."""
+    return list(dict.fromkeys(_wf88_claim_limits()))
+
+
+def _apply_computed_loop_blockers(routes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Overwrite WF74/WF88 static blockers with computed live-proof blockers.
+
+    Canonical holds, approval/authority gates, stop lines, tiers, and resume
+    commands are preserved; only the actionable blockers list is derived, plus
+    a parallel claim_limits list that constrains claims without blocking operation.
+    """
+    by_id = {route.get("workflow_id"): route for route in routes}
+    wf74 = by_id.get("WF74")
+    if wf74 is not None:
+        wf74["blockers"] = compute_wf74_blockers()
+        wf74["claim_limits"] = compute_wf74_claim_limits()
+    wf88 = by_id.get("WF88")
+    if wf88 is not None:
+        wf88["blockers"] = compute_wf88_blockers()
+        wf88["claim_limits"] = compute_wf88_claim_limits()
+    return routes
 
 # These are interface consumers, not owners.  The main session remains the
 # sole operational owner until an exact lane lease delegates a bounded write.
@@ -261,7 +625,7 @@ _REVIEW_STOP = (
 
 
 def build_routes() -> list[dict[str, Any]]:
-    return [
+    routes = [
         # ---- P0 ----
         route(
             "WF75",
@@ -1298,6 +1662,7 @@ def build_routes() -> list[dict[str, Any]]:
                 "tmp/wf74-autonomy-work-router.json",
                 "tmp/pm-control-packet.json",
                 "tmp/cron-control-packet.json",
+                "tmp/wf88-route-contraction-packet.json",
                 "tmp/coding-outcome-ledger-current.json",
                 "data/state-history/coding-outcome-ledger.jsonl",
                 "tmp/tmp-lifecycle-guard.json",
@@ -1392,6 +1757,7 @@ def build_routes() -> list[dict[str, Any]]:
                 "python scripts\\skill_workshop_body_guard.py --write --validate",
                 "python scripts\\test_skill_workshop_body_guard.py",
                 "python scripts\\wf88_os2_control_packet.py --write --write-md --validate",
+                "python scripts\\wf88_route_contraction_packet.py --write --write-md --validate",
                 "python -m pytest scripts\\test_wf88_cleanup_common.py scripts\\test_db_lifecycle_manifest.py scripts\\test_wf88_typed_script_reference_graph.py scripts\\test_wf88_cron_retired_job_inventory.py scripts\\test_wf88_cron_disabled_job_reference_review.py scripts\\test_wf88_delete_readiness_packet.py scripts\\test_wf88_deletion_approval_prep_packet.py",
                 "python scripts\\test_wf87_paper_autonomy_runtime_governor.py",
                 "python scripts\\test_wf88_route_contraction_packet.py",
@@ -1422,22 +1788,7 @@ def build_routes() -> list[dict[str, Any]]:
                 "python scripts\\coding_outcome_ledger.py --write --validate",
                 "python scripts\\workflow_router.py WF88 --answer all --write-capsules --validate",
             ],
-            [
-                "Formal Call Log intake is not current for recent finance stances",
-                "Recommendation outcome grading has started, but the graded row count is still an early sample and not a model-performance claim",
-                "WF87 runtime governor is fail-closed and owner-gated; it is not a performance or autonomy claim",
-                "WF67 paper manager remains the execution guardrail and currently surfaces blocked/ready card state only; WF88 may route that state but cannot execute or approve",
-                "Improvement-ledger overdue follow-up debt remains open",
-                "WF88 retrieval proof is split honestly: the 42-case/10-class compatibility corpus measures source-selection contracts, while the 19-case isolated live pilot currently shows zero semantic lift on six paraphrases and exact aggregate parity between semantic+FTS and FTS-only; gold review and separate abstention calibration remain open, so provider promotion is blocked",
-                "The matched frontier spine has 100 frozen source-identical cases and blind scorer aliases, but 0 result rows and 0 trusted execution/output/grader attestations; local labels and unkeyed hashes are integrity-only, so model comparison and route promotion remain blocked until independently attested results and confidence gates pass",
-                "The RSI outcome scorecard is review-only and not mature: current live rows lack enough stable, uniquely correlated later-outcome evidence for a recursive-improvement claim",
-                "Six advanced-capability pilots have official API request templates and isolated runner requirements, including an explicit-cache breakpoint/key/minimum-prefix/two-request usage-measurement contract, but 0 pilot calls have run and 0 promotions are allowed",
-                "Token efficiency scorecard is active and metadata-only; it currently surfaces API-call reduction and prompt-compression candidates but does not authorize cron/model/runtime changes",
-                "Implementation token closeout bridge is active: future lanes can stamp run id/token metadata through concurrent_lane_manager, but historical/current lanes without exposed token counts remain gaps; do not claim cost per implementation lane until gaps are reduced or provider-missing classifications are explicit",
-                "Skill Workshop body-replacement prevention is routed through the existing skill_workshop_body_guard.py surface; do not create duplicate guards for that failure mode",
-                "Database-facing script duplication audit is now partially consolidated; DB sidecar orphan proof and cron retired-job rollback export are review-only",
-                "Deletion approval prep packet is current: the approved disabled-cron delete microbatch has already been applied (6 rows) and approved tmp cleanup already applied 2 files; new destructive approval packets are now 0-ready; script deletion and DB archive/delete remain 0-ready; script refs are explicitly retained migration/route-contract surfaces with 0 exact active blockers and 0 basename-only active reviews; 34 disabled cron rows still have active code/control refs and 11 review refs",
-            ],
+            [],  # LOOP-REPAIR-20260912: actionable blockers are computed at build time
             [
                 "Review-only learning/productization, wiki synthesis, and cleanup planning. No base-model self-modification, raw prompt/tool capture, model-training claim, delete/move/archive, capital deployment, paper/live/brokerage/account action, portfolio/canon/cash/sizing/risk mutation, cron schedule/config/runtime mutation, customer/external output, or owner approval inference.",
             ],
@@ -1471,6 +1822,7 @@ def build_routes() -> list[dict[str, Any]]:
                 "python scripts\\chief_intelligence_promotion_gate.py --write --validate",
                 "python scripts\\wf67_autonomous_paper_manager.py --write --validate",
                 "python scripts\\wf88_os2_control_packet.py --write --write-md --validate",
+                "python scripts\\wf88_route_contraction_packet.py --write --write-md --validate",
             ],
             [
                 "Execution requires fresh kill switch + guards + redacted audit + notification + exact approval",
@@ -1547,16 +1899,21 @@ def build_routes() -> list[dict[str, Any]]:
             "complete; validation harness and boundary lint exist; consumes WF55/"
             "WF87 measurement telemetry, OTEL friction, and WF88 action rows for "
             "proposal-only improvements.",
-            "Use WF74 to convert repeated failures and measured lessons into "
+            "Use the WF74 improvement-opportunity queue, decision docket, work router, "
+            "improvement ledger, and OTEL control/window summary as the live owner proof; "
+            "convert repeated failures and measured lessons into "
             "WF88-visible proposal, PM, Skill Workshop, validator, owner-packet, "
             "or monitor-only rows; use the draft live retrieval evaluator for "
             "discriminating provider evidence, not the compatibility scorecard, and do not expand authority.",
             f"{CONTINUITY}/Workflow 74 - Veritas Recursive Self-Improvement Loop.md",
-            "tmp/autonomy-spine-readiness-rollup.json",
+            "tmp/wf74-improvement-opportunity-queue.json",
             [
-                "tmp/wf55-autonomy-outcome-ledger.json",
-                "tmp/wf74-improvement-opportunity-queue.json",
                 "tmp/wf74-decision-docket.json",
+                "tmp/wf74-autonomy-work-router.json",
+                "tmp/improvement-ledger-current.json",
+                "tmp/otel-ops-control.json",
+                "tmp/otel-ops-window-summary.json",
+                "tmp/wf55-autonomy-outcome-ledger.json",
                 "tmp/retrieval-live-eval.json",
                 "data/state-history/retrieval-live-eval.jsonl",
                 "tmp/wf88-os2-control-packet.json",
@@ -1571,7 +1928,7 @@ def build_routes() -> list[dict[str, Any]]:
                 "python scripts\\retrieval_live_eval.py --write --write-md --validate",
                 "python scripts\\test_retrieval_live_eval.py",
                 "python scripts\\wf74_rsi.py --outcome-eval-v2",
-                "python scripts\\autonomy_spine_readiness_rollup.py --write --validate",
+                "python scripts\\otel_ops_control.py --write --write-db --multi-window --validate",
                 "python scripts\\wf74_rsi.py --validate-only",
             ],
             [],
@@ -2118,7 +2475,51 @@ def build_routes() -> list[dict[str, Any]]:
             True,
             None,
         ),
+        route(
+            "WF89",
+            "Isolated Agent Specialization and Fleet Efficiency Contract",
+            "P1",
+            "A1 reader slice accepted 2026-09-10 with explicit limits; broader "
+            "fleet-efficiency work authorized and open. No whole-fleet readiness, "
+            "no successful live credited attribution, no accounting/activation "
+            "completion.",
+            "Minimize handoff/context waste, assess tool-compatible "
+            "specialization, and prepare explicit decisions before config, skills, "
+            "defaults or agent retirement.",
+            f"{CONTINUITY}/Workflow 89 - Isolated Agent Specialization and Fleet Efficiency Contract.md",
+            "tmp/wf89-fleet-20260909/wf89-refresh-20260918.json",
+            [
+                "tmp/wf89-fleet-20260909/current-handoff.json",
+                "tmp/wf89-fleet-20260909/a1-grok-applied-qa-result.json",
+                "tmp/wf89-fleet-20260909/a1-main-acceptance.json",
+            ],
+            [
+                "python scripts\\test_workflow_routing_index.py",
+                "python scripts\\workflow_router.py WF89 --answer all",
+            ],
+            [
+                "No successful live credited attribution (dispatch_binding_missing_or_ambiguous)",
+                "Windows directory-junction proof dated 2026-09-10: four native junction cases deny escape (see tmp/wf89-fleet-20260909/broader/windows-junction-proof.json); positive controls pass; file-symlink coverage remains partial/unavailable, no universal reparse/race/OS claim",
+                "Historical accounting not green (2026-08-24 canary isolated_source_reverification_mismatch); current active admission has zero errors",
+            ],
+            [
+                "Index is a derived route map; Active Workflows and exact continuity notes "
+                "stay authority. No canon/portfolio/ticker-card/SQL-canon mutation, no "
+                "paper/live/brokerage/account action, no cron/config/runtime mutation, no "
+                "owner-approval inference from any route row.",
+                "No capital/config/execution authority; read-only routing/support only; no "
+                "whole-workflow-complete inference from A1 acceptance.",
+            ],
+            "review-only; read-only routing/support, no approval/execution/mutation authority",
+            True,
+            True,
+            "python scripts\\workflow_router.py WF89 --answer all",
+            False,
+            None,
+            ["WF89", "Workflow89", "Isolated Agent Specialization and Fleet Efficiency Contract"],
+        ),
     ]
+    return _apply_computed_loop_blockers(routes)
 
 
 def relpath(path: Path) -> str:
@@ -2474,6 +2875,8 @@ def build_handoff(rt: dict[str, Any]) -> dict[str, Any]:
     shaped to `06. Playbooks/Subagent Spawn Handoff Template.md`."""
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     safe = bool(rt.get("safe_for_helper_lane"))
+    _explicit_monitor_routes = {"WF-CHIEF-GATE", "WF-FINANCE-CHAINS", "WF-BOARD-CANON-GUARDRAILS", "WF-SQL-INDEXES", "WF-WORKSPACE-GOVERNOR"}
+    _source_authority = "scripts/workflow_routing_index.py" if rt.get("workflow_id") in _explicit_monitor_routes else "06. Playbooks/Active Workflows.md"
 
     read_first: list[str] = []
     if rt.get("continuity_note"):
@@ -2488,7 +2891,7 @@ def build_handoff(rt: dict[str, Any]) -> dict[str, Any]:
     packet: dict[str, Any] = {
         "schema_version": "workflow_routing_handoff.v1",
         "generated_at_utc": now,
-        "source_authority": "06. Playbooks/Active Workflows.md",
+        "source_authority": _source_authority,
         "spawn_template": "06. Playbooks/Subagent Spawn Handoff Template.md",
         "workflow_id": rt.get("workflow_id"),
         "display_name": rt.get("display_name"),
@@ -2789,6 +3192,7 @@ def apply_alert_os_pivot_contract(route_row: dict[str, Any]) -> dict[str, Any]:
                 "tmp/wf88-decision-compiler.json",
                 "tmp/rsi-outcome-scorecard.json",
                 "tmp/cron-control-packet.json",
+                "tmp/wf88-route-contraction-packet.json",
             ],
             "validator_commands": [
                 "python scripts\\wf88_wiki_synthesis_packet.py --write --write-md --write-wiki --validate",
@@ -2798,6 +3202,7 @@ def apply_alert_os_pivot_contract(route_row: dict[str, Any]) -> dict[str, Any]:
                 "python scripts\\wf88_decision_compiler.py --write --write-md --validate",
                 "python scripts\\rsi_outcome_scorecard.py --write --write-md --validate",
                 "python scripts\\wf88_os2_control_packet.py --write --write-md --validate",
+                "python scripts\\wf88_route_contraction_packet.py --write --write-md --validate",
                 "python scripts\\workflow_router.py WF88 --answer all --write-capsules --validate",
             ],
             "stop_lines": [
@@ -2880,6 +3285,7 @@ def apply_alert_os_pivot_contract(route_row: dict[str, Any]) -> dict[str, Any]:
                 "tmp/alerts-recommendations-chain-weekly.json",
                 "tmp/cron-freshness-spine.json",
                 "tmp/cron-control-packet.json",
+                "tmp/wf88-route-contraction-packet.json",
             ],
             "validator_commands": [
                 "python scripts\\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate",
@@ -4440,3 +4846,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

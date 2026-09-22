@@ -1,0 +1,99 @@
+{
+  "artifacts": {
+    "authorization.json": {
+      "bytes": 631,
+      "sha256": "a3f92f7a840b8ca4af0d06d152e095b486f5910e742f3ed954c8f9d8a3a9812a"
+    },
+    "dimensional-rescore.json": {
+      "bytes": 13687,
+      "sha256": "19decbe82454dc10e7a9f9b1dc2762ceb4f7662d778d1bb7874951669287cbf2"
+    },
+    "dispatch-plan.json": {
+      "bytes": 5736,
+      "sha256": "e9dc5da57a22f5a0041508b94bde27af2897c1f7cd8fc875fb7f83c298a1f487"
+    },
+    "graded-results.json": {
+      "bytes": 8644,
+      "sha256": "757047a0f649c6c86e9d4994ef5f42f6e1e3472d5c261ead71ad0a1ea1f383e0"
+    },
+    "responses.json": {
+      "bytes": 3033,
+      "sha256": "04ff1e8dd990976cd397154f4c58f437c89709d84df9f788ab0626c6e3b59dcc"
+    },
+    "transport-receipts.json": {
+      "bytes": 10719,
+      "sha256": "e9b336133db15bfb2e1795a10747a36fe3ddd64d28e960f17cb6b0e8f637d4db"
+    }
+  },
+  "authorization": {
+    "authorized_at": "2026-09-20T16:39:00-07:00",
+    "authorized_by": "gateway-owner",
+    "cases": 12,
+    "model_scope": [
+      "meta/muse-spark-1.3-contributor"
+    ],
+    "reps": 1,
+    "source": "explicit WebChat owner request to continue Spark 1.3 overlay-r2 via CLI"
+  },
+  "dispatch_gate_after_run": {
+    "authorized_at": null,
+    "authorized_by": null,
+    "closed_gate_probe_created_output": false,
+    "closed_gate_probe_exit": 1,
+    "dispatch_ready": false,
+    "scope_models": []
+  },
+  "envelope": "arena-agentic-v1-20260920",
+  "execution": {
+    "attempted": 12,
+    "completed": 12,
+    "planned": 12,
+    "retries": 0,
+    "timeout": 0,
+    "timeout_seconds": 600
+  },
+  "grading": {
+    "contaminated": 0,
+    "dimensional_score": 1.0,
+    "family_scores_clean": {
+      "T1": 1.0,
+      "T2": 1.0,
+      "T3": 1.0,
+      "T4": 1.0,
+      "T5": 1.0,
+      "T6": 1.0
+    },
+    "strict_clean": "12/12"
+  },
+  "model": "meta/muse-spark-1.3-contributor",
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "recorded_at_utc": "2026-09-20T23:50:38.086785+00:00",
+  "schema": "veritas.arena_run_receipt.v1",
+  "strict_hits": [
+    "14d6a2f3 T3",
+    "1707973c T2",
+    "23273237 T5",
+    "36072319 T1",
+    "430898a2 T2",
+    "73cd99b6 T4",
+    "75c25de6 T6",
+    "a329ef46 T3",
+    "ad216115 T6",
+    "b5f7b370 T1",
+    "c8dbb0b4 T4",
+    "e82ba401 T5"
+  ],
+  "transport": {
+    "agent_id": "oxalpha-functional-lab",
+    "candidate_mount": [
+      "candidate-visible-bank.json",
+      "fixtures/"
+    ],
+    "cli": "openclaw agent --json --timeout 600 --thinking high --model meta/muse-spark-1.3-contributor",
+    "effective_model_receipts": "12/12 exact",
+    "fallbacks": 0,
+    "hidden_control_files_present": false,
+    "reroutes": 0,
+    "sandbox": "docker session sandbox"
+  }
+}

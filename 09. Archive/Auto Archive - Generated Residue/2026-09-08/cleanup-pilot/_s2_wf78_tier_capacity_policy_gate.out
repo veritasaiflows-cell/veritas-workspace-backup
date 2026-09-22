@@ -1,0 +1,33 @@
+{
+  "db": null,
+  "out": "tmp/wf78-tier-capacity-policy-gate.json",
+  "output_errors": [],
+  "status": "ok",
+  "summary": {
+    "active_ticker_count": 300,
+    "combined_remaining_capacity": 75,
+    "current_capital_ready_count": 0,
+    "macro_thesis_shortlist_count": 15,
+    "monitoring_role_counts": {
+      "decision_queue_or_near_action": 15,
+      "priority_watch": 17,
+      "review_100_thin_monitor": 58,
+      "sector_or_thematic_monitor": 10,
+      "tier_c_review_monitor_breadth_only": 200
+    },
+    "next_safe_action": "Use the 15-name macro shortlist as Tier B research-candidate work queue only; admit names into Tier B only after full research packets pass capacity and evidence gates.",
+    "sql_first_scope_note": "Retired historical production-scope labels are reported from current SQL proof, not source-universe compatibility text.",
+    "status": "ok",
+    "ticker_card_decision_ready_count": 6,
+    "tier_a_admitted_or_deployment_ready_count": 0,
+    "tier_a_b_combined_count": 0,
+    "tier_a_remaining_capacity": 25,
+    "tier_b_admitted_or_research_ready_count": 0,
+    "tier_b_remaining_capacity": 50,
+    "universe_scope_counts": {
+      "active_internal_universe": 42,
+      "review_100_monitor": 258
+    }
+  },
+  "validation_status": "ok"
+}

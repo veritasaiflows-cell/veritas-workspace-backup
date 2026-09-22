@@ -5,8 +5,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -17,9 +19,11 @@ ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 PHOENIX = ZoneInfo("America/Phoenix")
 LEVELS = TMP / "alert-level-freshness-controller.json"
+GUARD = TMP / "alert-reference-baseline-freshness-guard.json"
 DEFAULT_OUT = TMP / "finance-alert-os-digest.json"
 DEFAULT_TARGET = "8650152206"
 DEFAULT_MAX_CONTROLLER_AGE_HOURS = 6.0
+GUARD_MAX_AGE_HOURS = 36.0
 CLOCK_SKEW_TOLERANCE_HOURS = 0.25
 
 AUTHORITY = {
@@ -102,6 +106,33 @@ def controller_semantic_errors(levels: dict[str, Any]) -> list[str]:
     return errors
 
 
+def baseline_guard_line() -> str | None:
+    """Name the baseline canon cause when the freshness guard is not healthy.
+
+    Silent when the guard is ok, fresh, and every check passes; otherwise a
+    single prepended line so the digest distinguishes cause from symptom.
+    """
+    guard = load_json(GUARD)
+    if not guard:
+        return "BASELINE: WARNING - freshness guard proof missing; baseline canon unverified"
+    parts: list[str] = []
+    for check in as_list(guard.get("checks")):
+        entry = as_dict(check)
+        if entry.get("status") not in (None, "ok"):
+            parts.append(f"{entry.get('name', 'check')}: {entry.get('message', 'not ok')}")
+    age_hours = controller_age_hours(guard, datetime.now(timezone.utc))
+    if age_hours is None:
+        parts.append("guard proof has no usable generated_at_utc stamp")
+    elif age_hours > GUARD_MAX_AGE_HOURS:
+        parts.append(f"guard proof stale: {age_hours:.1f}h old exceeds {GUARD_MAX_AGE_HOURS:.1f}h")
+    status = str(guard.get("status") or "").lower()
+    if status == "ok" and not parts:
+        return None
+    label = "CRITICAL" if status == "critical" or as_list(guard.get("critical_checks")) else "WARNING"
+    detail = "; ".join(parts) or str(guard.get("headline") or "see tmp/alert-reference-baseline-freshness-guard.json")
+    return f"BASELINE: {label} - {detail}"
+
+
 def build_message(mode: str, levels: dict[str, Any]) -> str:
     summary = as_dict(levels.get("summary"))
     counts = as_dict(summary.get("alert_state_counts"))
@@ -122,6 +153,9 @@ def build_message(mode: str, levels: dict[str, Any]) -> str:
         f"Controller generated: {levels.get('generated_at_utc') or 'unknown'}",
         BOUNDARY,
     ]
+    guard_line = baseline_guard_line()
+    if guard_line:
+        lines.insert(1, guard_line)
     if monitor_only:
         lines.insert(
             -1,
@@ -134,21 +168,177 @@ def resolve_openclaw() -> str:
     return shutil.which("openclaw") or shutil.which("openclaw.cmd") or "openclaw"
 
 
-def deliver(target: str, message: str, timeout_seconds: int) -> dict[str, Any]:
-    run = subprocess.run(
+def _candidate_entry_points() -> list[Path]:
+    """Bounded existing-install entry checks; no broad scans, no shim evaluation."""
+    candidates: list[Path] = []
+    seen: set[str] = set()
+
+    def add(path: Path | None) -> None:
+        if path is None:
+            return
+        key = str(path).lower()
+        if key not in seen:
+            seen.add(key)
+            candidates.append(path)
+
+    for shim in ("openclaw", "openclaw.cmd", "agent-cli", "agent-cli.cmd"):
+        try:
+            found = shutil.which(shim)
+        except Exception:
+            found = None
+        if found:
+            try:
+                parent = Path(found).resolve().parent
+            except OSError:
+                parent = Path(found).parent
+            add(parent / "node_modules" / "openclaw" / "openclaw.mjs")
+    try:
+        add(Path.home() / "AppData" / "Roaming" / "npm" / "node_modules" / "openclaw" / "openclaw.mjs")
+    except Exception:
+        pass
+    appdata = os.environ.get("APPDATA")
+    if appdata:
+        try:
+            add(Path(appdata) / "npm" / "node_modules" / "openclaw" / "openclaw.mjs")
+        except Exception:
+            pass
+    return candidates[:6]
+
+
+_BATCH_NODE_SUFFIXES = (".cmd", ".bat", ".ps1", ".com")
+
+
+def _is_safe_node(path: str | None) -> bool:
+    """Reject batch-shim Node so multiline argv cannot fall back to .cmd/.bat."""
+    if not path or not isinstance(path, str):
+        return False
+    lowered = path.lower()
+    if lowered.endswith(_BATCH_NODE_SUFFIXES):
+        return False
+    base = lowered.replace("/", "\\").rsplit("\\", 1)[-1]
+    if base in ("node.cmd", "node.bat", "node.ps1", "node.com"):
+        return False
+    return True
+
+
+def _windows_node_entry() -> tuple[str, str] | None:
+    """Resolve (node, entry_mjs) using only existing install layout; None = fail closed."""
+    try:
+        node = shutil.which("node")
+    except Exception:
+        node = None
+    if not _is_safe_node(node):
+        return None
+    for candidate in _candidate_entry_points():
+        try:
+            if candidate.is_file():
+                return (node, str(candidate))
+        except OSError:
+            continue
+    return None
+
+
+def _is_windows() -> bool:
+    return os.name == "nt" or sys.platform.startswith("win")
+
+
+def resolve_launch_argv(target: str, message: str) -> tuple[list[str] | None, str]:
+    """Select a safe argv; Windows avoids .cmd/.bat so multiline argv is preserved.
+
+    Returns (argv_or_None, strategy). None means fail closed; caller must not send.
+    """
+    if _is_windows():
+        resolved = _windows_node_entry()
+        if resolved is None:
+            return (None, "windows-node-entry-missing")
+        node, entry = resolved
+        return (
+            [node, entry, "message", "send", "--channel", "telegram", "--target", target, "--message", message],
+            "windows-node-direct",
+        )
+    return (
         [resolve_openclaw(), "message", "send", "--channel", "telegram", "--target", target, "--message", message],
-        cwd=ROOT,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        capture_output=True,
-        timeout=timeout_seconds,
-        check=False,
+        "direct-posix",
     )
+
+
+def transport_meta(message: str, strategy: str) -> dict[str, Any]:
+    encoded = message.encode("utf-8")
     return {
-        "ok": run.returncode == 0,
-        "returncode": run.returncode,
-        "stderr_tail": run.stderr[-500:],
+        "strategy": strategy,
+        "message_sha256": hashlib.sha256(encoded).hexdigest(),
+        "message_bytes": len(encoded),
+        "message_lines": message.count("\n") + 1 if message else 0,
+    }
+
+
+def deliver(target: str, message: str, timeout_seconds: int) -> dict[str, Any]:
+    """Launch the CLI without shell; transport ok never implies recipient readback."""
+    argv, strategy = resolve_launch_argv(target, message)
+    meta = transport_meta(message, strategy)
+    if argv is None:
+        return {
+            "ok": False,
+            "returncode": None,
+            "stderr_tail": "",
+            "strategy": strategy,
+            "transport": meta,
+            "error": "safe-launch-unresolved",
+        }
+    try:
+        run = subprocess.run(
+            argv,
+            cwd=ROOT,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            capture_output=True,
+            timeout=timeout_seconds,
+            check=False,
+            shell=False,
+        )
+    except subprocess.TimeoutExpired:
+        return {
+            "ok": False,
+            "returncode": None,
+            "stderr_tail": "",
+            "strategy": strategy,
+            "transport": meta,
+            "error": "timeout",
+        }
+    except (FileNotFoundError, OSError) as exc:
+        return {
+            "ok": False,
+            "returncode": None,
+            "stderr_tail": "",
+            "strategy": strategy,
+            "transport": meta,
+            "error": type(exc).__name__,
+        }
+    except Exception as exc:
+        return {
+            "ok": False,
+            "returncode": None,
+            "stderr_tail": "",
+            "strategy": strategy,
+            "transport": meta,
+            "error": type(exc).__name__,
+        }
+    if run.returncode != 0:
+        return {
+            "ok": False,
+            "returncode": run.returncode,
+            "stderr_tail": "",
+            "strategy": strategy,
+            "transport": meta,
+            "error": "nonzero-exit",
+        }
+    return {
+        "ok": True,
+        "returncode": 0,
+        "stderr_tail": "",
+        "strategy": strategy,
+        "transport": meta,
     }
 
 
@@ -184,6 +374,7 @@ def build_payload(
     else:
         errors.extend(controller_semantic_errors(levels))
     controller_sha256 = hashlib.sha256(LEVELS.read_bytes()).hexdigest() if LEVELS.is_file() else None
+    guard = load_json(GUARD)
     message = build_message(mode, levels) if not errors else None
     status = "blocked" if errors else "ok"
     return {
@@ -201,6 +392,12 @@ def build_payload(
                 "generated_at_utc": levels.get("generated_at_utc"),
                 "age_hours": round(age_hours, 3) if age_hours is not None else None,
                 "max_age_hours": max_controller_age_hours,
+            },
+            "baseline_guard": {
+                "path": "tmp/alert-reference-baseline-freshness-guard.json",
+                "status": guard.get("status"),
+                "generated_at_utc": guard.get("generated_at_utc"),
+                "surfaced_in_message": bool(message and message.split("\n")[1].startswith("BASELINE:")) if message else False,
             },
         },
         "summary": as_dict(levels.get("summary")),
@@ -255,10 +452,13 @@ def main() -> int:
         else:
             result = deliver(args.target, message, args.timeout_seconds)
             payload["delivery"] = result
-            payload["status"] = "sent" if result["ok"] else "send_failed"
-            if result["ok"]:
-                sent_keys[digest_key] = {"sent_at_utc": payload["generated_at_utc"], "mode": args.mode}
+            unconfirmed = (not result["ok"]) and result.get("error") == "timeout"
+            payload["status"] = "sent" if result["ok"] else "send_unconfirmed" if unconfirmed else "send_failed"
+            if result["ok"] or unconfirmed:
+                sent_keys[digest_key] = {"sent_at_utc": payload["generated_at_utc"], "mode": args.mode, "confirmed": bool(result["ok"])}
                 write_json(state_path, {"sent_keys": sent_keys})
+            if unconfirmed:
+                payload["validation"]["warnings"].append("delivery_unconfirmed_transport_timeout")
 
     if args.write:
         write_json(output, payload)
@@ -271,7 +471,7 @@ def main() -> int:
                 encoding="utf-8",
             )
 
-    acceptable = {"ok", "weekend_quiet", "duplicate_quiet", "sent"}
+    acceptable = {"ok", "weekend_quiet", "duplicate_quiet", "sent", "send_unconfirmed"}
     print(json.dumps({
         "status": payload["status"],
         "mode": args.mode,

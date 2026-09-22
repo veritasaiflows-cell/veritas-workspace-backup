@@ -29,7 +29,7 @@ DEFAULT_POLICY: dict[str, Any] = {
         "recommended_cron": "52 7,14,20 * * *",
     },
     "default_model": {
-        "model": "openai/gpt-5.6-terra",
+        "model": "ollama-cloud/glm-5.3:cloud",
         "thinking": "medium",
         "role": "isolated scheduled PM implementation proof worker",
     },

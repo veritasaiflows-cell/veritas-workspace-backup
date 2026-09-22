@@ -2,8 +2,8 @@
 # Open Follow Up Debt
 
 Canonical page: `wiki/gaps/Open Follow Up Debt.md`
-Canonical rendered SHA-256: `b44376b7f2377986277459aa699e202f0a41c8069c6cf2c96d2cef250249167a`.
-Source snapshot SHA-256: `f6ee80a8d183635520f429f34c7ca23360ebdb6d238c1622f6dffae691bee7f1`.
+Canonical rendered SHA-256: `9756c829de32e547aa0e51529cf9dee718ad941d6c3372ad5b2394fc46de15f9`.
+Source snapshot SHA-256: `ae6e88eec2e3db981460397adfa78da800871c41fcd74d9852a0247c230c48f3`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -31,11 +31,11 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `tmp/wf88-os2-control-packet.json`
 ## Current debt
 
-- Improvement open count: `11`.
-- Follow-up-required open count: `2`.
+- Improvement open count: `7`.
+- Follow-up-required open count: `0`.
 - High-priority overdue open count: `2`.
-- Pending skill proposal count: `1`.
-- Actionable queue items: `11`.
+- Pending skill proposal count: `0`.
+- Actionable queue items: `7`.
 - Actionable queue orphans: `0`.
 - No-orphan validation: `ok`.
 - Top actionable destination: `wf74_decision_docket`.
@@ -43,6 +43,6 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 
 ## Claim evidence
 
-- `followup-no-orphan-health`: `{"actionable_missing_contract_count":0,"actionable_orphan_count":0,"followup_required_open_count":2,"no_orphan_validation":"ok"}`; authority `review_only`; source refs `improvement_ledger#/summary/followup_required_open_count`, `actionable_improvement_queue#/summary/orphan_count`, `actionable_improvement_queue#/summary/missing_contract_count`, `no_orphan_validator#/validation/status`.
+- `followup-no-orphan-health`: `{"actionable_missing_contract_count":0,"actionable_orphan_count":0,"followup_required_open_count":0,"no_orphan_validation":"ok"}`; authority `review_only`; source refs `improvement_ledger#/summary/followup_required_open_count`, `actionable_improvement_queue#/summary/orphan_count`, `actionable_improvement_queue#/summary/missing_contract_count`, `no_orphan_validator#/validation/status`.
 
 Follow-up debt is real until closed as a verified fix, owner packet, applied skill proposal, pending skill proposal, monitor-only row, or superseded open improvement.

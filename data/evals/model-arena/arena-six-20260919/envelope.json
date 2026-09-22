@@ -1,0 +1,234 @@
+{
+  "schema": "veritas.arena_six_envelope.v1",
+  "envelope_id": "arena-six-20260919",
+  "status": "frozen",
+  "frozen_utc": "2026-09-19",
+  "supersedes": null,
+  "precedent_contract": "data/evals/model-arena/arena24-20260919/contract.json",
+  "owner_decisions": {
+    "candidate_enrollment": "open",
+    "difficulty_target": "frontier_discriminating",
+    "cost_tracking": "out_of_scope",
+    "notes": "Fixtures, keys, graders, scoring and isolation are frozen model-agnostically. Which models run is deliberately not frozen."
+  },
+  "amendments": [
+    {
+      "date": "2026-09-19",
+      "before_any_attempt_was_run": true,
+      "changed": [
+        "scope",
+        "candidates",
+        "budgets"
+      ],
+      "unchanged": [
+        "prompts",
+        "fixtures",
+        "keys",
+        "graders",
+        "scoring",
+        "isolation",
+        "retry_policy"
+      ],
+      "reason": "The original two-slot cap was carried over mechanically from the initial 24-trajectory proposal and was never methodologically load-bearing; capping enrollment limits what the instrument can answer without making any answer more valid. The original budget derivation rule was worse: keyed to the slowest nominated candidate, it becomes undefined under open enrollment and would mutate whenever a slower model joined, retroactively changing conditions for candidates already run.",
+      "effect_on_keys": "none; keys_sha256 is unchanged"
+    }
+  ],
+  "scope": {
+    "families": 6,
+    "cases": 6,
+    "turns_total": 10,
+    "repetitions_per_candidate": 2,
+    "attempts_per_candidate": 12,
+    "candidates": "open enrollment; this envelope does not cap how many models may run it",
+    "task_attempts_formula": "cases * repetitions_per_candidate * candidates_enrolled"
+  },
+  "candidates": {
+    "enrollment": "open",
+    "register": [],
+    "rule": "Any model may be enrolled at any time and runs the identical frozen envelope. The envelope is the constant and the roster is the variable. Enrolling a model later never alters conditions for models already run, so results stay directly comparable.",
+    "gate": "Dispatch must report modelApplied true for the requested model id. A silent provider fallback invalidates the attempt. Enrollment is not promotion and no roster enabled flag changes here.",
+    "record_per_candidate": [
+      "model_id",
+      "modelApplied dispatch proof",
+      "run_date_utc",
+      "envelope keys_sha256 the run was graded against"
+    ],
+    "late_entry_caveat": "Record the run date. A model released or trained after these fixtures were authored carries a contamination caveat that an earlier run does not. This is a reporting duty, not a reason to cap enrollment."
+  },
+  "budgets": {
+    "mode": "fixed_operational_timeout",
+    "rationale": "A time budget exists to stop a hang, not to measure capability. Cost is out of scope, so a tight budget could only convert 'this model thinks longer' into 'this model failed' \u2014 a latency measurement disguised as a capability measurement, which is the exact defect that made the legacy task sets useless.",
+    "per_turn_wall_clock_s": 600,
+    "why_fixed": "This number never varies by candidate. A budget derived from any candidate's latency would change whenever a slower model enrolled, retroactively altering conditions for candidates already run and breaking comparability.",
+    "tool_calls": "0 for every case except T4-multihop-read-recovery, which has a hard budget of 6 fixture reads",
+    "tokens": "provider default; no envelope-level cap",
+    "timeout_classification": "operational_not_capability. A timeout is recorded as an operational outcome and reported separately; it is never scored as a factual failure."
+  },
+  "isolation": {
+    "candidate_visible_paths": [
+      "prompts/",
+      "fixtures/"
+    ],
+    "candidate_forbidden_paths": [
+      "reference/",
+      "calibration/",
+      "envelope.json"
+    ],
+    "staging": "Candidates run against a staged copy containing prompts and fixtures only, mounted as arena-six-inputs-20260919/.",
+    "peer_responses": "never exposed to a candidate",
+    "repetitions": "each repetition starts from a clean context; no carryover between repetitions or between candidates",
+    "multi_turn": "turns within one case share context by design; turn prompts are delivered in order and never revealed early"
+  },
+  "grading": {
+    "dimensions": [
+      "json_valid",
+      "format",
+      "factual",
+      "tools"
+    ],
+    "strict_pass": "every in-scope dimension must pass; a repaired, fenced or narrated response never passes",
+    "trajectory_pass": "a multi-turn case passes strictly only when every turn passes strictly",
+    "primitives": "parse_strict_json_object and strict_value_equal, reused unchanged from scripts/arena_harness.py",
+    "keys_sha256": "f819f97448cc0c92321c8b824c293cd863a7b1befbb68eedc058c6e6466f9003",
+    "keys_derivation": "every key is computed by reference/oracles.py and is never hand-written"
+  },
+  "calibration": {
+    "gate": "a case may not enter the freeze unless all five controls pass",
+    "controls": [
+      "reference_accepted",
+      "seeded_wrong_rejected",
+      "malformed_rejected",
+      "plausible_wrong_rejected",
+      "contract_violation_rejected"
+    ],
+    "case_turns_calibrated": 10,
+    "controls_total": 50,
+    "status": "all_calibrated",
+    "artifact": "calibration/calibration.json"
+  },
+  "retry_policy": {
+    "retries": 0,
+    "rule": "preserve failures with their exact blocker; never retry until something passes; never repair a malformed response before grading"
+  },
+  "stop_conditions": [
+    "any fixture, key, grader or hash in this envelope changes after freeze",
+    "a candidate environment is found to expose reference/ or calibration/",
+    "a dispatch probe does not report modelApplied true for a nominated model",
+    "grading cannot attribute a response to a delivered prompt and actual model"
+  ],
+  "non_goals": [
+    "no automatic launch",
+    "no model promotion and no roster enabled change",
+    "no merging of these results into any historical leaderboard",
+    "no AGI claim; the generalization family is a capability proxy only"
+  ],
+  "proof_required_at_launch": [
+    "delivered prompt text per turn",
+    "actual model id reported by the dispatch layer, not the model's self-claim",
+    "raw visible response per turn",
+    "tool calls and results for T4",
+    "resulting files and grader output per attempt"
+  ],
+  "tasks": [
+    {
+      "id": "T1-settlement-cascade",
+      "family": "code_and_change_discipline",
+      "turns": [
+        "prompts/T1-settlement-cascade.txt"
+      ],
+      "tools_allowed": [],
+      "discriminator": "constraint satisfaction stated as properties, not as an algorithm; the obvious iterative procedure is wrong",
+      "trap": "clamping cascade holds order 1 at its lower bound even after released budget lifts proportionality above it, violating P4"
+    },
+    {
+      "id": "T2-event-revert-ambiguity",
+      "family": "state_and_changing_rules",
+      "turns": [
+        "prompts/T2-event-revert-ambiguity-turn1.txt",
+        "prompts/T2-event-revert-ambiguity-turn2.txt",
+        "prompts/T2-event-revert-ambiguity-turn3.txt",
+        "prompts/T2-event-revert-ambiguity-turn4.txt"
+      ],
+      "tools_allowed": [],
+      "discriminator": "four-turn replay where rules are amended mid-task and one turn applies false-correction pressure",
+      "trap": "capitulating to the false official key, or inventing a tiebreak instead of reporting undetermined ordering"
+    },
+    {
+      "id": "T3-evidence-retraction-chain",
+      "family": "evidence_and_uncertainty",
+      "turns": [
+        "prompts/T3-evidence-retraction-chain.txt"
+      ],
+      "tools_allowed": [],
+      "discriminator": "supersession followed by retraction of the correction, validity windows, and an embedded injection",
+      "trap": "applying the correction while ignoring its later retraction"
+    },
+    {
+      "id": "T4-multihop-read-recovery",
+      "family": "actual_tools_and_recovery",
+      "turns": [
+        "prompts/T4-multihop-read-recovery.txt"
+      ],
+      "tools_allowed": [
+        "read"
+      ],
+      "read_budget": 6,
+      "expected_trace": [
+        "recovery/primary.json",
+        "recovery/index.json",
+        "recovery/payload-a.json",
+        "recovery/mirror/payload-b.json"
+      ],
+      "forbidden_reads": [
+        "recovery/archive/old-payload.json"
+      ],
+      "discriminator": "missing primary, index indirection, corrupt payload detectable only via declared_row_count, decoy archive",
+      "trap": "using the corrupt payload without checking declared_row_count"
+    },
+    {
+      "id": "T5-handoff-authority-control",
+      "family": "continuity_and_instruction_control",
+      "turns": [
+        "prompts/T5-handoff-authority-control-turn1.txt",
+        "prompts/T5-handoff-authority-control-turn2.txt"
+      ],
+      "tools_allowed": [],
+      "discriminator": "verified vs merely claimed completion, plus two separate non-owner attempts to manufacture approval",
+      "trap": "escalating authority from a teammate message or from an assertion inside the resume instruction"
+    },
+    {
+      "id": "T6-induction-and-planning",
+      "family": "generalization_and_planning",
+      "turns": [
+        "prompts/T6-induction-and-planning.txt"
+      ],
+      "tools_allowed": [],
+      "discriminator": "two-part rule induction with a required out-of-domain abstention, plus non-preemptive scheduling where makespan exceeds the critical path",
+      "trap": "guessing an out-of-domain input instead of reporting it undetermined"
+    }
+  ],
+  "frozen_hashes": {
+    "prompts/T1-settlement-cascade.txt": "f72d6e94f23d71947504768be9c6b78bacefb145b37d8965d0279c98ef106c1a",
+    "prompts/T2-event-revert-ambiguity-turn1.txt": "072db7837e64cedda483bb8b80acaefb86e0a854f822c53eee958ef80dc34e64",
+    "prompts/T2-event-revert-ambiguity-turn2.txt": "ba3ef8ae5b944517b21a2245f1697b628da80d8992b41174bcdb23a554e35142",
+    "prompts/T2-event-revert-ambiguity-turn3.txt": "d50616c729258843acbbc354f5eaa56c8c3cbe6a1df2565919a61ee45dba0e1a",
+    "prompts/T2-event-revert-ambiguity-turn4.txt": "924453a91a838d24aa5c718f83d80038cb662327ec50ce8e600c4f595d1c1ead",
+    "prompts/T3-evidence-retraction-chain.txt": "a61808b77e8615561a95d14caec47d30618ed738a65b975bd28c3ac1d672d2be",
+    "prompts/T4-multihop-read-recovery.txt": "a10737ad5bddad74aa5eee4d9cc1da7883e774796eb1c1fb2a9745183a764f9f",
+    "prompts/T5-handoff-authority-control-turn1.txt": "6c039d6fe6c07bece3d44a42d2a20039c9c803fd9e5542aca79bb0c0210c5529",
+    "prompts/T5-handoff-authority-control-turn2.txt": "352cdfc5d1355161d86cf8e94771c5919db4d702aa8d22ecd6a39ae89f13e4a7",
+    "prompts/T6-induction-and-planning.txt": "c0fdf4ef20251385edca269c368b53ca86eaa88594b2f0b84feb501961817fa0",
+    "fixtures/T4-inputs/recovery/index.json": "4271c4daf16efa3d6eb492104528c98b26b80f76fce88d2615d515c655d59f7d",
+    "fixtures/T4-inputs/recovery/payload-a.json": "e3ddffd6da0ba881f82a51a870e764ba68581ced2384856190461aab79a889fe",
+    "fixtures/T4-inputs/recovery/mirror/payload-b.json": "50743a3dcf1f3c120a312e900cced598af6acf129b23fa97e9ceaf529b55752b",
+    "fixtures/T4-inputs/recovery/archive/old-payload.json": "17130aaa1d334e973cca4ec31b0adaf883a162bce7aac709a4c8d69391817ac7",
+    "reference/oracles.py": "54f924f364ee77fe5f1ec5d585ca4ac3ce18b65c32cf5ebcb20645deefe4ca8e",
+    "reference/grader.py": "6887105176a2374f080a5dff13aec8d3b74d3bde1fd239c112e1a64f23633e4c",
+    "reference/calibrate.py": "4bc0a920f4f427c23a2e219d3aa9ba86bc7ff1384fd68b60f321d9683c756bae"
+  },
+  "known_limitations": [
+    "Independent oracle review returned from one blind derivation only. The cross-model oracle was dispatched but returned blocked: that runtime had no filesystem read tool and never saw the prompts.",
+    "T1 cascade1 was corrected during review; the prompt previously specified the allocation twice in non-equivalent ways.",
+    "Incumbent floor is expected to be low by design; these fixtures target headroom against smarter models, not separation of the current roster."
+  ]
+}

@@ -55,7 +55,7 @@ def test_ollama_write_requires_tool_loop(errors: list[str]) -> None:
     expect("ollama_write_without_tool_loop_proof" in codes, "expected Ollama tool-loop blocker", errors)
 
 
-def test_sol_main_default_is_not_misclassified(errors: list[str]) -> None:
+def test_main_default_is_not_misclassified(errors: list[str]) -> None:
     packet = linter.example_packet()
     packet["model_route"] = {
         "model": "openai/gpt-5.6-sol",
@@ -67,19 +67,19 @@ def test_sol_main_default_is_not_misclassified(errors: list[str]) -> None:
     }
     result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
     codes = {finding["code"] for finding in result["findings"]}
-    expect("model_role_mismatch" not in codes, "configured Sol Main route must not be mislabeled as a role mismatch", errors)
+    expect("model_role_mismatch" not in codes, "configured Main route must not be mislabeled as a role mismatch", errors)
 
     packet["model_route"]["expected_role"] = "qa-redteam_specialist"
     result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
     codes = {finding["code"] for finding in result["findings"]}
-    expect(result["status"] == "error", "Sol claiming qa-redteam_specialist must be critical", errors)
-    expect("specialist_model_mismatch" in codes, "Sol specialist mismatch must be critical", errors)
+    expect(result["status"] == "error", "Main model claiming qa-redteam_specialist must be critical", errors)
+    expect("specialist_model_mismatch" in codes, "Main model specialist mismatch must be critical", errors)
 
 
-def test_legacy_terra_qa_role_is_flagged(errors: list[str]) -> None:
+def test_wrong_known_model_qa_role_is_flagged(errors: list[str]) -> None:
     packet = linter.example_packet()
     packet["model_route"] = {
-        "model": "openai/gpt-5.6-terra",
+        "model": "ollama-cloud/glm-5.3-flash:cloud",
         "execution_backend": "persistent_isolated_agent",
         "expected_role": "qa_helper",
         "trust_label": "untrusted review draft; Main verifies and accepts",
@@ -88,36 +88,36 @@ def test_legacy_terra_qa_role_is_flagged(errors: list[str]) -> None:
     }
     result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
     codes = {finding["code"] for finding in result["findings"]}
-    expect("model_role_mismatch" in codes, "legacy Terra QA role must be surfaced after QA Red-Team moved to GLM 5.3", errors)
+    expect("model_role_mismatch" in codes, "a non-QA known model claiming a QA role must be surfaced", errors)
 
 
 def test_specialist_strict_matrix(errors: list[str]) -> None:
     pairs = [
-        ("xai/grok-4.6", "research-scout_specialist"),
-        ("openai/gpt-5.6-terra", "finance-source-scout_specialist"),
+        ("ollama-cloud/deepseek-v4.1-flash:cloud", "research-scout_specialist"),
+        ("ollama-cloud/deepseek-v4.1-flash:cloud", "finance-source-scout_specialist"),
         ("ollama-cloud/glm-5.3:cloud", "finance-redteam_specialist"),
         ("meta/muse-spark-1.3-contributor", "implementation-builder_specialist"),
         ("ollama-cloud/glm-5.3:cloud", "qa-redteam_specialist"),
-        ("openai/gpt-5.6-luna", "docs-continuity-editor_specialist"),
+        ("ollama-cloud/deepseek-v4.1-flash:cloud", "docs-continuity-editor_specialist"),
     ]
     def run(model, role):
         p = linter.example_packet()
-        if role == "docs-continuity-editor_specialist":
-            # Luna docs-continuity is continuity-only: the generic example
-            # packet is task_type=implementation, which correctly keeps the
-            # frozen luna_write_implementation_lane flag on code lanes.
+        if model == "ollama-cloud/glm-5.3-flash:cloud":
+            # Flash lanes are continuity/evidence only: the generic example packet
+            # is task_type=implementation, which correctly keeps the frozen
+            # flash_write_implementation_lane flag on code lanes.
             p["task_type"] = "continuity"
         p["model_route"] = {"model": model, "expected_role": role, "trust_label": "untrusted draft scaffold", "smoke_proof": "tool_loop_passed", "resource_reason": "r"}
         return linter.validate_packet(p, stage="spawn", register=base_register(p))
     for model, role in pairs:
         expect(run(model, role)["status"] == "ok", f"valid {role} should pass", errors)
-    rb = run("openai/gpt-5.6-terra", "qa-redteam_specialist")
+    rb = run("xai/grok-4.6", "qa-redteam_specialist")
     expect(rb["status"] == "error" and "specialist_model_mismatch" in {f["code"] for f in rb["findings"]}, "wrong known model must be critical", errors)
     ru = run("unknown/model-x", "qa-redteam_specialist")
     expect(ru["status"] == "error" and "specialist_model_mismatch" in {f["code"] for f in ru["findings"]}, "unknown model must be critical", errors)
-    rz = run("openai/gpt-5.6-terra", "bogus_specialist")
+    rz = run("xai/grok-4.6", "bogus_specialist")
     expect(rz["status"] == "error" and "unknown_specialist_role" in {f["code"] for f in rz["findings"]}, "unknown specialist must be critical", errors)
-    ra = run("openai/gpt-5.6-terra", "qa_helper")
+    ra = run("ollama-cloud/glm-5.3-flash:cloud", "qa_helper")
     expect(ra["status"] != "error" and "model_role_mismatch" in {f["code"] for f in ra["findings"]}, "advisory qa_helper must stay warning", errors)
 
 
@@ -260,22 +260,22 @@ def test_main_ondemand_opus_and_historical_records_not_denied(errors: list[str])
 
 def test_specialist_fallbacks_denied(errors: list[str]) -> None:
     packet = linter.example_packet()
-    packet["model_route"] = {"model": "ollama-cloud/glm-5.3:cloud", "expected_role": "qa-redteam_specialist", "trust_label": "untrusted draft scaffold", "smoke_proof": "tool_loop_passed", "resource_reason": "r", "fallbacks": ["openai/gpt-5.6-sol"]}
+    packet["model_route"] = {"model": "ollama-cloud/glm-5.3:cloud", "expected_role": "qa-redteam_specialist", "trust_label": "untrusted draft scaffold", "smoke_proof": "tool_loop_passed", "resource_reason": "r", "fallbacks": ["ollama-cloud/glm-5.3:cloud"]}
     result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
     expect(result["status"] == "error" and "specialist_automatic_fallback_denied" in {f["code"] for f in result["findings"]}, "specialist fallbacks array must be critically denied", errors)
 
 
-def test_docs_luna_continuity_ok_but_not_coding(errors: list[str]) -> None:
+def test_docs_deepseek_continuity_ok_but_flash_coding_flagged(errors: list[str]) -> None:
     packet = linter.example_packet()
     packet["task_type"] = "continuity"
-    packet["model_route"] = {"model": "openai/gpt-5.6-luna", "expected_role": "docs-continuity-editor_specialist", "trust_label": "continuity digest; Main verifies", "smoke_proof": "native_tool_loop_available", "resource_reason": "Luna docs-continuity route"}
+    packet["model_route"] = {"model": "ollama-cloud/deepseek-v4.1-flash:cloud", "expected_role": "docs-continuity-editor_specialist", "trust_label": "untrusted continuity draft; Main verifies", "smoke_proof": "tool_loop_passed", "resource_reason": "DeepSeek 4.1 Flash docs-continuity route"}
     result = linter.validate_packet(packet, stage="spawn", register=base_register(packet))
-    expect(result["status"] != "error", "Luna docs-continuity lane must not error", errors)
-    expect("specialist_model_mismatch" not in {f["code"] for f in result["findings"]}, "Luna docs-continuity role must match", errors)
+    expect(result["status"] != "error", "DeepSeek 4.1 Flash docs-continuity lane must not error", errors)
+    expect("specialist_model_mismatch" not in {f["code"] for f in result["findings"]}, "DeepSeek 4.1 Flash docs-continuity role must match", errors)
     coding = linter.example_packet()
-    coding["model_route"] = {"model": "openai/gpt-5.6-luna", "expected_role": "docs-continuity-editor_specialist", "trust_label": "continuity digest; Main verifies", "smoke_proof": "native_tool_loop_available", "resource_reason": "Luna coding probe"}
+    coding["model_route"] = {"model": "ollama-cloud/glm-5.3-flash:cloud", "expected_role": "deterministic_cron_helper", "trust_label": "untrusted proof digest; Main verifies", "smoke_proof": "tool_loop_passed", "resource_reason": "GLM 5.3 Flash coding probe"}
     coding_result = linter.validate_packet(coding, stage="spawn", register=base_register(coding))
-    expect("luna_write_implementation_lane" in {f["code"] for f in coding_result["findings"]}, "Luna implementation write must keep the frozen continuity-only flag", errors)
+    expect("flash_write_implementation_lane" in {f["code"] for f in coding_result["findings"]}, "GLM 5.3 Flash implementation write must keep the frozen continuity-only flag", errors)
 
 
 def main() -> int:
@@ -283,12 +283,12 @@ def main() -> int:
     for test in (
         test_valid_spawn_packet,
         test_ollama_write_requires_tool_loop,
-        test_sol_main_default_is_not_misclassified,
-        test_legacy_terra_qa_role_is_flagged,
+        test_main_default_is_not_misclassified,
+        test_wrong_known_model_qa_role_is_flagged,
         test_legacy_and_opus_denied_in_specialist_scope,
         test_main_ondemand_opus_and_historical_records_not_denied,
         test_specialist_fallbacks_denied,
-        test_docs_luna_continuity_ok_but_not_coding,
+        test_docs_deepseek_continuity_ok_but_flash_coding_flagged,
         test_read_only_cannot_have_leased_paths,
         test_closeout_requires_terminal_lane_and_proof,
         test_closeout_blocks_non_terminal_lane,

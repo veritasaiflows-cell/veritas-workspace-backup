@@ -295,6 +295,56 @@ class AgiOsEvalGatePacketTests(unittest.TestCase):
 
             self.assertIn("model_performance_claim_boundary_gate", payload["validation"]["warnings"])
 
+    def test_attribution_gate_accepts_terminal_unavailable_only_when_zero_action_required(self) -> None:
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            (root / "tmp").mkdir()
+            paths = {name: root / "tmp" / f"{name}.json" for name in module.DEFAULT_INPUTS}
+            for path in paths.values():
+                path.write_text(json.dumps({"status": "ok", "summary": {}}), encoding="utf-8")
+            paths["recommendation_outcomes"].write_text(json.dumps({"summary": {"graded_count": 0}}), encoding="utf-8")
+            paths["finance_decision_performance"].write_text(json.dumps({"summary": {"scoreable_count": 0}}), encoding="utf-8")
+            paths["vector_memory_graph"].write_text(json.dumps({"summary": {"node_count": 3, "edge_count": 2}}), encoding="utf-8")
+            paths["token_efficiency_review"].write_text(json.dumps({"summary": {"promotion_ready_count": 0}}), encoding="utf-8")
+            paths["implementation_token_attribution"].write_text(json.dumps({
+                "status": "ok",
+                "validation": {"status": "ok"},
+                "summary": {
+                    "gap_resolution_status": "terminal_unavailable_only",
+                    "implementation_token_gap_count": 597,
+                    "unclassified_supported_runtime_gap_count": 2,
+                    "action_required_supported_runtime_gap_count": 0,
+                },
+            }), encoding="utf-8")
+            paths["agent_message_ledger"].write_text(json.dumps({
+                "status": "ok",
+                "validation": {"status": "ok"},
+                "summary": {
+                    "event_count": 1,
+                    "verified_helper_event_count": 1,
+                    "telemetry_blocked_event_count": 0,
+                    "unverified_receipt_event_count": 0,
+                },
+            }), encoding="utf-8")
+            paths["wf74_wf88_checkpoint"].write_text(json.dumps({"status": "ok"}), encoding="utf-8")
+            paths["wf84_wf85_checkpoint"].write_text(json.dumps({"status": "ok"}), encoding="utf-8")
+            paths["implementation_checkpoint"].write_text(json.dumps({"status": "ok"}), encoding="utf-8")
+
+            payload = module.build_packet(root, paths)
+            self.assertNotIn("implementation_token_attribution_gate", payload["validation"]["warnings"])
+
+            paths["implementation_token_attribution"].write_text(json.dumps({
+                "status": "ok",
+                "validation": {"status": "ok"},
+                "summary": {
+                    "gap_resolution_status": "stamp_required",
+                    "action_required_supported_runtime_gap_count": 2,
+                },
+            }), encoding="utf-8")
+            payload = module.build_packet(root, paths)
+            self.assertIn("implementation_token_attribution_gate", payload["validation"]["warnings"])
+
     def test_unattested_frontier_and_counter_only_pilots_never_pass_evidence_gates(self) -> None:
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:

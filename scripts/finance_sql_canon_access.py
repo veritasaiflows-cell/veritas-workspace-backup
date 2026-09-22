@@ -32,6 +32,7 @@ DEFAULT_DB = ROOT / "state" / "finance" / "finance-canon.sqlite"
 VALIDATION_OUT = ROOT / "tmp" / "finance-sql-canon-access-validation.json"
 REFERENCE_BASELINE_META_KEY = "alerts_os_reference_baseline_v1"
 CONSUMER_RETIREMENT_META_KEY = "alerts_os_consumer_retirement_manifest_v1"
+CURRENT_LINEAGE_SOURCE_STATUSES = ("ok", "preserved_numeric_snapshot")
 _CAPTURED_SOURCE_READER: ContextVar[Any] = ContextVar("finance_captured_sources", default=None)
 
 
@@ -1012,10 +1013,16 @@ class FinanceSqlCanonAccess:
                 """
                 SELECT source_artifact_path, source_artifact_sha256, COUNT(*) AS row_count
                 FROM source_lineage
+                WHERE source_status IN ('ok', 'preserved_numeric_snapshot')
                 GROUP BY source_artifact_path, source_artifact_sha256
                 ORDER BY source_artifact_path, source_artifact_sha256
                 """
             )) if "source_lineage" in tables else []
+            excluded_retired_history_rows = int(
+                conn.execute(
+                    "SELECT COUNT(*) FROM source_lineage WHERE source_status='retired_history'"
+                ).fetchone()[0]
+            ) if "source_lineage" in tables else 0
             reference_rows = list(conn.execute(
                 """
                 SELECT ticker, reference_price_low, reference_price_high,
@@ -1245,6 +1252,8 @@ class FinanceSqlCanonAccess:
             forbidden_current_counts,
         )
         lineage_name, lineage_ok, lineage_detail = _lineage_artifact_check(lineage_artifacts)
+        lineage_detail["current_source_statuses"] = list(CURRENT_LINEAGE_SOURCE_STATUSES)
+        lineage_detail["excluded_retired_history_rows"] = excluded_retired_history_rows
         add(lineage_name, lineage_ok, lineage_detail)
         baseline_name, baseline_ok, baseline_detail = _baseline_check(
             str(baseline_meta_row[0]) if baseline_meta_row else None,

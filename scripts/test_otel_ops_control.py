@@ -13,6 +13,9 @@ from otel_ops_control import (
     build_window_summary,
     collector_config_posture,
     drift_summary,
+    build_telemetry_context,
+    load_telemetry_summary,
+    _bounded_read_text,
     parse_collector_logs,
     volume_normalization_recommendation,
 )
@@ -160,6 +163,43 @@ def main() -> int:
         expect(source["file_count"] == 2, "collector log glob should include restart log", errors)
         expect(len(parsed) == 2, "collector log parser should merge primary and restart events", errors)
         expect({row["signal"] for row in parsed} == {"metrics", "traces"}, "collector log parser should preserve signal types", errors)
+        import json as _json2
+        from datetime import timezone as _tz3
+        def _w(d):
+            p = tmp_dir / ("t_" + str(abs(hash(_json2.dumps(d, sort_keys=True))) % 999999) + ".json")
+            p.write_text(_json2.dumps(d), encoding="utf-8")
+            return p
+        now = datetime.now(_tz3.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+        good_probe = {"schema": "veritas.otel_runtime_metadata_probe.v1", "generated_at_utc": now, "status": "ok", "validation": {"status": "ok"}, "forbidden_findings": [], "blocked_markers": {}, "summary": {"runtime_metadata_observed": True, "allowed_field_count": 27, "raw_content_marker_count": 0, "secret_or_header_marker_count": 0, "metadata_depth_approved_enabled": True, "file_exporter_observed": True, "debug_log_observed": False, "runtime_metadata_learning_ready": True}}
+        good_depth = {"schema": "veritas.otel_token_cost_metadata_depth_owner_packet.v1", "generated_at_utc": now, "status": "owner_decision_pending", "validation": {"status": "warning"}, "patch_would_change_token_or_cost_coverage": False}
+        r = load_telemetry_summary(_w(good_probe), "veritas.otel_runtime_metadata_probe.v1")
+        expect(r.get("valid") is True and r["scalars"]["allowed_field_count"] == 27, "fresh probe consumed", errors)
+        d = load_telemetry_summary(_w(good_depth), "veritas.otel_token_cost_metadata_depth_owner_packet.v1")
+        expect(d.get("valid") is True and d.get("owner_gated") is True, "owner-gated depth evidence only", errors)
+        expect(load_telemetry_summary(tmp_dir / "nope.json", "veritas.otel_runtime_metadata_probe.v1").get("reason") == "missing", "missing fail-closed", errors)
+        bad = dict(good_probe); bad["summary"] = dict(good_probe["summary"]); bad["summary"]["allowed_field_count"] = "27"
+        expect("whitelist_type_invalid" in str(load_telemetry_summary(_w(bad), "veritas.otel_runtime_metadata_probe.v1").get("reason")), "strict types", errors)
+        hostile = dict(good_probe); hostile["summary"] = dict(good_probe["summary"]); hostile["summary"]["raw_content_marker_count"] = 1
+        expect("raw_or_secret" in str(load_telemetry_summary(_w(hostile), "veritas.otel_runtime_metadata_probe.v1").get("reason")), "raw marker rejected", errors)
+        ff = dict(good_probe); ff["forbidden_findings"] = ["x"]
+        expect("forbidden" in str(load_telemetry_summary(_w(ff), "veritas.otel_runtime_metadata_probe.v1").get("reason")), "forbidden rejected", errors)
+        stale = dict(good_probe); stale["generated_at_utc"] = "2020-01-01T00:00:00Z"
+        expect("stale" in str(load_telemetry_summary(_w(stale), "veritas.otel_runtime_metadata_probe.v1").get("reason")), "stale rejected", errors)
+        fut = dict(good_probe); fut["generated_at_utc"] = "2999-01-01T00:00:00Z"
+        expect("stale" in str(load_telemetry_summary(_w(fut), "veritas.otel_runtime_metadata_probe.v1").get("reason")), "future rejected", errors)
+        over = tmp_dir / "over.json"; over.write_bytes(b"x" * (262144 + 1))
+        expect("oversize" in str(load_telemetry_summary(over, "veritas.otel_runtime_metadata_probe.v1").get("reason")), "oversize rejected", errors)
+        mal = tmp_dir / "mal.json"; mal.write_bytes(b"\xff\xfe{not json")
+        expect("malformed" in str(load_telemetry_summary(mal, "veritas.otel_runtime_metadata_probe.v1").get("reason")), "malformed rejected", errors)
+        ctx = build_telemetry_context(_w(good_probe), _w(good_depth))
+        expect(ctx.get("status") == "ok", "ctx ok", errors)
+        ctx2 = build_telemetry_context(tmp_dir / "nope.json", _w(good_depth))
+        expect(ctx2.get("status") == "warning", "ctx warning when missing", errors)
+        data, flag = _bounded_read_text(_w(good_probe), 262144)
+        expect(flag is None and isinstance(data, bytes) and len(data) <= 262144, "bounded read within limit", errors)
+        big = tmp_dir / "big.json"; big.write_bytes(b"y" * (262144 + 5))
+        data2, flag2 = _bounded_read_text(big, 262144)
+        expect(flag2 == "oversize" and data2 is None, "bounded read rejects oversize via limit+1", errors)
 
     if errors:
         print("otel_ops_control_tests_failed")

@@ -1,0 +1,21 @@
+{
+ "model_slot": "sol",
+ "requested_model": "openai/gpt-5.6-sol",
+ "model_applied": true,
+ "case": "T2-event-revert-ambiguity",
+ "repetition": 2,
+ "turn": 3,
+ "prompt_file": "prompts/T2-event-revert-ambiguity-turn3.txt",
+ "prompt_sha256": "d50616c729258843acbbc354f5eaa56c8c3cbe6a1df2565919a61ee45dba0e1a",
+ "response_text": "{\"states\":{\"A\":{\"revision\":5,\"status\":\"ready\"},\"B\":{\"revision\":4,\"status\":\"ready\"},\"C\":{\"revision\":2,\"status\":\"blocked\"}},\"eligible\":[\"A\",\"B\"],\"applied\":11,\"ignored\":[{\"event\":\"e4\",\"reason\":\"stale\"},{\"event\":\"e6\",\"reason\":\"stale\"}]}",
+ "tool_trace": [],
+ "grade": {
+  "json_valid": true,
+  "parse_error": null,
+  "format": true,
+  "factual": true,
+  "tools": null,
+  "tool_findings": [],
+  "strict_pass": true
+ }
+}

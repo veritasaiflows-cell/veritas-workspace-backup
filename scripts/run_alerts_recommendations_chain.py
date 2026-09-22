@@ -23,6 +23,7 @@ from dynamic_entitlement_provider_policy import (
     ProviderPolicy,
     ProviderPolicyError,
     load_provider_policy,
+    read_daily_budget,
     reserve_provider_calls,
     settle_provider_calls,
 )
@@ -260,20 +261,206 @@ RUN_RETENTION_DIR = TMP / "alerts-chain-runs"
 RUN_RETENTION_LIMIT = 400
 
 
-def retain_run_payload(window: str, payload: dict[str, Any]) -> Path:
+def retain_run_payload(
+    window: str,
+    payload: dict[str, Any],
+    *,
+    retention_dir: Path | None = None,
+) -> Path:
     """Keep a timestamped copy of each run.
 
     The stage scripts write to shared fixed paths, so a later window overwrites
     the artifacts of an earlier failure within minutes and destroys the evidence
     needed to diagnose it.
     """
+    directory = retention_dir or RUN_RETENTION_DIR
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    path = RUN_RETENTION_DIR / f"{window}-{stamp}.json"
+    path = directory / f"{window}-{stamp}.json"
     write_json(path, payload)
-    retained = sorted(RUN_RETENTION_DIR.glob(f"{window}-*.json"))
+    retained = sorted(directory.glob(f"{window}-*.json"))
     for stale in retained[:-RUN_RETENTION_LIMIT]:
         stale.unlink(missing_ok=True)
     return path
+
+
+RECURRING_QUOTE_PROOF_REL = "tmp/intraday-alerts/quote-snapshot-proof.json"
+RECURRING_QUOTE_VALIDATION_REL = "tmp/intraday-alerts/quote-snapshot-proof-validation.json"
+
+
+def weekend_only_freshness_debt(controller_path) -> dict[str, Any]:
+    """Decide whether review debt is pure weekend staleness (warning-grade).
+
+    Eligible only when the controller artifact itself validates clean AND
+    every row is a freshness_decay under market_closed_weekend_or_holiday
+    whose quote is still the current last-completed session. Anything else
+    (mixed states, non-weekend windows, quotes older than the last session,
+    invalid proof) stays error-grade. Owner-approved 2026-09-20."""
+    try:
+        payload = json.loads(Path(controller_path).read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return {"eligible": False, "reason": f"controller_unreadable:{type(exc).__name__}"}
+    if not isinstance(payload, dict):
+        return {"eligible": False, "reason": "controller_malformed"}
+    if (payload.get("validation") or {}).get("status") != "ok":
+        return {"eligible": False, "reason": "controller_validation_not_ok"}
+    rows = payload.get("rows") or []
+    if not rows:
+        return {"eligible": False, "reason": "no_rows"}
+    for row in rows:
+        if not isinstance(row, dict):
+            return {"eligible": False, "reason": "row_malformed"}
+        if row.get("alert_state") != "freshness_decay":
+            return {"eligible": False, "reason": f"non_decay_state:{row.get('alert_state')}"}
+        if row.get("market_session_window") != "market_closed_weekend_or_holiday":
+            return {"eligible": False, "reason": f"non_weekend_window:{row.get('market_session_window')}"}
+        if row.get("quote_calendar_status") != "current_last_completed_session":
+            return {"eligible": False, "reason": f"quote_not_last_session:{row.get('quote_calendar_status')}"}
+    return {"eligible": True, "reason": "pure_weekend_decay_current_session",
+            "ticker_count": len(rows)}
+
+
+def emit_recurring_chain_receipts(
+    window: str,
+    result: dict[str, Any],
+    *,
+    quote_snapshot_json: bytes | None = None,
+    quote_validation_json: bytes | None = None,
+    timeout_seconds: int = 120,
+) -> dict[str, Any]:
+    """Write the shared chain receipts the control-plane consumers read.
+
+    The recurring dynamic lane does the same guarded-SQL and quote work the
+    legacy stage plan did, but keeps it in exclusive or temporary storage, so
+    the shared artifacts four consumers poll stopped advancing at the cutover
+    while the alerts OS itself kept delivering. Receipts are emitted after the
+    run and never change its outcome: a completed alerts run must not be failed
+    by a bookkeeping write, and every receipt failure is reported in place.
+    """
+    stages: list[dict[str, Any]] = []
+    started = time.perf_counter()
+    # ROOT is the seam callers redirect; TMP is frozen at import and does not
+    # follow it, so deriving paths here keeps a redirected run inside its own
+    # tree instead of writing the real workspace proofs.
+    tmp = ROOT / "tmp"
+    quote_proof = ROOT / RECURRING_QUOTE_PROOF_REL
+    quote_validation = ROOT / RECURRING_QUOTE_VALIDATION_REL
+
+    # Same producer and arguments the legacy plan used: a local read-only canon
+    # validation with no provider call and no canon mutation.
+    guard = run_stage(
+        {"name": "guarded_sql_access", "script": "finance_sql_canon_access.py",
+         "args": ["--write", "--validate"], "critical": True},
+        timeout_seconds,
+    )
+    stages.append(guard)
+
+    quote: dict[str, Any] = {"name": "quote_snapshot_refresh",
+                             "script": "phase3g_dynamic_execution._automatic_quote_intake",
+                             "critical": True, "promoted_path": rel_to_root(quote_proof),
+                             "promoted_validation_path": rel_to_root(quote_validation)}
+    if quote_snapshot_json and quote_validation_json:
+        try:
+            # The intake already binds its validation to these shared paths; the
+            # bytes promoted here are the exact bytes the run validated. The
+            # validation sibling is promoted too because the intraday job's
+            # contract requires both, and promoting one leaves a fresh snapshot
+            # paired with a stale verdict.
+            _atomic_promote_bytes(quote_proof, bytes(quote_snapshot_json))
+            _atomic_promote_bytes(quote_validation, bytes(quote_validation_json))
+            quote.update({"status": "ok",
+                          "sha256": hashlib.sha256(bytes(quote_snapshot_json)).hexdigest(),
+                          "validation_sha256": hashlib.sha256(bytes(quote_validation_json)).hexdigest()})
+        except (OSError, ValueError) as exc:
+            quote.update({"status": "error", "error": f"{type(exc).__name__}: {exc}"})
+    else:
+        quote.update({"status": "error", "error": "no_intake_snapshot_or_validation_bytes"})
+    stages.append(quote)
+
+    metrics = (result.get("component_metrics") or {}).get("alert_level_freshness") or {}
+    freshness_stage = {"name": "alert_level_freshness", "critical": True,
+                       "status": "ok" if metrics.get("status") in {"completed", "skipped_not_approved"} else "error",
+                       "component_status": metrics.get("status")}
+    stages.append(freshness_stage)
+
+    recurring_digest = result.get("recurring_digest") or {}
+    promotion = result.get("shared_promotion") or {}
+    stages.append({"name": "recommendation_digest", "critical": True,
+                   "status": "ok" if (recurring_digest.get("status") == "ok"
+                                      and promotion.get("status") in {"ok", "ok_duplicate_suppressed"}) else "error",
+                   "digest_status": recurring_digest.get("status"),
+                   "shared_promotion_status": promotion.get("status"),
+                   "digest_errors": recurring_digest.get("errors") or []})
+
+    coherence = digest_source_coherence(
+        window,
+        controller_path=tmp / "alert-level-freshness-controller.json",
+        digest_path=tmp / f"finance-alert-os-{window}-digest.json",
+    )
+    critical_errors = [stage["name"] for stage in stages if stage["status"] != "ok"]
+    if result.get("status") != "completed":
+        critical_errors.append(f"recurring_run_{result.get('status')}")
+    if coherence["status"] != "ok":
+        critical_errors.append("digest_source_coherence")
+    warnings: list[str] = []
+    # Owner-approved 2026-09-20: pure weekend staleness is warning-grade, never
+    # error-grade — but only when it is the SOLE problem. Any companion failure
+    # (guard, quote, digest, coherence) keeps the run red.
+    if (set(critical_errors) <= {"alert_level_freshness", "recurring_run_completed_with_visible_debt"}
+            and metrics.get("status") == "completed_with_review_debt"):
+        tolerance = weekend_only_freshness_debt(tmp / "alert-level-freshness-controller.json")
+        if tolerance["eligible"]:
+            critical_errors = [e for e in critical_errors
+                               if e not in {"alert_level_freshness", "recurring_run_completed_with_visible_debt"}]
+            freshness_stage["status"] = "ok"
+            freshness_stage["weekend_tolerance_applied"] = tolerance
+            warnings.append(
+                "weekend_freshness_debt_monitor_only:"
+                f"{tolerance['ticker_count']}_tickers_decay_current_last_session")
+    status = "error" if critical_errors else "ok"
+
+    payload = {
+        "schema": "veritas.alerts_recommendations_chain.v1",
+        "generated_at_utc": iso_now(),
+        "window": window,
+        "status": status,
+        "lane": "phase3f_dynamic_entitlement_recurring",
+        "duration_seconds": round(time.perf_counter() - started, 3),
+        "authority": dict(AUTHORITY),
+        "run_id": result.get("run_id"),
+        "results": stages,
+        "summary": {
+            "planned_stage_count": len(stages),
+            "completed_stage_count": len(stages),
+            "critical_errors": critical_errors,
+            "warnings": warnings,
+            "retired_stage_hits": [],
+            "digest_source_coherence": coherence,
+        },
+        "validation": {"status": status, "errors": critical_errors, "warnings": warnings},
+    }
+
+    written: list[str] = []
+    errors: list[str] = []
+    for path in (tmp / f"alerts-recommendations-chain-{window}.json",
+                 tmp / "alerts-recommendations-chain-current.json"):
+        try:
+            write_json(path, payload)
+            written.append(rel_to_root(path))
+        except OSError as exc:
+            errors.append(f"{rel_to_root(path)}: {type(exc).__name__}: {exc}")
+    try:
+        written.append(rel_to_root(
+            retain_run_payload(window, payload, retention_dir=tmp / "alerts-chain-runs")))
+    except OSError as exc:
+        errors.append(f"retain_run_payload: {type(exc).__name__}: {exc}")
+
+    return {"status": status, "written": written, "write_errors": errors,
+            "critical_errors": critical_errors, "warnings": warnings,
+            "quote_snapshot_proof": quote["status"], "guarded_sql_access": guard["status"]}
+
+
+def rel_to_root(path: Path) -> str:
+    return path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else str(path)
 
 
 def policy_run_id(now: datetime | None = None) -> str:
@@ -370,11 +557,8 @@ def prepare_policy_canary(
         )
         if provider_calls
         else {
-            "day": None,
+            **read_daily_budget(policy, now_utc=now_utc),
             "reserved_this_run": 0,
-            "reserved_today": None,
-            "daily_limit": policy.max_daily_provider_calls,
-            "remaining_today": None,
             "run_id": run_id,
         }
     )
@@ -519,11 +703,19 @@ def run_policy_canary(
             )
         import alert_level_freshness_controller as alert_child
 
+        # Owner-approved 2026-09-20: the weekly digest is a weekend review
+        # product, so it evaluates quotes against the 84h weekly tolerance.
+        # All other windows keep the 36h default (None).
+        weekly_quote_age = (
+            alert_child.WEEKLY_WINDOW_MAX_QUOTE_AGE_HOURS
+            if recurring_window == "weekly" else None
+        )
         alert_result = alert_child._build_phase3f_alert_component_with_authorization(
             authorization=authorization,
             reference_evidence_json=bytes(alert_reference_evidence_json or b""),
             quote_snapshot_json=bytes(alert_quote_snapshot_json or b""),
             quote_validation_json=bytes(alert_quote_validation_json or b""),
+            max_quote_age_hours=weekly_quote_age,
             **({"dynamic_execution": True} if dynamic_execution else {}),
         )
         component_hashes["alert_level_freshness"] = _exclusive_durable_json_write(

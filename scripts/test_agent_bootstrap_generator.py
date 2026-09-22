@@ -611,12 +611,12 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
 
     def test_fleet_policy_alignment_matches_approved_mapping(self) -> None:
         expected_primaries = {
-            "research-scout": "xai/grok-4.6",
+            "research-scout": "ollama-cloud/deepseek-v4.1-flash:cloud",
             "qa-redteam": "ollama-cloud/glm-5.3:cloud",
-            "finance-source-scout": "openai/gpt-5.6-terra",
+            "finance-source-scout": "ollama-cloud/deepseek-v4.1-flash:cloud",
             "finance-redteam": "ollama-cloud/glm-5.3:cloud",
             "implementation-builder": "meta/muse-spark-1.3-contributor",
-            "docs-continuity-editor": "openai/gpt-5.6-luna",
+            "docs-continuity-editor": "ollama-cloud/deepseek-v4.1-flash:cloud",
         }
         expected_displays = {
             "research-scout": "Opportunity Intelligence",
@@ -627,12 +627,12 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
             "docs-continuity-editor": "Knowledge and Continuity",
         }
         expected_recovery = {
-            "research-scout": ["openai/gpt-5.6-terra", "ollama-cloud/glm-5.3:cloud"],
-            "qa-redteam": ["openai/gpt-5.6-sol"],
-            "finance-source-scout": ["xai/grok-4.6", "ollama-cloud/glm-5.3:cloud"],
-            "finance-redteam": ["openai/gpt-5.6-sol"],
-            "implementation-builder": ["openai/gpt-5.6-sol", "openai/gpt-5.6-terra"],
-            "docs-continuity-editor": ["openai/gpt-5.6-terra", "ollama-cloud/glm-5.3:cloud"],
+            "research-scout": ["ollama-cloud/glm-5.3:cloud"],
+            "qa-redteam": ["xai/grok-4.6"],
+            "finance-source-scout": ["ollama-cloud/glm-5.3-flash:cloud", "xai/grok-4.6", "ollama-cloud/glm-5.3:cloud"],
+            "finance-redteam": ["xai/grok-4.6"],
+            "implementation-builder": ["ollama-cloud/glm-5.3:cloud"],
+            "docs-continuity-editor": ["ollama-cloud/glm-5.3-flash:cloud", "ollama-cloud/glm-5.3:cloud"],
         }
         for agent_id, primary in expected_primaries.items():
             self.assertEqual(generator.fleet_primary_for(agent_id), primary)
@@ -641,8 +641,7 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
             self.assertEqual(generator.fleet_display_for(agent_id), expected_displays[agent_id])
             self.assertEqual(generator.fleet_recovery_for(agent_id), expected_recovery[agent_id])
             self.assertEqual(generator.fleet_automatic_for(agent_id), [])
-        self.assertEqual(generator.MAIN_MODEL, "openai/gpt-6-astra")
-        self.assertEqual(generator.MAIN_FALLBACKS, ["openai/gpt-5.6-sol"])
+        self.assertEqual(generator.MAIN_MODEL, "openai/gpt-5.6-sol")
 
     def test_manifest_shows_display_name_and_non_executing_recovery(self) -> None:
         manifest = generator.build_manifest(
@@ -657,9 +656,10 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
         self.assertEqual(manifest["model_route"]["display_name"], "Finance Risk Challenger")
         self.assertEqual(manifest["model_route"]["default_model"], "ollama-cloud/glm-5.3:cloud")
         self.assertEqual(manifest["model_route"]["automatic_fallbacks"], [])
-        self.assertEqual(manifest["model_route"]["recovery_candidates"], ["openai/gpt-5.6-sol"])
+        self.assertEqual(manifest["model_route"]["recovery_candidates"], ["xai/grok-4.6"])
         self.assertTrue(manifest["model_route"]["recovery_is_non_executing_option"])
-        self.assertEqual(manifest["model_route"]["main_model"], "openai/gpt-6-astra")
+        self.assertEqual(manifest["model_route"]["main_model"], "openai/gpt-5.6-sol")
+        self.assertNotIn("main_fallbacks", manifest["model_route"])
         bootstrap = generator.build_bootstrap_markdown(manifest, [])
         self.assertIn("Display name:", bootstrap)
         self.assertIn("Finance Risk Challenger", bootstrap)

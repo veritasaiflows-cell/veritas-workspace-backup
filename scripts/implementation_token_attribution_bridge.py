@@ -26,6 +26,10 @@ TMP = ROOT / "tmp"
 TOKEN_USAGE = TMP / "token-usage-ledger-current.json"
 LANE_REGISTER = TMP / "concurrent-lane-register.json"
 CODING_OUTCOME = TMP / "coding-outcome-ledger-current.json"
+# WF89 D2a credit reader (attribution contract v0.2): optional, fail-closed,
+# read-only per-run join source refreshed upstream in the radar sequence.
+CREDIT_READER_OUT = TMP / "wf89-credit-reader-current.json"
+CREDIT_READER_SCHEMA = "veritas.wf89_credit_reader.v1"
 OUT = TMP / "implementation-token-attribution-bridge.json"
 MD_OUT = OUT.with_suffix(".md")
 SCHEMA = "veritas.implementation_token_attribution_bridge.v1"
@@ -78,14 +82,18 @@ REQUIRED_STAMPING_FIELDS = [
     "runtime.main_acceptance_evidence",
 ]
 
-ACCEPTED_MISSING_USAGE_CLASSIFICATIONS = {
-    "provider_usage_unavailable",
-    "runtime_usage_unavailable",
-    "current_chat_runtime_unavailable",
-    "manual_runtime_unavailable",
-    "unsupported_legacy_model_route",
-    "historical_pre_token_stamping_unavailable",
-    "historical_pre_token_closeout_guard_unavailable",
+# 2026-09-18 Phase 2 (owner-directed): shared definition lives in
+# scripts/token_usage_classifications.py. self_declared_usage_rejected stays in
+# this bridge set so pre-cutover lanes that closed on self-declared totals are
+# named and rejected; it remains deliberately absent from the closeout gate.
+from token_usage_classifications import BRIDGE_ACCEPTED_MISSING_USAGE_CLASSIFICATIONS
+ACCEPTED_MISSING_USAGE_CLASSIFICATIONS = set(BRIDGE_ACCEPTED_MISSING_USAGE_CLASSIFICATIONS)
+
+# Legacy register values written before the strict cutover. No current producer emits these,
+# so this set cannot grow and the classification below cannot apply to new work.
+LEGACY_SELF_DECLARED_USAGE_SOURCES = {
+    "session_status_current",
+    "session_status_current_approx",
 }
 
 TOKEN_STAMPING_ENFORCEMENT_START_UTC = "2026-06-27T00:00:00Z"
@@ -93,6 +101,9 @@ TOKEN_CLOSEOUT_GUARD_START_UTC = "2026-07-03T19:30:00Z"
 CURRENT_CHAT_BACKFILL_CUTOFF_UTC = "2026-07-06T22:30:00Z"
 ATTRIBUTION_GRADE_ALL_LANES_ENFORCEMENT_START_UTC = "2026-08-09T00:00:00Z"
 STRICT_TELEMETRY_CUTOVER_UTC = "2026-08-13T20:45:00Z"
+
+# 2026-08-25 canary aged out uncredited after isolated-session rotation; warning-only threshold.
+UNCREDITED_LANE_AGE_WARNING_HOURS = 168
 
 UNSUPPORTED_LEGACY_MODEL_PATHS = {
     "claude-cli/claude-fable-5",
@@ -180,6 +191,55 @@ def source_status(path: Path) -> dict[str, Any]:
         "status": payload.get("status"),
         "validation_status": as_dict(payload.get("validation")).get("status"),
         "generated_at_utc": payload.get("generated_at_utc"),
+    }
+
+
+def load_credit_reader_index(path: Path = CREDIT_READER_OUT) -> dict[str, Any]:
+    """Fail-closed WF89 credit-reader join index.
+
+    Only CREDITABLE rows with verified=True and a usage dict enter the index;
+    they carry per-run usage bound to run_id inside the executor-store window.
+    A missing or invalid artifact contributes nothing and never blocks the
+    bridge; credit is never inferred from any other source.
+    """
+    status = source_status(path)
+    if not path.exists():
+        return {
+            "status": "unavailable",
+            "reason": "credit_reader_artifact_missing",
+            "by_run_id": {},
+            "scanned_run_count": 0,
+            "creditable_run_count": 0,
+            "source_status": status,
+        }
+    payload = load(path)
+    if payload.get("schema") != CREDIT_READER_SCHEMA:
+        return {
+            "status": "schema_mismatch",
+            "reason": f"expected {CREDIT_READER_SCHEMA}",
+            "by_run_id": {},
+            "scanned_run_count": 0,
+            "creditable_run_count": 0,
+            "source_status": status,
+        }
+    by_run_id: dict[str, dict[str, Any]] = {}
+    for record in as_list(payload.get("records")):
+        if not isinstance(record, dict):
+            continue
+        if record.get("state") != "CREDITABLE" or record.get("verified") is not True:
+            continue
+        if not as_dict(record.get("usage")):
+            continue
+        run_id = str(record.get("run_id") or "")
+        if run_id:
+            by_run_id[run_id] = record
+    return {
+        "status": "ok",
+        "reason": None,
+        "by_run_id": by_run_id,
+        "scanned_run_count": int(payload.get("total_scanned") or 0),
+        "creditable_run_count": len(by_run_id),
+        "source_status": status,
     }
 
 
@@ -332,6 +392,15 @@ def inferred_missing_usage_classification(lane: dict[str, Any], token_gap: dict[
     if model_path in UNSUPPORTED_LEGACY_MODEL_PATHS:
         return "unsupported_legacy_model_route"
     completed = parse_utc(lane.get("completed_at_utc") or lane.get("ended_at_utc") or lane.get("updated_at_utc"))
+    raw_source = runtime.get("token_attribution_source") or lane.get("token_attribution_source")
+    cutover = parse_utc(STRICT_TELEMETRY_CUTOVER_UTC)
+    if (
+        raw_source in LEGACY_SELF_DECLARED_USAGE_SOURCES
+        and completed is not None
+        and cutover is not None
+        and completed < cutover
+    ):
+        return "self_declared_usage_rejected"
     enforcement = parse_utc(TOKEN_STAMPING_ENFORCEMENT_START_UTC)
     if completed is not None and enforcement is not None and completed < enforcement:
         return "historical_pre_token_stamping_unavailable"
@@ -408,10 +477,14 @@ def scan_forbidden(value: Any, path: str = "$") -> list[str]:
     return findings
 
 
-def build_payload(token_usage_path: Path = TOKEN_USAGE, register_path: Path = LANE_REGISTER, coding_outcome_path: Path = CODING_OUTCOME) -> dict[str, Any]:
+def build_payload(token_usage_path: Path = TOKEN_USAGE, register_path: Path = LANE_REGISTER, coding_outcome_path: Path = CODING_OUTCOME, credit_reader_path: Path | None = None) -> dict[str, Any]:
+    # Resolve lazily so patched-module TMP (tests) stays hermetic.
+    credit_reader_path = credit_reader_path or (TMP / "wf89-credit-reader-current.json")
     token_usage = load(token_usage_path)
     register = load(register_path)
     source_receipts = load_usage_source_receipts(register_path)
+    credit_reader = load_credit_reader_index(credit_reader_path)
+    credit_by_run_id = as_dict(credit_reader.get("by_run_id"))
     token_summary = as_dict(token_usage.get("summary"))
     token_gap_rows = [as_dict(row) for row in as_list(token_usage.get("implementation_token_gaps"))]
     gaps_by_lane = token_gap_by_lane(token_gap_rows)
@@ -459,6 +532,8 @@ def build_payload(token_usage_path: Path = TOKEN_USAGE, register_path: Path = LA
         if assessments[str(lane.get("lane_id"))].get("status") == "attribution_incomplete"
     ]
     runtime_gap_rows = []
+    credit_resolved_rows: list[dict[str, Any]] = []
+    credit_matched_usage_totals: dict[str, float] = {}
     for lane in lanes:
         assessment = assessments[str(lane.get("lane_id"))]
         runtime = as_dict(lane.get("runtime"))
@@ -470,6 +545,21 @@ def build_payload(token_usage_path: Path = TOKEN_USAGE, register_path: Path = LA
             and source_receipt_verified
         )
         if assessment.get("token_valid") is True and (not new_attribution_contract or usage_creditable):
+            continue
+        # WF89 credit-reader join: a verified CREDITABLE provider run bound to
+        # this lane's runtime.run_id resolves the gap deterministically. The
+        # resolved rows stay local; only counts and aggregate usage are emitted.
+        lane_run_id = str(runtime.get("run_id") or "")
+        reader_record = credit_by_run_id.get(lane_run_id) if lane_run_id else None
+        if reader_record is not None:
+            for usage_key, usage_value in as_dict(reader_record.get("usage")).items():
+                if isinstance(usage_value, (int, float)) and not isinstance(usage_value, bool):
+                    credit_matched_usage_totals[usage_key] = credit_matched_usage_totals.get(usage_key, 0) + usage_value
+            credit_resolved_rows.append({
+                "lane_id": lane.get("lane_id"),
+                "workflow_id": lane.get("workflow_id"),
+                "run_id": lane_run_id,
+            })
             continue
         token_gap = gaps_by_lane.get(str(lane.get("lane_id")))
         classification = inferred_missing_usage_classification(lane, token_gap)
@@ -527,6 +617,7 @@ def build_payload(token_usage_path: Path = TOKEN_USAGE, register_path: Path = LA
             ),
         })
     implementation_gap_count = int(token_summary.get("implementation_token_gap_count") or len(runtime_gap_rows))
+    credit_reader_resolved_runtime_gap_count = len(credit_resolved_rows)
     classified_runtime_gap_count = sum(1 for row in runtime_gap_rows if row.get("missing_usage_classified") is True)
     unclassified_runtime_gap_count = max(len(runtime_gap_rows) - classified_runtime_gap_count, 0)
     classification_counts = Counter(str(row.get("missing_usage_classification") or "unclassified") for row in runtime_gap_rows)
@@ -575,6 +666,35 @@ def build_payload(token_usage_path: Path = TOKEN_USAGE, register_path: Path = LA
         post_cutoff_supported_unresolved_gap_count
         + unknown_completion_supported_unresolved_gap_count
     )
+    # Warning-only rotation-age check (2026-08-25 canary). Additive only.
+    # runtime_gap_rows are uncredited gaps by construction; no credit/join logic touched.
+    _age_now = None
+    try:
+        _age_now = parse_utc(utc_now())
+    except Exception:
+        _age_now = None
+    _uncredited_ages = []
+    if _age_now is not None:
+        for _row in runtime_gap_rows:
+            try:
+                if not isinstance(_row, dict):
+                    continue
+                if _row.get("completion_cohort") != "post_cutoff":
+                    continue
+                if _row.get("terminal_unavailable"):
+                    continue
+                _dt = parse_utc(_row.get("completed_at_utc") or "")
+                if _dt is None:
+                    continue
+                _h = (_age_now - _dt).total_seconds() / 3600.0
+                if _h < 0 or not _row.get("lane_id"):
+                    continue
+                _uncredited_ages.append((_row.get("lane_id"), float(_h)))
+            except Exception:
+                continue
+    _uncredited_ages.sort(key=lambda t: t[1], reverse=True)
+    oldest_uncredited_lane_age_hours = float(_uncredited_ages[0][1]) if _uncredited_ages else None
+    uncredited_aging_lane_ids = [lid for lid, h in _uncredited_ages if h > UNCREDITED_LANE_AGE_WARNING_HOURS][:25]
     new_isolated_contract_gap_count = sum(
         1 for row in runtime_gap_rows
         if row.get("new_isolated_implementation_contract") is True
@@ -621,6 +741,12 @@ def build_payload(token_usage_path: Path = TOKEN_USAGE, register_path: Path = LA
         "token_ledger_gap_sample_count": len(token_gap_rows),
         "runtime_gap_total_count": len(runtime_gap_rows),
         "runtime_gap_sample_count": len(runtime_gap_rows[:25]),
+        "credit_reader_status": credit_reader.get("status"),
+        "credit_reader_reason": credit_reader.get("reason"),
+        "credit_reader_scanned_run_count": credit_reader.get("scanned_run_count"),
+        "credit_reader_creditable_run_count": credit_reader.get("creditable_run_count"),
+        "credit_reader_resolved_runtime_gap_count": credit_reader_resolved_runtime_gap_count,
+        "credit_reader_matched_usage_totals": credit_matched_usage_totals or None,
         "classified_runtime_gap_count": classified_runtime_gap_count,
         "unclassified_runtime_gap_count": unclassified_runtime_gap_count,
         "supported_runtime_gap_count": supported_runtime_gap_count,
@@ -632,6 +758,8 @@ def build_payload(token_usage_path: Path = TOKEN_USAGE, register_path: Path = LA
         "post_cutoff_supported_unresolved_gap_count": post_cutoff_supported_unresolved_gap_count,
         "unknown_completion_supported_unresolved_gap_count": unknown_completion_supported_unresolved_gap_count,
         "action_required_supported_runtime_gap_count": action_required_supported_runtime_gap_count,
+        "oldest_uncredited_lane_age_hours": oldest_uncredited_lane_age_hours,
+        "uncredited_aging_lane_ids": uncredited_aging_lane_ids,
         "post_cutoff_supported_missing_phase_count": post_cutoff_supported_missing_phase_count,
         "completion_cohort_counts": dict(sorted(Counter(str(row.get("completion_cohort")) for row in runtime_gap_rows).items())),
         "missing_usage_classification_counts": dict(sorted(classification_counts.items())),
@@ -661,12 +789,14 @@ def build_payload(token_usage_path: Path = TOKEN_USAGE, register_path: Path = LA
             "concurrent_lane_register": rel(register_path),
             "usage_source_receipts": rel(register_path.with_suffix(".usage-receipts.json")),
             "coding_outcome_ledger": rel(coding_outcome_path),
+            "wf89_credit_reader": rel(credit_reader_path),
         },
         "source_status": [
             source_status(token_usage_path),
             source_status(register_path),
             source_status(register_path.with_suffix(".usage-receipts.json")),
             source_status(coding_outcome_path),
+            as_dict(credit_reader.get("source_status")),
         ],
         "summary": summary,
         "required_stamping_fields": REQUIRED_STAMPING_FIELDS,
@@ -767,6 +897,8 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
         warnings.append(f"unknown_completion_supported_unresolved_gap_count:{summary.get('unknown_completion_supported_unresolved_gap_count')}")
     if int(summary.get("post_cutoff_supported_missing_phase_count") or 0) > 0:
         warnings.append(f"post_cutoff_supported_missing_phase_count:{summary.get('post_cutoff_supported_missing_phase_count')}")
+    if str(summary.get("credit_reader_status") or "") == "schema_mismatch":
+        warnings.append("credit_reader_artifact_schema_mismatch")
     if int(summary.get("new_isolated_implementation_contract_gap_count") or 0) > 0:
         errors.append(f"new_isolated_implementation_contract_gap_count:{summary.get('new_isolated_implementation_contract_gap_count')}")
     if int(summary.get("new_attribution_grade_contract_gap_count") or 0) > 0:
@@ -795,6 +927,32 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
         warnings.append(f"attribution_incomplete_lane_count:{summary.get('attribution_incomplete_lane_count')}")
     if not as_list(payload.get("required_stamping_fields")):
         errors.append("required_stamping_fields_empty")
+    # Rotation-age warnings only; never errors. No other validate() behavior touched.
+    try:
+        _v_ids = list((payload.get("summary", {}) or {}).get("uncredited_aging_lane_ids", []) or [])
+    except Exception:
+        _v_ids = []
+    if _v_ids:
+        try:
+            _v_by_id = {r.get("lane_id"): r for r in (payload.get("runtime_gap_samples", []) or []) if isinstance(r, dict) and r.get("lane_id")}
+        except Exception:
+            _v_by_id = {}
+        try:
+            _v_now = parse_utc(utc_now())
+        except Exception:
+            _v_now = None
+        for _v_lid in _v_ids[:25]:
+            _v_h = None
+            try:
+                _v_dt = parse_utc((_v_by_id.get(_v_lid, {}) or {}).get("completed_at_utc") or "")
+                if _v_dt is not None and _v_now is not None:
+                    _v_h = int(round((_v_now - _v_dt).total_seconds() / 3600.0))
+            except Exception:
+                _v_h = None
+            if _v_h is None:
+                warnings.append(f"uncredited_lane_aging:{_v_lid}")
+            else:
+                warnings.append(f"uncredited_lane_aging:{_v_lid}:{_v_h}")
     return {"status": "blocked" if errors else ("warning" if warnings else "ok"), "errors": errors, "warnings": warnings}
 
 
@@ -810,10 +968,13 @@ def render_md(payload: dict[str, Any]) -> str:
         f"- Implementation token events/gaps: {summary.get('implementation_token_event_count')} / {summary.get('implementation_token_gap_count')}",
         f"- Implementation gap count source: `{summary.get('implementation_token_gap_count_source')}`",
         f"- Runtime gap total: {summary.get('runtime_gap_total_count')}",
+        f"- WF89 credit reader: {summary.get('credit_reader_status')} scanned={summary.get('credit_reader_scanned_run_count')} creditable={summary.get('credit_reader_creditable_run_count')} gaps_resolved_by_run_join={summary.get('credit_reader_resolved_runtime_gap_count')}",
         f"- Classified/unclassified runtime gaps: {summary.get('classified_runtime_gap_count')} / {summary.get('unclassified_runtime_gap_count')}",
         f"- Historical/post-cutoff supported gaps: {summary.get('historical_supported_runtime_gap_count')} / {summary.get('post_cutoff_supported_runtime_gap_count')}",
         f"- Post-cutoff terminal-unavailable/unresolved: {summary.get('post_cutoff_supported_terminal_unavailable_count')} / {summary.get('post_cutoff_supported_unresolved_gap_count')}",
         f"- Provider run join ready: {summary.get('provider_run_join_ready')}",
+        f"- Oldest uncredited lane age (hours): {summary.get('oldest_uncredited_lane_age_hours')}",
+        f"- Uncredited aging lane ids: {summary.get('uncredited_aging_lane_ids')}",
         f"- Closeout stamp command: `{payload.get('closeout_stamp_command_template')}`",
         "",
         "## Required Stamping Fields",
@@ -840,6 +1001,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--token-usage", type=Path, default=TOKEN_USAGE)
     parser.add_argument("--lane-register", type=Path, default=LANE_REGISTER)
     parser.add_argument("--coding-outcome", type=Path, default=CODING_OUTCOME)
+    parser.add_argument("--credit-reader", type=Path, default=CREDIT_READER_OUT)
     parser.add_argument("--out", type=Path, default=OUT)
     parser.add_argument("--md-out", type=Path, default=MD_OUT)
     return parser.parse_args(argv)
@@ -850,9 +1012,10 @@ def main(argv: list[str] | None = None) -> int:
     token_usage = args.token_usage if args.token_usage.is_absolute() else ROOT / args.token_usage
     lane_register = args.lane_register if args.lane_register.is_absolute() else ROOT / args.lane_register
     coding_outcome = args.coding_outcome if args.coding_outcome.is_absolute() else ROOT / args.coding_outcome
+    credit_reader = args.credit_reader if args.credit_reader.is_absolute() else ROOT / args.credit_reader
     out = args.out if args.out.is_absolute() else ROOT / args.out
     md_out = args.md_out if args.md_out.is_absolute() else ROOT / args.md_out
-    payload = build_payload(token_usage, lane_register, coding_outcome)
+    payload = build_payload(token_usage, lane_register, coding_outcome, credit_reader)
     if args.write:
         atomic_write_json(out, payload)
     if args.write_md:

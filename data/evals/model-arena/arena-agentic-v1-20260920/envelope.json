@@ -1,0 +1,77 @@
+{
+  "authority": "No routing, configuration, role, capital, or execution authority follows. Seal is evidence only.",
+  "board": {
+    "file": "board.md",
+    "source": "five archived graded-results.json files"
+  },
+  "design_rulings": {
+    "DETERMINISTIC_EQUALITY": "validation reruns are asserted equal on all fields excluding the enumerated wall-clock fields; graded verdicts are byte-stable modulo those fields.",
+    "ELIGIBILITY": "a trajectory is eligible iff its response is non-empty; parse_error json_empty denotes the operational timeout and is excluded from factual denominators.",
+    "GRADER_LINEAGE": "grader_pin names the runner that actually produced all five archived graded-results files. scripts/arena_hidden_bank_runner.py is a later superset grader and is NOT the grading grader.",
+    "SCORING": "strict_pass requires strict JSON parse with no error and whole-object strict_equal against the frozen key; no repair, fencing, or narration is accepted.",
+    "T4_RULING": "T4 cases are solvable by derivation from the prompt; fixture-gated abstention scores zero by design."
+  },
+  "deterministic_equality": {
+    "evidence": "five-model rerun with reference/grader-frozen.py: per-case fields identical, top-level only timestamp_utc differs, identical byte length every time.",
+    "excluded_fields": [
+      "timestamp_utc"
+    ],
+    "excluded_scope": "top-level graded-results.json timestamp_utc only"
+  },
+  "enrollment": "open",
+  "enrollment_note": "Any model may enrol at any time and runs this identical frozen envelope. Enrolling later never alters conditions for models already run.",
+  "envelope_id": "arena-agentic-v1-20260920",
+  "evidence_manifest": {
+    "file": "evidence-manifest.json",
+    "schema": "veritas.arena_six_evidence_manifest.v2",
+    "self_excluded": true
+  },
+  "frozen_utc": "2026-09-20",
+  "grader_pin": {
+    "bytes": 12345,
+    "collect_command": "python reference/grader-frozen.py --visible data/evals/model-arena/arena-agentic-v1-20260920/candidate-visible-bank.json --hidden data/evals/model-arena/arena-agentic-v1-20260920/hidden-bank.json --isolation data/evals/model-arena/arena-agentic-v1-20260920/candidate-isolation.json --out <OUT_DIR> --model <EXACT_MODEL_ID> --grade-file <results>/<model>-20260920/responses.json",
+    "collect_command_note": "frozen lineage grades via --grade-file (the archive's invocation); --collect --responses is the later superset alias. Run with grader-frozen.py staged beside arena_agentic_expansion.py, or from a directory where the generator is a sibling.",
+    "collect_command_superset_note": "Superset runner form, recorded for traceability. It is NOT equivalent here: the superset --collect path emits an 18-key per-case schema (~9.2 KB) and cannot reproduce the archived 6-key schema. Use collect_command to reproduce the archive.",
+    "collect_command_superset_runner": "python scripts/arena_hidden_bank_runner.py ... --collect --responses <results>/<model>-20260920/responses.json",
+    "file": "reference/grader-frozen.py",
+    "generator_dependency": {
+      "note": "frozen grader imports the sibling generator for parse_strict_json_object and strict_equal; stage grader-frozen.py beside this file to run it",
+      "path": "scripts/arena_agentic_expansion.py",
+      "sha256": "75b97a53f8809eacb56c4e232339267e292284df2a36957bfb7507331442c51a"
+    },
+    "note": "produced all five archived graded-results; scripts/arena_hidden_bank_runner.py is a later superset and is NOT the grading grader",
+    "sha256": "ea14f559f022b1d9f438b62590bc0392e292139ad8503a5186da13320eb7241f"
+  },
+  "keys_sha256": "b663fb5351cfb006bd13462094c8527c4b44b0055665e42236edd96f04f881a5",
+  "keys_sha256_source": "BANK/hidden-bank.json raw bytes",
+  "open_enrollment_comparison": {
+    "file": "open-enrollment-comparison.json",
+    "schema": "veritas.arena_agentic_open_enrollment_comparison.v1"
+  },
+  "pre_overlay_declaration": "candidate prompts never show frozen key shapes; grading is whole-object strict_equal",
+  "prompts": {
+    "content_note": "prompts/<instance_id>.json carries the dispatch manifest entry {family, instance_id, prompt} verbatim; it is a superset of the {instance_id, family} pair named in the build brief. Byte-verbatim provenance was preferred over a derived subset so the 5/5 dispatch comparison applies to every promoted file.",
+    "count_json": 12,
+    "count_txt": 12,
+    "dir": "prompts/",
+    "provenance": "byte-identical to all five dispatch copies (5/5)"
+  },
+  "reference": {
+    "grader": "reference/grader-frozen.py",
+    "keys": "reference/keys.json"
+  },
+  "reference_keys": {
+    "file": "reference/keys.json",
+    "parsed_equal_to_hidden_bank": true,
+    "sha256": "989075c2941fcd478ebcc75aed4c7afc8cb5338d55ea1152c090290d76f9091f"
+  },
+  "schema": "veritas.arena_agentic_envelope.v1",
+  "scope": {
+    "cases": 12,
+    "families": 6,
+    "retries": 0,
+    "seconds_per_turn": 600,
+    "structures_per_family": 2
+  },
+  "status": "frozen"
+}

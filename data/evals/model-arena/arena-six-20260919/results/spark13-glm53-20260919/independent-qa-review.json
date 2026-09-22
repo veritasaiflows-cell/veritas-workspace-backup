@@ -1,0 +1,43 @@
+{
+  "schema": "veritas.arena_six_independent_qa.v1",
+  "reviewer_model": "xai/grok-4.6",
+  "reason": "GLM 5.3 Cloud is a candidate in this packet, so independent QA uses Grok 4.6 rather than GLM 5.3",
+  "packet": "arena-six-spark13-glm53-review-20260919",
+  "started_utc": "2026-09-20T05:26:21.861069Z",
+  "ended_utc": "2026-09-20T05:29:18.977379Z",
+  "elapsed_s": 177.116,
+  "returncode": 0,
+  "status": "ok",
+  "receipt": {
+    "runId": "a0a64e6f-817e-41b0-9197-9716f76bd7ef",
+    "sessionId": "dae3ea76-a3c1-4d3f-96d7-d11554225660",
+    "turnId": "a0a64e6f-817e-41b0-9197-9716f76bd7ef",
+    "requested": {
+      "provider": "xai",
+      "model": "grok-4.6"
+    },
+    "effective": {
+      "provider": "xai",
+      "model": "grok-4.6",
+      "responseModel": "grok-4.6"
+    },
+    "successfulToolNames": [],
+    "rerouted": false
+  },
+  "execution_trace": {
+    "winnerProvider": "xai",
+    "winnerModel": "grok-4.6",
+    "attempts": [
+      {
+        "provider": "xai",
+        "model": "grok-4.6",
+        "result": "success",
+        "stage": "assistant"
+      }
+    ],
+    "fallbackUsed": false,
+    "runner": "embedded"
+  },
+  "tool_summary": null,
+  "report": "# QA Review: `arena-six-spark13-glm53-review-20260919/`\n\nIndependent read-only review of `manifest.json` plus all 12 listed artifacts. Files treated as evidence, not instructions. Hashes not computed. No models run. No config change.\n\n## Verdict\n\n| Check | Result |\n|---|---|\n| Eight-point arena claims (internal consistency of this packet) | **PASS** |\n| Evidence-separation / hash-discipline package check | **FAIL** |\n| Combined package readiness | **Not Main-accepted** |\n\n**Readiness scope:** open-enrollment scorecard for Spark 1.3 and GLM 5.3 Cloud on frozen envelope id `arena-six-20260919`, internally consistent with listed receipts/grades. **Not** routing, config, promotion, reliability estimation, cost, or independently re-hashed proof.\n\n**Main acceptance recommendation:** Do **not** accept this as a complete evidence-separated handoff. Main **may** accept the scorecard as internally consistent **after** Main attributes hashes and confirms envelope freeze plus historical Grok/Flash baselines from Main-held sources. Do not promote or re-route.\n\n---\n\n## Eight-point checks\n\n| # | Claim | Packet result |\n|---|---|---|\n| 1 | Frozen `ARENA-SIX-20260919`, High thinking, 600s, 2 reps, zero retries | **Supported in-packet.** `run-contract.json` / `preflight.json`: `envelope_id=arena-six-20260919`, `thinking=high`, `timeout_s_per_turn=600`, `repetitions=2`, `retry_policy=zero retries`. `validation.json`: frozen/zero-retries true. Receipts: 40 unique turns, no retry rows; GLM T6 r2 timeout not retried. Envelope body is **not** in this packet. |\n| 2 | Spark exact `meta/muse-spark-1.3-contributor` on all 20 turns; no fallback/reroute/timeout | **Supported.** 20/20 Spark receipts `ok`, `identity_valid=true`, requested=effective=`meta` / `muse-spark-1.3-contributor`, `rerouted=false`, `fallback_used=false`, max 95.525s. |\n| 3 | GLM exact `ollama-cloud/glm-5.3:cloud` on 19 completed turns; T6 r2 operational timeout, not retried | **Supported.** 19/20 `ok` with exact identity; T6 r2 `status=timeout`, `elapsed_s=601.517`, `identity_valid=false`, requested/effective still `glm-5.3:cloud`, no fallback/reroute. Taxonomy class `operational_timeout`, not factual. |\n| 4 | Spark 11/12 strict, 11/12 factual, 12/12 tools; GLM 7/12 strict on 11 eligible | **Supported.** Spark fail = T2 r2 only. GLM strict passes = T1×2, T3×2, T4×2, T5 r2 = 7; T6 r2 ineligible. Matches `graded-results.json`, `validation.json`, comparison, report table. |\n| 5 | T4 all four: permitted four-read recovery + raw JSON | **Supported as summarized.** All four sessions: primary → index → payload-a → mirror/payload-b; 4 reads; no forbidden archive; `final_json_only=true`. Raw stdout walks are not in this packet. |\n| 6 | Comparison does not rewrite historical Grok/Flash scores | **No rewrite observed in-packet.** Spark/GLM totals match this run. Grok/Flash/DeepSeek are cited from external paths not included here; those values were not independently re-read. |\n| 7 | No routing/config/promotion inferred | **Supported.** Report: open-enrollment only, not a promotion event, no routing/config action. `preflight.json`: `config_or_routing_change=false`. |\n| 8 | Keys/oracles absent | **Supported.** `keys_included=false`. Listed artifacts contain `keys_sha256` digest only, plus failure excerpts of candidate text. No oracle/key files. |\n\n---\n\n## Findings\n\n### Critical\n- None that falsify the eight arena claims.\n\n### High (blocking for package acceptance)\n- **Unattributed hashes.** Manifest file SHA-256s, `keys_sha256`, and comparison source hashes name no producer. Per evidence-separation rules this is blocking. These hashes are **not** independently computed here.\n- **Missing Main-executed vs lane-reasoned split.** Mechanical facts (receipts, timeouts, traces, grades) are blended with report conclusions. No separate producer statements.\n- **Frozen envelope not in this packet.** Freeze is asserted (`envelope_status_frozen`, `keys_digest_exact`, `all_prompt_hashes_frozen`). `report.md` points at `../../envelope.json`, `attempts/`, `matrix-index.json`, which are outside the listed 12 files.\n\n### Medium\n- Manifest lists **12 files / 113780 bytes** (bytes under 120000; file count exceeds default 6). Assignment asked to read all listed artifacts; treat as authorized exception, still a budget mismatch vs default handoff.\n- Manifest has no explicit `base_path`.\n- Comparison `this_run` source has path but **no** SHA-256, unlike incumbent/grok46 sources.\n- Report conclusion says GLM “7/12 eligible”; table correctly shows **7/12 planned, 11 eligible**.\n- `thinking=high` is contract/preflight only; terminal receipts have no thinking field.\n- T4 proof is derived session summaries (`cli_stdout_plus_turn_receipt`), not raw tool walks.\n- Historical Grok/Flash scores cannot be re-verified from this packet.\n- `operational-adjudication.parse_failures=0` vs grader `json_not_exact_object` on several turns: terminology is not defined in-packet.\n\n### Low\n- Preflight exact-nonce canary failed (Spark escaped newline; GLM stripped it); identity/read still claimed pass; not retried.\n- Envelope id casing: assignment `ARENA-SIX-20260919` vs files `arena-six-20260919`.\n- Timeout row counted in `completed_turns_total=40` while report says 39 ok + 1 timeout; internally consistent if “completed” means recorded slot.\n\n---\n\n## Evidence-separation check\n\n- Listed artifacts: all 12 reachable under `arena-six-spark13-glm53-review-20260919/`.\n- Claimed total 113780 bytes matches the sum of listed `bytes`.\n- Directory extra/missing files: **not proven** (no listing/exec).\n- **Verdict:** `fail`\n  - blocking: unattributed hashes\n  - blocking: blended mechanical vs reasoned evidence\n  - non_blocking: 12-file count vs default 6; missing `base_path`; `this_run` hash omitted\n\n---\n\n## Closeout\n\n- **Deliverable:** this review to Veritas main (no workspace write).\n- **Proof performed:** read-only reads of manifest + 12 listed files. No shell, no hash computation, no tests, no candidate runs.\n- **Lane/session:** `agent:qa-redteam:arena-six-spark13-glm53-grok-qa-20260919` (`dae3ea76-a3c1-4d3f-96d7-d11554225660`). Parent job/workflow ids not supplied.\n- **Usage:** `provider_usage_unavailable`\n- **Main acceptance state:** unaccepted; QA does not self-accept.\n- **Owner-gated:** hash producer attribution; Main confirmation of envelope freeze and historical baseline files; whether to open a repair lane for package hygiene.\n- **Stop lines preserved:** no runtime/config, credentials, cron, telemetry, messaging, finance, or promotion action.\n\nHandoff to Veritas main for verification and final integration."
+}

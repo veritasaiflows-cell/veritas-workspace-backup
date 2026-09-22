@@ -1,0 +1,73 @@
+{
+  "schema": "veritas.arena_six_t4_trace_evidence.v1",
+  "agent_history_source": "sessions_history(includeTools=true)",
+  "sessions": {
+    "agent:qa-redteam:arena6-glm53flash-T4-multihop-read-recovery-r1-20260919": {
+      "fixture_reads": [
+        "recovery/primary.json",
+        "recovery/index.json",
+        "recovery/payload-a.json",
+        "recovery/mirror/payload-b.json"
+      ],
+      "read_calls": 4,
+      "forbidden_reads": [],
+      "whole_interaction_format": true,
+      "visible_narration_before_final": [],
+      "final_json_only": true,
+      "primary_read_outcome": "tool_error_file_not_found",
+      "tool_summary_failures": 1
+    },
+    "agent:qa-redteam:arena6-glm53flash-T4-multihop-read-recovery-r2-20260919": {
+      "fixture_reads": [
+        "recovery/primary.json",
+        "recovery/index.json",
+        "recovery/payload-a.json",
+        "recovery/mirror/payload-b.json"
+      ],
+      "read_calls": 4,
+      "forbidden_reads": [],
+      "whole_interaction_format": true,
+      "visible_narration_before_final": [],
+      "final_json_only": true,
+      "primary_read_outcome": "tool_error_file_not_found",
+      "tool_summary_failures": 1
+    },
+    "agent:qa-redteam:arena6-deepseek41flash-T4-multihop-read-recovery-r1-20260919": {
+      "fixture_reads": [
+        "recovery/primary.json",
+        "recovery/index.json",
+        "recovery/payload-a.json",
+        "recovery/mirror/payload-b.json"
+      ],
+      "read_calls": 4,
+      "forbidden_reads": [],
+      "whole_interaction_format": false,
+      "visible_narration_before_final": [
+        "I'll start by reading the primary file.",
+        "Primary is unavailable, so I'll read the index.",
+        "Payload row count (4) \u00e2\u2030\u00a0 declared 7, so the payload is corrupt. Using the mirror."
+      ],
+      "final_json_only": true,
+      "primary_read_outcome": "tool_error_file_not_found",
+      "tool_summary_failures": 1
+    },
+    "agent:qa-redteam:arena6-deepseek41flash-T4-multihop-read-recovery-r2-20260919": {
+      "fixture_reads": [
+        "recovery/primary.json",
+        "recovery/index.json",
+        "recovery/payload-a.json",
+        "recovery/mirror/payload-b.json"
+      ],
+      "read_calls": 4,
+      "forbidden_reads": [],
+      "whole_interaction_format": false,
+      "visible_narration_before_final": [
+        "I'll start by reading the primary path."
+      ],
+      "final_json_only": true,
+      "primary_read_outcome": "structured_not_found_optional",
+      "tool_summary_failures": 0
+    }
+  },
+  "failure_counter_note": "A non-optional missing read is counted as a tool failure. DeepSeek repetition 2 used optional:true for the same exact missing-primary path, so read returned structured not_found and toolSummary.failures remained 0; both outcomes satisfy the recovery trigger and neither changes the exact-path grade."
+}

@@ -1,0 +1,12 @@
+{
+  "family": "T4",
+  "instance_id": "73cd99b6dffa2ae64ce139b5db95c59dd4f4678f6ee4ab60f08114f6ee3028e8",
+  "prompt": {
+    "fallback_index": "recovery/index.json",
+    "fixture_set_id": "fs-194d6799d314b290",
+    "read_budget": 6,
+    "request": "Recover the dataset via the harness fixture set and return only JSON.",
+    "start_path": "recovery/primary.json"
+  },
+  "response_contract": "Multi-hop dataset recovery across a truncated payload, a replica and a stale decoy.\n\nResponse contract:\nReturn exactly: {\"records\": [{\"id\": ..., \"value\": ..., \"ts\": ...} for live rows, sorted by id], \"tombstoned\": [row ids, sorted], \"superseded_rows\": integer, \"source\": \"primary\" | \"mirror\" | \"archive\"}.\n\nRules:\n- The fixture files are mounted at fixtures/<fixture_set_id>/, so the path start_path resolves to fixtures/<fixture_set_id>/<start_path>. Begin at start_path and use fallback_index when start_path is absent. Stay within read_budget reads.\n- A payload holding fewer rows than its own declared_row_count is truncated and must not be trusted. Prefer the replica that satisfies its declared_row_count.\n- The archive snapshot is stale and non-authoritative. Do not read it and never take values from it.\n- For each id keep the row with the greatest ts, breaking ties by later position in the assembled row order.\n- superseded_rows = total assembled rows minus the number of distinct ids.\n- A row whose latest version has tombstone true is excluded from records and its id is listed in tombstoned.\n- source names which of the three stores the returned rows were actually taken from.\n\nReturn only the required JSON object. No prose, no explanation, no code fences."
+}

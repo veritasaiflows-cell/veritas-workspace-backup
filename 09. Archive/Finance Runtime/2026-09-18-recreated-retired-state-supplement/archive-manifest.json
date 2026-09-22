@@ -1,0 +1,3648 @@
+{
+ "authority": {
+  "archive_only": true,
+  "capital_or_order_authority": false,
+  "delete_allowed": false,
+  "owner_approval_inferred": false,
+  "paper_or_live_execution_allowed": false,
+  "rollback_requires_owner_gate": true
+ },
+ "errors": [],
+ "file_count": 603,
+ "files": [
+  {
+   "bytes": 27472,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/A.current.json",
+   "sha256": "8124264e283afcb0f264bcde34014ef06f4e5c34c95f4e07fa01af1337b2fefa",
+   "source": "tmp/ticker-intelligence-cards/A.current.json"
+  },
+  {
+   "bytes": 27585,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AAPL.current.json",
+   "sha256": "d8db67c51ede9e15d9133fbb41488bab0b3e90b50658619c7f5ad4dd5055c927",
+   "source": "tmp/ticker-intelligence-cards/AAPL.current.json"
+  },
+  {
+   "bytes": 28470,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ABBV.current.json",
+   "sha256": "3b6040b18cbf9b3d7ee8e2d8a8a5be3c72590fd321c298b6b4355929b8829596",
+   "source": "tmp/ticker-intelligence-cards/ABBV.current.json"
+  },
+  {
+   "bytes": 28048,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ABNB.current.json",
+   "sha256": "b71e83e5f1e851679ded3df5b775fdb62c621dab252b29699cfa1b3b1e2a1509",
+   "source": "tmp/ticker-intelligence-cards/ABNB.current.json"
+  },
+  {
+   "bytes": 28888,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ABT.current.json",
+   "sha256": "77fb7a70f7b5d0297ba3a355a061922608c8d87600e766407288c1ba994f3bca",
+   "source": "tmp/ticker-intelligence-cards/ABT.current.json"
+  },
+  {
+   "bytes": 27178,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ACGL.current.json",
+   "sha256": "5bde2b8d5688e5fbf0c7e2e01e62f48e75f4c18110741cd9abc8b5af704927fd",
+   "source": "tmp/ticker-intelligence-cards/ACGL.current.json"
+  },
+  {
+   "bytes": 27818,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ACN.current.json",
+   "sha256": "72ef44e18ee5dc76cede6280cef43944ab0b662fc1824b463b8ae9d99bca2b92",
+   "source": "tmp/ticker-intelligence-cards/ACN.current.json"
+  },
+  {
+   "bytes": 28524,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ADBE.current.json",
+   "sha256": "02eed8fc2f7ab676f26016f12882353c3341428bdaafd598b29b162c7421b23d",
+   "source": "tmp/ticker-intelligence-cards/ADBE.current.json"
+  },
+  {
+   "bytes": 28830,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ADI.current.json",
+   "sha256": "9421cecc9f8c26803d382779d7a66f49d118936f6bd28f1a51fe3f8cb7a078d7",
+   "source": "tmp/ticker-intelligence-cards/ADI.current.json"
+  },
+  {
+   "bytes": 27030,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ADM.current.json",
+   "sha256": "0288927fbb22fbebe2032691711f49c050eca729ea97c78b63b4fdf92544853a",
+   "source": "tmp/ticker-intelligence-cards/ADM.current.json"
+  },
+  {
+   "bytes": 28712,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ADP.current.json",
+   "sha256": "de0c5911852cd18943f091737b22e17edb11025fd625a2e4ddea15fe623a11d2",
+   "source": "tmp/ticker-intelligence-cards/ADP.current.json"
+  },
+  {
+   "bytes": 27816,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ADSK.current.json",
+   "sha256": "e0d80dd83b1f2966e0696a512df4214182e6e780031c550bd21b7e6a524060d9",
+   "source": "tmp/ticker-intelligence-cards/ADSK.current.json"
+  },
+  {
+   "bytes": 30251,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AEE.current.json",
+   "sha256": "9683cb0669af68966a6c5e9e85808a26797ef0b0c8f906afed29376b3e5cbb69",
+   "source": "tmp/ticker-intelligence-cards/AEE.current.json"
+  },
+  {
+   "bytes": 29328,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AEP.current.json",
+   "sha256": "36834af77a5a44943bd7be0bfc25a32a2deb415eb872b72334ea02c014586127",
+   "source": "tmp/ticker-intelligence-cards/AEP.current.json"
+  },
+  {
+   "bytes": 29358,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AES.current.json",
+   "sha256": "efccdac0ad3a8cd822c4fd60e29ecc019fa6d3beb81692510778ad06739c6d3d",
+   "source": "tmp/ticker-intelligence-cards/AES.current.json"
+  },
+  {
+   "bytes": 27970,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AFL.current.json",
+   "sha256": "a5ee95a387843cc0f5b51825c07a759ff25dafbc4b52c17ef58c067dfe61def2",
+   "source": "tmp/ticker-intelligence-cards/AFL.current.json"
+  },
+  {
+   "bytes": 27006,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AIG.current.json",
+   "sha256": "6ceafddf8b599fc83c8443c8c0603fd2076f553af09d72f0b512aa23a1ed3434",
+   "source": "tmp/ticker-intelligence-cards/AIG.current.json"
+  },
+  {
+   "bytes": 26892,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AIZ.current.json",
+   "sha256": "9a3b032c8bd0c3309f73b2f646d971e8bff317782cfc0a3ec449181002e779ef",
+   "source": "tmp/ticker-intelligence-cards/AIZ.current.json"
+  },
+  {
+   "bytes": 29632,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AJG.current.json",
+   "sha256": "c46f077daf1065302a06e6a60e5252f036df12e1e13a4926bbe125ecd1c9112d",
+   "source": "tmp/ticker-intelligence-cards/AJG.current.json"
+  },
+  {
+   "bytes": 30271,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AKAM.current.json",
+   "sha256": "654fb61ab3983564040f7a7acbdf788d55fdf5ff50c7301b437fdd3f7edb5829",
+   "source": "tmp/ticker-intelligence-cards/AKAM.current.json"
+  },
+  {
+   "bytes": 28127,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ALB.current.json",
+   "sha256": "d70eea222225b4dfcfaab636e5dd3fd0235e7cd7e53f81ba30fbe04ac06046d9",
+   "source": "tmp/ticker-intelligence-cards/ALB.current.json"
+  },
+  {
+   "bytes": 27963,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ALGN.current.json",
+   "sha256": "e654bfc048ab64dea6eb0b17f10c78cdd2f906433e9c62fb3dd8fe3238209132",
+   "source": "tmp/ticker-intelligence-cards/ALGN.current.json"
+  },
+  {
+   "bytes": 27575,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ALL.current.json",
+   "sha256": "47c7d66f8cd104fb9ebfddb35b99d321a45370633f07a9bc71f929751e1795db",
+   "source": "tmp/ticker-intelligence-cards/ALL.current.json"
+  },
+  {
+   "bytes": 27609,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ALLE.current.json",
+   "sha256": "4de4e6ccb8b55b88066a39262bbc8bec8849bd5f0e4b3b05060a51e9d4db99ae",
+   "source": "tmp/ticker-intelligence-cards/ALLE.current.json"
+  },
+  {
+   "bytes": 28886,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AMAT.current.json",
+   "sha256": "3e8047006a2f22def37e85bbe91dc297174e13dd381ee40d57df82532ca8dbaf",
+   "source": "tmp/ticker-intelligence-cards/AMAT.current.json"
+  },
+  {
+   "bytes": 31009,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AMCR.current.json",
+   "sha256": "aa6e85f5b01d1bb448e36516f7b54bcae95e899fd4b1827b1a17139890b1639d",
+   "source": "tmp/ticker-intelligence-cards/AMCR.current.json"
+  },
+  {
+   "bytes": 40644,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AMD.current.json",
+   "sha256": "dfc0609c111cd539bbe53cae64db27df00f5dd465a99223cc3491ea94c86f8a1",
+   "source": "tmp/ticker-intelligence-cards/AMD.current.json"
+  },
+  {
+   "bytes": 28135,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AME.current.json",
+   "sha256": "6aa556108bbf8ff8e8ed7d5665b09496ab61f664783e17a016cbb3b74eb17468",
+   "source": "tmp/ticker-intelligence-cards/AME.current.json"
+  },
+  {
+   "bytes": 27355,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AMGN.current.json",
+   "sha256": "901b9124a23d0deaa862d7bd085ab2d5b722ce479bb2b2d11014a8c2a93f20ed",
+   "source": "tmp/ticker-intelligence-cards/AMGN.current.json"
+  },
+  {
+   "bytes": 27653,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AMP.current.json",
+   "sha256": "cdda993e02c3a368842dcfe14d4997b0636e31462b6737551b80c51fb326a24f",
+   "source": "tmp/ticker-intelligence-cards/AMP.current.json"
+  },
+  {
+   "bytes": 28376,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AMT.current.json",
+   "sha256": "87bc4f82ee576be7d11daf23995df1faf12e556cb1d012ac5b71a1405a2129dc",
+   "source": "tmp/ticker-intelligence-cards/AMT.current.json"
+  },
+  {
+   "bytes": 40771,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AMZN.current.json",
+   "sha256": "87fb8acdcb24269435d1d1d8d6236be93ea0a135cce6c44b169021a307131c43",
+   "source": "tmp/ticker-intelligence-cards/AMZN.current.json"
+  },
+  {
+   "bytes": 28339,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ANET.current.json",
+   "sha256": "2fe14a159515fd12ebbc89d04e3906e51da8dd01a394fe23690a7c4dab03569a",
+   "source": "tmp/ticker-intelligence-cards/ANET.current.json"
+  },
+  {
+   "bytes": 28535,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AON.current.json",
+   "sha256": "a358b374981190faa5dc8f47b89aeb5471dc970df42e995e0728298565135d72",
+   "source": "tmp/ticker-intelligence-cards/AON.current.json"
+  },
+  {
+   "bytes": 28585,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AOS.current.json",
+   "sha256": "5706eccc93878ec7ddb7ef9c64429a6df8061dd3f937fff17186df3f2e38d8eb",
+   "source": "tmp/ticker-intelligence-cards/AOS.current.json"
+  },
+  {
+   "bytes": 27916,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/APA.current.json",
+   "sha256": "a7c717524675869be5ce815c9a930a73bd5a451c822efd9815bff396fa720c7c",
+   "source": "tmp/ticker-intelligence-cards/APA.current.json"
+  },
+  {
+   "bytes": 28569,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/APD.current.json",
+   "sha256": "72370f5da94339bfda420949f51f41fe496701b9a8a57e37e53b87c2bcf0786a",
+   "source": "tmp/ticker-intelligence-cards/APD.current.json"
+  },
+  {
+   "bytes": 27847,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/APH.current.json",
+   "sha256": "7c2e66a762eb72c2350e4a87dc0f5212eed419fd8681035dff7e810c6c19a3e7",
+   "source": "tmp/ticker-intelligence-cards/APH.current.json"
+  },
+  {
+   "bytes": 28644,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/APO.current.json",
+   "sha256": "dbd35bb9629908fdb089ab6788fcff101896a449ad29e9ce1f7d30bd1428d46d",
+   "source": "tmp/ticker-intelligence-cards/APO.current.json"
+  },
+  {
+   "bytes": 27818,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/APP.current.json",
+   "sha256": "b218ff9f80fabea6a866ac7ec298cf138c051ea187078cd15965240fcfa97bc4",
+   "source": "tmp/ticker-intelligence-cards/APP.current.json"
+  },
+  {
+   "bytes": 27456,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/APTV.current.json",
+   "sha256": "dc973d4abd9005cd5ba3fb27b995d3e3cb05f504643b5d06a2777270fdfaf6f6",
+   "source": "tmp/ticker-intelligence-cards/APTV.current.json"
+  },
+  {
+   "bytes": 28952,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ARE.current.json",
+   "sha256": "f9a5ed02be031163ef2fd63764b639b92cf3a008764f6eab53e00f2d733a5fcf",
+   "source": "tmp/ticker-intelligence-cards/ARE.current.json"
+  },
+  {
+   "bytes": 30575,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ARES.current.json",
+   "sha256": "04596c68734e1c1fad68f47e15e35ec88fad51d99f6f0aa3fe6ed95a926b3cb1",
+   "source": "tmp/ticker-intelligence-cards/ARES.current.json"
+  },
+  {
+   "bytes": 28651,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ASML.current.json",
+   "sha256": "e4a194d2bec86436cdbf459780d5e39fff9c696010d2f9208350dc1938d565d1",
+   "source": "tmp/ticker-intelligence-cards/ASML.current.json"
+  },
+  {
+   "bytes": 29720,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ATO.current.json",
+   "sha256": "9f42d5a5d946650e99b75e43c62f1c77eb62613c9386dc42e359076d4b8a837e",
+   "source": "tmp/ticker-intelligence-cards/ATO.current.json"
+  },
+  {
+   "bytes": 28336,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AVB.current.json",
+   "sha256": "12bc05c63ddd690c2ec7d785104f39bd6504403a110f11fc2314f39ea9af25d5",
+   "source": "tmp/ticker-intelligence-cards/AVB.current.json"
+  },
+  {
+   "bytes": 28632,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AVGO.current.json",
+   "sha256": "998fe5e3874160d06cad2b98c6ccd7eece0049733664491b9002221257615a06",
+   "source": "tmp/ticker-intelligence-cards/AVGO.current.json"
+  },
+  {
+   "bytes": 27566,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AVY.current.json",
+   "sha256": "de223cd567469a4faaef230e76c34cb2bdc0f1c0c3771211fd3ea3a5b48b28f8",
+   "source": "tmp/ticker-intelligence-cards/AVY.current.json"
+  },
+  {
+   "bytes": 28407,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AWK.current.json",
+   "sha256": "83d01136fd6655d686282863fe15d888bf4256ee7bbd4179ae87a10ef4f7d583",
+   "source": "tmp/ticker-intelligence-cards/AWK.current.json"
+  },
+  {
+   "bytes": 29006,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AXON.current.json",
+   "sha256": "1364cd7f2439fd97e26ccf3648e48d68b41449e59eb945961e26fd077ba40dcf",
+   "source": "tmp/ticker-intelligence-cards/AXON.current.json"
+  },
+  {
+   "bytes": 27547,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AXP.current.json",
+   "sha256": "47f6f7b0f4740c5df3c52038e09155eb960aae5415fb2b58ef81c9a5171b9070",
+   "source": "tmp/ticker-intelligence-cards/AXP.current.json"
+  },
+  {
+   "bytes": 27468,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/AZO.current.json",
+   "sha256": "78bb31e07059d6fac675b5ed1ea047674b1cfa0ea2be47c3b5cf41d15de6f5dd",
+   "source": "tmp/ticker-intelligence-cards/AZO.current.json"
+  },
+  {
+   "bytes": 29012,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BA.current.json",
+   "sha256": "199e7b2ac4356003600af649165baf5cec50f4ea9a2af296a499137cd5caf42a",
+   "source": "tmp/ticker-intelligence-cards/BA.current.json"
+  },
+  {
+   "bytes": 26993,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BAC.current.json",
+   "sha256": "6b0586a2dad33ae9240ab67eab200467693f17205170382c430d887cee794590",
+   "source": "tmp/ticker-intelligence-cards/BAC.current.json"
+  },
+  {
+   "bytes": 27537,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BALL.current.json",
+   "sha256": "96b3a2d7414e6ef644670900d3f2c973f718be4d052d7885f1c150001eb7fc04",
+   "source": "tmp/ticker-intelligence-cards/BALL.current.json"
+  },
+  {
+   "bytes": 27941,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BAX.current.json",
+   "sha256": "e2cd6f9fbdc140eb45afcf5c0d7055f1d0eeddfa00db33ce5eab6b7a01a18b18",
+   "source": "tmp/ticker-intelligence-cards/BAX.current.json"
+  },
+  {
+   "bytes": 27553,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BBY.current.json",
+   "sha256": "e86eef3dea74f38bf9856046e74411112f40e48c92e8a59f29e0c1ce1fd077cd",
+   "source": "tmp/ticker-intelligence-cards/BBY.current.json"
+  },
+  {
+   "bytes": 27450,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BDX.current.json",
+   "sha256": "93f24724c3ad13e6a8f72a4e035d3fad094246b1886d926dfb4e9c47ceffcf49",
+   "source": "tmp/ticker-intelligence-cards/BDX.current.json"
+  },
+  {
+   "bytes": 29952,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BEN.current.json",
+   "sha256": "8d355175337700d31d1061e461d83498cb32b3379ddb5c04ebc08293c08654f6",
+   "source": "tmp/ticker-intelligence-cards/BEN.current.json"
+  },
+  {
+   "bytes": 28016,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BF-B.current.json",
+   "sha256": "7997bb76f2648c7f766c42c6c7eed0383bb70183ad601b72b630c03b000ad393",
+   "source": "tmp/ticker-intelligence-cards/BF-B.current.json"
+  },
+  {
+   "bytes": 27986,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BG.current.json",
+   "sha256": "55b43d1b8bd9b453f89472eecd6ffd56c8ad138fa16e723ca4a573ad60be3e14",
+   "source": "tmp/ticker-intelligence-cards/BG.current.json"
+  },
+  {
+   "bytes": 27873,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BIIB.current.json",
+   "sha256": "b7317a624be5dd163db5b9da03f9f18551899d16661aab4cfd1bfc5d0a691b96",
+   "source": "tmp/ticker-intelligence-cards/BIIB.current.json"
+  },
+  {
+   "bytes": 33466,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BKNG.current.json",
+   "sha256": "72dd66d2f33dac5796ebe287bc9b1755d977361ad61b6a2e9d3392dc493c44ba",
+   "source": "tmp/ticker-intelligence-cards/BKNG.current.json"
+  },
+  {
+   "bytes": 27460,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BKR.current.json",
+   "sha256": "3a6773234d66699b64832bf1c98f9ed383eadd3695e587530317a003c148da15",
+   "source": "tmp/ticker-intelligence-cards/BKR.current.json"
+  },
+  {
+   "bytes": 29052,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BLDR.current.json",
+   "sha256": "679caa2adbc8316dee819318c724f1c60f5a4f8fa8c8fb7cd47ded37bc1d6a4b",
+   "source": "tmp/ticker-intelligence-cards/BLDR.current.json"
+  },
+  {
+   "bytes": 29939,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BLK.current.json",
+   "sha256": "8fad3086bb71dbd49680d84ab53a64327bfd68e15e2867642c30cd7ec8f1e0de",
+   "source": "tmp/ticker-intelligence-cards/BLK.current.json"
+  },
+  {
+   "bytes": 27407,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BMY.current.json",
+   "sha256": "cd8413c8e22f13addd2af37fa05c828fa12045a60803a9ae67ee332b766b086f",
+   "source": "tmp/ticker-intelligence-cards/BMY.current.json"
+  },
+  {
+   "bytes": 28027,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BNY.current.json",
+   "sha256": "2208eb38d37681b9ffaaeb1c9539f08da7bcd07362177f1a5c6212ae11946e5e",
+   "source": "tmp/ticker-intelligence-cards/BNY.current.json"
+  },
+  {
+   "bytes": 27673,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BR.current.json",
+   "sha256": "ffecf830d2aa2d5fe5d1af442c53aed4fb1a0cde75afff3c7635a697ab353829",
+   "source": "tmp/ticker-intelligence-cards/BR.current.json"
+  },
+  {
+   "bytes": 33648,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BRK.B.current.json",
+   "sha256": "2b7db0af4d8594f0836f0f72b70fb62dd4a50f06797b12f2826bf8da6974d3b4",
+   "source": "tmp/ticker-intelligence-cards/BRK.B.current.json"
+  },
+  {
+   "bytes": 28599,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BRO.current.json",
+   "sha256": "b62a899f7d52702d09e6c73808c0fa371e9278dff67d52b478cef9e068e5ea0a",
+   "source": "tmp/ticker-intelligence-cards/BRO.current.json"
+  },
+  {
+   "bytes": 27471,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BSX.current.json",
+   "sha256": "96f1cc741d58e9186d5ef81bc0978bd3c33cac1b1eb62bbd87c199210aca1ea1",
+   "source": "tmp/ticker-intelligence-cards/BSX.current.json"
+  },
+  {
+   "bytes": 28160,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BX.current.json",
+   "sha256": "aab07904431ba3e036bc70d64bcfb4398271360061ccdb2a04b38a6d47d1e7c3",
+   "source": "tmp/ticker-intelligence-cards/BX.current.json"
+  },
+  {
+   "bytes": 28355,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/BXP.current.json",
+   "sha256": "80a7cbaf4f6ae86b54437e195c4b87713f6d61cc937f5be55535426140fe3fca",
+   "source": "tmp/ticker-intelligence-cards/BXP.current.json"
+  },
+  {
+   "bytes": 27956,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/C.current.json",
+   "sha256": "93e1ee86e05e8c78c0e3bc5aef789f5083025034d02b9f4f2e128b897da4fab1",
+   "source": "tmp/ticker-intelligence-cards/C.current.json"
+  },
+  {
+   "bytes": 27528,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CAG.current.json",
+   "sha256": "5b060ae49a07596e1886cd47d4e680807c9443754ba93c515d2823f99ef4dbf1",
+   "source": "tmp/ticker-intelligence-cards/CAG.current.json"
+  },
+  {
+   "bytes": 27992,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CAH.current.json",
+   "sha256": "653394c9491422262378268f4e21285b01b797b8072368bcfb0cc2a2299cf209",
+   "source": "tmp/ticker-intelligence-cards/CAH.current.json"
+  },
+  {
+   "bytes": 27033,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CARR.current.json",
+   "sha256": "10c13dcf05e25267502f114ee4f0e5545dc751897aab7b375aff668dca406657",
+   "source": "tmp/ticker-intelligence-cards/CARR.current.json"
+  },
+  {
+   "bytes": 27539,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CASY.current.json",
+   "sha256": "c91397398ab95dc3c234eaf5ed0491b0612bf637fad4864af6eac8690f0bdda9",
+   "source": "tmp/ticker-intelligence-cards/CASY.current.json"
+  },
+  {
+   "bytes": 33125,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CAT.current.json",
+   "sha256": "c857ff6649d98c352e2c48fde9ec652e7a75abead1d26ffd9ce2ddfbfbe94f7f",
+   "source": "tmp/ticker-intelligence-cards/CAT.current.json"
+  },
+  {
+   "bytes": 27510,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CB.current.json",
+   "sha256": "4bf93d9afe6e9f848f2ded28390acd0717fac9fcf1a77ad3091d0ceb314cc3ba",
+   "source": "tmp/ticker-intelligence-cards/CB.current.json"
+  },
+  {
+   "bytes": 28161,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CBOE.current.json",
+   "sha256": "46f4430c102506daed42447bcb4650cc4b50232b9b00aa1ac2bad05290ff5491",
+   "source": "tmp/ticker-intelligence-cards/CBOE.current.json"
+  },
+  {
+   "bytes": 28363,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CBRE.current.json",
+   "sha256": "9fda9ea5bc4ae240252f383b5270665e49d931a2b3cb6ac02ccb899b417e07a5",
+   "source": "tmp/ticker-intelligence-cards/CBRE.current.json"
+  },
+  {
+   "bytes": 27970,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CCI.current.json",
+   "sha256": "7dc771774efca988fc1403c50965a2916790432281dd8ef4b50a4c977b5c0da8",
+   "source": "tmp/ticker-intelligence-cards/CCI.current.json"
+  },
+  {
+   "bytes": 28148,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CCL.current.json",
+   "sha256": "f5c153717af086434ad0174e54be3bfeee2d3ea89463e98212b3ab6983ae464d",
+   "source": "tmp/ticker-intelligence-cards/CCL.current.json"
+  },
+  {
+   "bytes": 28923,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CDNS.current.json",
+   "sha256": "6fda0738240171e64624a0b514b9637b755ab7850e1d3cdcb1dbacd1f9abb461",
+   "source": "tmp/ticker-intelligence-cards/CDNS.current.json"
+  },
+  {
+   "bytes": 29381,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CDW.current.json",
+   "sha256": "49347186811a68d314dbb73f4fc0f22359724ecf567d17eeadc89eed8757855a",
+   "source": "tmp/ticker-intelligence-cards/CDW.current.json"
+  },
+  {
+   "bytes": 29901,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CEG.current.json",
+   "sha256": "af34408ea49633f039b32d3761e40dacc700ddc6b7b28a55c6237cbafca2f867",
+   "source": "tmp/ticker-intelligence-cards/CEG.current.json"
+  },
+  {
+   "bytes": 27530,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CF.current.json",
+   "sha256": "772c02a350a1892689d6457808ed8e3ff5a647524d4af9adae9fa0229f5ad34f",
+   "source": "tmp/ticker-intelligence-cards/CF.current.json"
+  },
+  {
+   "bytes": 28008,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CFG.current.json",
+   "sha256": "be40d94d112e7d3fb5eaf6e43df13d444c52770561ead651b687a9997b13f173",
+   "source": "tmp/ticker-intelligence-cards/CFG.current.json"
+  },
+  {
+   "bytes": 26973,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CHD.current.json",
+   "sha256": "0d8c3073a5f2b1df586579e286218edc97e44ce553392d1c6f647404870782b2",
+   "source": "tmp/ticker-intelligence-cards/CHD.current.json"
+  },
+  {
+   "bytes": 28008,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CHRW.current.json",
+   "sha256": "cccc3f5810aba7336d8e8e12dd7f4a47f62417acc0f699c3727fb49231359290",
+   "source": "tmp/ticker-intelligence-cards/CHRW.current.json"
+  },
+  {
+   "bytes": 28167,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CHTR.current.json",
+   "sha256": "89f695b1a17c38bd849779debaa22b390d94d1346aa6895597c82fa189bc0233",
+   "source": "tmp/ticker-intelligence-cards/CHTR.current.json"
+  },
+  {
+   "bytes": 27367,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CI.current.json",
+   "sha256": "9b02b1ee0a3fdba3a2fec75475538ddbf84c2090537965f131f98e796c6f9a9f",
+   "source": "tmp/ticker-intelligence-cards/CI.current.json"
+  },
+  {
+   "bytes": 28289,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CIEN.current.json",
+   "sha256": "3770c4d27dbcec9c2029019c89789a724d7fde0d06da8a585111071c220bf78a",
+   "source": "tmp/ticker-intelligence-cards/CIEN.current.json"
+  },
+  {
+   "bytes": 27563,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CINF.current.json",
+   "sha256": "d7caec30826c0e5c6fbe2c8ba0a36009fa33625ac9163aaaf1d4e2cec2a5b1c3",
+   "source": "tmp/ticker-intelligence-cards/CINF.current.json"
+  },
+  {
+   "bytes": 27511,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CL.current.json",
+   "sha256": "b966dc5ad20f92546314642212d2d6c32029686c1f83454572c2edc70fba9ee5",
+   "source": "tmp/ticker-intelligence-cards/CL.current.json"
+  },
+  {
+   "bytes": 27971,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CLX.current.json",
+   "sha256": "ef1af8d4bc914a4b4b62473998ea0a57bf682f406a7ab67bc04d11cb55b6f4f2",
+   "source": "tmp/ticker-intelligence-cards/CLX.current.json"
+  },
+  {
+   "bytes": 26979,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CMCSA.current.json",
+   "sha256": "0a48f4b3d8a0eab2177c752fd2dff8f74a1aa25f2a274114943c8cf4494ad6a8",
+   "source": "tmp/ticker-intelligence-cards/CMCSA.current.json"
+  },
+  {
+   "bytes": 34073,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CME.current.json",
+   "sha256": "e7cecc12d2ed05c8968a66cff3f5cc9eda49aa2fdf8d5186fd2ebf33a341770b",
+   "source": "tmp/ticker-intelligence-cards/CME.current.json"
+  },
+  {
+   "bytes": 28156,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CMG.current.json",
+   "sha256": "c5ec2813281cf79356f2bab61b213105dbe256fe46694fabb77f6b00da0b14b6",
+   "source": "tmp/ticker-intelligence-cards/CMG.current.json"
+  },
+  {
+   "bytes": 28544,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CMI.current.json",
+   "sha256": "a55aee81c3bf2e6ba461fb193e4002f781a3a5fd1176cf27275f796c80be78c6",
+   "source": "tmp/ticker-intelligence-cards/CMI.current.json"
+  },
+  {
+   "bytes": 30276,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CMS.current.json",
+   "sha256": "b194d7b356b0d696f0161e10aaec01171a2e7a4ed5d3a369f27fb83dbbd64973",
+   "source": "tmp/ticker-intelligence-cards/CMS.current.json"
+  },
+  {
+   "bytes": 28922,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CNC.current.json",
+   "sha256": "4198878e7a101e98163e3e01e170ead53252d35ff3ac5c63370538072e587782",
+   "source": "tmp/ticker-intelligence-cards/CNC.current.json"
+  },
+  {
+   "bytes": 28376,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CNP.current.json",
+   "sha256": "dd305e58c16b3b9eea298590d0da9c4c04c5206dcd7eab334edaf8e70ee51b58",
+   "source": "tmp/ticker-intelligence-cards/CNP.current.json"
+  },
+  {
+   "bytes": 28754,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/COHR.current.json",
+   "sha256": "29cd0fce5b84194fe48d80ba261147e49d43703a8290a01d1410d79c592c75a4",
+   "source": "tmp/ticker-intelligence-cards/COHR.current.json"
+  },
+  {
+   "bytes": 28412,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/COO.current.json",
+   "sha256": "ddd3840cc910b4dfe8adde0539dd5c85d9d8d9da3c4a68adf056ce7c3a3f77f9",
+   "source": "tmp/ticker-intelligence-cards/COO.current.json"
+  },
+  {
+   "bytes": 27370,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/COP.current.json",
+   "sha256": "70fd61e831e7d11ec3d1956ccb99cb0f607d5b74f40965f817fe76e91c92ec72",
+   "source": "tmp/ticker-intelligence-cards/COP.current.json"
+  },
+  {
+   "bytes": 26871,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/COR.current.json",
+   "sha256": "ad6c82d65bfc40d4a12221a9974b0c7dc0906da63db2443adf944d03930467c4",
+   "source": "tmp/ticker-intelligence-cards/COR.current.json"
+  },
+  {
+   "bytes": 27937,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/COST.current.json",
+   "sha256": "d11242411d6e2b67973466d0ee20080e7fb723680151dab696228df076719fc2",
+   "source": "tmp/ticker-intelligence-cards/COST.current.json"
+  },
+  {
+   "bytes": 28994,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CPB.current.json",
+   "sha256": "a94b76a104066b0c7f67fe2568dbf540b5c913e19d84f8957ae4922039f19b8b",
+   "source": "tmp/ticker-intelligence-cards/CPB.current.json"
+  },
+  {
+   "bytes": 28123,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CPRT.current.json",
+   "sha256": "4f19740d1017cddc053e448fb78a8c00e474f40273755f5a480a05f18c7d79c2",
+   "source": "tmp/ticker-intelligence-cards/CPRT.current.json"
+  },
+  {
+   "bytes": 28995,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CPT.current.json",
+   "sha256": "be4d4c85b79c214a3ca7c4c0a8f2f03ef138444071e8f0741a5cc1ed33ae798a",
+   "source": "tmp/ticker-intelligence-cards/CPT.current.json"
+  },
+  {
+   "bytes": 27971,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CRH.current.json",
+   "sha256": "3f1c8293fbcaf662dffc38d60ad5bca85a765b879ee002f659d71a5630445094",
+   "source": "tmp/ticker-intelligence-cards/CRH.current.json"
+  },
+  {
+   "bytes": 28038,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CRL.current.json",
+   "sha256": "abf234c656384f7ebf18662cb8d0189ba73ba5a28af6d3cb8a393cd2fa546e7b",
+   "source": "tmp/ticker-intelligence-cards/CRL.current.json"
+  },
+  {
+   "bytes": 28626,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CRM.current.json",
+   "sha256": "6a2d6e6927513ae4e069def16738539e9b05698e1032977cc54dd08bfe4fb66d",
+   "source": "tmp/ticker-intelligence-cards/CRM.current.json"
+  },
+  {
+   "bytes": 29638,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CRWD.current.json",
+   "sha256": "92dad104d47dbe316b5045365729b03c325ab16f23d0f5b7dfe2339157973ac1",
+   "source": "tmp/ticker-intelligence-cards/CRWD.current.json"
+  },
+  {
+   "bytes": 28670,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CSCO.current.json",
+   "sha256": "30a0ddfaf5869381e9326aba2181387475f587701ddaba54e1114296d6d91c09",
+   "source": "tmp/ticker-intelligence-cards/CSCO.current.json"
+  },
+  {
+   "bytes": 28401,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CSGP.current.json",
+   "sha256": "ed5e2d44665ac84ba7397e7368ba68a19ef45abc2f60149c2f8bb1f0a14446bd",
+   "source": "tmp/ticker-intelligence-cards/CSGP.current.json"
+  },
+  {
+   "bytes": 27045,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CSX.current.json",
+   "sha256": "65103cadd37fa003614d292c603ed29f81db413b9bbb29eb4cacf54642ce9796",
+   "source": "tmp/ticker-intelligence-cards/CSX.current.json"
+  },
+  {
+   "bytes": 28066,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CTAS.current.json",
+   "sha256": "8ff43f359cccd9a0b14f8a1e778105f203a15ba05a4146f9fd8ae82ed5a2a21a",
+   "source": "tmp/ticker-intelligence-cards/CTAS.current.json"
+  },
+  {
+   "bytes": 28322,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CTSH.current.json",
+   "sha256": "52d9ecaa54aee46f78e4ce5e165ff11de5f0612f125e17fe877f59021b038f71",
+   "source": "tmp/ticker-intelligence-cards/CTSH.current.json"
+  },
+  {
+   "bytes": 28565,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CTVA.current.json",
+   "sha256": "7e856eca2d1cfd2e3965ba9d1fdaf4e1359b6de73a0a413bd01301fe3a7de026",
+   "source": "tmp/ticker-intelligence-cards/CTVA.current.json"
+  },
+  {
+   "bytes": 28105,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CVNA.current.json",
+   "sha256": "f0a4250f5c434acfe16a3038ab41d6b49ffdb05bcfe3103654d15f0d0318c010",
+   "source": "tmp/ticker-intelligence-cards/CVNA.current.json"
+  },
+  {
+   "bytes": 26897,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CVS.current.json",
+   "sha256": "f98fa31f367f60110c90509a92ed0eada7c6e2b7ff2275c86faa64f1a3e6fd5c",
+   "source": "tmp/ticker-intelligence-cards/CVS.current.json"
+  },
+  {
+   "bytes": 34326,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/CVX.current.json",
+   "sha256": "86744733c92234470577821679375c942fbede43ffebe0faa6359649f2ef570e",
+   "source": "tmp/ticker-intelligence-cards/CVX.current.json"
+  },
+  {
+   "bytes": 28847,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/D.current.json",
+   "sha256": "9209920476d4ef9b0bafb7c3821cf2788404945cabdc5f1fb35abb26b7938380",
+   "source": "tmp/ticker-intelligence-cards/D.current.json"
+  },
+  {
+   "bytes": 27594,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DAL.current.json",
+   "sha256": "ac269a57d716944938ec11ad366d0330f96cba824b30f68fcb3dccd72b2995ba",
+   "source": "tmp/ticker-intelligence-cards/DAL.current.json"
+  },
+  {
+   "bytes": 28621,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DASH.current.json",
+   "sha256": "b0af67479483b44a5c514c441123018adfaf7ca624caa5e2ce68a6dd014d239e",
+   "source": "tmp/ticker-intelligence-cards/DASH.current.json"
+  },
+  {
+   "bytes": 29324,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DD.current.json",
+   "sha256": "34cf148cb12cfda788a77733d1746c2c954078535f85386ed0b24dec9958a845",
+   "source": "tmp/ticker-intelligence-cards/DD.current.json"
+  },
+  {
+   "bytes": 28981,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DDOG.current.json",
+   "sha256": "f97b0a481250b1ccc0e3265872b6bfa9de81fe4383eabd3f6cd052dfa5feef2a",
+   "source": "tmp/ticker-intelligence-cards/DDOG.current.json"
+  },
+  {
+   "bytes": 27986,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DE.current.json",
+   "sha256": "a68357c8247c2903a1e4ce6c31d208d8a5c93ff3dd225c9d0aaee2432030a254",
+   "source": "tmp/ticker-intelligence-cards/DE.current.json"
+  },
+  {
+   "bytes": 28082,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DECK.current.json",
+   "sha256": "05f73d8bf2e6c5bbbe223bc66497d84df063d72023ecc1520f376230afed34e9",
+   "source": "tmp/ticker-intelligence-cards/DECK.current.json"
+  },
+  {
+   "bytes": 27883,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DELL.current.json",
+   "sha256": "68629e08955ea3a3d59f10fa8e5fa75cfa92f116c9ffb8cc298ac351417b799a",
+   "source": "tmp/ticker-intelligence-cards/DELL.current.json"
+  },
+  {
+   "bytes": 27956,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DG.current.json",
+   "sha256": "810a499ef0fc9b9c6f98327782e400ed3febbbc4087482143261c952eed5d82c",
+   "source": "tmp/ticker-intelligence-cards/DG.current.json"
+  },
+  {
+   "bytes": 26897,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DGX.current.json",
+   "sha256": "16d99beb173b0135c5179cadfbec57dac4fa373553289436e738646c605a3d7d",
+   "source": "tmp/ticker-intelligence-cards/DGX.current.json"
+  },
+  {
+   "bytes": 27953,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DHI.current.json",
+   "sha256": "b8811be0a25f19045f7f6b8e3e4c1cfb31eeeb6019199ef9c04ddbba872b1956",
+   "source": "tmp/ticker-intelligence-cards/DHI.current.json"
+  },
+  {
+   "bytes": 28919,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DHR.current.json",
+   "sha256": "dbeb9351cb828035f167390bcd1097dcb6ed3234da618e4d3088857a76c4ba7e",
+   "source": "tmp/ticker-intelligence-cards/DHR.current.json"
+  },
+  {
+   "bytes": 27645,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DIS.current.json",
+   "sha256": "0522c0a1e05e891ab8786b2c8f1b9496b3bbe07bc44d54d66d6538e9e0d90307",
+   "source": "tmp/ticker-intelligence-cards/DIS.current.json"
+  },
+  {
+   "bytes": 28858,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DLR.current.json",
+   "sha256": "d77260b3598cd667909f3cad73ced5a0a156b1a0f88d4f3146ab0d85e566fa1e",
+   "source": "tmp/ticker-intelligence-cards/DLR.current.json"
+  },
+  {
+   "bytes": 28502,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DLTR.current.json",
+   "sha256": "c53216afa9e1b5384b265669f711de7a54131ae51740c93103459e57f14d0dbf",
+   "source": "tmp/ticker-intelligence-cards/DLTR.current.json"
+  },
+  {
+   "bytes": 28861,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DOC.current.json",
+   "sha256": "70c0e54103099af6cb006a91a282550253a74741058ad124bf5bf0acc27c3eb2",
+   "source": "tmp/ticker-intelligence-cards/DOC.current.json"
+  },
+  {
+   "bytes": 27081,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DOV.current.json",
+   "sha256": "14e79a6964a0e5095bdc29716d0ddbd911da8d9ef452dc829a453b88e42b7da2",
+   "source": "tmp/ticker-intelligence-cards/DOV.current.json"
+  },
+  {
+   "bytes": 27498,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DOW.current.json",
+   "sha256": "33f0c81e300f90806708ef60879d2411409cc20ed56c18f740dfdf2b84057f0a",
+   "source": "tmp/ticker-intelligence-cards/DOW.current.json"
+  },
+  {
+   "bytes": 27925,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DPZ.current.json",
+   "sha256": "f507450f6f2289d182ebc631cd0a9ec79e3cfa4699e2db7fbb7e9fd0ac8672f0",
+   "source": "tmp/ticker-intelligence-cards/DPZ.current.json"
+  },
+  {
+   "bytes": 27571,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DRI.current.json",
+   "sha256": "d96bc929af9fe97545918954ee146492c9167b69f11502a2c855b7a5171fabe9",
+   "source": "tmp/ticker-intelligence-cards/DRI.current.json"
+  },
+  {
+   "bytes": 28831,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DTE.current.json",
+   "sha256": "438a422ae4fd11d65aa9c3b2836fd9b79237bbc32c9726896b4fcfebee1dde15",
+   "source": "tmp/ticker-intelligence-cards/DTE.current.json"
+  },
+  {
+   "bytes": 28397,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DUK.current.json",
+   "sha256": "1bb545c22dde6c76ee95c67986ad07d6dbc47df4895ae36eaf49701e9b0cc86d",
+   "source": "tmp/ticker-intelligence-cards/DUK.current.json"
+  },
+  {
+   "bytes": 28946,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DVA.current.json",
+   "sha256": "3c35933fdb0d27f184d67628c38a5b6072184c86e9d331d15d4858d3466bc78b",
+   "source": "tmp/ticker-intelligence-cards/DVA.current.json"
+  },
+  {
+   "bytes": 29937,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/DVN.current.json",
+   "sha256": "d6319513e3b5337bbc365179481fc96e5f802247ce3d43e80986551694f7fb8f",
+   "source": "tmp/ticker-intelligence-cards/DVN.current.json"
+  },
+  {
+   "bytes": 27422,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EA.current.json",
+   "sha256": "e0d6b7155ada6b76c65a46499b88e3880490343f55dfdcb93f901baa1f174db7",
+   "source": "tmp/ticker-intelligence-cards/EA.current.json"
+  },
+  {
+   "bytes": 27983,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EBAY.current.json",
+   "sha256": "3fc4dca136a0e4e462d545cd0735b18b67ef6c90071efa236dd8482ccd5fa9db",
+   "source": "tmp/ticker-intelligence-cards/EBAY.current.json"
+  },
+  {
+   "bytes": 32675,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ECL.current.json",
+   "sha256": "3f80a26d68d2f32aaef2b0cbd29b349b4556d7f5e1aae5801ab59348c12b3ccb",
+   "source": "tmp/ticker-intelligence-cards/ECL.current.json"
+  },
+  {
+   "bytes": 28761,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ED.current.json",
+   "sha256": "b11aefc3f054162243a8463941b9086453c2aebd22a0750a6b762ca51e1442f2",
+   "source": "tmp/ticker-intelligence-cards/ED.current.json"
+  },
+  {
+   "bytes": 28052,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EFX.current.json",
+   "sha256": "716a089bee2f775b38e1e92072ed3531230b6071c66c3b7d159ff08f780e1fd7",
+   "source": "tmp/ticker-intelligence-cards/EFX.current.json"
+  },
+  {
+   "bytes": 28940,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EIX.current.json",
+   "sha256": "3fecdcf765d1c366fc2029b7c89bf1d96cca62487cfed2bfb73d16a1ae0ac68e",
+   "source": "tmp/ticker-intelligence-cards/EIX.current.json"
+  },
+  {
+   "bytes": 29100,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EL.current.json",
+   "sha256": "e074c60802c9e653687593416c915265340243707e36a153eab4e05369faf080",
+   "source": "tmp/ticker-intelligence-cards/EL.current.json"
+  },
+  {
+   "bytes": 27540,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EME.current.json",
+   "sha256": "9b55af98c111ce624cce557cb8e18547782642520d59afbaadabe762e84a2950",
+   "source": "tmp/ticker-intelligence-cards/EME.current.json"
+  },
+  {
+   "bytes": 27532,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EMR.current.json",
+   "sha256": "0a32310520b83ecfb1801879af94f6257a0244bc70b9f40b60ac1308aad74030",
+   "source": "tmp/ticker-intelligence-cards/EMR.current.json"
+  },
+  {
+   "bytes": 27487,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EOG.current.json",
+   "sha256": "51d39688f6b19e88520e92117ff86206a13d8a4d715f1931ac6aed04ff1d6c82",
+   "source": "tmp/ticker-intelligence-cards/EOG.current.json"
+  },
+  {
+   "bytes": 28884,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EQIX.current.json",
+   "sha256": "4d188e04dff67de367502ae42c9da11dba02f2a49ebeaf31634dc6715bbac183",
+   "source": "tmp/ticker-intelligence-cards/EQIX.current.json"
+  },
+  {
+   "bytes": 28321,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EQR.current.json",
+   "sha256": "bb52ef0143295620457e04c7c6b48caa5280a407f2dd87ad7b182e049d7fcb69",
+   "source": "tmp/ticker-intelligence-cards/EQR.current.json"
+  },
+  {
+   "bytes": 27970,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EQT.current.json",
+   "sha256": "6379cd574a41d867574a2959c947f66a9647630f6ba6c06ab235b3b6c29d1e34",
+   "source": "tmp/ticker-intelligence-cards/EQT.current.json"
+  },
+  {
+   "bytes": 28430,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ES.current.json",
+   "sha256": "daf03af88c1f680914cd572642774e5dec01a8a09a00ac5f39249eaad3ad5da8",
+   "source": "tmp/ticker-intelligence-cards/ES.current.json"
+  },
+  {
+   "bytes": 27901,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ESS.current.json",
+   "sha256": "e569144bd3991c81fa96e18ec0d5dfc71749b80f3f650a4abd7bc9a8d24cd5de",
+   "source": "tmp/ticker-intelligence-cards/ESS.current.json"
+  },
+  {
+   "bytes": 56400,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ETN.current.json",
+   "sha256": "b704a7662b4d73672e4e6652c25d200f8355a64c451f8751c63b937c6c06e3b5",
+   "source": "tmp/ticker-intelligence-cards/ETN.current.json"
+  },
+  {
+   "bytes": 29267,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ETR.current.json",
+   "sha256": "5780b4f4166b9fd61a4b99b9725309fbec1028a0dae268f32ec1b5dbae3e19e7",
+   "source": "tmp/ticker-intelligence-cards/ETR.current.json"
+  },
+  {
+   "bytes": 29725,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EVRG.current.json",
+   "sha256": "e7901e620a078260560ca443822a4a2a76a23b5d4ae6d5f6dc09c0e9182b2473",
+   "source": "tmp/ticker-intelligence-cards/EVRG.current.json"
+  },
+  {
+   "bytes": 29709,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EXC.current.json",
+   "sha256": "625d06fa9513856dae958710cbee35877b527a41af2521298a65c3d3b90a39ba",
+   "source": "tmp/ticker-intelligence-cards/EXC.current.json"
+  },
+  {
+   "bytes": 27422,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EXE.current.json",
+   "sha256": "7f7d46109e4908153317b9661db87c56b5f63a21def8bcd49352482654361a9e",
+   "source": "tmp/ticker-intelligence-cards/EXE.current.json"
+  },
+  {
+   "bytes": 28114,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EXPD.current.json",
+   "sha256": "522622b9315f0cb5406eb086f559d6942f135f77712aa2fdc0c79ee549c44926",
+   "source": "tmp/ticker-intelligence-cards/EXPD.current.json"
+  },
+  {
+   "bytes": 27602,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EXPE.current.json",
+   "sha256": "a04778d3c2c430005a815503c0a259c8ad0f887635545154266eb9a7b222d75d",
+   "source": "tmp/ticker-intelligence-cards/EXPE.current.json"
+  },
+  {
+   "bytes": 28393,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/EXR.current.json",
+   "sha256": "e1d5fe986d815adde058fc9ab46abc801e237cac97f96aa7f51a7f31fb18826c",
+   "source": "tmp/ticker-intelligence-cards/EXR.current.json"
+  },
+  {
+   "bytes": 27532,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/F.current.json",
+   "sha256": "4f611891797e74eeb5abeffdbd72f73494b1cc718da2e4e5098b3911ed865169",
+   "source": "tmp/ticker-intelligence-cards/F.current.json"
+  },
+  {
+   "bytes": 27520,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/FANG.current.json",
+   "sha256": "426e60faf0eec1b1a392bb040c195174b4acb7be839631876680165bb5abf83e",
+   "source": "tmp/ticker-intelligence-cards/FANG.current.json"
+  },
+  {
+   "bytes": 28565,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/FAST.current.json",
+   "sha256": "c6f520cc042002028a94291ebe4ea50c2eb1b2c638392741a6e6f01a2f687fbb",
+   "source": "tmp/ticker-intelligence-cards/FAST.current.json"
+  },
+  {
+   "bytes": 27516,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/FCX.current.json",
+   "sha256": "6ebbe3e52b1bf947eab2b223daccf169d6060b7da15ea3ad5332558265970846",
+   "source": "tmp/ticker-intelligence-cards/FCX.current.json"
+  },
+  {
+   "bytes": 28342,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/FE.current.json",
+   "sha256": "e1cca3766c88dbea2541dcc623193327ed74dd53a5a07796e2131bd676381521",
+   "source": "tmp/ticker-intelligence-cards/FE.current.json"
+  },
+  {
+   "bytes": 28266,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/FFIV.current.json",
+   "sha256": "d865725d7abeb5a33ca14f6b280681d5b5df58eb33a2e1fa60cc1677e45f0514",
+   "source": "tmp/ticker-intelligence-cards/FFIV.current.json"
+  },
+  {
+   "bytes": 29303,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/FICO.current.json",
+   "sha256": "645ff8aa9089352edc0e80d222f30636cc5d4c775bf7201e72a3dba0def52fd3",
+   "source": "tmp/ticker-intelligence-cards/FICO.current.json"
+  },
+  {
+   "bytes": 27810,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/FLEX.current.json",
+   "sha256": "095c0bf38b238dd8884309eea9ad46a2d81ca3ea8eef78fcaf6c8b6721667ac1",
+   "source": "tmp/ticker-intelligence-cards/FLEX.current.json"
+  },
+  {
+   "bytes": 27595,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/FOX.current.json",
+   "sha256": "28d5fffcd4f5b132431b62ecfaae2bb6e175f2f5be769c6a844a474c1fa79a54",
+   "source": "tmp/ticker-intelligence-cards/FOX.current.json"
+  },
+  {
+   "bytes": 27601,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/FOXA.current.json",
+   "sha256": "d2ad711bccf42afcba7708d270ab79fc120cd504bddcf7f592a8334e88d8c535",
+   "source": "tmp/ticker-intelligence-cards/FOXA.current.json"
+  },
+  {
+   "bytes": 28900,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/FRT.current.json",
+   "sha256": "c908c2a1601a5f73f5c3080f1b1f2eefc6ee07ab958eb81d1829c79186ab9f38",
+   "source": "tmp/ticker-intelligence-cards/FRT.current.json"
+  },
+  {
+   "bytes": 27791,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/FSLR.current.json",
+   "sha256": "ee3f71754e12863564f817ac2193b8fef2216c3b6e223d347ed2c6a486e02204",
+   "source": "tmp/ticker-intelligence-cards/FSLR.current.json"
+  },
+  {
+   "bytes": 28592,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/GD.current.json",
+   "sha256": "852386c0b4abe6f9d8d592ee814cd7d17e0f0c9596932f449d64a3d3279aa643",
+   "source": "tmp/ticker-intelligence-cards/GD.current.json"
+  },
+  {
+   "bytes": 31527,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/GE.current.json",
+   "sha256": "b3ed2f0a7a28d5c8f24ef6fd7e8b0e69bcadd89eb8a054e0f5476a2f11d3d09e",
+   "source": "tmp/ticker-intelligence-cards/GE.current.json"
+  },
+  {
+   "bytes": 27479,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/GIS.current.json",
+   "sha256": "cb8e40c8b0c0b679cb16ff59250dd9a82e54d13c3a4b1a68f274798f791911c9",
+   "source": "tmp/ticker-intelligence-cards/GIS.current.json"
+  },
+  {
+   "bytes": 28916,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/GM.current.json",
+   "sha256": "6b1e1394dde427c445756f4c4e59fed12cc8ed492380767b41c86c5470b29186",
+   "source": "tmp/ticker-intelligence-cards/GM.current.json"
+  },
+  {
+   "bytes": 40793,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/GOOG.current.json",
+   "sha256": "c1b76c5ef4224322f25264b0c9653f1c6a316c5e7be24f7bb48916b750c8f4aa",
+   "source": "tmp/ticker-intelligence-cards/GOOG.current.json"
+  },
+  {
+   "bytes": 29598,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/GOOGL.current.json",
+   "sha256": "1d44ceb66eb04eea99c0eb5b98c884baa876f236cd22d3304331e1f7a15b624d",
+   "source": "tmp/ticker-intelligence-cards/GOOGL.current.json"
+  },
+  {
+   "bytes": 28065,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/GPC.current.json",
+   "sha256": "a2f40f95a2b78c6728eeb621072f3e11802b8bd778de9793536c76e9de5796bf",
+   "source": "tmp/ticker-intelligence-cards/GPC.current.json"
+  },
+  {
+   "bytes": 27528,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/GRMN.current.json",
+   "sha256": "8c151c1f4164b5661afff916ba66707e98ac237a382285352f88bad25be5223b",
+   "source": "tmp/ticker-intelligence-cards/GRMN.current.json"
+  },
+  {
+   "bytes": 41453,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/GS.current.json",
+   "sha256": "c8db7ca5def557e46a152e0e215826326199d8f664b5894dbdce507a80792ac5",
+   "source": "tmp/ticker-intelligence-cards/GS.current.json"
+  },
+  {
+   "bytes": 26881,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/HAL.current.json",
+   "sha256": "66c3370df0a69e8ef1363f640b8ca1fc00d72ab71c21eafb1d4ec5b1d2b1b6fa",
+   "source": "tmp/ticker-intelligence-cards/HAL.current.json"
+  },
+  {
+   "bytes": 28009,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/HAS.current.json",
+   "sha256": "fd3edc92d73bd5043d2089de754b9d5f81ca3f377d34365c7922a245725181ad",
+   "source": "tmp/ticker-intelligence-cards/HAS.current.json"
+  },
+  {
+   "bytes": 27943,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/HD.current.json",
+   "sha256": "e5f4ec0fd1b5d5b9d66358423dc28b8cc17666014d17f6282eba77f2c67a9b10",
+   "source": "tmp/ticker-intelligence-cards/HD.current.json"
+  },
+  {
+   "bytes": 28504,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/HON.current.json",
+   "sha256": "0a9d3c9bf6c3cdf7e881f3346c99cb378ca0086f45b856b8d589c16567c171aa",
+   "source": "tmp/ticker-intelligence-cards/HON.current.json"
+  },
+  {
+   "bytes": 28002,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/HRL.current.json",
+   "sha256": "ccb4fc1433cffe398202876eabec9dacda9bc36e2f29ece89da67b5449886243",
+   "source": "tmp/ticker-intelligence-cards/HRL.current.json"
+  },
+  {
+   "bytes": 26939,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/HST.current.json",
+   "sha256": "92cc74a822dac9588b0d911c7168a329b7645e2260b02cdf6faf8491f24c66dd",
+   "source": "tmp/ticker-intelligence-cards/HST.current.json"
+  },
+  {
+   "bytes": 27497,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/HSY.current.json",
+   "sha256": "4156e6e80fe7ee4115509191bc4cc4f04942047008256f8f92273eb53fb850f7",
+   "source": "tmp/ticker-intelligence-cards/HSY.current.json"
+  },
+  {
+   "bytes": 29037,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/IFF.current.json",
+   "sha256": "c1b37371bcd2afd93a6fa15c4f3534f0f3ff830c6cf11e2ebee49c7d7d4be0e4",
+   "source": "tmp/ticker-intelligence-cards/IFF.current.json"
+  },
+  {
+   "bytes": 27492,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/INTU.current.json",
+   "sha256": "a0733c466c10c37ca978846cc17e374863210b3044e7b5b87abb5396f0b58660",
+   "source": "tmp/ticker-intelligence-cards/INTU.current.json"
+  },
+  {
+   "bytes": 27868,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/INVH.current.json",
+   "sha256": "19445592710e555dbe42270eb6efc846fc97cb7371bfe5b627e6e839160e44a2",
+   "source": "tmp/ticker-intelligence-cards/INVH.current.json"
+  },
+  {
+   "bytes": 30018,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/IP.current.json",
+   "sha256": "bbd5c49752a57fc8f83d6c6376270405a38720bb9f2ea775d153c5ff65ce2feb",
+   "source": "tmp/ticker-intelligence-cards/IP.current.json"
+  },
+  {
+   "bytes": 29459,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/IRM.current.json",
+   "sha256": "ea19cd8a1952038b7289856935911439da12c5378cbc6bf9412cf5bc708a8542",
+   "source": "tmp/ticker-intelligence-cards/IRM.current.json"
+  },
+  {
+   "bytes": 27913,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ISRG.current.json",
+   "sha256": "41f59063e3dbb9c0023ebc551cd9068196d9a8a52bb870ac5fa108c84aabe267",
+   "source": "tmp/ticker-intelligence-cards/ISRG.current.json"
+  },
+  {
+   "bytes": 31538,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ITA.current.json",
+   "sha256": "0e688fc3f1b0bc1183efa457d052a284dd2c88f6e100e29221bd695fca9d7f4c",
+   "source": "tmp/ticker-intelligence-cards/ITA.current.json"
+  },
+  {
+   "bytes": 34405,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/JPM.current.json",
+   "sha256": "aa7261ba6be60021c747ab1d26988d02fcfc2c49d795464c8e67c956ea9b778a",
+   "source": "tmp/ticker-intelligence-cards/JPM.current.json"
+  },
+  {
+   "bytes": 29899,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/KDP.current.json",
+   "sha256": "57de7f6186fd4f3772d9df3186c3cfa259d040fbc1edc5e428bcc6def414e5f3",
+   "source": "tmp/ticker-intelligence-cards/KDP.current.json"
+  },
+  {
+   "bytes": 28934,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/KHC.current.json",
+   "sha256": "42c4f7fabe99f49fa575e13fb345285be9e475faa7a608537bfbfce64674d6f3",
+   "source": "tmp/ticker-intelligence-cards/KHC.current.json"
+  },
+  {
+   "bytes": 27511,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/KMB.current.json",
+   "sha256": "629908e8829cb1b6286ba2242b5b35b3181b236d72487da24e78f7098387e585",
+   "source": "tmp/ticker-intelligence-cards/KMB.current.json"
+  },
+  {
+   "bytes": 27949,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/KMI.current.json",
+   "sha256": "4980e8034f445cad1a4779cd6892bfdbfe11c3dc77622b7a2fd829424d5e5219",
+   "source": "tmp/ticker-intelligence-cards/KMI.current.json"
+  },
+  {
+   "bytes": 34502,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/KTOS.current.json",
+   "sha256": "3e517ae8d2c396f3cac8ea44b86691e8980e7c9233e247d935143964d3add49a",
+   "source": "tmp/ticker-intelligence-cards/KTOS.current.json"
+  },
+  {
+   "bytes": 34238,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/LIN.current.json",
+   "sha256": "ca84089f87d7e84017b8e674a6f599f4de170e062a1a7fc1b66b05e7dce5f8af",
+   "source": "tmp/ticker-intelligence-cards/LIN.current.json"
+  },
+  {
+   "bytes": 32065,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/LLY.current.json",
+   "sha256": "cea0640ec87fedb63b1fe129ba2c671e39437b124b80a5d708368d4200c319dc",
+   "source": "tmp/ticker-intelligence-cards/LLY.current.json"
+  },
+  {
+   "bytes": 38903,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/LMT.current.json",
+   "sha256": "7e1684a5bdf7fe62ff3330dc7e89509452343295c0e951ca4043446b2a8bba25",
+   "source": "tmp/ticker-intelligence-cards/LMT.current.json"
+  },
+  {
+   "bytes": 34106,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/LNG.current.json",
+   "sha256": "58f2d7193879fd0d3e097bd5a95c148039581fae145f8f13c44198046db9dbe4",
+   "source": "tmp/ticker-intelligence-cards/LNG.current.json"
+  },
+  {
+   "bytes": 27825,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/LNT.current.json",
+   "sha256": "a653febbb8b29bc2645959c1c94f72be3e11554f918570cd3cf43b053b1d7dc3",
+   "source": "tmp/ticker-intelligence-cards/LNT.current.json"
+  },
+  {
+   "bytes": 27541,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/LYB.current.json",
+   "sha256": "781f5b12d834b0e7fcd6a7ddc58dcd751b6da0bb7b33bfc118b0cbdde1a86a94",
+   "source": "tmp/ticker-intelligence-cards/LYB.current.json"
+  },
+  {
+   "bytes": 28577,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/LYV.current.json",
+   "sha256": "a2aaa19fc7165894d45881890fbbf35fbb5ffd6caf76526deeb63695e65bc240",
+   "source": "tmp/ticker-intelligence-cards/LYV.current.json"
+  },
+  {
+   "bytes": 28584,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/MA.current.json",
+   "sha256": "f6aae160ac8637a35eb6d3ed3fe8f49366e5760d482ebb104a10e4b02bafbe69",
+   "source": "tmp/ticker-intelligence-cards/MA.current.json"
+  },
+  {
+   "bytes": 27438,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/MCD.current.json",
+   "sha256": "721daea93c51e38dc7765ea00740ed13c42872268f2b000afec7e2f9d8f960ea",
+   "source": "tmp/ticker-intelligence-cards/MCD.current.json"
+  },
+  {
+   "bytes": 28337,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/MCK.current.json",
+   "sha256": "62d1216951d72c6540b0494abb7c016ea191c06d7fb212aa2c8f2c6762626aef",
+   "source": "tmp/ticker-intelligence-cards/MCK.current.json"
+  },
+  {
+   "bytes": 29022,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/MDB.current.json",
+   "sha256": "39499c731ff9e42f5b71c0e4b891872083dd9a070d405cf7ad715aa8cc2e208a",
+   "source": "tmp/ticker-intelligence-cards/MDB.current.json"
+  },
+  {
+   "bytes": 32984,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/META.current.json",
+   "sha256": "3f8b7da0728b63dcb16924a0d6c3f75a143162df88a6636db9c38fc46fa1549f",
+   "source": "tmp/ticker-intelligence-cards/META.current.json"
+  },
+  {
+   "bytes": 29089,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/MLM.current.json",
+   "sha256": "c385d1e7ed4df176d768739658739d9f503f457c883898c8be7fc7513bd06270",
+   "source": "tmp/ticker-intelligence-cards/MLM.current.json"
+  },
+  {
+   "bytes": 28996,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/MOS.current.json",
+   "sha256": "5680e8e30a7c8e79bfcefd2630ac730ce2fb620b147ab9d599965f7857d251f6",
+   "source": "tmp/ticker-intelligence-cards/MOS.current.json"
+  },
+  {
+   "bytes": 27450,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/MPC.current.json",
+   "sha256": "a91df5e6e98d83a6adf3d9e2fe6b41ee13f7c03839986d443dc3ca6d36048f88",
+   "source": "tmp/ticker-intelligence-cards/MPC.current.json"
+  },
+  {
+   "bytes": 40381,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/MSFT.current.json",
+   "sha256": "55ce3708dbe3291b91607168649cbe3fd362424f1218d059a09c075f7fe4275d",
+   "source": "tmp/ticker-intelligence-cards/MSFT.current.json"
+  },
+  {
+   "bytes": 27678,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/MU.current.json",
+   "sha256": "023f310a8d0c8bf49c776b00b32ea1d5ec21dda43378cade10a6d2cf65590280",
+   "source": "tmp/ticker-intelligence-cards/MU.current.json"
+  },
+  {
+   "bytes": 28230,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/NEE.current.json",
+   "sha256": "e597ee07a274140701ae06e773ba77480b0a57d287fd7209356f4ac515646ccf",
+   "source": "tmp/ticker-intelligence-cards/NEE.current.json"
+  },
+  {
+   "bytes": 27462,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/NEM.current.json",
+   "sha256": "3820bab61b65becf19f3e5d1090d79b15a49759de1924d7e06650c2e9e012097",
+   "source": "tmp/ticker-intelligence-cards/NEM.current.json"
+  },
+  {
+   "bytes": 33791,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/NFLX.current.json",
+   "sha256": "e972ac94632959647795793035090c08e5236282d9ac7b41a1c411fa6a5ad3a7",
+   "source": "tmp/ticker-intelligence-cards/NFLX.current.json"
+  },
+  {
+   "bytes": 29351,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/NI.current.json",
+   "sha256": "c8d5219e44fcb57708b6ccc4967fccaefc9e17fe881c4eae6859d3cb8f5a82e9",
+   "source": "tmp/ticker-intelligence-cards/NI.current.json"
+  },
+  {
+   "bytes": 27027,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/NOC.current.json",
+   "sha256": "26300b7000ff4741b72b8a22b963559eb6e70364785cab96140efa9077827f21",
+   "source": "tmp/ticker-intelligence-cards/NOC.current.json"
+  },
+  {
+   "bytes": 28034,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/NOW.current.json",
+   "sha256": "ea9eb34ae8e08dff59f7440009d20b615c63d6ef64414536bec982fe2f888807",
+   "source": "tmp/ticker-intelligence-cards/NOW.current.json"
+  },
+  {
+   "bytes": 27966,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/NUE.current.json",
+   "sha256": "8a6629f09975f2bd7e183e86cea563b7b1ec3509a927acf1c7c750ef6713dd36",
+   "source": "tmp/ticker-intelligence-cards/NUE.current.json"
+  },
+  {
+   "bytes": 40892,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/NVDA.current.json",
+   "sha256": "50a449fb19f0f80d77cb44c52cab961e8be8dcee04179d6041baf06a1e0b5a9a",
+   "source": "tmp/ticker-intelligence-cards/NVDA.current.json"
+  },
+  {
+   "bytes": 27014,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/NWS.current.json",
+   "sha256": "063d199dc432c6adc30e898f5748f89fc4aae9f33437f0fe46e2b2ba959aad20",
+   "source": "tmp/ticker-intelligence-cards/NWS.current.json"
+  },
+  {
+   "bytes": 27574,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/NWSA.current.json",
+   "sha256": "ce8f44be5596ba7a43184ad4c10f28ab7aa0ee28cfca20c9d57dac916520b206",
+   "source": "tmp/ticker-intelligence-cards/NWSA.current.json"
+  },
+  {
+   "bytes": 27915,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/OKE.current.json",
+   "sha256": "2e158186f7b0692d90a6e58615f48dd038ac29971a4f5f6944233e8dcb96ebdc",
+   "source": "tmp/ticker-intelligence-cards/OKE.current.json"
+  },
+  {
+   "bytes": 30012,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/OMC.current.json",
+   "sha256": "985a1110835002495f2a7ba5d204fa6454a5d234d90becbab5083c3a45af3909",
+   "source": "tmp/ticker-intelligence-cards/OMC.current.json"
+  },
+  {
+   "bytes": 29027,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ORCL.current.json",
+   "sha256": "d22280de223ff21dc266cf1a2daae3a79b556c565ca06d9368325e4eb5e4cd10",
+   "source": "tmp/ticker-intelligence-cards/ORCL.current.json"
+  },
+  {
+   "bytes": 27930,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/ORLY.current.json",
+   "sha256": "d762eef3b196114f8f770d080cf78689c9d8d7245c6c9b0740cb5f2213e0dbfe",
+   "source": "tmp/ticker-intelligence-cards/ORLY.current.json"
+  },
+  {
+   "bytes": 28464,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/OXY.current.json",
+   "sha256": "283a9febdd8d35e8daa70876ad56d37b9c6c347e41441caf53914759db2fe6f9",
+   "source": "tmp/ticker-intelligence-cards/OXY.current.json"
+  },
+  {
+   "bytes": 28582,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/PANW.current.json",
+   "sha256": "ca0113bce0fbd277119200b834c109ad631e1969757e99281d760f3ccbd93630",
+   "source": "tmp/ticker-intelligence-cards/PANW.current.json"
+  },
+  {
+   "bytes": 30239,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/PAVE.current.json",
+   "sha256": "9d3f6541addc22d9ae5d1faee73acb3f3cb58fa5ef892ef3804d2b0707b5b2a4",
+   "source": "tmp/ticker-intelligence-cards/PAVE.current.json"
+  },
+  {
+   "bytes": 27860,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/PEP.current.json",
+   "sha256": "84784b02f7c183ea6d1bb7e274b13ed66d1713a75fdb66a2e523cda99b1d0ac1",
+   "source": "tmp/ticker-intelligence-cards/PEP.current.json"
+  },
+  {
+   "bytes": 26917,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/PG.current.json",
+   "sha256": "79b41047c3daaac41cf481738f895fc686741b4c85b7dd1ec76e5e992364bbab",
+   "source": "tmp/ticker-intelligence-cards/PG.current.json"
+  },
+  {
+   "bytes": 40580,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/PH.current.json",
+   "sha256": "b473a5c1f1bf203e85344e223c0d462bcb34369f6a260a71b1203d2e98713e29",
+   "source": "tmp/ticker-intelligence-cards/PH.current.json"
+  },
+  {
+   "bytes": 27625,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/PKG.current.json",
+   "sha256": "2ac4629369346b6f81dab3a5d1e88179990bb78e44fb9e63282d1bdb9f6199ee",
+   "source": "tmp/ticker-intelligence-cards/PKG.current.json"
+  },
+  {
+   "bytes": 33421,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/PLTR.current.json",
+   "sha256": "763aa5821094adcbfb801e4a93b4d460316508e2e32839d86f1cb5b498b4e076",
+   "source": "tmp/ticker-intelligence-cards/PLTR.current.json"
+  },
+  {
+   "bytes": 26962,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/PPG.current.json",
+   "sha256": "073caa1c09393522105c31e86bdce575674434caeb3b61fa1b8167019d2d48df",
+   "source": "tmp/ticker-intelligence-cards/PPG.current.json"
+  },
+  {
+   "bytes": 28621,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/PSKY.current.json",
+   "sha256": "d97904003f725ba49b043b234588166099116d7d07b27ea5f43b34035ea3d9b7",
+   "source": "tmp/ticker-intelligence-cards/PSKY.current.json"
+  },
+  {
+   "bytes": 27485,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/PSX.current.json",
+   "sha256": "e30222e5c1c7eac6914bfb1a97f2cea04a714682f743ddda7c57099c7fa7258a",
+   "source": "tmp/ticker-intelligence-cards/PSX.current.json"
+  },
+  {
+   "bytes": 28637,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/QCOM.current.json",
+   "sha256": "badc1f09806055887833e3d11604d5aaa7435f16bb894cf32f6ed3b993a68081",
+   "source": "tmp/ticker-intelligence-cards/QCOM.current.json"
+  },
+  {
+   "bytes": 33276,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/RTX.current.json",
+   "sha256": "01fb3a26b8dbd0ecf33adb14ef67bef2f287e4fd83cf2a5a303ff147f2c2af9b",
+   "source": "tmp/ticker-intelligence-cards/RTX.current.json"
+  },
+  {
+   "bytes": 28490,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/SAP.current.json",
+   "sha256": "e3b956dbd8df351c31169555dc6d51909698c0da2796298fce3f321c85324203",
+   "source": "tmp/ticker-intelligence-cards/SAP.current.json"
+  },
+  {
+   "bytes": 27579,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/SCCO.current.json",
+   "sha256": "9c41efe1c4abb368448511a4725915a7b5d5f250592197a493e150098bcd9d92",
+   "source": "tmp/ticker-intelligence-cards/SCCO.current.json"
+  },
+  {
+   "bytes": 28051,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/SHOP.current.json",
+   "sha256": "326d59e5abf13f12b814c5fdc2524cfb847b191ed1b6516d54512ac570c72704",
+   "source": "tmp/ticker-intelligence-cards/SHOP.current.json"
+  },
+  {
+   "bytes": 28460,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/SHW.current.json",
+   "sha256": "0c1a3d81812c3917e0f10c5516898401a628f032f183d73eac2667e69b45f9c5",
+   "source": "tmp/ticker-intelligence-cards/SHW.current.json"
+  },
+  {
+   "bytes": 29343,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/SLB.current.json",
+   "sha256": "6da69e9272868dfd06e2d29b8123cce407b71046a678ae5dcb97b11b252b759f",
+   "source": "tmp/ticker-intelligence-cards/SLB.current.json"
+  },
+  {
+   "bytes": 27285,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/SLV.current.json",
+   "sha256": "80ffd161dceaafcc09da50e335e7ec3dca5b562e0c88228ecec53dc3c1bf737c",
+   "source": "tmp/ticker-intelligence-cards/SLV.current.json"
+  },
+  {
+   "bytes": 41399,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/SMCI.current.json",
+   "sha256": "ce0b3845075cd8c75cd02ee4eb032f04aa2eb29db35b177aba0a2e5c84cce8fb",
+   "source": "tmp/ticker-intelligence-cards/SMCI.current.json"
+  },
+  {
+   "bytes": 30011,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/SNOW.current.json",
+   "sha256": "a9f858582dbd833afbd0deaadf5bccb2844ef58d2aee7edb283dbbf59a354c2e",
+   "source": "tmp/ticker-intelligence-cards/SNOW.current.json"
+  },
+  {
+   "bytes": 29704,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/SO.current.json",
+   "sha256": "4cdf4c27de872a66e65808a50b91e1c28c4da360c8044ae072811e33c8ed6c30",
+   "source": "tmp/ticker-intelligence-cards/SO.current.json"
+  },
+  {
+   "bytes": 27503,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/STLD.current.json",
+   "sha256": "ce7b454dbe1859dacd5a2ebc03d167d343b12c84db95248c5f2e001bb57779e9",
+   "source": "tmp/ticker-intelligence-cards/STLD.current.json"
+  },
+  {
+   "bytes": 27383,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/SYK.current.json",
+   "sha256": "b5eed7ccc5c7f787265df6c66ef8a94b839d44bb715c6e2f57cf425cc531a3f6",
+   "source": "tmp/ticker-intelligence-cards/SYK.current.json"
+  },
+  {
+   "bytes": 27467,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/T.current.json",
+   "sha256": "5466149067ff26a5ed699762c0ec7a3a08487d384b11a384c3339aa4e0ca216e",
+   "source": "tmp/ticker-intelligence-cards/T.current.json"
+  },
+  {
+   "bytes": 29049,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/TDG.current.json",
+   "sha256": "904bc24ada7cab7bbff4125378b9e6aedca1ad02af51c5c592a0b10247afeda6",
+   "source": "tmp/ticker-intelligence-cards/TDG.current.json"
+  },
+  {
+   "bytes": 28064,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/TKO.current.json",
+   "sha256": "7b1c6e8a2cd420881948d8619c4c3451ddd83a4ac54e7bf4a25bad9464ff3ea9",
+   "source": "tmp/ticker-intelligence-cards/TKO.current.json"
+  },
+  {
+   "bytes": 27328,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/TLT.current.json",
+   "sha256": "467cfcb531a70cc740ffbf4d0d980eda731eeb07f044c28772d959cf3e426480",
+   "source": "tmp/ticker-intelligence-cards/TLT.current.json"
+  },
+  {
+   "bytes": 27448,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/TMO.current.json",
+   "sha256": "a2df1a0b37e4b8be96000325ef3827eabee0393a6b4e7dfab48b5d5b8e7aeede",
+   "source": "tmp/ticker-intelligence-cards/TMO.current.json"
+  },
+  {
+   "bytes": 31831,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/TMUS.current.json",
+   "sha256": "788e74ddac6e9d425a14ec21dc3bd6f183c2f7cd9c64c90131e55c404dad0eb0",
+   "source": "tmp/ticker-intelligence-cards/TMUS.current.json"
+  },
+  {
+   "bytes": 27545,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/TPL.current.json",
+   "sha256": "e31ffe4924f4ba89557d65acfc8354e89c75a94bb6d53f3d4be0bb930a8ba83e",
+   "source": "tmp/ticker-intelligence-cards/TPL.current.json"
+  },
+  {
+   "bytes": 27501,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/TRGP.current.json",
+   "sha256": "fddd26293c6f8b18eccb80e3a9efb1cbe76d25692b84bd9d712f78c9f8ecd38f",
+   "source": "tmp/ticker-intelligence-cards/TRGP.current.json"
+  },
+  {
+   "bytes": 27904,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/TSM.current.json",
+   "sha256": "845c8ecabb507d58477681b627ae26519f231ee46180f21442f934d90abc83bf",
+   "source": "tmp/ticker-intelligence-cards/TSM.current.json"
+  },
+  {
+   "bytes": 28054,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/TTD.current.json",
+   "sha256": "5a1a8d4ae7985bd7dd6c2e54442ccb70fd457518619aaad7575e981b6cb0c3ea",
+   "source": "tmp/ticker-intelligence-cards/TTD.current.json"
+  },
+  {
+   "bytes": 28533,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/TTWO.current.json",
+   "sha256": "3c06f5e64e1294dd1d08c1ce63aa58a18ffe6513887bc53cab871efaef513ec8",
+   "source": "tmp/ticker-intelligence-cards/TTWO.current.json"
+  },
+  {
+   "bytes": 29128,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/TXN.current.json",
+   "sha256": "c05d260dfcd8ed4ccb79ce535a13b35b7ced77e94753f0dc4a0d58ec78d46195",
+   "source": "tmp/ticker-intelligence-cards/TXN.current.json"
+  },
+  {
+   "bytes": 28055,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/UBER.current.json",
+   "sha256": "ab2ae6c5c146f6c007e6e77c9bf124f7c557b97976c70c41dc1ca9f5767c28af",
+   "source": "tmp/ticker-intelligence-cards/UBER.current.json"
+  },
+  {
+   "bytes": 27881,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/UNH.current.json",
+   "sha256": "00d6723671ccf52c87bbb8d3545d7d6e324750c58862beb44bde2dc6e719f887",
+   "source": "tmp/ticker-intelligence-cards/UNH.current.json"
+  },
+  {
+   "bytes": 27534,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/UNP.current.json",
+   "sha256": "f497a26977cd22377eba3eeb21054f0d293c030cb999937c8c0a2d92f635f077",
+   "source": "tmp/ticker-intelligence-cards/UNP.current.json"
+  },
+  {
+   "bytes": 29497,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/URI.current.json",
+   "sha256": "8cc363694a4edcfabb107a2381668a682d880d2e76a638cd67fb51dc972ccba3",
+   "source": "tmp/ticker-intelligence-cards/URI.current.json"
+  },
+  {
+   "bytes": 27517,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/V.current.json",
+   "sha256": "30aff17da194670b613b52b5a8aa1e391c654278f1db730028c95dc2cab1a38a",
+   "source": "tmp/ticker-intelligence-cards/V.current.json"
+  },
+  {
+   "bytes": 29743,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/VAW.current.json",
+   "sha256": "09b744168592fa3cd29f6abb474dbfaf72e1b9e0f2e3a22b0ef18de92e17e49f",
+   "source": "tmp/ticker-intelligence-cards/VAW.current.json"
+  },
+  {
+   "bytes": 27486,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/VLO.current.json",
+   "sha256": "437fed6f4489f5ef152fd5660c935e9d09dd1d2e7e75c770f87a143ae239a40d",
+   "source": "tmp/ticker-intelligence-cards/VLO.current.json"
+  },
+  {
+   "bytes": 33394,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/VMC.current.json",
+   "sha256": "d25f30c9ae8348fa90a4e10400232a04ec213d4f09758160409c73b818176b7a",
+   "source": "tmp/ticker-intelligence-cards/VMC.current.json"
+  },
+  {
+   "bytes": 33275,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/VRT.current.json",
+   "sha256": "b3ca9f23627ef311b6552df6bebb5598454cd7d0249658babfe127654a42c2cf",
+   "source": "tmp/ticker-intelligence-cards/VRT.current.json"
+  },
+  {
+   "bytes": 27622,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/VXUS.current.json",
+   "sha256": "9b57ee7e7694beef5dbd98b06ae04c49db4978c2666594d24fc43f4aaca71aad",
+   "source": "tmp/ticker-intelligence-cards/VXUS.current.json"
+  },
+  {
+   "bytes": 27502,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/VZ.current.json",
+   "sha256": "eb02fbb087e10b9f515ef5256bcd8596907fbe681c8750d5f5038cbe55e5459c",
+   "source": "tmp/ticker-intelligence-cards/VZ.current.json"
+  },
+  {
+   "bytes": 34225,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/WMB.current.json",
+   "sha256": "d1d3176fca4ef8ee6f01b47421feec22388d955e93c95c9a7e52b64b4a077fae",
+   "source": "tmp/ticker-intelligence-cards/WMB.current.json"
+  },
+  {
+   "bytes": 28834,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/WMT.current.json",
+   "sha256": "55481ec4e58a08731bb44bf1587dd126d3ab22e59064c300a1f45300c31dc12b",
+   "source": "tmp/ticker-intelligence-cards/WMT.current.json"
+  },
+  {
+   "bytes": 30441,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/XLB.current.json",
+   "sha256": "aa2b3c70f775f69601e0fe9d0d478c534188bc46443ffd693355e0333c0481de",
+   "source": "tmp/ticker-intelligence-cards/XLB.current.json"
+  },
+  {
+   "bytes": 29688,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/XLC.current.json",
+   "sha256": "b0480278e08ec0b9678e3592387a83f38a6c8f2e855fe0b7f03c151a56e4d94a",
+   "source": "tmp/ticker-intelligence-cards/XLC.current.json"
+  },
+  {
+   "bytes": 29733,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/XLE.current.json",
+   "sha256": "540693ac78353e06bbe342986b76ac261e459eb0b197dfdbc1ea360dde3860a8",
+   "source": "tmp/ticker-intelligence-cards/XLE.current.json"
+  },
+  {
+   "bytes": 29679,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/XLF.current.json",
+   "sha256": "54b448273fd469225cc404d2ed6f854d18a01ebdd978e10e423de16047d76843",
+   "source": "tmp/ticker-intelligence-cards/XLF.current.json"
+  },
+  {
+   "bytes": 30277,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/XLI.current.json",
+   "sha256": "68ea6c1792aca1dd95511f91d1b289823efe91eaef4e3caefc03c5ab996fac91",
+   "source": "tmp/ticker-intelligence-cards/XLI.current.json"
+  },
+  {
+   "bytes": 39326,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/ticker-intelligence-cards/XOM.current.json",
+   "sha256": "c8604183ec7dfd09a69627dbb2287a11aa8672886243f9122c69991ce84472fb",
+   "source": "tmp/ticker-intelligence-cards/XOM.current.json"
+  },
+  {
+   "bytes": 64586,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/A.json",
+   "sha256": "30dfd873be14085462cdea5ff68ef2f025cef46850f92e8a3660d5da4d36c5c4",
+   "source": "tmp/trade-grade-full-answer/A.json"
+  },
+  {
+   "bytes": 64773,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AAPL.json",
+   "sha256": "ff33d3f673fae73b2d614c4578f172097d07cd210a2e61aeb679c6b94e0467dc",
+   "source": "tmp/trade-grade-full-answer/AAPL.json"
+  },
+  {
+   "bytes": 66318,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ABBV.json",
+   "sha256": "be132d304219002015ff26d83b8ebe4b17b10de47c4486bade34dc6a9d83a056",
+   "source": "tmp/trade-grade-full-answer/ABBV.json"
+  },
+  {
+   "bytes": 65530,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ABNB.json",
+   "sha256": "9a303a068730a022e84d912c98910d0fc26a1e4e5645087fba26d5aaf21b9c3a",
+   "source": "tmp/trade-grade-full-answer/ABNB.json"
+  },
+  {
+   "bytes": 67817,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ABT.json",
+   "sha256": "0e3ad93aac6c2922c1b3d33e160e5f08786ee1b84100d545fa87104522e9663d",
+   "source": "tmp/trade-grade-full-answer/ABT.json"
+  },
+  {
+   "bytes": 64788,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ACGL.json",
+   "sha256": "bd572ecd5f472af80569143dcd47697fd2210026e4ad0fd6fc52728858e962b5",
+   "source": "tmp/trade-grade-full-answer/ACGL.json"
+  },
+  {
+   "bytes": 64932,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ACN.json",
+   "sha256": "cadd6251400e133439084c9fa972b943dae100245e257fc0117084d1a89fdadd",
+   "source": "tmp/trade-grade-full-answer/ACN.json"
+  },
+  {
+   "bytes": 66471,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ADBE.json",
+   "sha256": "f8b5c25bcfb59f7b28d9bd3da08363e3496fb98b8ca3f587b687f52edc6e3934",
+   "source": "tmp/trade-grade-full-answer/ADBE.json"
+  },
+  {
+   "bytes": 66710,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ADI.json",
+   "sha256": "13bdc750035925f72e283c9f3d3e887787cdc5977ff85b6ee573632eb19f63fa",
+   "source": "tmp/trade-grade-full-answer/ADI.json"
+  },
+  {
+   "bytes": 64399,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ADM.json",
+   "sha256": "c87471534cbfd0677f50001902e8feb0905d260094ae45555dd1c114b874158b",
+   "source": "tmp/trade-grade-full-answer/ADM.json"
+  },
+  {
+   "bytes": 66565,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ADP.json",
+   "sha256": "20c6103342a00a2a1b87766348fc2c450956ab4fb0fd69810e4a39974982f31b",
+   "source": "tmp/trade-grade-full-answer/ADP.json"
+  },
+  {
+   "bytes": 64945,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ADSK.json",
+   "sha256": "4e11b5dbf2f818718567ce53314ee220625c4ec481607662393c95f8485f4aa0",
+   "source": "tmp/trade-grade-full-answer/ADSK.json"
+  },
+  {
+   "bytes": 69629,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AEE.json",
+   "sha256": "7798fdde85023bc2c56753a24ab5790958fdfb0540b1a6001da861f24f1ff410",
+   "source": "tmp/trade-grade-full-answer/AEE.json"
+  },
+  {
+   "bytes": 68557,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AEP.json",
+   "sha256": "b15a3e295317717a4b27c0f009a826e469a81a3abef0fe4a4d300d9825570bdb",
+   "source": "tmp/trade-grade-full-answer/AEP.json"
+  },
+  {
+   "bytes": 68571,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AES.json",
+   "sha256": "fda5b04b2a7c2c6eed293f76258a5f413637a92b44f22b8fc6aa597848d716df",
+   "source": "tmp/trade-grade-full-answer/AES.json"
+  },
+  {
+   "bytes": 66244,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AFL.json",
+   "sha256": "b4124a04e3bfa510d9cbed5e76c1b6b20a75a172a651136a0294b24a7b82448f",
+   "source": "tmp/trade-grade-full-answer/AFL.json"
+  },
+  {
+   "bytes": 64416,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AIG.json",
+   "sha256": "11f8f37a4c314a2eccac33ffec8cbc3c91ab20f5571280fb78938aaf3ab977d2",
+   "source": "tmp/trade-grade-full-answer/AIG.json"
+  },
+  {
+   "bytes": 64301,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AIZ.json",
+   "sha256": "10832df6387f561b11ac2a06ee5d03e328e3cc779f3ca34f374ff13c00e28c15",
+   "source": "tmp/trade-grade-full-answer/AIZ.json"
+  },
+  {
+   "bytes": 68304,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AJG.json",
+   "sha256": "7dede39dadc25fb3d0131da46841d22f8ec0d18b9d5cb8ef93de129cf8908efa",
+   "source": "tmp/trade-grade-full-answer/AJG.json"
+  },
+  {
+   "bytes": 69281,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AKAM.json",
+   "sha256": "d740ca967e0761e1b28cb6e1e0ea35bb3378a6f3c95141e458fa60f9e5cb27cf",
+   "source": "tmp/trade-grade-full-answer/AKAM.json"
+  },
+  {
+   "bytes": 65611,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ALB.json",
+   "sha256": "01e28caa2126c1dcb5985703583b75eaa552755b5d455a376ff3bd0fac2881a6",
+   "source": "tmp/trade-grade-full-answer/ALB.json"
+  },
+  {
+   "bytes": 65499,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ALGN.json",
+   "sha256": "1e6dbc288372513941cbe81c6497140613e34d87f5122ec42edfafb6843a428d",
+   "source": "tmp/trade-grade-full-answer/ALGN.json"
+  },
+  {
+   "bytes": 64867,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ALL.json",
+   "sha256": "93fd882cd180b9fdfa150eb48dc0ebec6af4b90075f20aa2caa1987ced6a05b8",
+   "source": "tmp/trade-grade-full-answer/ALL.json"
+  },
+  {
+   "bytes": 64737,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ALLE.json",
+   "sha256": "83072224fe53f3f15e42743b58ca324febc014f8f976cbdc5f31690f0109d8f1",
+   "source": "tmp/trade-grade-full-answer/ALLE.json"
+  },
+  {
+   "bytes": 66739,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AMAT.json",
+   "sha256": "f2627b5796e83ec103565171c23819fd9022a1ae9914bbc95df199f9b09b42aa",
+   "source": "tmp/trade-grade-full-answer/AMAT.json"
+  },
+  {
+   "bytes": 70785,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AMCR.json",
+   "sha256": "7b7c7b0cf1cf6a920e0feaee060757a5a564f3e2ff4efcf231d1141b16ae5c4d",
+   "source": "tmp/trade-grade-full-answer/AMCR.json"
+  },
+  {
+   "bytes": 74376,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AMD.json",
+   "sha256": "44f5e8b7f564cc41bd48e1f2420e8877ee41f309fc93f7e545a696480cbff8fd",
+   "source": "tmp/trade-grade-full-answer/AMD.json"
+  },
+  {
+   "bytes": 65655,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AME.json",
+   "sha256": "b0d0cf75e3f2f4aabc4fd2ec1a3253cf507e219931c632797c53cfddf13397b2",
+   "source": "tmp/trade-grade-full-answer/AME.json"
+  },
+  {
+   "bytes": 64512,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AMGN.json",
+   "sha256": "bfc299a3305dc16b28178c38ece69568d700688ad7bb1dc079b6d72bf3f8c9a8",
+   "source": "tmp/trade-grade-full-answer/AMGN.json"
+  },
+  {
+   "bytes": 64942,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AMP.json",
+   "sha256": "f66880e47aaa405ece5c1f618d7844bc7347e73b9206186e4081efcf281e9849",
+   "source": "tmp/trade-grade-full-answer/AMP.json"
+  },
+  {
+   "bytes": 66866,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AMT.json",
+   "sha256": "7d111cba64289a8d4c98bb14b7e775236580fea1470f14dbba6aec746b4c6abd",
+   "source": "tmp/trade-grade-full-answer/AMT.json"
+  },
+  {
+   "bytes": 76681,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AMZN.json",
+   "sha256": "115fc82c3d0f9dc005764e43077599d4b14f00f8d1110cbd8c3529422958f63f",
+   "source": "tmp/trade-grade-full-answer/AMZN.json"
+  },
+  {
+   "bytes": 65843,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ANET.json",
+   "sha256": "dc5b554afb37cf056de967ba11900ea338c881032ce39cb158a3d9f76b4d13eb",
+   "source": "tmp/trade-grade-full-answer/ANET.json"
+  },
+  {
+   "bytes": 66433,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AON.json",
+   "sha256": "b56fe55940790089714c88be3685a0741cfceb91e065f00b3c5ba84dd84c712f",
+   "source": "tmp/trade-grade-full-answer/AON.json"
+  },
+  {
+   "bytes": 66477,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AOS.json",
+   "sha256": "82a06d416011381deadede08485897063b14e8209cbf58ba142e869801d29efe",
+   "source": "tmp/trade-grade-full-answer/AOS.json"
+  },
+  {
+   "bytes": 65441,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/APA.json",
+   "sha256": "0d8f22f9f7369b8be947c0ba83c6cceae3441c449389c24183fbb211e2266749",
+   "source": "tmp/trade-grade-full-answer/APA.json"
+  },
+  {
+   "bytes": 66479,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/APD.json",
+   "sha256": "1776360f5053c84b43aa237b436185796d6691a64244d39a6eb87b7996ac2888",
+   "source": "tmp/trade-grade-full-answer/APD.json"
+  },
+  {
+   "bytes": 65002,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/APH.json",
+   "sha256": "6c4e8142bfa3f123827f4bfe8cb3965645ee5f0f49af1c1230bb55c9b6a24fc2",
+   "source": "tmp/trade-grade-full-answer/APH.json"
+  },
+  {
+   "bytes": 66607,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/APO.json",
+   "sha256": "284a30fbe573cb2b13bf7936b7ad45307b67ccd76039a7de06f278eedb365cf5",
+   "source": "tmp/trade-grade-full-answer/APO.json"
+  },
+  {
+   "bytes": 64945,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/APP.json",
+   "sha256": "398824a11b6b33fa9f32c0397ef61a491e395acb06d16df30dfaeecf5007472a",
+   "source": "tmp/trade-grade-full-answer/APP.json"
+  },
+  {
+   "bytes": 65162,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/APTV.json",
+   "sha256": "14a1d6b9a5bdd1eabb3a0d9f8745bfb1ee2cc7acc123ed36ddc3cf6c7fac6349",
+   "source": "tmp/trade-grade-full-answer/APTV.json"
+  },
+  {
+   "bytes": 67209,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ARE.json",
+   "sha256": "e216005be11dc2f3df0d78493134b83b0e36155f7a6abb46469594ebaa58a163",
+   "source": "tmp/trade-grade-full-answer/ARE.json"
+  },
+  {
+   "bytes": 70145,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ARES.json",
+   "sha256": "0abea047e470bfc5286bd7aa927d944fd1d741e9399bd8a34bcdfeef2cf738ca",
+   "source": "tmp/trade-grade-full-answer/ARES.json"
+  },
+  {
+   "bytes": 66674,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ASML.json",
+   "sha256": "7c503b351a9b7eadbacca94c90b38793ca71f926dff0407a52cfc3bee3e02f95",
+   "source": "tmp/trade-grade-full-answer/ASML.json"
+  },
+  {
+   "bytes": 69330,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ATO.json",
+   "sha256": "2a1df8713dfbca16864db8e31c3cdc9bde1cda4f6a2dbaf90234a6f4010e6cab",
+   "source": "tmp/trade-grade-full-answer/ATO.json"
+  },
+  {
+   "bytes": 66774,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AVB.json",
+   "sha256": "ba0fa424674b629556e15223f37ccc0e2eb16162a223cb64d6dae34845c75dd9",
+   "source": "tmp/trade-grade-full-answer/AVB.json"
+  },
+  {
+   "bytes": 66612,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AVGO.json",
+   "sha256": "640717233fd4b7568128822a16f12655d4531fdea323ad324a4b7982e06061c7",
+   "source": "tmp/trade-grade-full-answer/AVGO.json"
+  },
+  {
+   "bytes": 64711,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AVY.json",
+   "sha256": "678a48da291a88fd5ae1bee29c062190e630146a54eeecc1d9943116da5cc0d3",
+   "source": "tmp/trade-grade-full-answer/AVY.json"
+  },
+  {
+   "bytes": 66929,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AWK.json",
+   "sha256": "71ea569ee214e0d07b31cdc1f3fb16f2505d20add0b26847cb63596d0791c5b3",
+   "source": "tmp/trade-grade-full-answer/AWK.json"
+  },
+  {
+   "bytes": 67234,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AXON.json",
+   "sha256": "239c5d5e86f6351222c57c1c7743c0436bcb07d6548e96fbd07df179158d18d9",
+   "source": "tmp/trade-grade-full-answer/AXON.json"
+  },
+  {
+   "bytes": 64889,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AXP.json",
+   "sha256": "55045ff2b781684285ac5935c8adcac3e53ef82fc68df084b9a52c814e7bd36e",
+   "source": "tmp/trade-grade-full-answer/AXP.json"
+  },
+  {
+   "bytes": 65180,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/AZO.json",
+   "sha256": "93c86418dc6ac7d923b966c5b3371091e483cacfce85c848040228577e2649a2",
+   "source": "tmp/trade-grade-full-answer/AZO.json"
+  },
+  {
+   "bytes": 67418,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BA.json",
+   "sha256": "32835d963bd9dcf0ce2d6f9c3eda7360a47d0128b86b6dd6d8d1ddcd499a6042",
+   "source": "tmp/trade-grade-full-answer/BA.json"
+  },
+  {
+   "bytes": 64451,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BAC.json",
+   "sha256": "4c5b3beac9c48510fb1be8287c0dd2ab4b9a73431c851e538adfb5df40256f0f",
+   "source": "tmp/trade-grade-full-answer/BAC.json"
+  },
+  {
+   "bytes": 64696,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BALL.json",
+   "sha256": "92233c4732152d73c24cbbae0f35d8be081f7db10979e9570ba10110fc5d153f",
+   "source": "tmp/trade-grade-full-answer/BALL.json"
+  },
+  {
+   "bytes": 65461,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BAX.json",
+   "sha256": "bc27238d81d8f29914dbe60f6db79a787fe73c0f71b17e0d1670ef53a516792b",
+   "source": "tmp/trade-grade-full-answer/BAX.json"
+  },
+  {
+   "bytes": 64650,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BBY.json",
+   "sha256": "0198f44aa7c481b68da75bad40489d5666d65f9b7d08770589c4a9a73740a7fe",
+   "source": "tmp/trade-grade-full-answer/BBY.json"
+  },
+  {
+   "bytes": 64576,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BDX.json",
+   "sha256": "dccca9fda7f3c2595ce56005bb33dd30d90070bc6160f80035bd538c1ffdc295",
+   "source": "tmp/trade-grade-full-answer/BDX.json"
+  },
+  {
+   "bytes": 69648,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BEN.json",
+   "sha256": "1d8e13fa0f7934d24f7dca88a242d0d686e75996babb09b7d51d5a3366d771e0",
+   "source": "tmp/trade-grade-full-answer/BEN.json"
+  },
+  {
+   "bytes": 65513,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BF-B.json",
+   "sha256": "9655b9dce001061e556ac6d4776b48bb02f83ef52bf600fe1b2dc400c4627421",
+   "source": "tmp/trade-grade-full-answer/BF-B.json"
+  },
+  {
+   "bytes": 66099,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BG.json",
+   "sha256": "8ac879a1e2dafb09d19b38931388d5a30dd62d2518fa2ebde45394a5b3810727",
+   "source": "tmp/trade-grade-full-answer/BG.json"
+  },
+  {
+   "bytes": 65403,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BIIB.json",
+   "sha256": "429ad8ebb42e109fffeee797c1938aed75febe790ccbaed790437b5cb1262be8",
+   "source": "tmp/trade-grade-full-answer/BIIB.json"
+  },
+  {
+   "bytes": 159383,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BKNG.json",
+   "sha256": "06c4dfffa2ec8bca2561e1aa28a961e5389c56c2f0d2ef6ec0cc522318e1bb7a",
+   "source": "tmp/trade-grade-full-answer/BKNG.json"
+  },
+  {
+   "bytes": 64629,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BKR.json",
+   "sha256": "a0a6aef0b41a997663b36a83dc2323c5ab26ee17bbdb923e5efc6261d5629883",
+   "source": "tmp/trade-grade-full-answer/BKR.json"
+  },
+  {
+   "bytes": 67440,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BLDR.json",
+   "sha256": "79056d2fefc5a3f0a46d013a9e57faec54bf8b206a3b41032c4539354d65adea",
+   "source": "tmp/trade-grade-full-answer/BLDR.json"
+  },
+  {
+   "bytes": 69632,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BLK.json",
+   "sha256": "65266690744c55617937a75171ca5b565ba1cf081d5f9647cfc893aa3a4b1efd",
+   "source": "tmp/trade-grade-full-answer/BLK.json"
+  },
+  {
+   "bytes": 65139,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BMY.json",
+   "sha256": "a348e99526de68d8ccb838428b52cddec80a1c2b031d8a8980a8a45ca9e04c43",
+   "source": "tmp/trade-grade-full-answer/BMY.json"
+  },
+  {
+   "bytes": 66259,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BNY.json",
+   "sha256": "bb7d1d76a3403aba59c4e34a415958a7019002c6d16b7bd01baf6ed02454367d",
+   "source": "tmp/trade-grade-full-answer/BNY.json"
+  },
+  {
+   "bytes": 64841,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BR.json",
+   "sha256": "77953a454103080513237c9d1ddd5339e65d5aa5e8d983fd00cc51aaba66b6bd",
+   "source": "tmp/trade-grade-full-answer/BR.json"
+  },
+  {
+   "bytes": 66683,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BRO.json",
+   "sha256": "fca1a70ebf54e9db8c4d2f16168bdd5662f77b50b45be04f979b89c01405adb9",
+   "source": "tmp/trade-grade-full-answer/BRO.json"
+  },
+  {
+   "bytes": 64643,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BSX.json",
+   "sha256": "5b60075085c671dc3ff256c7653197145a17a6a1e343a6d29f7c9459348de566",
+   "source": "tmp/trade-grade-full-answer/BSX.json"
+  },
+  {
+   "bytes": 65852,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BX.json",
+   "sha256": "47c42ffb477278f01289c0828a6b4e68d6a3a4d7286795933709b120bd02b735",
+   "source": "tmp/trade-grade-full-answer/BX.json"
+  },
+  {
+   "bytes": 66243,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/BXP.json",
+   "sha256": "286cd194eb178db9034816331c8e32f577f9785937b0b8ab14f128c4ac706123",
+   "source": "tmp/trade-grade-full-answer/BXP.json"
+  },
+  {
+   "bytes": 66154,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/C.json",
+   "sha256": "597900323b793cb65fbc1565d9bb5f561e79e7cb88b30a6d9ec65ecc3aeae078",
+   "source": "tmp/trade-grade-full-answer/C.json"
+  },
+  {
+   "bytes": 64645,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CAG.json",
+   "sha256": "620c65d5fc179110d4ea564b589deea78f2103c6a9feecd368faee9f351a660c",
+   "source": "tmp/trade-grade-full-answer/CAG.json"
+  },
+  {
+   "bytes": 65525,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CAH.json",
+   "sha256": "621c317c64ef4f38072ef8d3066158bcd6850fafbfab22f713e5e22234e3bf39",
+   "source": "tmp/trade-grade-full-answer/CAH.json"
+  },
+  {
+   "bytes": 64446,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CARR.json",
+   "sha256": "15e7f0cb273a2ffc3a0aaa6ebcd24490d919cdffa7f335c9d43f8465715e7414",
+   "source": "tmp/trade-grade-full-answer/CARR.json"
+  },
+  {
+   "bytes": 64586,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CASY.json",
+   "sha256": "ae13f95fe87f72bfbe1f5ea20b1acd85d34e0097ebd03b80f27b5034eb17ea7e",
+   "source": "tmp/trade-grade-full-answer/CASY.json"
+  },
+  {
+   "bytes": 66276,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CAT.json",
+   "sha256": "cdaf6852c65eb944fa07c13f42c2b069da77d6269b9524ead452e6e229a817b9",
+   "source": "tmp/trade-grade-full-answer/CAT.json"
+  },
+  {
+   "bytes": 64687,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CB.json",
+   "sha256": "9c82f30430cee986e2aed5883d919c3bb595b599c7a92d10853923e7d49ab9e9",
+   "source": "tmp/trade-grade-full-answer/CB.json"
+  },
+  {
+   "bytes": 65803,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CBOE.json",
+   "sha256": "bd970eb9b1f40964ad8ff9f6b08ce3312e104e70c3232d8efe35474c1176a9bc",
+   "source": "tmp/trade-grade-full-answer/CBOE.json"
+  },
+  {
+   "bytes": 66855,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CBRE.json",
+   "sha256": "ea2b871ba314bbe00296b57d902140a8cc17d90016a1948f1c9716f03705d071",
+   "source": "tmp/trade-grade-full-answer/CBRE.json"
+  },
+  {
+   "bytes": 66177,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CCI.json",
+   "sha256": "f30de11d0f41c62a15a2a9bb313d0eff42b8a328182efcd02634b928e0417c71",
+   "source": "tmp/trade-grade-full-answer/CCI.json"
+  },
+  {
+   "bytes": 65572,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CCL.json",
+   "sha256": "97ea7124ba08d869aa284b5626ff3189d012e386eb338a63c209a3655363b8e9",
+   "source": "tmp/trade-grade-full-answer/CCL.json"
+  },
+  {
+   "bytes": 66837,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CDNS.json",
+   "sha256": "6e6204e5f0381c16c384bef134655d03970caf27ab42867a04b0bacf1a5a3513",
+   "source": "tmp/trade-grade-full-answer/CDNS.json"
+  },
+  {
+   "bytes": 67627,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CDW.json",
+   "sha256": "336bd518494d3b8d9b78a0906400a31cdfe8abbf1a1e338565057c392560e045",
+   "source": "tmp/trade-grade-full-answer/CDW.json"
+  },
+  {
+   "bytes": 68965,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CEG.json",
+   "sha256": "c0616c5b5478da08806f4859c4b2a43fe8d14125734a096ad0d82032a7c7687a",
+   "source": "tmp/trade-grade-full-answer/CEG.json"
+  },
+  {
+   "bytes": 64683,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CF.json",
+   "sha256": "ea6731d5e15fd83eb31443598c9ccad04f40437c1965b48091e34f82f1028112",
+   "source": "tmp/trade-grade-full-answer/CF.json"
+  },
+  {
+   "bytes": 65585,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CFG.json",
+   "sha256": "6c32b9cc72f8690c89a639a23e4eea2bee1e72b7df24cc37ec9d01282b909d72",
+   "source": "tmp/trade-grade-full-answer/CFG.json"
+  },
+  {
+   "bytes": 64356,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CHD.json",
+   "sha256": "57b75b56accba4f274095a4e71e554b1f0094d94f8ea8fb328b11920d190cd29",
+   "source": "tmp/trade-grade-full-answer/CHD.json"
+  },
+  {
+   "bytes": 66222,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CHRW.json",
+   "sha256": "143f752155615895a1c12b8cb64bd6f7e06de47b27b332ff20c62fdf4ddb475e",
+   "source": "tmp/trade-grade-full-answer/CHRW.json"
+  },
+  {
+   "bytes": 65757,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CHTR.json",
+   "sha256": "2fc26c7ac2907294cca0af942b7334d8ce3f2ecc9d6648771daf106589c36fae",
+   "source": "tmp/trade-grade-full-answer/CHTR.json"
+  },
+  {
+   "bytes": 65124,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CI.json",
+   "sha256": "7448708ec04704bb9894c9393ea1fc2091de99d130c3910c1ef99fc9fd82d7f9",
+   "source": "tmp/trade-grade-full-answer/CI.json"
+  },
+  {
+   "bytes": 65882,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CIEN.json",
+   "sha256": "9f8cab975c39b66d651114cb3657a06c84a33a670b7fa1995d39f542751efb04",
+   "source": "tmp/trade-grade-full-answer/CIEN.json"
+  },
+  {
+   "bytes": 64789,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CINF.json",
+   "sha256": "e1a7b7f615ee44b1e858830617c5dc3bf0983d0220994fa8ae9bc849f1dcc052",
+   "source": "tmp/trade-grade-full-answer/CINF.json"
+  },
+  {
+   "bytes": 64629,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CL.json",
+   "sha256": "200cba058d416c045343a1e1895d96b9624384df0b7605ca8d5fba44f89212e1",
+   "source": "tmp/trade-grade-full-answer/CL.json"
+  },
+  {
+   "bytes": 65526,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CLX.json",
+   "sha256": "d43983ef28f59ae92afd2b445750dc494d4f301647bfac7ba684602e30aedd0e",
+   "source": "tmp/trade-grade-full-answer/CLX.json"
+  },
+  {
+   "bytes": 64309,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CMCSA.json",
+   "sha256": "24340b0071ec681a2530a59d3e1f428ced1b297283d6bf9e78b0530584553074",
+   "source": "tmp/trade-grade-full-answer/CMCSA.json"
+  },
+  {
+   "bytes": 151093,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CME.json",
+   "sha256": "2a9e19c62e79e29a647dd779f796a8661e6f616d3aa7662ba15901fa5814e7f1",
+   "source": "tmp/trade-grade-full-answer/CME.json"
+  },
+  {
+   "bytes": 65552,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CMG.json",
+   "sha256": "3d20c0db3e582f3e621e8596d5fe9a458da6af66ba1831ddac33f381149aad6b",
+   "source": "tmp/trade-grade-full-answer/CMG.json"
+  },
+  {
+   "bytes": 67072,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CMI.json",
+   "sha256": "673ccdbe373c2b91947800d6c8e491c0726db9640d93b8ded209b307ea72758a",
+   "source": "tmp/trade-grade-full-answer/CMI.json"
+  },
+  {
+   "bytes": 69667,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CMS.json",
+   "sha256": "0f08b78f42184458fe09d7506b61ff3f4ac57d8118a83f8254c08f283a31dc75",
+   "source": "tmp/trade-grade-full-answer/CMS.json"
+  },
+  {
+   "bytes": 67201,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CNC.json",
+   "sha256": "a3b3d4ce434ecc18d6706bedaf4d992aecf456948aa16509bf3ae6f90ad05a8f",
+   "source": "tmp/trade-grade-full-answer/CNC.json"
+  },
+  {
+   "bytes": 66884,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CNP.json",
+   "sha256": "d6674b3171a0c7410f930113f90241a34eae759e924e2c8a297ab86a5971d2df",
+   "source": "tmp/trade-grade-full-answer/CNP.json"
+  },
+  {
+   "bytes": 66706,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/COHR.json",
+   "sha256": "c708b8ebbebe8a3cb2d79add861b07dd3efe013b99d083784827080017fd014f",
+   "source": "tmp/trade-grade-full-answer/COHR.json"
+  },
+  {
+   "bytes": 66294,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/COO.json",
+   "sha256": "0094228e8ba959a93af65ac83bed832be9c2560f9f7d7c483a3d5601b7625e2e",
+   "source": "tmp/trade-grade-full-answer/COO.json"
+  },
+  {
+   "bytes": 64589,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/COP.json",
+   "sha256": "a3915401ed342ecd71115827a4686a53b24734bda68f4cee5e1a1832ffde7005",
+   "source": "tmp/trade-grade-full-answer/COP.json"
+  },
+  {
+   "bytes": 64215,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/COR.json",
+   "sha256": "b4aa6ebc76adadd58a3cafda1adf4361a978309fbf825016cee90541a9e088b2",
+   "source": "tmp/trade-grade-full-answer/COR.json"
+  },
+  {
+   "bytes": 66092,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/COST.json",
+   "sha256": "98bbb0bb21375c9db0d785b75dfc919c3f6e3d1dc731ed95f95550822ec225f0",
+   "source": "tmp/trade-grade-full-answer/COST.json"
+  },
+  {
+   "bytes": 67246,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CPB.json",
+   "sha256": "e0b16f6ff5fa8e94bace0e35abe65a41efa8a3a351c127ee5167548f6316ca8e",
+   "source": "tmp/trade-grade-full-answer/CPB.json"
+  },
+  {
+   "bytes": 65781,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CPRT.json",
+   "sha256": "b396a0fd1c76c98fcab4231b4b135e866beda131bc8e07addbcc1be2c23af9a2",
+   "source": "tmp/trade-grade-full-answer/CPRT.json"
+  },
+  {
+   "bytes": 67986,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CPT.json",
+   "sha256": "d2fe669b79c9a348785205dc6382aefc197059159eaa3eac23b413f80a6a2e65",
+   "source": "tmp/trade-grade-full-answer/CPT.json"
+  },
+  {
+   "bytes": 65520,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CRH.json",
+   "sha256": "a1eba0e8fdfeb78408dd1e03e9e2cdb30adadbe7fa0bb9f05a06a437cdaeb3c5",
+   "source": "tmp/trade-grade-full-answer/CRH.json"
+  },
+  {
+   "bytes": 65552,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CRL.json",
+   "sha256": "f7e07904507d571b5791f6b609f5ef08cca2a4e09a029c6f5cbb8d7828513807",
+   "source": "tmp/trade-grade-full-answer/CRL.json"
+  },
+  {
+   "bytes": 66663,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CRM.json",
+   "sha256": "ec55f50b676df862b0c45e819d29d62fb603719c3bda0556dc5398c5ac977ab8",
+   "source": "tmp/trade-grade-full-answer/CRM.json"
+  },
+  {
+   "bytes": 68348,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CRWD.json",
+   "sha256": "3e275be63de8ecf2a2783901751fa2f6379a3fc3fc117d2aff3504932bcabb8b",
+   "source": "tmp/trade-grade-full-answer/CRWD.json"
+  },
+  {
+   "bytes": 67209,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CSCO.json",
+   "sha256": "051e6e2895fc7dbce127fd8288422b30e29a54966af5af1d804fad241df4cbee",
+   "source": "tmp/trade-grade-full-answer/CSCO.json"
+  },
+  {
+   "bytes": 66280,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CSGP.json",
+   "sha256": "90f438bd186f52f5b038c03b3ac54f7f2c24ba5f9d6d4dc84156a25df01608b1",
+   "source": "tmp/trade-grade-full-answer/CSGP.json"
+  },
+  {
+   "bytes": 64456,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CSX.json",
+   "sha256": "b01530a52fd5046983e02d91a42c8f1d26142b317508a70888be460fcf2dfc70",
+   "source": "tmp/trade-grade-full-answer/CSX.json"
+  },
+  {
+   "bytes": 65655,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CTAS.json",
+   "sha256": "95e6d05eb4be52237ca3921ffa2cd8aef54c323ea8833e4378fc3e619175610e",
+   "source": "tmp/trade-grade-full-answer/CTAS.json"
+  },
+  {
+   "bytes": 65980,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CTSH.json",
+   "sha256": "2612d3cbbd3e8e4cfd3977c5f759677cbfe3c947ed881a59dcd529e920cce122",
+   "source": "tmp/trade-grade-full-answer/CTSH.json"
+  },
+  {
+   "bytes": 66556,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CTVA.json",
+   "sha256": "6a18c9bab9af5bfa0c56a2d49a353706bf1ce72058f145a14f48f960681bab4a",
+   "source": "tmp/trade-grade-full-answer/CTVA.json"
+  },
+  {
+   "bytes": 65502,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CVNA.json",
+   "sha256": "abd6f2cf201c083fd3712752f533ca537d23b416e3dd52f481a2eaa4adc88e13",
+   "source": "tmp/trade-grade-full-answer/CVNA.json"
+  },
+  {
+   "bytes": 64288,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CVS.json",
+   "sha256": "c014c7b29ce6271014dd1e4666213d30ee405a55b318a03dcdd13fd219edb201",
+   "source": "tmp/trade-grade-full-answer/CVS.json"
+  },
+  {
+   "bytes": 68112,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/CVX.json",
+   "sha256": "8eb89fa1464b455a06ab280e4fbbc3c888c57c54bb5ab8c151a28069ff7c312f",
+   "source": "tmp/trade-grade-full-answer/CVX.json"
+  },
+  {
+   "bytes": 67762,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/D.json",
+   "sha256": "e957b04e8b66b71496f5a023883f1222b7108e915a9d0c2628b29497980eb970",
+   "source": "tmp/trade-grade-full-answer/D.json"
+  },
+  {
+   "bytes": 64788,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DAL.json",
+   "sha256": "8ca57f61de885d40659bb3cefa40b27745487d92a6ca00c1a2f3610727b3693f",
+   "source": "tmp/trade-grade-full-answer/DAL.json"
+  },
+  {
+   "bytes": 66433,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DASH.json",
+   "sha256": "c88e169455d9ad30d93d89717885992065eba0ff6ea8f75e0bbbba38625fc75d",
+   "source": "tmp/trade-grade-full-answer/DASH.json"
+  },
+  {
+   "bytes": 68008,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DD.json",
+   "sha256": "f0c4b7057e25cae18bdf749f8af03f0ba3fe5056acc85457242c33722d69c524",
+   "source": "tmp/trade-grade-full-answer/DD.json"
+  },
+  {
+   "bytes": 67298,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DDOG.json",
+   "sha256": "2843ccf26fae1ba1ccfda7b6790e83e21c500607bf0f56d3effc7870ad4539a1",
+   "source": "tmp/trade-grade-full-answer/DDOG.json"
+  },
+  {
+   "bytes": 65605,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DE.json",
+   "sha256": "93ffbc5ed24daf65085a2571c75cc3a8a1898d839705aec08aa7e98e971281ce",
+   "source": "tmp/trade-grade-full-answer/DE.json"
+  },
+  {
+   "bytes": 65523,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DECK.json",
+   "sha256": "091c52bbc6d9e91b864eb23d8e57e7e14b51a9746cd2840db8c6940bd3fa4a79",
+   "source": "tmp/trade-grade-full-answer/DECK.json"
+  },
+  {
+   "bytes": 65054,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DELL.json",
+   "sha256": "e80249afb6d8736559c09fd9c9c83788ea7eff6059025e542fd7e1cf0a29fd7c",
+   "source": "tmp/trade-grade-full-answer/DELL.json"
+  },
+  {
+   "bytes": 66037,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DG.json",
+   "sha256": "a08e7d3b4494b9c2c4cc7f025ec4660db3c1b0050cdeaba5c210b3431ed715e8",
+   "source": "tmp/trade-grade-full-answer/DG.json"
+  },
+  {
+   "bytes": 64243,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DGX.json",
+   "sha256": "c2a1fe6df9975386d6d8549329f6f0de2ce56cc8ce0b479b51d60bdbedc20520",
+   "source": "tmp/trade-grade-full-answer/DGX.json"
+  },
+  {
+   "bytes": 66048,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DHI.json",
+   "sha256": "511db787cebf21fb02db145f81b010b9460345ab6447d053ad704f727954161d",
+   "source": "tmp/trade-grade-full-answer/DHI.json"
+  },
+  {
+   "bytes": 67161,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DHR.json",
+   "sha256": "744a9b3a036e26daa6291a170203fc944ac21359c0139d8c540a7980c3ee6835",
+   "source": "tmp/trade-grade-full-answer/DHR.json"
+  },
+  {
+   "bytes": 64749,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DIS.json",
+   "sha256": "c2a204be294d26b2cbeb3300a8e123f840020a5977c52976adeb8bec76f8ef7a",
+   "source": "tmp/trade-grade-full-answer/DIS.json"
+  },
+  {
+   "bytes": 67132,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DLR.json",
+   "sha256": "dcf61e44e006144463da2f62a21f42dff3e99b9d39d3960226b6d7c0ec5b87b1",
+   "source": "tmp/trade-grade-full-answer/DLR.json"
+  },
+  {
+   "bytes": 66364,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DLTR.json",
+   "sha256": "04d13991c156343ed29fd7c683bb7dddc19fdd04be20fba9aad59dacd06918ce",
+   "source": "tmp/trade-grade-full-answer/DLTR.json"
+  },
+  {
+   "bytes": 67093,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DOC.json",
+   "sha256": "f7bb24e50736f630b931a18366349e21de2b01bf151665bb3d794a781f9d648f",
+   "source": "tmp/trade-grade-full-answer/DOC.json"
+  },
+  {
+   "bytes": 64465,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DOV.json",
+   "sha256": "85874d7c1ab2126b99eef0f0b01652c9df3169f8bab02baac7e13a02d64b17fa",
+   "source": "tmp/trade-grade-full-answer/DOV.json"
+  },
+  {
+   "bytes": 64673,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DOW.json",
+   "sha256": "6679dd3332d52bc1dcf92b79e57ce6e506564039d81407e77f12f38d4c828651",
+   "source": "tmp/trade-grade-full-answer/DOW.json"
+  },
+  {
+   "bytes": 66025,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DPZ.json",
+   "sha256": "b63f01fedc19fe7256bdc5cd7dcd82fe0c08b8be09f777ec555a78a2c47ca4e9",
+   "source": "tmp/trade-grade-full-answer/DPZ.json"
+  },
+  {
+   "bytes": 64684,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DRI.json",
+   "sha256": "8868b7a159748c47e9f707641d268a8301bb0ed696df5321aef042d477f78c51",
+   "source": "tmp/trade-grade-full-answer/DRI.json"
+  },
+  {
+   "bytes": 67717,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DTE.json",
+   "sha256": "fd488ce67d4f31680e6abf3af1df35559827e8610dd575a20bf9fda1f42f3740",
+   "source": "tmp/trade-grade-full-answer/DTE.json"
+  },
+  {
+   "bytes": 66995,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DUK.json",
+   "sha256": "20fdeea7519f8329e0c1771ce29711727cb56391a37f0dd0f1369fa31b211bb1",
+   "source": "tmp/trade-grade-full-answer/DUK.json"
+  },
+  {
+   "bytes": 67348,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DVA.json",
+   "sha256": "7a1992bf61b693fa2ef643f58d291d8a8117d16301cc5ca6d39679df498e6e14",
+   "source": "tmp/trade-grade-full-answer/DVA.json"
+  },
+  {
+   "bytes": 69025,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/DVN.json",
+   "sha256": "bf1d3ed6ce7e20fefcc4b2bbb7c0cfac3ccd979ce3659d335cd2773a28fee0e2",
+   "source": "tmp/trade-grade-full-answer/DVN.json"
+  },
+  {
+   "bytes": 65140,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EA.json",
+   "sha256": "2582f63453294dda983578d247b7d914a95b84aedae6c0d9cdcb2b5b046935a1",
+   "source": "tmp/trade-grade-full-answer/EA.json"
+  },
+  {
+   "bytes": 66098,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EBAY.json",
+   "sha256": "8fa0a74c0b5565c01ba4cfa9cd91a8147c31e9092c247e61cc51b00758c41b43",
+   "source": "tmp/trade-grade-full-answer/EBAY.json"
+  },
+  {
+   "bytes": 66522,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ECL.json",
+   "sha256": "f4405861441d19eeed470d33105f12b7a2167f0b498bcfa60be650820f857df3",
+   "source": "tmp/trade-grade-full-answer/ECL.json"
+  },
+  {
+   "bytes": 67585,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ED.json",
+   "sha256": "3bfbaae13f8bb30c33ef75c2263ff77213de6b399478a61e1590ef98bd0aff67",
+   "source": "tmp/trade-grade-full-answer/ED.json"
+  },
+  {
+   "bytes": 65617,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EFX.json",
+   "sha256": "4c7aefcb901f1945ed7a1354108aa5a68e948b88bb8ddf1d50e157eff614d122",
+   "source": "tmp/trade-grade-full-answer/EFX.json"
+  },
+  {
+   "bytes": 67852,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EIX.json",
+   "sha256": "cb68bfc60e144954174acedc85abe413b35a0410ff1a106ebdc93ebb32bdd9ba",
+   "source": "tmp/trade-grade-full-answer/EIX.json"
+  },
+  {
+   "bytes": 67374,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EL.json",
+   "sha256": "f2dd68454efb0c23f991c57822c27dc4121adce297b4f33a525fd0161cffeebd",
+   "source": "tmp/trade-grade-full-answer/EL.json"
+  },
+  {
+   "bytes": 64722,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EME.json",
+   "sha256": "dc037a8b366eb149309d7e3d111ea4553bc5493948543cbbe50b9a9edb52c985",
+   "source": "tmp/trade-grade-full-answer/EME.json"
+  },
+  {
+   "bytes": 64725,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EMR.json",
+   "sha256": "b7cd83dd3bc5088440b572f8536885847173caa3743e73134c63f08e71ccdbe5",
+   "source": "tmp/trade-grade-full-answer/EMR.json"
+  },
+  {
+   "bytes": 64853,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EOG.json",
+   "sha256": "af223d51805b66dcb72a481c07be25c7ff02b4b76f7436990b2aaf2caebfbf19",
+   "source": "tmp/trade-grade-full-answer/EOG.json"
+  },
+  {
+   "bytes": 67773,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EQIX.json",
+   "sha256": "e4fd99e96c22b5968b21cd7ae0554afcc99a30d28149a1c03148f82b6280c6df",
+   "source": "tmp/trade-grade-full-answer/EQIX.json"
+  },
+  {
+   "bytes": 66786,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EQR.json",
+   "sha256": "b6ced18df49ea95a190a2687d1c106013ea1ce9b4cb35aa9520c317c1bc53128",
+   "source": "tmp/trade-grade-full-answer/EQR.json"
+  },
+  {
+   "bytes": 66216,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EQT.json",
+   "sha256": "1719de391820ee19c3a579ddabdbca047727d8e9ace1b0b5e077d4cf5ebabfc3",
+   "source": "tmp/trade-grade-full-answer/EQT.json"
+  },
+  {
+   "bytes": 66330,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ES.json",
+   "sha256": "36821acce8e54908455f332ccd9657d63b037afaec29bd11ad72593cbbb0bf58",
+   "source": "tmp/trade-grade-full-answer/ES.json"
+  },
+  {
+   "bytes": 65990,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ESS.json",
+   "sha256": "55cb1c990bf00ca18f4b680bf5cdd42cf63b42c5c21851a71c0cbb193a46ed53",
+   "source": "tmp/trade-grade-full-answer/ESS.json"
+  },
+  {
+   "bytes": 183812,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ETN.json",
+   "sha256": "91842ccc5e101ecd288df934f9a8f34b44c236644b51d0e2f3e72f7466cc347d",
+   "source": "tmp/trade-grade-full-answer/ETN.json"
+  },
+  {
+   "bytes": 68541,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ETR.json",
+   "sha256": "3ed0b0660b780bd77f6c1b4a877c2161e8ba158b945e575b50155dc389e57e3f",
+   "source": "tmp/trade-grade-full-answer/ETR.json"
+  },
+  {
+   "bytes": 69323,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EVRG.json",
+   "sha256": "50bd73a1bb29551558821773de7eae7af7fd5d981497fdebd05260d85e904872",
+   "source": "tmp/trade-grade-full-answer/EVRG.json"
+  },
+  {
+   "bytes": 69311,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EXC.json",
+   "sha256": "43bd6bd47c4e0942f695d20b77be86adb3f8ad6f1f53ebe58c45a72594254a3f",
+   "source": "tmp/trade-grade-full-answer/EXC.json"
+  },
+  {
+   "bytes": 65195,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EXE.json",
+   "sha256": "0123ad87003e6b4956ec72f413dd9b887f843808e96fbb7ee616c71afcdd0d3a",
+   "source": "tmp/trade-grade-full-answer/EXE.json"
+  },
+  {
+   "bytes": 65686,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EXPD.json",
+   "sha256": "6526d857242328a5e6ae31c1c5fbb95c184fd48ff9d42be3248a3819c1346e22",
+   "source": "tmp/trade-grade-full-answer/EXPD.json"
+  },
+  {
+   "bytes": 64698,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EXPE.json",
+   "sha256": "0223bc36bdcbb4314000e7d87d471459ff75e8208fa22216b959cc73f4cfda69",
+   "source": "tmp/trade-grade-full-answer/EXPE.json"
+  },
+  {
+   "bytes": 66933,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/EXR.json",
+   "sha256": "53f4e452a7e114f3acab52b267ca2c46480f2501d9d4da726c4bd8732d629053",
+   "source": "tmp/trade-grade-full-answer/EXR.json"
+  },
+  {
+   "bytes": 65226,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/F.json",
+   "sha256": "54106fc528b5025900d54408eadf615ea4dc2ce314e3a95103d61916e4ded254",
+   "source": "tmp/trade-grade-full-answer/F.json"
+  },
+  {
+   "bytes": 64685,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/FANG.json",
+   "sha256": "f09e60937cc26eb114fddbb3ed9abc834460dd3fd14e0179402ef18f8fd410ea",
+   "source": "tmp/trade-grade-full-answer/FANG.json"
+  },
+  {
+   "bytes": 66522,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/FAST.json",
+   "sha256": "909925f7f601cf3b58aeca8d0dec59a365bc41857d45b9d39bf83c89f9a7d717",
+   "source": "tmp/trade-grade-full-answer/FAST.json"
+  },
+  {
+   "bytes": 64656,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/FCX.json",
+   "sha256": "4f78900ad6bb2330cb028bd8427067c27d2345ec1b9a10509660b915f1d0866e",
+   "source": "tmp/trade-grade-full-answer/FCX.json"
+  },
+  {
+   "bytes": 66846,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/FE.json",
+   "sha256": "e94fa3530f4343fa006dbcb7122879a41cce0eb75ef373c095e8c9daa9384699",
+   "source": "tmp/trade-grade-full-answer/FE.json"
+  },
+  {
+   "bytes": 65862,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/FFIV.json",
+   "sha256": "cd4dbedfad41fd281fc7c7522d828f5ad2f1bdb1dd666071f8262c6657f0ba11",
+   "source": "tmp/trade-grade-full-answer/FFIV.json"
+  },
+  {
+   "bytes": 67721,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/FICO.json",
+   "sha256": "2080932fbbc26ac104167baf43badb133e37e015dec688ef4643941ae7547b3e",
+   "source": "tmp/trade-grade-full-answer/FICO.json"
+  },
+  {
+   "bytes": 65036,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/FLEX.json",
+   "sha256": "f1b8ee2af733eaaa4c21249f99a3bf6da03ab0f4191ab076d059886994f62256",
+   "source": "tmp/trade-grade-full-answer/FLEX.json"
+  },
+  {
+   "bytes": 64709,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/FOX.json",
+   "sha256": "d6b08e664fc1b1e0ecc43e4051dfca24ffce1a783b283cfb3666437f72d10fe5",
+   "source": "tmp/trade-grade-full-answer/FOX.json"
+  },
+  {
+   "bytes": 64716,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/FOXA.json",
+   "sha256": "75edf711c6213701727f1573673c324cf7fc2e4c71e61cd0523b6b0d6f6829e3",
+   "source": "tmp/trade-grade-full-answer/FOXA.json"
+  },
+  {
+   "bytes": 67779,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/FRT.json",
+   "sha256": "e35b179fc8fdc992ed3717c1b640ff2f8c5ac2b49ad41d5c7490514878243903",
+   "source": "tmp/trade-grade-full-answer/FRT.json"
+  },
+  {
+   "bytes": 65035,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/FSLR.json",
+   "sha256": "77e4c1a189cf7ca28eec660e9bbc0cb46cfd9818857bb44c64de6bbe061edc99",
+   "source": "tmp/trade-grade-full-answer/FSLR.json"
+  },
+  {
+   "bytes": 66601,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/GD.json",
+   "sha256": "1b8132c088f34cc882985462b3657e116f47713cb2cce8316bfd01459bf6e935",
+   "source": "tmp/trade-grade-full-answer/GD.json"
+  },
+  {
+   "bytes": 64781,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/GE.json",
+   "sha256": "714ba432e5a16ac506c53c0d05bcd0394a5291c3588eb37012702b8582ec7294",
+   "source": "tmp/trade-grade-full-answer/GE.json"
+  },
+  {
+   "bytes": 65202,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/GIS.json",
+   "sha256": "05749801aa29ef2669bb282fe1ad0b0a350571ab316464abfe44f41bbaf00d05",
+   "source": "tmp/trade-grade-full-answer/GIS.json"
+  },
+  {
+   "bytes": 67739,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/GM.json",
+   "sha256": "479f899c896b3934c9c5098d4a3ca7523b262a1993296ffc73bee7f22ab07984",
+   "source": "tmp/trade-grade-full-answer/GM.json"
+  },
+  {
+   "bytes": 160270,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/GOOG.json",
+   "sha256": "d740357484926d6574aeca531d94f859d9dd8487df103ac03f6ad6f9553ea1a0",
+   "source": "tmp/trade-grade-full-answer/GOOG.json"
+  },
+  {
+   "bytes": 68202,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/GOOGL.json",
+   "sha256": "1e93925975fe4c75e9b0d1a5cbb6593c8b7ed862ba26e85ab5910c53653399c9",
+   "source": "tmp/trade-grade-full-answer/GOOGL.json"
+  },
+  {
+   "bytes": 65570,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/GPC.json",
+   "sha256": "c254cc6c20ba209cc20877272dbd918eb6e4d601902ef1eff650dc12dc5b1d85",
+   "source": "tmp/trade-grade-full-answer/GPC.json"
+  },
+  {
+   "bytes": 64634,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/GRMN.json",
+   "sha256": "c383f41c79b7aee8785eddd16d286e93daf49309aeb2b40239e124703b261d8b",
+   "source": "tmp/trade-grade-full-answer/GRMN.json"
+  },
+  {
+   "bytes": 153558,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/GS.json",
+   "sha256": "80207536ce4fda235aa1edd2f5e06c5950152ccc60a13435c0690423185931b5",
+   "source": "tmp/trade-grade-full-answer/GS.json"
+  },
+  {
+   "bytes": 64266,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/HAL.json",
+   "sha256": "ff59fff75668853eafd5ad5a00b6ee2ee41e3a53edcc6dc969633724e7bdf17e",
+   "source": "tmp/trade-grade-full-answer/HAL.json"
+  },
+  {
+   "bytes": 66140,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/HAS.json",
+   "sha256": "238c1bb6fbe06c304ba12b4c3a75532871f40e5d4cea9bdcf7d9351de093dedb",
+   "source": "tmp/trade-grade-full-answer/HAS.json"
+  },
+  {
+   "bytes": 65446,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/HD.json",
+   "sha256": "bcf625a8d9590e4fe99ac09ff9099299bc2d51ae62a1079f4fb762c2f21ee847",
+   "source": "tmp/trade-grade-full-answer/HD.json"
+  },
+  {
+   "bytes": 66444,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/HON.json",
+   "sha256": "185d2908676b80501d438e4ece55f691edb181879cdc6a490d45efc582320e59",
+   "source": "tmp/trade-grade-full-answer/HON.json"
+  },
+  {
+   "bytes": 65506,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/HRL.json",
+   "sha256": "b44fe1c057655e3c8da1779d2cbf71ef3ed50fcefe2391489442f1a22e2effe4",
+   "source": "tmp/trade-grade-full-answer/HRL.json"
+  },
+  {
+   "bytes": 64284,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/HST.json",
+   "sha256": "69071c6d82013133100b25ac70a1d7c2388765ebb7fc9bcc58e2b92d902659ed",
+   "source": "tmp/trade-grade-full-answer/HST.json"
+  },
+  {
+   "bytes": 65220,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/HSY.json",
+   "sha256": "20b2685555fe44aa3adfa8853ceb3d0c3ca993da77e95dcd8be557b33def5808",
+   "source": "tmp/trade-grade-full-answer/HSY.json"
+  },
+  {
+   "bytes": 67359,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/IFF.json",
+   "sha256": "a2e73c43eef381deea8ba0de33437680a6a311d30b6bb2f709ed3b2a37fdb7ea",
+   "source": "tmp/trade-grade-full-answer/IFF.json"
+  },
+  {
+   "bytes": 64742,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/INTU.json",
+   "sha256": "6594af37ed727088bbba3a50071e6304e51be8d2ef58eb94a7c1ceea810c6bdd",
+   "source": "tmp/trade-grade-full-answer/INTU.json"
+  },
+  {
+   "bytes": 65955,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/INVH.json",
+   "sha256": "bdeca954ffb414e197abb35c4c0622bb14b64174ddf6e10228bf2369d35e91f8",
+   "source": "tmp/trade-grade-full-answer/INVH.json"
+  },
+  {
+   "bytes": 69069,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/IP.json",
+   "sha256": "7166155d1c883e8d2570f454ea08096875ec2c92dd02a485a2183d2c6f6f363a",
+   "source": "tmp/trade-grade-full-answer/IP.json"
+  },
+  {
+   "bytes": 68128,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/IRM.json",
+   "sha256": "15acbc69193828310dda3f2129eb7f289b13c2ece0e11af30d073af408907c3c",
+   "source": "tmp/trade-grade-full-answer/IRM.json"
+  },
+  {
+   "bytes": 65482,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ISRG.json",
+   "sha256": "4e751a87b87ccfabc9b1cd734923ea649b756f96bd4b114250c4400979635bae",
+   "source": "tmp/trade-grade-full-answer/ISRG.json"
+  },
+  {
+   "bytes": 78498,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ITA.json",
+   "sha256": "585b90f120b0b8587e35debecc0db8fc45a25a0f29e38b0692e3c5e140533724",
+   "source": "tmp/trade-grade-full-answer/ITA.json"
+  },
+  {
+   "bytes": 143260,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/JPM.json",
+   "sha256": "219b10721c72ab6690f3fb26787cf94579566723b7c6bb7f2d8050dea7da13a6",
+   "source": "tmp/trade-grade-full-answer/JPM.json"
+  },
+  {
+   "bytes": 68895,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/KDP.json",
+   "sha256": "616961924d37667d6ffa418eb81d20ed88e153e88f4383a84bdf9f7cd341f651",
+   "source": "tmp/trade-grade-full-answer/KDP.json"
+  },
+  {
+   "bytes": 67818,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/KHC.json",
+   "sha256": "5e7ce146b241617796cef3ac192ad5894b7c97f83725a4f5393e9a1c9b40ae17",
+   "source": "tmp/trade-grade-full-answer/KHC.json"
+  },
+  {
+   "bytes": 64629,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/KMB.json",
+   "sha256": "b4119babb30d1db54a7839be0dd99f42d50d18cb27410a20135d86ceca7b3015",
+   "source": "tmp/trade-grade-full-answer/KMB.json"
+  },
+  {
+   "bytes": 65506,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/KMI.json",
+   "sha256": "31c37b1384f9e6eefe3bf3d5b302fb9eab8000757f2895f242dfab2d7e18d25b",
+   "source": "tmp/trade-grade-full-answer/KMI.json"
+  },
+  {
+   "bytes": 68913,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/KTOS.json",
+   "sha256": "7a03dbed67915bdc5e65ac46275936fc5dd776182d252a01cfe1976ef6e0f622",
+   "source": "tmp/trade-grade-full-answer/KTOS.json"
+  },
+  {
+   "bytes": 153994,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/LIN.json",
+   "sha256": "c80d5aeb786632f85732a263a62f134131257b4f35d3b649ece2de442c4a8033",
+   "source": "tmp/trade-grade-full-answer/LIN.json"
+  },
+  {
+   "bytes": 64842,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/LLY.json",
+   "sha256": "a2984b6b25517695b2e5ef6c71c5cb1faa99ed58a181fa647c95e716cfb1b768",
+   "source": "tmp/trade-grade-full-answer/LLY.json"
+  },
+  {
+   "bytes": 146238,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/LMT.json",
+   "sha256": "7e8f93652a93277819f14c2d4095e64b5e478421b4fd4c4bc9c245e5280b51bc",
+   "source": "tmp/trade-grade-full-answer/LMT.json"
+  },
+  {
+   "bytes": 67848,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/LNG.json",
+   "sha256": "c3302bf02f58f424aa13dc754b214c898e8fa9d98277d29cd086272e7c8993b9",
+   "source": "tmp/trade-grade-full-answer/LNG.json"
+  },
+  {
+   "bytes": 65928,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/LNT.json",
+   "sha256": "a9ca730557421183addb3d1ce3ee4c93968ec4e988c2c2597ba6627333e342f1",
+   "source": "tmp/trade-grade-full-answer/LNT.json"
+  },
+  {
+   "bytes": 64759,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/LYB.json",
+   "sha256": "2f9dae6b353d8e7f5b0c127587d1f42da946515efa0fcff25c1621b50c68f0c6",
+   "source": "tmp/trade-grade-full-answer/LYB.json"
+  },
+  {
+   "bytes": 66450,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/LYV.json",
+   "sha256": "b5807641567b7bd6f6c265f85f747f0d3bbb88dedc96e0b3b5110daf0bd91216",
+   "source": "tmp/trade-grade-full-answer/LYV.json"
+  },
+  {
+   "bytes": 66536,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/MA.json",
+   "sha256": "a13faf60a2e2c114200d13b9d0936227fd9b862c27f40fcab2b3c18e8bba8280",
+   "source": "tmp/trade-grade-full-answer/MA.json"
+  },
+  {
+   "bytes": 65188,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/MCD.json",
+   "sha256": "b9493bc5bdecffd97abf5581afb6170b2a96e4a794075bf800a32556d6725e69",
+   "source": "tmp/trade-grade-full-answer/MCD.json"
+  },
+  {
+   "bytes": 66877,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/MCK.json",
+   "sha256": "d572ec50f185949257344e8105ae3858209cdd1ee3cf5e36c207d82c4e5d3326",
+   "source": "tmp/trade-grade-full-answer/MCK.json"
+  },
+  {
+   "bytes": 67367,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/MDB.json",
+   "sha256": "244ec097bf1d289f850c439e41fae33ab890b2d9d3ae4c61d779557c80f776bd",
+   "source": "tmp/trade-grade-full-answer/MDB.json"
+  },
+  {
+   "bytes": 149848,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/META.json",
+   "sha256": "02c71e3fde83018f0affdc2ccdf5dc84fbce9c0a805e49fe6f9b6940235a3e5a",
+   "source": "tmp/trade-grade-full-answer/META.json"
+  },
+  {
+   "bytes": 67422,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/MLM.json",
+   "sha256": "195c7322768b9e33f41e623e75066370f1bd21bee4b7027dcfcfa428c278708a",
+   "source": "tmp/trade-grade-full-answer/MLM.json"
+  },
+  {
+   "bytes": 67902,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/MOS.json",
+   "sha256": "8c2ede655873174222157ec2a94fb082a621472b67e239e3f1d61a3faed3c875",
+   "source": "tmp/trade-grade-full-answer/MOS.json"
+  },
+  {
+   "bytes": 64668,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/MPC.json",
+   "sha256": "2723cbe0a946a37fd87788d0a494ca54a4600e58d5349e115ad61ca5ffbe6b04",
+   "source": "tmp/trade-grade-full-answer/MPC.json"
+  },
+  {
+   "bytes": 161417,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/MSFT.json",
+   "sha256": "af9619f2bdafd83f153e3af3953ed92c4ff7bceb90dc666da62f8fc0dfee93cb",
+   "source": "tmp/trade-grade-full-answer/MSFT.json"
+  },
+  {
+   "bytes": 64860,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/MU.json",
+   "sha256": "bd9aea6ee8eca6f18adca08f754efd91234fca699db498aeeba737b798f13f56",
+   "source": "tmp/trade-grade-full-answer/MU.json"
+  },
+  {
+   "bytes": 66715,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/NEE.json",
+   "sha256": "4089b56720b565a0f769f28b084ff9c6c3bb6530190642902cf40ccc7365d682",
+   "source": "tmp/trade-grade-full-answer/NEE.json"
+  },
+  {
+   "bytes": 64648,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/NEM.json",
+   "sha256": "d87a2b03c37679978d33ea23fe7849781faf38b9d2895d187c976281d91a2d7b",
+   "source": "tmp/trade-grade-full-answer/NEM.json"
+  },
+  {
+   "bytes": 67806,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/NFLX.json",
+   "sha256": "b5420a9fffc6e68ca793e9e01432cacb8c67c7281c07e9b2b29d8c4676d11154",
+   "source": "tmp/trade-grade-full-answer/NFLX.json"
+  },
+  {
+   "bytes": 68696,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/NI.json",
+   "sha256": "bd44691f222c3262f6b5d7832973694f0fceaf60fbb9af42b6dd71021444740e",
+   "source": "tmp/trade-grade-full-answer/NI.json"
+  },
+  {
+   "bytes": 64458,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/NOC.json",
+   "sha256": "5509626f223732baeb713b3e3e298556b72df91b6b3e4e4ab771080fb58211a3",
+   "source": "tmp/trade-grade-full-answer/NOC.json"
+  },
+  {
+   "bytes": 65592,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/NOW.json",
+   "sha256": "232c57fd589880d3e808fe2d244bec4a9db8c94880313a535e96a84ed5a3e3b4",
+   "source": "tmp/trade-grade-full-answer/NOW.json"
+  },
+  {
+   "bytes": 65603,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/NUE.json",
+   "sha256": "5b6d5f9b6dc7196edca2be42f04a6f7adce637c4c88eceba78e9f7f6445f36cd",
+   "source": "tmp/trade-grade-full-answer/NUE.json"
+  },
+  {
+   "bytes": 166506,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/NVDA.json",
+   "sha256": "5aa2a76971114d72c39fdf6a2590d0cfead1a10f730b8757b740063b2e236836",
+   "source": "tmp/trade-grade-full-answer/NVDA.json"
+  },
+  {
+   "bytes": 64351,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/NWS.json",
+   "sha256": "0a80c289eb7da23b454c4bf6cdbe1abca8aa2def2a1ad9d683fa6a459fb8f42a",
+   "source": "tmp/trade-grade-full-answer/NWS.json"
+  },
+  {
+   "bytes": 64693,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/NWSA.json",
+   "sha256": "24fc6474624563e45a38959cf6569f1d6e0a04402f5b4fe11d98f2a710b9fd0d",
+   "source": "tmp/trade-grade-full-answer/NWSA.json"
+  },
+  {
+   "bytes": 65472,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/OKE.json",
+   "sha256": "bfa95bbee337219aec2156ac6f9f35c66e50db1083aed09e57092bde40e87652",
+   "source": "tmp/trade-grade-full-answer/OKE.json"
+  },
+  {
+   "bytes": 69051,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/OMC.json",
+   "sha256": "cf245253c81ee2f6498e2b7291248d8f9ebb95d41eb58c0060436272ebb2dd4f",
+   "source": "tmp/trade-grade-full-answer/OMC.json"
+  },
+  {
+   "bytes": 67463,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ORCL.json",
+   "sha256": "4b25cb234f68c88f07b0c7881f70b6c7823d8ff0d67b99e9f0461715167d8c59",
+   "source": "tmp/trade-grade-full-answer/ORCL.json"
+  },
+  {
+   "bytes": 66057,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/ORLY.json",
+   "sha256": "a8e90a2573271d295f3edd6ee7c669c7a55f7f1ef4c1e8f5a790cd1b222776ba",
+   "source": "tmp/trade-grade-full-answer/ORLY.json"
+  },
+  {
+   "bytes": 66384,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/OXY.json",
+   "sha256": "b2cf95127736c4a1ef9f55fcaab25097cb054cdf24fa45d943633583cd08dc1c",
+   "source": "tmp/trade-grade-full-answer/OXY.json"
+  },
+  {
+   "bytes": 66518,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/PANW.json",
+   "sha256": "32e8b2b39f4fa47a39f4518675ced52d84b60eb23c1ce5b0af6db7745cb6780c",
+   "source": "tmp/trade-grade-full-answer/PANW.json"
+  },
+  {
+   "bytes": 63795,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/PAVE.json",
+   "sha256": "9a838e4c12aa0258a9009dde77577136a02d3b615f5cfbbb6ad37d08d665702b",
+   "source": "tmp/trade-grade-full-answer/PAVE.json"
+  },
+  {
+   "bytes": 65999,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/PEP.json",
+   "sha256": "56d868eca4af4e93b90920b9c397fd2bc73342a9170e6ea951449dae54261492",
+   "source": "tmp/trade-grade-full-answer/PEP.json"
+  },
+  {
+   "bytes": 64292,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/PG.json",
+   "sha256": "6bdfe717673f023eda8e83bc6c0b0f5043ab5322b4e308b8d92748f737b5cb44",
+   "source": "tmp/trade-grade-full-answer/PG.json"
+  },
+  {
+   "bytes": 159388,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/PH.json",
+   "sha256": "ff8f1ed9eb60ffb90f2b05de3a5d9bb619a8197bf296f0b91c1b7951042dcc27",
+   "source": "tmp/trade-grade-full-answer/PH.json"
+  },
+  {
+   "bytes": 65400,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/PKG.json",
+   "sha256": "526d29fffcdeb1e5c4ed5bf465b136a8e8d469419ec85cdb2725c1e82360c011",
+   "source": "tmp/trade-grade-full-answer/PKG.json"
+  },
+  {
+   "bytes": 66365,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/PLTR.json",
+   "sha256": "6ba128f14dc07a999d81ab076f9d69d6e5f8db2a742e617fbb9745dce7cd7297",
+   "source": "tmp/trade-grade-full-answer/PLTR.json"
+  },
+  {
+   "bytes": 64353,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/PPG.json",
+   "sha256": "77ec04484bb3eb39dba2c9e52720af8f2495dfa8aa4d3d8044ede0dd0e0d93c6",
+   "source": "tmp/trade-grade-full-answer/PPG.json"
+  },
+  {
+   "bytes": 66498,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/PSKY.json",
+   "sha256": "5a2e00971ab8585dc63ee6a490e38d92d0bfc650447a26ca6f94225f09046f2e",
+   "source": "tmp/trade-grade-full-answer/PSKY.json"
+  },
+  {
+   "bytes": 64654,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/PSX.json",
+   "sha256": "4eae6c701c6bf6f76bc3f668ea5f2c497dd9a82507a1a57298d2987d416f6abb",
+   "source": "tmp/trade-grade-full-answer/PSX.json"
+  },
+  {
+   "bytes": 66603,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/QCOM.json",
+   "sha256": "e56c9ae0a85fc9abe9a4f7d931788ef2882f41a7a6e12ac8aa43ed43e092f34b",
+   "source": "tmp/trade-grade-full-answer/QCOM.json"
+  },
+  {
+   "bytes": 145224,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/RTX.json",
+   "sha256": "bfd2fcf7d4f4b308cc3524a2980d5917bb03d11d3c644e7ff900c195035facb5",
+   "source": "tmp/trade-grade-full-answer/RTX.json"
+  },
+  {
+   "bytes": 66522,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/SAP.json",
+   "sha256": "ac55633459f5f49d369fc90776ae185fc8469f81c75c85e581a4708cc871e1ee",
+   "source": "tmp/trade-grade-full-answer/SAP.json"
+  },
+  {
+   "bytes": 64722,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/SCCO.json",
+   "sha256": "61bd91e0688ccd2895acacd68f91eab7a541d423068b6ac2d497e6aef48a4f2c",
+   "source": "tmp/trade-grade-full-answer/SCCO.json"
+  },
+  {
+   "bytes": 65632,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/SHOP.json",
+   "sha256": "2e0405ac5b333221c60901598e1c6763471bdcc37bc5df6a794ec2f94e07c480",
+   "source": "tmp/trade-grade-full-answer/SHOP.json"
+  },
+  {
+   "bytes": 66431,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/SHW.json",
+   "sha256": "b2bbb23c04a278c9e608c593fc79cfe3dac47a0fcfdd74591dc6e3ac5c582e9a",
+   "source": "tmp/trade-grade-full-answer/SHW.json"
+  },
+  {
+   "bytes": 67987,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/SLB.json",
+   "sha256": "ec2140150175c2fc8ebc86119e4d1d4942015bb978eb22ed86cb8142dd2933a3",
+   "source": "tmp/trade-grade-full-answer/SLB.json"
+  },
+  {
+   "bytes": 60090,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/SLV.json",
+   "sha256": "66750604d678930f06cd2381a99d3f7e7d99dfc90c1ac0064defdd2c23ed1f06",
+   "source": "tmp/trade-grade-full-answer/SLV.json"
+  },
+  {
+   "bytes": 166452,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/SMCI.json",
+   "sha256": "eb41e35766d8e2458eaa5195fba380f3dd06b86c7a192411925369d31566d04b",
+   "source": "tmp/trade-grade-full-answer/SMCI.json"
+  },
+  {
+   "bytes": 69110,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/SNOW.json",
+   "sha256": "b94a925d6d2328761e8d9387928a9070e3961286d2ccb2b3d4588334f40434ae",
+   "source": "tmp/trade-grade-full-answer/SNOW.json"
+  },
+  {
+   "bytes": 69337,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/SO.json",
+   "sha256": "b47a5497238b1fec9e1e5e426eb1650f57bea2ef1e4f17dd745349ac4d6848d2",
+   "source": "tmp/trade-grade-full-answer/SO.json"
+  },
+  {
+   "bytes": 64691,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/STLD.json",
+   "sha256": "7230e7e8dc394405a280a01cd56f4505aee8cddecb4090b42cf5958e82958012",
+   "source": "tmp/trade-grade-full-answer/STLD.json"
+  },
+  {
+   "bytes": 64539,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/SYK.json",
+   "sha256": "44718d1d43742753af3337efb530ac940198121232ebe2f24e2bba653e069532",
+   "source": "tmp/trade-grade-full-answer/SYK.json"
+  },
+  {
+   "bytes": 65157,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/T.json",
+   "sha256": "4f533123444221d516fce62a855fdd94f879f1be7dfb073d04d48797dafc6a9c",
+   "source": "tmp/trade-grade-full-answer/T.json"
+  },
+  {
+   "bytes": 67401,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/TDG.json",
+   "sha256": "b940a5c18c805c6a4018441e66c00c8f4e1921abcb4fbf5fc35f735c2f0fb289",
+   "source": "tmp/trade-grade-full-answer/TDG.json"
+  },
+  {
+   "bytes": 65553,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/TKO.json",
+   "sha256": "d173848394819fe63fe95cfcee12e3cf34d390886d4828750bd746f5e7822dde",
+   "source": "tmp/trade-grade-full-answer/TKO.json"
+  },
+  {
+   "bytes": 60098,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/TLT.json",
+   "sha256": "980923d2832f2657204707fefd6af815b7fe2b6be60174138a7fe75cdb624578",
+   "source": "tmp/trade-grade-full-answer/TLT.json"
+  },
+  {
+   "bytes": 64604,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/TMO.json",
+   "sha256": "7b842433f652dddaf34fae37f375f794691179e5e8b7bf4d9f16085d90e14f56",
+   "source": "tmp/trade-grade-full-answer/TMO.json"
+  },
+  {
+   "bytes": 64883,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/TMUS.json",
+   "sha256": "2936f7e5cf6f604634691e4af3c9d48c2e177ef5c70c98606038ef7b1f3795ff",
+   "source": "tmp/trade-grade-full-answer/TMUS.json"
+  },
+  {
+   "bytes": 64707,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/TPL.json",
+   "sha256": "068ca2a85bc816e77c713e8fa6fe425249cf3b3bd9a6bfefa6150ece6c07a3d2",
+   "source": "tmp/trade-grade-full-answer/TPL.json"
+  },
+  {
+   "bytes": 64665,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/TRGP.json",
+   "sha256": "3001936c73c87351a3d39268c064bbf94377e716a23695e0f877710b1db9e5c0",
+   "source": "tmp/trade-grade-full-answer/TRGP.json"
+  },
+  {
+   "bytes": 65068,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/TSM.json",
+   "sha256": "74ba82f5c401e49216fe48bdd0dd41c027309004631a70ef65b131c60606e7a1",
+   "source": "tmp/trade-grade-full-answer/TSM.json"
+  },
+  {
+   "bytes": 65578,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/TTD.json",
+   "sha256": "4706d4bfe16887178f84de595fe2bd9823bc51b3c56756e402289b6fe02758ff",
+   "source": "tmp/trade-grade-full-answer/TTD.json"
+  },
+  {
+   "bytes": 66351,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/TTWO.json",
+   "sha256": "f99a4551c2beb76134833379a14be6eb16c4b500402ef6941a67cac2082c24c1",
+   "source": "tmp/trade-grade-full-answer/TTWO.json"
+  },
+  {
+   "bytes": 67457,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/TXN.json",
+   "sha256": "b7477dfd5be96a6cacdf2c3cfc3556e9a7cec26988a2a590d0b2c3488fe0a815",
+   "source": "tmp/trade-grade-full-answer/TXN.json"
+  },
+  {
+   "bytes": 65695,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/UBER.json",
+   "sha256": "71b2f3ed065fe8159dac052bb344e4e94b1069a1b86a166ff6362fa3eaf9c4e9",
+   "source": "tmp/trade-grade-full-answer/UBER.json"
+  },
+  {
+   "bytes": 65397,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/UNH.json",
+   "sha256": "9ed895d696e4ecb43b0870bbcdac707e5cb52781dbdde467ae181909efa179d8",
+   "source": "tmp/trade-grade-full-answer/UNH.json"
+  },
+  {
+   "bytes": 64761,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/UNP.json",
+   "sha256": "e2a9ceecfc3ecedf36516de87c66488ed4946e650ea4095a38c48a780b0f86ab",
+   "source": "tmp/trade-grade-full-answer/UNP.json"
+  },
+  {
+   "bytes": 68253,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/URI.json",
+   "sha256": "547974eb9e2c715d55fb56cc90c67f18c535464e7a836f085b7d1b2558433962",
+   "source": "tmp/trade-grade-full-answer/URI.json"
+  },
+  {
+   "bytes": 64661,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/V.json",
+   "sha256": "7026532c4c4bbb77a1f6f956051097342271cda04e32a9a5abe3280e189a7bbd",
+   "source": "tmp/trade-grade-full-answer/V.json"
+  },
+  {
+   "bytes": 63070,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/VAW.json",
+   "sha256": "3e673b9584cf084508a2135c4261069f8401cfc41fb00bcc02e26fd3dc76822b",
+   "source": "tmp/trade-grade-full-answer/VAW.json"
+  },
+  {
+   "bytes": 64654,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/VLO.json",
+   "sha256": "53d0e229e2ffed24e2de5f8d723b04c323e8412de71bca1fb4433a7240414739",
+   "source": "tmp/trade-grade-full-answer/VLO.json"
+  },
+  {
+   "bytes": 67194,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/VMC.json",
+   "sha256": "514c9182e3577a6829f7d1fa7271a11faf06c7f139b16648d3ed384889fff51a",
+   "source": "tmp/trade-grade-full-answer/VMC.json"
+  },
+  {
+   "bytes": 154757,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/VRT.json",
+   "sha256": "dfcff26e5d09a87a3bef0fb8849789bbd55bd882f8d33b5b1ae6b5563077566d",
+   "source": "tmp/trade-grade-full-answer/VRT.json"
+  },
+  {
+   "bytes": 60464,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/VXUS.json",
+   "sha256": "d3dfdb89deb8f70360580d1c683e73a36b9d4108f4819e9d19755416f2f82516",
+   "source": "tmp/trade-grade-full-answer/VXUS.json"
+  },
+  {
+   "bytes": 65202,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/VZ.json",
+   "sha256": "7f4fa4dab03319377e2747cd6adaeb7c7925dcd843bf48ae5e571fd0b47baa10",
+   "source": "tmp/trade-grade-full-answer/VZ.json"
+  },
+  {
+   "bytes": 69232,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/WMB.json",
+   "sha256": "e279504ba68cfaa93a8b9046ff88e3de9dee82974d8d1bf6d16f959134c3a332",
+   "source": "tmp/trade-grade-full-answer/WMB.json"
+  },
+  {
+   "bytes": 67741,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/WMT.json",
+   "sha256": "dcf5755039bb75c9efef4421f97a478ac1fb21ae58e1e3e0f2ed7ece3c23f5f6",
+   "source": "tmp/trade-grade-full-answer/WMT.json"
+  },
+  {
+   "bytes": 63431,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/XLB.json",
+   "sha256": "9c25acf1792a7613706058aea05a5728abe38f8ae184d838302400ef9c334040",
+   "source": "tmp/trade-grade-full-answer/XLB.json"
+  },
+  {
+   "bytes": 62935,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/XLC.json",
+   "sha256": "2e5ce357fb5e201b15f66411207a37906f78a08678b0f6d841fe5d3dec01eaf9",
+   "source": "tmp/trade-grade-full-answer/XLC.json"
+  },
+  {
+   "bytes": 63119,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/XLE.json",
+   "sha256": "b71c97d2b05a158d2b1c3a8e136c24da1a2c93ec9a57967f005e48807d1a8887",
+   "source": "tmp/trade-grade-full-answer/XLE.json"
+  },
+  {
+   "bytes": 63042,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/XLF.json",
+   "sha256": "5525f6628c20adc00b0f3288a4f01e81a5d906dc1030fffc79cdb0f74962148c",
+   "source": "tmp/trade-grade-full-answer/XLF.json"
+  },
+  {
+   "bytes": 63729,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/XLI.json",
+   "sha256": "3434a67239761fb4d9c958c579f6320b1982f767338f5cb79e456c04c7523915",
+   "source": "tmp/trade-grade-full-answer/XLI.json"
+  },
+  {
+   "bytes": 145204,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer/XOM.json",
+   "sha256": "8953b46fde82c93db667a307fd41d112822add6dc208e04eaae2d28aba4c801a",
+   "source": "tmp/trade-grade-full-answer/XOM.json"
+  },
+  {
+   "bytes": 20267008,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/finance-intelligence-state.sqlite",
+   "sha256": "ba5689ec63cd64726d9ff4f46a26f1a744c4500d7383035648177c969fb03381",
+   "source": "tmp/finance-intelligence-state.sqlite"
+  },
+  {
+   "bytes": 24220,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/finance-intelligence-state-validation.json",
+   "sha256": "859b78d92d6a7b1b460221ce3ee94cc44dd0b9c3f4fe32b55a463fc6701f0861",
+   "source": "tmp/finance-intelligence-state-validation.json"
+  },
+  {
+   "bytes": 358633,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/finance-intelligence-state-stale-tickers.json",
+   "sha256": "e7f9c27dc32f40b9c38b6a51bce06bc45e90ea8e6eb7d6fa89d2a9cfd06cafbe",
+   "source": "tmp/finance-intelligence-state-stale-tickers.json"
+  },
+  {
+   "bytes": 377046,
+   "destination": "09. Archive/Finance Runtime/2026-09-18-recreated-retired-state-supplement/files/tmp/trade-grade-full-answer-assembler.json",
+   "sha256": "4dbc59c548ceb547d8787b149f33578d522fd746fdf2e598bc4409da8512267c",
+   "source": "tmp/trade-grade-full-answer-assembler.json"
+  }
+ ],
+ "generated_at_utc": "2026-09-19T05:10:41Z",
+ "owner_authorization": {
+  "decided_at_phoenix": "2026-09-18 22:12",
+  "decision": "Clean + fix gate",
+  "source": "Randall, Telegram direct"
+ },
+ "reason": "Retired portfolio/paper current-state paths recreated by the 2026-09-18 21:37 Phoenix ticker-card refresh gate run. They are retired compatibility evidence and must not remain on active tmp paths.",
+ "schema": "veritas.finance_runtime_retirement_supplement.v1",
+ "status": "ok",
+ "total_bytes": 50976375,
+ "verification": {
+  "applied_at_utc": "2026-09-19T05:10:41Z",
+  "destination_hash_match_count": 603,
+  "source_absent_count": 603,
+  "status": "ok"
+ }
+}

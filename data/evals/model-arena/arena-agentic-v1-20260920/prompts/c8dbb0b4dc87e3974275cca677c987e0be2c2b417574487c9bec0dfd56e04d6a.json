@@ -1,0 +1,11 @@
+{
+  "family": "T4",
+  "instance_id": "c8dbb0b4dc87e3974275cca677c987e0be2c2b417574487c9bec0dfd56e04d6a",
+  "prompt": {
+    "fallback_index": "recovery/index.json",
+    "fixture_set_id": "fs-8c44f4aaca482291",
+    "read_budget": 6,
+    "request": "Recover the dataset via the harness fixture set and return only JSON.",
+    "start_path": "recovery/primary.json"
+  }
+}

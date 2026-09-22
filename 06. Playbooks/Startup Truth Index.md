@@ -54,11 +54,11 @@ Degrade honestly and keep moving through the safe route:
 `scripts/project_implementation_router.py` owns the machine-readable route. `veritas-model-routing-helper-lanes`, `veritas-isolated-agent-contract`, and `disciplined-implementation` own procedure.
 
 - Prefer deterministic model-free work.
-- Use explicitly opted-in Codex-native Terra only for bounded non-QA read-only work.
-- Main uses explicitly configured Astra for integration, acceptance, and authority-sensitive judgment; Sol is its backup. Default authorship is Engineering Builder/Muse Spark 1.3 Contributor; default independent QA is Engineering QA/GLM 5.3. Neither native subagents nor Main quick-fix exceptions bypass these role boundaries.
-- `scripts/agent_fleet_policy.py` owns stable IDs, display names, exact primaries and closed recovery lists: Opportunity Intelligence/Grok 4.6, Engineering QA/GLM 5.3, Finance Evidence/Terra, Finance Risk Challenger/GLM 5.3, Engineering Builder/Muse Spark 1.3 Contributor, Knowledge and Continuity/Luna. Renaming preserves workspace/auth/history.
+- Codex-native Terra is fail-closed while OpenAI quota is exhausted; do not dispatch it.
+- Main integration, acceptance, and authority-sensitive judgment use the live OpenClaw global/session model selection. Fleet recovery candidates live separately in `scripts/agent_fleet_policy.py` and grant no readiness or authority. Role default authorship and independent QA route through `veritas-model-routing-helper-lanes`; see that skill and the fleet policy for live IDs. This index does not pin Main models. Neither native subagents nor Main quick-fix exceptions bypass role boundaries.
+- `scripts/agent_fleet_policy.py` owns stable IDs, display names, exact primaries and closed recovery lists. Live OpenClaw global/session model selection is separate from those fleet recovery lists. Renaming preserves workspace/auth/history.
 - Specialist automatic fallbacks stay empty. Main selects a listed recovery candidate only in a NEW clean-context, separately identified attempt from a verified checkpoint with unchanged role/scope and actual-model proof. Refresh transport/runtime/lease evidence when changed or stale; a model option grants no readiness or authority. Review cannot use the patch-author model.
-- Expected model must equal the selected agent's live configured primary for persistent dispatch; a recovery candidate does not bypass that gate or missing capabilities. Sol architecture and Opus 5 advisory are on-demand Main-spawn roles, not persistent agents. Opus is never a persistent primary or automatic/recovery fallback.
+- Expected model must equal the selected agent's live configured primary for persistent dispatch; a recovery candidate does not bypass that gate or missing capabilities. Sol architecture and Opus 5 advisory are on-demand Main-spawn roles, not persistent agents. Opus 5 is Main's final global default fallback only; it is not an isolated-agent persistent primary or recovery fallback.
 - Missing proof blocks dispatch and never authorizes silent Main fallback.
 - Validation is proportional; Main alone verifies and accepts.
 - Review efficiency on demand from available attribution, elapsed-time, retry, acceptance, and escaped-defect evidence. No fixed cohort pilot is required; automatic route promotion remains disabled.
@@ -66,7 +66,7 @@ Degrade honestly and keep moving through the safe route:
 
 ## Finance Truth Route
 
-Use guarded structured state and generated packets as evidence routes, then verify exact canonical/source owners before material judgment. Clean data is not recommendation, customer, approval, or execution readiness. The OS owns alerts and non-executing recommendations only; it does not own portfolio structure/state. Capital, paper/live execution, brokerage/accounts, and money movement remain outside its authority.
+Use guarded structured state and generated packets as evidence routes, then verify exact canonical/source owners before material judgment. Live numeric bands and invalidation thresholds are guarded SQL `reference_levels`; the markdown Alert Bands register is thesis and interpretation only. Clean data is not recommendation, customer, approval, or execution readiness. The OS owns alerts and non-executing recommendations only; it does not own portfolio structure/state. Capital, paper/live execution, brokerage/accounts, and money movement remain outside its authority.
 
 ## Stop Lines
 

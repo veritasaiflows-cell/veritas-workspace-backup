@@ -1,0 +1,894 @@
+{
+  "schema_version": 2,
+  "artifact_type": "wf77_ticker_intelligence_card",
+  "generated_at_utc": "2026-09-19T04:37:23Z",
+  "ticker": "JPM",
+  "review_only": true,
+  "instrument_type": "equity",
+  "universe_metadata": {
+    "active": true,
+    "authority_boundary": {
+      "capital_or_order_authority": false,
+      "execution_allowed": false,
+      "maintains_account_or_capital_state": false,
+      "owner_approval_inferred": false,
+      "posture": "alerts_and_non_executing_recommendations_universe_registry",
+      "review_only": true,
+      "writes_finance_canon": false
+    },
+    "coverage_reason": {
+      "alert_evidence_route": "guarded_sql_and_source_open",
+      "fundamental_row_present": true,
+      "wf77_current_coverage": true
+    },
+    "data_requirements": {
+      "analyst_consensus": "weekly_required",
+      "authority_guardrails": "required",
+      "fundamentals": "weekly_required",
+      "official_evidence": "source_open_required",
+      "price_band_stop": "daily_required",
+      "risk_register": "required",
+      "technical_posture": "daily_required"
+    },
+    "decision_grade_eligible": true,
+    "demotion_triggers": [
+      "breaks_stop_or_invalidation",
+      "source_freshness_or_validator_status_blocks_claims",
+      "thesis_evidence_deteriorates_or_conflicts_with_canon",
+      "owner_demotes_or_removes_from_active_monitoring"
+    ],
+    "industry": null,
+    "instrument_type": "operating_company",
+    "mirrored_at_utc": "2026-08-30T02:09:23Z",
+    "monitoring_cadence": {
+      "analyst": "weekly",
+      "fundamentals": "weekly",
+      "official_evidence": "event_driven_source_open",
+      "price_technical": "daily"
+    },
+    "monitoring_role": "decision_queue_or_near_action",
+    "name": "JPMorgan Chase & Co.",
+    "pilot_scope": false,
+    "production_scope": false,
+    "promotion_required_before_action": true,
+    "promotion_triggers": [
+      "enters_or_reclaims_written_entry_band",
+      "fresh_official_or_fundamental_catalyst_improves_thesis",
+      "technical_relative_strength_or_sector_leadership_improves",
+      "owner_promotes_from_monitor_to_decision_queue"
+    ],
+    "sector": "Financials",
+    "source_artifact_path": "data/finance/universe-v1.json",
+    "source_artifact_sha256": "90e2db4b0fa355278a38a19df15d8f00d0d62fec89e5b9416da25dada46a0d49",
+    "source_open_required": true,
+    "source_symbols": {
+      "yfinance": "JPM",
+      "sec_cik": null,
+      "company_ir": "https://www.jpmorganchase.com/ir"
+    },
+    "ticker": "JPM",
+    "tier": "A",
+    "universe_scope": "active_internal_universe",
+    "coverage_obligation_tier": "A",
+    "sql_tier": "Tier A",
+    "sql_tier_state": "sql_first_wait_for_routing",
+    "tier_decision_scope": "tier_a_sql_first_review_scope",
+    "review_100_monitor": false,
+    "identity_scope_tier_authority_source": "state/finance/finance-canon.sqlite:universe_membership"
+  },
+  "durable_sql_canon_state": {
+    "ticker": "JPM",
+    "name": "JPMorgan Chase & Co.",
+    "instrument_type": "operating_company",
+    "sector": "Financials",
+    "industry": null,
+    "universe_scope": "active_internal_universe",
+    "legacy_tier": "A",
+    "legacy_production_42": false,
+    "production_scope_member": false,
+    "production_scope_source": null,
+    "tier_ab_decision_scope": null,
+    "compatibility_reason": null,
+    "sql_tier": "Tier A",
+    "sql_tier_state": "sql_first_wait_for_routing",
+    "tier_decision_scope": "tier_a_sql_first_review_scope",
+    "auto_tier": null,
+    "auto_state": null,
+    "answer_scope": "alert_recommendation_review",
+    "production_card_generation_allowed": false,
+    "has_production_card": false,
+    "provider_status": null
+  },
+  "wf78_auto_tier_routing": {
+    "ticker": "JPM",
+    "name": "JPMorgan Chase & Co.",
+    "sector": "Financials",
+    "instrument_type": "operating_company",
+    "asset_class": "equity",
+    "instrument_class": "operating_company",
+    "exposure_type": "single_company_equity",
+    "review_lane": "equity_depth",
+    "deployment_role": "company_specific_growth_quality_income_or_turnaround",
+    "opportunity_tier": "Tier A",
+    "lane_tier": "Tier A Equity",
+    "lane_tier_label": "Tier A Equity",
+    "tier_seeded_from_legacy_label": false,
+    "legacy_monitoring_role": "decision_queue_or_near_action",
+    "auto_tier": "Tier A",
+    "auto_state": "sql_first_wait_for_routing",
+    "route_reason": "production_adjudication_tier_a_repair_watchlist_candidate",
+    "route_priority": 40,
+    "data_confidence_rating": "high",
+    "fundamentals_confidence": "medium_high",
+    "tier_a_confidence_status": "ready",
+    "tier_a_confidence_promotion_effect": "allow_a_ready",
+    "tier_a_confidence_source": "artifact",
+    "critical_data_conflict_count": 0,
+    "tier_a_packet_freshness_status": null,
+    "tier_a_packet_stale_reasons": [],
+    "tier_a_packet_age_hours": null,
+    "tier_a_packet_quote_age_hours": null,
+    "tier_a_packet_ttl_hours": null,
+    "tier_a_packet_quote_ttl_hours": null,
+    "phase2_validated_tier_b": false,
+    "tier_c_attention_score": null,
+    "tier_c_attention_next_action": null,
+    "capital_deployment_approved": false,
+    "trade_or_execution_approved": false,
+    "requires_separate_capital_or_execution_approval": true,
+    "would_mutate_universe": false,
+    "tier_decision_scope": "tier_a_sql_first_review_scope",
+    "monitoring_role": "decision_queue_or_near_action",
+    "decision_grade_eligible": true,
+    "source_open_required": true,
+    "promotion_required_before_action": true,
+    "identity_scope_tier_authority_source": "state/finance/finance-canon.sqlite:universe_membership"
+  },
+  "latest_known_price": 357.62,
+  "price_band_stop": {
+    "latest_known_price": 357.62,
+    "price_source": "tmp/post-close-final-quote-ledger.json",
+    "entry_band_low": 343.07,
+    "entry_band_high": 352.3472,
+    "stop_or_invalidation": 333.7993,
+    "band_status": "ABOVE_BAND",
+    "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+    "stop_source": "state/finance/finance-canon.sqlite:reference_levels",
+    "fresh_quote_required": false,
+    "staleness_note": null,
+    "reference_band_refresh_required": false,
+    "sql_canon_reference": {
+      "ticker": "JPM",
+      "reference_price_low": 343.07,
+      "reference_price_high": 352.3472,
+      "reference_invalidation_level": 333.7993,
+      "reference_confidence": null,
+      "reference_band_status": "IN_BAND",
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "fallback_rule": "emit_freshness_decay_if_baseline_hash_quote_or_level_age_is_stale_or_conflicted"
+    },
+    "post_close_final_quote": {
+      "market_date": "2026-08-28",
+      "retrieved_at_utc": "2026-08-29T21:43:40Z",
+      "source": "yfinance",
+      "review_only": true,
+      "execution_freshness_approved": false
+    }
+  },
+  "entry_stop_reference_metadata": {
+    "schema_version": "wf72_entry_stop_reference_metadata.v1",
+    "status": "available",
+    "ticker": "JPM",
+    "authority_boundary": "wf72_entry_stop_reference_metadata_exact_key_gated_no_execution_authority",
+    "sql_cache_path": "state/finance/finance-canon.sqlite",
+    "sql_read_mode": "sqlite_uri_mode_ro",
+    "approved_row_family": "durable_finance_canon_reference_level_compatibility_projection",
+    "approved_fields": [
+      "reference_price_low",
+      "reference_price_high",
+      "reference_invalidation_level",
+      "reference_level_source_timestamp",
+      "reference_level_source_sha256",
+      "reference_level_owner_source_path"
+    ],
+    "row_keys": [
+      "JPM:reference_price_low",
+      "JPM:reference_price_high",
+      "JPM:reference_invalidation_level",
+      "JPM:reference_level_source_timestamp",
+      "JPM:reference_level_source_sha256",
+      "JPM:reference_level_owner_source_path"
+    ],
+    "values": {
+      "reference_price_low": 343.07,
+      "reference_price_high": 352.3472,
+      "reference_invalidation_level": 333.7993,
+      "reference_level_source_timestamp": "2026-09-17T01:22:10.915431+00:00",
+      "reference_level_source_sha256": "067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6",
+      "reference_level_owner_source_path": "state/finance/baselines/alert-reference-levels-v1-067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6.json"
+    },
+    "source_lineage": {
+      "owner_source_path": "state/finance/baselines/alert-reference-levels-v1-067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6.json",
+      "source_timestamp": "2026-09-17T01:22:10.915431+00:00",
+      "source_sha256": "067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6"
+    },
+    "source_rows": [
+      {
+        "key": "JPM:reference_price_low",
+        "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6.json",
+        "source_artifact_hash": "067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6",
+        "freshness_status": "ok",
+        "last_reconciled_at_utc": "2026-08-30T04:59:29Z",
+        "updated_at_utc": "2026-08-30T04:59:29Z"
+      },
+      {
+        "key": "JPM:reference_price_high",
+        "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6.json",
+        "source_artifact_hash": "067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6",
+        "freshness_status": "ok",
+        "last_reconciled_at_utc": "2026-08-30T04:59:29Z",
+        "updated_at_utc": "2026-08-30T04:59:29Z"
+      },
+      {
+        "key": "JPM:reference_invalidation_level",
+        "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6.json",
+        "source_artifact_hash": "067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6",
+        "freshness_status": "ok",
+        "last_reconciled_at_utc": "2026-08-30T04:59:29Z",
+        "updated_at_utc": "2026-08-30T04:59:29Z"
+      },
+      {
+        "key": "JPM:reference_level_source_timestamp",
+        "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6.json",
+        "source_artifact_hash": "067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6",
+        "freshness_status": "ok",
+        "last_reconciled_at_utc": "2026-08-30T04:59:29Z",
+        "updated_at_utc": "2026-08-30T04:59:29Z"
+      },
+      {
+        "key": "JPM:reference_level_source_sha256",
+        "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6.json",
+        "source_artifact_hash": "067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6",
+        "freshness_status": "ok",
+        "last_reconciled_at_utc": "2026-08-30T04:59:29Z",
+        "updated_at_utc": "2026-08-30T04:59:29Z"
+      },
+      {
+        "key": "JPM:reference_level_owner_source_path",
+        "source_artifact_path": "state/finance/baselines/alert-reference-levels-v1-067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6.json",
+        "source_artifact_hash": "067398e20ddb53f3ca496b1d1b72c772c6a6842a3594bca16c92287183a37ed6",
+        "freshness_status": "ok",
+        "last_reconciled_at_utc": "2026-08-30T04:59:29Z",
+        "updated_at_utc": "2026-08-30T04:59:29Z"
+      }
+    ],
+    "missing_fields": [],
+    "issues": [],
+    "notes": [
+      "Reference metadata only; does not replace price_band_stop fallback values.",
+      "No recommendation, deployment/action state, approval, portfolio mutation, or execution authority."
+    ],
+    "display_reference_only": true,
+    "fallback_required": true,
+    "recommendation_allowed": false,
+    "deployment_or_action_state_change_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "markdown_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "proposal_apply_allowed": false,
+    "trade_or_account_action_allowed": false,
+    "paper_trade_authority_allowed": false,
+    "live_trade_authority_allowed": false,
+    "money_movement_allowed": false
+  },
+  "thesis_bull_bear_entry_context": {
+    "status": "synthesized_review_only_source_backed",
+    "thesis": "JPMorgan Chase & Co. has a review-only synthesized Tier A thesis from local sourced artifacts: revenue YoY 17.76%, EPS YoY 46.95%, FCF YoY -185.57%. Entry posture is ABOVE_BAND; 3 evidence/freshness gaps still require review before decision-grade use.",
+    "bull_case_inputs": [
+      "latest_earnings_performance",
+      "key_financial_metrics",
+      "official_capture_developments_orders_backlog",
+      "current_sector_performance",
+      "technical_posture"
+    ],
+    "bear_case_inputs": [
+      "risk_register",
+      "missing_or_stale_evidence",
+      "valuation",
+      "price_band_stop"
+    ],
+    "entry_context": {
+      "latest_known_price": 357.62,
+      "price_source": "tmp/post-close-final-quote-ledger.json",
+      "entry_band_low": 343.07,
+      "entry_band_high": 352.3472,
+      "stop_or_invalidation": 333.7993,
+      "band_status": "ABOVE_BAND",
+      "band_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "stop_source": "state/finance/finance-canon.sqlite:reference_levels",
+      "fresh_quote_required": false,
+      "staleness_note": null,
+      "reference_band_refresh_required": false,
+      "sql_canon_reference": {
+        "ticker": "JPM",
+        "reference_price_low": 343.07,
+        "reference_price_high": 352.3472,
+        "reference_invalidation_level": 333.7993,
+        "reference_confidence": null,
+        "reference_band_status": "IN_BAND",
+        "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+        "fallback_rule": "emit_freshness_decay_if_baseline_hash_quote_or_level_age_is_stale_or_conflicted"
+      },
+      "post_close_final_quote": {
+        "market_date": "2026-08-28",
+        "retrieved_at_utc": "2026-08-29T21:43:40Z",
+        "source": "yfinance",
+        "review_only": true,
+        "execution_freshness_approved": false
+      }
+    },
+    "synthesis_evidence": [
+      {
+        "label": "fundamental_snapshot",
+        "summary": "revenue YoY 17.76%, EPS YoY 46.95%, FCF YoY -185.57%",
+        "source_artifact": "tmp\\fundamental-metrics-current.json",
+        "period_end": "2026-06-30",
+        "source_tier": "aggregator_secondary"
+      },
+      {
+        "label": "sector_proxy_context",
+        "summary": "Financials via XLF versus SPY; leadership=improving",
+        "source_artifact": "tmp\\sector-expansion-board.json",
+        "as_of": "2026-08-28",
+        "match_basis": "exact"
+      }
+    ],
+    "source_open_required": true,
+    "limits": [
+      "Review-only synthesis generated from existing local sourced artifacts.",
+      "This does not clear owner approval, capital deployment, paper/live execution, or final recommendation authority."
+    ]
+  },
+  "latest_earnings_performance": {
+    "status": "available",
+    "period_type": "quarterly",
+    "period_end": "2026-06-30",
+    "comparison_period_end": "2025-06-30",
+    "revenue": 52852000000.0,
+    "revenue_yoy_pct": 17.76,
+    "net_income": 21155000000.0,
+    "net_income_yoy_pct": 41.16,
+    "diluted_eps": 7.7,
+    "eps_yoy_pct": 46.95,
+    "free_cash_flow": -25283000000.0,
+    "free_cash_flow_yoy_pct": -185.57,
+    "official_adjusted_eps": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "official_growth_bridge": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "official_guidance": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "management_explanation": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "period_alignment": {
+      "status": "aligned",
+      "latest_official_period_end": "2026-06-30",
+      "normalized_metrics_period_end": "2026-06-30",
+      "normalized_metrics_stale": false,
+      "source_url": null,
+      "withheld_fields": []
+    },
+    "source_open_required": true
+  },
+  "key_financial_metrics": {
+    "status": "available",
+    "period_end": "2026-06-30",
+    "growth": {
+      "revenue_yoy_pct": 17.76,
+      "net_income_yoy_pct": 41.16,
+      "eps_yoy_pct": 46.95,
+      "free_cash_flow_yoy_pct": -185.57
+    },
+    "profitability": {
+      "gross_margin_pct": null,
+      "operating_margin_pct": null,
+      "net_margin_pct": 40.03,
+      "roic_proxy_pct": null
+    },
+    "cash_flow": {
+      "operating_cash_flow": -25283000000.0,
+      "free_cash_flow": -25283000000.0,
+      "fcf_per_share": -9.3842,
+      "fcf_yield_pct": -2.66
+    },
+    "balance_sheet": {
+      "cash_and_equivalents": 309811000000.0,
+      "total_debt": 532953000000.0,
+      "net_debt": 223142000000.0,
+      "debt_to_annualized_ebitda": null
+    },
+    "valuation": {
+      "market_cap": 950620534076.48,
+      "enterprise_value": 779510743040.0,
+      "trailing_pe": 15.32,
+      "forward_pe": 14.3,
+      "price_to_sales": 5.1,
+      "price_to_book": 2.69,
+      "ev_to_ebitda_proxy": null,
+      "ev_to_fcf_proxy": null,
+      "earnings_yield_pct": 2.23
+    },
+    "capital_returns": {
+      "buyback_yield_pct": 0.92,
+      "dividend_yield_pct": 0.46,
+      "shareholder_yield_pct": 1.07,
+      "capital_return_to_fcf_pct": null
+    },
+    "data_quality": "clean",
+    "period_alignment": {
+      "status": "aligned",
+      "latest_official_period_end": "2026-06-30",
+      "normalized_metrics_period_end": "2026-06-30",
+      "normalized_metrics_stale": false,
+      "source_url": null,
+      "withheld_fields": []
+    },
+    "source_open_required": true
+  },
+  "valuation": {
+    "valuation_context": "available",
+    "market_cap": 950620534076.48,
+    "enterprise_value": 779510743040.0,
+    "trailing_pe": 15.32,
+    "forward_pe": 14.3,
+    "fcf_yield_pct": -2.66,
+    "earnings_yield_pct": 2.23,
+    "price_to_sales": 5.1,
+    "price_to_book": 2.69,
+    "ev_to_ebitda_proxy": null,
+    "ev_to_fcf_proxy": null
+  },
+  "official_fundamentals": {
+    "source": "yfinance",
+    "source_tier": "aggregator_secondary",
+    "period_type": "quarterly",
+    "period_end": "2026-06-30",
+    "comparison_period_end": "2025-06-30",
+    "revenue": 52852000000.0,
+    "revenue_yoy_pct": 17.76,
+    "net_income": 21155000000.0,
+    "net_income_yoy_pct": 41.16,
+    "diluted_eps": 7.7,
+    "eps_yoy_pct": 46.95,
+    "gross_margin_pct": null,
+    "operating_margin_pct": null,
+    "net_margin_pct": 40.03,
+    "operating_cash_flow": -25283000000.0,
+    "free_cash_flow": -25283000000.0,
+    "free_cash_flow_yoy_pct": -185.57,
+    "fcf_per_share": -9.3842,
+    "fcf_per_share_yoy_pct": -188.73,
+    "cash_and_equivalents": 309811000000.0,
+    "total_debt": 532953000000.0,
+    "net_debt": 223142000000.0,
+    "debt_to_annualized_ebitda": null,
+    "roic_proxy_pct": null,
+    "data_quality": "clean"
+  },
+  "fundamental_period_alignment": {
+    "status": "aligned",
+    "latest_official_period_end": "2026-06-30",
+    "normalized_metrics_period_end": "2026-06-30",
+    "normalized_metrics_stale": false,
+    "source_url": null,
+    "withheld_fields": []
+  },
+  "fundamental_reconciliation": {
+    "sec_status": "matched",
+    "sec_source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000019617.json",
+    "company_ir_status": "configured_manual_review_required",
+    "company_ir_source_url": "https://www.jpmorganchase.com/ir",
+    "quality_notes": [],
+    "period_alignment": {
+      "status": "aligned",
+      "latest_official_period_end": "2026-06-30",
+      "normalized_metrics_period_end": "2026-06-30",
+      "normalized_metrics_stale": false,
+      "source_url": null,
+      "withheld_fields": []
+    }
+  },
+  "analyst_consensus_ratings_targets": {
+    "as_of": "2026-09-14T22:30:02Z",
+    "cross_check_conflict": "unavailable",
+    "source_lineage": {
+      "evidence_digest_sha256": "1cadfd8a0c0096c41957ce7c6cd76a8e49640e8b1e0b56ac2f1d1738c3197744",
+      "provider": "yfinance",
+      "provider_symbol": "JPM",
+      "retrieval_method": "yfinance.Ticker.get_analyst_price_targets+get_recommendations",
+      "source_url": "https://finance.yahoo.com/quote/JPM/analysis"
+    },
+    "source_status": "auto_sourced_yfinance"
+  },
+  "competitive_moat": {
+    "status": "partially_structured_source_backed_review_required",
+    "summary": "JPMorgan Chase & Co. has preliminary moat evidence from profitability, official operating commentary, demand/activity signals, or sector proxy context; this is not a final competitive-position conclusion.",
+    "evidence": [
+      {
+        "label": "profitability_quality",
+        "summary": "net margin 40.03%",
+        "source_artifact": "tmp\\fundamental-metrics-current.json",
+        "period_end": "2026-06-30",
+        "source_tier": "aggregator_secondary"
+      },
+      {
+        "label": "sector_proxy_position",
+        "summary": "Financials proxy XLF leadership=improving",
+        "source_artifact": "tmp\\sector-expansion-board.json",
+        "as_of": "2026-08-28",
+        "match_basis": "exact"
+      }
+    ],
+    "source_open_required": true,
+    "limits": [
+      "Evidence supports structured review coverage, not a final moat grade.",
+      "Peer comparison and source-open competitive research remain required before decision-grade use."
+    ]
+  },
+  "recent_developments": {
+    "status": "missing_manual_required",
+    "value": null,
+    "source_url": null,
+    "source_section": null,
+    "manual_capture_required": true,
+    "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+  },
+  "orders_backlog_book_to_bill": {
+    "status": "missing_manual_required",
+    "value": null,
+    "source_url": null,
+    "source_section": null,
+    "manual_capture_required": true,
+    "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+  },
+  "official_capture_developments_orders_backlog": {
+    "management_explanation": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "acquisition_debt_notes": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "orders_backlog": {
+      "status": "missing_manual_required",
+      "value": null,
+      "source_url": null,
+      "source_section": null,
+      "manual_capture_required": true,
+      "note": "No validated official capture found in tmp/official-earnings-bridge.json; do not fabricate."
+    },
+    "source_open_required": true
+  },
+  "current_sector_performance": {
+    "status": "available",
+    "sector": "Financials",
+    "sector_query": "Financials",
+    "sector_match_basis": "exact",
+    "sector_proxy_ticker": "XLF",
+    "as_of": "2026-08-28",
+    "relative_strength_vs_spy": {
+      "1d": 0.607,
+      "5d": 0.6045,
+      "20d": -0.9506
+    },
+    "sector_returns_pct": {
+      "1d": 0.3801,
+      "5d": 1.0786,
+      "20d": 2.0372
+    },
+    "spy_returns_pct": {
+      "1d": -0.2269,
+      "5d": 0.4741,
+      "20d": 2.9878
+    },
+    "relative_labels": {
+      "1d": "outperforming",
+      "5d": "outperforming",
+      "20d": "underperforming"
+    },
+    "leadership_status": "improving",
+    "portfolio_exposure": {
+      "draft_weight_pct": 21.0,
+      "tickers": [
+        "JPM",
+        "GS"
+      ],
+      "status": "near_cap",
+      "risk_cap_pct": 25,
+      "distance_to_cap_pct": 4.0
+    },
+    "underexposed": false,
+    "owner_gated_next_review_action": "Review concentration/correlation warning before any owner-gated promotion review; no sizing or deployment authority."
+  },
+  "etf_or_macro_proxy_profile": null,
+  "catalyst_earnings_state": {
+    "workflow_state": "ALMOST",
+    "surface_state": null,
+    "days_to_earnings": null,
+    "earnings_date_confirmed": null,
+    "last_earnings_date": null,
+    "post_earnings_review_confirmed": null
+  },
+  "technical_posture": {
+    "band_status": "ABOVE_BAND",
+    "latest_close": 357.62,
+    "ma20": 358.11,
+    "ma50": 346.91,
+    "ma200": 315.02,
+    "ma_posture": "above 50d and 200d, below 20d",
+    "above_ma20": false,
+    "above_ma50": true,
+    "above_ma200": true,
+    "data_date": "2026-08-28",
+    "deployment_surface_state": null,
+    "macro_gate": null,
+    "near_earnings_caution": null,
+    "why": null
+  },
+  "portfolio_fit_concentration": {
+    "sector": "Financials",
+    "wf78_tier": "A",
+    "sql_canon_legacy_tier": "A",
+    "sql_canon_universe_scope": "active_internal_universe",
+    "sql_canon_production_answer_path_member": false,
+    "wf78_auto_tier": "Tier A",
+    "wf78_auto_state": "sql_first_wait_for_routing",
+    "wf78_monitoring_role": "decision_queue_or_near_action",
+    "wf78_decision_grade_eligible": true,
+    "wf78_promotion_required_before_action": true,
+    "coverage_tier": "daily",
+    "portfolio_role": "core",
+    "coverage_lane": "execution",
+    "readiness_tier": null,
+    "recommended_starter_notional": null,
+    "recommended_target_notional": null,
+    "decision_note": null,
+    "prepared_order_card_path": null
+  },
+  "capital_allocation_quality": {
+    "quality": "bank_manual_review",
+    "anomalies": [
+      {
+        "code": "bank_fcf_not_applicable",
+        "severity": "info",
+        "message": "Bank sector: FCF/share, capital-return-to-FCF, and debt-issuance anomaly gates suppressed. Bank operating cash flow reflects loan origination, securities activity, deposit/funding flows, and balance-sheet changes, not industrial FCF. Use CET1, ROTCE/ROE, NIM, deposit growth, and credit quality for capital adequacy review."
+      }
+    ],
+    "notes": [
+      "Bank sector: industrial FCF/debt anomaly gates suppressed. Capital adequacy review requires CET1, ROTCE/ROE, NIM/rates, deposit trends, and credit quality from 10-Q/IR before entry use."
+    ]
+  },
+  "risk_register": [
+    {
+      "category": "capital_allocation",
+      "severity": "info",
+      "detail": "Bank sector: FCF/share, capital-return-to-FCF, and debt-issuance anomaly gates suppressed. Bank operating cash flow reflects loan origination, securities activity, deposit/funding flows, and balance-sheet changes, not industrial FCF. Use CET1, ROTCE/ROE, NIM, deposit growth, and credit quality for capital adequacy review."
+    },
+    {
+      "category": "evidence_gap",
+      "severity": "blocking",
+      "detail": "No row in current position-sizing readiness packet for Tier A/B deployment or promotion-prep context",
+      "family": "price_band_stop_position_sizing"
+    },
+    {
+      "category": "evidence_gap",
+      "severity": "context",
+      "detail": "Ticker not present in current deployment-readiness surface groups",
+      "family": "deployment_readiness_surface"
+    },
+    {
+      "category": "evidence_gap",
+      "severity": "context",
+      "detail": "Analyst evidence is lineage-only and cannot affect completeness, confidence, bands, invalidation, thesis, or recommendation posture.",
+      "family": "analyst_consensus_ratings_targets"
+    }
+  ],
+  "recommendation_support": {
+    "posture": "blocked stale",
+    "posture_key": "blocked_stale",
+    "deployment_contract": {
+      "deployment_status": "WATCH",
+      "status_reason": "watch_research_needed",
+      "display_label": "watch / research needed",
+      "raw_context": {
+        "workflow_state": null,
+        "machine_state": null,
+        "action_state": null,
+        "surface_state": null,
+        "base_surface_state": null,
+        "band_status": "ABOVE_BAND",
+        "below_stop": false
+      },
+      "authority": {
+        "review_only": true,
+        "paper_order_execution_allowed": false,
+        "capital_deployment_approved": false,
+        "trade_or_execution_approved": false
+      }
+    },
+    "support_level": "review_context_only",
+    "state_source": null,
+    "readiness_state_source": null,
+    "deployment_surface_state_source": null,
+    "band_status": "ABOVE_BAND",
+    "fresh_quote_required": false,
+    "prepared_order_card_present": false,
+    "actionability": "review_only_owner_gated",
+    "blockers_or_gates": [
+      "current price is outside the written band; wait for re-entry/reclaim or explicit owner-approved band review",
+      "card itself grants no paper/live execution authority and infers no approval",
+      "price_band_stop_position_sizing"
+    ],
+    "notes": [
+      "This is recommendation support, not a black-box buy/sell engine.",
+      "Open source artifacts before final readiness, recommendation, approval, or action claims."
+    ]
+  },
+  "missing_or_stale_evidence": [
+    {
+      "family": "price_band_stop_position_sizing",
+      "severity": "blocking",
+      "status": "missing",
+      "detail": "No row in current position-sizing readiness packet for Tier A/B deployment or promotion-prep context"
+    },
+    {
+      "family": "deployment_readiness_surface",
+      "severity": "context",
+      "status": "missing",
+      "detail": "Ticker not present in current deployment-readiness surface groups"
+    },
+    {
+      "family": "analyst_consensus_ratings_targets",
+      "severity": "context",
+      "status": "analyst_quarantined",
+      "detail": "Analyst evidence is lineage-only and cannot affect completeness, confidence, bands, invalidation, thesis, or recommendation posture."
+    }
+  ],
+  "source_artifacts": [
+    {
+      "path": "tmp\\fundamental-metrics-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T20:20:09Z",
+      "status": null
+    },
+    {
+      "path": "tmp\\deployment-readiness-surface.json",
+      "exists": false,
+      "generated_at_utc": null,
+      "status": null
+    },
+    {
+      "path": "tmp\\position-sizing-readiness-current.json",
+      "exists": false,
+      "generated_at_utc": null,
+      "status": null
+    },
+    {
+      "path": "tmp\\analyst-consensus-current.json",
+      "exists": true,
+      "generated_at_utc": "2026-09-14T22:30:04Z",
+      "status": "placeholder_manual_required"
+    },
+    {
+      "path": "tmp\\official-earnings-bridge.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T20:28:47Z",
+      "status": "manual_confirmed_partial"
+    },
+    {
+      "path": "tmp\\sector-expansion-board.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T21:05:19Z",
+      "status": "degraded"
+    },
+    {
+      "path": "tmp\\technical-refresh.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T21:43:58.075260+00:00",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\portfolio-config.json",
+      "exists": false,
+      "generated_at_utc": null,
+      "status": null
+    },
+    {
+      "path": "tmp\\post-close-final-quote-ledger.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T21:43:49Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\finance-decision-sync-spine.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T13:25:27Z",
+      "status": "ok"
+    },
+    {
+      "path": "tmp\\wf78-capital-review-queue.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-28T13:24:42Z",
+      "status": "ok"
+    },
+    {
+      "path": "data\\finance\\universe-v1.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-30T02:00:25Z",
+      "status": "wf78_tier_c_scaleout_monitor_ready"
+    },
+    {
+      "path": "tmp\\wf78-auto-tier-routing.json",
+      "exists": true,
+      "generated_at_utc": "2026-08-29T21:43:51Z",
+      "status": "ok"
+    },
+    {
+      "path": "state\\finance\\finance-canon.sqlite",
+      "exists": true,
+      "generated_at_utc": null,
+      "status": "ok"
+    }
+  ],
+  "authority_boundary": {
+    "artifact_role": "derived_review_and_question_routing_surface_only",
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "sizing_apply_allowed": false,
+    "cash_or_risk_rule_mutation_allowed": false,
+    "paper_order_execution_allowed": false,
+    "paper_order_submit_allowed_by_card": false,
+    "paper_order_cancel_allowed_by_card": false,
+    "durable_sql_canon_current_state_allowed": true,
+    "sql_canon_mutation_allowed": false,
+    "live_trade_allowed": false,
+    "live_brokerage_or_account_action_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "source_open_required_before_final_recommendation_or_action_claim": true
+  }
+}

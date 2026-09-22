@@ -1,0 +1,1 @@
+{"envelope":"arena-agentic-v1-20260920","records":[],"required_fields":["model","checkpoint","benchmark","evaluator_version","provenance","source_url","publication_date","effort","tool_mode","context_runtime","score","denominator","snapshot_hash","status"],"rule":"Empty is valid; unverifiable claims are never upgraded.","schema":"veritas.arena_agentic_external_registry.v1"}

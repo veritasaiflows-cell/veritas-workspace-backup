@@ -19,12 +19,15 @@
   },
   "failureAlert": {
     "after": 1,
-    "mode": "announce"
+    "mode": "announce",
+    "channel": "telegram",
+    "to": "telegram:8650152206",
+    "accountId": "default"
   },
   "payload": {
     "kind": "command",
     "argv": [
-      "python",
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
       "scripts/finance_alert_os_digest.py",
       "--mode",
       "midday",
@@ -34,10 +37,10 @@
       "--write-md",
       "--validate",
       "--timeout-seconds",
-      "120"
+      "240"
     ],
     "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
-    "timeoutSeconds": 240
+    "timeoutSeconds": 360
   },
   "compare_fields": [
     "enabled",

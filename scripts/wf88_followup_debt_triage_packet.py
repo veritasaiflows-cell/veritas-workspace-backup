@@ -19,6 +19,27 @@ from pathlib import Path
 from typing import Any
 
 from market_data_utils import atomic_write_json, atomic_write_text, load_json_artifact
+from wf74_improvement_opportunity_queue import select_actionable_planning_gap
+
+
+def planning_trust_from_router(router_summary: dict[str, Any]) -> dict[str, Any]:
+    """Re-verify router-projected partition with the single-source selector.
+
+    Rebuilds the raw signal shape from projected router keys so trust reuses
+    wf74_improvement_opportunity_queue.select_actionable_planning_gap instead
+    of duplicating its meaning. Schema-exactness is required; the schema is
+    carried by the router projection, never invented here.
+    """
+    projected = {
+        "schema": router_summary.get("planning_signal_schema"),
+        "plan_followthrough_gap_count": router_summary.get("planning_followthrough_gap_count"),
+        "plan_followthrough_actionable_gap_count": router_summary.get("planning_followthrough_actionable_gap_count"),
+        "plan_followthrough_terminal_unavailable_count": router_summary.get("planning_followthrough_terminal_unavailable_count"),
+        "plan_followthrough_repaired_accepted_count": router_summary.get("planning_followthrough_repaired_accepted_count"),
+        "partitioned_gap_row_count": router_summary.get("planning_partitioned_gap_row_count"),
+        "partition_reconciliation_ok": router_summary.get("planning_partition_reconciliation_ok"),
+    }
+    return select_actionable_planning_gap(projected)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,12 +56,18 @@ OTEL_OPS = TMP / "otel-ops-control.json"
 WF74_RUNNER = TMP / "wf74-model-quality-collection-cron-runner.json"
 FINANCE_RESPONSE_QUALITY_SLICE = TMP / "finance-response-quality-slice.json"
 FINANCE_RESPONSE_QUALITY_REPAIR_LOOP = TMP / "finance-response-quality-repair-loop.json"
-WF85_SOURCE_OPEN_RECONCILIATION = TMP / "wf85-source-open-reconciliation-contract.json"
 WORKFLOW_FOLLOWUPS = TMP / "workflow-blocker-followups.json"
 WF87_ROLLUP = TMP / "wf87-v2-readiness-rollup.json"
 AUTONOMY_SPINE = TMP / "autonomy-spine-readiness-rollup.json"
 VALIDATOR_TIMING = TMP / "validator-timing-ledger.json"
 WF88_OS2_CONTROL = TMP / "wf88-os2-control-packet.json"
+IMPLEMENTATION_TOKEN_ATTRIBUTION_BRIDGE = TMP / "implementation-token-attribution-bridge.json"
+
+IMPLEMENTATION_TOKEN_ATTRIBUTION_BRIDGE_SCHEMA = "veritas.implementation_token_attribution_bridge.v1"
+IMPLEMENTATION_TOKEN_BRIDGE_MAX_AGE_SECONDS = 24.0 * 3600.0
+IMPLEMENTATION_TOKEN_BRIDGE_OK_STATUSES = {"ok", "warning"}
+IMPLEMENTATION_TOKEN_BRIDGE_OK_VALIDATIONS = {"ok", "warning"}
+IMPLEMENTATION_TOKEN_BRIDGE_TERMINAL_RESOLUTIONS = {"terminal_unavailable_only", "historical_or_classified_unavailable_only"}
 
 ALLOWED_CLOSURE_STATUSES = {
     "verified_fix",
@@ -49,6 +76,7 @@ ALLOWED_CLOSURE_STATUSES = {
     "superseded_by_open_improvement",
     "owner_packet_ready_not_applied",
     "monitor_only_drift_currently_absent",
+    "historical_terminal_unavailable_claim_limit",
 }
 
 AUTHORITY_BOUNDARY = {
@@ -288,30 +316,75 @@ def classify_planning(row: dict[str, Any], ctx: dict[str, dict[str, Any]]) -> di
     runner_summary = as_dict(ctx["wf74_runner"].get("summary"))
     gap_count = int_value(router_summary.get("planning_followthrough_gap_count"))
     clean_rate = float_value(router_summary.get("planning_followthrough_clean_rate"))
-    if gap_count == 0 and clean_rate >= 1.0:
+    history_context = {
+        "planning_followthrough_gap_count": gap_count,
+        "planning_followthrough_clean_rate": clean_rate,
+        "runner_planning_followthrough_gap_count": runner_summary.get("planning_quality_followthrough_gap_count"),
+        "planning_followthrough_gap_count_selected": router_summary.get("planning_followthrough_gap_count_selected"),
+        "planning_followthrough_gap_source": router_summary.get("planning_followthrough_gap_source"),
+        "planning_followthrough_actionable_gap_count": router_summary.get("planning_followthrough_actionable_gap_count"),
+        "planning_followthrough_terminal_unavailable_count": router_summary.get("planning_followthrough_terminal_unavailable_count"),
+        "planning_followthrough_repaired_accepted_count": router_summary.get("planning_followthrough_repaired_accepted_count"),
+        "planning_partitioned_gap_row_count": router_summary.get("planning_partitioned_gap_row_count"),
+        "planning_partition_reconciliation_ok": router_summary.get("planning_partition_reconciliation_ok"),
+        "planning_actionable_status": router_summary.get("planning_actionable_status"),
+        "planning_gap_selection_warning": router_summary.get("planning_gap_selection_warning"),
+    }
+    partition_keys = (
+        "planning_followthrough_gap_count_selected",
+        "planning_followthrough_gap_source",
+        "planning_followthrough_actionable_gap_count",
+        "planning_actionable_status",
+    )
+    if not any(router_summary.get(key) is not None for key in partition_keys):
+        # Legacy pre-partition producer: raw rule preserved verbatim.
+        if gap_count == 0 and clean_rate >= 1.0:
+            item.update({
+                "closure_allowed": True,
+                "closure_status": "verified_fix",
+                "action_state": "close_with_clean_followthrough_proof",
+                **wf88_successor("improvement-ledger-open-followups"),
+                "closure_reason": "Planning follow-through proof is clean: gap count is zero and clean rate is 1.0.",
+                "recommended_next_action": "Close the stale planning follow-through rows and continue normal WF74/PM monitoring.",
+                "proof_artifacts": [rel(WF74_ROUTER), rel(WF74_RUNNER)],
+                "context": history_context,
+            })
+        else:
+            item.update({
+                "action_state": "planning_followthrough_gap_open",
+                "closure_reason": "Planning follow-through proof is not clean.",
+                "proof_artifacts": [rel(WF74_ROUTER), rel(WF74_RUNNER)],
+                "context": history_context,
+            })
+        return item
+    trust = planning_trust_from_router(router_summary)
+    if (
+        trust["source"] == "actionable_partition_verified"
+        and int(trust["selected_gap_count"]) == 0
+        and router_summary.get("planning_actionable_status") == "ok"
+    ):
         item.update({
             "closure_allowed": True,
             "closure_status": "verified_fix",
-            "action_state": "close_with_clean_followthrough_proof",
+            "action_state": "close_with_verified_zero_actionable_debt",
             **wf88_successor("improvement-ledger-open-followups"),
-            "closure_reason": "Planning follow-through proof is clean: gap count is zero and clean rate is 1.0.",
+            "closure_reason": (
+                "No actionable planning debt: trusted actionable count is 0 with actionable status ok; "
+                "terminal/repaired history is retained and the raw gap is preserved, not rewritten as clean."
+            ),
             "recommended_next_action": "Close the stale planning follow-through rows and continue normal WF74/PM monitoring.",
             "proof_artifacts": [rel(WF74_ROUTER), rel(WF74_RUNNER)],
-            "context": {
-                "planning_followthrough_gap_count": gap_count,
-                "planning_followthrough_clean_rate": clean_rate,
-                "runner_planning_followthrough_gap_count": runner_summary.get("planning_quality_followthrough_gap_count"),
-            },
+            "context": history_context,
         })
     else:
         item.update({
             "action_state": "planning_followthrough_gap_open",
-            "closure_reason": "Planning follow-through proof is not clean.",
+            "closure_reason": (
+                "Planning follow-through partition is untrusted (missing, malformed, or mismatched): "
+                "fail closed and keep open; raw gap and history context are preserved."
+            ),
             "proof_artifacts": [rel(WF74_ROUTER), rel(WF74_RUNNER)],
-            "context": {
-                "planning_followthrough_gap_count": gap_count,
-                "planning_followthrough_clean_rate": clean_rate,
-            },
+            "context": history_context,
         })
     return item
 
@@ -405,36 +478,149 @@ def is_finance_response_quality_row(row: dict[str, Any]) -> bool:
     return any(marker in text for marker in markers)
 
 
+FINANCE_RESPONSE_QUALITY_SLICE_SCHEMA = "veritas.finance_response_quality_slice.v1"
+FINANCE_RESPONSE_QUALITY_REPAIR_LOOP_SCHEMA = "veritas.finance_response_quality_repair_loop.v1"
+
+# Review-only evidence must be fresh and fully formed to authorize closure. A
+# days-old packet must never read as clean. Missing, malformed, future, stale,
+# wrong-schema, or failed-validation evidence fails closed and keeps the
+# follow-up open. Missing decisive counters never coerce to clean zero.
+FINANCE_EVIDENCE_MAX_AGE_SECONDS = 72.0 * 3600.0
+FINANCE_EVIDENCE_OK_VALIDATION_STATUSES = {"ok", "warning"}
+
+
+def parse_evidence_generated_at(value: Any) -> datetime | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        parsed = datetime.fromisoformat(text[:-1] + "+00:00" if text.endswith("Z") else text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def evidence_validation_informational(validation: Any) -> bool:
+    """Require an explicit validation object with a known-good status.
+
+    Only ``ok`` passes outright; ``warning`` passes only with informational
+    warning detail present. Any error entries, blank/unknown/missing status,
+    or a missing/non-object validation fails closed.
+    """
+    if not isinstance(validation, dict):
+        return False
+    if validation.get("status") not in FINANCE_EVIDENCE_OK_VALIDATION_STATUSES:
+        return False
+    errors = validation.get("errors")
+    if not isinstance(errors, list) or len(errors) != 0:
+        return False
+    warnings = validation.get("warnings")
+    if not isinstance(warnings, list):
+        return False
+    if validation.get("status") == "warning" and len(warnings) == 0:
+        return False
+    return True
+
+
+def required_count(summary: dict[str, Any], key: str) -> tuple[bool, int]:
+    """Read a decisive counter without coercing absence to clean zero.
+
+    Returns (False, 0) when the key is missing, boolean, or non-numeric, so a
+    missing counter can never satisfy a ``== 0`` cleanliness check.
+    """
+    if not isinstance(summary, dict) or key not in summary:
+        return (False, 0)
+    value = summary[key]
+    if isinstance(value, bool):
+        return (False, 0)
+    if isinstance(value, float) and not value.is_integer():
+        return (False, 0)
+    try:
+        return (True, int(value))
+    except (TypeError, ValueError):
+        return (False, 0)
+
+
+def finance_evidence_usable(
+    artifact: dict[str, Any],
+    *,
+    expected_schema: str,
+    allowed_statuses: set[str],
+) -> bool:
+    """Fail-closed gate for review-only finance evidence.
+
+    Returns False (keep the follow-up open) when the artifact is missing, has
+    an unexpected status, a missing or mismatched schema, a missing or
+    non-informational validation object, or a missing, malformed, future, or
+    stale generation timestamp. There is no future-timestamp grace.
+    """
+    if not isinstance(artifact, dict) or not artifact:
+        return False
+    if artifact.get("status") not in allowed_statuses:
+        return False
+    if artifact.get("schema") != expected_schema:
+        return False
+    if not evidence_validation_informational(artifact.get("validation")):
+        return False
+    generated_at = parse_evidence_generated_at(artifact.get("generated_at_utc"))
+    if generated_at is None:
+        return False
+    now = datetime.now(timezone.utc)
+    if generated_at > now:
+        return False
+    if (now - generated_at).total_seconds() > FINANCE_EVIDENCE_MAX_AGE_SECONDS:
+        return False
+    return True
+
+
 def finance_response_quality_proof_clean(ctx: dict[str, dict[str, Any]]) -> bool:
-    runner_summary = as_dict(ctx["wf74_runner"].get("summary"))
-    slice_summary = as_dict(ctx["finance_response_quality_slice"].get("summary"))
-    repair_summary = as_dict(ctx["finance_response_quality_repair_loop"].get("summary"))
-    wf85_summary = as_dict(ctx["wf85_source_open_reconciliation"].get("summary"))
-    return all((
-        ctx["wf74_runner"].get("status") == "ok",
-        int_value(runner_summary.get("steps_blocked")) == 0,
-        runner_summary.get("finance_response_quality_status") == "ok",
-        int_value(runner_summary.get("finance_response_quality_source_open_blocked_count")) == 0,
-        int_value(runner_summary.get("finance_response_quality_source_freshness_blocked_count")) == 0,
-        int_value(runner_summary.get("finance_response_quality_remediation_tracks_needing_repair")) == 0,
-        ctx["finance_response_quality_slice"].get("status") == "ok",
-        int_value(slice_summary.get("blocked_archetype_count")) == 0,
-        int_value(slice_summary.get("source_open_blocked_count")) == 0,
-        int_value(slice_summary.get("source_freshness_blocked_count")) == 0,
-        int_value(slice_summary.get("remediation_tracks_needing_repair")) == 0,
-        ctx["finance_response_quality_repair_loop"].get("status") in {"ok", "noop_ok"},
-        int_value(repair_summary.get("proposal_count")) == 0,
-        int_value(repair_summary.get("high_priority_count")) == 0,
-        int_value(repair_summary.get("source_open_blocked_count")) == 0,
-        int_value(repair_summary.get("source_freshness_blocked_count")) == 0,
-        int_value(repair_summary.get("remediation_tracks_needing_repair")) == 0,
-        ctx["wf85_source_open_reconciliation"].get("status") == "ok",
-        int_value(wf85_summary.get("fresh_verified_source_count")) > 0,
-        int_value(wf85_summary.get("unnecessary_source_open_blocker_count")) == 0,
-        int_value(wf85_summary.get("wrong_source_open_blocker_reason_count")) == 0,
-        int_value(wf85_summary.get("mismatch_error_count")) == 0,
-        int_value(wf85_summary.get("producer_order_error_count")) == 0,
+    runner = ctx["wf74_runner"]
+    runner_summary = as_dict(runner.get("summary"))
+    slice_artifact = ctx["finance_response_quality_slice"]
+    repair_artifact = ctx["finance_response_quality_repair_loop"]
+    slice_summary = as_dict(slice_artifact.get("summary"))
+    repair_summary = as_dict(repair_artifact.get("summary"))
+    # The WF74 runner is a generic technical health signal only. The retired
+    # pre-pivot keys (finance_response_quality_status and the
+    # finance_response_quality_*_count keys) no longer exist in the producer;
+    # they are intentionally not read here, and absent keys never default to
+    # clean. The retired WF85 reconciliation packet is likewise not read:
+    # WF85 old surfaces were retired from the alerts OS, so a blocked WF85
+    # packet is structurally obsolete evidence, not a source-quality failure.
+    # Finance cleanliness is keyed on the review-only slice and repair-loop
+    # packets instead.
+    checks: list[bool] = [
+        runner.get("status") == "ok",
+        required_count(runner_summary, "steps_blocked") == (True, 0),
+        finance_evidence_usable(
+            slice_artifact,
+            expected_schema=FINANCE_RESPONSE_QUALITY_SLICE_SCHEMA,
+            allowed_statuses={"ok"},
+        ),
+    ]
+    for key in (
+        "blocked_archetype_count",
+        "source_open_blocked_count",
+        "source_freshness_blocked_count",
+        "remediation_tracks_needing_repair",
+    ):
+        checks.append(required_count(slice_summary, key) == (True, 0))
+    checks.append(finance_evidence_usable(
+        repair_artifact,
+        expected_schema=FINANCE_RESPONSE_QUALITY_REPAIR_LOOP_SCHEMA,
+        allowed_statuses={"ok", "noop_ok"},
     ))
+    for key in (
+        "proposal_count",
+        "high_priority_count",
+        "source_open_blocked_count",
+        "source_freshness_blocked_count",
+        "remediation_tracks_needing_repair",
+    ):
+        checks.append(required_count(repair_summary, key) == (True, 0))
+    return all(checks)
 
 
 def classify_finance_response_quality(row: dict[str, Any], ctx: dict[str, dict[str, Any]]) -> dict[str, Any]:
@@ -443,7 +629,6 @@ def classify_finance_response_quality(row: dict[str, Any], ctx: dict[str, dict[s
         rel(WF74_RUNNER),
         rel(FINANCE_RESPONSE_QUALITY_SLICE),
         rel(FINANCE_RESPONSE_QUALITY_REPAIR_LOOP),
-        rel(WF85_SOURCE_OPEN_RECONCILIATION),
     ]
     if finance_response_quality_proof_clean(ctx):
         item.update({
@@ -451,23 +636,131 @@ def classify_finance_response_quality(row: dict[str, Any], ctx: dict[str, dict[s
             "closure_status": "verified_fix",
             "action_state": "close_with_finance_response_quality_clean_proof",
             **wf88_successor("wf85-source-open-repair-queue"),
-            "closure_reason": "Current WF74/WF85 proof shows zero finance response-quality source-open blockers, zero repair proposals, and zero WF85 source-open reconciliation mismatches.",
-            "recommended_next_action": "Close the stale finance response-quality follow-up row; reopen only if source-open blockers, repair proposals, or WF85 reconciliation mismatches reappear.",
+            "closure_reason": "Fresh review-only slice and repair-loop proof shows zero finance response-quality source-open blockers and zero repair proposals; WF74 runner technical health is ok with zero blocked steps.",
+            "recommended_next_action": "Close the stale finance response-quality follow-up row; reopen only if source-open blockers, repair proposals, or stale/failed evidence reappear.",
             "proof_artifacts": proof_artifacts,
             "context": {
                 "wf74_steps_blocked": int_value(as_dict(ctx["wf74_runner"].get("summary")).get("steps_blocked")),
                 "source_open_blocked_count": int_value(as_dict(ctx["finance_response_quality_slice"].get("summary")).get("source_open_blocked_count")),
                 "repair_proposal_count": int_value(as_dict(ctx["finance_response_quality_repair_loop"].get("summary")).get("proposal_count")),
-                "wf85_unnecessary_source_open_blocker_count": int_value(as_dict(ctx["wf85_source_open_reconciliation"].get("summary")).get("unnecessary_source_open_blocker_count")),
-                "wf85_mismatch_error_count": int_value(as_dict(ctx["wf85_source_open_reconciliation"].get("summary")).get("mismatch_error_count")),
             },
         })
     else:
         item.update({
             "action_state": "finance_response_quality_followup_open",
-            "closure_reason": "Finance response-quality proof is not clean enough to close this follow-up row.",
-            "recommended_next_action": "Keep open until WF74 runner, finance response-quality slice, repair loop, and WF85 source-open reconciliation are all clean.",
+            "closure_reason": "Finance response-quality proof is not clean enough to close this follow-up row; missing, stale, future, malformed, unvalidated, or failed evidence fails closed.",
+            "recommended_next_action": "Keep open until WF74 runner health, finance response-quality slice, and repair loop are all clean, fully validated, and freshly generated.",
             "proof_artifacts": proof_artifacts,
+        })
+    return item
+
+
+def strict_nonbool_int(value: Any) -> tuple[bool, int]:
+    """Strict non-bool int read: missing/bool/non-int never coerces to clean zero."""
+    if isinstance(value, bool) or not isinstance(value, int):
+        return (False, 0)
+    return (True, value)
+
+
+def implementation_token_bridge_usable(bridge: dict[str, Any]) -> tuple[bool, str]:
+    """Fail-closed gate for the implementation-token-attribution bridge.
+
+    Requires exact schema, fresh<=24h/nonfuture generation, status ok|warning,
+    validation ok|warning with errors empty, strict non-bool zero for the three
+    action-required counters, and terminal-only resolution status.
+    """
+    if not isinstance(bridge, dict) or not bridge:
+        return (False, "bridge_missing_or_malformed")
+    if bridge.get("schema") != IMPLEMENTATION_TOKEN_ATTRIBUTION_BRIDGE_SCHEMA:
+        return (False, "bridge_schema_mismatch")
+    if bridge.get("status") not in IMPLEMENTATION_TOKEN_BRIDGE_OK_STATUSES:
+        return (False, "bridge_status_not_ok")
+    validation = bridge.get("validation")
+    if not isinstance(validation, dict):
+        return (False, "bridge_validation_missing")
+    if validation.get("status") not in IMPLEMENTATION_TOKEN_BRIDGE_OK_VALIDATIONS:
+        return (False, "bridge_validation_not_ok")
+    errors = validation.get("errors")
+    if not isinstance(errors, list) or len(errors) != 0:
+        return (False, "bridge_validation_errors_not_empty")
+    generated_at = parse_evidence_generated_at(bridge.get("generated_at_utc"))
+    if generated_at is None:
+        return (False, "bridge_generated_at_malformed")
+    now = datetime.now(timezone.utc)
+    if generated_at > now:
+        return (False, "bridge_generated_at_future")
+    if (now - generated_at).total_seconds() > IMPLEMENTATION_TOKEN_BRIDGE_MAX_AGE_SECONDS:
+        return (False, "bridge_stale")
+    summary = as_dict(bridge.get("summary"))
+    for key in (
+        "action_required_supported_runtime_gap_count",
+        "post_cutoff_supported_unresolved_gap_count",
+        "unknown_completion_supported_unresolved_gap_count",
+    ):
+        present, number = strict_nonbool_int(summary.get(key))
+        if not present or number != 0:
+            return (False, f"bridge_unresolved_or_missing:{key}")
+    if summary.get("gap_resolution_status") not in IMPLEMENTATION_TOKEN_BRIDGE_TERMINAL_RESOLUTIONS:
+        return (False, "bridge_resolution_not_terminal_only")
+    return (True, "bridge_terminal_unavailable_only")
+
+
+def is_usage_source_reverification_row(row: dict[str, Any]) -> bool:
+    return (
+        str(row.get("source_key") or "") == "usage_source_reverification_required"
+        or str(row.get("title") or "") == "usage_source_reverification_required"
+    )
+
+
+def classify_usage_source_reverification(row: dict[str, Any], ctx: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    item = base_item(row)
+    bridge = ctx.get("implementation_token_bridge", {})
+    usable, detail = implementation_token_bridge_usable(bridge)
+    proof_artifacts = [rel(IMPLEMENTATION_TOKEN_ATTRIBUTION_BRIDGE)]
+    summary = as_dict(bridge.get("summary")) if isinstance(bridge, dict) else {}
+    context = {
+        "bridge_status": bridge.get("status") if isinstance(bridge, dict) else None,
+        "bridge_validation_status": as_dict(bridge.get("validation")).get("status") if isinstance(bridge, dict) else None,
+        "bridge_generated_at_utc": bridge.get("generated_at_utc") if isinstance(bridge, dict) else None,
+        "action_required_supported_runtime_gap_count": summary.get("action_required_supported_runtime_gap_count"),
+        "post_cutoff_supported_unresolved_gap_count": summary.get("post_cutoff_supported_unresolved_gap_count"),
+        "unknown_completion_supported_unresolved_gap_count": summary.get("unknown_completion_supported_unresolved_gap_count"),
+        "gap_resolution_status": summary.get("gap_resolution_status"),
+        "bridge_gate": detail,
+    }
+    if usable:
+        item.update({
+            "closure_allowed": True,
+            "closure_status": "historical_terminal_unavailable_claim_limit",
+            "action_state": "monitor_only",
+            "successor_id": None,
+            "successor_artifact": rel(IMPLEMENTATION_TOKEN_ATTRIBUTION_BRIDGE),
+            "successor_artifact_kind": "implementation_token_attribution_bridge",
+            "closure_reason": (
+                "Fresh bridge proof shows zero action-required supported-runtime gaps with terminal-only "
+                "resolution; this closes the reverification follow-up as a historical claim limit, explicitly "
+                "NOT a verified success or performance claim."
+            ),
+            "recommended_next_action": (
+                "Monitor only; keep historical economics and model-performance limits visible and do not use "
+                "these lanes for performance, cost, latency, reliability, or savings comparisons."
+            ),
+            "proof_artifacts": proof_artifacts,
+            "context": context,
+        })
+    else:
+        item.update({
+            "action_state": "usage_source_reverification_open",
+            "closure_reason": (
+                f"Bridge proof is not terminal-clean ({detail}); missing, malformed, stale, future, unvalidated, "
+                "or currently-unresolved evidence fails closed and keeps reverification open."
+            ),
+            "recommended_next_action": (
+                "Keep open until a fresh schema-exact bridge with zero action-required supported-runtime gaps "
+                "and terminal-only resolution is available; do not claim model economics or performance."
+            ),
+            "proof_artifacts": proof_artifacts,
+            "context": context,
         })
     return item
 
@@ -490,6 +783,8 @@ def classify_item(row: dict[str, Any], ctx: dict[str, dict[str, Any]]) -> dict[s
         return classify_wf74_queue(row, ctx)
     if is_finance_response_quality_row(row):
         return classify_finance_response_quality(row, ctx)
+    if is_usage_source_reverification_row(row):
+        return classify_usage_source_reverification(row, ctx)
     item = base_item(row)
     item.update({
         "action_state": "manual_review_required",
@@ -621,12 +916,12 @@ def build_packet() -> dict[str, Any]:
         "wf74_runner": load(WF74_RUNNER),
         "finance_response_quality_slice": load(FINANCE_RESPONSE_QUALITY_SLICE),
         "finance_response_quality_repair_loop": load(FINANCE_RESPONSE_QUALITY_REPAIR_LOOP),
-        "wf85_source_open_reconciliation": load(WF85_SOURCE_OPEN_RECONCILIATION),
         "workflow_followups": load(WORKFLOW_FOLLOWUPS),
         "wf87_rollup": load(WF87_ROLLUP),
         "autonomy_spine": load(AUTONOMY_SPINE),
         "validator_timing": load(VALIDATOR_TIMING),
         "wf88_os2_control": load(WF88_OS2_CONTROL),
+        "implementation_token_bridge": load(IMPLEMENTATION_TOKEN_ATTRIBUTION_BRIDGE),
     }
     followups = [as_dict(row) for row in as_list(ctx["improvement_ledger"].get("followup_required_improvements"))]
     classified_items = [classify_item(row, ctx) for row in followups]
@@ -653,12 +948,12 @@ def build_packet() -> dict[str, Any]:
             "wf74_runner": source_record(WF74_RUNNER),
             "finance_response_quality_slice": source_record(FINANCE_RESPONSE_QUALITY_SLICE),
             "finance_response_quality_repair_loop": source_record(FINANCE_RESPONSE_QUALITY_REPAIR_LOOP),
-            "wf85_source_open_reconciliation": source_record(WF85_SOURCE_OPEN_RECONCILIATION),
             "workflow_followups": source_record(WORKFLOW_FOLLOWUPS),
             "wf87_rollup": source_record(WF87_ROLLUP),
             "autonomy_spine": source_record(AUTONOMY_SPINE),
             "validator_timing": source_record(VALIDATOR_TIMING),
             "wf88_os2_control": source_record(WF88_OS2_CONTROL),
+            "implementation_token_bridge": source_record(IMPLEMENTATION_TOKEN_ATTRIBUTION_BRIDGE),
         },
         "summary": {
             "followup_input_count": len(followups),

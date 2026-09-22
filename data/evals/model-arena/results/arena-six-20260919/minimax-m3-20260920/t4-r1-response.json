@@ -1,0 +1,8 @@
+{
+  "case": "T4-multihop-read-recovery",
+  "rep": 1,
+  "model": "ollama-cloud/minimax-m3:cloud",
+  "model_applied": true,
+  "run_id": "a194a9f0-7c7a-4bf9-89e3-f36a8ff25410",
+  "text": "{\"records\":[{\"id\":\"r2\",\"value\":\"b2\",\"ts\":\"2026-09-18\"},{\"id\":\"r3\",\"value\":\"c2\",\"ts\":\"2026-09-17\"}],\"tombstoned\":[\"r1\",\"r4\"],\"superseded_rows\":3,\"source\":\"mirror\"}"
+}

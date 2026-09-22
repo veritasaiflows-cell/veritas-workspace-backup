@@ -31,7 +31,29 @@
       "Bash(Select-Object -First 6)",
       "Bash(Format-Table -AutoSize)",
       "Bash(Test-NetConnection -ComputerName 127.0.0.1 -Port 18789 -InformationLevel Quiet -WarningAction SilentlyContinue)",
-      "PowerShell(Get-NetTCPConnection *)"
+      "PowerShell(Get-NetTCPConnection *)",
+      "Bash(npm --version)",
+      "Bash(Get-Content *)",
+      "Read(//c/Users/Veritas/.openclaw/logs/**)",
+      "Bash(where node *)",
+      "Bash(where nvm *)",
+      "Bash(where fnm *)",
+      "Bash(where volta *)",
+      "Bash(where winget *)",
+      "Bash(winget search *)",
+      "Bash(winget list *)",
+      "Bash(npm list *)",
+      "Bash(winget install *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell($env:OPENCLAW_STATE_DIR; $env:OPENCLAW_CONFIG_PATH; $env:OPENCLAW_WORKSPACE_DIR)",
+      "PowerShell(npm *)",
+      "PowerShell(Test-Path *)",
+      "PowerShell(& \"$env:APPDATA\\\\npm\\\\openclaw.cmd\" --version 2>&1)",
+      "PowerShell(& \"$env:APPDATA\\\\npm\\\\openclaw.cmd\" doctor 2>&1)",
+      "PowerShell(& \"$env:APPDATA\\\\npm\\\\openclaw.cmd\" gateway status --deep)",
+      "PowerShell(& \"$env:APPDATA\\\\npm\\\\openclaw.cmd\" doctor --fix)",
+      "PowerShell(Get-CimInstance *)",
+      "PowerShell(Stop-Process *)"
     ]
   }
 }

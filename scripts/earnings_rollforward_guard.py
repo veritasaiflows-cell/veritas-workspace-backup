@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
-from official_capture_period_registry import build_registry
+from official_capture_period_registry import CAPTURE_SCRIPT_BY_TICKER, build_registry
 from official_earnings_source_discovery import cik_from_source_url, discover_latest_sec_report
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -67,18 +67,29 @@ def load_json(path: Path) -> dict[str, Any]:
 
 def tracked_universe(config: dict[str, Any], *, priority_only: bool) -> dict[str, dict[str, Any]]:
     rows = config.get("tracked_universe")
-    if not isinstance(rows, dict):
-        return {}
     selected: dict[str, dict[str, Any]] = {}
-    for ticker, row in rows.items():
-        if not isinstance(row, dict):
-            continue
-        ticker_name = str(ticker).upper()
-        policy = str(row.get("earnings_policy") or "").lower()
-        if priority_only and policy not in PRIORITY_POLICIES:
-            continue
-        selected[ticker_name] = row
-    return selected
+    if isinstance(rows, dict):
+        for ticker, row in rows.items():
+            if not isinstance(row, dict):
+                continue
+            ticker_name = str(ticker).upper()
+            policy = str(row.get("earnings_policy") or "").lower()
+            if priority_only and policy not in PRIORITY_POLICIES:
+                continue
+            selected[ticker_name] = row
+    if selected:
+        return selected
+
+    # portfolio-config.json is a retired surface. Fall back only to the
+    # maintained official-capture registry so an absent legacy config cannot
+    # yield a false-green zero-ticker guard or recreate configuration state.
+    return {
+        ticker: {
+            "earnings_policy": "post_earnings_rebuild",
+            "scope_source": "official_capture_registry_fallback",
+        }
+        for ticker in sorted(CAPTURE_SCRIPT_BY_TICKER)
+    }
 
 
 def _period_gt(left: str | None, right: str | None) -> bool:
@@ -194,7 +205,16 @@ def build_guard(
         "generated_at_utc": utc_now(),
         "status": status,
         "purpose": "Detect missed/new official earnings periods and create additive review-only catch-up state before stale fundamentals can be treated as current.",
-        "scope": {"priority_only": priority_only, "auto_capture": auto_capture, "tracked_ticker_count": len(tracked)},
+        "scope": {
+            "priority_only": priority_only,
+            "auto_capture": auto_capture,
+            "tracked_ticker_count": len(tracked),
+            "source": (
+                "official_capture_registry_fallback"
+                if tracked and all(row.get("scope_source") == "official_capture_registry_fallback" for row in tracked.values())
+                else "portfolio_config"
+            ),
+        },
         "authority": AUTHORITY,
         "source_artifacts": {
             "portfolio_config": rel(PORTFOLIO_CONFIG),

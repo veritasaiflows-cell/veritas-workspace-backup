@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-05-17T04:49:53Z",
+  "status": "ready_for_scoped_main_session_review",
+  "window": "post-close",
+  "input_bundle": "tmp/portfolio-mutation-proposals/semantic-patch-material/post-close-ETN-capital-deployment-review-2026-05-17-earnings_state.json",
+  "proposal_id": "post-close:ETN:capital-deployment-review:2026-05-17",
+  "apply_allowed": false,
+  "owner_approval_granted": false,
+  "trade_or_account_action_allowed": false,
+  "main_session_final_action_required": true,
+  "authority": {
+    "phase": "WF56 Phase 3 dry-run scoped patch helper",
+    "dry_run_patch_preview_allowed": true,
+    "apply_allowed": false,
+    "owner_approval_granted": false,
+    "main_session_final_action_required": true,
+    "write_owner_files_allowed": false,
+    "apply_allowed_by_this_helper": false,
+    "portfolio_mutation_allowed_by_this_helper": false,
+    "owner_approval_inferred": false,
+    "trade_or_account_action_allowed": false,
+    "trade_execution_allowed": false
+  },
+  "validation": {
+    "schema_validator_ok": true,
+    "schema_errors": [],
+    "schema_blockers": [],
+    "patch_scope_findings": [],
+    "patch_scope_critical": 0,
+    "build_errors": []
+  },
+  "summary": {
+    "requested_changes": 1,
+    "previewed_file_changes": 1,
+    "writes_performed": false,
+    "apply_ready": false,
+    "approval_artifact_required": true,
+    "ready_for_main_session_portfolio_mutation_review": true
+  },
+  "file_previews": [
+    {
+      "path": "03. Portfolio/Execution Board.md",
+      "change_type": "exact_text_replace",
+      "old_text_sha256_hint": null,
+      "old_text_match_count": 1,
+      "writes_performed": false,
+      "diff": "--- a/03. Portfolio/Execution Board.md\n+++ b/03. Portfolio/Execution Board.md\n@@ -162,6 +162,7 @@\n - Invalidation logic: loses the preferred band / 50-day support zone and ultimately fails the explicit 350.45 stop.\n - Stance: **Deployable now / owner-approved Tier 1 explicit add, with manual-only execution discipline**. Randall approved Tier 1 explicit-add status on 2026-05-10; the current artifact close remains inside the approved band at 399.44, still below the no-chase ceiling. Manual-only deployment authority: no automatic execution, no chase above 410.06?412.65, and sizing stays governed by broader AI-power/correlation warnings.\n - Entry-distance context: **inside the preferred band, near the upper/no-chase zone**.\n+- WF64 earnings-state semantic sync: next earnings `2026-08-04`; days_to_earnings=unknown; policy `timing_sensitive`; source `tmp/earnings-calendar.json` + `tmp/portfolio-config.json`; proposal `post-close:ETN:capital-deployment-review:2026-05-17`; review-only workspace maintenance, no external-action authority.\n - WF64 entry-band proposal preview: packet `post-close:ETN:capital-deployment-review:2026-05-16` is review-only; apply_allowed=false, owner_approval_granted=false, trade_or_account_action_allowed=false, and main-session final action is required.\n - **POST-EARNINGS FOLLOW-UP.** The pre-print blocker has passed and owner promotion has landed. ETN is still the first capital-deployment priority in the review stack, but execution remains manual-only: no automatic execution and no chase above the written band.\n - **Automated band maintenance:** 2026-05-15 eligible proposal applied: prior **369.08\u2013410.06 / stop 350.45** \u2192 new **369.08\u2013410.06 / stop 350.45**. This updates technical maintenance levels only; it does not create trade, sizing, sleeve, approval, or execution authority.\n",
+      "rationale": "Synchronize earnings_state semantic context from current portfolio artifacts without widening external-action authority."
+    }
+  ],
+  "stop_lines": [
+    "This artifact is an exact patch preview only; it does not mutate owner notes or portfolio config.",
+    "Main-session portfolio mutation still requires explicit scoped Randall approval for the proposal id and exact diff.",
+    "A clean preview does not grant owner approval, sizing, sleeve, cash, risk-rule, execution-entitlement, trade, or account authority.",
+    "Phase 4 apply mode must be a separate approval-gated path and must run the post-apply validation chain."
+  ]
+}

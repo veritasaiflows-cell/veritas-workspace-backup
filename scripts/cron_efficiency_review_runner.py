@@ -268,6 +268,7 @@ def build_review_payload(
     contract_validation = as_dict(contract.get("validation"))
     if contract_validation.get("status") == "error":
         errors.append("cron_contract_validator_error")
+    warnings.extend(f"contract:{item}" for item in as_list(contract_validation.get("warnings")))
     contract_summary = as_dict(contract.get("summary"))
     if int(contract_summary.get("live_prompt_integrity_error_count") or 0):
         errors.append("live_prompt_integrity_errors_present")
@@ -472,7 +473,14 @@ def build_payload() -> dict[str, Any]:
         live_file=None,
         require_contracts=True,
         fail_on_drift=True,
-        fail_on_prompt_bloat=True,
+        # Prompt bloat stays warning-level here, matching the
+        # cron-automation-manager proof spine (no --fail-on-prompt-bloat).
+        # The skill-collection-review jobs carry ~3199-char prompts by design;
+        # those are platform-projected declarations and are budgeted at
+        # SYSTEM_PROJECTED_MAX_PROMPT_CHARS rather than the 1800 workspace
+        # default, so they no longer register as bloat. Bloat stays visible
+        # via warnings for genuinely oversized workspace-authored prompts.
+        fail_on_prompt_bloat=False,
         max_prompt_chars=contract_validator.DEFAULT_MAX_PROMPT_CHARS,
         max_message_lines=contract_validator.DEFAULT_MAX_MESSAGE_LINES,
     )

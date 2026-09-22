@@ -21,6 +21,7 @@ SCRIPTS = Path(__file__).resolve().parent
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
+import agent_fleet_policy as fleet_policy
 from market_data_utils import atomic_write_json, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -86,18 +87,18 @@ def load_live_jobs(live_file: Path | None = None) -> tuple[list[dict[str, Any]],
 
 
 def desired_thinking(model: str | None) -> tuple[str | None, str | None]:
-    if model == "openai/gpt-5.6-luna":
-        return "low", "Luna is reserved for proven deterministic cron/status/proof jobs at low reasoning."
-    if model == "openai/gpt-5.6-terra":
-        return "medium", "Terra is the default for reasoning or tool-heavy cron helpers."
-    if model == "openai/gpt-5.6-sol":
-        return "medium", "Sol is reserved for main-session/final judgment, not routine cron."
-    if model == "codex/gpt-5.3-codex-spark":
-        return "xhigh", "Spark canary rule: bounded Spark jobs must stay xhigh."
-    if model == "openai/gpt-5.5":
-        return "medium", "GPT-5.5 is the primary fallback, not the normal active cron route."
-    if model in {"openai/gpt-5.4", "openai/gpt-5.4-mini"}:
-        return "medium", "GPT-5.4 family is retained for rollback/control only."
+    if model == fleet_policy.GLM_FLASH_MODEL:
+        return "low", "GLM 5.3 Flash is reserved for proven deterministic cron/status/proof jobs at low reasoning."
+    if model == fleet_policy.GLM_MODEL:
+        return "medium", "GLM 5.3 is the default for reasoning or tool-heavy cron helpers."
+    if model == fleet_policy.MAIN_PRIMARY:
+        return "medium", "The Main model is reserved for main-session/final judgment, not routine cron."
+    if model == fleet_policy.BUILDER_MODEL:
+        return "medium", "Muse Spark 1.3 is reserved for code authoring, not routine cron."
+    if model == fleet_policy.KIMI_MODEL:
+        return "medium", "Kimi K3 is a Main fallback, not the normal active cron route."
+    if fleet_policy.is_denied_persistent_model(model or ""):
+        return "medium", "Retired route: repoint this job to GLM 5.3 before tuning effort."
     return None, None
 
 
@@ -197,12 +198,11 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         "authority_boundary": AUTHORITY_BOUNDARY.copy(),
         "live_source": live_meta,
         "policy": {
-            "openai/gpt-5.6-luna": "low for proven deterministic agentTurn cron/status/proof jobs",
-            "openai/gpt-5.6-terra": "medium for reasoning or tool-heavy cron helpers",
-            "openai/gpt-5.6-sol": "main-session/final judgment only",
-            "codex/gpt-5.3-codex-spark": "xhigh for bounded canaries only",
-            "openai/gpt-5.5": "primary fallback only",
-            "openai/gpt-5.4": "rollback/control only",
+            fleet_policy.GLM_FLASH_MODEL: "low for proven deterministic agentTurn cron/status/proof jobs",
+            fleet_policy.GLM_MODEL: "medium for reasoning or tool-heavy cron helpers",
+            fleet_policy.MAIN_PRIMARY: "main-session/final judgment only",
+            fleet_policy.BUILDER_MODEL: "code authoring only",
+            fleet_policy.KIMI_MODEL: "Main fallback only",
             "non_agent_or_system": "keep no-token path; do not convert command jobs to an LLM",
         },
         "summary": summary,

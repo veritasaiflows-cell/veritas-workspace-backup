@@ -660,6 +660,48 @@ def settle_provider_calls(
     }
 
 
+def read_daily_budget(
+    policy: ProviderPolicy,
+    *,
+    now_utc: datetime | None = None,
+) -> dict[str, Any]:
+    """Report today's budget totals without reserving or settling anything.
+
+    A run that reserves no calls of its own still has to show the budget it
+    ran under, so this reads the same locked ledger the reservation path
+    writes rather than reporting an unmeasurable null.
+    """
+
+    day = budget_day_key(now_utc or utc_now())
+    with _ledger_lock(policy.ledger_path):
+        entry = _read_ledger(policy.ledger_path)["days"].get(day)
+    if entry is None:
+        reserved_today = 0
+        settled_today = 0
+    elif not isinstance(entry, dict):
+        raise ProviderPolicyError("provider_call_ledger_json_invalid")
+    else:
+        reserved_today = _bounded_int(
+            entry.get("reserved_calls", 0),
+            minimum=0,
+            maximum=ABSOLUTE_MAX_DAILY_PROVIDER_CALLS,
+            code="provider_call_ledger_json_invalid",
+        )
+        settled_today = _bounded_int(
+            entry.get("settled_calls", 0),
+            minimum=0,
+            maximum=ABSOLUTE_MAX_DAILY_PROVIDER_CALLS,
+            code="provider_call_ledger_json_invalid",
+        )
+    return {
+        "day": day,
+        "reserved_today": reserved_today,
+        "settled_today": settled_today,
+        "daily_limit": policy.max_daily_provider_calls,
+        "remaining_today": policy.max_daily_provider_calls - reserved_today,
+    }
+
+
 # --- Read-only market-data GET authorization (G4/G6 production half). ---
 #
 # The standing policy admits named providers for reads only. These helpers

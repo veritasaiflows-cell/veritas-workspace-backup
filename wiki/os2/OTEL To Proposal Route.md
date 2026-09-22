@@ -34,10 +34,10 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 ## Leak Guard
 
 - Open unrouted recommendations: `0`.
-- Loop trace rows: `7`.
+- Loop trace rows: `4`.
 - Loop trace missing destinations: `0`.
-- Loop trace PM/lane links: `5` / `1`.
-- Loop trace stale consumers: `0`.
+- Loop trace PM/lane links: `3` / `1`.
+- Loop trace stale consumers: `2`.
 - Long-work active/resumable/blocked jobs: `0` / `0` / `0`.
 - Long-work next safe action: No resumable long jobs are waiting.
 - Recommendation to route conversion: `1.0`.

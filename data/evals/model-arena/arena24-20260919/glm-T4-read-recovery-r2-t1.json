@@ -1,0 +1,68 @@
+﻿{
+    "case":  "T4-read-recovery",
+    "model_id":  "glm",
+    "requested_model":  "ollama-cloud/glm-5.3-flash:cloud",
+    "repetition":  2,
+    "turn":  1,
+    "session_key":  "agent:qa-redteam:a24-glm-T4-read-recovery-r2-20260919",
+    "cli_exit":  0,
+    "status":  "ok",
+    "run_id":  "64150a3c-491c-4897-8aaf-78fc96d43d59",
+    "visible_text":  "{\"records\":[{\"id\":\"r2\",\"value\":\"b2\",\"ts\":\"2026-09-18\"},{\"id\":\"r3\",\"value\":\"c2\",\"ts\":\"2026-09-17\"}],\"tombstoned\":[\"r1\",\"r4\"],\"superseded_rows\":3}",
+    "provider":  "ollama-cloud",
+    "model":  "glm-5.3-flash:cloud",
+    "execution_trace":  {
+                            "winnerProvider":  "ollama-cloud",
+                            "winnerModel":  "glm-5.3-flash:cloud",
+                            "attempts":  [
+                                             {
+                                                 "provider":  "ollama-cloud",
+                                                 "model":  "glm-5.3-flash:cloud",
+                                                 "result":  "success",
+                                                 "stage":  "assistant"
+                                             }
+                                         ],
+                            "fallbackUsed":  false,
+                            "runner":  "embedded"
+                        },
+    "receipt":  {
+                    "runId":  "64150a3c-491c-4897-8aaf-78fc96d43d59",
+                    "sessionId":  "d29c6e2d-c84c-4d48-b20e-0613032fdfc2",
+                    "turnId":  "64150a3c-491c-4897-8aaf-78fc96d43d59",
+                    "requested":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "glm-5.3-flash:cloud"
+                                  },
+                    "effective":  {
+                                      "provider":  "ollama-cloud",
+                                      "model":  "glm-5.3-flash:cloud",
+                                      "responseModel":  "glm-5.3-flash:cloud"
+                                  },
+                    "successfulToolNames":  [
+                                                "read"
+                                            ],
+                    "rerouted":  false
+                },
+    "tool_summary":  {
+                         "calls":  3,
+                         "tools":  [
+                                       "read"
+                                   ],
+                         "failures":  1
+                     },
+    "thinking":  "high",
+    "workspace":  "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+    "injected_files":  [
+                           "AGENTS.md",
+                           "SOUL.md",
+                           "IDENTITY.md",
+                           "USER.md",
+                           "MEMORY.md"
+                       ],
+    "tool_names":  [
+                       "read",
+                       "web_search",
+                       "web_fetch"
+                   ],
+    "error_kind":  null
+}

@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -74,6 +75,225 @@ def routes() -> list[dict[str, Any]]:
     return items if isinstance(items, list) else []
 
 
+# LOOP-REPAIR-20260912 (consumer slice): targeted WF74/WF88 live-dependency
+# invalidation plus claim_limits projection.
+#
+# Producer mirror (scripts/workflow_routing_index.py is read-only on this
+# slice): WF74_LIVE_PROOFS, WF74_OTEL_PROOFS, and WF88_LIVE_PROOFS name the
+# exact live evidence the computed WF74/WF88 blockers and claim_limits derive
+# from, and each route carries a claim_limits list beside blockers. The index
+# stores per-dependency mtime tokens only for the primary artifact and the
+# continuity note, so a changed secondary ledger/docket/OTEL/retrieval
+# artifact -- or elapsed producer-clock SLA with an untouched filesystem --
+# can leave cached computed blockers/limits stale while the existing
+# primary+continuity mtime check still passes. This consumer closes that gap
+# without executing producer code and without widening the global
+# source_freshness_snapshot: for WF74/WF88 routes only, a lookup is refused
+# as routing_index_stale when a mirrored live dependency changed after the
+# index was written (live mtime newer than the index file mtime) or when its
+# current producer evidence is missing, unreadable, future-dated,
+# un-timestamped, older than SLA, or reporting failure against a cached green
+# answer. WF88 additionally covers the WF74 live set because
+# compute_wf88_blockers() folds WF74 upstream state into WF88 blockers.
+# Non-WF74/WF88 semantics are untouched.
+#
+# Limitations (no unsupported hashes claimed): the index carries no
+# per-dependency content hash or consumed-mtime token, so "changed after the
+# index" is a coarse fail-closed mtime comparison -- touching a file without
+# changing it trips refusal, and a change followed by an index rebuild that
+# did not re-run the producer is not detectable here (producer-side defect,
+# out of consumer scope). Live failure status is not re-derived: it is already
+# encoded in the cached computed blockers at build time, and any post-build
+# flip rewrites the file and trips the mtime gate; only a live failure that
+# contradicts a cached green answer is refused. If the producer adds a live
+# source without updating this mirror, that source is unchecked until the
+# mirror follows.
+_LOOP_LIVE_SLA_FALLBACK_HOURS = 72.0
+_LOOP_LIVE_FUTURE_SKEW_SECONDS = 3600.0
+_LOOP_LIVE_FAIL_TOKENS = ("blocked", "failed", "fail_closed", "error", "critical")
+_WF74_LIVE_DEPENDENCIES = (
+    "tmp/wf74-improvement-opportunity-queue.json",
+    "tmp/wf74-decision-docket.json",
+    "tmp/wf74-autonomy-work-router.json",
+    "tmp/improvement-ledger-current.json",
+    "tmp/otel-ops-control.json",
+    "tmp/otel-ops-window-summary.json",
+)
+_WF88_LIVE_DEPENDENCIES = (
+    "tmp/wf88-os2-control-packet.json",
+    "tmp/improvement-ledger-current.json",
+    "tmp/retrieval-live-eval.json",
+)
+
+
+def _loop_live_sla_hours(route: dict[str, Any]) -> float:
+    """Producer-clock SLA for a route; falls back to the loop 72h default."""
+    sla = route.get("freshness_sla")
+    if isinstance(sla, dict):
+        for key in ("primary_artifact_max_age_hours", "owner_context_max_age_hours"):
+            value = sla.get(key)
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
+                return float(value)
+    return _LOOP_LIVE_SLA_FALLBACK_HOURS
+
+
+def _loop_live_parse_generated_at(raw: Any) -> datetime | None:
+    """Finite declared proof timestamp; filesystem mtime is never proof freshness."""
+    if not isinstance(raw, str) or not raw.strip():
+        return None
+    try:
+        moment = datetime.fromisoformat(raw.strip().replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if moment.tzinfo is None:
+        moment = moment.replace(tzinfo=timezone.utc)
+    try:
+        stamp = moment.timestamp()
+    except (OverflowError, OSError, ValueError):
+        return None
+    if stamp != stamp or stamp in (float("inf"), float("-inf")):
+        return None
+    return moment
+
+
+def _loop_live_status_failed(status: Any) -> bool:
+    return any(token in str(status or "").casefold() for token in _LOOP_LIVE_FAIL_TOKENS)
+
+
+def _loop_live_default_mtime_ns(rel: str) -> int | None:
+    try:
+        return (ROOT / rel).stat().st_mtime_ns
+    except OSError:
+        return None
+
+
+def _loop_live_default_payload(rel: str) -> dict[str, Any] | None:
+    try:
+        with (ROOT / rel).open(encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except (OSError, ValueError):
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def _wf_loop_live_dependency_reasons(
+    route: dict[str, Any],
+    *,
+    index_mtime_ns: int | None,
+    now: datetime | None = None,
+    _stat: Any = None,
+    _load: Any = None,
+) -> list[dict[str, Any]]:
+    """Fail-closed WF74/WF88 live-dependency check (lookup-time, no producer run).
+
+    _stat maps a workspace-relative path to an mtime ns (or None when absent);
+    _load maps it to a parsed JSON dict (or None when missing/unreadable).
+    Defaults read the live workspace; tests inject fakes so no fixture files
+    are written into the workspace.
+    """
+    workflow_id = str(route.get("workflow_id") or "")
+    if workflow_id == "WF74":
+        dependencies = _WF74_LIVE_DEPENDENCIES
+    elif workflow_id == "WF88":
+        dependencies = tuple(dict.fromkeys((*_WF88_LIVE_DEPENDENCIES, *_WF74_LIVE_DEPENDENCIES)))
+    else:
+        return []
+    stat = _stat or _loop_live_default_mtime_ns
+    load = _load or _loop_live_default_payload
+    moment_now = now if now is not None else datetime.now(timezone.utc)
+    sla_hours = _loop_live_sla_hours(route)
+    cached_blockers = route.get("blockers") or []
+    reasons: list[dict[str, Any]] = []
+    if index_mtime_ns is None:
+        reasons.append({
+            "source": "live_dependency",
+            "workflow_id": workflow_id,
+            "reason": "route_index_mtime_unavailable",
+            "detail": "cannot prove cached WF74/WF88 blockers/limits postdate live evidence; rebuild the index",
+        })
+        return reasons
+    for rel in dependencies:
+        current_mtime_ns = stat(rel)
+        if current_mtime_ns is None:
+            reasons.append({
+                "source": "live_dependency",
+                "workflow_id": workflow_id,
+                "artifact": rel,
+                "reason": "live_proof_missing",
+                "detail": "live evidence absent on disk; cached blockers/limits are unproven",
+            })
+            continue
+        if current_mtime_ns > index_mtime_ns:
+            reasons.append({
+                "source": "live_dependency",
+                "workflow_id": workflow_id,
+                "artifact": rel,
+                "reason": "live_proof_changed_after_index",
+                "stored_mtime_ns": index_mtime_ns,
+                "current_mtime_ns": current_mtime_ns,
+            })
+            continue
+        payload = load(rel)
+        if payload is None:
+            reasons.append({
+                "source": "live_dependency",
+                "workflow_id": workflow_id,
+                "artifact": rel,
+                "reason": "live_proof_unreadable",
+                "detail": "live evidence is not parseable JSON; fail closed until the producer is repaired",
+            })
+            continue
+        generated = _loop_live_parse_generated_at(payload.get("generated_at_utc"))
+        if generated is None:
+            reasons.append({
+                "source": "live_dependency",
+                "workflow_id": workflow_id,
+                "artifact": rel,
+                "reason": "live_proof_no_usable_generated_at_utc",
+                "detail": "missing or unparsable producer clock; touching the file must never green it",
+            })
+            continue
+        skew_seconds = (generated - moment_now).total_seconds()
+        if skew_seconds > _LOOP_LIVE_FUTURE_SKEW_SECONDS:
+            reasons.append({
+                "source": "live_dependency",
+                "workflow_id": workflow_id,
+                "artifact": rel,
+                "reason": "live_proof_generated_at_in_future",
+                "detail": "producer timestamp is ahead of now beyond skew tolerance; fail closed",
+            })
+            continue
+        age_hours = round(-skew_seconds / 3600.0, 1)
+        if age_hours > sla_hours:
+            reasons.append({
+                "source": "live_dependency",
+                "workflow_id": workflow_id,
+                "artifact": rel,
+                "reason": "live_proof_expired_by_producer_clock",
+                "age_hours": age_hours,
+                "sla_hours": sla_hours,
+                "detail": "evidence expired by producer clock although the filesystem is untouched",
+            })
+            continue
+        validation = payload.get("validation")
+        live_failed = _loop_live_status_failed(payload.get("status")) or (
+            isinstance(validation, dict)
+            and (
+                _loop_live_status_failed(validation.get("status"))
+                or (isinstance(validation.get("errors"), list) and len(validation["errors"]) > 0)
+            )
+        )
+        if live_failed and not cached_blockers:
+            reasons.append({
+                "source": "live_dependency",
+                "workflow_id": workflow_id,
+                "artifact": rel,
+                "reason": "live_proof_reports_failure_against_cached_green",
+                "detail": "live evidence reports failure while cached blockers claim green; rebuild before serving",
+            })
+    return reasons
+
+
 def route_index_staleness_reasons(
     payload: dict[str, Any],
     selected_routes: list[dict[str, Any]] | None = None,
@@ -129,6 +349,15 @@ def route_index_staleness_reasons(
                     "stored_mtime_ns": stored,
                     "current_mtime_ns": current,
                 })
+    # LOOP-REPAIR-20260912 (consumer slice): targeted WF74/WF88 live
+    # dependency invalidation. Secondary ledger/docket/OTEL/retrieval changes
+    # and elapsed producer-clock SLA are invisible to the mtime checks above.
+    try:
+        index_mtime_ns: int | None = ROUTE_INDEX.stat().st_mtime_ns
+    except OSError:
+        index_mtime_ns = None
+    for route in candidates:
+        reasons.extend(_wf_loop_live_dependency_reasons(route, index_mtime_ns=index_mtime_ns))
     return reasons
 
 
@@ -214,6 +443,9 @@ def build_capsule(route: dict[str, Any], registry: dict[str, Any], actions: list
         "proof_artifact": route.get("proof_artifact"),
         "freshness_sla": route.get("freshness_sla"),
         "blockers": route.get("blockers", []),
+        # LOOP-REPAIR-20260912: project producer-computed claim limits beside
+        # blockers; claim limits constrain claims and never block operation.
+        "claim_limits": list(route.get("claim_limits") or []),
         "stop_lines": route.get("stop_lines", []),
         "continuity_note": route.get("continuity_note"),
         "primary_route_artifact": route.get("primary_route_artifact"),

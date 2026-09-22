@@ -5,7 +5,7 @@
   "required": true,
   "owner_workflow": "RUNTIME",
   "contract_reason": "Weekly isolated Luna proof refresh 20 minutes before the main OS-improvement review so Main receives a closed Saturday-ending seven-day agent-fleet report plus fresh control proof.",
-  "description": "Weekly model-free OS improvement radar proof refresh. A declared command sequence in scripts/deterministic_cron_sequence_runner.py runs the nine proof scripts in order and writes tmp/weekly-os-improvement-radar-proof-runner.json. Main is woken only when a step fails. The runner composes no commands and carries no repair, cron, config, runtime, canon, capital, execution, account, or external-delivery authority. Rollback: state/cron-rollback/a9d1978a-weekly-os-improvement-radar-proof-2026-08-30.json",
+  "description": "Weekly model-free OS improvement radar proof refresh. A declared command sequence in scripts/deterministic_cron_sequence_runner.py runs the ten proof scripts in order and writes tmp/weekly-os-improvement-radar-proof-runner.json. Main is woken only when a step fails. The runner composes no commands and carries no repair, cron, config, runtime, canon, capital, execution, account, or external-delivery authority. Rollback: state/cron-rollback/a9d1978a-weekly-os-improvement-radar-proof-2026-09-12.json",
   "enabled": true,
   "schedule": {
     "kind": "cron",
@@ -20,7 +20,10 @@
   },
   "failureAlert": {
     "after": 1,
-    "mode": "announce"
+    "mode": "announce",
+    "channel": "telegram",
+    "to": "telegram:8650152206",
+    "accountId": "default"
   },
   "payload": {
     "kind": "command",
@@ -50,9 +53,24 @@
     "payload.timeoutSeconds"
   ],
   "expected_artifacts": [
-    {"path": "tmp/token-usage-ledger-current.json", "role": "token_usage_warning_evidence", "required": true, "blocking": false},
-    {"path": "tmp/token-budget-status.json", "role": "token_budget_warning_evidence", "required": true, "blocking": false},
-    {"path": "tmp/token-efficiency-scorecard.json", "role": "token_efficiency_warning_evidence", "required": true, "blocking": false},
+    {
+      "path": "tmp/token-usage-ledger-current.json",
+      "role": "token_usage_warning_evidence",
+      "required": true,
+      "blocking": false
+    },
+    {
+      "path": "tmp/token-budget-status.json",
+      "role": "token_budget_warning_evidence",
+      "required": true,
+      "blocking": false
+    },
+    {
+      "path": "tmp/token-efficiency-scorecard.json",
+      "role": "token_efficiency_warning_evidence",
+      "required": true,
+      "blocking": false
+    },
     "tmp/cron-efficiency-review-runner.json",
     {
       "path": "tmp/implementation-token-attribution-bridge.json",
@@ -60,7 +78,12 @@
       "required": true,
       "blocking": false
     },
-    {"path": "tmp/veritas-status-card.json", "role": "status_card_warning_evidence", "required": true, "blocking": false},
+    {
+      "path": "tmp/veritas-status-card.json",
+      "role": "status_card_warning_evidence",
+      "required": true,
+      "blocking": false
+    },
     "tmp/artifact-staleness-explainer.json",
     "tmp/lane-collision-preflight.json",
     "tmp/validator-bundle-router.json",
@@ -84,6 +107,6 @@
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-08-30T17:57:00Z",
-  "contract_update_reason": "Converted to model-free command payload via scripts/deterministic_cron_sequence_runner.py (approved scope-and-apply, item 2); timeout raised 600 to 900 for the nine-step sequence. Rollback: state/cron-rollback/a9d1978a-weekly-os-improvement-radar-proof-2026-08-30.json."
+  "updated_at_utc": "2026-09-12T16:10:00Z",
+  "contract_update_reason": "Converted to model-free command payload via scripts/deterministic_cron_sequence_runner.py (approved scope-and-apply, item 2); timeout raised 600 to 900 for the nine-step sequence. 2026-09-12: owner-approved prose-only drift fix, sequence is now ten steps after the WF89 credit-reader refresh was added. Rollback: state/cron-rollback/a9d1978a-weekly-os-improvement-radar-proof-2026-09-12.json."
 }

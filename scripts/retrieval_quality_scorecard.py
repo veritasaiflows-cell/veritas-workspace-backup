@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 from collections import Counter
 from dataclasses import dataclass, field
@@ -325,6 +326,23 @@ def evaluate_check(actual: Any, operation: str, expected: Any = None) -> bool:
         return actual is False
     if operation == "is_null":
         return actual is None
+    if operation == "is_finite_number":
+        return (
+            isinstance(actual, (int, float))
+            and not isinstance(actual, bool)
+            and math.isfinite(float(actual))
+        )
+    if operation == "in_range":
+        try:
+            low, high = expected[0], expected[1]
+            return (
+                isinstance(actual, (int, float))
+                and not isinstance(actual, bool)
+                and math.isfinite(float(actual))
+                and float(low) <= float(actual) <= float(high)
+            )
+        except (TypeError, ValueError, IndexError):
+            return False
     if operation == "exists":
         return actual is not _MISSING
     if operation == "not_empty":
@@ -778,7 +796,30 @@ def evaluate_sql_canon(spec: dict[str, Any], context: EvaluationContext) -> Fixt
                     }
                 )
                 actual_outcome = "selected"
-                checks_ok = strict_equal(value, expected.get("value")) and str(expected.get("authority_contains")) in row.authority_class
+                authority_ok = str(expected.get("authority_contains")) in row.authority_class
+                if "value" in expected:
+                    checks_ok = strict_equal(value, expected.get("value")) and authority_ok
+                elif expected.get("value_is_finite_number") is True:
+                    checks_ok = (
+                        isinstance(value, (int, float))
+                        and not isinstance(value, bool)
+                        and math.isfinite(float(value))
+                        and authority_ok
+                    )
+                elif "value_range" in expected:
+                    try:
+                        low, high = expected.get("value_range")[0], expected.get("value_range")[1]
+                        checks_ok = (
+                            isinstance(value, (int, float))
+                            and not isinstance(value, bool)
+                            and math.isfinite(float(value))
+                            and float(low) <= float(value) <= float(high)
+                            and authority_ok
+                        )
+                    except (TypeError, ValueError, IndexError):
+                        checks_ok = False
+                else:
+                    checks_ok = False
         elif operation == "production_answer_count":
             value = len(context.finance_client().production_answer_tickers())
             evidence["value"] = value
@@ -1098,7 +1139,7 @@ def build_scorecard(
             "artifact_index_db": "tmp/veritas-artifact-index.sqlite",
             "finance_sql_typed_access": "scripts/finance_sql_canon_access.py",
             "finance_sql_db": rel(sql_db, root),
-            "vector_index_supplement": "tmp/vector-memory-ollama-full-index.json",
+            "vector_index_supplement": "tmp/vector-memory-index.json",
         },
         "measurement_scope": {
             "live_index_queried": False,

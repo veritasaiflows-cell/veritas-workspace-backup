@@ -1,0 +1,18 @@
+{
+  "child_text": "ollama-cloud/glm-5.3:cloud\nfalse\nPROBE_OK",
+  "duration_ms": 2818,
+  "execution_trace": {
+    "attempts": 1,
+    "fallbackUsed": false,
+    "winnerModel": "glm-5.3:cloud",
+    "winnerProvider": "ollama-cloud"
+  },
+  "fallback_applied": false,
+  "model_applied": true,
+  "note": "Non-benchmark transport probe only. Not a candidate attempt.",
+  "probe_ok": true,
+  "requested_model": "ollama-cloud/glm-5.3:cloud",
+  "resolved_model": "ollama-cloud/glm-5.3:cloud",
+  "run_id": "40a3e2a9-8567-4977-889d-6e0ca026caf4",
+  "schema": "veritas.arena_model_pin_probe.v1"
+}

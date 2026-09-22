@@ -46,7 +46,8 @@
     "reason": "Retired by Randall's alerts-and-recommendations OS pivot because WF78 maintained tier, sizing, deployment, and promotion state.",
     "resume_condition": "Do not resume without Randall's new explicit architecture decision.",
     "aliases": [
-      "workflow_78"
+      "workflow_78",
+      "wf78_scaleout"
     ],
     "next_action": "Preserve historical proof only; use guarded SQL, explicit quote proof, the alert controller, WF84, and WF85."
   },

@@ -1,0 +1,12 @@
+{
+ "schema": "veritas.arena_mission_authorization.v1",
+ "mission": "mission-1",
+ "model": "ollama-cloud/glm-5.3-flash:cloud",
+ "authorized_by": "gateway-owner",
+ "authorized_at": "2026-09-20T21:52:00-07:00",
+ "budgets": {
+  "seconds_per_turn": 600,
+  "retries": 0
+ },
+ "note": "Run-scoped release for the GLM 5.3 Flash full-chain run, Surface D mission 1 only."
+}

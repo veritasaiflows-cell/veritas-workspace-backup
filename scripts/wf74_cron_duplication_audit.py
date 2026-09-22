@@ -109,6 +109,69 @@ def actionable_hits(text: str) -> list[str]:
     return hits
 
 
+def command_argv_hits(argv: list[Any]) -> list[str]:
+    """Treat scheduled command argv as collectors without English-context filters.
+
+    Full-path `python.exe scripts\\runner.py` jobs do not contain the substring
+    `python scripts`, so reminder-oriented line filters must not hide them.
+    """
+    hits: list[str] = []
+    tokens = [OWNER_RUNNER_TOKEN, *COMPONENT_TOKENS]
+    for part in argv:
+        text = str(part).replace("\\", "/")
+        for token in tokens:
+            if token in text and token not in hits:
+                hits.append(token)
+    return hits
+
+
+def job_hits(job: dict[str, Any]) -> list[str]:
+    payload = as_dict(job.get("payload"))
+    argv = payload.get("argv")
+    if str(payload.get("kind") or "") == "command" and isinstance(argv, list):
+        return command_argv_hits(argv)
+    return actionable_hits(job_text(job))
+
+
+def classify_enabled_jobs(jobs: list[dict[str, Any]]) -> dict[str, Any]:
+    enabled = [job for job in jobs if bool(job.get("enabled"))]
+    matched: list[dict[str, Any]] = []
+    component_outside_owner: list[dict[str, Any]] = []
+    recurring_component_outside_owner: list[dict[str, Any]] = []
+    one_shot_component_outside_owner: list[dict[str, Any]] = []
+    owner_runner_jobs: list[dict[str, Any]] = []
+    for job in enabled:
+        hits = job_hits(job)
+        if not hits and OWNER_JOB not in str(job.get("name") or ""):
+            continue
+        record = summarize_job(job, hits)
+        matched.append(record)
+        if OWNER_RUNNER_TOKEN in hits:
+            owner_runner_jobs.append(record)
+        if str(job.get("name") or "") != OWNER_JOB and any(token in hits for token in COMPONENT_TOKENS):
+            component_outside_owner.append(record)
+            if as_dict(job.get("schedule")).get("kind") == "cron":
+                recurring_component_outside_owner.append(record)
+            else:
+                one_shot_component_outside_owner.append(record)
+    owner_job_matches = [row for row in matched if row.get("name") == OWNER_JOB]
+    expected_owner_ok = (
+        len(owner_job_matches) == 1
+        and len(owner_runner_jobs) == 1
+        and owner_runner_jobs[0].get("name") == OWNER_JOB
+    )
+    return {
+        "enabled": enabled,
+        "matched": matched,
+        "component_outside_owner": component_outside_owner,
+        "recurring_component_outside_owner": recurring_component_outside_owner,
+        "one_shot_component_outside_owner": one_shot_component_outside_owner,
+        "owner_runner_jobs": owner_runner_jobs,
+        "owner_job_matches": owner_job_matches,
+        "expected_owner_ok": expected_owner_ok,
+    }
+
+
 def load_cron_jobs() -> tuple[list[dict[str, Any]], str | None]:
     if not OPENCLAW_CMD.exists():
         return [], f"openclaw.cmd not found: {OPENCLAW_CMD}"
@@ -148,33 +211,15 @@ def summarize_job(job: dict[str, Any], hits: list[str]) -> dict[str, Any]:
 
 def build_payload() -> dict[str, Any]:
     jobs, error = load_cron_jobs()
-    enabled = [job for job in jobs if bool(job.get("enabled"))]
-    matched: list[dict[str, Any]] = []
-    component_outside_owner: list[dict[str, Any]] = []
-    recurring_component_outside_owner: list[dict[str, Any]] = []
-    one_shot_component_outside_owner: list[dict[str, Any]] = []
-    owner_runner_jobs: list[dict[str, Any]] = []
-    for job in enabled:
-        text = job_text(job)
-        hits = actionable_hits(text)
-        if not hits and OWNER_JOB not in str(job.get("name") or ""):
-            continue
-        record = summarize_job(job, hits)
-        matched.append(record)
-        if OWNER_RUNNER_TOKEN in hits:
-            owner_runner_jobs.append(record)
-        if str(job.get("name") or "") != OWNER_JOB and any(token in hits for token in COMPONENT_TOKENS):
-            component_outside_owner.append(record)
-            if as_dict(job.get("schedule")).get("kind") == "cron":
-                recurring_component_outside_owner.append(record)
-            else:
-                one_shot_component_outside_owner.append(record)
-    owner_job_matches = [row for row in matched if row.get("name") == OWNER_JOB]
-    expected_owner_ok = (
-        len(owner_job_matches) == 1
-        and len(owner_runner_jobs) == 1
-        and owner_runner_jobs[0].get("name") == OWNER_JOB
-    )
+    classified = classify_enabled_jobs(jobs)
+    enabled = classified["enabled"]
+    matched = classified["matched"]
+    component_outside_owner = classified["component_outside_owner"]
+    recurring_component_outside_owner = classified["recurring_component_outside_owner"]
+    one_shot_component_outside_owner = classified["one_shot_component_outside_owner"]
+    owner_runner_jobs = classified["owner_runner_jobs"]
+    owner_job_matches = classified["owner_job_matches"]
+    expected_owner_ok = classified["expected_owner_ok"]
     payload = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),

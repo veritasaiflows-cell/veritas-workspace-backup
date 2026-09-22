@@ -1,0 +1,35 @@
+﻿{
+    "schema":  "veritas.finance_runtime_retirement_supplement.v1",
+    "generated_at_utc":  "2026-09-12T22:52:45.3075471Z",
+    "status":  "ok",
+    "reason":  "Two retired portfolio/deployment current-state artifacts were recreated by a manual macro repair and violated the alerts-and-recommendations OS boundary.",
+    "approval":  "Randall approved archive via structured owner decision on 2026-09-12",
+    "authority":  {
+                      "archive_only":  true,
+                      "delete_allowed":  false,
+                      "rollback_requires_owner_gate":  true,
+                      "capital_or_order_authority":  false,
+                      "paper_or_live_execution_allowed":  false,
+                      "scheduled_producer_found_before":  false
+                  },
+    "files":  [
+                  {
+                      "source":  "tmp/market-state.json",
+                      "destination":  "09. Archive/Finance Runtime/2026-09-12-recreated-retired-state-supplement/files/tmp/market-state.json",
+                      "bytes":  17930,
+                      "sha256":  "d947a2da299e2434aabf5246557286fd7ee4349b5e2bf86fe61ef9c611ecbed4"
+                  },
+                  {
+                      "source":  "tmp/deployment-readiness-surface.json",
+                      "destination":  "09. Archive/Finance Runtime/2026-09-12-recreated-retired-state-supplement/files/tmp/deployment-readiness-surface.json",
+                      "bytes":  34619,
+                      "sha256":  "79e564ac7be9ddd51770fb421594f2b55aa67c2957cac9645ab2ff412e446539"
+                  }
+              ],
+    "verification":  {
+                         "source_absent_count":  2,
+                         "destination_hash_match_count":  2,
+                         "status":  "ok"
+                     },
+    "rollback":  "Move both archived files back to their original tmp paths only after a separate owner gate; doing so will intentionally re-block the alerts OS pivot validator."
+}

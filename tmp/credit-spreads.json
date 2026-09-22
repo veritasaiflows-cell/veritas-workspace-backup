@@ -1,12 +1,12 @@
 {
-  "generated_at_utc": "2026-08-28T20:28:50.343203+00:00",
+  "generated_at_utc": "2026-09-19T23:09:03.100938+00:00",
   "status": "ok",
   "stale_after_hours": 36,
   "expected_update_window": "Refresh after the close for next-session regime work and before weekly macro outputs.",
-  "last_trading_day": "2026-08-27",
+  "last_trading_day": "2026-09-17",
   "source_last_trading_day": {
-    "ig_oas": "2026-08-27",
-    "hy_oas": "2026-08-27"
+    "ig_oas": "2026-09-17",
+    "hy_oas": "2026-09-17"
   },
   "freshness_notes": [
     "fred_ice_bofa_series_can_lag_one_trading_day",
@@ -17,22 +17,22 @@
     "source_label": "FRED ICE BofA OAS",
     "source_mode": "primary",
     "investment_grade_oas": {
-      "value": 0.79,
+      "value": 0.78,
       "unit": "percent",
       "series": "BAMLC0A0CM",
-      "as_of": "2026-08-27"
+      "as_of": "2026-09-17"
     },
     "high_yield_oas": {
-      "value": 2.63,
+      "value": 2.7,
       "unit": "percent",
       "series": "BAMLH0A0HYM2",
-      "as_of": "2026-08-27"
+      "as_of": "2026-09-17"
     },
-    "hy_minus_ig_spread": 1.84,
+    "hy_minus_ig_spread": 1.92,
     "direction": {
       "ig_5d": "flat",
-      "ig_20d": "flat",
-      "hy_5d": "tightening",
+      "ig_20d": "tightening",
+      "hy_5d": "flat",
       "hy_20d": "tightening"
     },
     "stress_regime": "benign",

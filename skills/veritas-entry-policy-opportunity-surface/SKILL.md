@@ -16,7 +16,7 @@ python scripts\finance_sql_canon_access.py --write --validate
 python scripts\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate
 ```
 
-Read the guarded level proof, explicit quote snapshot, alert-level freshness controller, and current digest. Static levels come from the Alert Bands and Invalidation Register and are never re-derived here.
+Read the guarded SQL `reference_levels` proof, explicit quote snapshot, alert-level freshness controller, and current digest. Live numeric levels come from SQL. The Alert Bands markdown register is thesis/interpretation only and is never re-derived here.
 
 ## Visibility Rule
 

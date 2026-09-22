@@ -5,8 +5,8 @@
   "job_id": "c295580b-fd61-4995-9a0e-f876873a5ea4",
   "required": true,
   "owner_workflow": "Heartbeat priority handoff",
-  "contract_reason": "A bounded main-session checkpoint must pick up new or aging P0/P1 current-window, ticker-debt, and cron-error handoffs within thirty minutes during the Phoenix operating window.",
-  "description": "Every-30-minute review-only main-session priority pickup, gated. A model-free command runs the escalation consumer and action executor, then wakes Main only when the deterministic handoff proves a P0/P1 review, a failed control, or an unreadable state. Unchanged priorities are suppressed inside their re-escalation window. The gate never decides a disposition, executes a repair, spawns a helper, leases a lane, imports tickers, or touches canon, capital, execution, account, config, or runtime state. Rollback: state/cron-rollback/c295580b-main-session-priority-pickup-2026-08-30.json",
+  "contract_reason": "A bounded checkpoint may surface genuinely new or changed P0/P1 current-window, ticker-debt, and cron-error handoffs within thirty minutes without repeating unchanged wakes.",
+  "description": "Every-30-minute deterministic priority gate. It runs the escalation consumer and action executor model-free and may wake Main once only for a genuinely new or changed signal because --dispatch-main is explicit. Receipt-only NEW_PRIORITY to NO_DELTA transitions and elapsed time never cause another wake. The validated handoff remains available to PM. Review-only; no repair, helper, lease, finance, account, config, or runtime authority. Rollback: state/cron-rollback/c295580b-main-session-priority-pickup-2026-08-30.json",
   "enabled": true,
   "schedule": {
     "kind": "cron",
@@ -21,6 +21,7 @@
       "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
       "scripts/pm_priority_pickup_predispatch_prefilter.py",
       "--execute",
+      "--dispatch-main",
       "--write",
       "--validate"
     ],

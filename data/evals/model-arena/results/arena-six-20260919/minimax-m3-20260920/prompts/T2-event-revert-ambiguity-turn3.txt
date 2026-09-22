@@ -1,0 +1,10 @@
+Genuine specification change. Replay ALL events from empty state under the amended rules.
+
+Amendment A1: deduplication now uses the pair (eventID, revision) instead of the eventID alone.
+Amendment A2: an event applies when its revision is greater than OR EQUAL TO the job's current revision.
+
+All other rules R2 through R6 are unchanged, and processing is still in written order.
+
+Append these events after the original nine, in this order: (e9,A,5,ready); (e10,C,2,revert); (e11,B,4,ready); (e12,C,2,blocked).
+
+Return ONLY the same raw JSON shape, covering the entire replay. No prose, no fences.

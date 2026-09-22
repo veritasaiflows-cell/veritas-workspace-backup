@@ -15,6 +15,12 @@ Use this skill for scripts, validators, manifests, workflow code, boot/control s
 
 This skill permits only the scoped workspace implementation the user authorized. It does not grant config/auth/channel/runtime/service mutation, cron schedule change, finance/canon/portfolio/cash/sizing/risk mutation, capital deployment, paper/live/brokerage/account action, external delivery, destructive cleanup, skill mutation outside Skill Workshop, or approval inference.
 
+## Owner-Decision Pre-Check
+
+Before proposing any change that loosens a gate - widening a status, allowlist, or exemption set; raising a limit or timeout; relaxing a validator; suppressing a red status or non-zero exit; disabling a fail-closed branch - read the lines directly above the value and its `git log -L` history for an owner-decision marker. Many owner decisions here exist only as a comment at the point of use, so absence from playbooks or canon does not prove none exists.
+
+Marker found: state the decision and its date, withdraw the proposal, and do not argue its merits unless the user reopens it. Reversing a recorded owner decision is never a cosmetic fix and never rides inside another lane. No marker found: say so explicitly, so the claim is falsifiable.
+
 ## Step 1: Classify And Route
 
 Record objective, acceptance criteria, authority class, task shape, write scope, validation budget, owner surfaces, stop lines, and rollback path.
@@ -22,8 +28,8 @@ Record objective, acceptance criteria, authority class, task shape, write scope,
 Use `scripts/project_implementation_router.py` and the `veritas.execution_efficiency_policy.v1` route order:
 
 1. model-free deterministic command and proof;
-2. explicitly opted-in Codex-native Terra for bounded non-QA read-only work, never implementation code;
-3. Main/Astra for integration, acceptance, and authority-sensitive judgment, not implementation code or independent QA;
+2. explicitly opted-in Codex-native work permitted by `veritas-model-routing-helper-lanes`, never implementation code;
+3. Main selected through live OpenClaw global/session configuration for integration, acceptance, and authority-sensitive judgment, not implementation code or independent QA;
 4. exact role-bound specialists through `veritas-model-routing-helper-lanes`, with fresh agent-matched transport proof and scoped-writeback proof for writes.
 
 Record explicit owner-directed task-role overrides and actual model/backend/effort without changing persistent defaults. Missing transport never authorizes silent Main fallback; Main alone accepts. Preserve any default-router nonconformance until its verified scoped route exists.
@@ -47,15 +53,11 @@ Existing dirty changes are user-owned unless proven otherwise. Preserve them and
 
 ## Step 3: Bounded Handoff
 
-When delegating, provide an explicit workspace-relative base path, no more than 6 files / 120,000 bytes / 30,000 estimated context tokens, sorted inventory, byte sizes, SHA-256 hashes, contract hash, frozen snapshot ID, deterministic preflight, exact deliverable, validators, stop lines, next recipient, and timeout.
-
-A persistent attachment lane must preflight the actual receiver/payload shape, not merely a nonce. For a shell-free receiver use a small manifest plus one raw UTF-8 source attachment at a time; verify readback names, bytes, hashes, and line limits before dispatch. Do not use compression or aggregate envelopes without a fresh proof for that exact decoder and reader.
-
-State whether the lane is a `patch_draft` or verified `scoped_worktree_implementation`. A draft is not a shared-workspace change. Re-use an unchanged frozen snapshot for repair/QA. Send a changed-only delta when possible. Do not fork or replay the full conversation unless the worker genuinely needs it.
+Follow the full [bounded handoff contract](references/applied-proof-and-usage.md#bounded-handoff) for every delegation. Enforce 6 files / 120,000 bytes / 30,000 estimated tokens, verify the actual receiver and immutable source inventory, and distinguish draft from writeback before dispatch.
 
 ## Step 4: Implement Narrowly
 
-Inspect exact producer and consumer contracts before editing. Patch only leased surfaces. Keep generated artifacts separate from source owners. Add regression coverage for the changed behavior and adversarial coverage for fail-closed boundaries.
+Inspect exact producer and consumer contracts before editing, and clear the Owner-Decision Pre-Check for every value the change would loosen. Patch only leased surfaces. Keep generated artifacts separate from source owners. Add regression coverage for the changed behavior and adversarial coverage for fail-closed boundaries.
 
 Do not mix unrelated refactoring, cleanup, migration, or authority expansion into the feature lane. Adjacent deterministic metadata/proof residue needs a separately named lane.
 
@@ -98,9 +100,7 @@ Tests prove only what they cover. Validate producer-consumer compatibility, auth
 
 For a Main-applied helper draft, QA must target the actual applied source diff: record the frozen snapshot ID, the applied diff hash, allowed paths, Main application result, commands run, and a `qa_target=actual_applied_diff` assertion. Never close on a proposed diff alone.
 
-For v3 handoffs, acceptance must bind the manifest schema to the handoff contract version; a v2 wrapper around a v3 handoff, or the reverse, blocks rather than downgrading proof requirements. Treat frozen input integrity and post-apply verification as separate phases: re-hash frozen sources before dispatch; after Main applies a patch, preserve immutable frozen metadata and verify the actual workspace state using each changed file's frozen before-hash plus its post-apply hash and size. A no-op or changed path outside the frozen scope blocks.
-
-The applied diff must be a bounded, hash-matched workspace artifact with normalized workspace-relative paths. QA must use a hash-matched result artifact tied to that exact applied-diff hash, frozen snapshot, changed-path list, and post-apply file hashes. Each QA command needs a recorded zero exit result, hash-matched output artifact, and the exact changed paths/post-apply hashes it validated. A self-attested command list, arbitrary hash, or unrelated test command is not completion proof.
+Follow every [frozen-input, applied-diff and command-evidence rule](references/applied-proof-and-usage.md#frozen-input-and-applied-diff) before acceptance. Verify the contract version, exact scope, hashes, postimages and successful validation evidence; never close on declarations alone.
 
 ## Step 6: Main Acceptance
 
@@ -110,20 +110,7 @@ Any route mismatch, mutated frozen input, failed receiver preflight, invalid tel
 
 ## Step 7: Usage And Efficiency Closeout
 
-For every material job record, when exposed:
-
-- parent job, phase, attempt, retry, task shape, write scope;
-- expected and actual backend/model/thinking;
-- files, bytes, estimated context tokens, duration;
-- input, cached input, uncached input, output, reasoning metadata, and total with explicit semantics;
-- QA verdict, Main acceptance, incident state, rework, and proof;
-- `provider_usage_unavailable` when the provider exposes no trustworthy counters.
-
-Never invent token counts, use ingestion time as usage time, call API-equivalent cost an invoice, or store raw prompts/responses/tool payloads/headers/secrets/credentials/account identifiers.
-
-Measure uncached and gross tokens per Main-accepted job, first-pass acceptance, time to accepted proof, retry tax, and escaped defects when the evidence is available. Prefer like-for-like comparisons. Incidents and invalid telemetry receive no success credit.
-
-Automatic route ranking and promotion remain disabled. Randall may request descriptive efficiency review on demand; no fixed cohort pilot or minimum job count is required. Main must explicitly change policy.
+Before closeout, follow the complete [usage and efficiency contract](references/applied-proof-and-usage.md#usage-and-efficiency-closeout). Verify available attribution and counters, mark unavailable evidence honestly, and preserve all no-credit and no-promotion limits.
 
 ## Incident Update
 

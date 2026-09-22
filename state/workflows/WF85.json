@@ -5,12 +5,12 @@
   "tier": "P0",
   "priority": "P0",
   "lifecycle": "active",
-  "readiness": "route_only",
-  "effective_status": "route_only",
+  "readiness": "refresh_required",
+  "effective_status": "refresh_required",
   "current_state": "Primary P0; recommendation readiness is fail-closed and generated drafts are never approval.",
   "next_action": "Produce ranked review alerts and non-executing recommendations from WF84 evidence; surface freshness and uncertainty explicitly.",
   "authoritative_next_action": "Produce ranked review alerts and non-executing recommendations from WF84 evidence; surface freshness and uncertainty explicitly.",
-  "helper_safe": true,
+  "helper_safe": false,
   "owner_action_required": false,
   "authority_boundary": "review-only alerts and non-executing recommendations",
   "authority_class": "review_only",
@@ -26,6 +26,7 @@
     "material_owner_context_required": true
   },
   "blockers": [],
+  "claim_limits": [],
   "stop_lines": [
     "Alerts and recommendations only. No portfolio construction/state, capital, order, account, money-movement, or paper/live execution authority."
   ],

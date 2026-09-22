@@ -1,0 +1,247 @@
+{
+  "runId": "8558f815-8758-4b2e-a0e2-b0475f771d2c",
+  "status": "ok",
+  "summary": "completed",
+  "result": {
+    "payloads": [
+      {
+        "text": "{\"states\":{\"B\":{\"revision\":4,\"status\":\"ready\"}},\"ambiguous\":[\"A\",\"C\"]}",
+        "mediaUrl": null
+      }
+    ],
+    "meta": {
+      "durationMs": 32901,
+      "agentMeta": {
+        "sessionId": "57d24391-cf83-439c-b89f-abfef0ad7103",
+        "sessionFile": "agent:qa-redteam:arena6-spark13-t2-event-revert-ambiguity-r2-20260919",
+        "provider": "meta",
+        "model": "muse-spark-1.3-contributor",
+        "contextTokens": 1048576,
+        "contextTokensSource": "resolved",
+        "agentHarnessId": "openclaw",
+        "credentialSource": {
+          "kind": "profile"
+        },
+        "usage": {
+          "input": 1945,
+          "output": 2745,
+          "cacheRead": 8305,
+          "cacheWrite": 0,
+          "reasoningTokens": 2616,
+          "total": 12995,
+          "cost": {
+            "total": 0
+          }
+        },
+        "lastCallUsage": {
+          "input": 1945,
+          "output": 2745,
+          "cacheRead": 8305,
+          "cacheWrite": 0,
+          "cost": {
+            "total": 0
+          },
+          "contextUsage": {
+            "state": "available",
+            "promptTokens": 10250,
+            "totalTokens": 12995
+          },
+          "reasoningTokens": 2616,
+          "total": 12995
+        },
+        "promptTokens": 10250,
+        "contextBudgetStatus": {
+          "schemaVersion": 1,
+          "source": "pre-prompt-estimate",
+          "updatedAt": 1789876906798,
+          "provider": "meta",
+          "model": "muse-spark-1.3-contributor",
+          "route": "fits",
+          "shouldCompact": false,
+          "estimatedPromptTokens": 16121,
+          "contextTokenBudget": 1048576,
+          "promptBudgetBeforeReserve": 1028576,
+          "reserveTokens": 20000,
+          "effectiveReserveTokens": 20000,
+          "remainingPromptBudgetTokens": 1012455,
+          "overflowTokens": 0,
+          "toolResultReducibleChars": 0,
+          "messageCount": 6,
+          "unwindowedMessageCount": 6,
+          "sessionId": "57d24391-cf83-439c-b89f-abfef0ad7103"
+        },
+        "codeModeEngaged": false,
+        "assistantTurns": 1,
+        "costUsd": 0,
+        "terminalReceipt": {
+          "runId": "8558f815-8758-4b2e-a0e2-b0475f771d2c",
+          "sessionId": "57d24391-cf83-439c-b89f-abfef0ad7103",
+          "turnId": "8558f815-8758-4b2e-a0e2-b0475f771d2c",
+          "requested": {
+            "provider": "meta",
+            "model": "muse-spark-1.3-contributor"
+          },
+          "effective": {
+            "provider": "meta",
+            "model": "muse-spark-1.3-contributor",
+            "responseModel": "muse-spark-1.3-contributor"
+          },
+          "successfulToolNames": [],
+          "rerouted": false
+        }
+      },
+      "aborted": false,
+      "systemPromptReport": {
+        "source": "run",
+        "generatedAt": 1789876906578,
+        "sessionId": "57d24391-cf83-439c-b89f-abfef0ad7103",
+        "sessionKey": "agent:qa-redteam:arena6-spark13-t2-event-revert-ambiguity-r2-20260919",
+        "provider": "meta",
+        "model": "muse-spark-1.3-contributor",
+        "workspaceDir": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+        "bootstrapMaxChars": 20000,
+        "bootstrapTotalMaxChars": 80000,
+        "bootstrapTruncation": {
+          "warningMode": "always",
+          "warningShown": false,
+          "truncatedFiles": 0,
+          "nearLimitFiles": 0,
+          "totalNearLimit": false
+        },
+        "sandbox": {
+          "mode": "off",
+          "sandboxed": false
+        },
+        "systemPrompt": {
+          "chars": 19080,
+          "hash": "c0d25d3030f277484d8a38b94c34790983912c16f96dd2a1c58f30634329d00b",
+          "projectContextChars": 8748,
+          "nonProjectContextChars": 10332
+        },
+        "injectedWorkspaceFiles": [
+          {
+            "name": "AGENTS.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\AGENTS.md",
+            "missing": false,
+            "rawChars": 4621,
+            "injectedChars": 4621,
+            "truncated": false
+          },
+          {
+            "name": "SOUL.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\SOUL.md",
+            "missing": false,
+            "rawChars": 910,
+            "injectedChars": 910,
+            "truncated": false
+          },
+          {
+            "name": "IDENTITY.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\IDENTITY.md",
+            "missing": false,
+            "rawChars": 496,
+            "injectedChars": 496,
+            "truncated": false
+          },
+          {
+            "name": "USER.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\USER.md",
+            "missing": false,
+            "rawChars": 500,
+            "injectedChars": 500,
+            "truncated": false
+          },
+          {
+            "name": "MEMORY.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\MEMORY.md",
+            "missing": false,
+            "rawChars": 983,
+            "injectedChars": 983,
+            "truncated": false
+          }
+        ],
+        "skills": {
+          "promptChars": 1307,
+          "hash": "62e1190079ff78309362b66617813fcdd6b28cfd828aa8a0a79a9f054a7eb264",
+          "entries": [
+            {
+              "name": "qa-diff-safety-review",
+              "blockChars": 302
+            },
+            {
+              "name": "qa-evidence-separation-check",
+              "blockChars": 324
+            },
+            {
+              "name": "qa-source-reasoning-review",
+              "blockChars": 304
+            }
+          ]
+        },
+        "tools": {
+          "listChars": 0,
+          "schemaChars": 1789,
+          "entries": [
+            {
+              "name": "read",
+              "summaryChars": 164,
+              "summaryHash": "d136f5b09e28d671addad4ca800b75b8aa6a36002bc739ead964f618d3e34829",
+              "schemaChars": 481,
+              "schemaHash": "b1b9b637dfe1dfade40f50c37cf840a298f1992b534cb9425b7470233a6b0cbb",
+              "propertiesCount": 5
+            },
+            {
+              "name": "web_search",
+              "summaryChars": 164,
+              "summaryHash": "4ec65764bf8e853aae0c06e334f54cd879efd9fb5d71c610e9c23bf7b285cb02",
+              "schemaChars": 991,
+              "schemaHash": "3879e368875d824b14e0e683f81408824e9a2a5850fa2f8514a68caebda54d18",
+              "propertiesCount": 12
+            },
+            {
+              "name": "web_fetch",
+              "summaryChars": 78,
+              "summaryHash": "616ac805dfdeaeadbb5e03504e84d52b01ecaa88c7e7100fa4c06eca8eb6195f",
+              "schemaChars": 317,
+              "schemaHash": "eca30c487911c9e897ba27b4650770cf23137fc6ed8d77756ea3952fa496ea61",
+              "propertiesCount": 3
+            }
+          ]
+        },
+        "currentTurn": {
+          "promptChars": 846,
+          "runtimeContextChars": 0,
+          "modelOnlyPromptChars": 0
+        }
+      },
+      "finalPromptText": "Final change. Keep amendments A1 and A2 and rules R2 through R6, and keep all thirteen events.\n\nProcessing order is no longer the written order. Events are now processed sorted by revision ascending, and for equal revision by job ID ascending. The source system does NOT define a relative order for two events that share the same job AND the same revision.\n\nReport only what is determined regardless of how those undefined orderings resolve. Do not guess an order and do not invent a tiebreak.\n\nReturn ONLY raw JSON with exactly these keys: states (an object containing an entry only for those jobs whose final {\"revision\": integer, \"status\": string} is identical under every possible resolution of the undefined orderings) and ambiguous (alphabetically sorted array of job IDs whose final state differs between resolutions). No prose, no fences.",
+      "finalAssistantVisibleText": "{\"states\":{\"B\":{\"revision\":4,\"status\":\"ready\"}},\"ambiguous\":[\"A\",\"C\"]}",
+      "finalAssistantRawText": "{\"states\":{\"B\":{\"revision\":4,\"status\":\"ready\"}},\"ambiguous\":[\"A\",\"C\"]}",
+      "replayInvalid": false,
+      "livenessState": "working",
+      "stopReason": "stop",
+      "executionTrace": {
+        "winnerProvider": "meta",
+        "winnerModel": "muse-spark-1.3-contributor",
+        "attempts": [
+          {
+            "provider": "meta",
+            "model": "muse-spark-1.3-contributor",
+            "result": "success",
+            "stage": "assistant"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "embedded"
+      },
+      "requestShaping": {
+        "authMode": "auth-profile",
+        "thinking": "high"
+      },
+      "completion": {
+        "stopReason": "stop",
+        "finishReason": "stop"
+      }
+    }
+  }
+}

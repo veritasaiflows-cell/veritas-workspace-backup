@@ -2,9 +2,10 @@
 """Gated repair for SQL source_lineage artifact hashes and registry rows.
 
 This is intentionally narrow: it syncs source_lineage/source_artifacts metadata
-to the current on-disk artifacts already referenced by source_lineage. It does
-not mutate source artifacts, portfolio notes, cash/sizing state, or any
-execution authority.
+to the current on-disk artifacts already referenced by source_lineage, and keeps
+consumer_migration_registry owner rows hash-paired with their lineage rows in
+the same transaction. It does not mutate source artifacts, portfolio notes,
+cash/sizing state, or any execution authority.
 """
 
 from __future__ import annotations
@@ -204,6 +205,20 @@ def lineage_summaries(conn: sqlite3.Connection) -> dict[str, dict[str, Any]]:
     return {str(row["source_artifact_path"]): dict(row) for row in conn.execute(query)}
 
 
+def lineage_field_families(conn: sqlite3.Connection) -> dict[str, list[str]]:
+    """Map each lineage artifact path to its distinct field families."""
+    families: dict[str, list[str]] = {}
+    for row in conn.execute(
+        """
+        SELECT DISTINCT source_artifact_path, field_family
+        FROM source_lineage
+        ORDER BY source_artifact_path, field_family
+        """
+    ):
+        families.setdefault(str(row["source_artifact_path"]), []).append(str(row["field_family"]))
+    return families
+
+
 def source_artifact_rows(conn: sqlite3.Connection) -> dict[str, dict[str, Any]]:
     return {
         str(row["artifact_path"]): dict(row)
@@ -232,6 +247,7 @@ def planned_artifacts(
     plans: list[dict[str, Any]] = []
     with closing(connect(db_path, readonly=True)) as conn:
         lineage = lineage_summaries(conn)
+        families = lineage_field_families(conn)
         registry = source_artifact_rows(conn)
         integrity = str(conn.execute("PRAGMA integrity_check").fetchone()[0])
     findings.append(
@@ -344,6 +360,8 @@ def planned_artifacts(
                 "generated_at_update_needed": bool(current_generated_at)
                 and old_generated_at != current_generated_at,
                 "registry_upsert_needed": True,
+                "field_families": families.get(rel_path, []),
+                "owner_pair_update_needed": bool(current_sha) and bool(sample_hash) and sample_hash.lower() != current_sha.lower(),
                 "repair_route": str(contract.get("sql_lineage_repair_route") or "").strip() or None,
                 "producer_id": str(contract.get("producer_id") or "").strip() or None,
             }
@@ -356,6 +374,7 @@ def apply_plans(conn: sqlite3.Connection, plans: list[dict[str, Any]]) -> dict[s
         "lineage_hash_rows_updated": 0,
         "lineage_generated_at_rows_updated": 0,
         "source_artifact_rows_upserted": 0,
+        "consumer_registry_owner_rows_updated": 0,
     }
     conn.execute("BEGIN IMMEDIATE")
     try:
@@ -364,6 +383,7 @@ def apply_plans(conn: sqlite3.Connection, plans: list[dict[str, Any]]) -> dict[s
             sha = str(plan["new_sha256"] or "")
             generated_at = plan.get("new_generated_at_utc")
             validator_status = str(plan.get("validator_status") or "unknown")
+            hash_changed = bool(plan.get("hash_update_needed"))
             if sha:
                 cur = conn.execute(
                     """
@@ -375,7 +395,11 @@ def apply_plans(conn: sqlite3.Connection, plans: list[dict[str, Any]]) -> dict[s
                     (sha, path, sha),
                 )
                 counts["lineage_hash_rows_updated"] += cur.rowcount
-            if generated_at:
+            # Gate timestamp writes on actual content change: rewriting
+            # source_generated_at_utc on unchanged artifacts desynchronizes
+            # lineage from owner tables (reference_levels/evidence_freshness
+            # pair their timestamps via IS NOT in finance_sql_canon_access).
+            if generated_at and hash_changed:
                 cur = conn.execute(
                     """
                     UPDATE source_lineage
@@ -386,6 +410,20 @@ def apply_plans(conn: sqlite3.Connection, plans: list[dict[str, Any]]) -> dict[s
                     (generated_at, path, generated_at),
                 )
                 counts["lineage_generated_at_rows_updated"] += cur.rowcount
+            # Paired owner-table update in the same transaction: consumer
+            # lineage rows must stay hash-identical to their
+            # consumer_migration_registry owner rows.
+            if sha and "consumer_migration_registry" in (plan.get("field_families") or []):
+                cur = conn.execute(
+                    """
+                    UPDATE consumer_migration_registry
+                    SET source_artifact_sha256=?
+                    WHERE source_artifact_path=?
+                      AND COALESCE(source_artifact_sha256, '') <> ?
+                    """,
+                    (sha, path, sha),
+                )
+                counts["consumer_registry_owner_rows_updated"] += cur.rowcount
             conn.execute(
                 """
                 INSERT INTO source_artifacts (
@@ -435,7 +473,10 @@ def verify_applied(root: Path, db_path: Path, plans: list[dict[str, Any]]) -> li
                 ).fetchone()[0]
             )
             generated_missing = 0
-            if generated_at:
+            # Only verify the timestamp write when the plan actually wrote
+            # one: timestamps are gated on hash change, so an unchanged
+            # artifact must retain its original lineage timestamp.
+            if generated_at and plan.get("hash_update_needed"):
                 generated_missing = int(
                     conn.execute(
                         """

@@ -21,7 +21,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - Trusted execution/output/grader attestations: `False` / `False` / `False`.
 - Cross-model ranking allowed: `False`.
 - Promotion action allowed: `False`.
-- Recent attribution coverage: `0.8557`; provider-run join ready: `False`.
+- Recent attribution coverage: `0.0`; provider-run join ready: `False`.
 
 ## Interpretation
 

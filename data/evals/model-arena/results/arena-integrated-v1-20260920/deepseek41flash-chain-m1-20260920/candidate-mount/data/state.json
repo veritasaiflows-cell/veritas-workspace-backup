@@ -1,0 +1,17 @@
+{
+  "declared_row_count": 4,
+  "rows": [
+    {
+      "id": "r1",
+      "tombstone": false,
+      "ts": "2026-09-11",
+      "value": "a4"
+    },
+    {
+      "id": "r2",
+      "tombstone": false,
+      "ts": "2026-09-11",
+      "value": "b1"
+    }
+  ]
+}

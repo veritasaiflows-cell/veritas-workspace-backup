@@ -344,6 +344,19 @@ def test_official_browser_evidence_can_primary_confirm_without_probe(tmp_path: P
         errors.append(f"browser-confirmed packet should be ok, got {payload.get('status')}: {payload.get('warnings')}")
 
 
+def test_missing_config_uses_bounded_official_capture_scope(errors: list[str]) -> None:
+    watchlist, scope = confidence.load_watchlist(
+        {},
+        {"records": [{"ticker": "ETN", "next_earnings_date": "2026-11-03"}]},
+    )
+    if scope.get("source") != "official_capture_registry_fallback" or scope.get("fallback_used") is not True:
+        errors.append(f"missing config should use official capture scope: {scope}")
+    if watchlist.get("ETN", {}).get("date") != "2026-11-03":
+        errors.append(f"fallback scope should preserve ETN provider date: {watchlist.get('ETN')}")
+    if not watchlist:
+        errors.append("fallback official capture scope must not be empty")
+
+
 def main() -> int:
     errors: list[str] = []
     with TemporaryDirectory() as tmp:
@@ -354,6 +367,7 @@ def main() -> int:
         test_config_primary_evidence_can_primary_confirm(Path(tmp), errors)
     with TemporaryDirectory() as tmp:
         test_official_browser_evidence_can_primary_confirm_without_probe(Path(tmp), errors)
+    test_missing_config_uses_bounded_official_capture_scope(errors)
     if errors:
         print("earnings_date_source_confidence_tests_failed")
         for error in errors:

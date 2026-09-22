@@ -1,0 +1,19 @@
+﻿{
+    "schema":  "veritas.cron_contract_retirement_proof.v1",
+    "retired_at_utc":  "2026-09-12T22:44:28.4673950Z",
+    "approval":  "Randall approved archive via structured owner decision on 2026-09-12",
+    "reason":  "Managed Memory Dreaming job intentionally absent and memory-core dreaming disabled; active required contract was orphaned and caused cron drift",
+    "job_id":  "a2979b48-4c2e-4490-9ffa-3976c7bb2835",
+    "job_live_before":  false,
+    "dreaming_config_enabled_before":  false,
+    "source_path":  "state/cron-contracts/memory-dreaming-promotion.json",
+    "archive_path":  "09. Archive/Cron Contracts/2026-09-12-memory-dreaming-promotion/memory-dreaming-promotion.json",
+    "source_sha256":  "361393D9715B728D88ADC6D8CD9A35A5D7284A0F04F16CD0961D481B5BF16B43",
+    "rollback":  "Move archived contract back to state/cron-contracts/memory-dreaming-promotion.json, then validate; do not recreate or enable the managed job without separate approval.",
+    "authority":  {
+                      "schedule_changed":  false,
+                      "job_created_or_enabled":  false,
+                      "runtime_config_changed":  false,
+                      "finance_or_execution_action":  false
+                  }
+}

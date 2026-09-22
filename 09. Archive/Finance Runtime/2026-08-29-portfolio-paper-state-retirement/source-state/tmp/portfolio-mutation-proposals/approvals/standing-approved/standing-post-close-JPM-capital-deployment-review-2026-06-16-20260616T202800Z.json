@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "artifact_type": "wf56_scoped_apply_approval",
+  "approval_artifact_id": "standing-post-close-JPM-capital-deployment-review-2026-06-16-20260616T202800Z",
+  "approval_status": "approved",
+  "standing_approval_policy_version": "2026-05-16-randall-workspace-portfolio-maintenance",
+  "standing_approval_source": "Randall explicit 2026-05-16 approval for autonomous workspace portfolio/canon maintenance; trading remains owner-gated.",
+  "approved_by": "Randall-standing-approval-2026-05-16-position-sizing-sync",
+  "approved_at_utc": "2026-06-16T20:28:00Z",
+  "expires_at_utc": "2026-06-17T20:28:00Z",
+  "expiry_required": true,
+  "proposal_id": "post-close:JPM:capital-deployment-review:2026-06-16",
+  "proposal_artifact": "tmp/portfolio-mutation-proposals/semantic-patch-material/post-close-JPM-capital-deployment-review-2026-06-16-sizing.json",
+  "preview_artifact": "tmp/portfolio-mutation-proposals/patch-previews/exact-apply-preview-post-close-JPM-capital-deployment-review-2026-06-16-sizing.json",
+  "approved_target_files": [
+    "03. Portfolio/Portfolio Snapshot.md"
+  ],
+  "approved_diff_sha256": "924ca605c1ae4bfd98dfb73f536d126efcfd4369a8e513443409f23cffbc1a7d",
+  "approved_adjustment_categories": [
+    "sizing"
+  ],
+  "owner_approval_granted": true,
+  "scoped_owner_file_write_allowed": true,
+  "canonical_note_write_allowed": true,
+  "trade_or_account_action_allowed": false,
+  "trade_execution_allowed": false,
+  "brokerage_order_allowed": false,
+  "money_movement_allowed": false,
+  "sizing_sleeve_cash_risk_rule_allowed": false,
+  "execution_entitlement_allowed": false,
+  "owner_approval_inferred": false,
+  "apply_allowed_without_valid_approval_artifact": false,
+  "guards": {
+    "no_trade": true,
+    "no_account_action": true,
+    "no_brokerage_order": true,
+    "no_money_movement": true,
+    "no_external_execution_entitlement": true,
+    "exact_diff_only": true,
+    "post_apply_validation_required": true
+  },
+  "scope_note": "Standing-approved workspace portfolio/canon maintenance artifact. It authorizes only the exact validated diff/category/target files named here. It does not authorize trading, accounts, brokerage orders, money movement, credentials, or external execution."
+}

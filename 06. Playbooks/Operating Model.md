@@ -10,7 +10,8 @@ Deliver truthful, fresh, efficient market alerts and evidence-backed, non-execut
 |---|---|
 | Preferences and objectives | `03. Alerts and Recommendations/Investor Profile.md` |
 | Generic alert conditions and states | `03. Alerts and Recommendations/Alert Trigger Policy.md` |
-| Ticker-level thesis, levels, invalidation, and review dates | `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md` |
+| Ticker-level thesis and alert interpretation | `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md` |
+| Live numeric bands, invalidation, and level timestamps | guarded SQL `reference_levels` |
 | Read-only routes and governance | `03. Alerts and Recommendations/Alert Operations Board.md` |
 | Research scope | `04. Research/Coverage Universe.md` |
 | Market context | `02. Markets/Macro Regime Dashboard.md` |

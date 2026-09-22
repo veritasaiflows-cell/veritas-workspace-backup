@@ -1,0 +1,78 @@
+{
+  "schema": "veritas.workflow_checkpoint_config.v1",
+  "workflow_id": "IMPLEMENTATION-CLOSEOUT",
+  "description": "Checkpointed implementation proof chain for AGI-OS substrate changes.",
+  "db_path": "state/workflow-checkpoints/implementation-closeout-checkpoints.sqlite",
+  "out_path": "tmp/implementation-closeout-checkpointed-execution.json",
+  "authority_boundary": {
+    "review_only": true,
+    "checkpoint_runner_only": true,
+    "runs_existing_producers": true,
+    "auto_apply_allowed": false,
+    "skill_application_allowed": false,
+    "delete_archive_or_move_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "sql_or_source_mutation_allowed": false,
+    "canonical_note_mutation_allowed": false,
+    "portfolio_mutation_allowed": false,
+    "cash_sizing_risk_mutation_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "customer_or_external_output_allowed": false,
+    "model_training_claim_allowed": false,
+    "raw_prompt_or_tool_capture_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "steps": [
+    {
+      "id": "vector_memory_graph_packet",
+      "command": ["{python}", "scripts/vector_memory_graph_packet.py", "--write", "--validate"],
+      "expected_outputs": ["tmp/vector-memory-graph-packet.json"],
+      "input_paths": ["tmp/vector-memory.sqlite", "data/vector-memory-sources.json"],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "agent_message_ledger_packet",
+      "command": ["{python}", "scripts/agent_message_ledger_packet.py", "--write", "--append-ledger", "--validate"],
+      "expected_outputs": ["tmp/agent-message-ledger-current.json", "state/agent-message-ledger.jsonl"],
+      "input_paths": ["tmp/concurrent-lane-register.json"],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "agi_os_eval_gate_packet",
+      "command": ["{python}", "scripts/agi_os_eval_gate_packet.py", "--write", "--validate"],
+      "expected_outputs": ["tmp/agi-os-eval-gate-packet.json"],
+      "input_paths": [
+        "tmp/vector-memory-graph-packet.json",
+        "tmp/agent-message-ledger-current.json",
+        "tmp/recommendation-outcome-ledger-current.json",
+        "tmp/finance-decision-performance-digest.json",
+        "tmp/coding-outcome-ledger-current.json",
+        "tmp/token-efficiency-review-packet.json"
+      ],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "changed_file_validator_router",
+      "command": ["{python}", "scripts/changed_file_validator_router.py", "--write", "--validate"],
+      "expected_outputs": ["tmp/changed-file-validator-router.json"],
+      "input_paths": ["tmp/agi-os-eval-gate-packet.json", "tmp/agent-message-ledger-current.json"],
+      "timeout_seconds": 600
+    },
+    {
+      "id": "validator_bundle_router",
+      "command": ["{python}", "scripts/validator_bundle_router.py", "--write", "--validate"],
+      "expected_outputs": ["tmp/validator-bundle-router.json"],
+      "input_paths": ["tmp/changed-file-validator-router.json"],
+      "timeout_seconds": 600
+    },
+    {
+      "id": "implementation_release_contract",
+      "command": ["{python}", "scripts/implementation_release_contract.py", "--phase", "blocking", "--write", "--validate"],
+      "expected_outputs": ["tmp/implementation-release-contract.json"],
+      "input_paths": ["tmp/changed-file-validator-router.json", "tmp/validator-bundle-router.json"],
+      "timeout_seconds": 600
+    }
+  ]
+}

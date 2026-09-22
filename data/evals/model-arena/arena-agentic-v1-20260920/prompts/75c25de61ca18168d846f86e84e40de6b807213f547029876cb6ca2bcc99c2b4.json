@@ -1,0 +1,64 @@
+{
+  "family": "T6",
+  "instance_id": "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4",
+  "prompt": {
+    "heldout_inputs": [
+      "zebra",
+      "mint"
+    ],
+    "request": "Infer the transform from labeled pairs only; abstain elsewhere; schedule.",
+    "tasks": {
+      "A": {
+        "deps": [],
+        "dur": 3
+      },
+      "B": {
+        "deps": [],
+        "dur": 3
+      },
+      "C": {
+        "deps": [],
+        "dur": 3
+      },
+      "D": {
+        "deps": [
+          "A"
+        ],
+        "dur": 2
+      },
+      "E": {
+        "deps": [
+          "B"
+        ],
+        "dur": 2
+      },
+      "F": {
+        "deps": [
+          "C",
+          "D",
+          "E"
+        ],
+        "dur": 1
+      }
+    },
+    "training_pairs": [
+      {
+        "input": "dog",
+        "output": "fpg"
+      },
+      {
+        "input": "fish",
+        "output": "jkth"
+      },
+      {
+        "input": "tree",
+        "output": "wtff"
+      },
+      {
+        "input": "stone",
+        "output": "wwqpf"
+      }
+    ],
+    "workers": 2
+  }
+}

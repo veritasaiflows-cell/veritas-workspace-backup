@@ -1,16 +1,16 @@
-# Graph Report - scripts  (2026-09-04)
+# Graph Report - scripts  (2026-09-07)
 
 ## Corpus Check
-- 1610 files · ~1,936,341 words
+- 1628 files · ~1,972,508 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 26625 nodes · 78494 edges · 1110 communities (1044 shown, 66 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 767 edges (avg confidence: 0.63)
+- 27129 nodes · 80027 edges · 1129 communities (1064 shown, 65 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 939 edges (avg confidence: 0.64)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f3267615`
+- Built from commit: `b2fdd2f9`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -37,7 +37,7 @@
 - testing.T
 - Any
 - project_implementation_router.py
-- Connection
+- artifact_index.py
 - frontier_capability_eval_spine.py
 - PersistentScopedWorktreeProofTests
 - wf78_auto_tier_router.py
@@ -143,7 +143,7 @@
 - wf74_telemetry_critique_engine.py
 - time.Time
 - legacy_state
-- cron_contract_validator.py
+- wf88_disabled_cron_delete_microbatch_apply.py
 - cronproof/lint.go
 - frontier_eval_openai_transport.py
 - pmlint/lint.go
@@ -162,7 +162,7 @@
 - trade_grade_decision_cards.py
 - schemalint/lint.go
 - pipeline_state_consistency_check.py
-- route_catalog_health.py
+- build_health_packet
 - weekday_morning_review_cron_runner.py
 - build_contract
 - vector_memory_ollama_job_runner.py
@@ -181,7 +181,7 @@
 - band_refresh.py
 - candidate_packet_validator.py
 - finance_recommendation_regression_calibration.py
-- SummarizeFindings
+- UTCNow
 - implementation_token_attribution_bridge.py
 - intraday_alert_advisor_enricher.py
 - reference_levels_derived_refresh_dry_run.py
@@ -219,10 +219,10 @@
 - wf74_self_prompt_generator.py
 - wf74_wf88_checkpointed_execution.py
 - automation_health_dashboard.py
-- policy_expectations_refresh.py
+- market_data_utils.py
 - core_live_surface_migration.py
 - escalation_trigger.py
-- test_cron_freshness_spine.py
+- test_harness_task_model_roles.py
 - finance_daily_actionability_snapshot.py
 - graphify_selective_provenance_repair.py
 - in_band_review_attention_bridge.py
@@ -237,12 +237,12 @@
 - wf78_101_200_candidate_source_registry.py
 - wf78_tier_routing_event_ledger.py
 - test_portfolio_mutation_validators.py
-- UTCNow
+- ReadOnlyAuthorityBoundary
 - capital_deployment_band_integrity_validator.py
 - manifest_steps
 - chief_intelligence_promotion_gate.py
 - cron_signal_scorecard.py
-- market_data_utils.py
+- macro_regime_refresh.py
 - otel_learning_loop.py
 - reference_levels_derived_refresh_apply.py
 - wf75_service_state.py
@@ -279,10 +279,10 @@
 - current_regime_analog_matcher.py
 - Run
 - interactive_training_xapi_ledger.py
-- model_quality_scorecard.py
+- DynamicEntitlementScopeError
 - otel_tool_workflow_metadata.py
 - parallel_lane_recommender.py
-- analyst_consensus_refresh.py
+- run_alerts_recommendations_chain.py
 - sql_canon_field_family_preflight.py
 - evaluate_sql_first_thin_board_contract
 - workflow_router.py
@@ -292,9 +292,9 @@
 - wf78_promotion_visibility_top10.py
 - wf85_deployment_timing_gate.py
 - workbook_template.py
-- workspace_index.py
+- model_quality_scorecard.py
 - agent_message_ledger_packet.py
-- artifact_index.py
+- Path
 - test_concurrent_lane_manager.py
 - earnings_date_source_confidence.py
 - finance_intelligence_router_qa.py
@@ -373,7 +373,7 @@
 - operating_leverage_spine.py
 - operators/test_universe.py
 - otel_drift_critical_review_loop.py
-- _semantic_match_is_boundary
+- alerts_os_pivot_validator.py
 - candidate_packet_schema.json
 - build_proof
 - render_composite_regime_sector_pdf.py
@@ -404,14 +404,14 @@
 - tier_entitlement_surface_inventory.py
 - wf74_self_audit_cadence_packet.py
 - wf78_daily_movement_ledger.py
-- tier_a_depth_repair_phase_executor.py
+- test_phase3g_alert_coverage.py
 - wf74_prompt_variant_ledger.py
 - wf74_rsi.py
 - wf78_funnel_owner_decision_packet.py
 - wf78_phase_runner.py
 - wf78_tier_c_attention_trigger.py
 - wf78_tier_capacity_policy_gate.py
-- alerts_os_pivot_validator.py
+- validate_state
 - wf85_opportunity_visibility_queue.py
 - wf87_trade_decision_journal.py
 - wf88_route_contraction_packet.py
@@ -445,11 +445,11 @@
 - cyber_security_daily_audit_cron_runner.py
 - disciplined_reference_levels_migration.py
 - execution_board_canon_anchor_pilot.py
-- wf74_learning_loop_telegram_cron_runner.py
+- guard_context
 - finance_production_scope.py
 - handoff_first_proof_gate.py
 - intraday_alert_outcome_link.py
-- premarket_snapshot.py
+- task_scoped_model_role_contract.py
 - sql_500_ticker_expansion_design_gate.py
 - test_main_session_escalation_consumer.py
 - wf67_legacy_radar_archive_readiness.py
@@ -462,7 +462,7 @@
 - wf88_delete_readiness_packet.py
 - Run
 - bank_native_sec_concept_probe.py
-- cron_retire_merge_candidates.py
+- intraday_quote_snapshot_proof.py
 - Run
 - 04-overview.js
 - dashboard_validation.py
@@ -483,13 +483,13 @@
 - wf75_artifact_only_pm_handoff.py
 - veritas_question_router.py
 - cron_main_session_usage_metadata.py
-- wf88_disabled_cron_delete_microbatch_apply.py
+- Path
 - wf78_tier_a_reference_band_proposals.py
 - wf85_production_blocker_repair.py
 - wf86_assisted_order_card_builder.py
 - wf86_daily_shadow_reconciliation_cron_runner.py
 - wf87_approval_freshness_ttl.py
-- as_dict
+- wf88_cron_retired_job_inventory.py
 - wf88_typed_script_reference_graph.py
 - wf88_cron_disabled_job_reference_review.py
 - alpaca_read_only_connection_proof.py
@@ -508,10 +508,10 @@
 - post_apply_board_snapshot_config_coherence.py
 - post_close_final_quote_ledger.py
 - prompt_book_morning_p0_contract.py
-- question_route_catalog.py
+- QuestionRouteCatalogTests
 - response_recommendation_contract_lint.py
 - retail_truth_safety.py
-- quote_evaluation_policy
+- alert_level_freshness_controller.py
 - source_freshness_classifier.py
 - sql_source_truth_apply_scaffold.py
 - tech_official_ir_capture.py
@@ -529,7 +529,7 @@
 - wf78_tier_b_final_promotion_packet.py
 - atomic_write_text
 - wf87_intraday_monitor.py
-- Any
+- analyst_consensus_refresh.py
 - archive_suggester.py
 - artifact_staleness_explainer.py
 - auto_apply_position_sizing_semantic_sync.py
@@ -560,7 +560,7 @@
 - wf69_phase2_provenance_spine.py
 - wf69_phase4_analytics.py
 - wf78_contract_state_guard.py
-- wf78_owner_lineage_discovery.py
+- interactive_training_catalog_builder.py
 - wf78_100_ticker_candidate_scope_packet.py
 - wf78_tier_c_hold_recheck.py
 - wf88_db_duplicate_source_delete_packet.py
@@ -670,7 +670,7 @@
 - full_workspace_delete_readiness.py
 - portfolio_mutation_proposal_verifier.py
 - post_earnings_prep.py
-- PromptBookEvalFixtureTests
+- prompt_book_eval_fixtures.py
 - python_go_sql_helper_demotion_queue.py
 - python_go_sql_helper_go_primary_history_gate.py
 - regime_scoring_refresh.py
@@ -710,8 +710,8 @@
 - sec_capital_freshness_review.py
 - sector_allocation_decision_matrix_cron_runner.py
 - sql_canon_migration_master_plan.py
-- skill_workshop_body_guard.py
-- disciplined_band_gate.py
+- wf78_tier_b_research_packet.py
+- test_disciplined_band_gate.py
 - DynamicExecutionTests
 - test_run_summary_refresh.py
 - test_run_summary_tail_order.py
@@ -728,7 +728,7 @@
 - wf78_ph_owner_review_candidate_packet.py
 - wf78_tier_a_invalidation_review_queue.py
 - wf78_tier_a_owner_readiness_proposal.py
-- wf88_deletion_approval_prep_packet.py
+- as_dict
 - workflow_hygiene_check.py
 - build_report
 - control_closeout_bundle.py
@@ -745,7 +745,7 @@
 - python_go_sql_helper_controlled_router_batch.py
 - python_go_sql_helper_default_route_promotion.py
 - wf78_clean_tier_roster.py
-- question_route_usage_ledger.py
+- QuestionRouteUsageLedgerTests
 - reference_levels_expected_parity_validator.py
 - review_brief_report.py
 - sec_evidence_packet.py
@@ -776,7 +776,7 @@
 - python_go_wf78_sql_phase2_readiness_parity.py
 - test_morning_paper_deployment_recommendation_builder.py
 - pm_value_added_register.py
-- test_otel_drift_critical_review_loop.py
+- AgentBootstrapGeneratorTests
 - python_go_finance_human_notes_sql_check_parity.py
 - python_go_finance_universe_validation_parity.py
 - retail_answer_harness.py
@@ -811,7 +811,7 @@
 - paper_pilot_status_surface.py
 - proposal_patch_scope_validator.py
 - presentation_render_default_compatibility.py
-- test_disciplined_band_gate.py
+- wf68_telegram_notifier.py
 - sql_canon_shadow_backfill_validator.py
 - sql_hardening_flattening_plan.py
 - ChiefIntelligencePromotionGateTests
@@ -861,7 +861,7 @@
 - swarm_completion_handshake.py
 - 09-macro.js
 - build_report
-- test_daily_review_objects.py
+- agent_bootstrap_linter.py
 - CollectorHandler
 - presentation_retrieval_enforcement.py
 - required
@@ -872,7 +872,7 @@
 - sql_source_truth_promotion_readiness_gate.py
 - test_actionable_improvement_queue.py
 - load_module
-- CurrentOpportunityApprovalBriefTests
+- interactive_training_scorm_smoke_validator.py
 - test_cyber_security_daily_audit_cron_runner.py
 - FinanceDecisionSyncSpineTests
 - HelperSpawnPacketTests
@@ -894,7 +894,7 @@
 - test_alpaca_paper_trade_executor.py
 - test_entry_policy_opportunity_surface.py
 - finance_alert_os_digest.py
-- canonical_finance_data_plane_retirement_readiness.py
+- test_ticker_intelligence_card_analyst_lookup.py
 - cron_authority_matrix_validator.py
 - 05-deployment.js
 - deployment_contract_legacy_read_audit.py
@@ -911,7 +911,7 @@
 - main
 - test_db_lifecycle_manifest.py
 - test_go_fast_proof_validators.py
-- test_heartbeat_priority_handoff.py
+- AssertionError
 - test_long_work_job_runtime.py
 - test_long_work_job_status_packet.py
 - test_no_orphan_validator.py
@@ -933,7 +933,7 @@
 - test_reference_levels_derived_refresh_apply.py
 - sql_source_truth_field_family_decision_packet.py
 - AgiOsEvalGatePacketTests
-- AlertsRecommendationsChainTests
+- test_agent_fleet_policy.py
 - test_finance_cache_cleanup_readiness.py
 - test_heartbeat_continuation_candidates.py
 - load_module
@@ -981,7 +981,7 @@
 - load_json
 - build_report
 - 01-nav.js
-- FakeDynamicClient
+- _FakePipeChild
 - build_report
 - telemetry_audit_window_control.py
 - test_alpaca_paper_readiness_validator.py
@@ -1000,7 +1000,7 @@
 - main
 - migrate_alert_reference_lineage.py
 - main
-- test_authority_matrix.py
+- wf78_tier_funnel_promotion_gate.py
 - test_band_review_auto_apply_gate.py
 - python_go_sql_consumer_authority_controlled_router.py
 - wf75_closeout_refresh.py
@@ -1010,7 +1010,7 @@
 - test_security_warning_ledger.py
 - test_sql_retail_gate_hardening.py
 - test_state_history_capture.py
-- classify_job
+- phase3g_coherent_reference_read.py
 - test_preview_classifies_stale_unreferenced_without_cleanup_authority
 - test_veritas_harness_scorecard.py
 - test_wf88_cron_retired_job_inventory.py
@@ -1041,12 +1041,12 @@
 - source_surface
 - test_coding_runtime_kpi_probe.py
 - test_cron_cadence_reduction_plan.py
-- test_finance_production_grade_policy_gate.py
+- reference_levels_band_proposals_source_migration.py
 - test_major_closeout_delta.py
 - test_model_learning_capture_approval_packet.py
 - test_otel_recommendation_closeout.py
 - test_owner_gated_action_review_queue.py
-- test_regime_scoring_authority.py
+- test_ticker_intelligence_card_sql_canon.py
 - test_tool_bloat_reduction_guard.py
 - test_trade_grade_os_readiness_rollup.py
 - test_wf74_rsi_outcome_eval_v2.py
@@ -1056,17 +1056,17 @@
 - lib/__init__.py
 - readme.md
 - veritas.local/wf74
-- guard_context
+- test_phase3g_coherent_reference_read.py
 - boot_surface_size_guard.py
 - test_wf87_autonomy_command_center.py
 - python_go_sql_consumer_authority_demotion_dry_run.py
 - capital_deployment_recommendation_report.py
 - validation.py
-- test_autonomous_routing_deployment_cards.py
+- build_sql_markdown_reconciliation
 - embedding_keepalive_guard.py
 - test_layered_finance_refresh_chain.py
 - Phase3ADynamicContractTests
-- positioning_ranking_refresh.py
+- interactive_training_qa_validator.py
 - test_wf67_order_card_request_generator.py
 - normalize_retired_cron_contracts.py
 - wf78_batch_manifest.py
@@ -1075,14 +1075,14 @@
 - test_pm_control_packet.py
 - test_layered_finance_cron_pilot_runner.py
 - ArtifactIndexAlertsOsTests
-- PromptBookEvalGapPacketTests
+- route_readiness.py
 - PromptBookPmJobPacketTests
 - veritas_probe_memory_speed.py
 - test_layered_finance_refresh_timing_probe.py
 - test_model_quality_scorecard.py
 - TierCAuditTests
-- main
-- test_market_intelligence_event_router.py
+- test_interactive_training_builder.py
+- build
 - test_post_apply_validation_chain.py
 - wf78_next_owner_review_and_source_capture_integration.py
 - test_sql_canon_front_door_readiness_packet.py
@@ -1092,18 +1092,36 @@
 - main
 - layered_finance_refresh_timing_probe.py
 - main
+- test_market_execution_readiness_cron_hardening.py
+- official_earnings_source_discovery.py
+- VeritasQuestionRouterTests
+- wf88_cleanup_common.py
+- test_ticker_intelligence_card_sector_alias.py
+- test_finance_intelligence_state_wf72_guard.py
+- classify_quote_freshness
+- python_go_finance_data_coverage_probe_parity.py
+- ProviderRetryTests
+- wf78_tier_funnel_contract.py
+- sql_canon_answer_path_ab_harness.py
+- build_report
+- scoped_writeback_preflight.py
+- planned_agent_stub
+- main
+- cron_trust_block_consumer.py
+- build_missing_and_stale
+- PromptBookLinterTests
 
 ## God Nodes (most connected - your core abstractions)
-1. `atomic_write_json()` - 1308 edges
+1. `atomic_write_json()` - 1310 edges
 2. `load_json_artifact()` - 1007 edges
-3. `atomic_write_text()` - 387 edges
-4. `legacy_state()` - 108 edges
-5. `FinanceSqlCanonAccess` - 108 edges
+3. `atomic_write_text()` - 389 edges
+4. `FinanceSqlCanonAccess` - 118 edges
+5. `legacy_state()` - 108 edges
 6. `main()` - 62 edges
 7. `Shared Toolkit` - 58 edges
 8. `CollectorTests` - 56 edges
 9. `clean_text()` - 53 edges
-10. `validate_register()` - 49 edges
+10. `DynamicEntitlementScope` - 53 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `build_payload()` --uses--> `FinanceSqlCanonAccess`  [INFERRED]
@@ -1114,17 +1132,17 @@
   alert_level_freshness_controller.py → finance_sql_canon_access.py
 - `dynamic_entitlement_preview()` --uses--> `FinanceSqlCanonAccess`  [INFERRED]
   alert_level_freshness_controller.py → finance_sql_canon_access.py
-- `validate_finance_sql_state()` --uses--> `FinanceSqlCanonAccess`  [INFERRED]
-  alerts_os_pivot_validator.py → finance_sql_canon_access.py
+- `main()` --uses--> `DynamicEntitlementExternalGateError`  [INFERRED]
+  alert_level_freshness_controller.py → finance_sql_canon_access.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (1110 total, 66 thin omitted)
+## Communities (1129 total, 65 thin omitted)
 
 ### Community 0 - "concurrent_lane_manager.py"
 Cohesion: 0.04
-Nodes (160): accepted_missing_usage_classification(), acquire_active_lease_admission_lock(), action_requires_active_lease_admission(), active_implementation_attempt_outcome_baseline_applies(), active_lease_admission_lock_path(), apply_complete(), apply_lease(), apply_plan() (+152 more)
+Nodes (174): accepted_missing_usage_classification(), acquire_active_lease_admission_lock(), action_requires_active_lease_admission(), active_implementation_attempt_outcome_baseline_applies(), active_lease_admission_lock_path(), apply_complete(), apply_lease(), apply_plan() (+166 more)
 
 ### Community 1 - "wf88_wiki_synthesis_packet.py"
 Cohesion: 0.07
@@ -1139,8 +1157,8 @@ Cohesion: 0.05
 Nodes (94): expect(), main(), main(), main(), test_generic_helpers_remain_available(), test_retired_phase_request_is_explicit(), main(), test_manifest_is_retired_and_empty() (+86 more)
 
 ### Community 4 - "interactive_training_builder.py"
-Cohesion: 0.05
-Nodes (106): Element, artifact_paths(), build(), build_hvac_module(), build_module_artifacts(), build_otel_proof_validator_module(), build_sample_module(), build_sec_evidence_module() (+98 more)
+Cohesion: 0.19
+Nodes (29): artifact_paths(), build(), build_hvac_module(), build_module_artifacts(), build_openclaw_day1_module(), build_otel_proof_validator_module(), build_sec_evidence_module(), clean_text() (+21 more)
 
 ### Community 5 - "wf55_outcome_ledger_v2.py"
 Cohesion: 0.07
@@ -1148,31 +1166,31 @@ Nodes (107): abs_path(), append_grade_events(), as_dict(), as_list(), build_grad
 
 ### Community 6 - "coding_outcome_ledger.py"
 Cohesion: 0.07
-Nodes (104): abs_path(), append_new_records(), apply_ex_post_reviews(), apply_legacy_proof_remediations(), as_dict(), as_float(), as_int(), as_list() (+96 more)
+Nodes (102): abs_path(), append_new_records(), apply_ex_post_reviews(), apply_legacy_proof_remediations(), as_dict(), as_float(), as_int(), as_list() (+94 more)
 
 ### Community 7 - "status_card_packet.py"
 Cohesion: 0.11
 Nodes (72): actionable_queue_summary(), add_active_item(), apply_alerts_os_pivot_projection(), artifact_age_seconds(), artifact_index_health(), artifact_pointer(), as_dict(), as_list() (+64 more)
 
 ### Community 8 - "wf74_decision_docket.py"
-Cohesion: 0.06
-Nodes (99): main(), as_dict(), as_list(), build_payload(), classify_item(), collect_rows(), cron_context(), dedupe_rows() (+91 more)
+Cohesion: 0.07
+Nodes (98): as_dict(), as_list(), build_payload(), classify_item(), collect_rows(), cron_context(), dedupe_rows(), docket_row() (+90 more)
 
 ### Community 9 - "helper_lane_manifest.py"
 Cohesion: 0.14
 Nodes (42): build_attempt(), build_handoff(), build_incident(), build_payload(), canonical_hash(), estimated_tokens(), file_hash(), iso_utc() (+34 more)
 
 ### Community 10 - "market_execution_readiness_cron_hardening.py"
-Cohesion: 0.05
-Nodes (94): authority_block(), BlockedRun, classify_freshness(), credential_status(), fetch_snapshots(), fetch_snapshots_with_retry(), load_symbols(), main() (+86 more)
+Cohesion: 0.16
+Nodes (38): actionable_quote_snapshot_gate_ok(), add_check(), append_unique(), as_dict(), as_list(), build_report(), cron_expr(), cron_times() (+30 more)
 
 ### Community 11 - "Any"
 Cohesion: 0.09
 Nodes (71): Decimal, assignment_manifest_sha256(), _atomic_write_json(), BudgetLedger, build_collector_packet(), _build_identity(), calculate_usage_cost(), _canonical_assignment_map() (+63 more)
 
 ### Community 12 - "agent_bootstrap_generator.py"
-Cohesion: 0.05
-Nodes (77): agent_kb_pages(), build_agents_markdown(), build_bootstrap_markdown(), build_core_markdown_documents(), build_heartbeat_markdown(), build_identity_markdown(), build_manifest(), build_outputs() (+69 more)
+Cohesion: 0.11
+Nodes (48): agent_kb_pages(), build_agents_markdown(), build_bootstrap_markdown(), build_core_markdown_documents(), build_heartbeat_markdown(), build_identity_markdown(), build_manifest(), build_outputs() (+40 more)
 
 ### Community 13 - "test_implementation_release_contract.py"
 Cohesion: 0.07
@@ -1187,8 +1205,8 @@ Cohesion: 0.19
 Nodes (44): apply_transaction(), authority_counts(), backup_database(), build_baseline(), build_retirement_manifest(), configure_paths(), connect(), consumer_registry_rows() (+36 more)
 
 ### Community 16 - "Path"
-Cohesion: 0.04
-Nodes (61): _acquire_exclusive(), _atomic_write_json(), _bounded_int(), budget_day_key(), _ledger_lock(), _ledger_lock_path(), load_provider_policy(), _normalised_path_text() (+53 more)
+Cohesion: 0.03
+Nodes (63): _acquire_exclusive(), _atomic_write_json(), authorize_market_data_get(), _bounded_int(), budget_day_key(), _ledger_lock(), _ledger_lock_path(), load_provider_policy() (+55 more)
 
 ### Community 17 - "token_usage_ledger.py"
 Cohesion: 0.10
@@ -1203,36 +1221,36 @@ Cohesion: 0.06
 Nodes (75): main(), makeFreshnessIndex(), mustTime(), TestRunAcceptsFreshRows(), TestRunBlocksCriticalStaleFreshnessRow(), write(), createAuthorityTestDB(), TestRunAcceptsSupersededLegacyValidatorArtifact() (+67 more)
 
 ### Community 20 - "Any"
-Cohesion: 0.14
-Nodes (51): as_dict(), as_json(), as_list(), bool_int(), build_note_drift_report(), clean_text(), earnings_lifecycle_authority(), earnings_lifecycle_semantic_key() (+43 more)
+Cohesion: 0.15
+Nodes (50): as_dict(), as_json(), as_list(), bool_int(), build_note_drift_report(), clean_text(), earnings_lifecycle_authority(), earnings_lifecycle_semantic_key() (+42 more)
 
 ### Community 21 - "project_implementation_router.py"
-Cohesion: 0.06
-Nodes (85): _active_openclaw_version(), as_dict(), as_list(), _attachment_mapping(), _binding_unchanged(), build_lease_command(), _capture_git_path_inventory(), cohort_observation() (+77 more)
+Cohesion: 0.05
+Nodes (94): _active_openclaw_version(), as_dict(), as_list(), _attachment_mapping(), _binding_unchanged(), build_lease_command(), _capture_git_path_inventory(), cohort_observation() (+86 more)
 
-### Community 22 - "Connection"
+### Community 22 - "artifact_index.py"
 Cohesion: 0.12
-Nodes (44): build_canon_stage_readiness_report(), build_handoff_packet(), drift_fingerprint_for_table(), drift_fingerprints(), main(), parse_args(), print_table(), Connection (+36 more)
+Nodes (51): _artifact_proof(), build_canon_stage_readiness_report(), build_handoff_packet(), count_tables(), drift_fingerprint_for_table(), drift_fingerprints(), init_canon_cache_schema(), main() (+43 more)
 
 ### Community 23 - "frontier_capability_eval_spine.py"
 Cohesion: 0.08
 Nodes (56): as_dict(), as_list(), baseline_attribution_context(), build_assignments(), build_readiness(), build_spine(), candidate_statistics(), canonical_json() (+48 more)
 
 ### Community 24 - "PersistentScopedWorktreeProofTests"
-Cohesion: 0.05
-Nodes (43): inventory_checkpoint(), inventory_checkpoints(), inventory_sha256(), patch_draft_v1_payload(), PersistentScopedWorktreeProofTests, prepare_inspection_fixture(), Path, run_git_checked() (+35 more)
+Cohesion: 0.12
+Nodes (16): inventory_checkpoint(), inventory_checkpoints(), inventory_sha256(), patch_draft_v1_payload(), PersistentScopedWorktreeProofTests, prepare_inspection_fixture(), Path, run_git_checked() (+8 more)
 
 ### Community 25 - "wf78_auto_tier_router.py"
 Cohesion: 0.08
 Nodes (75): test_classify_etf_sleeve_and_existing_special_proxies(), test_classify_operating_company_equity(), test_lane_family_count_uses_lane_qualified_tiers(), test_phase2_evidence_complete_does_not_create_new_tier_b_admission(), test_phase2_evidence_complete_validates_existing_tier_b(), test_sync_lane_tier_fields_recomputes_demoted_rows(), test_tier_b_cap_moves_low_priority_overflow_to_candidate_hold(), add_check() (+67 more)
 
 ### Community 26 - "test_concurrent_lane_manager_runtime_metadata.py"
-Cohesion: 0.11
-Nodes (75): codex_subagent_source(), efficiency_test_args(), full_hash(), load_manager_module(), load_register(), main(), manager_time(), native_import_args() (+67 more)
+Cohesion: 0.09
+Nodes (89): _build_retention_canary_lane(), codex_subagent_source(), efficiency_test_args(), full_hash(), load_manager_module(), load_register(), main(), manager_time() (+81 more)
 
 ### Community 27 - "wf78_route_ticker.py"
-Cohesion: 0.13
-Nodes (44): as_dict(), authority_state_for(), build_route_readiness(), first_present(), next_route_action_for(), Any, route_readiness_from_route_context(), route_readiness_from_wf84_row() (+36 more)
+Cohesion: 0.26
+Nodes (25): add_check(), as_dict(), as_list(), blocking_evidence(), build_packet(), card_summary_row(), default_out(), find_row() (+17 more)
 
 ### Community 28 - "implementation_builder_worktree_manager.py"
 Cohesion: 0.13
@@ -1251,16 +1269,16 @@ Cohesion: 0.08
 Nodes (71): artifact_record(), as_dict(), as_list(), build_payload(), contains_forbidden_true(), decision_count_snapshot(), decision_layer_ready(), determinism_guard() (+63 more)
 
 ### Community 32 - "python_go_sql_consumer_authority_dashboard_ab.py"
-Cohesion: 0.25
-Nodes (23): add_finding(), approved_key_count(), as_dict(), as_list(), boundary_false(), build_cycle(), build_report(), case_summary() (+15 more)
+Cohesion: 0.26
+Nodes (22): add_finding(), approved_key_count(), as_dict(), as_list(), boundary_false(), build_cycle(), build_report(), case_summary() (+14 more)
 
 ### Community 33 - "wf78_101_200_provider_source_validation.py"
 Cohesion: 0.08
 Nodes (70): add_command(), as_dict(), as_list(), build_batch(), build_payload(), command_argv(), component_by_name(), contract_by_id() (+62 more)
 
 ### Community 34 - "finance_intelligence_state.py"
-Cohesion: 0.07
-Nodes (103): action_queue_packet(), as_dict(), as_list(), assert_wf72_support_only_answer_route(), authority_boundary(), authority_forbidden_true(), build_entry_stop_reference_metadata(), build_state() (+95 more)
+Cohesion: 0.14
+Nodes (40): as_dict(), as_list(), authority_forbidden_true(), build_entry_stop_reference_metadata(), build_state(), canonical_data_plane_switch_gate(), card_path(), connect() (+32 more)
 
 ### Community 35 - "improvement_ledger.py"
 Cohesion: 0.12
@@ -1271,8 +1289,8 @@ Cohesion: 0.07
 Nodes (70): main(), routes_by_id(), test_canonical_pause_reconciles_route_and_control_registry(), test_exact_alias_lookup_is_indexed_and_rejects_fragments(), test_operational_packets_are_primary_freshness_owners(), test_sql_lookup_fails_closed_when_selected_freshness_source_moves(), test_stable_script_mtime_is_not_used_for_current_state_freshness(), test_wf74_wf88_route_live_retrieval_discrimination_separately() (+62 more)
 
 ### Community 37 - "canonical_finance_data_plane.py"
-Cohesion: 0.09
-Nodes (66): add_check(), assembler_section_raw(), bool_int(), build_packet(), check_source_schemas(), classify_band_status(), connect_ro(), create_sqlite() (+58 more)
+Cohesion: 0.10
+Nodes (67): add_check(), as_list(), assembler_section_raw(), bool_int(), build_packet(), check_source_schemas(), classify_band_status(), create_sqlite() (+59 more)
 
 ### Community 38 - "dashboard_payload.py"
 Cohesion: 0.08
@@ -1280,7 +1298,7 @@ Nodes (66): age_hours(), assess_source(), build_provenance(), describe_overall_s
 
 ### Community 39 - "finance_agent_work_queue.py"
 Cohesion: 0.09
-Nodes (63): as_dict(), as_list(), build_packet(), build_packets(), load(), main(), packet_fingerprint(), packet_id() (+55 more)
+Nodes (62): as_dict(), as_list(), build_packet(), build_packets(), load(), main(), packet_fingerprint(), packet_id() (+54 more)
 
 ### Community 40 - "bandfreshness/lint.go"
 Cohesion: 0.07
@@ -1308,7 +1326,7 @@ Nodes (63): approx_tokens(), build_redacted_tool_telemetry(), build_report(), co
 
 ### Community 46 - "session_resume_checkpoint.py"
 Cohesion: 0.14
-Nodes (63): acknowledge_checkpoint(), active_lane_finding(), active_lease_for_lane(), append_execution_ledger_record(), apply_evaluation(), as_dict(), as_list(), assemble_checkpoint() (+55 more)
+Nodes (64): acknowledge_checkpoint(), active_lane_finding(), active_lease_for_lane(), append_execution_ledger_record(), apply_evaluation(), as_dict(), as_list(), assemble_checkpoint() (+56 more)
 
 ### Community 47 - "wf74_improvement_opportunity_queue.py"
 Cohesion: 0.10
@@ -1351,12 +1369,12 @@ Cohesion: 0.11
 Nodes (57): expect(), main(), test_artifact_probe_top_level_validation_status(), test_authority_boundaries(), test_customer_safe_contracts_when_manifests_exist(), test_customer_safe_readiness_helpers_fail_closed(), test_markdown_mentions_outputs(), test_operator_gate_when_manifest_exists() (+49 more)
 
 ### Community 57 - "official_earnings_auto_capture.py"
-Cohesion: 0.13
-Nodes (33): _attach_official_evidence(), build_etn_capture(), build_generic_source_captures(), _capture_claim(), capture_discovered_source(), capture_etn(), _company_name(), _context_end_date() (+25 more)
+Cohesion: 0.12
+Nodes (36): _attach_official_evidence(), build_etn_capture(), build_generic_source_captures(), _capture_claim(), capture_discovered_source(), capture_etn(), _company_name(), _context_end_date() (+28 more)
 
 ### Community 58 - "wf78_tier_a_competitive_promotion_gate.py"
-Cohesion: 0.06
-Nodes (93): add_check(), as_dict(), as_list(), as_score(), b_to_a_required_evidence(), build_report(), by_ticker(), evaluate_b_to_a() (+85 more)
+Cohesion: 0.22
+Nodes (31): add_check(), as_dict(), as_list(), as_score(), b_to_a_required_evidence(), build_report(), by_ticker(), evaluate_b_to_a() (+23 more)
 
 ### Community 59 - "cleanup_autopilot_family_packets.py"
 Cohesion: 0.10
@@ -1364,11 +1382,11 @@ Nodes (55): as_dict(), as_list(), backup_and_delete(), build_report(), expected_
 
 ### Community 60 - "finance_sql_canon_access.py"
 Cohesion: 0.07
-Nodes (50): _Phase3FFrozenReferenceClient, _baseline_check(), _bool(), connect_readonly(), _consumer_retirement_manifest_check(), _count_value(), _dynamic_scope_fingerprint(), EvidenceFreshness (+42 more)
+Nodes (50): _baseline_check(), _bool(), _captured_source_reads(), connect_readonly(), _consumer_retirement_manifest_check(), _count_value(), _dynamic_scope_fingerprint(), _file_hash() (+42 more)
 
 ### Community 61 - "daily_executive_brief.py"
-Cohesion: 0.08
-Nodes (54): _as_float(), band_behavior_by_ticker(), band_behavior_for_record(), format_band_behavior(), _pct_distance(), Any, qualified_band_behavior(), _quote_for_record() (+46 more)
+Cohesion: 0.09
+Nodes (52): _as_float(), band_behavior_by_ticker(), band_behavior_for_record(), format_band_behavior(), _pct_distance(), Any, qualified_band_behavior(), _quote_for_record() (+44 more)
 
 ### Community 62 - "Shared Toolkit"
 Cohesion: 0.03
@@ -1387,8 +1405,8 @@ Cohesion: 0.10
 Nodes (56): age_hours(), artifact_health(), artifact_probe(), artifact_required_for_readiness(), artifact_status_blocks_readiness(), as_dict(), as_list(), build_lane() (+48 more)
 
 ### Community 66 - "daily_review_objects.py"
-Cohesion: 0.10
-Nodes (56): action_family_for(), artifact_is_fresh_enough(), artifact_record(), band_distance_points(), band_status_note(), blocker_lines(), build_packet(), build_system_review_object() (+48 more)
+Cohesion: 0.07
+Nodes (71): action_family_for(), artifact_is_fresh_enough(), artifact_record(), band_distance_points(), band_status_note(), blocker_lines(), build_packet(), build_system_review_object() (+63 more)
 
 ### Community 67 - "CollectorTests"
 Cohesion: 0.09
@@ -1403,8 +1421,8 @@ Cohesion: 0.10
 Nodes (54): as_dict(), backup_job(), build_payload(), build_requested_patch(), classify_impact(), compare_patch_to_live_job(), cron_get(), cron_list() (+46 more)
 
 ### Community 70 - "chain_executor.py"
-Cohesion: 0.12
-Nodes (54): apply_result_to_record(), command_text(), data_quality_repair_classification(), data_quality_repair_context(), data_quality_repair_steps(), dependency_output_paths(), execute_subprocess(), _handle_failure() (+46 more)
+Cohesion: 0.13
+Nodes (52): apply_result_to_record(), command_text(), data_quality_repair_classification(), data_quality_repair_context(), data_quality_repair_steps(), dependency_output_paths(), execute_subprocess(), _handle_failure() (+44 more)
 
 ### Community 71 - "finance_recommendation_lookback_engine.py"
 Cohesion: 0.12
@@ -1439,8 +1457,8 @@ Cohesion: 0.15
 Nodes (54): age_hours(), artifact_state(), as_dict(), as_list(), build_input_signature(), build_payload(), classify_findings(), daily_memory_surfaces() (+46 more)
 
 ### Community 79 - "isolated_agent_usage_metadata.py"
-Cohesion: 0.12
-Nodes (48): build_attempt_correlation_key(), canonical_model_path(), dispatch_binding_token_hash_for_attempt(), epoch_ms_to_utc(), extract_session_usage(), find_session_usage_record(), full_hash_reference(), hash_reference() (+40 more)
+Cohesion: 0.11
+Nodes (50): build_attempt_correlation_key(), canonical_correlation_identifier(), canonical_model_path(), dispatch_binding_token_hash_for_attempt(), epoch_ms_to_utc(), extract_session_usage(), find_session_usage_record(), full_hash_reference() (+42 more)
 
 ### Community 80 - "pm_priority_pickup_predispatch_prefilter.py"
 Cohesion: 0.15
@@ -1456,7 +1474,7 @@ Nodes (6): Cron control, Development rules, Finance: alerts and recommendations 
 
 ### Community 83 - "rsi_outcome_scorecard.py"
 Cohesion: 0.14
-Nodes (49): aggregate_live_cohort(), as_dict(), as_list(), authority_metric(), authority_violation_values(), build_fixture_evaluation(), build_lane_outcome_map(), build_ledger_context() (+41 more)
+Nodes (51): aggregate_live_cohort(), as_dict(), as_list(), authority_metric(), authority_violation_values(), build_fixture_evaluation(), build_lane_closure_durability_map(), build_lane_outcome_map() (+43 more)
 
 ### Community 84 - ".evaluate_ticker"
 Cohesion: 0.10
@@ -1499,8 +1517,8 @@ Cohesion: 0.16
 Nodes (45): atomic_write_json(), build_input_signature(), build_prefilter_report(), ensure_workspace_path(), finalize_runner_execution(), input_source_paths(), json_or_bytes_material(), load_json() (+37 more)
 
 ### Community 94 - "ticker_intelligence_card.py"
-Cohesion: 0.04
-Nodes (105): ReferenceLevelRecord, main(), built_nvda_card(), cron_tickers(), EmptyTicker, FakeRecommendations, FakeTicker, projection() (+97 more)
+Cohesion: 0.10
+Nodes (53): main(), built_nvda_card(), real_card_inputs(), apply_approved_wf78_card_field_repair(), apply_post_close_price_overlay(), approved_wf78_card_field_repair_rows(), build_card(), build_etf_profile() (+45 more)
 
 ### Community 95 - "workbook_export.py"
 Cohesion: 0.13
@@ -1515,8 +1533,8 @@ Cohesion: 0.11
 Nodes (43): attach_command_manifest(), budget_relevant(), build_payload(), classify_path(), command(), compact_reason(), current_diff_paths(), dedupe_recommendations() (+35 more)
 
 ### Community 98 - "long_work_packet_linter.py"
-Cohesion: 0.16
-Nodes (44): add_finding(), artifact_path_candidates(), as_dict(), as_list(), coerce_packet(), example_packet(), find_lane(), load_dict() (+36 more)
+Cohesion: 0.14
+Nodes (51): add_finding(), artifact_path_candidates(), as_dict(), as_list(), coerce_packet(), example_packet(), find_lane(), load_dict() (+43 more)
 
 ### Community 99 - "post_close_review_cron_runner.py"
 Cohesion: 0.07
@@ -1535,7 +1553,7 @@ Cohesion: 0.10
 Nodes (42): test_authority_fields_remain_false_for_macro_note(), test_broader_placeholder_terms_block_completion(), test_capital_action_allowed_blocks_completion(), test_dashboard_warning_does_not_block_macro_completion(), test_deployment_surface_presentation_false_warns_when_no_stop_line(), test_deployment_surface_stop_line_blocks_completion(), test_missing_authority_blocks_completion(), test_placeholders_block_completion() (+34 more)
 
 ### Community 103 - "wf74_autonomy_work_router.py"
-Cohesion: 0.14
+Cohesion: 0.15
 Nodes (43): main(), as_dict(), as_list(), build_cron_repair_plan(), build_payload(), command_is_wf74_proof_safe(), compact_cron_signal(), compact_identifier() (+35 more)
 
 ### Community 104 - "ticker_data_repair_controller.py"
@@ -1559,8 +1577,8 @@ Cohesion: 0.11
 Nodes (40): backlogItem, Finding, loadedJSON, Options, registryRow, Report, Summary, testRow (+32 more)
 
 ### Community 109 - "earnings_rollforward_guard.py"
-Cohesion: 0.11
-Nodes (40): build_guard(), _latest_by_ticker(), load_json(), main(), parse_args(), Any, Namespace, Path (+32 more)
+Cohesion: 0.16
+Nodes (23): build_guard(), _latest_by_ticker(), load_json(), main(), parse_args(), Any, Namespace, Path (+15 more)
 
 ### Community 110 - "test_cache_dependency_manifest.py"
 Cohesion: 0.36
@@ -1599,12 +1617,12 @@ Cohesion: 0.15
 Nodes (37): Path, WorkflowCheckpointRunnerTests, atomic_write_json(), completed_step_valid(), config_sha(), ensure_run(), ensure_schema(), expand_command() (+29 more)
 
 ### Community 119 - "cron_freshness_spine.py"
-Cohesion: 0.16
-Nodes (34): artifact(), artifact_role_from_path(), as_dict(), as_list(), attention_bucket(), authority_widened(), build_payload(), effective_freshness_hours() (+26 more)
+Cohesion: 0.05
+Nodes (98): age_hours_from_dt(), artifact(), artifact_record(), artifact_role_from_path(), artifacts_prove_post_failure_recovery(), as_dict(), as_list(), attention_bucket() (+90 more)
 
 ### Community 120 - "atomic_write_json"
-Cohesion: 0.13
-Nodes (37): check(), main(), now_utc(), Any, atomic_write_json(), main(), CompletedProcess, Path (+29 more)
+Cohesion: 0.08
+Nodes (48): check(), main(), now_utc(), Any, atomic_write_json(), test_router_builds_packets_from_queue_with_required_guards(), main(), CompletedProcess (+40 more)
 
 ### Community 121 - "turn_circuit_breaker.py"
 Cohesion: 0.18
@@ -1631,12 +1649,12 @@ Cohesion: 0.12
 Nodes (37): Finding, loadedJSON, Options, PacketSummary, Report, Summary, asMap(), authorityViolationsFor() (+29 more)
 
 ### Community 127 - "legacy_state"
-Cohesion: 0.13
-Nodes (38): legacy_state(), Compatibility accessor for legacy state fields. Readers should use canonical…, action_label(), band_position(), blocker_text(), build_row(), build_thin_board_row(), fmt_band() (+30 more)
+Cohesion: 0.10
+Nodes (44): legacy_state(), Compatibility accessor for legacy state fields. Readers should use canonical…, action_label(), band_position(), blocker_text(), build_row(), build_thin_board_row(), fmt_band() (+36 more)
 
-### Community 128 - "cron_contract_validator.py"
-Cohesion: 0.13
-Nodes (43): as_dict(), as_list(), build_payload(), compare_contract(), contract_identity(), detected_unsupported_model_routes(), expected_value(), find_live_job() (+35 more)
+### Community 128 - "wf88_disabled_cron_delete_microbatch_apply.py"
+Cohesion: 0.09
+Nodes (71): as_dict(), as_list(), build_payload(), compare_contract(), contract_identity(), detected_unsupported_model_routes(), expected_value(), find_live_job() (+63 more)
 
 ### Community 129 - "cronproof/lint.go"
 Cohesion: 0.11
@@ -1648,7 +1666,7 @@ Nodes (38): _atomic_write(), _canonical_bytes(), _claim_send(), _current_executi
 
 ### Community 131 - "pmlint/lint.go"
 Cohesion: 0.12
-Nodes (37): arrayLen(), authorityViolations(), blockedStatus(), checkAuthority(), checkAuthorityLanguage(), checkFreshness(), checkHandoff(), checkStaleLaneDigest() (+29 more)
+Nodes (36): arrayLen(), authorityViolations(), blockedStatus(), checkAuthority(), checkAuthorityLanguage(), checkFreshness(), checkHandoff(), checkStaleLaneDigest() (+28 more)
 
 ### Community 132 - "properties"
 Cohesion: 0.05
@@ -1679,8 +1697,8 @@ Cohesion: 0.11
 Nodes (19): GraphifyError, GraphifyRouter, main(), Any, Exception, Path, Graphify-backed code-structure router for Veritas. Thin derivation layer. Does…, Reverse dependency traversal: what depends on node? (+11 more)
 
 ### Community 141 - "build_project"
-Cohesion: 0.14
-Nodes (52): build_project(), default_forbidden_writes(), default_stop_lines(), infer_helper_fit(), infer_task_shape(), infer_validator_budget(), live_configured_agent_model(), packet_subset() (+44 more)
+Cohesion: 0.16
+Nodes (49): build_project(), live_configured_agent_model(), packet_subset(), Return a deterministic, non-executing route across the six-agent fleet. The…, Live keyed primary model for one agent. A present `agents.entries` key is…, select_isolated_agent_dispatch(), validate_project(), args() (+41 more)
 
 ### Community 142 - "small_mid_cap_regime_feed.py"
 Cohesion: 0.12
@@ -1702,9 +1720,9 @@ Nodes (27): main(), main(), checkContract(), escapeSQL(), expectColumn(), expect
 Cohesion: 0.13
 Nodes (37): _artifact_authority(), _authority_artifacts_for_window(), _authority_block(), _authority_bool(), _authority_findings(), _baseline_generated_at(), _brief_states(), _bucket_from_state() (+29 more)
 
-### Community 147 - "route_catalog_health.py"
-Cohesion: 0.27
-Nodes (8): build_health_packet(), _load(), main(), Any, Path, render_markdown(), Tests for the route-catalog-health packet., RouteCatalogHealthTests
+### Community 147 - "build_health_packet"
+Cohesion: 0.29
+Nodes (6): build_health_packet(), _load(), Any, Path, Tests for the route-catalog-health packet., RouteCatalogHealthTests
 
 ### Community 148 - "weekday_morning_review_cron_runner.py"
 Cohesion: 0.13
@@ -1723,8 +1741,8 @@ Cohesion: 0.20
 Nodes (38): analyst_buy_skew(), approved_tier_b_labels_from_records(), as_dict(), as_float(), as_list(), attention_candidates(), attention_rows_by_ticker(), build_report() (+30 more)
 
 ### Community 152 - "board_state_contract.py"
-Cohesion: 0.14
-Nodes (34): canonical_action_state(), _clean_label(), deployment_contract(), deployment_raw_context(), _effective_raw_label(), execution_priority_quote_targets(), filter_records_by_states(), format_user_state() (+26 more)
+Cohesion: 0.08
+Nodes (58): canonical_action_state(), _clean_label(), deployment_contract(), deployment_raw_context(), _effective_raw_label(), execution_priority_quote_targets(), filter_records_by_states(), format_user_state() (+50 more)
 
 ### Community 153 - "canon_drift_freshness_gate.py"
 Cohesion: 0.17
@@ -1778,13 +1796,13 @@ Nodes (68): error(), find_deployment_record(), find_earnings_record(), iter_text
 Cohesion: 0.16
 Nodes (35): abs_path(), anti_curve_fit_warnings(), as_dict(), as_list(), authority_true_paths(), band_position_signal(), build_report(), confidence_penalties() (+27 more)
 
-### Community 166 - "SummarizeFindings"
+### Community 166 - "UTCNow"
 Cohesion: 0.10
-Nodes (29): T, StatusFromBlockedWarnings(), StatusFromCounts(), SummarizeFindings(), TestStatusFromCounts(), TestSummarizeFindings(), contains(), contractsSlice() (+21 more)
+Nodes (30): T, StatusFromBlockedWarnings(), StatusFromCounts(), SummarizeFindings(), TestStatusFromCounts(), TestSummarizeFindings(), UTCNow(), contains() (+22 more)
 
 ### Community 167 - "implementation_token_attribution_bridge.py"
-Cohesion: 0.17
-Nodes (38): Return true for post-cutover model work that needs a source-backed join. The…, telemetry_enforcement_applies(), action_items(), as_dict(), as_list(), build_payload(), completed_model_lanes(), completion_cohort() (+30 more)
+Cohesion: 0.18
+Nodes (36): action_items(), as_dict(), as_list(), build_payload(), completed_model_lanes(), completion_cohort(), gap_model_capacity(), has_token_stamp() (+28 more)
 
 ### Community 168 - "intraday_alert_advisor_enricher.py"
 Cohesion: 0.15
@@ -1899,8 +1917,8 @@ Cohesion: 0.20
 Nodes (34): add_research_item(), as_dict(), as_list(), authority_from(), bool_int(), build_index(), build_payload(), build_registry() (+26 more)
 
 ### Community 197 - "market_state_refresh.py"
-Cohesion: 0.12
-Nodes (34): fetch_fred_latest(), fetch_2y_treasury(), fetch_best_effort_pre_market(), fetch_daily_close_change(), fetch_last_close(), fetch_snapshot(), fetch_treasury_curve_2y(), fetch_treasury_curve_value() (+26 more)
+Cohesion: 0.13
+Nodes (33): fetch_2y_treasury(), fetch_best_effort_pre_market(), fetch_daily_close_change(), fetch_last_close(), fetch_snapshot(), fetch_treasury_curve_2y(), fetch_treasury_curve_value(), find_distribution_probability() (+25 more)
 
 ### Community 198 - "market_today_answer_packet.py"
 Cohesion: 0.20
@@ -1930,9 +1948,9 @@ Nodes (31): WF74WF88CheckpointedExecutionTests, atomic_write_json(), completed_s
 Cohesion: 0.17
 Nodes (33): append_history_entry(), artifact_meta(), build_report(), build_trend_summary(), history_entry(), load_history(), load_json(), load_text() (+25 more)
 
-### Community 205 - "policy_expectations_refresh.py"
-Cohesion: 0.16
-Nodes (32): build_single_step_fomc_distribution(), fetch_fedwatch_implied_rate(), fetch_fedwatch_probability(), zq_ticker_for_meeting_date(), build_manual_dependencies(), build_policy_freshness_contract(), coerce_float(), days_until() (+24 more)
+### Community 205 - "market_data_utils.py"
+Cohesion: 0.07
+Nodes (63): build_packet(), main(), Any, Path, reference_count(), rel(), text_files(), utc_now() (+55 more)
 
 ### Community 206 - "core_live_surface_migration.py"
 Cohesion: 0.22
@@ -1942,9 +1960,9 @@ Nodes (33): archive_copy(), archive_move(), archive_path_for(), archive_row_from
 Cohesion: 0.27
 Nodes (17): as_dict(), as_list(), build_payload(), compose_message(), load_json(), main(), parse_args(), Any (+9 more)
 
-### Community 208 - "test_cron_freshness_spine.py"
-Cohesion: 0.11
-Nodes (29): artifact_record(), attention_class(), expected_warning_quiet(), merged_job_contracts(), test_attention_class_separates_known_review_from_new_review(), test_cron_control_packet_context_does_not_block_freshness_spine(), test_cron_operator_ledger_warning_rollup_quiet_only_when_clean(), test_embedded_legacy_contracts_never_enter_active_merge() (+21 more)
+### Community 208 - "test_harness_task_model_roles.py"
+Cohesion: 0.10
+Nodes (58): _apply_witness_anchors(), _approval_file(), base_args(), _check_unresolved_ancestors(), contract_codes(), _default_applied_root(), expect(), fail() (+50 more)
 
 ### Community 209 - "finance_daily_actionability_snapshot.py"
 Cohesion: 0.19
@@ -1959,8 +1977,8 @@ Cohesion: 0.16
 Nodes (32): as_dict(), as_list(), attention_rows(), band_fields(), build_payload(), fingerprint(), fnum(), fresh_quote() (+24 more)
 
 ### Community 212 - "main_session_greenkeeper_controller.py"
-Cohesion: 0.19
-Nodes (36): parse_command(), action_commands(), active_action_is_retired(), age_hours(), alerts_os_proof_health(), append_ledger(), approved_internal_telegram_runner_delivery(), artifact_view() (+28 more)
+Cohesion: 0.20
+Nodes (35): action_commands(), active_action_is_retired(), age_hours(), alerts_os_proof_health(), append_ledger(), approved_internal_telegram_runner_delivery(), artifact_view(), as_dict() (+27 more)
 
 ### Community 213 - "wf75_internal_prototype_readiness.py"
 Cohesion: 0.22
@@ -1968,7 +1986,7 @@ Nodes (32): expect(), main(), test_authority_boundaries(), test_score_and_valida
 
 ### Community 214 - "wf77_supplemental_price_evidence.py"
 Cohesion: 0.14
-Nodes (30): check_regular_market_quote_fallback(), expect(), FakeTicker, main(), test_regular_market_quote_fallback(), as_dict(), as_float(), build_payload() (+22 more)
+Nodes (33): check_regular_market_quote_fallback(), expect(), FakeTicker, main(), test_regular_market_quote_fallback(), as_dict(), as_float(), build_payload() (+25 more)
 
 ### Community 215 - "wf86_shadow_eligibility_validator.py"
 Cohesion: 0.19
@@ -2002,7 +2020,7 @@ Nodes (33): add_check(), as_dict(), as_list(), authority_false_ok(), build_repor
 Cohesion: 0.14
 Nodes (29): build_report(), iter_files(), main(), Path, text_for(), build_report(), canonical_status(), load_packets() (+21 more)
 
-### Community 223 - "UTCNow"
+### Community 223 - "ReadOnlyAuthorityBoundary"
 Cohesion: 0.14
 Nodes (29): Finding, Options, Report, Summary, Table, TickerRow, cell(), containsNormalized() (+21 more)
 
@@ -2011,8 +2029,8 @@ Cohesion: 0.18
 Nodes (31): active_band_record(), add_record(), artifact_generated_at(), as_dict(), as_float(), as_list(), band_signature(), build_report() (+23 more)
 
 ### Community 225 - "manifest_steps"
-Cohesion: 0.21
-Nodes (24): _apply_earnings_rollforward_guard(), _apply_stage_names(), dependency_graph(), expected_outputs_by_script(), _latest_prior_index_by_script(), manifest_stages(), manifest_steps(), manifest_validation() (+16 more)
+Cohesion: 0.19
+Nodes (25): _apply_earnings_rollforward_guard(), _apply_stage_names(), dependency_graph(), expected_outputs_by_script(), _latest_prior_index_by_script(), manifest_stages(), manifest_steps(), manifest_validation() (+17 more)
 
 ### Community 226 - "chief_intelligence_promotion_gate.py"
 Cohesion: 0.16
@@ -2022,9 +2040,9 @@ Nodes (32): artifact_status(), band_plain_text(), blocker_categories_from_text()
 Cohesion: 0.17
 Nodes (31): age_hours(), as_dict(), as_list(), blocked_signal_breakdown(), build_payload(), classify_run_summary(), expected_run_summary_warning(), expected_suspended_weight_warning() (+23 more)
 
-### Community 228 - "market_data_utils.py"
-Cohesion: 0.05
-Nodes (76): classify_oas_direction(), classify_proxy_direction(), compute_change_pct(), fetch_proxy_series(), infer_stress_regime(), main(), Any, Path (+68 more)
+### Community 228 - "macro_regime_refresh.py"
+Cohesion: 0.15
+Nodes (29): build_sector_fit_table(), classify_breadth_pillar(), classify_credit_pillar(), classify_policy_pillar(), get_path(), load_json(), _macro_freshness_contract(), main() (+21 more)
 
 ### Community 229 - "otel_learning_loop.py"
 Cohesion: 0.17
@@ -2075,8 +2093,8 @@ Cohesion: 0.12
 Nodes (40): build_augmented_packet(), earnings_record(), line_starting(), load_json(), main(), portfolio_row(), portfolio_rows(), Any (+32 more)
 
 ### Community 241 - "prompt_book_registry.py"
-Cohesion: 0.10
-Nodes (51): build_prompt_book_packets(), base_contract(), file_sha256(), load_json(), prompt_entry(), Any, Path, rel() (+43 more)
+Cohesion: 0.08
+Nodes (61): base_contract(), file_sha256(), load_json(), prompt_entry(), Any, Path, rel(), scan_forbidden() (+53 more)
 
 ### Community 242 - "required"
 Cohesion: 0.06
@@ -2099,8 +2117,8 @@ Cohesion: 0.20
 Nodes (30): main(), as_dict(), as_list(), atomic_five_family_repair_errors(), atomic_five_family_repair_queue(), build(), card_band_status(), classify_lane() (+22 more)
 
 ### Community 247 - "wf74_auto_patch_proposer.py"
-Cohesion: 0.24
-Nodes (24): as_dict(), as_list(), base_plan(), build_payload(), build_plan_for_proposal(), execution_guardrail_review(), finance_repair_review(), main() (+16 more)
+Cohesion: 0.18
+Nodes (30): main(), proposal_packet(), Path, queue_packet(), stamp(), write(), as_dict(), as_list() (+22 more)
 
 ### Community 248 - "wf85_intraday_review_overlay.py"
 Cohesion: 0.20
@@ -2131,8 +2149,8 @@ Cohesion: 0.14
 Nodes (29): apply_closeout_hold_to_records(), apply_post_earnings_manual_hold(), apply_watchlist_lifecycle_closeouts(), build_existing_watchlist_lifecycle_holds(), build_watchlist_lifecycle_closeouts(), compare_to_watchlist(), days_until(), fetch_earnings_date() (+21 more)
 
 ### Community 255 - "Run"
-Cohesion: 0.11
-Nodes (24): main(), blockedStatus(), boolPresent(), defaulted(), liveEndpointValues(), parseTime(), readJSON(), resolve() (+16 more)
+Cohesion: 0.14
+Nodes (22): blockedStatus(), boolPresent(), defaulted(), liveEndpointValues(), parseTime(), readJSON(), resolve(), Run() (+14 more)
 
 ### Community 256 - "otel_critical_review_decision_packet.py"
 Cohesion: 0.19
@@ -2170,21 +2188,21 @@ Nodes (26): authorityViolations(), authorityViolationsIn(), blockedStatus(), def
 Cohesion: 0.18
 Nodes (23): append_statement(), build(), LedgerHandler, load_jsonl(), main(), marker_hits(), post_json(), Any (+15 more)
 
-### Community 265 - "model_quality_scorecard.py"
-Cohesion: 0.30
-Nodes (23): append_history(), as_dict(), as_num(), build_scorecard(), decision_quality_track(), efficiency_loops(), finance_sql_canon_context(), implementation_quality_track() (+15 more)
+### Community 265 - "DynamicEntitlementScopeError"
+Cohesion: 0.10
+Nodes (34): DynamicEntitlementExternalGateError, DynamicEntitlementScopeError, eligibility_debt_label(), Render the explicit debt label; never a readiness conferral., A guarded dynamic-entitlement scope cannot be used safely., A caller attempted dynamic provider work before the positive gate exists., Serialize the immutable membership proof passed to child planners., Fail closed if a child receives a changed scope serialization. A present… (+26 more)
 
 ### Community 266 - "otel_tool_workflow_metadata.py"
 Cohesion: 0.23
 Nodes (28): as_dict(), as_list(), build_payload(), command_label(), command_tool_name(), cron_ledger_rows(), cron_runner_rows(), failure_category() (+20 more)
 
 ### Community 267 - "parallel_lane_recommender.py"
-Cohesion: 0.16
-Nodes (35): active_lane_writes(), as_dict(), as_list(), base_templates(), build_report(), completed_lane_states(), completion_freshness(), forbidden_write() (+27 more)
+Cohesion: 0.17
+Nodes (34): active_lane_writes(), as_dict(), as_list(), base_templates(), build_report(), completed_lane_states(), completion_freshness(), forbidden_write() (+26 more)
 
-### Community 268 - "analyst_consensus_refresh.py"
-Cohesion: 0.04
-Nodes (130): age_hours(), build_payload(), _build_phase3f_alert_component_with_authorization(), display_age(), dynamic_entitlement_preview(), finite_age_within(), iso_utc(), load_json() (+122 more)
+### Community 268 - "run_alerts_recommendations_chain.py"
+Cohesion: 0.05
+Nodes (106): _build_phase3f_alert_component_with_authorization(), _phase3f_reference_evidence(), Build an approved in-memory alert component with zero child SQL reads., _build_phase3f_analyst_component_with_authorization(), Run only the immutable approved scope and return an in-memory artifact., authorize_from_policy(), canonical_json_bytes(), compare_and_freeze_phase3f_scope() (+98 more)
 
 ### Community 269 - "sql_canon_field_family_preflight.py"
 Cohesion: 0.19
@@ -2218,17 +2236,17 @@ Nodes (29): as_dict(), as_list(), build_payload(), build_rows(), classify_earnin
 Cohesion: 0.15
 Nodes (29): add_state_formatting(), age_hours_at(), apply_text_conditional(), auto_width(), build_control_panel(), find_col(), format_age_hours(), freshness_status_from_age() (+21 more)
 
-### Community 278 - "workspace_index.py"
-Cohesion: 0.17
-Nodes (29): alias_hits(), build_index(), classify(), classify_artifact(), connect(), create_schema(), dedupe_rows(), Doc (+21 more)
+### Community 278 - "model_quality_scorecard.py"
+Cohesion: 0.11
+Nodes (52): append_history(), as_dict(), as_num(), build_scorecard(), decision_quality_track(), efficiency_loops(), finance_sql_canon_context(), implementation_quality_track() (+44 more)
 
 ### Community 279 - "agent_message_ledger_packet.py"
 Cohesion: 0.20
 Nodes (28): as_dict(), as_list(), bounded_code(), build_packet(), event_for_lane(), fingerprint(), hash_reference(), is_metadata_supplement_conflict() (+20 more)
 
-### Community 280 - "artifact_index.py"
-Cohesion: 0.11
-Nodes (52): _artifact_proof(), artifact_type_for(), build_phase3a_architecture_artifact(), build_phase3a_dry_run_promotion(), build_phase3b_writepath_preflight(), build_phase3c_live_preflight(), build_sql_markdown_reconciliation(), _canon_cache_file_states() (+44 more)
+### Community 280 - "Path"
+Cohesion: 0.17
+Nodes (29): artifact_type_for(), build_phase3b_writepath_preflight(), _canon_cache_file_states(), _canon_cache_sidecar_paths(), connect(), connect_canon_cache(), empty_index_counts(), execute_phase3c_cache_write() (+21 more)
 
 ### Community 281 - "test_concurrent_lane_manager.py"
 Cohesion: 0.21
@@ -2263,8 +2281,8 @@ Cohesion: 0.20
 Nodes (27): backup_sqlite_database(), Write a complete, self-contained SQLite backup of `source`. Uses the online…, advisory_missing_registry_item(), backup_db(), build(), connect_ro(), connect_rw(), load_json() (+19 more)
 
 ### Community 289 - "market_intelligence_event_router.py"
-Cohesion: 0.20
-Nodes (28): artifact_record(), as_of_date(), band_events(), build_packet(), dashboard_events(), deployment_events(), earnings_events(), enrich_event_source_context() (+20 more)
+Cohesion: 0.16
+Nodes (33): artifact_record(), as_of_date(), band_events(), build_packet(), dashboard_events(), deployment_events(), earnings_events(), enrich_event_source_context() (+25 more)
 
 ### Community 290 - "otel_runtime_metadata_probe.py"
 Cohesion: 0.21
@@ -2355,8 +2373,8 @@ Cohesion: 0.15
 Nodes (24): blockedSafetyCommands(), blockedStatus(), boolAt(), budgetKnown(), defaulted(), intAt(), objectArray(), objectAt() (+16 more)
 
 ### Community 312 - "pm_execution_loop.py"
-Cohesion: 0.19
-Nodes (25): command_is_review_only_safe(), _normalized_command(), Command safety helpers for review-only proof runners., active_register_groups(), as_dict(), as_list(), build_report(), command_parts_and_cwd() (+17 more)
+Cohesion: 0.18
+Nodes (26): command_is_review_only_safe(), _normalized_command(), parse_command(), Command safety helpers for review-only proof runners., active_register_groups(), as_dict(), as_list(), build_report() (+18 more)
 
 ### Community 313 - "long_work_job_runtime.py"
 Cohesion: 0.22
@@ -2371,8 +2389,8 @@ Cohesion: 0.20
 Nodes (26): artifact(), as_dict(), as_list(), build_payload(), build_summary(), can_skip_changed_only(), file_digest(), fresh_enough() (+18 more)
 
 ### Community 316 - "sql_canon_front_door_readiness_packet.py"
-Cohesion: 0.17
-Nodes (26): build(), connect_ro(), main(), p0_not_cut_over_backlog_paths(), payload(), Any, Connection, Path (+18 more)
+Cohesion: 0.30
+Nodes (16): as_dict(), build_front_door_packet_without_sidecar(), build_packet(), build_scope(), front_door_result(), main(), parse_args(), Any (+8 more)
 
 ### Community 317 - "tuesday_position_sizing_readiness.py"
 Cohesion: 0.18
@@ -2415,8 +2433,8 @@ Cohesion: 0.14
 Nodes (24): Finding, Options, Report, Summary, authorityViolations(), blockedStatus(), checkTime(), defaulted() (+16 more)
 
 ### Community 327 - "autonomous_routing_deployment_cards.py"
-Cohesion: 0.24
-Nodes (26): as_dict(), as_list(), authoritative_action(), authority_true_paths(), build_payload(), build_queue(), candidate_key(), classify_queue_row() (+18 more)
+Cohesion: 0.18
+Nodes (33): as_dict(), as_list(), authoritative_action(), authority_true_paths(), build_payload(), build_queue(), candidate_key(), classify_queue_row() (+25 more)
 
 ### Community 328 - "official_capture_period_registry.py"
 Cohesion: 0.20
@@ -2440,19 +2458,19 @@ Nodes (25): action_bucket(), build_market_view(), build_records(), build_report(
 
 ### Community 333 - "DynamicEntitlementScope"
 Cohesion: 0.09
-Nodes (65): DynamicEntitlementScope, One guarded SQL snapshot of the active Tier A+B attention scope.…, Serialize the immutable membership proof passed to child planners., _age_error(), build_current_alerts_coverage(), _cell(), _positive_number(), Any (+57 more)
+Nodes (64): DynamicEntitlementScope, One guarded SQL snapshot of the active Tier A+B attention scope.…, _age_error(), build_current_alerts_coverage(), _cell(), _positive_number(), Any, datetime (+56 more)
 
 ### Community 334 - "reference_band_note_sync.py"
 Cohesion: 0.19
 Nodes (25): build_change(), format_num(), load_json(), main(), missing_execution_sections(), parse_args(), proposal_complete(), Any (+17 more)
 
 ### Community 335 - "test_run_finance_refresh_chain.py"
-Cohesion: 0.23
-Nodes (26): resolved_manifest_steps(), current_run_state_for_data_quality_context(), data_quality_artifact(), expect(), main(), Path, test_chain_state_stage_paths(), test_chain_validator_analysis_surface() (+18 more)
+Cohesion: 0.21
+Nodes (27): resolved_manifest_steps(), resolved_steps(), current_run_state_for_data_quality_context(), data_quality_artifact(), expect(), main(), Path, test_chain_state_stage_paths() (+19 more)
 
 ### Community 336 - "semantic_memory_maintenance.py"
-Cohesion: 0.17
-Nodes (21): as_dict(), as_list(), has_volatile_source_drift(), inspect_agent_store(), main(), parse_args(), Any, Namespace (+13 more)
+Cohesion: 0.14
+Nodes (26): as_dict(), as_list(), _behavior_proof(), has_volatile_source_drift(), inspect_agent_store(), main(), parse_args(), Any (+18 more)
 
 ### Community 337 - "sql_canon_low_risk_phase3_activate.py"
 Cohesion: 0.27
@@ -2539,12 +2557,12 @@ Cohesion: 0.18
 Nodes (23): _check(), main(), test_universe.py — contract tests for the lane resolver. Phase 1 deliverable.…, Smoke check against the actual config file. Lanes should resolve cleanly., Critical contract: only execution-lane names can ever be action-card eligible., test_action_cards_only_execution(), test_entitlement_matrix(), test_lane_summary_partitions_universe() (+15 more)
 
 ### Community 358 - "otel_drift_critical_review_loop.py"
-Cohesion: 0.23
-Nodes (25): as_dict(), as_float(), as_int(), as_list(), build_payload(), classify_state(), direction(), drift_opportunity() (+17 more)
+Cohesion: 0.16
+Nodes (38): as_dict(), as_float(), as_int(), as_list(), build_payload(), classify_state(), direction(), drift_opportunity() (+30 more)
 
-### Community 359 - "_semantic_match_is_boundary"
+### Community 359 - "alerts_os_pivot_validator.py"
 Cohesion: 0.12
-Nodes (28): action_is_near_legacy_match(), action_is_negated(), action_relation_is_negated(), match_has_dated_historical_operation(), match_has_explicit_reactivation(), match_has_inactive_or_past_state(), match_has_local_historical_or_boundary(), match_has_negated_deactivation() (+20 more)
+Nodes (32): action_is_near_legacy_match(), action_is_negated(), action_relation_is_negated(), has_affirmative_reactivation(), has_present_activation(), match_has_dated_historical_operation(), match_has_explicit_reactivation(), match_has_inactive_or_past_state() (+24 more)
 
 ### Community 360 - "candidate_packet_schema.json"
 Cohesion: 0.09
@@ -2575,8 +2593,8 @@ Cohesion: 0.21
 Nodes (24): expect(), main(), overall_for(), as_dict(), as_list(), build_report(), card_generated_at(), family_name() (+16 more)
 
 ### Community 367 - "tier_c_band_status_refresh.py"
-Cohesion: 0.20
-Nodes (25): as_dict(), as_list(), atr_multiplier(), build(), build_technical(), classify_band(), classify_trend(), download_prices() (+17 more)
+Cohesion: 0.06
+Nodes (89): add_finding(), analyze_live_skill(), analyze_pair(), build_payload(), first_h1(), frontmatter_name(), heading_titles(), headings() (+81 more)
 
 ### Community 368 - "training_dataset_candidate_builder.py"
 Cohesion: 0.30
@@ -2662,9 +2680,9 @@ Nodes (23): expect(), main(), Path, source_paths(), test_packet_blocks_nonzero_a
 Cohesion: 0.20
 Nodes (23): expect(), main(), as_dict(), as_list(), build_ledger(), by_ticker(), collect_delta_tickers(), decision_for() (+15 more)
 
-### Community 391 - "tier_a_depth_repair_phase_executor.py"
-Cohesion: 0.29
-Nodes (24): as_dict(), as_list(), build_packets(), build_phase_a(), build_phase_b(), build_phase_c(), build_phase_d(), build_phase_e() (+16 more)
+### Community 391 - "test_phase3g_alert_coverage.py"
+Cohesion: 0.14
+Nodes (49): _assert_breach_denied_without_work(), _breached_scope(), cell(), clean_analyst_row(), clean_controller_row(), clean_lineage(), clean_quote_row(), controlled_helpers() (+41 more)
 
 ### Community 392 - "wf74_prompt_variant_ledger.py"
 Cohesion: 0.27
@@ -2690,9 +2708,9 @@ Nodes (24): active_tier_c_entries(), add_check(), add_score(), as_dict(), as_lis
 Cohesion: 0.22
 Nodes (24): active_entries(), add_check(), admission_counts(), as_dict(), as_list(), build_report(), connect_write(), int_or() (+16 more)
 
-### Community 398 - "alerts_os_pivot_validator.py"
+### Community 398 - "validate_state"
 Cohesion: 0.11
-Nodes (35): active_retired_workflow_skill_hits(), active_semantic_hits(), _call_name(), direct_callable_tombstone_findings(), has_affirmative_reactivation(), has_present_activation(), is_historical_or_boundary_label(), is_legacy_sql_consumer() (+27 more)
+Nodes (30): active_retired_workflow_skill_hits(), active_semantic_hits(), _call_name(), direct_callable_tombstone_findings(), is_historical_or_boundary_label(), is_negative_literal_owner(), iso_now(), literal_sequence_assignment() (+22 more)
 
 ### Community 399 - "wf85_opportunity_visibility_queue.py"
 Cohesion: 0.25
@@ -2799,8 +2817,8 @@ Cohesion: 0.26
 Nodes (23): as_dict(), as_list(), build_packet(), gate_rows_by_name(), load_optional_json(), main(), parse_args(), parse_utc() (+15 more)
 
 ### Community 425 - "full_intelligence_answer_parity.py"
-Cohesion: 0.20
-Nodes (34): as_dict(), assembler_section_raw(), best_tier(), build_rollup(), build_sql_canon_scope_snapshot(), build_ticker_packet(), card_path(), card_price_band_stop() (+26 more)
+Cohesion: 0.18
+Nodes (36): as_dict(), connect_ro(), Connection, assembler_section_raw(), best_tier(), build_rollup(), build_sql_canon_scope_snapshot(), build_ticker_packet() (+28 more)
 
 ### Community 426 - "backup_rollback_delete_prep_packet.py"
 Cohesion: 0.27
@@ -2826,9 +2844,9 @@ Nodes (22): apply_rows(), backup_db(), _blocked_payload(), build_payload(), buil
 Cohesion: 0.19
 Nodes (22): band_position(), build_anchor(), build_report(), clean_cell(), main(), parse_args(), parse_band(), parse_close_date() (+14 more)
 
-### Community 432 - "wf74_learning_loop_telegram_cron_runner.py"
-Cohesion: 0.38
-Nodes (11): build_runner(), load_dict(), main(), model_quality_artifact_clean(), parse_args(), Any, Namespace, Path (+3 more)
+### Community 432 - "guard_context"
+Cohesion: 0.18
+Nodes (20): guard_context(), Return a compact fail-closed guard payload for migrated consumers., build_packet(), main(), parse_args(), Any, Namespace, run_command() (+12 more)
 
 ### Community 433 - "finance_production_scope.py"
 Cohesion: 0.16
@@ -2842,9 +2860,9 @@ Nodes (20): age_hours(), as_dict(), as_list(), build_payload(), build_repair_pac
 Cohesion: 0.25
 Nodes (21): alert_trigger(), as_root(), authority_block(), build_link(), main(), parse_args(), Any, Namespace (+13 more)
 
-### Community 436 - "premarket_snapshot.py"
-Cohesion: 0.17
-Nodes (22): actionable_quote_audit(), build_actionable_table(), build_macro_block(), build_open_protocol(), build_overnight_earnings(), build_today_catalysts(), build_yesterday_changes(), fmt() (+14 more)
+### Community 436 - "task_scoped_model_role_contract.py"
+Cohesion: 0.11
+Nodes (35): build_task_role_fragment(), Build the bounded task-role fragment, or None when no contract is given.…, Return None when clean, else a critical finding for validate_project.…, _task_role_invalid(), validate_task_role_fragment(), approval_ref_is_allowed(), bind_scope(), child_claims_main_acceptance() (+27 more)
 
 ### Community 437 - "sql_500_ticker_expansion_design_gate.py"
 Cohesion: 0.25
@@ -2894,9 +2912,9 @@ Nodes (19): Finding, Options, Report, Summary, defaulted(), errorText(), fileExi
 Cohesion: 0.23
 Nodes (19): add_finding(), candidate_entries(), cross_concept_checks(), derived_computations(), frame_matches(), load_metrics_rows(), load_sec_ticker_map(), main() (+11 more)
 
-### Community 449 - "cron_retire_merge_candidates.py"
-Cohesion: 0.20
-Nodes (25): compact_json_error(), Some producers dump their whole result object into the error field. A truncated…, Operator-ledger error text, kept so escalations name the failure instead of…, scheduler_error_text(), as_dict(), as_list(), build_candidates(), build_payload() (+17 more)
+### Community 449 - "intraday_quote_snapshot_proof.py"
+Cohesion: 0.15
+Nodes (31): max_quote_http_attempts(), Maximum policy-permitted quote HTTP attempts for one intake. One initial…, authority_block(), authorize_policy_quote_get(), BlockedRun, classify_freshness(), credential_status(), fetch_snapshots() (+23 more)
 
 ### Community 450 - "Run"
 Cohesion: 0.16
@@ -2919,8 +2937,8 @@ Cohesion: 0.18
 Nodes (19): main(), copyFalseFlags(), FalseFlagKeys(), fieldFamilyPlan(), fileSHA256(), inspectDB(), noteState(), promotionPhases() (+11 more)
 
 ### Community 455 - "Run"
-Cohesion: 0.19
-Nodes (18): arrayLen(), blockedStatus(), checkAuthority(), checkValidation(), DefaultPackets(), forbiddenFlagName(), Report, Run() (+10 more)
+Cohesion: 0.14
+Nodes (20): main(), arrayLen(), blockedStatus(), checkAuthority(), checkValidation(), DefaultPackets(), forbiddenFlagName(), Report (+12 more)
 
 ### Community 456 - "official_earnings_bridge.py"
 Cohesion: 0.21
@@ -2971,16 +2989,16 @@ Cohesion: 0.26
 Nodes (20): base_handoff(), expect(), test_missing_price_rows_still_block(), test_unavailable_price_rows_are_warning_only(), artifact_probe(), as_dict(), as_list(), build_handoff() (+12 more)
 
 ### Community 468 - "veritas_question_router.py"
-Cohesion: 0.13
-Nodes (39): UniverseMembershipRecord, assert_complete_scope(), baseline_snapshot(), expected_memberships(), membership(), Resolve a snapshot while making any attempted SQLite path fail loudly., Build one hand-authored guarded-SQL-shaped record for this test only., Return a simulated effective tier with its two witnesses synchronized. (+31 more)
+Cohesion: 0.22
+Nodes (22): artifact_record(), build_route(), classify(), controller_observation_ok(), detect_family(), extract_ticker(), extract_workflow_id(), final_answer_allowed() (+14 more)
 
 ### Community 469 - "cron_main_session_usage_metadata.py"
 Cohesion: 0.20
 Nodes (28): extract_cron_main_session_usage(), job_rollup(), load_cron_main_session_usage(), main(), _model_path_from_system_prompt_report(), parse_cron_run_session_key(), _payload(), Any (+20 more)
 
-### Community 470 - "wf88_disabled_cron_delete_microbatch_apply.py"
-Cohesion: 0.25
-Nodes (28): approval_rows(), as_dict(), as_list(), build_recovered_applied_report(), build_report(), contract_retirement_rows(), deleted_inventory_rows(), file_sha256() (+20 more)
+### Community 470 - "Path"
+Cohesion: 0.28
+Nodes (29): action_queue_packet(), authority_boundary(), canonical_data_plane_overlay(), connect_ro(), live_pilot_packet(), main(), packet_header(), paper_position_authority_boundary() (+21 more)
 
 ### Community 471 - "wf78_tier_a_reference_band_proposals.py"
 Cohesion: 0.27
@@ -2998,13 +3016,13 @@ Nodes (21): artifact_preserves_paper_reconciliation_boundary(), artifact_record(
 Cohesion: 0.34
 Nodes (21): age_minutes(), approval_checks(), as_dict(), as_list(), band_stop_checks(), build_report(), check_boundary_false(), kill_switch_check() (+13 more)
 
-### Community 476 - "as_dict"
+### Community 476 - "wf88_cron_retired_job_inventory.py"
 Cohesion: 0.29
-Nodes (21): as_dict(), as_list(), Any, build_packet(), is_disabled_job(), job_identity(), live_job_key(), live_job_lookup() (+13 more)
+Nodes (19): as_list(), build_packet(), is_disabled_job(), job_identity(), live_job_key(), live_job_lookup(), load_optional_json(), main() (+11 more)
 
 ### Community 477 - "wf88_typed_script_reference_graph.py"
-Cohesion: 0.23
-Nodes (21): wf88_reference_need(), apply_retained_target_reference_policy(), build_packet(), classify_reference(), is_historical_other_text_reference(), iter_text_files(), line_match_profile(), load_targets() (+13 more)
+Cohesion: 0.20
+Nodes (23): test_reference_category_shared_for_inventory_and_typed_graph(), wf88_reference_category(), wf88_reference_need(), apply_retained_target_reference_policy(), build_packet(), classify_reference(), is_historical_other_text_reference(), iter_text_files() (+15 more)
 
 ### Community 478 - "wf88_cron_disabled_job_reference_review.py"
 Cohesion: 0.23
@@ -3031,8 +3049,8 @@ Cohesion: 0.38
 Nodes (20): as_dict(), as_list(), build_reader(), compact_values(), esc(), main(), Any, Path (+12 more)
 
 ### Community 484 - "utc_now"
-Cohesion: 0.20
-Nodes (21): build_cross_db_stale_check(), build_phase3d_consumer_parity(), build_phase3e_dashboard_proof_pilot(), build_phase3f_executable_rollback_preflight(), build_phase4a_activation(), build_sql_consumer_authority_guard(), init_canon_cache_schema(), _latest_phase3c_rollback_export() (+13 more)
+Cohesion: 0.25
+Nodes (17): build_cross_db_stale_check(), build_phase3d_consumer_parity(), build_phase3e_dashboard_proof_pilot(), build_phase3f_executable_rollback_preflight(), build_phase4a_activation(), build_sql_consumer_authority_guard(), _latest_phase3c_rollback_export(), query_phase3e_dashboard_proof_pilot() (+9 more)
 
 ### Community 485 - "pythonsqllint/lint.go"
 Cohesion: 0.16
@@ -3074,10 +3092,6 @@ Nodes (20): as_dict(), as_list(), build(), collect_targets(), existing_post_clos
 Cohesion: 0.22
 Nodes (14): build_contract(), _covered_fixture_prompt_ids(), _high_priority_gaps(), _load_packet(), main(), _p0_work_items(), Any, Path (+6 more)
 
-### Community 495 - "question_route_catalog.py"
-Cohesion: 0.14
-Nodes (10): build_catalog(), _has_forbidden_broad_first_hop(), main(), _norm(), Any, render_markdown(), route_card(), select_route() (+2 more)
-
 ### Community 496 - "response_recommendation_contract_lint.py"
 Cohesion: 0.22
 Nodes (19): build_payload(), has_action_labels(), has_do_dont(), has_improvement(), has_ranked_recommendations(), has_recommendation_heading(), line_lower(), lint_text() (+11 more)
@@ -3086,9 +3100,9 @@ Nodes (19): build_payload(), has_action_labels(), has_do_dont(), has_improvement
 Cohesion: 0.29
 Nodes (19): artifact_freshness(), claim_freshness(), export_guard(), freshness_record(), iso_utc(), leak_findings(), parse_utc(), public_source_url() (+11 more)
 
-### Community 498 - "quote_evaluation_policy"
-Cohesion: 0.14
-Nodes (11): classify_signal(), confidence_label(), quote_evaluation_policy(), quote_proof_is_clean(), quote_rows_by_ticker(), Validate quote-proof status, authority, conflicts, and session identity., Separate calendar-current evidence from alert-fire eligibility. A last-…, AlertLevelFreshnessControllerTests (+3 more)
+### Community 498 - "alert_level_freshness_controller.py"
+Cohesion: 0.08
+Nodes (34): age_hours(), build_payload(), classify_signal(), confidence_label(), display_age(), dynamic_entitlement_preview(), finite_age_within(), iso_utc() (+26 more)
 
 ### Community 499 - "source_freshness_classifier.py"
 Cohesion: 0.26
@@ -3154,9 +3168,9 @@ Nodes (16): atomic_write_text(), build_inventory(), load_json(), main(), Any, Pa
 Cohesion: 0.30
 Nodes (20): anomaly_halts(), as_dict(), as_list(), build_report(), fill_drift(), fnum(), latest_quote_map(), load_dict() (+12 more)
 
-### Community 516 - "Any"
-Cohesion: 0.13
-Nodes (34): artifact_shell(), build_artifact(), evidence_digest(), fetch_ticker(), finite_number(), int_or_none(), json_safe(), latest_recommendation_row() (+26 more)
+### Community 516 - "analyst_consensus_refresh.py"
+Cohesion: 0.09
+Nodes (44): artifact_shell(), build_artifact(), dynamic_entitlement_preview(), enforce_explicit_ticker_boundary(), evidence_digest(), fetch_ticker(), finite_number(), int_or_none() (+36 more)
 
 ### Community 517 - "archive_suggester.py"
 Cohesion: 0.24
@@ -3179,8 +3193,8 @@ Cohesion: 0.29
 Nodes (18): action_bucket(), as_dict(), as_list(), build_router_payload(), build_wf85_packet(), classify_actions(), load_dict(), load_wf85_contract_rows() (+10 more)
 
 ### Community 522 - "current_opportunity_approval_brief.py"
-Cohesion: 0.36
-Nodes (15): build_brief(), _compact_alert_rows(), _cron_attention(), _load_json(), _long_work_items(), main(), _owner_items(), Any (+7 more)
+Cohesion: 0.17
+Nodes (18): build_brief(), _compact_alert_rows(), _cron_attention(), _load_json(), _long_work_items(), main(), _owner_items(), Any (+10 more)
 
 ### Community 523 - "finance_human_notes_thinning_candidates.py"
 Cohesion: 0.33
@@ -3278,9 +3292,9 @@ Nodes (19): alert_analytics(), build_report(), find_restricted_text(), infer_sta
 Cohesion: 0.34
 Nodes (19): add_check(), as_dict(), as_list(), authority_findings(), build(), count_where(), load_dict(), main() (+11 more)
 
-### Community 547 - "wf78_owner_lineage_discovery.py"
-Cohesion: 0.32
-Nodes (19): as_dict(), as_list(), build(), card_lineage(), first_text(), generic_lineage(), lineage_row(), load_dict() (+11 more)
+### Community 547 - "interactive_training_catalog_builder.py"
+Cohesion: 0.20
+Nodes (27): build(), build_catalog(), esc(), href_from_catalog(), load_json(), load_recordings(), load_walkthroughs(), main() (+19 more)
 
 ### Community 548 - "wf78_100_ticker_candidate_scope_packet.py"
 Cohesion: 0.39
@@ -3308,7 +3322,7 @@ Nodes (17): as_dict(), build_payload(), load(), main(), parse_args(), Any, Names
 
 ### Community 554 - "cron_efficiency_review_runner.py"
 Cohesion: 0.17
-Nodes (34): as_dict(), as_list(), build_payload(), build_review_payload(), detail_count_mismatches(), main(), parse_args(), parse_utc() (+26 more)
+Nodes (35): as_dict(), as_list(), build_payload(), build_prompt_book_packets(), build_review_payload(), detail_count_mismatches(), main(), parse_args() (+27 more)
 
 ### Community 555 - "cron_reduction_inventory.py"
 Cohesion: 0.30
@@ -3331,8 +3345,8 @@ Cohesion: 0.30
 Nodes (18): artifact_status(), authority_violations(), build_payload(), classify_candidate(), load_pm_context(), main(), parse_args(), Any (+10 more)
 
 ### Community 561 - "canonical_finance_data_plane_phase6_10.py"
-Cohesion: 0.27
-Nodes (23): as_list(), durable_registry_findings(), load_json(), add_check(), build_packet(), consumer_expansion_checks(), drillback_checks(), full_answer_parity_checks() (+15 more)
+Cohesion: 0.29
+Nodes (20): load_json(), add_check(), build_packet(), consumer_expansion_checks(), drillback_checks(), full_answer_parity_checks(), main(), parity_checks() (+12 more)
 
 ### Community 562 - "pm_post_repair_quiescence_refresh.py"
 Cohesion: 0.24
@@ -3355,8 +3369,8 @@ Cohesion: 0.25
 Nodes (18): as_dict(), as_list(), bad_findings(), build_report(), classify(), group_findings(), has_ok(), load_artifact() (+10 more)
 
 ### Community 567 - "retail_saas_fixture_demo.py"
-Cohesion: 0.28
-Nodes (18): as_list(), build_payload(), build_watchlist_item(), compact_evidence_gaps(), customer_export_document(), freshness_from_card(), load_card(), main() (+10 more)
+Cohesion: 0.25
+Nodes (20): as_list(), build_payload(), build_watchlist_item(), compact_evidence_gaps(), customer_export_document(), freshness_from_card(), load_card(), main() (+12 more)
 
 ### Community 568 - "wf72_entry_stop_reference_helper.py"
 Cohesion: 0.24
@@ -3531,8 +3545,8 @@ Cohesion: 0.34
 Nodes (17): as_dict(), as_list(), build(), build_rows(), lineage_available(), load_dict(), main(), parse_args() (+9 more)
 
 ### Community 613 - "wf88_script_cleanup_inventory.py"
-Cohesion: 0.15
-Nodes (31): test_file_sha256_and_input_record(), test_reference_category_shared_for_inventory_and_typed_graph(), test_sqlite_sidecar_helpers_find_orphans(), file_sha256(), input_record(), is_sqlite_sidecar(), iter_orphan_sqlite_sidecars(), iter_sqlite_db_files() (+23 more)
+Cohesion: 0.26
+Nodes (17): utc_now(), build_packet(), classify_reference(), cleanup_category(), input_record(), load_optional_json(), main(), parse_args() (+9 more)
 
 ### Community 614 - "test_entry_band_automation.py"
 Cohesion: 0.27
@@ -3710,6 +3724,10 @@ Nodes (15): add_finding(), build_report(), exact_material_files(), load_json(), 
 Cohesion: 0.22
 Nodes (15): age_hours(), build_macro_context(), days_from_today(), fmt_age(), generic_config_for(), infer_phase(), infer_stage(), load_json() (+7 more)
 
+### Community 658 - "prompt_book_eval_fixtures.py"
+Cohesion: 0.23
+Nodes (9): build_fixture_packet(), _entries_by_id(), _fixture_for(), main(), Any, Path, render_markdown(), validate_fixture_packet() (+1 more)
+
 ### Community 659 - "python_go_sql_helper_demotion_queue.py"
 Cohesion: 0.29
 Nodes (15): add(), as_dict(), as_list(), build_next_queue(), build_report(), candidate_by_path(), demotion_requirements(), gate_clean_or_warning() (+7 more)
@@ -3862,13 +3880,17 @@ Nodes (14): artifact(), as_dict(), as_list(), build_payload(), build_summary(), 
 Cohesion: 0.42
 Nodes (14): artifact_state(), artifact_status(), build_ledger(), build_plan(), build_schema_packet(), db_probe(), load_json(), main() (+6 more)
 
-### Community 698 - "skill_workshop_body_guard.py"
-Cohesion: 0.26
-Nodes (21): add_finding(), analyze_live_skill(), analyze_pair(), build_payload(), first_h1(), frontmatter_name(), heading_titles(), headings() (+13 more)
+### Community 698 - "wf78_tier_b_research_packet.py"
+Cohesion: 0.24
+Nodes (27): add_check(), as_dict(), as_list(), build_packet(), build_report(), card_path(), connect_write(), json_text() (+19 more)
 
-### Community 699 - "disciplined_band_gate.py"
-Cohesion: 0.20
-Nodes (20): build_staleness_alert_payload(), _connect_ro(), extension_assessment(), has_disciplined_band(), load_disciplined_bands(), _parse_date(), proposal_index(), Any (+12 more)
+### Community 699 - "test_disciplined_band_gate.py"
+Cohesion: 0.15
+Nodes (32): build_staleness_alert_payload(), _connect_ro(), extension_assessment(), has_disciplined_band(), load_disciplined_bands(), _parse_date(), Any, Connection (+24 more)
+
+### Community 700 - "DynamicExecutionTests"
+Cohesion: 0.07
+Nodes (12): dynamic_entitlement_payload_fingerprint(), Validate and fingerprint child scope payload without touching SQL., AnalystDynamicEntitlementScopeTests, FakeDynamicClient, FakeDynamicScope, alert(), DynamicExecutionTests, AlertsRecommendationsChainTests (+4 more)
 
 ### Community 701 - "test_run_summary_refresh.py"
 Cohesion: 0.38
@@ -3895,8 +3917,8 @@ Cohesion: 0.34
 Nodes (14): build_spine(), capture_files(), main(), normalize_field(), normalize_source_matrix(), Any, Path, read_json() (+6 more)
 
 ### Community 708 - "wf74_cron_duplication_audit.py"
-Cohesion: 0.31
-Nodes (14): actionable_hits(), as_dict(), as_list(), build_payload(), job_text(), load_cron_jobs(), main(), Any (+6 more)
+Cohesion: 0.20
+Nodes (24): main(), owner_command_job(), test_duplicate_component_command_outside_owner_is_flagged(), test_full_path_command_argv_is_owner_runner(), test_name_only_owner_job_without_argv_is_not_ok(), test_reminder_do_not_execute_is_not_a_collector(), actionable_hits(), as_dict() (+16 more)
 
 ### Community 709 - "wf75_pm_weekly_update.py"
 Cohesion: 0.33
@@ -3926,9 +3948,9 @@ Nodes (14): as_dict(), as_list(), build(), build_rows(), load_dict(), main(), pa
 Cohesion: 0.33
 Nodes (14): as_dict(), as_list(), build_report(), load_dict(), main(), owner_posture(), parse_args(), Any (+6 more)
 
-### Community 716 - "wf88_deletion_approval_prep_packet.py"
-Cohesion: 0.30
-Nodes (14): utc_now(), approval_surface(), build_packet(), cron_approval_phrase(), deletion_contract_summary(), load_optional_json(), main(), parse_args() (+6 more)
+### Community 716 - "as_dict"
+Cohesion: 0.31
+Nodes (15): as_dict(), Any, approval_surface(), build_packet(), cron_approval_phrase(), deletion_contract_summary(), load_optional_json(), main() (+7 more)
 
 ### Community 717 - "workflow_hygiene_check.py"
 Cohesion: 0.29
@@ -3951,8 +3973,8 @@ Cohesion: 0.33
 Nodes (13): Cursor, add_check(), as_int(), build_report(), connect_readonly(), finish_report(), main(), Any (+5 more)
 
 ### Community 722 - "wiki_bootstrap_validator.py"
-Cohesion: 0.23
-Nodes (21): execution_efficiency_semantic_contract(), Return the router-owned wiki/startup semantic anchors., age_hours(), as_dict(), as_list(), build_payload(), main(), packet_state() (+13 more)
+Cohesion: 0.26
+Nodes (19): age_hours(), as_dict(), as_list(), build_payload(), main(), packet_state(), parse_utc(), Any (+11 more)
 
 ### Community 723 - "dashboard_v2_reader_migration.py"
 Cohesion: 0.43
@@ -3993,10 +4015,6 @@ Nodes (13): add(), as_dict(), as_list(), build_report(), load(), main(), parse_a
 ### Community 732 - "wf78_clean_tier_roster.py"
 Cohesion: 0.26
 Nodes (21): add_check(), approved_label_set(), as_dict(), as_list(), build_report(), clean_row(), label_rows(), load_dict() (+13 more)
-
-### Community 733 - "question_route_usage_ledger.py"
-Cohesion: 0.27
-Nodes (9): _baseline_row(), build_ledger(), _event_row(), main(), Any, render_markdown(), _route_by_id(), validate_ledger() (+1 more)
 
 ### Community 734 - "reference_levels_expected_parity_validator.py"
 Cohesion: 0.34
@@ -4091,8 +4109,8 @@ Cohesion: 0.27
 Nodes (12): main(), parse_args(), Any, Namespace, Path, Return an existing directory contained by ROOT, or fail before execution., rel(), run_command() (+4 more)
 
 ### Community 757 - "generate_dashboard.py"
-Cohesion: 0.11
-Nodes (36): as_dict(), as_list(), build_report(), main(), Any, Path, Acceptance gate for the compact WF79 Command Center shell., read_json() (+28 more)
+Cohesion: 0.14
+Nodes (27): load_sources(), Path, write_json(), compute_delta(), as_dict(), as_list(), badge(), esc() (+19 more)
 
 ### Community 758 - "db_lifecycle_archive_apply.py"
 Cohesion: 0.40
@@ -4118,9 +4136,9 @@ Nodes (12): quote_display_context(), Return the public display posture for one q
 Cohesion: 0.38
 Nodes (12): as_dict(), as_list(), build_lane_value_record(), build_register(), main(), parse_args(), Any, Namespace (+4 more)
 
-### Community 764 - "test_otel_drift_critical_review_loop.py"
-Cohesion: 0.33
-Nodes (15): build(), main(), queue(), summary(), test_authority_validation_blocks_widened_flags(), test_critical_drift_for_errors(), test_markdown_contains_thresholds_and_guardrails(), test_missing_evidence_blocks() (+7 more)
+### Community 764 - "AgentBootstrapGeneratorTests"
+Cohesion: 0.15
+Nodes (5): agent_stub(), AgentBootstrapGeneratorTests, latest_finance_template_packet(), sandbox_exec_pilot_agent(), scoped_worktree_agent()
 
 ### Community 765 - "python_go_finance_human_notes_sql_check_parity.py"
 Cohesion: 0.35
@@ -4246,9 +4264,9 @@ Nodes (10): build_report(), load_packets(), main(), patch_categories(), proposed
 Cohesion: 0.36
 Nodes (11): build_report(), classify_sidecar(), consumers_for(), iter_scan_files(), main(), Any, Path, Prove render-default compatibility for presentation sidecar thinning. The proof… (+3 more)
 
-### Community 799 - "test_disciplined_band_gate.py"
-Cohesion: 0.36
-Nodes (14): _candidate(), _clean_system(), expect(), main(), test_extension_above_band_within_threshold(), test_extension_auto_drop_when_extended(), test_extension_no_band_never_drops(), test_extension_no_price() (+6 more)
+### Community 799 - "wf68_telegram_notifier.py"
+Cohesion: 0.18
+Nodes (25): fresh_stamp(), main(), Path, runtime(), write(), artifact_age_minutes(), authority_clean(), build_delivery_test_message() (+17 more)
 
 ### Community 800 - "sql_canon_shadow_backfill_validator.py"
 Cohesion: 0.42
@@ -4343,8 +4361,8 @@ Cohesion: 0.42
 Nodes (10): build_result(), load_json(), main(), Any, Path, rel(), replacement_plan(), run_post_apply_validation() (+2 more)
 
 ### Community 825 - "main"
-Cohesion: 0.27
-Nodes (11): abs_path(), build_lane_closure_durability_map(), main(), parse_args(), Namespace, Path, Map lane_id -> validated closure_durability from the concurrent-lane register.…, read_json() (+3 more)
+Cohesion: 0.36
+Nodes (9): abs_path(), main(), parse_args(), Namespace, Path, read_json(), read_jsonl(), rel() (+1 more)
 
 ### Community 826 - "missing_gates"
 Cohesion: 0.18
@@ -4412,7 +4430,7 @@ Nodes (13): as_dict(), idle_payload(), load_json(), main(), manifest_payload(), 
 
 ### Community 842 - "is_retired_alerts_os_consumer"
 Cohesion: 0.21
-Nodes (6): is_retired_alerts_os_consumer(), is_unaudited_legacy_signal(), Flag suspicious new paths for review without retiring them implicitly., Return true only for an explicitly audited legacy consumer., _is_legacy_consumer(), AlertsOsSqlCanonMigrationTests
+Nodes (6): is_legacy_sql_consumer(), is_retired_alerts_os_consumer(), is_unaudited_legacy_signal(), Flag suspicious new paths for review without retiring them implicitly., Return true only for an explicitly audited legacy consumer., AlertsOsSqlCanonMigrationTests
 
 ### Community 843 - "workspace_boundary_check.py"
 Cohesion: 0.36
@@ -4438,9 +4456,9 @@ Nodes (9): macroCard(), renderBreadthCard(), renderCreditCard(), renderFomcCard(
 Cohesion: 0.42
 Nodes (9): as_dict(), as_list(), build_report(), main(), Any, Path, Acceptance gate for the compact WF79 dashboard presentation route., read_json() (+1 more)
 
-### Community 849 - "test_daily_review_objects.py"
-Cohesion: 0.33
-Nodes (13): expect(), iso_now(), iso_old(), main(), sector_board_doc(), sector_correlation_doc(), test_in_band_conditional_review_not_labeled_wait_for_band(), test_live_artifact_boundaries() (+5 more)
+### Community 849 - "agent_bootstrap_linter.py"
+Cohesion: 0.19
+Nodes (24): fleet_display_for(), fleet_primary_for(), fleet_recovery_for(), select_agents(), as_dict(), binding_count(), extract_json(), lint_agent() (+16 more)
 
 ### Community 850 - "CollectorHandler"
 Cohesion: 0.33
@@ -4482,9 +4500,9 @@ Nodes (9): configure(), load_module(), main(), Path, seed_routed_workspace(), te
 Cohesion: 0.64
 Nodes (9): load_module(), Path, seed_workspace(), test_apply_deletes_only_rollback_rows(), test_apply_is_idempotent_when_target_already_missing(), test_apply_retries_transient_tree_delete_failure(), test_apply_uses_manual_fallback_when_tree_delete_keeps_failing(), test_dry_run_validates_without_deleting() (+1 more)
 
-### Community 860 - "CurrentOpportunityApprovalBriefTests"
-Cohesion: 0.24
-Nodes (3): CurrentOpportunityApprovalBriefTests, Path, _write()
+### Community 860 - "interactive_training_scorm_smoke_validator.py"
+Cohesion: 0.22
+Nodes (24): Element, build(), build_config(), dependency_status(), discover_modules(), find_edge(), inspect_static_module(), load_json() (+16 more)
 
 ### Community 861 - "test_cyber_security_daily_audit_cron_runner.py"
 Cohesion: 0.47
@@ -4558,9 +4576,9 @@ Nodes (8): entry_policy_review_candidate(), expect(), main(), test_below_stop_st
 Cohesion: 0.16
 Nodes (18): as_dict(), as_list(), build_message(), build_payload(), compact(), controller_age_hours(), controller_semantic_errors(), deliver() (+10 more)
 
-### Community 882 - "canonical_finance_data_plane_retirement_readiness.py"
-Cohesion: 0.47
-Nodes (8): build_packet(), main(), Any, Path, reference_count(), rel(), text_files(), utc_now()
+### Community 882 - "test_ticker_intelligence_card_analyst_lookup.py"
+Cohesion: 0.11
+Nodes (18): cron_tickers(), EmptyTicker, FakeRecommendations, FakeTicker, projection(), test_analyst_direction_conflict_cannot_change_non_analyst_card_behavior(), test_analyst_lookup_accepts_only_exact_ticker_projection(), test_analyst_lookup_rejects_generic_queue_and_legacy_rows() (+10 more)
 
 ### Community 883 - "cron_authority_matrix_validator.py"
 Cohesion: 0.47
@@ -4622,9 +4640,9 @@ Nodes (8): create_sqlite(), load_module(), Path, test_manifest_surfaces_orphan_s
 Cohesion: 0.42
 Nodes (8): load_module(), test_aggregate_payload_partitions_post_residue_closeout_warnings(), test_aggregate_payload_surfaces_inner_warning(), test_build_commands_binary_first_and_no_shell_tokens(), test_bundle_profile_excludes_only_bundle_dependent_closeout_checks(), test_full_profile_uses_go_default_packet_bundle(), test_missing_binary_is_fail_closed(), test_write_json_creates_aggregate_payload()
 
-### Community 899 - "test_heartbeat_priority_handoff.py"
-Cohesion: 0.47
-Nodes (8): configure(), load_module(), main(), priority_boundary(), Path, test_fixed_bridge_is_heartbeat_dry_run_only(), test_receipt_rejects_execution_and_nonfixed_cli_flags(), write_json()
+### Community 899 - "AssertionError"
+Cohesion: 0.05
+Nodes (77): AssertionError, _acquire(), assemble(), _binding(), _BoundCapture, _collect(), Path, RuntimeError (+69 more)
 
 ### Community 900 - "test_long_work_job_runtime.py"
 Cohesion: 0.64
@@ -4706,9 +4724,9 @@ Nodes (10): make_db(), Path, read_row(), run_payload(), test_apply_updates_only_
 Cohesion: 0.50
 Nodes (7): build_payload(), load_json(), main(), Any, Path, utc_now(), write_json()
 
-### Community 921 - "AlertsRecommendationsChainTests"
-Cohesion: 0.20
-Nodes (3): AlertsRecommendationsChainTests, FakeDynamicClient, FakeDynamicScope
+### Community 921 - "test_agent_fleet_policy.py"
+Cohesion: 0.16
+Nodes (20): fleet_automatic_for(), automatic_fallbacks_for(), is_denied_persistent_model(), Any, Live specialist automatic fallbacks. Always [] by approved design., Named recovery candidates with explicit unmet requirements. Returns options…, Structural map-semantics check only. Never claims live readiness.…, recovery_options() (+12 more)
 
 ### Community 922 - "test_finance_cache_cleanup_readiness.py"
 Cohesion: 0.61
@@ -4804,7 +4822,7 @@ Nodes (11): base_payload(), make_paths(), Path, test_retired_layered_artifacts_c
 
 ### Community 949 - "official_ir_capture_common.py"
 Cohesion: 0.13
-Nodes (40): build_capture(), build_captures(), claim(), excerpt_around(), first_excerpt(), main(), Any, build_capture() (+32 more)
+Nodes (37): build_capture(), build_captures(), claim(), excerpt_around(), first_excerpt(), main(), Any, build_capture() (+29 more)
 
 ### Community 950 - "sector_cap_check"
 Cohesion: 0.29
@@ -4878,9 +4896,9 @@ Nodes (5): find_record(), load_json(), main(), Any, Path
 Cohesion: 0.60
 Nodes (5): build_report(), main(), Any, run_cron_list(), utc_now()
 
-### Community 973 - "FakeDynamicClient"
-Cohesion: 0.25
-Nodes (3): AnalystDynamicEntitlementScopeTests, FakeDynamicClient, FakeDynamicScope
+### Community 973 - "_FakePipeChild"
+Cohesion: 0.10
+Nodes (12): _drain_close_reap(), _FakePipeChild, _FakePipeStream, HolderCleanupError, HolderPipeCleanupFailureTests, HolderPipeCleanupRegressionTests, Fail-closed cleanup failure for a PIPE-spawned test child. Raised when the…, Bounded fail-closed drain/close/reap for a PIPE-spawned child (test-only).… (+4 more)
 
 ### Community 974 - "build_report"
 Cohesion: 0.67
@@ -4954,9 +4972,9 @@ Nodes (15): apply_migration(), backup_database(), connect(), file_hash(), inspec
 Cohesion: 0.70
 Nodes (4): main(), Path, remove_db_family(), utc_now()
 
-### Community 994 - "test_authority_matrix.py"
-Cohesion: 0.70
-Nodes (4): assert_error(), assert_ok(), load_module(), main()
+### Community 994 - "wf78_tier_funnel_promotion_gate.py"
+Cohesion: 0.24
+Nodes (24): add_check(), as_dict(), as_list(), build_report(), default_c_to_b_candidates(), evaluate_transition(), is_competitive(), load_dict() (+16 more)
 
 ### Community 995 - "test_band_review_auto_apply_gate.py"
 Cohesion: 0.80
@@ -4994,9 +5012,9 @@ Nodes (3): file_state(), Path, test_every_legacy_cli_shape_is_the_same_zero_writ
 Cohesion: 0.60
 Nodes (4): expect(), main(), CompletedProcess, run_cmd()
 
-### Community 1004 - "classify_job"
-Cohesion: 0.24
-Nodes (10): age_hours_from_dt(), artifacts_prove_post_failure_recovery(), classify_job(), parse_utc(), datetime, Require every required artifact to be newer than the failed scheduler run., test_newer_clean_artifact_deescalates_failed_scheduler_until_natural_canary(), test_newer_warning_artifact_keeps_review_signal_without_scheduler_escalation() (+2 more)
+### Community 1004 - "phase3g_coherent_reference_read.py"
+Cohesion: 0.15
+Nodes (15): _BorrowedAccess, _canonical(), CoherentReadError, Any, Connection, Path, RuntimeError, Internal SQL core only; caller must contain blocked file I/O separately. The… (+7 more)
 
 ### Community 1005 - "test_preview_classifies_stale_unreferenced_without_cleanup_authority"
 Cohesion: 0.70
@@ -5017,6 +5035,10 @@ Nodes (3): renderCountRow(), renderDecisionQueue(), renderQueueItem()
 ### Community 1011 - "equity_pdf_report.py"
 Cohesion: 0.83
 Nodes (3): build_pdf(), load_json(), main()
+
+### Community 1012 - "SemanticMemoryMaintenanceTests"
+Cohesion: 0.13
+Nodes (4): Path, Stage a 2026.9.2-style split-chunk runtime: upstream markers in the tools…, SemanticMemoryMaintenanceTests, stale_alert_validation()
 
 ### Community 1013 - "full_portfolio_view_schema.json"
 Cohesion: 0.50
@@ -5074,9 +5096,17 @@ Nodes (3): schema_version, const, type
 Cohesion: 0.67
 Nodes (3): source_surface, minLength, type
 
-### Community 1073 - "guard_context"
-Cohesion: 0.33
-Nodes (9): guard_context(), Return a compact fail-closed guard payload for migrated consumers., build_packet(), main(), parse_args(), Any, Namespace, run_command() (+1 more)
+### Community 1046 - "reference_levels_band_proposals_source_migration.py"
+Cohesion: 0.21
+Nodes (22): as_list(), band_values(), build_packet(), connect_ro(), json_text(), load_json(), main(), proposal_by_ticker() (+14 more)
+
+### Community 1051 - "test_ticker_intelligence_card_sql_canon.py"
+Cohesion: 0.13
+Nodes (21): ReferenceLevelRecord, Path, reference_record(), test_default_and_coverage_selection_are_sql_resolved(), test_live_nvda_card_preserves_contract_and_no_drift(), test_low_confidence_reference_band_requires_reference_refresh(), test_post_close_overlay_preserves_stale_reference_band_with_current_technicals(), test_provenance_gap_and_absent_reference_both_fail_closed() (+13 more)
+
+### Community 1073 - "test_phase3g_coherent_reference_read.py"
+Cohesion: 0.13
+Nodes (18): db(), _insert(), fixture, parametrize, Hermetic SQL-core tests. Synthetic guard positive path is NOT full guard QA.…, Reproduce the design gap without changing or invoking production state., _synthetic_guard(), _table() (+10 more)
 
 ### Community 1074 - "boot_surface_size_guard.py"
 Cohesion: 0.39
@@ -5087,8 +5117,8 @@ Cohesion: 0.58
 Nodes (8): base_payload(), make_paths(), Path, test_authority_drift_blocks_packet(), test_command_center_quiets_expected_collecting_data_state(), test_daylight_blocked_probe_requires_handoff(), write_json(), write_minimal_sources()
 
 ### Community 1076 - "python_go_sql_consumer_authority_demotion_dry_run.py"
-Cohesion: 0.29
-Nodes (12): add(), approved_key_count(), as_dict(), build_report(), main(), parse_args(), Any, Namespace (+4 more)
+Cohesion: 0.27
+Nodes (13): live_case(), add(), approved_key_count(), as_dict(), build_report(), main(), parse_args(), Any (+5 more)
 
 ### Community 1077 - "capital_deployment_recommendation_report.py"
 Cohesion: 0.38
@@ -5098,9 +5128,9 @@ Nodes (12): load_bundle(), main(), parse_args(), Any, Namespace, Path, rel(), re
 Cohesion: 0.27
 Nodes (11): authority_validation(), forbidden_true_flags(), Any, Shared authority-boundary checks for review-only artifacts., add_check(), as_dict(), as_list(), ok_status() (+3 more)
 
-### Community 1079 - "test_autonomous_routing_deployment_cards.py"
-Cohesion: 0.61
-Nodes (7): base_payload(), make_paths(), Path, test_clean_review_card_is_still_blocked_by_maturity(), test_import_gate_or_authority_drift_blocks_packet(), write_json(), write_sources()
+### Community 1079 - "build_sql_markdown_reconciliation"
+Cohesion: 0.15
+Nodes (21): build_phase3a_architecture_artifact(), build_phase3a_dry_run_promotion(), build_phase3c_live_preflight(), build_sql_markdown_reconciliation(), _extract_earnings_markdown_value(), _extract_execution_table_rows(), _extract_markdown_section(), _normalize_deployment_state() (+13 more)
 
 ### Community 1080 - "embedding_keepalive_guard.py"
 Cohesion: 0.36
@@ -5110,9 +5140,9 @@ Nodes (11): http_json(), load_config(), main(), model_matches(), parse_args(), A
 Cohesion: 0.43
 Nodes (7): call_name(), Call, Path, test_all_legacy_cli_shapes_block_nonzero_without_writes(), test_pilot_tombstone_blocks_all_legacy_side_effect_flags(), test_source_is_a_minimal_fail_closed_tombstone(), tree_state()
 
-### Community 1083 - "positioning_ranking_refresh.py"
-Cohesion: 0.52
-Nodes (6): bucket_from_action_state(), load(), main(), Any, score_bonus(), utc_now_iso()
+### Community 1083 - "interactive_training_qa_validator.py"
+Cohesion: 0.25
+Nodes (19): build(), build_config(), dependency_status(), discover_files(), find_edge(), load_json(), main(), Any (+11 more)
 
 ### Community 1084 - "test_wf67_order_card_request_generator.py"
 Cohesion: 0.29
@@ -5138,6 +5168,10 @@ Nodes (6): load_module(), main(), Path, test_alerts_os_health_uses_only_current_
 Cohesion: 0.43
 Nodes (6): call_name(), Call, Path, test_all_legacy_cli_shapes_return_identical_block_without_writes(), test_source_is_a_minimal_fail_closed_tombstone(), tree_state()
 
+### Community 1092 - "route_readiness.py"
+Cohesion: 0.27
+Nodes (19): as_dict(), authority_state_for(), build_route_readiness(), first_present(), next_route_action_for(), Any, route_readiness_from_route_context(), route_readiness_from_wf84_row() (+11 more)
+
 ### Community 1094 - "veritas_probe_memory_speed.py"
 Cohesion: 0.60
 Nodes (4): embed_ms(), main(), Latency probe for the workspace derived semantic-memory index. Read-only.…, stats()
@@ -5146,13 +5180,13 @@ Nodes (4): embed_ms(), main(), Latency probe for the workspace derived semantic-
 Cohesion: 0.43
 Nodes (6): call_name(), Call, Path, test_all_legacy_cli_shapes_block_nonzero_without_writes(), test_source_is_a_minimal_fail_closed_tombstone(), tree_state()
 
-### Community 1099 - "main"
-Cohesion: 0.57
-Nodes (6): main(), proposal_packet(), Path, queue_packet(), stamp(), write()
+### Community 1099 - "test_interactive_training_builder.py"
+Cohesion: 0.34
+Nodes (18): build_sample_module(), js_template(), render_html(), validate_module(), assert_true(), main(), test_authoring_resources_render(), test_build_manifest_counts() (+10 more)
 
-### Community 1100 - "test_market_intelligence_event_router.py"
-Cohesion: 0.73
-Nodes (5): expect(), main(), test_live_artifact_boundaries(), test_no_route_event_contract(), test_router_boundaries()
+### Community 1100 - "build"
+Cohesion: 0.25
+Nodes (17): build(), inventory_recordings(), is_safe_clip_name(), main(), open_capture_tool(), Any, Path, Best-effort launch of the Windows Snipping Tool screen recorder. Never raises:… (+9 more)
 
 ### Community 1101 - "test_post_apply_validation_chain.py"
 Cohesion: 0.47
@@ -5166,25 +5200,85 @@ Nodes (10): as_dict(), build(), load_dict(), main(), parse_args(), Any, Namespac
 Cohesion: 0.50
 Nodes (4): null, string, type, market_data_as_of
 
+### Community 1110 - "test_market_execution_readiness_cron_hardening.py"
+Cohesion: 0.25
+Nodes (17): quote_snapshot_market_date_gate_ok(), main(), proof(), test_closed_market_quote_gate_allows_no_actionable_subset(), test_closed_market_quote_gate_uses_actionable_subset(), test_deployment_intraday_symbols_are_actionable_subset(), test_effective_probe_prefers_enabled_silent_job(), test_effective_wf68_prefers_consolidated_digest_job() (+9 more)
+
+### Community 1111 - "official_earnings_source_discovery.py"
+Cohesion: 0.26
+Nodes (17): _archive_url(), discover_from_sec_payload(), discover_latest_sec_report(), _exhibit_candidate(), _fetch_json(), _filing_url(), _index_exhibit(), normalize_cik() (+9 more)
+
+### Community 1113 - "wf88_cleanup_common.py"
+Cohesion: 0.34
+Nodes (13): test_file_sha256_and_input_record(), test_sqlite_sidecar_helpers_find_orphans(), file_sha256(), input_record(), is_sqlite_sidecar(), iter_orphan_sqlite_sidecars(), iter_sqlite_db_files(), iter_text_files() (+5 more)
+
+### Community 1114 - "test_ticker_intelligence_card_sector_alias.py"
+Cohesion: 0.27
+Nodes (13): test_competitive_moat_requires_evidence(), test_custom_sector_alias_match(), test_defense_alias_uses_industrials_proxy(), test_etf_review_thesis_uses_instrument_profile(), test_exact_sector_match(), test_exact_ticker_match(), test_missing_post_close_quote_keeps_review_freshness_requirement(), test_post_close_quote_clears_review_freshness_requirement() (+5 more)
+
+### Community 1115 - "test_finance_intelligence_state_wf72_guard.py"
+Cohesion: 0.32
+Nodes (12): assert_wf72_support_only_answer_route(), phase3_qc_sample_tickers(), Fail closed if WF72 is ever promoted into ticker answer ownership., assert_durable_reference_projection(), assert_full_answer_is_read_only(), assert_retired_runtime_imports_absent(), assert_sql_sample_and_build(), expect() (+4 more)
+
+### Community 1116 - "classify_quote_freshness"
+Cohesion: 0.44
+Nodes (12): classify_quote_freshness(), is_market_day(), last_completed_market_date(), latest_market_date(), legacy_freshness_status(), market_close_for_date(), market_session(), parse_utc() (+4 more)
+
+### Community 1117 - "python_go_finance_data_coverage_probe_parity.py"
+Cohesion: 0.33
+Nodes (12): as_dict(), build_report(), compare(), load(), main(), parse_args(), Any, Namespace (+4 more)
+
+### Community 1119 - "wf78_tier_funnel_contract.py"
+Cohesion: 0.42
+Nodes (11): add_check(), as_dict(), build_contract(), main(), Any, Path, rel(), resolve() (+3 more)
+
+### Community 1120 - "sql_canon_answer_path_ab_harness.py"
+Cohesion: 0.40
+Nodes (10): build(), connect_ro(), main(), p0_not_cut_over_backlog_paths(), payload(), Any, Connection, Path (+2 more)
+
+### Community 1121 - "build_report"
+Cohesion: 0.42
+Nodes (9): as_dict(), as_list(), build_report(), main(), Any, Path, Acceptance gate for the compact WF79 Command Center shell., read_json() (+1 more)
+
+### Community 1122 - "scoped_writeback_preflight.py"
+Cohesion: 0.33
+Nodes (9): agent_entry(), config_fingerprint(), latest_proof_path(), load_config(), main(), parse_bind_host(), Hash the config surface that defines the scoped-writeback capability., Return (host_path, is_rw) for a docker bind string. Windows form:… (+1 more)
+
+### Community 1123 - "planned_agent_stub"
+Cohesion: 0.43
+Nodes (7): expand_planned_agent_selector(), planned_agent_stub(), assert_true(), test_bootstrap_markdown_includes_latest_template_feed(), test_finance_alias_expands_first_wave(), test_planned_build_outputs_do_not_require_live_creation(), test_planned_finance_manifest_is_proposal_only()
+
+### Community 1124 - "main"
+Cohesion: 0.57
+Nodes (7): check(), complete_ns(), lease_ns(), main(), Namespace, Path, status_ns()
+
+### Community 1125 - "cron_trust_block_consumer.py"
+Cohesion: 0.43
+Nodes (6): main(), parse_args(), Any, Namespace, Path, read_json()
+
+### Community 1126 - "build_missing_and_stale"
+Cohesion: 0.80
+Nodes (4): families(), test_tier_b_missing_sizing_remains_repair_debt(), test_tier_c_monitor_missing_sizing_is_expected_context(), build_missing_and_stale()
+
 ## Knowledge Gaps
 - **263 isolated node(s):** `tabs`, `SHORTCUTS`, `toneMap`, `statusLabel`, `deployFilters` (+258 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **66 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **65 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `atomic_write_json()` connect `atomic_write_json` to `concurrent_lane_manager.py`, `wf88_wiki_synthesis_packet.py`, `probability_readiness_validator.py`, `wf78_daily_freshness_loop.py`, `interactive_training_builder.py`, `wf55_outcome_ledger_v2.py`, `coding_outcome_ledger.py`, `status_card_packet.py`, `wf74_decision_docket.py`, `helper_lane_manifest.py`, `market_execution_readiness_cron_hardening.py`, `test_implementation_release_contract.py`, `token_usage_ledger.py`, `macro_metrics_ingest.py`, `project_implementation_router.py`, `frontier_capability_eval_spine.py`, `wf78_auto_tier_router.py`, `wf78_route_ticker.py`, `portfolio_mutation_proposal_generator.py`, `cron_runner_guardrails.py`, `finance_market_deployment_operating_loop.py`, `python_go_sql_consumer_authority_dashboard_ab.py`, `wf78_101_200_provider_source_validation.py`, `finance_intelligence_state.py`, `improvement_ledger.py`, `canonical_finance_data_plane.py`, `finance_agent_work_queue.py`, `trade_grade_full_answer_assembler.py`, `wf75_service_state_sqlite.py`, `finance_decision_factory.py`, `generic_intelligence_saas_pivot.py`, `session_resume_checkpoint.py`, `wf74_improvement_opportunity_queue.py`, `wf74_learning_loop_telegram_digest.py`, `pm_job_worker_runner.py`, `alpaca_paper_position_sql_refresh.py`, `macro_signal_spine.py`, `wf85_paper_deployment_notification_digest.py`, `wf75_operator_delivery_gate.py`, `wf78_tier_a_competitive_promotion_gate.py`, `cleanup_autopilot_family_packets.py`, `finance_sql_canon_access.py`, `daily_executive_brief.py`, `model_run_ledger.py`, `pm_autonomy_dispatcher.py`, `pm_program_state.py`, `daily_review_objects.py`, `token_efficiency_scorecard.py`, `cron_patch_manager.py`, `chain_executor.py`, `finance_recommendation_lookback_engine.py`, `pm_implementation_job_queue.py`, `main_session_escalation_consumer.py`, `cleanup_autopilot_full_approved_apply.py`, `load_json_artifact`, `tier_a_intraday_opportunity_probe.py`, `rsi_outcome_scorecard.py`, `fundamental_metrics_refresh.py`, `morning_paper_deployment_recommendation_builder.py`, `otel_ops_control.py`, `authority_matrix.py`, `finance_sql_canon.py`, `workbook_export.py`, `actionable_improvement_queue.py`, `build_payload`, `long_work_packet_linter.py`, `post_close_review_cron_runner.py`, `weekly_macro_snapshot.py`, `wf74_autonomy_work_router.py`, `ticker_data_repair_controller.py`, `alpaca_order_preview_generator.py`, `automation_stack_hardening_pass.py`, `sector_expansion_board.py`, `wf78_wf85_conversion_bridge.py`, `wf88_decision_compiler.py`, `finance_recommendation_history_ledger.py`, `implementation_completion_ledger.py`, `reference_levels_wf78_retirement_migration_exception.py`, `build_payload`, `cron_freshness_spine.py`, `reference_levels_goog_nvda_source_authority_decision.py`, `wf74_telemetry_critique_engine.py`, `legacy_state`, `cron_contract_validator.py`, `sql_source_lineage_artifact_registry_repair.py`, `wf78_100_to_200_candidate_manifest.py`, `wf78_500_ticker_reputation_gate.py`, `wf88_os2_control_packet.py`, `small_mid_cap_regime_feed.py`, `trade_grade_decision_cards.py`, `pipeline_state_consistency_check.py`, `weekday_morning_review_cron_runner.py`, `wf78_tier_c_to_b_auto_promotion_pipeline.py`, `daily_price_trend_signals.py`, `finance_delivery_series_orchestrator.py`, `learning_promotion_classifier.py`, `promotion_review_queue_reconciler.py`, `research_freshness_opportunity_review.py`, `sql_canon_migration_phase_executor.py`, `veritas_finance_brief.py`, `wf78_capital_review_queue.py`, `band_refresh.py`, `finance_recommendation_regression_calibration.py`, `implementation_token_attribution_bridge.py`, `reference_levels_derived_refresh_dry_run.py`, `reference_levels_targeted_repair_packet.py`, `run_summary_refresh.py`, `wf67_stale_paper_artifact_archive_apply.py`, `wf74_model_quality_collection_cron_runner.py`, `wf75_scenario_regression_matrix.py`, `workflow_advancement_scorecard.py`, `wf88_followup_debt_triage_packet.py`, `alpaca_paper_order_history_classifier.py`, `auto_apply_entry_band_maintenance.py`, `deployment_readiness_surface.py`, `post_close_control_digest.py`, `ticker_card_freshness_owner_runner.py`, `trade_grade_os_freshness_cron_runner.py`, `wf78_opportunity_refresh_controller.py`, `wf88_retired_surface_cleanup_plan.py`, `json_sql_promotion_index.py`, `market_state_refresh.py`, `market_today_answer_packet.py`, `pm_control_packet.py`, `tier_a_fundamental_enrichment_pass.py`, `wf74_self_prompt_generator.py`, `policy_expectations_refresh.py`, `core_live_surface_migration.py`, `escalation_trigger.py`, `in_band_review_attention_bridge.py`, `main_session_greenkeeper_controller.py`, `wf75_internal_prototype_readiness.py`, `wf77_supplemental_price_evidence.py`, `wf86_shadow_eligibility_validator.py`, `wf87_shadow_outcome_scorecard.py`, `build_rollup`, `veritas_harness_scorecard.py`, `wf74_wf88_loop_trace_packet.py`, `wf78_101_200_candidate_source_registry.py`, `wf78_tier_routing_event_ledger.py`, `capital_deployment_band_integrity_validator.py`, `chief_intelligence_promotion_gate.py`, `cron_signal_scorecard.py`, `market_data_utils.py`, `otel_learning_loop.py`, `reference_levels_derived_refresh_apply.py`, `wf75_service_state.py`, `wf78_deployment_readiness_human_review.py`, `wf78_live_pilot_import_gate.py`, `implementation_validator_modularization_plan.py`, `band_hygiene_freshness_controller.py`, `finance_decision_performance_digest.py`, `prompt_book_registry.py`, `runtime_performance_scorecard.py`, `ticker_monitoring_performance.py`, `tier_ab_band_freshness_cron_guard.py`, `trade_grade_repair_conveyor.py`, `wf74_auto_patch_proposer.py`, `wf85_intraday_review_overlay.py`, `wf87_autonomy_command_center.py`, `wf77_price_freshness_bridge.py`, `wf78_official_source_discovery_runner.py`, `cron_redundancy_audit.py`, `db_lifecycle_manifest.py`, `otel_critical_review_decision_packet.py`, `wf85_paper_deployment_telegram_notifier.py`, `wf87_runtime_gate_explanation.py`, `wf78_sql_readiness_index.py`, `autonomy_spine_readiness_rollup.py`, `cleanup_autopilot_full_delete_readiness.py`, `current_regime_analog_matcher.py`, `interactive_training_xapi_ledger.py`, `model_quality_scorecard.py`, `otel_tool_workflow_metadata.py`, `parallel_lane_recommender.py`, `workflow_router.py`, `wf87_market_hours_gate_probe.py`, `wf78_100_ticker_import_gate.py`, `wf78_promotion_visibility_top10.py`, `wf85_deployment_timing_gate.py`, `workbook_template.py`, `agent_message_ledger_packet.py`, `go_sql_inprocess_driver_pilot_gate.py`, `main_session_action_executor.py`, `backup_sqlite_database`, `market_intelligence_event_router.py`, `otel_runtime_metadata_probe.py`, `pm_main_session_handoff.py`, `sql_canon_phase2_backfill.py`, `wf74_response_self_review_sampler.py`, `wf78_missing_band_context_repair.py`, `wf87_assisted_paper_cadence.py`, `wf78_101_200_import_decision_packet.py`, `wf78_position_sizing_surface_review.py`, `wf78_routing_dashboard.py`, `wf78_tier_c_attention_evidence_repair_bridge.py`, `wf78_tier_promotion_review_gate.py`, `wf85_market_hours_refresh_readiness.py`, `trade_grade_os_readiness_rollup.py`, `autonomous_card_authority_audit.py`, `cleanup_autopilot_phase1_apply.py`, `current_window_artifact_index.py`, `finance_data_coverage.py`, `finance_decision_sync_spine.py`, `finance_response_quality_slice.py`, `pm_execution_loop.py`, `production_scope_schema_retirement_plan.py`, `research_freshness_opportunity_cron_runner.py`, `sql_canon_front_door_readiness_packet.py`, `tuesday_position_sizing_readiness.py`, `wf78_evidence_family_repair_runner.py`, `wf78_tier_weighted_freshness_resolver.py`, `wf78_source_capture_requirements_queue.py`, `wf85_decision_os_review_packet.py`, `wf85_retirement_gate_adjudication.py`, `wf88_finance_query_friction_guard.py`, `agi_harness_readiness_packet.py`, `artifact_intelligence_action_scorer.py`, `autonomous_routing_deployment_cards.py`, `cleanup_autopilot_stale_text_apply.py`, `reference_band_note_sync.py`, `wf55_autonomy_outcome_ledger.py`, `test_wf75_service_led_saas_readiness_plan.py`, `today_card_generator.py`, `token_efficiency_review_packet.py`, `wf75_monetization_training_pdf.py`, `wf78_tier_semantics_guard.py`, `canonical_finance_data_plane_contract.py`, `finance_response_quality_repair_loop.py`, `finance_stack_snapshot.py`, `go_binary_freshness_guard.py`, `morning_control_digest.py`, `operating_leverage_spine.py`, `otel_drift_critical_review_loop.py`, `build_proof`, `sector_allocation_decision_matrix.py`, `sql_coverage_guard.py`, `wf75_operator_review_state.py`, `wf78_ticker_freshness_ledger.py`, `tier_c_band_status_refresh.py`, `training_dataset_candidate_builder.py`, `wf85_paper_deployment_telegram_cron_runner.py`, `capital_recommendation_slate_notifier.py`, `cron_operator_ledger.py`, `disciplined_band_staleness_notifier.py`, `legacy_audit_root_cleanup_apply.py`, `macro_judgment_draft.py`, `weekly_intelligence_brief.py`, `model_learning_metadata_ledger.py`, `retail_automation_control_plane.py`, `sql_canon_consumer_registry_sync.py`, `sql_canon_parallel_phase_executor.py`, `wf74_self_audit_cadence_packet.py`, `wf78_daily_movement_ledger.py`, `tier_a_depth_repair_phase_executor.py`, `wf74_prompt_variant_ledger.py`, `wf78_funnel_owner_decision_packet.py`, `wf78_phase_runner.py`, `wf78_tier_c_attention_trigger.py`, `wf78_tier_capacity_policy_gate.py`, `wf85_opportunity_visibility_queue.py`, `wf88_route_contraction_packet.py`, `cleanup_autopilot_consolidated_prep.py`, `finance_evidence_warning_router.py`, `fundamental_ir_reconciliation_packets.py`, `market_open_repair_cadence.py`, `owner_gated_action_review_queue.py`, `parallel_repeatable_work_orchestrator.py`, `pm1_pm3_finance_pipeline_runner.py`, `wf75_internal_service_run_loop.py`, `wf78_production_tier_adjudication.py`, `wf73_postgres_shadow_pilot.py`, `wf75_hvac_outreach_training_stack.py`, `wf78_macro_thesis_overlay_gate.py`, `wf78_source_open_repair_executor.py`, `startup_brief_packet.py`, `wf87_paper_autonomy_runtime_governor.py`, `full_intelligence_answer_parity.py`, `backup_rollback_delete_prep_packet.py`, `disciplined_reference_levels_migration.py`, `execution_board_canon_anchor_pilot.py`, `wf74_learning_loop_telegram_cron_runner.py`, `finance_production_scope.py`, `handoff_first_proof_gate.py`, `intraday_alert_outcome_link.py`, `premarket_snapshot.py`, `wf67_legacy_radar_archive_readiness.py`, `wf75_agent_training_pdf.py`, `wf78_review_monitor_source_open_gate.py`, `wf78_source_artifact_capture_review.py`, `wf78_ticker_card_field_repair_apply.py`, `wf78_tier_c_opportunity_scoreboard.py`, `wf78_truth_layer_map.py`, `wf88_delete_readiness_packet.py`, `bank_native_sec_concept_probe.py`, `cron_retire_merge_candidates.py`, `finance_recommendation_correctness_ledger.py`, `official_earnings_bridge.py`, `orphan_transcript_archive_apply.py`, `orphan_transcript_inventory_packet.py`, `python_go_source_truth_parity_validator_promotion_gate.py`, `sql_canon_migration_completion_runner.py`, `stale_paper_card_reference_guard.py`, `tmp_cleanup.py`, `wf75_artifact_only_pm_handoff.py`, `veritas_question_router.py`, `cron_main_session_usage_metadata.py`, `wf88_disabled_cron_delete_microbatch_apply.py`, `wf78_tier_a_reference_band_proposals.py`, `wf85_production_blocker_repair.py`, `wf86_daily_shadow_reconciliation_cron_runner.py`, `wf87_approval_freshness_ttl.py`, `as_dict`, `wf88_typed_script_reference_graph.py`, `wf88_cron_disabled_job_reference_review.py`, `operators/band_note_sync.py`, `workspace_automation_approval_packet.py`, `cleanup_autopilot_phase1.py`, `lane_collision_preflight.py`, `wf75_customer_safe_excel_exporter.py`, `md_finance_structured_drift_lint.py`, `parallel_operator_visibility.py`, `post_apply_board_snapshot_config_coherence.py`, `post_close_final_quote_ledger.py`, `response_recommendation_contract_lint.py`, `wf75_renderer_export_regression.py`, `vector_memory_graph_packet.py`, `wf73_control_plane_audit.py`, `wf78_daily_freshness_cron_runner.py`, `wf78_legacy_label_retirement_guard.py`, `wf78_sec_reconciliation_scaler.py`, `wf78_small_mid_cap_scaleout_candidate_pass.py`, `wf78_source_open_patch_orchestrator.py`, `wf78_tier_b_final_promotion_packet.py`, `atomic_write_text`, `wf87_intraday_monitor.py`, `artifact_staleness_explainer.py`, `auto_apply_position_sizing_semantic_sync.py`, `cron_escalation_decision_router.py`, `current_opportunity_approval_brief.py`, `finance_human_notes_thinning_candidates.py`, `finance_predictive_learning_loop.py`, `workflow_control.py`, `python_go_finance_human_notes_sql_check_promotion_gate.py`, `python_go_sql_helper_contract_gate.py`, `python_go_sql_helper_fallback_removal_readiness_gate.py`, `retail_automation_control_plane_cron_runner.py`, `retail_saas_customer_output_validator.py`, `retail_truth_routing_contract.py`, `snapshot_contract_check.py`, `wf75_ai_drop_service_demo.py`, `wf88_wiki_refresh_cron_gate.py`, `worktree_checkpoint_planner.py`, `tmp_python_helper_archive_apply.py`, `validate_fundamental_metrics.py`, `wf78_contract_state_guard.py`, `wf78_owner_lineage_discovery.py`, `wf78_tier_c_hold_recheck.py`, `wf88_db_duplicate_source_delete_packet.py`, `wf88_source_open_residue_classifier.py`, `agi_os_eval_gate_packet.py`, `autonomy_spine_promotion_contract.py`, `cron_efficiency_review_runner.py`, `cron_reduction_inventory.py`, `runtime_expansion_pilot.py`, `finance_os_noncapital_expansion_packet.py`, `canonical_finance_data_plane_phase6_10.py`, `pm_post_repair_quiescence_refresh.py`, `python_go_source_truth_manifest_parity.py`, `python_go_source_truth_parity_validator_parity.py`, `python_go_sql_helper_retirement_gate.py`, `python_go_sql_migration_candidates.py`, `retail_saas_fixture_demo.py`, `validator_timing_ledger.py`, `wf74_operating_control_loop.py`, `wf74_source_open_recurrence_guard.py`, `tier_a_trade_grade_coverage_gate.py`, `tmp_python_helper_archive_packet.py`, `wf75_pm_readiness_pdf.py`, `wf75_training_desk.py`, `wf78_deployment_readiness_review.py`, `wf78_event_triggered_rerouting.py`, `wf78_evidence_repair_batch_runner.py`, `wf78_owner_lineage_proposal.py`, `wf78_position_sizing_integration_proposal.py`, `wf78_sql_phase2_readiness.py`, `wf88_tmp_delete_microbatch_apply.py`, `breadth_refresh.py`, `cron_changed_input_prefilter_plan.py`, `dream_review_packet.py`, `finance_discrepancy_resolver.py`, `finance_sql_primary_migration_plan.py`, `macro_event_calendar.py`, `python_go_sql_helper_default_route_history_gate.py`, `python_go_sql_parity_check.py`, `sec_env_audit_validator.py`, `sql_canon_tier_routing_refresh.py`, `sunday_research_opportunity_reset_cron_runner.py`, `ticker_answer_packet_versioned_archive_packet.py`, `trade_grade_decision_os_contract.py`, `wf75_customer_safe_pdf_renderer.py`, `wf78_101_200_tier_c_import_gate.py`, `wf78_pilot_contract_gate.py`, `wf78_pilot_provider_runtime_probe.py`, `wf78_promotion_owner_lineage_queue.py`, `wf88_script_cleanup_inventory.py`, `coding_runtime_kpi_probe.py`, `cron_cadence_reduction_plan.py`, `efficiency_cohort_ledger.py`, `build_report`, `ticker_answer_packet_retirement_plan.py`, `finance_sql_consumer_migration_burndown.py`, `helper_spawn_packets.py`, `human_canon_thinning_retirement_inventory.py`, `macro_energy_supply_ingest.py`, `otel_recommendation_closeout.py`, `pm_control_summary_packet.py`, `python_go_sql_consumer_authority_guard_parity.py`, `skill_core_proof_tier_audit.py`, `sql_canon_consumer_cutover_apply.py`, `sql_field_family_canon_promotion_apply.py`, `sql_first_consumer_wiring_preflight.py`, `wf78_source_open_work_packet.py`, `tier_a_late_session_opportunity_cron_runner.py`, `tmp_lifecycle_guard.py`, `validate_official_earnings_bridge.py`, `wf78_official_registry_apply_preview.py`, `wf78_tier_b_evidence_repair.py`, `operators/apply_band_update.py`, `cron_execution_posture_patch.py`, `full_workspace_delete_readiness.py`, `python_go_sql_helper_demotion_queue.py`, `python_go_sql_helper_go_primary_history_gate.py`, `build_report`, `summary_brief_packet.py`, `truth_surface_inventory.py`, `capital_deployment_recommendation_validator.py`, `wf72_a2_fallback_fixture.py`, `wf78_open_ready_owner_review_cron_runner.py`, `wf78_tier_label_decision_register.py`, `wf88_daily_actionability_refresh.py`, `cron_gpt54mini_canary_research.py`, `cron_notes_flattening_plan.py`, `execution_board_canon_anchor_drift_validator.py`, `finance_cache_cleanup_readiness.py`, `wf86_shadow_decision_ledger.py`, `local_audio_transcriber.py`, `pm_sidecar_retirement_guard.py`, `pm_value_added_summary.py`, `python_go_sql_500_expansion_gate_parity.py`, `python_go_sql_helper_demotion_readiness_gate.py`, `sector_allocation_decision_matrix_cron_runner.py`, `sql_canon_migration_master_plan.py`, `skill_workshop_body_guard.py`, `test_run_summary_tail_order.py`, `ticker_answer_packet_archive_apply.py`, `tmp_lifecycle_phase2_6_delete_apply.py`, `veritas_harness_failure_classifier.py`, `wf74_cron_duplication_audit.py`, `wf75_pm_weekly_update.py`, `wf78_enrichment_orchestrator.py`, `wf78_live_pilot_preflight.py`, `wf78_official_registry_proposal.py`, `wf78_ph_owner_review_candidate_packet.py`, `wf78_tier_a_invalidation_review_queue.py`, `wf78_tier_a_owner_readiness_proposal.py`, `wf88_deletion_approval_prep_packet.py`, `workflow_hygiene_check.py`, `control_closeout_bundle.py`, `core_folders_flattening_watchdog.py`, `finance_production_grade_policy_gate.py`, `wiki_bootstrap_validator.py`, `finance_human_notes_archive_apply.py`, `finance_sql_canon_archive_apply.py`, `heartbeat_priority_handoff.py`, `python_go_durable_output_parity_repeated_gate.py`, `python_go_sql_helper_controlled_router_batch.py`, `python_go_sql_helper_default_route_promotion.py`, `wf78_clean_tier_roster.py`, `reference_levels_expected_parity_validator.py`, `review_brief_report.py`, `security_warning_ledger.py`, `skill_git_checkpoint.py`, `sql_canon_rollback_rehearsal.py`, `active_sql_canon_approved_keys`, `tmp_lifecycle_delete_proposal.py`, `today_card_validator.py`, `wf75_cron_automation_authority_plan.py`, `wf78_evidence_drag_reducer.py`, `wf78_tier_a_final_promotion_packet.py`, `wf78_tier_label_apply_closeout.py`, `wf78_tier_label_sync_preview.py`, `archive_delete_apply.py`, `archive_manual_delete_review.py`, `db_lifecycle_archive_apply.py`, `finance_backup_retention_packet.py`, `intraday_entry_watcher.py`, `python_go_wf78_sql_phase2_readiness_parity.py`, `pm_value_added_register.py`, `test_otel_drift_critical_review_loop.py`, `python_go_finance_human_notes_sql_check_parity.py`, `python_go_finance_universe_validation_parity.py`, `retail_customer_output_decision_packet.py`, `sql_canon_consumer_inventory.py`, `sql_canon_phase2_schema_contract_guard.py`, `macro_geopolitical_sweep.py`, `sql_retail_grade_automation_gate.py`, `veritas_pm_department_validate.py`, `weekly_printable_brief.py`, `wf78_repair_debt_scoreboard.py`, `automation_trust_block.py`, `core_folders_archive_apply.py`, `finance_sql_markdown_field_ownership.py`, `full_workspace_generated_residue_delete_apply.py`, `legacy_42_no_runtime_imports_guard.py`, `cron_control_packet.py`, `backup_rollback_delete_apply.py`, `model_learning_capture_approval_packet.py`, `paper_pilot_status_surface.py`, `sql_canon_shadow_backfill_validator.py`, `finance_cache_frontdoor.py`, `tier_a_cohort_alignment_reconciliation.py`, `tmp_lifecycle_phase1_delete_apply.py`, `wf78_scaleout_policy_dry_run.py`, `codex_app_server_timeout_diagnostics.py`, `fast_path_qa.py`, `full_archive_delete_apply.py`, `human_facing_truth_surface.py`, `macro_inputs_refresh_cron_runner.py`, `main`, `legacy_42_full_archive_packet.py`, `validate_fundamental_ir_reconciliation.py`, `veritas_technical_pass_validate.py`, `wf72_a2_fallback_fixture_prep.py`, `helper_completion_handshake.py`, `archive_delete_readiness_plan.py`, `swarm_completion_handshake.py`, `repeatable_work_closeout.py`, `test_wf87_approval_freshness_ttl.py`, `test_wf87_intraday_monitor.py`, `canonical_finance_data_plane_retirement_readiness.py`, `official_ir_source_inventory_validator.py`, `wf75_scenario_template_library.py`, `wf78_routing_delta.py`, `python_go_sql_consumer_authority_controlled_router.py`, `wf75_closeout_refresh.py`, `guard_context`, `boot_surface_size_guard.py`, `python_go_sql_consumer_authority_demotion_dry_run.py`, `wf78_batch_manifest.py`, `wf78_next_owner_review_and_source_capture_integration.py`?**
-  _High betweenness centrality (0.276) - this node is a cross-community bridge._
-- **Why does `load_json_artifact()` connect `load_json_artifact` to `concurrent_lane_manager.py`, `wf88_wiki_synthesis_packet.py`, `probability_readiness_validator.py`, `wf78_daily_freshness_loop.py`, `status_card_packet.py`, `wf74_decision_docket.py`, `market_execution_readiness_cron_hardening.py`, `test_implementation_release_contract.py`, `token_usage_ledger.py`, `macro_metrics_ingest.py`, `Any`, `project_implementation_router.py`, `wf78_auto_tier_router.py`, `wf78_route_ticker.py`, `portfolio_mutation_proposal_generator.py`, `cron_runner_guardrails.py`, `finance_market_deployment_operating_loop.py`, `python_go_sql_consumer_authority_dashboard_ab.py`, `wf78_101_200_provider_source_validation.py`, `finance_intelligence_state.py`, `improvement_ledger.py`, `canonical_finance_data_plane.py`, `dashboard_payload.py`, `finance_agent_work_queue.py`, `trade_grade_full_answer_assembler.py`, `wf75_service_state_sqlite.py`, `finance_decision_factory.py`, `session_resume_checkpoint.py`, `wf74_improvement_opportunity_queue.py`, `wf74_learning_loop_telegram_digest.py`, `pm_job_worker_runner.py`, `macro_signal_spine.py`, `wf85_paper_deployment_notification_digest.py`, `wf75_operator_delivery_gate.py`, `wf78_tier_a_competitive_promotion_gate.py`, `cleanup_autopilot_family_packets.py`, `model_run_ledger.py`, `pm_autonomy_dispatcher.py`, `pm_program_state.py`, `daily_review_objects.py`, `token_efficiency_scorecard.py`, `cron_patch_manager.py`, `finance_recommendation_lookback_engine.py`, `pm_implementation_job_queue.py`, `main_session_escalation_consumer.py`, `tier_a_intraday_opportunity_probe.py`, `fundamental_metrics_refresh.py`, `morning_paper_deployment_recommendation_builder.py`, `otel_ops_control.py`, `authority_matrix.py`, `workbook_export.py`, `actionable_improvement_queue.py`, `long_work_packet_linter.py`, `post_close_review_cron_runner.py`, `wf74_autonomy_work_router.py`, `ticker_data_repair_controller.py`, `alpaca_order_preview_generator.py`, `automation_stack_hardening_pass.py`, `sector_expansion_board.py`, `wf78_wf85_conversion_bridge.py`, `implementation_completion_ledger.py`, `build_payload`, `cron_freshness_spine.py`, `wf74_telemetry_critique_engine.py`, `cron_contract_validator.py`, `wf78_100_to_200_candidate_manifest.py`, `wf78_500_ticker_reputation_gate.py`, `wf88_os2_control_packet.py`, `small_mid_cap_regime_feed.py`, `trade_grade_decision_cards.py`, `weekday_morning_review_cron_runner.py`, `wf78_tier_c_to_b_auto_promotion_pipeline.py`, `finance_delivery_series_orchestrator.py`, `learning_promotion_classifier.py`, `promotion_review_queue_reconciler.py`, `research_freshness_opportunity_review.py`, `veritas_finance_brief.py`, `wf78_capital_review_queue.py`, `finance_recommendation_regression_calibration.py`, `implementation_token_attribution_bridge.py`, `run_summary_refresh.py`, `wf67_stale_paper_artifact_archive_apply.py`, `wf74_model_quality_collection_cron_runner.py`, `wf75_scenario_regression_matrix.py`, `workflow_advancement_scorecard.py`, `wf88_followup_debt_triage_packet.py`, `alpaca_paper_order_history_classifier.py`, `post_close_control_digest.py`, `ticker_card_freshness_owner_runner.py`, `trade_grade_os_freshness_cron_runner.py`, `wf78_opportunity_refresh_controller.py`, `wf88_retired_surface_cleanup_plan.py`, `json_sql_promotion_index.py`, `market_state_refresh.py`, `market_today_answer_packet.py`, `tier_a_fundamental_enrichment_pass.py`, `wf74_self_prompt_generator.py`, `policy_expectations_refresh.py`, `escalation_trigger.py`, `in_band_review_attention_bridge.py`, `main_session_greenkeeper_controller.py`, `wf75_internal_prototype_readiness.py`, `wf77_supplemental_price_evidence.py`, `wf86_shadow_eligibility_validator.py`, `wf87_shadow_outcome_scorecard.py`, `build_rollup`, `veritas_harness_scorecard.py`, `wf74_wf88_loop_trace_packet.py`, `wf78_101_200_candidate_source_registry.py`, `wf78_tier_routing_event_ledger.py`, `capital_deployment_band_integrity_validator.py`, `chief_intelligence_promotion_gate.py`, `cron_signal_scorecard.py`, `market_data_utils.py`, `otel_learning_loop.py`, `wf75_service_state.py`, `wf78_deployment_readiness_human_review.py`, `wf78_live_pilot_import_gate.py`, `implementation_validator_modularization_plan.py`, `band_hygiene_freshness_controller.py`, `runtime_performance_scorecard.py`, `ticker_monitoring_performance.py`, `tier_ab_band_freshness_cron_guard.py`, `trade_grade_repair_conveyor.py`, `wf74_auto_patch_proposer.py`, `wf85_intraday_review_overlay.py`, `wf87_autonomy_command_center.py`, `wf77_price_freshness_bridge.py`, `wf78_official_source_discovery_runner.py`, `cron_redundancy_audit.py`, `otel_critical_review_decision_packet.py`, `wf85_paper_deployment_telegram_notifier.py`, `wf87_runtime_gate_explanation.py`, `wf78_sql_readiness_index.py`, `autonomy_spine_readiness_rollup.py`, `cleanup_autopilot_full_delete_readiness.py`, `current_regime_analog_matcher.py`, `model_quality_scorecard.py`, `otel_tool_workflow_metadata.py`, `parallel_lane_recommender.py`, `workflow_router.py`, `wf87_market_hours_gate_probe.py`, `wf78_100_ticker_import_gate.py`, `wf78_promotion_visibility_top10.py`, `wf85_deployment_timing_gate.py`, `agent_message_ledger_packet.py`, `artifact_index.py`, `go_sql_inprocess_driver_pilot_gate.py`, `main_session_action_executor.py`, `market_intelligence_event_router.py`, `otel_runtime_metadata_probe.py`, `pm_main_session_handoff.py`, `wf78_missing_band_context_repair.py`, `wf87_assisted_paper_cadence.py`, `wf78_101_200_import_decision_packet.py`, `wf78_position_sizing_surface_review.py`, `wf78_routing_dashboard.py`, `wf78_tier_c_attention_evidence_repair_bridge.py`, `wf78_tier_promotion_review_gate.py`, `wf85_market_hours_refresh_readiness.py`, `trade_grade_os_readiness_rollup.py`, `autonomous_card_authority_audit.py`, `cleanup_autopilot_phase1_apply.py`, `current_window_artifact_index.py`, `finance_data_coverage.py`, `finance_decision_sync_spine.py`, `finance_response_quality_slice.py`, `pm_execution_loop.py`, `research_freshness_opportunity_cron_runner.py`, `tuesday_position_sizing_readiness.py`, `wf78_evidence_family_repair_runner.py`, `wf78_tier_weighted_freshness_resolver.py`, `wf78_source_capture_requirements_queue.py`, `wf85_decision_os_review_packet.py`, `wf85_retirement_gate_adjudication.py`, `wf88_finance_query_friction_guard.py`, `agi_harness_readiness_packet.py`, `artifact_intelligence_action_scorer.py`, `autonomous_routing_deployment_cards.py`, `cleanup_autopilot_stale_text_apply.py`, `wf55_autonomy_outcome_ledger.py`, `today_card_generator.py`, `token_efficiency_review_packet.py`, `wf78_tier_semantics_guard.py`, `canonical_finance_data_plane_contract.py`, `finance_response_quality_repair_loop.py`, `finance_stack_snapshot.py`, `morning_control_digest.py`, `operating_leverage_spine.py`, `otel_drift_critical_review_loop.py`, `sector_allocation_decision_matrix.py`, `wf75_operator_review_state.py`, `wf78_ticker_freshness_ledger.py`, `tier_c_band_status_refresh.py`, `training_dataset_candidate_builder.py`, `wf85_paper_deployment_telegram_cron_runner.py`, `capital_recommendation_slate_notifier.py`, `cron_operator_ledger.py`, `disciplined_band_staleness_notifier.py`, `macro_judgment_draft.py`, `model_learning_metadata_ledger.py`, `retail_automation_control_plane.py`, `wf74_self_audit_cadence_packet.py`, `wf78_daily_movement_ledger.py`, `wf74_prompt_variant_ledger.py`, `wf78_funnel_owner_decision_packet.py`, `wf78_phase_runner.py`, `wf78_tier_c_attention_trigger.py`, `wf78_tier_capacity_policy_gate.py`, `wf85_opportunity_visibility_queue.py`, `wf87_trade_decision_journal.py`, `wf88_route_contraction_packet.py`, `finance_evidence_warning_router.py`, `fundamental_ir_reconciliation_packets.py`, `market_open_repair_cadence.py`, `owner_gated_action_review_queue.py`, `parallel_repeatable_work_orchestrator.py`, `pm1_pm3_finance_pipeline_runner.py`, `wf75_internal_service_run_loop.py`, `wf78_production_tier_adjudication.py`, `wf73_postgres_shadow_pilot.py`, `wf75_hvac_outreach_training_stack.py`, `wf78_macro_thesis_overlay_gate.py`, `wf78_source_open_repair_executor.py`, `startup_brief_packet.py`, `wf87_paper_autonomy_runtime_governor.py`, `wf74_learning_loop_telegram_cron_runner.py`, `finance_production_scope.py`, `handoff_first_proof_gate.py`, `intraday_alert_outcome_link.py`, `wf67_legacy_radar_archive_readiness.py`, `wf78_review_monitor_source_open_gate.py`, `wf78_source_artifact_capture_review.py`, `wf78_ticker_card_field_repair_apply.py`, `wf78_tier_c_opportunity_scoreboard.py`, `wf78_truth_layer_map.py`, `wf88_delete_readiness_packet.py`, `bank_native_sec_concept_probe.py`, `finance_recommendation_correctness_ledger.py`, `python_go_source_truth_parity_validator_promotion_gate.py`, `stale_paper_card_reference_guard.py`, `state_history_capture.py`, `wf75_artifact_only_pm_handoff.py`, `veritas_question_router.py`, `wf88_disabled_cron_delete_microbatch_apply.py`, `wf78_tier_a_reference_band_proposals.py`, `wf85_production_blocker_repair.py`, `wf86_daily_shadow_reconciliation_cron_runner.py`, `wf87_approval_freshness_ttl.py`, `as_dict`, `wf88_typed_script_reference_graph.py`, `wf88_cron_disabled_job_reference_review.py`, `workspace_automation_approval_packet.py`, `cleanup_autopilot_phase1.py`, `lane_collision_preflight.py`, `wf75_customer_safe_excel_exporter.py`, `parallel_operator_visibility.py`, `post_apply_board_snapshot_config_coherence.py`, `post_close_final_quote_ledger.py`, `wf75_renderer_export_regression.py`, `vector_memory_graph_packet.py`, `wf73_control_plane_audit.py`, `wf78_daily_freshness_cron_runner.py`, `wf78_legacy_label_retirement_guard.py`, `wf78_sec_reconciliation_scaler.py`, `wf78_small_mid_cap_scaleout_candidate_pass.py`, `wf78_source_open_patch_orchestrator.py`, `wf78_tier_b_final_promotion_packet.py`, `wf87_intraday_monitor.py`, `artifact_staleness_explainer.py`, `cron_escalation_decision_router.py`, `finance_predictive_learning_loop.py`, `workflow_control.py`, `python_go_finance_human_notes_sql_check_promotion_gate.py`, `python_go_sql_helper_contract_gate.py`, `python_go_sql_helper_fallback_removal_readiness_gate.py`, `retail_automation_control_plane_cron_runner.py`, `retail_saas_customer_output_validator.py`, `retail_truth_routing_contract.py`, `wf75_ai_drop_service_demo.py`, `wf88_wiki_refresh_cron_gate.py`, `tmp_python_helper_archive_apply.py`, `validate_fundamental_metrics.py`, `wf78_contract_state_guard.py`, `wf78_owner_lineage_discovery.py`, `wf78_tier_c_hold_recheck.py`, `wf88_source_open_residue_classifier.py`, `agi_os_eval_gate_packet.py`, `autonomy_spine_promotion_contract.py`, `cron_reduction_inventory.py`, `runtime_expansion_pilot.py`, `finance_os_noncapital_expansion_packet.py`, `canonical_finance_data_plane_phase6_10.py`, `pm_post_repair_quiescence_refresh.py`, `python_go_source_truth_manifest_parity.py`, `python_go_source_truth_parity_validator_parity.py`, `python_go_sql_helper_retirement_gate.py`, `python_go_sql_migration_candidates.py`, `retail_saas_fixture_demo.py`, `wf74_operating_control_loop.py`, `wf74_source_open_recurrence_guard.py`, `wf78_deployment_readiness_review.py`, `wf78_event_triggered_rerouting.py`, `wf78_evidence_repair_batch_runner.py`, `wf78_owner_lineage_proposal.py`, `wf78_position_sizing_integration_proposal.py`, `wf78_sql_phase2_readiness.py`, `wf88_tmp_delete_microbatch_apply.py`, `cron_changed_input_prefilter_plan.py`, `finance_discrepancy_resolver.py`, `macro_event_calendar.py`, `python_go_sql_helper_default_route_history_gate.py`, `python_go_sql_parity_check.py`, `sunday_research_opportunity_reset_cron_runner.py`, `ticker_answer_packet_versioned_archive_packet.py`, `trade_grade_decision_os_contract.py`, `wf75_customer_safe_pdf_renderer.py`, `wf78_101_200_tier_c_import_gate.py`, `wf78_pilot_contract_gate.py`, `wf78_pilot_provider_runtime_probe.py`, `wf78_promotion_owner_lineage_queue.py`, `wf88_script_cleanup_inventory.py`, `coding_runtime_kpi_probe.py`, `cron_cadence_reduction_plan.py`, `ticker_answer_packet_retirement_plan.py`, `helper_spawn_packets.py`, `human_canon_thinning_retirement_inventory.py`, `macro_energy_supply_ingest.py`, `otel_recommendation_closeout.py`, `pm_control_summary_packet.py`, `python_go_sql_consumer_authority_guard_parity.py`, `wf78_source_open_work_packet.py`, `tier_a_late_session_opportunity_cron_runner.py`, `tmp_lifecycle_guard.py`, `validate_official_earnings_bridge.py`, `wf78_official_registry_apply_preview.py`, `wf78_tier_b_evidence_repair.py`, `python_go_sql_helper_demotion_queue.py`, `python_go_sql_helper_go_primary_history_gate.py`, `regime_scoring_refresh.py`, `summary_brief_packet.py`, `truth_surface_inventory.py`, `wf72_a2_fallback_fixture.py`, `wf78_open_ready_owner_review_cron_runner.py`, `wf78_tier_label_decision_register.py`, `cron_gpt54mini_canary_research.py`, `cron_notes_flattening_plan.py`, `finance_cache_cleanup_readiness.py`, `wf86_shadow_decision_ledger.py`, `pm_value_added_summary.py`, `python_go_sql_500_expansion_gate_parity.py`, `python_go_sql_helper_demotion_readiness_gate.py`, `sector_allocation_decision_matrix_cron_runner.py`, `test_run_summary_tail_order.py`, `ticker_answer_packet_archive_apply.py`, `veritas_harness_failure_classifier.py`, `wf78_enrichment_orchestrator.py`, `wf78_live_pilot_preflight.py`, `wf78_official_registry_proposal.py`, `wf78_ph_owner_review_candidate_packet.py`, `wf78_tier_a_invalidation_review_queue.py`, `wf78_tier_a_owner_readiness_proposal.py`, `wf88_deletion_approval_prep_packet.py`, `control_closeout_bundle.py`, `wiki_bootstrap_validator.py`, `heartbeat_priority_handoff.py`, `python_go_durable_output_parity_repeated_gate.py`, `python_go_sql_helper_controlled_router_batch.py`, `python_go_sql_helper_default_route_promotion.py`, `wf78_clean_tier_roster.py`, `review_brief_report.py`, `security_warning_ledger.py`, `active_sql_canon_approved_keys`, `today_card_validator.py`, `wf78_evidence_drag_reducer.py`, `wf78_tier_a_final_promotion_packet.py`, `wf78_tier_label_apply_closeout.py`, `wf78_tier_label_sync_preview.py`, `python_go_wf78_sql_phase2_readiness_parity.py`, `pm_value_added_register.py`, `python_go_finance_human_notes_sql_check_parity.py`, `python_go_finance_universe_validation_parity.py`, `retail_customer_output_decision_packet.py`, `weekly_printable_brief.py`, `wf78_repair_debt_scoreboard.py`, `automation_trust_block.py`, `pm_control_reader.py`, `model_learning_capture_approval_packet.py`, `paper_pilot_status_surface.py`, `finance_cache_frontdoor.py`, `wf78_scaleout_policy_dry_run.py`, `fast_path_qa.py`, `human_facing_truth_surface.py`, `macro_inputs_refresh_cron_runner.py`, `legacy_42_full_archive_packet.py`, `validate_fundamental_ir_reconciliation.py`, `wf72_a2_fallback_fixture_prep.py`, `helper_completion_handshake.py`, `swarm_completion_handshake.py`, `wf78_routing_delta.py`, `positioning_ranking_refresh.py`, `wf78_batch_manifest.py`, `wf78_next_owner_review_and_source_capture_integration.py`?**
-  _High betweenness centrality (0.150) - this node is a cross-community bridge._
-- **Why does `atomic_write_text()` connect `atomic_write_text` to `wf88_wiki_synthesis_packet.py`, `probability_readiness_validator.py`, `interactive_training_builder.py`, `wf55_outcome_ledger_v2.py`, `auto_apply_position_sizing_semantic_sync.py`, `wf74_decision_docket.py`, `cron_escalation_decision_router.py`, `current_opportunity_approval_brief.py`, `finance_predictive_learning_loop.py`, `token_usage_ledger.py`, `macro_metrics_ingest.py`, `retail_saas_customer_output_validator.py`, `frontier_capability_eval_spine.py`, `wf75_ai_drop_service_demo.py`, `cron_runner_guardrails.py`, `finance_market_deployment_operating_loop.py`, `improvement_ledger.py`, `wf88_source_open_residue_classifier.py`, `cron_efficiency_review_runner.py`, `wf75_service_state_sqlite.py`, `runtime_expansion_pilot.py`, `finance_os_noncapital_expansion_packet.py`, `wf74_improvement_opportunity_queue.py`, `capital_deployment_recommendation_report.py`, `retail_saas_fixture_demo.py`, `wf75_operator_delivery_gate.py`, `cleanup_autopilot_family_packets.py`, `wf74_operating_control_loop.py`, `daily_executive_brief.py`, `model_run_ledger.py`, `token_efficiency_scorecard.py`, `wf75_pm_readiness_pdf.py`, `wf75_training_desk.py`, `finance_recommendation_lookback_engine.py`, `cron_changed_input_prefilter_plan.py`, `load_json_artifact`, `finance_discrepancy_resolver.py`, `finance_sql_primary_migration_plan.py`, `rsi_outcome_scorecard.py`, `macro_event_calendar.py`, `fundamental_metrics_refresh.py`, `morning_paper_deployment_recommendation_builder.py`, `tier_a_intraday_opportunity_probe.py`, `actionable_improvement_queue.py`, `wf75_customer_safe_pdf_renderer.py`, `wf88_script_cleanup_inventory.py`, `weekly_macro_snapshot.py`, `coding_runtime_kpi_probe.py`, `build_report`, `finance_sql_consumer_migration_burndown.py`, `finance_recommendation_history_ledger.py`, `macro_energy_supply_ingest.py`, `otel_recommendation_closeout.py`, `pm_control_summary_packet.py`, `reference_levels_wf78_retirement_migration_exception.py`, `reference_levels_goog_nvda_source_authority_decision.py`, `wf74_telemetry_critique_engine.py`, `legacy_state`, `sql_source_lineage_artifact_registry_repair.py`, `operators/apply_band_update.py`, `wf88_os2_control_packet.py`, `small_mid_cap_regime_feed.py`, `finance_delivery_series_orchestrator.py`, `learning_promotion_classifier.py`, `promotion_review_queue_reconciler.py`, `research_freshness_opportunity_review.py`, `veritas_finance_brief.py`, `cron_gpt54mini_canary_research.py`, `cron_notes_flattening_plan.py`, `finance_recommendation_regression_calibration.py`, `implementation_token_attribution_bridge.py`, `reference_levels_derived_refresh_dry_run.py`, `reference_levels_targeted_repair_packet.py`, `wf74_model_quality_collection_cron_runner.py`, `wf75_scenario_regression_matrix.py`, `wf88_followup_debt_triage_packet.py`, `auto_apply_entry_band_maintenance.py`, `post_close_control_digest.py`, `trade_grade_os_freshness_cron_runner.py`, `wf88_retired_surface_cleanup_plan.py`, `json_sql_promotion_index.py`, `wf75_pm_weekly_update.py`, `market_today_answer_packet.py`, `wf74_self_prompt_generator.py`, `core_live_surface_migration.py`, `wf75_internal_prototype_readiness.py`, `veritas_harness_scorecard.py`, `wf74_wf88_loop_trace_packet.py`, `wf78_tier_routing_event_ledger.py`, `reference_levels_expected_parity_validator.py`, `review_brief_report.py`, `capital_deployment_band_integrity_validator.py`, `market_data_utils.py`, `otel_learning_loop.py`, `wf78_deployment_readiness_human_review.py`, `wf75_cron_automation_authority_plan.py`, `band_hygiene_freshness_controller.py`, `finance_decision_performance_digest.py`, `prompt_book_registry.py`, `runtime_performance_scorecard.py`, `wf74_auto_patch_proposer.py`, `intraday_entry_watcher.py`, `wf87_autonomy_command_center.py`, `cron_redundancy_audit.py`, `db_lifecycle_manifest.py`, `otel_critical_review_decision_packet.py`, `macro_geopolitical_sweep.py`, `cleanup_autopilot_full_delete_readiness.py`, `current_regime_analog_matcher.py`, `model_quality_scorecard.py`, `otel_tool_workflow_metadata.py`, `weekly_printable_brief.py`, `agent_message_ledger_packet.py`, `model_learning_capture_approval_packet.py`, `go_sql_inprocess_driver_pilot_gate.py`, `otel_runtime_metadata_probe.py`, `current_window_artifact_index.py`, `human_facing_truth_surface.py`, `finance_decision_sync_spine.py`, `finance_response_quality_slice.py`, `main`, `tuesday_position_sizing_readiness.py`, `wf88_finance_query_friction_guard.py`, `agi_harness_readiness_packet.py`, `reference_band_note_sync.py`, `today_card_generator.py`, `token_efficiency_review_packet.py`, `wf75_monetization_training_pdf.py`, `finance_response_quality_repair_loop.py`, `finance_stack_snapshot.py`, `go_binary_freshness_guard.py`, `morning_control_digest.py`, `otel_drift_critical_review_loop.py`, `build_proof`, `sector_allocation_decision_matrix.py`, `sql_coverage_guard.py`, `wf75_operator_review_state.py`, `training_dataset_candidate_builder.py`, `capital_recommendation_slate_notifier.py`, `cron_operator_ledger.py`, `disciplined_band_staleness_notifier.py`, `macro_judgment_draft.py`, `weekly_intelligence_brief.py`, `model_learning_metadata_ledger.py`, `wf78_daily_movement_ledger.py`, `wf78_phase_runner.py`, `wf87_trade_decision_journal.py`, `wf88_route_contraction_packet.py`, `cleanup_autopilot_consolidated_prep.py`, `fundamental_ir_reconciliation_packets.py`, `market_open_repair_cadence.py`, `owner_gated_action_review_queue.py`, `pm1_pm3_finance_pipeline_runner.py`, `wf75_internal_service_run_loop.py`, `wf75_hvac_outreach_training_stack.py`, `wf87_paper_autonomy_runtime_governor.py`, `backup_rollback_delete_prep_packet.py`, `execution_board_canon_anchor_pilot.py`, `intraday_alert_outcome_link.py`, `premarket_snapshot.py`, `wf75_agent_training_pdf.py`, `wf78_review_monitor_source_open_gate.py`, `wf88_delete_readiness_packet.py`, `cron_retire_merge_candidates.py`, `finance_recommendation_correctness_ledger.py`, `official_earnings_bridge.py`, `orphan_transcript_inventory_packet.py`, `sql_canon_migration_completion_runner.py`, `wf75_artifact_only_pm_handoff.py`, `wf86_daily_shadow_reconciliation_cron_runner.py`, `as_dict`, `wf88_typed_script_reference_graph.py`, `wf88_cron_disabled_job_reference_review.py`, `operators/band_note_sync.py`, `workspace_automation_approval_packet.py`, `cleanup_autopilot_phase1.py`, `wf75_customer_safe_excel_exporter.py`, `wf75_renderer_export_regression.py`, `wf78_small_mid_cap_scaleout_candidate_pass.py`?**
+- **Why does `atomic_write_json()` connect `atomic_write_json` to `concurrent_lane_manager.py`, `wf88_wiki_synthesis_packet.py`, `probability_readiness_validator.py`, `wf78_daily_freshness_loop.py`, `interactive_training_builder.py`, `wf55_outcome_ledger_v2.py`, `coding_outcome_ledger.py`, `status_card_packet.py`, `wf74_decision_docket.py`, `helper_lane_manifest.py`, `market_execution_readiness_cron_hardening.py`, `test_implementation_release_contract.py`, `token_usage_ledger.py`, `macro_metrics_ingest.py`, `project_implementation_router.py`, `frontier_capability_eval_spine.py`, `wf78_auto_tier_router.py`, `wf78_route_ticker.py`, `portfolio_mutation_proposal_generator.py`, `cron_runner_guardrails.py`, `finance_market_deployment_operating_loop.py`, `python_go_sql_consumer_authority_dashboard_ab.py`, `wf78_101_200_provider_source_validation.py`, `finance_intelligence_state.py`, `improvement_ledger.py`, `canonical_finance_data_plane.py`, `finance_agent_work_queue.py`, `trade_grade_full_answer_assembler.py`, `wf75_service_state_sqlite.py`, `finance_decision_factory.py`, `generic_intelligence_saas_pivot.py`, `session_resume_checkpoint.py`, `wf74_improvement_opportunity_queue.py`, `wf74_learning_loop_telegram_digest.py`, `pm_job_worker_runner.py`, `alpaca_paper_position_sql_refresh.py`, `macro_signal_spine.py`, `wf85_paper_deployment_notification_digest.py`, `wf75_operator_delivery_gate.py`, `wf78_tier_a_competitive_promotion_gate.py`, `cleanup_autopilot_family_packets.py`, `finance_sql_canon_access.py`, `daily_executive_brief.py`, `model_run_ledger.py`, `pm_autonomy_dispatcher.py`, `pm_program_state.py`, `daily_review_objects.py`, `token_efficiency_scorecard.py`, `cron_patch_manager.py`, `chain_executor.py`, `finance_recommendation_lookback_engine.py`, `pm_implementation_job_queue.py`, `main_session_escalation_consumer.py`, `cleanup_autopilot_full_approved_apply.py`, `load_json_artifact`, `tier_a_intraday_opportunity_probe.py`, `rsi_outcome_scorecard.py`, `fundamental_metrics_refresh.py`, `morning_paper_deployment_recommendation_builder.py`, `otel_ops_control.py`, `authority_matrix.py`, `finance_sql_canon.py`, `workbook_export.py`, `actionable_improvement_queue.py`, `build_payload`, `long_work_packet_linter.py`, `post_close_review_cron_runner.py`, `weekly_macro_snapshot.py`, `wf74_autonomy_work_router.py`, `ticker_data_repair_controller.py`, `alpaca_order_preview_generator.py`, `automation_stack_hardening_pass.py`, `sector_expansion_board.py`, `wf78_wf85_conversion_bridge.py`, `wf88_decision_compiler.py`, `finance_recommendation_history_ledger.py`, `implementation_completion_ledger.py`, `reference_levels_wf78_retirement_migration_exception.py`, `build_payload`, `cron_freshness_spine.py`, `reference_levels_goog_nvda_source_authority_decision.py`, `wf74_telemetry_critique_engine.py`, `legacy_state`, `wf88_disabled_cron_delete_microbatch_apply.py`, `sql_source_lineage_artifact_registry_repair.py`, `wf78_100_to_200_candidate_manifest.py`, `wf78_500_ticker_reputation_gate.py`, `wf88_os2_control_packet.py`, `small_mid_cap_regime_feed.py`, `trade_grade_decision_cards.py`, `pipeline_state_consistency_check.py`, `weekday_morning_review_cron_runner.py`, `wf78_tier_c_to_b_auto_promotion_pipeline.py`, `board_state_contract.py`, `daily_price_trend_signals.py`, `finance_delivery_series_orchestrator.py`, `learning_promotion_classifier.py`, `promotion_review_queue_reconciler.py`, `research_freshness_opportunity_review.py`, `sql_canon_migration_phase_executor.py`, `veritas_finance_brief.py`, `wf78_capital_review_queue.py`, `band_refresh.py`, `finance_recommendation_regression_calibration.py`, `implementation_token_attribution_bridge.py`, `reference_levels_derived_refresh_dry_run.py`, `reference_levels_targeted_repair_packet.py`, `run_summary_refresh.py`, `wf67_stale_paper_artifact_archive_apply.py`, `wf74_model_quality_collection_cron_runner.py`, `wf75_scenario_regression_matrix.py`, `workflow_advancement_scorecard.py`, `wf88_followup_debt_triage_packet.py`, `alpaca_paper_order_history_classifier.py`, `auto_apply_entry_band_maintenance.py`, `deployment_readiness_surface.py`, `post_close_control_digest.py`, `ticker_card_freshness_owner_runner.py`, `trade_grade_os_freshness_cron_runner.py`, `wf78_opportunity_refresh_controller.py`, `wf88_retired_surface_cleanup_plan.py`, `json_sql_promotion_index.py`, `market_state_refresh.py`, `market_today_answer_packet.py`, `pm_control_packet.py`, `tier_a_fundamental_enrichment_pass.py`, `wf74_self_prompt_generator.py`, `market_data_utils.py`, `core_live_surface_migration.py`, `escalation_trigger.py`, `in_band_review_attention_bridge.py`, `main_session_greenkeeper_controller.py`, `wf75_internal_prototype_readiness.py`, `wf77_supplemental_price_evidence.py`, `wf86_shadow_eligibility_validator.py`, `wf87_shadow_outcome_scorecard.py`, `build_rollup`, `veritas_harness_scorecard.py`, `wf74_wf88_loop_trace_packet.py`, `wf78_101_200_candidate_source_registry.py`, `wf78_tier_routing_event_ledger.py`, `capital_deployment_band_integrity_validator.py`, `chief_intelligence_promotion_gate.py`, `cron_signal_scorecard.py`, `macro_regime_refresh.py`, `otel_learning_loop.py`, `reference_levels_derived_refresh_apply.py`, `wf75_service_state.py`, `wf78_deployment_readiness_human_review.py`, `wf78_live_pilot_import_gate.py`, `implementation_validator_modularization_plan.py`, `band_hygiene_freshness_controller.py`, `finance_decision_performance_digest.py`, `prompt_book_registry.py`, `runtime_performance_scorecard.py`, `ticker_monitoring_performance.py`, `tier_ab_band_freshness_cron_guard.py`, `trade_grade_repair_conveyor.py`, `wf74_auto_patch_proposer.py`, `wf85_intraday_review_overlay.py`, `wf87_autonomy_command_center.py`, `wf77_price_freshness_bridge.py`, `wf78_official_source_discovery_runner.py`, `cron_redundancy_audit.py`, `db_lifecycle_manifest.py`, `otel_critical_review_decision_packet.py`, `wf85_paper_deployment_telegram_notifier.py`, `wf87_runtime_gate_explanation.py`, `wf78_sql_readiness_index.py`, `autonomy_spine_readiness_rollup.py`, `cleanup_autopilot_full_delete_readiness.py`, `current_regime_analog_matcher.py`, `interactive_training_xapi_ledger.py`, `otel_tool_workflow_metadata.py`, `parallel_lane_recommender.py`, `workflow_router.py`, `wf87_market_hours_gate_probe.py`, `wf78_100_ticker_import_gate.py`, `wf78_promotion_visibility_top10.py`, `wf85_deployment_timing_gate.py`, `workbook_template.py`, `model_quality_scorecard.py`, `agent_message_ledger_packet.py`, `go_sql_inprocess_driver_pilot_gate.py`, `main_session_action_executor.py`, `backup_sqlite_database`, `market_intelligence_event_router.py`, `otel_runtime_metadata_probe.py`, `pm_main_session_handoff.py`, `sql_canon_phase2_backfill.py`, `wf74_response_self_review_sampler.py`, `wf78_missing_band_context_repair.py`, `wf87_assisted_paper_cadence.py`, `wf78_101_200_import_decision_packet.py`, `wf78_position_sizing_surface_review.py`, `wf78_routing_dashboard.py`, `wf78_tier_c_attention_evidence_repair_bridge.py`, `wf78_tier_promotion_review_gate.py`, `wf85_market_hours_refresh_readiness.py`, `trade_grade_os_readiness_rollup.py`, `autonomous_card_authority_audit.py`, `cleanup_autopilot_phase1_apply.py`, `current_window_artifact_index.py`, `finance_data_coverage.py`, `finance_decision_sync_spine.py`, `finance_response_quality_slice.py`, `pm_execution_loop.py`, `production_scope_schema_retirement_plan.py`, `research_freshness_opportunity_cron_runner.py`, `sql_canon_front_door_readiness_packet.py`, `tuesday_position_sizing_readiness.py`, `wf78_evidence_family_repair_runner.py`, `wf78_tier_weighted_freshness_resolver.py`, `wf78_source_capture_requirements_queue.py`, `wf85_decision_os_review_packet.py`, `wf85_retirement_gate_adjudication.py`, `wf88_finance_query_friction_guard.py`, `agi_harness_readiness_packet.py`, `artifact_intelligence_action_scorer.py`, `autonomous_routing_deployment_cards.py`, `cleanup_autopilot_stale_text_apply.py`, `reference_band_note_sync.py`, `wf55_autonomy_outcome_ledger.py`, `test_wf75_service_led_saas_readiness_plan.py`, `today_card_generator.py`, `token_efficiency_review_packet.py`, `wf75_monetization_training_pdf.py`, `wf78_tier_semantics_guard.py`, `canonical_finance_data_plane_contract.py`, `finance_response_quality_repair_loop.py`, `finance_stack_snapshot.py`, `go_binary_freshness_guard.py`, `morning_control_digest.py`, `operating_leverage_spine.py`, `otel_drift_critical_review_loop.py`, `build_proof`, `sector_allocation_decision_matrix.py`, `sql_coverage_guard.py`, `wf75_operator_review_state.py`, `wf78_ticker_freshness_ledger.py`, `tier_c_band_status_refresh.py`, `training_dataset_candidate_builder.py`, `wf85_paper_deployment_telegram_cron_runner.py`, `capital_recommendation_slate_notifier.py`, `cron_operator_ledger.py`, `disciplined_band_staleness_notifier.py`, `legacy_audit_root_cleanup_apply.py`, `macro_judgment_draft.py`, `weekly_intelligence_brief.py`, `model_learning_metadata_ledger.py`, `retail_automation_control_plane.py`, `sql_canon_consumer_registry_sync.py`, `sql_canon_parallel_phase_executor.py`, `wf74_self_audit_cadence_packet.py`, `wf78_daily_movement_ledger.py`, `wf74_prompt_variant_ledger.py`, `wf78_funnel_owner_decision_packet.py`, `wf78_phase_runner.py`, `wf78_tier_c_attention_trigger.py`, `wf78_tier_capacity_policy_gate.py`, `wf85_opportunity_visibility_queue.py`, `wf88_route_contraction_packet.py`, `cleanup_autopilot_consolidated_prep.py`, `finance_evidence_warning_router.py`, `fundamental_ir_reconciliation_packets.py`, `market_open_repair_cadence.py`, `owner_gated_action_review_queue.py`, `parallel_repeatable_work_orchestrator.py`, `pm1_pm3_finance_pipeline_runner.py`, `wf75_internal_service_run_loop.py`, `wf78_production_tier_adjudication.py`, `wf73_postgres_shadow_pilot.py`, `wf75_hvac_outreach_training_stack.py`, `wf78_macro_thesis_overlay_gate.py`, `wf78_source_open_repair_executor.py`, `startup_brief_packet.py`, `wf87_paper_autonomy_runtime_governor.py`, `full_intelligence_answer_parity.py`, `backup_rollback_delete_prep_packet.py`, `disciplined_reference_levels_migration.py`, `execution_board_canon_anchor_pilot.py`, `guard_context`, `finance_production_scope.py`, `handoff_first_proof_gate.py`, `intraday_alert_outcome_link.py`, `wf67_legacy_radar_archive_readiness.py`, `wf75_agent_training_pdf.py`, `wf78_review_monitor_source_open_gate.py`, `wf78_source_artifact_capture_review.py`, `wf78_ticker_card_field_repair_apply.py`, `wf78_tier_c_opportunity_scoreboard.py`, `wf78_truth_layer_map.py`, `wf88_delete_readiness_packet.py`, `bank_native_sec_concept_probe.py`, `finance_recommendation_correctness_ledger.py`, `official_earnings_bridge.py`, `orphan_transcript_archive_apply.py`, `orphan_transcript_inventory_packet.py`, `python_go_source_truth_parity_validator_promotion_gate.py`, `sql_canon_migration_completion_runner.py`, `stale_paper_card_reference_guard.py`, `tmp_cleanup.py`, `wf75_artifact_only_pm_handoff.py`, `veritas_question_router.py`, `cron_main_session_usage_metadata.py`, `Path`, `wf78_tier_a_reference_band_proposals.py`, `wf85_production_blocker_repair.py`, `wf86_daily_shadow_reconciliation_cron_runner.py`, `wf87_approval_freshness_ttl.py`, `wf88_cron_retired_job_inventory.py`, `wf88_typed_script_reference_graph.py`, `wf88_cron_disabled_job_reference_review.py`, `operators/band_note_sync.py`, `workspace_automation_approval_packet.py`, `cleanup_autopilot_phase1.py`, `lane_collision_preflight.py`, `wf75_customer_safe_excel_exporter.py`, `md_finance_structured_drift_lint.py`, `parallel_operator_visibility.py`, `post_apply_board_snapshot_config_coherence.py`, `post_close_final_quote_ledger.py`, `response_recommendation_contract_lint.py`, `wf75_renderer_export_regression.py`, `vector_memory_graph_packet.py`, `wf73_control_plane_audit.py`, `wf78_daily_freshness_cron_runner.py`, `wf78_legacy_label_retirement_guard.py`, `wf78_sec_reconciliation_scaler.py`, `wf78_small_mid_cap_scaleout_candidate_pass.py`, `wf78_source_open_patch_orchestrator.py`, `wf78_tier_b_final_promotion_packet.py`, `atomic_write_text`, `wf87_intraday_monitor.py`, `artifact_staleness_explainer.py`, `auto_apply_position_sizing_semantic_sync.py`, `cron_escalation_decision_router.py`, `current_opportunity_approval_brief.py`, `finance_human_notes_thinning_candidates.py`, `finance_predictive_learning_loop.py`, `workflow_control.py`, `python_go_finance_human_notes_sql_check_promotion_gate.py`, `python_go_sql_helper_contract_gate.py`, `python_go_sql_helper_fallback_removal_readiness_gate.py`, `retail_automation_control_plane_cron_runner.py`, `retail_saas_customer_output_validator.py`, `retail_truth_routing_contract.py`, `snapshot_contract_check.py`, `wf75_ai_drop_service_demo.py`, `wf88_wiki_refresh_cron_gate.py`, `worktree_checkpoint_planner.py`, `tmp_python_helper_archive_apply.py`, `validate_fundamental_metrics.py`, `wf78_contract_state_guard.py`, `interactive_training_catalog_builder.py`, `wf78_tier_c_hold_recheck.py`, `wf88_db_duplicate_source_delete_packet.py`, `wf88_source_open_residue_classifier.py`, `agi_os_eval_gate_packet.py`, `autonomy_spine_promotion_contract.py`, `cron_efficiency_review_runner.py`, `cron_reduction_inventory.py`, `runtime_expansion_pilot.py`, `finance_os_noncapital_expansion_packet.py`, `canonical_finance_data_plane_phase6_10.py`, `pm_post_repair_quiescence_refresh.py`, `python_go_source_truth_manifest_parity.py`, `python_go_source_truth_parity_validator_parity.py`, `python_go_sql_helper_retirement_gate.py`, `python_go_sql_migration_candidates.py`, `retail_saas_fixture_demo.py`, `validator_timing_ledger.py`, `wf74_operating_control_loop.py`, `wf74_source_open_recurrence_guard.py`, `tier_a_trade_grade_coverage_gate.py`, `tmp_python_helper_archive_packet.py`, `wf75_pm_readiness_pdf.py`, `wf75_training_desk.py`, `wf78_deployment_readiness_review.py`, `wf78_event_triggered_rerouting.py`, `wf78_evidence_repair_batch_runner.py`, `wf78_owner_lineage_proposal.py`, `wf78_position_sizing_integration_proposal.py`, `wf78_sql_phase2_readiness.py`, `wf88_tmp_delete_microbatch_apply.py`, `breadth_refresh.py`, `cron_changed_input_prefilter_plan.py`, `dream_review_packet.py`, `finance_discrepancy_resolver.py`, `finance_sql_primary_migration_plan.py`, `macro_event_calendar.py`, `python_go_sql_helper_default_route_history_gate.py`, `python_go_sql_parity_check.py`, `sec_env_audit_validator.py`, `sql_canon_tier_routing_refresh.py`, `sunday_research_opportunity_reset_cron_runner.py`, `ticker_answer_packet_versioned_archive_packet.py`, `trade_grade_decision_os_contract.py`, `wf75_customer_safe_pdf_renderer.py`, `wf78_101_200_tier_c_import_gate.py`, `wf78_pilot_contract_gate.py`, `wf78_pilot_provider_runtime_probe.py`, `wf78_promotion_owner_lineage_queue.py`, `wf88_script_cleanup_inventory.py`, `coding_runtime_kpi_probe.py`, `cron_cadence_reduction_plan.py`, `efficiency_cohort_ledger.py`, `build_report`, `ticker_answer_packet_retirement_plan.py`, `finance_sql_consumer_migration_burndown.py`, `helper_spawn_packets.py`, `human_canon_thinning_retirement_inventory.py`, `macro_energy_supply_ingest.py`, `otel_recommendation_closeout.py`, `pm_control_summary_packet.py`, `python_go_sql_consumer_authority_guard_parity.py`, `skill_core_proof_tier_audit.py`, `sql_canon_consumer_cutover_apply.py`, `sql_field_family_canon_promotion_apply.py`, `sql_first_consumer_wiring_preflight.py`, `wf78_source_open_work_packet.py`, `tier_a_late_session_opportunity_cron_runner.py`, `tmp_lifecycle_guard.py`, `validate_official_earnings_bridge.py`, `wf78_official_registry_apply_preview.py`, `wf78_tier_b_evidence_repair.py`, `operators/apply_band_update.py`, `cron_execution_posture_patch.py`, `full_workspace_delete_readiness.py`, `python_go_sql_helper_demotion_queue.py`, `python_go_sql_helper_go_primary_history_gate.py`, `build_report`, `summary_brief_packet.py`, `truth_surface_inventory.py`, `capital_deployment_recommendation_validator.py`, `wf72_a2_fallback_fixture.py`, `wf78_open_ready_owner_review_cron_runner.py`, `wf78_tier_label_decision_register.py`, `wf88_daily_actionability_refresh.py`, `cron_gpt54mini_canary_research.py`, `cron_notes_flattening_plan.py`, `execution_board_canon_anchor_drift_validator.py`, `finance_cache_cleanup_readiness.py`, `wf86_shadow_decision_ledger.py`, `local_audio_transcriber.py`, `pm_sidecar_retirement_guard.py`, `pm_value_added_summary.py`, `python_go_sql_500_expansion_gate_parity.py`, `python_go_sql_helper_demotion_readiness_gate.py`, `sector_allocation_decision_matrix_cron_runner.py`, `sql_canon_migration_master_plan.py`, `wf78_tier_b_research_packet.py`, `test_run_summary_tail_order.py`, `ticker_answer_packet_archive_apply.py`, `tmp_lifecycle_phase2_6_delete_apply.py`, `veritas_harness_failure_classifier.py`, `wf74_cron_duplication_audit.py`, `wf75_pm_weekly_update.py`, `wf78_enrichment_orchestrator.py`, `wf78_live_pilot_preflight.py`, `wf78_official_registry_proposal.py`, `wf78_ph_owner_review_candidate_packet.py`, `wf78_tier_a_invalidation_review_queue.py`, `wf78_tier_a_owner_readiness_proposal.py`, `as_dict`, `workflow_hygiene_check.py`, `control_closeout_bundle.py`, `core_folders_flattening_watchdog.py`, `finance_production_grade_policy_gate.py`, `wiki_bootstrap_validator.py`, `finance_human_notes_archive_apply.py`, `finance_sql_canon_archive_apply.py`, `heartbeat_priority_handoff.py`, `python_go_durable_output_parity_repeated_gate.py`, `python_go_sql_helper_controlled_router_batch.py`, `python_go_sql_helper_default_route_promotion.py`, `wf78_clean_tier_roster.py`, `reference_levels_expected_parity_validator.py`, `review_brief_report.py`, `security_warning_ledger.py`, `skill_git_checkpoint.py`, `sql_canon_rollback_rehearsal.py`, `active_sql_canon_approved_keys`, `tmp_lifecycle_delete_proposal.py`, `today_card_validator.py`, `wf75_cron_automation_authority_plan.py`, `wf78_evidence_drag_reducer.py`, `wf78_tier_a_final_promotion_packet.py`, `wf78_tier_label_apply_closeout.py`, `wf78_tier_label_sync_preview.py`, `archive_delete_apply.py`, `archive_manual_delete_review.py`, `db_lifecycle_archive_apply.py`, `finance_backup_retention_packet.py`, `intraday_entry_watcher.py`, `python_go_wf78_sql_phase2_readiness_parity.py`, `pm_value_added_register.py`, `python_go_finance_human_notes_sql_check_parity.py`, `python_go_finance_universe_validation_parity.py`, `retail_customer_output_decision_packet.py`, `sql_canon_consumer_inventory.py`, `sql_canon_phase2_schema_contract_guard.py`, `macro_geopolitical_sweep.py`, `sql_retail_grade_automation_gate.py`, `veritas_pm_department_validate.py`, `weekly_printable_brief.py`, `wf78_repair_debt_scoreboard.py`, `automation_trust_block.py`, `core_folders_archive_apply.py`, `finance_sql_markdown_field_ownership.py`, `full_workspace_generated_residue_delete_apply.py`, `legacy_42_no_runtime_imports_guard.py`, `cron_control_packet.py`, `backup_rollback_delete_apply.py`, `model_learning_capture_approval_packet.py`, `paper_pilot_status_surface.py`, `sql_canon_shadow_backfill_validator.py`, `finance_cache_frontdoor.py`, `tier_a_cohort_alignment_reconciliation.py`, `tmp_lifecycle_phase1_delete_apply.py`, `wf78_scaleout_policy_dry_run.py`, `codex_app_server_timeout_diagnostics.py`, `fast_path_qa.py`, `full_archive_delete_apply.py`, `human_facing_truth_surface.py`, `macro_inputs_refresh_cron_runner.py`, `main`, `legacy_42_full_archive_packet.py`, `validate_fundamental_ir_reconciliation.py`, `veritas_technical_pass_validate.py`, `wf72_a2_fallback_fixture_prep.py`, `helper_completion_handshake.py`, `archive_delete_readiness_plan.py`, `swarm_completion_handshake.py`, `repeatable_work_closeout.py`, `interactive_training_scorm_smoke_validator.py`, `test_wf87_approval_freshness_ttl.py`, `test_wf87_intraday_monitor.py`, `official_ir_source_inventory_validator.py`, `wf75_scenario_template_library.py`, `wf78_routing_delta.py`, `wf78_tier_funnel_promotion_gate.py`, `python_go_sql_consumer_authority_controlled_router.py`, `wf75_closeout_refresh.py`, `reference_levels_band_proposals_source_migration.py`, `boot_surface_size_guard.py`, `python_go_sql_consumer_authority_demotion_dry_run.py`, `interactive_training_qa_validator.py`, `wf78_batch_manifest.py`, `build`, `wf78_next_owner_review_and_source_capture_integration.py`, `python_go_finance_data_coverage_probe_parity.py`, `wf78_tier_funnel_contract.py`, `sql_canon_answer_path_ab_harness.py`?**
+  _High betweenness centrality (0.307) - this node is a cross-community bridge._
+- **Why does `load_json_artifact()` connect `load_json_artifact` to `concurrent_lane_manager.py`, `wf88_wiki_synthesis_packet.py`, `probability_readiness_validator.py`, `wf78_daily_freshness_loop.py`, `status_card_packet.py`, `wf74_decision_docket.py`, `market_execution_readiness_cron_hardening.py`, `test_implementation_release_contract.py`, `token_usage_ledger.py`, `macro_metrics_ingest.py`, `Any`, `project_implementation_router.py`, `artifact_index.py`, `wf78_auto_tier_router.py`, `wf78_route_ticker.py`, `portfolio_mutation_proposal_generator.py`, `cron_runner_guardrails.py`, `finance_market_deployment_operating_loop.py`, `python_go_sql_consumer_authority_dashboard_ab.py`, `wf78_101_200_provider_source_validation.py`, `finance_intelligence_state.py`, `improvement_ledger.py`, `canonical_finance_data_plane.py`, `dashboard_payload.py`, `finance_agent_work_queue.py`, `trade_grade_full_answer_assembler.py`, `wf75_service_state_sqlite.py`, `finance_decision_factory.py`, `session_resume_checkpoint.py`, `wf74_improvement_opportunity_queue.py`, `wf74_learning_loop_telegram_digest.py`, `pm_job_worker_runner.py`, `macro_signal_spine.py`, `wf85_paper_deployment_notification_digest.py`, `wf75_operator_delivery_gate.py`, `wf78_tier_a_competitive_promotion_gate.py`, `cleanup_autopilot_family_packets.py`, `model_run_ledger.py`, `pm_autonomy_dispatcher.py`, `pm_program_state.py`, `daily_review_objects.py`, `token_efficiency_scorecard.py`, `cron_patch_manager.py`, `finance_recommendation_lookback_engine.py`, `pm_implementation_job_queue.py`, `main_session_escalation_consumer.py`, `tier_a_intraday_opportunity_probe.py`, `fundamental_metrics_refresh.py`, `morning_paper_deployment_recommendation_builder.py`, `otel_ops_control.py`, `authority_matrix.py`, `workbook_export.py`, `actionable_improvement_queue.py`, `long_work_packet_linter.py`, `post_close_review_cron_runner.py`, `wf74_autonomy_work_router.py`, `ticker_data_repair_controller.py`, `alpaca_order_preview_generator.py`, `automation_stack_hardening_pass.py`, `sector_expansion_board.py`, `wf78_wf85_conversion_bridge.py`, `implementation_completion_ledger.py`, `build_payload`, `cron_freshness_spine.py`, `atomic_write_json`, `wf74_telemetry_critique_engine.py`, `legacy_state`, `wf88_disabled_cron_delete_microbatch_apply.py`, `wf78_100_to_200_candidate_manifest.py`, `wf78_500_ticker_reputation_gate.py`, `wf88_os2_control_packet.py`, `small_mid_cap_regime_feed.py`, `trade_grade_decision_cards.py`, `weekday_morning_review_cron_runner.py`, `wf78_tier_c_to_b_auto_promotion_pipeline.py`, `finance_delivery_series_orchestrator.py`, `learning_promotion_classifier.py`, `promotion_review_queue_reconciler.py`, `research_freshness_opportunity_review.py`, `veritas_finance_brief.py`, `wf78_capital_review_queue.py`, `finance_recommendation_regression_calibration.py`, `implementation_token_attribution_bridge.py`, `run_summary_refresh.py`, `wf67_stale_paper_artifact_archive_apply.py`, `wf74_model_quality_collection_cron_runner.py`, `wf75_scenario_regression_matrix.py`, `workflow_advancement_scorecard.py`, `wf88_followup_debt_triage_packet.py`, `alpaca_paper_order_history_classifier.py`, `post_close_control_digest.py`, `ticker_card_freshness_owner_runner.py`, `trade_grade_os_freshness_cron_runner.py`, `wf78_opportunity_refresh_controller.py`, `wf88_retired_surface_cleanup_plan.py`, `json_sql_promotion_index.py`, `market_state_refresh.py`, `market_today_answer_packet.py`, `tier_a_fundamental_enrichment_pass.py`, `wf74_self_prompt_generator.py`, `market_data_utils.py`, `escalation_trigger.py`, `in_band_review_attention_bridge.py`, `main_session_greenkeeper_controller.py`, `wf75_internal_prototype_readiness.py`, `wf77_supplemental_price_evidence.py`, `wf86_shadow_eligibility_validator.py`, `wf87_shadow_outcome_scorecard.py`, `build_rollup`, `veritas_harness_scorecard.py`, `wf74_wf88_loop_trace_packet.py`, `wf78_101_200_candidate_source_registry.py`, `wf78_tier_routing_event_ledger.py`, `capital_deployment_band_integrity_validator.py`, `chief_intelligence_promotion_gate.py`, `cron_signal_scorecard.py`, `macro_regime_refresh.py`, `otel_learning_loop.py`, `wf75_service_state.py`, `wf78_deployment_readiness_human_review.py`, `wf78_live_pilot_import_gate.py`, `implementation_validator_modularization_plan.py`, `band_hygiene_freshness_controller.py`, `runtime_performance_scorecard.py`, `ticker_monitoring_performance.py`, `tier_ab_band_freshness_cron_guard.py`, `trade_grade_repair_conveyor.py`, `wf74_auto_patch_proposer.py`, `wf85_intraday_review_overlay.py`, `wf87_autonomy_command_center.py`, `wf77_price_freshness_bridge.py`, `wf78_official_source_discovery_runner.py`, `cron_redundancy_audit.py`, `otel_critical_review_decision_packet.py`, `wf85_paper_deployment_telegram_notifier.py`, `wf87_runtime_gate_explanation.py`, `wf78_sql_readiness_index.py`, `autonomy_spine_readiness_rollup.py`, `cleanup_autopilot_full_delete_readiness.py`, `current_regime_analog_matcher.py`, `otel_tool_workflow_metadata.py`, `parallel_lane_recommender.py`, `workflow_router.py`, `wf87_market_hours_gate_probe.py`, `wf78_100_ticker_import_gate.py`, `wf78_promotion_visibility_top10.py`, `wf85_deployment_timing_gate.py`, `model_quality_scorecard.py`, `agent_message_ledger_packet.py`, `go_sql_inprocess_driver_pilot_gate.py`, `main_session_action_executor.py`, `market_intelligence_event_router.py`, `otel_runtime_metadata_probe.py`, `pm_main_session_handoff.py`, `wf78_missing_band_context_repair.py`, `wf87_assisted_paper_cadence.py`, `wf78_101_200_import_decision_packet.py`, `wf78_position_sizing_surface_review.py`, `wf78_routing_dashboard.py`, `wf78_tier_c_attention_evidence_repair_bridge.py`, `wf78_tier_promotion_review_gate.py`, `wf85_market_hours_refresh_readiness.py`, `trade_grade_os_readiness_rollup.py`, `autonomous_card_authority_audit.py`, `cleanup_autopilot_phase1_apply.py`, `current_window_artifact_index.py`, `finance_data_coverage.py`, `finance_decision_sync_spine.py`, `finance_response_quality_slice.py`, `pm_execution_loop.py`, `research_freshness_opportunity_cron_runner.py`, `tuesday_position_sizing_readiness.py`, `wf78_evidence_family_repair_runner.py`, `wf78_tier_weighted_freshness_resolver.py`, `wf78_source_capture_requirements_queue.py`, `wf85_decision_os_review_packet.py`, `wf85_retirement_gate_adjudication.py`, `wf88_finance_query_friction_guard.py`, `agi_harness_readiness_packet.py`, `artifact_intelligence_action_scorer.py`, `autonomous_routing_deployment_cards.py`, `cleanup_autopilot_stale_text_apply.py`, `wf55_autonomy_outcome_ledger.py`, `today_card_generator.py`, `token_efficiency_review_packet.py`, `wf78_tier_semantics_guard.py`, `canonical_finance_data_plane_contract.py`, `finance_response_quality_repair_loop.py`, `finance_stack_snapshot.py`, `morning_control_digest.py`, `operating_leverage_spine.py`, `otel_drift_critical_review_loop.py`, `sector_allocation_decision_matrix.py`, `wf75_operator_review_state.py`, `wf78_ticker_freshness_ledger.py`, `tier_c_band_status_refresh.py`, `training_dataset_candidate_builder.py`, `wf85_paper_deployment_telegram_cron_runner.py`, `capital_recommendation_slate_notifier.py`, `cron_operator_ledger.py`, `disciplined_band_staleness_notifier.py`, `macro_judgment_draft.py`, `model_learning_metadata_ledger.py`, `retail_automation_control_plane.py`, `wf74_self_audit_cadence_packet.py`, `wf78_daily_movement_ledger.py`, `wf74_prompt_variant_ledger.py`, `wf78_funnel_owner_decision_packet.py`, `wf78_phase_runner.py`, `wf78_tier_c_attention_trigger.py`, `wf78_tier_capacity_policy_gate.py`, `wf85_opportunity_visibility_queue.py`, `wf87_trade_decision_journal.py`, `wf88_route_contraction_packet.py`, `finance_evidence_warning_router.py`, `fundamental_ir_reconciliation_packets.py`, `market_open_repair_cadence.py`, `owner_gated_action_review_queue.py`, `parallel_repeatable_work_orchestrator.py`, `pm1_pm3_finance_pipeline_runner.py`, `wf75_internal_service_run_loop.py`, `wf78_production_tier_adjudication.py`, `wf73_postgres_shadow_pilot.py`, `wf75_hvac_outreach_training_stack.py`, `wf78_macro_thesis_overlay_gate.py`, `wf78_source_open_repair_executor.py`, `startup_brief_packet.py`, `wf87_paper_autonomy_runtime_governor.py`, `guard_context`, `finance_production_scope.py`, `handoff_first_proof_gate.py`, `intraday_alert_outcome_link.py`, `wf67_legacy_radar_archive_readiness.py`, `wf78_review_monitor_source_open_gate.py`, `wf78_source_artifact_capture_review.py`, `wf78_ticker_card_field_repair_apply.py`, `wf78_tier_c_opportunity_scoreboard.py`, `wf78_truth_layer_map.py`, `wf88_delete_readiness_packet.py`, `bank_native_sec_concept_probe.py`, `finance_recommendation_correctness_ledger.py`, `python_go_source_truth_parity_validator_promotion_gate.py`, `stale_paper_card_reference_guard.py`, `state_history_capture.py`, `wf75_artifact_only_pm_handoff.py`, `veritas_question_router.py`, `wf78_tier_a_reference_band_proposals.py`, `wf85_production_blocker_repair.py`, `wf86_daily_shadow_reconciliation_cron_runner.py`, `wf87_approval_freshness_ttl.py`, `wf88_cron_retired_job_inventory.py`, `wf88_typed_script_reference_graph.py`, `wf88_cron_disabled_job_reference_review.py`, `workspace_automation_approval_packet.py`, `cleanup_autopilot_phase1.py`, `lane_collision_preflight.py`, `wf75_customer_safe_excel_exporter.py`, `parallel_operator_visibility.py`, `post_apply_board_snapshot_config_coherence.py`, `post_close_final_quote_ledger.py`, `wf75_renderer_export_regression.py`, `vector_memory_graph_packet.py`, `wf73_control_plane_audit.py`, `wf78_daily_freshness_cron_runner.py`, `wf78_legacy_label_retirement_guard.py`, `wf78_sec_reconciliation_scaler.py`, `wf78_small_mid_cap_scaleout_candidate_pass.py`, `wf78_source_open_patch_orchestrator.py`, `wf78_tier_b_final_promotion_packet.py`, `wf87_intraday_monitor.py`, `artifact_staleness_explainer.py`, `cron_escalation_decision_router.py`, `finance_predictive_learning_loop.py`, `workflow_control.py`, `python_go_finance_human_notes_sql_check_promotion_gate.py`, `python_go_sql_helper_contract_gate.py`, `python_go_sql_helper_fallback_removal_readiness_gate.py`, `retail_automation_control_plane_cron_runner.py`, `retail_saas_customer_output_validator.py`, `retail_truth_routing_contract.py`, `wf75_ai_drop_service_demo.py`, `wf88_wiki_refresh_cron_gate.py`, `tmp_python_helper_archive_apply.py`, `validate_fundamental_metrics.py`, `wf78_contract_state_guard.py`, `wf78_tier_c_hold_recheck.py`, `wf88_source_open_residue_classifier.py`, `agi_os_eval_gate_packet.py`, `autonomy_spine_promotion_contract.py`, `cron_reduction_inventory.py`, `runtime_expansion_pilot.py`, `finance_os_noncapital_expansion_packet.py`, `canonical_finance_data_plane_phase6_10.py`, `pm_post_repair_quiescence_refresh.py`, `python_go_source_truth_manifest_parity.py`, `python_go_source_truth_parity_validator_parity.py`, `python_go_sql_helper_retirement_gate.py`, `python_go_sql_migration_candidates.py`, `retail_saas_fixture_demo.py`, `wf74_operating_control_loop.py`, `wf74_source_open_recurrence_guard.py`, `wf78_deployment_readiness_review.py`, `wf78_event_triggered_rerouting.py`, `wf78_evidence_repair_batch_runner.py`, `wf78_owner_lineage_proposal.py`, `wf78_position_sizing_integration_proposal.py`, `wf78_sql_phase2_readiness.py`, `wf88_tmp_delete_microbatch_apply.py`, `cron_changed_input_prefilter_plan.py`, `finance_discrepancy_resolver.py`, `macro_event_calendar.py`, `python_go_sql_helper_default_route_history_gate.py`, `python_go_sql_parity_check.py`, `sunday_research_opportunity_reset_cron_runner.py`, `ticker_answer_packet_versioned_archive_packet.py`, `trade_grade_decision_os_contract.py`, `wf75_customer_safe_pdf_renderer.py`, `wf78_101_200_tier_c_import_gate.py`, `wf78_pilot_contract_gate.py`, `wf78_pilot_provider_runtime_probe.py`, `wf78_promotion_owner_lineage_queue.py`, `wf88_script_cleanup_inventory.py`, `coding_runtime_kpi_probe.py`, `cron_cadence_reduction_plan.py`, `ticker_answer_packet_retirement_plan.py`, `helper_spawn_packets.py`, `human_canon_thinning_retirement_inventory.py`, `macro_energy_supply_ingest.py`, `otel_recommendation_closeout.py`, `pm_control_summary_packet.py`, `python_go_sql_consumer_authority_guard_parity.py`, `wf78_source_open_work_packet.py`, `tier_a_late_session_opportunity_cron_runner.py`, `tmp_lifecycle_guard.py`, `validate_official_earnings_bridge.py`, `wf78_official_registry_apply_preview.py`, `wf78_tier_b_evidence_repair.py`, `python_go_sql_helper_demotion_queue.py`, `python_go_sql_helper_go_primary_history_gate.py`, `regime_scoring_refresh.py`, `summary_brief_packet.py`, `truth_surface_inventory.py`, `wf72_a2_fallback_fixture.py`, `wf78_open_ready_owner_review_cron_runner.py`, `wf78_tier_label_decision_register.py`, `cron_gpt54mini_canary_research.py`, `cron_notes_flattening_plan.py`, `finance_cache_cleanup_readiness.py`, `wf86_shadow_decision_ledger.py`, `pm_value_added_summary.py`, `python_go_sql_500_expansion_gate_parity.py`, `python_go_sql_helper_demotion_readiness_gate.py`, `sector_allocation_decision_matrix_cron_runner.py`, `wf78_tier_b_research_packet.py`, `test_run_summary_tail_order.py`, `ticker_answer_packet_archive_apply.py`, `veritas_harness_failure_classifier.py`, `wf78_enrichment_orchestrator.py`, `wf78_live_pilot_preflight.py`, `wf78_official_registry_proposal.py`, `wf78_ph_owner_review_candidate_packet.py`, `wf78_tier_a_invalidation_review_queue.py`, `wf78_tier_a_owner_readiness_proposal.py`, `as_dict`, `control_closeout_bundle.py`, `wiki_bootstrap_validator.py`, `heartbeat_priority_handoff.py`, `python_go_durable_output_parity_repeated_gate.py`, `python_go_sql_helper_controlled_router_batch.py`, `python_go_sql_helper_default_route_promotion.py`, `wf78_clean_tier_roster.py`, `review_brief_report.py`, `security_warning_ledger.py`, `active_sql_canon_approved_keys`, `today_card_validator.py`, `wf78_evidence_drag_reducer.py`, `wf78_tier_a_final_promotion_packet.py`, `wf78_tier_label_apply_closeout.py`, `wf78_tier_label_sync_preview.py`, `python_go_wf78_sql_phase2_readiness_parity.py`, `pm_value_added_register.py`, `python_go_finance_human_notes_sql_check_parity.py`, `python_go_finance_universe_validation_parity.py`, `retail_customer_output_decision_packet.py`, `weekly_printable_brief.py`, `wf78_repair_debt_scoreboard.py`, `automation_trust_block.py`, `pm_control_reader.py`, `model_learning_capture_approval_packet.py`, `paper_pilot_status_surface.py`, `finance_cache_frontdoor.py`, `wf78_scaleout_policy_dry_run.py`, `fast_path_qa.py`, `human_facing_truth_surface.py`, `macro_inputs_refresh_cron_runner.py`, `legacy_42_full_archive_packet.py`, `validate_fundamental_ir_reconciliation.py`, `wf72_a2_fallback_fixture_prep.py`, `helper_completion_handshake.py`, `swarm_completion_handshake.py`, `wf78_routing_delta.py`, `wf78_tier_funnel_promotion_gate.py`, `python_go_sql_consumer_authority_demotion_dry_run.py`, `wf78_batch_manifest.py`, `wf78_next_owner_review_and_source_capture_integration.py`, `python_go_finance_data_coverage_probe_parity.py`, `wf78_tier_funnel_contract.py`, `cron_trust_block_consumer.py`?**
+  _High betweenness centrality (0.149) - this node is a cross-community bridge._
+- **Why does `atomic_write_text()` connect `atomic_write_text` to `wf88_wiki_synthesis_packet.py`, `probability_readiness_validator.py`, `interactive_training_builder.py`, `wf55_outcome_ledger_v2.py`, `auto_apply_position_sizing_semantic_sync.py`, `wf74_decision_docket.py`, `cron_escalation_decision_router.py`, `current_opportunity_approval_brief.py`, `finance_predictive_learning_loop.py`, `token_usage_ledger.py`, `macro_metrics_ingest.py`, `retail_saas_customer_output_validator.py`, `frontier_capability_eval_spine.py`, `wf75_ai_drop_service_demo.py`, `cron_runner_guardrails.py`, `finance_market_deployment_operating_loop.py`, `improvement_ledger.py`, `interactive_training_catalog_builder.py`, `wf88_source_open_residue_classifier.py`, `cron_efficiency_review_runner.py`, `wf75_service_state_sqlite.py`, `runtime_expansion_pilot.py`, `finance_os_noncapital_expansion_packet.py`, `wf74_improvement_opportunity_queue.py`, `capital_deployment_recommendation_report.py`, `retail_saas_fixture_demo.py`, `wf75_operator_delivery_gate.py`, `cleanup_autopilot_family_packets.py`, `wf74_operating_control_loop.py`, `daily_executive_brief.py`, `model_run_ledger.py`, `token_efficiency_scorecard.py`, `wf75_pm_readiness_pdf.py`, `wf75_training_desk.py`, `finance_recommendation_lookback_engine.py`, `build`, `cron_changed_input_prefilter_plan.py`, `load_json_artifact`, `finance_discrepancy_resolver.py`, `finance_sql_primary_migration_plan.py`, `rsi_outcome_scorecard.py`, `macro_event_calendar.py`, `fundamental_metrics_refresh.py`, `morning_paper_deployment_recommendation_builder.py`, `tier_a_intraday_opportunity_probe.py`, `actionable_improvement_queue.py`, `wf75_customer_safe_pdf_renderer.py`, `wf88_script_cleanup_inventory.py`, `weekly_macro_snapshot.py`, `coding_runtime_kpi_probe.py`, `build_report`, `finance_sql_consumer_migration_burndown.py`, `finance_recommendation_history_ledger.py`, `macro_energy_supply_ingest.py`, `otel_recommendation_closeout.py`, `pm_control_summary_packet.py`, `reference_levels_wf78_retirement_migration_exception.py`, `cron_freshness_spine.py`, `reference_levels_goog_nvda_source_authority_decision.py`, `wf74_telemetry_critique_engine.py`, `legacy_state`, `sql_source_lineage_artifact_registry_repair.py`, `operators/apply_band_update.py`, `wf88_os2_control_packet.py`, `small_mid_cap_regime_feed.py`, `board_state_contract.py`, `finance_delivery_series_orchestrator.py`, `learning_promotion_classifier.py`, `promotion_review_queue_reconciler.py`, `research_freshness_opportunity_review.py`, `veritas_finance_brief.py`, `cron_gpt54mini_canary_research.py`, `cron_notes_flattening_plan.py`, `finance_recommendation_regression_calibration.py`, `implementation_token_attribution_bridge.py`, `reference_levels_derived_refresh_dry_run.py`, `reference_levels_targeted_repair_packet.py`, `wf74_model_quality_collection_cron_runner.py`, `wf75_scenario_regression_matrix.py`, `wf88_followup_debt_triage_packet.py`, `auto_apply_entry_band_maintenance.py`, `post_close_control_digest.py`, `trade_grade_os_freshness_cron_runner.py`, `wf88_retired_surface_cleanup_plan.py`, `json_sql_promotion_index.py`, `wf75_pm_weekly_update.py`, `market_today_answer_packet.py`, `wf74_self_prompt_generator.py`, `market_data_utils.py`, `core_live_surface_migration.py`, `wf75_internal_prototype_readiness.py`, `veritas_harness_scorecard.py`, `wf74_wf88_loop_trace_packet.py`, `wf78_tier_routing_event_ledger.py`, `reference_levels_expected_parity_validator.py`, `review_brief_report.py`, `capital_deployment_band_integrity_validator.py`, `otel_learning_loop.py`, `wf78_deployment_readiness_human_review.py`, `wf75_cron_automation_authority_plan.py`, `band_hygiene_freshness_controller.py`, `finance_decision_performance_digest.py`, `prompt_book_registry.py`, `runtime_performance_scorecard.py`, `wf74_auto_patch_proposer.py`, `intraday_entry_watcher.py`, `wf87_autonomy_command_center.py`, `cron_redundancy_audit.py`, `db_lifecycle_manifest.py`, `otel_critical_review_decision_packet.py`, `macro_geopolitical_sweep.py`, `cleanup_autopilot_full_delete_readiness.py`, `current_regime_analog_matcher.py`, `otel_tool_workflow_metadata.py`, `weekly_printable_brief.py`, `model_quality_scorecard.py`, `agent_message_ledger_packet.py`, `model_learning_capture_approval_packet.py`, `go_sql_inprocess_driver_pilot_gate.py`, `otel_runtime_metadata_probe.py`, `current_window_artifact_index.py`, `human_facing_truth_surface.py`, `finance_decision_sync_spine.py`, `finance_response_quality_slice.py`, `main`, `tuesday_position_sizing_readiness.py`, `wf88_finance_query_friction_guard.py`, `agi_harness_readiness_packet.py`, `reference_band_note_sync.py`, `today_card_generator.py`, `token_efficiency_review_packet.py`, `wf75_monetization_training_pdf.py`, `finance_response_quality_repair_loop.py`, `finance_stack_snapshot.py`, `go_binary_freshness_guard.py`, `morning_control_digest.py`, `otel_drift_critical_review_loop.py`, `build_proof`, `sector_allocation_decision_matrix.py`, `sql_coverage_guard.py`, `wf75_operator_review_state.py`, `training_dataset_candidate_builder.py`, `capital_recommendation_slate_notifier.py`, `cron_operator_ledger.py`, `disciplined_band_staleness_notifier.py`, `macro_judgment_draft.py`, `weekly_intelligence_brief.py`, `model_learning_metadata_ledger.py`, `wf78_daily_movement_ledger.py`, `wf78_phase_runner.py`, `wf87_trade_decision_journal.py`, `wf88_route_contraction_packet.py`, `cleanup_autopilot_consolidated_prep.py`, `fundamental_ir_reconciliation_packets.py`, `market_open_repair_cadence.py`, `owner_gated_action_review_queue.py`, `pm1_pm3_finance_pipeline_runner.py`, `wf75_internal_service_run_loop.py`, `wf75_hvac_outreach_training_stack.py`, `wf87_paper_autonomy_runtime_governor.py`, `backup_rollback_delete_prep_packet.py`, `execution_board_canon_anchor_pilot.py`, `intraday_alert_outcome_link.py`, `wf75_agent_training_pdf.py`, `wf78_review_monitor_source_open_gate.py`, `wf88_delete_readiness_packet.py`, `finance_recommendation_correctness_ledger.py`, `official_earnings_bridge.py`, `orphan_transcript_inventory_packet.py`, `sql_canon_migration_completion_runner.py`, `wf75_artifact_only_pm_handoff.py`, `wf86_daily_shadow_reconciliation_cron_runner.py`, `wf88_cron_retired_job_inventory.py`, `wf88_typed_script_reference_graph.py`, `wf88_cron_disabled_job_reference_review.py`, `operators/band_note_sync.py`, `workspace_automation_approval_packet.py`, `cleanup_autopilot_phase1.py`, `wf75_customer_safe_excel_exporter.py`, `wf75_renderer_export_regression.py`, `wf78_small_mid_cap_scaleout_candidate_pass.py`?**
   _High betweenness centrality (0.020) - this node is a cross-community bridge._
+- **Are the 50 inferred relationships involving `FinanceSqlCanonAccess` (e.g. with `build_payload()` and `dynamic_entitlement_preview()`) actually correct?**
+  _`FinanceSqlCanonAccess` has 50 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `tabs`, `SHORTCUTS`, `toneMap` to the rest of the system?**
   _263 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `concurrent_lane_manager.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.04394409937888199 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.03993431855500821 - nodes in this community are weakly interconnected._
 - **Should `wf88_wiki_synthesis_packet.py` be split into smaller, more focused modules?**
   _Cohesion score 0.06740878169449598 - nodes in this community are weakly interconnected._
-- **Should `probability_readiness_validator.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.052129326306793906 - nodes in this community are weakly interconnected._

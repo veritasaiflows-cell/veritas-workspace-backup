@@ -1,0 +1,93 @@
+{
+  "authority": "No routing, configuration, role, or execution authority follows.",
+  "eligibility_definition": "a trajectory is eligible iff its response is non-empty; parse_error json_empty denotes the operational timeout and is excluded from factual denominators.",
+  "enrollment": "open",
+  "enrollment_rule": "Any model runs this identical frozen envelope; later enrolment never alters conditions for models already run, so results stay directly comparable.",
+  "envelope_id": "arena-agentic-v1-20260920",
+  "keys_sha256": "b663fb5351cfb006bd13462094c8527c4b44b0055665e42236edd96f04f881a5",
+  "schema": "veritas.arena_agentic_open_enrollment_comparison.v1",
+  "source_disposition": {
+    "all_runs": "graded by reference/grader-frozen.py (the grading lineage) against the frozen hidden bank; hashes recomputed by Veritas Main at seal time against the live files",
+    "comparability": "all five runs share one envelope, one hidden bank hash, one grading lineage, and one operational timeout policy"
+  },
+  "sources": {
+    "astra": {
+      "path": "data/evals/model-arena/results/arena-agentic-v1-20260920/astra-20260920/graded-results.json",
+      "sha256": "965ab7f2fc489e4e15228aca550b8c9a31a7c9f4fbfba6136bfefe2e5460ff7b"
+    },
+    "deepseek41flash": {
+      "path": "data/evals/model-arena/results/arena-agentic-v1-20260920/deepseek41flash-20260920/graded-results.json",
+      "sha256": "e4d838d160ce2de84483210c8e4a266cc082ec1e87e4d0dbe3da4fec0c3d08e5"
+    },
+    "glm53flash": {
+      "path": "data/evals/model-arena/results/arena-agentic-v1-20260920/glm53flash-20260920/graded-results.json",
+      "sha256": "674ea66e2192fcd762b89560d899007ab52b4bf84161d5b8bed512feef4d1c7d"
+    },
+    "sol": {
+      "path": "data/evals/model-arena/results/arena-agentic-v1-20260920/sol-20260920/graded-results.json",
+      "sha256": "885a5c53695fc203f54d7580bb8ce2f708ad19264fe66a3c5379a700d0bbc98f"
+    },
+    "spark13": {
+      "path": "data/evals/model-arena/results/arena-agentic-v1-20260920/spark13-20260920/graded-results.json",
+      "sha256": "7410e049c2c8993c0c6f599a2052a9b8e89bd0eaa3a0d025f593c68c2aa06475"
+    }
+  },
+  "summary": {
+    "astra": {
+      "eligible_trajectories": 12,
+      "graded_trajectories": 12,
+      "keys_sha256_graded_against": "b663fb5351cfb006bd13462094c8527c4b44b0055665e42236edd96f04f881a5",
+      "operational_timeouts": 0,
+      "requested_model": "openai/gpt-6-astra",
+      "source_sha256": "965ab7f2fc489e4e15228aca550b8c9a31a7c9f4fbfba6136bfefe2e5460ff7b",
+      "strict_trajectory_passes": 0,
+      "timeout_cases": []
+    },
+    "deepseek41flash": {
+      "eligible_trajectories": 11,
+      "graded_trajectories": 12,
+      "keys_sha256_graded_against": "b663fb5351cfb006bd13462094c8527c4b44b0055665e42236edd96f04f881a5",
+      "operational_timeouts": 1,
+      "requested_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "source_sha256": "e4d838d160ce2de84483210c8e4a266cc082ec1e87e4d0dbe3da4fec0c3d08e5",
+      "strict_trajectory_passes": 1,
+      "timeout_cases": [
+        "ad2161157921538089853178cdb459bbaed40f96fa77329a69e4be635c5af0bc"
+      ]
+    },
+    "glm53flash": {
+      "eligible_trajectories": 11,
+      "graded_trajectories": 12,
+      "keys_sha256_graded_against": "b663fb5351cfb006bd13462094c8527c4b44b0055665e42236edd96f04f881a5",
+      "operational_timeouts": 1,
+      "requested_model": "ollama-cloud/glm-5.3-flash:cloud",
+      "source_sha256": "674ea66e2192fcd762b89560d899007ab52b4bf84161d5b8bed512feef4d1c7d",
+      "strict_trajectory_passes": 0,
+      "timeout_cases": [
+        "ad2161157921538089853178cdb459bbaed40f96fa77329a69e4be635c5af0bc"
+      ]
+    },
+    "sol": {
+      "eligible_trajectories": 12,
+      "graded_trajectories": 12,
+      "keys_sha256_graded_against": "b663fb5351cfb006bd13462094c8527c4b44b0055665e42236edd96f04f881a5",
+      "operational_timeouts": 0,
+      "requested_model": "openai/gpt-5.6-sol",
+      "source_sha256": "885a5c53695fc203f54d7580bb8ce2f708ad19264fe66a3c5379a700d0bbc98f",
+      "strict_trajectory_passes": 0,
+      "timeout_cases": []
+    },
+    "spark13": {
+      "eligible_trajectories": 11,
+      "graded_trajectories": 12,
+      "keys_sha256_graded_against": "b663fb5351cfb006bd13462094c8527c4b44b0055665e42236edd96f04f881a5",
+      "operational_timeouts": 1,
+      "requested_model": "meta/muse-spark-1.3-contributor",
+      "source_sha256": "7410e049c2c8993c0c6f599a2052a9b8e89bd0eaa3a0d025f593c68c2aa06475",
+      "strict_trajectory_passes": 1,
+      "timeout_cases": [
+        "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4"
+      ]
+    }
+  }
+}

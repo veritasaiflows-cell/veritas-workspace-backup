@@ -33,7 +33,7 @@ Default human-facing read order:
 2. `05. Intelligence/Thesis Ranking and Leadership Board.md`
 3. `03. Alerts and Recommendations/Alert Operations Board.md`
 4. `03. Alerts and Recommendations/Alert Trigger Policy.md`
-5. `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md`
+5. `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md` (thesis/interpretation only; live numbers are SQL `reference_levels`)
 6. `06. Playbooks/Active Workflows.md`
 7. `04. Research/Coverage Universe.md`
 8. `02. Markets/Macro Regime Dashboard.md`

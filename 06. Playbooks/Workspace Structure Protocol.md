@@ -18,7 +18,13 @@ Keep ownership, retrieval, generated proof, and retired history unambiguous.
 - `09. Archive/` — retired history and rollback evidence
 - `10. Deliverables/` — human-facing read-only exports
 
-Implementation and state roots are `scripts/`, `skills/`, `tmp/`, `state/`, `data/`, `memory/`, `wiki/`, `schemas/`, `tests/`, `apps/`, and documented runtime folders.
+Implementation and state roots are `scripts/`, `skills/`, `tmp/`, `state/`, `data/`, `memory/`, `wiki/`, `schemas/`, `tests/`, `apps/`, and documented runtime folders. A root `00/` layer is disallowed; do not reintroduce it.
+
+## Current documented root exceptions
+
+- `migration-backups/` — retained migration rollback evidence
+- `attachments/` — inbound attachment staging
+- `migration-review.md` — migration/security review note
 
 ## Placement rules
 

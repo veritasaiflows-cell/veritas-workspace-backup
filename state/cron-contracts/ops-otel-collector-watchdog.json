@@ -1,0 +1,74 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "8fa73747-e22d-4751-b574-6846fe90e514",
+  "name": "Ops - OTEL Collector Watchdog",
+  "required": true,
+  "owner_workflow": "Runtime observability hygiene",
+  "freshness_hours": 6,
+  "contract_reason": "The watchdog was enabled and healthy but unregistered, so cron freshness validation raised enabled_job_missing_contract and enabled_job_missing_expected_artifacts and failed the nightly WF88 P1 chain at step 5. Registering the contract restores drift checking on a local-only supervision route that had none.",
+  "description": "Bounded local-only OTEL collector supervision. Every 10 min probes 127.0.0.1:4318 and the otelcol.exe PID; if down, starts it detached (loopback-only config unchanged), and alerts after 1 failure. Also alerts when listening but no file-exporter data for 2h. No collector-config, service, scheduled-task, network, external-export, secret/header, capture-depth, finance/canon/capital, or execution authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "*/10 * * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:/Users/Veritas/AppData/Local/Programs/Python/Python313/python.exe",
+      "scripts/otel_collector_watchdog.py",
+      "--restart",
+      "--write",
+      "--validate",
+      "--starvation-hours",
+      "2"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 180
+  },
+  "delivery": {
+    "mode": "none"
+  },
+  "failureAlert": {
+    "after": 1,
+    "mode": "announce"
+  },
+  "compare_fields": [
+    "name",
+    "description",
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds",
+    "delivery.mode",
+    "failureAlert.after",
+    "failureAlert.mode"
+  ],
+  "expected_artifacts": [
+    "tmp/otel-collector-watchdog.json"
+  ],
+  "authority_boundary": {
+    "local_runtime_hygiene_only": true,
+    "cron_contract_only": true,
+    "collector_config_mutation_allowed": false,
+    "external_export_allowed": false,
+    "raw_content_capture_allowed": false,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-09-16T22:05:00Z",
+  "contract_update_reason": "Initial registration. Contract records the live job as observed on 2026-09-16 (lastStatus ok, consecutiveErrors 0); it adds no scheduler, config, or runtime mutation and changes no job field."
+}

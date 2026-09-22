@@ -18,13 +18,14 @@ python scripts\run_alerts_recommendations_chain.py midday --timeout-seconds 120 
 
 Read:
 
-- `03. Alerts and Recommendations\Alert Bands and Invalidation Register.md`
-- `03. Alerts and Recommendations\Alert Trigger Policy.md`
-- the current quote snapshot
+- guarded SQL `reference_levels` via `python scripts\finance_sql_canon_access.py --write --validate`
 - `tmp\alert-level-freshness-controller.json`
+- the current quote snapshot
+- `03. Alerts and Recommendations\Alert Trigger Policy.md`
+- `03. Alerts and Recommendations\Alert Bands and Invalidation Register.md` for thesis and interpretation only
 - the relevant daily or weekly digest
 
-Static levels come from guarded canon. Do not re-derive or auto-apply them. If quote, level, timestamp, or lineage proof is stale or missing, return Freshness decay or Suppressed.
+Live numeric levels come from guarded SQL. The markdown register is not live numeric canon. Do not re-derive or auto-apply levels. If quote, level, timestamp, or lineage proof is stale or missing, return Freshness decay or Suppressed.
 
 ## Alert States
 

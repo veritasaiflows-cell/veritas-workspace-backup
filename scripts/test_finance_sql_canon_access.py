@@ -11,6 +11,7 @@ from pathlib import Path
 from unittest import mock
 
 from finance_sql_canon_access import (
+    CURRENT_LINEAGE_SOURCE_STATUSES,
     DynamicEntitlementScopeError,
     DynamicEntitlementExternalGateError,
     REFERENCE_LEVEL_LINEAGE_FIELDS,
@@ -46,6 +47,25 @@ def main() -> int:
         "alert_lineage_complete",
     ]:
         assert_true(checks.get(name, {}).get("ok") is True, f"{name} failed: {checks.get(name)}")
+    lineage_check = checks["current_lineage_artifacts_exist_and_hash_match"]
+    lineage_detail = lineage_check.get("detail") or {}
+    assert_true(
+        tuple(lineage_detail.get("current_source_statuses") or ()) == CURRENT_LINEAGE_SOURCE_STATUSES,
+        f"current lineage statuses drifted: {lineage_detail.get('current_source_statuses')}",
+    )
+    assert_true(
+        int(lineage_detail.get("excluded_retired_history_rows") or 0) >= 1,
+        f"retired_history rows should be excluded from current hash-match: {lineage_detail}",
+    )
+    mismatch_paths = {
+        str(row.get("path") or "")
+        for row in (lineage_detail.get("mismatches") or [])
+        if isinstance(row, dict)
+    }
+    assert_true(
+        "03. Alerts and Recommendations/Alert Bands and Invalidation Register.md" not in mismatch_paths,
+        f"retired markdown register must not block current lineage hash-match: {mismatch_paths}",
+    )
 
     tickers = client.production_answer_tickers()
     assert_true(len(tickers) == 0, f"expected 0 proof-joined production-grade tickers, got {len(tickers)}")

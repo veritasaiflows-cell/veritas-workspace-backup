@@ -1,0 +1,4 @@
+runner_fail_closed: authorization_not_dispatch_ready:False
+exit=1
+output_created=false
+canonical overlay/dispatch-authorization.json left INERT
