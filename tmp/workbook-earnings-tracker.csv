@@ -1,2 +1,0 @@
-ticker,company,quarter,report_date,earnings_state,ir_confirmed,scorecard_created,interpreted,board_synced,follow_up_open,next_required_action,owner_note,deployment_impact,technical_impact,unresolved_issue,export_generated_at_utc
-EOG,,Q3 2026,2026-08-04,"Reported, evidence pending",,FALSE,FALSE,FALSE,TRUE,Create or complete the scorecard interpretation.,,,,Generic fallback post-earnings config used for: EOG. Add ticker-specific watch items if this is a material tracked name.,2026-08-14T13:15:48.393904+00:00
