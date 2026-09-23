@@ -96,3 +96,6 @@ state/long-work-jobs/*/chunks.jsonl
 09. Archive/skills-backup-*.zip
 # Compiled Go helpers are rebuilt from scripts/go source (go_binary_freshness_guard.py); do not track.
 scripts/go/bin/
+# Workflow capsules are derived mirrors (workflow_routing_index.py) rebuilt by
+# `workflow_router.py --all --write-capsules`; ledgers (*.jsonl) stay tracked.
+state/workflows/*.json
