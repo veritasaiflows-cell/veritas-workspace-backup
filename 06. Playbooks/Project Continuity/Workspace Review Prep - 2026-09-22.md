@@ -34,6 +34,20 @@ Tracked files total: 16,762.
 - `.gitignore`: dated `*-tmp-cleanup/` archive dirs (today's: 653 MB, 5,889 files) and `skills-backup-*.zip`.
 - `tmp_cleanup.py` protects tmp entries named by active scripts; pivot-retired paths stay archivable.
 
+## Progress (2026-09-22 evening)
+
+- Item 1 done: `scripts/go/bin` untracked (`4a66d01f`).
+- Item 3 done: 105 regenerated tmp artifacts untracked; test-read fixtures (`tmp/wf38-fixtures`, `tmp/entry-band-data`, `tmp/research-automation`) stay tracked (`4a66d01f`).
+- Item 4 done: `state/workflows/*.json` capsules untracked; `wf78-tier-routing-events.jsonl` ledger stays tracked (`8784f074`).
+- Item 2 decided (Randall 19:37): keep tracked archives; the origin repo `veritas-workspace-backup` is their only off-machine copy and untracking saves no repo size.
+
+## Archive retention policy (item 2, Randall-approved 2026-09-22 19:37 MST)
+
+1. **Tracked archives stay tracked.** They are static (no commit churn) and git is their off-machine backup.
+2. **New bulk archives stay out of git.** `.gitignore` excludes dated `*-tmp-cleanup/` dirs and `skills-backup-*.zip`.
+3. **Untracked bulk archives have a 30-day age limit.** `python scripts\archive_retention.py` (dry-run) / `--apply`. Eligible only if: dated past the limit, zero git-tracked files, and not named by any file under `scripts/` or `state/`. Deletions are recorded in `state/archive-retention/`. First expected eligibility: 2026-10-22 (today's 653 MB tmp-cleanup dir and skills zip). Not scheduled; running it on a cron is a separate owner-gated change.
+4. **History rewrite only near ~1 GB pack size** (414 MiB on 2026-09-22). If needed, drop the unreferenced families first (`backups-archived-20260823`, `Finance Runtime/2026-09-18-recreated-retired-state-supplement`, `Scripts and Tmp Cleanup - Archived/2026-05-19-owner-approved-archive`, ~290 MB), with an off-machine copy made first.
+
 ## Suggested review order
 
 Items 1 and 3 are low-risk, reversible, and cover most of the regenerable churn. Items 2 and 5 need per-family owner calls. Item 6 is the largest effort and should be scoped against evidence, not by filename.
