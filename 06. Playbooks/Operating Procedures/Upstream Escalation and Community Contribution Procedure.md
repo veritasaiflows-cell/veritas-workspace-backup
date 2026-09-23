@@ -60,14 +60,30 @@ Do not escalate when the finding is local-only, already explained by an owner no
    Then answer two questions in writing:
    - is the fix present in my installed build?
    - if present, does it address my specific term, or a different term?
-   *Completion: the finding is classified as NEW, PARTIALLY-FIXED, or ALREADY-FIXED, with the
-   predecessor issue/PR numbers recorded.*
+
+   **Then check merge-versus-release timing.** A fix can be merged on `main` and still absent from
+   every published build, which makes a fresh bug report race a fix that already exists:
+   ```powershell
+   gh api repos/openclaw/openclaw/pulls/<pr> --jq ".merged, .merged_at"   # when the fix landed
+   (Get-Content "$env:APPDATA\npm\node_modules\openclaw\package.json" -Raw | ConvertFrom-Json).version
+   gh release list --repo openclaw/openclaw --limit 12                          # release dates
+   ```
+   Compare the fix's merge date against your installed version's release date and the newest release.
+   If the fix merged *after* both, no shipped build contains it yet. Say so explicitly and classify the
+   finding as **FIXED-UNRELEASED** instead of filing a bug report.
+
+   *Completion: the finding is classified as NEW, PARTIALLY-FIXED, ALREADY-FIXED, or FIXED-UNRELEASED,
+   with the predecessor issue/PR numbers and their merge/release timing recorded.*
 
 4. **Choose the frame from that classification.**
    - NEW → open a new issue
    - PARTIALLY-FIXED → open a new issue and cite the predecessor PR as prior work
    - ALREADY-FIXED → do not file; record it in the register as closed-by-upstream and re-test on the
      next release
+   - FIXED-UNRELEASED → **do not file a bug report.** Record it in the register as
+     fixed-awaiting-release with the merge date, then let the release watch carry it: re-test after the
+     next release and only file if the fix does not actually arrive. Filing here is what produces a
+     same-day supersede.
    Never post into a closed thread expecting triage. Closed issues rarely re-enter the queue; a
    closed-but-unfixed residual needs its own issue referencing the predecessor.
 
@@ -99,7 +115,10 @@ Do not escalate when the finding is local-only, already explained by an owner no
    *Completion: the escalation is trackable without reading this conversation.*
 
 10. **Close the loop.** Re-test on new releases; report a fixed/regressed/unmoved verdict back to
-    Randall. A filed issue with no follow-up is not a finished contribution.
+    Randall. A filed issue with no follow-up is not a finished contribution. Note that upstream may
+    close your issue as *already implemented* or *superseded* — by a fix merged before your build was
+    released, or by an automated triage bot. Treat that as a real outcome, not a failure: verify the
+    cited fix yourself, then update the register and keep the release watch as the follow-through.
 
 ## The register
 Every escalation gets one row in `06. Playbooks/Project Continuity/Upstream Escalation Register.md`:
@@ -116,9 +135,14 @@ row when upstream responds or a release changes the answer.
 - Do not restate an old audit as a new finding; re-measure or say it is unverified.
 
 ## Proof standard
-An escalation is complete when: the issue URL exists and is OPEN; the register row is updated; the
-body contains repro steps and a measurement table; and the severity frame names its platform
-dependence. Filing alone is not completion — the follow-up verdict is.
+An escalation is complete when: the issue exists upstream and is attributed correctly; the register row
+is updated; the body contains repro steps and a measurement table; and the severity frame names its
+platform dependence. Filing alone is not completion — the follow-up verdict is.
+
+Upstream state may legitimately be `closed` at completion, including `closed as not planned` or
+`closed / completed` by automated triage. Treat an upstream closure as a result to verify against the
+cited fix, not as a defect in the escalation. What is *not* complete is an issue whose cited fix you
+never checked, or a closure that leaves a real residual unrecorded.
 
 ## Stop lines
 - Duplicate check not done → stop, do not file.

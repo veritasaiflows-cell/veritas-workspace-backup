@@ -377,3 +377,27 @@ if __name__ == "__main__":
     test_current_phase2_registry_rows_remain_required_and_blocking()
     test_new_direct_phase2_blocker_cannot_hide_behind_older_green_aggregate()
     print("pm_program_state tests passed")
+
+
+def _missing_probe(key: str) -> dict:
+    return pm.artifact_probe(key, pm.TMP / f"__absent_{key}__.json", True, 24)
+
+
+def test_retired_lane_with_absent_proof_reports_retired_without_blockers() -> None:
+    lane = pm.build_lane("ticker_card_refresh", "t", "p", [_missing_probe("x")], "ready", "stale", ["review-only"])
+    assert lane["status"] == "retired"
+    assert lane["blockers"] == []
+    assert lane["next_action"]["action_type"] == "retired"
+
+
+def test_non_retired_lane_with_absent_proof_still_blocks() -> None:
+    lane = pm.build_lane("finance_os_data_model", "t", "p", [_missing_probe("x")], "ready", "stale", ["review-only"])
+    assert lane["status"] == "blocked"
+    assert lane["blockers"]
+
+
+def test_finance_os_data_model_tracks_wf84_alert_evidence_plane() -> None:
+    lane = next(l for l in pm.build_lanes(pm.source_artifacts()) if l["lane_id"] == "finance_os_data_model")
+    paths = {a["path"] for a in lane["source_artifacts"]}
+    assert "tmp/alert-level-freshness-controller.json" in paths
+    assert not any("canonical-finance-data-plane" in p or "wf78" in p for p in paths)

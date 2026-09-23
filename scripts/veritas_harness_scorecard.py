@@ -61,9 +61,9 @@ ARTIFACT_CHECKS = [
     ("python_sql_contract_lint", TMP / "python-sql-contract-lint.json", "status", {"ok", "warning"}),
     ("sql_schema_drift_lint", TMP / "sql-schema-drift-lint.json", "status", {"ok"}),
     ("sql_proof_probe", TMP / "sql-proof-probe.json", "status", {"ok"}),
-    ("go_sql_latency_probe", TMP / "go-sql-latency-probe.json", "status", {"ok"}),
+    ("go_sql_latency_probe", TMP / "go-sql-latency-probe.json", "status", {"ok", "warning"}),  # warning: retired DBs absent
     ("go_sql_latency_probe_inprocess_driver", TMP / "go-sql-latency-probe.json", "sqlite_driver", {"inprocess"}),
-    ("go_sql_inventory_helper", TMP / "go-sql-inventory-helper.json", "status", {"ok"}),
+    ("go_sql_inventory_helper", TMP / "go-sql-inventory-helper.json", "status", {"ok", "warning"}),  # warning: retired DBs absent
     ("go_sql_inventory_helper_inprocess_driver", TMP / "go-sql-inventory-helper.json", "sqlite_driver", {"inprocess"}),
     ("python_go_sql_parity_check", TMP / "python-go-sql-parity-check.json", "status", {"ok"}),
     ("python_go_sql_migration_candidates", TMP / "python-go-sql-migration-candidates.json", "status", {"ok", "warning"}),
@@ -281,6 +281,27 @@ for gate_name in (
     EXPECTED_PENDING_PREDICATES[gate_name] = expected_fail_closed_warning
 
 EXPECTED_PENDING_PREDICATES["go_source_truth_parity_validator"] = source_truth_parity_sql_first_pending
+
+
+# Checks over pivot-retired (2026-08-29) or paused state: the legacy tmp/veritas-canon-cache.sqlite
+# Go/SQL parity family, WF78 tier / 500-ticker expansion, WF55 probability, and paused WF75 retail
+# truth routing. A failing row is reported "retired" rather than "fail"; passing rows are unchanged.
+PIVOT_RETIRED_CHECKS = {
+    "python_go_sql_parity_check", "python_go_sql_migration_candidates", "go_sql_source_truth_manifest",
+    "go_source_truth_parity_validator", "python_go_source_truth_parity_validator_parity",
+    "go_sql_500_expansion_gate", "python_go_sql_500_expansion_gate_parity",
+    "python_go_finance_human_notes_sql_check_parity", "go_finance_universe_validation_probe",
+    "python_go_finance_universe_validation_parity", "go_wf78_sql_phase2_readiness_probe",
+    "python_go_wf78_sql_phase2_readiness_parity", "python_go_durable_output_parity_repeated_gate",
+    "python_go_sql_consumer_authority_guard_parity", "python_go_sql_helper_demotion_readiness_gate",
+    "python_go_sql_helper_demotion_queue", "retail_truth_routing_contract", "retail_answer_harness",
+    # WF72 Python->Go consumer-authority / helper-demotion program: retired by Randall 2026-09-22
+    # (Option A) - it benchmarks only pivot-retired DBs. Code kept; runtime scorecard is its harness.
+    "python_go_sql_consumer_authority_guard_fixture_parity", "python_go_sql_consumer_authority_dashboard_ab",
+    "python_go_sql_consumer_authority_demotion_dry_run", "python_go_sql_consumer_authority_controlled_router",
+    "go_sql_inprocess_driver_pilot_gate", "runtime_performance_scorecard",
+    "retail_automation_control_plane", "wf55_probability_readiness",
+}
 
 
 def apply_expected_pending(checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -601,7 +622,11 @@ def build_scorecard(command_lanes: set[str] | None = None) -> dict[str, Any]:
     checks.extend(artifact_check(name, path, field, accepted, warning_only=True) for name, path, field, accepted in READINESS_WARNING_ARTIFACTS)
 
     expected_pending = apply_expected_pending(checks)
-    pass_count = sum(1 for row in checks if row.get("status") == "pass")
+    for row in checks:
+        if row.get("status") == "fail" and row.get("name") in PIVOT_RETIRED_CHECKS:
+            row["status"] = "retired"
+    retired_count = sum(1 for row in checks if row.get("status") == "retired")
+    pass_count =sum(1 for row in checks if row.get("status") == "pass")
     warn_count = sum(1 for row in checks if row.get("status") == "warn")
     fail_count = sum(1 for row in checks if row.get("status") == "fail")
     expected_pending_count = len(expected_pending)
@@ -623,6 +648,7 @@ def build_scorecard(command_lanes: set[str] | None = None) -> dict[str, Any]:
             "warning_count": warn_count,
             "failure_count": fail_count,
             "expected_pending_count": expected_pending_count,
+            "retired_count": retired_count,
             "scenario_count": scenario_library.get("template_count"),
             "smb_scenario_count": smb_scenario_library.get("scenario_count"),
             "recommendation_tracking_rows": rec_summary.get("tracking_row_count"),

@@ -3,7 +3,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -55,6 +57,8 @@ PROTECTED_FILES = {
     "weekly-intelligence-brief.json",
     "weekly-macro-snapshot.json",
     "weekly-review-skeleton.json",
+    "wf70-wf66-official-evidence-spine.json",
+    "wf70-wf66-official-evidence-spine-validation.json",
     "workbook-build-validation.json",
     "workbook-control-panel.csv",
     "workbook-deployment-ranking.csv",
@@ -77,6 +81,89 @@ PROTECTED_DIRS = {
     # holds older builds only. See scripts/go/README.md.
     "go-binaries",
 }
+
+# Finance SQL canon lineage pins artifacts by exact sha256; archiving a pinned
+# file breaks finance_sql_canon_access's current_lineage_artifacts_exist_and_hash_match
+# check (seen 2026-09-22: sql-canon-consumer-migration-backlog.json archived by
+# tmp-cleanup, guard went blocked). Pinned current-lineage tmp artifacts are
+# therefore protected dynamically, mirroring CURRENT_LINEAGE_SOURCE_STATUSES in
+# scripts/finance_sql_canon_access.py ("ok", "preserved_numeric_snapshot").
+CANON_DB_PATH = WORKSPACE / "state" / "finance" / "finance-canon.sqlite"
+CANON_CURRENT_SOURCE_STATUSES = ("ok", "preserved_numeric_snapshot")
+_lineage_pinned_paths: set[str] | None = None
+
+
+def lineage_pinned_paths() -> set[str]:
+    """Workspace-relative paths pinned by current finance canon lineage rows.
+
+    Read-only. On any DB error returns an empty set: cleanup then behaves as
+    before this protection existed (static lists only) rather than crashing.
+    """
+    global _lineage_pinned_paths
+    if _lineage_pinned_paths is not None:
+        return _lineage_pinned_paths
+    pinned: set[str] = set()
+    try:
+        import sqlite3
+
+        uri = f"file:{CANON_DB_PATH.as_posix()}?mode=ro"
+        conn = sqlite3.connect(uri, uri=True)
+        try:
+            placeholders = ",".join("?" for _ in CANON_CURRENT_SOURCE_STATUSES)
+            rows = conn.execute(
+                "SELECT DISTINCT source_artifact_path FROM source_lineage "
+                f"WHERE source_status IN ({placeholders}) "
+                "AND source_artifact_path LIKE 'tmp/%'",
+                CANON_CURRENT_SOURCE_STATUSES,
+            ).fetchall()
+        finally:
+            conn.close()
+        pinned = {str(row[0]).replace("\\", "/") for row in rows if row[0]}
+    except Exception:
+        pinned = set()
+    _lineage_pinned_paths = pinned
+    return pinned
+
+
+# Regenerable tmp artifacts that active scripts read by literal path were archived by the
+# 7-day retention and broke their consumers (seen 2026-09-22: six false alarms, e.g.
+# workflow-routing-parity-validation.json, wf75-cron-automation-authority-plan.json). Any
+# top-level tmp entry named literally in a non-test script is therefore protected, except
+# paths the alerts-OS pivot validator lists as retired (those must stay archivable).
+SCRIPTS_DIR = WORKSPACE / "scripts"
+_TMP_LITERAL_PATTERNS = (
+    re.compile(r"""["']tmp[\\/]+([^"'\\/\s*?]+)"""),
+    re.compile(r"""\bTMP\s*/\s*["']([^"'\\/\s*?]+)["']"""),
+)
+_script_referenced_names: set[str] | None = None
+
+
+def pivot_retired_names() -> set[str]:
+    try:
+        sys.path.insert(0, str(SCRIPTS_DIR))
+        from alerts_os_pivot_validator import RETIRED_RUNTIME_PATHS
+    except Exception:
+        return set()
+    return {path.split("/", 1)[1].split("/")[0] for path in RETIRED_RUNTIME_PATHS if path.startswith("tmp/")}
+
+
+def script_referenced_names() -> set[str]:
+    """Top-level tmp names referenced literally by non-test scripts (minus pivot-retired paths)."""
+    global _script_referenced_names
+    if _script_referenced_names is not None:
+        return _script_referenced_names
+    names: set[str] = set()
+    for script in SCRIPTS_DIR.glob("*.py"):
+        if script.name.startswith("test_"):
+            continue
+        try:
+            text = script.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        for pattern in _TMP_LITERAL_PATTERNS:
+            names.update(match.group(1) for match in pattern.finditer(text))
+    _script_referenced_names = names - pivot_retired_names()
+    return _script_referenced_names
 
 
 def parse_args() -> argparse.Namespace:
@@ -272,6 +359,10 @@ def is_protected(path: Path) -> bool:
         return True
     name = path.name
     if name in PROTECTED_FILES:
+        return True
+    if f"tmp/{rel.as_posix()}" in lineage_pinned_paths():
+        return True
+    if parts and parts[0] in script_referenced_names():
         return True
     return any(name.startswith(prefix) for prefix in PROTECTED_PREFIXES)
 

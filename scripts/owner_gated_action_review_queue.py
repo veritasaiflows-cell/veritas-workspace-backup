@@ -36,6 +36,9 @@ SOURCES = {
     "alerts_chain": TMP / "alerts-recommendations-chain-midday.json",
 }
 
+# cron-patch-manager.json exists only after a cron patch plan/apply; absence means no pending patch.
+OPTIONAL_SOURCES = {"tmp/cron-patch-manager.json"}
+
 AUTHORITY_BOUNDARY = {
     "review_only": True,
     "recommendation_queue_only": True,
@@ -328,7 +331,7 @@ def validate(payload: dict[str, Any]) -> dict[str, Any]:
         if item.get("decision_state") != "monitor_only" and not item.get("required_before_apply"):
             warnings.append(f"item {item.get('item_id')} missing required_before_apply")
     for source in as_list(payload.get("source_status")):
-        if isinstance(source, dict) and not source.get("exists"):
+        if isinstance(source, dict) and not source.get("exists") and source.get("path") not in OPTIONAL_SOURCES:
             warnings.append(f"missing source: {source.get('path')}")
     return {"status": "critical" if errors else ("warning" if warnings else "ok"), "errors": errors, "warnings": warnings}
 

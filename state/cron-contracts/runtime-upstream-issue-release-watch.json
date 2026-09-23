@@ -1,0 +1,87 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "348e6192-4420-4485-a2d9-059557a52f93",
+  "declarationKey": "veritas.upstream-issue-release-watch.v1",
+  "name": "Runtime - Upstream Issue Release Watch",
+  "required": true,
+  "owner_workflow": "Runtime upstream escalation watch (openclaw/openclaw#155478 release re-test)",
+  "contract_reason": "Owner-directed 2026-09-21 upstream escalation lane. Enabled job was flagged enabled_job_missing_freshness_contract because it has no state/cron-contracts entry, so cron freshness cannot tell a live watcher from an ungoverned job. The job fires only when the installed OpenClaw version changes; it writes no tmp packet, so its durable proof surface is the Upstream Escalation Register it updates. Registration clears the P1 and pins schedule, payload, trigger, and delivery so silent drift is visible.",
+  "description": "Re-test upstream issue #155478 when the installed OpenClaw version changes. Read-only trigger; no auto-posting. Filing/commenting stays owner-approved.",
+  "enabled": true,
+  "schedule": {
+    "kind": "every",
+    "everyMs": 21600000,
+    "anchorMs": 1790055806549
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Upstream release re-test for openclaw/openclaw#155478 (memory_search KNN child spawn on Windows). If the appended trigger detail reports a version change, re-test that issue against the newly installed build: (1) re-run tmp/knn_spawn_probe.mjs for the current spawn-cost table; (2) inspect dist/extensions/memory-core/manager-runtime.js for reused or pooled KNN children instead of a one-shot spawn per query; (3) check whether memory-search-knn.child.js now sets PRAGMA mmap_size or cache_size; (4) run: gh issue view 155478 --repo openclaw/openclaw --json state,labels. Then report a fixed / regressed / unmoved verdict, update 06. Playbooks/Project Continuity/Upstream Escalation Register.md, and tell Randall in one short message. If this is a manually forced test run with no version change, verify the plumbing only and reply with a single line confirming the watch executes; do not imply a new release. Do not file or comment upstream without owner approval.",
+    "model": "ollama-cloud/glm-5.3:cloud",
+    "thinking": "low",
+    "timeoutSeconds": 600,
+    "toolsAllow": [
+      "exec",
+      "read",
+      "write"
+    ]
+  },
+  "trigger": {
+    "script": "// Condition-trigger script for the upstream release re-test watch.\n//\n// Purpose: fire only when the installed OpenClaw version changes from the last\n// observed value, so a release re-test happens without a model polling for it.\n//\n// Contract: returns { fire, message?, state? }. Read-only — it never mutates the\n// workspace, the scheduler, or anything upstream. Actions live in the job payload.\n//\n// Failure posture: a success-only watcher looks healthy while broken, so repeated\n// inability to read the version raises one warning instead of staying silent.\n\nconst pkgPath =\n  \"C:\\\\Users\\\\Veritas\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\openclaw\\\\package.json\";\n\nconst res = await exec({\n  command: `(Get-Content '${pkgPath}' -Raw | ConvertFrom-Json).version`,\n});\n\nconst version = String(res?.aggregated ?? res?.stdout ?? \"\").trim();\nconst prev = trigger.state?.version ?? null;\nconst failStreak = version ? 0 : (trigger.state?.failStreak ?? 0) + 1;\nconst warnedAt = trigger.state?.warnedAt ?? null;\n\nif (!version) {\n  const shouldWarn = failStreak >= 3 && warnedAt === null;\n  const state = {\n    version: prev,\n    failStreak,\n    warnedAt: shouldWarn ? Date.now() : warnedAt,\n  };\n  if (shouldWarn) {\n    json({\n      fire: true,\n      message:\n        \"Upstream release watch is blind: it failed to read the installed OpenClaw version three checks in a row. \" +\n        \"Verify the package.json path and the trigger script; the issue re-test watch is not working until this is repaired.\",\n      state,\n    });\n  } else {\n    json({ fire: false, state });\n  }\n} else if (prev === null) {\n  // First observation only records a baseline; it must not fire on install.\n  json({ fire: false, state: { version, failStreak: 0, warnedAt: null } });\n} else if (prev !== version) {\n  json({\n    fire: true,\n    message:\n      `OpenClaw version changed: ${prev} -> ${version}. ` +\n      \"Re-test upstream issue #155478 (memory_search KNN child spawn on Windows) per \" +\n      \"06. Playbooks/Operating Procedures/Upstream Escalation and Community Contribution Procedure.md step 10. \" +\n      \"Steps: (1) re-run tmp/knn_spawn_probe.mjs for the current spawn-cost table; \" +\n      \"(2) inspect dist/extensions/memory-core/manager-runtime.js for reused/pooled KNN children \" +\n      \"instead of a one-shot spawn per query; \" +\n      \"(3) check whether memory-search-knn.child.js now sets PRAGMA mmap_size or cache_size; \" +\n      \"(4) check the issue state with: gh issue view 155478 --repo openclaw/openclaw --json state,labels. \" +\n      \"Then report a fixed / regressed / unmoved verdict, update \" +\n      \"06. Playbooks/Project Continuity/Upstream Escalation Register.md, and tell Randall. \" +\n      \"Filing or commenting upstream remains an owner-approved action: do not post without approval.\",\n    state: { version, previousVersion: prev, failStreak: 0, warnedAt: null },\n  });\n} else {\n  json({ fire: false, state: { version, failStreak: 0, warnedAt: null } });\n}"
+  },
+  "delivery": {
+    "mode": "announce",
+    "channel": "telegram",
+    "to": "telegram:8650152206"
+  },
+  "compare_fields": [
+    "name",
+    "description",
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "delivery.to",
+    "payload.kind",
+    "payload.message",
+    "payload.model",
+    "payload.thinking",
+    "payload.timeoutSeconds",
+    "payload.toolsAllow",
+    "trigger.script"
+  ],
+  "freshness_hours": 168,
+  "expected_artifacts": [
+    {
+      "path": "06. Playbooks/Project Continuity/Upstream Escalation Register.md",
+      "role": "upstream_escalation_register",
+      "required": true,
+      "blocking": false
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "trigger_script_reads_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "external_delivery_mutation_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "stop_lines": [
+    "Read-only release watch; it does not file or comment upstream without owner approval.",
+    "No cron schedule/config/runtime mutation from this contract.",
+    "No finance/canon/portfolio mutation, capital, account, order, or execution authority.",
+    "No external delivery mutation and no owner-approval inference."
+  ],
+  "updated_at_utc": "2026-09-22T20:25:00Z",
+  "contract_update_reason": "Initial registration of the live enabled watch to clear enabled_job_missing_freshness_contract; values copied verbatim from the live Gateway job (schedule every 21600000ms, agentTurn payload, version-change trigger, telegram announce delivery)."
+}

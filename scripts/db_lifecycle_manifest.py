@@ -14,6 +14,7 @@ from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from stat import S_ISREG
 from typing import Any, Iterable
 
 from market_data_utils import atomic_write_json, atomic_write_text
@@ -496,12 +497,13 @@ def iter_text_files() -> Iterable[Path]:
                 continue
             if any(part in EXCLUDED_SCAN_DIRS for part in rel_parts):
                 continue
-            if not path.is_file() or path.suffix.lower() not in TEXT_EXTENSIONS:
+            if path.suffix.lower() not in TEXT_EXTENSIONS:
                 continue
             try:
-                if path.stat().st_size > MAX_REFERENCE_TEXT_BYTES:
-                    continue
+                entry = path.stat()
             except OSError:
+                continue
+            if not S_ISREG(entry.st_mode) or entry.st_size > MAX_REFERENCE_TEXT_BYTES:
                 continue
             yield path
 
@@ -511,12 +513,13 @@ def iter_text_files() -> Iterable[Path]:
         if path in seen:
             continue
         seen.add(path)
-        if not path.is_file() or path.suffix.lower() not in TEXT_EXTENSIONS:
+        if path.suffix.lower() not in TEXT_EXTENSIONS:
             continue
         try:
-            if path.stat().st_size > MAX_REFERENCE_TEXT_BYTES:
-                continue
+            entry = path.stat()
         except OSError:
+            continue
+        if not S_ISREG(entry.st_mode) or entry.st_size > MAX_REFERENCE_TEXT_BYTES:
             continue
         yield path
 

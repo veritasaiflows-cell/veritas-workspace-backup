@@ -203,3 +203,18 @@ if __name__ == "__main__":
     test_scorecard_blocks_scheduler_exceptions_when_hard_cron_blocker_present()
     test_scorecard_blocks_execution_authority_drift()
     print("workflow_advancement_scorecard tests passed")
+
+
+def test_scorecard_reports_absent_retired_workflows_as_retired_not_blocked() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        paths = make_paths(Path(tmp))
+        write_sources(paths)
+        for wf in scorecard.RETIRED_WORKFLOWS:
+            for name in scorecard.SOURCE_BY_WORKFLOW[wf]:
+                paths[name].unlink()
+        payload = scorecard.build_payload(paths)
+        by_wf = {signal["workflow_id"]: signal for signal in payload["signals"]}
+        for wf in scorecard.RETIRED_WORKFLOWS:
+            assert by_wf[wf]["signal"] == "retired"
+        assert not any(e.startswith("missing_source:") for e in payload["validation"]["errors"])
+        assert payload["summary"]["blocked_count"] == 0

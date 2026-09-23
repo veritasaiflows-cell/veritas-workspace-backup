@@ -108,3 +108,86 @@ def test_hash_cache_preserves_digest(tmp_path, monkeypatch) -> None:
     assert second["summary"]["candidate_digest"] == first["summary"]["candidate_digest"]
     assert second["candidates"] == first["candidates"]
     assert second["validation"] == {"status": "ok", "errors": [], "warnings": []}
+
+
+def test_lineage_pinned_tmp_artifact_is_protected(tmp_path, monkeypatch) -> None:
+    """A tmp artifact pinned by current finance canon lineage must never be
+    archive-eligible, even when old (regression for the 2026-09-22 cleanup that
+    archived sql-canon-consumer-migration-backlog.json and blocked the guard)."""
+    import sqlite3
+
+    workspace = tmp_path / "workspace"
+    tmp = workspace / "tmp"
+    finance_state = workspace / "state" / "finance"
+    tmp.mkdir(parents=True)
+    finance_state.mkdir(parents=True)
+
+    db_path = finance_state / "finance-canon.sqlite"
+    conn = sqlite3.connect(db_path)
+    conn.execute(
+        "CREATE TABLE source_lineage ("
+        "source_artifact_path TEXT, source_artifact_sha256 TEXT, source_status TEXT)"
+    )
+    conn.executemany(
+        "INSERT INTO source_lineage VALUES (?, ?, ?)",
+        [
+            ("tmp/pinned-backlog.json", "a" * 64, "ok"),
+            ("tmp/preserved-snapshot.json", "b" * 64, "preserved_numeric_snapshot"),
+            ("tmp/retired-old.json", "c" * 64, "retired_history"),
+            ("data/elsewhere.json", "d" * 64, "ok"),
+        ],
+    )
+    conn.commit()
+    conn.close()
+
+    monkeypatch.setattr(tmp_cleanup, "WORKSPACE", workspace)
+    monkeypatch.setattr(tmp_cleanup, "TMP", tmp)
+    monkeypatch.setattr(tmp_cleanup, "CANON_DB_PATH", db_path)
+    monkeypatch.setattr(tmp_cleanup, "_lineage_pinned_paths", None)
+
+    pinned_paths = tmp_cleanup.lineage_pinned_paths()
+    assert "tmp/pinned-backlog.json" in pinned_paths
+    assert "tmp/preserved-snapshot.json" in pinned_paths
+    assert "tmp/retired-old.json" not in pinned_paths
+    assert "data/elsewhere.json" not in pinned_paths
+
+    old = time.time() - 30 * 24 * 60 * 60
+    for name in ("pinned-backlog.json", "retired-old.json"):
+        f = tmp / name
+        f.write_text("{}", encoding="utf-8")
+        os.utime(f, (old, old))
+
+    assert tmp_cleanup.is_protected(tmp / "pinned-backlog.json") is True
+    assert tmp_cleanup.is_protected(tmp / "retired-old.json") is False
+    assert tmp_cleanup.is_candidate(tmp / "pinned-backlog.json", time.time()) is False
+
+
+def test_lineage_pinned_paths_fails_safe_without_db(tmp_path, monkeypatch) -> None:
+    """Missing/unreadable canon DB degrades to the prior static-only protection."""
+    monkeypatch.setattr(
+        tmp_cleanup, "CANON_DB_PATH", tmp_path / "nonexistent" / "finance-canon.sqlite"
+    )
+    monkeypatch.setattr(tmp_cleanup, "_lineage_pinned_paths", None)
+    assert tmp_cleanup.lineage_pinned_paths() == set()
+
+
+def test_script_referenced_tmp_inputs_are_protected_but_pivot_retired_are_not(tmp_path, monkeypatch) -> None:
+    scripts = tmp_path / "scripts"
+    scripts.mkdir()
+    (scripts / "consumer.py").write_text(
+        'A = TMP / "live-input.json"\nB = "tmp/live-dir/x.json"\nC = TMP / "veritas-canon-cache.sqlite"\n',
+        encoding="utf-8",
+    )
+    (scripts / "test_only.py").write_text('X = TMP / "test-only.json"\n', encoding="utf-8")
+    tmp = tmp_path / "tmp"
+    tmp.mkdir()
+    monkeypatch.setattr(tmp_cleanup, "SCRIPTS_DIR", scripts)
+    monkeypatch.setattr(tmp_cleanup, "TMP", tmp)
+    monkeypatch.setattr(tmp_cleanup, "_script_referenced_names", None)
+    monkeypatch.setattr(tmp_cleanup, "pivot_retired_names", lambda: {"veritas-canon-cache.sqlite"})
+    monkeypatch.setattr(tmp_cleanup, "lineage_pinned_paths", lambda: set())
+    assert tmp_cleanup.is_protected(tmp / "live-input.json")
+    assert tmp_cleanup.is_protected(tmp / "live-dir" / "x.json")
+    assert not tmp_cleanup.is_protected(tmp / "veritas-canon-cache.sqlite")
+    assert not tmp_cleanup.is_protected(tmp / "test-only.json")
+    assert not tmp_cleanup.is_protected(tmp / "one-off-scratch.json")

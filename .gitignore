@@ -216,3 +216,9 @@ state/long-work-jobs/*/chunks.jsonl
 
 # Nested Claude Code worktrees are local scratch checkouts, not workspace content.
 .claude/worktrees/
+
+# Dated tmp-cleanup archives are bulk regenerable/one-off tmp output (2026-09-22 run: 653 MB, 5,889 files).
+# Rollback lives on disk; do not commit. Earlier tracked archive dirs are unaffected.
+09. Archive/Scripts and Tmp Cleanup - Archived/*-tmp-cleanup/
+# Local skill backup zips are rollback copies of skills/ (already in git history).
+09. Archive/skills-backup-*.zip

@@ -529,6 +529,33 @@ def artifact_health(artifacts: list[dict[str, Any]], now: datetime | None = None
     }
 
 
+# Lanes built on pre-pivot (2026-08-29) trade-grade, WF78 tier, and ticker-card work. While their
+# proof is absent or stale they report "retired" instead of blocking; if fresh proof reappears
+# they are evaluated normally again. Authority violations are never masked.
+RETIRED_LANES = {"trade_grade_decision_os", "wf78_scaleout", "tier_promotion_review", "ticker_card_refresh", "retail_truth_routing"}
+
+# Sources that measure pivot-retired state: the legacy tmp/veritas-canon-cache.sqlite (retired by
+# alerts_os_pivot_validator), WF78 tier / 500-ticker expansion, and the ticker-card runner. The live
+# guarded SQL truth is state/finance/finance-canon.sqlite (WF84 lane). Dropped from lane evaluation.
+PIVOT_RETIRED_SOURCES = {
+    "python_go_sql_parity_check", "python_go_sql_migration_candidates", "go_sql_source_truth_manifest",
+    "go_source_truth_parity_validator", "python_go_source_truth_parity_validator_parity",
+    "go_sql_500_expansion_gate", "python_go_sql_500_expansion_gate_parity", "wf78_500_reputation_gate",
+    "python_go_finance_human_notes_sql_check_parity", "go_finance_universe_validation_probe",
+    "python_go_finance_universe_validation_parity", "go_wf78_sql_phase2_readiness_probe",
+    "python_go_wf78_sql_phase2_readiness_parity", "python_go_durable_output_parity_repeated_gate",
+    "go_sql_consumer_authority_guard", "python_go_sql_consumer_authority_guard_parity",
+    "python_go_sql_helper_demotion_readiness_gate", "python_go_sql_helper_demotion_queue",
+    "ticker_card_freshness_owner_runner",
+    # WF72 Python->Go consumer-authority / helper-demotion program and its runtime scorecard:
+    # retired by Randall 2026-09-22 (Option A); they benchmark only pivot-retired DBs.
+    "python_go_sql_consumer_authority_guard_fixture_parity", "python_go_sql_consumer_authority_dashboard_ab",
+    "python_go_sql_consumer_authority_demotion_dry_run", "python_go_sql_consumer_authority_controlled_router",
+    "go_sql_inprocess_driver_pilot_gate", "runtime_performance_scorecard",
+}
+RETIRED_LANE_ACTION = "Retired by the 2026-08-29 alerts-OS pivot; no action. Do not regenerate its pre-pivot proof."
+
+
 def lane_status(health: dict[str, Any], authority_violations: list[dict[str, Any]]) -> str:
     if health["missing_required"] or health["unreadable_required"] or authority_violations or health["problem_statuses"]:
         return "blocked"
@@ -551,6 +578,7 @@ def readiness_score(status: str) -> int:
         "blocked": 15,
         "complete_for_now": 95,
         "on_hold": 40,
+        "retired": 0,
     }.get(status, 50)
 
 
@@ -565,7 +593,9 @@ def build_lane(
     enforce_authority_scan: bool = True,
 ) -> dict[str, Any]:
     registry = load_registry()
-    loaded_payloads = [load_json(ROOT / item["path"]) for item in artifacts if item.get("parseable_json")]
+    if lane_id not in RETIRED_LANES:
+        artifacts = [item for item in artifacts if item.get("key") not in PIVOT_RETIRED_SOURCES]
+    loaded_payloads =[load_json(ROOT / item["path"]) for item in artifacts if item.get("parseable_json")]
     violations: list[dict[str, Any]] = []
     if enforce_authority_scan:
         for payload in loaded_payloads:
@@ -577,11 +607,18 @@ def build_lane(
     hold = find_override(lane_id, lane_id=lane_id, workflow_name=title, registry=registry)
     if is_on_hold(hold):
         status = "on_hold"
+    retired = lane_id in RETIRED_LANES and status in {"blocked", "stale"} and not violations
+    if retired:
+        status = "retired"
     next_action = next_action_when_stale if status in {"stale", "needs_validation", "blocked"} else next_action_when_ready
+    if retired:
+        next_action = RETIRED_LANE_ACTION
     action_override = wf74_finance_source_open_action_override(lane_id, status, loaded_payloads)
     if is_on_hold(hold):
         next_action = hold["next_action"]
         action_type = "hold"
+    elif retired:
+        action_type = "retired"
     elif status == "blocked":
         action_type = "inspect_blocker"
     elif status == "stale":
@@ -593,16 +630,18 @@ def build_lane(
     if action_override:
         next_action = str(action_override.get("description") or next_action)
         action_type = str(action_override.get("action_type") or action_type)
+    if retired:
+        action_override = {}
     blockers = []
-    for item in health["missing_required"]:
+    for item in ([] if retired else health["missing_required"]):
         blockers.append({"severity": "critical", "kind": "missing_required_artifact", "lane_id": lane_id, "path": item["path"]})
-    for item in health["unreadable_required"]:
+    for item in ([] if retired else health["unreadable_required"]):
         blockers.append({"severity": "critical", "kind": "unreadable_required_artifact", "lane_id": lane_id, "path": item["path"]})
-    for item in health["problem_statuses"]:
+    for item in ([] if retired else health["problem_statuses"]):
         blockers.append({"severity": "critical", "kind": "problem_status", "lane_id": lane_id, **item})
     for item in violations:
         blockers.append({"severity": "critical", "kind": "authority_boundary_widened", "lane_id": lane_id, **item})
-    for item in health["stale"]:
+    for item in ([] if retired else health["stale"]):
         blockers.append({"severity": "warning", "kind": "stale_proof", "lane_id": lane_id, "path": item["path"], "age_hours": item.get("age_hours"), "max_age_hours": item.get("max_age_hours")})
     return {
         "lane_id": lane_id,
@@ -732,6 +771,11 @@ def source_artifacts() -> dict[str, dict[str, Any]]:
         "wf78_next_owner_review_and_source_capture_integration": artifact_probe("wf78_next_owner_review_and_source_capture_integration", TMP / "wf78-next-owner-review-and-source-capture-integration.json", True, 24),
         "wf78_ticker_freshness_ledger": artifact_probe("wf78_ticker_freshness_ledger", TMP / "wf78-ticker-freshness-ledger.json", True, 24),
         "wf78_tier_weighted_freshness_resolution": artifact_probe("wf78_tier_weighted_freshness_resolution", TMP / "wf78-tier-weighted-freshness-resolution.json", True, 24),
+        # WF84 Guarded Alert Evidence Plane inputs (owner note: Workflow 84). 96h covers weekend gaps.
+        "wf84_sql_canon_access_validation": artifact_probe("wf84_sql_canon_access_validation", TMP / "finance-sql-canon-access-validation.json", True, 96),
+        "wf84_quote_snapshot_proof": artifact_probe("wf84_quote_snapshot_proof", TMP / "intraday-alerts" / "quote-snapshot-proof.json", True, 96),
+        "wf84_quote_snapshot_proof_validation": artifact_probe("wf84_quote_snapshot_proof_validation", TMP / "intraday-alerts" / "quote-snapshot-proof-validation.json", True, 96),
+        "wf84_alert_level_freshness_controller": artifact_probe("wf84_alert_level_freshness_controller", TMP / "alert-level-freshness-controller.json", True, 96),
         "canonical_finance_data_plane_contract": artifact_probe("canonical_finance_data_plane_contract", TMP / "canonical-finance-data-plane-contract.json", True, 168),
         "canonical_finance_data_plane": artifact_probe("canonical_finance_data_plane", TMP / "canonical-finance-data-plane.json", True, 24),
         "canonical_finance_data_plane_validation": artifact_probe("canonical_finance_data_plane_validation", TMP / "canonical-finance-data-plane-validation.json", True, 24),
@@ -1016,21 +1060,16 @@ def build_lanes(sources: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
         ),
         build_lane(
             "finance_os_data_model",
-            "WF84 Canonical Finance Data Plane",
-            "Internal trade-grade personal finance OS data model lane. Starts with a review-only schema/feeder/validator contract before any JSON packet writer, SQLite companion, or consumer migration.",
+            "WF84 Guarded Alert Evidence Plane",
+            "Read-only, fail-closed evidence plane for the alerts-and-recommendations OS: guarded SQL access, explicit quote proof, and the alert-state/freshness controller.",
             [
-                sources["canonical_finance_data_plane_contract"],
-                sources["canonical_finance_data_plane"],
-                sources["canonical_finance_data_plane_validation"],
-                sources["canonical_finance_data_plane_phase6_10"],
-                sources["canonical_finance_data_plane_retirement_readiness"],
-                sources["canonical_finance_data_plane_sqlite"],
-                sources["wf78_auto_tier_router"],
-                sources["wf78_tier_weighted_freshness_resolution"],
-                sources["ticker_card_refresh_gate"],
+                sources["wf84_sql_canon_access_validation"],
+                sources["wf84_quote_snapshot_proof"],
+                sources["wf84_quote_snapshot_proof_validation"],
+                sources["wf84_alert_level_freshness_controller"],
             ],
-            "Use the validated WF84 phase 6-10 proof for internal read-only consumer expansion, parity, source drillback, priority queue, and retirement gating.",
-            "Run canonical_finance_data_plane with DB lifecycle validation, workflow route validation, PM control, artifact index, and major closeout before any consumer default route switch.",
+            "Use the WF84 evidence plane for review-only alert state; stale, missing, or conflicted evidence lowers confidence or blocks a material recommendation.",
+            "Run the WF84 route: finance_sql_canon_access --write --validate, then run_alerts_recommendations_chain midday --write --validate, then workflow_router WF84 --write-capsules --validate.",
             [
                 "internal personal finance infrastructure only",
                 "no customer/account/PII/suitability/brokerage data",
@@ -1148,6 +1187,7 @@ def choose_next_actions(lanes: list[dict[str, Any]]) -> list[dict[str, Any]]:
         "complete_for_now": 5,
         "gated": 6,
         "on_hold": 7,
+        "retired": 8,
     }
     lane_priority = {
         "smb_saas_parallel_morning_plan": 0,
@@ -1247,7 +1287,8 @@ def build_program_state() -> dict[str, Any]:
     lanes = build_lanes(sources)
     blockers = [blocker for lane in lanes for blocker in lane["blockers"]]
     next_actions = choose_next_actions(lanes)
-    readiness_average = round(sum(lane["readiness_score"] for lane in lanes) / len(lanes), 1) if lanes else 0.0
+    scored_lanes = [lane for lane in lanes if lane["status"] != "retired"]
+    readiness_average = round(sum(lane["readiness_score"] for lane in scored_lanes) / len(scored_lanes), 1) if scored_lanes else 0.0
     state: dict[str, Any] = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),

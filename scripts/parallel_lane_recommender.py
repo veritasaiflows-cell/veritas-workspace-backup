@@ -429,7 +429,8 @@ def score_template(
         "completion_reopen_reason": completion_reopen_reason,
         "stale_completion_inputs": completion.get("stale_inputs", []),
         "missing_completion_proofs": completion.get("missing_proofs", []),
-        "eligible": score > 0 and not collisions and not forbidden and route_safe and not already_completed and not (from_pm_job and not department),
+        # A lane whose read-first inputs are absent has nothing to review; never dispatch it.
+        "eligible": score > 0 and not collisions and not forbidden and route_safe and not already_completed and not (from_pm_job and not department) and not missing_read_first,
     }
 
 

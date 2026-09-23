@@ -57,6 +57,20 @@ SOURCE_BY_WORKFLOW = {
     "AUTONOMY-SPINE": ["autonomy_spine_rollup", "autonomy_spine_contract"],
 }
 
+# Retired by the 2026-08-29 alerts-OS pivot: WF87 is retired (Startup Truth Index), and the
+# WF55 ledger / autonomy spine carry capital and paper semantics the pivot removed. Their
+# artifacts are no longer produced; report them as retired instead of blocking on them.
+RETIRED_WORKFLOWS = {"WF87", "WF55", "AUTONOMY-SPINE"}
+
+
+def retired_signal(workflow_id: str) -> dict[str, Any]:
+    return {
+        "workflow_id": workflow_id,
+        "signal": "retired",
+        "reason": "retired_by_2026_08_29_alerts_os_pivot",
+        "cron_update_recommended": False,
+    }
+
 
 def utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -359,14 +373,23 @@ def summarize_followups(followups: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
+    # A retired workflow is only reported as retired while its artifacts are absent; if they
+    # reappear, full evaluation (including the WF87 execution-drift guard) resumes.
+    retired = {
+        wf for wf in RETIRED_WORKFLOWS
+        if not all(paths[name].exists() for name in SOURCE_BY_WORKFLOW[wf])
+    }
+    skipped = {name for wf in retired for name in SOURCE_BY_WORKFLOW[wf]}
+    paths = {name: path for name, path in paths.items() if name not in skipped}
     payloads = {name: load(path) for name, path in paths.items()}
     records = [source_record(name, path, payloads[name]) for name, path in paths.items()]
-    signals = [
-        cron_signal(payloads["cron_freshness"]),
-        wf87_signal(payloads["wf87_command"], payloads["autonomous_card_audit"]),
-        wf55_signal(payloads["wf55_outcome_ledger"]),
-        autonomy_spine_signal(payloads["autonomy_spine_rollup"], payloads["autonomy_spine_contract"]),
-    ]
+    signals = [cron_signal(payloads["cron_freshness"])]
+    signals.append(retired_signal("WF87") if "WF87" in retired else wf87_signal(payloads["wf87_command"], payloads["autonomous_card_audit"]))
+    signals.append(retired_signal("WF55") if "WF55" in retired else wf55_signal(payloads["wf55_outcome_ledger"]))
+    signals.append(
+        retired_signal("AUTONOMY-SPINE") if "AUTONOMY-SPINE" in retired
+        else autonomy_spine_signal(payloads["autonomy_spine_rollup"], payloads["autonomy_spine_contract"])
+    )
     counts: dict[str, int] = {}
     for signal in signals:
         counts[signal["signal"]] = counts.get(signal["signal"], 0) + 1
