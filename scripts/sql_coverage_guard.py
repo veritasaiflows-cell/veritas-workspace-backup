@@ -52,7 +52,9 @@ COMMANDS = [
     {
         "id": "wf75_closeout_refresh",
         "cmd": [sys.executable, "scripts\\wf75_closeout_refresh.py", "--validation-budget", "shared", "--write", "--validate"],
-        "required": True,
+        # WF75 retail SaaS is paused (Active Workflows P3, Randall 2026-06-09); its closeout
+        # checks paused/retired proofs, so it runs and reports but does not block this guard.
+        "required": False,
     },
     {
         "id": "pm_control_packet",

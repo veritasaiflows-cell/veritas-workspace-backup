@@ -437,7 +437,10 @@ def alerts_os_summary() -> dict[str, Any]:
     for name, path in sources.items():
         packet = load(path)
         validation_status = as_dict(packet.get("validation")).get("status")
-        proof_ok = bool(packet) and packet.get("status") == "ok" and validation_status in {None, "ok"}
+        # The digest owner (finance_alert_os_digest.py) reports a delivered digest as "sent" and
+        # quiet runs as weekend_quiet/duplicate_quiet; those are healthy. send_unconfirmed stays flagged.
+        ok_statuses = {"ok", "sent", "weekend_quiet", "duplicate_quiet"} if name == "recommendations_digest" else {"ok"}
+        proof_ok = bool(packet) and packet.get("status") in ok_statuses and validation_status in {None, "ok"}
         if not proof_ok:
             blocked.append(name)
         summary = as_dict(packet.get("summary"))

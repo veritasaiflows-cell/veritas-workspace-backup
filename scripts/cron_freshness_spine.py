@@ -1436,7 +1436,8 @@ def artifact_record(spec: dict[str, Any], default_freshness_hours: float) -> dic
         "generated_at_utc": generated_dt.replace(microsecond=0).isoformat().replace("+00:00", "Z") if generated_dt else None,
         "age_hours": age,
         "freshness_window_hours": float(spec.get("freshness_hours") or default_freshness_hours),
-        "stale": age is not None and age > float(spec.get("freshness_hours") or default_freshness_hours),
+        # existence_only artifacts (e.g. doctrine files) prove presence, not recency.
+        "stale": not spec.get("existence_only") and age is not None and age > float(spec.get("freshness_hours") or default_freshness_hours),
         "blocked_semantic": raw_blocked_semantic and not review_only_blocked_semantic,
         "review_only_blocked_semantic": review_only_blocked_semantic,
         "main_handoff_semantic": operator_action in {"MAIN_HANDOFF_REQUIRED", "MAIN_SESSION_REQUIRED"} or review_only_blocked_semantic,

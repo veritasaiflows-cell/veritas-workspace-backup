@@ -1008,6 +1008,11 @@ def validate(packet: dict[str, Any]) -> dict[str, Any]:
     for name, source in as_dict(packet.get("source_status")).items():
         record = as_dict(source)
         if not record.get("present"):
+            # WF87 and the autonomy spine were retired by the 2026-08-29 alerts-OS pivot;
+            # their rollups are no longer produced, so absence is expected, not an error.
+            if name in {"wf87_rollup", "autonomy_spine"}:
+                warnings.append(f"retired_source_absent:{name}")
+                continue
             errors.append(f"missing_source:{name}:{record.get('path')}")
     items = [as_dict(row) for row in as_list(packet.get("triage_items"))]
     if not items:

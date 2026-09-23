@@ -30,7 +30,8 @@
     {
       "path": "HEARTBEAT.md",
       "required": true,
-      "blocking": false
+      "blocking": false,
+      "existence_only": true
     }
   ],
   "authority_boundary": {
