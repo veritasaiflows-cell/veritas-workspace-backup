@@ -47,7 +47,15 @@
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-09-14T02:02:23.372057+00:00",
-  "contract_update_reason": "Owner approved contract-only reconciliation on 2026-09-13; match verified stored job representation, preserve schedule, payload behavior, authority, and prompt budgets. No live job mutation.",
-  "declarationKey": "skill-collection-review:implementation-builder"
+  "updated_at_utc": "2026-09-24T23:20:00Z",
+  "contract_update_reason": "Owner-approved known_platform_failure for the rw-required review harness (Randall 2026-09-24 16:17 MST).",
+  "declarationKey": "skill-collection-review:implementation-builder",
+  "known_platform_failure": {
+    "error_substring": "sandbox workspace is not read-write; collection review skipped",
+    "openclaw_version": "2026.9.4",
+    "upstream": "openclaw/openclaw#144515",
+    "owner_approved_at": "2026-09-24",
+    "reason": "Platform review requires workspaceAccess=rw; implementation-builder is deliberately workspaceAccess=none (owner requirement 2026-09-24: builder must not be able to rewrite its role files or skills; rw mounts the real agent workspace writable at /workspace). Same class as oxalpha-lab. Quieted to STALE_OR_NOISE only for this exact error on this exact version; any other error (including the earlier bind-root 'Sandbox security' rejection) or any OpenClaw version change re-escalates.",
+    "evidence": "memory/2026-09-24.md (builder correction + end-to-end test); tmp/builder-e2e-20260924/ (close-proof.json, protected-before/after.sha256)"
+  }
 }

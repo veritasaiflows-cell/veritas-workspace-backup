@@ -873,6 +873,17 @@ def run_policy_canary(
             )
             if proof["shared_promotion"].get("status") not in ("ok", "ok_duplicate_suppressed"):
                 proof_status = proof["status"] = "completed_with_visible_debt"
+            elif proof["shared_promotion"].get("status") == "ok":
+                # Alert event ledger: only freshly promoted, validated output is
+                # ledgered. Failure-isolated; never changes proof_status.
+                proof["alert_ledger"] = _record_alert_ledger(
+                    controller=controller,
+                    run_id=approval.record_id,
+                    window=str(recurring_window),
+                    scope_fingerprint=authorization.scope.fingerprint,
+                    controller_sha256=proof["shared_promotion"].get("controller_sha256"),
+                    message=str(proof["recurring_digest"]["message_preview"]),
+                )
         proof["delivery"] = _stash_delivery_record(
             delivery_intent=delivery_intent,
             delivery_sender=delivery_sender,
@@ -899,6 +910,7 @@ def run_policy_canary(
         **({"recurring_digest": proof["recurring_digest"],
             "recurring_reference_provenance_sha256": proof["recurring_reference_provenance_sha256"],
             "shared_promotion": proof.get("shared_promotion"),
+            "alert_ledger": proof.get("alert_ledger"),
             "delivery": proof.get("delivery"),
             "acquisition_to_authorization_latency_seconds": proof.get("acquisition_to_authorization_latency_seconds"),
             "guarded_sql_membership_selection_evidence": proof.get("guarded_sql_membership_selection_evidence")}
@@ -1064,7 +1076,11 @@ def _promote_recurring_shared_outputs(*, window: str, controller: dict[str, Any]
         for name, path in targets.items():
             _atomic_promote_bytes(path, staged[name])
             promoted.append(name)
-        coherence = digest_source_coherence(window)
+        # Check the exact files just promoted. The default paths are import-time
+        # TMP, which a ROOT-redirected run never writes, so every synthetic
+        # promotion rolled back (and read production files) until 2026-09-23.
+        coherence = digest_source_coherence(window, controller_path=targets["controller"],
+                                            digest_path=targets["digest"])
         if coherence["status"] != "ok":
             raise RuntimeError(f"shared_coherence_failed: {coherence['errors']}")
         receipt.update({"status": "ok", "promoted": promoted,
@@ -1096,6 +1112,22 @@ def _promote_recurring_shared_outputs(*, window: str, controller: dict[str, Any]
         receipt["quarantine"] = _quarantine_promotion_evidence(
             run_id=run_id, window=window, staged=staged, receipt=receipt)
         return receipt
+
+
+def _record_alert_ledger(**kwargs: Any) -> dict[str, Any]:
+    """Append this run's alert transitions to the hash-chained ledger.
+
+    Design: 06. Playbooks/Project Continuity/Alert Event Ledger Design -
+    2026-09-23.md. Paths come from ROOT at call time (the test seam). The
+    ledger's own entry point never raises; this guard also covers import
+    failure, so a ledger problem is reported in the proof and the receipt
+    but never fails an alerts run that already completed.
+    """
+    try:
+        import alert_event_ledger
+        return alert_event_ledger.record_promoted_run(ROOT, **kwargs)
+    except Exception as exc:  # noqa: BLE001 - isolation is the contract
+        return {"status": "error", "appended": 0, "errors": [f"{type(exc).__name__}: {exc}"]}
 
 
 def _stash_delivery_record(*, delivery_intent: dict[str, Any] | None, delivery_sender: Any,

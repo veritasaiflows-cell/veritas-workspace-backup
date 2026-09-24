@@ -102,3 +102,6 @@ state/workflows/*.json
 
 # Arena transport canaries copy a live OpenClaw state dir (session DBs, gateway locks); runtime state, never commit (2026-09-23)
 data/evals/model-arena/**/transport-canary-state/
+
+# Alert event ledger append lock (runtime only); the ledger .jsonl and head are committed (2026-09-24)
+state/finance/ledger/*.lock

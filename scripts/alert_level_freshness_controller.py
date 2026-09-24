@@ -332,9 +332,13 @@ def confidence_label(raw: Any, stale: bool, conflicted: bool) -> str:
         score = int(raw)
     except (TypeError, ValueError):
         return "medium"
-    if score >= 4:
+    # Canon reference_confidence is a whole-number percent 0-100
+    # (data_confidence_v1; owner-delegated rescale 2026-09-24). The old 1-5
+    # thresholds labelled every percent value "high". Single-source Yahoo data
+    # is capped at 50, so nothing reads "high" until a second source exists.
+    if score >= 70:
         return "high"
-    if score >= 2:
+    if score >= 40:
         return "medium"
     return "low"
 

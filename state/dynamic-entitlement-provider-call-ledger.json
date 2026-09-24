@@ -369,10 +369,10 @@
       "settled_calls": 34
     },
     "2026-09-24": {
-      "last_reserved_at_utc": "2026-09-24T14:30:02Z",
-      "last_settled_at_utc": "2026-09-24T14:30:03Z",
+      "last_reserved_at_utc": "2026-09-24T20:45:00Z",
+      "last_settled_at_utc": "2026-09-24T20:45:01Z",
       "open_reservations": {},
-      "reserved_calls": 8,
+      "reserved_calls": 34,
       "run_ids": [
         "recurring-a1501157dfb546f1a0a0f6be5a3fa147-quotes",
         "recurring-ddc3d968cfb64edabbabbe56a8c3a7f3-quotes",
@@ -381,10 +381,36 @@
         "recurring-459c03ac6fea4d298a944bb6b195c09d-quotes",
         "recurring-35db25a089db41e98c513588c538a56d-quotes",
         "recurring-729d32e97c004fc8acea323fee3b37a1-quotes",
-        "recurring-6df92eab454046408cf00d2518f89804-quotes"
+        "recurring-6df92eab454046408cf00d2518f89804-quotes",
+        "recurring-84061ff9a31847b18435ff5c82bf5fdc-quotes",
+        "recurring-b74d625c27e741acb6a88b0f0a134f0d-quotes",
+        "recurring-d940f38d520f431aaed7aff135204bbc-quotes",
+        "recurring-6dd0877bbbbf411996ed1a307be3ca91-quotes",
+        "recurring-19f3ca1a702b471ba50db089feb102d0-quotes",
+        "recurring-3c76872c61094ba396c6e9046304afdd-quotes",
+        "recurring-0b6e4903834141e0bcc3a9822bf52d3b-quotes",
+        "recurring-0d2a266ff7354f858bbdb9df6c45c859-quotes",
+        "recurring-287f9dd683cd49ab9bcb55a6380669b2-quotes",
+        "recurring-6fe595c56b694c38a5f154571165d23f-quotes",
+        "recurring-ea49337ad6fd4803ac24e3d6d66dbfda-quotes",
+        "recurring-507055e42b8c43cf8eec62fd31bd4e4b-quotes",
+        "recurring-ff55d8b96df14856a6025ef4e2b0917c-quotes",
+        "recurring-18669a21a84c48c2af5913de8055d772-quotes",
+        "recurring-9eb4f9babf214d01bc9ca2222d52e5e1-quotes",
+        "recurring-46165470c78243c8a12b2988865b0cda-quotes",
+        "recurring-c2f061b9612a4e5caccd61c1df78f1de-quotes",
+        "recurring-a8bee6f89b2c45009e59069dc5a01159-quotes",
+        "recurring-217154a0f42d469ea68073c6a1d91d0b-quotes",
+        "recurring-21726e1e5eb44d5ba92c2b7333bdb319-quotes",
+        "recurring-7f86d2a3d7d9434f8649dbb114ce77a1-quotes",
+        "recurring-b677b397c8b74f54aae3e2f1986350d7-quotes",
+        "recurring-1cf82da302c84ddaa604ba025c4664c8-quotes",
+        "recurring-d099976d1bc448a8add414f0adc272b1-quotes",
+        "recurring-c7334522eafb4a74aa086a8bdb4353cc-quotes",
+        "recurring-6bb39db6466948f28173d7e640684e14-quotes"
       ],
-      "runs": 8,
-      "settled_calls": 8
+      "runs": 34,
+      "settled_calls": 34
     }
   },
   "schema": "veritas.dynamic_entitlement_provider_call_ledger.v1"

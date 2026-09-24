@@ -2,8 +2,8 @@
 # WF88 Wiki Source Map
 
 Canonical page: `wiki/source-map/WF88 Wiki Source Map.md`
-Canonical rendered SHA-256: `2897ae86a39111479fa5a7f517878500e89f415eac47e721bc553d8b7eb89c20`.
-Source snapshot SHA-256: `1232da06890b2c2a895aa50bd88f2fa976c072ff78872c8799a029c06af22b8c`.
+Canonical rendered SHA-256: `b92ecabd410eaa578ffe53c6a846b0a7bb3caeda82577c4181a1fd044fdd4065`.
+Source snapshot SHA-256: `533f5ad18f5c94e6bd6379d4a227fa6fc55f8e38e3c40e7c431b99006d3a2bf9`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -55,7 +55,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `tmp/no-orphan-validator.json`
 ## Source freshness
 
-- `wf88_os2_control`: `fresh` / `control_packet_ready_no_apply_authority` / `tmp/wf88-os2-control-packet.json` / sha256 `ae5c348eabcd76149416bba39c3c712b4fffe25f530231c46b6831657fba37d6`
+- `wf88_os2_control`: `fresh` / `control_packet_ready_no_apply_authority` / `tmp/wf88-os2-control-packet.json` / sha256 `757537d1ef49bb66231c0296d802bb2ba0a1f2add8d24841080ceda6c2cbb2c9`
 - `otel_ops_control`: `fresh` / `ok` / `tmp/otel-ops-control.json` / sha256 `4f0e850dfcb2d794aa32afc13c6ed298388430adc1b6612c58f1824351669630`
 - `model_learning_metadata_ledger`: `fresh` / `ok` / `tmp/model-learning-metadata-ledger.json` / sha256 `7f277912672472a577950b1a0bd4eef88a81ef2620d3985b6ad471440a1801e3`
 - `wf74_improvement_opportunity_queue`: `fresh` / `ok` / `tmp/wf74-improvement-opportunity-queue.json` / sha256 `b11afadf74b799dc44f4eb221be1f6bf34e8337a20ceafe6c6df7b6b7f12eee7`
@@ -79,7 +79,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `token_efficiency_scorecard`: `fresh` / `warning` / `tmp/token-efficiency-scorecard.json` / sha256 `cd8d3ab8fe359dbc4395b4719efc56b00b2aa1f705e7025e9a14595a6722a2bb`
 - `implementation_token_attribution_bridge`: `fresh` / `warning` / `tmp/implementation-token-attribution-bridge.json` / sha256 `fe676c42e8f075989dd911131af919d918858d8f6476166bd9558453f3d51b69`
 - `coding_outcome_ledger`: `fresh` / `warning` / `tmp/coding-outcome-ledger-current.json` / sha256 `a6a8d76199f53b91c5a60d93eef0e2b4777108413a2f8295b55a0d0422cf78aa`
-- `pm_control_packet`: `fresh` / `ok` / `tmp/pm-control-packet.json` / sha256 `76740795972d780adc32a1cedfc8ebd39068c9e80bfd0f3159a695ec0aeba82f`
+- `pm_control_packet`: `fresh` / `ok` / `tmp/pm-control-packet.json` / sha256 `332f6a1f7abe8317278e02006263a3e2a3a99208b044ba0e8969b8d1a047222f`
 - `recommendation_outcome_ledger`: `fresh` / `ok` / `tmp/recommendation-outcome-ledger-current.json` / sha256 `cae95ca627a7feeac6acdead26d1a4743c9d0dd97b9b2af09da4d71ceea15b62`
 - `improvement_ledger`: `fresh` / `warning` / `tmp/improvement-ledger-current.json` / sha256 `2bd7a9be86b50b83708f11b2d41799abda394724e39524265269e372d2955b2d`
 - `actionable_improvement_queue`: `fresh` / `actionable_queue_ready_no_apply_authority` / `tmp/actionable-improvement-queue.json` / sha256 `b8b6efcb9ee9a6a6126856a0dffa5bb13716fa0562ee0c9ec4abc8ca78e34738`

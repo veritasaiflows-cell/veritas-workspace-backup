@@ -590,6 +590,9 @@ def load_completion_markers(path: Path | None = None) -> dict[str, Any]:
     return markers
 
 
+REGRESSION_COMPLETION_MAX_AGE_HOURS = 48.0
+
+
 def newer_exact_completion_for_regression(job: dict[str, Any], markers: dict[str, Any]) -> bool:
     job_id = job.get("job_id")
     if not isinstance(job_id, str) or job_id not in markers.get("job_ids", set()):
@@ -603,7 +606,14 @@ def newer_exact_completion_for_regression(job: dict[str, Any], markers: dict[str
     if not isinstance(completed_by_job, dict):
         return False
     exact_completed_at = completed_by_job.get(job_id)
-    return isinstance(exact_completed_at, datetime) and exact_completed_at > prior_completed_at
+    if not (isinstance(exact_completed_at, datetime) and exact_completed_at > prior_completed_at):
+        return False
+    # The regression is re-derived from live signals on every build, so a still-
+    # present regression means an old fix did not hold. Only a recent exact
+    # completion (fix just landed, signal not yet refreshed) may resolve it.
+    # 2026-09-24: June completions hid September recurrences of the same job ids.
+    age_hours = (datetime.now(timezone.utc) - exact_completed_at).total_seconds() / 3600.0
+    return age_hours <= REGRESSION_COMPLETION_MAX_AGE_HOURS
 
 
 def prior_completion_is_in_ledger(job: dict[str, Any], markers: dict[str, Any]) -> bool:

@@ -3,7 +3,7 @@
 
 Canonical page: `wiki/README.md`
 Canonical rendered SHA-256: `ba2ba2a219ac36a9b0fbad61bf8f306ed8dbbc331dcf68a38a62eaa088b30473`.
-Source snapshot SHA-256: `1232da06890b2c2a895aa50bd88f2fa976c072ff78872c8799a029c06af22b8c`.
+Source snapshot SHA-256: `533f5ad18f5c94e6bd6379d4a227fa6fc55f8e38e3c40e7c431b99006d3a2bf9`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases

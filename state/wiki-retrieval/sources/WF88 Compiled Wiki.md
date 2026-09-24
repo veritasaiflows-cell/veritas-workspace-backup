@@ -3,7 +3,7 @@
 
 This is a generated index for page-granular mirrors of the canonical `wiki/**/*.md` contract. It is review-only, creates no canon or approval authority, and must defer to the named owner sources.
 
-Source snapshot SHA-256: `1232da06890b2c2a895aa50bd88f2fa976c072ff78872c8799a029c06af22b8c`.
+Source snapshot SHA-256: `533f5ad18f5c94e6bd6379d4a227fa6fc55f8e38e3c40e7c431b99006d3a2bf9`.
 Canonical page count: `15`.
 
 ## Canonical page: `wiki/README.md`
@@ -87,11 +87,11 @@ Query aliases: open followup triage, improvement debt, unrouted action backlog.
 ## Canonical page: `wiki/source-map/WF88 Wiki Source Map.md`
 
 Retrieval mirror: `state/wiki-retrieval/sources/canonical/source-map/WF88 Wiki Source Map.md`.
-Canonical rendered SHA-256: `2897ae86a39111479fa5a7f517878500e89f415eac47e721bc553d8b7eb89c20`.
+Canonical rendered SHA-256: `b92ecabd410eaa578ffe53c6a846b0a7bb3caeda82577c4181a1fd044fdd4065`.
 Query aliases: WF88 source map, owner artifact lookup, source open proof.
 
 ## Canonical page: `wiki/changes/What Changed Since Last Refresh.md`
 
 Retrieval mirror: `state/wiki-retrieval/sources/canonical/changes/What Changed Since Last Refresh.md`.
-Canonical rendered SHA-256: `619069d8f4973777acf4fd69f845afebac90050b956c0ebcaaaf399a979021d4`.
+Canonical rendered SHA-256: `65d572c06394364ca1e3b8db96f02d1b8d6edc7a035fe2a862e2d1c742dcf96b`.
 Query aliases: wiki refresh delta, recent wiki changes, claim catalog change.

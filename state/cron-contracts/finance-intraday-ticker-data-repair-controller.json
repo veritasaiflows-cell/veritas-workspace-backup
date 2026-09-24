@@ -58,7 +58,15 @@
     "tmp/finance-alert-os-midday-digest.json",
     "tmp/intraday-alerts/quote-snapshot-proof.json",
     "tmp/intraday-alerts/quote-snapshot-proof-validation.json",
-    "tmp/finance-sql-canon-access-validation.json"
+    "tmp/finance-sql-canon-access-validation.json",
+    {
+      "path": "tmp/alert-event-ledger-last-append.json",
+      "role": "alert_event_ledger_receipt",
+      "required": false,
+      "blocking": true,
+      "freshness_hours": 120,
+      "note": "Ledger append receipt (owner-approved 2026-09-24). status=error blocks and escalates to heartbeat; written only on verified promotions, so 120h spans weekends."
+    }
   ],
   "authority_boundary": {
     "review_only": true,
@@ -73,6 +81,6 @@
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-09-14T20:55:00Z",
-  "contract_update_reason": "G7 Path A: argv-only cutover to dynamic entitlement + recurring reference inputs; schedule, delivery, and timeoutSeconds unchanged. No --send."
+  "updated_at_utc": "2026-09-24T15:08:00Z",
+  "contract_update_reason": "Alert event ledger wired into recurring chain; ledger failures surface via spine/heartbeat."
 }

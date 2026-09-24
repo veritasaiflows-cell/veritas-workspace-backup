@@ -215,9 +215,13 @@ class AlertLevelFreshnessControllerTests(unittest.TestCase):
         self.assertEqual(classify_signal(None, 90.0, 100.0, 80.0), "freshness_decay")
 
     def test_stale_or_conflicted_confidence_fails_low(self) -> None:
-        self.assertEqual(confidence_label(5, True, False), "low")
-        self.assertEqual(confidence_label(5, False, True), "low")
-        self.assertEqual(confidence_label(5, False, False), "high")
+        self.assertEqual(confidence_label(70, True, False), "low")
+        self.assertEqual(confidence_label(70, False, True), "low")
+        self.assertEqual(confidence_label(70, False, False), "high")
+        self.assertEqual(confidence_label(40, False, False), "medium")
+        self.assertEqual(confidence_label(50, False, False), "medium")
+        self.assertEqual(confidence_label(35, False, False), "low")
+        self.assertEqual(confidence_label(None, False, False), "medium")
 
     def test_quote_rows_use_symbol_as_ticker(self) -> None:
         rows = quote_rows_by_ticker({"snapshots": [{"symbol": "etn", "price": 1.0}]})

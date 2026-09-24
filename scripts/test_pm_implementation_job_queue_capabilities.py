@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+from datetime import datetime, timedelta, timezone
 import tempfile
 from pathlib import Path
 from types import SimpleNamespace
@@ -247,7 +248,8 @@ def test_regressed_wf74_job_resolves_after_new_exact_completion() -> None:
         module.DEFAULT_COMPLETION_LEDGER.parent.mkdir(parents=True, exist_ok=True)
         module.DEFAULT_COMPLETION_LEDGER.write_text(
             json.dumps({
-                "completed_at_utc": "2026-06-24T00:08:22Z",
+                # Recent exact completion: the fix just landed.
+                "completed_at_utc": (datetime.now(timezone.utc) - timedelta(hours=2)).strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "job": {"job_id": job_id},
             }) + "\n",
             encoding="utf-8",
@@ -472,3 +474,41 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+def test_stale_exact_completion_does_not_hide_current_regression() -> None:
+    # 2026-09-24: 06-24 completions of the regression job id hid a live
+    # September cron regression; an old exact completion must not resolve it.
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+        module.ROOT = root
+        module.TMP = root / "tmp"
+        module.DEFAULT_COMPLETION_LEDGER = root / "state" / "implementation-completion-ledger.jsonl"
+        job_id = "pm-wf74-cron-migration-regression-repair"
+        test_args = args()
+        test_args.pm_state_payload = {"status": "ok"}
+        test_args.pm_actions_payload = {"status": "ok", "next_actions": []}
+        test_args.cron_candidates_payload = {"status": "ok", "candidates": []}
+        test_args.helper_packets_payload = {"status": "ok"}
+        test_args.wf74_router_payload = {
+            "status": "ok",
+            "validation": {"status": "ok"},
+            "pm_job_candidates": [{
+                "job_id": job_id, "status": "ready_for_main_or_helper", "priority": "P1",
+                "source_key": "cron-migration-regression", "source_category": "cron_migration",
+                "completion_status": "current_regression_after_completion",
+                "prior_completion": {"latest_completed_at_utc": "2026-06-21T03:32:18Z"},
+                "title": "Repair regressed cron signals after completed migration plan",
+                "implementation_class": "wf74_cron_migration_repair_plan",
+                "proof_commands": ["python scripts\cron_control_packet.py --write --validate"],
+            }],
+        }
+        module.DEFAULT_COMPLETION_LEDGER.parent.mkdir(parents=True, exist_ok=True)
+        module.DEFAULT_COMPLETION_LEDGER.write_text(
+            json.dumps({"completed_at_utc": "2026-06-24T00:08:22Z", "job": {"job_id": job_id}}) + "\n",
+            encoding="utf-8",
+        )
+        job = module.build_payload(test_args)["jobs"][0]
+        assert job["status"] == "ready_for_main_or_helper"
+        assert job.get("completed_by_ledger") is not True

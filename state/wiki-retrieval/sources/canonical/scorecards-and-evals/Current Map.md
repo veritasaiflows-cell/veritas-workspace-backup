@@ -3,7 +3,7 @@
 
 Canonical page: `wiki/scorecards-and-evals/Current Map.md`
 Canonical rendered SHA-256: `ac1f5edcc5e1d75821ee3f6880e3a98e677a7ee8fccda7076ed0ac678bc0f8f1`.
-Source snapshot SHA-256: `1232da06890b2c2a895aa50bd88f2fa976c072ff78872c8799a029c06af22b8c`.
+Source snapshot SHA-256: `533f5ad18f5c94e6bd6379d4a227fa6fc55f8e38e3c40e7c431b99006d3a2bf9`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases

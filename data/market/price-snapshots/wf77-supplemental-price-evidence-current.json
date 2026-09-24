@@ -1,6 +1,6 @@
 {
   "schema_version": "wf77_supplemental_price_evidence.v1",
-  "generated_at_utc": "2026-09-24T01:14:53Z",
+  "generated_at_utc": "2026-09-24T21:55:08Z",
   "status": "ok",
   "source_policy": {
     "source": "yfinance public market data",
@@ -907,19 +907,20 @@
       "ticker": "AVB",
       "yfinance_symbol": "AVB",
       "status": "ok",
-      "close": 68.14,
-      "ma20": 66.35,
+      "close": 184.06,
+      "ma20": null,
       "ma50": null,
       "ma200": null,
       "ma_posture": "insufficient data for full posture",
-      "data_date": "2026-08-24",
+      "data_date": "2026-08-14",
       "source": "yfinance",
-      "retrieved_at_utc": "2026-09-24T01:14:53Z",
+      "retrieved_at_utc": "2026-09-24T21:55:08Z",
       "notes": [
+        "history latest row 2026-08-17 had no usable close after 2026-08-14",
         "Less than 200 trading days available."
       ],
       "retrieval_method": "yf.Ticker(symbol).history(period='1y')",
-      "history_data_date": "2026-08-24",
+      "history_data_date": "2026-08-14",
       "regular_market_time_utc": null
     },
     {
@@ -2913,7 +2914,7 @@
       "ma_posture": "insufficient data for full posture",
       "data_date": "2026-08-04",
       "source": "yfinance",
-      "retrieved_at_utc": "2026-09-24T01:14:53Z",
+      "retrieved_at_utc": "2026-09-24T21:55:08Z",
       "notes": [
         "Less than 200 trading days available."
       ],
@@ -3112,7 +3113,7 @@
       "ma_posture": "insufficient data for full posture",
       "data_date": "2026-08-17",
       "source": "yfinance",
-      "retrieved_at_utc": "2026-09-24T01:14:53Z",
+      "retrieved_at_utc": "2026-09-24T21:55:08Z",
       "notes": [
         "Less than 200 trading days available."
       ],
