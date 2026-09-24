@@ -21,6 +21,15 @@ denied in persistent specialist scope. research-scout moves from Grok to
 DeepSeek 4.1 Flash. Grok is retained as a recovery candidate only.
 Opus 5 sits in Main's owner-directed chain but is still never a persistent
 specialist primary or specialist automatic fallback (see OPUS_ADVISORY).
+Owner change: GPT6-SOL-PRIMARY-20260922 (Randall, 2026-09-22): Main primary
+is GPT-6 Sol (openai/gpt-6-sol, codex runtime) and GPT-6 Luna
+(openai/gpt-6-luna) joins the selectable roster. Main's live fallback chain
+is Opus 5.5 (anthropic/claude-opus-5-5), then Ollama Cloud GLM 5.3, then
+Ollama Cloud Kimi K3, then GPT-5.6 Terra last. GPT-5.6 Sol re-enters
+LEGACY_DENIED_MODELS for persistent specialist scope (it is no longer the
+Main primary) and GPT-6 Luna is denied there as well. Opus 5.5 sits in
+Main's owner-directed chain but, like Opus 5, is never a persistent
+specialist primary or specialist automatic fallback.
 Recommended fleet roles/models/display-names alignment. Muse Spark 1.3
 Contributor and Grok task helpers explicitly permitted. Opus excluded
 from persistent roles and automatic fallbacks (Main on-demand spawn
@@ -48,24 +57,31 @@ DEEPSEEK_FLASH_MODEL = "ollama-cloud/deepseek-v4.1-flash:cloud"
 KIMI_MODEL = "ollama-cloud/kimi-k3:cloud"
 BUILDER_MODEL = "meta/muse-spark-1.3-contributor"
 OPUS_MODEL = "anthropic/claude-opus-5"
+OPUS55_MODEL = "anthropic/claude-opus-5-5"
+SOL6_MODEL = "openai/gpt-6-sol"
 SOL_MODEL = "openai/gpt-5.6-sol"
+TERRA_MODEL = "openai/gpt-5.6-terra"
 ZAI_MODEL = "zai/glm-5.3"
-MAIN_MODEL = SOL_MODEL
+MAIN_MODEL = SOL6_MODEL
 
-# Retired OpenAI refs denied in PERSISTENT SPECIALIST scope only. Sol is no
-# longer listed: it is the live Main primary. Persistent specialists never use
-# an OpenAI model regardless, and Opus is denied separately below.
+# Retired OpenAI refs denied in PERSISTENT SPECIALIST scope only. GPT-6 Sol is
+# not listed: it is the live Main primary. GPT-5.6 Sol returns to the denied
+# set as a former Main primary, and GPT-6 Luna is denied there too. Persistent
+# specialists never use an OpenAI model regardless, and Opus is denied
+# separately below.
 LEGACY_DENIED_MODELS = frozenset({
     "openai/gpt-6-astra",
-    "openai/gpt-5.6-terra",
+    "openai/gpt-6-luna",
+    "openai/gpt-5.6-sol",
+    TERRA_MODEL,
     "openai/gpt-5.6-luna",
     "openai/gpt-5.5",
     "openai/gpt-5.4",
     "openai/gpt-5.4-mini",
 })
 
-MAIN_PRIMARY = SOL_MODEL
-MAIN_FALLBACKS = [ZAI_MODEL, OPUS_MODEL, GLM_MODEL]
+MAIN_PRIMARY = SOL6_MODEL
+MAIN_FALLBACKS = [OPUS55_MODEL, GLM_MODEL, KIMI_MODEL, TERRA_MODEL]
 
 SPECIALIST_PRIMARY: dict[str, str] = {
     "research-scout": DEEPSEEK_FLASH_MODEL,
@@ -109,8 +125,11 @@ OPUS_ADVISORY = {
     "main_spawn_only": True,
     # Never a specialist automatic fallback; specialists keep fallbacks: [].
     "automatic_fallback": False,
-    # Owner-directed 2026-09-19: present in Main's live fallback chain only.
-    "main_chain_fallback": True,
+    # Owner-directed 2026-09-22: Opus 5 left Main's live chain; Opus 5.5
+    # (OPUS55_MODEL) is the Main-chain fallback. Opus 5 stays Main-spawn
+    # advisory only.
+    "main_chain_fallback": False,
+    "main_chain_fallback_model": OPUS55_MODEL,
     "requires_actual_runtime_model_verification": True,
 }
 
@@ -183,7 +202,7 @@ def automatic_fallbacks_for(role_id: str) -> list[str]:
 
 
 def is_denied_persistent_model(model: str) -> bool:
-    return model == OPUS_MODEL or model in LEGACY_DENIED_MODELS
+    return model in (OPUS_MODEL, OPUS55_MODEL) or model in LEGACY_DENIED_MODELS
 
 
 def recovery_options(role_id: str) -> dict[str, Any]:

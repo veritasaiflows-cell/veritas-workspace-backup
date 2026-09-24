@@ -1,0 +1,31 @@
+{
+  "schema": "veritas.standing_approval.v1",
+  "id": "band-renewal-option-b",
+  "active": true,
+  "granted_by": "Randall",
+  "granted_at": "2026-09-23T18:3x-07:00",
+  "grant_text": "Proceed with recommendations and option b as a standing permission as proposed.",
+  "channel": "Telegram direct",
+  "scope": "Weekly renewal of alert reference bands (low, high, invalidation, reference_confidence) for the evaluated scope, via scripts/weekly_band_renewal.py and the gated scripts/g6_yahoo32_sql_apply.py.",
+  "auto_apply_only_when_all_hold": [
+    "every evaluated name computes (no blocked names)",
+    "zero invalidation-ordering warnings (invalidation strictly below band low)",
+    "dry run against live canon reports zero drift and no mutation",
+    "no band edge (low, high, invalidation) moves more than 5% for any name"
+  ],
+  "otherwise": "stop, write the review packet, and surface to Randall for a per-batch decision",
+  "every_run_produces": [
+    "tmp/weekly-band-renewal.json and .md review packet",
+    "state/finance/renewal-audit/<session>-<status>.json durable audit record",
+    "on apply: sqlite backup, rollback record, content-addressed successor pin in state/finance/baselines, baseline freshness guard result"
+  ],
+  "rollback": "python scripts/g6_yahoo32_sql_apply.py --rollback --db state/finance/finance-canon.sqlite --rollback-path <rollback record from the audit>",
+  "not_granted": [
+    "methodology or formula changes (new band_methodology_version needs owner approval)",
+    "thesis acceptance or edits",
+    "adding or removing names from scope",
+    "capital, orders, accounts, execution, external delivery"
+  ],
+  "revocation": "Randall says so; set active=false. The weekly job then always stops at review.",
+  "review_by": "2026-12-23"
+}

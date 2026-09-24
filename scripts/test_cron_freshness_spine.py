@@ -971,6 +971,67 @@ def test_newer_clean_artifact_deescalates_failed_scheduler_until_natural_canary(
     assert not_recovered["signal_class"] == "BLOCKED"
 
 
+def test_known_platform_failure_quiets_only_exact_error_on_recorded_version() -> None:
+    now = datetime.now(timezone.utc).replace(microsecond=0)
+    with tempfile.TemporaryDirectory() as raw:
+        artifact = Path(raw) / "AGENTS.md"
+        artifact.write_text("# role\n", encoding="utf-8")
+        job = {
+            "name": "skill-collection-review-locked-lab",
+            "enabled": True,
+            "schedule": {"kind": "every", "everyMs": 604800000},
+            "last_status": "error",
+            "consecutive_errors": 2,
+            "last_run_utc": now.isoformat().replace("+00:00", "Z"),
+            "last_error": "sandbox workspace is not read-write; collection review skipped",
+        }
+        contract = {
+            "owner_workflow": "test",
+            "freshness_hours": 192,
+            "expected_artifacts": [{"path": str(artifact), "required": True, "blocking": False}],
+            "known_platform_failure": {
+                "error_substring": "sandbox workspace is not read-write",
+                "openclaw_version": "2026.9.4",
+                "upstream": "openclaw/openclaw#144515",
+                "owner_approved_at": "2026-09-23",
+            },
+        }
+
+        quiet = classify_job(job, contract, "2026.9.4")
+        new_version = classify_job(job, contract, "2026.9.5")
+        no_version = classify_job(job, contract, None)
+        other_error = classify_job({**job, "last_error": "Failed to inspect sandbox image"}, contract, "2026.9.4")
+        unapproved = classify_job(
+            job,
+            {**contract, "known_platform_failure": {**contract["known_platform_failure"], "owner_approved_at": ""}},
+            "2026.9.4",
+        )
+        missing_artifact = classify_job(
+            job,
+            {**contract, "expected_artifacts": [{"path": str(Path(raw) / "gone.md"), "required": True}]},
+            "2026.9.4",
+        )
+
+    assert quiet["status"] == "known_platform_failure"
+    assert quiet["signal_class"] == "STALE_OR_NOISE"
+    assert quiet["reason"] == "owner_approved_known_platform_failure:openclaw/openclaw#144515"
+    assert quiet["live_scheduler_last_error"] == job["last_error"]
+    for escalated in (new_version, no_version, other_error, unapproved):
+        assert escalated["status"] == "scheduler_error"
+        assert escalated["signal_class"] == "BLOCKED"
+    assert missing_artifact["signal_class"] == "BLOCKED"
+    assert missing_artifact["status"] == "scheduler_error"
+
+    with tempfile.TemporaryDirectory() as raw:
+        contract_dir = Path(raw)
+        (contract_dir / "locked-lab.json").write_text(
+            json.dumps({**contract, "name": job["name"], "expected_artifacts": [{"path": "AGENTS.md", "required": True}]}),
+            encoding="utf-8",
+        )
+        merged = merged_job_contracts(contract_dir)
+    assert merged[job["name"]]["known_platform_failure"] == contract["known_platform_failure"]
+
+
 def test_newer_warning_artifact_keeps_review_signal_without_scheduler_escalation() -> None:
     now = datetime.now(timezone.utc).replace(microsecond=0)
     with tempfile.TemporaryDirectory() as raw:

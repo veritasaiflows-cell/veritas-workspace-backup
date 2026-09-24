@@ -1,0 +1,72 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "aa6b52ee-5f26-4a06-9cc2-9e1da35d0604",
+  "declarationKey": "finance-weekly-band-renewal-option-b-v1",
+  "name": "Finance - Weekly Band Renewal (Option B gate)",
+  "required": true,
+  "owner_workflow": "WF85 alerts-and-recommendations OS / reference-band freshness",
+  "contract_reason": "Weekly Saturday band renewal; auto-apply only under the Option B standing gate granted by Randall 2026-09-23 ~18:30 MST.",
+  "description": "Saturday recompute of evaluated-scope reference bands (Yahoo-only, repair overlay honoured), dry run against live canon, and auto-apply ONLY under the Option B standing gate (no blocked names, no invalidation-ordering warnings, dry run clean, no band edge moving >5%). Otherwise stops for owner review. Always writes tmp/weekly-band-renewal.json and a state/finance/renewal-audit record. No thesis, capital, execution, or delivery authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 9 * * 6",
+    "tz": "America/Phoenix",
+    "staggerMs": 0
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:/Users/Veritas/AppData/Local/Programs/Python/Python313/python.exe",
+      "scripts/weekly_band_renewal.py",
+      "--python",
+      "C:/Users/Veritas/AppData/Local/Programs/Python/Python313/python.exe",
+      "--apply-if-gated"
+    ],
+    "cwd": "C:/Users/Veritas/.openclaw/workspace",
+    "timeoutSeconds": 1500
+  },
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "compare_fields": [
+    "name",
+    "description",
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds",
+    "delivery.mode"
+  ],
+  "expected_artifacts": [
+    "tmp/weekly-band-renewal.json",
+    "tmp/weekly-band-renewal.md"
+  ],
+  "optional_artifacts": [
+    "state/finance/renewal-audit/"
+  ],
+  "authority_boundary": {
+    "standing_gate": "state/finance/standing-approvals/band-renewal-option-b.json",
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "thesis_mutation_allowed": false,
+    "scope_mutation_allowed": false,
+    "methodology_change_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "external_delivery_allowed": false,
+    "owner_approval_inferred": false,
+    "alert_canon_mutation_allowed": "only_under_standing_gate"
+  },
+  "updated_at_utc": "2026-09-24T01:50:00Z",
+  "contract_update_reason": "Initial owner-approved creation (Option B standing gate)."
+}

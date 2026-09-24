@@ -1,0 +1,74 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "ITA",
+  "thesis_version": 1,
+  "status": "draft",
+  "thesis_type": "sector_etf",
+  "thesis_statement": "ITA (iShares US Aerospace & Defense ETF) is a diversified proxy for US defense and commercial-aerospace spending, supported by elevated defense budgets and the commercial aircraft production ramp.",
+  "timeframe": "intermediate_3_12m",
+  "cases": {
+    "base": {
+      "summary": "Defense budgets stay elevated and commercial aerospace keeps ramping; the ETF compounds with the sector.",
+      "drivers": [
+        "US and allied defense spending",
+        "commercial aircraft delivery ramp"
+      ]
+    },
+    "bull": {
+      "summary": "New multi-year procurement or geopolitical escalation accelerates orders.",
+      "drivers": [
+        "supplemental defense appropriations",
+        "OEM production-rate increases"
+      ]
+    },
+    "bear": {
+      "summary": "Budget cuts, a continuing resolution, or aerospace supply-chain problems stall the sector.",
+      "drivers": [
+        "US budget impasse",
+        "OEM quality/production setbacks"
+      ]
+    }
+  },
+  "key_risks": [
+    "Concentration in a few large holdings means single-name news moves the ETF.",
+    "Policy and budget timing risk; an ETF has no single company thesis to check."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the band invalidation level (proposed 205.74) on the owner-approved baseline.",
+    "fundamental": [
+      "Enacted US defense budget cut in real terms.",
+      "Sustained commercial aerospace production cuts at the major OEMs."
+    ]
+  },
+  "catalysts": [],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_review_bias",
+      "defensive_neutral_selective",
+      "selective_with_watch_flags"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": null
+  },
+  "evidence": [
+    {
+      "claim": "ETF; no company fundamentals (instrument_type etf_or_macro_proxy); no earnings date",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator snapshot 2026-08-28)",
+      "as_of": "2026-08-28"
+    },
+    {
+      "claim": "Proposed band 211.43-234.17, invalidation 205.74, confidence 0.30; price 213.92 in band",
+      "source": "tmp/renewal-matrix-20260922close-v3.json (proposed band, not yet approved)",
+      "as_of": "2026-09-22"
+    }
+  ],
+  "thesis_as_of": "2026-09-23",
+  "review_due": "2026-12-23",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": null,
+  "owner_notes": "The ETF is its own sector benchmark, so relative strength is measured against SPY only. Top holdings were not verified in this draft; confirm before accepting."
+}

@@ -22,6 +22,8 @@ RETIRED_SOL_MODEL = "openai/gpt-5.6-sol"
 
 TEMP_PROOF_DIR: Path | None = None
 PROOF_SEQUENCE = 0
+HERMETIC_LANE_REGISTER_NAME = "hermetic-concurrent-lane-register.json"
+HERMETIC_LANE_ID = "RUNTIME::PROJECT-IMPLEMENTATION-ROUTER-2026-06-21::router-framework"
 
 
 def transport_proof(*, agent_id: str | None = None, payload: dict | None = None, raw: str | None = None) -> str:
@@ -70,6 +72,29 @@ def native_dispatch_proof(*, payload: dict | None = None, raw: str | None = None
             },
         }), encoding="utf-8")
     return path.relative_to(ROOT).as_posix()
+
+
+def closeout_proof_artifact() -> str:
+    """Create a disposable closeout proof artifact; closeout linting requires it
+    to exist and be mirrored in the lane register."""
+    global PROOF_SEQUENCE
+    assert TEMP_PROOF_DIR is not None
+    PROOF_SEQUENCE += 1
+    path = TEMP_PROOF_DIR / f"closeout-proof-{PROOF_SEQUENCE}.json"
+    path.write_text(json.dumps({
+        "schema": "veritas.closeout_proof_artifact.example",
+        "status": "ok",
+        "project_id": "project-router-framework-example",
+    }), encoding="utf-8")
+    relative = path.relative_to(ROOT).as_posix()
+    register_path = TEMP_PROOF_DIR / HERMETIC_LANE_REGISTER_NAME
+    if register_path.exists():
+        register = json.loads(register_path.read_text(encoding="utf-8"))
+        for lane in register.get("lanes", []):
+            if isinstance(lane, dict) and lane.get("lane_id") == HERMETIC_LANE_ID:
+                lane.setdefault("proof_artifacts", []).append(relative)
+        register_path.write_text(json.dumps(register), encoding="utf-8")
+    return relative
 
 
 def expect(condition: bool, message: str, errors: list[str]) -> None:
@@ -268,17 +293,18 @@ def test_project_packet_subset_lints(errors: list[str]) -> None:
 
 
 def test_closeout_flags_populate_proof(errors: list[str]) -> None:
+    proof_path = closeout_proof_artifact()
     project = router.build_project(
         args(
             status="complete",
-            proof_artifact=["tmp/projects/project-router-framework-example.json"],
+            proof_artifact=[proof_path],
             helper_outputs_reviewed=True,
             main_verified=True,
         )
     )
     closeout = project["closeout_proof"]
     expect(project["status"] == "complete", "explicit status should be preserved", errors)
-    expect(closeout["proof_artifacts"] == ["tmp/projects/project-router-framework-example.json"], "proof artifacts should be preserved", errors)
+    expect(closeout["proof_artifacts"] == [proof_path], "proof artifacts should be preserved", errors)
     expect(closeout["helper_outputs_reviewed"] is True, "helper review flag should be true", errors)
     expect(closeout["main_verified"] is True, "main verification flag should be true", errors)
 
@@ -867,7 +893,7 @@ def test_route_closeout_mismatch_fails_closed(errors: list[str]) -> None:
     expect("actual_route_mismatch" in codes, "new closeout route mismatch must fail closed", errors)
 
     project = router.build_project(args(
-        proof_artifact=["tmp/projects/project-router-framework-example.json"],
+        proof_artifact=[closeout_proof_artifact()],
         helper_outputs_reviewed=True,
         main_verified=True,
     ))
@@ -1270,9 +1296,20 @@ def main() -> int:
             "implementation-builder": {"model": router.BUILDER_MODEL},
             "docs-continuity-editor": {"model": router.DOCS_MODEL},
         }}}), encoding="utf-8")
+        hermetic_lane_register = Path(temp_dir) / HERMETIC_LANE_REGISTER_NAME
+        hermetic_lane_register.write_text(json.dumps({"lanes": [{
+            "lane_id": HERMETIC_LANE_ID,
+            "workflow_id": "RUNTIME::PROJECT-IMPLEMENTATION-ROUTER-2026-06-21",
+            "workstream_id": "router-framework",
+            "owner": "main-session",
+            "status": "complete",
+            "mode": "Spawn distinct-output",
+            "allowed_writes": args().leased_path,
+            "proof_artifacts": [],
+        }]}), encoding="utf-8")
         with patch.object(router, "PERSISTENT_TRANSPORT_CONFIG_PATH", hermetic_config), patch.object(
             router.main_model_selection, "DEFAULT_CONFIG_PATH", hermetic_config
-        ):
+        ), patch.object(router, "LANE_REGISTER", hermetic_lane_register):
             for test in tests:
                 try:
                     test(errors)

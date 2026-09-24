@@ -1,0 +1,52 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "1d762d96-3053-44e5-8b1d-89d5b2ca61c2",
+  "declarationKey": "finance-weekly-band-renewal-main-review-v1",
+  "name": "Finance - Weekly Band Renewal Main Review",
+  "required": true,
+  "owner_workflow": "WF85 alerts-and-recommendations OS / reference-band freshness",
+  "contract_reason": "Main wake to review the weekly renewal packet and surface it to Randall; approval card when the gate stops.",
+  "description": "Wakes Main 30 minutes after the weekly band renewal to review the packet and surface it to Randall.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "30 9 * * 6",
+    "tz": "America/Phoenix",
+    "staggerMs": 0
+  },
+  "sessionTarget": "main",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "systemEvent",
+    "text": "Weekly band renewal, thesis review and recommendation review. (1) Read tmp/weekly-band-renewal.json and .md (check started_at_utc is from today; if stale or missing, report the job as not run). If status=applied: verify the guard step passed, then send Randall a short Telegram report of what changed (largest edge moves, floor-widened, repaired days, new expiry) with the rollback record path. If status=needs_owner_review: send an approval card listing each gate reason and affected names with your recommendation; do not apply without his reply. If status=apply_failed: P1, do not retry, report step tails. (2) Read tmp/thesis-review.json (generated today). For each new_quarter or review_overdue flag, draft an updated thesis version for Randall's acceptance (keep prior version in history); for missing_thesis, propose the next 3-5 names to draft. (3) Read tmp/recommendation-funnel.json (generated today): present review candidates with score, band position, conviction, macro fit, relative strength and earnings flags, plus board-only names with their reasons, as non-executing recommendations for Randall's review. Never accept a thesis, change scope, methodology, weights, or anything outside state/finance/standing-approvals/band-renewal-option-b.json on your own; no capital, order, account or execution language."
+  },
+  "delivery": null,
+  "compare_fields": [
+    "name",
+    "description",
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.text"
+  ],
+  "expected_artifacts": [],
+  "authority_boundary": {
+    "standing_gate": "state/finance/standing-approvals/band-renewal-option-b.json",
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "thesis_mutation_allowed": false,
+    "scope_mutation_allowed": false,
+    "methodology_change_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "external_delivery_allowed": false,
+    "owner_approval_inferred": false,
+    "alert_canon_mutation_allowed": false
+  },
+  "updated_at_utc": "2026-09-24T04:10:00Z",
+  "contract_update_reason": "Payload extended to weekly recommendation review (funnel-v1 approved 2026-09-23)."
+}

@@ -19,14 +19,14 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 
 - Token usage ledger status: `warning`.
 - Token efficiency scorecard status: `warning`.
-- Token events observed: `1165`.
-- Total observed tokens: `68367111`.
-- API-equivalent token benchmark (not an invoice): `14.925727` (`partial_unknown_input_semantics_or_missing_rate`; `200/1165` events priced).
-- Estimated ChatGPT credits (not an observed debit): `338.593006` (`partial_separate_no_public_rate_or_missing_rate`; `200/1165` events priced).
-- Rolling 5h / observed 7d tokens: `0` / `0`; usage timestamp coverage `15.9657`%.
+- Token events observed: `1166`.
+- Total observed tokens: `68413287`.
+- API-equivalent token benchmark (not an invoice): `14.925727` (`partial_unknown_input_semantics_or_missing_rate`; `200/1166` events priced).
+- Estimated ChatGPT credits (not an observed debit): `338.593006` (`partial_separate_no_public_rate_or_missing_rate`; `200/1166` events priced).
+- Rolling 5h / observed 7d tokens: `0` / `46176`; usage timestamp coverage `16.0377`%.
 - Actual billed cost (owner-entered only): `None`.
 - OAuth quota state / remaining / days to reset: `stale` / `58.0` / `0.0`.
-- Cron token events: `735`.
+- Cron token events: `736`.
 - Implementation token events: `3`.
 - Implementation token gaps: `597`.
 - API-call reduction candidates: `0`.

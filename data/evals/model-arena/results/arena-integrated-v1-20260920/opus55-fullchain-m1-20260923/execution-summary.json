@@ -1,0 +1,17 @@
+{
+  "schema": "veritas.arena_mission_execution_summary.v1",
+  "mission": "mission-1",
+  "outcome": "blocked_before_dispatch",
+  "reason": "Candidate-mount read/write access and held-out isolation were not proven. Sandbox-required spawn was refused; the separate non-benchmark pinned-model mount canary timed out without output. No frozen prompt was delivered as a mission attempt.",
+  "candidate_attempts": 0,
+  "retries": 0,
+  "response_artifact": null,
+  "native_transcript": null,
+  "tool_trace": null,
+  "grade_artifact": null,
+  "score": null,
+  "model_pin_verified_for_mission": false,
+  "fallback_verified_absent_for_mission": false,
+  "transport_receipt": "transport-receipt.json",
+  "next_action": "Main must establish a sandboxed, candidate-mount-only pinned-model route and preflight access before a new authorized dispatch decision. Do not interpret this as a candidate failure."
+}

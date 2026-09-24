@@ -15,7 +15,7 @@ Custom isolated agent for Veritas finance-first multi-workflow market intelligen
 - Department: `custom`
 - Owner workflow: `VERITAS-MAIN`
 - Authority class: `workspace_scoped`
-- Current configured model: `openai/gpt-5.6-sol`
+- Current configured model: `openai/gpt-6-sol`
 - Workspace: `agent-owned workspace (runtime configured)`
 - Agent dir: `agent-owned runtime directory`
 - External bindings count: `1`

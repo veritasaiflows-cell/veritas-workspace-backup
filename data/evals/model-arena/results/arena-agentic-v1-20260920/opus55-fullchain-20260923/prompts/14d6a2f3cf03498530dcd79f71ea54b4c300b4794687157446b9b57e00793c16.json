@@ -1,0 +1,39 @@
+{
+  "family": "T3",
+  "instance_id": "14d6a2f3cf03498530dcd79f71ea54b4c300b4794687157446b9b57e00793c16",
+  "prompt": {
+    "query_time": 10,
+    "request": "Resolve claims from chronology, roles, windows, corrections, withdrawals.",
+    "sources": [
+      {
+        "claim_id": "C1",
+        "published": 1,
+        "sid": "S10",
+        "source_role": "publisher",
+        "text": "base",
+        "valid_from": 0,
+        "valid_to": 20
+      },
+      {
+        "claim_id": "C1",
+        "corrects": "S10",
+        "published": 2,
+        "sid": "S20",
+        "source_role": "publisher",
+        "text": "fix",
+        "valid_from": 0,
+        "valid_to": 20
+      },
+      {
+        "claim_id": null,
+        "published": 3,
+        "retracts": "S20",
+        "sid": "S30",
+        "source_role": "publisher",
+        "text": "withdraw",
+        "valid_from": 0,
+        "valid_to": 20
+      }
+    ]
+  }
+}

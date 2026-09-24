@@ -155,7 +155,7 @@ Current approved roster:
 
 | Agent | Purpose | Exact model |
 |---|---|---|
-| `main` | architect, queue owner, final integrator, and acceptance owner | `openai/gpt-5.6-sol` |
+| `main` | architect, queue owner, final integrator, and acceptance owner | `openai/gpt-6-sol` |
 | `research-scout` | public market, competitor, niche, and offer research | `openai/gpt-5.6-terra` |
 | `implementation-builder` | scoped implementation and proof | `meta/muse-spark-1.3-contributor` |
 | `qa-redteam` | independent implementation and claim review | `ollama-cloud/glm-5.3:cloud` |

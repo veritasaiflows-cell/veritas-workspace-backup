@@ -162,7 +162,7 @@ Examples:
 Posture:
 - require preflight review first
 - if the work is cleared to proceed without fresh human input, spawn one bounded detached worker
-- preferred model: `openai/gpt-5.6-terra` with the justified reasoning setting for bounded detached work; reserve `openai/gpt-5.6-sol` for main/final integration
+- preferred model: `openai/gpt-5.6-terra` with the justified reasoning setting for bounded detached work; reserve `openai/gpt-6-sol` for main/final integration
 - if the chosen model is unavailable, keep the same bounded contract and record the fallback; prefer `openai/gpt-5.5` then `openai/gpt-5.4` as controlled fallback/rollback routes instead of silently downgrading trust
 - if a second-opinion judgment lane is needed rather than implementation labor, stop and record that need instead of faking unattended progress
 

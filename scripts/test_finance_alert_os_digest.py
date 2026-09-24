@@ -490,3 +490,38 @@ class SendUnconfirmedTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_suppressed_line_only_when_nothing_is_fire_eligible() -> None:
+    import finance_alert_os_digest as digest
+    base = {"monitor_only_tickers": ["AAA"], "band_entry_signal_tickers": ["BBB"]}
+    mixed = digest.build_message("midday", {"summary": {**base, "fresh_intraday_signal_eligible_tickers": ["BBB"]}})
+    assert "firing is suppressed" not in mixed
+    assert "Review-only (last-completed-session evidence, not fire-eligible): AAA" in mixed
+    closed = digest.build_message("midday", {"summary": {**base, "fresh_intraday_signal_eligible_tickers": []}})
+    assert "firing is suppressed" in closed
+
+
+def test_digest_key_ignores_timestamps_but_tracks_content() -> None:
+    import finance_alert_os_digest as digest
+    one = {"summary": {"band_entry_signal_tickers": ["B", "A"], "quote_as_of_utc_values": ["2026-09-23T14:00:00Z"]}}
+    two = {"summary": {"band_entry_signal_tickers": ["A", "B"], "quote_as_of_utc_values": ["2026-09-23T15:00:00Z"]}}
+    three = {"summary": {"band_entry_signal_tickers": ["A"]}}
+    k = lambda levels: digest.semantic_digest_key("2026-09-23", "midday", levels, "ok")
+    assert k(one) == k(two)
+    assert k(one) != k(three)
+    assert digest.semantic_digest_key("2026-09-24", "midday", one, "ok") != k(one)
+
+
+def test_confidence_line_prints_median_lowest_and_missing() -> None:
+    import finance_alert_os_digest as digest
+    rows = [{"ticker": t, "sql_reference": {"reference_confidence": c}}
+            for t, c in (("AAA", 0.5), ("BBB", 0.15), ("CCC", 0.3), ("DDD", None))]
+    line = digest.confidence_line({"rows": rows})
+    assert line.startswith("Data confidence (0-1, provisional, single-source cap 0.50):")
+    assert "median 0.30 over 3" in line and "lowest BBB 0.15, CCC 0.30" in line
+    assert "missing for 1: DDD" in line
+    msg = digest.build_message("morning", {"rows": rows, "summary": {}})
+    assert msg.splitlines()[-2] == line and msg.splitlines()[-1] == digest.BOUNDARY
+    assert digest.confidence_line({"summary": {}}) is None
+    assert "Data confidence" not in digest.build_message("morning", {"summary": {}})

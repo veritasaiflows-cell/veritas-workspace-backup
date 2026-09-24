@@ -1,0 +1,15 @@
+{
+  "schema": "veritas.arena_dispatch_authorization.v1",
+  "envelope": "arena-agentic-v1-20260920",
+  "overlay_version": "arena-agentic-v1-20260920-overlay-r2",
+  "dispatch_ready": true,
+  "authorized_by": "gateway-owner",
+  "authorized_at": "2026-09-23T20:17:00-07:00",
+  "note": "Run-scoped release for Anthropic Claude Opus 5.5 full-suite Surface C only. Owner authorized by explicit WebChat request on 2026-09-23 20:17 MST. Canonical overlay/dispatch-authorization.json remains inert.",
+  "scope": {
+    "cases": 12,
+    "models": ["anthropic/claude-opus-5-5"],
+    "reps": 1,
+    "retries": 0
+  }
+}

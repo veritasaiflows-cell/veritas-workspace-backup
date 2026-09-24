@@ -1,0 +1,15 @@
+{
+  "schema": "veritas.arena_transport_canary.v1",
+  "route": "Gateway CLI external user turn via oxalpha-lab",
+  "requested_model": "anthropic/claude-opus-5-5",
+  "provider": "claude-cli",
+  "effective_model": "claude-opus-5-5",
+  "fallback_used": false,
+  "status": "ok",
+  "tool_summary": {"calls": 1, "tools": ["Read"], "failures": 0},
+  "user_provenance": {"role": "user", "user_type": "external", "entrypoint": "sdk-cli"},
+  "prompt_delivery": "runtime timestamp wrapper with exact frozen-payload suffix; wrapper retained in native transcript",
+  "tool_trace": ["recovery/index.json"],
+  "workspace": "oxalpha-lab synthetic fixture workspace",
+  "run_id": "891e5241-6176-441f-8809-108a82022a47"
+}

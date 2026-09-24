@@ -1,0 +1,88 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "META",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "secular_growth",
+  "thesis_statement": "Meta monetises the largest social and messaging audience in the world through advertising, with AI-driven ranking and ad tools lifting engagement and pricing; the open question is whether very heavy AI capex earns an adequate return.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Revenue grows 20%+ on AI-improved ads while capex stays heavy; earnings growth resumes once depreciation growth normalises.",
+      "drivers": [
+        "AI ranking and ad-tool improvements",
+        "Reels/messaging monetisation"
+      ]
+    },
+    "bull": {
+      "summary": "AI products (assistants, business messaging, ad automation) open new revenue while capex intensity peaks.",
+      "drivers": [
+        "business messaging monetisation",
+        "capex growth slowing"
+      ]
+    },
+    "bear": {
+      "summary": "Capex keeps rising faster than revenue, free cash flow stays near zero, and regulation or an ad slowdown hits revenue.",
+      "drivers": [
+        "capex overrun",
+        "EU/US regulatory action",
+        "ad-market cyclical slowdown"
+      ]
+    }
+  },
+  "key_risks": [
+    "Q2 2026 free cash flow was only ~$1.7B on ~$30B quarterly capex; EPS fell 13% YoY despite 28% revenue growth.",
+    "Regulatory and legal risk across the EU and US."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the band invalidation level (proposed 518.01) on the owner-approved baseline.",
+    "fundamental": [
+      "Revenue growth falls below 10% while capex keeps growing.",
+      "Free cash flow negative for two consecutive quarters."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-28",
+      "date_confidence": "provider_estimate"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": [
+      "defensive_review_bias"
+    ]
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLC"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026 revenue +27.96% YoY, EPS -13.45%, operating margin 30.9%, capex $30.1B vs OCF $31.9B, forward P/E 16.6",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator snapshot 2026-08-28)",
+      "as_of": "2026-08-28"
+    },
+    {
+      "claim": "Next earnings 2026-10-28 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (provider estimate, 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "Proposed band 555.66-609.96, invalidation 518.01; price 746.14 far above band (no_chase)",
+      "source": "tmp/renewal-matrix-20260922close-v3.json (proposed band, not yet approved)",
+      "as_of": "2026-09-22"
+    }
+  ],
+  "thesis_as_of": "2026-09-23",
+  "review_due": "2026-12-23",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-23T18:17:31-07:00",
+  "owner_notes": "Price is ~22% above the proposed band high, so the mechanical band is not a useful entry reference right now. Disfavored under today's defensive posture because of capex/FCF risk. A candidate for a trend-anchored band method later. Accepted by Randall, Telegram 2026-09-23 evening: 'theses accepted, continue to repair ITA and PH'.",
+  "fundamentals_period_end": "2026-06-30"
+}

@@ -133,6 +133,34 @@ def baseline_guard_line() -> str | None:
     return f"BASELINE: {label} - {detail}"
 
 
+def confidence_line(levels: dict[str, Any], lowest: int = 4) -> str | None:
+    """Readiness item 2 (2026-09-23): print reference_confidence from the SQL
+    reference each controller row carries. Values are data_confidence_v1, 0-1,
+    capped at 0.50 while Yahoo is the only source; provisional, uncalibrated."""
+    values: list[tuple[float, str]] = []
+    missing: list[str] = []
+    for row in as_list(levels.get("rows")):
+        entry = as_dict(row)
+        ticker = str(entry.get("ticker") or "?")
+        raw = as_dict(entry.get("sql_reference")).get("reference_confidence")
+        try:
+            values.append((float(raw), ticker))
+        except (TypeError, ValueError):
+            missing.append(ticker)
+    if not values and not missing:
+        return None
+    parts: list[str] = []
+    if values:
+        scores = sorted(score for score, _ in values)
+        mid = len(scores) // 2
+        median = scores[mid] if len(scores) % 2 else (scores[mid - 1] + scores[mid]) / 2
+        low_names = ", ".join(f"{t} {s:.2f}" for s, t in sorted(values)[:lowest])
+        parts.append(f"median {median:.2f} over {len(values)}; lowest {low_names}")
+    if missing:
+        parts.append(f"missing for {len(missing)}: {compact(sorted(missing))}")
+    return "Data confidence (0-1, provisional, single-source cap 0.50): " + "; ".join(parts)
+
+
 def build_message(mode: str, levels: dict[str, Any]) -> str:
     summary = as_dict(levels.get("summary"))
     counts = as_dict(summary.get("alert_state_counts"))
@@ -153,15 +181,44 @@ def build_message(mode: str, levels: dict[str, Any]) -> str:
         f"Controller generated: {levels.get('generated_at_utc') or 'unknown'}",
         BOUNDARY,
     ]
+    conf_line = confidence_line(levels)
+    if conf_line:
+        lines.insert(lines.index(BOUNDARY), conf_line)
     guard_line = baseline_guard_line()
     if guard_line:
         lines.insert(1, guard_line)
+    # A-D1 (2026-09-23): the global "suppressed" line printed whenever any one
+    # ticker was monitor_only, contradicting fire-eligible rows in the same
+    # message. It now appears only when nothing is fire-eligible; otherwise
+    # the review-only caveat is scoped to the monitor-only names.
     if monitor_only:
+        fire_eligible = as_list(summary.get("fresh_intraday_signal_eligible_tickers"))
         lines.insert(
             -1,
-            "Fresh intraday alert firing is suppressed; last-completed-session evidence is review-only.",
+            "Fresh intraday alert firing is suppressed; last-completed-session evidence is review-only."
+            if not fire_eligible
+            else f"Review-only (last-completed-session evidence, not fire-eligible): {compact(monitor_only)}",
         )
     return "\n".join(lines)
+
+
+def semantic_digest_key(day: str, mode: str, levels: dict[str, Any], status: str) -> str:
+    """A-D2 (2026-09-23): dedup on what the message says, not when it was
+    generated. The old key hashed the message text, which embeds quote and
+    controller timestamps, so it could never match a prior send."""
+    summary = as_dict(levels.get("summary"))
+    content = {
+        "date": day,
+        "mode": mode,
+        "status": status,
+        "counts": as_dict(summary.get("alert_state_counts")),
+        **{key: sorted(str(t) for t in as_list(summary.get(key))) for key in (
+            "band_entry_signal_tickers", "invalidation_signal_tickers", "no_chase_signal_tickers",
+            "monitor_only_tickers", "freshness_review_tickers", "fresh_intraday_signal_eligible_tickers",
+        )},
+        "quote_session_dates": sorted(str(d) for d in as_list(summary.get("quote_session_dates"))),
+    }
+    return hashlib.sha256(json.dumps(content, sort_keys=True).encode("utf-8")).hexdigest()[:24]
 
 
 def resolve_openclaw() -> str:
@@ -441,9 +498,9 @@ def main() -> int:
     state = load_json(state_path)
     sent_keys = as_dict(state.get("sent_keys"))
     message = str(payload.get("message_preview") or "")
-    digest_key = hashlib.sha256(
-        json.dumps({"date": local_now.date().isoformat(), "mode": args.mode, "message": message}, sort_keys=True).encode("utf-8")
-    ).hexdigest()[:24]
+    digest_key = semantic_digest_key(
+        local_now.date().isoformat(), args.mode, {"summary": payload.get("summary")}, str(payload["status"])
+    )
     payload["digest_key"] = digest_key
 
     if args.send and payload["status"] == "ok":

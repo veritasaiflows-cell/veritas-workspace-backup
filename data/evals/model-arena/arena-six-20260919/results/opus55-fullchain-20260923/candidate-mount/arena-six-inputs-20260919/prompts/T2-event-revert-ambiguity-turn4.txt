@@ -1,0 +1,7 @@
+Final change. Keep amendments A1 and A2 and rules R2 through R6, and keep all thirteen events.
+
+Processing order is no longer the written order. Events are now processed sorted by revision ascending, and for equal revision by job ID ascending. The source system does NOT define a relative order for two events that share the same job AND the same revision.
+
+Report only what is determined regardless of how those undefined orderings resolve. Do not guess an order and do not invent a tiebreak.
+
+Return ONLY raw JSON with exactly these keys: states (an object containing an entry only for those jobs whose final {"revision": integer, "status": string} is identical under every possible resolution of the undefined orderings) and ambiguous (alphabetically sorted array of job IDs whose final state differs between resolutions). No prose, no fences.

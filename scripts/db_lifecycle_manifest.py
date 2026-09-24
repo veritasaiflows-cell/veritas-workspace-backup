@@ -896,6 +896,21 @@ def classify(path: Path, active_refs: int, operational_refs: int, sqlite_meta: d
         blockers.append("runtime backup provenance requires owner decision before archive/delete")
         if integrity_check_problem(sqlite_meta):
             blockers.append("integrity check is not ok; preserve for investigation")
+    elif (path_rel.startswith("state/finance/finance-canon.g6-yahoo32-backup-")
+          and name.endswith(".sqlite")):
+        # Pre-apply backups written by scripts/g6_yahoo32_sql_apply.py for each
+        # reference-band renewal (owner-approved batches and, since 2026-09-23,
+        # the weekly Option B standing gate). Paired with a -rollback-*.json.
+        lifecycle = "rollback"
+        owner = "Reference-band renewal pre-apply backup (g6_yahoo32_sql_apply)"
+        status = "conditional_keep"
+        recommendation = "retain as rollback proof for the paired reference-band renewal apply"
+        retention_policy = "conditional keep with its rollback record; archive/delete only through DB lifecycle approval packet"
+        evidence.append("pre-apply backup taken by the gated canon apply before a reference_levels renewal")
+        evidence.append("not active finance-canon current state; restore only under explicit rollback instruction")
+        blockers.append("rollback proof retained for reference-band renewal")
+        if integrity_check_problem(sqlite_meta):
+            blockers.append("integrity check is not ok; preserve for rollback investigation")
     elif name.startswith("reference-levels-production-grade-pre-apply-") and name.endswith(".sqlite"):
         lifecycle = "rollback"
         owner = "WF72 Tier A/A-READY reference-level SQL apply rollback backup"
@@ -929,6 +944,43 @@ def classify(path: Path, active_refs: int, operational_refs: int, sqlite_meta: d
         blockers.append("rollback proof retained for WF88 duplicate-source delete")
         if integrity_check_problem(sqlite_meta):
             blockers.append("integrity check is not ok; preserve for rollback investigation")
+    elif path_rel.startswith("09. Archive/DB Lifecycle - Archived/2026-09-23-wf89-test-probes/"):
+        lifecycle = "archived"
+        owner = "WF89 junction-probe / blocker test database (archived)"
+        status = "archived"
+        recommendation = "retain in archive; do not delete until a later retention proof"
+        evidence.append("moved by db_lifecycle_archive_apply 2026-09-23 with hash verification (owner-approved)")
+    elif path_rel.startswith("tmp/wf89-fleet-20260909/broader/junction-probe-v1/") and name == "openclaw-agent.sqlite":
+        # Junction-probe structure: the implementation-builder paths are Windows
+        # junction aliases of the research-scout paths (same file). Moving either
+        # would dangle the junctions and double-count the file, so keep in place.
+        lifecycle = "proof"
+        owner = "WF89 junction-probe evidence (junction-aliased test store)"
+        status = "conditional_keep"
+        recommendation = "keep in place; archive only as a whole directory with junctions recreated"
+        retention_policy = "retain with WF89 junction-probe evidence; not a live agent store"
+        evidence.append("junction targets verified 2026-09-23 to stay inside junction-probe-v1; not a live agent database")
+    elif (path_rel.startswith("tmp/wf89-fleet-20260909/broader/junction-probe-v1/")
+          or path_rel == "tmp/wf89-blocker-20260910/before-generated-workflow-routing-index.sqlite"):
+        # WF89 test DBs (2026-09-09/10 junction probes and a pre-regeneration
+        # snapshot). Randall approved archiving them 2026-09-23 evening. Several
+        # share the basename openclaw-agent.sqlite, so the destination keeps the
+        # tmp-relative path to avoid collisions.
+        lifecycle = "retired"
+        owner = "WF89 junction-probe / blocker test database"
+        status = "archive_candidate"
+        recommendation = "archive (owner-approved 2026-09-23); do not delete"
+        archive_ready = True
+        evidence.append("WF89 test artifact; findings are recorded in the WF89 continuity note, the DB itself is not read by any live route")
+        proposed_destination = (Path("09. Archive/DB Lifecycle - Archived/2026-09-23-wf89-test-probes")
+                                / path_rel.removeprefix("tmp/")).as_posix()
+        if (ROOT / proposed_destination).exists():
+            archive_ready = False
+            blockers.append("archive destination already exists")
+        if operational_refs:
+            blockers.append("active operational references exist; inspect before archiving")
+        if integrity_check_problem(sqlite_meta):
+            blockers.append("integrity check is not ok; preserve for investigation instead of cleanup")
     elif name in ARCHIVE_CANDIDATE_RULES:
         rule = ARCHIVE_CANDIDATE_RULES[name]
         lifecycle = rule["lifecycle"]

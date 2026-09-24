@@ -3,7 +3,7 @@
 
 Canonical page: `wiki/self-improvement/Prompt Book RSI Loop.md`
 Canonical rendered SHA-256: `e9783862e97b5094414ff094a4db365c6ec2741e5c4ff115ea40be782a178e14`.
-Source snapshot SHA-256: `ae6e88eec2e3db981460397adfa78da800871c41fcd74d9852a0247c230c48f3`.
+Source snapshot SHA-256: `77222f5213ea094e34dd46183baf36db7716415fdcaa3f1e581f0c047cbcd7a8`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases

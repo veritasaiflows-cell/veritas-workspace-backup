@@ -242,6 +242,45 @@ class AlertLevelFreshnessControllerTests(unittest.TestCase):
         self.assertFalse(policy["fire_eligible"])
         self.assertFalse(policy["stale_or_missing"])
 
+    def _closed_window_policy(self, window: str, age: float) -> dict:
+        row, proof, validation = clean_quote_fixture(closed_session=True)
+        row["market_session_window"] = window
+        proof["snapshots"][0]["market_session_window"] = window
+        proof["market_session"]["market_session_window"] = window
+        return quote_evaluation_policy(row, age, 36.0, quote_proof=proof, quote_validation=validation)
+
+    def test_monday_pre_open_last_session_quote_is_monitor_only_not_decay(self) -> None:
+        policy = self._closed_window_policy("pre_open", 65.09)
+        self.assertTrue(policy["calendar_current"])
+        self.assertTrue(policy["monitor_only"])
+        self.assertFalse(policy["fire_eligible"])
+        self.assertFalse(policy["stale_or_missing"])
+
+    def test_post_holiday_pre_open_gap_is_monitor_only(self) -> None:
+        policy = self._closed_window_policy("pre_open", 84.0)
+        self.assertTrue(policy["monitor_only"])
+        self.assertFalse(policy["stale_or_missing"])
+
+    def test_beyond_structural_gap_still_decays(self) -> None:
+        policy = self._closed_window_policy("pre_open", 100.0)
+        self.assertTrue(policy["stale_or_missing"])
+        self.assertFalse(policy["fire_eligible"])
+
+    def test_live_hours_quote_keeps_36h_ceiling(self) -> None:
+        row, proof, validation = clean_quote_fixture()
+        policy = quote_evaluation_policy(row, 40.0, 36.0, quote_proof=proof, quote_validation=validation)
+        self.assertTrue(policy["stale_or_missing"])
+        self.assertFalse(policy["fire_eligible"])
+
+    def test_closed_market_widening_fails_closed_on_tampered_flags(self) -> None:
+        row, proof, validation = clean_quote_fixture()
+        row["closed_market_expected_stale_allowed"] = True
+        row["calendar_freshness_status"] = "current_last_completed_session"
+        row["freshness_status"] = "stale"
+        policy = quote_evaluation_policy(row, 65.0, 36.0, quote_proof=proof, quote_validation=validation)
+        self.assertTrue(policy["stale_or_missing"])
+        self.assertFalse(policy["fire_eligible"])
+
     def test_current_clean_intraday_quote_can_fire(self) -> None:
         row, proof, validation = clean_quote_fixture()
         self.assertTrue(quote_proof_is_clean(proof, validation, row))

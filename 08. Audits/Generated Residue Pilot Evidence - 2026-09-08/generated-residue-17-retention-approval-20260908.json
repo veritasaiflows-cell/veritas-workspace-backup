@@ -1,0 +1,41 @@
+{
+  "schema": "veritas.generated_residue_retention_approval.v1",
+  "status": "retention_active_not_delete_ready",
+  "approved_at_utc": "2026-09-09T05:18:00Z",
+  "approval_text": "Approve a 14-calendar-day retention rule for the already-proven 17-file generated-residue pilot, measured from its latest successful all-file restore drill.",
+  "scope": {
+    "frozen_manifest_path": "tmp/cleanup-infrastructure-20260908/archive-pilot-input.json",
+    "frozen_manifest_sha256": "c1f5586c7ad4bfb1f030a0b93c6eb215eb51bb1c1e088de6731d7619fd51dacc",
+    "row_count": 17,
+    "total_bytes": 607330
+  },
+  "retention_rule": {
+    "duration_calendar_days": 14,
+    "anchor": "latest successful all-file restore drill",
+    "anchor_at_utc": "2026-09-09T05:01:23Z",
+    "eligible_at_utc": "2026-09-23T05:01:23Z",
+    "eligible_at_phoenix": "2026-09-22T22:01:23-07:00",
+    "clock_resets_if": "a later restore drill is run for this batch"
+  },
+  "preconditions_already_proven": {
+    "archive_hash_and_byte_checks": true,
+    "zero_bounded_active_references": true,
+    "all_file_restore_drill_passed": true
+  },
+  "remaining_delete_gates": [
+    "At or after eligible_at_utc, rebuild a fresh frozen permanent-delete manifest from current archive paths/hashes/bytes and fresh reference results.",
+    "That manifest may be valid for no more than 24 hours.",
+    "Randall must give a second exact approval naming that manifest digest, its 17-file scope, and permanent deletion.",
+    "A manifest-bound, fail-closed delete executor must be validated before it is used."
+  ],
+  "authority_boundary": {
+    "permanent_deletion_authorized": false,
+    "permanent_deletion_executed": false,
+    "default_retention_policy_created": false,
+    "other_archive_family_covered": false
+  },
+  "validation": {
+    "status": "ok",
+    "errors": []
+  }
+}

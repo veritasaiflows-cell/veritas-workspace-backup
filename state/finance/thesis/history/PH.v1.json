@@ -1,0 +1,87 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "PH",
+  "thesis_version": 1,
+  "status": "draft",
+  "thesis_type": "quality_compounder",
+  "thesis_statement": "Parker-Hannifin is a leading motion-and-control and aerospace-components manufacturer whose decentralised operating system has steadily expanded margins, with a growing, high-margin aerospace aftermarket.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Mid-to-high single-digit revenue growth with continued margin expansion and strong free cash flow.",
+      "drivers": [
+        "aerospace aftermarket growth",
+        "margin programme"
+      ]
+    },
+    "bull": {
+      "summary": "Industrial cycle recovery on top of aerospace strength drives operating leverage.",
+      "drivers": [
+        "industrial restocking",
+        "aerospace OEM ramp"
+      ]
+    },
+    "bear": {
+      "summary": "Industrial recession hits short-cycle demand while the premium valuation compresses.",
+      "drivers": [
+        "manufacturing downturn",
+        "valuation compression from ~25x forward"
+      ]
+    }
+  },
+  "key_risks": [
+    "Premium valuation (trailing P/E ~35, forward ~25).",
+    "Short-cycle industrial exposure."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the band invalidation level (proposed 877.28) on the owner-approved baseline.",
+    "fundamental": [
+      "Segment operating margins decline for two consecutive quarters.",
+      "Aerospace aftermarket growth turns negative."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Fiscal Q1 2027 earnings",
+      "expected_date": "2026-11-05",
+      "date_confidence": "provider_estimate"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_neutral_selective",
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": [
+      "defensive_review_bias"
+    ]
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLI"
+  },
+  "evidence": [
+    {
+      "claim": "Quarter ended 2026-03-31: revenue +10.6% YoY, operating margin 20.7%, FCF $881M, forward P/E 25.4 (June fiscal-Q4 quarter missing from snapshot)",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator snapshot 2026-08-28)",
+      "as_of": "2026-08-28"
+    },
+    {
+      "claim": "Next earnings 2026-11-05 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (provider estimate, 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "Proposed band 911.41-985.59, invalidation 877.28, confidence 0.40; price 971.45 in band",
+      "source": "tmp/renewal-matrix-20260922close-v3.json (proposed band, not yet approved)",
+      "as_of": "2026-09-22"
+    }
+  ],
+  "thesis_as_of": "2026-09-23",
+  "review_due": "2026-12-23",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": null,
+  "owner_notes": "Fundamental data is stale: the snapshot has only the March quarter; the June (fiscal Q4) report is missing. Refresh before accepting."
+}

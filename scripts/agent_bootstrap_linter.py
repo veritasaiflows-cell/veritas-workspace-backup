@@ -50,7 +50,6 @@ CORE_BOOT_REQUIRED_PHRASES = {
     "AGENTS.md": ["veritas main", "final qc", "sole acceptance", "factory-managed", "## tools", "does not control which tools exist"],
     "SOUL.md": ["veritas main", "final qc owner", "sole acceptance owner"],
     "IDENTITY.md": ["veritas main", "unaccepted until main verifies"],
-    "TOOLS.md": ["retired", "not a runtime bootstrap", "## tools"],
     "USER.md": ["veritas main", "raw prompts/responses"],
     "HEARTBEAT.md": ["no autonomous heartbeat work", "do not create cron schedules"],
 }

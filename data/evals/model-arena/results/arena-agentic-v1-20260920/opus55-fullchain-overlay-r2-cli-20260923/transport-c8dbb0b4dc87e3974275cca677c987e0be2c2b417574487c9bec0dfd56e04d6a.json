@@ -1,0 +1,158 @@
+{
+  "runId": "6f31eebe-a88b-4202-b4c7-ba877c086a68",
+  "status": "ok",
+  "summary": "completed",
+  "result": {
+    "payloads": [
+      {
+        "text": "Truncated (2 < 4). Reading the replica.\n\n{\"records\": [{\"id\": \"r2\", \"value\": \"b1\", \"ts\": \"2026-09-11\"}, {\"id\": \"r3\", \"value\": \"c2\", \"ts\": \"2026-09-17\"}], \"tombstoned\": [\"r1\"], \"superseded_rows\": 1, \"source\": \"mirror\"}",
+        "mediaUrl": null
+      }
+    ],
+    "meta": {
+      "durationMs": 38350,
+      "finalPromptText": "[Wed 2026-09-23 20:41 MST] case c8dbb0b4dc87e3974275cca677c987e0be2c2b417574487c9bec0dfd56e04d6a (family: T4)\r\nresponse contract:\r\nMulti-hop dataset recovery across a truncated payload, a replica and a stale decoy.\r\n\r\nResponse contract:\r\nReturn exactly: {\"records\": [{\"id\": ..., \"value\": ..., \"ts\": ...} for live rows, sorted by id], \"tombstoned\": [row ids, sorted], \"superseded_rows\": integer, \"source\": \"primary\" | \"mirror\" | \"archive\"}.\r\n\r\nRules:\r\n- The fixture files are mounted at fixtures/<fixture_set_id>/, so the path start_path resolves to fixtures/<fixture_set_id>/<start_path>. Begin at start_path and use fallback_index when start_path is absent. Stay within read_budget reads.\r\n- A payload holding fewer rows than its own declared_row_count is truncated and must not be trusted. Prefer the replica that satisfies its declared_row_count.\r\n- The archive snapshot is stale and non-authoritative. Do not read it and never take values from it.\r\n- For each id keep the row with the greatest ts, breaking ties by later position in the assembled row order.\r\n- superseded_rows = total assembled rows minus the number of distinct ids.\r\n- A row whose latest version has tombstone true is excluded from records and its id is listed in tombstoned.\r\n- source names which of the three stores the returned rows were actually taken from.\r\n\r\nReturn only the required JSON object. No prose, no explanation, no code fences.\r\n\r\nprompt:\r\n{\r\n  \"fallback_index\": \"recovery/index.json\",\r\n  \"fixture_set_id\": \"fs-8c44f4aaca482291\",\r\n  \"read_budget\": 6,\r\n  \"request\": \"Recover the dataset via the harness fixture set and return only JSON.\",\r\n  \"start_path\": \"recovery/primary.json\"\r\n}\r\nReturn only the required JSON object. No prose.",
+      "finalAssistantVisibleText": "Truncated (2 < 4). Reading the replica.\n\n{\"records\": [{\"id\": \"r2\", \"value\": \"b1\", \"ts\": \"2026-09-11\"}, {\"id\": \"r3\", \"value\": \"c2\", \"ts\": \"2026-09-17\"}], \"tombstoned\": [\"r1\"], \"superseded_rows\": 1, \"source\": \"mirror\"}",
+      "finalAssistantRawText": "Truncated (2 < 4). Reading the replica.\n\n{\"records\": [{\"id\": \"r2\", \"value\": \"b1\", \"ts\": \"2026-09-11\"}, {\"id\": \"r3\", \"value\": \"c2\", \"ts\": \"2026-09-17\"}], \"tombstoned\": [\"r1\"], \"superseded_rows\": 1, \"source\": \"mirror\"}",
+      "systemPromptReport": {
+        "source": "run",
+        "generatedAt": 1790221304528,
+        "sessionId": "arena-r2-opus55-c8dbb0b4dc87",
+        "sessionKey": "agent:oxalpha-functional-lab:explicit:arena-r2-opus55-c8dbb0b4dc87",
+        "provider": "claude-cli",
+        "model": "claude-opus-5-5",
+        "workspaceDir": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab",
+        "bootstrapMaxChars": 20000,
+        "bootstrapTotalMaxChars": 80000,
+        "bootstrapTruncation": {
+          "warningMode": "always",
+          "warningShown": false,
+          "truncatedFiles": 0,
+          "nearLimitFiles": 0,
+          "totalNearLimit": false
+        },
+        "sandbox": {
+          "mode": "off",
+          "sandboxed": false
+        },
+        "systemPrompt": {
+          "chars": 12105,
+          "hash": "8d0d1a947abdc5d89ef8fa28cf291a79d217e5fe61de3e3345f1ddb30c65bc91",
+          "projectContextChars": 4341,
+          "nonProjectContextChars": 7764
+        },
+        "currentTurn": {
+          "promptChars": 1719,
+          "runtimeContextChars": 0
+        },
+        "injectedWorkspaceFiles": [
+          {
+            "name": "AGENTS.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\AGENTS.md",
+            "missing": false,
+            "rawChars": 2376,
+            "injectedChars": 2376,
+            "truncated": false
+          },
+          {
+            "name": "SOUL.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\SOUL.md",
+            "missing": false,
+            "rawChars": 275,
+            "injectedChars": 275,
+            "truncated": false
+          },
+          {
+            "name": "IDENTITY.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\IDENTITY.md",
+            "missing": false,
+            "rawChars": 379,
+            "injectedChars": 379,
+            "truncated": false
+          },
+          {
+            "name": "USER.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\USER.md",
+            "missing": false,
+            "rawChars": 254,
+            "injectedChars": 254,
+            "truncated": false
+          }
+        ],
+        "skills": {
+          "promptChars": 0,
+          "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "entries": []
+        },
+        "tools": {
+          "listChars": 0,
+          "schemaChars": 0,
+          "entries": []
+        }
+      },
+      "executionTrace": {
+        "winnerProvider": "claude-cli",
+        "winnerModel": "claude-opus-5-5",
+        "attempts": [
+          {
+            "provider": "claude-cli",
+            "model": "claude-opus-5-5",
+            "result": "success"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "cli"
+      },
+      "requestShaping": {
+        "thinking": "high"
+      },
+      "completion": {
+        "finishReason": "stop",
+        "stopReason": "completed",
+        "refusal": false
+      },
+      "toolSummary": {
+        "calls": 4,
+        "tools": [
+          "Read"
+        ],
+        "failures": 1
+      },
+      "agentMeta": {
+        "sessionId": "a498a025-be8e-4ac4-9ac3-a69548e66745",
+        "provider": "claude-cli",
+        "model": "claude-opus-5-5",
+        "contextTokens": 1000000,
+        "contextTokensSource": "resolved",
+        "usage": {
+          "input": 2,
+          "output": 8,
+          "cacheRead": 23825,
+          "cacheWrite": 316
+        },
+        "lastCallUsage": {
+          "input": 2,
+          "output": 8,
+          "cacheRead": 23825,
+          "cacheWrite": 316
+        },
+        "diagnosticUsage": {
+          "input": 10,
+          "output": 631,
+          "cacheRead": 103662,
+          "cacheWrite": 14554
+        },
+        "cliSessionBinding": {
+          "sessionId": "a498a025-be8e-4ac4-9ac3-a69548e66745",
+          "resumeCheckpointId": "c14ec875-b1b9-463f-aa46-551baddd4e43",
+          "authEpochVersion": 7,
+          "messageToolPolicyHash": "92a8de91722cbb4fe1a7fd6892245e359c339d96cafe8db3a08738ffda913d71",
+          "promptToolNamesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "cwdHash": "81809321427212872aba083ecb8441b0326aa949670c6f65db1d466f8e3d3dff",
+          "mcpConfigHash": "a2ce72a0355f31290ff890b6b80850e3a8926ed2693efd66dcef0259f44941f0",
+          "mcpResumeHash": "410ef86a7b41ee36c7814a650b5096ac6767d27487970f37030eb49f93cc5d11"
+        }
+      }
+    }
+  }
+}

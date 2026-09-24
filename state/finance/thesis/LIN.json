@@ -1,0 +1,87 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "LIN",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "quality_compounder",
+  "thesis_statement": "Linde is the largest industrial-gas company: long-term take-or-pay contracts, on-site plants and dense distribution give durable pricing power and steady high-return growth, with optional upside from clean-hydrogen and electronics gases.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "High-single-digit revenue and low-double-digit EPS growth from pricing, project backlog and buybacks.",
+      "drivers": [
+        "contractual pricing",
+        "project backlog start-ups",
+        "share repurchases"
+      ]
+    },
+    "bull": {
+      "summary": "Industrial recovery plus electronics and clean-energy projects lift volumes on top of pricing.",
+      "drivers": [
+        "semiconductor fab gas demand",
+        "clean hydrogen / decarbonisation contracts"
+      ]
+    },
+    "bear": {
+      "summary": "Industrial recession cuts merchant volumes while a premium valuation de-rates.",
+      "drivers": [
+        "manufacturing downturn",
+        "valuation compression from ~25x forward earnings"
+      ]
+    }
+  },
+  "key_risks": [
+    "Premium valuation (forward P/E ~25) leaves little room for a growth miss.",
+    "Free cash flow is lumpy because of heavy project capex."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the band invalidation level (proposed 443.52) on the owner-approved baseline.",
+    "fundamental": [
+      "Operating margin falls below 25% for two quarters.",
+      "Project backlog shrinks materially or major contracts are cancelled."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-30",
+      "date_confidence": "provider_estimate"
+    }
+  ],
+  "conviction": "high",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_neutral_selective",
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLB"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026 revenue +9.35% YoY, EPS +11.26%, operating margin 27.3%, forward P/E 25.0, capex $1.44B vs OCF $2.27B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator snapshot 2026-08-28)",
+      "as_of": "2026-08-28"
+    },
+    {
+      "claim": "Next earnings 2026-10-30 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (provider estimate, 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "Proposed band 454.19-485.87, invalidation 443.52, confidence 0.30; price 469.77 in band; not trend-qualified",
+      "source": "tmp/renewal-matrix-20260922close-v3.json (proposed band, not yet approved)",
+      "as_of": "2026-09-22"
+    }
+  ],
+  "thesis_as_of": "2026-09-23",
+  "review_due": "2026-12-23",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-23T18:17:31-07:00",
+  "owner_notes": "Strongest business-quality case of the five, but the price trend is not qualified (confidence 0.30). High conviction is on the business, not on timing. Accepted by Randall, Telegram 2026-09-23 evening: 'theses accepted, continue to repair ITA and PH'.",
+  "fundamentals_period_end": "2026-06-30"
+}

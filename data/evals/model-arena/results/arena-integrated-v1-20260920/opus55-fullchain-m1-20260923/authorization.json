@@ -1,0 +1,9 @@
+{
+  "schema": "veritas.arena_mission_authorization.v1",
+  "mission": "mission-1",
+  "model": "anthropic/claude-opus-5-5",
+  "authorized_by": "gateway-owner",
+  "authorized_at": "2026-09-23T20:17:00-07:00",
+  "budgets": {"seconds_per_turn": 600, "max_output_tokens": 64000, "retries": 0},
+  "note": "Run-scoped release for Anthropic Claude Opus 5.5 full-suite Surface D mission 1."
+}

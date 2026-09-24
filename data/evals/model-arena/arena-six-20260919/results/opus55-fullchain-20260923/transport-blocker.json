@@ -1,0 +1,21 @@
+{
+  "schema": "veritas.arena_transport_blocker.v1",
+  "status": "blocked",
+  "surface": "A",
+  "reason": "The available Gateway CLI --message-file transport removes terminal line feeds. Surface A's frozen prompt hashes include those terminal line feeds, and the frozen envelope does not authorize terminal-newline normalization.",
+  "evidence": {
+    "T1_expected_sha256": "f72d6e94f23d71947504768be9c6b78bacefb145b37d8965d0279c98ef106c1a",
+    "T1_observed_payload_sha256": "3a8f1014d1aba8caa53cba7f98b98539907110336d5525a2ae4a4edae23ce02f",
+    "difference": "one terminal LF removed",
+    "double_terminal_newline_canary": "all trailing LFs removed",
+    "model_pin": "anthropic/claude-opus-5-5 -> claude-cli/claude-opus-5-5, no fallback"
+  },
+  "attempts_preserved_not_scored": [
+    "T1-settlement-cascade-r1-turn1",
+    "T1-settlement-cascade-r2-turn1",
+    "T2-event-revert-ambiguity-r1-turn1",
+    "T2-event-revert-ambiguity-r2-turn1"
+  ],
+  "retry_policy": "zero; no invalid attempt was replayed",
+  "required_owner_decision": "Authorize an explicitly versioned terminal-newline-normalized transport contract, or provide/authorize a transport that preserves frozen prompts byte-exactly."
+}

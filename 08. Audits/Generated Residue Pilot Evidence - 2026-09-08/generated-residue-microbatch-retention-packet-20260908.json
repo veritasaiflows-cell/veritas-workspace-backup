@@ -1,0 +1,62 @@
+{
+  "schema": "veritas.generated_residue_retention_packet.v1",
+  "status": "retention_ready_not_delete_ready",
+  "generated_at_utc": "2026-09-09T01:07:00Z",
+  "scope": "17-file cleanup-pilot archive subset only; no permanent deletion authority",
+  "frozen_path_hash_size_list": {
+    "path": "tmp/cleanup-infrastructure-20260908/archive-pilot-input.json",
+    "sha256": "c1f5586c7ad4bfb1f030a0b93c6eb215eb51bb1c1e088de6731d7619fd51dacc",
+    "row_count": 17,
+    "total_bytes": 607330,
+    "required_row_fields": ["path", "sha256", "bytes", "kind", "reference_count", "blocking_reference_count", "proposed_destination"],
+    "archive_root": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot"
+  },
+  "source_lineage_and_restore": {
+    "original_restore_target_field": "suggestions[].path in the frozen input",
+    "archive_destination_field": "suggestions[].proposed_destination plus source basename",
+    "move_receipt": "tmp/bounded-auto-archive-last-report.json",
+    "move_receipt_scope": "17 moved rows, source absence and matching source/destination hashes"
+  },
+  "reference_proof": {
+    "method": "exact basename search excluding archive contents and the pilot manifest/receipt",
+    "checked_at_utc": "2026-09-09T01:06:00Z",
+    "non_archive_live_reference_count": 0,
+    "result": "passed"
+  },
+  "mover_integrity": {
+    "script": "scripts/bounded_auto_archive.py",
+    "contract": "valid manifest SHA-256 and exact byte count are checked during eligibility and immediately before move; destination collision blocks",
+    "focused_regression_test": "scripts/test_bounded_auto_archive.py",
+    "test_result": "passed: valid move, hash drift blocked, byte drift blocked, existing destination blocked",
+    "deletes_performed": false
+  },
+  "restore_drill": {
+    "status": "passed",
+    "archive_source": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_canon.log",
+    "original_restore_target": "tmp/_canon.log",
+    "bytes": 126,
+    "sha256_before_restore": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+    "sha256_at_restore_target": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+    "sha256_after_return_to_archive": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+    "restore_target_absent_after_return": true,
+    "operation": "archive to original restore target, verify hash and bytes, return to the identical archive path, verify hash and bytes",
+    "deletes_performed": false
+  },
+  "retention_recommendation": {
+    "decision": "retain pending explicit generated-residue retention rule",
+    "reason": "the current control plan deliberately has no default retention duration and the pilot establishes archive/restore evidence, not deletion eligibility"
+  },
+  "delete_blockers": [
+    "no approved retention duration or per-file retention rule",
+    "no per-file origin and replacement proof",
+    "no applicable family integrity rule beyond the tested restore drill",
+    "no frozen permanent-delete manifest",
+    "no second exact owner deletion approval"
+  ],
+  "authority_boundary": {
+    "archive_retention_only": true,
+    "permanent_delete_allowed": false,
+    "scheduled_automation_changed": false,
+    "finance_or_database_archive_scope": false
+  }
+}

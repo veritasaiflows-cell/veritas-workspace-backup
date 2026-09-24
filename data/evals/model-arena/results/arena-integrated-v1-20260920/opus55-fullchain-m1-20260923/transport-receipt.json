@@ -1,0 +1,34 @@
+{
+  "schema": "veritas.arena_transport_preflight.v1",
+  "mission": "mission-1",
+  "type": "non_benchmark_preflight",
+  "requested_model": "anthropic/claude-opus-5-5",
+  "requested_thinking": "high",
+  "requested_timeout_seconds": 60,
+  "mission_timeout_seconds_authorized": 600,
+  "mission_retries_authorized": 0,
+  "sandbox_required_probe": {
+    "status": "forbidden",
+    "error": "sessions_spawn sandbox=\"require\" needs a sandboxed target runtime. Pick a sandboxed agentId or use sandbox=\"inherit\"."
+  },
+  "lab_agent_probe": {
+    "status": "forbidden",
+    "error": "agentId is not allowed for sessions_spawn",
+    "target_agent": "oxalpha-functional-lab"
+  },
+  "inherited_sandbox_canary": {
+    "status_at_spawn": "accepted",
+    "child_session_key": "agent:main:subagent:3d0e6277-9543-44c3-a11d-a40b3fae4458",
+    "run_id": "5482d611-2491-4087-b380-ebc7d0063aee",
+    "resolved_model_at_spawn": "anthropic/claude-opus-5-5",
+    "resolved_provider_at_spawn": "anthropic",
+    "model_applied_at_spawn": true,
+    "completion_status": "timeout",
+    "visible_result": null,
+    "mount_read_verified": false,
+    "sandbox_boundary_verified": false,
+    "effective_inference_model_verified": false,
+    "fallback_observed": null,
+    "candidate_attempt": false
+  }
+}

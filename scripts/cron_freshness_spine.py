@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -1154,6 +1155,8 @@ def merged_job_contracts(contract_dir: Path = DEFAULT_CONTRACT_DIR) -> dict[str,
             merged["expected_artifacts"] = expected_artifacts
         elif "expected_artifacts" not in merged:
             merged["expected_artifacts"] = []
+        if file_contract.get("known_platform_failure"):
+            merged["known_platform_failure"] = dict(as_dict(file_contract.get("known_platform_failure")))
         contracts[name] = merged
     return contracts
 
@@ -1586,7 +1589,45 @@ def artifacts_prove_post_failure_recovery(
     return bool(required and all(value is not None and value > last_run_at for value in generated))
 
 
-def classify_job(job: dict[str, Any], contract: dict[str, Any] | None) -> dict[str, Any]:
+def installed_openclaw_version() -> str | None:
+    appdata = os.environ.get("APPDATA")
+    if not appdata:
+        return None
+    try:
+        package = json.loads((Path(appdata) / "npm" / "node_modules" / "openclaw" / "package.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    version = package.get("version")
+    return str(version) if version else None
+
+
+def known_platform_failure_match(
+    contract: dict[str, Any],
+    live_last_error: str | None,
+    openclaw_version: str | None,
+) -> dict[str, Any] | None:
+    """Owner-approved known platform defect: exact error text on the exact recorded OpenClaw version.
+
+    Any other error, a missing version, or a version change fails closed back to normal escalation so
+    the defect is re-checked after every OpenClaw update.
+    """
+    known = as_dict(contract.get("known_platform_failure"))
+    error_text = str(known.get("error_substring") or "")
+    recorded_version = str(known.get("openclaw_version") or "")
+    if not (error_text and recorded_version and known.get("owner_approved_at")):
+        return None
+    if not live_last_error or error_text not in live_last_error:
+        return None
+    if not openclaw_version or openclaw_version != recorded_version:
+        return None
+    return known
+
+
+def classify_job(
+    job: dict[str, Any],
+    contract: dict[str, Any] | None,
+    openclaw_version: str | None = None,
+) -> dict[str, Any]:
     enabled = bool(job.get("enabled"))
     name = str(job.get("name") or "")
     live_last_status = str(job.get("last_status") or "").strip().lower()
@@ -1725,8 +1766,16 @@ def classify_job(job: dict[str, Any], contract: dict[str, Any] | None) -> dict[s
         and status in {"fresh", "needs_review"}
         and artifacts_prove_post_failure_recovery(artifacts, live_last_run_at)
     )
+    known_failure = None
     if live_last_run_exception and live_consecutive_errors >= 2:
-        if recovery_proven:
+        if signal_class not in {"BLOCKED", "OWNER_DECISION"}:
+            known_failure = known_platform_failure_match(contract, live_last_error, openclaw_version)
+        if known_failure:
+            status = "known_platform_failure"
+            signal_class = "STALE_OR_NOISE"
+            attention = "inspect_if_relevant"
+            reason = f"owner_approved_known_platform_failure:{known_failure.get('upstream') or 'unspecified'}"
+        elif recovery_proven:
             if status == "fresh":
                 status = "recovered_waiting_scheduler_canary"
                 signal_class = "STALE_OR_NOISE"
@@ -1758,7 +1807,9 @@ def classify_job(job: dict[str, Any], contract: dict[str, Any] | None) -> dict[s
         "live_scheduler_last_run_at": job.get("last_run_utc") or None,
         "live_scheduler_last_error": live_last_error,
         "live_scheduler_reconciliation": (
-            "newer_nonblocking_artifacts_prove_execution_recovery_waiting_natural_canary"
+            "owner_approved_known_platform_failure_on_recorded_openclaw_version"
+            if known_failure
+            else "newer_nonblocking_artifacts_prove_execution_recovery_waiting_natural_canary"
             if recovery_proven
             else "artifact_freshness_governs_escalation_but_last_scheduler_status_is_visible"
             if live_last_run_exception
@@ -1893,7 +1944,11 @@ def build_payload(
     }
     ledger_jobs = as_list(ledger.get("jobs"))
     contracts = job_contracts or merged_job_contracts()
-    jobs = [classify_job(as_dict(job), contracts.get(str(as_dict(job).get("name") or ""))) for job in ledger_jobs]
+    openclaw_version = installed_openclaw_version()
+    jobs = [
+        classify_job(as_dict(job), contracts.get(str(as_dict(job).get("name") or "")), openclaw_version)
+        for job in ledger_jobs
+    ]
     enabled_jobs = [job for job in jobs if job.get("enabled")]
     unregistered = [job for job in enabled_jobs if job.get("status") == "unregistered"]
     missing_contract = [job for job in enabled_jobs if not as_list(job.get("expected_artifacts"))]

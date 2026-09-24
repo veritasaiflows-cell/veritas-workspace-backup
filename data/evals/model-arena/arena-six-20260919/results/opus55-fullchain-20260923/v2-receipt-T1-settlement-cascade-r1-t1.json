@@ -1,0 +1,35 @@
+{
+  "case": "T1-settlement-cascade",
+  "operational_status": "ok",
+  "rep": 1,
+  "response_text": "{\"cascade1\": {\"feasible\": true, \"alloc\": [10, 10, 10, 10]}, \"cascade2\": {\"feasible\": true, \"alloc\": [10, 12, 14, 14]}, \"residual\": {\"feasible\": true, \"alloc\": [33.34, 33.33, 33.33]}, \"infeasible\": {\"feasible\": false, \"alloc\": []}, \"cascade2_rounds\": 2}",
+  "transport": {
+    "delivered_payload_sha256": "3a8f1014d1aba8caa53cba7f98b98539907110336d5525a2ae4a4edae23ce02f",
+    "delivery_match": true,
+    "duration_ms": 58591,
+    "effective_model": "claude-opus-5-5",
+    "effective_provider": "claude-cli",
+    "exit_code": 0,
+    "expected_normalized_sha256": "3a8f1014d1aba8caa53cba7f98b98539907110336d5525a2ae4a4edae23ce02f",
+    "fallback_used": false,
+    "frozen_prompt_sha256": "f72d6e94f23d71947504768be9c6b78bacefb145b37d8965d0279c98ef106c1a",
+    "native_external_user_content_sha256": "5d01818cca79ba1560518f4b5eb62b9f27167efc1b5f617b0ba20dac98595c5b",
+    "native_log": "1b40e215-2ed8-4777-a67a-01786635b87a.jsonl",
+    "native_session_id": "1b40e215-2ed8-4777-a67a-01786635b87a",
+    "normalization": "strip_terminal_LF_only",
+    "raw_transport_file": "v2-transport-T1-settlement-cascade-r1-t1.json",
+    "receipt_file": "v2-receipt-T1-settlement-cascade-r1-t1.json",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "session_key": "arena-a-v2-opus55-t1-settlement-cascade-r1",
+    "stderr_file": "v2-transport-T1-settlement-cascade-r1-t1.stderr.txt",
+    "tool_calls": [],
+    "tool_results": [],
+    "tool_violation": false,
+    "user_provenance": {
+      "entrypoint": "sdk-cli",
+      "role": "user",
+      "user_type": "external"
+    }
+  },
+  "turn": 1
+}

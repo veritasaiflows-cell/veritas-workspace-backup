@@ -30,7 +30,7 @@ Pick independent lanes by task shape, proof, and consequence:
 - Use a persistent Terra specialist only after a fresh strict context-transport proof passes; do not fall back silently to Main when it does not.
 - Use GPT-5.6 Luna at low reasoning only for proven deterministic cron proof/digest/status `agentTurn` jobs; keep command-backed cron model-free.
 - Prefer Ollama Cloud for reviewed drafts, scaffolds, formatting, long-context digestion, and challenger notes until tool-loop proof expands trust.
-- Reserve GPT-5.6 Sol for main-session orchestration, high-stakes final judgment, final integration, and serious false-ready risk. Keep GPT-5.5 as primary fallback and GPT-5.4 as rollback/control.
+- Reserve GPT-6 Sol for main-session orchestration, high-stakes final judgment, final integration, and serious false-ready risk. Main's ordered fallback chain is Opus 5.5, then Ollama Cloud GLM 5.3, then Ollama Cloud Kimi K3, then GPT-5.6 Terra last; Opus 5 is Main-spawn advisory only.
 
 Requested and actual backend/model/thinking must match at closeout. Compare route efficiency only across like-for-like Main-accepted jobs using uncached/gross tokens, first-pass acceptance, time, retry tax, and escaped defects. Incidents and invalid telemetry receive no success credit. Ten comparable accepted jobs is an observation gate, not automatic promotion authority.
 

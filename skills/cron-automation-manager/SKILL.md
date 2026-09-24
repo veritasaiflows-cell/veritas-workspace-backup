@@ -11,7 +11,7 @@ description: "Govern cron contracts, freshness, delivery, failure routing, and t
 - Use ollama-cloud/glm-5.3:cloud at low reasoning only for proven compact agentTurn status, proof, digest, or quiet-output jobs.
 - Use ollama-cloud/glm-5.3:cloud at medium reasoning for bounded synthesis or judgment.
 - Reserve xai/grok-4.6 for Main-session high-stakes integration. Do not pin OpenAI/GPT models on cron jobs.
-- Cron fallbacks inherit Main's ordered chain: GLM 5.3, Ollama Cloud Kimi K3, zAI GLM 5.3, then Opus 5. Coding work stays off cron and uses Spark 1.3 in a leased builder lane.
+- Cron fallbacks inherit Main's ordered chain (2026-09-22): Opus 5.5, Ollama Cloud GLM 5.3, Ollama Cloud Kimi K3, then GPT-5.6 Terra last. Coding work stays off cron and uses Spark 1.3 in a leased builder lane.
 - Treat fallback as a change in evidence source, never authority.
 - Require scheduler canary, prompt-contract, output validation, and clean authority boundaries before promotion.
 

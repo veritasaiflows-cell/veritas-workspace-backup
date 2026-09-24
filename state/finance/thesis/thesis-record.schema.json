@@ -1,0 +1,276 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "veritas.thesis_record.v1",
+  "title": "Structured thesis record for one evaluated ticker",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "ticker",
+    "thesis_version",
+    "status",
+    "thesis_type",
+    "thesis_statement",
+    "timeframe",
+    "cases",
+    "key_risks",
+    "invalidation_reasons",
+    "catalysts",
+    "conviction",
+    "evidence",
+    "thesis_as_of",
+    "review_due",
+    "drafted_by",
+    "owner_accepted_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "veritas.thesis_record.v1"
+    },
+    "ticker": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z.]{0,9}$"
+    },
+    "thesis_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "accepted",
+        "retired"
+      ]
+    },
+    "thesis_type": {
+      "enum": [
+        "quality_compounder",
+        "cyclical",
+        "secular_growth",
+        "ai_infrastructure",
+        "defensive_income",
+        "commodity_linked",
+        "financial_franchise",
+        "sector_etf",
+        "turnaround"
+      ]
+    },
+    "thesis_statement": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 600
+    },
+    "timeframe": {
+      "enum": [
+        "tactical_0_3m",
+        "intermediate_3_12m",
+        "long_term_12m_plus"
+      ]
+    },
+    "cases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base",
+        "bull",
+        "bear"
+      ],
+      "properties": {
+        "base": {
+          "$ref": "#/$defs/case"
+        },
+        "bull": {
+          "$ref": "#/$defs/case"
+        },
+        "bear": {
+          "$ref": "#/$defs/case"
+        }
+      }
+    },
+    "key_risks": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "minLength": 10
+      }
+    },
+    "invalidation_reasons": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "price",
+        "fundamental"
+      ],
+      "properties": {
+        "price": {
+          "type": "string",
+          "minLength": 10
+        },
+        "fundamental": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 10
+          }
+        }
+      }
+    },
+    "catalysts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event",
+          "expected_date",
+          "date_confidence"
+        ],
+        "properties": {
+          "event": {
+            "type": "string"
+          },
+          "expected_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "date_confidence": {
+            "enum": [
+              "confirmed",
+              "provider_estimate",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    "conviction": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "regime_fit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "favored_postures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "disfavored_postures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "benchmark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "market",
+        "sector"
+      ],
+      "properties": {
+        "market": {
+          "type": "string"
+        },
+        "sector": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "claim",
+          "source",
+          "as_of"
+        ],
+        "properties": {
+          "claim": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    },
+    "thesis_as_of": {
+      "type": "string",
+      "format": "date"
+    },
+    "review_due": {
+      "type": "string",
+      "format": "date"
+    },
+    "drafted_by": {
+      "type": "string"
+    },
+    "owner_accepted_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "owner_notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "fundamentals_period_end": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Latest reported fiscal quarter end the thesis was written against; a newer quarter in tmp/fundamental-metrics-current.json flags the thesis for review."
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "drivers"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 20
+        },
+        "drivers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

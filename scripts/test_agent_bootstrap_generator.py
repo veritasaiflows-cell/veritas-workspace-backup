@@ -445,8 +445,8 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
         self.assertIn("## Tools", core["AGENTS.md"])
         self.assertIn("does not control which tools exist", core["AGENTS.md"])
         self.assertIn("Write/edit/patch only under `/worktree`", core["AGENTS.md"])
-        self.assertIn("retired compatibility pointer", core["TOOLS.md"])
-        self.assertIn("not a runtime bootstrap", core["TOOLS.md"])
+        self.assertNotIn("TOOLS.md", core)
+        self.assertNotIn("TOOLS.md", "\n".join(agent["sandbox"]["docker"]["binds"]))
         self.assertNotIn("C:\\Users\\", "\n".join(core.values()))
 
         unsafe = json.loads(json.dumps(agent))
@@ -641,7 +641,7 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
             self.assertEqual(generator.fleet_display_for(agent_id), expected_displays[agent_id])
             self.assertEqual(generator.fleet_recovery_for(agent_id), expected_recovery[agent_id])
             self.assertEqual(generator.fleet_automatic_for(agent_id), [])
-        self.assertEqual(generator.MAIN_MODEL, "openai/gpt-5.6-sol")
+        self.assertEqual(generator.MAIN_MODEL, "openai/gpt-6-sol")
 
     def test_manifest_shows_display_name_and_non_executing_recovery(self) -> None:
         manifest = generator.build_manifest(
@@ -658,7 +658,7 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
         self.assertEqual(manifest["model_route"]["automatic_fallbacks"], [])
         self.assertEqual(manifest["model_route"]["recovery_candidates"], ["xai/grok-4.6"])
         self.assertTrue(manifest["model_route"]["recovery_is_non_executing_option"])
-        self.assertEqual(manifest["model_route"]["main_model"], "openai/gpt-5.6-sol")
+        self.assertEqual(manifest["model_route"]["main_model"], "openai/gpt-6-sol")
         self.assertNotIn("main_fallbacks", manifest["model_route"])
         bootstrap = generator.build_bootstrap_markdown(manifest, [])
         self.assertIn("Display name:", bootstrap)
@@ -764,8 +764,8 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
             g["workspace"] = str(Path(t) / "g")
             e = agent_stub("research-scout")
             w = Path(t) / "e"
-            (w / "TOOLS.md").parent.mkdir(parents=True)
-            (w / "TOOLS.md").mkdir()
+            (w / "AGENTS.md").parent.mkdir(parents=True)
+            (w / "AGENTS.md").mkdir()
             e["workspace"] = str(w)
             with self.assertRaisesRegex(ValueError, "is directory"):
                 generator._validate_live_output_workspaces([e])

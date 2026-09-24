@@ -68,6 +68,17 @@ TRACKED_TICKERS = (
 # holiday weekends. Weekday windows keep 36.0. Anything older than 84h on a
 # weekend is a genuinely broken feed and still decays.
 WEEKLY_WINDOW_MAX_QUOTE_AGE_HOURS = 84.0
+# Owner-approved 2026-09-23 14:51 MST (Randall, Option A; reopens the
+# 2026-09-20 "weekday windows keep 36.0" boundary). A live-intraday age
+# ceiling cannot grade a closed-market window: the weekday 06:05 pre_open run
+# evaluates the last completed session's quotes, which is 65h after a Friday
+# close and so fails the 36h weekday ceiling by construction every Monday and
+# post-holiday morning (measured 65.09h on 2026-09-21). Windows the producer
+# already stamps closed_market_expected_stale_allowed=True are graded against
+# the structural-gap tolerance instead and remain monitor-only. Live
+# market_hours_fresh keeps the 36h intraday ceiling unchanged, so genuine
+# intraday staleness still decays.
+CLOSED_MARKET_MAX_QUOTE_AGE_HOURS = WEEKLY_WINDOW_MAX_QUOTE_AGE_HOURS
 
 AUTHORITY = {
     "review_only": True,
@@ -369,6 +380,18 @@ def quote_evaluation_policy(
     freshness_status = str(quote_row.get("freshness_status") or "")
     market_session_window = str(quote_row.get("market_session_window") or "")
     age_current = finite_age_within(quote_age_hours, max_quote_age_hours)
+    # Closed-market windows are graded against the structural-gap tolerance,
+    # never the live-intraday ceiling. Fire eligibility is untouched: it still
+    # requires market_hours_fresh plus a clean intraday proof.
+    closed_market_window = (
+        market_session_window in {"market_closed_weekend_or_holiday", "pre_open", "post_close"}
+        and quote_row.get("fresh_intraday_allowed") is False
+        and quote_row.get("closed_market_expected_stale_allowed") is True
+    )
+    closed_market_age_current = finite_age_within(
+        quote_age_hours,
+        max(CLOSED_MARKET_MAX_QUOTE_AGE_HOURS, max_quote_age_hours) if closed_market_window else max_quote_age_hours,
+    )
     proof_clean = quote_proof_is_clean(
         quote_proof,
         quote_validation,
@@ -395,7 +418,7 @@ def quote_evaluation_policy(
     )
     closed_session_current = (
         proof_clean
-        and age_current
+        and closed_market_age_current
         and calendar_status in {"current_last_completed_session", "market_closed_expected_stale"}
         and freshness_status in {"current_but_not_intraday_fresh", "stale"}
         and market_session_window in {"market_closed_weekend_or_holiday", "pre_open", "post_close"}

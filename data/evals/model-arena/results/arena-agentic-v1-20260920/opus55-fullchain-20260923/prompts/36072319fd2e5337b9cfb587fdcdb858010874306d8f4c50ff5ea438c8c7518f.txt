@@ -1,0 +1,35 @@
+case 36072319fd2e5337b9cfb587fdcdb858010874306d8f4c50ff5ea438c8c7518f (family: T1)
+prompt:
+{
+  "budget": 80,
+  "orders": [
+    {
+      "hi": 20,
+      "lo": 0,
+      "w": 7
+    },
+    {
+      "hi": 200,
+      "lo": 12,
+      "w": 1
+    },
+    {
+      "hi": 200,
+      "lo": 0,
+      "w": 1
+    },
+    {
+      "hi": 200,
+      "lo": 0,
+      "w": 1
+    }
+  ],
+  "properties": [
+    "bounds",
+    "sum",
+    "proportionality",
+    "binding-bounds"
+  ],
+  "request": "Return only the required allocation JSON."
+}
+Return only the required JSON object. No prose.

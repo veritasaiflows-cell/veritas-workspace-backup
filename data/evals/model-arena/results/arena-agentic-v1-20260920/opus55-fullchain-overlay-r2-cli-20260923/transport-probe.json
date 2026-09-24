@@ -1,0 +1,13 @@
+{
+  "schema": "veritas.arena_cli_transport_probe.v1",
+  "requested_model": "anthropic/claude-opus-5-5",
+  "effective_model": "anthropic/claude-opus-5-5",
+  "provider": "claude-cli",
+  "modelApplied": true,
+  "fallbackUsed": false,
+  "status": "ok",
+  "run_id": "ef6b77c8-b41f-4e07-8ce2-b71b57be8573",
+  "session_key": "agent:oxalpha-functional-lab:explicit:arena-r2-opus55-probe-20260923",
+  "duration_ms": 34411,
+  "response_text": "PONG-OPUS55-C"
+}

@@ -2,8 +2,8 @@
 # Decision Compiler
 
 Canonical page: `wiki/decisions/Decision Compiler.md`
-Canonical rendered SHA-256: `09be8bc909cf8e3d75a4b28549283ef953b28cf3c3888ae379c0abb0b8056848`.
-Source snapshot SHA-256: `ae6e88eec2e3db981460397adfa78da800871c41fcd74d9852a0247c230c48f3`.
+Canonical rendered SHA-256: `2db4b680645cb5ae70c1a9d9f3f94b39d26b96a8e4e5e5c72a6b16e0e1c82ac6`.
+Source snapshot SHA-256: `77222f5213ea094e34dd46183baf36db7716415fdcaa3f1e581f0c047cbcd7a8`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -35,8 +35,8 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 ## Current compiler state
 
 - Status / validation: `decision_objects_warning_review_only` / `warning`.
-- Decision objects: `7`; states: `{'monitor_only': 3, 'repair_ready_review_only': 3, 'review_ready': 1}`.
-- Conflicts / uncertainties: `2` / `7`.
+- Decision objects: `10`; states: `{'monitor_only': 5, 'repair_ready_review_only': 4, 'review_ready': 1}`.
+- Conflicts / uncertainties: `3` / `10`.
 - Owner review required / blocked: `0` / `0`.
 - Leak guard: `True`; wiki/OS2 runtime inputs forbidden: `['tmp/wf88-os2-control-packet.json', 'tmp/wf88-wiki-synthesis-packet.json']`.
 

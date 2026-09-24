@@ -906,13 +906,20 @@ def run_policy_canary(
     }
 
 
-RECURRING_SHARED_CONTROLLER = TMP / "alert-level-freshness-controller.json"
+RECURRING_SHARED_CONTROLLER_REL = "tmp/alert-level-freshness-controller.json"
 RECURRING_PROMOTION_PREIMAGE_BYTES_CAP = 10 * 1024 * 1024
+
+
+def _shared_controller_path() -> Path:
+    # Resolved from ROOT at call time: ROOT is the test redirect seam, TMP is
+    # frozen at import, so a TMP-based path let a redirected test overwrite
+    # the production controller (2026-09-23 S000/S001 pollution).
+    return ROOT / RECURRING_SHARED_CONTROLLER_REL
 
 
 def _shared_digest_path(window: str) -> Path:
     """Narrow shared target: the existing per-window digest output only."""
-    return TMP / f"finance-alert-os-{window}-digest.json"
+    return ROOT / "tmp" / f"finance-alert-os-{window}-digest.json"
 
 
 def _acquisition_latency_seconds(manifest: dict[str, Any], authorized_at: datetime) -> float | None:
@@ -965,7 +972,7 @@ def _atomic_promote_bytes(path: Path, raw: bytes) -> None:
 def _quarantine_promotion_evidence(*, run_id: str, window: str,
                                    staged: dict[str, bytes], receipt: dict[str, Any]) -> dict[str, Any]:
     """Quarantine mixed-mode evidence plus a machine-readable receipt."""
-    qdir = TMP / "recurring-promotion-quarantine"
+    qdir = ROOT / "tmp" / "recurring-promotion-quarantine"
     qdir.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     names: list[str] = []
@@ -996,7 +1003,7 @@ def _promote_recurring_shared_outputs(*, window: str, controller: dict[str, Any]
     files are never touched.
     """
     targets = {
-        "controller": RECURRING_SHARED_CONTROLLER,
+        "controller": _shared_controller_path(),
         "digest": _shared_digest_path(window),
     }
     generated_at = controller.get("generated_at_utc")

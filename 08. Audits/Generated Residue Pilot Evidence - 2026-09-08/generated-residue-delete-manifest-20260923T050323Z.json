@@ -1,0 +1,151 @@
+{
+  "schema": "veritas.generated_residue_delete_manifest.v1",
+  "status": "frozen_awaiting_exact_owner_delete_approval",
+  "generated_at_utc": "2026-09-23T05:03:23Z",
+  "expires_at_utc": "2026-09-24T05:03:23Z",
+  "retention_approval_sha256": "90e1004ce8ad1b3bb312c30c965933f7448dd90b6ee19dcfc204481553380b2e",
+  "frozen_list_sha256": "c1f5586c7ad4bfb1f030a0b93c6eb215eb51bb1c1e088de6731d7619fd51dacc",
+  "eligible_at_utc": "2026-09-23T05:01:23Z",
+  "row_count": 17,
+  "total_bytes": 607330,
+  "reference_scan": {
+    "dirs": [
+      "scripts",
+      "state",
+      "skills"
+    ],
+    "method": "exact basename, archive and evidence excluded"
+  },
+  "rows": [
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_canon.log",
+      "original_path": "tmp/_canon.log",
+      "sha256": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+      "bytes": 126,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_cronlist.err",
+      "original_path": "tmp/_cronlist.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_fsep.log",
+      "original_path": "tmp/_fsep.log",
+      "sha256": "cd89c46f4f0cf64ec9930148d6bec5699fe1fc2aeb822294cee13a298647a8fe",
+      "bytes": 649,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_newjob.err",
+      "original_path": "tmp/_newjob.err",
+      "sha256": "b903d348b29d4cce503178d8543e6cb3dc2393d16a65f35b44e2c2bb0ba19bec",
+      "bytes": 75,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_guard2.out",
+      "original_path": "tmp/_s2_guard2.out",
+      "sha256": "782f0247ee409796dcb13118d514440219c69efed2ff7eae2ae8eea7101a45f9",
+      "bytes": 1062,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_roster.out",
+      "original_path": "tmp/_s2_roster.out",
+      "sha256": "af3a71e35bfa29ab8b41f45c32a48fffcd96770fc3d9a92771d3ef2fdbe32f4c",
+      "bytes": 1698,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_sqlguard.out",
+      "original_path": "tmp/_s2_sqlguard.out",
+      "sha256": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+      "bytes": 126,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_sqlrefresh_apply.out",
+      "original_path": "tmp/_s2_sqlrefresh_apply.out",
+      "sha256": "d4f3efe2ea0c796739e6bfc03bca147909d290b259c5f0d2bb362a53b08d7dca",
+      "bytes": 237,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_sqlrefresh_dry.out",
+      "original_path": "tmp/_s2_sqlrefresh_dry.out",
+      "sha256": "c74b0d1266da2d9517315e192ae6b8c4ab3353e51123809cc8377d46f103380f",
+      "bytes": 257,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_tlm.out",
+      "original_path": "tmp/_s2_tlm.out",
+      "sha256": "809a44203a1f6c688cbb4a978afc50765f659ff42592a1812e8a9879ab521b3f",
+      "bytes": 1204,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_wf78_legacy_label_retirement_guard.out",
+      "original_path": "tmp/_s2_wf78_legacy_label_retirement_guard.out",
+      "sha256": "c054d90508373a8fb04ff9f5f630cc6400087603767a33fe1b8734b2b33dfe30",
+      "bytes": 1020,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_wf78_tier_capacity_policy_gate.out",
+      "original_path": "tmp/_s2_wf78_tier_capacity_policy_gate.out",
+      "sha256": "8e5f3209a8a18c82536c014f09ce4c62d18f181ba22ce046712fc3d9dffb5e3d",
+      "bytes": 1303,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_wf78_tier_semantics_guard.out",
+      "original_path": "tmp/_s2_wf78_tier_semantics_guard.out",
+      "sha256": "fa350321bdb739f129709dd543d02bc0811633598a8c5ebeef76f8b539c76dc9",
+      "bytes": 3487,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_wf85.out",
+      "original_path": "tmp/_s2_wf85.out",
+      "sha256": "ff9ea3e953128d0b8bbe9393a3ad152092ca19ad2afe12dc64e2b3d60a60e4f8",
+      "bytes": 20123,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/gatefix-run.log",
+      "original_path": "tmp/gatefix-run.log",
+      "sha256": "109c935cc6d3ee65f9d88050c1cf3bee870948462403f24b587130092ac3bc11",
+      "bytes": 574023,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/memory-compounding-probe.err",
+      "original_path": "tmp/memory-compounding-probe.err",
+      "sha256": "8f006ae9fbcf2bec95b74174aa8bf3d5c195824684b9735f39a3e4cd30dd17c4",
+      "bytes": 49,
+      "live_reference_count": 0
+    },
+    {
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/rb-apply.out",
+      "original_path": "tmp/rb-apply.out",
+      "sha256": "5aeb95b9d08f04c753e20a4c93e264c439ce35b32cd7bcb766544c247e56f151",
+      "bytes": 1891,
+      "live_reference_count": 0
+    }
+  ],
+  "authority_boundary": {
+    "scope": "17-file 2026-09-08 generated-residue pilot only",
+    "build_deletes": false,
+    "apply_requires_apply_flag": true,
+    "apply_requires_exact_manifest_sha256": true,
+    "apply_requires_owner_approval_reference": true,
+    "other_archive_family_covered": false,
+    "config_auth_channel_runtime_mutation_allowed": false,
+    "finance_canon_mutation_allowed": false,
+    "permanent_deletion_authorized": false
+  }
+}

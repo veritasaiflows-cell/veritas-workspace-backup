@@ -1,0 +1,269 @@
+{
+  "schema": "veritas.weekly_band_renewal.v1",
+  "started_at_utc": "2026-09-24T01:53:38.197553Z",
+  "session": "2026-09-23",
+  "standing_gate": "state/finance/standing-approvals/band-renewal-option-b.json",
+  "gate_active": true,
+  "matrix": "tmp/weekly-renewal-2026-09-23-matrix.json",
+  "dryrun": "tmp/weekly-renewal-2026-09-23-dryrun.json",
+  "applied": false,
+  "steps": {
+    "matrix": {
+      "rc": 0,
+      "tail": "{\"json_output\": \"tmp\\\\weekly-renewal-2026-09-23-matrix.json\", \"markdown_output\": \"tmp\\\\weekly-renewal-2026-09-23-matrix.md\", \"row_counts\": {\"blocked\": 0, \"monitor_only\": 15, \"trend_qualified\": 17}, \"status\": \"review_only_written\"}\n"
+    },
+    "dryrun": {
+      "rc": 0,
+      "tail": "dry_run_written: tmp/weekly-renewal-2026-09-23-dryrun.json\ndry_run_valid: triples=32 drift=0 no_mutation=True pin_preview=alert-reference-levels-v1-b982fe95b5943e20614bfee6a5be725f5035486f3483c8a5de4da3af6ff75d7f.json\n"
+    }
+  },
+  "gate": {
+    "passed": true,
+    "reasons": [],
+    "blocked": [],
+    "ordering_warnings": [],
+    "moved_over_limit": [],
+    "floor_widened": [
+      "CME",
+      "CVX",
+      "LNG",
+      "NVDA",
+      "PLTR",
+      "SMCI",
+      "XOM"
+    ],
+    "repaired": {
+      "BRK.B": [
+        "2026-09-22"
+      ],
+      "CAT": [
+        "2026-09-22"
+      ],
+      "CME": [
+        "2026-09-22"
+      ],
+      "CVX": [
+        "2026-09-22"
+      ],
+      "ECL": [
+        "2026-09-22"
+      ],
+      "ETN": [
+        "2026-09-22"
+      ],
+      "GE": [
+        "2026-09-22"
+      ],
+      "GS": [
+        "2026-09-22"
+      ],
+      "ITA": [
+        "2026-09-22"
+      ],
+      "LIN": [
+        "2026-09-22"
+      ],
+      "LLY": [
+        "2026-09-22"
+      ],
+      "LMT": [
+        "2026-09-22"
+      ],
+      "LNG": [
+        "2026-09-22"
+      ],
+      "PH": [
+        "2026-09-22"
+      ],
+      "RTX": [
+        "2026-09-22"
+      ],
+      "TMUS": [
+        "2026-09-22"
+      ],
+      "VMC": [
+        "2026-09-22"
+      ],
+      "VRT": [
+        "2026-09-22"
+      ],
+      "WMB": [
+        "2026-09-22"
+      ],
+      "XOM": [
+        "2026-09-22"
+      ]
+    },
+    "edge_moves": {
+      "AMD": {
+        "reference_price_low": 0.0,
+        "reference_price_high": 0.0027,
+        "reference_invalidation_level": 0.0015
+      },
+      "AMZN": {
+        "reference_price_low": 0.0,
+        "reference_price_high": 0.0001,
+        "reference_invalidation_level": -0.001
+      },
+      "BKNG": {
+        "reference_price_low": -0.0325,
+        "reference_price_high": -0.0019,
+        "reference_invalidation_level": -0.0364
+      },
+      "BRK.B": {
+        "reference_price_low": 0.0,
+        "reference_price_high": 0.0006,
+        "reference_invalidation_level": -0.0007
+      },
+      "CAT": {
+        "reference_price_low": 0.0,
+        "reference_price_high": -0.0029,
+        "reference_invalidation_level": 0.0012
+      },
+      "CME": {
+        "reference_price_low": 0.001,
+        "reference_price_high": 0.0011,
+        "reference_invalidation_level": 0.0008
+      },
+      "CVX": {
+        "reference_price_low": 0.0011,
+        "reference_price_high": 0.0014,
+        "reference_invalidation_level": 0.0006
+      },
+      "ECL": {
+        "reference_price_low": 0.0,
+        "reference_price_high": 0.0006,
+        "reference_invalidation_level": 0.0003
+      },
+      "ETN": {
+        "reference_price_low": 0.0,
+        "reference_price_high": 0.0012,
+        "reference_invalidation_level": 0.0011
+      },
+      "GE": {
+        "reference_price_low": 0.0,
+        "reference_price_high": -0.002,
+        "reference_invalidation_level": -0.0
+      },
+      "GOOG": {
+        "reference_price_low": 0.0,
+        "reference_price_high": -0.0013,
+        "reference_invalidation_level": -0.0021
+      },
+      "GS": {
+        "reference_price_low": 0.0,
+        "reference_price_high": -0.0038,
+        "reference_invalidation_level": 0.0005
+      },
+      "ITA": {
+        "reference_price_low": 0.0,
+        "reference_price_high": -0.0018,
+        "reference_invalidation_level": -0.0003
+      },
+      "JPM": {
+        "reference_price_low": -0.0009,
+        "reference_price_high": -0.0003,
+        "reference_invalidation_level": -0.001
+      },
+      "KTOS": {
+        "reference_price_low": 0.0,
+        "reference_price_high": -0.0016,
+        "reference_invalidation_level": -0.0
+      },
+      "LIN": {
+        "reference_price_low": 0.0,
+        "reference_price_high": -0.0021,
+        "reference_invalidation_level": -0.0007
+      },
+      "LLY": {
+        "reference_price_low": 0.0,
+        "reference_price_high": 0.0,
+        "reference_invalidation_level": -0.0006
+      },
+      "LMT": {
+        "reference_price_low": 0.0,
+        "reference_price_high": 0.0005,
+        "reference_invalidation_level": 0.0
+      },
+      "LNG": {
+        "reference_price_low": 0.0001,
+        "reference_price_high": 0.0006,
+        "reference_invalidation_level": -0.0007
+      },
+      "META": {
+        "reference_price_low": 0.0,
+        "reference_price_high": 0.0027,
+        "reference_invalidation_level": -0.0022
+      },
+      "MSFT": {
+        "reference_price_low": 0.005,
+        "reference_price_high": 0.0035,
+        "reference_invalidation_level": 0.0042
+      },
+      "NFLX": {
+        "reference_price_low": 0.0,
+        "reference_price_high": -0.0006,
+        "reference_invalidation_level": 0.002
+      },
+      "NVDA": {
+        "reference_price_low": 0.0008,
+        "reference_price_high": 0.0005,
+        "reference_invalidation_level": 0.0014
+      },
+      "PH": {
+        "reference_price_low": 0.0,
+        "reference_price_high": 0.0002,
+        "reference_invalidation_level": -0.0001
+      },
+      "PLTR": {
+        "reference_price_low": 0.0032,
+        "reference_price_high": 0.004,
+        "reference_invalidation_level": 0.0018
+      },
+      "RTX": {
+        "reference_price_low": 0.0,
+        "reference_price_high": -0.0001,
+        "reference_invalidation_level": -0.0005
+      },
+      "SMCI": {
+        "reference_price_low": 0.0052,
+        "reference_price_high": 0.0028,
+        "reference_invalidation_level": 0.0096
+      },
+      "TMUS": {
+        "reference_price_low": -0.0004,
+        "reference_price_high": -0.0023,
+        "reference_invalidation_level": -0.0023
+      },
+      "VMC": {
+        "reference_price_low": 0.0,
+        "reference_price_high": -0.0035,
+        "reference_invalidation_level": -0.0003
+      },
+      "VRT": {
+        "reference_price_low": 0.0,
+        "reference_price_high": -0.0041,
+        "reference_invalidation_level": 0.002
+      },
+      "WMB": {
+        "reference_price_low": 0.0,
+        "reference_price_high": -0.0012,
+        "reference_invalidation_level": -0.0004
+      },
+      "XOM": {
+        "reference_price_low": 0.0011,
+        "reference_price_high": 0.0011,
+        "reference_invalidation_level": 0.0013
+      }
+    }
+  },
+  "status": "gate_passed_not_applied",
+  "finished_at_utc": "2026-09-24T01:53:47.128100Z",
+  "authority": {
+    "standing_gate_only": true,
+    "thesis_change": false,
+    "capital_or_execution": false,
+    "delivery": false,
+    "owner_approval_inferred_beyond_gate": false
+  }
+}

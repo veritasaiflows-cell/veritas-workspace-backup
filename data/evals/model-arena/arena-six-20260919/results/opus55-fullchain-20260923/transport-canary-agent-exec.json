@@ -1,0 +1,11 @@
+{
+  "schema": "veritas.arena_transport_canary.v1",
+  "route": "openclaw agent exec --state-dir",
+  "requested_model": "anthropic/claude-opus-5-5",
+  "status": "transport_invalid",
+  "benchmark_prompt_delivered": false,
+  "retry_count": 0,
+  "reason": "Embedded agent execution produced a provider turn but failed runtime cleanup; its stable JSON envelope omitted a visible response and model/provider attribution. The route is excluded rather than replayed.",
+  "error_kind": "agent_exec_cleanup_failed",
+  "error_message": "Agent runtime cleanup did not settle; state ownership retained until this process exits"
+}

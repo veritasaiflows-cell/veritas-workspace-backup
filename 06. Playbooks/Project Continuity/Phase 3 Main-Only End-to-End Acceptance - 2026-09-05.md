@@ -195,3 +195,7 @@ G9 requires Main to reconcile all gates, source hashes, real-run receipts and ow
 Hard scheduling constraint: Day 5 post-close (09-23) clears pin expiry (`2026-09-24T23:34:45Z`) by roughly 27.5 hours. G9 reconciliation should therefore complete before expiry, or Phase 3 closes against an expiring evidence base. Any G8 restart triggers the suspend rule above rather than a mid-window renewal.
 
 **Next action:** observe 09-17 Day 1. Do not patch the chain, controller, provider policy, or the five recurring payloads inside the window; do not start the post-G9 analyst-consensus lane. Two owner decisions are open and time-sensitive: the gateway reboot mitigation (before 09-17 06:00) and the 32-value baseline renewal (before 09-24).
+
+## G9 closed, Phase 3 complete (2026-09-23, Main)
+
+Randall accepted the 09-21 observed-build repin as the Phase 3 final pin (Telegram 14:46 MST). G9 reconciliation found all G5-pin drift explained by owner-approved changes; the 09-18 mtime change was CRLF-only. No acceptance-critical debt remains. Record: `g9_close_20260923` in `tmp/phase3-main-only-20260905/g9-reconciliation-register-20260916.json`. Carried owner items and post-G9 lanes are listed there. Next hard date: baseline pin renewal before ~2026-09-30 18:22 Phoenix.

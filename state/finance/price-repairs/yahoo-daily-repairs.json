@@ -1,0 +1,346 @@
+{
+  "repairs": {
+    "BRK.B": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.001693,
+          "median_close_error": 0.000198
+        },
+        "close": 503.6099853515625,
+        "high": 505.5799865722656,
+        "intraday_bars": 13,
+        "low": 501.4100036621094,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 503.32501220703125,
+        "repaired_at_utc": "2026-09-24T00:36:53.295074Z",
+        "volume": 3192478
+      }
+    },
+    "CAT": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.001493,
+          "median_close_error": 0.0002
+        },
+        "close": 808.27001953125,
+        "high": 812.45947265625,
+        "intraday_bars": 13,
+        "low": 802.6099853515625,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 806.0599975585938,
+        "repaired_at_utc": "2026-09-24T00:36:53.681735Z",
+        "volume": 1596083
+      }
+    },
+    "CME": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.000684,
+          "median_close_error": 9.2e-05
+        },
+        "close": 267.2099914550781,
+        "high": 274.7012023925781,
+        "intraday_bars": 13,
+        "low": 266.95001220703125,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 273.42999267578125,
+        "repaired_at_utc": "2026-09-24T00:36:54.064476Z",
+        "volume": 1285358
+      }
+    },
+    "CVX": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.00081,
+          "median_close_error": 7.1e-05
+        },
+        "close": 202.3699951171875,
+        "high": 204.44000244140625,
+        "intraday_bars": 13,
+        "low": 200.77999877929688,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 201.8699951171875,
+        "repaired_at_utc": "2026-09-24T00:36:54.482236Z",
+        "volume": 6555883
+      }
+    },
+    "ECL": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.000565,
+          "median_close_error": 0.000144
+        },
+        "close": 276.2099914550781,
+        "high": 277.1099853515625,
+        "intraday_bars": 13,
+        "low": 271.0,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 272.8399963378906,
+        "repaired_at_utc": "2026-09-24T00:36:54.931646Z",
+        "volume": 562632
+      }
+    },
+    "ETN": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.000758,
+          "median_close_error": 0.000189
+        },
+        "close": 442.4700012207031,
+        "high": 443.6400146484375,
+        "intraday_bars": 13,
+        "low": 433.17999267578125,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 434.6700134277344,
+        "repaired_at_utc": "2026-09-24T00:36:55.383802Z",
+        "volume": 1485126
+      }
+    },
+    "GE": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.001082,
+          "median_close_error": 0.000184
+        },
+        "close": 319.3599853515625,
+        "high": 322.5,
+        "intraday_bars": 13,
+        "low": 314.3599853515625,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 322.3299865722656,
+        "repaired_at_utc": "2026-09-24T00:36:55.834491Z",
+        "volume": 2628017
+      }
+    },
+    "GS": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.001735,
+          "median_close_error": 0.000274
+        },
+        "close": 950.0999755859375,
+        "high": 967.760009765625,
+        "intraday_bars": 13,
+        "low": 936.7750244140625,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 967.3900146484375,
+        "repaired_at_utc": "2026-09-24T00:36:56.385350Z",
+        "volume": 1601023
+      }
+    },
+    "ITA": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.000508,
+          "median_close_error": 0.000229
+        },
+        "close": 214.02999877929688,
+        "high": 217.75999450683594,
+        "intraday_bars": 13,
+        "low": 211.42999267578125,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 217.67999267578125,
+        "repaired_at_utc": "2026-09-24T00:36:56.826956Z",
+        "volume": 1069539
+      }
+    },
+    "LIN": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.000608,
+          "median_close_error": 0.000166
+        },
+        "close": 464.8399963378906,
+        "high": 465.95001220703125,
+        "intraday_bars": 13,
+        "low": 455.2799987792969,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 458.05999755859375,
+        "repaired_at_utc": "2026-09-24T00:36:57.841084Z",
+        "volume": 1380851
+      }
+    },
+    "LLY": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.001639,
+          "median_close_error": 0.000403
+        },
+        "close": 1170.47998046875,
+        "high": 1180.530029296875,
+        "intraday_bars": 13,
+        "low": 1139.260009765625,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 1146.1500244140625,
+        "repaired_at_utc": "2026-09-24T00:36:58.281422Z",
+        "volume": 1887299
+      }
+    },
+    "LMT": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.000616,
+          "median_close_error": 0.000214
+        },
+        "close": 522.3150024414062,
+        "high": 537.0,
+        "intraday_bars": 13,
+        "low": 515.5980224609375,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 536.8699951171875,
+        "repaired_at_utc": "2026-09-24T00:36:58.767317Z",
+        "volume": 1252345
+      }
+    },
+    "LNG": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.000857,
+          "median_close_error": 0.00011
+        },
+        "close": 272.9700012207031,
+        "high": 279.57000732421875,
+        "intraday_bars": 13,
+        "low": 268.760009765625,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 271.0400085449219,
+        "repaired_at_utc": "2026-09-24T00:36:59.146787Z",
+        "volume": 2031610
+      }
+    },
+    "PH": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.001001,
+          "median_close_error": 0.000209
+        },
+        "close": 964.7999877929688,
+        "high": 969.4199829101562,
+        "intraday_bars": 13,
+        "low": 954.3099975585938,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 959.344970703125,
+        "repaired_at_utc": "2026-09-24T00:37:00.508094Z",
+        "volume": 333343
+      }
+    },
+    "RTX": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.001131,
+          "median_close_error": 0.0001
+        },
+        "close": 190.97999572753906,
+        "high": 194.8699951171875,
+        "intraday_bars": 13,
+        "low": 187.0399932861328,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 194.74000549316406,
+        "repaired_at_utc": "2026-09-24T00:37:01.229200Z",
+        "volume": 3696614
+      }
+    },
+    "TMUS": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.000986,
+          "median_close_error": 0.000165
+        },
+        "close": 162.22999572753906,
+        "high": 166.49000549316406,
+        "intraday_bars": 13,
+        "low": 161.2100067138672,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 165.92999267578125,
+        "repaired_at_utc": "2026-09-24T00:37:01.916323Z",
+        "volume": 5455922
+      }
+    },
+    "VMC": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.000616,
+          "median_close_error": 0.000154
+        },
+        "close": 247.8800048828125,
+        "high": 251.92999267578125,
+        "intraday_bars": 13,
+        "low": 242.72500610351562,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 250.47999572753906,
+        "repaired_at_utc": "2026-09-24T00:37:02.477228Z",
+        "volume": 969081
+      }
+    },
+    "VRT": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.002326,
+          "median_close_error": 0.000206
+        },
+        "close": 253.50999450683594,
+        "high": 255.39999389648438,
+        "intraday_bars": 13,
+        "low": 249.13999938964844,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 250.3000030517578,
+        "repaired_at_utc": "2026-09-24T00:37:02.981760Z",
+        "volume": 2976594
+      }
+    },
+    "WMB": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.001862,
+          "median_close_error": 0.000136
+        },
+        "close": 70.98999786376953,
+        "high": 72.4000015258789,
+        "intraday_bars": 13,
+        "low": 70.7300033569336,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 71.44000244140625,
+        "repaired_at_utc": "2026-09-24T00:37:03.558897Z",
+        "volume": 3796557
+      }
+    },
+    "XOM": {
+      "2026-09-22": {
+        "calibration": {
+          "days": 28,
+          "max_close_error": 0.002171,
+          "median_close_error": 0.000128
+        },
+        "close": 158.69000244140625,
+        "high": 159.97000122070312,
+        "intraday_bars": 13,
+        "low": 155.85000610351562,
+        "method": "yahoo_30m_intraday_aggregate_v1",
+        "open": 157.52999877929688,
+        "repaired_at_utc": "2026-09-24T00:37:04.208377Z",
+        "volume": 10947120
+      }
+    }
+  },
+  "schema": "veritas.yahoo_daily_repairs.v1",
+  "updated_at_utc": "2026-09-24T00:37:04.208512Z"
+}

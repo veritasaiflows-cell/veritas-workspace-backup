@@ -134,7 +134,7 @@
       },
       {
         "execution_backend": "main",
-        "expected_model_path": "openai/gpt-5.6-sol",
+        "expected_model_path": "openai/gpt-6-sol",
         "expected_thinking": "high",
         "implicit_fallback_allowed": false,
         "when": "explicit quick bounded fix, final integration, or authority-sensitive judgment"
@@ -196,7 +196,7 @@
     "general_route": [
       "model_free_command when deterministic proof is complete",
       "codex_native_subagent when explicitly eligible for bounded work",
-      "main on Sol for a quick bounded fix, final integration, or authority-sensitive judgment",
+      "main on GPT-6 Sol for a quick bounded fix, final integration, or authority-sensitive judgment",
       "persistent isolated specialist on its exact configured role model with fresh strict context transport proof",
       "risk-budgeted QA when required",
       "main acceptance and closeout"
@@ -247,10 +247,10 @@
   },
   "model_route": {
     "cost_rule": "Use the role's exact configured model; narrow scope before increasing effort, and never inherit another role's model or Main.",
-    "current_configured_model": "openai/gpt-5.6-sol",
-    "default_model": "openai/gpt-5.6-sol",
+    "current_configured_model": "openai/gpt-6-sol",
+    "default_model": "openai/gpt-6-sol",
     "sol_helper_upgrade_allowed": false,
-    "upgrade_model": "openai/gpt-5.6-sol",
+    "upgrade_model": "openai/gpt-6-sol",
     "upgrade_when": [
       "increase the configured role model's thinking only when the validated route requires it",
       "split or return cross-owner final judgment to Veritas main"
@@ -281,7 +281,7 @@
     "agent_dir": "C:\\Users\\Veritas\\.openclaw\\agents\\main\\agent",
     "bindings_count": 1,
     "is_default": false,
-    "model": "openai/gpt-5.6-sol",
+    "model": "openai/gpt-6-sol",
     "planned_not_installed": false,
     "workspace": "C:\\Users\\Veritas\\.openclaw\\workspace"
   },

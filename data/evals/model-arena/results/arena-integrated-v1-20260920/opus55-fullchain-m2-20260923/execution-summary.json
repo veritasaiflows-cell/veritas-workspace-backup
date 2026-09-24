@@ -1,0 +1,16 @@
+{
+  "schema": "veritas.arena_mission_execution_summary.v1",
+  "mission": "mission-2",
+  "outcome": "not_run_blocked_by_sequence",
+  "reason": "Sequential mission-1 preflight blocked before frozen dispatch; mission-2 not attempted.",
+  "candidate_attempts": 0,
+  "retries": 0,
+  "response_artifact": null,
+  "transport_receipt": null,
+  "native_transcript": null,
+  "tool_trace": null,
+  "grade_artifact": null,
+  "score": null,
+  "model_pin_verified_for_mission": false,
+  "fallback_verified_absent_for_mission": false
+}

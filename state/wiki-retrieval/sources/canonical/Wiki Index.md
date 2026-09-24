@@ -2,8 +2,8 @@
 # Wiki Index
 
 Canonical page: `wiki/index.md`
-Canonical rendered SHA-256: `aa8815d81954823da7ac4a8b728e18755762a53ad0a864cef1b025a50a78c0af`.
-Source snapshot SHA-256: `ae6e88eec2e3db981460397adfa78da800871c41fcd74d9852a0247c230c48f3`.
+Canonical rendered SHA-256: `b1efac3fd2d64e3daae7a599e4b8fe01504c0ae1db5aa27c199f9598fc109b60`.
+Source snapshot SHA-256: `77222f5213ea094e34dd46183baf36db7716415fdcaa3f1e581f0c047cbcd7a8`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -46,8 +46,8 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 
 - WF88 action rows: `14`.
 - Open unrouted recommendations: `0`.
-- Loop trace rows: `4`.
-- Loop trace missing lane links: `0`.
+- Loop trace rows: `7`.
+- Loop trace missing lane links: `1`.
 - Long-work jobs active/resumable/blocked: `0` / `0` / `0`.
 - Auto-apply count: `0`.
 - Follow-up-required open improvements: `0`.

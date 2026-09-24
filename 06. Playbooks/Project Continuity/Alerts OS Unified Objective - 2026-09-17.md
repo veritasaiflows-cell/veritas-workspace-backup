@@ -4,6 +4,8 @@ Owner: Main. Stated by Randall in Telegram on 2026-09-17 at 17:21 America/Phoeni
 
 Status: **objective record.** This is the first written statement of what the alerts OS is ultimately for. It grants no authority: no capital, order, brokerage, account, paper, or live execution; no canon mutation; no guarded-SQL write; no cron install; no provider expansion; no external delivery. It changes nothing inside the G8 observation window. Its purpose is to give Phase 4 and everything after it a target to be measured against, instead of being judged only against the gates that happen to be open.
 
+**Follow-up (2026-09-23):** `Alerts OS Audit and Monetization Readiness - 2026-09-23.md` audits the whole ecosystem against this objective and a monetization goal. It covers thesis, bands, alerts, context, outcomes and pivot residue. It proposes success measures (open item 3) and a post-G9 roadmap. It is proposal-only.
+
 ## The objective, as stated
 
 > This alert system must have a unified goal to ensure it monitors tickers at scale, provides best recommendations for entries and it aims at making money long term. It must align with thesis, market leadership and environment.

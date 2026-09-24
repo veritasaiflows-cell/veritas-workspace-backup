@@ -180,7 +180,6 @@ IMPLEMENTATION_BUILDER_ROLE_MOUNT_FILES = (
     "BOOTSTRAP.md",
     "SOUL.md",
     "IDENTITY.md",
-    "TOOLS.md",
     "USER.md",
     "HEARTBEAT.md",
     "agent.capabilities.json",
@@ -197,7 +196,6 @@ FACTORY_MANAGED_SURFACES = [
     "AGENTS.md",
     "SOUL.md",
     "IDENTITY.md",
-    "TOOLS.md",
     "USER.md",
     "HEARTBEAT.md",
 ]
@@ -983,7 +981,7 @@ def existing_source_surfaces(workspace: Path) -> list[str]:
     # particular, legacy profiles can retain retired product language; Main must
     # explicitly stage any relevant history in a bounded assignment rather than
     # making it a required bootstrap read.
-    for name in ("SOUL.md", "AGENTS.md", "IDENTITY.md", "TOOLS.md", "USER.md"):
+    for name in ("SOUL.md", "AGENTS.md", "IDENTITY.md", "USER.md"):
         candidate = workspace / name
         try:
             candidate.resolve().relative_to(workspace_resolved)
@@ -1655,7 +1653,7 @@ def build_bootstrap_markdown(manifest: dict[str, Any], delta: list[dict[str, Any
     lines.extend(
         [
             "",
-            "This BOOTSTRAP.md file is regenerated context. If it conflicts with SOUL.md, AGENTS.md, a live skill, or an exact owner artifact, the higher authority wins. TOOLS.md is a retired compatibility pointer, not injected bootstrap. Historical memory is Main-supplied context, not required role doctrine.",
+            "This BOOTSTRAP.md file is regenerated context. If it conflicts with SOUL.md, AGENTS.md, a live skill, or an exact owner artifact, the higher authority wins. TOOLS.md is retired; tool notes live in AGENTS.md `## Tools`. Historical memory is Main-supplied context, not required role doctrine.",
             "",
         ]
     )
@@ -1738,9 +1736,9 @@ def build_agents_markdown(manifest: dict[str, Any]) -> str:
         "## Startup",
         "",
         (
-            "1. Read the factory role packet under `/role`: `AGENTS.md` (including `## Tools`), `SOUL.md`, `IDENTITY.md`, `USER.md`, and `BOOTSTRAP.md`. `TOOLS.md` is a retired compatibility pointer, not injected bootstrap."
+            "1. Read the factory role packet under `/role`: `AGENTS.md` (including `## Tools`), `SOUL.md`, `IDENTITY.md`, `USER.md`, and `BOOTSTRAP.md`. `TOOLS.md` is retired."
             if posture.get("scoped_worktree_only")
-            else "1. Read this role packet (`AGENTS.md`, including `## Tools`), `SOUL.md`, `IDENTITY.md`, `USER.md`, and `BOOTSTRAP.md`. `TOOLS.md` is a retired compatibility pointer, not injected bootstrap."
+            else "1. Read this role packet (`AGENTS.md`, including `## Tools`), `SOUL.md`, `IDENTITY.md`, `USER.md`, and `BOOTSTRAP.md`. `TOOLS.md` is retired."
         ),
         (
             "2. Read only Main-supplied context under `/attachments` and frozen task material under `/worktree`."
@@ -1823,20 +1821,6 @@ def build_identity_markdown(manifest: dict[str, Any]) -> str:
     ])
 
 
-def build_tools_markdown(manifest: dict[str, Any]) -> str:
-    return "\n".join([
-        f"# TOOLS.md - {manifest['identity']} retired compatibility pointer",
-        "",
-        f"Profile revision: `{manifest['profile_revision']}`.",
-        "",
-        "OpenClaw retired workspace `TOOLS.md`. It is not a runtime bootstrap basename.",
-        "Local tool notes live in the `## Tools` section of `AGENTS.md`.",
-        "This file is kept only so existing sandbox binds do not recreate an empty directory.",
-        "Do not treat this file as injected operating doctrine.",
-        "",
-    ])
-
-
 def build_user_markdown(manifest: dict[str, Any]) -> str:
     return "\n".join([
         "# USER.md - Operating Relationship",
@@ -1871,7 +1855,6 @@ def build_core_markdown_documents(manifest: dict[str, Any], delta: list[dict[str
         "AGENTS.md": build_agents_markdown(manifest),
         "SOUL.md": build_soul_markdown(manifest),
         "IDENTITY.md": build_identity_markdown(manifest),
-        "TOOLS.md": build_tools_markdown(manifest),
         "USER.md": build_user_markdown(manifest),
         "HEARTBEAT.md": build_heartbeat_markdown(manifest),
         "BOOTSTRAP.md": build_bootstrap_markdown(manifest, delta),

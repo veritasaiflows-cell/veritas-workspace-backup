@@ -1,0 +1,122 @@
+{
+  "status": "review_required",
+  "generated_at_utc": "2026-09-09T01:06:42Z",
+  "script": "scripts/bounded_auto_archive.py",
+  "mode": "dry_run",
+  "input": "tmp/cleanup-infrastructure-20260908/archive-pilot-input.json",
+  "moves_performed": false,
+  "deletes_performed": false,
+  "counts": {
+    "moved": 0,
+    "skipped": 0,
+    "blocked": 17
+  },
+  "moved": [],
+  "skipped": [],
+  "blocked": [
+    {
+      "path": "tmp/_canon.log",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_cronlist.err",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_fsep.log",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_newjob.err",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_s2_guard2.out",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_s2_roster.out",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_s2_sqlguard.out",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_s2_sqlrefresh_apply.out",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_s2_sqlrefresh_dry.out",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_s2_tlm.out",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_s2_wf78_legacy_label_retirement_guard.out",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_s2_wf78_tier_capacity_policy_gate.out",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_s2_wf78_tier_semantics_guard.out",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/_s2_wf85.out",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/gatefix-run.log",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/memory-compounding-probe.err",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    },
+    {
+      "path": "tmp/rb-apply.out",
+      "kind": "deprecated_scratch",
+      "status": "blocked",
+      "reason": "source missing or not a file"
+    }
+  ],
+  "authority_boundary": "archive-only helper; no deletes; protected paths blocked; explicit apply_allowed suggestions can move only with zero references, the WF72 adjacent-JSON historical-reference-only exception, or the WF72 adjacent-JSON script-output-constant exception",
+  "manifest_binding": "apply requires a 64-character SHA-256 and exact byte count; both are rechecked immediately before every move and destination collisions fail closed"
+}

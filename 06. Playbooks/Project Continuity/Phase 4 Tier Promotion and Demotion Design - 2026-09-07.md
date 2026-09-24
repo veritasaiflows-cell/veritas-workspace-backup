@@ -106,3 +106,26 @@ A tier-C name promoted into the evaluated scope therefore arrives carrying bench
 This record already documented, on 2026-09-07, that `sql_tier_state` is a hardcoded literal, that `production_scope_member` is 0 for all 300 rows, and that the tier authority named in code is a retired router. On 2026-09-16 Main re-derived those same facts from live canon and reported them to Randall as new findings, because nothing routes an operator question about evaluation scope to this document. Reading `universe_membership.tier` alone yields the wrong conclusion that tier A/B/C is the settled design.
 
 For the avoidance of doubt: `current_sql_canon_routing` selects `u.tier AS legacy_tier`, `tier_routing_state` holds 0 rows, and the feeder that would populate it (`Finance - Daily SQL Canon Tier Routing Sync`, `scripts/sql_canon_tier_routing_refresh.py`) was retired on 2026-08-29 with `rollback_requires_owner_gate: true`. Tier A/B/C is the legacy fallback still doing real work because its replacement is unbuilt, and this document owns that replacement.
+
+## Addendum 2026-09-23: per-name onboarding readiness (owner direction)
+
+Randall, Telegram 2026-09-23: the 32 names must not be static; as Tier A rotates under the Phase 4 dynamic router, every new name must arrive with the same readiness work completed.
+
+**Principle: readiness is a per-name contract, not a per-list project.** A router promotion may only activate a name whose readiness record passes; otherwise the name stays monitor-only (alerts on invalidation/data quality, never a recommendation) and a readiness task is queued.
+
+**Per-name readiness gate (all required before recommendation eligibility):**
+1. Accepted structured thesis, `state/finance/thesis/<T>.json`, `status: accepted`, inside `review_due`.
+2. Fresh band from the current methodology (`mech-v3-floor-atr20` or later) with non-null `reference_confidence`, invalidation below band low, width >= 1×ATR20.
+3. 252 clean or repaired daily bars; at most 2 repaired bars (nightly gap repair covers any name in the live controller scope automatically).
+4. Earnings date and macro-regime context present.
+5. Sector ETF benchmark assigned (for relative strength and ledger scoring).
+6. Ledger `state_snapshot` written on first evaluation so its first transition has a prior.
+
+**Static assumptions that must be removed before the router goes live (found 2026-09-23):**
+- `scripts/yahoo_reference_level_matrix.py` hard-codes `SCOPED_TICKERS` (the 32) and rejects any other scope.
+- `scripts/g6_yahoo32_sql_apply.py` enforces `EXPECTED_TRIPLE_COUNT = 32`, so a batch cannot add or remove a name.
+- Both must read scope from the guarded-SQL dynamic entitlement (the same source the recurring chain uses) and support per-ticker apply, consistent with recommendation P4-2 (per-ticker transactional writer).
+
+**Already dynamic:** the recurring chain and controller (dynamic entitlement scope), the nightly gap repair (reads the promoted controller), the alert-event ledger (keys on ticker; new names get a `state_snapshot`).
+
+**Thesis supply for rotation:** a promotion candidate triggers a thesis draft task automatically; Randall's acceptance is the gate. Until accepted, promotion can proceed for monitoring but not for recommendations.

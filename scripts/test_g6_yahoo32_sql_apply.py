@@ -1033,6 +1033,69 @@ def main() -> int:
               len(ref_lin) == 200 and len(ref_lin[0]) == 5 and not bad_cells,
               f"rows={len(ref_lin)} bad={bad_cells[:2]}")
 
+    # Confidence write (2026-09-23): proposed reference_confidence lands in
+    # SQL and the successor pin; rollback restores the prior NULLs exactly.
+    with tempfile.TemporaryDirectory() as ctd:
+        ctmp = Path(ctd)
+        cdb = make_null_conf_db(ctmp / "conf.sqlite", 32)
+        pre_sha = db_sha(cdb)
+        cmx_path = make_matrix(ctmp / "conf_matrix.json", cdb)
+        cmx = json.loads(cmx_path.read_text(encoding="utf-8"))
+        want = {}
+        for i, (t, entry) in enumerate(sorted(cmx["tickers"].items())):
+            want[t] = round(0.25 + 0.05 * (i % 6), 2)
+            entry["old_to_proposed"]["proposed"]["reference_confidence"] = want[t]
+        cmx_path.write_text(json.dumps(cmx), encoding="utf-8")
+        cbase = ctmp / "baselines"
+        cbase.mkdir()
+        (cbase / OLD_PIN_BASENAME).write_text(json.dumps({"sentinel": True}), encoding="utf-8")
+        r = run_cli(["--apply", "--write", "--validate", "--matrix", str(cmx_path), "--db", str(cdb),
+                     "--baseline-dir", str(cbase), "--backup-path", str(ctmp / "bk.sqlite"),
+                     "--rollback-path", str(ctmp / "bk.json")], ctmp)
+        check("conf_apply_exit0", r.returncode == 0, r.stderr[-500:] + r.stdout[-300:])
+        ccon = sqlite3.connect(f"file:{cdb}?mode=ro", uri=True)
+        try:
+            got = dict(ccon.execute("SELECT ticker, reference_confidence FROM reference_levels").fetchall())
+        finally:
+            ccon.close()
+        check("conf_written_to_sql", got == want, str(list(got.items())[:3]))
+        try:
+            rb = json.loads((ctmp / "bk.json").read_text(encoding="utf-8"))
+            pin = json.loads(Path(str(rb.get("baseline_path"))).read_text(encoding="utf-8"))
+            check("conf_in_successor_pin",
+                  {e["ticker"]: e["reference_confidence"] for e in pin["rows"]} == want
+                  and pin.get("numeric_projection_sha256") == recompute_projection(pin["rows"]))
+        except Exception as e:  # noqa: BLE001
+            check("conf_in_successor_pin", False, repr(e))
+        r = run_cli(["--rollback", "--db", str(cdb), "--rollback-path", str(ctmp / "bk.json")], ctmp)
+        check("conf_rollback_byte_exact", r.returncode == 0 and db_sha(cdb) == pre_sha, r.stderr[-300:])
+        bad = json.loads(cmx_path.read_text(encoding="utf-8"))
+        next(iter(bad["tickers"].values()))["old_to_proposed"]["proposed"]["reference_confidence"] = 1.5
+        try:
+            mod.extract_triples(bad)
+            check("conf_out_of_range_refused", False, "accepted 1.5")
+        except ValueError as e:
+            check("conf_out_of_range_refused", "reference_confidence" in str(e), str(e))
+
+    # D9 option C: inverted invalidation is refused unless owner-acknowledged.
+    def _entry(lo: float, hi: float, inv: float, warn: bool = False) -> dict:
+        triple = {"reference_price_low": lo, "reference_price_high": hi, "reference_invalidation_level": inv}
+        return {"old_to_proposed": {"old": dict(triple), "proposed": dict(triple)},
+                "invalidation_ordering_warning": warn}
+    good = {"tickers": {t: _entry(100.0, 110.0, 95.0) for t in tickers()}}
+    check("d9c_coherent_batch_accepted", len(mod.extract_triples(good)) == N)
+    for label, bad_entry in (("inside_band", _entry(100.0, 110.0, 105.0)),
+                             ("warning_flag", _entry(100.0, 110.0, 95.0, warn=True))):
+        bad = {"tickers": dict(good["tickers"])}
+        bad["tickers"][tickers()[0]] = bad_entry
+        try:
+            mod.extract_triples(bad)
+            check(f"d9c_{label}_refused", False, "accepted without acknowledgement")
+        except ValueError as e:
+            check(f"d9c_{label}_refused", "invalidation_ordering" in str(e), str(e))
+        check(f"d9c_{label}_ack_overrides",
+              len(mod.extract_triples(bad, ack_invalidation_ordering=True)) == N)
+
     print(f"\nSUMMARY pass={len(PASS)} fail={len(FAIL)}")
     return 0 if not FAIL else 1
 

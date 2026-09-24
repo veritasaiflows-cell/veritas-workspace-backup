@@ -34,6 +34,25 @@ YAHOO_CHART_BASE = "https://query1.finance.yahoo.com/v8/finance/chart"
 SOURCE_MODE = "single_source_yahoo_personal_use"
 SOURCE_CONFIDENCE = "low_single_source_yahoo_personal_use"
 DEFAULT_DB = Path("state/finance/finance-canon.sqlite")
+# Owner-approved 2026-09-23: Yahoo-only repairs of missing daily bars, rebuilt
+# from Yahoo's own intraday bars by scripts/yahoo_daily_gap_repair.py. Official
+# daily bars always win; a repair is used only where Yahoo's daily bar is null.
+DEFAULT_REPAIRS = Path("state/finance/price-repairs/yahoo-daily-repairs.json")
+MAX_REPAIRED_BARS = 2
+BAND_METHODOLOGY_VERSION = "mech-v3-floor-atr20"  # stamped on every proposed row; the ledger mirrors it
+REPAIRED_CONFIDENCE_PENALTY = 0.10
+
+
+def load_repairs(path) -> dict:
+    """Return {ticker: {session_date: repair}}; missing or unreadable -> {}."""
+    if path is None:
+        return {}
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    repairs = data.get("repairs") if isinstance(data, dict) else None
+    return repairs if isinstance(repairs, dict) else {}
 
 
 def provider_symbol(ticker: str) -> str:
@@ -178,7 +197,7 @@ def safe_json_load(raw: bytes):
         return None
 
 
-def extract_normalized_bars(payload: dict, as_of: date) -> tuple[list[dict] | None, dict]:
+def extract_normalized_bars(payload: dict, as_of: date, repairs: dict | None = None) -> tuple[list[dict] | None, dict]:
     """Return normalized bars or block metadata that preserves observed evidence."""
     default_fields = {"adjclose": False, "dividends": False, "splits": False, "dividend_entries": False, "split_entries": False}
     metadata = {
@@ -189,6 +208,7 @@ def extract_normalized_bars(payload: dict, as_of: date) -> tuple[list[dict] | No
         "normalized_count_total": 0,
         "observed_raw_final_session_date": None,
         "invalid_bar_evidence": None,
+        "repaired_session_dates": [],
     }
 
     def failed(reason: str, bars: list[dict], evidence: dict | None = None):
@@ -249,6 +269,15 @@ def extract_normalized_bars(payload: dict, as_of: date) -> tuple[list[dict] | No
         metadata["observed_raw_final_session_date"] = session_date.isoformat()
         values = {name: arrays[name][index] for name in arrays}
         raw_evidence = {"index": index, "timestamp_utc": datetime.fromtimestamp(timestamp, tz=timezone.utc).isoformat().replace("+00:00", "Z"), "session_date": session_date.isoformat(), **values}
+        repair = (repairs or {}).get(session_date.isoformat())
+        if not all(is_finite_number(value) for value in values.values()) and isinstance(repair, dict) and bars:
+            # Yahoo's daily bar is null but an owner-approved same-source repair
+            # exists. No corporate action on this date (checked at repair time),
+            # so the prior bar's adjustment factor applies unchanged.
+            prior_factor = bars[-1]["adjustment_factor"]
+            values = {name: repair.get(name) for name in ("open", "high", "low", "close", "volume")}
+            values["adjclose"] = values["close"] * prior_factor if is_finite_number(values["close"]) else None
+            metadata["repaired_session_dates"].append(session_date.isoformat())
         if not all(is_finite_number(value) for value in values.values()):
             return failed("nonfinite_ohlcv_or_adjclose", bars, raw_evidence)
         op, hi, lo, close, volume, adjusted_close = (values["open"], values["high"], values["low"], values["close"], values["volume"], values["adjclose"])
@@ -288,7 +317,24 @@ def calculate_metrics(bars: list[dict]) -> dict:
     last_close = closes[-1]
     lower = min(support20, sma50)
     upper = max(support20, sma50)
-    invalidation = support20 - 1.5 * atr20
+    # Minimum band width (owner-approved 2026-09-23): a band narrower than one
+    # ATR20 is crossed by ordinary daily movement (LNG 0.2%, XOM 0.3% wide on
+    # the 09-17 pin). Widen symmetrically about the midpoint to one ATR20 and
+    # record that it was widened; the name is kept, not dropped.
+    band_floor_applied = (upper - lower) < atr20
+    if band_floor_applied:
+        mid = (upper + lower) / 2
+        lower, upper = mid - atr20 / 2, mid + atr20 / 2
+    trend_qualified = last_close > sma200 and sma50 > sma200
+    # data_confidence_v1 (provisional, uncalibrated until the ledger scorer
+    # exists): measures the level's evidence quality, not thesis conviction.
+    # Single-source Yahoo caps it at 0.5; a floor-widened band or a name not
+    # in a qualified uptrend lowers it.
+    reference_confidence = 0.5 - (0.15 if band_floor_applied else 0.0) - (0.0 if trend_qualified else 0.1)
+    # D9 option A (owner-approved 2026-09-23): anchor invalidation on the band
+    # low so it is below the band by construction. Anchoring on support20 put
+    # invalidation inside the band whenever support20 > SMA50.
+    invalidation = lower - 1.5 * atr20
     values = (sma50, sma200, support20, atr20, last_close, lower, upper, invalidation)
     if not all(math.isfinite(value) for value in values):
         raise ValueError("nonfinite_metric")
@@ -301,9 +347,11 @@ def calculate_metrics(bars: list[dict]) -> dict:
         "proposed_reference_price_low": lower,
         "proposed_reference_price_high": upper,
         "proposed_reference_invalidation_level": invalidation,
-        "trend_qualified": last_close > sma200 and sma50 > sma200,
+        "trend_qualified": trend_qualified,
         "price_below_support20": last_close < support20,
         "invalidation_below_range": invalidation < lower,
+        "band_floor_applied": band_floor_applied,
+        "reference_confidence": reference_confidence,
     }
 
 
@@ -380,6 +428,9 @@ def old_to_proposed(old_record: dict, proposed: dict | None, lineage: dict) -> d
         "reference_price_low": round_display(proposed["proposed_reference_price_low"]),
         "reference_price_high": round_display(proposed["proposed_reference_price_high"]),
         "reference_invalidation_level": round_display(proposed["proposed_reference_invalidation_level"]),
+        "reference_confidence": round(proposed["reference_confidence"], 2),
+        "band_methodology_version": BAND_METHODOLOGY_VERSION,
+        "band_floor_applied": proposed["band_floor_applied"],
         "level_as_of": lineage["expected_completed_session_date"],
     }
     changed = None
@@ -403,6 +454,7 @@ def collect_one(
     old_record: dict,
     http_get=None,
     now_fn=None,
+    repairs: dict | None = None,
 ) -> dict:
     yahoo_symbol = provider_symbol(ticker)
     source_url = build_source_url(yahoo_symbol, as_of)
@@ -428,7 +480,7 @@ def collect_one(
     payload = safe_json_load(bytes(raw))
     if not isinstance(payload, dict):
         return blocked_row(ticker, yahoo_symbol, source_url, retrieved_at, "malformed_payload", old_to_proposed(old_record, None, base_lineage), raw_hash, expected_session_date.isoformat())
-    bars, metadata = extract_normalized_bars(payload, as_of)
+    bars, metadata = extract_normalized_bars(payload, as_of, repairs)
     fields = metadata.get("adjustment_fields_present")
     exchange_timezone = metadata.get("exchange_timezone")
     timezone_source = metadata.get("exchange_timezone_source")
@@ -469,7 +521,21 @@ def collect_one(
             normalized_bars=bars,
         )
     bars = bars[-MIN_BARS:]
+    window_dates = {bar["session_date"] for bar in bars}
+    repaired_dates = [d for d in metadata.get("repaired_session_dates", []) if d in window_dates]
     observed = bars[-1]["session_date"]
+    if len(repaired_dates) > MAX_REPAIRED_BARS:
+        return blocked_row(
+            ticker, yahoo_symbol, source_url, retrieved_at, "too_many_repaired_bars",
+            old_to_proposed(old_record, None, base_lineage), raw_hash,
+            expected_session_date=expected_session_date.isoformat(),
+            observed_final_session_date=observed,
+            normalized_count=len(bars),
+            adjustment_fields_present=fields,
+            exchange_timezone=exchange_timezone,
+            exchange_timezone_source=timezone_source,
+            normalized_bars=bars,
+        )
     base_lineage["observed_final_session_date"] = observed
     if observed != expected_session_date.isoformat():
         return blocked_row(
@@ -497,6 +563,8 @@ def collect_one(
             exchange_timezone_source=timezone_source,
             normalized_bars=bars,
         )
+    if repaired_dates:
+        metrics["reference_confidence"] -= REPAIRED_CONFIDENCE_PENALTY
     lineage = {**base_lineage, "observed_final_session_date": observed}
     diff = old_to_proposed(old_record, metrics, lineage)
     ordering_ok = metrics["invalidation_below_range"]
@@ -518,12 +586,13 @@ def collect_one(
         "independent_reconciliation": False,
         "invalidation_ordering_warning": not ordering_ok,
         "invalid_bar_evidence": None,
-        "metrics": {name: round_display(value) for name, value in metrics.items() if name not in {"trend_qualified", "price_below_support20", "invalidation_below_range"}},
+        "metrics": {name: round_display(value) for name, value in metrics.items() if name not in {"trend_qualified", "price_below_support20", "invalidation_below_range", "band_floor_applied"}},
         "normalized_bars": bars,
         "observed_final_session_date": observed,
         "old_to_proposed": diff,
         "price_below_support20": metrics["price_below_support20"],
         "raw_sha256": raw_hash,
+        "repaired_session_dates": repaired_dates,
         "retrieved_at_utc": retrieved_at,
         "review_only": True,
         "review_required": True,
@@ -538,7 +607,7 @@ def collect_one(
     }
 
 
-def build_document(as_of_date: str, expected_session_date: str, tickers=None, db_path=DEFAULT_DB, http_get=None, now_fn=None, diagnostic=False) -> dict:
+def build_document(as_of_date: str, expected_session_date: str, tickers=None, db_path=DEFAULT_DB, http_get=None, now_fn=None, diagnostic=False, repairs_path=None) -> dict:
     as_of = parse_iso_date(as_of_date)
     expected = parse_iso_date(expected_session_date)
     if expected >= as_of:
@@ -549,7 +618,9 @@ def build_document(as_of_date: str, expected_session_date: str, tickers=None, db
     if not diagnostic and selected != SCOPED_TICKERS:
         raise ValueError("a contract matrix must use the exact full 32-symbol G6 scope")
     old_records, old_lookup_status = read_old_levels(db_path, selected)
-    rows = {ticker: collect_one(ticker, as_of, expected, old_records[ticker], http_get=http_get, now_fn=now_fn) for ticker in selected}
+    repairs = load_repairs(repairs_path)
+    rows = {ticker: collect_one(ticker, as_of, expected, old_records[ticker], http_get=http_get, now_fn=now_fn,
+                                repairs=repairs.get(ticker)) for ticker in selected}
     counts = {"trend_qualified": 0, "monitor_only": 0, "blocked": 0}
     for row in rows.values():
         counts[row["classification"]] += 1
@@ -671,7 +742,7 @@ def markdown_for(document: dict) -> str:
         "",
         "## Method",
         "",
-        "For each ticker, Yahoo daily bars ending on the stated completed session are structurally gated. The final 252 valid normalized bars use Yahoo's row-level `adjclose / close` factor on OHLC. This is a Yahoo adjustment convention, not independently verified corporate-action proof. SMA50 and SMA200 are simple means of adjusted closes; support20 is the minimum of the final 20 adjusted lows; ATR20 is the arithmetic mean of final-20 adjusted true ranges using each prior adjusted close. The review range is min/max(support20, SMA50), and mechanical invalidation is support20 minus 1.5 ATR20.",
+        "For each ticker, Yahoo daily bars ending on the stated completed session are structurally gated. The final 252 valid normalized bars use Yahoo's row-level `adjclose / close` factor on OHLC. This is a Yahoo adjustment convention, not independently verified corporate-action proof. SMA50 and SMA200 are simple means of adjusted closes; support20 is the minimum of the final 20 adjusted lows; ATR20 is the arithmetic mean of final-20 adjusted true ranges using each prior adjusted close. The review range is min/max(support20, SMA50), and mechanical invalidation is the range low minus 1.5 ATR20.",
         "",
         "## Yahoo-only limitations",
         "",
@@ -810,6 +881,8 @@ def main(argv=None, http_get=None, now_fn=None) -> int:
         http_get=http_get,
         now_fn=now_fn,
         diagnostic=args.ticker is not None,
+        # Injected fetchers are tests; only real runs read the repair overlay.
+        repairs_path=DEFAULT_REPAIRS if http_get is None else None,
     )
     serialized = json.dumps(document, sort_keys=True, indent=2)
     if not args.write:

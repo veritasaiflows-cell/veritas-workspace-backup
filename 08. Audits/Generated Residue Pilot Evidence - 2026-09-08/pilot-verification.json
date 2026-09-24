@@ -1,0 +1,29 @@
+{
+  "schema": "veritas.cleanup_archive_pilot_verification.v1",
+  "status": "ok",
+  "approval_reference": "Randall Telegram message 9120",
+  "operation": "archive_move_only",
+  "files_moved": 17,
+  "bytes_moved": 607330,
+  "deletes_performed": false,
+  "source_absence_verified": true,
+  "destination_hash_equality_verified": true,
+  "bounded_mover_validation": "ok",
+  "post_move_tmp_cleanup": {
+    "status": "ok",
+    "eligible_count": 1962,
+    "moved_count": 0,
+    "protected_violation_count": 0,
+    "candidate_digest": "1740e2a48ea1cd3c89901d2318034b901a17565446ae11df2db05db98f96b821"
+  },
+  "rollback": {
+    "available": true,
+    "method": "Move each archived destination in tmp/bounded-auto-archive-last-report.json back to its recorded tmp source path after verifying its SHA-256.",
+    "not_exercised": true
+  },
+  "limits": [
+    "Archive retention and permanent deletion were not authorized in this pilot.",
+    "Existing archive inventory remains manual_review_required.",
+    "The mover's manifest source hash is currently verified by Main preflight; tool-enforced hash binding is a pending Spark implementation increment."
+  ]
+}

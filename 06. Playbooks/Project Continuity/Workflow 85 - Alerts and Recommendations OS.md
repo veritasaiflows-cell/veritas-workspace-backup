@@ -8,7 +8,7 @@ Primary P0 finance lane. It produces alerts and non-executing recommendations fr
 
 Turn current, source-backed market evidence into concise review states and recommendations while keeping freshness, confidence, uncertainty, and invalidation visible.
 
-This is a fidelity objective and is currently met. It is not the program's outcome objective. The stated outcome objective — scale, entry quality, long-term return, and alignment to thesis, leadership, and environment — lives in `Alerts OS Unified Objective - 2026-09-17.md`, which also measures the current system against it and names what is missing.
+This is a fidelity objective and is currently met at the pipeline level. The 2026-09-23 audit (`Alerts OS Audit and Monetization Readiness - 2026-09-23.md`) found that the delivered digest does not yet carry the thesis, base/bull/bear, or regime/catalyst fields this contract requires. It is not the program's outcome objective. The stated outcome objective — scale, entry quality, long-term return, and alignment to thesis, leadership, and environment — lives in `Alerts OS Unified Objective - 2026-09-17.md`, which also measures the current system against it and names what is missing.
 
 ## Decision States
 

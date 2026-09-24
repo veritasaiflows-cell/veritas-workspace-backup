@@ -112,6 +112,11 @@ CONFIDENCE_CANDIDATES = ("confidence", "reference_confidence", "level_confidence
 DEFAULT_CONFIDENCE = None
 
 
+def _proposed_or_existing_confidence(triple: dict, existing: dict) -> float | None:
+    proposed = triple.get("proposed_confidence")
+    return proposed if proposed is not None else _reference_confidence_value(existing)
+
+
 def _reference_confidence_value(entry: dict) -> float | None:
     """Guard-contract confidence: reference_confidence, null preserved.
 
@@ -307,8 +312,13 @@ def validate_triple(d: object, where: str) -> dict[str, float]:
     return out
 
 
-def extract_triples(matrix: dict) -> dict[str, dict]:
-    """Return {ticker: {'old': triple, 'proposed': triple}}; exactly 32."""
+def extract_triples(matrix: dict, *, ack_invalidation_ordering: bool = False) -> dict[str, dict]:
+    """Return {ticker: {'old': triple, 'proposed': triple}}; exactly 32.
+
+    D9 option C (owner-approved 2026-09-23): a proposed invalidation level at
+    or above the band low, or a generator invalidation_ordering_warning, is
+    refused unless the owner explicitly acknowledges it.
+    """
     tickers = matrix.get("tickers")
     if not isinstance(tickers, dict):
         raise ValueError("matrix['tickers'] must be an object mapping ticker -> entry")
@@ -341,7 +351,24 @@ def extract_triples(matrix: dict) -> dict[str, dict]:
             )
         old = validate_triple(otp["old"], f"tickers[{ticker}].old")
         proposed = validate_triple(otp["proposed"], f"tickers[{ticker}].proposed")
-        out[ticker] = {"old": old, "proposed": proposed}
+        inverted = (
+            entry.get("invalidation_ordering_warning") is True
+            or proposed["reference_invalidation_level"] >= proposed["reference_price_low"]
+        )
+        if inverted and not ack_invalidation_ordering:
+            raise ValueError(
+                f"tickers[{ticker}]: proposed invalidation is not below the band low "
+                "(invalidation_ordering); pass --ack-invalidation-ordering only with owner approval"
+            )
+        # Proposed confidence (owner-approved 2026-09-23): written to canon
+        # when the matrix carries it; absent -> existing SQL value preserved.
+        proposed_conf = None
+        raw_conf = otp["proposed"].get("reference_confidence") if isinstance(otp["proposed"], dict) else None
+        if raw_conf is not None:
+            if not _is_number(raw_conf) or not (0.0 <= float(raw_conf) <= 1.0):
+                raise ValueError(f"tickers[{ticker}].proposed.reference_confidence must be a number in [0, 1]")
+            proposed_conf = float(raw_conf)
+        out[ticker] = {"old": old, "proposed": proposed, "proposed_confidence": proposed_conf}
     return out
 
 
@@ -821,7 +848,7 @@ def build_dry_run(
                     "reference_invalidation_level": float(
                         p["reference_invalidation_level"]
                     ),
-                    "reference_confidence": _reference_confidence_value(e),
+                    "reference_confidence": _proposed_or_existing_confidence(triples[e["ticker"]], e),
                 }
             )
         else:
@@ -926,7 +953,7 @@ def run_apply(
                     "reference_invalidation_level": float(
                         p["reference_invalidation_level"]
                     ),
-                    "reference_confidence": _reference_confidence_value(e),
+                    "reference_confidence": _proposed_or_existing_confidence(triples[e["ticker"]], e),
                 }
             )
         else:
@@ -984,8 +1011,19 @@ def run_apply(
     try:
         con.execute("BEGIN IMMEDIATE")
         try:
+            conf_col = schema.get("conf_col")
             for ticker in sorted(triples):
                 p = triples[ticker]["proposed"]
+                if triples[ticker].get("proposed_confidence") is not None:
+                    if not conf_col:
+                        raise ValueError("apply aborted: matrix carries confidence but canon has no confidence column")
+                    cur = con.execute(
+                        f"UPDATE {_quote_ident('reference_levels')} SET {_quote_ident(conf_col)} = ? "  # noqa: S608 (gated canon apply)
+                        f"WHERE {_quote_ident(id_col)} = ?",
+                        (triples[ticker]["proposed_confidence"], ticker),
+                    )
+                    if cur.rowcount != 1:
+                        raise ValueError(f"apply aborted: confidence UPDATE affected {cur.rowcount} rows for {ticker}")
                 cur = con.execute(
                     f"UPDATE {_quote_ident('reference_levels')} SET {numeric_set} "  # noqa: S608 (gated canon apply)
                     f"WHERE {_quote_ident(id_col)} = ?",
@@ -1099,6 +1137,11 @@ def run_apply(
                 raise ValueError(
                     f"apply verification FAILED: {ticker}.{f} not at proposed value"
                 )
+    after_levels = {e["ticker"]: e for e in read_full_levels(db_path, schema)}
+    for ticker in sorted(triples):
+        want = triples[ticker].get("proposed_confidence")
+        if want is not None and after_levels[ticker]["reference_confidence"] != want:
+            raise ValueError(f"apply verification FAILED: {ticker}.reference_confidence not at proposed value")
     if schema["authority_col"]:
         after_full = read_full_levels(db_path, schema)
         for e in after_full:
@@ -1441,6 +1484,11 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--backup-path", default=None, help="backup sqlite destination (apply)")
     ap.add_argument("--rollback-path", default=None, help="rollback JSON path (apply writes; rollback reads)")
     ap.add_argument("--dryrun-path", default=None, help="dry-run JSON destination (with --write)")
+    ap.add_argument(
+        "--ack-invalidation-ordering",
+        action="store_true",
+        help="owner acknowledgement: allow a batch whose invalidation is not below the band low",
+    )
     return ap
 
 
@@ -1461,7 +1509,7 @@ def main(argv: list[str] | None = None) -> int:
             return 2
         matrix, matrix_sha = load_matrix(args.matrix)
         try:
-            triples = extract_triples(matrix)
+            triples = extract_triples(matrix, ack_invalidation_ordering=args.ack_invalidation_ordering)
         except ValueError as e:
             print(f"matrix refused: {e}", file=sys.stderr)
             return 2

@@ -1,0 +1,473 @@
+{
+  "schema": "veritas.generated_residue_delete_readiness.v1",
+  "generated_at_utc": "2026-09-09T05:01:23Z",
+  "status": "retention_proof_complete_delete_not_ready",
+  "scope": "17-file 2026-09-08 generated-residue cleanup pilot only",
+  "authority_boundary": {
+    "permanent_deletion_executed": false,
+    "permanent_deletion_authorized": false,
+    "archive_moves_only_for_restore_drill": true
+  },
+  "frozen_input": {
+    "path": "tmp/cleanup-infrastructure-20260908/archive-pilot-input.json",
+    "sha256": "c1f5586c7ad4bfb1f030a0b93c6eb215eb51bb1c1e088de6731d7619fd51dacc",
+    "row_count": 17,
+    "total_bytes": 607330
+  },
+  "per_file_evidence": [
+    {
+      "path": "tmp/_canon.log",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_canon.log",
+      "sha256": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+      "bytes": 126,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_cronlist.err",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_cronlist.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_fsep.log",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_fsep.log",
+      "sha256": "cd89c46f4f0cf64ec9930148d6bec5699fe1fc2aeb822294cee13a298647a8fe",
+      "bytes": 649,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_newjob.err",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_newjob.err",
+      "sha256": "b903d348b29d4cce503178d8543e6cb3dc2393d16a65f35b44e2c2bb0ba19bec",
+      "bytes": 75,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_s2_guard2.out",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_guard2.out",
+      "sha256": "782f0247ee409796dcb13118d514440219c69efed2ff7eae2ae8eea7101a45f9",
+      "bytes": 1062,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_s2_roster.out",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_roster.out",
+      "sha256": "af3a71e35bfa29ab8b41f45c32a48fffcd96770fc3d9a92771d3ef2fdbe32f4c",
+      "bytes": 1698,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_s2_sqlguard.out",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_sqlguard.out",
+      "sha256": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+      "bytes": 126,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_s2_sqlrefresh_apply.out",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_sqlrefresh_apply.out",
+      "sha256": "d4f3efe2ea0c796739e6bfc03bca147909d290b259c5f0d2bb362a53b08d7dca",
+      "bytes": 237,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_s2_sqlrefresh_dry.out",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_sqlrefresh_dry.out",
+      "sha256": "c74b0d1266da2d9517315e192ae6b8c4ab3353e51123809cc8377d46f103380f",
+      "bytes": 257,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_s2_tlm.out",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_tlm.out",
+      "sha256": "809a44203a1f6c688cbb4a978afc50765f659ff42592a1812e8a9879ab521b3f",
+      "bytes": 1204,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_s2_wf78_legacy_label_retirement_guard.out",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_wf78_legacy_label_retirement_guard.out",
+      "sha256": "c054d90508373a8fb04ff9f5f630cc6400087603767a33fe1b8734b2b33dfe30",
+      "bytes": 1020,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_s2_wf78_tier_capacity_policy_gate.out",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_wf78_tier_capacity_policy_gate.out",
+      "sha256": "8e5f3209a8a18c82536c014f09ce4c62d18f181ba22ce046712fc3d9dffb5e3d",
+      "bytes": 1303,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_s2_wf78_tier_semantics_guard.out",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_wf78_tier_semantics_guard.out",
+      "sha256": "fa350321bdb739f129709dd543d02bc0811633598a8c5ebeef76f8b539c76dc9",
+      "bytes": 3487,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/_s2_wf85.out",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/_s2_wf85.out",
+      "sha256": "ff9ea3e953128d0b8bbe9393a3ad152092ca19ad2afe12dc64e2b3d60a60e4f8",
+      "bytes": 20123,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/gatefix-run.log",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/gatefix-run.log",
+      "sha256": "109c935cc6d3ee65f9d88050c1cf3bee870948462403f24b587130092ac3bc11",
+      "bytes": 574023,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/memory-compounding-probe.err",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/memory-compounding-probe.err",
+      "sha256": "8f006ae9fbcf2bec95b74174aa8bf3d5c195824684b9735f39a3e4cd30dd17c4",
+      "bytes": 49,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    },
+    {
+      "path": "tmp/rb-apply.out",
+      "archive_path": "09. Archive/Auto Archive - Generated Residue/2026-09-08/cleanup-pilot/rb-apply.out",
+      "sha256": "5aeb95b9d08f04c753e20a4c93e264c439ce35b32cd7bcb766544c247e56f151",
+      "bytes": 1891,
+      "origin": "2026-09-08 cleanup-pilot top-level tmp ephemeral command output",
+      "replacement_proof": "No replacement required: scratch/diagnostic output is not an active owner surface.",
+      "retention_class": "generated_residue_ephemeral_output",
+      "integrity_check": "archive SHA-256 and exact byte count",
+      "active_reference_scan": {
+        "scope": "scripts, skills, memory, numbered owner domains, data, state, wiki; archive and tmp excluded",
+        "hits": [],
+        "passed": true
+      },
+      "archive_integrity_passed": true
+    }
+  ],
+  "all_file_restore_drill": {
+    "row_count": 17,
+    "passed_count": 17,
+    "rows": [
+      {
+        "path": "tmp/_canon.log",
+        "restore_target": "tmp/_canon.log",
+        "sha256_before": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+        "sha256_at_restore_target": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+        "sha256_after_return": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+        "bytes": 126,
+        "passed": true
+      },
+      {
+        "path": "tmp/_cronlist.err",
+        "restore_target": "tmp/_cronlist.err",
+        "sha256_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sha256_at_restore_target": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sha256_after_return": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "passed": true
+      },
+      {
+        "path": "tmp/_fsep.log",
+        "restore_target": "tmp/_fsep.log",
+        "sha256_before": "cd89c46f4f0cf64ec9930148d6bec5699fe1fc2aeb822294cee13a298647a8fe",
+        "sha256_at_restore_target": "cd89c46f4f0cf64ec9930148d6bec5699fe1fc2aeb822294cee13a298647a8fe",
+        "sha256_after_return": "cd89c46f4f0cf64ec9930148d6bec5699fe1fc2aeb822294cee13a298647a8fe",
+        "bytes": 649,
+        "passed": true
+      },
+      {
+        "path": "tmp/_newjob.err",
+        "restore_target": "tmp/_newjob.err",
+        "sha256_before": "b903d348b29d4cce503178d8543e6cb3dc2393d16a65f35b44e2c2bb0ba19bec",
+        "sha256_at_restore_target": "b903d348b29d4cce503178d8543e6cb3dc2393d16a65f35b44e2c2bb0ba19bec",
+        "sha256_after_return": "b903d348b29d4cce503178d8543e6cb3dc2393d16a65f35b44e2c2bb0ba19bec",
+        "bytes": 75,
+        "passed": true
+      },
+      {
+        "path": "tmp/_s2_guard2.out",
+        "restore_target": "tmp/_s2_guard2.out",
+        "sha256_before": "782f0247ee409796dcb13118d514440219c69efed2ff7eae2ae8eea7101a45f9",
+        "sha256_at_restore_target": "782f0247ee409796dcb13118d514440219c69efed2ff7eae2ae8eea7101a45f9",
+        "sha256_after_return": "782f0247ee409796dcb13118d514440219c69efed2ff7eae2ae8eea7101a45f9",
+        "bytes": 1062,
+        "passed": true
+      },
+      {
+        "path": "tmp/_s2_roster.out",
+        "restore_target": "tmp/_s2_roster.out",
+        "sha256_before": "af3a71e35bfa29ab8b41f45c32a48fffcd96770fc3d9a92771d3ef2fdbe32f4c",
+        "sha256_at_restore_target": "af3a71e35bfa29ab8b41f45c32a48fffcd96770fc3d9a92771d3ef2fdbe32f4c",
+        "sha256_after_return": "af3a71e35bfa29ab8b41f45c32a48fffcd96770fc3d9a92771d3ef2fdbe32f4c",
+        "bytes": 1698,
+        "passed": true
+      },
+      {
+        "path": "tmp/_s2_sqlguard.out",
+        "restore_target": "tmp/_s2_sqlguard.out",
+        "sha256_before": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+        "sha256_at_restore_target": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+        "sha256_after_return": "3602ed102bb72e178d4d3c3b984394635602cffdd13341d9f26b1a299d506bfb",
+        "bytes": 126,
+        "passed": true
+      },
+      {
+        "path": "tmp/_s2_sqlrefresh_apply.out",
+        "restore_target": "tmp/_s2_sqlrefresh_apply.out",
+        "sha256_before": "d4f3efe2ea0c796739e6bfc03bca147909d290b259c5f0d2bb362a53b08d7dca",
+        "sha256_at_restore_target": "d4f3efe2ea0c796739e6bfc03bca147909d290b259c5f0d2bb362a53b08d7dca",
+        "sha256_after_return": "d4f3efe2ea0c796739e6bfc03bca147909d290b259c5f0d2bb362a53b08d7dca",
+        "bytes": 237,
+        "passed": true
+      },
+      {
+        "path": "tmp/_s2_sqlrefresh_dry.out",
+        "restore_target": "tmp/_s2_sqlrefresh_dry.out",
+        "sha256_before": "c74b0d1266da2d9517315e192ae6b8c4ab3353e51123809cc8377d46f103380f",
+        "sha256_at_restore_target": "c74b0d1266da2d9517315e192ae6b8c4ab3353e51123809cc8377d46f103380f",
+        "sha256_after_return": "c74b0d1266da2d9517315e192ae6b8c4ab3353e51123809cc8377d46f103380f",
+        "bytes": 257,
+        "passed": true
+      },
+      {
+        "path": "tmp/_s2_tlm.out",
+        "restore_target": "tmp/_s2_tlm.out",
+        "sha256_before": "809a44203a1f6c688cbb4a978afc50765f659ff42592a1812e8a9879ab521b3f",
+        "sha256_at_restore_target": "809a44203a1f6c688cbb4a978afc50765f659ff42592a1812e8a9879ab521b3f",
+        "sha256_after_return": "809a44203a1f6c688cbb4a978afc50765f659ff42592a1812e8a9879ab521b3f",
+        "bytes": 1204,
+        "passed": true
+      },
+      {
+        "path": "tmp/_s2_wf78_legacy_label_retirement_guard.out",
+        "restore_target": "tmp/_s2_wf78_legacy_label_retirement_guard.out",
+        "sha256_before": "c054d90508373a8fb04ff9f5f630cc6400087603767a33fe1b8734b2b33dfe30",
+        "sha256_at_restore_target": "c054d90508373a8fb04ff9f5f630cc6400087603767a33fe1b8734b2b33dfe30",
+        "sha256_after_return": "c054d90508373a8fb04ff9f5f630cc6400087603767a33fe1b8734b2b33dfe30",
+        "bytes": 1020,
+        "passed": true
+      },
+      {
+        "path": "tmp/_s2_wf78_tier_capacity_policy_gate.out",
+        "restore_target": "tmp/_s2_wf78_tier_capacity_policy_gate.out",
+        "sha256_before": "8e5f3209a8a18c82536c014f09ce4c62d18f181ba22ce046712fc3d9dffb5e3d",
+        "sha256_at_restore_target": "8e5f3209a8a18c82536c014f09ce4c62d18f181ba22ce046712fc3d9dffb5e3d",
+        "sha256_after_return": "8e5f3209a8a18c82536c014f09ce4c62d18f181ba22ce046712fc3d9dffb5e3d",
+        "bytes": 1303,
+        "passed": true
+      },
+      {
+        "path": "tmp/_s2_wf78_tier_semantics_guard.out",
+        "restore_target": "tmp/_s2_wf78_tier_semantics_guard.out",
+        "sha256_before": "fa350321bdb739f129709dd543d02bc0811633598a8c5ebeef76f8b539c76dc9",
+        "sha256_at_restore_target": "fa350321bdb739f129709dd543d02bc0811633598a8c5ebeef76f8b539c76dc9",
+        "sha256_after_return": "fa350321bdb739f129709dd543d02bc0811633598a8c5ebeef76f8b539c76dc9",
+        "bytes": 3487,
+        "passed": true
+      },
+      {
+        "path": "tmp/_s2_wf85.out",
+        "restore_target": "tmp/_s2_wf85.out",
+        "sha256_before": "ff9ea3e953128d0b8bbe9393a3ad152092ca19ad2afe12dc64e2b3d60a60e4f8",
+        "sha256_at_restore_target": "ff9ea3e953128d0b8bbe9393a3ad152092ca19ad2afe12dc64e2b3d60a60e4f8",
+        "sha256_after_return": "ff9ea3e953128d0b8bbe9393a3ad152092ca19ad2afe12dc64e2b3d60a60e4f8",
+        "bytes": 20123,
+        "passed": true
+      },
+      {
+        "path": "tmp/gatefix-run.log",
+        "restore_target": "tmp/gatefix-run.log",
+        "sha256_before": "109c935cc6d3ee65f9d88050c1cf3bee870948462403f24b587130092ac3bc11",
+        "sha256_at_restore_target": "109c935cc6d3ee65f9d88050c1cf3bee870948462403f24b587130092ac3bc11",
+        "sha256_after_return": "109c935cc6d3ee65f9d88050c1cf3bee870948462403f24b587130092ac3bc11",
+        "bytes": 574023,
+        "passed": true
+      },
+      {
+        "path": "tmp/memory-compounding-probe.err",
+        "restore_target": "tmp/memory-compounding-probe.err",
+        "sha256_before": "8f006ae9fbcf2bec95b74174aa8bf3d5c195824684b9735f39a3e4cd30dd17c4",
+        "sha256_at_restore_target": "8f006ae9fbcf2bec95b74174aa8bf3d5c195824684b9735f39a3e4cd30dd17c4",
+        "sha256_after_return": "8f006ae9fbcf2bec95b74174aa8bf3d5c195824684b9735f39a3e4cd30dd17c4",
+        "bytes": 49,
+        "passed": true
+      },
+      {
+        "path": "tmp/rb-apply.out",
+        "restore_target": "tmp/rb-apply.out",
+        "sha256_before": "5aeb95b9d08f04c753e20a4c93e264c439ce35b32cd7bcb766544c247e56f151",
+        "sha256_at_restore_target": "5aeb95b9d08f04c753e20a4c93e264c439ce35b32cd7bcb766544c247e56f151",
+        "sha256_after_return": "5aeb95b9d08f04c753e20a4c93e264c439ce35b32cd7bcb766544c247e56f151",
+        "bytes": 1891,
+        "passed": true
+      }
+    ]
+  },
+  "retention_rule": {
+    "status": "owner_decision_required",
+    "reason": "The active control plan establishes no default retention duration; this request does not state a duration or rule."
+  },
+  "integrity_rule": {
+    "status": "passed",
+    "rule": "every row retains frozen SHA-256 and exact byte count; every restore target round-trips byte-identically"
+  },
+  "delete_manifest": {
+    "status": "not_created",
+    "reason": "Retention rule must be approved and elapsed before a permanent-delete manifest can be frozen."
+  },
+  "second_exact_deletion_approval": {
+    "status": "not_present",
+    "reason": "Required after a frozen permanent-delete manifest exists."
+  },
+  "validation": {
+    "status": "ok",
+    "errors": [],
+    "all_archive_hashes_and_bytes_passed": true,
+    "all_active_reference_scans_passed": true,
+    "all_restore_drills_passed": true
+  }
+}

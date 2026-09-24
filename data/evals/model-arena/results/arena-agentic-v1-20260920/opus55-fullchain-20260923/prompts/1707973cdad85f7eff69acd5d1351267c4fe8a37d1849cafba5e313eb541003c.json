@@ -1,0 +1,44 @@
+{
+  "family": "T2",
+  "instance_id": "1707973cdad85f7eff69acd5d1351267c4fe8a37d1849cafba5e313eb541003c",
+  "prompt": {
+    "events": [
+      [
+        "e1",
+        "A",
+        1,
+        "queued"
+      ],
+      [
+        "e2",
+        "A",
+        2,
+        "ready"
+      ],
+      [
+        "e3",
+        "A",
+        3,
+        "blocked"
+      ],
+      [
+        "e4",
+        "A",
+        4,
+        "revert"
+      ],
+      [
+        "e5",
+        "B",
+        1,
+        "ready"
+      ]
+    ],
+    "request": "Replay the stream; report ambiguity, never invent a tie-break.",
+    "rules": {
+      "apply_ge": false,
+      "dedup_on_pair": false,
+      "ordering": "arrival"
+    }
+  }
+}

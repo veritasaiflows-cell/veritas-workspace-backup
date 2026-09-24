@@ -1,6 +1,6 @@
 {
   "schema_version": "wf77_supplemental_price_evidence.v1",
-  "generated_at_utc": "2026-09-23T01:30:45Z",
+  "generated_at_utc": "2026-09-24T01:14:53Z",
   "status": "ok",
   "source_policy": {
     "source": "yfinance public market data",
@@ -914,7 +914,7 @@
       "ma_posture": "insufficient data for full posture",
       "data_date": "2026-08-24",
       "source": "yfinance",
-      "retrieved_at_utc": "2026-09-23T01:30:45Z",
+      "retrieved_at_utc": "2026-09-24T01:14:53Z",
       "notes": [
         "Less than 200 trading days available."
       ],
@@ -2913,7 +2913,7 @@
       "ma_posture": "insufficient data for full posture",
       "data_date": "2026-08-04",
       "source": "yfinance",
-      "retrieved_at_utc": "2026-09-23T01:30:45Z",
+      "retrieved_at_utc": "2026-09-24T01:14:53Z",
       "notes": [
         "Less than 200 trading days available."
       ],
@@ -3112,7 +3112,7 @@
       "ma_posture": "insufficient data for full posture",
       "data_date": "2026-08-17",
       "source": "yfinance",
-      "retrieved_at_utc": "2026-09-23T01:30:45Z",
+      "retrieved_at_utc": "2026-09-24T01:14:53Z",
       "notes": [
         "Less than 200 trading days available."
       ],

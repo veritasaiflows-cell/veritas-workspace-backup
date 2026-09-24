@@ -1,0 +1,15 @@
+{
+  "note": "stale archive snapshot; not authoritative",
+  "rows": [
+    {
+      "id": "r1",
+      "ts": "2026-08-02",
+      "value": "stale-0"
+    },
+    {
+      "id": "r2",
+      "ts": "2026-08-03",
+      "value": "old-b0"
+    }
+  ]
+}

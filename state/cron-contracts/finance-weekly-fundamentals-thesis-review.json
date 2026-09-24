@@ -1,0 +1,69 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "315e7a78-d997-4e38-8b95-bc6a1352d20f",
+  "declarationKey": "finance-weekly-fundamentals-thesis-review-v1",
+  "name": "Finance - Weekly Fundamentals and Thesis Review",
+  "required": true,
+  "owner_workflow": "WF85 alerts-and-recommendations OS / thesis freshness",
+  "contract_reason": "Weekly fundamentals refresh + thesis review flags; owner-approved 2026-09-23.",
+  "description": "Saturday refresh of review-only fundamentals for the live evaluated scope, then thesis review flags (missing thesis, review overdue, new quarter since thesis, invalid) to tmp/thesis-review.json. Never edits theses or canon; Main surfaces flags and drafts updates for owner acceptance.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 8 * * 6",
+    "tz": "America/Phoenix",
+    "staggerMs": 0
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:/Users/Veritas/AppData/Local/Programs/Python/Python313/python.exe",
+      "scripts/weekly_thesis_review.py",
+      "--python",
+      "C:/Users/Veritas/AppData/Local/Programs/Python/Python313/python.exe"
+    ],
+    "cwd": "C:/Users/Veritas/.openclaw/workspace",
+    "timeoutSeconds": 1800
+  },
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "compare_fields": [
+    "name",
+    "description",
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds",
+    "delivery.mode"
+  ],
+  "expected_artifacts": [
+    "tmp/thesis-review.json",
+    "tmp/fundamental-metrics-current.json"
+  ],
+  "optional_artifacts": [],
+  "authority_boundary": {
+    "standing_gate": "state/finance/standing-approvals/band-renewal-option-b.json",
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "thesis_mutation_allowed": false,
+    "scope_mutation_allowed": false,
+    "methodology_change_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "external_delivery_allowed": false,
+    "owner_approval_inferred": false,
+    "alert_canon_mutation_allowed": false
+  },
+  "updated_at_utc": "2026-09-24T01:50:00Z",
+  "contract_update_reason": "Initial owner-approved creation (Option B standing gate)."
+}

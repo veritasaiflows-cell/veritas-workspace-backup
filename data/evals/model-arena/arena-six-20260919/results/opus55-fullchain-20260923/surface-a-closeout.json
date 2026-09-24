@@ -1,0 +1,23 @@
+{
+  "schema": "veritas.arena_surface_closeout.v1",
+  "surface": "A",
+  "model": "anthropic/claude-opus-5-5",
+  "outcome": "owner_stopped_without_score",
+  "owner_decision": "Stop Surface A",
+  "reason": "Strict frozen prompt delivery was unavailable: Gateway CLI --message-file removed terminal line feeds and the frozen envelope did not authorize normalization.",
+  "preflight": {
+    "frozen_oracle_calibration": "all_calibrated",
+    "staged_input_hashes": "14/14 matched",
+    "model_pin": "claude-cli/claude-opus-5-5 with fallbackUsed=false",
+    "tool_route_canary": "passed"
+  },
+  "invalid_unscored_attempts": [
+    "T1-settlement-cascade-r1-turn1",
+    "T1-settlement-cascade-r2-turn1",
+    "T2-event-revert-ambiguity-r1-turn1",
+    "T2-event-revert-ambiguity-r2-turn1"
+  ],
+  "retries": 0,
+  "score": null,
+  "next_action": "None unless the owner later authorizes a versioned normalized transport contract or a byte-exact transport."
+}

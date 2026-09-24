@@ -1237,7 +1237,11 @@ def classify_quality(record: dict[str, Any]) -> tuple[str, list[str]]:
 def load_covered_universe() -> dict[str, dict[str, Any]]:
     config = load_json_artifact(CONFIG_PATH)
     if not isinstance(config, dict):
-        raise FileNotFoundError(f"Missing or invalid {CONFIG_PATH}")
+        # tmp/portfolio-config.json was retired with the 2026-08-29 alerts-OS
+        # pivot; the refresh silently stopped on 2026-08-28 because of this
+        # raise. The universe now comes from data/finance/universe-v1.json
+        # (load_wf78_universe), which covers the full evaluated scope.
+        return {}
     tracked = config.get("tracked_universe") or {}
     if not isinstance(tracked, dict):
         raise ValueError("tracked_universe must be an object")

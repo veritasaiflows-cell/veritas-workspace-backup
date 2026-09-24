@@ -1,0 +1,79 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "202a5801-e453-4d5a-85b6-e021712ba493",
+  "declarationKey": "finance-nightly-yahoo-daily-gap-repair-v1",
+  "name": "Finance - Nightly Yahoo Daily Gap Repair",
+  "required": true,
+  "owner_workflow": "WF85 alerts-and-recommendations OS / reference-level baseline renewal inputs",
+  "contract_reason": "Randall 2026-09-23 17:2x MST approved a nightly Yahoo-only repair of missing daily bars so baseline renewals are not blocked by Yahoo data holes. Reverses the 2026-09-09 no-backfill rule for this mechanism only; no other provider, no manual entry.",
+  "description": "Deterministic Yahoo-only repair of missing daily bars for the live evaluated scope (read from the promoted controller). Rebuilds null daily bars from Yahoo 30-minute bars only when calibrated, no corporate action, full coverage, and at least one session old. Writes state/finance/price-repairs overlay + tmp report. No canon write, no manual entry, no other provider, no delivery. Owner-approved 2026-09-23.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "30 19 * * 1-5",
+    "tz": "America/Phoenix",
+    "staggerMs": 0
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:/Users/Veritas/AppData/Local/Programs/Python/Python313/python.exe",
+      "scripts/yahoo_daily_gap_repair.py",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:/Users/Veritas/.openclaw/workspace",
+    "timeoutSeconds": 900
+  },
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "compare_fields": [
+    "name",
+    "description",
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "delivery.channel",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/yahoo-daily-gap-repair.json"
+  ],
+  "optional_artifacts": [
+    "state/finance/price-repairs/yahoo-daily-repairs.json"
+  ],
+  "result_semantics": {
+    "exit_0_status_ok": "no gaps, or every gap repaired",
+    "exit_0_status_warning": "one or more gaps blocked (uncalibrated, corporate action, thin coverage) or a fetch failed; truthful domain warning routed to baseline renewal owner",
+    "exit_1": "empty scope (controller unreadable) - technical failure"
+  },
+  "authority_boundary": {
+    "review_only": true,
+    "yahoo_only": true,
+    "manual_price_entry_allowed": false,
+    "other_provider_allowed": false,
+    "overlay_rewrite_allowed": false,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "alert_canon_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "external_delivery_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "rollback": "openclaw cron rm 202a5801-e453-4d5a-85b6-e021712ba493 (or disable), then move state/finance/price-repairs/yahoo-daily-repairs.json aside; the reference-level generator treats a missing overlay as no repairs.",
+  "updated_at_utc": "2026-09-24T00:42:00Z",
+  "contract_update_reason": "Initial owner-approved creation. Manual pre-run 2026-09-23 repaired 20 gaps (09-22 across 20 names), 0 blocked; first natural run 2026-09-23 19:30 Phoenix."
+}

@@ -1,0 +1,40 @@
+{
+  "schema": "veritas.arena_surface_a_transport_contract.v1",
+  "version": "v2-normalized-lf-20260923",
+  "surface": "A",
+  "owner_authorized_at_local": "2026-09-23 21:35 MST",
+  "owner_decision": "Authorize versioned normalized transport for Surface A only; no changes to the frozen envelope, bank, keys, graders, or other surfaces.",
+  "envelope_id": "arena-six-20260919",
+  "normalization": {
+    "route": "Gateway CLI --message-file",
+    "rule": "Remove all trailing LF characters (U+000A) from the frozen UTF-8 prompt payload; retain every other character and preserve the Gateway runtime timestamp wrapper separately from delivered payload.",
+    "T1_frozen_sha256": "f72d6e94f23d71947504768be9c6b78bacefb145b37d8965d0279c98ef106c1a",
+    "T1_observed_delivered_payload_sha256": "3a8f1014d1aba8caa53cba7f98b98539907110336d5525a2ae4a4edae23ce02f",
+    "T1_difference": "one terminal LF removed",
+    "double_terminal_newline_canary": "all trailing LFs removed",
+    "required_match": "delivered payload equals frozen prompt with terminal LF characters stripped only; record both hashes on every turn"
+  },
+  "prior_invalid_turns": {
+    "status": "preserved_and_unscored",
+    "turns": ["T1-settlement-cascade-r1-t1", "T1-settlement-cascade-r2-t1", "T2-event-revert-ambiguity-r1-t1", "T2-event-revert-ambiguity-r2-t1"],
+    "receipt_prefix": "transport-",
+    "rule": "Never grade, replay, or overwrite these receipts; fresh sessions under this contract are the first valid attempts, not retries."
+  },
+  "dispatch": {
+    "agent": "oxalpha-lab",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "required_effective_provider": "claude-cli",
+    "required_effective_model": "claude-opus-5-5",
+    "required_fallback_used": false,
+    "thinking": "high",
+    "timeout_s_per_turn": 600,
+    "max_concurrent_trajectories": 4,
+    "planned_trajectories": 12,
+    "planned_turns": 20,
+    "retries_per_valid_attempt": 0,
+    "continuity": "T2 four turns and T5 two turns each use a shared session within one case/repetition; different trajectories use distinct fresh sessions.",
+    "candidate_mount": "candidate-mount/arena-six-inputs-20260919",
+    "T4_fixture": "Read-only staged candidate-mount fixture path, not reference or calibration."
+  },
+  "stops": ["Any delivered payload not matching the sole authorized trailing-LF normalization", "Any requested/effective model or fallback mismatch", "Any unexpected tool call outside T4 or invalid provenance", "Any changed frozen fixture, key, or grader", "Any timeout or operational invalidity: preserve and do not retry"]
+}

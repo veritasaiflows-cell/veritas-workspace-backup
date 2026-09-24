@@ -129,7 +129,13 @@ class YahooReferenceLevelMatrixTests(unittest.TestCase):
         self.assertAlmostEqual(metrics["sma50"], sum(11 + index for index in range(202, 252)) / 50)
         self.assertAlmostEqual(metrics["support20"], 9 + 232)
         self.assertAlmostEqual(metrics["atr20"], 3.0)
-        self.assertAlmostEqual(metrics["proposed_reference_invalidation_level"], (9 + 232) - 4.5)
+        # D9 option A: invalidation anchors on the band low, so support20 >
+        # SMA50 (this series) can no longer put invalidation inside the band.
+        self.assertAlmostEqual(
+            metrics["proposed_reference_invalidation_level"],
+            min(metrics["support20"], metrics["sma50"]) - 4.5,
+        )
+        self.assertTrue(metrics["invalidation_below_range"])
 
     def test_safe_output_path_rejects_unsafe_values(self):
         for unsafe in ("../bad.json", "/tmp/bad.json", "tmp", "tmp/../bad.json", "tmp/x:ads", "C:\\bad.json"):

@@ -30,12 +30,13 @@ def test_primary_map_matches_approved_design(errors: list[str]) -> None:
         "implementation-builder": "meta/muse-spark-1.3-contributor",
         "docs-continuity-editor": "ollama-cloud/deepseek-v4.1-flash:cloud",
     }, "specialist primary map must equal the approved six-role map", errors)
-    expect(fleet.MAIN_PRIMARY == "openai/gpt-5.6-sol", "Main primary must be Sol", errors)
+    expect(fleet.MAIN_PRIMARY == "openai/gpt-6-sol", "Main primary must be GPT-6 Sol", errors)
     expect(fleet.MAIN_FALLBACKS == [
-        "zai/glm-5.3",
-        "anthropic/claude-opus-5",
+        "anthropic/claude-opus-5-5",
         "ollama-cloud/glm-5.3:cloud",
-    ], "Main fallbacks must equal the owner-directed Sol chain", errors)
+        "ollama-cloud/kimi-k3:cloud",
+        "openai/gpt-5.6-terra",
+    ], "Main fallbacks must equal the owner-directed GPT-6 Sol chain", errors)
     expect(fleet.ON_DEMAND_ARCHITECTURE["primary"] == "ollama-cloud/glm-5.3:cloud", "on-demand architect must be GLM 5.3", errors)
     expect(fleet.OPUS_ADVISORY["main_spawn_only"] is True, "Opus must be Main-spawn only", errors)
     expect(fleet.OPUS_ADVISORY["automatic_fallback"] is False, "Opus must never be an automatic specialist fallback", errors)
@@ -91,13 +92,15 @@ def test_automatic_fallbacks_are_empty_for_specialists(errors: list[str]) -> Non
 
 def test_denied_models(errors: list[str]) -> None:
     expect(fleet.is_denied_persistent_model("anthropic/claude-opus-5") is True, "Opus must be denied in persistent scope", errors)
+    expect(fleet.is_denied_persistent_model("anthropic/claude-opus-5-5") is True, "Opus 5.5 must be denied in persistent scope", errors)
     for legacy in (
         "openai/gpt-5.5", "openai/gpt-5.4", "openai/gpt-5.4-mini",
-        "openai/gpt-6-astra", "openai/gpt-5.6-terra", "openai/gpt-5.6-luna",
+        "openai/gpt-6-astra", "openai/gpt-6-luna",
+        "openai/gpt-5.6-sol", "openai/gpt-5.6-terra", "openai/gpt-5.6-luna",
     ):
         expect(fleet.is_denied_persistent_model(legacy) is True, f"{legacy} must be denied", errors)
     expect(fleet.is_denied_persistent_model("xai/grok-4.6") is False, "Grok must not be denied", errors)
-    expect(fleet.is_denied_persistent_model("openai/gpt-5.6-sol") is False, "Sol must not be denied: it is the live Main primary", errors)
+    expect(fleet.is_denied_persistent_model("openai/gpt-6-sol") is False, "GPT-6 Sol must not be denied: it is the live Main primary", errors)
 
 
 def test_recovery_options_never_authorize(errors: list[str]) -> None:

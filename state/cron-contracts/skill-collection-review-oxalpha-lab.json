@@ -49,5 +49,13 @@
   },
   "updated_at_utc": "2026-09-14T02:02:23.372057+00:00",
   "contract_update_reason": "Owner approved contract-only reconciliation on 2026-09-13; match verified stored job representation, preserve schedule, payload behavior, authority, and prompt budgets. No live job mutation.",
-  "declarationKey": "skill-collection-review:oxalpha-lab"
+  "declarationKey": "skill-collection-review:oxalpha-lab",
+  "known_platform_failure": {
+    "error_substring": "sandbox workspace is not read-write; collection review skipped",
+    "openclaw_version": "2026.9.4",
+    "upstream": "openclaw/openclaw#144515",
+    "owner_approved_at": "2026-09-23",
+    "reason": "Platform review requires workspaceAccess=rw; oxalpha-lab is deliberately locked (workspaceAccess=none) to protect arena benchmark integrity. No per-agent opt-out exists on 2026.9.4. Quieted to STALE_OR_NOISE only for this exact error on this exact version; any OpenClaw version change re-escalates for re-check.",
+    "evidence": "tmp/oxalpha-lab-cron-resolution-20260922/decision-card.md"
+  }
 }

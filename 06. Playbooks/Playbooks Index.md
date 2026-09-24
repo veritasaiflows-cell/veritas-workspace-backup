@@ -26,6 +26,7 @@ It exists so the right control surface can be found without scanning the whole p
 | launch a bounded OpenClaw subagent | `06. Playbooks/Subagent Spawn Handoff Template.md` | `06. Playbooks/Spawn and Closeout Governance Matrix.md`, `06. Playbooks/OpenClaw Parallel Work Plan.md` |
 | inspect workbook / PDF packaging rules | `06. Playbooks/Workbook Export Contracts.md` | `06. Playbooks/Excel Operating Workbook Structure.md`, `06. Playbooks/PDF Brief Standards.md`, `06. Playbooks/Minimum-Viable Workbook Schema.md` |
 | audit skills / workflow-driving standards | `06. Playbooks/Skills Governance Index.md` | `06. Playbooks/Skill Quality Standard.md` |
+| plan OpenClaw extension (MCP servers, plugins, SDK) | `06. Playbooks/OpenClaw Extension Roadmap - MCP Plugins SDK - 2026-09-23.md` | shipped docs: `docs/tools/mcp.md`, `docs/plugins/manage-plugins.md`, `docs/plugins/sdk-overview.md` |
 
 ## Current operator control surfaces
 

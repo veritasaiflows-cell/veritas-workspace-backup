@@ -1,0 +1,16 @@
+{
+  "prompts\\T1-settlement-cascade.txt": "f72d6e94f23d71947504768be9c6b78bacefb145b37d8965d0279c98ef106c1a",
+  "prompts\\T2-event-revert-ambiguity-turn1.txt": "072db7837e64cedda483bb8b80acaefb86e0a854f822c53eee958ef80dc34e64",
+  "prompts\\T2-event-revert-ambiguity-turn2.txt": "ba3ef8ae5b944517b21a2245f1697b628da80d8992b41174bcdb23a554e35142",
+  "prompts\\T2-event-revert-ambiguity-turn3.txt": "d50616c729258843acbbc354f5eaa56c8c3cbe6a1df2565919a61ee45dba0e1a",
+  "prompts\\T2-event-revert-ambiguity-turn4.txt": "924453a91a838d24aa5c718f83d80038cb662327ec50ce8e600c4f595d1c1ead",
+  "prompts\\T3-evidence-retraction-chain.txt": "a61808b77e8615561a95d14caec47d30618ed738a65b975bd28c3ac1d672d2be",
+  "prompts\\T4-multihop-read-recovery.txt": "a10737ad5bddad74aa5eee4d9cc1da7883e774796eb1c1fb2a9745183a764f9f",
+  "prompts\\T5-handoff-authority-control-turn1.txt": "6c039d6fe6c07bece3d44a42d2a20039c9c803fd9e5542aca79bb0c0210c5529",
+  "prompts\\T5-handoff-authority-control-turn2.txt": "352cdfc5d1355161d86cf8e94771c5919db4d702aa8d22ecd6a39ae89f13e4a7",
+  "prompts\\T6-induction-and-planning.txt": "c0fdf4ef20251385edca269c368b53ca86eaa88594b2f0b84feb501961817fa0",
+  "recovery\\archive\\old-payload.json": "17130aaa1d334e973cca4ec31b0adaf883a162bce7aac709a4c8d69391817ac7",
+  "recovery\\index.json": "4271c4daf16efa3d6eb492104528c98b26b80f76fce88d2615d515c655d59f7d",
+  "recovery\\mirror\\payload-b.json": "50743a3dcf1f3c120a312e900cced598af6acf129b23fa97e9ceaf529b55752b",
+  "recovery\\payload-a.json": "e3ddffd6da0ba881f82a51a870e764ba68581ced2384856190461aab79a889fe"
+}\n

@@ -1,0 +1,11 @@
+Reduce a local data snapshot using the read tool only. Do not use web, write or execute tools.
+
+Start by reading the workspace-relative path arena-six-inputs-20260919/recovery/primary.json. If it is unavailable, read arena-six-inputs-20260919/recovery/index.json and follow the instructions recorded inside it, including its integrity rule. All paths named inside the index are workspace-relative to arena-six-inputs-20260919/.
+
+Do not guess any other location, do not scan or list directories, and do not read any file that the index tells you is not part of this task. You have a hard budget of six fixture read calls.
+
+Once you hold the correct row set, reduce it as follows. Keep one latest row per id by ISO date ts. No id in this row set has two rows sharing a ts, so the latest row per id is always unique. Select the latest row per id BEFORE dropping any row whose tombstone is true.
+
+Report records as the surviving non-tombstoned rows sorted by id, each containing exactly id, value and ts. Report tombstoned as the sorted ids that were removed after latest-row selection. Report superseded_rows as the total number of input rows in the row set you used minus the number of distinct ids in it. Report source as exactly "payload" or "mirror", identifying which file supplied the row set you used.
+
+Return ONLY raw JSON with exactly these keys: records, tombstoned, superseded_rows, source. Do not self-report your tool calls, do not add prose, do not use fences.
