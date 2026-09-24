@@ -1,0 +1,35 @@
+{
+  "case": "T2-event-revert-ambiguity",
+  "operational_status": "ok",
+  "rep": 2,
+  "response_text": "I'm keeping my original answer because the rules as written don't give \"blocked\" for job A. When e3 was applied, R4 pushed A's previous status, \"queued\", onto A's history stack and set A to \"blocked\". \"Blocked\" was A's current status, not something saved in its history. So when e6 reverts under R5, it pops \"queued\". To get \"blocked\" you'd need a different revert rule, such as \"undo to the status before the latest change\" with a stack that includes the current status.\n\n{\"states\":{\"A\":{\"revision\":4,\"status\":\"queued\"},\"B\":{\"revision\":3,\"status\":\"cancelled\"},\"C\":{\"revision\":1,\"status\":\"ready\"}},\"eligible\":[\"C\"],\"applied\":7,\"ignored\":[{\"event\":\"e4\",\"reason\":\"stale\"},{\"event\":\"e3\",\"reason\":\"duplicate\"}]}",
+  "transport": {
+    "delivered_payload_sha256": "c3fce42f1f4017165df98f79cb6df126660b881544df252c5db3d406d9d6e157",
+    "delivery_match": true,
+    "duration_ms": 22914,
+    "effective_model": "claude-opus-5-5",
+    "effective_provider": "claude-cli",
+    "exit_code": 0,
+    "expected_normalized_sha256": "c3fce42f1f4017165df98f79cb6df126660b881544df252c5db3d406d9d6e157",
+    "fallback_used": false,
+    "frozen_prompt_sha256": "ba3ef8ae5b944517b21a2245f1697b628da80d8992b41174bcdb23a554e35142",
+    "native_external_user_content_sha256": "17f0436f14178d78139cf6e2ec8a4508ac79932ea1b33de77c8921cec48bc011",
+    "native_log": "cb23d186-a0a8-4f14-b3b1-1f77aa8325d8.jsonl",
+    "native_session_id": "cb23d186-a0a8-4f14-b3b1-1f77aa8325d8",
+    "normalization": "strip_terminal_LF_only",
+    "raw_transport_file": "v2-transport-T2-event-revert-ambiguity-r2-t2.json",
+    "receipt_file": "v2-receipt-T2-event-revert-ambiguity-r2-t2.json",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "session_key": "arena-a-v2-opus55-t2-event-revert-ambiguity-r2",
+    "stderr_file": "v2-transport-T2-event-revert-ambiguity-r2-t2.stderr.txt",
+    "tool_calls": [],
+    "tool_results": [],
+    "tool_violation": false,
+    "user_provenance": {
+      "entrypoint": "sdk-cli",
+      "role": "user",
+      "user_type": "external"
+    }
+  },
+  "turn": 2
+}

@@ -369,6 +369,7 @@ def genesis_payload(root: Path, controller: dict[str, Any]) -> dict[str, Any]:
         "baseline_matrix_sha256": (pin_json or {}).get("matrix_sha256"),
         "band_methodology_version": BAND_METHODOLOGY_VERSION,
         "thesis_schema": "veritas.thesis_record.v1",
+        "confidence_scale": "data_confidence_v1 whole-number percent 0-100 (canon INTEGER column)",
         "funnel_version": FUNNEL_VERSION,
         "ledger_schema": SCHEMA,
     }

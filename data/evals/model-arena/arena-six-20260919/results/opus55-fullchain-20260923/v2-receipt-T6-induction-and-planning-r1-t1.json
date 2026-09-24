@@ -1,0 +1,35 @@
+{
+  "case": "T6-induction-and-planning",
+  "operational_status": "ok",
+  "rep": 1,
+  "response_text": "{\"induced\":{\"plum\":\"snvm\",\"zebra\":\"dhdsb\"},\"undetermined\":[\"Cat7\"],\"makespan\":13,\"critical_path\":[\"A\",\"C\",\"E\",\"F\"]}",
+  "transport": {
+    "delivered_payload_sha256": "1b851cc616b844800c9b468d55b7a2a6cc1f887b555a8ba6ba7eb4dfe0ba51e2",
+    "delivery_match": true,
+    "duration_ms": 81433,
+    "effective_model": "claude-opus-5-5",
+    "effective_provider": "claude-cli",
+    "exit_code": 0,
+    "expected_normalized_sha256": "1b851cc616b844800c9b468d55b7a2a6cc1f887b555a8ba6ba7eb4dfe0ba51e2",
+    "fallback_used": false,
+    "frozen_prompt_sha256": "c0fdf4ef20251385edca269c368b53ca86eaa88594b2f0b84feb501961817fa0",
+    "native_external_user_content_sha256": "524c231e0a28fa43abe8c2b3d0f777592376d0489e4e7080f6d4c2e0e4090a6a",
+    "native_log": "0d013adf-3cef-44df-972c-2a7e17e09bf2.jsonl",
+    "native_session_id": "0d013adf-3cef-44df-972c-2a7e17e09bf2",
+    "normalization": "strip_terminal_LF_only",
+    "raw_transport_file": "v2-transport-T6-induction-and-planning-r1-t1.json",
+    "receipt_file": "v2-receipt-T6-induction-and-planning-r1-t1.json",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "session_key": "arena-a-v2-opus55-t6-induction-and-planning-r1",
+    "stderr_file": "v2-transport-T6-induction-and-planning-r1-t1.stderr.txt",
+    "tool_calls": [],
+    "tool_results": [],
+    "tool_violation": false,
+    "user_provenance": {
+      "entrypoint": "sdk-cli",
+      "role": "user",
+      "user_type": "external"
+    }
+  },
+  "turn": 1
+}

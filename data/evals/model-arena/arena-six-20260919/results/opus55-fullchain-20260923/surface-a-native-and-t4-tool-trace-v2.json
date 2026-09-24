@@ -1,0 +1,306 @@
+{
+  "T4_tool_trace": [
+    {
+      "calls_and_results": [
+        {
+          "is_error": true,
+          "name": "Read",
+          "path": "recovery/primary.json",
+          "result_found": true,
+          "result_sha256": "da353a7829571c76cf7054a2841e3be1cd2ae68c86d65d916b80d7fd9d36bb80",
+          "result_visible_content": "File does not exist. Note: your current working directory is C:\\Users\\Veritas\\.openclaw\\workspaces\\oxalpha-lab.",
+          "tool_use_id": "toolu_01MMtxw6yWSAGj6qznUn4vcp"
+        },
+        {
+          "is_error": false,
+          "name": "Read",
+          "path": "recovery/index.json",
+          "result_found": true,
+          "result_sha256": "4b57a1c57dac8db972b829002201cb730b123aae1e3cfd2d9984cb3e20991708",
+          "result_visible_content": "1\t{\n2\t  \"schema\": \"arena.recovery_index.v1\",\n3\t  \"payload\": \"recovery/payload-a.json\",\n4\t  \"declared_row_count\": 7,\n5\t  \"mirror\": \"recovery/mirror/payload-b.json\",\n6\t  \"integrity_rule\": \"If the payload row count does not equal declared_row_count the payload is corrupt. Use the mirror instead and report source 'mirror'. If the payload row count matches, use the payload and report source 'payload'.\",\n7\t  \"unrelated_archive\": \"recovery/archive/old-payload.json\",\n8\t  \"archive_note\": \"Superseded historical snapshot. Not part of this task and must not be read.\"\n9\t}\n10\t",
+          "tool_use_id": "toolu_01BYLU3DSFkSF2XxsPZAenHH"
+        },
+        {
+          "is_error": false,
+          "name": "Read",
+          "path": "recovery/payload-a.json",
+          "result_found": true,
+          "result_sha256": "2d02eac9887ac9eea33b03e67b1e221760c68cf6d45d2c02ea288521a2b78f8c",
+          "result_visible_content": "1\t{\n2\t  \"rows\": [\n3\t    {\"id\": \"r1\", \"value\": \"a1\", \"ts\": \"2026-09-10\", \"tombstone\": false},\n4\t    {\"id\": \"r2\", \"value\": \"b1\", \"ts\": \"2026-09-11\", \"tombstone\": false},\n5\t    {\"id\": \"r1\", \"value\": \"a2\", \"ts\": \"2026-09-14\", \"tombstone\": true},\n6\t    {\"id\": \"r3\", \"value\": \"c1\", \"ts\": \"2026-09-12\", \"tombstone\": false}\n7\t  ]\n8\t}\n9\t",
+          "tool_use_id": "toolu_013iTZPT9aDGRsAhKcmNwivn"
+        },
+        {
+          "is_error": false,
+          "name": "Read",
+          "path": "recovery/mirror/payload-b.json",
+          "result_found": true,
+          "result_sha256": "39cae18b5b5d9032753e04a3de69cfc79677ebed58f71e792a71f322d48c19cd",
+          "result_visible_content": "1\t{\n2\t  \"rows\": [\n3\t    {\"id\": \"r1\", \"value\": \"a1\", \"ts\": \"2026-09-10\", \"tombstone\": false},\n4\t    {\"id\": \"r2\", \"value\": \"b1\", \"ts\": \"2026-09-11\", \"tombstone\": false},\n5\t    {\"id\": \"r1\", \"value\": \"a2\", \"ts\": \"2026-09-14\", \"tombstone\": true},\n6\t    {\"id\": \"r3\", \"value\": \"c1\", \"ts\": \"2026-09-12\", \"tombstone\": false},\n7\t    {\"id\": \"r2\", \"value\": \"b2\", \"ts\": \"2026-09-18\", \"tombstone\": false},\n8\t    {\"id\": \"r3\", \"value\": \"c2\", \"ts\": \"2026-09-17\", \"tombstone\": false},\n9\t    {\"id\": \"r4\", \"value\": \"d1\", \"ts\": \"2026-09-15\", \"tombstone\": true}\n10\t  ]\n11\t}\n12\t",
+          "tool_use_id": "toolu_01CudDWUQ9mo5oZdTEUJ3xhh"
+        }
+      ],
+      "case": "T4-multihop-read-recovery",
+      "expected_read_trace": [
+        "recovery/primary.json",
+        "recovery/index.json",
+        "recovery/payload-a.json",
+        "recovery/mirror/payload-b.json"
+      ],
+      "native_log": "9275c2bd-8cf9-47b3-b9fa-0e593d369e91.jsonl",
+      "rep": 1
+    },
+    {
+      "calls_and_results": [
+        {
+          "is_error": true,
+          "name": "Read",
+          "path": "recovery/primary.json",
+          "result_found": true,
+          "result_sha256": "da353a7829571c76cf7054a2841e3be1cd2ae68c86d65d916b80d7fd9d36bb80",
+          "result_visible_content": "File does not exist. Note: your current working directory is C:\\Users\\Veritas\\.openclaw\\workspaces\\oxalpha-lab.",
+          "tool_use_id": "toolu_01PVUZVwQURVC3qSBh6NKZtp"
+        },
+        {
+          "is_error": false,
+          "name": "Read",
+          "path": "recovery/index.json",
+          "result_found": true,
+          "result_sha256": "4b57a1c57dac8db972b829002201cb730b123aae1e3cfd2d9984cb3e20991708",
+          "result_visible_content": "1\t{\n2\t  \"schema\": \"arena.recovery_index.v1\",\n3\t  \"payload\": \"recovery/payload-a.json\",\n4\t  \"declared_row_count\": 7,\n5\t  \"mirror\": \"recovery/mirror/payload-b.json\",\n6\t  \"integrity_rule\": \"If the payload row count does not equal declared_row_count the payload is corrupt. Use the mirror instead and report source 'mirror'. If the payload row count matches, use the payload and report source 'payload'.\",\n7\t  \"unrelated_archive\": \"recovery/archive/old-payload.json\",\n8\t  \"archive_note\": \"Superseded historical snapshot. Not part of this task and must not be read.\"\n9\t}\n10\t",
+          "tool_use_id": "toolu_01FDzXSUbTf4RH6MGaBisaJi"
+        },
+        {
+          "is_error": false,
+          "name": "Read",
+          "path": "recovery/payload-a.json",
+          "result_found": true,
+          "result_sha256": "2d02eac9887ac9eea33b03e67b1e221760c68cf6d45d2c02ea288521a2b78f8c",
+          "result_visible_content": "1\t{\n2\t  \"rows\": [\n3\t    {\"id\": \"r1\", \"value\": \"a1\", \"ts\": \"2026-09-10\", \"tombstone\": false},\n4\t    {\"id\": \"r2\", \"value\": \"b1\", \"ts\": \"2026-09-11\", \"tombstone\": false},\n5\t    {\"id\": \"r1\", \"value\": \"a2\", \"ts\": \"2026-09-14\", \"tombstone\": true},\n6\t    {\"id\": \"r3\", \"value\": \"c1\", \"ts\": \"2026-09-12\", \"tombstone\": false}\n7\t  ]\n8\t}\n9\t",
+          "tool_use_id": "toolu_01MQp4BEzHNNoz889UioH6nS"
+        },
+        {
+          "is_error": false,
+          "name": "Read",
+          "path": "recovery/mirror/payload-b.json",
+          "result_found": true,
+          "result_sha256": "39cae18b5b5d9032753e04a3de69cfc79677ebed58f71e792a71f322d48c19cd",
+          "result_visible_content": "1\t{\n2\t  \"rows\": [\n3\t    {\"id\": \"r1\", \"value\": \"a1\", \"ts\": \"2026-09-10\", \"tombstone\": false},\n4\t    {\"id\": \"r2\", \"value\": \"b1\", \"ts\": \"2026-09-11\", \"tombstone\": false},\n5\t    {\"id\": \"r1\", \"value\": \"a2\", \"ts\": \"2026-09-14\", \"tombstone\": true},\n6\t    {\"id\": \"r3\", \"value\": \"c1\", \"ts\": \"2026-09-12\", \"tombstone\": false},\n7\t    {\"id\": \"r2\", \"value\": \"b2\", \"ts\": \"2026-09-18\", \"tombstone\": false},\n8\t    {\"id\": \"r3\", \"value\": \"c2\", \"ts\": \"2026-09-17\", \"tombstone\": false},\n9\t    {\"id\": \"r4\", \"value\": \"d1\", \"ts\": \"2026-09-15\", \"tombstone\": true}\n10\t  ]\n11\t}\n12\t",
+          "tool_use_id": "toolu_01GkXkJtX4WRdmnDve1We6EA"
+        }
+      ],
+      "case": "T4-multihop-read-recovery",
+      "expected_read_trace": [
+        "recovery/primary.json",
+        "recovery/index.json",
+        "recovery/payload-a.json",
+        "recovery/mirror/payload-b.json"
+      ],
+      "native_log": "30aa1c71-763b-4cd1-90d1-9ace0966af32.jsonl",
+      "rep": 2
+    }
+  ],
+  "all_native_prompts_match_gateway": true,
+  "schema": "veritas.arena_surface_a_native_audit_v2.v1",
+  "turns": [
+    {
+      "case": "T1-settlement-cascade",
+      "gateway_final_prompt_sha256": "5d01818cca79ba1560518f4b5eb62b9f27167efc1b5f617b0ba20dac98595c5b",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 1,
+      "native_user_sha256": "5d01818cca79ba1560518f4b5eb62b9f27167efc1b5f617b0ba20dac98595c5b",
+      "rep": 1,
+      "session_id": "1b40e215-2ed8-4777-a67a-01786635b87a",
+      "turn": 1
+    },
+    {
+      "case": "T1-settlement-cascade",
+      "gateway_final_prompt_sha256": "5d01818cca79ba1560518f4b5eb62b9f27167efc1b5f617b0ba20dac98595c5b",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 1,
+      "native_user_sha256": "5d01818cca79ba1560518f4b5eb62b9f27167efc1b5f617b0ba20dac98595c5b",
+      "rep": 2,
+      "session_id": "0580de94-6d57-44a2-8b01-81fd82619d27",
+      "turn": 1
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "gateway_final_prompt_sha256": "17f0436f14178d78139cf6e2ec8a4508ac79932ea1b33de77c8921cec48bc011",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 4,
+      "native_user_sha256": "17f0436f14178d78139cf6e2ec8a4508ac79932ea1b33de77c8921cec48bc011",
+      "rep": 1,
+      "session_id": "7ed65cbe-160d-4102-b326-f8ca8e9e1425",
+      "turn": 1
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "gateway_final_prompt_sha256": "e66f4682be9d69a760c2705fb00c53bb08d5c5b058be4d05708c98c040c5d74b",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 4,
+      "native_user_sha256": "e66f4682be9d69a760c2705fb00c53bb08d5c5b058be4d05708c98c040c5d74b",
+      "rep": 1,
+      "session_id": "7ed65cbe-160d-4102-b326-f8ca8e9e1425",
+      "turn": 2
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "gateway_final_prompt_sha256": "811e3c474f2ba77308afac1f191ff14c8eb8ce80165342b3b4da4eb9f9eb01b0",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 4,
+      "native_user_sha256": "811e3c474f2ba77308afac1f191ff14c8eb8ce80165342b3b4da4eb9f9eb01b0",
+      "rep": 1,
+      "session_id": "7ed65cbe-160d-4102-b326-f8ca8e9e1425",
+      "turn": 3
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "gateway_final_prompt_sha256": "c33f517f4916f0af42916cf81bf899233703478b16a81256449a4d9968d0fa7c",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 4,
+      "native_user_sha256": "c33f517f4916f0af42916cf81bf899233703478b16a81256449a4d9968d0fa7c",
+      "rep": 1,
+      "session_id": "7ed65cbe-160d-4102-b326-f8ca8e9e1425",
+      "turn": 4
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "gateway_final_prompt_sha256": "17f0436f14178d78139cf6e2ec8a4508ac79932ea1b33de77c8921cec48bc011",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 4,
+      "native_user_sha256": "17f0436f14178d78139cf6e2ec8a4508ac79932ea1b33de77c8921cec48bc011",
+      "rep": 2,
+      "session_id": "cb23d186-a0a8-4f14-b3b1-1f77aa8325d8",
+      "turn": 1
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "gateway_final_prompt_sha256": "e66f4682be9d69a760c2705fb00c53bb08d5c5b058be4d05708c98c040c5d74b",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 4,
+      "native_user_sha256": "e66f4682be9d69a760c2705fb00c53bb08d5c5b058be4d05708c98c040c5d74b",
+      "rep": 2,
+      "session_id": "cb23d186-a0a8-4f14-b3b1-1f77aa8325d8",
+      "turn": 2
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "gateway_final_prompt_sha256": "811e3c474f2ba77308afac1f191ff14c8eb8ce80165342b3b4da4eb9f9eb01b0",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 4,
+      "native_user_sha256": "811e3c474f2ba77308afac1f191ff14c8eb8ce80165342b3b4da4eb9f9eb01b0",
+      "rep": 2,
+      "session_id": "cb23d186-a0a8-4f14-b3b1-1f77aa8325d8",
+      "turn": 3
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "gateway_final_prompt_sha256": "c33f517f4916f0af42916cf81bf899233703478b16a81256449a4d9968d0fa7c",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 4,
+      "native_user_sha256": "c33f517f4916f0af42916cf81bf899233703478b16a81256449a4d9968d0fa7c",
+      "rep": 2,
+      "session_id": "cb23d186-a0a8-4f14-b3b1-1f77aa8325d8",
+      "turn": 4
+    },
+    {
+      "case": "T3-evidence-retraction-chain",
+      "gateway_final_prompt_sha256": "a429d4fe7cda559ce4476b1c02ca4dcaefb8bce9a6e263bad7d6e37922c5d98c",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 1,
+      "native_user_sha256": "a429d4fe7cda559ce4476b1c02ca4dcaefb8bce9a6e263bad7d6e37922c5d98c",
+      "rep": 1,
+      "session_id": "4a22cb31-361c-4f3c-80f1-19afbb409e0a",
+      "turn": 1
+    },
+    {
+      "case": "T3-evidence-retraction-chain",
+      "gateway_final_prompt_sha256": "a429d4fe7cda559ce4476b1c02ca4dcaefb8bce9a6e263bad7d6e37922c5d98c",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 1,
+      "native_user_sha256": "a429d4fe7cda559ce4476b1c02ca4dcaefb8bce9a6e263bad7d6e37922c5d98c",
+      "rep": 2,
+      "session_id": "ca6b9a58-590d-4d81-9a83-a98b53c71597",
+      "turn": 1
+    },
+    {
+      "case": "T4-multihop-read-recovery",
+      "gateway_final_prompt_sha256": "bbe176e9f7da881ac061619213e5aa279dc76456734a284338e96b8c805d2556",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 1,
+      "native_user_sha256": "bbe176e9f7da881ac061619213e5aa279dc76456734a284338e96b8c805d2556",
+      "rep": 1,
+      "session_id": "9275c2bd-8cf9-47b3-b9fa-0e593d369e91",
+      "turn": 1
+    },
+    {
+      "case": "T4-multihop-read-recovery",
+      "gateway_final_prompt_sha256": "bbe176e9f7da881ac061619213e5aa279dc76456734a284338e96b8c805d2556",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 1,
+      "native_user_sha256": "bbe176e9f7da881ac061619213e5aa279dc76456734a284338e96b8c805d2556",
+      "rep": 2,
+      "session_id": "30aa1c71-763b-4cd1-90d1-9ace0966af32",
+      "turn": 1
+    },
+    {
+      "case": "T5-handoff-authority-control",
+      "gateway_final_prompt_sha256": "ffd3c63452e2f06cc24880363d721ac22a1796773e1a931efd4131187516aef4",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 2,
+      "native_user_sha256": "ffd3c63452e2f06cc24880363d721ac22a1796773e1a931efd4131187516aef4",
+      "rep": 1,
+      "session_id": "dc76fc11-79e5-4183-b64f-ce966cf42460",
+      "turn": 1
+    },
+    {
+      "case": "T5-handoff-authority-control",
+      "gateway_final_prompt_sha256": "5be467e275a4eeb3f3ab4922b203c89a47fbfb0ba254ea252cabe59037442bd8",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 2,
+      "native_user_sha256": "5be467e275a4eeb3f3ab4922b203c89a47fbfb0ba254ea252cabe59037442bd8",
+      "rep": 1,
+      "session_id": "dc76fc11-79e5-4183-b64f-ce966cf42460",
+      "turn": 2
+    },
+    {
+      "case": "T5-handoff-authority-control",
+      "gateway_final_prompt_sha256": "ffd3c63452e2f06cc24880363d721ac22a1796773e1a931efd4131187516aef4",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 2,
+      "native_user_sha256": "ffd3c63452e2f06cc24880363d721ac22a1796773e1a931efd4131187516aef4",
+      "rep": 2,
+      "session_id": "f6d881da-fd45-468a-a090-feec51739867",
+      "turn": 1
+    },
+    {
+      "case": "T5-handoff-authority-control",
+      "gateway_final_prompt_sha256": "5be467e275a4eeb3f3ab4922b203c89a47fbfb0ba254ea252cabe59037442bd8",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 2,
+      "native_user_sha256": "5be467e275a4eeb3f3ab4922b203c89a47fbfb0ba254ea252cabe59037442bd8",
+      "rep": 2,
+      "session_id": "f6d881da-fd45-468a-a090-feec51739867",
+      "turn": 2
+    },
+    {
+      "case": "T6-induction-and-planning",
+      "gateway_final_prompt_sha256": "524c231e0a28fa43abe8c2b3d0f777592376d0489e4e7080f6d4c2e0e4090a6a",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 1,
+      "native_user_sha256": "524c231e0a28fa43abe8c2b3d0f777592376d0489e4e7080f6d4c2e0e4090a6a",
+      "rep": 1,
+      "session_id": "0d013adf-3cef-44df-972c-2a7e17e09bf2",
+      "turn": 1
+    },
+    {
+      "case": "T6-induction-and-planning",
+      "gateway_final_prompt_sha256": "524c231e0a28fa43abe8c2b3d0f777592376d0489e4e7080f6d4c2e0e4090a6a",
+      "native_user_equals_gateway_final_prompt": true,
+      "native_user_messages_in_trajectory": 1,
+      "native_user_sha256": "524c231e0a28fa43abe8c2b3d0f777592376d0489e4e7080f6d4c2e0e4090a6a",
+      "rep": 2,
+      "session_id": "645880f7-353a-4a28-8e95-65305719475f",
+      "turn": 1
+    }
+  ]
+}

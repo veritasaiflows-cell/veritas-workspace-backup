@@ -367,6 +367,24 @@
       ],
       "runs": 34,
       "settled_calls": 34
+    },
+    "2026-09-24": {
+      "last_reserved_at_utc": "2026-09-24T14:30:02Z",
+      "last_settled_at_utc": "2026-09-24T14:30:03Z",
+      "open_reservations": {},
+      "reserved_calls": 8,
+      "run_ids": [
+        "recurring-a1501157dfb546f1a0a0f6be5a3fa147-quotes",
+        "recurring-ddc3d968cfb64edabbabbe56a8c3a7f3-quotes",
+        "recurring-285c483669f2446c8ed713b9222be268-quotes",
+        "recurring-a5d59f46e8e44e28a30086c62e5ae41e-quotes",
+        "recurring-459c03ac6fea4d298a944bb6b195c09d-quotes",
+        "recurring-35db25a089db41e98c513588c538a56d-quotes",
+        "recurring-729d32e97c004fc8acea323fee3b37a1-quotes",
+        "recurring-6df92eab454046408cf00d2518f89804-quotes"
+      ],
+      "runs": 8,
+      "settled_calls": 8
     }
   },
   "schema": "veritas.dynamic_entitlement_provider_call_ledger.v1"

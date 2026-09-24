@@ -282,7 +282,7 @@ def make_null_conf_db(path: Path, n: int = 32) -> Path:
             "reference_price_low REAL NOT NULL, "
             "reference_price_high REAL NOT NULL, "
             "reference_invalidation_level REAL NOT NULL, "
-            "reference_confidence REAL, "
+            "reference_confidence INTEGER, "
             "authority_class TEXT NOT NULL, "
             "source_artifact_path TEXT NOT NULL DEFAULT '', "
             "source_artifact_sha256 TEXT NOT NULL DEFAULT '', "
@@ -1043,8 +1043,9 @@ def main() -> int:
         cmx = json.loads(cmx_path.read_text(encoding="utf-8"))
         want = {}
         for i, (t, entry) in enumerate(sorted(cmx["tickers"].items())):
-            want[t] = round(0.25 + 0.05 * (i % 6), 2)
-            entry["old_to_proposed"]["proposed"]["reference_confidence"] = want[t]
+            frac = round(0.25 + 0.05 * (i % 6), 2)
+            entry["old_to_proposed"]["proposed"]["reference_confidence"] = frac
+            want[t] = int(round(frac * 100))  # canon stores whole-number percent (INTEGER column)
         cmx_path.write_text(json.dumps(cmx), encoding="utf-8")
         cbase = ctmp / "baselines"
         cbase.mkdir()
@@ -1059,6 +1060,10 @@ def main() -> int:
         finally:
             ccon.close()
         check("conf_written_to_sql", got == want, str(list(got.items())[:3]))
+        # The frozen access layer reads this column with int(); a fraction
+        # truncated to 0 (2026-09-24). Whole numbers must survive it intact.
+        check("conf_survives_int_reader",
+              all(isinstance(v, int) and int(v) == v and v > 0 for v in got.values()), str(list(got.items())[:3]))
         try:
             rb = json.loads((ctmp / "bk.json").read_text(encoding="utf-8"))
             pin = json.loads(Path(str(rb.get("baseline_path"))).read_text(encoding="utf-8"))

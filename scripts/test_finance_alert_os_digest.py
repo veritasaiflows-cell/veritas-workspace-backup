@@ -516,7 +516,7 @@ def test_digest_key_ignores_timestamps_but_tracks_content() -> None:
 def test_confidence_line_prints_median_lowest_and_missing() -> None:
     import finance_alert_os_digest as digest
     rows = [{"ticker": t, "sql_reference": {"reference_confidence": c}}
-            for t, c in (("AAA", 0.5), ("BBB", 0.15), ("CCC", 0.3), ("DDD", None))]
+            for t, c in (("AAA", 50), ("BBB", 15), ("CCC", 30), ("DDD", None))]
     line = digest.confidence_line({"rows": rows})
     assert line.startswith("Data confidence (0-1, provisional, single-source cap 0.50):")
     assert "median 0.30 over 3" in line and "lowest BBB 0.15, CCC 0.30" in line

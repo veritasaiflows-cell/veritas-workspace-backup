@@ -47,3 +47,9 @@ Items 1, 2, 4, 6, 7 done and the Tier A five theses accepted. The genesis record
 - Item 5 **done**: relative strength vs SPY and sector ETF (63 sessions) in the funnel.
 - Item 6 **done**: ranking `funnel-v1`, weights owner-approved (uncalibrated); defensive rule admits medium conviction when the thesis favors the posture. Refreshed weekly (Sat 08:00) and surfaced by the Sat 09:30 Main review.
 - Remaining before ledger genesis: confidence line in the digest, and one live funnel run on the renewed controller (first 06:05 run on 2026-09-24). Then wire the ledger (owner go-ahead on the wiring diff).
+
+## Update 2026-09-23 ~22:00 MST
+
+- Item 2 **done**: digest prints a data-confidence line (median, lowest four, missing). Known display gap: the controller's `confidence_label()` still assumes a 1-5 scale, so every row labels "low" on 0-1 values (owner decision).
+- Live funnel run on the renewed controller: scheduled check 2026-09-24 07:00 PHX (automation `d6a06375`).
+- Ledger wiring diff ready for owner review: `tmp/ledger-wiring-20260923/ledger-wiring.diff`. Checkpoint commit `2e083ea9`.

@@ -1,0 +1,134 @@
+{
+  "14d6a2f3cf03498530dcd79f71ea54b4c300b4794687157446b9b57e00793c16": {
+    "effective_model": "claude-opus-5-5",
+    "exit_code": 0,
+    "fallback_used": false,
+    "prompt_intact": true,
+    "provider": "claude-cli",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "response_chars": 1003,
+    "stderr_file": "transport-14d6a2f3cf03498530dcd79f71ea54b4c300b4794687157446b9b57e00793c16.stderr.txt",
+    "transport_file": "transport-14d6a2f3cf03498530dcd79f71ea54b4c300b4794687157446b9b57e00793c16.json"
+  },
+  "1707973cdad85f7eff69acd5d1351267c4fe8a37d1849cafba5e313eb541003c": {
+    "effective_model": "claude-opus-5-5",
+    "exit_code": 0,
+    "fallback_used": false,
+    "prompt_intact": true,
+    "provider": "claude-cli",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "response_chars": 1729,
+    "stderr_file": "transport-1707973cdad85f7eff69acd5d1351267c4fe8a37d1849cafba5e313eb541003c.stderr.txt",
+    "transport_file": "transport-1707973cdad85f7eff69acd5d1351267c4fe8a37d1849cafba5e313eb541003c.json"
+  },
+  "23273237a6525b0c4dd195ad0bbf0f1b6104d0ca86d9920936339e183a1c1ff0": {
+    "effective_model": "claude-opus-5-5",
+    "exit_code": 0,
+    "fallback_used": false,
+    "prompt_intact": true,
+    "provider": "claude-cli",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "response_chars": 801,
+    "stderr_file": "transport-23273237a6525b0c4dd195ad0bbf0f1b6104d0ca86d9920936339e183a1c1ff0.stderr.txt",
+    "transport_file": "transport-23273237a6525b0c4dd195ad0bbf0f1b6104d0ca86d9920936339e183a1c1ff0.json"
+  },
+  "36072319fd2e5337b9cfb587fdcdb858010874306d8f4c50ff5ea438c8c7518f": {
+    "effective_model": "claude-opus-5-5",
+    "exit_code": 0,
+    "fallback_used": false,
+    "prompt_intact": true,
+    "provider": "claude-cli",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "response_chars": 28,
+    "stderr_file": "transport-36072319fd2e5337b9cfb587fdcdb858010874306d8f4c50ff5ea438c8c7518f.stderr.txt",
+    "transport_file": "transport-36072319fd2e5337b9cfb587fdcdb858010874306d8f4c50ff5ea438c8c7518f.json"
+  },
+  "430898a2d5b5c3f02ebdccc66dc12ddc78c2c454941c9c8033eae2a8762b0545": {
+    "effective_model": "claude-opus-5-5",
+    "exit_code": 0,
+    "fallback_used": false,
+    "prompt_intact": true,
+    "provider": "claude-cli",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "response_chars": 994,
+    "stderr_file": "transport-430898a2d5b5c3f02ebdccc66dc12ddc78c2c454941c9c8033eae2a8762b0545.stderr.txt",
+    "transport_file": "transport-430898a2d5b5c3f02ebdccc66dc12ddc78c2c454941c9c8033eae2a8762b0545.json"
+  },
+  "73cd99b6dffa2ae64ce139b5db95c59dd4f4678f6ee4ab60f08114f6ee3028e8": {
+    "effective_model": "claude-opus-5-5",
+    "exit_code": 0,
+    "fallback_used": false,
+    "prompt_intact": true,
+    "provider": "claude-cli",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "response_chars": 848,
+    "stderr_file": "transport-73cd99b6dffa2ae64ce139b5db95c59dd4f4678f6ee4ab60f08114f6ee3028e8.stderr.txt",
+    "transport_file": "transport-73cd99b6dffa2ae64ce139b5db95c59dd4f4678f6ee4ab60f08114f6ee3028e8.json"
+  },
+  "75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4": {
+    "effective_model": "claude-opus-5-5",
+    "exit_code": 0,
+    "fallback_used": false,
+    "prompt_intact": true,
+    "provider": "claude-cli",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "response_chars": 954,
+    "stderr_file": "transport-75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4.stderr.txt",
+    "transport_file": "transport-75c25de61ca18168d846f86e84e40de6b807213f547029876cb6ca2bcc99c2b4.json"
+  },
+  "a329ef46d6f1a6336e6b64b7b2368cfbb028daf129b881b31bbdc0db6220417d": {
+    "effective_model": "claude-opus-5-5",
+    "exit_code": 0,
+    "fallback_used": false,
+    "prompt_intact": true,
+    "provider": "claude-cli",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "response_chars": 393,
+    "stderr_file": "transport-a329ef46d6f1a6336e6b64b7b2368cfbb028daf129b881b31bbdc0db6220417d.stderr.txt",
+    "transport_file": "transport-a329ef46d6f1a6336e6b64b7b2368cfbb028daf129b881b31bbdc0db6220417d.json"
+  },
+  "ad2161157921538089853178cdb459bbaed40f96fa77329a69e4be635c5af0bc": {
+    "effective_model": "claude-opus-5-5",
+    "exit_code": 0,
+    "fallback_used": false,
+    "prompt_intact": true,
+    "provider": "claude-cli",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "response_chars": 1990,
+    "stderr_file": "transport-ad2161157921538089853178cdb459bbaed40f96fa77329a69e4be635c5af0bc.stderr.txt",
+    "transport_file": "transport-ad2161157921538089853178cdb459bbaed40f96fa77329a69e4be635c5af0bc.json"
+  },
+  "b5f7b370f7d8445a01c7698b67b647d5eb76389024dbd53b3dee506299b0eda3": {
+    "effective_model": "claude-opus-5-5",
+    "exit_code": 0,
+    "fallback_used": false,
+    "prompt_intact": true,
+    "provider": "claude-cli",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "response_chars": 150,
+    "stderr_file": "transport-b5f7b370f7d8445a01c7698b67b647d5eb76389024dbd53b3dee506299b0eda3.stderr.txt",
+    "transport_file": "transport-b5f7b370f7d8445a01c7698b67b647d5eb76389024dbd53b3dee506299b0eda3.json"
+  },
+  "c8dbb0b4dc87e3974275cca677c987e0be2c2b417574487c9bec0dfd56e04d6a": {
+    "effective_model": "claude-opus-5-5",
+    "exit_code": 0,
+    "fallback_used": false,
+    "prompt_intact": true,
+    "provider": "claude-cli",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "response_chars": 637,
+    "stderr_file": "transport-c8dbb0b4dc87e3974275cca677c987e0be2c2b417574487c9bec0dfd56e04d6a.stderr.txt",
+    "transport_file": "transport-c8dbb0b4dc87e3974275cca677c987e0be2c2b417574487c9bec0dfd56e04d6a.json"
+  },
+  "e82ba4016b1d11f68a84bd936fc50dda81ff052a5de6f578de090a3278c763ac": {
+    "effective_model": "claude-opus-5-5",
+    "exit_code": 0,
+    "fallback_used": false,
+    "prompt_intact": true,
+    "provider": "claude-cli",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "response_chars": 1457,
+    "stderr_file": "transport-e82ba4016b1d11f68a84bd936fc50dda81ff052a5de6f578de090a3278c763ac.stderr.txt",
+    "transport_file": "transport-e82ba4016b1d11f68a84bd936fc50dda81ff052a5de6f578de090a3278c763ac.json"
+  }
+}

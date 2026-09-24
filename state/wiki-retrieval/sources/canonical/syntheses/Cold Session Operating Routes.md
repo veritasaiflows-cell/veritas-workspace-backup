@@ -3,7 +3,7 @@
 
 Canonical page: `wiki/syntheses/Cold Session Operating Routes.md`
 Canonical rendered SHA-256: `ffcb10dbea1d03f9268719dcabec984a47d2558eb29de025e46086b4a182f464`.
-Source snapshot SHA-256: `77222f5213ea094e34dd46183baf36db7716415fdcaa3f1e581f0c047cbcd7a8`.
+Source snapshot SHA-256: `1232da06890b2c2a895aa50bd88f2fa976c072ff78872c8799a029c06af22b8c`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases

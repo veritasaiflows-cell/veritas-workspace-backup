@@ -1,0 +1,35 @@
+{
+  "case": "T2-event-revert-ambiguity",
+  "operational_status": "ok",
+  "rep": 1,
+  "response_text": "{\"states\":{\"B\":{\"revision\":4,\"status\":\"ready\"}},\"ambiguous\":[\"A\",\"C\"]}",
+  "transport": {
+    "delivered_payload_sha256": "2b02fec644a7f3651d90a93c372aacdc56c02666f5b54f10bd170915d2ec39c0",
+    "delivery_match": true,
+    "duration_ms": 26849,
+    "effective_model": "claude-opus-5-5",
+    "effective_provider": "claude-cli",
+    "exit_code": 0,
+    "expected_normalized_sha256": "2b02fec644a7f3651d90a93c372aacdc56c02666f5b54f10bd170915d2ec39c0",
+    "fallback_used": false,
+    "frozen_prompt_sha256": "924453a91a838d24aa5c718f83d80038cb662327ec50ce8e600c4f595d1c1ead",
+    "native_external_user_content_sha256": "17f0436f14178d78139cf6e2ec8a4508ac79932ea1b33de77c8921cec48bc011",
+    "native_log": "7ed65cbe-160d-4102-b326-f8ca8e9e1425.jsonl",
+    "native_session_id": "7ed65cbe-160d-4102-b326-f8ca8e9e1425",
+    "normalization": "strip_terminal_LF_only",
+    "raw_transport_file": "v2-transport-T2-event-revert-ambiguity-r1-t4.json",
+    "receipt_file": "v2-receipt-T2-event-revert-ambiguity-r1-t4.json",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "session_key": "arena-a-v2-opus55-t2-event-revert-ambiguity-r1",
+    "stderr_file": "v2-transport-T2-event-revert-ambiguity-r1-t4.stderr.txt",
+    "tool_calls": [],
+    "tool_results": [],
+    "tool_violation": false,
+    "user_provenance": {
+      "entrypoint": "sdk-cli",
+      "role": "user",
+      "user_type": "external"
+    }
+  },
+  "turn": 4
+}

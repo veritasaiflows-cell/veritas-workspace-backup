@@ -15,11 +15,11 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `tmp/wf88-os2-control-packet.json`
 ## Current debt
 
-- Improvement open count: `10`.
+- Improvement open count: `8`.
 - Follow-up-required open count: `0`.
 - High-priority overdue open count: `2`.
 - Pending skill proposal count: `0`.
-- Actionable queue items: `10`.
+- Actionable queue items: `8`.
 - Actionable queue orphans: `0`.
 - No-orphan validation: `ok`.
 - Top actionable destination: `wf74_decision_docket`.

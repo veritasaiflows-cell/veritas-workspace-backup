@@ -1,0 +1,73 @@
+{
+  "case": "T4-multihop-read-recovery",
+  "operational_status": "ok",
+  "rep": 2,
+  "response_text": "4 rows \u2260 7, so use mirror.\n\n{\"records\":[{\"id\":\"r2\",\"value\":\"b2\",\"ts\":\"2026-09-18\"},{\"id\":\"r3\",\"value\":\"c2\",\"ts\":\"2026-09-17\"}],\"tombstoned\":[\"r1\",\"r4\"],\"superseded_rows\":3,\"source\":\"mirror\"}",
+  "transport": {
+    "delivered_payload_sha256": "844a351172bda087c163c234ce15969346727929f83c7908813ea3b04693fedf",
+    "delivery_match": true,
+    "duration_ms": 113268,
+    "effective_model": "claude-opus-5-5",
+    "effective_provider": "claude-cli",
+    "exit_code": 0,
+    "expected_normalized_sha256": "844a351172bda087c163c234ce15969346727929f83c7908813ea3b04693fedf",
+    "fallback_used": false,
+    "frozen_prompt_sha256": "a10737ad5bddad74aa5eee4d9cc1da7883e774796eb1c1fb2a9745183a764f9f",
+    "native_external_user_content_sha256": "bbe176e9f7da881ac061619213e5aa279dc76456734a284338e96b8c805d2556",
+    "native_log": "30aa1c71-763b-4cd1-90d1-9ace0966af32.jsonl",
+    "native_session_id": "30aa1c71-763b-4cd1-90d1-9ace0966af32",
+    "normalization": "strip_terminal_LF_only",
+    "raw_transport_file": "v2-transport-T4-multihop-read-recovery-r2-t1.json",
+    "receipt_file": "v2-receipt-T4-multihop-read-recovery-r2-t1.json",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "session_key": "arena-a-v2-opus55-t4-multihop-read-recovery-r2",
+    "stderr_file": "v2-transport-T4-multihop-read-recovery-r2-t1.stderr.txt",
+    "tool_calls": [
+      {
+        "name": "Read",
+        "path": "recovery/primary.json",
+        "tool_use_id": "toolu_01PVUZVwQURVC3qSBh6NKZtp"
+      },
+      {
+        "name": "Read",
+        "path": "recovery/index.json",
+        "tool_use_id": "toolu_01FDzXSUbTf4RH6MGaBisaJi"
+      },
+      {
+        "name": "Read",
+        "path": "recovery/payload-a.json",
+        "tool_use_id": "toolu_01MQp4BEzHNNoz889UioH6nS"
+      },
+      {
+        "name": "Read",
+        "path": "recovery/mirror/payload-b.json",
+        "tool_use_id": "toolu_01GkXkJtX4WRdmnDve1We6EA"
+      }
+    ],
+    "tool_results": [
+      {
+        "is_error": true,
+        "tool_use_id": "toolu_01PVUZVwQURVC3qSBh6NKZtp"
+      },
+      {
+        "is_error": null,
+        "tool_use_id": "toolu_01FDzXSUbTf4RH6MGaBisaJi"
+      },
+      {
+        "is_error": null,
+        "tool_use_id": "toolu_01MQp4BEzHNNoz889UioH6nS"
+      },
+      {
+        "is_error": null,
+        "tool_use_id": "toolu_01GkXkJtX4WRdmnDve1We6EA"
+      }
+    ],
+    "tool_violation": false,
+    "user_provenance": {
+      "entrypoint": "sdk-cli",
+      "role": "user",
+      "user_type": "external"
+    }
+  },
+  "turn": 1
+}

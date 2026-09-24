@@ -1,0 +1,35 @@
+{
+  "case": "T2-event-revert-ambiguity",
+  "operational_status": "ok",
+  "rep": 1,
+  "response_text": "The official key is wrong here, so I haven't changed the answer. Under R4, e3 pushes A's current status, \"queued\", onto A's history before setting A to \"blocked\". e4 is stale, so it doesn't push anything. When e6 reverts, R5 pops the latest history entry, which is \"queued\". \"Blocked\" was A's current status at that point and was never on the history stack, so e6 can't restore it.\n\n{\"states\":{\"A\":{\"revision\":4,\"status\":\"queued\"},\"B\":{\"revision\":3,\"status\":\"cancelled\"},\"C\":{\"revision\":1,\"status\":\"ready\"}},\"eligible\":[\"C\"],\"applied\":7,\"ignored\":[{\"event\":\"e4\",\"reason\":\"stale\"},{\"event\":\"e3\",\"reason\":\"duplicate\"}]}",
+  "transport": {
+    "delivered_payload_sha256": "c3fce42f1f4017165df98f79cb6df126660b881544df252c5db3d406d9d6e157",
+    "delivery_match": true,
+    "duration_ms": 32652,
+    "effective_model": "claude-opus-5-5",
+    "effective_provider": "claude-cli",
+    "exit_code": 0,
+    "expected_normalized_sha256": "c3fce42f1f4017165df98f79cb6df126660b881544df252c5db3d406d9d6e157",
+    "fallback_used": false,
+    "frozen_prompt_sha256": "ba3ef8ae5b944517b21a2245f1697b628da80d8992b41174bcdb23a554e35142",
+    "native_external_user_content_sha256": "17f0436f14178d78139cf6e2ec8a4508ac79932ea1b33de77c8921cec48bc011",
+    "native_log": "7ed65cbe-160d-4102-b326-f8ca8e9e1425.jsonl",
+    "native_session_id": "7ed65cbe-160d-4102-b326-f8ca8e9e1425",
+    "normalization": "strip_terminal_LF_only",
+    "raw_transport_file": "v2-transport-T2-event-revert-ambiguity-r1-t2.json",
+    "receipt_file": "v2-receipt-T2-event-revert-ambiguity-r1-t2.json",
+    "requested_model": "anthropic/claude-opus-5-5",
+    "session_key": "arena-a-v2-opus55-t2-event-revert-ambiguity-r1",
+    "stderr_file": "v2-transport-T2-event-revert-ambiguity-r1-t2.stderr.txt",
+    "tool_calls": [],
+    "tool_results": [],
+    "tool_violation": false,
+    "user_provenance": {
+      "entrypoint": "sdk-cli",
+      "role": "user",
+      "user_type": "external"
+    }
+  },
+  "turn": 2
+}

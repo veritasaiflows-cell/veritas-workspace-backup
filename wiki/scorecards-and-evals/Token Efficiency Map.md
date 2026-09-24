@@ -27,7 +27,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - Actual billed cost (owner-entered only): `None`.
 - OAuth quota state / remaining / days to reset: `stale` / `58.0` / `0.0`.
 - Cron token events: `736`.
-- Implementation token events: `3`.
+- Implementation token events: `4`.
 - Implementation token gaps: `597`.
 - API-call reduction candidates: `0`.
 - Prompt-compression candidates: `0`.

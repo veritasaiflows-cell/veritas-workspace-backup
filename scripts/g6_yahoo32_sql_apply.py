@@ -128,7 +128,10 @@ def _reference_confidence_value(entry: dict) -> float | None:
     else:
         raw = entry.get("confidence")
     if _is_number(raw):
-        return float(raw)  # type: ignore[arg-type]
+        value = float(raw)  # type: ignore[arg-type]
+        # SQL returns INTEGER-column values as int; the pin projection must
+        # serialize identically ("40", not "40.0") or the guard hash differs.
+        return int(value) if value.is_integer() else value
     return None
 
 
@@ -367,7 +370,10 @@ def extract_triples(matrix: dict, *, ack_invalidation_ordering: bool = False) ->
         if raw_conf is not None:
             if not _is_number(raw_conf) or not (0.0 <= float(raw_conf) <= 1.0):
                 raise ValueError(f"tickers[{ticker}].proposed.reference_confidence must be a number in [0, 1]")
-            proposed_conf = float(raw_conf)
+            # Canon column is INTEGER and the frozen access layer reads it with
+            # int(); a 0-1 fraction truncated to 0 for every name on 2026-09-24.
+            # Store whole-number percent 0-100 (the fixture scale, e.g. 70).
+            proposed_conf = int(round(float(raw_conf) * 100))
         out[ticker] = {"old": old, "proposed": proposed, "proposed_confidence": proposed_conf}
     return out
 

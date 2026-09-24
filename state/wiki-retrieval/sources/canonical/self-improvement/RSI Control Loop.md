@@ -2,8 +2,8 @@
 # RSI Control Loop
 
 Canonical page: `wiki/self-improvement/RSI Control Loop.md`
-Canonical rendered SHA-256: `919ac493ddf438d5182e6d035fb971faec7881e3a91542f4669a2cc871c6dcaa`.
-Source snapshot SHA-256: `77222f5213ea094e34dd46183baf36db7716415fdcaa3f1e581f0c047cbcd7a8`.
+Canonical rendered SHA-256: `65edf1c011adb9cec53dab367bc50de04dab377b1ae9d8389df31c478ae5d592`.
+Source snapshot SHA-256: `1232da06890b2c2a895aa50bd88f2fa976c072ff78872c8799a029c06af22b8c`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -45,13 +45,13 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - Rubric dimensions: `9`.
 - Primary first-hop eval: `tmp/wf74-learning-loop-eval-harness.json`.
 - Legacy RSI first-hop truth: `False`.
-- Decision docket rows: `25`.
-- Decision docket active actions: `14`.
+- Decision docket rows: `21`.
+- Decision docket active actions: `12`.
 - Decision docket hard stops: `0`.
-- Live RSI trace rows / stable closures: `7` / `0`.
-- RSI correlation IDs unique/duplicate/missing/noncanonical: `7` / `0` / `0` / `0`; integrity gate `True`.
+- Live RSI trace rows / stable closures: `6` / `0`.
+- RSI correlation IDs unique/duplicate/missing/noncanonical: `6` / `0` / `0` / `0`; integrity gate `True`.
 - Closed claims with durability unverified: `1`.
-- Missing outcome-link/metric debt: `40`.
+- Missing outcome-link/metric debt: `31`.
 - RSI later-outcome maturity: `warning_insufficient_real_outcome_evidence`.
 
 `tmp/wf74-rsi-evaluation-harness.json` remains compatibility/drill-in only for one transition cycle and is not first-hop truth.

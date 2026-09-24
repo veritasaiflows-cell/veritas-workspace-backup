@@ -155,7 +155,7 @@ def evaluate(root: Path, *, closes: Closes = yahoo_closes, today: date | None = 
                           0.0 if posture in (fit.get("disfavored_postures") or []) else 0.5,
             "relative_strength": clamp01((rs + 0.10) / 0.20) if rs is not None else 0.5,
             "catalyst_clear": 0.0 if days is not None and 0 <= days <= EARNINGS_WINDOW_DAYS else 1.0,
-            "data_confidence": clamp01(float(conf) / 0.5),
+            "data_confidence": clamp01(float(conf) / 50.0),  # canon percent 0-100; single-source cap 50
         }
         entry.update({
             "conviction": conviction, "thesis_type": thesis.get("thesis_type"), "days_to_earnings": days,

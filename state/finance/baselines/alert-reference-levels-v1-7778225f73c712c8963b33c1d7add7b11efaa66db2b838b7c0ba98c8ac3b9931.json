@@ -1,0 +1,4226 @@
+{
+  "authority": {
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "capital_or_order_authority": false,
+    "execution_allowed": false,
+    "money_movement_allowed": false,
+    "numeric_values_changed": false,
+    "original_provenance_invented": false,
+    "portfolio_action_allowed": false,
+    "portfolio_or_account_state_maintained": false,
+    "review_only": true,
+    "trade_or_execution_allowed": false
+  },
+  "generated_at_utc": "2026-09-24T14:20:23.781129+00:00",
+  "levels": [
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 124.43,
+      "reference_price_high": 136.45,
+      "reference_price_low": 130.44,
+      "ticker": "A"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 277.63,
+      "reference_price_high": 300.76,
+      "reference_price_low": 286.37,
+      "ticker": "AAPL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 206.18,
+      "reference_price_high": 220.95,
+      "reference_price_low": 212.97,
+      "ticker": "ABBV"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 126.45,
+      "reference_price_high": 135.76,
+      "reference_price_low": 132.13,
+      "ticker": "ABNB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 111.63,
+      "reference_price_high": 116.51,
+      "reference_price_low": 114.07,
+      "ticker": "ABT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 91.03,
+      "reference_price_high": 95.75,
+      "reference_price_low": 93.39,
+      "ticker": "ACGL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 195.74,
+      "reference_price_high": 213.9,
+      "reference_price_low": 203.81,
+      "ticker": "ACN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 282.98,
+      "reference_price_high": 310.73,
+      "reference_price_low": 296.85,
+      "ticker": "ADBE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 340.76,
+      "reference_price_high": 385.25,
+      "reference_price_low": 356.65,
+      "ticker": "ADI"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 73.06,
+      "reference_price_high": 80.26,
+      "reference_price_low": 75.92,
+      "ticker": "ADM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 237.69,
+      "reference_price_high": 266.8,
+      "reference_price_low": 248.3,
+      "ticker": "ADP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 240.53,
+      "reference_price_high": 262.87,
+      "reference_price_low": 250.46,
+      "ticker": "ADSK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 105.55,
+      "reference_price_high": 109.32,
+      "reference_price_low": 108.16,
+      "ticker": "AEE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 125.69,
+      "reference_price_high": 129.39,
+      "reference_price_low": 128.5,
+      "ticker": "AEP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 14.48,
+      "reference_price_high": 14.66,
+      "reference_price_low": 14.55,
+      "ticker": "AES"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 110.78,
+      "reference_price_high": 116.56,
+      "reference_price_low": 113.63,
+      "ticker": "AFL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 75.73,
+      "reference_price_high": 79.75,
+      "reference_price_low": 77.74,
+      "ticker": "AIG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 237.22,
+      "reference_price_high": 254.55,
+      "reference_price_low": 243.41,
+      "ticker": "AIZ"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 236.83,
+      "reference_price_high": 251.35,
+      "reference_price_low": 244.09,
+      "ticker": "AJG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 97.38,
+      "reference_price_high": 121.46,
+      "reference_price_low": 104.91,
+      "ticker": "AKAM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 148.61,
+      "reference_price_high": 160.04,
+      "reference_price_low": 153.69,
+      "ticker": "ALB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 160.2,
+      "reference_price_high": 173.59,
+      "reference_price_low": 168.61,
+      "ticker": "ALGN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 205.08,
+      "reference_price_high": 218.49,
+      "reference_price_low": 212.0,
+      "ticker": "ALL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 143.26,
+      "reference_price_high": 160.17,
+      "reference_price_low": 149.3,
+      "ticker": "ALLE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 468.3,
+      "reference_price_high": 541.1,
+      "reference_price_low": 511.64,
+      "ticker": "AMAT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 41.72,
+      "reference_price_high": 46.09,
+      "reference_price_low": 43.28,
+      "ticker": "AMCR"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 406.3158,
+      "reference_price_high": 498.7872,
+      "reference_price_low": 440.5,
+      "ticker": "AMD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 232.14,
+      "reference_price_high": 250.17,
+      "reference_price_low": 238.74,
+      "ticker": "AME"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 327.24,
+      "reference_price_high": 345.15,
+      "reference_price_low": 338.21,
+      "ticker": "AMGN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 461.25,
+      "reference_price_high": 488.23,
+      "reference_price_low": 474.74,
+      "ticker": "AMP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 174.98,
+      "reference_price_high": 187.35,
+      "reference_price_low": 180.81,
+      "ticker": "AMT"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 235.783,
+      "reference_price_high": 256.2554,
+      "reference_price_low": 244.3,
+      "ticker": "AMZN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 159.61,
+      "reference_price_high": 191.55,
+      "reference_price_low": 172.32,
+      "ticker": "ANET"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 328.77,
+      "reference_price_high": 347.95,
+      "reference_price_low": 338.36,
+      "ticker": "AON"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 63.02,
+      "reference_price_high": 67.0,
+      "reference_price_low": 64.79,
+      "ticker": "AOS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 34.37,
+      "reference_price_high": 37.43,
+      "reference_price_low": 36.34,
+      "ticker": "APA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 276.63,
+      "reference_price_high": 285.6,
+      "reference_price_low": 284.35,
+      "ticker": "APD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 146.43,
+      "reference_price_high": 166.14,
+      "reference_price_low": 155.18,
+      "ticker": "APH"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 120.43,
+      "reference_price_high": 131.69,
+      "reference_price_low": 125.34,
+      "ticker": "APO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 484.44,
+      "reference_price_high": 534.35,
+      "reference_price_low": 506.62,
+      "ticker": "APP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 70.61,
+      "reference_price_high": 78.59,
+      "reference_price_low": 74.6,
+      "ticker": "APTV"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.19,
+      "reference_price_high": 59.21,
+      "reference_price_low": 56.7,
+      "ticker": "ARE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 135.54,
+      "reference_price_high": 147.66,
+      "reference_price_low": 141.6,
+      "ticker": "ARES"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 1453.11,
+      "reference_price_high": 1738.36,
+      "reference_price_low": 1553.38,
+      "ticker": "ASML"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 172.79,
+      "reference_price_high": 180.07,
+      "reference_price_low": 176.43,
+      "ticker": "ATO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 176.34,
+      "reference_price_high": 185.94,
+      "reference_price_low": 180.34,
+      "ticker": "AVB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 343.04,
+      "reference_price_high": 406.04,
+      "reference_price_low": 362.73,
+      "ticker": "AVGO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 167.98,
+      "reference_price_high": 177.46,
+      "reference_price_low": 172.72,
+      "ticker": "AVY"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 128.92,
+      "reference_price_high": 135.9,
+      "reference_price_low": 132.41,
+      "ticker": "AWK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 512.86,
+      "reference_price_high": 582.56,
+      "reference_price_low": 547.71,
+      "ticker": "AXON"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 304.48,
+      "reference_price_high": 320.76,
+      "reference_price_low": 313.88,
+      "ticker": "AXP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 3532.06,
+      "reference_price_high": 3795.64,
+      "reference_price_low": 3663.85,
+      "ticker": "AZO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 209.03,
+      "reference_price_high": 223.21,
+      "reference_price_low": 218.21,
+      "ticker": "BA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 55.11,
+      "reference_price_high": 57.38,
+      "reference_price_low": 56.73,
+      "ticker": "BALL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 17.59,
+      "reference_price_high": 19.68,
+      "reference_price_low": 18.46,
+      "ticker": "BAX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 62.17,
+      "reference_price_high": 72.44,
+      "reference_price_low": 65.87,
+      "ticker": "BBY"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 149.61,
+      "reference_price_high": 158.66,
+      "reference_price_low": 154.14,
+      "ticker": "BDX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 26.38,
+      "reference_price_high": 28.36,
+      "reference_price_low": 27.37,
+      "ticker": "BF-B"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 117.03,
+      "reference_price_high": 126.21,
+      "reference_price_low": 122.15,
+      "ticker": "BG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 181.6,
+      "reference_price_high": 196.42,
+      "reference_price_low": 188.55,
+      "ticker": "BIIB"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 150.6453,
+      "reference_price_high": 192.1504,
+      "reference_price_low": 160.59,
+      "ticker": "BKNG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 60.1,
+      "reference_price_high": 64.37,
+      "reference_price_low": 62.61,
+      "ticker": "BKR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 99.51,
+      "reference_price_high": 108.73,
+      "reference_price_low": 104.12,
+      "ticker": "BLDR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.77,
+      "reference_price_high": 56.98,
+      "reference_price_low": 56.54,
+      "ticker": "BMY"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 193.07,
+      "reference_price_high": 204.15,
+      "reference_price_low": 198.61,
+      "ticker": "BR"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 490.7142,
+      "reference_price_high": 505.3874,
+      "reference_price_low": 499.22,
+      "ticker": "BRK.B"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 79.64,
+      "reference_price_high": 83.98,
+      "reference_price_low": 81.81,
+      "ticker": "BSX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 58.05,
+      "reference_price_high": 63.4,
+      "reference_price_low": 59.96,
+      "ticker": "BXP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 16.34,
+      "reference_price_high": 17.38,
+      "reference_price_low": 16.86,
+      "ticker": "CAG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 60.61,
+      "reference_price_high": 68.26,
+      "reference_price_low": 63.76,
+      "ticker": "CARR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 791.06,
+      "reference_price_high": 855.09,
+      "reference_price_low": 822.41,
+      "ticker": "CASY"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 739.4108,
+      "reference_price_high": 834.8243,
+      "reference_price_low": 771.39,
+      "ticker": "CAT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 146.31,
+      "reference_price_high": 156.03,
+      "reference_price_low": 151.17,
+      "ticker": "CBRE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 86.75,
+      "reference_price_high": 92.65,
+      "reference_price_low": 89.7,
+      "ticker": "CCI"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 24.77,
+      "reference_price_high": 28.1,
+      "reference_price_low": 25.96,
+      "ticker": "CCL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 334.94,
+      "reference_price_high": 362.59,
+      "reference_price_low": 347.23,
+      "ticker": "CDNS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 305.79,
+      "reference_price_high": 333.54,
+      "reference_price_low": 319.66,
+      "ticker": "CEG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 108.17,
+      "reference_price_high": 114.3,
+      "reference_price_low": 113.9,
+      "ticker": "CF"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 92.04,
+      "reference_price_high": 96.85,
+      "reference_price_low": 94.71,
+      "ticker": "CHD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 168.65,
+      "reference_price_high": 185.1,
+      "reference_price_low": 176.02,
+      "ticker": "CHRW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 205.68,
+      "reference_price_high": 221.48,
+      "reference_price_low": 213.58,
+      "ticker": "CHTR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 84.19,
+      "reference_price_high": 89.4,
+      "reference_price_low": 86.95,
+      "ticker": "CL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 104.77,
+      "reference_price_high": 111.95,
+      "reference_price_low": 108.36,
+      "ticker": "CLX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 27.25,
+      "reference_price_high": 28.77,
+      "reference_price_low": 28.01,
+      "ticker": "CMCSA"
+    },
+    {
+      "reference_confidence": 15,
+      "reference_invalidation_level": 255.5971,
+      "reference_price_high": 269.4602,
+      "reference_price_low": 263.915,
+      "ticker": "CME"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 34.48,
+      "reference_price_high": 37.36,
+      "reference_price_low": 35.92,
+      "ticker": "CMG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 71.36,
+      "reference_price_high": 73.33,
+      "reference_price_low": 73.14,
+      "ticker": "CMS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 41.07,
+      "reference_price_high": 42.72,
+      "reference_price_low": 42.07,
+      "ticker": "CNP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 112.26,
+      "reference_price_high": 117.77,
+      "reference_price_low": 116.56,
+      "ticker": "COP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 955.11,
+      "reference_price_high": 993.6,
+      "reference_price_low": 983.91,
+      "ticker": "COST"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 25.73,
+      "reference_price_high": 27.55,
+      "reference_price_low": 26.64,
+      "ticker": "CPB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 103.62,
+      "reference_price_high": 111.14,
+      "reference_price_low": 106.37,
+      "ticker": "CPT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 110.86,
+      "reference_price_high": 120.11,
+      "reference_price_low": 115.49,
+      "ticker": "CRH"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 206.08,
+      "reference_price_high": 228.68,
+      "reference_price_low": 217.38,
+      "ticker": "CRM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 521.36,
+      "reference_price_high": 672.12,
+      "reference_price_low": 568.77,
+      "ticker": "CRWD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 55.54,
+      "reference_price_high": 59.34,
+      "reference_price_low": 57.44,
+      "ticker": "CSGP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 75.73,
+      "reference_price_high": 77.86,
+      "reference_price_low": 77.82,
+      "ticker": "CTVA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 68.39,
+      "reference_price_high": 78.83,
+      "reference_price_low": 73.61,
+      "ticker": "CVNA"
+    },
+    {
+      "reference_confidence": 25,
+      "reference_invalidation_level": 189.2975,
+      "reference_price_high": 200.595,
+      "reference_price_low": 196.076,
+      "ticker": "CVX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 62.65,
+      "reference_price_high": 66.86,
+      "reference_price_low": 64.35,
+      "ticker": "D"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 192.62,
+      "reference_price_high": 213.68,
+      "reference_price_low": 203.15,
+      "ticker": "DASH"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 44.8,
+      "reference_price_high": 48.06,
+      "reference_price_low": 46.68,
+      "ticker": "DD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 175.89,
+      "reference_price_high": 229.65,
+      "reference_price_low": 192.69,
+      "ticker": "DDOG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 539.06,
+      "reference_price_high": 574.45,
+      "reference_price_low": 561.35,
+      "ticker": "DE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 98.53,
+      "reference_price_high": 106.58,
+      "reference_price_low": 102.11,
+      "ticker": "DECK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 104.75,
+      "reference_price_high": 109.83,
+      "reference_price_low": 107.29,
+      "ticker": "DIS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 180.68,
+      "reference_price_high": 188.39,
+      "reference_price_low": 185.9,
+      "ticker": "DLR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 33.37,
+      "reference_price_high": 35.8,
+      "reference_price_low": 35.1,
+      "ticker": "DOW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 139.97,
+      "reference_price_high": 145.76,
+      "reference_price_low": 143.3,
+      "ticker": "DTE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 121.38,
+      "reference_price_high": 124.7,
+      "reference_price_low": 124.08,
+      "ticker": "DUK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 43.23,
+      "reference_price_high": 45.81,
+      "reference_price_low": 45.3,
+      "ticker": "DVN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 200.34,
+      "reference_price_high": 202.65,
+      "reference_price_low": 201.57,
+      "ticker": "EA"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 259.934,
+      "reference_price_high": 277.0944,
+      "reference_price_low": 267.8085,
+      "ticker": "ECL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 140.08,
+      "reference_price_high": 156.35,
+      "reference_price_low": 145.98,
+      "ticker": "EMR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 128.81,
+      "reference_price_high": 137.79,
+      "reference_price_low": 133.86,
+      "ticker": "EOG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.88,
+      "reference_price_high": 58.28,
+      "reference_price_low": 56.58,
+      "ticker": "EQT"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 363.0972,
+      "reference_price_high": 416.857,
+      "reference_price_low": 384.77,
+      "ticker": "ETN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 101.7,
+      "reference_price_high": 107.1,
+      "reference_price_low": 104.4,
+      "ticker": "EXE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 181.67,
+      "reference_price_high": 197.46,
+      "reference_price_low": 190.67,
+      "ticker": "FANG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 59.69,
+      "reference_price_high": 66.76,
+      "reference_price_low": 63.09,
+      "ticker": "FCX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.63,
+      "reference_price_high": 60.29,
+      "reference_price_low": 57.46,
+      "ticker": "FOX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 60.64,
+      "reference_price_high": 67.14,
+      "reference_price_low": 63.89,
+      "ticker": "FOXA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 333.0,
+      "reference_price_high": 349.9,
+      "reference_price_low": 341.56,
+      "ticker": "GD"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 294.395,
+      "reference_price_high": 346.6034,
+      "reference_price_low": 306.8,
+      "ticker": "GE"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 313.9776,
+      "reference_price_high": 343.159,
+      "reference_price_low": 325.63,
+      "ticker": "GOOG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 343.37,
+      "reference_price_high": 372.76,
+      "reference_price_low": 356.49,
+      "ticker": "GOOGL"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 882.2791,
+      "reference_price_high": 1028.9946,
+      "reference_price_low": 922.0,
+      "ticker": "GS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 37.24,
+      "reference_price_high": 40.05,
+      "reference_price_low": 38.79,
+      "ticker": "HAL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 349.04,
+      "reference_price_high": 369.86,
+      "reference_price_low": 359.45,
+      "ticker": "HD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 209.89,
+      "reference_price_high": 223.82,
+      "reference_price_low": 218.94,
+      "ticker": "HON"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 501.38,
+      "reference_price_high": 553.16,
+      "reference_price_low": 527.27,
+      "ticker": "INTU"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 476.26,
+      "reference_price_high": 506.46,
+      "reference_price_low": 491.36,
+      "ticker": "ISRG"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 205.7426,
+      "reference_price_high": 234.171,
+      "reference_price_low": 211.43,
+      "ticker": "ITA"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 327.1345,
+      "reference_price_high": 353.6198,
+      "reference_price_low": 337.3,
+      "ticker": "JPM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 30.88,
+      "reference_price_high": 32.05,
+      "reference_price_low": 31.75,
+      "ticker": "KMI"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 42.218,
+      "reference_price_high": 51.7632,
+      "reference_price_low": 45.47,
+      "ticker": "KTOS"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 443.5152,
+      "reference_price_high": 485.8694,
+      "reference_price_low": 454.19,
+      "ticker": "LIN"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 1071.2173,
+      "reference_price_high": 1175.8823,
+      "reference_price_low": 1113.29,
+      "ticker": "LLY"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 496.6888,
+      "reference_price_high": 554.3676,
+      "reference_price_low": 515.598,
+      "ticker": "LMT"
+    },
+    {
+      "reference_confidence": 25,
+      "reference_invalidation_level": 251.2724,
+      "reference_price_high": 271.6112,
+      "reference_price_low": 263.4757,
+      "ticker": "LNG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 155.5,
+      "reference_price_high": 168.46,
+      "reference_price_low": 161.24,
+      "ticker": "LYV"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 522.75,
+      "reference_price_high": 548.9,
+      "reference_price_low": 535.82,
+      "ticker": "MA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 299.55,
+      "reference_price_high": 311.69,
+      "reference_price_low": 305.62,
+      "ticker": "MCD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 802.19,
+      "reference_price_high": 844.67,
+      "reference_price_low": 823.43,
+      "ticker": "MCK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 272.35,
+      "reference_price_high": 348.03,
+      "reference_price_low": 305.3,
+      "ticker": "MDB"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 518.013,
+      "reference_price_high": 609.9591,
+      "reference_price_low": 555.6614,
+      "ticker": "META"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 229.92,
+      "reference_price_high": 259.24,
+      "reference_price_low": 241.94,
+      "ticker": "MPC"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 452.8718,
+      "reference_price_high": 484.3,
+      "reference_price_low": 468.699,
+      "ticker": "MSFT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 767.79,
+      "reference_price_high": 933.74,
+      "reference_price_low": 861.4,
+      "ticker": "MU"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 86.08,
+      "reference_price_high": 89.19,
+      "reference_price_low": 88.3,
+      "ticker": "NEE"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 66.5865,
+      "reference_price_high": 75.6836,
+      "reference_price_low": 70.11,
+      "ticker": "NFLX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 601.8,
+      "reference_price_high": 631.18,
+      "reference_price_low": 616.49,
+      "ticker": "NOC"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 128.0,
+      "reference_price_high": 147.3,
+      "reference_price_low": 137.65,
+      "ticker": "NOW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 224.7,
+      "reference_price_high": 252.0,
+      "reference_price_low": 234.45,
+      "ticker": "NUE"
+    },
+    {
+      "reference_confidence": 35,
+      "reference_invalidation_level": 198.2137,
+      "reference_price_high": 215.3475,
+      "reference_price_low": 208.494,
+      "ticker": "NVDA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 28.85,
+      "reference_price_high": 30.83,
+      "reference_price_low": 29.84,
+      "ticker": "NWS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 341.01,
+      "reference_price_high": 404.94,
+      "reference_price_low": 360.99,
+      "ticker": "OKE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 188.55,
+      "reference_price_high": 222.19,
+      "reference_price_low": 205.37,
+      "ticker": "ORCL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 93.0,
+      "reference_price_high": 98.5,
+      "reference_price_low": 95.75,
+      "ticker": "ORLY"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 212.34,
+      "reference_price_high": 267.74,
+      "reference_price_low": 229.65,
+      "ticker": "PANW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 52.64,
+      "reference_price_high": 56.28,
+      "reference_price_low": 53.94,
+      "ticker": "PAVE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 146.57,
+      "reference_price_high": 154.05,
+      "reference_price_low": 150.31,
+      "ticker": "PEP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 140.65,
+      "reference_price_high": 147.24,
+      "reference_price_low": 144.5,
+      "ticker": "PG"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 877.2796,
+      "reference_price_high": 985.5853,
+      "reference_price_low": 911.41,
+      "ticker": "PH"
+    },
+    {
+      "reference_confidence": 35,
+      "reference_invalidation_level": 148.4873,
+      "reference_price_high": 166.0246,
+      "reference_price_low": 159.0097,
+      "ticker": "PLTR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 168.17,
+      "reference_price_high": 183.56,
+      "reference_price_low": 175.01,
+      "ticker": "QCOM"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 181.1982,
+      "reference_price_high": 207.5891,
+      "reference_price_low": 187.04,
+      "ticker": "RTX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 210.69,
+      "reference_price_high": 228.49,
+      "reference_price_low": 219.59,
+      "ticker": "SAP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 169.19,
+      "reference_price_high": 189.03,
+      "reference_price_low": 179.34,
+      "ticker": "SCCO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 130.78,
+      "reference_price_high": 145.03,
+      "reference_price_low": 137.91,
+      "ticker": "SHOP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 324.89,
+      "reference_price_high": 345.57,
+      "reference_price_low": 335.23,
+      "ticker": "SHW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 51.34,
+      "reference_price_high": 55.95,
+      "reference_price_low": 53.56,
+      "ticker": "SLB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 62.47,
+      "reference_price_high": 66.41,
+      "reference_price_low": 64.22,
+      "ticker": "SLV"
+    },
+    {
+      "reference_confidence": 35,
+      "reference_invalidation_level": 30.1681,
+      "reference_price_high": 35.8656,
+      "reference_price_low": 33.5866,
+      "ticker": "SMCI"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 166.93,
+      "reference_price_high": 226.33,
+      "reference_price_low": 187.42,
+      "ticker": "SNOW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 90.51,
+      "reference_price_high": 93.52,
+      "reference_price_low": 92.63,
+      "ticker": "SO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 341.32,
+      "reference_price_high": 361.74,
+      "reference_price_low": 351.53,
+      "ticker": "SYK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 1167.8,
+      "reference_price_high": 1248.02,
+      "reference_price_low": 1210.68,
+      "ticker": "TDG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 84.59,
+      "reference_price_high": 85.96,
+      "reference_price_low": 85.2,
+      "ticker": "TLT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 508.32,
+      "reference_price_high": 543.9,
+      "reference_price_low": 526.11,
+      "ticker": "TMO"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 153.7234,
+      "reference_price_high": 179.5534,
+      "reference_price_low": 161.21,
+      "ticker": "TMUS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 392.48,
+      "reference_price_high": 422.78,
+      "reference_price_low": 410.14,
+      "ticker": "TSM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 241.32,
+      "reference_price_high": 284.2,
+      "reference_price_low": 254.72,
+      "ticker": "TXN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 79.47,
+      "reference_price_high": 85.12,
+      "reference_price_low": 82.3,
+      "ticker": "UBER"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 363.15,
+      "reference_price_high": 395.94,
+      "reference_price_low": 374.86,
+      "ticker": "UNH"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 251.7,
+      "reference_price_high": 269.16,
+      "reference_price_low": 259.94,
+      "ticker": "UNP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 930.93,
+      "reference_price_high": 1038.8,
+      "reference_price_low": 969.46,
+      "ticker": "URI"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 308.53,
+      "reference_price_high": 324.99,
+      "reference_price_low": 317.48,
+      "ticker": "V"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 220.85,
+      "reference_price_high": 233.7,
+      "reference_price_low": 225.44,
+      "ticker": "VAW"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 230.7761,
+      "reference_price_high": 271.3703,
+      "reference_price_low": 240.69,
+      "ticker": "VMC"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 207.0853,
+      "reference_price_high": 268.9874,
+      "reference_price_low": 226.94,
+      "ticker": "VRT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 78.15,
+      "reference_price_high": 83.36,
+      "reference_price_low": 80.88,
+      "ticker": "VXUS"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 66.9659,
+      "reference_price_high": 72.4554,
+      "reference_price_low": 69.85,
+      "ticker": "WMB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 117.69,
+      "reference_price_high": 121.92,
+      "reference_price_low": 121.7,
+      "ticker": "WMT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 48.81,
+      "reference_price_high": 51.68,
+      "reference_price_low": 49.84,
+      "ticker": "XLB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 112.71,
+      "reference_price_high": 116.55,
+      "reference_price_low": 114.31,
+      "ticker": "XLC"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.83,
+      "reference_price_high": 58.04,
+      "reference_price_low": 56.35,
+      "ticker": "XLE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 51.61,
+      "reference_price_high": 53.07,
+      "reference_price_low": 52.26,
+      "ticker": "XLF"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 163.1,
+      "reference_price_high": 173.4,
+      "reference_price_low": 166.78,
+      "ticker": "XLI"
+    },
+    {
+      "reference_confidence": 25,
+      "reference_invalidation_level": 149.1198,
+      "reference_price_high": 158.5335,
+      "reference_price_low": 154.768,
+      "ticker": "XOM"
+    }
+  ],
+  "matrix_sha256": "0d1a8e66829152d11cc0766bdfe4915c9f06768040d35700233f24acf5c08754",
+  "numeric_projection_sha256": "129cb638c938d0a13fa3d1be48f6f201bb10c6cb7f43a8d48266be24c1ee2f8a",
+  "reference_levels": [
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 124.43,
+      "reference_price_high": 136.45,
+      "reference_price_low": 130.44,
+      "ticker": "A"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 277.63,
+      "reference_price_high": 300.76,
+      "reference_price_low": 286.37,
+      "ticker": "AAPL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 206.18,
+      "reference_price_high": 220.95,
+      "reference_price_low": 212.97,
+      "ticker": "ABBV"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 126.45,
+      "reference_price_high": 135.76,
+      "reference_price_low": 132.13,
+      "ticker": "ABNB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 111.63,
+      "reference_price_high": 116.51,
+      "reference_price_low": 114.07,
+      "ticker": "ABT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 91.03,
+      "reference_price_high": 95.75,
+      "reference_price_low": 93.39,
+      "ticker": "ACGL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 195.74,
+      "reference_price_high": 213.9,
+      "reference_price_low": 203.81,
+      "ticker": "ACN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 282.98,
+      "reference_price_high": 310.73,
+      "reference_price_low": 296.85,
+      "ticker": "ADBE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 340.76,
+      "reference_price_high": 385.25,
+      "reference_price_low": 356.65,
+      "ticker": "ADI"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 73.06,
+      "reference_price_high": 80.26,
+      "reference_price_low": 75.92,
+      "ticker": "ADM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 237.69,
+      "reference_price_high": 266.8,
+      "reference_price_low": 248.3,
+      "ticker": "ADP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 240.53,
+      "reference_price_high": 262.87,
+      "reference_price_low": 250.46,
+      "ticker": "ADSK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 105.55,
+      "reference_price_high": 109.32,
+      "reference_price_low": 108.16,
+      "ticker": "AEE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 125.69,
+      "reference_price_high": 129.39,
+      "reference_price_low": 128.5,
+      "ticker": "AEP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 14.48,
+      "reference_price_high": 14.66,
+      "reference_price_low": 14.55,
+      "ticker": "AES"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 110.78,
+      "reference_price_high": 116.56,
+      "reference_price_low": 113.63,
+      "ticker": "AFL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 75.73,
+      "reference_price_high": 79.75,
+      "reference_price_low": 77.74,
+      "ticker": "AIG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 237.22,
+      "reference_price_high": 254.55,
+      "reference_price_low": 243.41,
+      "ticker": "AIZ"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 236.83,
+      "reference_price_high": 251.35,
+      "reference_price_low": 244.09,
+      "ticker": "AJG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 97.38,
+      "reference_price_high": 121.46,
+      "reference_price_low": 104.91,
+      "ticker": "AKAM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 148.61,
+      "reference_price_high": 160.04,
+      "reference_price_low": 153.69,
+      "ticker": "ALB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 160.2,
+      "reference_price_high": 173.59,
+      "reference_price_low": 168.61,
+      "ticker": "ALGN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 205.08,
+      "reference_price_high": 218.49,
+      "reference_price_low": 212.0,
+      "ticker": "ALL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 143.26,
+      "reference_price_high": 160.17,
+      "reference_price_low": 149.3,
+      "ticker": "ALLE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 468.3,
+      "reference_price_high": 541.1,
+      "reference_price_low": 511.64,
+      "ticker": "AMAT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 41.72,
+      "reference_price_high": 46.09,
+      "reference_price_low": 43.28,
+      "ticker": "AMCR"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 406.3158,
+      "reference_price_high": 498.7872,
+      "reference_price_low": 440.5,
+      "ticker": "AMD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 232.14,
+      "reference_price_high": 250.17,
+      "reference_price_low": 238.74,
+      "ticker": "AME"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 327.24,
+      "reference_price_high": 345.15,
+      "reference_price_low": 338.21,
+      "ticker": "AMGN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 461.25,
+      "reference_price_high": 488.23,
+      "reference_price_low": 474.74,
+      "ticker": "AMP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 174.98,
+      "reference_price_high": 187.35,
+      "reference_price_low": 180.81,
+      "ticker": "AMT"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 235.783,
+      "reference_price_high": 256.2554,
+      "reference_price_low": 244.3,
+      "ticker": "AMZN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 159.61,
+      "reference_price_high": 191.55,
+      "reference_price_low": 172.32,
+      "ticker": "ANET"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 328.77,
+      "reference_price_high": 347.95,
+      "reference_price_low": 338.36,
+      "ticker": "AON"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 63.02,
+      "reference_price_high": 67.0,
+      "reference_price_low": 64.79,
+      "ticker": "AOS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 34.37,
+      "reference_price_high": 37.43,
+      "reference_price_low": 36.34,
+      "ticker": "APA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 276.63,
+      "reference_price_high": 285.6,
+      "reference_price_low": 284.35,
+      "ticker": "APD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 146.43,
+      "reference_price_high": 166.14,
+      "reference_price_low": 155.18,
+      "ticker": "APH"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 120.43,
+      "reference_price_high": 131.69,
+      "reference_price_low": 125.34,
+      "ticker": "APO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 484.44,
+      "reference_price_high": 534.35,
+      "reference_price_low": 506.62,
+      "ticker": "APP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 70.61,
+      "reference_price_high": 78.59,
+      "reference_price_low": 74.6,
+      "ticker": "APTV"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.19,
+      "reference_price_high": 59.21,
+      "reference_price_low": 56.7,
+      "ticker": "ARE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 135.54,
+      "reference_price_high": 147.66,
+      "reference_price_low": 141.6,
+      "ticker": "ARES"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 1453.11,
+      "reference_price_high": 1738.36,
+      "reference_price_low": 1553.38,
+      "ticker": "ASML"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 172.79,
+      "reference_price_high": 180.07,
+      "reference_price_low": 176.43,
+      "ticker": "ATO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 176.34,
+      "reference_price_high": 185.94,
+      "reference_price_low": 180.34,
+      "ticker": "AVB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 343.04,
+      "reference_price_high": 406.04,
+      "reference_price_low": 362.73,
+      "ticker": "AVGO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 167.98,
+      "reference_price_high": 177.46,
+      "reference_price_low": 172.72,
+      "ticker": "AVY"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 128.92,
+      "reference_price_high": 135.9,
+      "reference_price_low": 132.41,
+      "ticker": "AWK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 512.86,
+      "reference_price_high": 582.56,
+      "reference_price_low": 547.71,
+      "ticker": "AXON"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 304.48,
+      "reference_price_high": 320.76,
+      "reference_price_low": 313.88,
+      "ticker": "AXP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 3532.06,
+      "reference_price_high": 3795.64,
+      "reference_price_low": 3663.85,
+      "ticker": "AZO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 209.03,
+      "reference_price_high": 223.21,
+      "reference_price_low": 218.21,
+      "ticker": "BA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 55.11,
+      "reference_price_high": 57.38,
+      "reference_price_low": 56.73,
+      "ticker": "BALL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 17.59,
+      "reference_price_high": 19.68,
+      "reference_price_low": 18.46,
+      "ticker": "BAX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 62.17,
+      "reference_price_high": 72.44,
+      "reference_price_low": 65.87,
+      "ticker": "BBY"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 149.61,
+      "reference_price_high": 158.66,
+      "reference_price_low": 154.14,
+      "ticker": "BDX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 26.38,
+      "reference_price_high": 28.36,
+      "reference_price_low": 27.37,
+      "ticker": "BF-B"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 117.03,
+      "reference_price_high": 126.21,
+      "reference_price_low": 122.15,
+      "ticker": "BG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 181.6,
+      "reference_price_high": 196.42,
+      "reference_price_low": 188.55,
+      "ticker": "BIIB"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 150.6453,
+      "reference_price_high": 192.1504,
+      "reference_price_low": 160.59,
+      "ticker": "BKNG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 60.1,
+      "reference_price_high": 64.37,
+      "reference_price_low": 62.61,
+      "ticker": "BKR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 99.51,
+      "reference_price_high": 108.73,
+      "reference_price_low": 104.12,
+      "ticker": "BLDR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.77,
+      "reference_price_high": 56.98,
+      "reference_price_low": 56.54,
+      "ticker": "BMY"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 193.07,
+      "reference_price_high": 204.15,
+      "reference_price_low": 198.61,
+      "ticker": "BR"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 490.7142,
+      "reference_price_high": 505.3874,
+      "reference_price_low": 499.22,
+      "ticker": "BRK.B"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 79.64,
+      "reference_price_high": 83.98,
+      "reference_price_low": 81.81,
+      "ticker": "BSX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 58.05,
+      "reference_price_high": 63.4,
+      "reference_price_low": 59.96,
+      "ticker": "BXP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 16.34,
+      "reference_price_high": 17.38,
+      "reference_price_low": 16.86,
+      "ticker": "CAG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 60.61,
+      "reference_price_high": 68.26,
+      "reference_price_low": 63.76,
+      "ticker": "CARR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 791.06,
+      "reference_price_high": 855.09,
+      "reference_price_low": 822.41,
+      "ticker": "CASY"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 739.4108,
+      "reference_price_high": 834.8243,
+      "reference_price_low": 771.39,
+      "ticker": "CAT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 146.31,
+      "reference_price_high": 156.03,
+      "reference_price_low": 151.17,
+      "ticker": "CBRE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 86.75,
+      "reference_price_high": 92.65,
+      "reference_price_low": 89.7,
+      "ticker": "CCI"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 24.77,
+      "reference_price_high": 28.1,
+      "reference_price_low": 25.96,
+      "ticker": "CCL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 334.94,
+      "reference_price_high": 362.59,
+      "reference_price_low": 347.23,
+      "ticker": "CDNS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 305.79,
+      "reference_price_high": 333.54,
+      "reference_price_low": 319.66,
+      "ticker": "CEG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 108.17,
+      "reference_price_high": 114.3,
+      "reference_price_low": 113.9,
+      "ticker": "CF"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 92.04,
+      "reference_price_high": 96.85,
+      "reference_price_low": 94.71,
+      "ticker": "CHD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 168.65,
+      "reference_price_high": 185.1,
+      "reference_price_low": 176.02,
+      "ticker": "CHRW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 205.68,
+      "reference_price_high": 221.48,
+      "reference_price_low": 213.58,
+      "ticker": "CHTR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 84.19,
+      "reference_price_high": 89.4,
+      "reference_price_low": 86.95,
+      "ticker": "CL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 104.77,
+      "reference_price_high": 111.95,
+      "reference_price_low": 108.36,
+      "ticker": "CLX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 27.25,
+      "reference_price_high": 28.77,
+      "reference_price_low": 28.01,
+      "ticker": "CMCSA"
+    },
+    {
+      "reference_confidence": 15,
+      "reference_invalidation_level": 255.5971,
+      "reference_price_high": 269.4602,
+      "reference_price_low": 263.915,
+      "ticker": "CME"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 34.48,
+      "reference_price_high": 37.36,
+      "reference_price_low": 35.92,
+      "ticker": "CMG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 71.36,
+      "reference_price_high": 73.33,
+      "reference_price_low": 73.14,
+      "ticker": "CMS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 41.07,
+      "reference_price_high": 42.72,
+      "reference_price_low": 42.07,
+      "ticker": "CNP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 112.26,
+      "reference_price_high": 117.77,
+      "reference_price_low": 116.56,
+      "ticker": "COP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 955.11,
+      "reference_price_high": 993.6,
+      "reference_price_low": 983.91,
+      "ticker": "COST"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 25.73,
+      "reference_price_high": 27.55,
+      "reference_price_low": 26.64,
+      "ticker": "CPB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 103.62,
+      "reference_price_high": 111.14,
+      "reference_price_low": 106.37,
+      "ticker": "CPT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 110.86,
+      "reference_price_high": 120.11,
+      "reference_price_low": 115.49,
+      "ticker": "CRH"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 206.08,
+      "reference_price_high": 228.68,
+      "reference_price_low": 217.38,
+      "ticker": "CRM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 521.36,
+      "reference_price_high": 672.12,
+      "reference_price_low": 568.77,
+      "ticker": "CRWD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 55.54,
+      "reference_price_high": 59.34,
+      "reference_price_low": 57.44,
+      "ticker": "CSGP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 75.73,
+      "reference_price_high": 77.86,
+      "reference_price_low": 77.82,
+      "ticker": "CTVA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 68.39,
+      "reference_price_high": 78.83,
+      "reference_price_low": 73.61,
+      "ticker": "CVNA"
+    },
+    {
+      "reference_confidence": 25,
+      "reference_invalidation_level": 189.2975,
+      "reference_price_high": 200.595,
+      "reference_price_low": 196.076,
+      "ticker": "CVX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 62.65,
+      "reference_price_high": 66.86,
+      "reference_price_low": 64.35,
+      "ticker": "D"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 192.62,
+      "reference_price_high": 213.68,
+      "reference_price_low": 203.15,
+      "ticker": "DASH"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 44.8,
+      "reference_price_high": 48.06,
+      "reference_price_low": 46.68,
+      "ticker": "DD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 175.89,
+      "reference_price_high": 229.65,
+      "reference_price_low": 192.69,
+      "ticker": "DDOG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 539.06,
+      "reference_price_high": 574.45,
+      "reference_price_low": 561.35,
+      "ticker": "DE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 98.53,
+      "reference_price_high": 106.58,
+      "reference_price_low": 102.11,
+      "ticker": "DECK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 104.75,
+      "reference_price_high": 109.83,
+      "reference_price_low": 107.29,
+      "ticker": "DIS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 180.68,
+      "reference_price_high": 188.39,
+      "reference_price_low": 185.9,
+      "ticker": "DLR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 33.37,
+      "reference_price_high": 35.8,
+      "reference_price_low": 35.1,
+      "ticker": "DOW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 139.97,
+      "reference_price_high": 145.76,
+      "reference_price_low": 143.3,
+      "ticker": "DTE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 121.38,
+      "reference_price_high": 124.7,
+      "reference_price_low": 124.08,
+      "ticker": "DUK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 43.23,
+      "reference_price_high": 45.81,
+      "reference_price_low": 45.3,
+      "ticker": "DVN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 200.34,
+      "reference_price_high": 202.65,
+      "reference_price_low": 201.57,
+      "ticker": "EA"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 259.934,
+      "reference_price_high": 277.0944,
+      "reference_price_low": 267.8085,
+      "ticker": "ECL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 140.08,
+      "reference_price_high": 156.35,
+      "reference_price_low": 145.98,
+      "ticker": "EMR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 128.81,
+      "reference_price_high": 137.79,
+      "reference_price_low": 133.86,
+      "ticker": "EOG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.88,
+      "reference_price_high": 58.28,
+      "reference_price_low": 56.58,
+      "ticker": "EQT"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 363.0972,
+      "reference_price_high": 416.857,
+      "reference_price_low": 384.77,
+      "ticker": "ETN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 101.7,
+      "reference_price_high": 107.1,
+      "reference_price_low": 104.4,
+      "ticker": "EXE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 181.67,
+      "reference_price_high": 197.46,
+      "reference_price_low": 190.67,
+      "ticker": "FANG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 59.69,
+      "reference_price_high": 66.76,
+      "reference_price_low": 63.09,
+      "ticker": "FCX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.63,
+      "reference_price_high": 60.29,
+      "reference_price_low": 57.46,
+      "ticker": "FOX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 60.64,
+      "reference_price_high": 67.14,
+      "reference_price_low": 63.89,
+      "ticker": "FOXA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 333.0,
+      "reference_price_high": 349.9,
+      "reference_price_low": 341.56,
+      "ticker": "GD"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 294.395,
+      "reference_price_high": 346.6034,
+      "reference_price_low": 306.8,
+      "ticker": "GE"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 313.9776,
+      "reference_price_high": 343.159,
+      "reference_price_low": 325.63,
+      "ticker": "GOOG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 343.37,
+      "reference_price_high": 372.76,
+      "reference_price_low": 356.49,
+      "ticker": "GOOGL"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 882.2791,
+      "reference_price_high": 1028.9946,
+      "reference_price_low": 922.0,
+      "ticker": "GS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 37.24,
+      "reference_price_high": 40.05,
+      "reference_price_low": 38.79,
+      "ticker": "HAL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 349.04,
+      "reference_price_high": 369.86,
+      "reference_price_low": 359.45,
+      "ticker": "HD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 209.89,
+      "reference_price_high": 223.82,
+      "reference_price_low": 218.94,
+      "ticker": "HON"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 501.38,
+      "reference_price_high": 553.16,
+      "reference_price_low": 527.27,
+      "ticker": "INTU"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 476.26,
+      "reference_price_high": 506.46,
+      "reference_price_low": 491.36,
+      "ticker": "ISRG"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 205.7426,
+      "reference_price_high": 234.171,
+      "reference_price_low": 211.43,
+      "ticker": "ITA"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 327.1345,
+      "reference_price_high": 353.6198,
+      "reference_price_low": 337.3,
+      "ticker": "JPM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 30.88,
+      "reference_price_high": 32.05,
+      "reference_price_low": 31.75,
+      "ticker": "KMI"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 42.218,
+      "reference_price_high": 51.7632,
+      "reference_price_low": 45.47,
+      "ticker": "KTOS"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 443.5152,
+      "reference_price_high": 485.8694,
+      "reference_price_low": 454.19,
+      "ticker": "LIN"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 1071.2173,
+      "reference_price_high": 1175.8823,
+      "reference_price_low": 1113.29,
+      "ticker": "LLY"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 496.6888,
+      "reference_price_high": 554.3676,
+      "reference_price_low": 515.598,
+      "ticker": "LMT"
+    },
+    {
+      "reference_confidence": 25,
+      "reference_invalidation_level": 251.2724,
+      "reference_price_high": 271.6112,
+      "reference_price_low": 263.4757,
+      "ticker": "LNG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 155.5,
+      "reference_price_high": 168.46,
+      "reference_price_low": 161.24,
+      "ticker": "LYV"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 522.75,
+      "reference_price_high": 548.9,
+      "reference_price_low": 535.82,
+      "ticker": "MA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 299.55,
+      "reference_price_high": 311.69,
+      "reference_price_low": 305.62,
+      "ticker": "MCD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 802.19,
+      "reference_price_high": 844.67,
+      "reference_price_low": 823.43,
+      "ticker": "MCK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 272.35,
+      "reference_price_high": 348.03,
+      "reference_price_low": 305.3,
+      "ticker": "MDB"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 518.013,
+      "reference_price_high": 609.9591,
+      "reference_price_low": 555.6614,
+      "ticker": "META"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 229.92,
+      "reference_price_high": 259.24,
+      "reference_price_low": 241.94,
+      "ticker": "MPC"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 452.8718,
+      "reference_price_high": 484.3,
+      "reference_price_low": 468.699,
+      "ticker": "MSFT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 767.79,
+      "reference_price_high": 933.74,
+      "reference_price_low": 861.4,
+      "ticker": "MU"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 86.08,
+      "reference_price_high": 89.19,
+      "reference_price_low": 88.3,
+      "ticker": "NEE"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 66.5865,
+      "reference_price_high": 75.6836,
+      "reference_price_low": 70.11,
+      "ticker": "NFLX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 601.8,
+      "reference_price_high": 631.18,
+      "reference_price_low": 616.49,
+      "ticker": "NOC"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 128.0,
+      "reference_price_high": 147.3,
+      "reference_price_low": 137.65,
+      "ticker": "NOW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 224.7,
+      "reference_price_high": 252.0,
+      "reference_price_low": 234.45,
+      "ticker": "NUE"
+    },
+    {
+      "reference_confidence": 35,
+      "reference_invalidation_level": 198.2137,
+      "reference_price_high": 215.3475,
+      "reference_price_low": 208.494,
+      "ticker": "NVDA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 28.85,
+      "reference_price_high": 30.83,
+      "reference_price_low": 29.84,
+      "ticker": "NWS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 341.01,
+      "reference_price_high": 404.94,
+      "reference_price_low": 360.99,
+      "ticker": "OKE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 188.55,
+      "reference_price_high": 222.19,
+      "reference_price_low": 205.37,
+      "ticker": "ORCL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 93.0,
+      "reference_price_high": 98.5,
+      "reference_price_low": 95.75,
+      "ticker": "ORLY"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 212.34,
+      "reference_price_high": 267.74,
+      "reference_price_low": 229.65,
+      "ticker": "PANW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 52.64,
+      "reference_price_high": 56.28,
+      "reference_price_low": 53.94,
+      "ticker": "PAVE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 146.57,
+      "reference_price_high": 154.05,
+      "reference_price_low": 150.31,
+      "ticker": "PEP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 140.65,
+      "reference_price_high": 147.24,
+      "reference_price_low": 144.5,
+      "ticker": "PG"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 877.2796,
+      "reference_price_high": 985.5853,
+      "reference_price_low": 911.41,
+      "ticker": "PH"
+    },
+    {
+      "reference_confidence": 35,
+      "reference_invalidation_level": 148.4873,
+      "reference_price_high": 166.0246,
+      "reference_price_low": 159.0097,
+      "ticker": "PLTR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 168.17,
+      "reference_price_high": 183.56,
+      "reference_price_low": 175.01,
+      "ticker": "QCOM"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 181.1982,
+      "reference_price_high": 207.5891,
+      "reference_price_low": 187.04,
+      "ticker": "RTX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 210.69,
+      "reference_price_high": 228.49,
+      "reference_price_low": 219.59,
+      "ticker": "SAP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 169.19,
+      "reference_price_high": 189.03,
+      "reference_price_low": 179.34,
+      "ticker": "SCCO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 130.78,
+      "reference_price_high": 145.03,
+      "reference_price_low": 137.91,
+      "ticker": "SHOP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 324.89,
+      "reference_price_high": 345.57,
+      "reference_price_low": 335.23,
+      "ticker": "SHW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 51.34,
+      "reference_price_high": 55.95,
+      "reference_price_low": 53.56,
+      "ticker": "SLB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 62.47,
+      "reference_price_high": 66.41,
+      "reference_price_low": 64.22,
+      "ticker": "SLV"
+    },
+    {
+      "reference_confidence": 35,
+      "reference_invalidation_level": 30.1681,
+      "reference_price_high": 35.8656,
+      "reference_price_low": 33.5866,
+      "ticker": "SMCI"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 166.93,
+      "reference_price_high": 226.33,
+      "reference_price_low": 187.42,
+      "ticker": "SNOW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 90.51,
+      "reference_price_high": 93.52,
+      "reference_price_low": 92.63,
+      "ticker": "SO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 341.32,
+      "reference_price_high": 361.74,
+      "reference_price_low": 351.53,
+      "ticker": "SYK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 1167.8,
+      "reference_price_high": 1248.02,
+      "reference_price_low": 1210.68,
+      "ticker": "TDG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 84.59,
+      "reference_price_high": 85.96,
+      "reference_price_low": 85.2,
+      "ticker": "TLT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 508.32,
+      "reference_price_high": 543.9,
+      "reference_price_low": 526.11,
+      "ticker": "TMO"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 153.7234,
+      "reference_price_high": 179.5534,
+      "reference_price_low": 161.21,
+      "ticker": "TMUS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 392.48,
+      "reference_price_high": 422.78,
+      "reference_price_low": 410.14,
+      "ticker": "TSM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 241.32,
+      "reference_price_high": 284.2,
+      "reference_price_low": 254.72,
+      "ticker": "TXN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 79.47,
+      "reference_price_high": 85.12,
+      "reference_price_low": 82.3,
+      "ticker": "UBER"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 363.15,
+      "reference_price_high": 395.94,
+      "reference_price_low": 374.86,
+      "ticker": "UNH"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 251.7,
+      "reference_price_high": 269.16,
+      "reference_price_low": 259.94,
+      "ticker": "UNP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 930.93,
+      "reference_price_high": 1038.8,
+      "reference_price_low": 969.46,
+      "ticker": "URI"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 308.53,
+      "reference_price_high": 324.99,
+      "reference_price_low": 317.48,
+      "ticker": "V"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 220.85,
+      "reference_price_high": 233.7,
+      "reference_price_low": 225.44,
+      "ticker": "VAW"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 230.7761,
+      "reference_price_high": 271.3703,
+      "reference_price_low": 240.69,
+      "ticker": "VMC"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 207.0853,
+      "reference_price_high": 268.9874,
+      "reference_price_low": 226.94,
+      "ticker": "VRT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 78.15,
+      "reference_price_high": 83.36,
+      "reference_price_low": 80.88,
+      "ticker": "VXUS"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 66.9659,
+      "reference_price_high": 72.4554,
+      "reference_price_low": 69.85,
+      "ticker": "WMB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 117.69,
+      "reference_price_high": 121.92,
+      "reference_price_low": 121.7,
+      "ticker": "WMT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 48.81,
+      "reference_price_high": 51.68,
+      "reference_price_low": 49.84,
+      "ticker": "XLB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 112.71,
+      "reference_price_high": 116.55,
+      "reference_price_low": 114.31,
+      "ticker": "XLC"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.83,
+      "reference_price_high": 58.04,
+      "reference_price_low": 56.35,
+      "ticker": "XLE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 51.61,
+      "reference_price_high": 53.07,
+      "reference_price_low": 52.26,
+      "ticker": "XLF"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 163.1,
+      "reference_price_high": 173.4,
+      "reference_price_low": 166.78,
+      "ticker": "XLI"
+    },
+    {
+      "reference_confidence": 25,
+      "reference_invalidation_level": 149.1198,
+      "reference_price_high": 158.5335,
+      "reference_price_low": 154.768,
+      "ticker": "XOM"
+    }
+  ],
+  "row_count": 200,
+  "rows": [
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 124.43,
+      "reference_price_high": 136.45,
+      "reference_price_low": 130.44,
+      "ticker": "A"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 277.63,
+      "reference_price_high": 300.76,
+      "reference_price_low": 286.37,
+      "ticker": "AAPL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 206.18,
+      "reference_price_high": 220.95,
+      "reference_price_low": 212.97,
+      "ticker": "ABBV"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 126.45,
+      "reference_price_high": 135.76,
+      "reference_price_low": 132.13,
+      "ticker": "ABNB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 111.63,
+      "reference_price_high": 116.51,
+      "reference_price_low": 114.07,
+      "ticker": "ABT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 91.03,
+      "reference_price_high": 95.75,
+      "reference_price_low": 93.39,
+      "ticker": "ACGL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 195.74,
+      "reference_price_high": 213.9,
+      "reference_price_low": 203.81,
+      "ticker": "ACN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 282.98,
+      "reference_price_high": 310.73,
+      "reference_price_low": 296.85,
+      "ticker": "ADBE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 340.76,
+      "reference_price_high": 385.25,
+      "reference_price_low": 356.65,
+      "ticker": "ADI"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 73.06,
+      "reference_price_high": 80.26,
+      "reference_price_low": 75.92,
+      "ticker": "ADM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 237.69,
+      "reference_price_high": 266.8,
+      "reference_price_low": 248.3,
+      "ticker": "ADP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 240.53,
+      "reference_price_high": 262.87,
+      "reference_price_low": 250.46,
+      "ticker": "ADSK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 105.55,
+      "reference_price_high": 109.32,
+      "reference_price_low": 108.16,
+      "ticker": "AEE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 125.69,
+      "reference_price_high": 129.39,
+      "reference_price_low": 128.5,
+      "ticker": "AEP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 14.48,
+      "reference_price_high": 14.66,
+      "reference_price_low": 14.55,
+      "ticker": "AES"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 110.78,
+      "reference_price_high": 116.56,
+      "reference_price_low": 113.63,
+      "ticker": "AFL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 75.73,
+      "reference_price_high": 79.75,
+      "reference_price_low": 77.74,
+      "ticker": "AIG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 237.22,
+      "reference_price_high": 254.55,
+      "reference_price_low": 243.41,
+      "ticker": "AIZ"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 236.83,
+      "reference_price_high": 251.35,
+      "reference_price_low": 244.09,
+      "ticker": "AJG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 97.38,
+      "reference_price_high": 121.46,
+      "reference_price_low": 104.91,
+      "ticker": "AKAM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 148.61,
+      "reference_price_high": 160.04,
+      "reference_price_low": 153.69,
+      "ticker": "ALB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 160.2,
+      "reference_price_high": 173.59,
+      "reference_price_low": 168.61,
+      "ticker": "ALGN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 205.08,
+      "reference_price_high": 218.49,
+      "reference_price_low": 212.0,
+      "ticker": "ALL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 143.26,
+      "reference_price_high": 160.17,
+      "reference_price_low": 149.3,
+      "ticker": "ALLE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 468.3,
+      "reference_price_high": 541.1,
+      "reference_price_low": 511.64,
+      "ticker": "AMAT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 41.72,
+      "reference_price_high": 46.09,
+      "reference_price_low": 43.28,
+      "ticker": "AMCR"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 406.3158,
+      "reference_price_high": 498.7872,
+      "reference_price_low": 440.5,
+      "ticker": "AMD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 232.14,
+      "reference_price_high": 250.17,
+      "reference_price_low": 238.74,
+      "ticker": "AME"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 327.24,
+      "reference_price_high": 345.15,
+      "reference_price_low": 338.21,
+      "ticker": "AMGN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 461.25,
+      "reference_price_high": 488.23,
+      "reference_price_low": 474.74,
+      "ticker": "AMP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 174.98,
+      "reference_price_high": 187.35,
+      "reference_price_low": 180.81,
+      "ticker": "AMT"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 235.783,
+      "reference_price_high": 256.2554,
+      "reference_price_low": 244.3,
+      "ticker": "AMZN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 159.61,
+      "reference_price_high": 191.55,
+      "reference_price_low": 172.32,
+      "ticker": "ANET"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 328.77,
+      "reference_price_high": 347.95,
+      "reference_price_low": 338.36,
+      "ticker": "AON"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 63.02,
+      "reference_price_high": 67.0,
+      "reference_price_low": 64.79,
+      "ticker": "AOS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 34.37,
+      "reference_price_high": 37.43,
+      "reference_price_low": 36.34,
+      "ticker": "APA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 276.63,
+      "reference_price_high": 285.6,
+      "reference_price_low": 284.35,
+      "ticker": "APD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 146.43,
+      "reference_price_high": 166.14,
+      "reference_price_low": 155.18,
+      "ticker": "APH"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 120.43,
+      "reference_price_high": 131.69,
+      "reference_price_low": 125.34,
+      "ticker": "APO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 484.44,
+      "reference_price_high": 534.35,
+      "reference_price_low": 506.62,
+      "ticker": "APP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 70.61,
+      "reference_price_high": 78.59,
+      "reference_price_low": 74.6,
+      "ticker": "APTV"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.19,
+      "reference_price_high": 59.21,
+      "reference_price_low": 56.7,
+      "ticker": "ARE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 135.54,
+      "reference_price_high": 147.66,
+      "reference_price_low": 141.6,
+      "ticker": "ARES"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 1453.11,
+      "reference_price_high": 1738.36,
+      "reference_price_low": 1553.38,
+      "ticker": "ASML"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 172.79,
+      "reference_price_high": 180.07,
+      "reference_price_low": 176.43,
+      "ticker": "ATO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 176.34,
+      "reference_price_high": 185.94,
+      "reference_price_low": 180.34,
+      "ticker": "AVB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 343.04,
+      "reference_price_high": 406.04,
+      "reference_price_low": 362.73,
+      "ticker": "AVGO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 167.98,
+      "reference_price_high": 177.46,
+      "reference_price_low": 172.72,
+      "ticker": "AVY"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 128.92,
+      "reference_price_high": 135.9,
+      "reference_price_low": 132.41,
+      "ticker": "AWK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 512.86,
+      "reference_price_high": 582.56,
+      "reference_price_low": 547.71,
+      "ticker": "AXON"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 304.48,
+      "reference_price_high": 320.76,
+      "reference_price_low": 313.88,
+      "ticker": "AXP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 3532.06,
+      "reference_price_high": 3795.64,
+      "reference_price_low": 3663.85,
+      "ticker": "AZO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 209.03,
+      "reference_price_high": 223.21,
+      "reference_price_low": 218.21,
+      "ticker": "BA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 55.11,
+      "reference_price_high": 57.38,
+      "reference_price_low": 56.73,
+      "ticker": "BALL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 17.59,
+      "reference_price_high": 19.68,
+      "reference_price_low": 18.46,
+      "ticker": "BAX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 62.17,
+      "reference_price_high": 72.44,
+      "reference_price_low": 65.87,
+      "ticker": "BBY"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 149.61,
+      "reference_price_high": 158.66,
+      "reference_price_low": 154.14,
+      "ticker": "BDX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 26.38,
+      "reference_price_high": 28.36,
+      "reference_price_low": 27.37,
+      "ticker": "BF-B"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 117.03,
+      "reference_price_high": 126.21,
+      "reference_price_low": 122.15,
+      "ticker": "BG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 181.6,
+      "reference_price_high": 196.42,
+      "reference_price_low": 188.55,
+      "ticker": "BIIB"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 150.6453,
+      "reference_price_high": 192.1504,
+      "reference_price_low": 160.59,
+      "ticker": "BKNG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 60.1,
+      "reference_price_high": 64.37,
+      "reference_price_low": 62.61,
+      "ticker": "BKR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 99.51,
+      "reference_price_high": 108.73,
+      "reference_price_low": 104.12,
+      "ticker": "BLDR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.77,
+      "reference_price_high": 56.98,
+      "reference_price_low": 56.54,
+      "ticker": "BMY"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 193.07,
+      "reference_price_high": 204.15,
+      "reference_price_low": 198.61,
+      "ticker": "BR"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 490.7142,
+      "reference_price_high": 505.3874,
+      "reference_price_low": 499.22,
+      "ticker": "BRK.B"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 79.64,
+      "reference_price_high": 83.98,
+      "reference_price_low": 81.81,
+      "ticker": "BSX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 58.05,
+      "reference_price_high": 63.4,
+      "reference_price_low": 59.96,
+      "ticker": "BXP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 16.34,
+      "reference_price_high": 17.38,
+      "reference_price_low": 16.86,
+      "ticker": "CAG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 60.61,
+      "reference_price_high": 68.26,
+      "reference_price_low": 63.76,
+      "ticker": "CARR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 791.06,
+      "reference_price_high": 855.09,
+      "reference_price_low": 822.41,
+      "ticker": "CASY"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 739.4108,
+      "reference_price_high": 834.8243,
+      "reference_price_low": 771.39,
+      "ticker": "CAT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 146.31,
+      "reference_price_high": 156.03,
+      "reference_price_low": 151.17,
+      "ticker": "CBRE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 86.75,
+      "reference_price_high": 92.65,
+      "reference_price_low": 89.7,
+      "ticker": "CCI"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 24.77,
+      "reference_price_high": 28.1,
+      "reference_price_low": 25.96,
+      "ticker": "CCL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 334.94,
+      "reference_price_high": 362.59,
+      "reference_price_low": 347.23,
+      "ticker": "CDNS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 305.79,
+      "reference_price_high": 333.54,
+      "reference_price_low": 319.66,
+      "ticker": "CEG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 108.17,
+      "reference_price_high": 114.3,
+      "reference_price_low": 113.9,
+      "ticker": "CF"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 92.04,
+      "reference_price_high": 96.85,
+      "reference_price_low": 94.71,
+      "ticker": "CHD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 168.65,
+      "reference_price_high": 185.1,
+      "reference_price_low": 176.02,
+      "ticker": "CHRW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 205.68,
+      "reference_price_high": 221.48,
+      "reference_price_low": 213.58,
+      "ticker": "CHTR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 84.19,
+      "reference_price_high": 89.4,
+      "reference_price_low": 86.95,
+      "ticker": "CL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 104.77,
+      "reference_price_high": 111.95,
+      "reference_price_low": 108.36,
+      "ticker": "CLX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 27.25,
+      "reference_price_high": 28.77,
+      "reference_price_low": 28.01,
+      "ticker": "CMCSA"
+    },
+    {
+      "reference_confidence": 15,
+      "reference_invalidation_level": 255.5971,
+      "reference_price_high": 269.4602,
+      "reference_price_low": 263.915,
+      "ticker": "CME"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 34.48,
+      "reference_price_high": 37.36,
+      "reference_price_low": 35.92,
+      "ticker": "CMG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 71.36,
+      "reference_price_high": 73.33,
+      "reference_price_low": 73.14,
+      "ticker": "CMS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 41.07,
+      "reference_price_high": 42.72,
+      "reference_price_low": 42.07,
+      "ticker": "CNP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 112.26,
+      "reference_price_high": 117.77,
+      "reference_price_low": 116.56,
+      "ticker": "COP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 955.11,
+      "reference_price_high": 993.6,
+      "reference_price_low": 983.91,
+      "ticker": "COST"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 25.73,
+      "reference_price_high": 27.55,
+      "reference_price_low": 26.64,
+      "ticker": "CPB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 103.62,
+      "reference_price_high": 111.14,
+      "reference_price_low": 106.37,
+      "ticker": "CPT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 110.86,
+      "reference_price_high": 120.11,
+      "reference_price_low": 115.49,
+      "ticker": "CRH"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 206.08,
+      "reference_price_high": 228.68,
+      "reference_price_low": 217.38,
+      "ticker": "CRM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 521.36,
+      "reference_price_high": 672.12,
+      "reference_price_low": 568.77,
+      "ticker": "CRWD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 55.54,
+      "reference_price_high": 59.34,
+      "reference_price_low": 57.44,
+      "ticker": "CSGP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 75.73,
+      "reference_price_high": 77.86,
+      "reference_price_low": 77.82,
+      "ticker": "CTVA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 68.39,
+      "reference_price_high": 78.83,
+      "reference_price_low": 73.61,
+      "ticker": "CVNA"
+    },
+    {
+      "reference_confidence": 25,
+      "reference_invalidation_level": 189.2975,
+      "reference_price_high": 200.595,
+      "reference_price_low": 196.076,
+      "ticker": "CVX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 62.65,
+      "reference_price_high": 66.86,
+      "reference_price_low": 64.35,
+      "ticker": "D"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 192.62,
+      "reference_price_high": 213.68,
+      "reference_price_low": 203.15,
+      "ticker": "DASH"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 44.8,
+      "reference_price_high": 48.06,
+      "reference_price_low": 46.68,
+      "ticker": "DD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 175.89,
+      "reference_price_high": 229.65,
+      "reference_price_low": 192.69,
+      "ticker": "DDOG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 539.06,
+      "reference_price_high": 574.45,
+      "reference_price_low": 561.35,
+      "ticker": "DE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 98.53,
+      "reference_price_high": 106.58,
+      "reference_price_low": 102.11,
+      "ticker": "DECK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 104.75,
+      "reference_price_high": 109.83,
+      "reference_price_low": 107.29,
+      "ticker": "DIS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 180.68,
+      "reference_price_high": 188.39,
+      "reference_price_low": 185.9,
+      "ticker": "DLR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 33.37,
+      "reference_price_high": 35.8,
+      "reference_price_low": 35.1,
+      "ticker": "DOW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 139.97,
+      "reference_price_high": 145.76,
+      "reference_price_low": 143.3,
+      "ticker": "DTE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 121.38,
+      "reference_price_high": 124.7,
+      "reference_price_low": 124.08,
+      "ticker": "DUK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 43.23,
+      "reference_price_high": 45.81,
+      "reference_price_low": 45.3,
+      "ticker": "DVN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 200.34,
+      "reference_price_high": 202.65,
+      "reference_price_low": 201.57,
+      "ticker": "EA"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 259.934,
+      "reference_price_high": 277.0944,
+      "reference_price_low": 267.8085,
+      "ticker": "ECL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 140.08,
+      "reference_price_high": 156.35,
+      "reference_price_low": 145.98,
+      "ticker": "EMR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 128.81,
+      "reference_price_high": 137.79,
+      "reference_price_low": 133.86,
+      "ticker": "EOG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.88,
+      "reference_price_high": 58.28,
+      "reference_price_low": 56.58,
+      "ticker": "EQT"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 363.0972,
+      "reference_price_high": 416.857,
+      "reference_price_low": 384.77,
+      "ticker": "ETN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 101.7,
+      "reference_price_high": 107.1,
+      "reference_price_low": 104.4,
+      "ticker": "EXE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 181.67,
+      "reference_price_high": 197.46,
+      "reference_price_low": 190.67,
+      "ticker": "FANG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 59.69,
+      "reference_price_high": 66.76,
+      "reference_price_low": 63.09,
+      "ticker": "FCX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.63,
+      "reference_price_high": 60.29,
+      "reference_price_low": 57.46,
+      "ticker": "FOX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 60.64,
+      "reference_price_high": 67.14,
+      "reference_price_low": 63.89,
+      "ticker": "FOXA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 333.0,
+      "reference_price_high": 349.9,
+      "reference_price_low": 341.56,
+      "ticker": "GD"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 294.395,
+      "reference_price_high": 346.6034,
+      "reference_price_low": 306.8,
+      "ticker": "GE"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 313.9776,
+      "reference_price_high": 343.159,
+      "reference_price_low": 325.63,
+      "ticker": "GOOG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 343.37,
+      "reference_price_high": 372.76,
+      "reference_price_low": 356.49,
+      "ticker": "GOOGL"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 882.2791,
+      "reference_price_high": 1028.9946,
+      "reference_price_low": 922.0,
+      "ticker": "GS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 37.24,
+      "reference_price_high": 40.05,
+      "reference_price_low": 38.79,
+      "ticker": "HAL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 349.04,
+      "reference_price_high": 369.86,
+      "reference_price_low": 359.45,
+      "ticker": "HD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 209.89,
+      "reference_price_high": 223.82,
+      "reference_price_low": 218.94,
+      "ticker": "HON"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 501.38,
+      "reference_price_high": 553.16,
+      "reference_price_low": 527.27,
+      "ticker": "INTU"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 476.26,
+      "reference_price_high": 506.46,
+      "reference_price_low": 491.36,
+      "ticker": "ISRG"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 205.7426,
+      "reference_price_high": 234.171,
+      "reference_price_low": 211.43,
+      "ticker": "ITA"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 327.1345,
+      "reference_price_high": 353.6198,
+      "reference_price_low": 337.3,
+      "ticker": "JPM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 30.88,
+      "reference_price_high": 32.05,
+      "reference_price_low": 31.75,
+      "ticker": "KMI"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 42.218,
+      "reference_price_high": 51.7632,
+      "reference_price_low": 45.47,
+      "ticker": "KTOS"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 443.5152,
+      "reference_price_high": 485.8694,
+      "reference_price_low": 454.19,
+      "ticker": "LIN"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 1071.2173,
+      "reference_price_high": 1175.8823,
+      "reference_price_low": 1113.29,
+      "ticker": "LLY"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 496.6888,
+      "reference_price_high": 554.3676,
+      "reference_price_low": 515.598,
+      "ticker": "LMT"
+    },
+    {
+      "reference_confidence": 25,
+      "reference_invalidation_level": 251.2724,
+      "reference_price_high": 271.6112,
+      "reference_price_low": 263.4757,
+      "ticker": "LNG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 155.5,
+      "reference_price_high": 168.46,
+      "reference_price_low": 161.24,
+      "ticker": "LYV"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 522.75,
+      "reference_price_high": 548.9,
+      "reference_price_low": 535.82,
+      "ticker": "MA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 299.55,
+      "reference_price_high": 311.69,
+      "reference_price_low": 305.62,
+      "ticker": "MCD"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 802.19,
+      "reference_price_high": 844.67,
+      "reference_price_low": 823.43,
+      "ticker": "MCK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 272.35,
+      "reference_price_high": 348.03,
+      "reference_price_low": 305.3,
+      "ticker": "MDB"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 518.013,
+      "reference_price_high": 609.9591,
+      "reference_price_low": 555.6614,
+      "ticker": "META"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 229.92,
+      "reference_price_high": 259.24,
+      "reference_price_low": 241.94,
+      "ticker": "MPC"
+    },
+    {
+      "reference_confidence": 50,
+      "reference_invalidation_level": 452.8718,
+      "reference_price_high": 484.3,
+      "reference_price_low": 468.699,
+      "ticker": "MSFT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 767.79,
+      "reference_price_high": 933.74,
+      "reference_price_low": 861.4,
+      "ticker": "MU"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 86.08,
+      "reference_price_high": 89.19,
+      "reference_price_low": 88.3,
+      "ticker": "NEE"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 66.5865,
+      "reference_price_high": 75.6836,
+      "reference_price_low": 70.11,
+      "ticker": "NFLX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 601.8,
+      "reference_price_high": 631.18,
+      "reference_price_low": 616.49,
+      "ticker": "NOC"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 128.0,
+      "reference_price_high": 147.3,
+      "reference_price_low": 137.65,
+      "ticker": "NOW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 224.7,
+      "reference_price_high": 252.0,
+      "reference_price_low": 234.45,
+      "ticker": "NUE"
+    },
+    {
+      "reference_confidence": 35,
+      "reference_invalidation_level": 198.2137,
+      "reference_price_high": 215.3475,
+      "reference_price_low": 208.494,
+      "ticker": "NVDA"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 28.85,
+      "reference_price_high": 30.83,
+      "reference_price_low": 29.84,
+      "ticker": "NWS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 341.01,
+      "reference_price_high": 404.94,
+      "reference_price_low": 360.99,
+      "ticker": "OKE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 188.55,
+      "reference_price_high": 222.19,
+      "reference_price_low": 205.37,
+      "ticker": "ORCL"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 93.0,
+      "reference_price_high": 98.5,
+      "reference_price_low": 95.75,
+      "ticker": "ORLY"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 212.34,
+      "reference_price_high": 267.74,
+      "reference_price_low": 229.65,
+      "ticker": "PANW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 52.64,
+      "reference_price_high": 56.28,
+      "reference_price_low": 53.94,
+      "ticker": "PAVE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 146.57,
+      "reference_price_high": 154.05,
+      "reference_price_low": 150.31,
+      "ticker": "PEP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 140.65,
+      "reference_price_high": 147.24,
+      "reference_price_low": 144.5,
+      "ticker": "PG"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 877.2796,
+      "reference_price_high": 985.5853,
+      "reference_price_low": 911.41,
+      "ticker": "PH"
+    },
+    {
+      "reference_confidence": 35,
+      "reference_invalidation_level": 148.4873,
+      "reference_price_high": 166.0246,
+      "reference_price_low": 159.0097,
+      "ticker": "PLTR"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 168.17,
+      "reference_price_high": 183.56,
+      "reference_price_low": 175.01,
+      "ticker": "QCOM"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 181.1982,
+      "reference_price_high": 207.5891,
+      "reference_price_low": 187.04,
+      "ticker": "RTX"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 210.69,
+      "reference_price_high": 228.49,
+      "reference_price_low": 219.59,
+      "ticker": "SAP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 169.19,
+      "reference_price_high": 189.03,
+      "reference_price_low": 179.34,
+      "ticker": "SCCO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 130.78,
+      "reference_price_high": 145.03,
+      "reference_price_low": 137.91,
+      "ticker": "SHOP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 324.89,
+      "reference_price_high": 345.57,
+      "reference_price_low": 335.23,
+      "ticker": "SHW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 51.34,
+      "reference_price_high": 55.95,
+      "reference_price_low": 53.56,
+      "ticker": "SLB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 62.47,
+      "reference_price_high": 66.41,
+      "reference_price_low": 64.22,
+      "ticker": "SLV"
+    },
+    {
+      "reference_confidence": 35,
+      "reference_invalidation_level": 30.1681,
+      "reference_price_high": 35.8656,
+      "reference_price_low": 33.5866,
+      "ticker": "SMCI"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 166.93,
+      "reference_price_high": 226.33,
+      "reference_price_low": 187.42,
+      "ticker": "SNOW"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 90.51,
+      "reference_price_high": 93.52,
+      "reference_price_low": 92.63,
+      "ticker": "SO"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 341.32,
+      "reference_price_high": 361.74,
+      "reference_price_low": 351.53,
+      "ticker": "SYK"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 1167.8,
+      "reference_price_high": 1248.02,
+      "reference_price_low": 1210.68,
+      "ticker": "TDG"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 84.59,
+      "reference_price_high": 85.96,
+      "reference_price_low": 85.2,
+      "ticker": "TLT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 508.32,
+      "reference_price_high": 543.9,
+      "reference_price_low": 526.11,
+      "ticker": "TMO"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 153.7234,
+      "reference_price_high": 179.5534,
+      "reference_price_low": 161.21,
+      "ticker": "TMUS"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 392.48,
+      "reference_price_high": 422.78,
+      "reference_price_low": 410.14,
+      "ticker": "TSM"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 241.32,
+      "reference_price_high": 284.2,
+      "reference_price_low": 254.72,
+      "ticker": "TXN"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 79.47,
+      "reference_price_high": 85.12,
+      "reference_price_low": 82.3,
+      "ticker": "UBER"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 363.15,
+      "reference_price_high": 395.94,
+      "reference_price_low": 374.86,
+      "ticker": "UNH"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 251.7,
+      "reference_price_high": 269.16,
+      "reference_price_low": 259.94,
+      "ticker": "UNP"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 930.93,
+      "reference_price_high": 1038.8,
+      "reference_price_low": 969.46,
+      "ticker": "URI"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 308.53,
+      "reference_price_high": 324.99,
+      "reference_price_low": 317.48,
+      "ticker": "V"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 220.85,
+      "reference_price_high": 233.7,
+      "reference_price_low": 225.44,
+      "ticker": "VAW"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 230.7761,
+      "reference_price_high": 271.3703,
+      "reference_price_low": 240.69,
+      "ticker": "VMC"
+    },
+    {
+      "reference_confidence": 30,
+      "reference_invalidation_level": 207.0853,
+      "reference_price_high": 268.9874,
+      "reference_price_low": 226.94,
+      "ticker": "VRT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 78.15,
+      "reference_price_high": 83.36,
+      "reference_price_low": 80.88,
+      "ticker": "VXUS"
+    },
+    {
+      "reference_confidence": 40,
+      "reference_invalidation_level": 66.9659,
+      "reference_price_high": 72.4554,
+      "reference_price_low": 69.85,
+      "ticker": "WMB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 117.69,
+      "reference_price_high": 121.92,
+      "reference_price_low": 121.7,
+      "ticker": "WMT"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 48.81,
+      "reference_price_high": 51.68,
+      "reference_price_low": 49.84,
+      "ticker": "XLB"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 112.71,
+      "reference_price_high": 116.55,
+      "reference_price_low": 114.31,
+      "ticker": "XLC"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 54.83,
+      "reference_price_high": 58.04,
+      "reference_price_low": 56.35,
+      "ticker": "XLE"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 51.61,
+      "reference_price_high": 53.07,
+      "reference_price_low": 52.26,
+      "ticker": "XLF"
+    },
+    {
+      "reference_confidence": null,
+      "reference_invalidation_level": 163.1,
+      "reference_price_high": 173.4,
+      "reference_price_low": 166.78,
+      "ticker": "XLI"
+    },
+    {
+      "reference_confidence": 25,
+      "reference_invalidation_level": 149.1198,
+      "reference_price_high": 158.5335,
+      "reference_price_low": 154.768,
+      "ticker": "XOM"
+    }
+  ],
+  "schema": "veritas.alert_reference_numeric_baseline.v1"
+}

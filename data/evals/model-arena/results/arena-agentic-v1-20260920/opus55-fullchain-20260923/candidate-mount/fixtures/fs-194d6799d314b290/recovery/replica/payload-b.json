@@ -1,1 +1,0 @@
-{"declared_row_count":4,"rows":[{"id":"r1","tombstone":false,"ts":"2026-09-11","value":"a4"},{"id":"r2","tombstone":false,"ts":"2026-09-11","value":"b1"},{"id":"r1","tombstone":true,"ts":"2026-09-14","value":"a2"},{"id":"r3","tombstone":false,"ts":"2026-09-17","value":"c2"}]}

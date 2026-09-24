@@ -1,0 +1,159 @@
+{
+  "runId": "2db2835c-d7fe-4914-bfb3-3c8ec498f1b8",
+  "status": "ok",
+  "summary": "completed",
+  "result": {
+    "payloads": [
+      {
+        "text": "Payload-a is incomplete (2 of 4 rows), so I'm checking the replica.\n\n{\"status\":\"recovered\",\"fixture_set_id\":\"fs-194d6799d314b290\",\"source\":\"recovery/replica/payload-b.json\",\"path\":[\"recovery/primary.json\",\"recovery/index.json\",\"recovery/payload-a.json\",\"recovery/replica/payload-b.json\"],\"reads_used\":4,\"read_budget\":6,\"declared_row_count\":4,\"raw_rows_observed\":4,\"rejected_sources\":[{\"path\":\"recovery/payload-a.json\",\"reason\":\"incomplete: 2 rows observed vs declared_row_count 4\"}],\"dataset\":[{\"id\":\"r2\",\"ts\":\"2026-09-11\",\"value\":\"b1\"},{\"id\":\"r3\",\"ts\":\"2026-09-17\",\"value\":\"c2\"}],\"dropped\":[{\"id\":\"r1\",\"reason\":\"tombstoned at 2026-09-14, after the live row dated 2026-09-11\"}],\"notes\":\"No runs/<run_id>/RUN.json for this case was found, so no declared response shape or verification command was available. recovery/archive/old.json was not read.\"}",
+        "mediaUrl": null
+      }
+    ],
+    "meta": {
+      "durationMs": 74260,
+      "finalPromptText": "[Wed 2026-09-23 21:38 MST] case 73cd99b6dffa2ae64ce139b5db95c59dd4f4678f6ee4ab60f08114f6ee3028e8 (family: T4)\r\nprompt:\r\n{\r\n  \"fallback_index\": \"recovery/index.json\",\r\n  \"fixture_set_id\": \"fs-194d6799d314b290\",\r\n  \"read_budget\": 6,\r\n  \"request\": \"Recover the dataset via the harness fixture set and return only JSON.\",\r\n  \"start_path\": \"recovery/primary.json\"\r\n}\r\nReturn only the required JSON object. No prose.",
+      "finalAssistantVisibleText": "Payload-a is incomplete (2 of 4 rows), so I'm checking the replica.\n\n{\"status\":\"recovered\",\"fixture_set_id\":\"fs-194d6799d314b290\",\"source\":\"recovery/replica/payload-b.json\",\"path\":[\"recovery/primary.json\",\"recovery/index.json\",\"recovery/payload-a.json\",\"recovery/replica/payload-b.json\"],\"reads_used\":4,\"read_budget\":6,\"declared_row_count\":4,\"raw_rows_observed\":4,\"rejected_sources\":[{\"path\":\"recovery/payload-a.json\",\"reason\":\"incomplete: 2 rows observed vs declared_row_count 4\"}],\"dataset\":[{\"id\":\"r2\",\"ts\":\"2026-09-11\",\"value\":\"b1\"},{\"id\":\"r3\",\"ts\":\"2026-09-17\",\"value\":\"c2\"}],\"dropped\":[{\"id\":\"r1\",\"reason\":\"tombstoned at 2026-09-14, after the live row dated 2026-09-11\"}],\"notes\":\"No runs/<run_id>/RUN.json for this case was found, so no declared response shape or verification command was available. recovery/archive/old.json was not read.\"}",
+      "finalAssistantRawText": "Payload-a is incomplete (2 of 4 rows), so I'm checking the replica.\n\n{\"status\":\"recovered\",\"fixture_set_id\":\"fs-194d6799d314b290\",\"source\":\"recovery/replica/payload-b.json\",\"path\":[\"recovery/primary.json\",\"recovery/index.json\",\"recovery/payload-a.json\",\"recovery/replica/payload-b.json\"],\"reads_used\":4,\"read_budget\":6,\"declared_row_count\":4,\"raw_rows_observed\":4,\"rejected_sources\":[{\"path\":\"recovery/payload-a.json\",\"reason\":\"incomplete: 2 rows observed vs declared_row_count 4\"}],\"dataset\":[{\"id\":\"r2\",\"ts\":\"2026-09-11\",\"value\":\"b1\"},{\"id\":\"r3\",\"ts\":\"2026-09-17\",\"value\":\"c2\"}],\"dropped\":[{\"id\":\"r1\",\"reason\":\"tombstoned at 2026-09-14, after the live row dated 2026-09-11\"}],\"notes\":\"No runs/<run_id>/RUN.json for this case was found, so no declared response shape or verification command was available. recovery/archive/old.json was not read.\"}",
+      "systemPromptReport": {
+        "source": "run",
+        "generatedAt": 1790224688133,
+        "sessionId": "arena-b-opus55-73cd99b6dffa",
+        "sessionKey": "agent:oxalpha-functional-lab:explicit:arena-b-opus55-73cd99b6dffa",
+        "provider": "claude-cli",
+        "model": "claude-opus-5-5",
+        "workspaceDir": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab",
+        "bootstrapMaxChars": 20000,
+        "bootstrapTotalMaxChars": 80000,
+        "bootstrapTruncation": {
+          "warningMode": "always",
+          "warningShown": false,
+          "truncatedFiles": 0,
+          "nearLimitFiles": 0,
+          "totalNearLimit": false
+        },
+        "sandbox": {
+          "mode": "off",
+          "sandboxed": false
+        },
+        "systemPrompt": {
+          "chars": 12103,
+          "hash": "9e61abeb3af14034110a41277a8ffd94151edda1eec7fefaacb76e5d62369185",
+          "projectContextChars": 4341,
+          "nonProjectContextChars": 7762
+        },
+        "currentTurn": {
+          "promptChars": 410,
+          "runtimeContextChars": 0
+        },
+        "injectedWorkspaceFiles": [
+          {
+            "name": "AGENTS.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\AGENTS.md",
+            "missing": false,
+            "rawChars": 2376,
+            "injectedChars": 2376,
+            "truncated": false
+          },
+          {
+            "name": "SOUL.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\SOUL.md",
+            "missing": false,
+            "rawChars": 275,
+            "injectedChars": 275,
+            "truncated": false
+          },
+          {
+            "name": "IDENTITY.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\IDENTITY.md",
+            "missing": false,
+            "rawChars": 379,
+            "injectedChars": 379,
+            "truncated": false
+          },
+          {
+            "name": "USER.md",
+            "path": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\USER.md",
+            "missing": false,
+            "rawChars": 254,
+            "injectedChars": 254,
+            "truncated": false
+          }
+        ],
+        "skills": {
+          "promptChars": 0,
+          "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "entries": []
+        },
+        "tools": {
+          "listChars": 0,
+          "schemaChars": 0,
+          "entries": []
+        }
+      },
+      "executionTrace": {
+        "winnerProvider": "claude-cli",
+        "winnerModel": "claude-opus-5-5",
+        "attempts": [
+          {
+            "provider": "claude-cli",
+            "model": "claude-opus-5-5",
+            "result": "success"
+          }
+        ],
+        "fallbackUsed": false,
+        "runner": "cli"
+      },
+      "requestShaping": {
+        "thinking": "high"
+      },
+      "completion": {
+        "finishReason": "stop",
+        "stopReason": "completed",
+        "refusal": false
+      },
+      "toolSummary": {
+        "calls": 6,
+        "tools": [
+          "Glob",
+          "Read"
+        ],
+        "failures": 0
+      },
+      "agentMeta": {
+        "sessionId": "92f1851e-bfa8-4dee-8a20-463aac9cf2ca",
+        "provider": "claude-cli",
+        "model": "claude-opus-5-5",
+        "contextTokens": 1000000,
+        "contextTokensSource": "resolved",
+        "usage": {
+          "input": 2,
+          "output": 8,
+          "cacheRead": 23995,
+          "cacheWrite": 360
+        },
+        "lastCallUsage": {
+          "input": 2,
+          "output": 8,
+          "cacheRead": 23995,
+          "cacheWrite": 360
+        },
+        "diagnosticUsage": {
+          "input": 14,
+          "output": 1145,
+          "cacheRead": 150137,
+          "cacheWrite": 14768
+        },
+        "cliSessionBinding": {
+          "sessionId": "92f1851e-bfa8-4dee-8a20-463aac9cf2ca",
+          "resumeCheckpointId": "42ee1c30-f9b8-4e92-921c-2e00c2f8fd30",
+          "authEpochVersion": 7,
+          "messageToolPolicyHash": "92a8de91722cbb4fe1a7fd6892245e359c339d96cafe8db3a08738ffda913d71",
+          "promptToolNamesHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "cwdHash": "81809321427212872aba083ecb8441b0326aa949670c6f65db1d466f8e3d3dff",
+          "mcpConfigHash": "26636cd25d229d34324a77266d6833313b351adb6c00a22378669f9602c9abae",
+          "mcpResumeHash": "ac4b69168648cbad8de18e65578ff90a85eeddd3207e5bfd653d29661866075a"
+        }
+      }
+    }
+  }
+}

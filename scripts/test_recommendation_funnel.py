@@ -13,7 +13,7 @@ WORKSPACE = Path(__file__).resolve().parents[1]
 TODAY = date(2026, 9, 24)
 
 
-def ctl_row(ticker, price, *, conf=0.4, state="band_entry"):
+def ctl_row(ticker, price, *, conf=40, state="band_entry"):
     return {"ticker": ticker, "latest_price": price, "reference_low": 100.0, "reference_high": 110.0,
             "invalidation_threshold": 95.0, "alert_state": state, "level_relationship_state": state,
             "sql_reference": {"reference_confidence": conf}}
@@ -103,3 +103,10 @@ def test_defensive_posture_admits_medium_conviction_that_favors_it(tmp_path):
     root = seed(tmp_path, [ctl_row("AAA", 101)], [thesis("AAA", "medium", fav=["defensive_review_bias"])],
                 posture="defensive_review_bias")
     assert by(f.evaluate(root, closes=flat, today=TODAY))["AAA"]["stage"] == "review_candidate"
+
+
+def test_data_confidence_uses_canon_percent_scale(tmp_path):
+    # 2026-09-24: canon stores whole-number percent; 40 must not read as 0.
+    root = seed(tmp_path, [ctl_row("AAA", 101, conf=40)], [thesis("AAA", "high")])
+    entry = by(f.evaluate(root, closes=flat, today=TODAY))["AAA"]
+    assert entry["components"]["data_confidence"] == 0.8

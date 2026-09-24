@@ -135,7 +135,8 @@ def baseline_guard_line() -> str | None:
 
 def confidence_line(levels: dict[str, Any], lowest: int = 4) -> str | None:
     """Readiness item 2 (2026-09-23): print reference_confidence from the SQL
-    reference each controller row carries. Values are data_confidence_v1, 0-1,
+    reference each controller row carries. Canon stores data_confidence_v1 as a
+    whole-number percent 0-100 (INTEGER column), printed here as 0-1;
     capped at 0.50 while Yahoo is the only source; provisional, uncalibrated."""
     values: list[tuple[float, str]] = []
     missing: list[str] = []
@@ -144,7 +145,7 @@ def confidence_line(levels: dict[str, Any], lowest: int = 4) -> str | None:
         ticker = str(entry.get("ticker") or "?")
         raw = as_dict(entry.get("sql_reference")).get("reference_confidence")
         try:
-            values.append((float(raw), ticker))
+            values.append((float(raw) / 100.0, ticker))
         except (TypeError, ValueError):
             missing.append(ticker)
     if not values and not missing:

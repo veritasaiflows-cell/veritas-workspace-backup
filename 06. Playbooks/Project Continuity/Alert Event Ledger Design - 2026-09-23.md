@@ -118,3 +118,7 @@ Findings that changed the design:
 4. **Narrow bands create churn** (e.g. NFLX band 75.03–75.79, about 1% wide). This is a band-quality issue for the thesis/context lane, not a ledger issue; the ledger records it faithfully under `mech-v2-lowanchor`.
 
 Next: wiring into the recurring branch after `_promote_recurring_shared_outputs` returns ok, with the failure-isolation test, then genesis on the first live run. Wiring touches `run_alerts_recommendations_chain.py` / `phase3g_dynamic_execution.py`; it needs Randall's go-ahead on the wiring diff.
+
+## Wiring diff for owner review (2026-09-23 ~22:00 MST)
+
+`tmp/ledger-wiring-20260923/ledger-wiring.diff` (sha256 prefix `61745ae8a93c05b2`), not applied. `run_alerts_recommendations_chain.py`: `_record_alert_ledger()` after `shared_promotion` status `ok` (duplicates and failures are not ledgered), result in the proof and return value, never changes run status; promotion coherence now checks the promoted ROOT targets. Writer side (committed in `2e083ea9`): `record_promoted_run()`, genesis payload, thesis versions, methodology `mech-v3-floor-atr20`, receipt `tmp/alert-event-ledger-last-append.json`, kill switch `state/finance/ledger/DISABLED`. Tests: 3 wiring (append under redirected ROOT, failure isolation, kill switch) + 14 ledger. Open gap: nothing yet alerts the heartbeat from the receipt.

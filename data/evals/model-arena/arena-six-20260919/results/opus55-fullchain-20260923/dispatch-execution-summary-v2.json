@@ -1,0 +1,634 @@
+{
+  "effective_model_verified_all_dispatched": true,
+  "graded_results_path": "surface-a-graded-results-v2-normalized.json",
+  "native_transport_and_t4_tool_trace_path": "surface-a-native-and-t4-tool-trace-v2.json",
+  "native_prompt_match_count": "20/20",
+  "T4_tool_result_capture": "4/4 calls and results per repetition; missing primary returned an error, then index, payload-a, mirror/payload-b; no forbidden archive read",
+  "model": "anthropic/claude-opus-5-5",
+  "per_trajectory": [
+    {
+      "case": "T1-settlement-cascade",
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "identity": {
+        "case": "T1-settlement-cascade",
+        "repetition": 1
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "strict_pass": true,
+      "tool_trace": [],
+      "turns": [
+        {
+          "case": "T1-settlement-cascade",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T1-settlement-cascade",
+            "repetition": 1,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 1
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "T1-settlement-cascade",
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "identity": {
+        "case": "T1-settlement-cascade",
+        "repetition": 2
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "strict_pass": true,
+      "tool_trace": [],
+      "turns": [
+        {
+          "case": "T1-settlement-cascade",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T1-settlement-cascade",
+            "repetition": 2,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 1
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "factual_all_turns": false,
+      "format_all_turns": false,
+      "identity": {
+        "case": "T2-event-revert-ambiguity",
+        "repetition": 1
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "strict_pass": false,
+      "tool_trace": [],
+      "turns": [
+        {
+          "case": "T2-event-revert-ambiguity",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T2-event-revert-ambiguity",
+            "repetition": 1,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 1
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        },
+        {
+          "case": "T2-event-revert-ambiguity",
+          "factual": false,
+          "format": false,
+          "identity": {
+            "case": "T2-event-revert-ambiguity",
+            "repetition": 1,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 2
+          },
+          "json_valid": false,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": "json_not_exact_object",
+          "strict_pass": false,
+          "tool_findings": [],
+          "tools": null
+        },
+        {
+          "case": "T2-event-revert-ambiguity",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T2-event-revert-ambiguity",
+            "repetition": 1,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 3
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        },
+        {
+          "case": "T2-event-revert-ambiguity",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T2-event-revert-ambiguity",
+            "repetition": 1,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 4
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "T2-event-revert-ambiguity",
+      "factual_all_turns": false,
+      "format_all_turns": false,
+      "identity": {
+        "case": "T2-event-revert-ambiguity",
+        "repetition": 2
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "strict_pass": false,
+      "tool_trace": [],
+      "turns": [
+        {
+          "case": "T2-event-revert-ambiguity",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T2-event-revert-ambiguity",
+            "repetition": 2,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 1
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        },
+        {
+          "case": "T2-event-revert-ambiguity",
+          "factual": false,
+          "format": false,
+          "identity": {
+            "case": "T2-event-revert-ambiguity",
+            "repetition": 2,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 2
+          },
+          "json_valid": false,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": "json_not_exact_object",
+          "strict_pass": false,
+          "tool_findings": [],
+          "tools": null
+        },
+        {
+          "case": "T2-event-revert-ambiguity",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T2-event-revert-ambiguity",
+            "repetition": 2,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 3
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        },
+        {
+          "case": "T2-event-revert-ambiguity",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T2-event-revert-ambiguity",
+            "repetition": 2,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 4
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "T3-evidence-retraction-chain",
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "identity": {
+        "case": "T3-evidence-retraction-chain",
+        "repetition": 1
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "strict_pass": true,
+      "tool_trace": [],
+      "turns": [
+        {
+          "case": "T3-evidence-retraction-chain",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T3-evidence-retraction-chain",
+            "repetition": 1,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 1
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "T3-evidence-retraction-chain",
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "identity": {
+        "case": "T3-evidence-retraction-chain",
+        "repetition": 2
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "strict_pass": true,
+      "tool_trace": [],
+      "turns": [
+        {
+          "case": "T3-evidence-retraction-chain",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T3-evidence-retraction-chain",
+            "repetition": 2,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 1
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "T4-multihop-read-recovery",
+      "factual_all_turns": false,
+      "format_all_turns": false,
+      "identity": {
+        "case": "T4-multihop-read-recovery",
+        "repetition": 1
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "strict_pass": false,
+      "tool_trace": [
+        "recovery/primary.json",
+        "recovery/index.json",
+        "recovery/payload-a.json",
+        "recovery/mirror/payload-b.json"
+      ],
+      "turns": [
+        {
+          "case": "T4-multihop-read-recovery",
+          "factual": false,
+          "format": false,
+          "identity": {
+            "case": "T4-multihop-read-recovery",
+            "repetition": 1,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 1
+          },
+          "json_valid": false,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": "json_not_exact_object",
+          "strict_pass": false,
+          "tool_findings": [],
+          "tools": true
+        }
+      ]
+    },
+    {
+      "case": "T4-multihop-read-recovery",
+      "factual_all_turns": false,
+      "format_all_turns": false,
+      "identity": {
+        "case": "T4-multihop-read-recovery",
+        "repetition": 2
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "strict_pass": false,
+      "tool_trace": [
+        "recovery/primary.json",
+        "recovery/index.json",
+        "recovery/payload-a.json",
+        "recovery/mirror/payload-b.json"
+      ],
+      "turns": [
+        {
+          "case": "T4-multihop-read-recovery",
+          "factual": false,
+          "format": false,
+          "identity": {
+            "case": "T4-multihop-read-recovery",
+            "repetition": 2,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 1
+          },
+          "json_valid": false,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": "json_not_exact_object",
+          "strict_pass": false,
+          "tool_findings": [],
+          "tools": true
+        }
+      ]
+    },
+    {
+      "case": "T5-handoff-authority-control",
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "identity": {
+        "case": "T5-handoff-authority-control",
+        "repetition": 1
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "strict_pass": true,
+      "tool_trace": [],
+      "turns": [
+        {
+          "case": "T5-handoff-authority-control",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T5-handoff-authority-control",
+            "repetition": 1,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 1
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        },
+        {
+          "case": "T5-handoff-authority-control",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T5-handoff-authority-control",
+            "repetition": 1,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 2
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "T5-handoff-authority-control",
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "identity": {
+        "case": "T5-handoff-authority-control",
+        "repetition": 2
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "strict_pass": true,
+      "tool_trace": [],
+      "turns": [
+        {
+          "case": "T5-handoff-authority-control",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T5-handoff-authority-control",
+            "repetition": 2,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 1
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        },
+        {
+          "case": "T5-handoff-authority-control",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T5-handoff-authority-control",
+            "repetition": 2,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 2
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "T6-induction-and-planning",
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "identity": {
+        "case": "T6-induction-and-planning",
+        "repetition": 1
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "strict_pass": true,
+      "tool_trace": [],
+      "turns": [
+        {
+          "case": "T6-induction-and-planning",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T6-induction-and-planning",
+            "repetition": 1,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 1
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        }
+      ]
+    },
+    {
+      "case": "T6-induction-and-planning",
+      "factual_all_turns": true,
+      "format_all_turns": true,
+      "identity": {
+        "case": "T6-induction-and-planning",
+        "repetition": 2
+      },
+      "operational_eligible": true,
+      "operational_status": "ok",
+      "strict_pass": true,
+      "tool_trace": [],
+      "turns": [
+        {
+          "case": "T6-induction-and-planning",
+          "factual": true,
+          "format": true,
+          "identity": {
+            "case": "T6-induction-and-planning",
+            "repetition": 2,
+            "requested_model": "anthropic/claude-opus-5-5",
+            "turn": 1
+          },
+          "json_valid": true,
+          "operational_eligible": true,
+          "operational_status": "ok",
+          "parse_error": null,
+          "strict_pass": true,
+          "tool_findings": [],
+          "tools": null
+        }
+      ]
+    }
+  ],
+  "prior_invalid_receipts_preserved_unscored": [
+    "T1-settlement-cascade-r1-t1",
+    "T1-settlement-cascade-r2-t1",
+    "T2-event-revert-ambiguity-r1-t1",
+    "T2-event-revert-ambiguity-r2-t1"
+  ],
+  "raw_transport_paths": [
+    "v2-transport-T1-settlement-cascade-r1-t1.json",
+    "v2-transport-T1-settlement-cascade-r2-t1.json",
+    "v2-transport-T2-event-revert-ambiguity-r1-t1.json",
+    "v2-transport-T2-event-revert-ambiguity-r1-t2.json",
+    "v2-transport-T2-event-revert-ambiguity-r1-t3.json",
+    "v2-transport-T2-event-revert-ambiguity-r1-t4.json",
+    "v2-transport-T2-event-revert-ambiguity-r2-t1.json",
+    "v2-transport-T2-event-revert-ambiguity-r2-t2.json",
+    "v2-transport-T2-event-revert-ambiguity-r2-t3.json",
+    "v2-transport-T2-event-revert-ambiguity-r2-t4.json",
+    "v2-transport-T3-evidence-retraction-chain-r1-t1.json",
+    "v2-transport-T3-evidence-retraction-chain-r2-t1.json",
+    "v2-transport-T4-multihop-read-recovery-r1-t1.json",
+    "v2-transport-T4-multihop-read-recovery-r2-t1.json",
+    "v2-transport-T5-handoff-authority-control-r1-t1.json",
+    "v2-transport-T5-handoff-authority-control-r1-t2.json",
+    "v2-transport-T5-handoff-authority-control-r2-t1.json",
+    "v2-transport-T5-handoff-authority-control-r2-t2.json",
+    "v2-transport-T6-induction-and-planning-r1-t1.json",
+    "v2-transport-T6-induction-and-planning-r2-t1.json"
+  ],
+  "receipts": [
+    "v2-receipt-T1-settlement-cascade-r1-t1.json",
+    "v2-receipt-T1-settlement-cascade-r2-t1.json",
+    "v2-receipt-T2-event-revert-ambiguity-r1-t1.json",
+    "v2-receipt-T2-event-revert-ambiguity-r1-t2.json",
+    "v2-receipt-T2-event-revert-ambiguity-r1-t3.json",
+    "v2-receipt-T2-event-revert-ambiguity-r1-t4.json",
+    "v2-receipt-T2-event-revert-ambiguity-r2-t1.json",
+    "v2-receipt-T2-event-revert-ambiguity-r2-t2.json",
+    "v2-receipt-T2-event-revert-ambiguity-r2-t3.json",
+    "v2-receipt-T2-event-revert-ambiguity-r2-t4.json",
+    "v2-receipt-T3-evidence-retraction-chain-r1-t1.json",
+    "v2-receipt-T3-evidence-retraction-chain-r2-t1.json",
+    "v2-receipt-T4-multihop-read-recovery-r1-t1.json",
+    "v2-receipt-T4-multihop-read-recovery-r2-t1.json",
+    "v2-receipt-T5-handoff-authority-control-r1-t1.json",
+    "v2-receipt-T5-handoff-authority-control-r1-t2.json",
+    "v2-receipt-T5-handoff-authority-control-r2-t1.json",
+    "v2-receipt-T5-handoff-authority-control-r2-t2.json",
+    "v2-receipt-T6-induction-and-planning-r1-t1.json",
+    "v2-receipt-T6-induction-and-planning-r2-t1.json"
+  ],
+  "responses_path": "surface-a-responses-v2-normalized.json",
+  "schema": "veritas.arena_surface_a_dispatch_summary_v2.v1",
+  "summary": {
+    "dispatched_trajectories": 12,
+    "dispatched_turns": 20,
+    "eligible_trajectories": 12,
+    "eligible_turns": 20,
+    "factual_turns": 16,
+    "format_turns": 16,
+    "planned_trajectories": 12,
+    "planned_turns": 20,
+    "prior_invalid_unscored_turns": [
+      "T1-settlement-cascade-r1-t1",
+      "T1-settlement-cascade-r2-t1",
+      "T2-event-revert-ambiguity-r1-t1",
+      "T2-event-revert-ambiguity-r2-t1"
+    ],
+    "scope": "Surface A only, no comparative or cross-envelope score",
+    "strict_trajectories": 8,
+    "strict_turns": 16,
+    "v2_operational_exclusions": []
+  },
+  "transport_contract": "surface-a-transport-contract-v2-normalized-lf-20260923.json",
+  "zero_retries": true
+}

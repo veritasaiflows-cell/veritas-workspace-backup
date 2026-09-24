@@ -2,8 +2,8 @@
 # Current Scorecards And Evals
 
 Canonical page: `wiki/scorecards-and-evals/Current Map.md`
-Canonical rendered SHA-256: `790e909ba12c1a38809af6b32884cbdc05ecb73dfc6ed8c4a71e95cd8fcc937c`.
-Source snapshot SHA-256: `77222f5213ea094e34dd46183baf36db7716415fdcaa3f1e581f0c047cbcd7a8`.
+Canonical rendered SHA-256: `ac1f5edcc5e1d75821ee3f6880e3a98e677a7ee8fccda7076ed0ac678bc0f8f1`.
+Source snapshot SHA-256: `1232da06890b2c2a895aa50bd88f2fa976c072ff78872c8799a029c06af22b8c`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -42,8 +42,8 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - Model quality scorecard status: `scaffold_active`.
 - Retrieval regression corpus: `42/42` passed across `10` classes; average `1.0`; live timestamp-age proofs `1`.
 - Frontier eval: `ready_to_collect` with `100` frozen cases, `0` results, `0` fully proof-verified, execution `verifier_ready_no_result_claims`, ranking `False`.
-- Decision compiler: `10` objects; conflicts `3`; leak guard `True`.
-- RSI later-outcome maturity: `warning_insufficient_real_outcome_evidence`; stable closures `0`; linkage debt `40`.
+- Decision compiler: `8` objects; conflicts `2`; leak guard `True`.
+- RSI later-outcome maturity: `warning_insufficient_real_outcome_evidence`; stable closures `0`; linkage debt `31`.
 - Advanced capability pilots: `6` fixture-ready, `0` executed, `0` promotion-ready.
 - Recommendation later-outcome rows (current preview / durable / grade history): `0` / `316` / `316`. The aggregate `316` uses scope `durable_recommendation_outcome_ledger_max_of_preview_durable_and_grade_history`; model-performance claim allowed now: `False`.
 - RSI maturity status from primary WF74 eval: `proof_worker_ready`.
@@ -61,7 +61,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - Actual billed cost (owner-entered only): `None`.
 - OAuth quota state / remaining / days to reset: `stale` / `58.0` / `0.0`.
 - Cron token events: `736`.
-- Implementation token events: `3`.
+- Implementation token events: `4`.
 - Implementation token gaps: `597`.
 - API-call reduction candidates: `0`.
 - Prompt-compression candidates: `0`.

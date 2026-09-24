@@ -2,8 +2,8 @@
 # Token Efficiency Map
 
 Canonical page: `wiki/scorecards-and-evals/Token Efficiency Map.md`
-Canonical rendered SHA-256: `0e1f4a75b76dcf0a4e926fb8c1939db32b597804e45431b24390c55521dc80a1`.
-Source snapshot SHA-256: `77222f5213ea094e34dd46183baf36db7716415fdcaa3f1e581f0c047cbcd7a8`.
+Canonical rendered SHA-256: `57e610dbfaece8cbddc3c9a57461cb2f93b5e73b1640e0a1a9b1b10a60a6bea1`.
+Source snapshot SHA-256: `1232da06890b2c2a895aa50bd88f2fa976c072ff78872c8799a029c06af22b8c`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -43,7 +43,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - Actual billed cost (owner-entered only): `None`.
 - OAuth quota state / remaining / days to reset: `stale` / `58.0` / `0.0`.
 - Cron token events: `736`.
-- Implementation token events: `3`.
+- Implementation token events: `4`.
 - Implementation token gaps: `597`.
 - API-call reduction candidates: `0`.
 - Prompt-compression candidates: `0`.
