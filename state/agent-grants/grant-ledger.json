@@ -4,7 +4,7 @@
   "posture": "evidence of approved grants; grants nothing; openclaw.json stays the runtime authority",
   "agents": {
     "_global": {
-      "fingerprint": "1d2bff8faaaebe3ff6cc122c92de9a436d9c486d94383abdede2e33212466557",
+      "fingerprint": "2521367f3e9701459881382a2f8b7340c94c82a8829322a2ea79f001fbcc2760",
       "grant": {
         "tools.profile": "coding",
         "tools.agentToAgent": {
@@ -17,7 +17,6 @@
             "finance-redteam",
             "implementation-builder",
             "docs-continuity-editor",
-            "oxalpha-lab",
             "marketing-outreach"
           ]
         },
@@ -35,8 +34,8 @@
         },
         "agents.defaults.maxConcurrent": 16
       },
-      "recorded_at_utc": "2026-09-25T03:43:56Z",
-      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "recorded_at_utc": "2026-09-25T14:35:15Z",
+      "record_ref": "oxalpha-lab removed from tools.agentToAgent.allow 2026-09-25 ~07:50; agents delete blocked by OpenClaw Windows bug",
       "notable": {
         "agentToAgent.allow": {
           "value": [
@@ -46,11 +45,10 @@
             "implementation-builder",
             "main",
             "marketing-outreach",
-            "oxalpha-lab",
             "qa-redteam",
             "research-scout"
           ],
-          "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+          "approval_ref": "Randall Telegram 2026-09-25 07:31 MST: 'ox lab delete no archive'"
         },
         "sessions.visibility": {
           "value": "all",
@@ -998,6 +996,18 @@
       "flag": "docker.binds.rw",
       "previous_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending",
       "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+    },
+    {
+      "at_utc": "2026-09-25T14:35:15Z",
+      "action": "record",
+      "agent": "_global",
+      "old_fingerprint": "1d2bff8faaaebe3ff6cc122c92de9a436d9c486d94383abdede2e33212466557",
+      "new_fingerprint": "2521367f3e9701459881382a2f8b7340c94c82a8829322a2ea79f001fbcc2760",
+      "paths": [
+        "~tools.agentToAgent.allow"
+      ],
+      "record_ref": "oxalpha-lab removed from tools.agentToAgent.allow 2026-09-25 ~07:50; agents delete blocked by OpenClaw Windows bug",
+      "approval_ref": "Randall Telegram 2026-09-25 07:31 MST: 'ox lab delete no archive'"
     }
   ]
 }

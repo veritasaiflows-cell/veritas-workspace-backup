@@ -77,5 +77,6 @@
     "accountId": "default"
   },
   "updated_at_utc": "2026-09-17T04:35:00Z",
-  "contract_update_reason": "Initial registration for the owner-requested scoreboard rollup gate (2026-09-16); contract fields synced to the live job definition as created. Trigger script scripts/wf74_scoreboard_rollup_trigger.py is read-only; the woken Main turn owns disposition and PM confirmation."
+  "contract_update_reason": "2026-09-25 (Randall 11:41 MST approved gate fix): trigger read exec output from r.stdout/output/text (absent; documented field is r.aggregated) so every run parsed the wrapper object and fired a false unreadable; previous state read from state instead of trigger.state so dedupe never worked. Fixed both; harness tmp/wf74-gate-fix-20260925/test_trigger.mjs 8/8. Trigger scripts are not in compare_fields (validator blind spot).",
+  "trigger_script_sha256": "ba6e6ee13ae3a14939399020174bd76db7311c11e204a97b942029dd066208db"
 }

@@ -1,0 +1,16 @@
+import { readFileSync } from 'node:fs';
+import { execSync } from 'node:child_process';
+const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+const dir = new URL('.', import.meta.url);
+const load = (f) => new AsyncFunction('exec', 'trigger', readFileSync(new URL(f, dir), 'utf8'));
+const realOut = execSync('python -c "import json,pathlib; p=pathlib.Path(r\'tmp/phase3-main-only-20260905/g9-reconciliation-register-20260916.json\'); d=json.loads(p.read_text(encoding=\'utf-8\')); s=str(d.get(\'gate_state\',{}).get(\'G8\',{}).get(\'status\',\'\')).upper(); print(json.dumps({\'status\':s,\'closed\':s in {\'CLOSED\',\'PASS\'}}))"').toString();
+const mock = (out) => async () => ({ aggregated: out, exitCode: 0 });
+const cases = [];
+const check = (name, got, want) => { const ok = JSON.stringify(got) === JSON.stringify(want); cases.push(ok); console.log(ok ? 'PASS' : 'FAIL', name, JSON.stringify(got)); };
+const fixed = load('trigger.js'), before = load('trigger-before.js');
+check('old trigger on real output = PARSE_ERROR hold (reproduces live state)', await before(mock(realOut), { state: null }), { fire: false, state: { g8Status: 'PARSE_ERROR', held: true } });
+check('fixed trigger on real output fires (G8 CLOSED)', await fixed(mock(realOut), { state: null }), { fire: true, state: { g8Status: 'CLOSED', held: false } });
+check('fixed: G8 open holds', await fixed(mock('{"status":"OPEN","closed":false}\n'), { state: null }), { fire: false, state: { g8Status: 'OPEN', held: true } });
+check('fixed: empty output holds PARSE_ERROR', await fixed(mock(''), { state: null }), { fire: false, state: { g8Status: 'PARSE_ERROR', held: true } });
+check('fixed: exec throws holds READ_ERROR', await fixed(async () => { throw new Error('x'); }, { state: null }), { fire: false, state: { g8Status: 'READ_ERROR', held: true } });
+console.log(cases.every(Boolean) ? `ALL ${cases.length} PASS` : 'FAILURES');

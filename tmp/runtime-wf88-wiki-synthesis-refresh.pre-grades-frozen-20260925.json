@@ -51,14 +51,7 @@
     "payload.timeoutSeconds"
   ],
   "expected_artifacts": [
-    {
-      "path": "data/state-history/recommendation-outcome-grades.jsonl",
-      "role": "recommendation_outcome_grades",
-      "required": true,
-      "blocking": true,
-      "existence_only": true,
-      "freshness_note": "Frozen pre-pivot evidence: append-only, and its feeders stopped (outcome-ledger-v2 last written 2026-08-29; post-close-final-quote-ledger last produced 2026-08-29, archived 2026-09-22, no scheduled producer). mtime can no longer advance, so recency is not checked; the grading cadence receipt below carries freshness."
-    },
+    "data/state-history/recommendation-outcome-grades.jsonl",
     "tmp/recommendation-outcome-grading-cadence.json",
     "tmp/recommendation-outcome-grading-cadence.md",
     "tmp/recommendation-outcome-ledger-current.json",
@@ -123,6 +116,6 @@
     "raw_prompt_or_tool_capture_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-09-25T23:55:00Z",
-  "contract_update_reason": "2026-09-25 (Randall 16:48 MST 'continue with ... the WF88 P1'): recommendation-outcome-grades.jsonl made existence_only. It was a required 36h-fresh artifact whose feeders are retired pre-pivot (ledger and quotes end 2026-08-28/29), so it was permanently stale and fed recurring WF88 P1 noise. Grading cadence receipts stay freshness-checked. Prior: 2026-09-06 pinned command argv to CPython 3.13. Backup tmp/runtime-wf88-wiki-synthesis-refresh.pre-grades-frozen-20260925.json."
+  "updated_at_utc": "2026-09-06T22:13:50Z",
+  "contract_update_reason": "Pin command argv to CPython 3.13 so Gateway can spawn the job after python ENOENT auto-failures."
 }

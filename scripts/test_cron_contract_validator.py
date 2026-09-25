@@ -341,6 +341,97 @@ def test_contract_prompt_integrity_error_makes_validation_non_ok() -> None:
         assert "cron_contract_prompt_integrity_error_present" in payload["validation"]["errors"]
 
 
+GOOD_TRIGGER = (
+    "const res = await exec({ command: 'check' });\n"
+    "const status = String(res?.aggregated ?? '').trim();\n"
+    "json({ fire: status !== trigger.state?.status, state: { status } });"
+)
+# Shape of the WF74 gate trigger before the 2026-09-25 fix.
+OLD_GATE_TRIGGER = (
+    "let raw='';\n"
+    "try{const r=await exec({command:cmd});raw=(r&&typeof r==='object')?(r.stdout||r.output||r.text||JSON.stringify(r)):String(r||'');}catch(e){}\n"
+    "const prev=(typeof state!=='undefined'&&state&&state.sig)?state.sig:null;\n"
+    "return{fire:false,state:{sig:prev}};"
+)
+
+
+def trigger_job(script: str | None) -> dict:
+    job = sample_job()
+    if script is not None:
+        job["trigger"] = {"script": script}
+    return job
+
+
+def test_trigger_lint_accepts_documented_shape() -> None:
+    assert ccv.trigger_integrity_findings(trigger_job(GOOD_TRIGGER), source="live") == []
+
+
+def test_trigger_lint_flags_old_gate_shape() -> None:
+    issues = {f["issue"] for f in ccv.trigger_integrity_findings(trigger_job(OLD_GATE_TRIGGER), source="live")}
+    assert issues == {"trigger_exec_output_not_aggregated", "trigger_bare_state_read"}
+
+
+def test_trigger_lint_ignores_comments_and_state_keys() -> None:
+    script = (
+        "// previous state. is read from trigger.state; never call exec() on stdout\n"
+        "/* tools.call('exec') was the old envelope */\n"
+        "const state = { n: trigger.state?.n ?? 0 };\n"
+        "json({ fire: false, state });"
+    )
+    assert ccv.trigger_integrity_findings(trigger_job(script), source="live") == []
+
+
+def test_trigger_lint_flags_legacy_envelope() -> None:
+    script = "const r = await tools.call('exec', {command: 'x'}); const out = r.result.details.aggregated;"
+    issues = {f["issue"] for f in ccv.trigger_integrity_findings(trigger_job(script), source="live")}
+    assert issues == {"trigger_legacy_tools_call_exec"}
+
+
+def test_trigger_sha_pin_matches_and_drifts() -> None:
+    contract = {"name": "Ops - Sample", "trigger_script_sha256": ccv.trigger_script_sha256(GOOD_TRIGGER)}
+    assert ccv.compare_contract(contract, trigger_job(GOOD_TRIGGER))["status"] == "ok"
+    changed = ccv.compare_contract(contract, trigger_job(GOOD_TRIGGER + "\n"))
+    assert changed["status"] == "drift"
+    assert changed["drift"][0]["field"] == "trigger.script_sha256"
+    removed = ccv.compare_contract(contract, trigger_job(None))
+    assert removed["drift"][0]["actual"] is None
+
+
+def test_trigger_verbatim_pin_compared_without_compare_field() -> None:
+    contract = {"name": "Ops - Sample", "trigger": {"script": GOOD_TRIGGER}, "compare_fields": ["enabled"]}
+    assert ccv.compare_contract(contract, trigger_job(GOOD_TRIGGER))["status"] == "ok"
+    result = ccv.compare_contract(contract, trigger_job(GOOD_TRIGGER.replace("status", "s")))
+    assert [d["field"] for d in result["drift"]] == ["trigger.script"]
+
+
+def test_unpinned_live_trigger_is_drift() -> None:
+    result = ccv.compare_contract({"name": "Ops - Sample"}, trigger_job(GOOD_TRIGGER))
+    assert result["status"] == "drift"
+    assert result["drift"][0]["reason"] == "live job has a trigger script the contract does not pin"
+
+
+def test_trigger_integrity_error_makes_validation_non_ok() -> None:
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        contract_dir = root / "contracts"
+        contract_dir.mkdir()
+        live_path = root / "live.json"
+        (contract_dir / "sample.json").write_text(json.dumps({
+            "job_id": "job-1",
+            "name": "Ops - Sample",
+            "trigger_script_sha256": ccv.trigger_script_sha256(OLD_GATE_TRIGGER),
+            "compare_fields": ["enabled"],
+        }), encoding="utf-8")
+        live_path.write_text(json.dumps({"jobs": [trigger_job(OLD_GATE_TRIGGER)]}), encoding="utf-8")
+        payload = ccv.build_payload(build_args(contract_dir, live_path))
+        assert payload["contracts"][0]["status"] == "trigger_integrity_error"
+        assert payload["summary"]["live_trigger_job_count"] == 1
+        assert payload["summary"]["live_trigger_integrity_error_count"] == 2
+        assert payload["summary"]["contract_trigger_integrity_error_count"] == 0
+        assert payload["validation"]["status"] == "error"
+        assert "cron_trigger_integrity_error_present" in payload["validation"]["errors"]
+
+
 if __name__ == "__main__":
     test_compare_contract_ok()
     test_compare_contract_reports_payload_drift()
@@ -363,4 +454,12 @@ if __name__ == "__main__":
     test_future_one_shot_delete_after_run_stays_missing()
     test_past_due_one_shot_without_delete_after_run_stays_missing()
     test_recurring_cron_without_live_job_stays_missing()
+    test_trigger_lint_accepts_documented_shape()
+    test_trigger_lint_flags_old_gate_shape()
+    test_trigger_lint_ignores_comments_and_state_keys()
+    test_trigger_lint_flags_legacy_envelope()
+    test_trigger_sha_pin_matches_and_drifts()
+    test_trigger_verbatim_pin_compared_without_compare_field()
+    test_unpinned_live_trigger_is_drift()
+    test_trigger_integrity_error_makes_validation_non_ok()
     print("ok")

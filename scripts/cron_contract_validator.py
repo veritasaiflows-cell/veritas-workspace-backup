@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -74,6 +76,24 @@ TASK_BODY_MARKERS = (
     "python scripts\\",
     "python scripts/",
 )
+
+# Condition-trigger scripts run unattended, and a broken one fails quietly: it
+# returns fire:false (or a false alarm) every evaluation while the job still
+# reports lastStatus ok. A contract pins the live script either verbatim
+# (trigger.script) or by digest (trigger_script_sha256); a live trigger with no
+# pin is drift. The lint covers the documented code-mode shape in
+# docs/automation/cron-jobs/schedules.md: exec() output is res.aggregated and
+# prior state is trigger.state. On 2026-09-25 the WF74 gate (e3c1b7a8) was found
+# reading r.stdout/r.output/r.text and bare state, firing a false "unreadable"
+# every night for days while the validator could not see it.
+TRIGGER_SCRIPT_FIELD = "trigger.script"
+TRIGGER_SHA_FIELD = "trigger_script_sha256"
+TRIGGER_SHA_DRIFT_FIELD = "trigger.script_sha256"
+_TRIGGER_BLOCK_COMMENT = re.compile(r"/\*.*?\*/", re.DOTALL)
+_TRIGGER_LINE_COMMENT = re.compile(r"^\s*//[^\n]*", re.MULTILINE)
+_TRIGGER_EXEC_CALL = re.compile(r"(?<![\w.$])exec\s*\(")
+_TRIGGER_LEGACY_EXEC = re.compile(r"tools\.call\(\s*['\"]exec['\"]|\.result\.details")
+_TRIGGER_BARE_STATE = re.compile(r"(?<![\w.$])state\s*(?:\?\.|\.|\[)|\btypeof\s+state\b")
 
 UNSUPPORTED_MODEL_ROUTES = {
     "claude-cli/claude-fable-5": {
@@ -187,6 +207,69 @@ def prompt_integrity_findings(job: dict[str, Any] | None, *, source: str) -> lis
             "reason": "agentTurn prompt contains the quiet output rule but no task body or command marker",
         })
     return findings
+
+
+def trigger_script_text(job: dict[str, Any] | None) -> str | None:
+    script = get_nested(job, TRIGGER_SCRIPT_FIELD) if isinstance(job, dict) else None
+    return script if isinstance(script, str) and script.strip() else None
+
+
+def trigger_script_sha256(script: str | None) -> str | None:
+    return hashlib.sha256(script.encode("utf-8")).hexdigest() if script is not None else None
+
+
+def trigger_integrity_findings(job: dict[str, Any] | None, *, source: str) -> list[dict[str, Any]]:
+    """Lint a condition-trigger script for the known silent-failure shapes."""
+    script = trigger_script_text(job)
+    if script is None:
+        return []
+    code = _TRIGGER_LINE_COMMENT.sub("", _TRIGGER_BLOCK_COMMENT.sub("", script))
+    findings: list[dict[str, Any]] = []
+    if _TRIGGER_EXEC_CALL.search(code) and ".aggregated" not in code:
+        findings.append({
+            "source": source,
+            "issue": "trigger_exec_output_not_aggregated",
+            "severity": "error",
+            "reason": "trigger calls exec() but never reads res.aggregated; stdout/output/text are absent, so the check parses nothing",
+        })
+    if _TRIGGER_LEGACY_EXEC.search(code):
+        findings.append({
+            "source": source,
+            "issue": "trigger_legacy_tools_call_exec",
+            "severity": "error",
+            "reason": "trigger uses the legacy tools.call('exec') / .result.details envelope; convert to exec() and res.aggregated",
+        })
+    if _TRIGGER_BARE_STATE.search(code):
+        findings.append({
+            "source": source,
+            "issue": "trigger_bare_state_read",
+            "severity": "error",
+            "reason": "trigger reads a bare state variable; previous state is trigger.state, so dedupe never sees it",
+        })
+    return findings
+
+
+def trigger_pin_drift(contract: dict[str, Any], live_job: dict[str, Any], fields: list[str]) -> list[dict[str, Any]]:
+    """Compare the live trigger against the contract's verbatim or digest pin."""
+    live_script = trigger_script_text(live_job)
+    pinned_script = expected_value(contract, TRIGGER_SCRIPT_FIELD)
+    pinned_sha = contract.get(TRIGGER_SHA_FIELD)
+    drift: list[dict[str, Any]] = []
+    if isinstance(pinned_script, str) and TRIGGER_SCRIPT_FIELD not in fields:
+        if live_script != pinned_script:
+            drift.append({"field": TRIGGER_SCRIPT_FIELD, "expected": pinned_script, "actual": live_script})
+    if isinstance(pinned_sha, str) and pinned_sha:
+        actual_sha = trigger_script_sha256(live_script)
+        if actual_sha != pinned_sha.lower():
+            drift.append({"field": TRIGGER_SHA_DRIFT_FIELD, "expected": pinned_sha, "actual": actual_sha})
+    if live_script is not None and not isinstance(pinned_script, str) and not pinned_sha:
+        drift.append({
+            "field": TRIGGER_SHA_DRIFT_FIELD,
+            "expected": None,
+            "actual": trigger_script_sha256(live_script),
+            "reason": "live job has a trigger script the contract does not pin",
+        })
+    return drift
 
 
 def unsupported_model_findings(contract: dict[str, Any], live_job: dict[str, Any] | None) -> list[dict[str, Any]]:
@@ -432,6 +515,7 @@ def compare_contract(
         actual = get_nested(live_job, field)
         if actual != expected:
             drift.append({"field": field, "expected": expected, "actual": actual})
+    drift.extend(trigger_pin_drift(contract, live_job, fields))
     expected_artifacts = [
         normalize_expected_artifact(item)
         for item in as_list(contract.get("expected_artifacts"))
@@ -467,6 +551,10 @@ def compare_contract(
         *prompt_integrity_findings(contract, source="contract"),
         *prompt_integrity_findings(live_job, source="live"),
     ]
+    trigger_integrity = [
+        *trigger_integrity_findings(contract, source="contract"),
+        *trigger_integrity_findings(live_job, source="live"),
+    ]
     multiline_expected = prompt_shape["expected"]["has_multiline"]
     multiline_live_intact = not multiline_expected or (
         isinstance(actual_message, str)
@@ -480,13 +568,19 @@ def compare_contract(
         "status": (
             "prompt_integrity_error"
             if prompt_integrity else
+            "trigger_integrity_error" if trigger_integrity else
             "unsupported_model" if unsupported_model_routes else
             ("drift" if drift else "ok")
         ),
-        "severity": "error" if prompt_integrity or unsupported_model_routes else ("warning" if drift else "ok"),
+        "severity": (
+            "error" if prompt_integrity or trigger_integrity or unsupported_model_routes
+            else ("warning" if drift else "ok")
+        ),
         "drift": drift,
         "unsupported_model_routes": unsupported_model_routes,
         "prompt_integrity_findings": prompt_integrity,
+        "trigger_integrity_findings": trigger_integrity,
+        "trigger_script_sha256": trigger_script_sha256(trigger_script_text(live_job)),
         "expected_artifacts": expected_artifacts,
         "missing_expected_artifacts": missing_artifacts,
         "prompt_shape": prompt_shape,
@@ -540,6 +634,29 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         for finding in prompt_integrity_findings(job, source="live_global")
     ]
     live_prompt_integrity_error_count = len(live_prompt_integrity_findings)
+    contract_trigger_integrity_findings = [
+        {
+            "contract_path": result.get("contract_path"),
+            "job_id": result.get("job_id"),
+            "name": result.get("name"),
+            **finding,
+        }
+        for result in results
+        for raw_finding in as_list(result.get("trigger_integrity_findings"))
+        if (finding := as_dict(raw_finding)).get("source") == "contract"
+    ]
+    live_trigger_integrity_findings = [
+        {
+            "job_id": job.get("id"),
+            "name": job.get("name"),
+            "enabled": job.get("enabled"),
+            **finding,
+        }
+        for job in jobs
+        if job.get("enabled", True) is not False
+        for finding in trigger_integrity_findings(job, source="live_global")
+    ]
+    live_trigger_job_count = sum(1 for job in jobs if trigger_script_text(job) is not None)
     prompt_bloat_count = sum(1 for item in results if as_list(item.get("prompt_bloat")))
     multiline_truncation_risk_count = sum(1 for item in results if item.get("multiline_live_intact") is False)
     errors = []
@@ -555,6 +672,8 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         errors.append("cron_contract_prompt_integrity_error_present")
     if live_prompt_integrity_error_count:
         errors.append("cron_prompt_integrity_error_present")
+    if contract_trigger_integrity_findings or live_trigger_integrity_findings:
+        errors.append("cron_trigger_integrity_error_present")
     if args.fail_on_prompt_bloat and prompt_bloat_count:
         errors.append("cron_prompt_bloat_present")
     if multiline_truncation_risk_count:
@@ -581,6 +700,9 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "configured_unsupported_model_routes": sorted(UNSUPPORTED_MODEL_ROUTES),
             "contract_prompt_integrity_error_count": contract_prompt_integrity_error_count,
             "live_prompt_integrity_error_count": live_prompt_integrity_error_count,
+            "live_trigger_job_count": live_trigger_job_count,
+            "contract_trigger_integrity_error_count": len(contract_trigger_integrity_findings),
+            "live_trigger_integrity_error_count": len(live_trigger_integrity_findings),
             "prompt_bloat_count": prompt_bloat_count,
             "multiline_truncation_risk_count": multiline_truncation_risk_count,
             "max_prompt_chars": args.max_prompt_chars,
@@ -602,6 +724,8 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         "contracts": results,
         "contract_prompt_integrity_findings": contract_prompt_integrity_findings,
         "live_prompt_integrity_findings": live_prompt_integrity_findings,
+        "contract_trigger_integrity_findings": contract_trigger_integrity_findings,
+        "live_trigger_integrity_findings": live_trigger_integrity_findings,
         "authority_boundary": AUTHORITY_BOUNDARY,
         "validation": {"status": "error" if errors else "warning" if warnings else "ok", "errors": errors, "warnings": warnings},
     }

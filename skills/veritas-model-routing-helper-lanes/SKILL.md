@@ -48,6 +48,10 @@ Main is not the default broad implementation lane. Record why Main is the smalle
 
 When Randall explicitly directs Main-only work with named reviewer/QA models and no subagents, run each named role as its own sequential inference in the same Main session. Pin the session model to the named role's model, then verify the actual live model for that inference before doing the role's work; if the current inference is not the named model, reissue the caller-owned wake instead of claiming the role ran. Lease each role's writes as a bounded distinct-output lane, record the runtime backend distinction (for example `claude-cli/claude-opus-5` versus a requested provider path), and disclose that same-session roles are not clean-context independent review. Restore the primary Main model when the role's work ends and queue continuation through a caller-owned wake. The exception is task-scoped: it never becomes a persistent specialist, routing, or config change.
 
+## Delegation Decision
+
+Before any helper dispatch, follow [Delegation Decision](references/delegation-decision.md). Default to no helper; delegate only for context load (builder, docs-continuity-editor), independent review (qa-redteam; finance implementation adds finance-redteam) or real web research (research-scout). It owns the dispatch path by runtime, credit rules, handoff and parallel caps. Finish when `python scripts\wf89_credit_reader.py` lists the run as CREDITABLE and the closeout names the reason that applied.
+
 ## Thinking Effort
 
 - Low: deterministic reading, extraction, simple audit, or narrow proof.

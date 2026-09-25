@@ -127,6 +127,13 @@ Keep current proof fresh. The September 6 AGI Readiness Opportunity Plan is in P
   2. Decay signals on memory entries — stale-timestamp annotation on promoted memories, killing the "cached artifact reads as live truth" error class (bit Main 3x on 09-17; also recorded as a pending validator convention).
 - Implementation shape, pre-scoped: each is a ~1-day bounded edit inside the existing memory-continuity lane (no new service, no new files to watch). Both require the standing gates: leased lane, validator proof, no authority expansion.
 
+## Recurring grades-file P1 closed - 2026-09-25 ~17:00 Phoenix
+
+- The recurring `Runtime - WF88 Wiki Synthesis Refresh` P1 cited `data/state-history/recommendation-outcome-grades.jsonl`. The 09-24 blocked episodes were cascades that are already fixed, and the 09-24 22:12 run completed 45/45 with the refresh gate ok.
+- The residual cause is structural. The grades file is append-only, and its feeders are retired pre-pivot: `outcome-ledger-v2.jsonl` was last written 2026-08-29, and `tmp/post-close-final-quote-ledger.json` was last produced 2026-08-29, has had no scheduled producer since, and was archived in the 2026-09-22 tmp cleanup. The cadence now grades 0 of 415 rows (`missing_local_quote`), so the file can never meet its 36h freshness window.
+- Fix: the WF88 contract marks the grades file `existence_only` (it must exist, but recency is not checked); the grading cadence receipts stay freshness-checked. Backup: `tmp/runtime-wf88-wiki-synthesis-refresh.pre-grades-frozen-20260925.json`. Spine: WF88 has no stale artifacts.
+- Open, not done: the grader still reports `ok` when its quote input is missing (and labels the missing file `present`). It was not changed because `wf88_wiki_refresh_cron_gate.py` requires grading validation == ok, so a status change would block the nightly run. Whether recommendation-outcome grading has an alerts-OS successor or is retired is an owner decision.
+
 ## Stop Line
 
 No base-model self-modification claim, raw prompt/tool capture, retired finance producer, finance-canon apply, maintained portfolio or simulated-account state, account/order/execution action, schedule/runtime mutation, destructive cleanup, external delivery, or owner-approval inference.

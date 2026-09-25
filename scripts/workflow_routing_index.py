@@ -2486,9 +2486,9 @@ def build_routes() -> list[dict[str, Any]]:
             "uncreditable. Plan item 2 done: grant ledger + drift check (0 drift, 13 "
             "unprovenanced notable grants for owner review). No whole-fleet readiness, "
             "no accounting/activation completion.",
-            "Plan item 3: stage dispatch-playbook Skill Workshop proposals. Randall: "
-            "choose archive-then-delete for oxalpha-lab retirement; 6 notable grants "
-            "remain unprovenanced; other config items wait for Randall.",
+            "Main next: plan item 4, the builder-trim like-for-like canary. "
+            "oxalpha-lab delete blocked by upstream OpenClaw bug #137416; rerun "
+            "`openclaw agents delete oxalpha-lab --force` after an update with the fix.",
             f"{CONTINUITY}/Workflow 89 - Isolated Agent Specialization and Fleet Efficiency Contract.md",
             "tmp/wf89-fleet-20260909/item2-grant-manifest-20260924.json",
             [
