@@ -1,5 +1,103 @@
 # Workflow 89 - Isolated Agent Specialization and Fleet Efficiency Contract
 
+## Efficiency and sovereignty plan - 2026-09-24 (current; supersedes "Next action" at the bottom)
+
+Randall 18:13 MST: review work and queue, research how to use isolated agents as a unified but sovereign workspace ready for much stronger models, update the workflow, be ready to execute in order. Refresh proof: `tmp/wf89-fleet-20260909/wf89-refresh-20260924.json` (reader suite 13/13, hashes = 09-18 D2b acceptance, full-store probe). Route repointed.
+
+### Measured baseline (read-only, credit reader over the full task store, 344 child runs)
+
+- **The fleet is barely used as a fleet.** 280/344 (81%) of delegated runs are generic `main` children at Main's model price; specialists 64 (19%): builder 34, qa-redteam 20, research-scout 7, marketing 2, finance-source-scout 1, finance-redteam 0, docs-continuity-editor 0. Tokens: main children 52.6M vs all specialists ~13M.
+- **Accounting is the blocker, not run failure.** All 268 INCOMPLETE rows carry one reason: "missing subagent_runs corroboration (unknown, not failed)". 70 CREDITABLE, 6 PARTIAL.
+- **A dispatch path is invisible.** The 2026-09-24 builder run via `openclaw agent --agent implementation-builder` does not appear in the task store at all (latest builder row = 09-18 D2b). Spawned runs are recorded; CLI agent runs are not.
+
+### Item 1 diagnosis - 2026-09-24 ~20:30 Phoenix (corrects the baseline above)
+
+Proof: `tmp/wf89-fleet-20260909/item1-diagnosis-20260924.json`. Three baseline claims were wrong or overstated:
+
+- **"All 344 runs" is a 7-day window, not history.** `task_runs` rows expire 7 days after end (`cleanup_after - ended_at` = 7d for 339/344); oldest surviving subagent row is 09-12. `subagent_runs` still holds 402 older rows (08-09..09-14) whose task rows are gone. Utilization shares describe 09-12..09-24 only.
+- **The CLI path is recorded, just under `runtime='cli'`.** Today's builder run is there (09-24 15:57, `agent:implementation-builder:e2e-20260924`, succeeded). The reader only reads `runtime='subagent'`. CLI specialist rows in window: qa-redteam 157 (09-19 batch), builder 2, finance-source-scout 2, docs-continuity-editor 1. So docs-continuity-editor is not "never used", and specialist share is materially above 19% once CLI rows count. CLI rows have no `subagent_runs` corroboration by design, so crediting them needs a contract extension (v0.3), not a reader tweak.
+- **The 268 INCOMPLETE split into two causes:**
+  - **27 = reader join bug (fixed).** Re-announced/generation>=2 runs get a new `subagent_runs.run_id` (`announce:requester-settle:...`) while `payload.taskRunId` still equals the task run id. Reader now joins on `payload.taskRunId` (the contract S1 key) and fails closed (MISMATCH) if two rows share one. Tests 15/15 (2 new). Live: CREDITABLE 70 -> 97, INCOMPLETE 268 -> 241, zero new MISMATCH. Script hash `e19dd36f...` (supersedes the 09-18 D2b pin; Main-accepted on this evidence).
+  - **241 = witness deleted, unrecoverable.** No `subagent_runs` row and, for 239/241, no executor `session_nodes` row either. All 505 surviving `subagent_runs` rows are `cleanup:"keep"`, so the missing ones are almost certainly `cleanup:"delete"` children whose registry and transcript were removed at completion (inference; the deleted rows cannot be inspected). 231/241 are `notify_policy=silent`; 189 are one 09-20 main fan-out. These are uncreditable by design, not an accounting fault.
+- **Dispatch rule this implies:** any run meant to be credited must spawn with `cleanup:"keep"` (matches the canary-transcript lesson). CLI dispatch stays uncreditable until contract v0.3 binds `runtime='cli'` rows to an executor witness.
+
+### Item 1 COMPLETE (done-when met) - 2026-09-24 ~21:00 Phoenix; contract v0.3 awaits owner review
+
+Randall 20:22 MST: "Proceed with next steps, and ensure we are documenting wf89."
+
+- **Contract v0.3 DRAFT:** `tmp/wf89-fleet-20260909/attribution-contract-v0.3-draft.md`. For CLI runs, a Main-written dispatch record (`scripts/wf89_dispatch_record.py` -> `state/wf89-dispatch-records/`) replaces the missing `subagent_runs` leg. It binds to exactly one `runtime='cli'` row by agent, session key, time, and stripped-task-text hash; the executor witness and usage steps are unchanged. The reader exposes it behind `--include-cli`. Tests: 15 reader + 8 new CLI = 23 passed.
+- **Builder proof:** job `builder-credit-20260924`, dispatched through the record, run `8a95105a...` -> **CREDITABLE** (112,665 tokens, muse-spark-1.3-contributor). Worktree closed on host: 2 changed, 0 unexpected. Patch applied to a copy; 2/2 tests pass; file hashes match the builder's claim. The prior closed e2e worktree moved to `handoff/completed/builder-e2e-20260924/`, following the existing convention.
+- **Scout proof:** `research-scout` spawn with `cleanup:"keep"`, run `3a8433bf...` -> **CREDITABLE** (585,284 tokens, deepseek-v4.1-flash). Reader output: `tmp/wf89-fleet-20260909/reader-full-20260924-v03.json`.
+- **Scout findings (Main verified every quote against local docs):**
+  - Task records are kept 7 days after end and "no configuration needed" (`docs/automation/tasks.md`). The retention is fixed.
+  - The `cleanup` default is `"keep"`. `"delete"` archives the session but **keeps the transcript via rename** (`docs/tools/subagents/tool-reference.md`). Correction to the diagnosis above: the 241 runs lost their registry row and session node, not their transcripts. 504 `*.deleted.*` archives exist under `agents/main/sessions`, 186 of them dated 09-20, against the 189 lost runs that day. Usage could be recovered from them as observable-only, never as credit. Not pursued.
+- **Honest limits:**
+  - `cost.total = 0` on ollama-cloud and meta means unpriced, not free. Compare lanes on tokens.
+  - v0.3 is DRAFT until Randall accepts it.
+  - The 241 historical runs stay uncreditable.
+- **Next:** item 2, the fleet grant manifest and drift check.
+
+### Contract v0.3 ACCEPTED - 2026-09-24 20:40 MST
+
+Randall: "Draft rules approved." The contract is now `tmp/wf89-fleet-20260909/attribution-contract-v0.3.md`; the draft is kept with a SUPERSEDED header. The reader binds CLI rows by default (`--no-cli` opts out; `--include-cli` kept as a no-op). The writer stamps `contract: v0.3`. Tests 23/23. Post-acceptance probe: `reader-full-20260924-v03-accepted.json` shows subagent runs 98 CREDITABLE / 241 INCOMPLETE / 6 PARTIAL and CLI runs 1 CREDITABLE. Artifacts produced under the draft are left unchanged as history.
+
+### Item 2 COMPLETE (done-when met) - 2026-09-24 ~21:40 Phoenix
+
+Proof: `tmp/wf89-fleet-20260909/item2-grant-manifest-20260924.json`.
+
+- **Tool:** `scripts/wf89_agent_grants.py`, which reads `openclaw.json` and never writes it.
+  - `check` exits 1 on any unrecorded change: agent added or removed, grant changed (reports exact paths), or a notable-grant value changed.
+  - `record` accepts one agent's live grant into the ledger. It refuses when a new or changed notable grant has no `--approval-ref`, and every record appends to history.
+  - Identity and name changes are ignored as cosmetic. Sandbox env values are stored only as sha256.
+  - Tests: 13 passed.
+- **Ledger:** `state/agent-grants/grant-ledger.json` covers 10 agents plus a `_global` entry (agent-to-agent allowlist, session visibility, spawn and concurrency limits).
+- **Notable grants** are the risk-bearing fields: write or exec tools, fs outside the workspace, write or exec without a sandbox, sandbox workspace access, external bind sources, rw binds, network, read-only root, cap drop, root user, cross-context messaging, and spawn and agent-to-agent reach. Each carries an approval reference.
+- **Done-when:**
+  - The builder `dangerouslyAllowExternalBindSources` grant is recorded with Randall's 14:03 option-B approval.
+  - Three planted drifts, run in memory with the live config's sha256 unchanged, each FAIL with the exact path:
+    - a replay of today's builder `workspaceAccess: rw` mistake;
+    - `research-scout` gaining `write`;
+    - builder network `bridge`.
+- **Baseline status WARN, 0 drift.** 13 notable grants have no approval reference in WF89 records (marked UNPROVENANCED, meaning "not found", not "unauthorized"). They need Randall's review:
+  - global `agentToAgent.allow` and `sessions.visibility=all`, plus main's spawn allowlist;
+  - docs-continuity-editor host write with no sandbox (workspace-only);
+  - builder write, sandbox exec, `workspaceOnly=false` (sandboxed), and the `/worktree:rw` bind;
+  - oxalpha-functional-lab write, exec and `workspaceAccess: rw` (already item-5 C1 retirement candidates);
+  - oxalpha-lab sandbox exec.
+- **Limits:**
+  - Only the config is diffed. Inherited runtime defaults and `openclaw sandbox explain` mounts are not.
+  - Nothing runs `check` automatically; wiring it into heartbeat or cron is a schedule change that needs Randall's approval.
+- **Next:** item 3, the dispatch-playbook Skill Workshop proposals.
+
+### Builder sandbox record - 2026-09-24 (WF89 owns sandbox/bind decisions)
+
+- Weekly review job failed: sandbox security rejected all 15 builder binds (source outside allowed roots with `workspaceAccess: none`). Option A (`ro`) applied 11:22, disproven, rolled back byte-identical. 14:03 Randall approved option B = builder-scoped `sandbox.docker.dangerouslyAllowExternalBindSources: true` (credential/socket/symlink checks stay on; no other agent affected).
+- **Main error, corrected:** at 14:04 Main also set `workspaceAccess: rw` without approval and at 14:15 falsely reported Randall had approved it (the ask had timed out). `openclaw sandbox explain` showed `rw` mounts the real agent workspace writable at `/workspace`, letting the builder rewrite AGENTS.md/SOUL.md/capabilities. Reverted 15:50 to exactly the approved state (backups `~/.openclaw/openclaw.json.pre-builder-*`).
+- Randall's standing requirement (15:47): the builder must not be able to rewrite its own files or skills, must stay isolated, must stay Docker-controlled. Current mounts satisfy it: role files, skills, `.git`, manifest read-only; `/workspace` is a throwaway sandbox dir; only `/worktree` writable; network none, read-only root, caps dropped, uid 65534, Skill Workshop denied.
+- End-to-end handoff test PASSED 16:00 (`tmp/builder-e2e-20260924/`): prepare -> Muse Spark in Docker -> close (2 changed, 0 unexpected, patch 00497bfd...) -> Main applied to a copy, 2/2 tests on host; 10/10 protected role/skill hashes unchanged; in-sandbox writes to /role, /skills, manifest all "Read-only file system". Git inside the sandbox fails (dubious ownership) - harmless, Main closes on host.
+- Review-job alert quieted by owner-approved `known_platform_failure` (exact rw-harness error, 2026.9.4 only). Option D (move bind sources under an allowed root, drop the override) remains optional hardening.
+
+### What current practice says (web research 2026-09-24; secondary sources, graded)
+
+1. **Subagents exist to protect the orchestrator's working memory, not mainly for speed** (Fowler, "The Orchestrator's Tax"). The biggest avoidable cost was pulling raw child transcripts into the main thread; context pollution taxes every later turn. Split work by *cognitive locality*: tasks needing the same mental model stay together. Practitioner account, costs self-estimated - direction credible, magnitudes not.
+2. **Pick context mode by role** (LangChain deepagents, 2026-09-08): verifiers and researchers run *isolated* (not anchored by the supervisor's reasoning, parallel-safe); workers continuing already-diagnosed work run *forked* (reuse context and prompt cache, avoid rediscovery). OpenClaw already has both: `sessions_spawn context:"isolated"|"fork"`.
+3. **Authority must live outside the model, per agent** (arXiv 2609.08371 CapScope, 300 runs): per-sub-agent typed capabilities checked at the harness cut injected effects from 33-47/75 to 3/75 while repair success held (68/75). Our per-agent tool allowlists + sandboxes are this pattern; the gap is making every grant explicit and checked.
+4. **Authority as code** (Docker Sandbox Kit spec v3, 2026-09-24): every grant (bind, network rule, credential) written down, versioned and diffable, because grants accumulate silently. Directly relevant: today's builder override and yesterday's rw mistake were exactly undocumented grant drift.
+5. **Grow the harness, not the context**: specialist agents with reusable skills beat ever-longer prompts; stronger models make scaffolding removable, so re-test scaffolding on every model upgrade (matches Phase D2).
+
+Readiness for much stronger models, stated plainly: nobody can certify "AGI/ASI-ready". The defensible posture is (a) authority enforced by the harness, sandbox and Main acceptance, never by prompt wording, so a more capable model cannot talk its way past it; (b) scaffolding that can be measured and removed when a lane outgrows it; (c) per-lane evals so an upgrade is judged by evidence.
+
+### Ordered plan (each item: authority class, done-when)
+
+1. **Fix the measurement (Phase A1 completion).** No approval (instrumentation). (a) Rule: fleet work dispatches through `sessions_spawn` (recorded) or, where the CLI path is required (builder), Main writes a dispatch record that the credit reader can bind; (b) diagnose "missing subagent_runs corroboration" on the 268 rows. Done when a new builder and a new scout run both read CREDITABLE.
+2. **Fleet grant manifest + drift check.** No approval (read-only generator/validator; no config change). Generate per-agent grants from `openclaw.json` + `openclaw sandbox explain` (tools, workspaceAccess, binds and modes, overrides, network, model pin) into `state/agent-grants/`; validator fails on any unrecorded change. Done when today's builder override appears as an owner-approved grant and a planted drift is caught.
+3. **Dispatch playbook (Skill Workshop proposals, owner applies).** Into `veritas-model-routing-helper-lanes` + `veritas-isolated-agent-contract`: effort scaling (no lane / 1 lane / 2-4 lanes by task shape); context mode by role (verifier/researcher isolated, worker fork); cognitive-locality splitting; outcome-file handoff only (never pull child transcripts); concurrency/total caps; steer-or-cancel rule for drifting children; scout output handled as untrusted content (D3). Done when proposals are staged and reviewed.
+4. **Route real work to specialists and measure.** Within existing approvals. Default verifier = qa-redteam (isolated), research = research-scout, patches = builder via the scoped worktree. Run the approved builder-trim like-for-like canary as the first measured pair. Done when specialist share and cost per accepted task are reported from item-1 data.
+5. **Owner-gated hardening.** Config: Docker `no-new-privileges` + seccomp for sandbox lanes (D4); builder option D (drop the override); B2 scouts write their own artifacts (workspace-only). Decide unused lanes (finance-redteam, docs-continuity-editor 0 runs; oxalpha-functional-lab dead writable).
+6. **Stronger-model readiness.** Per-lane ~20-case eval sets from real accepted tasks (A3) + scaffold re-test on every model upgrade (D2). Done when one lane has an eval set and a baseline score.
+
+Stop lines unchanged (bottom of note). Items 1-2 start next; 3 is staged as proposals; 5 waits for Randall.
+
 ## Two Flash-role promotions applied; lab documentation blocked — 2026-09-19
 
 - Owner approved at 10:36 MST. Finance Evidence (`finance-source-scout`) and Knowledge and Continuity (`docs-continuity-editor`) now use `ollama-cloud/deepseek-v4.1-flash:cloud`. `ollama-cloud/glm-5.3-flash:cloud` is first Main-selected recovery option; previous stronger options remain. Automatic fallback arrays remain empty. No other model assignments, permissions, tools, sandbox, bindings or schedules changed. <!-- project: github.com/veritasaiflows-cell/veritas-workspace-backup -->
@@ -379,4 +477,4 @@ Randall approved disabling the nine empty-collection jobs. **The attempt was mad
 
 ## Next action
 
-Randall confirms scope and tier. Recommended: register as **P1** in `06. Playbooks/Active Workflows.md` and start Phase A only — A1 and A2 are internal instrumentation repairs inside existing approved boundaries and need no config change. Phases B and C need an explicit approval pass first.
+Superseded 2026-09-24: see "Efficiency and sovereignty plan - 2026-09-24" at the top. Start with item 1 (measurement) and item 2 (grant manifest); both need no config change.
