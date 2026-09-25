@@ -1,0 +1,5 @@
+{
+  "implementation-builder": {
+    "docker.dangerouslyAllowExternalBindSources": "Randall Telegram 2026-09-24 14:03 MST: approved option B (builder-scoped override; WF89 note 'Builder sandbox record - 2026-09-24')"
+  }
+}

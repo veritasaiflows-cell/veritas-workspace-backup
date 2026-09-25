@@ -2479,16 +2479,23 @@ def build_routes() -> list[dict[str, Any]]:
             "WF89",
             "Isolated Agent Specialization and Fleet Efficiency Contract",
             "P1",
-            "A1 reader slice accepted 2026-09-10 with explicit limits; broader "
-            "fleet-efficiency work authorized and open. No whole-fleet readiness, "
-            "no successful live credited attribution, no accounting/activation "
-            "completion.",
-            "Minimize handoff/context waste, assess tool-compatible "
-            "specialization, and prepare explicit decisions before config, skills, "
-            "defaults or agent retirement.",
+            "A1 reader slice accepted 2026-09-10 with explicit limits. Plan item 1 "
+            "done 2026-09-24: reader join-key fix (+27 credited); fresh builder and "
+            "research-scout runs read CREDITABLE under attribution contract v0.3 "
+            "(accepted by Randall 2026-09-24); 241 historical cleanup-delete runs stay "
+            "uncreditable. Plan item 2 done: grant ledger + drift check (0 drift, 13 "
+            "unprovenanced notable grants for owner review). No whole-fleet readiness, "
+            "no accounting/activation completion.",
+            "Plan item 3: stage dispatch-playbook Skill Workshop proposals. Randall: "
+            "choose archive-then-delete for oxalpha-lab retirement; 6 notable grants "
+            "remain unprovenanced; other config items wait for Randall.",
             f"{CONTINUITY}/Workflow 89 - Isolated Agent Specialization and Fleet Efficiency Contract.md",
-            "tmp/wf89-fleet-20260909/wf89-refresh-20260918.json",
+            "tmp/wf89-fleet-20260909/item2-grant-manifest-20260924.json",
             [
+                "tmp/wf89-fleet-20260909/item1-diagnosis-20260924.json",
+                "state/agent-grants/grant-ledger.json",
+                "tmp/wf89-fleet-20260909/wf89-refresh-20260924.json",
+                "tmp/wf89-fleet-20260909/attribution-contract-v0.3.md",
                 "tmp/wf89-fleet-20260909/current-handoff.json",
                 "tmp/wf89-fleet-20260909/a1-grok-applied-qa-result.json",
                 "tmp/wf89-fleet-20260909/a1-main-acceptance.json",
@@ -2498,7 +2505,7 @@ def build_routes() -> list[dict[str, Any]]:
                 "python scripts\\workflow_router.py WF89 --answer all",
             ],
             [
-                "No successful live credited attribution (dispatch_binding_missing_or_ambiguous)",
+                "Attribution contract v0.3 accepted 2026-09-24, but only 2 runs are credited under it so far (1 builder, 1 scout); 241 historical cleanup-delete runs stay uncreditable",
                 "Windows directory-junction proof dated 2026-09-10: four native junction cases deny escape (see tmp/wf89-fleet-20260909/broader/windows-junction-proof.json); positive controls pass; file-symlink coverage remains partial/unavailable, no universal reparse/race/OS claim",
                 "Historical accounting not green (2026-08-24 canary isolated_source_reverification_mismatch); current active admission has zero errors",
             ],

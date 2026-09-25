@@ -1,0 +1,13 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "47488eba-2c6a-4e91-8de5-e34ccb987586",
+  "agent_id": "docs-continuity-editor",
+  "session_key": "agent:docs-continuity-editor:wf89-trim-20260924",
+  "label": "WF89 docs canary: trim WF89 continuity note",
+  "task_text_sha256": "a9dc1236040e1c6563e7f37f45b6841e10bb3e5156d7ecd9648d1ae1a4a5696a",
+  "message_file": "tmp\\docs-trim-20260924\\task.md",
+  "created_at_ms": 1790311566032,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority"
+}

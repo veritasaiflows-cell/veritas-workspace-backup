@@ -1,6 +1,6 @@
 {
   "schema_version": "wf77_price_freshness_bridge.v1",
-  "generated_at_utc": "2026-09-24T21:55:10Z",
+  "generated_at_utc": "2026-09-24T23:25:56Z",
   "status": "warning",
   "phase": "B",
   "phase_name": "WF77 freshness leap through price-state bridge",
@@ -46,16 +46,16 @@
   "source_freshness": {
     "status": "stale",
     "technical_generated_at_utc": "2026-08-29T21:43:58.075260+00:00",
-    "technical_age_hours": 624.19,
+    "technical_age_hours": 625.7,
     "supplemental": {
       "status": "ok",
-      "generated_at_utc": "2026-09-24T21:55:08Z",
+      "generated_at_utc": "2026-09-24T23:25:53Z",
       "latest_market_data_date": "2026-09-22",
       "problem_tickers": []
     },
     "latest_market_data_date": "2026-09-22",
     "source_blockers": [
-      "technical refresh age 624.19h exceeds 36.0h"
+      "technical refresh age 625.7h exceeds 36.0h"
     ]
   },
   "summary": {

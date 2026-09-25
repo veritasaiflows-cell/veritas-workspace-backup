@@ -1,0 +1,74 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "575886cb-79f4-437c-a4c0-36b3ce658c2c",
+  "name": "WF89 - Daily Agent Grant Drift Check",
+  "owner_workflow": "WF89 fleet grant manifest + drift check",
+  "contract_reason": "Daily model-free proof that every agent's permissions match the owner-approved grant ledger; exit 1 (failure alert) on any unrecorded grant change.",
+  "approval": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (item 3 = model-free daily grant check, alert only on failure)",
+  "description": "Model-free daily check that every agent's permissions match the owner-approved grant ledger (state/agent-grants/grant-ledger.json). Exit 1 on any unrecorded change. Read-only on openclaw.json. No delivery except failure alert.",
+  "enabled": true,
+  "required": true,
+  "deleteAfterRun": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "10 6 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none"
+  },
+  "failureAlert": {
+    "after": 1,
+    "channel": "telegram",
+    "to": "telegram:8650152206",
+    "accountId": "default",
+    "includeSkipped": false
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts\\wf89_agent_grants.py",
+      "check",
+      "--out",
+      "tmp\\wf89-grant-check-latest.json"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 120
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/wf89-grant-check-latest.json"
+  ],
+  "quiet_output": "PASS/WARN runs are silent by design; WARN = notable grants without an approval reference (owner review list), not drift.",
+  "rollback": "openclaw cron rm 575886cb-79f4-437c-a4c0-36b3ce658c2c; delete this contract file",
+  "authority_boundary": {
+    "agent_turn_model_spawn_required": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "command_payload": true,
+    "config_auth_runtime_mutation_allowed": false,
+    "delivery_mutation_allowed": false,
+    "enable_disable_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "owner_workflow": "WF89 fleet grant manifest + drift check",
+    "paper_or_live_execution_allowed": false,
+    "review_only": true,
+    "schedule_mutation_allowed": false
+  },
+  "updated_at_utc": "2026-09-25T05:00:00Z"
+}

@@ -27,7 +27,7 @@ EXPECTED_FRESHNESS_OWNERS = {
 WF89_CONTINUITY_SUFFIX = (
     "Workflow 89 - Isolated Agent Specialization and Fleet Efficiency Contract.md"
 )
-WF89_PRIMARY_ARTIFACT = "tmp/wf89-fleet-20260909/wf89-refresh-20260918.json"
+WF89_PRIMARY_ARTIFACT = "tmp/wf89-fleet-20260909/item2-grant-manifest-20260924.json"
 WF89_RESUME_COMMAND = "python scripts\\workflow_router.py WF89 --answer all"
 WF89_REQUIRED_ALIAS_KEYS = {
     "wf89",
@@ -243,7 +243,10 @@ def test_wf89_readonly_no_completion_inference() -> None:
     state = wf89["current_state"].casefold()
     assert "a1" in state and "explicit limits" in state
     assert "no whole-fleet readiness" in state
-    assert "no successful live credited attribution" in state
+    # 2026-09-24: live credit exists only under attribution contract v0.3
+    # (Randall-accepted); a credit claim must name the contract and its acceptance.
+    assert "no successful live credited attribution" in state or (
+        "creditable" in state and "v0.3" in state and "accepted" in state)
     assert "complet" not in state or "no accounting/activation completion" in state
     assert wf89.get("effective_status_override") is None
 
@@ -303,7 +306,10 @@ def test_wf89_windows_junction_blocker_dated_proof() -> None:
     assert "four" in joined
     assert "file-symlink" in joined
     assert "no universal" in joined or "no claim" in joined or "reparse" in joined
-    assert any("dispatch_binding_missing_or_ambiguous" in b for b in blockers)
+    # 2026-09-24: binding blocker resolved by accepted contract v0.3; the residual
+    # blocker must keep the thin-evidence and uncreditable-history limits visible.
+    assert any("dispatch_binding_missing_or_ambiguous" in b
+               or ("v0.3" in b and "uncreditable" in b) for b in blockers)
     assert any("isolated_source_reverification_mismatch" in b for b in blockers)
 
 

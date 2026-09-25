@@ -1,0 +1,154 @@
+{
+  "schema": "veritas.wf89_item2_grant_manifest.v1",
+  "created_at_phoenix": "2026-09-24T21:40:00-07:00",
+  "created_by": "Veritas Main",
+  "authorized_by": "WF89 plan item 2 (no-approval class: read-only generator/validator); Randall Telegram 2026-09-24 20:40 MST 'Draft rules approved. Continue'",
+  "v03_acceptance": {
+    "contract": "tmp/wf89-fleet-20260909/attribution-contract-v0.3.md",
+    "accepted": "Randall Telegram 2026-09-24 20:40 MST 'Draft rules approved'",
+    "reader_default": "CLI binding on (--no-cli opts out)",
+    "post_acceptance_probe": "tmp/wf89-fleet-20260909/reader-full-20260924-v03-accepted.json"
+  },
+  "tool": {
+    "script": "scripts/wf89_agent_grants.py",
+    "commands": {
+      "check": "python scripts\\wf89_agent_grants.py check",
+      "record": "python scripts\\wf89_agent_grants.py record --agent <id> --record-ref <why> [--approval-ref <owner approval>]"
+    },
+    "reads": "~/.openclaw/openclaw.json (read-only; never written)",
+    "ledger": "state/agent-grants/grant-ledger.json",
+    "secret_handling": "sandbox env values stored only as sha256; no other config secrets are in agent entries"
+  },
+  "tests": "python -m pytest scripts/test_wf89_agent_grants.py -> 13 passed",
+  "baseline_check": {
+    "out": "tmp/wf89-fleet-20260909/grant-check-baseline-20260924.json",
+    "status": "WARN",
+    "agents_checked": 11,
+    "drift": 0,
+    "unprovenanced_notable": 13
+  },
+  "done_when": {
+    "builder_override_recorded_as_owner_approved": "implementation-builder docker.dangerouslyAllowExternalBindSources approval_ref = Randall Telegram 2026-09-24 14:03 MST option B",
+    "planted_drift_caught": "tmp/wf89-fleet-20260909/grant-planted-drift-20260924.json: replay of 09-24 workspaceAccess rw mistake, scout gains write, builder network bridge -> all FAIL with exact path; live config sha256 unchanged (in-memory mutation only)",
+    "status": "DONE"
+  },
+  "owner_review_items": [
+    {
+      "agent": "_global",
+      "grant": "agentToAgent.allow",
+      "value": [
+        "docs-continuity-editor",
+        "finance-redteam",
+        "finance-source-scout",
+        "implementation-builder",
+        "main",
+        "marketing-outreach",
+        "oxalpha-lab",
+        "qa-redteam",
+        "research-scout"
+      ]
+    },
+    {
+      "agent": "_global",
+      "grant": "sessions.visibility",
+      "value": "all"
+    },
+    {
+      "agent": "docs-continuity-editor",
+      "grant": "tools.write",
+      "value": [
+        "apply_patch",
+        "edit",
+        "write"
+      ]
+    },
+    {
+      "agent": "docs-continuity-editor",
+      "grant": "unsandboxed.write_or_exec",
+      "value": [
+        "apply_patch",
+        "edit",
+        "write"
+      ]
+    },
+    {
+      "agent": "implementation-builder",
+      "grant": "tools.write",
+      "value": [
+        "apply_patch",
+        "edit",
+        "write"
+      ]
+    },
+    {
+      "agent": "implementation-builder",
+      "grant": "tools.exec",
+      "value": "sandbox"
+    },
+    {
+      "agent": "implementation-builder",
+      "grant": "fs.workspaceOnly=false",
+      "value": "sandboxed"
+    },
+    {
+      "agent": "implementation-builder",
+      "grant": "docker.binds.rw",
+      "value": [
+        "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree:/worktree:rw"
+      ]
+    },
+    {
+      "agent": "main",
+      "grant": "subagents.allowAgents",
+      "value": [
+        "docs-continuity-editor",
+        "finance-redteam",
+        "finance-source-scout",
+        "implementation-builder",
+        "main",
+        "marketing-outreach",
+        "qa-redteam",
+        "research-scout"
+      ]
+    },
+    {
+      "agent": "oxalpha-functional-lab",
+      "grant": "tools.write",
+      "value": [
+        "apply_patch",
+        "edit",
+        "write"
+      ]
+    },
+    {
+      "agent": "oxalpha-functional-lab",
+      "grant": "tools.exec",
+      "value": "sandbox"
+    },
+    {
+      "agent": "oxalpha-functional-lab",
+      "grant": "sandbox.workspaceAccess",
+      "value": "rw"
+    },
+    {
+      "agent": "oxalpha-lab",
+      "grant": "tools.exec",
+      "value": "sandbox"
+    }
+  ],
+  "limits": [
+    "Config-derived only: effective runtime defaults (e.g. inherited tools.profile for main) and `openclaw sandbox explain` mounts are not diffed.",
+    "Not scheduled: nothing runs check automatically yet; adding it to heartbeat or cron is a schedule change needing Randall's approval.",
+    "UNPROVENANCED means no approval reference was found in WF89 records, not that the grant is unauthorized."
+  ],
+  "sha256": {
+    "scripts/wf89_agent_grants.py": "5b96cd2362c12341461640492a99b88337673aa4c27bdaf96f825aeef4f15272",
+    "scripts/test_wf89_agent_grants.py": "92241df125c6d9b0518bf72bda03096152aba6ee7fa9933314a00e80b6a9d9bf",
+    "state/agent-grants/grant-ledger.json": "97faf977aa40590efea739b40057b67e54de578129e825b49f4b0931a3093088",
+    "state/agent-grants/baseline-provenance-20260924.json": "2bf469a7b8cf00b4b92c1216d9e9bec04227e603dbb331abd267fbfe06815d84"
+  },
+  "next": [
+    "Randall: review the 13 unprovenanced notable grants (approve, or route to plan item 5 config changes)",
+    "Plan item 3: dispatch-playbook Skill Workshop proposals"
+  ]
+}

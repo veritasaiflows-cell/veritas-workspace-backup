@@ -2,8 +2,8 @@
 # OTEL To Proposal Route
 
 Canonical page: `wiki/os2/OTEL To Proposal Route.md`
-Canonical rendered SHA-256: `519afd7d21f63d9f1b4057594ca7dbfc43bf11e3a7f9c776f737188c80262755`.
-Source snapshot SHA-256: `533f5ad18f5c94e6bd6379d4a227fa6fc55f8e38e3c40e7c431b99006d3a2bf9`.
+Canonical rendered SHA-256: `1be7c8dea2dce8dff43fbf682becdca8190a28736166e0c5210b371edf09d5cd`.
+Source snapshot SHA-256: `b72cb76a50a01d76ee8320f68106404839653ca4d7ef17f73d8fb2324486ae83`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -50,9 +50,9 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 ## Leak Guard
 
 - Open unrouted recommendations: `0`.
-- Loop trace rows: `6`.
+- Loop trace rows: `5`.
 - Loop trace missing destinations: `0`.
-- Loop trace PM/lane links: `3` / `1`.
+- Loop trace PM/lane links: `2` / `1`.
 - Loop trace stale consumers: `2`.
 - Long-work active/resumable/blocked jobs: `0` / `0` / `0`.
 - Long-work next safe action: No resumable long jobs are waiting.

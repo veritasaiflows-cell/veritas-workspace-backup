@@ -29,13 +29,13 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - Rubric dimensions: `9`.
 - Primary first-hop eval: `tmp/wf74-learning-loop-eval-harness.json`.
 - Legacy RSI first-hop truth: `False`.
-- Decision docket rows: `21`.
-- Decision docket active actions: `12`.
+- Decision docket rows: `18`.
+- Decision docket active actions: `10`.
 - Decision docket hard stops: `0`.
-- Live RSI trace rows / stable closures: `6` / `0`.
-- RSI correlation IDs unique/duplicate/missing/noncanonical: `6` / `0` / `0` / `0`; integrity gate `True`.
+- Live RSI trace rows / stable closures: `5` / `0`.
+- RSI correlation IDs unique/duplicate/missing/noncanonical: `5` / `0` / `0` / `0`; integrity gate `True`.
 - Closed claims with durability unverified: `1`.
-- Missing outcome-link/metric debt: `31`.
+- Missing outcome-link/metric debt: `22`.
 - RSI later-outcome maturity: `warning_insufficient_real_outcome_evidence`.
 
 `tmp/wf74-rsi-evaluation-harness.json` remains compatibility/drill-in only for one transition cycle and is not first-hop truth.

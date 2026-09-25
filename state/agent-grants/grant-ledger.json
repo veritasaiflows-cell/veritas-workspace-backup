@@ -1,0 +1,1003 @@
+{
+  "schema": "veritas.wf89_grant_ledger.v1",
+  "created_at_utc": "2026-09-25T03:43:56Z",
+  "posture": "evidence of approved grants; grants nothing; openclaw.json stays the runtime authority",
+  "agents": {
+    "_global": {
+      "fingerprint": "1d2bff8faaaebe3ff6cc122c92de9a436d9c486d94383abdede2e33212466557",
+      "grant": {
+        "tools.profile": "coding",
+        "tools.agentToAgent": {
+          "enabled": true,
+          "allow": [
+            "main",
+            "research-scout",
+            "qa-redteam",
+            "finance-source-scout",
+            "finance-redteam",
+            "implementation-builder",
+            "docs-continuity-editor",
+            "oxalpha-lab",
+            "marketing-outreach"
+          ]
+        },
+        "tools.sessions": {
+          "visibility": "all"
+        },
+        "tools.sessions_spawn": {
+          "attachments": {
+            "enabled": true
+          }
+        },
+        "agents.defaults.subagents": {
+          "archiveAfterMinutes": 60,
+          "maxConcurrent": 8
+        },
+        "agents.defaults.maxConcurrent": 16
+      },
+      "recorded_at_utc": "2026-09-25T03:43:56Z",
+      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "notable": {
+        "agentToAgent.allow": {
+          "value": [
+            "docs-continuity-editor",
+            "finance-redteam",
+            "finance-source-scout",
+            "implementation-builder",
+            "main",
+            "marketing-outreach",
+            "oxalpha-lab",
+            "qa-redteam",
+            "research-scout"
+          ],
+          "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+        },
+        "sessions.visibility": {
+          "value": "all",
+          "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+        }
+      }
+    },
+    "docs-continuity-editor": {
+      "fingerprint": "ceeab815707800a4c6881fcbaa4c90d63046a74867e455d4d1f7aa9649f041c4",
+      "grant": {
+        "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\docs-continuity-editor",
+        "agentDir": "C:\\Users\\Veritas\\.openclaw\\agents\\docs-continuity-editor\\agent",
+        "model": {
+          "primary": "ollama-cloud/deepseek-v4.1-flash:cloud",
+          "fallbacks": []
+        },
+        "models": {
+          "ollama-cloud/glm-5.3-flash:cloud": {
+            "agentRuntime": {
+              "id": "openclaw"
+            }
+          }
+        },
+        "skills": [],
+        "tools": {
+          "allow": [
+            "read",
+            "write",
+            "edit",
+            "apply_patch"
+          ],
+          "deny": [
+            "exec",
+            "process",
+            "cron",
+            "gateway",
+            "message",
+            "sessions_list",
+            "sessions_history",
+            "session_status",
+            "sessions_send",
+            "sessions_spawn",
+            "subagents",
+            "skill_workshop",
+            "browser",
+            "view_image",
+            "media",
+            "nodes"
+          ],
+          "elevated": {
+            "enabled": false
+          },
+          "fs": {
+            "workspaceOnly": true
+          },
+          "message": {
+            "crossContext": {
+              "allowWithinProvider": false,
+              "allowAcrossProviders": false
+            }
+          }
+        }
+      },
+      "recorded_at_utc": "2026-09-25T03:43:56Z",
+      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "notable": {
+        "tools.write": {
+          "value": [
+            "apply_patch",
+            "edit",
+            "write"
+          ],
+          "approval_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending"
+        },
+        "unsandboxed.write_or_exec": {
+          "value": [
+            "apply_patch",
+            "edit",
+            "write"
+          ],
+          "approval_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending"
+        }
+      }
+    },
+    "finance-redteam": {
+      "fingerprint": "9414fba45bc0d89f3ae39291ad0232970a9f0853774370a37d5743acdb851cb5",
+      "grant": {
+        "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\finance-redteam",
+        "agentDir": "C:\\Users\\Veritas\\.openclaw\\agents\\finance-redteam\\agent",
+        "model": {
+          "primary": "ollama-cloud/glm-5.3:cloud",
+          "fallbacks": []
+        },
+        "models": {
+          "ollama-cloud/glm-5.3-flash:cloud": {
+            "agentRuntime": {
+              "id": "openclaw"
+            }
+          }
+        },
+        "skills": [],
+        "tools": {
+          "allow": [
+            "read",
+            "web_search",
+            "web_fetch"
+          ],
+          "deny": [
+            "exec",
+            "process",
+            "write",
+            "edit",
+            "apply_patch",
+            "cron",
+            "gateway",
+            "message",
+            "sessions_list",
+            "sessions_history",
+            "session_status",
+            "sessions_send",
+            "sessions_spawn",
+            "subagents",
+            "skill_workshop",
+            "browser",
+            "view_image",
+            "media",
+            "nodes"
+          ],
+          "elevated": {
+            "enabled": false
+          },
+          "fs": {
+            "workspaceOnly": true
+          },
+          "message": {
+            "crossContext": {
+              "allowWithinProvider": false,
+              "allowAcrossProviders": false
+            }
+          }
+        }
+      },
+      "recorded_at_utc": "2026-09-25T03:43:56Z",
+      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "notable": {}
+    },
+    "finance-source-scout": {
+      "fingerprint": "b2d3f0b1392cce7661ec7a74aa17f84604e73d624ea5e22e9ae30f5892a7bf7d",
+      "grant": {
+        "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\finance-source-scout",
+        "agentDir": "C:\\Users\\Veritas\\.openclaw\\agents\\finance-source-scout\\agent",
+        "model": {
+          "primary": "ollama-cloud/deepseek-v4.1-flash:cloud",
+          "fallbacks": []
+        },
+        "models": {
+          "ollama-cloud/glm-5.3-flash:cloud": {
+            "agentRuntime": {
+              "id": "openclaw"
+            }
+          }
+        },
+        "skills": [],
+        "tools": {
+          "allow": [
+            "read",
+            "web_search",
+            "web_fetch"
+          ],
+          "deny": [
+            "exec",
+            "process",
+            "write",
+            "edit",
+            "apply_patch",
+            "cron",
+            "gateway",
+            "message",
+            "sessions_list",
+            "sessions_history",
+            "session_status",
+            "sessions_send",
+            "sessions_spawn",
+            "subagents",
+            "skill_workshop",
+            "browser",
+            "view_image",
+            "media",
+            "nodes"
+          ],
+          "elevated": {
+            "enabled": false
+          },
+          "fs": {
+            "workspaceOnly": true
+          },
+          "message": {
+            "crossContext": {
+              "allowWithinProvider": false,
+              "allowAcrossProviders": false
+            }
+          }
+        }
+      },
+      "recorded_at_utc": "2026-09-25T03:43:56Z",
+      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "notable": {}
+    },
+    "implementation-builder": {
+      "fingerprint": "c8890816d3817d6fb93b5a69d01500730e0e40fdcdd6f58503791f8f13868c0c",
+      "grant": {
+        "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder",
+        "agentDir": "C:\\Users\\Veritas\\.openclaw\\agents\\implementation-builder\\agent",
+        "model": {
+          "primary": "meta/muse-spark-1.3-contributor",
+          "fallbacks": []
+        },
+        "models": {
+          "ollama-cloud/glm-5.3-flash:cloud": {
+            "agentRuntime": {
+              "id": "openclaw"
+            }
+          },
+          "meta/muse-spark-1.3-contributor": {
+            "agentRuntime": {
+              "id": "openclaw"
+            }
+          }
+        },
+        "skills": [
+          "disciplined-implementation-linux-steps",
+          "patch-draft-bounded-linux",
+          "linux-workspace-proof-runner"
+        ],
+        "sandbox": {
+          "mode": "all",
+          "backend": "docker",
+          "workspaceAccess": "none",
+          "scope": "session",
+          "docker": {
+            "dangerouslyAllowExternalBindSources": true,
+            "image": "openclaw-sandbox:bookworm-slim-python-calibration-r1",
+            "readOnlyRoot": true,
+            "tmpfs": [
+              "/tmp",
+              "/var/tmp",
+              "/run"
+            ],
+            "network": "none",
+            "user": "65534:65534",
+            "capDrop": [
+              "ALL"
+            ],
+            "env": {
+              "PYTHONDONTWRITEBYTECODE": "sha256:6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+              "PYTHONPYCACHEPREFIX": "sha256:17c9dd8da0b7b5a8018aebbbb4a24fc0d47fed8562ea26bd11f91ae14f8758d5"
+            },
+            "pidsLimit": 64,
+            "memory": "512m",
+            "memorySwap": "512m",
+            "cpus": 1,
+            "binds": [
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\AGENTS.md:/role/AGENTS.md:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\BOOTSTRAP.md:/role/BOOTSTRAP.md:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\SOUL.md:/role/SOUL.md:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\IDENTITY.md:/role/IDENTITY.md:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\USER.md:/role/USER.md:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\HEARTBEAT.md:/role/HEARTBEAT.md:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\agent.capabilities.json:/role/agent.capabilities.json:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\.openclaw\\attachments:/attachments:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree:/worktree:rw",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree\\.git:/worktree/.git:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree\\handoff-manifest.json:/worktree/handoff-manifest.json:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\.veritas-scoped-worktree.json:/worktree/.veritas-scoped-worktree.json:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\skills\\disciplined-implementation-linux-steps:/skills/disciplined-implementation-linux-steps:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\skills\\patch-draft-bounded-linux:/skills/patch-draft-bounded-linux:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\skills\\linux-workspace-proof-runner:/skills/linux-workspace-proof-runner:ro"
+            ]
+          }
+        },
+        "tools": {
+          "allow": [
+            "read",
+            "write",
+            "edit",
+            "apply_patch",
+            "exec"
+          ],
+          "deny": [
+            "process",
+            "cron",
+            "gateway",
+            "message",
+            "sessions_list",
+            "sessions_history",
+            "session_status",
+            "sessions_send",
+            "sessions_spawn",
+            "subagents",
+            "skill_workshop",
+            "browser",
+            "view_image",
+            "media",
+            "nodes"
+          ],
+          "elevated": {
+            "enabled": false
+          },
+          "exec": {
+            "host": "sandbox",
+            "mode": "full",
+            "strictInlineEval": true,
+            "timeoutSeconds": 30
+          },
+          "fs": {
+            "workspaceOnly": false
+          },
+          "message": {
+            "crossContext": {
+              "allowWithinProvider": false,
+              "allowAcrossProviders": false
+            }
+          },
+          "sandbox": {
+            "tools": {
+              "allow": [
+                "read",
+                "write",
+                "edit",
+                "apply_patch",
+                "exec"
+              ],
+              "deny": [
+                "process",
+                "cron",
+                "gateway",
+                "message",
+                "sessions_list",
+                "sessions_history",
+                "session_status",
+                "sessions_send",
+                "sessions_spawn",
+                "subagents",
+                "skill_workshop",
+                "browser",
+                "view_image",
+                "media",
+                "nodes"
+              ]
+            }
+          }
+        }
+      },
+      "recorded_at_utc": "2026-09-25T03:43:56Z",
+      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "notable": {
+        "tools.write": {
+          "value": [
+            "apply_patch",
+            "edit",
+            "write"
+          ],
+          "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+        },
+        "tools.exec": {
+          "value": "sandbox",
+          "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+        },
+        "fs.workspaceOnly=false": {
+          "value": "sandboxed",
+          "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+        },
+        "docker.dangerouslyAllowExternalBindSources": {
+          "value": true,
+          "approval_ref": "Randall Telegram 2026-09-24 14:03 MST: approved option B (builder-scoped override; WF89 note 'Builder sandbox record - 2026-09-24')"
+        },
+        "docker.binds.rw": {
+          "value": [
+            "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree:/worktree:rw"
+          ],
+          "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+        }
+      }
+    },
+    "main": {
+      "fingerprint": "05c9b95ad7ae6285ccb5329bcc145d7edd61f556dc726f0b6b52abf872b9269f",
+      "grant": {
+        "workspace": "C:\\Users\\Veritas\\.openclaw\\workspace",
+        "contextInjection": "continuation-skip",
+        "heartbeat": {
+          "every": "6h"
+        },
+        "subagents": {
+          "allowAgents": [
+            "main",
+            "research-scout",
+            "qa-redteam",
+            "finance-source-scout",
+            "finance-redteam",
+            "implementation-builder",
+            "docs-continuity-editor",
+            "marketing-outreach"
+          ]
+        },
+        "models": {
+          "zai/glm-5.3": {
+            "alias": "GLM"
+          },
+          "opencode-go/deepseek-v4-pro": {}
+        }
+      },
+      "recorded_at_utc": "2026-09-25T03:43:56Z",
+      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "notable": {
+        "subagents.allowAgents": {
+          "value": [
+            "docs-continuity-editor",
+            "finance-redteam",
+            "finance-source-scout",
+            "implementation-builder",
+            "main",
+            "marketing-outreach",
+            "qa-redteam",
+            "research-scout"
+          ],
+          "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+        }
+      }
+    },
+    "marketing-outreach": {
+      "fingerprint": "78405125a8e259ff627df570b7c5d495e9d19329c8f76e389efaebb73436fd04",
+      "grant": {
+        "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\marketing-outreach",
+        "agentDir": "C:\\Users\\Veritas\\.openclaw\\agents\\marketing-outreach\\agent",
+        "model": {
+          "primary": "ollama-cloud/deepseek-v4.1-flash:cloud",
+          "fallbacks": []
+        },
+        "skills": [
+          "cold-outreach-email-writer"
+        ],
+        "tools": {
+          "allow": [
+            "read",
+            "web_search",
+            "web_fetch"
+          ],
+          "deny": [
+            "exec",
+            "process",
+            "write",
+            "edit",
+            "apply_patch",
+            "cron",
+            "gateway",
+            "message",
+            "sessions_list",
+            "sessions_history",
+            "session_status",
+            "sessions_send",
+            "sessions_spawn",
+            "subagents",
+            "skill_workshop",
+            "browser",
+            "view_image",
+            "media",
+            "nodes"
+          ],
+          "elevated": {
+            "enabled": false
+          },
+          "fs": {
+            "workspaceOnly": true
+          },
+          "message": {
+            "crossContext": {
+              "allowWithinProvider": false,
+              "allowAcrossProviders": false
+            }
+          }
+        }
+      },
+      "recorded_at_utc": "2026-09-25T03:43:56Z",
+      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "notable": {}
+    },
+    "oxalpha-functional-lab": {
+      "fingerprint": "524d4cbd82fd2d30b5a64f3de92e0f37bb7c55b384cc61a09dbb581579b233b0",
+      "grant": {
+        "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab",
+        "agentDir": "C:\\Users\\Veritas\\.openclaw\\agents\\oxalpha-functional-lab\\agent",
+        "model": {
+          "primary": "ollama-cloud/glm-5.3-flash:cloud",
+          "fallbacks": []
+        },
+        "models": {
+          "ollama-cloud/glm-5.3-flash:cloud": {}
+        },
+        "sandbox": {
+          "mode": "all",
+          "backend": "docker",
+          "workspaceAccess": "rw",
+          "scope": "session",
+          "docker": {
+            "image": "openclaw-sandbox:bookworm-slim",
+            "readOnlyRoot": true,
+            "tmpfs": [
+              "/tmp",
+              "/var/tmp",
+              "/run"
+            ],
+            "network": "none",
+            "user": "65534:65534",
+            "capDrop": [
+              "ALL"
+            ],
+            "pidsLimit": 64,
+            "memory": "512m",
+            "memorySwap": "512m",
+            "cpus": 1,
+            "binds": []
+          }
+        },
+        "tools": {
+          "allow": [
+            "read",
+            "write",
+            "edit",
+            "apply_patch",
+            "exec"
+          ],
+          "deny": [
+            "process",
+            "cron",
+            "gateway",
+            "message",
+            "sessions_list",
+            "sessions_history",
+            "session_status",
+            "sessions_send",
+            "sessions_spawn",
+            "subagents",
+            "skill_workshop",
+            "browser",
+            "view_image",
+            "media",
+            "nodes",
+            "web_search",
+            "web_fetch",
+            "memory_search",
+            "memory_get"
+          ],
+          "elevated": {
+            "enabled": false
+          },
+          "exec": {
+            "host": "sandbox",
+            "mode": "full",
+            "strictInlineEval": true,
+            "timeoutSeconds": 30
+          },
+          "fs": {
+            "workspaceOnly": true
+          },
+          "message": {
+            "crossContext": {
+              "allowWithinProvider": false,
+              "allowAcrossProviders": false
+            }
+          },
+          "sandbox": {
+            "tools": {
+              "allow": [
+                "read",
+                "write",
+                "edit",
+                "apply_patch",
+                "exec"
+              ],
+              "deny": [
+                "process",
+                "cron",
+                "gateway",
+                "message",
+                "sessions_list",
+                "sessions_history",
+                "session_status",
+                "sessions_send",
+                "sessions_spawn",
+                "subagents",
+                "skill_workshop",
+                "browser",
+                "view_image",
+                "media",
+                "nodes",
+                "web_search",
+                "web_fetch",
+                "memory_search",
+                "memory_get"
+              ]
+            }
+          }
+        }
+      },
+      "recorded_at_utc": "2026-09-25T03:43:56Z",
+      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "notable": {
+        "tools.write": {
+          "value": [
+            "apply_patch",
+            "edit",
+            "write"
+          ],
+          "approval_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending"
+        },
+        "tools.exec": {
+          "value": "sandbox",
+          "approval_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending"
+        },
+        "sandbox.workspaceAccess": {
+          "value": "rw",
+          "approval_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending"
+        }
+      }
+    },
+    "oxalpha-lab": {
+      "fingerprint": "daf57c0ba483524bda9638380cb2b573d769753e69707ce3eb9d59868c69bd2c",
+      "grant": {
+        "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\oxalpha-lab",
+        "agentDir": "C:\\Users\\Veritas\\.openclaw\\agents\\oxalpha-lab\\agent",
+        "model": {
+          "primary": "ollama-cloud/glm-5.3-flash:cloud",
+          "fallbacks": []
+        },
+        "models": {
+          "ollama-cloud/glm-5.3-flash:cloud": {}
+        },
+        "sandbox": {
+          "mode": "all",
+          "backend": "docker",
+          "workspaceAccess": "none",
+          "scope": "session",
+          "docker": {
+            "image": "openclaw-sandbox:bookworm-slim",
+            "readOnlyRoot": true,
+            "tmpfs": [
+              "/tmp",
+              "/var/tmp",
+              "/run"
+            ],
+            "network": "none",
+            "user": "65534:65534",
+            "capDrop": [
+              "ALL"
+            ],
+            "pidsLimit": 64,
+            "memory": "512m",
+            "memorySwap": "512m",
+            "cpus": 1,
+            "binds": []
+          }
+        },
+        "tools": {
+          "allow": [
+            "read",
+            "exec"
+          ],
+          "deny": [
+            "write",
+            "edit",
+            "apply_patch",
+            "process",
+            "cron",
+            "gateway",
+            "message",
+            "sessions_list",
+            "sessions_history",
+            "session_status",
+            "sessions_send",
+            "sessions_spawn",
+            "subagents",
+            "skill_workshop",
+            "browser",
+            "view_image",
+            "media",
+            "nodes",
+            "web_search",
+            "web_fetch",
+            "memory_search",
+            "memory_get"
+          ],
+          "elevated": {
+            "enabled": false
+          },
+          "exec": {
+            "host": "sandbox",
+            "mode": "full",
+            "strictInlineEval": true,
+            "timeoutSeconds": 30
+          },
+          "fs": {
+            "workspaceOnly": true
+          },
+          "message": {
+            "crossContext": {
+              "allowWithinProvider": false,
+              "allowAcrossProviders": false
+            }
+          },
+          "sandbox": {
+            "tools": {
+              "allow": [
+                "read",
+                "exec"
+              ],
+              "deny": [
+                "write",
+                "edit",
+                "apply_patch",
+                "process",
+                "cron",
+                "gateway",
+                "message",
+                "sessions_list",
+                "sessions_history",
+                "session_status",
+                "sessions_send",
+                "sessions_spawn",
+                "subagents",
+                "skill_workshop",
+                "browser",
+                "view_image",
+                "media",
+                "nodes",
+                "web_search",
+                "web_fetch",
+                "memory_search",
+                "memory_get"
+              ]
+            }
+          }
+        }
+      },
+      "recorded_at_utc": "2026-09-25T03:43:56Z",
+      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "notable": {
+        "tools.exec": {
+          "value": "sandbox",
+          "approval_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending"
+        }
+      }
+    },
+    "qa-redteam": {
+      "fingerprint": "302f5723ab82c95dbd9146fcb5fe55eaeb9c7248b447961c0255f582c2aed1df",
+      "grant": {
+        "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam",
+        "agentDir": "C:\\Users\\Veritas\\.openclaw\\agents\\qa-redteam\\agent",
+        "model": {
+          "primary": "ollama-cloud/glm-5.3:cloud",
+          "fallbacks": []
+        },
+        "models": {
+          "ollama-cloud/glm-5.3-flash:cloud": {
+            "agentRuntime": {
+              "id": "openclaw"
+            }
+          },
+          "ollama-cloud/glm-5.3:cloud": {
+            "agentRuntime": {
+              "id": "openclaw"
+            }
+          }
+        },
+        "skills": [
+          "qa-source-reasoning-review",
+          "qa-diff-safety-review",
+          "qa-evidence-separation-check"
+        ],
+        "tools": {
+          "allow": [
+            "read",
+            "web_search",
+            "web_fetch"
+          ],
+          "deny": [
+            "exec",
+            "process",
+            "write",
+            "edit",
+            "apply_patch",
+            "cron",
+            "gateway",
+            "message",
+            "sessions_list",
+            "sessions_history",
+            "session_status",
+            "sessions_send",
+            "sessions_spawn",
+            "subagents",
+            "skill_workshop",
+            "browser",
+            "view_image",
+            "media",
+            "nodes"
+          ],
+          "elevated": {
+            "enabled": false
+          },
+          "fs": {
+            "workspaceOnly": true
+          },
+          "message": {
+            "crossContext": {
+              "allowWithinProvider": false,
+              "allowAcrossProviders": false
+            }
+          }
+        }
+      },
+      "recorded_at_utc": "2026-09-25T03:43:56Z",
+      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "notable": {}
+    },
+    "research-scout": {
+      "fingerprint": "3dfc54171d01f9a9d7dadaae1383b14c0ad7dd877697007d1a6d351b2e5672c9",
+      "grant": {
+        "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\research-scout",
+        "agentDir": "C:\\Users\\Veritas\\.openclaw\\agents\\research-scout\\agent",
+        "model": {
+          "primary": "ollama-cloud/deepseek-v4.1-flash:cloud",
+          "fallbacks": []
+        },
+        "models": {
+          "ollama-cloud/glm-5.3-flash:cloud": {
+            "agentRuntime": {
+              "id": "openclaw"
+            }
+          }
+        },
+        "skills": [],
+        "tools": {
+          "allow": [
+            "read",
+            "web_search",
+            "web_fetch"
+          ],
+          "deny": [
+            "exec",
+            "process",
+            "write",
+            "edit",
+            "apply_patch",
+            "cron",
+            "gateway",
+            "message",
+            "sessions_list",
+            "sessions_history",
+            "session_status",
+            "sessions_send",
+            "sessions_spawn",
+            "subagents",
+            "skill_workshop",
+            "browser",
+            "view_image",
+            "media",
+            "nodes"
+          ],
+          "elevated": {
+            "enabled": false
+          },
+          "fs": {
+            "workspaceOnly": true
+          },
+          "message": {
+            "crossContext": {
+              "allowWithinProvider": false,
+              "allowAcrossProviders": false
+            }
+          }
+        }
+      },
+      "recorded_at_utc": "2026-09-25T03:43:56Z",
+      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "notable": {}
+    }
+  },
+  "history": [
+    {
+      "at_utc": "2026-09-25T03:43:56Z",
+      "action": "init",
+      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)"
+    },
+    {
+      "at_utc": "2026-09-25T04:55:33Z",
+      "action": "approve",
+      "agent": "_global",
+      "flag": "agentToAgent.allow",
+      "previous_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending",
+      "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+    },
+    {
+      "at_utc": "2026-09-25T04:55:33Z",
+      "action": "approve",
+      "agent": "_global",
+      "flag": "sessions.visibility",
+      "previous_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending",
+      "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+    },
+    {
+      "at_utc": "2026-09-25T04:55:33Z",
+      "action": "approve",
+      "agent": "main",
+      "flag": "subagents.allowAgents",
+      "previous_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending",
+      "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+    },
+    {
+      "at_utc": "2026-09-25T04:55:33Z",
+      "action": "approve",
+      "agent": "implementation-builder",
+      "flag": "tools.write",
+      "previous_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending",
+      "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+    },
+    {
+      "at_utc": "2026-09-25T04:55:34Z",
+      "action": "approve",
+      "agent": "implementation-builder",
+      "flag": "tools.exec",
+      "previous_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending",
+      "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+    },
+    {
+      "at_utc": "2026-09-25T04:55:34Z",
+      "action": "approve",
+      "agent": "implementation-builder",
+      "flag": "fs.workspaceOnly=false",
+      "previous_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending",
+      "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+    },
+    {
+      "at_utc": "2026-09-25T04:55:34Z",
+      "action": "approve",
+      "agent": "implementation-builder",
+      "flag": "docker.binds.rw",
+      "previous_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending",
+      "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+    }
+  ]
+}

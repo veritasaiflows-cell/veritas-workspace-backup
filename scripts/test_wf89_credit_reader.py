@@ -164,6 +164,30 @@ class CreditReaderTests(unittest.TestCase):
         self.assertEqual(rec["state"], "INCOMPLETE")
         self.assertFalse(rec["verified"] and rec["creditable"])
 
+    def test_rekeyed_registry_run_id_joins_on_task_run_id(self) -> None:
+        # Live 2026-09-24: re-announced runs carry a new subagent_runs.run_id;
+        # payload.taskRunId still names the task run and must be the join key.
+        c = Ctx()
+        mk_global(c.gdb, [base_task()],
+                  [base_sub(run_id="announce:requester-settle:child1:yield-1")])
+        mk_executor(c.aroot / "ag1" / "agent" / "openclaw-agent.sqlite",
+                    [{"session_key": "child1", "current_session_id": "w1",
+                      "entry_json": entry_json("w1"), "entry_valid": 1, "status": "done"}],
+                    [{"session_id": "w1", "session_key": "child1",
+                      "previous_session_id": None, "status": "done",
+                      "model": "m1", "model_provider": "p1"}],
+                    [("w1", "r1", completed_event("r1", "w1", MIN_USAGE))])
+        rec = c.run()["records"][0]
+        self.assertEqual(rec["state"], "CREDITABLE")
+
+    def test_duplicate_task_run_id_fails_closed(self) -> None:
+        c = Ctx()
+        mk_global(c.gdb, [base_task()],
+                  [base_sub(), base_sub(run_id="announce:dup")])
+        rec = c.run()["records"][0]
+        self.assertEqual(rec["state"], "MISMATCH")
+        self.assertFalse(rec["creditable"])
+
     def test_unreadable_executor_store(self) -> None:
         c = Ctx()
         mk_global(c.gdb, [base_task()], [base_sub()])

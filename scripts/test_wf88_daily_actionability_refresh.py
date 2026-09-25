@@ -929,3 +929,62 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+SCORECARD_STEP = r'''
+import json, pathlib, sys
+root = pathlib.Path(".")
+(root / "tmp").mkdir(exist_ok=True)
+recovered = (root / "recovered.txt").exists()
+bad = sys.argv[1]
+fixtures = [{"fixture_id": "rq_other_fixture", "status": "fail" if bad == "other" else "pass"},
+            {"fixture_id": "rq_freshness_current_descriptor_accepted",
+             "status": "pass" if recovered or bad != "freshness" else "fail"}]
+(root / "tmp" / "retrieval-quality-scorecard.json").write_text(json.dumps({"fixtures": fixtures}))
+raise SystemExit(0 if all(f["status"] == "pass" for f in fixtures) else 1)
+'''
+
+
+def _recovery_harness(tmp_path, monkeypatch, bad: str, step_id: str = "retrieval_quality_scorecard"):
+    module = load_module()
+    monkeypatch.setattr(module, "ROOT", tmp_path)
+    monkeypatch.setattr(module, "WIKI_SYNTHESIS_RECOVERY", {
+        "id": "wf88_wiki_synthesis_recovery",
+        "command": [sys.executable, "-c", "import pathlib; pathlib.Path('recovered.txt').write_text('x')"],
+    })
+    commands = [{"id": step_id, "command": [sys.executable, "-c", SCORECARD_STEP, bad]}]
+    return module.run_sequence(commands, execute=True, timeout_seconds=30, reuse_fresh_wf74=False,
+                               retry_limit=1, retry_wait_seconds=0)
+
+
+def test_wiki_freshness_only_failure_rebuilds_wiki_then_retries(tmp_path, monkeypatch) -> None:
+    # 2026-09-24 deadlock: a stale wiki packet failed the scorecard, which runs
+    # before the only step that rebuilds the packet.
+    results, ok = _recovery_harness(tmp_path, monkeypatch, "freshness")
+    assert ok is True
+    row = results[0]
+    assert row["returncode"] == 0 and row["retry_attempted"] is True
+    assert row["recovery"]["id"] == "wf88_wiki_synthesis_recovery" and row["recovery"]["returncode"] == 0
+    assert (tmp_path / "recovered.txt").exists()
+
+
+def test_other_scorecard_failure_does_not_trigger_wiki_rebuild(tmp_path, monkeypatch) -> None:
+    results, ok = _recovery_harness(tmp_path, monkeypatch, "other")
+    assert ok is False
+    assert "recovery" not in results[0]
+    assert not (tmp_path / "recovered.txt").exists()
+
+
+def test_recovery_only_applies_to_retrieval_scorecard_step(tmp_path, monkeypatch) -> None:
+    results, ok = _recovery_harness(tmp_path, monkeypatch, "freshness", step_id="some_other_step")
+    assert ok is False
+    assert "recovery" not in results[0]
+
+
+def test_production_recovery_rebuilds_pages_and_packet_together() -> None:
+    module = load_module()
+    command = module.WIKI_SYNTHESIS_RECOVERY["command"]
+    assert command[1].endswith("wf88_wiki_synthesis_packet.py")
+    assert "--write-wiki" in command and "--write" in command
+    assert [row["id"] for row in module.COMMANDS].count("wf88_wiki_synthesis") == 1
+    assert len(module.COMMANDS) == 45

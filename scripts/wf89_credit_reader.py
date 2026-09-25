@@ -26,6 +26,12 @@ binding semantics exactly:
   (D2c unapproved). Legacy subagent_dispatch_bindings permanently excluded
   (never read).
 
+Contract v0.3 (ACCEPTED 2026-09-24; on by default, --no-cli opts out; see
+tmp/wf89-fleet-20260909/attribution-contract-v0.3.md): runtime='cli'
+rows (`openclaw agent --agent X`) have no subagent_runs leg. A Main-written
+dispatch record in state/wf89-dispatch-records/ replaces it; the executor
+witness and usage steps are unchanged.
+
 All SQLite opened read-only via URI mode=ro. No writes to any store.
 """
 from __future__ import annotations
@@ -45,6 +51,11 @@ SCHEMA = "veritas.wf89_credit_reader.v1"
 REQUIRED_USAGE_KEYS = ("input", "output", "total")
 TERMINAL_TASK_STATUSES = {"succeeded", "failed", "timed_out", "cancelled"}
 CREDITABLE_TASK_STATUSES = {"succeeded", "failed", "timed_out", "cancelled"}
+WORKSPACE = Path(__file__).resolve().parent.parent
+DISPATCH_DIR = WORKSPACE / "state" / "wf89-dispatch-records"
+DISPATCH_SCHEMA = "veritas.wf89_dispatch_record.v1"
+DISPATCH_REQUIRED_KEYS = ("dispatch_id", "agent_id", "session_key", "label",
+                          "task_text_sha256", "created_at_ms")
 
 
 def utc_now() -> str:
@@ -142,7 +153,13 @@ def classify_row(task: sqlite3.Row, sub: sqlite3.Row | None, node: sqlite3.Row |
         rec.update(state="OBSERVABLE_ONLY", reason="unlabeled run: observable, not creditable",
                    verified=False, creditable=False)
         return rec
-    # Executor witness.
+    return classify_witness(rec, status, node, node_error, window, entry, usage_events)
+
+
+def classify_witness(rec: dict, status: str, node: sqlite3.Row | None, node_error: str | None,
+                     window: sqlite3.Row | None, entry: dict | None,
+                     usage_events: list[dict]) -> dict:
+    """Executor-store witness + usage steps shared by the subagent and CLI paths."""
     if node_error is not None:
         rec.update(state="UNREADABLE", reason=node_error)
         return rec
@@ -191,6 +208,144 @@ def classify_row(task: sqlite3.Row, sub: sqlite3.Row | None, node: sqlite3.Row |
     return rec
 
 
+def normalized_text_hash(text: str) -> str:
+    """The task store keeps CLI --message text stripped; hash both sides the same way."""
+    return task_text_hash(text.strip())
+
+
+def load_dispatch_records(dispatch_dir: Path) -> tuple[list[dict], list[str]]:
+    records, errors = [], []
+    if not dispatch_dir.is_dir():
+        return records, errors
+    for p in sorted(dispatch_dir.glob("*.json")):
+        try:
+            d = json.loads(p.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            errors.append(f"{p.name}: unreadable ({exc})")
+            continue
+        missing = [k for k in DISPATCH_REQUIRED_KEYS if not d.get(k)]
+        if d.get("schema") != DISPATCH_SCHEMA or missing:
+            errors.append(f"{p.name}: invalid dispatch record (schema={d.get('schema')}, missing={missing})")
+            continue
+        d["_path"] = p.name
+        records.append(d)
+    return records, errors
+
+
+def classify_cli_row(task: sqlite3.Row, dispatch: dict, node: sqlite3.Row | None,
+                     node_error: str | None, window: sqlite3.Row | None,
+                     entry: dict | None, usage_events: list[dict]) -> dict:
+    """Contract v0.3: a Main-written dispatch record replaces the
+    subagent_runs leg for runtime='cli' rows. Label comes from the record."""
+    rec = classify_row(task, None, None, None, None, None, [])
+    rec.update(dispatch_path="cli", dispatch_id=dispatch["dispatch_id"],
+               dispatch_record=dispatch["_path"], label=dispatch["label"], label_null=False)
+    return classify_witness(rec, task["status"], node, node_error, window, entry, usage_events)
+
+
+def executor_witness(agent_root: Path, agent_id: str | None, child_key: str | None,
+                     run_id: str | None) -> tuple:
+    """Return (node, node_error, window, entry, usage_events) from the executor store."""
+    node = window = None
+    entry = None
+    node_error = None
+    usage_events: list = []
+    if not agent_id or not child_key:
+        return None, "missing agent_id/child_session_key; executor store unresolvable", None, None, []
+    edb = agent_root / agent_id / "agent" / "openclaw-agent.sqlite"
+    if not edb.exists():
+        return None, f"executor store absent: {edb}", None, None, []
+    try:
+        econ = open_ro(edb)
+        try:
+            node = econ.execute("SELECT * FROM session_nodes WHERE session_key = ?",
+                                (child_key,)).fetchone()
+            if node is None:
+                node_error = "no session_nodes row for child_session_key"
+            else:
+                try:
+                    entry = json.loads(node["entry_json"] or "null")
+                    if not isinstance(entry, dict):
+                        entry = None
+                except json.JSONDecodeError:
+                    entry = None
+                if entry is None and node["entry_valid"]:
+                    node_error = "entry_json corrupt"
+                    node = None
+                else:
+                    wid = node["current_session_id"]
+                    window = econ.execute("SELECT * FROM session_windows WHERE session_id = ?",
+                                          (wid,)).fetchone()
+                    if run_id and wid:
+                        for (ej,) in econ.execute(
+                                "SELECT event_json FROM trajectory_runtime_events"
+                                " WHERE run_id = ? AND session_id = ?", (run_id, wid)).fetchall():
+                            u = extract_usage(ej)
+                            if u is not None:
+                                usage_events.append(u)
+                            else:
+                                try:
+                                    if json.loads(ej).get("type") == "model.completed":
+                                        usage_events.append(None)
+                                except (json.JSONDecodeError, TypeError, AttributeError):
+                                    pass
+        finally:
+            econ.close()
+    except sqlite3.Error as exc:
+        node_error = f"executor store unreadable: {exc}"
+        node = None
+    return node, node_error, window, entry, usage_events
+
+
+def read_cli(dispatch_dir: Path, global_db: Path = GLOBAL_DB,
+             agent_root: Path = AGENT_ROOT) -> dict:
+    """Contract v0.3: bind each Main dispatch record to exactly one
+    runtime='cli' task row (same agent, same session key, created at/after the
+    record, identical normalized task-text hash). 0 matches = PENDING, >1 =
+    MISMATCH (ambiguous). CLI rows with no record are counted, never credited."""
+    dispatches, errors = load_dispatch_records(dispatch_dir)
+    gcon = open_ro(global_db)
+    try:
+        cli_rows = gcon.execute("SELECT * FROM task_runs WHERE runtime='cli' ORDER BY created_at").fetchall()
+    finally:
+        gcon.close()
+    records, bound_task_ids = [], set()
+    for d in dispatches:
+        matches = [t for t in cli_rows
+                   if t["agent_id"] == d["agent_id"] and t["child_session_key"] == d["session_key"]
+                   and (t["created_at"] or 0) >= d["created_at_ms"]
+                   and isinstance(t["task"], str)
+                   and normalized_text_hash(t["task"]) == d["task_text_sha256"]]
+        if len(matches) != 1:
+            state = "PENDING" if not matches else "MISMATCH"
+            records.append({"dispatch_path": "cli", "dispatch_id": d["dispatch_id"],
+                            "dispatch_record": d["_path"], "agent_id": d["agent_id"],
+                            "label": d["label"], "state": state, "verified": False,
+                            "creditable": False,
+                            "reason": "no matching runtime='cli' task row yet" if not matches
+                            else f"ambiguous: {len(matches)} cli task rows match one dispatch record"})
+            continue
+        task = matches[0]
+        bound_task_ids.add(task["task_id"])
+        node, node_error, window, entry, usage_events = executor_witness(
+            agent_root, task["agent_id"], task["child_session_key"], task["run_id"])
+        rec = classify_cli_row(task, d, node, node_error, window, entry, usage_events)
+        rec["usage_event_count"] = (len([u for u in usage_events if isinstance(u, dict)])
+                                    if rec["state"] == "CREDITABLE" else 0)
+        records.append(rec)
+    unrecorded: dict[str, int] = {}
+    for t in cli_rows:
+        if t["task_id"] not in bound_task_ids:
+            unrecorded[t["agent_id"] or "unknown"] = unrecorded.get(t["agent_id"] or "unknown", 0) + 1
+    counts: dict[str, int] = {}
+    for r in records:
+        counts[r["state"]] = counts.get(r["state"], 0) + 1
+    return {"contract": "v0.3", "dispatch_dir": str(dispatch_dir),
+            "dispatch_records": len(dispatches), "dispatch_record_errors": errors,
+            "counts": counts, "cli_rows_total": len(cli_rows),
+            "cli_rows_without_dispatch_record_by_agent": unrecorded, "records": records}
+
+
 def read_task(task_id: str | None = None, limit: int | None = None,
               global_db: Path = GLOBAL_DB, agent_root: Path = AGENT_ROOT) -> dict:
     gcon = open_ro(global_db)
@@ -199,70 +354,32 @@ def read_task(task_id: str | None = None, limit: int | None = None,
              + (" AND task_id = ?" if task_id else "") + " ORDER BY created_at"
              + (f" LIMIT {int(limit)}" if limit else ""))
         tasks = gcon.execute(q, (task_id,) if task_id else []).fetchall()
-        subs = {r["run_id"]: r for r in
-                gcon.execute("SELECT * FROM subagent_runs").fetchall() if r["run_id"]}
+        # Join on payload.taskRunId (the contract S1 key), not subagent_runs.run_id:
+        # re-announced/generation>=2 runs get a new registry run_id (e.g.
+        # "announce:requester-settle:...") while taskRunId still names the task run.
+        subs: dict[str, list[sqlite3.Row]] = {}
+        for r in gcon.execute("SELECT * FROM subagent_runs").fetchall():
+            try:
+                key = json.loads(r["payload_json"] or "{}").get("taskRunId") or r["run_id"]
+            except json.JSONDecodeError:
+                key = r["run_id"]
+            if key:
+                subs.setdefault(key, []).append(r)
     finally:
         gcon.close()
     records = []
     for task in tasks:
         run_id = task["run_id"]
-        sub = subs.get(run_id) if run_id else None
-        node = window = None
-        entry = None
-        node_error = None
-        usage_events: list[dict] = []
-        agent_id = task["agent_id"]
-        child_key = task["child_session_key"]
-        if not agent_id or not child_key:
-            node_error = "missing agent_id/child_session_key; executor store unresolvable"
-        else:
-            edb = agent_root / agent_id / "agent" / "openclaw-agent.sqlite"
-            if not edb.exists():
-                node_error = f"executor store absent: {edb}"
-            else:
-                try:
-                    econ = open_ro(edb)
-                    try:
-                        node = econ.execute(
-                            "SELECT * FROM session_nodes WHERE session_key = ?",
-                            (child_key,)).fetchone()
-                        if node is None:
-                            node_error = "no session_nodes row for child_session_key"
-                        else:
-                            try:
-                                entry = json.loads(node["entry_json"] or "null")
-                                if not isinstance(entry, dict):
-                                    entry = None
-                            except json.JSONDecodeError:
-                                entry = None
-                            if entry is None and node["entry_valid"]:
-                                node_error = "entry_json corrupt"
-                                node = None
-                            else:
-                                wid = node["current_session_id"]
-                                window = econ.execute(
-                                    "SELECT * FROM session_windows WHERE session_id = ?",
-                                    (wid,)).fetchone()
-                                if run_id and wid:
-                                    for (ej,) in econ.execute(
-                                            "SELECT event_json FROM trajectory_runtime_events"
-                                            " WHERE run_id = ? AND session_id = ?",
-                                            (run_id, wid)).fetchall():
-                                        u = extract_usage(ej)
-                                        if u is not None:
-                                            usage_events.append(u)
-                                        else:
-                                            try:
-                                                d = json.loads(ej)
-                                                if d.get("type") == "model.completed":
-                                                    usage_events.append(None)  # type: ignore
-                                            except (json.JSONDecodeError, TypeError):
-                                                pass
-                    finally:
-                        econ.close()
-                except sqlite3.Error as exc:
-                    node_error = f"executor store unreadable: {exc}"
-                    node = None
+        candidates = subs.get(run_id, []) if run_id else []
+        if len(candidates) > 1:
+            rec = classify_row(task, None, None, None, None, None, [])
+            rec.update(state="MISMATCH",
+                       reason=f"ambiguous corroboration: {len(candidates)} subagent_runs rows share taskRunId")
+            records.append(rec)
+            continue
+        sub = candidates[0] if candidates else None
+        node, node_error, window, entry, usage_events = executor_witness(
+            agent_root, task["agent_id"], task["child_session_key"], run_id)
         # Normalize: usage_events may contain None sentinels for unusable completed events.
         usable_only = [u for u in usage_events if isinstance(u, dict)]
         rec = classify_row(task, sub, node, node_error, window, entry, usage_events)
@@ -283,14 +400,25 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", default=None)
     ap.add_argument("--global-db", default=str(GLOBAL_DB))
     ap.add_argument("--agent-root", default=str(AGENT_ROOT))
+    ap.add_argument("--no-cli", action="store_true",
+                    help="skip binding runtime='cli' rows via dispatch records (contract v0.3)")
+    ap.add_argument("--include-cli", action="store_true",
+                    help="no-op; kept for pre-acceptance commands (CLI binding is the default)")
+    ap.add_argument("--dispatch-dir", default=str(DISPATCH_DIR))
     args = ap.parse_args(argv)
     result = read_task(task_id=args.task_id, limit=args.limit,
                        global_db=Path(args.global_db), agent_root=Path(args.agent_root))
+    if not args.no_cli:
+        result["cli"] = read_cli(Path(args.dispatch_dir), global_db=Path(args.global_db),
+                                 agent_root=Path(args.agent_root))
     text = json.dumps(result, indent=2)
     if args.out:
         Path(args.out).write_text(text, encoding="utf-8")
-        print(json.dumps({"total_scanned": result["total_scanned"],
-                          "counts": result["counts"], "out": args.out}, indent=2))
+        summary = {"total_scanned": result["total_scanned"], "counts": result["counts"],
+                   "out": args.out}
+        if "cli" in result:
+            summary["cli"] = {k: v for k, v in result["cli"].items() if k != "records"}
+        print(json.dumps(summary, indent=2))
     else:
         print(text)
     return 0

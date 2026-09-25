@@ -3,7 +3,7 @@
 
 Canonical page: `wiki/recommendations/Action Promotion Map.md`
 Canonical rendered SHA-256: `39afe68f67270c8934faca14c8704e050653ad9a2e5b0149abe0162c303bd4c6`.
-Source snapshot SHA-256: `533f5ad18f5c94e6bd6379d4a227fa6fc55f8e38e3c40e7c431b99006d3a2bf9`.
+Source snapshot SHA-256: `b72cb76a50a01d76ee8320f68106404839653ca4d7ef17f73d8fb2324486ae83`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases

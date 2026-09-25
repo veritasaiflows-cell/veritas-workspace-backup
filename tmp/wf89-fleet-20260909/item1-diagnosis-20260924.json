@@ -1,0 +1,151 @@
+{
+  "schema": "veritas.wf89_item1_diagnosis.v1",
+  "created_at_phoenix": "2026-09-24T20:30:00-07:00",
+  "created_by": "Veritas Main",
+  "authorized_by": "WF89 2026-09-24 plan item 1 (no approval class: instrumentation); Randall Telegram 20:16 MST 'Lets continue with this work'",
+  "stores_read_only": [
+    "~/.openclaw/state/openclaw.sqlite",
+    "~/.openclaw/agents/*/agent/openclaw-agent.sqlite"
+  ],
+  "findings": {
+    "task_runs_retention": {
+      "subagent_task_rows": 344,
+      "oldest_subagent_row_phoenix": "2026-09-12 22:59",
+      "cleanup_after_minus_ended_days": {
+        "7": 339,
+        "10": 2,
+        "9": 1
+      },
+      "subagent_runs_rows_total": 505,
+      "subagent_runs_rows_without_task_row": 402,
+      "orphan_date_range": "2026-08-09..2026-09-14",
+      "conclusion": "344 is a rolling ~7-day window, not full history"
+    },
+    "cli_runtime_rows": {
+      "total_cli_rows": 1118,
+      "non_main_by_agent": {
+        "qa-redteam": 157,
+        "oxalpha-functional-lab": 138,
+        "oxalpha-lab": 28,
+        "implementation-builder": 2,
+        "finance-source-scout": 2,
+        "docs-continuity-editor": 1
+      },
+      "builder_e2e_20260924": {
+        "created_phoenix": "2026-09-24 15:57",
+        "status": "succeeded",
+        "child_session_key": "agent:implementation-builder:e2e-20260924"
+      },
+      "conclusion": "CLI dispatch is recorded under runtime='cli'; reader scope is runtime='subagent' only; crediting needs contract v0.3"
+    },
+    "incomplete_268_split": {
+      "join_key_bug": {
+        "count": 27,
+        "cause": "subagent_runs.run_id re-keyed on re-announce (e.g. 'announce:requester-settle:...'); payload.taskRunId equals task_runs.run_id",
+        "fix": "join on payload.taskRunId; >1 row per taskRunId -> MISMATCH (fail closed)",
+        "result_after_fix": "27/27 CREDITABLE, 0 new MISMATCH"
+      },
+      "witness_deleted": {
+        "count": 241,
+        "executor_session_node": {
+          "gone": 239,
+          "present": 2
+        },
+        "notify_policy": {
+          "silent": 231,
+          "done_only": 10
+        },
+        "by_agent": {
+          "main": 226,
+          "implementation-builder": 10,
+          "research-scout": 2,
+          "qa-redteam": 2,
+          "finance-source-scout": 1
+        },
+        "by_day": {
+          "09-12": 2,
+          "09-18": 16,
+          "09-19": 34,
+          "09-20": 189
+        },
+        "surviving_subagent_runs_cleanup_modes": {
+          "keep": 505
+        },
+        "cause_inference": "cleanup:'delete' children: registry row and session node removed. Transcripts are NOT erased: docs say delete 'still keeps the transcript via rename' (docs/tools/subagents/tool-reference.md); 504 *.deleted.* archives under agents/main/sessions, 186 dated 09-20 vs 189 lost runs. Observable-only usage recovery possible; credit is not.",
+        "recoverable": false
+      }
+    }
+  },
+  "change": {
+    "files": [
+      "scripts/wf89_credit_reader.py",
+      "scripts/test_wf89_credit_reader.py"
+    ],
+    "tests": "python -m pytest scripts/test_wf89_credit_reader.py -> 15 passed (13 prior + 2 new)",
+    "sha256": {
+      "scripts/wf89_credit_reader.py": "e19dd36fbf10d55b79d8776fa1d9d344ab05716586df3ef507d0d4df00748406",
+      "scripts/test_wf89_credit_reader.py": "f16c21e9c4127eb0e461750df1209a0ac6b1fc278c09a124745df20df9da1f46"
+    },
+    "supersedes_pin": "2026-09-18 D2b acceptance hashes (9E09DDBB... / 60AD828E...)",
+    "live_probe": {
+      "out": "tmp/wf89-fleet-20260909/reader-full-20260924-rekey.json",
+      "before": {
+        "INCOMPLETE": 268,
+        "CREDITABLE": 70,
+        "PARTIAL": 6
+      },
+      "after": {
+        "INCOMPLETE": 241,
+        "CREDITABLE": 97,
+        "PARTIAL": 6
+      }
+    },
+    "posture": "read-only observation; reader output grants no credit, approval or authority",
+    "sha256_note": "interim hashes after join-key fix only; superseded by completion.sha256_final (v0.3 CLI path added)"
+  },
+  "item1_done_when_status": "DONE 2026-09-24 ~21:00 Phoenix (under contract v0.3 DRAFT; owner review pending)",
+  "next": [
+    "Randall: review attribution-contract-v0.3-draft.md",
+    "Plan item 2: fleet grant manifest + drift check"
+  ],
+  "completion": {
+    "contract_draft": "tmp/wf89-fleet-20260909/attribution-contract-v0.3-draft.md",
+    "new_files": [
+      "scripts/wf89_dispatch_record.py",
+      "scripts/test_wf89_cli_attribution.py"
+    ],
+    "tests": "test_wf89_credit_reader.py 15 + test_wf89_cli_attribution.py 8 = 23 passed; test_workflow_routing_index.py passed",
+    "builder_proof": {
+      "job": "builder-credit-20260924",
+      "run_id": "8a95105a-80f6-466e-805c-fd16fb1f6c88",
+      "dispatch_record": "state/wf89-dispatch-records/1da81f34-fd89-4cae-91b6-b46d63b4e58b.json",
+      "state": "CREDITABLE",
+      "total_tokens": 112665,
+      "model": "meta/muse-spark-1.3-contributor",
+      "host_verification": "close ok, 2 changed 0 unexpected; patch applied to copy; 2/2 tests; hashes match builder claim",
+      "artifacts": "tmp/builder-credit-20260924/"
+    },
+    "scout_proof": {
+      "run_id": "3a8433bf-a874-40a4-94f2-c38a71824f96",
+      "agent": "research-scout",
+      "cleanup": "keep",
+      "state": "CREDITABLE",
+      "total_tokens": 585284,
+      "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "output_handling": "untrusted; Main verified all cited quotes against local docs"
+    },
+    "reader_output": "tmp/wf89-fleet-20260909/reader-full-20260924-v03.json",
+    "filesystem_move": "builder handoff/scoped-worktree (closed e2e job) -> handoff/completed/builder-e2e-20260924/ per existing convention",
+    "limits": [
+      "cost.total=0 on ollama-cloud/meta = unpriced, not free",
+      "v0.3 is DRAFT",
+      "241 historical runs uncreditable"
+    ],
+    "sha256_final": {
+      "scripts/wf89_credit_reader.py": "7ffab6b47da8d515c7bc99a0a23dc82935476d82c6dff6f82d6fd07c17ffee8d",
+      "scripts/test_wf89_credit_reader.py": "f16c21e9c4127eb0e461750df1209a0ac6b1fc278c09a124745df20df9da1f46",
+      "scripts/wf89_dispatch_record.py": "f3a18b7f6da0c4d9e5b302ce93e1b57626a990f99fb77a782aa50bcfabbca596",
+      "scripts/test_wf89_cli_attribution.py": "dc95ae9a4ec274e5a8a1c4e1b2ccc72842038028be271eb9390ee2264202754d"
+    }
+  }
+}

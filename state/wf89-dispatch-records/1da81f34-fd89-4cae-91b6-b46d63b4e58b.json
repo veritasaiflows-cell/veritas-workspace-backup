@@ -1,0 +1,13 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3-draft",
+  "dispatch_id": "1da81f34-fd89-4cae-91b6-b46d63b4e58b",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:credit-20260924",
+  "label": "WF89 item1 builder credit proof",
+  "task_text_sha256": "a41dfce806bac8426355d5d970e5b513df5c0b1bf408fbeb1722cd620b24d1d9",
+  "message_file": "tmp\\builder-credit-20260924\\task.md",
+  "created_at_ms": 1790306763364,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority"
+}

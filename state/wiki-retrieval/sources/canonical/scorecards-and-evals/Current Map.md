@@ -2,8 +2,8 @@
 # Current Scorecards And Evals
 
 Canonical page: `wiki/scorecards-and-evals/Current Map.md`
-Canonical rendered SHA-256: `ac1f5edcc5e1d75821ee3f6880e3a98e677a7ee8fccda7076ed0ac678bc0f8f1`.
-Source snapshot SHA-256: `533f5ad18f5c94e6bd6379d4a227fa6fc55f8e38e3c40e7c431b99006d3a2bf9`.
+Canonical rendered SHA-256: `3f82f67db9f7976c7092d244e1edd42c971c29fe63855c2603e9b7a3d5fe7b4f`.
+Source snapshot SHA-256: `b72cb76a50a01d76ee8320f68106404839653ca4d7ef17f73d8fb2324486ae83`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -42,8 +42,8 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - Model quality scorecard status: `scaffold_active`.
 - Retrieval regression corpus: `42/42` passed across `10` classes; average `1.0`; live timestamp-age proofs `1`.
 - Frontier eval: `ready_to_collect` with `100` frozen cases, `0` results, `0` fully proof-verified, execution `verifier_ready_no_result_claims`, ranking `False`.
-- Decision compiler: `8` objects; conflicts `2`; leak guard `True`.
-- RSI later-outcome maturity: `warning_insufficient_real_outcome_evidence`; stable closures `0`; linkage debt `31`.
+- Decision compiler: `7` objects; conflicts `1`; leak guard `True`.
+- RSI later-outcome maturity: `warning_insufficient_real_outcome_evidence`; stable closures `0`; linkage debt `22`.
 - Advanced capability pilots: `6` fixture-ready, `0` executed, `0` promotion-ready.
 - Recommendation later-outcome rows (current preview / durable / grade history): `0` / `316` / `316`. The aggregate `316` uses scope `durable_recommendation_outcome_ledger_max_of_preview_durable_and_grade_history`; model-performance claim allowed now: `False`.
 - RSI maturity status from primary WF74 eval: `proof_worker_ready`.
@@ -53,11 +53,11 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 
 - Token usage ledger status: `warning`.
 - Token efficiency scorecard status: `warning`.
-- Token events observed: `1166`.
-- Total observed tokens: `68413287`.
-- API-equivalent token benchmark (not an invoice): `14.925727` (`partial_unknown_input_semantics_or_missing_rate`; `200/1166` events priced).
-- Estimated ChatGPT credits (not an observed debit): `338.593006` (`partial_separate_no_public_rate_or_missing_rate`; `200/1166` events priced).
-- Rolling 5h / observed 7d tokens: `0` / `46176`; usage timestamp coverage `16.0377`%.
+- Token events observed: `1170`.
+- Total observed tokens: `69507530`.
+- API-equivalent token benchmark (not an invoice): `14.925727` (`partial_unknown_input_semantics_or_missing_rate`; `200/1170` events priced).
+- Estimated ChatGPT credits (not an observed debit): `338.593006` (`partial_separate_no_public_rate_or_missing_rate`; `200/1170` events priced).
+- Rolling 5h / observed 7d tokens: `0` / `46176`; usage timestamp coverage `15.9829`%.
 - Actual billed cost (owner-entered only): `None`.
 - OAuth quota state / remaining / days to reset: `stale` / `58.0` / `0.0`.
 - Cron token events: `736`.

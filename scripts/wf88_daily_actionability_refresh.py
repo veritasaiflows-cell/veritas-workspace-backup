@@ -370,6 +370,57 @@ def dependencies_ready(spec: dict[str, Any]) -> tuple[bool, list[dict[str, Any]]
     return all(row.get("fresh") for row in statuses), statuses
 
 
+# Targeted recovery before the single retry (2026-09-24). The retrieval
+# scorecard checks the wiki packet's embedded OS2 descriptor (max 24h), but the
+# wiki synthesis that refreshes it runs after the scorecard. One aborted night
+# therefore blocked every later night. When the scorecard fails ONLY on the
+# wiki-packet freshness fixtures, rebuild pages and packet together (a
+# packet-only write desyncs page hashes and breaks the status card), then retry.
+# Any other failure retries unchanged. Normal nights never run this.
+WIKI_FRESHNESS_FIXTURE_IDS = frozenset({"rq_freshness_current_descriptor_accepted"})
+RETRIEVAL_SCORECARD_REL = "tmp/retrieval-quality-scorecard.json"
+WIKI_SYNTHESIS_RECOVERY = {
+    "id": "wf88_wiki_synthesis_recovery",
+    "command": [sys.executable, "scripts\\wf88_wiki_synthesis_packet.py", "--write", "--write-md", "--write-wiki"],
+}
+
+
+def recovery_for_failure(spec: dict[str, Any]) -> dict[str, Any] | None:
+    if spec.get("id") != "retrieval_quality_scorecard":
+        return None
+    fixtures = load_json(resolve_under_root(RETRIEVAL_SCORECARD_REL)).get("fixtures")
+    if not isinstance(fixtures, list):
+        return None
+    failed = {
+        str(item.get("fixture_id"))
+        for item in fixtures
+        if isinstance(item, dict) and item.get("status") != "pass"
+    }
+    if failed and failed <= WIKI_FRESHNESS_FIXTURE_IDS:
+        return WIKI_SYNTHESIS_RECOVERY
+    return None
+
+
+def run_recovery(spec: dict[str, Any], *, timeout_seconds: int) -> dict[str, Any]:
+    command = [str(part) for part in spec["command"]]
+    record: dict[str, Any] = {"id": spec["id"], "command": command, "returncode": None}
+    start = time.monotonic()
+    try:
+        completed = subprocess.run(
+            command, cwd=ROOT, text=True, capture_output=True, timeout=timeout_seconds, check=False
+        )
+        record["returncode"] = completed.returncode
+        record["stdout_tail"] = tail(completed.stdout, 400)
+        record["stderr_tail"] = tail(completed.stderr, 400)
+    except subprocess.TimeoutExpired:
+        record["returncode"] = "timeout"
+    except OSError as exc:
+        record["returncode"] = "launch_error"
+        record["stderr_tail"] = tail(str(exc), 400)
+    record["duration_seconds"] = round(time.monotonic() - start, 2)
+    return record
+
+
 def run_sequence(
     commands: list[dict[str, Any]],
     *,
@@ -474,6 +525,9 @@ def run_sequence(
                         "stdout_tail": row["stdout_tail"],
                         "stderr_tail": row["stderr_tail"],
                     }
+                recovery = recovery_for_failure(spec)
+                if recovery is not None:
+                    row["recovery"] = run_recovery(recovery, timeout_seconds=timeout_seconds)
                 attempts += 1
                 time.sleep(retry_wait_seconds)
                 continue
