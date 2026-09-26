@@ -1,0 +1,11 @@
+Changed `credit_join.py`: registry join key is now `taskRunId` parsed from `payload_json` (JSON string), falling back to the row's `run_id` when `payload_json` is missing, empty/whitespace-only, invalid JSON, not a JSON object, or has no/`None` `taskRunId`. Registry rows are grouped by this key; each task matches on its `run_id`: 0 matches → `None`, 1 match → that row, ≥2 matches → `"AMBIGUOUS"`. Did not touch `test_credit_join.py`. No BLOCKED items.
+
+Exact test output (`cd /worktree && python3 -m unittest -v`):
+```
+test_plain_match (test_credit_join.Visible.test_plain_match) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```

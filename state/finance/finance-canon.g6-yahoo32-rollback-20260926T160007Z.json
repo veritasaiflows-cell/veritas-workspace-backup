@@ -1,0 +1,432 @@
+{
+  "authority": {
+    "authority_class_mutation_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "gated_yahoo32_only": true,
+    "insert_new_tickers_allowed": false,
+    "markdown_canon_write_allowed": false,
+    "money_movement_allowed": false,
+    "owner_approval_inferred": false,
+    "paper_or_live_execution_allowed": false,
+    "schema_mutation_allowed": false,
+    "sql_reference_levels_apply_path": true,
+    "trade_or_execution_allowed": false
+  },
+  "authority_class_preserved": true,
+  "backup_path": "state/finance/finance-canon.g6-yahoo32-backup-20260926T160007Z.sqlite",
+  "backup_sha256": "f5be4b933909b81303bf5de4b8a18eef74e3a5f61e026923d2607cdb4a817d09",
+  "baseline_dir": "state/finance/baselines",
+  "baseline_filename": "alert-reference-levels-v1-39e9db6b2ff03ab16965193cd3d995745344d7b95857272b90d1bf23f8a54ebc.json",
+  "baseline_path": "state/finance/baselines/alert-reference-levels-v1-39e9db6b2ff03ab16965193cd3d995745344d7b95857272b90d1bf23f8a54ebc.json",
+  "baseline_row_count": 200,
+  "baseline_schema": "veritas.alert_reference_numeric_baseline.v1",
+  "baseline_sha256": "39e9db6b2ff03ab16965193cd3d995745344d7b95857272b90d1bf23f8a54ebc",
+  "before_rows": {
+    "AMD": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 406.3158,
+      "reference_price_high": 498.7872,
+      "reference_price_low": 440.5,
+      "ticker": "AMD"
+    },
+    "AMZN": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 235.783,
+      "reference_price_high": 256.2554,
+      "reference_price_low": 244.3,
+      "ticker": "AMZN"
+    },
+    "BKNG": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 150.6453,
+      "reference_price_high": 192.1504,
+      "reference_price_low": 160.59,
+      "ticker": "BKNG"
+    },
+    "BRK.B": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 490.7142,
+      "reference_price_high": 505.3874,
+      "reference_price_low": 499.22,
+      "ticker": "BRK.B"
+    },
+    "CAT": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 739.4108,
+      "reference_price_high": 834.8243,
+      "reference_price_low": 771.39,
+      "ticker": "CAT"
+    },
+    "CME": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 255.5971,
+      "reference_price_high": 269.4602,
+      "reference_price_low": 263.915,
+      "ticker": "CME"
+    },
+    "CVX": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 189.2975,
+      "reference_price_high": 200.595,
+      "reference_price_low": 196.076,
+      "ticker": "CVX"
+    },
+    "ECL": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 259.934,
+      "reference_price_high": 277.0944,
+      "reference_price_low": 267.8085,
+      "ticker": "ECL"
+    },
+    "ETN": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 363.0972,
+      "reference_price_high": 416.857,
+      "reference_price_low": 384.77,
+      "ticker": "ETN"
+    },
+    "GE": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 294.395,
+      "reference_price_high": 346.6034,
+      "reference_price_low": 306.8,
+      "ticker": "GE"
+    },
+    "GOOG": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 313.9776,
+      "reference_price_high": 343.159,
+      "reference_price_low": 325.63,
+      "ticker": "GOOG"
+    },
+    "GS": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 882.2791,
+      "reference_price_high": 1028.9946,
+      "reference_price_low": 922.0,
+      "ticker": "GS"
+    },
+    "ITA": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 205.7426,
+      "reference_price_high": 234.171,
+      "reference_price_low": 211.43,
+      "ticker": "ITA"
+    },
+    "JPM": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 327.1345,
+      "reference_price_high": 353.6198,
+      "reference_price_low": 337.3,
+      "ticker": "JPM"
+    },
+    "KTOS": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 42.218,
+      "reference_price_high": 51.7632,
+      "reference_price_low": 45.47,
+      "ticker": "KTOS"
+    },
+    "LIN": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 443.5152,
+      "reference_price_high": 485.8694,
+      "reference_price_low": 454.19,
+      "ticker": "LIN"
+    },
+    "LLY": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 1071.2173,
+      "reference_price_high": 1175.8823,
+      "reference_price_low": 1113.29,
+      "ticker": "LLY"
+    },
+    "LMT": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 496.6888,
+      "reference_price_high": 554.3676,
+      "reference_price_low": 515.598,
+      "ticker": "LMT"
+    },
+    "LNG": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 251.2724,
+      "reference_price_high": 271.6112,
+      "reference_price_low": 263.4757,
+      "ticker": "LNG"
+    },
+    "META": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 518.013,
+      "reference_price_high": 609.9591,
+      "reference_price_low": 555.6614,
+      "ticker": "META"
+    },
+    "MSFT": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 452.8718,
+      "reference_price_high": 484.3,
+      "reference_price_low": 468.699,
+      "ticker": "MSFT"
+    },
+    "NFLX": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 66.5865,
+      "reference_price_high": 75.6836,
+      "reference_price_low": 70.11,
+      "ticker": "NFLX"
+    },
+    "NVDA": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 198.2137,
+      "reference_price_high": 215.3475,
+      "reference_price_low": 208.494,
+      "ticker": "NVDA"
+    },
+    "PH": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 877.2796,
+      "reference_price_high": 985.5853,
+      "reference_price_low": 911.41,
+      "ticker": "PH"
+    },
+    "PLTR": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 148.4873,
+      "reference_price_high": 166.0246,
+      "reference_price_low": 159.0097,
+      "ticker": "PLTR"
+    },
+    "RTX": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 181.1982,
+      "reference_price_high": 207.5891,
+      "reference_price_low": 187.04,
+      "ticker": "RTX"
+    },
+    "SMCI": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 30.1681,
+      "reference_price_high": 35.8656,
+      "reference_price_low": 33.5866,
+      "ticker": "SMCI"
+    },
+    "TMUS": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 153.7234,
+      "reference_price_high": 179.5534,
+      "reference_price_low": 161.21,
+      "ticker": "TMUS"
+    },
+    "VMC": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 230.7761,
+      "reference_price_high": 271.3703,
+      "reference_price_low": 240.69,
+      "ticker": "VMC"
+    },
+    "VRT": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 207.0853,
+      "reference_price_high": 268.9874,
+      "reference_price_low": 226.94,
+      "ticker": "VRT"
+    },
+    "WMB": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 66.9659,
+      "reference_price_high": 72.4554,
+      "reference_price_low": 69.85,
+      "ticker": "WMB"
+    },
+    "XOM": {
+      "authority_class": "alert_reference_metadata_review_only_no_execution_authority",
+      "reference_invalidation_level": 149.1198,
+      "reference_price_high": 158.5335,
+      "reference_price_low": 154.768,
+      "ticker": "XOM"
+    }
+  },
+  "db": "state/finance/finance-canon.sqlite",
+  "db_sha256_after": "1208a6156407501e68d9df5ecf140df753ab5e3171293511b456532ac0267e55",
+  "db_sha256_before": "f5be4b933909b81303bf5de4b8a18eef74e3a5f61e026923d2607cdb4a817d09",
+  "generated_at": "2026-09-26T16:00:07.919603+00:00",
+  "lineage_tables_updated": [
+    "source_lineage"
+  ],
+  "matrix": "tmp/weekly-renewal-2026-09-25-matrix.json",
+  "matrix_sha256": "cf73fc66aa0cb2737181b12137fdab857c49343d4017c6bbafa00baf2122e348",
+  "meta_key": "alerts_os_reference_baseline_v1",
+  "meta_updated": true,
+  "mode": "yahoo32-apply",
+  "numeric_projection_sha256": "76d295bb5c46c47eb6703de81166ca7b5310cdb15808312d9b78ea0cb1cf9b31",
+  "old_pin_basename": "alert-reference-levels-v1-bb11218340670d8b6a59cc9bcf334ec932c0dda99b84ae3fafb4ae7ca103e007.json",
+  "old_pin_preserved": true,
+  "proposed_rows": {
+    "AMD": {
+      "reference_invalidation_level": 405.7915,
+      "reference_price_high": 504.713,
+      "reference_price_low": 440.5
+    },
+    "AMZN": {
+      "reference_invalidation_level": 235.5865,
+      "reference_price_high": 256.175,
+      "reference_price_low": 244.3
+    },
+    "BKNG": {
+      "reference_invalidation_level": 145.4374,
+      "reference_price_high": 190.8765,
+      "reference_price_low": 155.37
+    },
+    "BRK.B": {
+      "reference_invalidation_level": 491.7242,
+      "reference_price_high": 506.438,
+      "reference_price_low": 500.5525
+    },
+    "CAT": {
+      "reference_invalidation_level": 740.529,
+      "reference_price_high": 829.2008,
+      "reference_price_low": 771.39
+    },
+    "CME": {
+      "reference_invalidation_level": 249.9238,
+      "reference_price_high": 267.8765,
+      "reference_price_low": 258.87
+    },
+    "CVX": {
+      "reference_invalidation_level": 190.8662,
+      "reference_price_high": 202.2049,
+      "reference_price_low": 197.6694
+    },
+    "ECL": {
+      "reference_invalidation_level": 260.019,
+      "reference_price_high": 277.4552,
+      "reference_price_low": 267.8085
+    },
+    "ETN": {
+      "reference_invalidation_level": 363.4752,
+      "reference_price_high": 418.7993,
+      "reference_price_low": 384.77
+    },
+    "GE": {
+      "reference_invalidation_level": 294.716,
+      "reference_price_high": 344.7378,
+      "reference_price_low": 306.8
+    },
+    "GOOG": {
+      "reference_invalidation_level": 313.1658,
+      "reference_price_high": 341.8474,
+      "reference_price_low": 325.63
+    },
+    "GS": {
+      "reference_invalidation_level": 875.4632,
+      "reference_price_high": 1017.464,
+      "reference_price_low": 914.68
+    },
+    "ITA": {
+      "reference_invalidation_level": 205.7163,
+      "reference_price_high": 232.9449,
+      "reference_price_low": 211.43
+    },
+    "JPM": {
+      "reference_invalidation_level": 325.1213,
+      "reference_price_high": 353.3438,
+      "reference_price_low": 335.28
+    },
+    "KTOS": {
+      "reference_invalidation_level": 41.4845,
+      "reference_price_high": 51.5992,
+      "reference_price_low": 44.81
+    },
+    "LIN": {
+      "reference_invalidation_level": 443.6582,
+      "reference_price_high": 482.9795,
+      "reference_price_low": 454.19
+    },
+    "LLY": {
+      "reference_invalidation_level": 1070.4861,
+      "reference_price_high": 1176.7351,
+      "reference_price_low": 1113.29
+    },
+    "LMT": {
+      "reference_invalidation_level": 496.7098,
+      "reference_price_high": 555.0572,
+      "reference_price_low": 515.6
+    },
+    "LNG": {
+      "reference_invalidation_level": 251.7829,
+      "reference_price_high": 271.9867,
+      "reference_price_low": 263.9052
+    },
+    "META": {
+      "reference_invalidation_level": 515.6729,
+      "reference_price_high": 615.32,
+      "reference_price_low": 555.6614
+    },
+    "MSFT": {
+      "reference_invalidation_level": 458.554,
+      "reference_price_high": 486.239,
+      "reference_price_low": 475.165
+    },
+    "NFLX": {
+      "reference_invalidation_level": 66.8393,
+      "reference_price_high": 75.537,
+      "reference_price_low": 70.11
+    },
+    "NVDA": {
+      "reference_invalidation_level": 200.0173,
+      "reference_price_high": 215.7948,
+      "reference_price_low": 208.93
+    },
+    "PH": {
+      "reference_invalidation_level": 879.3551,
+      "reference_price_high": 986.6756,
+      "reference_price_low": 911.41
+    },
+    "PLTR": {
+      "reference_invalidation_level": 150.6552,
+      "reference_price_high": 167.6342,
+      "reference_price_low": 160.8426
+    },
+    "RTX": {
+      "reference_invalidation_level": 181.0895,
+      "reference_price_high": 207.3591,
+      "reference_price_low": 187.04
+    },
+    "SMCI": {
+      "reference_invalidation_level": 30.653,
+      "reference_price_high": 36.3318,
+      "reference_price_low": 34.0603
+    },
+    "TMUS": {
+      "reference_invalidation_level": 153.493,
+      "reference_price_high": 178.199,
+      "reference_price_low": 161.14
+    },
+    "VMC": {
+      "reference_invalidation_level": 230.8148,
+      "reference_price_high": 268.5352,
+      "reference_price_low": 240.69
+    },
+    "VRT": {
+      "reference_invalidation_level": 207.8009,
+      "reference_price_high": 265.8928,
+      "reference_price_low": 226.94
+    },
+    "WMB": {
+      "reference_invalidation_level": 66.1733,
+      "reference_price_high": 72.2048,
+      "reference_price_low": 68.82
+    },
+    "XOM": {
+      "reference_invalidation_level": 149.5851,
+      "reference_price_high": 159.0576,
+      "reference_price_low": 155.2686
+    }
+  },
+  "restore_method": "byte-exact copy of backup_path over db",
+  "row_count_after": 200,
+  "row_count_before": 200,
+  "triple_count": 32
+}

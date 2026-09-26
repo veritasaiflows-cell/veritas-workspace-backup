@@ -191,6 +191,10 @@ SANDBOXED_OUTBOX_TOOL_POSTURE = {
     "outbox_only": True,
 }
 
+# Any of these on a containment shape means its security posture was changed;
+# the shape check then fails closed (WF89 Astra review F1, 2026-09-26).
+DOCKER_SECURITY_OVERRIDE_KEYS = ("seccompProfile", "apparmorProfile", "capAdd", "securityOpt", "privileged")
+
 # Owner-approved 2026-09-26 (WF89 item 5): these lanes write only to /outbox.
 OUTBOX_SANDBOX_AGENT_IDS = ("research-scout", "docs-continuity-editor")
 OUTBOX_SANDBOX_TOOL_CEILING = {"read", "write", "edit", "web_search", "web_fetch"}
@@ -1117,6 +1121,7 @@ def implementation_builder_scoped_worktree_is_configured(
         and docker.get("dangerouslyAllowReservedContainerTargets") is not True
         and docker.get("dangerouslyAllowExternalBindSources") is not True
         and docker.get("dangerouslyAllowContainerNamespaceJoin") is not True
+        and not any(docker.get(key) for key in DOCKER_SECURITY_OVERRIDE_KEYS)
         and allowed == {"read", "write", "edit", "apply_patch", "exec"}
         and outer_allowed == {"read", "write", "edit", "apply_patch", "exec"}
         and required_denied.issubset(denied)
@@ -1181,6 +1186,7 @@ def outbox_sandbox_is_configured(agent: dict[str, Any] | None) -> bool:
         and docker.get("dangerouslyAllowReservedContainerTargets") is not True
         and docker.get("dangerouslyAllowExternalBindSources") is not True
         and docker.get("dangerouslyAllowContainerNamespaceJoin") is not True
+        and not any(docker.get(key) for key in DOCKER_SECURITY_OVERRIDE_KEYS)
         and "write" in allowed
         and allowed == outer_allowed
         and allowed <= OUTBOX_SANDBOX_TOOL_CEILING

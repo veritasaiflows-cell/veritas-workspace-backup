@@ -1,0 +1,33 @@
+Summary of changes (only `/worktree/snapshot_stats.py` modified; read-only `test_snapshot_stats.py` untouched):
+
+- `snapshots` still counts all `*.json` files.
+- `days` now counts distinct `data_date` string values: each file is opened and JSON-parsed, skipped if unreadable/invalid JSON, not a dict, or its `data_date` is not a string.
+- Added `gaps`: parses distinct dates as calendar dates, takes the strict interior between earliest and latest, and returns the sorted Monday–Friday dates with no snapshot; empty list when fewer than two distinct parseable dates.
+
+No BLOCKED items — all requirements were implementable within the allowed file.
+
+Exact command output:
+
+1. `cd /worktree && python3 -m unittest -v`
+```
+test_one_file (test_snapshot_stats.Visible.test_one_file) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK
+```
+
+2. Sanity check (temp fixtures, Fri 2026-09-18 + duplicate Mon 2026-09-21 + bad/list/nodate files; empty dir; single-file dir):
+```
+{'snapshots': 6, 'days': 2, 'gaps': []}
+{'snapshots': 0, 'days': 0, 'gaps': []}
+{'snapshots': 1, 'days': 1, 'gaps': []}
+```
+
+3. Weekday gap check (Mon 2026-09-21 to Fri 2026-09-25):
+```
+{'snapshots': 2, 'days': 2, 'gaps': ['2026-09-22', '2026-09-23', '2026-09-24']}
+```
+
+Handoff: deliverable at `/worktree/snapshot_stats.py` for job builder-v1-f07-snapshot-distinct-days-r1-20260926T065038Z; proof commands run as shown (visible suite passes plus temp-fixture checks for distinct days, exclusions, and weekday gaps); provider usage counts unavailable (provider_usage_unavailable); independent QA/Red-Team verdict and Main acceptance still pending; stop lines preserved (no commit, no network, nothing touched outside /worktree).

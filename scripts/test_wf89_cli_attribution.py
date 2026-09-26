@@ -102,6 +102,16 @@ class CliAttributionTests(unittest.TestCase):
         self.assertEqual(rec["state"], "MISMATCH")
         self.assertFalse(rec["creditable"])
 
+    def test_two_records_claiming_one_row_fail_closed(self) -> None:
+        self.record(now_ms=1000)
+        self.record(now_ms=1500)
+        mk_global(self.c.gdb, [cli_task()], [])
+        executor(self.c)
+        out = self.run_cli()
+        self.assertEqual([r["state"] for r in out["records"]], ["MISMATCH", "MISMATCH"])
+        self.assertFalse(any(r["creditable"] for r in out["records"]))
+        self.assertEqual(out["cli_rows_without_dispatch_record_by_agent"], {})
+
     def test_missing_executor_witness_is_unreadable(self) -> None:
         self.record()
         mk_global(self.c.gdb, [cli_task()], [])

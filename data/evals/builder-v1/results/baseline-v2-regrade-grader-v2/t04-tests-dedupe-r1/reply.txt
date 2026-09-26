@@ -1,0 +1,36 @@
+Created `/worktree/test_dedupe.py` (unittest,stdlib only; `dedupe.py` untouched): 24 tests covering normal cases (dedup, first-occurrence kept, order, key selection), boundaries (empty, single, all-dupes, all-missing-key, repeated missing-key rows, interspersed order, None vs missing, type equality, 0/False set semantics, input-not-modified, new-list return), and errors (unhashable list/dict values, `rows=None`, non-mapping row → `TypeError`).
+
+Proof command: `cd /worktree && python3 -m unittest -v`
+Exact output:
+```
+test_all_duplicates_collapse_to_first (test_dedupe.TestDedupeByKeyBoundaries.test_all_duplicates_collapse_to_first) ... ok
+test_all_rows_missing_key_are_all_kept (test_dedupe.TestDedupeByKeyBoundaries.test_all_rows_missing_key_are_all_kept) ... ok
+test_empty_input (test_dedupe.TestDedupeByKeyBoundaries.test_empty_input) ... ok
+test_input_list_not_modified (test_dedupe.TestDedupeByKeyBoundaries.test_input_list_not_modified) ... ok
+test_input_list_not_modified_empty_and_no_dupes (test_dedupe.TestDedupeByKeyBoundaries.test_input_list_not_modified_empty_and_no_dupes) ... ok
+test_key_with_none_value_dedupes (test_dedupe.TestDedupeByKeyBoundaries.test_key_with_none_value_dedupes) ... ok
+test_missing_key_rows_interspersed_preserve_order (test_dedupe.TestDedupeByKeyBoundaries.test_missing_key_rows_interspersed_preserve_order) ... ok
+test_none_value_distinct_from_missing_key (test_dedupe.TestDedupeByKeyBoundaries.test_none_value_distinct_from_missing_key) ... ok
+test_returns_new_list_object (test_dedupe.TestDedupeByKeyBoundaries.test_returns_new_list_object) ... ok
+test_rows_missing_key_always_kept_even_repeatedly (test_dedupe.TestDedupeByKeyBoundaries.test_rows_missing_key_always_kept_even_repeatedly) ... ok
+test_single_row_with_key (test_dedupe.TestDedupeByKeyBoundaries.test_single_row_with_key) ... ok
+test_single_row_without_key (test_dedupe.TestDedupeByKeyBoundaries.test_single_row_without_key) ... ok
+test_value_types_compared_by_equality (test_dedupe.TestDedupeByKeyBoundaries.test_value_types_compared_by_equality) ... ok
+test_zero_and_false_treated_as_same_seen_value (test_dedupe.TestDedupeByKeyBoundaries.test_zero_and_false_treated_as_same_seen_value) ... ok
+test_non_mapping_row_raises_type_error (test_dedupe.TestDedupeByKeyErrors.test_non_mapping_row_raises_type_error) ... ok
+test_rows_none_raises_type_error (test_dedupe.TestDedupeByKeyErrors.test_rows_none_raises_type_error) ... ok
+test_unhashable_dict_value_raises_type_error (test_dedupe.TestDedupeByKeyErrors.test_unhashable_dict_value_raises_type_error) ... ok
+test_unhashable_key_value_raises_type_error (test_dedupe.TestDedupeByKeyErrors.test_unhashable_key_value_raises_type_error) ... ok
+test_dedupe_uses_named_key_not_whole_row (test_dedupe.TestDedupeByKeyNormalCases.test_dedupe_uses_named_key_not_whole_row) ... ok
+test_different_key_argument (test_dedupe.TestDedupeByKeyNormalCases.test_different_key_argument) ... ok
+test_duplicate_key_values_removed (test_dedupe.TestDedupeByKeyNormalCases.test_duplicate_key_values_removed) ... ok
+test_keeps_first_occurrence_full_row (test_dedupe.TestDedupeByKeyNormalCases.test_keeps_first_occurrence_full_row) ... ok
+test_no_duplicates_returns_equal_rows_in_order (test_dedupe.TestDedupeByKeyNormalCases.test_no_duplicates_returns_equal_rows_in_order) ... ok
+test_original_order_preserved_with_interleaved_duplicates (test_dedupe.TestDedupeByKeyNormalCases.test_original_order_preserved_with_interleaved_duplicates) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.001s
+
+OK
+```
+Parent job: builder-v1-t04-tests-dedupe-r1-20260926T065538Z. No BLOCKED items. No commit; handoff to Veritas main for verification/acceptance; QA/Red-Team verdict and Main acceptance still pending.

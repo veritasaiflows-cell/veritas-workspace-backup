@@ -39,7 +39,8 @@ def patch_reader(monkeypatch, records: list[dict], cli_records: list[dict] | Non
 
 
 def build(tmp: Path, *, write: bool = True) -> dict:
-    return sc.build(tmp / "g.sqlite", tmp / "agents", tmp / "dispatch", tmp / "history.jsonl", write=write)
+    return sc.build(tmp / "g.sqlite", tmp / "agents", tmp / "dispatch", tmp / "history.jsonl", write=write,
+                    outcomes_path=tmp / "outcomes.jsonl")
 
 
 def test_benchmark_labels_separate_model_comparisons_from_real_work() -> None:
@@ -141,6 +142,66 @@ def test_main_share_counts_work_runs_only(monkeypatch) -> None:
                                    rec("c"), rec("d", state="INCOMPLETE", agent="qa-redteam")])
         payload = build(tmp, write=False)
         assert payload["window"]["main_share_of_work_runs"] == round(1 / 3, 3)
+
+
+
+def test_duplicate_run_in_one_batch_is_appended_once(monkeypatch) -> None:
+    with tempfile.TemporaryDirectory() as t:
+        tmp = Path(t)
+        patch_reader(monkeypatch, [rec("a")], cli_records=[rec("a")])
+        payload = build(tmp)
+        assert payload["history"]["rows_appended"] == 1
+        rows = (tmp / "history.jsonl").read_text(encoding="utf-8").splitlines()
+        assert len(rows) == 1
+
+
+def test_never_launched_dispatch_is_not_counted_as_work(monkeypatch) -> None:
+    with tempfile.TemporaryDirectory() as t:
+        pending = {"agent_id": "implementation-builder", "label": "Fix gate", "state": "PENDING"}
+        patch_reader(monkeypatch, [rec("a", agent="main")], cli_records=[pending])
+        payload = build(Path(t), write=False)
+        assert payload["window"]["delegated_runs_by_agent"] == {"main": {"work": 1, "benchmark": 0}}
+        assert payload["window"]["main_share_of_work_runs"] == 1.0
+
+
+def test_explicit_prefix_overrides_label_heuristic() -> None:
+    assert sc.classify_label("work: build eval case set") == (False, "prefix")
+    assert sc.classify_label("bench:arena-v2 fix") == (True, "prefix")
+    assert sc.classify_label("Sol T3 case") == (True, "heuristic")
+    assert sc.classify_label("Fix WF88 gate") == (False, "heuristic")
+
+
+def test_history_row_records_model_and_class_source(monkeypatch) -> None:
+    with tempfile.TemporaryDirectory() as t:
+        tmp = Path(t)
+        r = rec("a", label="work: case set review")
+        r.update(window_model="glm-5.3:cloud", window_model_provider="ollama-cloud")
+        patch_reader(monkeypatch, [r])
+        build(tmp)
+        row = json.loads((tmp / "history.jsonl").read_text(encoding="utf-8"))
+        assert row["model"] == "ollama-cloud/glm-5.3:cloud"
+        assert row["benchmark"] is False and row["class_source"] == "prefix"
+
+
+def test_cost_per_accepted_task_uses_main_outcomes(monkeypatch) -> None:
+    import wf89_run_outcome as ro
+
+    with tempfile.TemporaryDirectory() as t:
+        tmp = Path(t)
+        patch_reader(monkeypatch, [rec("a"), rec("b"), rec("c")])
+        build(tmp)
+        history, _ = sc.load_history(tmp / "history.jsonl")
+        out = tmp / "outcomes.jsonl"
+        for run_id, outcome, minutes in (("a", "accepted", 5), ("b", "rework", 10), ("a", "accepted", 4)):
+            assert ro.main(["--run-id", run_id, "--outcome", outcome, "--main-review-minutes", str(minutes),
+                            "--history", str(tmp / "history.jsonl"), "--outcomes", str(out)]) == 0
+        assert ro.main(["--run-id", "zzz", "--outcome", "accepted", "--history", str(tmp / "history.jsonl"),
+                        "--outcomes", str(out)]) == 2
+        lane = build(tmp, write=False)["lanes"]["implementation-builder"]["work_outcomes"]
+        assert lane["runs_judged"] == 2 and lane["runs_unjudged"] == 1
+        assert lane["accepted"] == 1 and lane["rework"] == 1
+        assert lane["fresh_tokens_per_accepted_task"] == 2400
+        assert lane["main_review_minutes_total"] == 14.0
 
 
 if __name__ == "__main__":

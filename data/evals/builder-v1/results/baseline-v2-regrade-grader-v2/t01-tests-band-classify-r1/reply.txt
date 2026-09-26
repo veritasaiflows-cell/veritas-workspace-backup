@@ -1,0 +1,41 @@
+Created `/worktree/test_band.py` (unittest, standard library only) covering the full `classify()` docstring contract: normal below/above/inside cases (ints, floats, negatives), every stated boundary (price == low, price == high, zero-width interval equal/below/above, just outside bounds, zero bounds), and error cases (low > high variants, each argument None, all None). Did not modify `band.py`.
+
+Proof — `cd /worktree && python3 -m unittest -v`, exit 0:
+
+```
+test_just_above_high (test_band.TestClassifyBoundaries.test_just_above_high) ... ok
+test_just_below_low (test_band.TestClassifyBoundaries.test_just_below_low) ... ok
+test_low_equals_high_float (test_band.TestClassifyBoundaries.test_low_equals_high_float) ... ok
+test_price_equal_high_is_inside (test_band.TestClassifyBoundaries.test_price_equal_high_is_inside) ... ok
+test_price_equal_low_is_inside (test_band.TestClassifyBoundaries.test_price_equal_low_is_inside) ... ok
+test_return_values_are_exact_strings (test_band.TestClassifyBoundaries.test_return_values_are_exact_strings) ... ok
+test_zero_bounds (test_band.TestClassifyBoundaries.test_zero_bounds) ... ok
+test_zero_width_interval_above (test_band.TestClassifyBoundaries.test_zero_width_interval_above) ... ok
+test_zero_width_interval_below (test_band.TestClassifyBoundaries.test_zero_width_interval_below) ... ok
+test_zero_width_interval_equal_is_inside (test_band.TestClassifyBoundaries.test_zero_width_interval_equal_is_inside) ... ok
+test_all_none (test_band.TestClassifyErrors.test_all_none) ... ok
+test_high_none (test_band.TestClassifyErrors.test_high_none) ... ok
+test_low_greater_than_high (test_band.TestClassifyErrors.test_low_greater_than_high) ... ok
+test_low_greater_than_high_by_one (test_band.TestClassifyErrors.test_low_greater_than_high_by_one) ... ok
+test_low_greater_than_high_price_outside (test_band.TestClassifyErrors.test_low_greater_than_high_price_outside) ... ok
+test_low_none (test_band.TestClassifyErrors.test_low_none) ... ok
+test_none_with_inverted_bounds_still_value_error (test_band.TestClassifyErrors.test_none_with_inverted_bounds_still_value_error) ... ok
+test_price_none (test_band.TestClassifyErrors.test_price_none) ... ok
+test_clearly_above (test_band.TestClassifyNormalCases.test_clearly_above) ... ok
+test_clearly_below (test_band.TestClassifyNormalCases.test_clearly_below) ... ok
+test_clearly_inside (test_band.TestClassifyNormalCases.test_clearly_inside) ... ok
+test_float_above (test_band.TestClassifyNormalCases.test_float_above) ... ok
+test_float_below (test_band.TestClassifyNormalCases.test_float_below) ... ok
+test_float_inside (test_band.TestClassifyNormalCases.test_float_inside) ... ok
+test_inside_midpoint (test_band.TestClassifyNormalCases.test_inside_midpoint) ... ok
+test_negative_range_above (test_band.TestClassifyNormalCases.test_negative_range_above) ... ok
+test_negative_range_below (test_band.TestClassifyNormalCases.test_negative_range_below) ... ok
+test_negative_range_inside (test_band.TestClassifyNormalCases.test_negative_range_inside) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 0.001s
+
+OK
+```
+
+Closeout: deliverable `/worktree/test_band.py`; proof command above (pass, 28 tests); job builder-v1-t01-tests-band-classify-r1-20260926T065538Z; no BLOCKED items; provider_usage_unavailable; QA/Red-Team verdict and Main acceptance pending; handoff to Veritas main.

@@ -1,0 +1,19 @@
+Changed `/worktree/trigger_eval.py` only:
+- `parse_exec_result()` now also reads `res.get("aggregated")` (after `stdout`/`output`/`text`).
+- Takes the last non-empty line of the text and parses that as JSON, so preceding log lines are ignored.
+- Keeps existing behavior: returns `None` for missing/unreadable/non-dict output (also guards non-dict `res` and non-string text).
+
+No BLOCKED items. No changes to `test_trigger_eval.py`, no commit, no network, nothing outside `/worktree`.
+
+Tests run: `cd /worktree && python3 -m unittest -v`
+Exact output:
+```
+test_actionable_fires (test_trigger_eval.Visible.test_actionable_fires) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+Handoff to Veritas main for verification and acceptance; QA-RedTeam review still required per route.

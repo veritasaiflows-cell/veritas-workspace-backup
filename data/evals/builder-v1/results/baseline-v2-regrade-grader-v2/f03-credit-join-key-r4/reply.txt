@@ -1,0 +1,11 @@
+Changed `credit_join.py`: `join_runs()` now derives the registry join key from `payload_json`'s `taskRunId`, falling back to `run_id` when payload is missing/empty/invalid/non-object/without a non-empty string `taskRunId`; groups registry rows by that key; maps unmatched tasks to `None` and multi-matched tasks to `"AMBIGUOUS"`.
+
+Proof command `cd /worktree && python3 -m unittest -v` exact output:
+```
+test_plain_match (test_credit_join.Visible.test_plain_match) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```

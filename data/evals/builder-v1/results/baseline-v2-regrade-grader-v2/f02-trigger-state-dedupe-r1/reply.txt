@@ -1,0 +1,9 @@
+Summary of change (file: `/worktree/wake_gate.py`, the only file touched; `test_wake_gate.py` left unmodified):
+
+- `decide()` now reads prior state exclusively from `trigger.get("state")`; the legacy `"last"` key is never consulted, so a trigger carrying only `"last"` is treated as a first run and fires.
+- Non-dict prior state (`missing` or `None`) is normalized to `{}`.
+- Return shape stays `(fire: bool, new_state: dict)`; `new_state` is always `{"signature": signature, "fired_count": n}` where `n` is incremented by one on each fire and carried over unchanged when the signature matches (no fire). A missing/non-int prior `fired_count` is treated as `0`.
+
+Exact test output: no test command could be run — the `exec` tool is not available in this sandbox (read/write/edit/patch only), so I could not execute `cd /worktree && python3 -m unittest -v`. I state this plainly instead of reporting unobserved output. No `BLOCKED:` line applies: every task requirement was implemented as specified within the allowed file.
+
+Handoff to Veritas main: draft status, unaccepted until Main verifies and accepts; suggested Main-side verification is running `cd /worktree && python3 -m unittest -v` plus checks for dedupe (`state` match → no fire, count unchanged), new-signature fire (count +1), first-run fire (count 1), and legacy-`"last"`-only trigger firing.

@@ -38,6 +38,12 @@ GLOBAL_ID = "_global"
 UNPROVENANCED = "UNPROVENANCED"
 COSMETIC_KEYS = ("identity", "name")
 WRITE_TOOLS = {"write", "edit", "apply_patch"}
+GLOBAL_INHERITED_TOOL_KEYS = ("allow", "alsoAllow", "deny", "byProvider", "elevated", "fs",
+                              "exec", "sandbox", "message", "web")
+GLOBAL_INHERITED_DEFAULT_KEYS = ("sandbox", "tools")
+DOCKER_SECURITY_KEYS = ("seccompProfile", "apparmorProfile", "capAdd", "securityOpt", "privileged",
+                        "dangerouslyAllowReservedContainerTargets",
+                        "dangerouslyAllowContainerNamespaceJoin")
 
 
 def utc_now() -> str:
@@ -65,14 +71,22 @@ def extract(config: dict) -> dict[str, dict]:
             g["sandbox"]["docker"]["env"] = {k: "sha256:" + sha(str(v)) for k, v in env.items()}
         out[agent_id] = g
     tools = config.get("tools") or {}
+    defaults = agents.get("defaults") or {}
     out[GLOBAL_ID] = {
         "tools.profile": tools.get("profile"),
         "tools.agentToAgent": tools.get("agentToAgent"),
         "tools.sessions": tools.get("sessions"),
         "tools.sessions_spawn": tools.get("sessions_spawn"),
-        "agents.defaults.subagents": (agents.get("defaults") or {}).get("subagents"),
-        "agents.defaults.maxConcurrent": (agents.get("defaults") or {}).get("maxConcurrent"),
+        "agents.defaults.subagents": defaults.get("subagents"),
+        "agents.defaults.maxConcurrent": defaults.get("maxConcurrent"),
     }
+    # Fleet-wide authority every agent inherits unless it overrides it
+    # (WF89 Astra review F1, 2026-09-26). Absent keys are recorded as None so
+    # setting one later is drift.
+    for key in GLOBAL_INHERITED_TOOL_KEYS:
+        out[GLOBAL_ID][f"tools.{key}"] = copy.deepcopy(tools.get(key))
+    for key in GLOBAL_INHERITED_DEFAULT_KEYS:
+        out[GLOBAL_ID][f"agents.defaults.{key}"] = copy.deepcopy(defaults.get(key))
     return out
 
 
@@ -87,6 +101,24 @@ def notable(agent_id: str, g: dict) -> dict[str, object]:
         vis = (g.get("tools.sessions") or {}).get("visibility")
         if vis and vis != "self":
             f["sessions.visibility"] = vis
+        gallow = set(g.get("tools.allow") or []) | set(g.get("tools.alsoAllow") or [])
+        if gallow & (WRITE_TOOLS | {"exec", "process"}):
+            f["global.tools.allow.write_or_exec"] = sorted(gallow & (WRITE_TOOLS | {"exec", "process"}))
+        if (g.get("tools.elevated") or {}).get("enabled"):
+            f["global.tools.elevated"] = True
+        if (g.get("tools.fs") or {}).get("workspaceOnly") is False:
+            f["global.fs.workspaceOnly=false"] = True
+        dsb = g.get("agents.defaults.sandbox") or {}
+        if dsb.get("workspaceAccess") not in (None, "none"):
+            f["global.sandbox.workspaceAccess"] = dsb.get("workspaceAccess")
+        ddk = dsb.get("docker") or {}
+        if ddk.get("network") not in (None, "none"):
+            f["global.docker.network"] = ddk.get("network")
+        for key in DOCKER_SECURITY_KEYS + ("dangerouslyAllowExternalBindSources",):
+            if ddk.get(key):
+                f[f"global.docker.{key}"] = ddk.get(key)
+        if ddk.get("binds"):
+            f["global.docker.binds"] = list(ddk.get("binds"))
         return f
     tools = g.get("tools") or {}
     allow = set(tools.get("allow") or [])
@@ -124,6 +156,9 @@ def notable(agent_id: str, g: dict) -> dict[str, object]:
             f["docker.capDrop!=ALL"] = dk.get("capDrop")
         if str(dk.get("user", "")).split(":")[0] in ("", "0", "root"):
             f["docker.user=root"] = dk.get("user")
+        for key in DOCKER_SECURITY_KEYS:
+            if dk.get(key):
+                f[f"docker.{key}"] = dk.get(key)
     return f
 
 

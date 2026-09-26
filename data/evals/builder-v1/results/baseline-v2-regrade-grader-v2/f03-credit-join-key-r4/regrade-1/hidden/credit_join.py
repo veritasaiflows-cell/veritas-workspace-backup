@@ -1,0 +1,37 @@
+import json
+
+
+def _join_key(sub):
+    run_id = sub.get("run_id")
+    payload = sub.get("payload_json")
+    if isinstance(payload, str) and payload.strip():
+        try:
+            parsed = json.loads(payload)
+        except (ValueError, TypeError):
+            return run_id
+        if isinstance(parsed, dict):
+            task_run_id = parsed.get("taskRunId")
+            if isinstance(task_run_id, str) and task_run_id:
+                return task_run_id
+    return run_id
+
+
+def join_runs(tasks, subs):
+    """Pair each task row with its registry row.
+
+    tasks: list of {"task_id", "run_id"}; subs: list of {"run_id", "payload_json"}.
+    Returns {task_id: sub | None | "AMBIGUOUS"}.
+    """
+    grouped = {}
+    for s in subs:
+        grouped.setdefault(_join_key(s), []).append(s)
+    result = {}
+    for t in tasks:
+        matches = grouped.get(t["run_id"], [])
+        if not matches:
+            result[t["task_id"]] = None
+        elif len(matches) == 1:
+            result[t["task_id"]] = matches[0]
+        else:
+            result[t["task_id"]] = "AMBIGUOUS"
+    return result

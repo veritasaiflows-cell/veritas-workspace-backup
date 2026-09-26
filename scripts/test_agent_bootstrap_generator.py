@@ -596,6 +596,21 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
         other = outbox_sandbox_agent("qa-redteam", ["read", "write"])
         self.assertFalse(generator.outbox_sandbox_is_configured(other))
 
+    def test_docker_security_overrides_fail_every_containment_shape(self) -> None:
+        shapes = [
+            (scoped_worktree_agent(), generator.PROFILES["implementation-builder"],
+             generator.SCOPED_WORKTREE_TOOL_POSTURE),
+            (outbox_sandbox_agent("research-scout", ["read", "write", "web_search", "web_fetch"]),
+             generator.PROFILES["research-scout"], generator.SANDBOXED_OUTBOX_TOOL_POSTURE),
+        ]
+        for agent, profile, posture in shapes:
+            self.assertEqual(generator.runtime_tool_posture_for(profile, agent), posture)
+            for key, value in (("seccompProfile", "unconfined"), ("apparmorProfile", "unconfined"),
+                               ("capAdd", ["SYS_ADMIN"]), ("privileged", True)):
+                unsafe = json.loads(json.dumps(agent))
+                unsafe["sandbox"]["docker"][key] = value
+                self.assertNotEqual(generator.runtime_tool_posture_for(profile, unsafe), posture, key)
+
     def test_implementation_builder_skill_mounts_must_stay_read_only_and_exact(self) -> None:
         agent = scoped_worktree_agent()
         profile = generator.PROFILES["implementation-builder"]

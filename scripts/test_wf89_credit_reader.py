@@ -243,6 +243,7 @@ class CreditReaderTests(unittest.TestCase):
         self.assertEqual(rec["window_session_id"], "w2")
         self.assertEqual(rec["usage"],
                          {"input": 200, "output": 60, "total": 260, "cost_total": 0.02})
+        self.assertEqual(rec["usage_events_outside_bound_window"], 1)
 
     def test_generations_reported_per_attempt_no_aggregation(self) -> None:
         """Two generations of the same logical task => two rows, each credited
@@ -254,10 +255,12 @@ class CreditReaderTests(unittest.TestCase):
                        detail_json=json.dumps({"generation": 2}))
         s1 = base_sub(run_id="r1", child_session_key="child1",
                       payload_json=json.dumps({"runId": "r1", "taskRunId": "r1",
-                                               "childSessionKey": "child1"}))
+                                               "childSessionKey": "child1",
+                                               "requesterAgentId": "rag1"}))
         s2 = base_sub(run_id="r2", child_session_key="child2",
                       payload_json=json.dumps({"runId": "r2", "taskRunId": "r2",
-                                               "childSessionKey": "child2"}))
+                                               "childSessionKey": "child2",
+                                               "requesterAgentId": "rag1"}))
         mk_global(c.gdb, [t1, t2], [s1, s2])
         mk_executor(c.aroot / "ag1" / "agent" / "openclaw-agent.sqlite",
                     [{"session_key": "child1", "current_session_id": "w1",
@@ -292,6 +295,59 @@ class CreditReaderTests(unittest.TestCase):
         rec = c.run()["records"][0]
         self.assertEqual(rec["state"], "OBSERVABLE_ONLY")
         self.assertFalse(rec["creditable"])
+
+    def full_executor(self, c: Ctx, events: list[tuple]) -> None:
+        mk_executor(c.aroot / "ag1" / "agent" / "openclaw-agent.sqlite",
+                    [{"session_key": "child1", "current_session_id": "w1",
+                      "entry_json": entry_json("w1"), "entry_valid": 1, "status": "done"}],
+                    [{"session_id": "w1", "session_key": "child1",
+                      "previous_session_id": None, "status": "done",
+                      "model": "m1", "model_provider": "p1"}],
+                    events)
+
+    def test_requester_agent_id_mismatch_blocks_credit(self) -> None:
+        c = Ctx()
+        payload = json.loads(base_sub()["payload_json"])
+        payload["requesterAgentId"] = "someone-else"
+        mk_global(c.gdb, [base_task()], [base_sub(payload_json=json.dumps(payload))])
+        self.full_executor(c, [("w1", "r1", completed_event("r1", "w1", FULL_USAGE))])
+        rec = c.run()["records"][0]
+        self.assertEqual(rec["state"], "MISMATCH")
+        self.assertIn("requester_agent_id", rec["reason"])
+
+    def test_one_unusable_completed_event_makes_run_partial(self) -> None:
+        c = Ctx()
+        mk_global(c.gdb, [base_task()], [base_sub()])
+        self.full_executor(c, [("w1", "r1", completed_event("r1", "w1", FULL_USAGE, seq=1)),
+                               ("w1", "r1", completed_event("r1", "w1", None, seq=2))])
+        rec = c.run()["records"][0]
+        self.assertEqual(rec["state"], "PARTIAL")
+        self.assertFalse(rec["creditable"])
+        self.assertIn("1 of 2", rec["reason"])
+
+    def test_state_event_witness(self) -> None:
+        cases = {
+            "match": ([("r1", "CHILD1", "ag1", "run_completed")], "CREDITABLE"),
+            "disagree": ([("r1", "child-other", "ag1", "run_completed")], "MISMATCH"),
+            "absent": ([("r9", "child1", "ag1", "run_completed")], "CREDITABLE"),
+        }
+        for expected, (rows, state) in cases.items():
+            c = Ctx()
+            mk_global(c.gdb, [base_task()], [base_sub()])
+            con = sqlite3.connect(c.gdb)
+            con.execute("""CREATE TABLE session_state_events (run_id TEXT, session_key TEXT,
+              agent_id TEXT, kind TEXT)""")
+            con.executemany("INSERT INTO session_state_events VALUES (?,?,?,?)", rows)
+            con.commit()
+            con.close()
+            self.full_executor(c, [("w1", "r1", completed_event("r1", "w1", FULL_USAGE))])
+            rec = c.run()["records"][0]
+            self.assertEqual(rec["state_event_witness"], expected)
+            self.assertEqual(rec["state"], state)
+        c = Ctx()
+        mk_global(c.gdb, [base_task()], [base_sub()])
+        self.full_executor(c, [("w1", "r1", completed_event("r1", "w1", FULL_USAGE))])
+        self.assertEqual(c.run()["records"][0]["state_event_witness"], "unavailable")
 
     def test_task_text_hash_known_answer_vector(self) -> None:
         self.assertEqual(task_text_hash("wf89 d2b known-answer vector"),

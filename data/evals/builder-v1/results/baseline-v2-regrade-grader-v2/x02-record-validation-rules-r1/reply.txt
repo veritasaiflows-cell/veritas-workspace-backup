@@ -1,0 +1,27 @@
+Changed `/worktree/record_check.py` `validate()` to add the three rules while keeping `missing:<key>` checks in `REQUIRED` order:
+- whitespace-only `label` now returns `missing:label`
+- when truthy `agent_id` and `session_key` are present, requires `session_key == "agent:<agent_id>:<rest>"` with non-empty `<rest>`, else `session_key_not_scoped`
+- when `created_at_ms` key is present, requires `type(v) is int` and `v > 0`, else `bad_created_at`
+- error order: missing errors, then `session_key_not_scoped`, then `bad_created_at`
+
+Did not modify `test_record_check.py`.
+
+Proof:
+- command: `cd /worktree && python3 -m unittest -v`
+- exact output:
+```
+test_good (test_record_check.Visible.test_good) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+Closeout:
+- deliverable: `/worktree/record_check.py`
+- parent job: `builder-v1-x02-record-validation-rules-r1-20260926T065038Z`; workflow/lane: not supplied
+- provider_usage_unavailable
+- QA/Red-Team verdict: pending (handoff to qa-redteam, then Veritas main)
+- Main acceptance: pending
+- stop lines preserved; no runtime/config, external, cron, telemetry, credential, or delivery actions taken

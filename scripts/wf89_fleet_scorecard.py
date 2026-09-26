@@ -52,6 +52,13 @@ BENCHMARK_LABEL = re.compile(
     re.IGNORECASE,
 )
 MIN_RUNS_FOR_MEDIAN = 3
+# Explicit class prefixes (delegation-decision.md): "bench:<suite>" or "work:<task>".
+# They win over the heuristic, which stays only for unprefixed labels.
+EXPLICIT_CLASS = re.compile(r"^\s*(bench|work)\s*:", re.IGNORECASE)
+OUTCOMES = ROOT / "data" / "state-history" / "wf89-run-outcomes.jsonl"
+OUTCOME_VALUES = ("accepted", "rework", "rejected")
+# Dispatches that never bound to a task row did no work.
+NOT_LAUNCHED_STATES = {"PENDING"}
 
 
 def utc_iso(ms: Any) -> str | None:
@@ -60,8 +67,55 @@ def utc_iso(ms: Any) -> str | None:
     return datetime.fromtimestamp(ms / 1000, tz=timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
+def classify_label(label: str | None) -> tuple[bool, str]:
+    """Return (is_benchmark, source); source is "prefix" or "heuristic"."""
+    m = EXPLICIT_CLASS.match(label or "")
+    if m:
+        return m.group(1).lower() == "bench", "prefix"
+    return bool(label) and bool(BENCHMARK_LABEL.search(label)), "heuristic"
+
+
 def is_benchmark(label: str | None) -> bool:
-    return bool(label) and bool(BENCHMARK_LABEL.search(label))
+    return classify_label(label)[0]
+
+
+def load_outcomes(path: Path) -> tuple[dict[str, dict[str, Any]], int]:
+    """Latest Main outcome per run_id from the append-only outcome ledger."""
+    latest: dict[str, dict[str, Any]] = {}
+    bad = 0
+    if not path.exists():
+        return latest, bad
+    with path.open(encoding="utf-8") as handle:
+        for line in handle:
+            if not line.strip():
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                bad += 1
+                continue
+            if isinstance(row, dict) and row.get("run_id") and row.get("outcome") in OUTCOME_VALUES:
+                latest[row["run_id"]] = row
+            else:
+                bad += 1
+    return latest, bad
+
+
+def outcome_stats(rows: list[dict[str, Any]], outcomes: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Cost per accepted task over runs Main has judged. Rework and rejected
+    runs still cost tokens, so they count in the numerator."""
+    judged = [r for r in rows if r.get("run_id") in outcomes]
+    counts = {v: sum(1 for r in judged if outcomes[r["run_id"]]["outcome"] == v) for v in OUTCOME_VALUES}
+    fresh = sum(r["usage"]["fresh"] for r in judged if isinstance(r.get("usage", {}).get("fresh"), int))
+    review = [outcomes[r["run_id"]].get("main_review_minutes") for r in judged]
+    review = [m for m in review if isinstance(m, (int, float))]
+    return {
+        "runs_judged": len(judged),
+        "runs_unjudged": len(rows) - len(judged),
+        **counts,
+        "fresh_tokens_per_accepted_task": round(fresh / counts["accepted"]) if counts["accepted"] else None,
+        "main_review_minutes_total": round(sum(review), 1) if review else None,
+    }
 
 
 def task_timing(global_db: Path, task_ids: list[str]) -> dict[str, dict[str, Any]]:
@@ -95,13 +149,20 @@ def history_row(rec: dict[str, Any], timing: dict[str, Any], captured_at: str) -
     fresh = None
     if isinstance(usage.get("input"), int) and isinstance(usage.get("output"), int):
         fresh = usage["input"] + usage["output"]
+    benchmark, class_source = classify_label(rec.get("label"))
+    model = None
+    if rec.get("window_model"):
+        provider = rec.get("window_model_provider")
+        model = f"{provider}/{rec['window_model']}" if provider else rec["window_model"]
     return {
         "schema": HISTORY_SCHEMA,
         "run_id": rec.get("run_id"),
         "task_id": rec.get("task_id"),
         "agent_id": rec.get("agent_id"),
         "label": rec.get("label"),
-        "benchmark": is_benchmark(rec.get("label")),
+        "benchmark": benchmark,
+        "class_source": class_source,
+        "model": model,
         "dispatch_path": rec.get("dispatch_path") or "sessions_spawn",
         "status": rec.get("status"),
         "usage": {
@@ -154,7 +215,8 @@ def lane_stats(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def build(global_db: Path, agent_root: Path, dispatch_dir: Path, history_path: Path, *, write: bool) -> dict[str, Any]:
+def build(global_db: Path, agent_root: Path, dispatch_dir: Path, history_path: Path, *, write: bool,
+          outcomes_path: Path = OUTCOMES) -> dict[str, Any]:
     captured_at = reader.utc_now()
     window = reader.read_task(global_db=global_db, agent_root=agent_root)
     cli = reader.read_cli(dispatch_dir, global_db=global_db, agent_root=agent_root)
@@ -163,7 +225,11 @@ def build(global_db: Path, agent_root: Path, dispatch_dir: Path, history_path: P
 
     history, bad_rows = load_history(history_path)
     seen = {r["run_id"] for r in history}
-    new = [r for r in creditable if r["run_id"] not in seen]
+    new = []
+    for r in creditable:
+        if r["run_id"] not in seen:
+            seen.add(r["run_id"])  # dedupe within this batch too
+            new.append(r)
     timing = task_timing(global_db, [r["task_id"] for r in new if r.get("task_id")])
     new_rows = [history_row(r, timing.get(r.get("task_id"), {}), captured_at) for r in new]
     if write and new_rows:
@@ -173,6 +239,7 @@ def build(global_db: Path, agent_root: Path, dispatch_dir: Path, history_path: P
                 handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
     all_rows = history + new_rows
 
+    outcomes, bad_outcomes = load_outcomes(outcomes_path)
     now = datetime.now(timezone.utc)
     recent_cutoff = (now - timedelta(days=30)).isoformat().replace("+00:00", "Z")
     lanes: dict[str, Any] = {}
@@ -182,11 +249,14 @@ def build(global_db: Path, agent_root: Path, dispatch_dir: Path, history_path: P
         lanes[agent] = {
             "work": lane_stats(work),
             "work_last_30d": lane_stats([r for r in work if (r.get("ended_at_utc") or r.get("captured_at_utc") or "") >= recent_cutoff]),
+            "work_outcomes": outcome_stats(work, outcomes),
             "benchmark_runs": sum(1 for r in mine if r.get("benchmark")),
         }
 
     window_by_agent: dict[str, dict[str, int]] = {}
     for rec in live:
+        if rec.get("state") in NOT_LAUNCHED_STATES:
+            continue
         agent = rec.get("agent_id") or "unknown"
         kind = "benchmark" if is_benchmark(rec.get("label")) else "work"
         slot = window_by_agent.setdefault(agent, {"work": 0, "benchmark": 0})
@@ -200,7 +270,10 @@ def build(global_db: Path, agent_root: Path, dispatch_dir: Path, history_path: P
     observations: list[str] = []
     if bad_rows:
         errors.append(f"history_unparseable_rows:{bad_rows}")
-    warnings: list[str] = []
+    warnings_pre: list[str] = []
+    if bad_outcomes:
+        warnings_pre.append(f"outcome_ledger_invalid_rows:{bad_outcomes}")
+    warnings: list[str] = list(warnings_pre)
     uncreditable_cli = cli.get("cli_rows_without_dispatch_record_by_agent") or {}
     if uncreditable_cli:
         observations.append("cli_runs_without_dispatch_record_are_uncreditable")
@@ -244,9 +317,11 @@ def build(global_db: Path, agent_root: Path, dispatch_dir: Path, history_path: P
             "cli_exec_background_rows_excluded": cli.get("cli_exec_background_rows", 0),
         },
         "lanes": lanes,
+        "outcomes": {"path": outcomes_path.as_posix(), "runs_with_outcome": len(outcomes)},
         "limits": [
             "Credited means usage was proven for a run, not that Main accepted its output.",
-            "Benchmark separation is a label heuristic; unlabeled runs count as work.",
+            "Acceptance comes only from Main's outcome ledger; unjudged runs are excluded from cost per accepted task.",
+            "Benchmark separation uses an explicit bench:/work: label prefix when present, else a label heuristic; unlabeled runs count as work.",
             "Lanes do different tasks; medians are not like-for-like comparisons.",
             "cost.total is unpriced (0) on ollama-cloud and meta; compare on tokens.",
         ],
@@ -267,11 +342,13 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--agent-root", type=Path, default=reader.AGENT_ROOT)
     ap.add_argument("--dispatch-dir", type=Path, default=reader.DISPATCH_DIR)
     ap.add_argument("--history", type=Path, default=HISTORY)
+    ap.add_argument("--outcomes", type=Path, default=OUTCOMES)
     ap.add_argument("--out", type=Path, default=OUT)
     ap.add_argument("--write", action="store_true")
     ap.add_argument("--validate", action="store_true")
     args = ap.parse_args(argv)
-    payload = build(args.global_db, args.agent_root, args.dispatch_dir, args.history, write=args.write)
+    payload = build(args.global_db, args.agent_root, args.dispatch_dir, args.history, write=args.write,
+                    outcomes_path=args.outcomes)
     if args.write:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")

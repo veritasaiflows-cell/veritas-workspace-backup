@@ -14,7 +14,7 @@ Default to no helper. Delegate only when one reason holds, and name it in the cl
 
 Keep with Main or a script: lookups, small edits, daily-log lines, continuity sections, routing rows. A brief plus a review turn costs more than doing them.
 
-Main copies on another model (`sessions_spawn` with a model override) are for benchmarks only; label them `bench:<suite>` so utilization numbers stay honest.
+Main copies on another model (`sessions_spawn` with a model override) are for benchmarks only; label them `bench:<suite>` so utilization numbers stay honest. Label delegated real work `work:<task>`. The scorecard trusts these prefixes over its label guesswork.
 
 **Finish when** the reason is named, or the work stays with Main.
 
@@ -54,4 +54,4 @@ A child gets only the target agent's `tools.allow` intersected with what the par
 
 ## 7. Close out
 
-Run `python scripts\wf89_credit_reader.py --out <path>` and confirm the run reads CREDITABLE. Record the reason from step 1, the tokens, and Main's review cost. `cost.total = 0` on ollama-cloud and meta means unpriced, not free; compare on tokens.
+Run `python scripts\wf89_credit_reader.py --out <path>` and confirm the run reads CREDITABLE. Record the reason from step 1, the tokens, and Main's review cost. Once the daily scorecard has captured the run, record your judgment: `python scripts\wf89_run_outcome.py --run-id <run_id> --outcome accepted|rework|rejected --main-review-minutes <n>`. Without it, the scorecard cannot report cost per accepted task. `cost.total = 0` on ollama-cloud and meta means unpriced, not free; compare on tokens.

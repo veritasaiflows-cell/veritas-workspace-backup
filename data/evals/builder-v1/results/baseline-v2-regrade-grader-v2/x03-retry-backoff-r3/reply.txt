@@ -1,0 +1,30 @@
+Changed `/worktree/fetch_retry.py` to implement `fetch_with_retry(fetch, attempts=3, sleep=None)`:
+- raises `ValueError` if `attempts < 1` without calling `fetch`
+- defaults `sleep` to `time.sleep`
+- calls `fetch()` up to `attempts` times, returning first success
+- retries only `OSError` (including subclasses); other exceptions propagate immediately
+- sleeps `1, 2, 4, ..., capped at 8` before each retry, no sleep after final failure, then re-raises last `OSError`
+
+Did not modify `test_fetch_retry.py`. No BLOCKED items.
+
+Proof run:
+- Command: `cd /worktree && python3 -m unittest -v`
+
+Exact output:
+```
+test_success (test_fetch_retry.Visible.test_success) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+Closeout:
+- deliverable: `/worktree/fetch_retry.py` (draft, unaccepted until Main verifies/accepts)
+- proof commands run: `cd /worktree && python3 -m unittest -v` (pass, 1 test OK)
+- parent job/workflow/lane IDs: not supplied in lease
+- provider usage: provider_usage_unavailable
+- QA/Red-Team verdict: required downstream (qa-redteam, then Veritas main); not yet obtained
+- Main acceptance: pending
+- handoff to Veritas main for verification and final integration

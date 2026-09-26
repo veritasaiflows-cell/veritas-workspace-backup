@@ -93,6 +93,39 @@ class GrantTests(unittest.TestCase):
         res = check(cfg, self.ledger)
         self.assertEqual(res["drift"][0]["agent"], "_global")
 
+    def test_inherited_global_authority_changes_fail(self) -> None:
+        """Astra F1: a global setting every agent inherits must be drift."""
+        mutations = {
+            "global.tools.elevated": lambda c: c["tools"].__setitem__("elevated", {"enabled": True}),
+            "global.fs.workspaceOnly=false": lambda c: c["tools"].__setitem__("fs", {"workspaceOnly": False}),
+            "global.tools.allow.write_or_exec": lambda c: c["tools"].__setitem__("alsoAllow", ["exec"]),
+            "global.sandbox.workspaceAccess": lambda c: c["agents"]["defaults"].__setitem__(
+                "sandbox", {"mode": "all", "workspaceAccess": "rw"}),
+            "global.docker.network": lambda c: c["agents"]["defaults"].__setitem__(
+                "sandbox", {"docker": {"network": "bridge"}}),
+        }
+        for flag, mutate in mutations.items():
+            cfg = copy.deepcopy(self.cfg)
+            mutate(cfg)
+            res = check(cfg, self.ledger)
+            self.assertEqual(res["status"], "FAIL", flag)
+            self.assertEqual(res["drift"][0]["agent"], "_global", flag)
+            self.assertIn(flag, res["drift"][0]["notable_now"], flag)
+        cfg = copy.deepcopy(self.cfg)
+        cfg["tools"]["deny"] = ["exec"]
+        self.assertEqual(check(cfg, self.ledger)["status"], "FAIL")
+
+    def test_docker_security_weakening_is_notable(self) -> None:
+        cfg = copy.deepcopy(self.cfg)
+        dk = cfg["agents"]["entries"]["builder"]["sandbox"]["docker"]
+        dk["seccompProfile"] = "unconfined"
+        dk["capAdd"] = ["SYS_ADMIN"]
+        res = check(cfg, self.ledger)
+        self.assertEqual(res["status"], "FAIL")
+        now = res["drift"][0]["notable_now"]
+        self.assertEqual(now["docker.seccompProfile"], "unconfined")
+        self.assertEqual(now["docker.capAdd"], ["SYS_ADMIN"])
+
     def test_cosmetic_identity_change_is_not_drift(self) -> None:
         cfg = copy.deepcopy(self.cfg)
         cfg["agents"]["entries"]["scout"]["identity"]["name"] = "Renamed"

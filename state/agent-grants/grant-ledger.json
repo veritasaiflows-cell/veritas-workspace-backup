@@ -4,7 +4,7 @@
   "posture": "evidence of approved grants; grants nothing; openclaw.json stays the runtime authority",
   "agents": {
     "_global": {
-      "fingerprint": "2521367f3e9701459881382a2f8b7340c94c82a8829322a2ea79f001fbcc2760",
+      "fingerprint": "1a9ea872ff2d3da041d50a1ad842176ce2a191facd2d09717cf226a2d0e35c6f",
       "grant": {
         "tools.profile": "coding",
         "tools.agentToAgent": {
@@ -32,10 +32,27 @@
           "archiveAfterMinutes": 60,
           "maxConcurrent": 8
         },
-        "agents.defaults.maxConcurrent": 16
+        "agents.defaults.maxConcurrent": 16,
+        "tools.allow": null,
+        "tools.alsoAllow": null,
+        "tools.deny": null,
+        "tools.byProvider": null,
+        "tools.elevated": null,
+        "tools.fs": null,
+        "tools.exec": null,
+        "tools.sandbox": null,
+        "tools.message": null,
+        "tools.web": {
+          "search": {
+            "enabled": true,
+            "provider": "ollama"
+          }
+        },
+        "agents.defaults.sandbox": null,
+        "agents.defaults.tools": null
       },
-      "recorded_at_utc": "2026-09-25T14:35:15Z",
-      "record_ref": "oxalpha-lab removed from tools.agentToAgent.allow 2026-09-25 ~07:50; agents delete blocked by OpenClaw Windows bug",
+      "recorded_at_utc": "2026-09-26T16:00:32Z",
+      "record_ref": "2026-09-26 WF89 Astra F1: grant monitor now also captures inherited global authority (tools.allow/alsoAllow/deny/byProvider/elevated/fs/exec/sandbox/message/web, agents.defaults.sandbox/tools). Monitoring change only; live config unchanged (sha matches pre-change backup chain).",
       "notable": {
         "agentToAgent.allow": {
           "value": [
@@ -1179,6 +1196,29 @@
       ],
       "record_ref": "WF89 item 5 docs tighten 2026-09-26: Docker sandbox (workspaceAccess none, network none), apply_patch dropped, drafts only via /outbox rw bind, /handoff ro; role files no longer writable; host canary tmp/wf89-item5-20260926/docs-canary.out",
       "approval_ref": "Randall Telegram 2026-09-26 07:11 MST: 'Approve for builder for exec allowed, option d approved, approved for research scout to write its own files. Proceed to tighten up docs continuity editor.'"
+    },
+    {
+      "at_utc": "2026-09-26T16:00:32Z",
+      "action": "record",
+      "agent": "_global",
+      "old_fingerprint": "2521367f3e9701459881382a2f8b7340c94c82a8829322a2ea79f001fbcc2760",
+      "new_fingerprint": "1a9ea872ff2d3da041d50a1ad842176ce2a191facd2d09717cf226a2d0e35c6f",
+      "paths": [
+        "+agents.defaults.sandbox",
+        "+agents.defaults.tools",
+        "+tools.allow",
+        "+tools.alsoAllow",
+        "+tools.byProvider",
+        "+tools.deny",
+        "+tools.elevated",
+        "+tools.exec",
+        "+tools.fs",
+        "+tools.message",
+        "+tools.sandbox",
+        "+tools.web"
+      ],
+      "record_ref": "2026-09-26 WF89 Astra F1: grant monitor now also captures inherited global authority (tools.allow/alsoAllow/deny/byProvider/elevated/fs/exec/sandbox/message/web, agents.defaults.sandbox/tools). Monitoring change only; live config unchanged (sha matches pre-change backup chain).",
+      "approval_ref": null
     }
   ]
 }

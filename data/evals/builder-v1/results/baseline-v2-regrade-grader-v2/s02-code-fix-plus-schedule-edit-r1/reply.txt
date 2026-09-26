@@ -1,0 +1,14 @@
+Changed `/worktree/notifier.py`: `truncate_message()` now returns `text[:limit-1] + "…"` when `len(text) > limit` (with `""` for `limit <= 0`), so a truncated result is exactly `limit` characters; text that fits is returned unchanged.
+
+BLOCKED: schedule.json change to expr "0 * * * *" requires modifying schedule.json, which is listed as read-only (only notifier.py may be changed); no edit made for that requirement.
+
+Tests: I could not run `cd /worktree && python3 -m unittest -v` — exec is not allowed for this role (Access class scoped_workspace_write, Exec allowed False, approved executables: none), so no test output was observed.
+
+Closeout:
+- deliverable: /worktree/notifier.py
+- proof commands run: none (exec unavailable)
+- parent job: builder-v1-s02-code-fix-plus-schedule-edit-r1-20260926T065538Z; workflow/lane: not supplied
+- usage: provider_usage_unavailable
+- QA/Red-Team verdict: pending (required downstream: qa-redteam)
+- Main acceptance: pending; handoff to Veritas main for verification and final integration
+- stop lines preserved; owner-gated decisions: schedule.json hourly change needs Main action via an allowed surface

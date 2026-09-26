@@ -56,6 +56,13 @@
       "skill": "veritas-model-routing-helper-lanes",
       "reason": "2026-09-26 WF89 item 5: loaded delegation-decision.md updated for research-scout/docs-continuity-editor /handoff+/outbox sandbox (Randall 07:11 approval). Workshop sync not stageable from this session (reference-file change; full skill read exceeds budget). Sync owed: stage Workshop update of references/delegation-decision.md.",
       "acknowledged_at_utc": "2026-09-26T14:29:24Z"
+    },
+    {
+      "key": "main|veritas-model-routing-helper-lanes|15aa220a08b0d95e74e0a38d6d2624670789d605f84e26667df5ba8eb52bdc99|8739f5cfbb87b2af9f6eaf55f4b3bd397bd9c91212d167a345b9ed0b221bdc71",
+      "agent_id": "main",
+      "skill": "veritas-model-routing-helper-lanes",
+      "reason": "2026-09-26 WF89 Astra follow-up: loaded delegation-decision.md adds work:/bench: label prefixes and wf89_run_outcome.py closeout step (Randall 08:55 'Proceed as recommended'). Workshop sync still owed (reference-file change; not stageable from this session).",
+      "acknowledged_at_utc": "2026-09-26T16:09:44Z"
     }
   ]
 }

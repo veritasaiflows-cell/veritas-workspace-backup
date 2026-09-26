@@ -6,8 +6,14 @@ Implements attribution contract v0.2
 binding semantics exactly:
 
 - Spine: global store task_runs rows with runtime='subagent'.
-- Corroboration: subagent_runs row keyed by same run_id with matching
-  child/controller/requester keys + requesterAgentId.
+- Corroboration: subagent_runs row keyed by payload taskRunId with matching
+  child and requester session keys and payload requesterAgentId ==
+  task_runs.requester_agent_id (task_runs has no controller column; the
+  controller key is reported, not compared).
+- Identity trail (sessions_spawn path only): a session_state_events
+  run_completed/run_failed row for the run_id naming a different session or
+  agent blocks credit; an absent row is reported as state_event_witness=absent
+  (CLI runs never emit one; old rows age out).
 - Executor-store witness: agents/<agent_id>/agent/openclaw-agent.sqlite
   session_nodes row (entry_valid=1) for child_session_key whose current
   sessionId matches a session_windows row; window lifecycle must match
@@ -16,7 +22,10 @@ binding semantics exactly:
   with run_id == task_runs.run_id WITHIN the bound window (session_id ==
   bound window session_id). Required usage keys: input/output/total/
   cost.total. Optional: cacheRead/reasoningTokens. Missing-usage =>
-  PARTIAL/no-credit (never inferred).
+  PARTIAL/no-credit (never inferred); one completed event without usable
+  usage makes the whole run PARTIAL (no partial sums). Usage events for the
+  same run_id in other windows are counted in
+  usage_events_outside_bound_window, never credited.
 - task_runs-only rows => observable-only, verified=false, creditable=false.
 - Unknown vs uninstrumented (S5): task_kind NULL = uninstrumented;
   label NULL = unlabeled/observable-only; missing subagent_runs =
@@ -146,6 +155,7 @@ def classify_row(task: sqlite3.Row, sub: sqlite3.Row | None, node: sqlite3.Row |
     mismatch_keys = [k for k, a, b in (
         ("child_session_key", sub["child_session_key"], child_key),
         ("requester_session_key", sub["requester_session_key"], task["requester_session_key"]),
+        ("requester_agent_id", payload.get("requesterAgentId"), task["requester_agent_id"]),
     ) if a != b]
     if mismatch_keys or payload.get("taskRunId") != run_id:
         rec.update(state="MISMATCH",
@@ -197,6 +207,12 @@ def classify_witness(rec: dict, status: str, node: sqlite3.Row | None, node_erro
     usable = [u for u in usage_events if u is not None]
     if not usable:
         rec.update(state="PARTIAL", reason="no usable model.completed usage events for run_id in bound window")
+        return rec
+    unusable = len(usage_events) - len(usable)
+    if unusable:
+        rec.update(state="PARTIAL",
+                   reason=f"{unusable} of {len(usage_events)} model.completed events lack usable usage; "
+                          "a partial sum is never credited")
         return rec
     totals: dict = {"input": 0, "output": 0, "total": 0, "cost_total": 0.0}
     for opt in ("cacheRead", "reasoningTokens"):
@@ -300,6 +316,77 @@ def executor_witness(agent_root: Path, agent_id: str | None, child_key: str | No
     return node, node_error, window, entry, usage_events
 
 
+def usage_events_outside_window(agent_root: Path, agent_id: str | None, run_id: str | None,
+                                bound_session_id: str | None) -> int | None:
+    """Count model.completed events for run_id in windows other than the bound
+    one. Contract v0.2 credits the bound window only, so these are an
+    undercount made visible, never added to credit. None = not countable."""
+    if not agent_id or not run_id or not bound_session_id:
+        return None
+    edb = agent_root / agent_id / "agent" / "openclaw-agent.sqlite"
+    if not edb.exists():
+        return None
+    try:
+        econ = open_ro(edb)
+        try:
+            rows = econ.execute(
+                "SELECT event_json FROM trajectory_runtime_events WHERE run_id = ? AND session_id != ?",
+                (run_id, bound_session_id)).fetchall()
+        finally:
+            econ.close()
+    except sqlite3.Error:
+        return None
+    count = 0
+    for (ej,) in rows:
+        try:
+            if json.loads(ej).get("type") == "model.completed":
+                count += 1
+        except (json.JSONDecodeError, TypeError, AttributeError):
+            pass
+    return count
+
+
+def terminal_state_events(global_db: Path) -> dict[str, list[tuple]] | None:
+    """run_id -> [(session_key, agent_id, kind)] for run_completed/run_failed rows
+    of the global session_state_events trail. None when the table is absent."""
+    try:
+        gcon = open_ro(global_db)
+        try:
+            rows = gcon.execute(
+                "SELECT run_id, session_key, agent_id, kind FROM session_state_events"
+                " WHERE kind IN ('run_completed', 'run_failed') AND run_id IS NOT NULL").fetchall()
+        finally:
+            gcon.close()
+    except sqlite3.Error:
+        return None
+    out: dict[str, list[tuple]] = {}
+    for r in rows:
+        out.setdefault(r["run_id"], []).append((r["session_key"], r["agent_id"], r["kind"]))
+    return out
+
+
+def apply_state_event_witness(rec: dict, events: dict[str, list[tuple]] | None) -> dict:
+    """Identity trail for sessions_spawn runs. A terminal event that names a
+    different session or agent blocks credit; an absent event is recorded but
+    does not (CLI runs never emit one, and old rows age out)."""
+    if events is None:
+        rec["state_event_witness"] = "unavailable"
+        return rec
+    mine = events.get(rec.get("run_id") or "", [])
+    if not mine:
+        rec["state_event_witness"] = "absent"
+        return rec
+    child = (rec.get("child_session_key") or "").lower()
+    if any((key or "").lower() == child and agent == rec.get("agent_id") for key, agent, _ in mine):
+        rec["state_event_witness"] = "match"
+        return rec
+    rec["state_event_witness"] = "disagree"
+    if rec.get("state") == "CREDITABLE":
+        rec.update(state="MISMATCH", verified=False, creditable=False, usage=None, usage_event_count=0,
+                   reason="session_state_events terminal event names a different session or agent")
+    return rec
+
+
 def read_cli(dispatch_dir: Path, global_db: Path = GLOBAL_DB,
              agent_root: Path = AGENT_ROOT) -> dict:
     """Contract v0.3: bind each Main dispatch record to exactly one
@@ -313,6 +400,7 @@ def read_cli(dispatch_dir: Path, global_db: Path = GLOBAL_DB,
     finally:
         gcon.close()
     records, bound_task_ids = [], set()
+    candidates: list[tuple[dict, list]] = []
     for d in dispatches:
         matches = [t for t in cli_rows
                    if t["agent_id"] == d["agent_id"]
@@ -322,6 +410,22 @@ def read_cli(dispatch_dir: Path, global_db: Path = GLOBAL_DB,
                    and (t["created_at"] or 0) >= d["created_at_ms"]
                    and isinstance(t["task"], str)
                    and normalized_text_hash(t["task"]) == d["task_text_sha256"]]
+        candidates.append((d, matches))
+    # One dispatch per task as well as one task per dispatch: two records that
+    # each bind the same single row would otherwise credit one run twice.
+    claims: dict[str, int] = {}
+    for _, matches in candidates:
+        if len(matches) == 1:
+            claims[matches[0]["task_id"]] = claims.get(matches[0]["task_id"], 0) + 1
+    for d, matches in candidates:
+        if len(matches) == 1 and claims[matches[0]["task_id"]] > 1:
+            records.append({"dispatch_path": "cli", "dispatch_id": d["dispatch_id"],
+                            "dispatch_record": d["_path"], "agent_id": d["agent_id"],
+                            "label": d["label"], "state": "MISMATCH", "verified": False,
+                            "creditable": False, "task_id": matches[0]["task_id"],
+                            "reason": f"ambiguous: task row claimed by {claims[matches[0]['task_id']]} dispatch records"})
+            bound_task_ids.add(matches[0]["task_id"])
+            continue
         if len(matches) != 1:
             state = "PENDING" if not matches else "MISMATCH"
             records.append({"dispatch_path": "cli", "dispatch_id": d["dispatch_id"],
@@ -338,6 +442,8 @@ def read_cli(dispatch_dir: Path, global_db: Path = GLOBAL_DB,
         rec = classify_cli_row(task, d, node, node_error, window, entry, usage_events)
         rec["usage_event_count"] = (len([u for u in usage_events if isinstance(u, dict)])
                                     if rec["state"] == "CREDITABLE" else 0)
+        rec["usage_events_outside_bound_window"] = usage_events_outside_window(
+            agent_root, task["agent_id"], task["run_id"], rec.get("window_session_id"))
         records.append(rec)
     # task_kind='exec' rows are background shell commands from the exec tool,
     # not agent runs; they have no session key and can never carry a record.
@@ -391,6 +497,7 @@ def read_task(task_id: str | None = None, limit: int | None = None,
                 subs.setdefault(key, []).append(r)
     finally:
         gcon.close()
+    state_events = terminal_state_events(global_db)
     records = []
     for task in tasks:
         run_id = task["run_id"]
@@ -408,6 +515,9 @@ def read_task(task_id: str | None = None, limit: int | None = None,
         usable_only = [u for u in usage_events if isinstance(u, dict)]
         rec = classify_row(task, sub, node, node_error, window, entry, usage_events)
         rec["usage_event_count"] = len(usable_only) if rec["state"] == "CREDITABLE" else 0
+        apply_state_event_witness(rec, state_events)
+        rec["usage_events_outside_bound_window"] = usage_events_outside_window(
+            agent_root, task["agent_id"], run_id, rec.get("window_session_id"))
         records.append(rec)
     counts: dict[str, int] = {}
     for r in records:

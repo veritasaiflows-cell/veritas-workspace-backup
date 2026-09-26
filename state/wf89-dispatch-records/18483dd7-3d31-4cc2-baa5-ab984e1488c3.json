@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "18483dd7-3d31-4cc2-baa5-ab984e1488c3",
+  "agent_id": "main",
+  "session_key": "agent:main:wf89-astra-review-20260926",
+  "label": "wf89 astra review+qa",
+  "task_text_sha256": "968344a6396329ecb505923c139a5deb6b51f6b6c4e8220814bc4047efcb905f",
+  "message_file": "tmp\\wf89-astra-review-20260926\\brief.md",
+  "created_at_ms": 1790435186961,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

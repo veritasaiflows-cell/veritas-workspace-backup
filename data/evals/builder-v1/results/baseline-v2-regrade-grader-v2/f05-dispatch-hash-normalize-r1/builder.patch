@@ -1,0 +1,14 @@
+diff --git a/dispatch_hash.py b/dispatch_hash.py
+index 684ca09..824e06f 100644
+--- a/dispatch_hash.py
++++ b/dispatch_hash.py
+@@ -2,7 +2,8 @@ import hashlib
+ 
+ 
+ def task_hash(text):
+-    return hashlib.sha256(text.encode("utf-8")).hexdigest()
++    normalized = text.replace("\r\n", "\n").replace("\r", "\n").strip()
++    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+ 
+ 
+ def matches(record, stored_task):

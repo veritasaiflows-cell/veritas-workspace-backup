@@ -1,0 +1,47 @@
+Created `/worktree/test_slug.py` (unittest, stdlib only: `unittest` + `inspect`) covering the `slugify()` docstring: lowercasing, separator-run collapsing, leading/trailing `-` stripping, `max_len` truncation + second strip (default 40, boundaries 39/40/41, 0/1, custom), empty→`untitled`, ASCII-only rule incl. non-ASCII, and error cases (`TypeError` for missing title / non-int `max_len`, `AttributeError` for `None`/int/list title). `slug.py` untouched.
+
+Exact output of `cd /worktree && python3 -m unittest -v`:
+```
+test_all_non_ascii_becomes_untitled (test_slug.TestSlugifyAsciiRule.test_all_non_ascii_becomes_untitled) ... ok
+test_digits_and_lowercase_untouched (test_slug.TestSlugifyAsciiRule.test_digits_and_lowercase_untouched) ... ok
+test_non_ascii_is_separator (test_slug.TestSlugifyAsciiRule.test_non_ascii_is_separator) ... ok
+test_uppercase_ascii_folded (test_slug.TestSlugifyAsciiRule.test_uppercase_ascii_folded) ... ok
+test_empty_string (test_slug.TestSlugifyEmptyUntitled.test_empty_string) ... ok
+test_numeric_zero_string_not_untitled (test_slug.TestSlugifyEmptyUntitled.test_numeric_zero_string_not_untitled) ... ok
+test_only_separators (test_slug.TestSlugifyEmptyUntitled.test_only_separators) ... ok
+test_word_untitled_round_trips (test_slug.TestSlugifyEmptyUntitled.test_word_untitled_round_trips) ... ok
+test_int_title_raises_attribute_error (test_slug.TestSlugifyErrors.test_int_title_raises_attribute_error) ... ok
+test_list_title_raises_attribute_error (test_slug.TestSlugifyErrors.test_list_title_raises_attribute_error) ... ok
+test_missing_title_raises_type_error (test_slug.TestSlugifyErrors.test_missing_title_raises_type_error) ... ok
+test_non_int_max_len_raises_type_error (test_slug.TestSlugifyErrors.test_non_int_max_len_raises_type_error) ... ok
+test_none_title_raises_attribute_error (test_slug.TestSlugifyErrors.test_none_title_raises_attribute_error) ... ok
+test_boundary_lengths (test_slug.TestSlugifyMaxLen.test_boundary_lengths) ... ok
+test_custom_max_len (test_slug.TestSlugifyMaxLen.test_custom_max_len) ... ok
+test_default_max_len_is_40 (test_slug.TestSlugifyMaxLen.test_default_max_len_is_40) ... ok
+test_default_truncates_to_40 (test_slug.TestSlugifyMaxLen.test_default_truncates_to_40) ... ok
+test_long_title_truncated (test_slug.TestSlugifyMaxLen.test_long_title_truncated) ... ok
+test_max_len_one (test_slug.TestSlugifyMaxLen.test_max_len_one) ... ok
+test_max_len_zero_gives_untitled (test_slug.TestSlugifyMaxLen.test_max_len_zero_gives_untitled) ... ok
+test_truncated_result_never_ends_with_dash (test_slug.TestSlugifyMaxLen.test_truncated_result_never_ends_with_dash) ... ok
+test_truncation_strips_trailing_dash (test_slug.TestSlugifyMaxLen.test_truncation_strips_trailing_dash) ... ok
+test_already_a_slug (test_slug.TestSlugifyNormalCases.test_already_a_slug) ... ok
+test_lowercases_title (test_slug.TestSlugifyNormalCases.test_lowercases_title) ... ok
+test_numbers_preserved (test_slug.TestSlugifyNormalCases.test_numbers_preserved) ... ok
+test_punctuation_becomes_dash (test_slug.TestSlugifyNormalCases.test_punctuation_becomes_dash) ... ok
+test_simple_words (test_slug.TestSlugifyNormalCases.test_simple_words) ... ok
+test_single_word (test_slug.TestSlugifyNormalCases.test_single_word) ... ok
+test_mixed_separator_run (test_slug.TestSlugifySeparatorRuns.test_mixed_separator_run) ... ok
+test_run_collapses_to_single_dash (test_slug.TestSlugifySeparatorRuns.test_run_collapses_to_single_dash) ... ok
+test_tab_newline_are_separators (test_slug.TestSlugifySeparatorRuns.test_tab_newline_are_separators) ... ok
+test_underscore_is_separator (test_slug.TestSlugifySeparatorRuns.test_underscore_is_separator) ... ok
+test_strips_both_ends (test_slug.TestSlugifyStrip.test_strips_both_ends) ... ok
+test_strips_leading_separators (test_slug.TestSlugifyStrip.test_strips_leading_separators) ... ok
+test_strips_trailing_separators (test_slug.TestSlugifyStrip.test_strips_trailing_separators) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 0.001s
+
+OK
+```
+
+Handoff: deliverable `/worktree/test_slug.py` (draft, unaccepted; Main verification/acceptance required); proof `python3 -m unittest -v` passed 35/35; no BLOCKED items; no commits, network, or writes outside `/worktree`; next: Veritas main + qa-redteam review.

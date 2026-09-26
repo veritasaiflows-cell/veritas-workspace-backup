@@ -1,0 +1,12 @@
+diff --git a/notifier.py b/notifier.py
+index 344830b..15af411 100644
+--- a/notifier.py
++++ b/notifier.py
+@@ -3,4 +3,6 @@ def truncate_message(text, limit=4096):
+     trailing "…", is exactly `limit` characters."""
+     if len(text) <= limit:
+         return text
+-    return text[:limit] + "…"
++    if limit <= 0:
++        return ""
++    return text[:limit - 1] + "…"

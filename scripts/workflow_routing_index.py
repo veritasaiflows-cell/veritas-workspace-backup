@@ -2511,7 +2511,7 @@ def build_routes() -> list[dict[str, Any]]:
                 "python scripts\\workflow_router.py WF89 --answer all",
             ],
             [
-                "Attribution contract v0.3 accepted 2026-09-24, but only 2 runs are credited under it so far (1 builder, 1 scout); 241 historical cleanup-delete runs stay uncreditable",
+                "Credited under contract v0.3 is not accepted: cost per accepted task needs Main outcomes in data/state-history/wf89-run-outcomes.jsonl (none recorded yet); 241 historical cleanup-delete runs stay uncreditable",
                 "Windows directory-junction proof dated 2026-09-10: four native junction cases deny escape (see tmp/wf89-fleet-20260909/broader/windows-junction-proof.json); positive controls pass; file-symlink coverage remains partial/unavailable, no universal reparse/race/OS claim",
                 "Historical accounting not green (2026-08-24 canary isolated_source_reverification_mismatch); current active admission has zero errors",
             ],

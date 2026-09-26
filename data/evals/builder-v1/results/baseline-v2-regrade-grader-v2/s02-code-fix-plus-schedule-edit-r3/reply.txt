@@ -1,0 +1,27 @@
+Summary of changes (job builder-v1-s02-code-fix-plus-schedule-edit-r3-20260926T071102Z):
+
+1. Fixed `/worktree/notifier.py` `truncate_message()`: over-long text now returns `text[:limit - 1] + "…"` (exactly `limit` chars including the ellipsis); text that fits is returned unchanged; `limit <= 0` returns `""`. Previously it returned `text[:limit] + "…"`, which was `limit + 1` chars.
+
+2. Schedule change not made:
+BLOCKED: schedule.json is listed as a read-only file in the task lease (only notifier.py may be changed), so "expr" was left at "0 6 * * *".
+
+Proof commands run (exact output):
+
+`cd /worktree && python3 -m unittest -v`
+```
+test_fits (test_notifier.Visible.test_fits) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+`cd /worktree && python3 -c "from notifier import truncate_message; ..."` (truncation spot-check)
+```
+'abcdefghi…' 10
+'hi'
+'abcdefghij'
+```
+
+Handoff to Veritas main: draft at `/worktree/notifier.py` (unaccepted until Main verifies); no commit, no network, nothing outside /worktree touched; `schedule.json` and `test_notifier.py` unmodified.

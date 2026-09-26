@@ -1,0 +1,71 @@
+Created `/worktree/test_slug.py` (unittest, stdlib only) covering every docstring rule: lowercasing, separator-run collapsing, leading/trailing strip, truncation + post-truncation dash strip (incl. 39/40/41 boundary, custom max_len, max_len 0/1), non-ASCII/emoji handling, "untitled" fallbacks, and error cases (non-string title → AttributeError, string max_len → TypeError; docstring documents no explicit raises). Did not modify `slug.py`.
+
+Exact output of `cd /worktree && python3 -m unittest -v`:
+```
+test_int_title_raises_attribute_error (test_slug.TestErrorCases.test_int_title_raises_attribute_error) ... ok
+test_list_title_raises_attribute_error (test_slug.TestErrorCases.test_list_title_raises_attribute_error) ... ok
+test_none_title_raises_attribute_error (test_slug.TestErrorCases.test_none_title_raises_attribute_error) ... ok
+test_string_max_len_raises_type_error (test_slug.TestErrorCases.test_string_max_len_raises_type_error) ... ok
+test_both_dash_ends_stripped (test_slug.TestLeadingTrailingStrip.test_both_dash_ends_stripped) ... ok
+test_both_ends_stripped (test_slug.TestLeadingTrailingStrip.test_both_ends_stripped) ... ok
+test_leading_dashes_stripped (test_slug.TestLeadingTrailingStrip.test_leading_dashes_stripped) ... ok
+test_leading_punctuation_stripped (test_slug.TestLeadingTrailingStrip.test_leading_punctuation_stripped) ... ok
+test_leading_spaces_stripped (test_slug.TestLeadingTrailingStrip.test_leading_spaces_stripped) ... ok
+test_trailing_dashes_stripped (test_slug.TestLeadingTrailingStrip.test_trailing_dashes_stripped) ... ok
+test_trailing_punctuation_stripped (test_slug.TestLeadingTrailingStrip.test_trailing_punctuation_stripped) ... ok
+test_trailing_spaces_stripped (test_slug.TestLeadingTrailingStrip.test_trailing_spaces_stripped) ... ok
+test_39_chars_unchanged (test_slug.TestMaxLen.test_39_chars_unchanged) ... ok
+test_41_chars_truncated_to_40 (test_slug.TestMaxLen.test_41_chars_truncated_to_40) ... ok
+test_custom_max_len (test_slug.TestMaxLen.test_custom_max_len) ... ok
+test_custom_max_len_longer_than_input (test_slug.TestMaxLen.test_custom_max_len_longer_than_input) ... ok
+test_default_max_len_is_40 (test_slug.TestMaxLen.test_default_max_len_is_40) ... ok
+test_exactly_40_chars_unchanged (test_slug.TestMaxLen.test_exactly_40_chars_unchanged) ... ok
+test_long_input_truncated_to_default_40 (test_slug.TestMaxLen.test_long_input_truncated_to_default_40) ... ok
+test_max_len_one (test_slug.TestMaxLen.test_max_len_one) ... ok
+test_max_len_zero_empty_input_gives_untitled (test_slug.TestMaxLen.test_max_len_zero_empty_input_gives_untitled) ... ok
+test_max_len_zero_gives_untitled (test_slug.TestMaxLen.test_max_len_zero_gives_untitled) ... ok
+test_result_never_exceeds_max_len (test_slug.TestMaxLen.test_result_never_exceeds_max_len) ... ok
+test_trailing_dash_stripped_after_truncation (test_slug.TestMaxLen.test_trailing_dash_stripped_after_truncation) ... ok
+test_truncation_at_word_boundary_dash (test_slug.TestMaxLen.test_truncation_at_word_boundary_dash) ... ok
+test_truncation_without_trailing_dash_kept_whole (test_slug.TestMaxLen.test_truncation_without_trailing_dash_kept_whole) ... ok
+test_accented_char_becomes_separator (test_slug.TestNonAscii.test_accented_char_becomes_separator) ... ok
+test_accented_char_mid_word (test_slug.TestNonAscii.test_accented_char_mid_word) ... ok
+test_all_non_ascii_gives_untitled (test_slug.TestNonAscii.test_all_non_ascii_gives_untitled) ... ok
+test_emoji_becomes_separator (test_slug.TestNonAscii.test_emoji_becomes_separator) ... ok
+test_uppercase_non_ascii_lowered_then_separator (test_slug.TestNonAscii.test_uppercase_non_ascii_lowered_then_separator) ... ok
+test_all_caps (test_slug.TestNormalCases.test_all_caps) ... ok
+test_digits_preserved (test_slug.TestNormalCases.test_digits_preserved) ... ok
+test_digits_with_surrounding_spaces (test_slug.TestNormalCases.test_digits_with_surrounding_spaces) ... ok
+test_dots_become_dashes (test_slug.TestNormalCases.test_dots_become_dashes) ... ok
+test_existing_dashes_preserved_as_single (test_slug.TestNormalCases.test_existing_dashes_preserved_as_single) ... ok
+test_mixed_case_with_dashes (test_slug.TestNormalCases.test_mixed_case_with_dashes) ... ok
+test_mixed_case_with_digits (test_slug.TestNormalCases.test_mixed_case_with_digits) ... ok
+test_punctuation_becomes_dash (test_slug.TestNormalCases.test_punctuation_becomes_dash) ... ok
+test_simple_lowercase_unchanged (test_slug.TestNormalCases.test_simple_lowercase_unchanged) ... ok
+test_spaces_become_single_dash (test_slug.TestNormalCases.test_spaces_become_single_dash) ... ok
+test_underscore_becomes_dash (test_slug.TestNormalCases.test_underscore_becomes_dash) ... ok
+test_uppercase_is_lowercased (test_slug.TestNormalCases.test_uppercase_is_lowercased) ... ok
+test_version_string (test_slug.TestNormalCases.test_version_string) ... ok
+test_mixed_separators_collapse (test_slug.TestSeparatorRuns.test_mixed_separators_collapse) ... ok
+test_mixed_whitespace_collapses (test_slug.TestSeparatorRuns.test_mixed_whitespace_collapses) ... ok
+test_multiple_spaces_collapse (test_slug.TestSeparatorRuns.test_multiple_spaces_collapse) ... ok
+test_no_double_dashes_from_mixed_runs (test_slug.TestSeparatorRuns.test_no_double_dashes_from_mixed_runs) ... ok
+test_run_of_dashes_collapses (test_slug.TestSeparatorRuns.test_run_of_dashes_collapses) ... ok
+test_run_of_mixed_punctuation_collapses (test_slug.TestSeparatorRuns.test_run_of_mixed_punctuation_collapses) ... ok
+test_run_of_underscores_collapses (test_slug.TestSeparatorRuns.test_run_of_underscores_collapses) ... ok
+test_tabs_and_newlines_collapse (test_slug.TestSeparatorRuns.test_tabs_and_newlines_collapse) ... ok
+test_empty_string (test_slug.TestUntitled.test_empty_string) ... ok
+test_mixed_separators_only (test_slug.TestUntitled.test_mixed_separators_only) ... ok
+test_only_dashes (test_slug.TestUntitled.test_only_dashes) ... ok
+test_only_punctuation (test_slug.TestUntitled.test_only_punctuation) ... ok
+test_only_spaces (test_slug.TestUntitled.test_only_spaces) ... ok
+test_single_dash (test_slug.TestUntitled.test_single_dash) ... ok
+test_truncation_to_empty_gives_untitled (test_slug.TestUntitled.test_truncation_to_empty_gives_untitled) ... ok
+
+----------------------------------------------------------------------
+Ran 59 tests in 0.002s
+
+OK
+```
+
+No BLOCKED items. Handoff: deliverable `/worktree/test_slug.py`; proof `cd /worktree && python3 -m unittest -v` (59 tests OK); parent job `builder-v1-t02-tests-slugify-r3-20260926T070436Z`; provider usage unavailable; QA/Red-Team verdict and Main acceptance still required — returning to Veritas main for verification.

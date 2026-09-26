@@ -8,7 +8,7 @@
 
 ## How a run works
 
-The harness uses the builder's real pipeline: `implementation_builder_worktree_manager` prepare, then a WF89 `launch()` (the dispatch record is written first, so every run is credited), then close and archive into `handoff/completed/`. Grading is model-free and runs builder output only inside the builder's sandbox image: no network, read-only mount, no capabilities, non-root user.
+The harness uses the builder's real pipeline: `implementation_builder_worktree_manager` prepare, then a WF89 `launch()` (the dispatch record is written first, so every run can bind to a record; credit still needs the executor usage witness), then close and archive into `handoff/completed/`. Grading is model-free and runs builder output only inside the builder's sandbox image: no network, read-only mount, no capabilities, non-root user.
 
 An attempt passes only if all of these hold:
 - the hidden tests pass (or, for test-writing cases, every mutant is killed);
@@ -29,7 +29,7 @@ python scripts/builder_eval_v1.py run --run-id cand-<model>-<yyyymmdd> --model <
 python scripts/builder_eval_v1.py score --run-id cand-<model>-<yyyymmdd>
 ```
 
-The run stops at the first invalid transport (wrong effective model, fallback, or a status that is not ok) and never retries. Decision rule: any hard fail disqualifies the candidate. Otherwise compare first-pass counts against the baseline; a gap of 2 or fewer cases is within noise. A switch still goes through the Approved Route Change procedure and needs a separate approval for `agent_fleet_policy.BUILDER_MODEL`.
+The run stops at the first invalid transport (wrong effective model, fallback, or a status that is not ok) and never retries. Decision rule: any hard fail disqualifies the candidate. Otherwise compare first-pass counts against the baseline; treat a gap of 2 or fewer cases as inconclusive (a working rule, not a measured noise band: repeats cover only 5 cases). Grader v2 (2026-09-26) re-graded the baseline copy `results/baseline-v2-regrade-grader-v2` with 0 of 35 grades changed; compare only rows with the same `grader_version`. A switch still goes through the Approved Route Change procedure and needs a separate approval for `agent_fleet_policy.BUILDER_MODEL`.
 
 ## Baseline
 

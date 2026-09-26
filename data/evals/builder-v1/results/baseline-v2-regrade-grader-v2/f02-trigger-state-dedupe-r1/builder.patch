@@ -1,0 +1,18 @@
+diff --git a/wake_gate.py b/wake_gate.py
+index 6aff574..0ac1adc 100644
+--- a/wake_gate.py
++++ b/wake_gate.py
+@@ -1,6 +1,10 @@
+ def decide(trigger, signature):
+     """Fire once per new signature. Returns (fire, new_state)."""
+-    state = trigger.get("last") or {}
++    raw = trigger.get("state")
++    state = raw if isinstance(raw, dict) else {}
++    prev_count = state.get("fired_count")
++    if not isinstance(prev_count, int):
++        prev_count = 0
+     if state.get("signature") == signature:
+-        return False, state
+-    return True, {"signature": signature}
++        return False, {"signature": signature, "fired_count": prev_count}
++    return True, {"signature": signature, "fired_count": prev_count + 1}
