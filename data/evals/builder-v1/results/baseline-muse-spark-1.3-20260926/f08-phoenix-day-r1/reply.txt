@@ -1,0 +1,27 @@
+Changed `/worktree/local_day.py` only (read-only `test_local_day.py` untouched):
+
+- `phoenix_day()`: subtracts fixed 7h (Phoenix is UTC-7, no DST) from the epoch-ms instant via naive `datetime` + `timedelta` arithmetic, then formats the date — no `zoneinfo`/tz database used.
+- Added `day_bounds_ms(day)`: parses `"YYYY-MM-DD"`, computes midnight Phoenix = 07:00 UTC via `calendar.timegm` (exact integer ms, host-tz independent), returns `(start_ms, start_ms + 86400000)`.
+
+Proof commands run (exact output):
+
+1. `cd /worktree && python3 -m unittest -v`
+```
+test_midday (test_local_day.Visible.test_midday) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+2. `cd /worktree && python3 -c "from local_day import phoenix_day, day_bounds_ms ..."` (evening/bounds/zoneinfo check)
+```
+2026-09-25
+1790319600000 1790406000000 86400000
+2026-09-25 2026-09-24 2026-09-26
+False False
+```
+Evening case (2026-09-26 02:00 UTC = 19:00 Phoenix 09-25) now returns `2026-09-25`; bounds round-trip: `start->09-25`, `start-1ms->09-24`, `end->09-26`; no `zoneinfo`/`tzdata` references.
+
+Handoff: deliverable `/worktree/local_day.py` to Veritas main for verification/acceptance; required independent QA/Red-Team verdict still pending; Main acceptance state: unaccepted. No lane/job identifiers supplied. provider_usage_unavailable — no token/usage counts exposed. Stop lines preserved (no config/cron/credentials/network/external writes; nothing outside `/worktree`). No owner-gated decisions needed.

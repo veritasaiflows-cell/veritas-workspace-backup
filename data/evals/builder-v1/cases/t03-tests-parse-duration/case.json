@@ -1,0 +1,27 @@
+{
+  "id": "t03-tests-parse-duration",
+  "category": "tests",
+  "brief": "Write test_duration.py (unittest, standard library only) that thoroughly tests parse_duration() in duration.py\nagainst its docstring: normal cases, every boundary and edge case the docstring states,\nand error cases. Do not modify duration.py. The tests must pass against the current duration.py.\nRun them before replying.",
+  "src_files": [
+    "duration.py"
+  ],
+  "writable": [],
+  "readonly": [
+    "duration.py"
+  ],
+  "protected": [],
+  "outputs": [
+    "test_duration.py"
+  ],
+  "expect": {
+    "mutation": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [],
+  "mutants": [
+    "m1-any-order",
+    "m2-empty-is-zero",
+    "m3-whitespace-ok"
+  ]
+}

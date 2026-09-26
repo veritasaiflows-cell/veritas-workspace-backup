@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "778aa454-4500-4d8a-bcb8-7f11aed82cc0",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:builder-v1-x04-lane-median-min-sample-r1-20260926T063723Z",
+  "label": "bench:builder-v1 x04-lane-median-min-sample r1",
+  "task_text_sha256": "b2d26a0b33383e94cf3b1b234dd4a8a13d29ae0b42526bde68696b456c8676bd",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\builder-v1\\results\\baseline-muse-spark-1.3-20260926\\x04-lane-median-min-sample-r1\\task.md",
+  "created_at_ms": 1790404680916,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "builder_eval_v1"
+}

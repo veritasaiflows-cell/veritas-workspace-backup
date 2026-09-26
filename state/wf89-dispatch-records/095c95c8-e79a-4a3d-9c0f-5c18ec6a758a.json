@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "095c95c8-e79a-4a3d-9c0f-5c18ec6a758a",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:builder-v1-f03-credit-join-key-r1-20260926T062945Z",
+  "label": "bench:builder-v1 f03-credit-join-key r1",
+  "task_text_sha256": "2fad3948bdc37a6ec506bbaa51b3035340ba5562cd82555e6791c637f626d269",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\builder-v1\\results\\baseline-muse-spark-1.3-20260926\\f03-credit-join-key-r1\\task.md",
+  "created_at_ms": 1790404224494,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "builder_eval_v1"
+}

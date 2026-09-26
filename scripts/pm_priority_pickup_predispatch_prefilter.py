@@ -24,6 +24,9 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import wf89_dispatch_record  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 STATE_HISTORY = ROOT / "data" / "state-history"
@@ -349,23 +352,18 @@ def dispatch_wake(
         record["stderr_tail"] = str(exc)[-400:]
         return record
 
-    command = [
-        binary,
-        "agent",
-        "--agent",
-        "main",
-        "--session-key",
-        session_key,
-        "--message-file",
-        str(message_path),
-        "--timeout",
-        str(timeout_seconds),
-        "--json",
-    ]
+    # WF89: the launcher writes the dispatch record before starting the run, so
+    # this Main wake is measured. No record, no launch.
     started = time.monotonic()
     try:
-        completed = subprocess.run(
-            command,
+        dispatch, completed = wf89_dispatch_record.launch(
+            "main",
+            session_key,
+            "cron wake: pm priority pickup",
+            message_file=message_path,
+            extra_args=["--timeout", str(timeout_seconds), "--json"],
+            binary=binary,
+            launched_by="pm_priority_pickup_predispatch_prefilter",
             cwd=str(ROOT),
             capture_output=True,
             text=True,
@@ -379,6 +377,7 @@ def dispatch_wake(
         return record
 
     record["duration_ms"] = int((time.monotonic() - started) * 1000)
+    record["wf89_dispatch_id"] = dispatch["dispatch_id"]
     record["returncode"] = completed.returncode
     record["dispatched"] = completed.returncode == 0
     record["dispatched_at_utc"] = utc_now()

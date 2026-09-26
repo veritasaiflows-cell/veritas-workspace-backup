@@ -1,0 +1,30 @@
+Changed `/worktree/fetch_retry.py` to implement `fetch_with_retry(fetch, attempts=3, sleep=None)`:
+- raises `ValueError` if `attempts < 1` before calling `fetch`
+- defaults `sleep` to `time.sleep`
+- loops up to `attempts` times, returning first success
+- catches only `OSError` (incl. subclasses) for retry; other exceptions propagate
+- sleeps `1, 2, 4, ...` capped at `8` before each retry, no sleep after final failure, then re-raises last `OSError`
+
+Did not modify `test_fetch_retry.py`. No BLOCKED items.
+
+Proof commands run:
+1. `cd /worktree && python3 -m unittest -v`
+Exact output:
+```
+test_success (test_fetch_retry.Visible.test_success) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+2. Diagnostic `pwd; ls -la; ls -la /worktree || true; ls -la /workspace || true` confirmed `/worktree` contains `fetch_retry.py`, `test_fetch_retry.py`, `handoff-manifest.json`.
+
+Closeout:
+- deliverable: `/worktree/fetch_retry.py` (495 bytes)
+- parent job: builder-v1-x03-retry-backoff-r2-20260926T070436Z; no workflow/lane IDs supplied
+- provider_usage_unavailable — no pricing-grade token counts exposed
+- QA/Red-Team verdict: none (returned for Main routing; single-file change)
+- Main acceptance: pending; no self-acceptance claimed
+- stop lines preserved: no runtime/config, cron, telemetry, credentials, external, or out-of-worktree changes; no commit, no network
+- handoff to Veritas main for verification and final integration

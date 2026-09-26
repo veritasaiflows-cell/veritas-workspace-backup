@@ -16,6 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import wf89_dispatch_record
 from market_data_utils import atomic_write_json, load_json_artifact
 
 
@@ -95,22 +96,24 @@ def select_packet(packets: dict[str, Any], packet_id: str | None, processed_fing
     return rows[0] if rows else {}
 
 
-def command_for(packet: dict[str, Any]) -> list[str]:
+def launch_args(packet: dict[str, Any]) -> list[str]:
     return [
-        *openclaw_prefix(),
-        "agent",
-        "--agent",
-        str(packet.get("agent_id")),
-        "--session-key",
-        str(packet.get("session_key")),
         "--thinking",
         str(packet.get("thinking") or "low"),
         "--timeout",
         str(packet.get("timeout_seconds") or 900),
-        "--message",
-        str(packet.get("message") or ""),
         "--json",
     ]
+
+
+def command_for(packet: dict[str, Any]) -> list[str]:
+    return wf89_dispatch_record.agent_command(
+        openclaw_prefix(),
+        str(packet.get("agent_id")),
+        str(packet.get("session_key")),
+        message_text=str(packet.get("message") or ""),
+        extra_args=launch_args(packet),
+    )
 
 
 def preview_command(command: list[str]) -> list[str]:
@@ -156,7 +159,18 @@ def run_packet(packet: dict[str, Any]) -> dict[str, Any]:
     command = command_for(packet)
     started = utc_now()
     try:
-        proc = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, timeout=int(packet.get("timeout_seconds") or 900) + 60)
+        # WF89: the launcher writes the dispatch record before starting the run.
+        _dispatch, proc = wf89_dispatch_record.launch(
+            str(packet.get("agent_id")),
+            str(packet.get("session_key")),
+            f"finance packet: {packet.get('packet_id') or 'unknown'}",
+            message_text=str(packet.get("message") or ""),
+            extra_args=launch_args(packet),
+            binary=openclaw_prefix(),
+            launched_by="finance_agent_supervised_cycle_runner",
+            cwd=ROOT, text=True, capture_output=True,
+            timeout=int(packet.get("timeout_seconds") or 900) + 60,
+        )
         parsed = parse_agent_stdout(proc.stdout)
         agent_payload = parse_agent_payload(parsed)
         return {
@@ -195,6 +209,18 @@ def run_packet(packet: dict[str, Any]) -> dict[str, Any]:
             "command_preview": preview_command(command),
             "stdout_preview": "",
             "stderr_preview": f"openclaw executable not found: {exc}",
+        }
+    except (OSError, ValueError) as exc:
+        # The dispatch record could not be written, so the agent was not started.
+        return {
+            "executed": False,
+            "started_at_utc": started,
+            "completed_at_utc": utc_now(),
+            "returncode": None,
+            "ok": False,
+            "command_preview": preview_command(command),
+            "stdout_preview": "",
+            "stderr_preview": f"wf89 dispatch record not written; agent not launched: {exc}",
         }
 
 

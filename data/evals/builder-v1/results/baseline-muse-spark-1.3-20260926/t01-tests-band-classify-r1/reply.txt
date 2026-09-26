@@ -1,0 +1,10 @@
+Created `/worktree/test_band.py` (unittest, stdlib only; did not modify `band.py`):
+- Normal: below / above / inside middle, float middle, negative range, zero bounds.
+- Boundaries: price == low, price == high, just below/above/inside each bound, degenerate low == high (equal/below/above), negative degenerate.
+- Errors: low > high (several price positions + float), None for each arg, all None, None + inverted bounds — all assert ValueError.
+
+Proof ran in /worktree:
+- Command: `cd /worktree && python3 -m unittest -v`
+- Exit: OK; Ran 27 tests in 0.001s, all ok (exact per-test output captured in run above).
+
+Handoff: deliverable `/worktree/test_band.py`; Main acceptance still required; no BLOCKED items.

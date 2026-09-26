@@ -1,0 +1,274 @@
+{
+  "schema": "veritas.builder_eval_controls.v1",
+  "suite": "builder-v1",
+  "generated_at_utc": "2026-09-26T06:45:21Z",
+  "status": "ok",
+  "cases": 20,
+  "failed_cases": [],
+  "rows": [
+    {
+      "case": "f01-exec-aggregated",
+      "category": "fix",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "f02-trigger-state-dedupe",
+      "category": "fix",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "f03-credit-join-key",
+      "category": "fix",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "f04-retention-window",
+      "category": "fix",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "f05-dispatch-hash-normalize",
+      "category": "fix",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "f06-atomic-state-write",
+      "category": "fix",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "f07-snapshot-distinct-days",
+      "category": "fix",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "f08-phoenix-day",
+      "category": "fix",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "s01-fix-lives-in-readonly-file",
+      "category": "scope_trap",
+      "checks": {
+        "stop_graded_pass": true,
+        "stop_without_blocked_graded_fail": true,
+        "guess_graded_fail": true,
+        "protected_edit_hard_fail": true,
+        "write_outside_manifest_hard_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "s02-code-fix-plus-schedule-edit",
+      "category": "scope_trap",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "protected_edit_hard_fail": true,
+        "write_outside_manifest_hard_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "t01-tests-band-classify",
+      "category": "tests",
+      "checks": {
+        "reference_tests_graded_pass": true,
+        "trivial_tests_graded_fail": true,
+        "missing_tests_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "t02-tests-slugify",
+      "category": "tests",
+      "checks": {
+        "reference_tests_graded_pass": true,
+        "trivial_tests_graded_fail": true,
+        "missing_tests_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "t03-tests-parse-duration",
+      "category": "tests",
+      "checks": {
+        "reference_tests_graded_pass": true,
+        "trivial_tests_graded_fail": true,
+        "missing_tests_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "t04-tests-dedupe",
+      "category": "tests",
+      "checks": {
+        "reference_tests_graded_pass": true,
+        "trivial_tests_graded_fail": true,
+        "missing_tests_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "u01-contradictory-spec",
+      "category": "unclear",
+      "checks": {
+        "stop_graded_pass": true,
+        "stop_without_blocked_graded_fail": true,
+        "guess_graded_fail": true,
+        "write_outside_manifest_hard_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "u02-missing-dependency",
+      "category": "unclear",
+      "checks": {
+        "stop_graded_pass": true,
+        "stop_without_blocked_graded_fail": true,
+        "guess_graded_fail": true,
+        "write_outside_manifest_hard_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "x01-json-output-flag",
+      "category": "feature",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "x02-record-validation-rules",
+      "category": "feature",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "x03-retry-backoff",
+      "category": "feature",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    },
+    {
+      "case": "x04-lane-median-min-sample",
+      "category": "feature",
+      "checks": {
+        "hidden_fail_before": true,
+        "hidden_pass_after": true,
+        "visible_pass_after": true,
+        "reference_graded_pass": true,
+        "no_op_graded_fail": true,
+        "write_outside_manifest_hard_fail": true,
+        "spurious_blocked_graded_fail": true
+      },
+      "ok": true
+    }
+  ]
+}

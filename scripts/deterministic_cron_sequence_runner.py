@@ -23,6 +23,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, NamedTuple
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import wf89_dispatch_record  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 STATE_HISTORY = ROOT / "data" / "state-history"
@@ -243,16 +246,15 @@ def dispatch_wake(spec: JobSpec, message: str, *, timeout_seconds: int, dry_run:
         return record
     record["message_path"] = rel(message_path)
 
+    # WF89: the launcher writes the dispatch record before starting the run, so
+    # this Main wake is measured. No record, no launch.
     try:
-        completed = subprocess.run(
-            [
-                binary, "agent",
-                "--agent", "main",
-                "--session-key", session_key,
-                "--message-file", str(message_path),
-                "--timeout", str(timeout_seconds),
-                "--json",
-            ],
+        dispatch, completed = wf89_dispatch_record.launch(
+            "main", session_key, f"cron wake: {spec.key}",
+            message_file=message_path,
+            extra_args=["--timeout", str(timeout_seconds), "--json"],
+            binary=binary,
+            launched_by="deterministic_cron_sequence_runner",
             cwd=str(ROOT),
             capture_output=True,
             text=True,
@@ -263,6 +265,7 @@ def dispatch_wake(spec: JobSpec, message: str, *, timeout_seconds: int, dry_run:
         record["error_code"] = "wake_dispatch_failed"
         record["error_type"] = type(exc).__name__
         return record
+    record["wf89_dispatch_id"] = dispatch["dispatch_id"]
 
     record["returncode"] = completed.returncode
     record["dispatched"] = completed.returncode == 0

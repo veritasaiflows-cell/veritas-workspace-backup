@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "bd287e81-e98c-49b1-8799-29b02ca28c23",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:builder-v1-u02-missing-dependency-r1-20260926t070044z",
+  "label": "bench:builder-v1 u02-missing-dependency r1",
+  "task_text_sha256": "024eb28949bd20d970da5427f96f4cd230f180ada9e285a5df641cbb3d812b21",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\builder-v1\\results\\baseline-muse-spark-1.3-20260926-v2\\u02-missing-dependency-r1\\task.md",
+  "created_at_ms": 1790406075192,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "builder_eval_v1"
+}

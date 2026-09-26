@@ -1,0 +1,30 @@
+diff --git a/trigger_eval.py b/trigger_eval.py
+index e6df50e..aa6631f 100644
+--- a/trigger_eval.py
++++ b/trigger_eval.py
+@@ -4,12 +4,21 @@ import json
+ 
+ def parse_exec_result(res):
+     """Return the parsed JSON object the command printed, or None."""
+-    text = res.get("stdout") or res.get("output") or res.get("text")
+-    if not text:
++    if not isinstance(res, dict):
++        return None
++    text = res.get("stdout") or res.get("output") or res.get("text") or res.get("aggregated")
++    if not text or not isinstance(text, str):
++        return None
++    last = ""
++    for line in text.splitlines():
++        if line.strip():
++            last = line
++    last = last.strip()
++    if not last:
+         return None
+     try:
+-        doc = json.loads(text)
+-    except ValueError:
++        doc = json.loads(last)
++    except (ValueError, TypeError):
+         return None
+     return doc if isinstance(doc, dict) else None
+ 

@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "53dfb43e-5a18-47ad-8a4d-2480cae476c4",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:builder-v1-x02-record-validation-rules-r1-20260926T063238Z",
+  "label": "bench:builder-v1 x02-record-validation-rules r1",
+  "task_text_sha256": "3ee314bc2118ab947de7994fa79c418cb65a93c1e5ddff1bd1d657c8584d979d",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\builder-v1\\results\\baseline-muse-spark-1.3-20260926\\x02-record-validation-rules-r1\\task.md",
+  "created_at_ms": 1790404597941,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "builder_eval_v1"
+}

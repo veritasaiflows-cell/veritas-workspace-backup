@@ -1,0 +1,15 @@
+Changed `/worktree/credit_join.py`: `join_runs()` now derives each registry row's join key from `taskRunId` inside `payload_json` (JSON string), falling back to the row's `run_id` when `payload_json` is missing, `None`, non-string, empty/whitespace-only, invalid JSON, not a JSON object, missing `taskRunId`, or `taskRunId` is `None`/empty string. Registry rows are grouped by this join key: tasks with no match map to `None`, exactly one match map to that row, and two or more matches map to `"AMBIGUOUS"`.
+
+No other files changed; `test_credit_join.py` left untouched.
+
+Tests: I could not run `cd /worktree && python3 -m unittest -v` — shell/exec is not available to this agent (access class `scoped_workspace_write`, Exec allowed: `False`, no approved executables), so I have no observed test output to report. Main/QA should run the suite during verification.
+
+Closeout:
+- Deliverable: `/worktree/credit_join.py`
+- Proof commands run: none (exec unavailable)
+- Parent job: `builder-v1-f03-credit-join-key-r1-20260926T064608Z`; no workflow/lane IDs supplied
+- Usage: provider_usage_unavailable
+- QA verdict: required (qa-redteam), not yet obtained
+- Main acceptance: required, not yet obtained; no rework/blocker known
+- Stop lines preserved; no runtime/config, cron, telemetry, credential, messaging, finance, or external changes made
+- Handoff to Veritas main for verification and final integration

@@ -1,0 +1,26 @@
+{
+  "id": "f04-retention-window",
+  "category": "fix",
+  "brief": "retention.is_expired() is wrong since the store switched units: \"ended_at\" is now epoch\nmilliseconds, like now_ms. A row expires exactly at ended_at + days (inclusive: at that\ninstant it is expired). ended_at of None means the run is still going and never expires.\nFix is_expired(), then add expiring_within(rows, now_ms, hours, days=7): rows are dicts\nwith \"id\" and \"ended_at\"; return the ids of rows that are not yet expired and will expire\nat or before now_ms + hours, ordered by expiry time (earliest first). Skip rows whose\nended_at is None.",
+  "src_files": [
+    "retention.py",
+    "test_retention.py"
+  ],
+  "writable": [
+    "retention.py"
+  ],
+  "readonly": [
+    "test_retention.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [
+    "test_hidden_retention.py"
+  ],
+  "mutants": []
+}

@@ -1,0 +1,23 @@
+Fixed `wake_gate.py` `decide()` to dedupe on `trigger["state"]` only (ignoring legacy `"last"` key) and to track `fired_count` (increment on fire, carry over on no-fire). Return shape stays `(fire: bool, new_state: dict)`.
+
+Changed file: `/worktree/wake_gate.py`
+
+Commands run and exact output:
+
+1. `cd /worktree && python3 -m unittest -v`
+```
+test_first_run_fires (test_wake_gate.Visible.test_first_run_fires) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+2. `cd /worktree && python3 -c "from wake_gate import decide; ..."`
+```
+(True, {'signature': 'a', 'fired_count': 1}) (False, {'signature': 'a', 'fired_count': 1}) (True, {'signature': 'b', 'fired_count': 2}) (False, {'signature': 'b', 'fired_count': 2}) (True, {'signature': 'a', 'fired_count': 1}) (True, {'signature': 'a', 'fired_count': 1})
+ALL DEDUPE CHECKS PASS
+```
+
+Closeout: parent job `builder-v1-f02-trigger-state-dedupe-r1-20260926T062945Z`; no BLOCKED items; no owner-gated decisions needed; `provider_usage_unavailable`; stop lines preserved (no config/cron/credentials/messaging changes, no commit, no network, writes only to `/worktree/wake_gate.py`); handoff to Veritas main for verification and QA-RedTeam review; Main acceptance pending.

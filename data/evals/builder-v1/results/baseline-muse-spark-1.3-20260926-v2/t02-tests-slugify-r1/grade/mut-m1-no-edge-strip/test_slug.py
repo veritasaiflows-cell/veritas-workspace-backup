@@ -1,0 +1,179 @@
+"""Tests for slug.slugify against its docstring (unittest, stdlib only)."""
+import inspect
+import unittest
+
+from slug import slugify
+
+
+class TestSlugifyNormalCases(unittest.TestCase):
+    def test_simple_words(self):
+        self.assertEqual(slugify("hello world"), "hello-world")
+
+    def test_lowercases_title(self):
+        self.assertEqual(slugify("Hello World"), "hello-world")
+        self.assertEqual(slugify("UPPER CASE"), "upper-case")
+        self.assertEqual(slugify("MiXeD CaSe"), "mixed-case")
+
+    def test_numbers_preserved(self):
+        self.assertEqual(slugify("version 2 release"), "version-2-release")
+        self.assertEqual(slugify("123 abc"), "123-abc")
+        self.assertEqual(slugify("abc123"), "abc123")
+
+    def test_already_a_slug(self):
+        self.assertEqual(slugify("already-a-slug"), "already-a-slug")
+        self.assertEqual(slugify("abc-123"), "abc-123")
+
+    def test_single_word(self):
+        self.assertEqual(slugify("hello"), "hello")
+
+    def test_punctuation_becomes_dash(self):
+        self.assertEqual(slugify("Hello, World!"), "hello-world")
+        self.assertEqual(slugify("foo.bar"), "foo-bar")
+        self.assertEqual(slugify("foo/bar"), "foo-bar")
+        self.assertEqual(slugify("a:b;c"), "a-b-c")
+
+
+class TestSlugifySeparatorRuns(unittest.TestCase):
+    def test_run_collapses_to_single_dash(self):
+        self.assertEqual(slugify("a   b"), "a-b")
+        self.assertEqual(slugify("a___b"), "a-b")
+        self.assertEqual(slugify("a--b"), "a-b")
+        self.assertEqual(slugify("a...b"), "a-b")
+        self.assertEqual(slugify("a \t\n b"), "a-b")
+
+    def test_mixed_separator_run(self):
+        self.assertEqual(slugify("a -_ b"), "a-b")
+        self.assertEqual(slugify("a!!b"), "a-b")
+
+    def test_underscore_is_separator(self):
+        self.assertEqual(slugify("foo_bar_baz"), "foo-bar-baz")
+
+    def test_tab_newline_are_separators(self):
+        self.assertEqual(slugify("a\tb\nc"), "a-b-c")
+
+
+class TestSlugifyStrip(unittest.TestCase):
+    def test_strips_leading_separators(self):
+        self.assertEqual(slugify("  hello"), "hello")
+        self.assertEqual(slugify("---hello"), "hello")
+        self.assertEqual(slugify("!!!hello"), "hello")
+
+    def test_strips_trailing_separators(self):
+        self.assertEqual(slugify("hello  "), "hello")
+        self.assertEqual(slugify("hello---"), "hello")
+        self.assertEqual(slugify("hello!!!"), "hello")
+
+    def test_strips_both_ends(self):
+        self.assertEqual(slugify("  hello world  "), "hello-world")
+        self.assertEqual(slugify("--hello--"), "hello")
+        self.assertEqual(slugify("  leading and trailing  "),
+                         "leading-and-trailing")
+
+
+class TestSlugifyEmptyUntitled(unittest.TestCase):
+    def test_empty_string(self):
+        self.assertEqual(slugify(""), "untitled")
+
+    def test_only_separators(self):
+        self.assertEqual(slugify("   "), "untitled")
+        self.assertEqual(slugify("---"), "untitled")
+        self.assertEqual(slugify("!!!"), "untitled")
+        self.assertEqual(slugify("-"), "untitled")
+        self.assertEqual(slugify(" _- "), "untitled")
+
+    def test_word_untitled_round_trips(self):
+        self.assertEqual(slugify("untitled"), "untitled")
+
+    def test_numeric_zero_string_not_untitled(self):
+        # "0" is non-empty so it must not fall back to "untitled".
+        self.assertEqual(slugify("0"), "0")
+
+
+class TestSlugifyAsciiRule(unittest.TestCase):
+    def test_uppercase_ascii_folded(self):
+        self.assertEqual(slugify("ABC"), "abc")
+
+    def test_non_ascii_is_separator(self):
+        # 'e-acute' is not ASCII a-z, so "cafe" + separator then stripped.
+        self.assertEqual(slugify("caf\u00e9"), "caf")
+
+    def test_all_non_ascii_becomes_untitled(self):
+        self.assertEqual(slugify("\u00e4\u00f6\u00fc"), "untitled")
+
+    def test_digits_and_lowercase_untouched(self):
+        self.assertEqual(slugify("abcdefghijklmnopqrstuvwxyz0123456789"),
+                         "abcdefghijklmnopqrstuvwxyz0123456789")
+
+
+class TestSlugifyMaxLen(unittest.TestCase):
+    def test_default_max_len_is_40(self):
+        sig = inspect.signature(slugify)
+        self.assertEqual(sig.parameters["max_len"].default, 40)
+
+    def test_default_truncates_to_40(self):
+        self.assertEqual(slugify("a" * 50), "a" * 40)
+
+    def test_boundary_lengths(self):
+        self.assertEqual(slugify("a" * 39), "a" * 39)
+        self.assertEqual(slugify("a" * 40), "a" * 40)
+        self.assertEqual(slugify("a" * 41), "a" * 40)
+
+    def test_long_title_truncated(self):
+        result = slugify("hello world, this is a very long title indeed!")
+        self.assertLessEqual(len(result), 40)
+        self.assertFalse(result.endswith("-"))
+        self.assertEqual(result, slugify(
+            "hello world, this is a very long title indeed!")[:40])
+
+    def test_truncation_strips_trailing_dash(self):
+        # Base slug is "a"*39 + "-b"; [:40] ends with "-" so it is stripped.
+        self.assertEqual(slugify("a" * 39 + " b", max_len=40), "a" * 39)
+        self.assertEqual(slugify("hello world", max_len=6), "hello")
+        self.assertEqual(slugify("hello world", max_len=5), "hello")
+        self.assertEqual(slugify("hello world", max_len=7), "hello-w")
+
+    def test_custom_max_len(self):
+        self.assertEqual(slugify("hello world", max_len=5), "hello")
+        self.assertEqual(slugify("hello-world", max_len=20), "hello-world")
+
+    def test_max_len_zero_gives_untitled(self):
+        self.assertEqual(slugify("hello", max_len=0), "untitled")
+        self.assertEqual(slugify("", max_len=0), "untitled")
+
+    def test_max_len_one(self):
+        self.assertEqual(slugify("hello", max_len=1), "h")
+        self.assertEqual(slugify("-hello-", max_len=1), "h")
+        self.assertEqual(slugify("---", max_len=1), "untitled")
+
+    def test_truncated_result_never_ends_with_dash(self):
+        for n in (1, 2, 5, 6, 39, 40, 41):
+            with self.subTest(max_len=n):
+                result = slugify("a" * 39 + " b c d", max_len=n)
+                self.assertFalse(result.endswith("-"))
+                self.assertLessEqual(len(result), n)
+
+
+class TestSlugifyErrors(unittest.TestCase):
+    def test_missing_title_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            slugify()
+
+    def test_none_title_raises_attribute_error(self):
+        with self.assertRaises(AttributeError):
+            slugify(None)
+
+    def test_int_title_raises_attribute_error(self):
+        with self.assertRaises(AttributeError):
+            slugify(123)
+
+    def test_list_title_raises_attribute_error(self):
+        with self.assertRaises(AttributeError):
+            slugify(["hello"])
+
+    def test_non_int_max_len_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            slugify("hello", max_len="5")
+
+
+if __name__ == "__main__":
+    unittest.main()

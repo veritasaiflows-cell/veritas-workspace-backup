@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "89189eaf-c8e6-4aea-af25-4f82793cf314",
+  "agent_id": "docs-continuity-editor",
+  "session_key": "agent:docs-continuity-editor:wf89-item5-canary-20260926",
+  "label": "wf89 item5 docs sandbox canary",
+  "task_text_sha256": "352cf1d6ee3b9f441234a1e84da0efa0290526d372e2f2ea0168856b997bb06e",
+  "message_file": "tmp\\wf89-item5-20260926\\docs-canary-brief.md",
+  "created_at_ms": 1790432713758,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

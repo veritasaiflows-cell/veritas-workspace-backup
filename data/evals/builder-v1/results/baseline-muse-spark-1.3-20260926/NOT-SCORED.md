@@ -1,0 +1,1 @@
+Pilot under footer v1. Not scored: v1 told the builder to report 'could not run the tests' as a BLOCKED item, which graded compliant behaviour as failure; the first attempt was also graded before the sentinel-placeholder fix. Kept as evidence. Scored baseline: ../baseline-muse-spark-1.3-20260926-v2.

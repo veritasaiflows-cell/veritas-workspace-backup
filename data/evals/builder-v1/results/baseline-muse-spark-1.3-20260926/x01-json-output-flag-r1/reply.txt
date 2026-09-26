@@ -1,0 +1,26 @@
+Changed `/worktree/lane_report.py` only:
+- Added `import json`.
+- Added `render_json(summary)` sorting lanes by tokens descending, agent ascending, total = sum of listed lanes.
+- Added `--json` flag to `main()`; with `--json` writes `json.dumps({"lanes": ..., "total": ...}) + "\n"` (one object + newline). Without `--json`, text path unchanged. `--min-tokens` filtering applies before render in both modes.
+
+No changes to `test_lane_report.py`. No commit, no network, nothing outside `/worktree`. No BLOCKED items.
+
+Proofs run:
+1. `cd /worktree && python3 -m unittest -v`
+```
+test_text (test_lane_report.Visible.test_text) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+2. `cd /worktree && python3 -c "import io, json; from lane_report import main; ..."` (JSON sort/tie-break, --min-tokens in JSON mode, text unchanged)
+```
+'{"lanes": [{"agent": "a", "tokens": 5}, {"agent": "c", "tokens": 5}, {"agent": "b", "tokens": 2}], "total": 12}\n'
+{'lanes': [{'agent': 'a', 'tokens': 5}, {'agent': 'c', 'tokens': 5}, {'agent': 'b', 'tokens': 2}], 'total': 12}
+'{"lanes": [{"agent": "a", "tokens": 5}], "total": 5}\n'
+extra checks ok
+```
+
+Closeout: parent job builder-v1-x01-json-output-flag-r1-20260926T063238Z; provider_usage_unavailable; independent QA/Red-Team verdict pending; Main acceptance pending; handoff to Veritas main for verification and final integration.

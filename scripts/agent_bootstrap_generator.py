@@ -175,6 +175,26 @@ SCOPED_WORKTREE_TOOL_POSTURE = {
     "scoped_worktree_only": True,
 }
 
+SANDBOXED_OUTBOX_TOOL_POSTURE = {
+    "access_class": "sandboxed_outbox_write",
+    "filesystem_scope": "sandbox_outbox_only",
+    "write_edit_patch_allowed": True,
+    "exec_or_process_allowed": False,
+    "exec_allowed": False,
+    "process_allowed": False,
+    "host_path_direct_reads_allowed": False,
+    "main_supplied_context_required": True,
+    "container_network_allowed": False,
+    "shared_main_workspace_access": False,
+    "handoff_mounted_read_only": True,
+    "factory_role_files_writable": False,
+    "outbox_only": True,
+}
+
+# Owner-approved 2026-09-26 (WF89 item 5): these lanes write only to /outbox.
+OUTBOX_SANDBOX_AGENT_IDS = ("research-scout", "docs-continuity-editor")
+OUTBOX_SANDBOX_TOOL_CEILING = {"read", "write", "edit", "web_search", "web_fetch"}
+
 IMPLEMENTATION_BUILDER_ROLE_MOUNT_FILES = (
     "AGENTS.md",
     "BOOTSTRAP.md",
@@ -183,6 +203,11 @@ IMPLEMENTATION_BUILDER_ROLE_MOUNT_FILES = (
     "USER.md",
     "HEARTBEAT.md",
     "agent.capabilities.json",
+)
+IMPLEMENTATION_BUILDER_SKILL_MOUNTS = (
+    "disciplined-implementation-linux-steps",
+    "patch-draft-bounded-linux",
+    "linux-workspace-proof-runner",
 )
 IMPLEMENTATION_BUILDER_SCOPED_SENTINEL = ".veritas-scoped-worktree.json"
 IMPLEMENTATION_BUILDER_PYTHON_ENV = {
@@ -411,11 +436,13 @@ PROFILES: dict[str, dict[str, Any]] = {
         ),
         "tools_allowed": [
             "read its own workspace doctrine",
-            "read Veritas-main-supplied attachments or digests made available in its workspace or assignment",
+            "read Veritas-main-supplied task inputs staged read-only under /handoff",
             "public web research when the task requests it",
-            "return source tables, summaries, and research gaps to Veritas main",
+            "write source tables, summaries, and research gaps as files under /outbox for Veritas main",
         ],
-        "write_scope": [],
+        "write_scope": [
+            "new research artifact files under /outbox only",
+        ],
         "routing_triggers": [
             "public-source competitor, vendor, technology, business, or opportunity research",
             "source-table or evidence-gap work requiring broad external lookup",
@@ -527,13 +554,12 @@ PROFILES: dict[str, dict[str, Any]] = {
         ),
         "tools_allowed": [
             "read its own workspace doctrine",
-            "read exact implementation summaries, diffs, proof packets, and owner-artifact digests supplied by Veritas main",
-            "write only assigned documentation, memory, playbook, route catalog, prompt-book, and continuity drafts inside its workspace",
+            "read exact implementation summaries, diffs, proof packets, and owner-artifact digests staged read-only under /handoff",
+            "write only assigned documentation, memory, playbook, route catalog, prompt-book, and continuity drafts under /outbox",
             "name documentation validators for Veritas main and inspect Main-supplied results; do not execute processes",
         ],
         "write_scope": [
-            "own workspace drafts and memory",
-            "exact documentation and continuity draft paths staged inside its workspace by Veritas main",
+            "assigned documentation and continuity drafts under /outbox only; Main applies accepted drafts",
         ],
         "routing_triggers": [
             "post-acceptance documentation or continuity synchronization from verified proof",
@@ -1034,6 +1060,10 @@ def implementation_builder_scoped_worktree_binds(agent: dict[str, Any]) -> list[
             f"{handoff / IMPLEMENTATION_BUILDER_SCOPED_SENTINEL}:/worktree/{IMPLEMENTATION_BUILDER_SCOPED_SENTINEL}:ro",
         ]
     )
+    binds.extend(
+        f"{workspace / 'skills' / name}:/skills/{name}:ro"
+        for name in IMPLEMENTATION_BUILDER_SKILL_MOUNTS
+    )
     return binds
 
 
@@ -1102,6 +1132,64 @@ def implementation_builder_scoped_worktree_is_configured(
     )
 
 
+def outbox_sandbox_binds(agent: dict[str, Any]) -> list[str]:
+    """Return the exact bind set for an outbox-sandboxed lane."""
+
+    workspace = Path(str(agent.get("workspace") or "")).expanduser()
+    return [
+        f"{workspace / 'handoff'}:/handoff:ro",
+        f"{workspace / 'outbox'}:/outbox:rw",
+    ]
+
+
+def outbox_sandbox_is_configured(agent: dict[str, Any] | None) -> bool:
+    """Validate the complete owner-approved outbox containment shape."""
+
+    if not isinstance(agent, dict) or str(agent.get("id") or "") not in OUTBOX_SANDBOX_AGENT_IDS:
+        return False
+    sandbox = agent.get("sandbox") if isinstance(agent.get("sandbox"), dict) else {}
+    docker = sandbox.get("docker") if isinstance(sandbox.get("docker"), dict) else {}
+    tools = agent.get("tools") if isinstance(agent.get("tools"), dict) else {}
+    sandbox_tools = tools.get("sandbox") if isinstance(tools.get("sandbox"), dict) else {}
+    sandbox_policy = sandbox_tools.get("tools") if isinstance(sandbox_tools.get("tools"), dict) else {}
+    elevated = tools.get("elevated") if isinstance(tools.get("elevated"), dict) else {}
+    allowed = {str(value) for value in sandbox_policy.get("allow") or []}
+    denied = {str(value) for value in sandbox_policy.get("deny") or []}
+    outer_allowed = {str(value) for value in tools.get("allow") or []}
+    outer_denied = {str(value) for value in tools.get("deny") or []}
+    required_denied = {
+        "exec", "process", "apply_patch", "cron", "gateway", "message", "sessions_list",
+        "sessions_history", "session_status", "sessions_send", "sessions_spawn", "subagents",
+        "skill_workshop", "browser", "view_image", "media", "nodes",
+    }
+    return (
+        sandbox.get("mode") == "all"
+        and sandbox.get("scope") == "session"
+        and sandbox.get("backend") == "docker"
+        and sandbox.get("workspaceAccess") == "none"
+        and docker.get("image") == "openclaw-sandbox:bookworm-slim"
+        and docker.get("network") == "none"
+        and docker.get("readOnlyRoot") is True
+        and docker.get("user") == "65534:65534"
+        and set(docker.get("tmpfs") or []) == {"/tmp", "/var/tmp", "/run"}
+        and set(docker.get("capDrop") or []) == {"ALL"}
+        and docker.get("pidsLimit") == 64
+        and docker.get("memory") == "512m"
+        and docker.get("memorySwap") == "512m"
+        and docker.get("cpus") == 1
+        and _normalized_bind_list(docker.get("binds")) == _normalized_bind_list(outbox_sandbox_binds(agent))
+        and docker.get("dangerouslyAllowReservedContainerTargets") is not True
+        and docker.get("dangerouslyAllowExternalBindSources") is not True
+        and docker.get("dangerouslyAllowContainerNamespaceJoin") is not True
+        and "write" in allowed
+        and allowed == outer_allowed
+        and allowed <= OUTBOX_SANDBOX_TOOL_CEILING
+        and required_denied.issubset(denied)
+        and required_denied.issubset(outer_denied)
+        and elevated.get("enabled") is False
+    )
+
+
 def implementation_builder_sandbox_exec_pilot_is_configured(agent: dict[str, Any] | None) -> bool:
     """Return true only for the owner-approved, container-only decode pilot.
 
@@ -1164,6 +1252,8 @@ def runtime_tool_posture_for(profile: dict[str, Any], agent: dict[str, Any] | No
         return deepcopy(SCOPED_WORKTREE_TOOL_POSTURE)
     if implementation_builder_sandbox_exec_pilot_is_configured(agent):
         return deepcopy(SANDBOXED_EXEC_PILOT_TOOL_POSTURE)
+    if outbox_sandbox_is_configured(agent):
+        return deepcopy(SANDBOXED_OUTBOX_TOOL_POSTURE)
     posture = deepcopy(profile.get("runtime_tool_posture") or READ_ONLY_TOOL_POSTURE)
     posture.setdefault("exec_allowed", bool(posture.get("exec_or_process_allowed")))
     posture.setdefault("process_allowed", bool(posture.get("exec_or_process_allowed")))
@@ -1416,6 +1506,12 @@ def build_bootstrap_markdown(manifest: dict[str, Any], delta: list[dict[str, Any
             "- Factory role files, attachment transport, Git metadata, and frozen handoff controls are mounted read-only.",
             "- Synchronous tests may run inside the no-network sandbox; Main independently validates and applies accepted output.",
         ]
+    elif posture.get("outbox_only"):
+        pilot_lines = [
+            "- Writable filesystem scope is technically limited to `/outbox`; the host workspace and role files are not mounted writable.",
+            "- Main-staged task inputs are mounted read-only at `/handoff`; `/workspace` is a throwaway sandbox copy.",
+            "- No shell or container network; Main collects `/outbox` files and verifies them before any use.",
+        ]
     elif posture.get("pilot_only"):
         pilot_lines = [
             "- Sandboxed shell pilot only: no network, elevation, host-workspace access, shared-workspace writeback, or background process authority.",
@@ -1667,6 +1763,12 @@ def tools_shell_rule(posture: dict[str, Any]) -> str:
             "`/worktree`; `/role`, `/attachments`, Git metadata, and handoff controls are read-only. No network, "
             "host path, Main-workspace access, elevation, background process, or cross-session action is permitted."
         )
+    if posture.get("outbox_only"):
+        return (
+            "Write/edit only under `/outbox`; `/handoff` is read-only and `/workspace` is a throwaway copy Main never "
+            "collects. Use no shell, process, runtime, gateway, cron, messaging, spawn/send, Skill Workshop, or "
+            "external-binding action."
+        )
     if posture.get("pilot_only"):
         return (
             "Use `exec` only for synchronous, sandbox-local attachment decode/test work. No network, host path, "
@@ -1698,6 +1800,13 @@ def tools_guidance_lines(manifest: dict[str, Any]) -> list[str]:
                 "- Writable root: `/worktree` only.",
                 "- Read-only roots: `/role`, `/attachments`, `/worktree/.git`, and frozen handoff controls.",
                 "- When runtime context labels an attachment as `.openclaw/attachments/<id>/<filename>`, resolve that exact attachment inside this sandbox as `/attachments/<id>/<filename>`.",
+            ]
+        )
+    elif posture.get("outbox_only"):
+        lines.extend(
+            [
+                "- Writable root: `/outbox` only. Deliverables written anywhere else are lost.",
+                "- Read-only root: `/handoff` (Main-staged task inputs).",
             ]
         )
     lines.extend(["", "### Allowed Task Actions", ""])
@@ -1743,6 +1852,8 @@ def build_agents_markdown(manifest: dict[str, Any]) -> str:
         (
             "2. Read only Main-supplied context under `/attachments` and frozen task material under `/worktree`."
             if posture.get("scoped_worktree_only")
+            else "2. Read only Main-supplied task context under `/handoff`; write deliverables only to `/outbox`."
+            if posture.get("outbox_only")
             else "2. Read only Main-supplied task context or workspace-local material allowed by the assignment."
         ),
         *(

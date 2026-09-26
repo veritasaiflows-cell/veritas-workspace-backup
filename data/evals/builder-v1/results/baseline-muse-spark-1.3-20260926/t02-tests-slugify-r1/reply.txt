@@ -1,0 +1,5 @@
+Created `/worktree/test_slug.py` (unittest, stdlib only): normal cases (casing, digits, separator-run collapsing, strip), docstring boundaries/edges (empty/only-separators→"untitled", non-ASCII→"-", default/custom/zero `max_len`, truncate-then-rstrip-dash, exact-length cases), and error cases (None/int/list→AttributeError, bytes/str-max_len→TypeError). Did not modify `slug.py`.
+
+BLOCKED: could not run `cd /worktree && python3 -m unittest -v` — this role has no exec/shell tool access (AGENTS.md: Exec allowed False; approved executables none), so no test output exists and pass status is unverified by me. Main should run the proof command before acceptance.
+
+Closeout: deliverable `/worktree/test_slug.py`; proof commands run: none (blocked above); parent job `builder-v1-t02-tests-slugify-r1-20260926T063723Z`; provider_usage_unavailable; QA/Red-Team verdict required, not obtained; Main acceptance pending; stop lines preserved (no runtime/config/cron/telemetry/credential/messaging changes, no commits, no network, nothing outside /worktree); handoff to Veritas main for verification and final integration.

@@ -1,0 +1,35 @@
+diff --git a/lane_report.py b/lane_report.py
+index 91a9c67..85f2fa2 100644
+--- a/lane_report.py
++++ b/lane_report.py
+@@ -1,4 +1,5 @@
+ import argparse
++import json
+ import sys
+ 
+ 
+@@ -14,10 +15,23 @@ def render_text(summary):
+     return "\n".join(f"{agent}: {tokens}" for agent, tokens in sorted(summary.items()))
+ 
+ 
++def render_json(summary):
++    lanes = [
++        {"agent": agent, "tokens": tokens}
++        for agent, tokens in sorted(summary.items(), key=lambda kv: (-kv[1], kv[0]))
++    ]
++    total = sum(summary.values())
++    return json.dumps({"lanes": lanes, "total": total})
++
++
+ def main(argv=None, rows=None, out=sys.stdout):
+     ap = argparse.ArgumentParser()
+     ap.add_argument("--min-tokens", type=int, default=0)
++    ap.add_argument("--json", action="store_true")
+     args = ap.parse_args(argv)
+     summary = {a: t for a, t in summarize(rows or []).items() if t >= args.min_tokens}
+-    out.write(render_text(summary) + "\n")
++    if args.json:
++        out.write(render_json(summary) + "\n")
++    else:
++        out.write(render_text(summary) + "\n")
+     return 0

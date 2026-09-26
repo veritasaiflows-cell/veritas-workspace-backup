@@ -1,0 +1,29 @@
+diff --git a/local_day.py b/local_day.py
+index 4d4cb47..9093f87 100644
+--- a/local_day.py
++++ b/local_day.py
+@@ -1,6 +1,22 @@
+-from datetime import datetime
++import calendar
++from datetime import datetime, timedelta
++
++# America/Phoenix is UTC-7 year-round (no daylight saving).
++_PHOENIX_OFFSET = timedelta(hours=7)
++_DAY_MS = 86400000
+ 
+ 
+ def phoenix_day(epoch_ms):
+     """Calendar date (YYYY-MM-DD) in America/Phoenix for an epoch-ms timestamp."""
+-    return datetime.utcfromtimestamp(epoch_ms / 1000).strftime("%Y-%m-%d")
++    shifted = datetime(1970, 1, 1) + timedelta(milliseconds=epoch_ms) - _PHOENIX_OFFSET
++    return shifted.strftime("%Y-%m-%d")
++
++
++def day_bounds_ms(day):
++    """Return (start_ms, end_ms) epoch-ms for the start of the given Phoenix
++    calendar day ("YYYY-MM-DD") and the start of the next Phoenix day
++    (end exclusive). Midnight Phoenix is 07:00 UTC the same date."""
++    dt = datetime.strptime(day, "%Y-%m-%d")
++    start_utc = dt + _PHOENIX_OFFSET
++    start_ms = calendar.timegm(start_utc.timetuple()) * 1000
++    return (start_ms, start_ms + _DAY_MS)

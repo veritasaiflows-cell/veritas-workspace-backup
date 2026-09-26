@@ -1,0 +1,12 @@
+Changed `dispatch_hash.py`: `task_hash()` now normalizes `\r\n` → `\n`, then lone `\r` → `\n`, then strips leading/trailing whitespace before hashing. Interior whitespace unchanged.
+
+Tests run: `cd /worktree && python3 -m unittest -v`
+Exact output:
+```
+test_identical_text_matches (test_dispatch_hash.Visible.test_identical_text_matches) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```

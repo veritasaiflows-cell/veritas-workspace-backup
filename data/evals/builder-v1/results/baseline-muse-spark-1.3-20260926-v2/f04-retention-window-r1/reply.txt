@@ -1,0 +1,15 @@
+Changed `/worktree/retention.py`:
+- `is_expired()`: treats `ended_at` as epoch milliseconds (removed `* 1000` seconds conversion), inclusive expiry (`now_ms - ended_at >= days * DAY_MS`), and `None` → `False` (still running, never expires).
+- Added `HOUR_MS = 3_600_000` and `expiring_within(rows, now_ms, hours, days=7)`: skips `ended_at is None`, includes rows with `expiry > now_ms and expiry <= now_ms + hours * HOUR_MS`, returns ids ordered by expiry earliest first.
+- Did not modify `test_retention.py`.
+
+Exact test output from `cd /worktree && python3 -m unittest -v`:
+```
+test_fresh_row (test_retention.Visible.test_fresh_row) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+Handoff: deliverable `/worktree/retention.py`; proof `python3 -m unittest -v` passed (1 test OK); no BLOCKED items; Main acceptance still required.

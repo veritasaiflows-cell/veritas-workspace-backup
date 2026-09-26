@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "3a350577-41bb-49b6-98f4-c2a32cfbdc1b",
+  "agent_id": "qa-redteam",
+  "session_key": "agent:qa-redteam:wf89-launcher-canary-20260925",
+  "label": "wf89 launcher canary",
+  "task_text_sha256": "7148da207215eddb1ec1d297ac41907d2a11ec268cb45e84918b539365bb3e4a",
+  "message_file": "tmp\\wf89-launcher-canary\\task.md",
+  "created_at_ms": 1790399597185,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

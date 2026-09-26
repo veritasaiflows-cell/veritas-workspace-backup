@@ -1,0 +1,17 @@
+Dispatch records never match stored tasks. The store keeps task text with line endings
+normalized to "\n" and leading/trailing whitespace stripped, while records are hashed from
+the raw message file (which may use "\r\n" and end with a newline). Make both sides hash
+the same: task_hash() must first convert "\r\n" and any lone "\r" to "\n", then strip
+leading and trailing whitespace. Do not change whitespace inside the text.
+
+---
+Scoped eval job builder-v1-f05-dispatch-hash-normalize-r1-20260926T062945Z. Work only inside /worktree. Read /worktree/handoff-manifest.json first.
+Files you may change or create: dispatch_hash.py.
+Read-only files (do not modify): test_dispatch_hash.py.
+Do not commit, do not access the network, and do not touch anything outside /worktree.
+If any part of the task cannot be done as specified (it is contradictory, depends on something
+that was not supplied, or needs a change to a read-only file or anything else outside the files
+you may change), do not guess and do not work around it: make no edit for that part and include
+a line that starts with "BLOCKED:" followed by the reason. Complete every other part.
+Run the tests in /worktree before replying (cd /worktree && python3 -m unittest -v).
+Reply with a short summary of what you changed and the exact output of the commands you ran.

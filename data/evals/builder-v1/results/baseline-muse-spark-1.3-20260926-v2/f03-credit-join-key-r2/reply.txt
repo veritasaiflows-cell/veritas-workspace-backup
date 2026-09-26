@@ -1,0 +1,8 @@
+Summary of changes (in `/worktree`, file `credit_join.py` only; `test_credit_join.py` untouched):
+
+- Added `_join_key(sub)`: uses `taskRunId` from `payload_json` when it is a JSON string decoding to an object containing a usable `taskRunId`; otherwise falls back to the row's `run_id`. Fallback covers: key missing, `None`, non-string, empty/whitespace-only string, invalid JSON, decoded non-object, missing `taskRunId`, `None`/empty-string `taskRunId`, or unhashable value.
+- Rewrote `join_runs(tasks, subs)` to group registry rows by true join key and return per task: the single matching row, `None` when unmatched, or the string `"AMBIGUOUS"` when 2+ rows match. No longer silently keeps one of duplicates, and re-announced rows (e.g. `announce:requester-settle:...`) join via `taskRunId`.
+
+No BLOCKED lines — every requirement was implementable within `credit_join.py`.
+
+Tests: I could not run `cd /worktree && python3 -m unittest -v` — shell/exec is not available to this role (access class `scoped_workspace_write`, Exec allowed `False`, no approved executables), so there is no observed test output to report. Handoff to Veritas main for verification: please run the suite and forward the QA/Red-Team verdict; parent job `builder-v1-f03-credit-join-key-r2-20260926T070146Z`.

@@ -84,6 +84,9 @@ def scoped_worktree_agent() -> dict[str, object]:
         f"{worktree / '.git'}:/worktree/.git:ro",
         f"{worktree / 'handoff-manifest.json'}:/worktree/handoff-manifest.json:ro",
         f"{handoff / generator.IMPLEMENTATION_BUILDER_SCOPED_SENTINEL}:/worktree/{generator.IMPLEMENTATION_BUILDER_SCOPED_SENTINEL}:ro",
+    ] + [
+        f"{workspace / 'skills' / name}:/skills/{name}:ro"
+        for name in generator.IMPLEMENTATION_BUILDER_SKILL_MOUNTS
     ]
     agent["sandbox"]["docker"]["env"] = dict(
         generator.IMPLEMENTATION_BUILDER_PYTHON_ENV
@@ -96,6 +99,46 @@ def scoped_worktree_agent() -> dict[str, object]:
         for value in agent["tools"]["sandbox"]["tools"]["deny"]
         if value not in {"write", "edit", "apply_patch"}
     ]
+    return agent
+
+
+def outbox_sandbox_agent(agent_id: str, allow: list[str]) -> dict[str, object]:
+    agent = agent_stub(agent_id)
+    workspace = Path(str(agent["workspace"]))
+    agent["sandbox"] = {
+        "mode": "all",
+        "scope": "session",
+        "backend": "docker",
+        "workspaceAccess": "none",
+        "docker": {
+            "image": "openclaw-sandbox:bookworm-slim",
+            "network": "none",
+            "readOnlyRoot": True,
+            "user": "65534:65534",
+            "tmpfs": ["/tmp", "/var/tmp", "/run"],
+            "capDrop": ["ALL"],
+            "pidsLimit": 64,
+            "memory": "512m",
+            "memorySwap": "512m",
+            "cpus": 1,
+            "binds": [
+                f"{workspace / 'handoff'}:/handoff:ro",
+                f"{workspace / 'outbox'}:/outbox:rw",
+            ],
+        },
+    }
+    deny = [
+        "exec", "process", "apply_patch", "cron", "gateway", "message", "sessions_list",
+        "sessions_history", "session_status", "sessions_send", "sessions_spawn", "subagents",
+        "skill_workshop", "browser", "view_image", "media", "nodes",
+    ]
+    agent["tools"] = {
+        "allow": list(allow),
+        "deny": list(deny),
+        "elevated": {"enabled": False},
+        "fs": {"workspaceOnly": False},
+        "sandbox": {"tools": {"allow": list(allow), "deny": list(deny)}},
+    }
     return agent
 
 
@@ -495,6 +538,106 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
             generator.runtime_tool_posture_for(
                 generator.PROFILES["implementation-builder"], unsafe
             ),
+            generator.WORKSPACE_ONLY_TOOL_POSTURE,
+        )
+
+    def test_outbox_sandbox_posture_requires_exact_containment(self) -> None:
+        cases = {
+            "research-scout": ["read", "write", "web_search", "web_fetch"],
+            "docs-continuity-editor": ["read", "write", "edit"],
+        }
+        for agent_id, allow in cases.items():
+            agent = outbox_sandbox_agent(agent_id, allow)
+            profile = generator.PROFILES[agent_id]
+            self.assertEqual(
+                generator.runtime_tool_posture_for(profile, agent),
+                generator.SANDBOXED_OUTBOX_TOOL_POSTURE,
+            )
+            manifest = generator.build_manifest(
+                agent, "2026-09-26T00:00:00Z", generator.DEFAULT_OWNER_ROUTE, "outbox", {"present": False}
+            )
+            core = generator.build_core_markdown_documents(manifest, [])
+            self.assertIn("Writable root: `/outbox` only", core["AGENTS.md"])
+            self.assertIn("/handoff", core["AGENTS.md"])
+            self.assertIn("- Exec allowed: `False`", core["AGENTS.md"])
+            self.assertNotIn("C:\\Users\\", "\n".join(core.values()))
+
+            mutations = []
+            rw_handoff = json.loads(json.dumps(agent))
+            rw_handoff["sandbox"]["docker"]["binds"][0] = (
+                rw_handoff["sandbox"]["docker"]["binds"][0].removesuffix(":ro") + ":rw"
+            )
+            mutations.append(rw_handoff)
+            role_bind = json.loads(json.dumps(agent))
+            role_bind["sandbox"]["docker"]["binds"].append(
+                f"{Path(str(agent['workspace'])) / 'AGENTS.md'}:/role/AGENTS.md:rw"
+            )
+            mutations.append(role_bind)
+            with_exec = json.loads(json.dumps(agent))
+            for policy in (with_exec["tools"], with_exec["tools"]["sandbox"]["tools"]):
+                policy["allow"].append("exec")
+                policy["deny"].remove("exec")
+            mutations.append(with_exec)
+            rw_workspace = json.loads(json.dumps(agent))
+            rw_workspace["sandbox"]["workspaceAccess"] = "rw"
+            mutations.append(rw_workspace)
+            networked = json.loads(json.dumps(agent))
+            networked["sandbox"]["docker"]["network"] = "bridge"
+            mutations.append(networked)
+            override = json.loads(json.dumps(agent))
+            override["sandbox"]["docker"]["dangerouslyAllowExternalBindSources"] = True
+            mutations.append(override)
+            for unsafe in mutations:
+                self.assertNotEqual(
+                    generator.runtime_tool_posture_for(profile, unsafe),
+                    generator.SANDBOXED_OUTBOX_TOOL_POSTURE,
+                )
+
+        other = outbox_sandbox_agent("qa-redteam", ["read", "write"])
+        self.assertFalse(generator.outbox_sandbox_is_configured(other))
+
+    def test_implementation_builder_skill_mounts_must_stay_read_only_and_exact(self) -> None:
+        agent = scoped_worktree_agent()
+        profile = generator.PROFILES["implementation-builder"]
+        self.assertEqual(
+            generator.runtime_tool_posture_for(profile, agent),
+            generator.SCOPED_WORKTREE_TOOL_POSTURE,
+        )
+        skill_binds = [
+            bind for bind in agent["sandbox"]["docker"]["binds"] if ":/skills/" in bind
+        ]
+        self.assertEqual(len(skill_binds), len(generator.IMPLEMENTATION_BUILDER_SKILL_MOUNTS))
+
+        writable = json.loads(json.dumps(agent))
+        binds = writable["sandbox"]["docker"]["binds"]
+        index = binds.index(skill_binds[0])
+        binds[index] = binds[index].removesuffix(":ro") + ":rw"
+        self.assertEqual(
+            generator.runtime_tool_posture_for(profile, writable),
+            generator.WORKSPACE_ONLY_TOOL_POSTURE,
+        )
+
+        missing = json.loads(json.dumps(agent))
+        missing["sandbox"]["docker"]["binds"].remove(skill_binds[-1])
+        self.assertEqual(
+            generator.runtime_tool_posture_for(profile, missing),
+            generator.WORKSPACE_ONLY_TOOL_POSTURE,
+        )
+
+        extra = json.loads(json.dumps(agent))
+        workspace = Path(str(agent["workspace"]))
+        extra["sandbox"]["docker"]["binds"].append(
+            f"{workspace / 'skills' / 'unleased-skill'}:/skills/unleased-skill:ro"
+        )
+        self.assertEqual(
+            generator.runtime_tool_posture_for(profile, extra),
+            generator.WORKSPACE_ONLY_TOOL_POSTURE,
+        )
+
+        override = json.loads(json.dumps(agent))
+        override["sandbox"]["docker"]["dangerouslyAllowExternalBindSources"] = True
+        self.assertEqual(
+            generator.runtime_tool_posture_for(profile, override),
             generator.WORKSPACE_ONLY_TOOL_POSTURE,
         )
 

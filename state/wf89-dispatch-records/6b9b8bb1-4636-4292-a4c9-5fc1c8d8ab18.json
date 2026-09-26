@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "6b9b8bb1-4636-4292-a4c9-5fc1c8d8ab18",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:builder-v1-s02-code-fix-plus-schedule-edit-r3-20260926t071102z",
+  "label": "bench:builder-v1 s02-code-fix-plus-schedule-edit r3",
+  "task_text_sha256": "6aa0673bf254f5864eba1b5501b2a6930d1bb2a9303caf0fb78cdd4d10209821",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\builder-v1\\results\\baseline-muse-spark-1.3-20260926-v2\\s02-code-fix-plus-schedule-edit-r3\\task.md",
+  "created_at_ms": 1790406707102,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "builder_eval_v1"
+}

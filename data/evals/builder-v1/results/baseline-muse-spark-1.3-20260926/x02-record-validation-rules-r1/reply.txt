@@ -1,0 +1,32 @@
+Changed `/worktree/record_check.py` (`validate()`): whitespace-only `label` now reports `missing:label`; when both `agent_id` and `session_key` are truthy, a `session_key` not of form `agent:<agent_id>:<non-empty rest>` adds `session_key_not_scoped`; when `created_at_ms` key is present, a value that is not an `int` (bools excluded) and > 0 adds `bad_created_at`. Error order: missing errors in REQUIRED order, then `session_key_not_scoped`, then `bad_created_at`. No read-only files touched, nothing committed.
+
+Proof commands run:
+1. `cd /worktree && python3 -m unittest -v`
+```
+test_good (test_record_check.Visible.test_good) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+2. Edge-case check via `python3 -c` (all OK): good→[], ws/empty label→[missing:label], unscoped/empty-rest/wrong-agent session_key→[session_key_not_scoped], missing session_key→[missing:session_key] with no scoped error, str/0/negative/True/float created_at_ms→[bad_created_at], int 123→[], ordering cases confirmed (missing in REQUIRED order, then session_key_not_scoped, then bad_created_at).
+```
+OK: good
+OK: ws label
+OK: empty label
+OK: unscoped sk
+OK: empty rest
+OK: wrong agent
+OK: missing sk no scoped err
+OK: bad created str
+OK: bad created zero
+OK: bad created neg
+OK: bad created bool
+OK: bad created float
+OK: good created
+OK: order
+OK: order2
+```
+
+Handoff: no QA verdict or Main acceptance yet; returning to Veritas main for verification and final integration. No BLOCKED items; no owner-gated decisions pending.

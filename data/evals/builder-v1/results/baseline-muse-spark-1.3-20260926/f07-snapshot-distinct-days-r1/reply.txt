@@ -1,0 +1,5 @@
+Changed `snapshot_stats.py` `coverage()` to count `days` as distinct valid `data_date` values (unreadable/invalid/non-object/missing or malformed `data_date` files count in `snapshots` only) and to return sorted weekday-only `gaps` strictly between earliest and latest dates (empty when <2 distinct dates).
+
+Commands run:
+- `cd /worktree && python3 -m unittest -v` → `test_one_file (test_snapshot_stats.Visible.test_one_file) ... ok / Ran 1 test in 0.001s / OK`
+- `cd /worktree && python3 -c "import json,os,tempfile; from snapshot_stats import coverage; ..."` → `{'snapshots': 4, 'days': 2, 'gaps': ['2026-09-22']}`

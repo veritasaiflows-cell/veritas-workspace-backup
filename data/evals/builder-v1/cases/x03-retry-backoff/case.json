@@ -1,0 +1,26 @@
+{
+  "id": "x03-retry-backoff",
+  "category": "feature",
+  "brief": "Implement retries in fetch_retry.fetch_with_retry(fetch, attempts=3, sleep=None):\n- call fetch() up to `attempts` times in total and return the first successful result;\n- retry only when fetch raises OSError (subclasses such as ConnectionError and\n  TimeoutError included); any other exception propagates immediately, with no retry;\n- before each retry call sleep(delay): delays 1, 2, 4, ... seconds (doubling), capped at 8;\n- do not sleep after the final failed attempt; after the last attempt re-raise that OSError;\n- sleep defaults to time.sleep; attempts < 1 raises ValueError without calling fetch.",
+  "src_files": [
+    "fetch_retry.py",
+    "test_fetch_retry.py"
+  ],
+  "writable": [
+    "fetch_retry.py"
+  ],
+  "readonly": [
+    "test_fetch_retry.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [
+    "test_hidden_fetch_retry.py"
+  ],
+  "mutants": []
+}

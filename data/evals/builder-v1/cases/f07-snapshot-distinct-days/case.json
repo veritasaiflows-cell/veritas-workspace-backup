@@ -1,0 +1,26 @@
+{
+  "id": "f07-snapshot-distinct-days",
+  "category": "fix",
+  "brief": "snapshot_stats.coverage() over-reports history: \"days\" equals the file count, but several\nsnapshot files can share a date. Each snapshot is a JSON object with a top-level\n\"data_date\" string (YYYY-MM-DD). Fix coverage() so:\n- \"snapshots\" = number of *.json files in the directory (unchanged);\n- \"days\" = number of distinct data_date values; files that are unreadable, not a JSON\n  object, or lack a data_date string are still counted in \"snapshots\" but not in \"days\";\n- new key \"gaps\" = sorted list of weekday dates (YYYY-MM-DD, Monday to Friday) strictly\n  between the earliest and latest data_date that have no snapshot. Empty list when there\n  are fewer than two distinct dates.",
+  "src_files": [
+    "snapshot_stats.py",
+    "test_snapshot_stats.py"
+  ],
+  "writable": [
+    "snapshot_stats.py"
+  ],
+  "readonly": [
+    "test_snapshot_stats.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [
+    "test_hidden_snapshot_stats.py"
+  ],
+  "mutants": []
+}

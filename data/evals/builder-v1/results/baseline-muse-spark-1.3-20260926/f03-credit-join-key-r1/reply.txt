@@ -1,0 +1,11 @@
+Short summary: rewrote `join_runs` in `credit_join.py` so each registry row's join key is `taskRunId` parsed from its `payload_json` string, falling back to the row's `run_id` when the payload is missing, empty/whitespace, not a string, invalid JSON, not a JSON object, or lacks a non-empty string `taskRunId`. Tasks are looked up by their `run_id` against these keys: no match → `None`, exactly one → that row, two or more → `"AMBIGUOUS"`.
+
+Exact test output from `cd /worktree && python3 -m unittest -v`:
+```
+test_plain_match (test_credit_join.Visible.test_plain_match) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```

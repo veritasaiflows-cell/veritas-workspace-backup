@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "5039d40c-13c0-4f20-9425-e72bbe7b5152",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:builder-v1-t03-tests-parse-duration-r1-20260926t065538z",
+  "label": "bench:builder-v1 t03-tests-parse-duration r1",
+  "task_text_sha256": "c022a204585305d55b87fbe5d94d3511bd65e4d221cf01c5eb9d3e9390fc32cf",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\builder-v1\\results\\baseline-muse-spark-1.3-20260926-v2\\t03-tests-parse-duration-r1\\task.md",
+  "created_at_ms": 1790405847347,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "builder_eval_v1"
+}

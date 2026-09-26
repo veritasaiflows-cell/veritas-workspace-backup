@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "7a5b5a15-c929-4aed-9162-48c67b71f9ae",
+  "agent_id": "research-scout",
+  "session_key": "agent:research-scout:wf89-item5-canary-20260926",
+  "label": "wf89 item5 scout sandbox canary",
+  "task_text_sha256": "98b4ef9503ad57dceef3f0842687f650a803b933baa184f71528f809e85e1284",
+  "message_file": "tmp\\wf89-item5-20260926\\scout-canary-brief.md",
+  "created_at_ms": 1790432609080,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

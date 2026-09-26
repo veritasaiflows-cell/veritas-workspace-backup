@@ -1,0 +1,31 @@
+Created `/worktree/test_duration.py` (unittest, stdlib only) covering `parse_duration()` docstring contract: normal cases (single units, docstring examples `1h30m`/`45s`/`2h5s`, all 2-unit and 3-unit combos, multi-digit, int return), boundaries (zeros, all-zero combos, zero+nonzero, leading zeros, large values, at-most-once boundary), and error cases (empty, whitespace anywhere, malformed, out-of-order, duplicates, bare numbers, ValueError type). Did not modify `duration.py`. Fixed one wrong expected value in my own test (`999h59m59s` → 3599999).
+
+Exact output of `cd /worktree && python3 -m unittest -v` (final run):
+```
+test_all_zero_combined (test_duration.TestParseDurationBoundaries.test_all_zero_combined) ... ok
+test_each_unit_at_most_once_boundary (test_duration.TestParseDurationBoundaries.test_each_unit_at_most_once_boundary) ... ok
+test_large_values (test_duration.TestParseDurationBoundaries.test_large_values) ... ok
+test_leading_zeros (test_duration.TestParseDurationBoundaries.test_leading_zeros) ... ok
+test_zero_mixed_with_nonzero (test_duration.TestParseDurationBoundaries.test_zero_mixed_with_nonzero) ... ok
+test_zero_values (test_duration.TestParseDurationBoundaries.test_zero_values) ... ok
+test_bare_number_with_unit_missing_raises (test_duration.TestParseDurationErrors.test_bare_number_with_unit_missing_raises) ... ok
+test_duplicate_unit_raises (test_duration.TestParseDurationErrors.test_duplicate_unit_raises) ... ok
+test_empty_raises (test_duration.TestParseDurationErrors.test_empty_raises) ... ok
+test_error_type_is_valueerror (test_duration.TestParseDurationErrors.test_error_type_is_valueerror) ... ok
+test_malformed_raises (test_duration.TestParseDurationErrors.test_malformed_raises) ... ok
+test_out_of_order_raises (test_duration.TestParseDurationErrors.test_out_of_order_raises) ... ok
+test_whitespace_anywhere_raises (test_duration.TestParseDurationErrors.test_whitespace_anywhere_raises) ... ok
+test_all_three_units (test_duration.TestParseDurationNormal.test_all_three_units) ... ok
+test_all_two_unit_combinations (test_duration.TestParseDurationNormal.test_all_two_unit_combinations) ... ok
+test_docstring_examples (test_duration.TestParseDurationNormal.test_docstring_examples) ... ok
+test_multi_digit_values (test_duration.TestParseDurationNormal.test_multi_digit_values) ... ok
+test_returns_int (test_duration.TestParseDurationNormal.test_returns_int) ... ok
+test_single_units (test_duration.TestParseDurationNormal.test_single_units) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.002s
+
+OK
+```
+
+Closeout: deliverable `/worktree/test_duration.py`; proof `cd /worktree && python3 -m unittest -v` → 19 tests OK; parent job `builder-v1-t03-tests-parse-duration-r1-20260926T065538Z`; provider_usage_unavailable; QA/Red-Team verdict pending; Main acceptance pending; no BLOCKED items; handoff to Veritas main for verification.

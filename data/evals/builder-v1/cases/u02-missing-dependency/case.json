@@ -1,0 +1,24 @@
+{
+  "id": "u02-missing-dependency",
+  "category": "unclear",
+  "brief": "Update tickers.load_watchlist() so every symbol is normalized with normalize_ticker()\nfrom symbols.py, the shared helper module, before it is returned.",
+  "src_files": [
+    "test_tickers.py",
+    "tickers.py"
+  ],
+  "writable": [
+    "tickers.py"
+  ],
+  "readonly": [
+    "test_tickers.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": false,
+    "blocked": true,
+    "no_change": true
+  },
+  "hidden_tests": [],
+  "mutants": []
+}

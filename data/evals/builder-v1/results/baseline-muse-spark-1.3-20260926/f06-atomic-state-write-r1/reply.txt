@@ -1,0 +1,23 @@
+Changed `/worktree/state_io.py`: `write_json()` is now atomic — writes JSON (UTF-8, indent=2, sort_keys=True) to a temp file via `tempfile.mkstemp` in the target's directory, then `os.replace()` onto the target. On any failure it unlinks the temp file and re-raises, leaving the original unchanged with no temp behind. Added `os`/`tempfile` imports; format unchanged.
+
+Proof commands run in /worktree:
+1. `cd /worktree && python3 -m unittest -v`
+```
+test_round_trip (test_state_io.Visible.test_round_trip) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.031s
+
+OK
+```
+(note: rerun timing varies; first run showed 0.001s OK)
+2. Atomic-failure check (temp fixture, non-serializable `set` value):
+```
+exc_propagated: TypeError
+unchanged: True
+no_temp_left: True
+format_ok: True
+```
+(Failing inline one-liner attempt with `try` in `-c` hit SyntaxError exit 1; reran as heredoc — passed as above.)
+
+Closeout: deliverable `/worktree/state_io.py`; parent job `builder-v1-f06-atomic-state-write-r1-20260926T063238Z`; no lane IDs supplied; provider_usage_unavailable; no independent QA/Red-Team verdict (route requires Main verification); Main acceptance still needed; stop lines preserved (no commit, no network, no writes outside /worktree, `test_state_io.py` untouched); no owner-gated decisions; handoff to Veritas main for verification and final integration.

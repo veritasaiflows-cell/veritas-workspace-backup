@@ -1,0 +1,15 @@
+Changed `/worktree/retention.py`:
+- `is_expired()`: treats `ended_at` as epoch ms (removed the `*1000` seconds conversion), uses inclusive expiry (`now_ms - ended_at >= days * DAY_MS`), and returns `False` when `ended_at is None`.
+- Added `expiring_within(rows, now_ms, hours, days=7)`: skips `ended_at is None` rows, skips already-expired rows (via `is_expired`), includes rows with `ended_at + days*DAY_MS <= now_ms + hours*HOUR_MS`, returns ids ordered by expiry earliest-first.
+
+Proof command ran (`cd /worktree && python3 -m unittest -v`), exact output:
+```
+test_fresh_row (test_retention.Visible.test_fresh_row) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+Closeout: deliverable `/worktree/retention.py`; parent job `builder-v1-f04-retention-window-r1-20260926T062945Z` (no workflow/lane ids supplied); read-only `test_retention.py` untouched; no commit, no network, nothing outside `/worktree`; provider_usage_unavailable; QA/Red-Team verdict pending; Main acceptance pending — handed off to Veritas main for verification and final integration.

@@ -1,0 +1,12 @@
+Changed `trigger_eval.py` `parse_exec_result()` to also read `res.get("aggregated")` (fallback after stdout/output/text), take the last non-empty line as the JSON document, and return None for unreadable/non-object output as before.
+
+Exact test output:
+```
+test_actionable_fires (test_trigger_eval.Visible.test_actionable_fires) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.0s
+
+OK
+```
+Command run: `cd /worktree && python3 -m unittest -v`

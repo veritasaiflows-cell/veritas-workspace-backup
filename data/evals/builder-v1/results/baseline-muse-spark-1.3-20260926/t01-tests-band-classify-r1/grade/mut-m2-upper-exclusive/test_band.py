@@ -1,0 +1,109 @@
+"""Tests for band.classify against its docstring (unittest, stdlib only)."""
+import unittest
+
+from band import classify
+
+
+class TestClassifyNormal(unittest.TestCase):
+    def test_below(self):
+        self.assertEqual(classify(5, 10, 20), "below")
+
+    def test_above(self):
+        self.assertEqual(classify(25, 10, 20), "above")
+
+    def test_inside_middle(self):
+        self.assertEqual(classify(15, 10, 20), "inside")
+
+    def test_inside_float_middle(self):
+        self.assertEqual(classify(15.5, 10.0, 20.0), "inside")
+
+    def test_negative_range_inside(self):
+        self.assertEqual(classify(-5, -10, 0), "inside")
+
+    def test_negative_range_below(self):
+        self.assertEqual(classify(-15, -10, 0), "below")
+
+    def test_negative_range_above(self):
+        self.assertEqual(classify(5, -10, 0), "above")
+
+    def test_zero_bounds_inside(self):
+        self.assertEqual(classify(0, 0, 0), "inside")
+
+
+class TestClassifyBoundaries(unittest.TestCase):
+    def test_price_equal_low_is_inside(self):
+        self.assertEqual(classify(10, 10, 20), "inside")
+
+    def test_price_equal_high_is_inside(self):
+        self.assertEqual(classify(20, 10, 20), "inside")
+
+    def test_price_just_below_low(self):
+        self.assertEqual(classify(9.999, 10, 20), "below")
+
+    def test_price_just_above_high(self):
+        self.assertEqual(classify(20.001, 10, 20), "above")
+
+    def test_price_just_inside_low(self):
+        self.assertEqual(classify(10.001, 10, 20), "inside")
+
+    def test_price_just_inside_high(self):
+        self.assertEqual(classify(19.999, 10, 20), "inside")
+
+    def test_degenerate_range_equal(self):
+        # low == high: the single point is inside.
+        self.assertEqual(classify(10, 10, 10), "inside")
+
+    def test_degenerate_range_below(self):
+        self.assertEqual(classify(9, 10, 10), "below")
+
+    def test_degenerate_range_above(self):
+        self.assertEqual(classify(11, 10, 10), "above")
+
+    def test_negative_equal_bounds(self):
+        self.assertEqual(classify(-3, -3, -3), "inside")
+        self.assertEqual(classify(-4, -3, -3), "below")
+        self.assertEqual(classify(-2, -3, -3), "above")
+
+
+class TestClassifyErrors(unittest.TestCase):
+    def test_low_above_high(self):
+        with self.assertRaises(ValueError):
+            classify(15, 20, 10)
+
+    def test_low_above_high_price_below_both(self):
+        with self.assertRaises(ValueError):
+            classify(5, 20, 10)
+
+    def test_low_above_high_price_above_both(self):
+        with self.assertRaises(ValueError):
+            classify(25, 20, 10)
+
+    def test_low_above_high_float(self):
+        with self.assertRaises(ValueError):
+            classify(10.5, 10.6, 10.5)
+
+    def test_price_none(self):
+        with self.assertRaises(ValueError):
+            classify(None, 10, 20)
+
+    def test_low_none(self):
+        with self.assertRaises(ValueError):
+            classify(15, None, 20)
+
+    def test_high_none(self):
+        with self.assertRaises(ValueError):
+            classify(15, 10, None)
+
+    def test_all_none(self):
+        with self.assertRaises(ValueError):
+            classify(None, None, None)
+
+    def test_price_none_with_inverted_bounds(self):
+        # None check and inverted-bounds check both raise ValueError;
+        # either way the docstring requires ValueError.
+        with self.assertRaises(ValueError):
+            classify(None, 20, 10)
+
+
+if __name__ == "__main__":
+    unittest.main()

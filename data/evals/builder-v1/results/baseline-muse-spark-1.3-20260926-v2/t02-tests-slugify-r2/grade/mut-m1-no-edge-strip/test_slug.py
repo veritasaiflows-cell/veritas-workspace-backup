@@ -1,0 +1,195 @@
+"""Tests for slug.slugify against its docstring (unittest, stdlib only)."""
+import unittest
+
+from slug import slugify
+
+
+class TestNormalCases(unittest.TestCase):
+    def test_simple_words(self):
+        self.assertEqual(slugify("Hello World"), "hello-world")
+
+    def test_already_lowercase(self):
+        self.assertEqual(slugify("hello world"), "hello-world")
+
+    def test_uppercase(self):
+        self.assertEqual(slugify("UPPERCASE"), "uppercase")
+
+    def test_mixed_case(self):
+        self.assertEqual(slugify("HeLLo WoRLD"), "hello-world")
+
+    def test_numbers_preserved(self):
+        self.assertEqual(slugify("Version 2.0"), "version-2-0")
+
+    def test_alphanumeric_untouched(self):
+        self.assertEqual(slugify("abc123"), "abc123")
+
+    def test_single_word(self):
+        self.assertEqual(slugify("Hello"), "hello")
+
+    def test_single_char(self):
+        self.assertEqual(slugify("A"), "a")
+
+    def test_already_slug(self):
+        self.assertEqual(slugify("already-slug"), "already-slug")
+
+    def test_underscores_become_dash(self):
+        self.assertEqual(slugify("foo_bar_baz"), "foo-bar-baz")
+
+    def test_slashes_and_punctuation(self):
+        self.assertEqual(slugify("a/b\\c:d;e"), "a-b-c-d-e")
+
+    def test_dot_separator(self):
+        self.assertEqual(slugify("Python 3.10 Release"), "python-3-10-release")
+
+
+class TestRunCollapsing(unittest.TestCase):
+    def test_each_run_becomes_single_dash(self):
+        self.assertEqual(slugify("a---b___c   d"), "a-b-c-d")
+
+    def test_multiple_spaces_collapse(self):
+        self.assertEqual(slugify("a  b"), "a-b")
+
+    def test_mixed_separators_collapse(self):
+        self.assertEqual(slugify("Hello,   World!!!"), "hello-world")
+
+    def test_comma_space_is_one_dash(self):
+        self.assertEqual(slugify("Hello, World!"), "hello-world")
+
+    def test_tab_newline_collapse(self):
+        self.assertEqual(slugify("a\tb\nc"), "a-b-c")
+
+
+class TestLeadingTrailingStripping(unittest.TestCase):
+    def test_leading_trailing_spaces(self):
+        self.assertEqual(slugify("  hello  "), "hello")
+
+    def test_leading_trailing_dashes(self):
+        self.assertEqual(slugify("---hello---"), "hello")
+
+    def test_dashes_around_words(self):
+        self.assertEqual(slugify("---hello---world---"), "hello-world")
+
+    def test_punctuation_edges_stripped(self):
+        self.assertEqual(slugify("!!!hello!!!"), "hello")
+
+    def test_only_separators_is_untitled(self):
+        self.assertEqual(slugify("---"), "untitled")
+        self.assertEqual(slugify("!!!"), "untitled")
+        self.assertEqual(slugify("   "), "untitled")
+        self.assertEqual(slugify(" - - - "), "untitled")
+
+
+class TestEmptyAndUntitled(unittest.TestCase):
+    def test_empty_string(self):
+        self.assertEqual(slugify(""), "untitled")
+
+    def test_nothing_left_after_strip(self):
+        self.assertEqual(slugify("---"), "untitled")
+
+    def test_unicode_only_gives_untitled(self):
+        # "\u00e9" alone is a non a-z0-9 run -> "-" -> stripped -> "" -> untitled
+        self.assertEqual(slugify("\u00e9"), "untitled")
+
+    def test_untitled_is_literal(self):
+        self.assertEqual(slugify(""), "untitled")
+        self.assertNotEqual(slugify(""), "")
+        self.assertTrue(slugify(""))
+
+
+class TestNonAscii(unittest.TestCase):
+    def test_accented_char_becomes_dash_then_stripped(self):
+        # "caf\u00e9" -> "caf-" -> strip -> "caf"
+        self.assertEqual(slugify("Caf\u00e9"), "caf")
+
+    def test_accent_mid_word(self):
+        # "na\u00efve" -> "na-ve"
+        self.assertEqual(slugify("na\u00efve"), "na-ve")
+
+    def test_emoji_is_separator(self):
+        self.assertEqual(slugify("hello \U0001f30d world"), "hello-world")
+
+
+class TestTruncation(unittest.TestCase):
+    def test_default_max_len_40(self):
+        self.assertEqual(slugify("a" * 50), "a" * 40)
+        self.assertEqual(len(slugify("a" * 50)), 40)
+
+    def test_exactly_max_len_unchanged(self):
+        self.assertEqual(slugify("a" * 40), "a" * 40)
+
+    def test_one_over_max_len(self):
+        self.assertEqual(slugify("a" * 41), "a" * 40)
+
+    def test_shorter_than_max_untouched(self):
+        self.assertEqual(slugify("hello world", max_len=100), "hello-world")
+
+    def test_explicit_max_len_matches_default(self):
+        self.assertEqual(slugify("Hello World", max_len=40), "hello-world")
+
+    def test_truncation_then_trailing_dash_stripped(self):
+        # full slug "aaaa-bbbb", [:5] -> "aaaa-" -> rstrip -> "aaaa"
+        self.assertEqual(slugify("aaaa bbbb", max_len=5), "aaaa")
+
+    def test_truncation_leaves_embedded_dash(self):
+        # full slug "ab-cd-ef", [:6] -> "ab-cd-" -> "ab-cd"
+        self.assertEqual(slugify("ab cd ef", max_len=6), "ab-cd")
+
+    def test_truncation_at_dash_boundary(self):
+        # full slug "ab-cd", [:5] -> "ab-cd" (no trailing dash to strip)
+        self.assertEqual(slugify("ab cd", max_len=5), "ab-cd")
+
+    def test_max_len_39_40_41(self):
+        long_title = "a" * 50
+        self.assertEqual(slugify(long_title, max_len=39), "a" * 39)
+        self.assertEqual(slugify(long_title, max_len=40), "a" * 40)
+        self.assertEqual(slugify(long_title, max_len=41), "a" * 41)
+
+    def test_max_len_1(self):
+        self.assertEqual(slugify("abc", max_len=1), "a")
+
+    def test_max_len_2(self):
+        self.assertEqual(slugify("abc", max_len=2), "ab")
+
+    def test_max_len_zero_returns_untitled(self):
+        self.assertEqual(slugify("hello", max_len=0), "untitled")
+        self.assertEqual(slugify("", max_len=0), "untitled")
+
+    def test_untitled_not_truncated_by_small_max_len(self):
+        # empty slug -> "untitled" returned whole even when max_len < 8
+        self.assertEqual(slugify("!!!", max_len=2), "untitled")
+        self.assertEqual(slugify("", max_len=0), "untitled")
+
+    def test_truncation_to_empty_gives_untitled(self):
+        # "-" * 10 -> slug "" before truncation; also a slug of only
+        # dashes truncated still empty -> untitled
+        self.assertEqual(slugify("---", max_len=2), "untitled")
+
+
+class TestErrorCases(unittest.TestCase):
+    def test_none_title_raises(self):
+        with self.assertRaises(AttributeError):
+            slugify(None)
+
+    def test_int_title_raises(self):
+        with self.assertRaises(AttributeError):
+            slugify(123)
+
+    def test_list_title_raises(self):
+        with self.assertRaises(AttributeError):
+            slugify(["hello"])
+
+    def test_missing_title_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            slugify()
+
+    def test_string_max_len_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            slugify("hello", max_len="5")
+
+    def test_none_max_len_means_no_truncation(self):
+        # documents current behavior: slug[:None] is the whole slug
+        self.assertEqual(slugify("Hello World", max_len=None), "hello-world")
+
+
+if __name__ == "__main__":
+    unittest.main()

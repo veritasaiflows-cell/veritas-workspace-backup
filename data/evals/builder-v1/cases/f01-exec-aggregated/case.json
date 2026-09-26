@@ -1,0 +1,26 @@
+{
+  "id": "f01-exec-aggregated",
+  "category": "fix",
+  "brief": "trigger_eval.should_fire() reports \"unreadable\" on every run. The exec runtime returns\ncommand output only in the \"aggregated\" field (a string); \"stdout\", \"output\" and \"text\"\nare never present. Fix parse_exec_result() so it reads \"aggregated\". The command may\nprint log lines before its JSON document: the JSON document is always the last non-empty\nline. Keep the existing behaviour for unreadable or non-object output (return None).",
+  "src_files": [
+    "test_trigger_eval.py",
+    "trigger_eval.py"
+  ],
+  "writable": [
+    "trigger_eval.py"
+  ],
+  "readonly": [
+    "test_trigger_eval.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [
+    "test_hidden_trigger_eval.py"
+  ],
+  "mutants": []
+}

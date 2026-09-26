@@ -1,0 +1,27 @@
+Changed `/worktree/lane_stats.py`: `lane_summary(values, min_n=5)` now ignores `None` entries, returns true median (averages two middle values when n even), adds `p90` via nearest-rank `ceil(0.9*n)`-th smallest, and returns `median=None, p90=None` when `n < min_n` (empty list safe). Returns `{"n", "median", "p90"}`. Did not modify `test_lane_stats.py`. No BLOCKED items.
+
+Proof commands run:
+- `cd /worktree && python3 -m unittest -v`
+- `cd /worktree && python3 -c "from lane_stats import lane_summary; ..."` (edge-case sanity check)
+
+Exact test output:
+```
+test_odd (test_lane_stats.Visible.test_odd) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+Edge-case check output:
+```
+{'n': 0, 'median': None, 'p90': None}
+{'n': 5, 'median': 3, 'p90': 5}
+{'n': 4, 'median': None, 'p90': None}
+{'n': 0, 'median': None, 'p90': None}
+{'n': 3, 'median': 2, 'p90': 3}
+{'n': 10, 'median': 5.5, 'p90': 9}
+```
+
+Parent job: builder-v1-x04-lane-median-min-sample-r1-20260926T142012Z. No lane identifiers supplied. provider_usage_unavailable. QA/Red-Team verdict required downstream (not done by Builder). Main acceptance pending; handoff to Veritas main for verification and final integration. Stop lines preserved.

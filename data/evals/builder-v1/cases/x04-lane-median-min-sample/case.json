@@ -1,0 +1,26 @@
+{
+  "id": "x04-lane-median-min-sample",
+  "category": "feature",
+  "brief": "Fix and extend lane_stats.lane_summary(values, min_n=5):\n- None entries are ignored (not counted in \"n\");\n- \"median\" is the true median (average of the two middle values when n is even);\n- add \"p90\" using the nearest-rank method: the ceil(0.9 * n)-th smallest value;\n- when n < min_n, \"median\" and \"p90\" are None (and an empty list must not crash).\nReturn {\"n\": ..., \"median\": ..., \"p90\": ...}.",
+  "src_files": [
+    "lane_stats.py",
+    "test_lane_stats.py"
+  ],
+  "writable": [
+    "lane_stats.py"
+  ],
+  "readonly": [
+    "test_lane_stats.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [
+    "test_hidden_lane_stats.py"
+  ],
+  "mutants": []
+}

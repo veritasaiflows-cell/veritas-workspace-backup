@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "0d7ebb55-9b14-4233-8744-7719988577d8",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:builder-v1-f08-phoenix-day-r1-20260926T063238Z",
+  "label": "bench:builder-v1 f08-phoenix-day r1",
+  "task_text_sha256": "b9fa93ccc667ae949c63aba9d93f20a149b1bd83ff5c101b7159e7403860f5dd",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\builder-v1\\results\\baseline-muse-spark-1.3-20260926\\f08-phoenix-day-r1\\task.md",
+  "created_at_ms": 1790404456358,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "builder_eval_v1"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "f03-credit-join-key",
+  "category": "fix",
+  "brief": "credit_join.join_runs() loses runs. Registry rows that were re-announced get a new\n\"run_id\" (for example \"announce:requester-settle:...\"); the true join key is \"taskRunId\"\ninside the row's \"payload_json\" (a JSON string). When payload_json is missing, empty, not\nvalid JSON, not a JSON object, or has no taskRunId, fall back to the row's \"run_id\".\nAlso, today a task matched by two registry rows silently keeps one of them: such a task\nmust map to the string \"AMBIGUOUS\". Unmatched tasks map to None.",
+  "src_files": [
+    "credit_join.py",
+    "test_credit_join.py"
+  ],
+  "writable": [
+    "credit_join.py"
+  ],
+  "readonly": [
+    "test_credit_join.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [
+    "test_hidden_credit_join.py"
+  ],
+  "mutants": []
+}

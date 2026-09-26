@@ -1,0 +1,26 @@
+{
+  "id": "x02-record-validation-rules",
+  "category": "feature",
+  "brief": "Extend record_check.validate() with three rules, keeping the existing \"missing:<key>\"\nerrors:\n1. A label that is only whitespace counts as missing (\"missing:label\").\n2. When both agent_id and session_key are present, session_key must look like\n   \"agent:<agent_id>:<rest>\" with a non-empty <rest>; otherwise add \"session_key_not_scoped\".\n3. If \"created_at_ms\" is present it must be an int (a bool does not count) greater than 0;\n   otherwise add \"bad_created_at\".\nError order: missing errors in REQUIRED order, then session_key_not_scoped, then\nbad_created_at.",
+  "src_files": [
+    "record_check.py",
+    "test_record_check.py"
+  ],
+  "writable": [
+    "record_check.py"
+  ],
+  "readonly": [
+    "test_record_check.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [
+    "test_hidden_record_check.py"
+  ],
+  "mutants": []
+}

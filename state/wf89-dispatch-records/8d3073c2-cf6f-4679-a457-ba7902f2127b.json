@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "8d3073c2-cf6f-4679-a457-ba7902f2127b",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:builder-v1-x04-lane-median-min-sample-r1-20260926t142012z",
+  "label": "bench:builder-v1 x04-lane-median-min-sample r1",
+  "task_text_sha256": "7e9974ea6214364c409474ea9b48e634eb6cee8266229646192463337b838a88",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\builder-v1\\results\\optd-canary-20260926\\x04-lane-median-min-sample-r1\\task.md",
+  "created_at_ms": 1790432452542,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "builder_eval_v1"
+}

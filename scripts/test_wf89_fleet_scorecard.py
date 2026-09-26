@@ -21,10 +21,15 @@ def rec(run_id: str, agent: str = "implementation-builder", label: str = "Fix WF
 
 
 def patch_reader(monkeypatch, records: list[dict], cli_records: list[dict] | None = None,
-                 timing: dict | None = None) -> None:
+                 timing: dict | None = None, bypass_rows: list[dict] | None = None) -> None:
     monkeypatch.setattr(sc.reader, "read_task", lambda **_: {"records": records, "counts": {"CREDITABLE": len(records)}})
+    bypassed: dict[str, int] = {}
+    for row in bypass_rows or []:
+        bypassed[row["agent_id"]] = bypassed.get(row["agent_id"], 0) + 1
     monkeypatch.setattr(sc.reader, "read_cli", lambda *_a, **_k: {
         "records": cli_records or [], "counts": {}, "cli_rows_without_dispatch_record_by_agent": {"qa-redteam": 4},
+        "cli_rows_bypassing_dispatch_wrapper_by_agent": bypassed, "cli_bypass_rows": bypass_rows or [],
+        "cli_exec_background_rows": 7,
     })
     monkeypatch.setattr(sc, "task_timing", lambda _db, ids: {
         i: (timing or {}).get(i, {"started_at_utc": "2026-09-25T10:00:00Z", "ended_at_utc": "2026-09-25T10:01:00Z",
@@ -102,6 +107,31 @@ def test_corrupt_history_is_an_error_and_cli_gap_is_reported(monkeypatch) -> Non
         payload = build(tmp, write=False)
         assert payload["validation"]["status"] == "error"
         assert payload["window"]["cli_rows_without_dispatch_record_by_agent"] == {"qa-redteam": 4}
+
+
+def test_pre_go_live_cli_gap_is_an_observation_not_a_failure(monkeypatch) -> None:
+    with tempfile.TemporaryDirectory() as t:
+        patch_reader(monkeypatch, [rec("a")])
+        payload = build(Path(t), write=False)
+        assert payload["status"] == "ok"
+        assert "cli_runs_without_dispatch_record_are_uncreditable" in payload["observations"]
+        assert payload["window"]["cli_exec_background_rows_excluded"] == 7
+
+
+def test_new_wrapper_bypass_fails_once_then_stays_a_warning(monkeypatch) -> None:
+    now_ms = int(sc.datetime.now(sc.timezone.utc).timestamp() * 1000)
+    fresh = {"agent_id": "qa-redteam", "task_id": "t1", "created_at": now_ms - 3_600_000}
+    stale = {"agent_id": "main", "task_id": "t2", "created_at": now_ms - 30 * 3_600_000}
+    with tempfile.TemporaryDirectory() as t:
+        patch_reader(monkeypatch, [rec("a")], bypass_rows=[fresh, stale])
+        payload = build(Path(t), write=False)
+        assert payload["status"] == "error"
+        assert payload["validation"]["errors"] == ["cli_run_bypassed_dispatch_wrapper:qa-redteam:1"]
+        assert "cli_run_bypassed_dispatch_wrapper_in_window:main:1" in payload["validation"]["warnings"]
+        patch_reader(monkeypatch, [rec("a")], bypass_rows=[stale])
+        later = build(Path(t), write=False)
+        assert later["status"] == "ok"
+        assert later["window"]["cli_rows_bypassing_dispatch_wrapper_by_agent"] == {"main": 1}
 
 
 def test_main_share_counts_work_runs_only(monkeypatch) -> None:

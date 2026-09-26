@@ -3,7 +3,7 @@
 
 This is a generated index for page-granular mirrors of the canonical `wiki/**/*.md` contract. It is review-only, creates no canon or approval authority, and must defer to the named owner sources.
 
-Source snapshot SHA-256: `b72cb76a50a01d76ee8320f68106404839653ca4d7ef17f73d8fb2324486ae83`.
+Source snapshot SHA-256: `e1e5783c361c118d2fe7decaa3658414a1a39d794508f8edf2e81cf1edfa5ce7`.
 Canonical page count: `15`.
 
 ## Canonical page: `wiki/README.md`
@@ -33,7 +33,7 @@ Query aliases: OTEL proposal route, WF74 WF88 routing, operational telemetry fol
 ## Canonical page: `wiki/scorecards-and-evals/Current Map.md`
 
 Retrieval mirror: `state/wiki-retrieval/sources/canonical/scorecards-and-evals/Current Map.md`.
-Canonical rendered SHA-256: `3f82f67db9f7976c7092d244e1edd42c971c29fe63855c2603e9b7a3d5fe7b4f`.
+Canonical rendered SHA-256: `6faac6cb8741e33ca67b3246b750a50017601f6061a2b5b3684f6548a6de1b9a`.
 Query aliases: current scorecard map, evaluation status, quality proof route.
 
 ## Canonical page: `wiki/scorecards-and-evals/Frontier Capability Eval.md`
@@ -51,13 +51,13 @@ Query aliases: advanced capability pilots, isolated pilot gate, pilot execution 
 ## Canonical page: `wiki/scorecards-and-evals/Token Efficiency Map.md`
 
 Retrieval mirror: `state/wiki-retrieval/sources/canonical/scorecards-and-evals/Token Efficiency Map.md`.
-Canonical rendered SHA-256: `991d5cae4e14c02c05c38cb53c1915a2967a8adfc47617311ae45df8275d27da`.
+Canonical rendered SHA-256: `6c9ffb37d80504533439f0d4169172e404f97ee9d7bc8eac7061f9d920012c49`.
 Query aliases: token attribution, implementation token efficiency, route retry tax.
 
 ## Canonical page: `wiki/decisions/Decision Compiler.md`
 
 Retrieval mirror: `state/wiki-retrieval/sources/canonical/decisions/Decision Compiler.md`.
-Canonical rendered SHA-256: `0d0a09227e032788d28207bf7bda15dbfd24aaae4130861a4889690a7068d3b3`.
+Canonical rendered SHA-256: `a37e1ae46354ed1be9998d4a59d54b7f4bda6a5a57c202fb47ef8b3ed7b8e0c0`.
 Query aliases: decision object compiler, evidence to decision, review only decision route.
 
 ## Canonical page: `wiki/self-improvement/Prompt Book RSI Loop.md`
@@ -69,7 +69,7 @@ Query aliases: prompt book loop, prompt evaluation friction, WF74 skill workshop
 ## Canonical page: `wiki/self-improvement/RSI Control Loop.md`
 
 Retrieval mirror: `state/wiki-retrieval/sources/canonical/self-improvement/RSI Control Loop.md`.
-Canonical rendered SHA-256: `3df62d7dac8283d4155cc940cfe08b082dbb255898fc4441a7db6b4839751667`.
+Canonical rendered SHA-256: `29398e005876aeadb507395a9545f84a9baa39378ce502bcdcd2d5a06b452741`.
 Query aliases: recursive self improvement, RSI control loop, guarded improvement evidence.
 
 ## Canonical page: `wiki/recommendations/Action Promotion Map.md`
@@ -81,17 +81,17 @@ Query aliases: recommendation promotion, action routing, no orphan followup.
 ## Canonical page: `wiki/gaps/Open Follow Up Debt.md`
 
 Retrieval mirror: `state/wiki-retrieval/sources/canonical/gaps/Open Follow Up Debt.md`.
-Canonical rendered SHA-256: `9756c829de32e547aa0e51529cf9dee718ad941d6c3372ad5b2394fc46de15f9`.
+Canonical rendered SHA-256: `cbbcf1858c362d6d8f53f74feded80759fb894b367ce8d0af671d5a643dc61c8`.
 Query aliases: open followup triage, improvement debt, unrouted action backlog.
 
 ## Canonical page: `wiki/source-map/WF88 Wiki Source Map.md`
 
 Retrieval mirror: `state/wiki-retrieval/sources/canonical/source-map/WF88 Wiki Source Map.md`.
-Canonical rendered SHA-256: `b17e240109cd4a321809f65c58c5739db59c9058af83984043d63e7e494f03f1`.
+Canonical rendered SHA-256: `6f549e7936fffb0b46e99fb73a8e17037ace1ae5823afdecbb1a0696a01c9d17`.
 Query aliases: WF88 source map, owner artifact lookup, source open proof.
 
 ## Canonical page: `wiki/changes/What Changed Since Last Refresh.md`
 
 Retrieval mirror: `state/wiki-retrieval/sources/canonical/changes/What Changed Since Last Refresh.md`.
-Canonical rendered SHA-256: `4bbd51f839cf107471f4328e169a0c22df233c395c6a2c103593950a3768d04e`.
+Canonical rendered SHA-256: `c281dffc9ca83aeb88c3d7bacc34bfa198cc46bdc6ffd609cdcb4f02617f847e`.
 Query aliases: wiki refresh delta, recent wiki changes, claim catalog change.

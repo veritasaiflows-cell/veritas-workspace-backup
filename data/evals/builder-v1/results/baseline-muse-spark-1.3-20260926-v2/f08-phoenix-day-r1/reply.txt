@@ -1,0 +1,23 @@
+Changed `/worktree/local_day.py`: `phoenix_day()` now subtracts the fixed UTC-7 offset using integer `timedelta(milliseconds=...)` arithmetic (no `zoneinfo` dependency) before taking the UTC calendar date. Added `day_bounds_ms(day)` which parses `"YYYY-MM-DD"`, computes Phoenix midnight as 07:00 UTC that date via `calendar.timegm`, and returns `(start_ms, start_ms + 86400000)`.
+
+Proof commands run (exact output):
+
+`cd /worktree && python3 -m unittest -v`
+```
+test_midday (test_local_day.Visible.test_midday) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+`cd /worktree && python3 -c "from local_day import phoenix_day, day_bounds_ms; print(phoenix_day(1790362800000)); print(phoenix_day(1790384400000)); print(day_bounds_ms('2026-09-25')); s,e=day_bounds_ms('2026-09-25'); print(phoenix_day(s), phoenix_day(e), phoenix_day(e-1), e-s)"`
+```
+2026-09-25
+2026-09-25
+(1790319600000, 1790406000000)
+2026-09-25 2026-09-26 2026-09-25 86400000
+```
+
+Evening case (2026-09-26 01:00 UTC = 18:00 Phoenix 09-25) correctly stays 2026-09-25; bounds round-trip at Phoenix midnight with a 24h span. Handoff to Veritas main for verification and acceptance; job builder-v1-f08-phoenix-day-r1-20260926T065038Z.

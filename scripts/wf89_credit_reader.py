@@ -54,6 +54,9 @@ CREDITABLE_TASK_STATUSES = {"succeeded", "failed", "timed_out", "cancelled"}
 WORKSPACE = Path(__file__).resolve().parent.parent
 DISPATCH_DIR = WORKSPACE / "state" / "wf89-dispatch-records"
 DISPATCH_SCHEMA = "veritas.wf89_dispatch_record.v1"
+# From here on every CLI agent run is launched through wf89_dispatch_record.launch();
+# an unrecorded agent run created after this instant means something bypassed it.
+WRAPPER_GO_LIVE_MS = 1790400600000  # 2026-09-25T22:30:00-07:00
 DISPATCH_REQUIRED_KEYS = ("dispatch_id", "agent_id", "session_key", "label",
                           "task_text_sha256", "created_at_ms")
 
@@ -312,7 +315,10 @@ def read_cli(dispatch_dir: Path, global_db: Path = GLOBAL_DB,
     records, bound_task_ids = [], set()
     for d in dispatches:
         matches = [t for t in cli_rows
-                   if t["agent_id"] == d["agent_id"] and t["child_session_key"] == d["session_key"]
+                   if t["agent_id"] == d["agent_id"]
+                   # OpenClaw lowercases session keys; records written before the
+                   # launcher normalized case carry the caller's mixed-case key.
+                   and (t["child_session_key"] or "").lower() == d["session_key"].lower()
                    and (t["created_at"] or 0) >= d["created_at_ms"]
                    and isinstance(t["task"], str)
                    and normalized_text_hash(t["task"]) == d["task_text_sha256"]]
@@ -333,17 +339,35 @@ def read_cli(dispatch_dir: Path, global_db: Path = GLOBAL_DB,
         rec["usage_event_count"] = (len([u for u in usage_events if isinstance(u, dict)])
                                     if rec["state"] == "CREDITABLE" else 0)
         records.append(rec)
+    # task_kind='exec' rows are background shell commands from the exec tool,
+    # not agent runs; they have no session key and can never carry a record.
     unrecorded: dict[str, int] = {}
+    bypassed: dict[str, int] = {}
+    bypass_rows: list[dict] = []
+    exec_rows = 0
     for t in cli_rows:
+        if t["task_kind"] == "exec":
+            exec_rows += 1
+            continue
         if t["task_id"] not in bound_task_ids:
-            unrecorded[t["agent_id"] or "unknown"] = unrecorded.get(t["agent_id"] or "unknown", 0) + 1
+            agent = t["agent_id"] or "unknown"
+            unrecorded[agent] = unrecorded.get(agent, 0) + 1
+            if (t["created_at"] or 0) >= WRAPPER_GO_LIVE_MS:
+                bypassed[agent] = bypassed.get(agent, 0) + 1
+                bypass_rows.append({"agent_id": agent, "task_id": t["task_id"],
+                                    "child_session_key": t["child_session_key"],
+                                    "created_at": t["created_at"]})
     counts: dict[str, int] = {}
     for r in records:
         counts[r["state"]] = counts.get(r["state"], 0) + 1
     return {"contract": "v0.3", "dispatch_dir": str(dispatch_dir),
             "dispatch_records": len(dispatches), "dispatch_record_errors": errors,
             "counts": counts, "cli_rows_total": len(cli_rows),
-            "cli_rows_without_dispatch_record_by_agent": unrecorded, "records": records}
+            "cli_exec_background_rows": exec_rows,
+            "cli_rows_without_dispatch_record_by_agent": unrecorded,
+            "wrapper_go_live_ms": WRAPPER_GO_LIVE_MS,
+            "cli_rows_bypassing_dispatch_wrapper_by_agent": bypassed,
+            "cli_bypass_rows": bypass_rows, "records": records}
 
 
 def read_task(task_id: str | None = None, limit: int | None = None,

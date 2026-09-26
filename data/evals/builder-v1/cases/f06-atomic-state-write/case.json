@@ -1,0 +1,26 @@
+{
+  "id": "f06-atomic-state-write",
+  "category": "fix",
+  "brief": "state_io.write_json() can destroy the last good state: if json.dump fails midway (for\nexample on a value that is not JSON-serializable) the target file is left truncated.\nMake write_json atomic: write to a temporary file in the same directory, then move it\nonto the target with os.replace. On failure the original file must be unchanged, no\ntemporary file may be left behind, and the original exception must propagate. Keep the\noutput format identical (UTF-8, indent=2, sort_keys=True).",
+  "src_files": [
+    "state_io.py",
+    "test_state_io.py"
+  ],
+  "writable": [
+    "state_io.py"
+  ],
+  "readonly": [
+    "test_state_io.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [
+    "test_hidden_state_io.py"
+  ],
+  "mutants": []
+}

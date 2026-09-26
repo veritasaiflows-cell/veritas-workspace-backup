@@ -1,0 +1,31 @@
+Summary of changes and proof:
+
+**Changed:** `/worktree/fetch_retry.py` (only file modified; `test_fetch_retry.py` untouched). Replaced the stub with a full `fetch_with_retry(fetch, attempts=3, sleep=None)` implementation:
+- `attempts < 1` raises `ValueError` before calling `fetch`.
+- `sleep` defaults to `time.sleep`.
+- Calls `fetch()` up to `attempts` times, returning the first success.
+- Retries only on `OSError` (subclasses included); any other exception propagates immediately with no retry and no sleep.
+- Sleeps `1, 2, 4, …` seconds (doubling, capped at 8) before each retry; no sleep after the final failure, then re-raises the last `OSError`.
+
+No BLOCKED items — every requirement was implementable as specified within the allowed paths.
+
+**Exact test output** (`cd /worktree && python3 -m unittest -v`):
+```
+test_success (test_fetch_retry.Visible.test_success) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+**Extra behavioral proof** (inline checks against `/worktree`, nothing written outside it):
+```
+PASS attempts=0 ValueError, fetch called: 0 time(s)
+PASS retry-success: True | sleeps: [1, 2]
+PASS backoff sleeps: [1, 2, 4, 8, 8] | attempts: 6
+PASS non-OSError immediate | calls: 1 | sleeps: []
+PASS default-sleep success: True
+```
+
+Handoff to Veritas main for verification and acceptance. Job `builder-v1-x03-retry-backoff-r4-20260926T070436Z`; deliverable is draft/unaccepted pending Main QC. No owner-gated decisions outstanding.

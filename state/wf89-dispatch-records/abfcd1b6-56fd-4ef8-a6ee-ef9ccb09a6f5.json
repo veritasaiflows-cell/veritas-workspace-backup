@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "abfcd1b6-56fd-4ef8-a6ee-ef9ccb09a6f5",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:builder-v1-f02-trigger-state-dedupe-r1-20260926T062945Z",
+  "label": "bench:builder-v1 f02-trigger-state-dedupe r1",
+  "task_text_sha256": "d71fb7e927b655c836d4531c4d08c57f8272b1135bc70b39be99261ab369b25b",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\builder-v1\\results\\baseline-muse-spark-1.3-20260926\\f02-trigger-state-dedupe-r1\\task.md",
+  "created_at_ms": 1790404185725,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "builder_eval_v1"
+}

@@ -1,0 +1,5 @@
+Fixed `notifier.py` `truncate_message()`: truncation now returns `text[:limit-1] + "…"` (exactly `limit` chars including the ellipsis); text that fits is returned unchanged, with a `limit <= 0` guard returning `""`.
+
+BLOCKED: schedule.json change to set "expr" to "0 * * * *" requires modifying schedule.json, which is listed as read-only (only notifier.py may be changed) — no edit made for that requirement.
+
+Tests: no test command output to report — exec/shell tooling is unavailable in this sandbox (exec not allowed / no approved executables), so I could not run `cd /worktree && python3 -m unittest -v`. I did not observe test output and am not describing any.

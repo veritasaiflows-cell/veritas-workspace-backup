@@ -1,0 +1,18 @@
+Changed `/worktree/state_io.py` to make `write_json()` atomic:
+- Writes JSON (UTF-8, indent=2, sort_keys=True, identical format) to a temp file via `tempfile.mkstemp` in the same directory as the target.
+- On success, moves it onto the target with `os.replace()`.
+- On any failure (including non-serializable payload), unlinks the temp file and re-raises the original exception, leaving the original file unchanged.
+
+No other files changed. `test_state_io.py` was not modified.
+
+Proof commands run: none. I could not run `cd /worktree && python3 -m unittest -v` because shell/exec is not allowed for this role (access class `scoped_workspace_write`, Exec allowed: `False`); no test output was observed. This is a tool-unavailability statement, not a BLOCKED requirement.
+
+Closeout:
+- Deliverable: `/worktree/state_io.py` (draft, unaccepted until Main verifies).
+- Parent job: builder-v1-f06-atomic-state-write-r1-20260926T064608Z; no workflow/lane identifiers supplied.
+- provider_usage_unavailable — no token/usage counts exposed.
+- QA/Red-Team verdict: required downstream (qa-redteam, then Veritas main); not yet obtained.
+- Main acceptance: pending; no rework yet.
+- Stop lines preserved: worktree-only, no runtime/config/cron/telemetry/credential changes, no external contact, no delegation, no role-packet mutation.
+- Owner-gated decisions: none.
+- Handoff to Veritas main for verification, test execution, and final integration.

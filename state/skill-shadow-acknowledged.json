@@ -49,6 +49,13 @@
       "skill": "veritas-model-routing-helper-lanes",
       "reason": "Merged into the loaded copy 2026-09-25 (post-QA fixes); Workshop sync proposals pending Randall apply: ai-drop 2d0d082c6d, routing 8bf2f2fc1f, isolated-agent 33eae82878, os2 453f3bdbb2",
       "acknowledged_at_utc": "2026-09-26T02:25:20Z"
+    },
+    {
+      "key": "main|veritas-model-routing-helper-lanes|ee679402fbcc897826df92dc756ac80169bce74539fee663e42a1c96793f1282|bee13f6429f7b3cb9df44b4abffb1f7cb7d95899e671d589af8cf2ec385c7701",
+      "agent_id": "main",
+      "skill": "veritas-model-routing-helper-lanes",
+      "reason": "2026-09-26 WF89 item 5: loaded delegation-decision.md updated for research-scout/docs-continuity-editor /handoff+/outbox sandbox (Randall 07:11 approval). Workshop sync not stageable from this session (reference-file change; full skill read exceeds budget). Sync owed: stage Workshop update of references/delegation-decision.md.",
+      "acknowledged_at_utc": "2026-09-26T14:29:24Z"
     }
   ]
 }

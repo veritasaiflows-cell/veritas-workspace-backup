@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "cd8da936-cad4-480a-a8ec-585d551b778a",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:builder-v1-t01-tests-band-classify-r1-20260926T063723Z",
+  "label": "bench:builder-v1 t01-tests-band-classify r1",
+  "task_text_sha256": "b59311380503c381f84dd18c8add91af8946b23eaa6f6de51c4fb051421a9855",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\builder-v1\\results\\baseline-muse-spark-1.3-20260926\\t01-tests-band-classify-r1\\task.md",
+  "created_at_ms": 1790404735287,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "builder_eval_v1"
+}

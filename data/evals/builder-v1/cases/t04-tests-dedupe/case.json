@@ -1,0 +1,28 @@
+{
+  "id": "t04-tests-dedupe",
+  "category": "tests",
+  "brief": "Write test_dedupe.py (unittest, standard library only) that thoroughly tests dedupe_by_key() in dedupe.py\nagainst its docstring: normal cases, every boundary and edge case the docstring states,\nand error cases. Do not modify dedupe.py. The tests must pass against the current dedupe.py.\nRun them before replying.",
+  "src_files": [
+    "dedupe.py"
+  ],
+  "writable": [],
+  "readonly": [
+    "dedupe.py"
+  ],
+  "protected": [],
+  "outputs": [
+    "test_dedupe.py"
+  ],
+  "expect": {
+    "mutation": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [],
+  "mutants": [
+    "m1-keeps-last",
+    "m2-drops-keyless",
+    "m3-sorted",
+    "m4-mutates-input"
+  ]
+}

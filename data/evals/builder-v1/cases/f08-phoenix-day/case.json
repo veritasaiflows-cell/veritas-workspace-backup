@@ -1,0 +1,26 @@
+{
+  "id": "f08-phoenix-day",
+  "category": "fix",
+  "brief": "local_day.phoenix_day() returns the UTC calendar date, so evening timestamps land on the\nnext day. Phoenix is UTC-7 all year (no daylight saving). Fix phoenix_day() without\ndepending on the zoneinfo/tz database (it is not installed in every runtime), and add\nday_bounds_ms(day) that takes \"YYYY-MM-DD\" and returns (start_ms, end_ms): epoch\nmilliseconds of the start of that Phoenix calendar day and of the next day's start (end\nexclusive).",
+  "src_files": [
+    "local_day.py",
+    "test_local_day.py"
+  ],
+  "writable": [
+    "local_day.py"
+  ],
+  "readonly": [
+    "test_local_day.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [
+    "test_hidden_local_day.py"
+  ],
+  "mutants": []
+}

@@ -1,0 +1,26 @@
+{
+  "id": "f05-dispatch-hash-normalize",
+  "category": "fix",
+  "brief": "Dispatch records never match stored tasks. The store keeps task text with line endings\nnormalized to \"\\n\" and leading/trailing whitespace stripped, while records are hashed from\nthe raw message file (which may use \"\\r\\n\" and end with a newline). Make both sides hash\nthe same: task_hash() must first convert \"\\r\\n\" and any lone \"\\r\" to \"\\n\", then strip\nleading and trailing whitespace. Do not change whitespace inside the text.",
+  "src_files": [
+    "dispatch_hash.py",
+    "test_dispatch_hash.py"
+  ],
+  "writable": [
+    "dispatch_hash.py"
+  ],
+  "readonly": [
+    "test_dispatch_hash.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [
+    "test_hidden_dispatch_hash.py"
+  ],
+  "mutants": []
+}

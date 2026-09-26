@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "af347b5a-ca18-4059-be23-f94918fcc7b9",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:builder-v1-x03-retry-backoff-r1-20260926T063723Z",
+  "label": "bench:builder-v1 x03-retry-backoff r1",
+  "task_text_sha256": "438bd55645d6b3d95bec96de3945539f84aca98f6cb0bf35606f5552c89059fc",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\builder-v1\\results\\baseline-muse-spark-1.3-20260926\\x03-retry-backoff-r1\\task.md",
+  "created_at_ms": 1790404644071,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "builder_eval_v1"
+}

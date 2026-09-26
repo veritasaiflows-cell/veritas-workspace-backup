@@ -1,0 +1,26 @@
+{
+  "id": "f02-trigger-state-dedupe",
+  "category": "fix",
+  "brief": "wake_gate.decide() should fire once per new signature, but it fires on every run.\nPrior state is supplied as trigger[\"state\"] (a dict; missing or None on the first run).\nFix decide() to read it from there and ignore any other key, including the legacy \"last\"\nkey. Also: the returned state must carry \"fired_count\",\nthe number of times the gate has fired: incremented on each fire, carried over unchanged\nwhen the gate does not fire. Return shape stays (fire: bool, new_state: dict).",
+  "src_files": [
+    "test_wake_gate.py",
+    "wake_gate.py"
+  ],
+  "writable": [
+    "wake_gate.py"
+  ],
+  "readonly": [
+    "test_wake_gate.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [
+    "test_hidden_wake_gate.py"
+  ],
+  "mutants": []
+}

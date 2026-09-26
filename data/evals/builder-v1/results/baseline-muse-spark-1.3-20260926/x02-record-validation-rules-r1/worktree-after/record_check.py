@@ -1,0 +1,23 @@
+REQUIRED = ("dispatch_id", "agent_id", "session_key", "label")
+
+
+def validate(record):
+    """Return a list of error strings; empty means valid."""
+    errors = []
+    for key in REQUIRED:
+        value = record.get(key)
+        if key == "label" and isinstance(value, str) and not value.strip():
+            errors.append(f"missing:{key}")
+        elif not value:
+            errors.append(f"missing:{key}")
+    agent_id = record.get("agent_id")
+    session_key = record.get("session_key")
+    if agent_id and session_key:
+        prefix = f"agent:{agent_id}:"
+        if not isinstance(session_key, str) or not session_key.startswith(prefix) or not session_key[len(prefix):]:
+            errors.append("session_key_not_scoped")
+    if "created_at_ms" in record:
+        created = record["created_at_ms"]
+        if isinstance(created, bool) or not isinstance(created, int) or created <= 0:
+            errors.append("bad_created_at")
+    return errors

@@ -1,0 +1,5 @@
+{
+  "job": "notifier",
+  "expr": "0 6 * * *",
+  "tz": "America/Phoenix"
+}

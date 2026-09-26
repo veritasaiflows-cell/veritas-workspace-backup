@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "a58b07eb-fa17-4d72-bf0c-482c8a8a7b97",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:builder-v1-t02-tests-slugify-r2-20260926t070436z",
+  "label": "bench:builder-v1 t02-tests-slugify r2",
+  "task_text_sha256": "b8d640d3f3cfd2ff40a1164f3aaf77d8cb3028e4c55fe432ce41b9604c0b680d",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\data\\evals\\builder-v1\\results\\baseline-muse-spark-1.3-20260926-v2\\t02-tests-slugify-r2\\task.md",
+  "created_at_ms": 1790406448444,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "builder_eval_v1"
+}

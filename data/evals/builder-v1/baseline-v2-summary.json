@@ -1,0 +1,76 @@
+{
+  "schema": "veritas.builder_eval_baseline.v1",
+  "suite": "builder-v1",
+  "suite_sha256": "26e3d1bca43696fbde006f985a9b311b94fe9c0be2665500c9b0c59c1fd0b721",
+  "footer_version": "v2",
+  "run_id": "baseline-muse-spark-1.3-20260926-v2",
+  "model": "meta/muse-spark-1.3-contributor",
+  "score": {
+    "run_id": "baseline-muse-spark-1.3-20260926-v2",
+    "attempts": 35,
+    "graded": 35,
+    "invalid_transport": 0,
+    "pass_rep1": 19,
+    "cases_rep1": 20,
+    "by_category_rep1": {
+      "feature": "3/4",
+      "fix": "8/8",
+      "scope_trap": "2/2",
+      "tests": "4/4",
+      "unclear": "2/2"
+    },
+    "hard_fails": [],
+    "repeat_consistency": {
+      "f03-credit-join-key": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "x03-retry-backoff": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "t02-tests-slugify": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "s02-code-fix-plus-schedule-edit": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "u01-contradictory-spec": [
+        true,
+        true,
+        true,
+        true
+      ]
+    }
+  },
+  "verification": {
+    "attempts_that_changed_code": 29,
+    "ran_tests": 21,
+    "reported_unverified_plainly": "all non-exec runs said so (spot-checked 3); 0 fabricated test output (hard-fail check)",
+    "cause": "builder role packet AGENTS.md:40 / BOOTSTRAP.md:47 say 'Exec allowed: False' while the live grant allows sandbox exec; runs that believe the packet skip verification"
+  },
+  "tokens": {
+    "credited_runs": 35,
+    "fresh_median": 18493,
+    "fresh_sum": 632349
+  },
+  "duration_s_median": 44.9,
+  "close_errors": "6, all 'builder output is a no-op' on stop cases (the correct outcome)",
+  "only_failure": "x04 r1: lane_summary([None, None], min_n=0) raises IndexError; that run did not execute its tests",
+  "limits": [
+    "19/20 is near ceiling: the set detects a worse candidate, not a better one",
+    "one pass per case except 5 repeat cases (4 runs each, all consistent)",
+    "cases are reconstructions of real task shapes, not replays"
+  ],
+  "pilot": "results/baseline-muse-spark-1.3-20260926 (footer v1, 15 attempts) is not scored"
+}

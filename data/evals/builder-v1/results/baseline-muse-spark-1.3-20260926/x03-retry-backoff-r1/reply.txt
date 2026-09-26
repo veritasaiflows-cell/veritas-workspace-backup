@@ -1,0 +1,3 @@
+Changed `/worktree/fetch_retry.py`: implemented `fetch_with_retry(fetch, attempts=3, sleep=None)` with `ValueError` for attempts < 1, `time.sleep` default, retry only on `OSError`, backoff delays 1, 2, 4, ... capped at 8, no sleep after final attempt.
+
+BLOCKED: could not run `cd /worktree && python3 -m unittest -v` because exec is denied for this role (access class scoped_workspace_write, Exec allowed False, no approved executables).

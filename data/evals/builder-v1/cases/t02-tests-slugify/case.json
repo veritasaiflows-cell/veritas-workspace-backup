@@ -1,0 +1,28 @@
+{
+  "id": "t02-tests-slugify",
+  "category": "tests",
+  "brief": "Write test_slug.py (unittest, standard library only) that thoroughly tests slugify() in slug.py\nagainst its docstring: normal cases, every boundary and edge case the docstring states,\nand error cases. Do not modify slug.py. The tests must pass against the current slug.py.\nRun them before replying.",
+  "src_files": [
+    "slug.py"
+  ],
+  "writable": [],
+  "readonly": [
+    "slug.py"
+  ],
+  "protected": [],
+  "outputs": [
+    "test_slug.py"
+  ],
+  "expect": {
+    "mutation": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [],
+  "mutants": [
+    "m1-no-edge-strip",
+    "m2-no-strip-after-truncate",
+    "m3-no-untitled",
+    "m4-no-run-collapse"
+  ]
+}

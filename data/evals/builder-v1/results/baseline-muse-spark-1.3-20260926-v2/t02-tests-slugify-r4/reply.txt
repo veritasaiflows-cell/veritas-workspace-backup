@@ -1,0 +1,62 @@
+Created `/worktree/test_slug.py` (unittest, stdlib only; did not modify `slug.py`).
+
+Coverage against docstring:
+- Normal: lowercase, digits preserved, punctuation/underscore/slash/colon/dot → `-`.
+- Run-collapsing: spaces, tabs/newlines, dashes, underscores, mixed runs → single `-`.
+- Strip leading/trailing `-` (spaces, dashes, punctuation, mixed).
+- ASCII-only: `Café`→`caf`, `naïve`→`na-ve`, non-ASCII-only/emoji handling, `_`→`-`.
+- Empty → `untitled` (`""`, separators, whitespace).
+- Truncation: default `max_len=40`, boundary 39/40/41, short-no-truncate, `max_len=0`→`untitled`, `max_len=1`, re-strip of trailing `-` after truncate (`"abcdef ghij"`, max 7 → `"abcdef"`).
+- Errors: `None`/`int`/`list`/`bytes` title → `(AttributeError, TypeError)`; `str`/`float` `max_len` → `TypeError`.
+
+Proof — `cd /worktree && python3 -m unittest -v`:
+Exact output:
+```
+test_accented_run_collapses (test_slug.TestSlugifyAsciiOnly.test_accented_run_collapses) ... ok
+test_emoji_becomes_dash_and_stripped (test_slug.TestSlugifyAsciiOnly.test_emoji_becomes_dash_and_stripped) ... ok
+test_non_ascii_becomes_dash (test_slug.TestSlugifyAsciiOnly.test_non_ascii_becomes_dash) ... ok
+test_non_ascii_only_returns_untitled (test_slug.TestSlugifyAsciiOnly.test_non_ascii_only_returns_untitled) ... ok
+test_underscore_is_not_word_char_here (test_slug.TestSlugifyAsciiOnly.test_underscore_is_not_word_char_here) ... ok
+test_all_separator_inputs (test_slug.TestSlugifyEmptyUntitled.test_all_separator_inputs) ... ok
+test_empty_string (test_slug.TestSlugifyEmptyUntitled.test_empty_string) ... ok
+test_bytes_title_raises (test_slug.TestSlugifyErrors.test_bytes_title_raises) ... ok
+test_float_max_len_raises (test_slug.TestSlugifyErrors.test_float_max_len_raises) ... ok
+test_int_title_raises (test_slug.TestSlugifyErrors.test_int_title_raises) ... ok
+test_list_title_raises (test_slug.TestSlugifyErrors.test_list_title_raises) ... ok
+test_non_int_max_len_raises (test_slug.TestSlugifyErrors.test_non_int_max_len_raises) ... ok
+test_none_title_raises (test_slug.TestSlugifyErrors.test_none_title_raises) ... ok
+test_already_lowercase_unchanged (test_slug.TestSlugifyNormalCases.test_already_lowercase_unchanged) ... ok
+test_digits_preserved (test_slug.TestSlugifyNormalCases.test_digits_preserved) ... ok
+test_dot_becomes_dash (test_slug.TestSlugifyNormalCases.test_dot_becomes_dash) ... ok
+test_lowercases (test_slug.TestSlugifyNormalCases.test_lowercases) ... ok
+test_mixed_separators (test_slug.TestSlugifyNormalCases.test_mixed_separators) ... ok
+test_punctuation_becomes_dash (test_slug.TestSlugifyNormalCases.test_punctuation_becomes_dash) ... ok
+test_single_letter_words (test_slug.TestSlugifyNormalCases.test_single_letter_words) ... ok
+test_slash_colon_become_dashes (test_slug.TestSlugifyNormalCases.test_slash_colon_become_dashes) ... ok
+test_underscore_becomes_dash (test_slug.TestSlugifyNormalCases.test_underscore_becomes_dash) ... ok
+test_uppercase_with_digits (test_slug.TestSlugifyNormalCases.test_uppercase_with_digits) ... ok
+test_long_mixed_separator_run (test_slug.TestSlugifyRunCollapsing.test_long_mixed_separator_run) ... ok
+test_mixed_run_collapses_to_single_dash (test_slug.TestSlugifyRunCollapsing.test_mixed_run_collapses_to_single_dash) ... ok
+test_multiple_dashes_collapse (test_slug.TestSlugifyRunCollapsing.test_multiple_dashes_collapse) ... ok
+test_multiple_spaces_become_single_dash (test_slug.TestSlugifyRunCollapsing.test_multiple_spaces_become_single_dash) ... ok
+test_tabs_and_newlines_collapse (test_slug.TestSlugifyRunCollapsing.test_tabs_and_newlines_collapse) ... ok
+test_underscore_runs_collapse (test_slug.TestSlugifyRunCollapsing.test_underscore_runs_collapse) ... ok
+test_only_separators_returns_untitled (test_slug.TestSlugifyStripLeadingTrailing.test_only_separators_returns_untitled) ... ok
+test_strips_dashes (test_slug.TestSlugifyStripLeadingTrailing.test_strips_dashes) ... ok
+test_strips_mixed_leading_trailing (test_slug.TestSlugifyStripLeadingTrailing.test_strips_mixed_leading_trailing) ... ok
+test_strips_punctuation_runs (test_slug.TestSlugifyStripLeadingTrailing.test_strips_punctuation_runs) ... ok
+test_strips_spaces (test_slug.TestSlugifyStripLeadingTrailing.test_strips_spaces) ... ok
+test_default_max_len_is_40 (test_slug.TestSlugifyTruncation.test_default_max_len_is_40) ... ok
+test_max_len_one (test_slug.TestSlugifyTruncation.test_max_len_one) ... ok
+test_no_truncation_when_short (test_slug.TestSlugifyTruncation.test_no_truncation_when_short) ... ok
+test_truncation_after_collapse_and_strip (test_slug.TestSlugifyTruncation.test_truncation_after_collapse_and_strip) ... ok
+test_truncation_at_boundary_lengths (test_slug.TestSlugifyTruncation.test_truncation_at_boundary_lengths) ... ok
+test_truncation_leading_to_empty_returns_untitled (test_slug.TestSlugifyTruncation.test_truncation_leading_to_empty_returns_untitled) ... ok
+test_truncation_preserves_up_to_max_len (test_slug.TestSlugifyTruncation.test_truncation_preserves_up_to_max_len) ... ok
+test_truncation_strips_trailing_dash_again (test_slug.TestSlugifyTruncation.test_truncation_strips_trailing_dash_again) ... ok
+----------------------------------------------------------------------
+Ran 42 tests in 0.001s
+OK
+```
+
+Closeout: deliverable `/worktree/test_slug.py`; proof above (exit OK); parent job `builder-v1-t02-tests-slugify-r4-20260926T070436Z`, no lane/workflow IDs supplied; provider_usage_unavailable; QA/Red-Team verdict and Main acceptance still required; no BLOCKED items; no owner-gated decisions; stop lines preserved (no runtime/config/cron/telemetry/credential/messaging changes, worktree-only); handoff to Veritas main for verification and final integration.

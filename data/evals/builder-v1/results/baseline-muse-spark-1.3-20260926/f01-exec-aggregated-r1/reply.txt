@@ -1,0 +1,22 @@
+Changed `/worktree/trigger_eval.py`: `parse_exec_result()` now reads `res["aggregated"]` first (falling back to `stdout`/`output`/`text` only if `aggregated` is absent), takes the last non-empty line, and parses that as JSON. Returns `None` for missing/non-string/empty/unparseable/non-dict output, preserving existing behaviour.
+
+Tests run (`cd /worktree && python3 -m unittest -v`):
+```
+test_actionable_fires (test_trigger_eval.Visible.test_actionable_fires) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+Closeout:
+- Deliverable: `/worktree/trigger_eval.py` (only file changed; `test_trigger_eval.py` untouched as read-only per task).
+- Proof: above unittest run, pass.
+- Parent job/workflow/lane: `builder-v1-f01-exec-aggregated-r1-20260926T062750Z`; no lane supplied.
+- Usage: provider_usage_unavailable (no token counts exposed).
+- QA/Red-Team verdict: required downstream (qa-redteam, then Veritas main); not run in this scope.
+- Main acceptance: pending; work is unaccepted draft for Main verification/integration.
+- Stop lines preserved: no commit, no network, nothing touched outside `/worktree`.
+- Owner-gated decisions: none.
+- Handoff to Veritas main for verification and final integration.

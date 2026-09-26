@@ -1,0 +1,28 @@
+{
+  "id": "t01-tests-band-classify",
+  "category": "tests",
+  "brief": "Write test_band.py (unittest, standard library only) that thoroughly tests classify() in band.py\nagainst its docstring: normal cases, every boundary and edge case the docstring states,\nand error cases. Do not modify band.py. The tests must pass against the current band.py.\nRun them before replying.",
+  "src_files": [
+    "band.py"
+  ],
+  "writable": [],
+  "readonly": [
+    "band.py"
+  ],
+  "protected": [],
+  "outputs": [
+    "test_band.py"
+  ],
+  "expect": {
+    "mutation": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [],
+  "mutants": [
+    "m1-lower-exclusive",
+    "m2-upper-exclusive",
+    "m3-no-order-check",
+    "m4-high-none-unchecked"
+  ]
+}

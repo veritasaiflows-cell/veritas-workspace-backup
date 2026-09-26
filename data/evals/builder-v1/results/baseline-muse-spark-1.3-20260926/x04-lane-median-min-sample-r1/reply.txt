@@ -1,0 +1,23 @@
+Changed `/worktree/lane_stats.py`: `lane_summary(values, min_n=5)` now ignores `None` entries (not counted in `n`), computes true median (averages two middle values for even `n`), adds `p90` via nearest-rank (`ceil(0.9*n)`-th smallest), and returns `median=None, p90=None` when `n < min_n` (empty list safe). Returns `{"n", "median", "p90"}`. Did not modify `test_lane_stats.py`.
+
+Commands run and exact output:
+
+`cd /worktree && python3 -m unittest -v`
+```
+test_odd (test_lane_stats.Visible.test_odd) ... ok
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+OK
+```
+
+`cd /worktree && python3 -c "from lane_stats import lane_summary; print(lane_summary([])); print(lane_summary([5,1,3,2,4])); print(lane_summary([1,2,3,4,5,6])); print(lane_summary([None,1,2,None,3,4,5])); print(lane_summary([1,2,3])); print(lane_summary([1,2,3,4], min_n=4))"`
+```
+{'n': 0, 'median': None, 'p90': None}
+{'n': 5, 'median': 3, 'p90': 5}
+{'n': 6, 'median': 3.5, 'p90': 6}
+{'n': 5, 'median': 3, 'p90': 5}
+{'n': 3, 'median': None, 'p90': None}
+{'n': 4, 'median': 2.5, 'p90': 4}
+```
+
+Closeout: deliverable `/worktree/lane_stats.py` (draft, unaccepted); proofs above; parent job `builder-v1-x04-lane-median-min-sample-r1-20260926T063723Z`, no workflow/lane IDs supplied; provider_usage_unavailable; QA/Red-Team verdict pending; Main acceptance pending; no BLOCKED items; no owner-gated decisions; handoff to Veritas main for verification and final integration.

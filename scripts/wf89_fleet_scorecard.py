@@ -11,7 +11,8 @@ disappears unless it is captured. Each run:
 3. Writes tmp/wf89-fleet-scorecard.json: per-lane medians over the history
    (fresh tokens = input + output, total tokens, duration), the live window's
    delegation mix, and the command-line runs that cannot be credited because
-   they have no dispatch record.
+   they have no dispatch record. Exec-tool background commands are excluded;
+   an unrecorded agent run created after the wrapper went live fails the run.
 
 Benchmark runs are separated by label heuristic (BENCHMARK_LABEL); they are
 model comparisons, not delegated work. Credited is not accepted: acceptance is
@@ -38,6 +39,9 @@ HISTORY = ROOT / "data" / "state-history" / "wf89-credited-runs.jsonl"
 OUT = ROOT / "tmp" / "wf89-fleet-scorecard.json"
 SCHEMA = "veritas.wf89_fleet_scorecard.v1"
 HISTORY_SCHEMA = "veritas.wf89_credited_run.v1"
+# Daily job: a bypass created within this window is "new" and fails the run.
+# 25h (not 24h) so schedule jitter cannot skip one; worst case it alerts twice.
+BYPASS_ALERT_WINDOW = timedelta(hours=25)
 # Label families of model-comparison runs seen 2026-09-12..24: "Sol T3 case",
 # "Arena A T2 rep1", "DS chain B T4a", "Arena D mission-2", "GLM multi-turn TTL
 # pilot", and harness case ids containing "::" ("glm::code-debug-offbyone").
@@ -196,9 +200,24 @@ def build(global_db: Path, agent_root: Path, dispatch_dir: Path, history_path: P
     observations: list[str] = []
     if bad_rows:
         errors.append(f"history_unparseable_rows:{bad_rows}")
+    warnings: list[str] = []
     uncreditable_cli = cli.get("cli_rows_without_dispatch_record_by_agent") or {}
     if uncreditable_cli:
         observations.append("cli_runs_without_dispatch_record_are_uncreditable")
+    # Pre-go-live gaps are history; a post-go-live one means a launch skipped the
+    # wrapper. It fails the run (the job's existing failure alert) on the first
+    # daily run that sees it, then stays a warning until the row expires, so one
+    # bypass alerts once instead of every day for a week.
+    bypassed_cli = cli.get("cli_rows_bypassing_dispatch_wrapper_by_agent") or {}
+    fresh_cutoff_ms = int((now - BYPASS_ALERT_WINDOW).timestamp() * 1000)
+    fresh: dict[str, int] = {}
+    for row in cli.get("cli_bypass_rows") or []:
+        if (row.get("created_at") or 0) >= fresh_cutoff_ms:
+            fresh[row["agent_id"]] = fresh.get(row["agent_id"], 0) + 1
+    for agent, count in sorted(fresh.items()):
+        errors.append(f"cli_run_bypassed_dispatch_wrapper:{agent}:{count}")
+    for agent, count in sorted(bypassed_cli.items()):
+        warnings.append(f"cli_run_bypassed_dispatch_wrapper_in_window:{agent}:{count}")
     if not any(v["work"]["median_fresh_tokens"] is not None for v in lanes.values()):
         observations.append("no_lane_has_enough_credited_work_runs_for_medians")
 
@@ -221,6 +240,8 @@ def build(global_db: Path, agent_root: Path, dispatch_dir: Path, history_path: P
             "delegated_runs_by_agent": window_by_agent,
             "main_share_of_work_runs": round(main_work / window_work, 3) if window_work else None,
             "cli_rows_without_dispatch_record_by_agent": uncreditable_cli,
+            "cli_rows_bypassing_dispatch_wrapper_by_agent": bypassed_cli,
+            "cli_exec_background_rows_excluded": cli.get("cli_exec_background_rows", 0),
         },
         "lanes": lanes,
         "limits": [
@@ -236,7 +257,7 @@ def build(global_db: Path, agent_root: Path, dispatch_dir: Path, history_path: P
             "cron_mutation_allowed": False,
             "owner_approval_inferred": False,
         },
-        "validation": {"status": "error" if errors else "ok", "errors": errors, "warnings": []},
+        "validation": {"status": "error" if errors else "ok", "errors": errors, "warnings": warnings},
     }
 
 

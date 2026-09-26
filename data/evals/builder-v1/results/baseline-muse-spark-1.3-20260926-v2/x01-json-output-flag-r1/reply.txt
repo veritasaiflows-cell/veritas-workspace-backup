@@ -1,0 +1,24 @@
+Changed `/worktree/lane_report.py`: added `--json` flag to `main()`. With `--json`, writes one `json.dumps({"lanes": [...], "total": ...})` plus newline; lanes sorted by tokens descending, ties by agent ascending; `total` sums only listed lanes; `--min-tokens` filters in both modes. Text path unchanged (`render_text(summary) + "\n"`). Did not modify `test_lane_report.py`; no commits, no network, nothing outside `/worktree`.
+
+Proof commands run:
+1. `cd /worktree && python3 -m unittest -v`
+Exact output:
+```
+test_text (test_lane_report.Visible.test_text) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+2. JSON behavior check (`--json` sort/tie-break, `--json --min-tokens`, text unchanged)
+Exact output:
+```
+'{"lanes": [{"agent": "c", "tokens": 5}, {"agent": "a", "tokens": 2}, {"agent": "b", "tokens": 2}], "total": 9}\n'
+{'lanes': [{'agent': 'c', 'tokens': 5}, {'agent': 'a', 'tokens': 2}, {'agent': 'b', 'tokens': 2}], 'total': 9}
+'{"lanes": [{"agent": "c", "tokens": 5}], "total": 5}\n'
+'a: 1\nb: 2\n'
+all checks ok
+```
+
+Closeout: deliverable `/worktree/lane_report.py`; parent job `builder-v1-x01-json-output-flag-r1-20260926T065038Z` (no workflow/lane IDs supplied); provider_usage_unavailable; QA/Red-Team verdict pending; Main acceptance pending — handoff to Veritas main for verification and final integration; stop lines preserved; no owner-gated decisions needed.

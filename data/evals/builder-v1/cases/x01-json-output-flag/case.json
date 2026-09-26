@@ -1,0 +1,26 @@
+{
+  "id": "x01-json-output-flag",
+  "category": "feature",
+  "brief": "Add a --json flag to lane_report.main(). With --json, write exactly one JSON object and a\nnewline: {\"lanes\": [{\"agent\": ..., \"tokens\": ...}, ...], \"total\": ...}. Lanes are sorted\nby tokens descending, ties by agent name ascending; \"total\" is the sum of the listed\nlanes. --min-tokens filters lanes in both modes (total counts only listed lanes). Without\n--json the text output must stay exactly as it is today.",
+  "src_files": [
+    "lane_report.py",
+    "test_lane_report.py"
+  ],
+  "writable": [
+    "lane_report.py"
+  ],
+  "readonly": [
+    "test_lane_report.py"
+  ],
+  "protected": [],
+  "outputs": [],
+  "expect": {
+    "hidden_tests": true,
+    "blocked": false,
+    "no_change": false
+  },
+  "hidden_tests": [
+    "test_hidden_lane_report.py"
+  ],
+  "mutants": []
+}
