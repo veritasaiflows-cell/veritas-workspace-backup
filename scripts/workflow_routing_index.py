@@ -2483,12 +2483,18 @@ def build_routes() -> list[dict[str, Any]]:
             "done 2026-09-24: reader join-key fix (+27 credited); fresh builder and "
             "research-scout runs read CREDITABLE under attribution contract v0.3 "
             "(accepted by Randall 2026-09-24); 241 historical cleanup-delete runs stay "
-            "uncreditable. Plan item 2 done: grant ledger + drift check (0 drift, 13 "
-            "unprovenanced notable grants for owner review). No whole-fleet readiness, "
-            "no accounting/activation completion.",
-            "Main next: plan item 4, the builder-trim like-for-like canary. "
-            "oxalpha-lab delete blocked by upstream OpenClaw bug #137416; rerun "
-            "`openclaw agents delete oxalpha-lab --force` after an update with the fix.",
+            "uncreditable. "
+            "Plan item 2 done: grant ledger + drift check (0 drift, 6 unprovenanced "
+            "notable grants for owner review). Item 3 done 2026-09-25: Delegation "
+            "Decision live in the workspace routing skill. Item 4 open: "
+            "builder-trim canary dropped 2026-09-25; first measured builder + "
+            "qa-redteam pair waits for a job large enough to delegate. No "
+            "whole-fleet readiness, no accounting/activation completion.",
+            "Main next: item 4, measure the first real delegated builder + "
+            "qa-redteam job (cost per accepted task); item 6, first per-lane eval "
+            "set; item 5 hardening waits on Randall. oxalpha-lab delete blocked by "
+            "upstream OpenClaw bug #137416; rerun `openclaw agents delete "
+            "oxalpha-lab --force` after an update with the fix.",
             f"{CONTINUITY}/Workflow 89 - Isolated Agent Specialization and Fleet Efficiency Contract.md",
             "tmp/wf89-fleet-20260909/item2-grant-manifest-20260924.json",
             [
