@@ -5,8 +5,7 @@ This index is a router. It is not authority.
 ## Authority Sources
 
 - `SOUL.md` governs identity, mission, and hard boundaries.
-- `AGENTS.md` governs workspace operation and orchestration.
-- `TOOLS.md` governs local runtime and tool posture.
+- `AGENTS.md` governs workspace operation and orchestration; its Tools section owns local runtime and tool notes.
 - Skills and playbooks govern procedures.
 - Generated packets provide evidence only.
 

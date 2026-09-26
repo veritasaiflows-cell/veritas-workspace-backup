@@ -9,6 +9,7 @@ Use this as a prompt-local checklist after reading `SKILL.md`.
 - Cron control validates; freshness scorecard and live scheduler state are reconciled when cron matters.
 - Runtime scorecard validates or blockers are named.
 - Artifact index validates or stale/missing artifacts are named.
+- Workflow route registry: a named-workflow query returning `routing_index_stale` is not a broken workflow — run `python scripts\workflow_routing_index.py --write --write-db --validate`, re-query, and report from the refreshed capsule's live blockers.
 - Go helper route registry validates when Go route posture matters.
 - DB lifecycle manifest validates or unclassified databases are listed.
 - Skills check passes or skill errors are listed.

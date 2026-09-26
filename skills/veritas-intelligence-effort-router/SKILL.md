@@ -1,6 +1,6 @@
 ---
 name: "veritas-intelligence-effort-router"
-description: "Route finance work through guarded alert freshness and non-executing recommendation review."
+description: "Finance recs, ticker reviews, weekly market freshness. Route through SQL live bands, thesis canon, and non-executing recommendation review."
 ---
 
 # Veritas Intelligence Effort Router
@@ -21,27 +21,42 @@ Use these sources in order:
 python scripts\finance_sql_canon_access.py --write --validate
 ```
 
-4. Current explicit quote proof and alert evaluation:
+4. Current-window quote proof and alert evaluation, only as Band 2 when the matching digest or controller is missing, older than its max-age, or lacks the needed tickers:
 
 ```powershell
-python scripts\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate
+python scripts\run_alerts_recommendations_chain.py <morning|midday|post-close|weekly> --timeout-seconds 120 --write --validate
 ```
+
+Match the market session. Do not run `midday` because a pass skill names it. If the current-window digest and controller are already fresh and complete for the asked tickers, stay Band 1 for ticker-alert state. That green chain does not prove policy, breadth, credit, or regime freshness.
 
 5. `tmp/alert-level-freshness-controller.json` for ticker-level alert state.
 6. `tmp/finance-alert-os-digest.json` for ranked review context.
 7. Current WF84 evidence and WF85 non-executing recommendation cards only when their sources, freshness, and authority flags are clean.
 
-Indexes, caches, dashboards, old workflow packets, and archived files are routing or history only. They never outrank active canon.
+Indexes, caches, dashboards, old workflow packets, earnings scorecards, capital slates, quarantined analyst packets, and archived files are routing or history only. They never outrank active canon. Do not recursively search `tmp/` or Coverage Watchlist for a ticker thesis.
 
 ## Effort Bands
 
 - Band 0 — explain a concept from current canon without refresh.
-- Band 1 — read the current controller/digest and answer.
+- Band 1 — read the current controller/digest and answer ticker-alert state. Weekly/policy/sector questions still need the macro-artifact check below.
 - Band 2 — refresh the four-stage alerts chain because required proof is missing or stale.
 - Band 3 — perform bounded source-open research for a material recommendation, then reconcile it to active canon.
 - Band 4 — use implementation and independent QA governance when code, contracts, cron, SQL lineage, or skills change.
 
 Do not run a broad legacy finance stack merely because more artifacts exist.
+
+## Weekly / Policy / Sector Questions
+
+A weekly market, FOMC, rates, or sector-leadership ask needs the macro artifacts, not only the ticker chain.
+
+1. Read `generated_at_utc`, `last_trading_day`, and next FOMC date inside `tmp/policy-expectations.json`, `tmp/breadth-state.json`, `tmp/credit-spreads.json`, and `tmp/macro-regime.json`. File mtime can move without content refresh.
+2. If those timestamps predate the last material policy event or last completed cash session, refresh in this order: `policy_expectations_refresh.py`, `credit_spread_refresh.py`, `breadth_refresh.py`, `macro_regime_refresh.py`. `macro_regime_refresh.py` does not read market state and downstream macro fallbacks tolerate its absence, so the chain has no market-state stage. Never run `market_state_refresh.py` or recreate `tmp/market-state.json`: it is retired portal/paper current-state (2026-08-29 retirement), and `alerts_os_pivot_validator.py` treats recreation as a retired-state error that cascades blocked status into cron jobs. Run that validator after the refresh. Do not run `generate_dashboard.py` unless asked.
+3. Do not pass sector or index symbols to `intraday_quote_snapshot_proof.py`; that overwrites the alerts quote snapshot. Use the breadth-state artifact or a separate price pull.
+4. Official FOMC statement and SEP/dots outrank next-meeting futures odds and the composite regime label when they conflict. A high next-meeting hold probability is not a finished hiking path.
+5. For VIX, oil, or DXY that a macro-judgment draft reports as n/a, use official releases or a separate quote pull; never recreate retired `market-state.json` to fill them.
+6. `05. Intelligence/Weekly Positioning Review.md` is retired historical text, not current weekly canon.
+
+Done when policy/regime dates post-date the event, sector leadership uses the refreshed breadth tape, and the answer stays review-only.
 
 ## Named Ticker Review
 
@@ -50,9 +65,13 @@ For a full review or recommendation on a named ticker, open these exact rows bef
 1. Guarded SQL `reference_levels` for that ticker — live low, high, invalidation, timestamps, and band status.
 2. The same ticker in the current controller and current-window digest.
 3. The quote-snapshot row for that symbol.
-4. `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md` for thesis and interpretation only.
+4. `03. Alerts and Recommendations/Alert Bands and Invalidation Register.md` for thesis and interpretation only. Its numeric table is a historical snapshot, not live canon.
 
-If markdown snapshot numbers disagree with SQL, fail closed to SQL. Do not treat the markdown table as a live band.
+If markdown snapshot numbers disagree with SQL, fail closed to SQL. Do not treat the markdown table as the written band. Quote the disagreement as stale-register residue, not as a second live band.
+
+Band 3 then opens issuer IR plus the latest SEC Exhibit 99.1 or 10-Q. A local earnings scorecard cannot replace a newer official period. Extract SQL with a small `.py` file; nested `python -c` quoting fails on Windows.
+
+Done when the recommendation contract is filled, live numbers come from SQL, any stale-markdown-versus-SQL residue is named, the official-period date is stated, and the answer stays review-only.
 
 ## Alert States
 
@@ -70,6 +89,8 @@ Use only these operating states:
 - `suppressed`
 
 A state is an observation or review route, never an action instruction.
+
+When the digest lists no band-entry/no-chase/invalidation alerts and every `alert_state` is `monitor_only` because the cash session is closed, still report `level_relationship_state`. Last-completed-session quotes cannot fire; they remain valid review evidence. SQL `reference_band_status` can stay `IN_BAND` while live price versus SQL numbers is `no_chase`, `near_band`, or below the low. Use the live comparison.
 
 ## Recommendation Contract
 
@@ -94,7 +115,7 @@ Owner-provided objectives or limits may inform the current answer transiently. N
 - Current-last-completed-session data is valid closed-market evidence when the market calendar confirms it.
 - Market-hours claims require current quote proof appropriate to the decision consequence.
 - Stale, missing, conflicted, or hash-mismatched inputs emit `freshness_decay`; they must not be hidden to make the chain green.
-- Static bands are read from guarded SQL `reference_levels`. Do not silently re-derive them, auto-apply them, or prefer the historical markdown snapshot.
+- Live numeric bands are read from guarded SQL `reference_levels`. Do not silently re-derive them, auto-apply them, or treat the markdown register table as a live band. A markdown-versus-SQL number mismatch is stale-register residue; fail closed to SQL.
 - A structurally green chain proves only that its checks passed, not that the recommendation is correct.
 
 ## Automation Allowed
@@ -112,6 +133,7 @@ Do not invoke or recreate:
 - deployment/trade-grade gates or capital-priority queues
 - simulated account, request-card, order, reconciliation, or execution routes
 - WF56/WF58/WF63/WF64/WF67/WF86/WF87 operational paths
+- `05. Intelligence/Weekly Positioning Review.md` as a current weekly product
 
 Historical artifacts may be inspected read-only for audit.
 

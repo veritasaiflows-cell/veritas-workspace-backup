@@ -37,7 +37,7 @@ Finance alert-canon maintenance may run only through exact standing/scoped appro
 - Validation is proportional to scope and consequence; use `workspace-qa-pass` for independent QA when risk warrants it.
 - Record actual route, retries, proof, and truthful usage availability. Review efficiency on demand from available attribution/outcome evidence; no fixed cohort pilot is required and automatic route promotion remains disabled.
 - Workspace skills are primary. Use the narrowest owner skill and load only what the task needs.
-- Skill changes go through Skill Workshop; after material applies update the Skills Governance Index and run skill validation.
+- Skill changes go through Skill Workshop; after material applies update the Skills Governance Index and run skill validation. Workspace `skills/` outranks the Workshop copy: verify the live source with `openclaw skills info` after any apply, publish Workshop changes into the loaded copy through the governed path, and same-day stage the matching Workshop update after direct loaded-copy edits; the daily skill-shadow check alerts on new drift.
 
 After delegated work, Main integrates, verifies, updates continuity where needed, and continues until complete, blocked, or needing a real owner decision.
 

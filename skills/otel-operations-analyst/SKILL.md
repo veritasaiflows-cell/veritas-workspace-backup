@@ -1,6 +1,6 @@
 ---
 name: "otel-operations-analyst"
-description: "Interpret local OTEL operations and route privacy-safe telemetry evidence."
+description: "Assess local OTEL collector health, telemetry quality and cron/PM follow-through; route new metadata-capture proposals to the expansion skill."
 ---
 
 # OTEL Operations Analyst
@@ -31,6 +31,8 @@ python scripts\cron_control_packet.py --write --validate
 python scripts\pm_control_packet.py --write --write-db --validate
 python scripts\wf74_autonomy_work_router.py --write --validate
 ```
+
+Full command reference for status, follow-through, and post-change validation: `references/otel-command-map.md`.
 
 ## Window Selection
 
@@ -90,7 +92,7 @@ Never recommend or enable capture of:
 - raw file contents beyond approved local proof metadata
 - external telemetry export without explicit approval and a separate security review
 
-If the user asks for deeper telemetry, scope a proposal first. Do not mutate collector/runtime config from this skill.
+If the user asks for deeper telemetry, use [Privacy-Safe Telemetry Expansion](../privacy-safe-telemetry-expansion/SKILL.md) for the proposal, field selection, privacy proof and rollback plan. This skill owns current-state interpretation and the usage/outcome ownership split, not a second expansion procedure. Do not mutate collector/runtime config from this skill.
 
 ## Recommendation Format
 
@@ -104,7 +106,7 @@ Use this response shape:
 6. Boundary: state what was not authorized or changed.
 7. Proof: commands or packets checked.
 
-Keep conclusions blunt. If data is stale or thin, say so.
+Keep conclusions blunt. If data is stale or thin, say so. Short-status and recommendation answer shapes: `references/otel-response-contract.md`.
 
 ## Escalation And Stop Lines
 
@@ -113,12 +115,24 @@ Stop and ask before:
 - starting/restarting the collector or changing collector/runtime config
 - changing OTEL flush interval, sampling, exporter, verbosity, or capture depth
 - enabling external export or channel delivery
-- deleting, archiving, moving, or cleaning collector/log artifacts
+- deleting, archiving, moving, or cleaning collector/log artifacts. Retention coverage is per-file, not per-directory: a contract whose name matches the directory can still cover only some of the files in it, so verify the route's actual file list rather than its name. `metrics.jsonl`, `traces.jsonl` and `logs.jsonl` are collector outputs with their own disposition. Adding or changing a retention route is separately owner-gated; follow [Collector Artifact Retention](references/collector-artifact-retention.md) to confirm the specific gap, size the policy against a measured rate, and prove the change.
 - editing cron schedules or delivery modes
 - capturing token/cost/latency metadata through a new runtime path
 - changing finance canon/portfolio/cash/sizing/risk/account/paper/live state
 
 If collector health is down, say the local collector appears down and identify the exact next gated command/proof path, but do not start runtime services without approval.
+
+### Collector Recovery (owner-gated)
+
+After explicit owner approval, restart through the existing launcher — never a hand-rolled `otelcol.exe` call or a different config path — and run it so it outlives the exec session, because a foreground exec dies with the session:
+
+```powershell
+.\scripts\start_local_otel_collector.cmd
+```
+
+Config stays `tools\otelcol\openclaw-local-otel-runtime-metadata.yaml` on loopback `127.0.0.1:4318`, no external export. Verify in order, claiming only what passes: (1) `otelcol` process present and 4318 reachable; (2) `python scripts\otel_ops_control.py --write --write-db --multi-window --validate` returns `status=ok` with all five windows ok; (3) rerun the blocked consumer — for a blocked WF74 collection step, `python scripts\wf74_model_quality_collection_cron_runner.py --write --write-md --validate` returns `steps_blocked: 0` and `otel_window_summary_status: ok`.
+
+Claim limit: no scheduled task supervises this collector, so a restart does not survive a gateway restart or reboot. Report restored-now, not durable, and flag supervision as separately owner-gated.
 
 ## Routing Recommendations Into Work
 

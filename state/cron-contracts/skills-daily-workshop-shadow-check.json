@@ -1,0 +1,83 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "c75373d2-f0d7-4aa1-a246-09056c3d956b",
+  "name": "Skills - Daily Workshop Shadow Check",
+  "owner_workflow": "WF89 skill-copy governance",
+  "contract_reason": "Workspace skills/ outranks the agent workshop-skills directory, and Skill Workshop applies plus the autonomous collection reviewer write only the Workshop copy. On 2026-09-25, 12 skills were found silently split, with 17 reviewer-written reference files never loaded. This daily model-free check fails (Telegram failure alert) on any new unacknowledged divergence so Workshop output reaches the loaded copy within a day.",
+  "approval": "Randall Telegram 2026-09-25 19:13 MST: 'Proceed with recommendations and continue to merge' (recommendation 2 = daily shadow check)",
+  "description": "Model-free daily check that no Skill Workshop copy is shadowed by a differing loaded copy (workspace skills/ outranks workshop-skills). Exit 1 on a new unacknowledged divergence so the failure alert fires. Read-only on skills. No delivery except failure alert.",
+  "enabled": true,
+  "required": true,
+  "deleteAfterRun": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "30 6 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none"
+  },
+  "failureAlert": {
+    "after": 1,
+    "channel": "telegram",
+    "to": "telegram:8650152206",
+    "accountId": "default",
+    "includeSkipped": false
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts\\skill_shadow_check.py",
+      "check",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 120
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "failureAlert",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/skill-shadow-check.json",
+    {
+      "path": "state/skill-shadow-acknowledged.json",
+      "role": "acknowledged_shadow_divergences",
+      "required": true,
+      "blocking": true,
+      "existence_only": true
+    }
+  ],
+  "quiet_output": "Identical and acknowledged pairs are silent; exit 1 only on a new unacknowledged divergence.",
+  "rollback": "openclaw cron rm c75373d2-f0d7-4aa1-a246-09056c3d956b; delete this contract file",
+  "authority_boundary": {
+    "agent_turn_model_spawn_required": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "command_payload": true,
+    "config_auth_runtime_mutation_allowed": false,
+    "delivery_mutation_allowed": false,
+    "enable_disable_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "owner_workflow": "WF89 skill-copy governance",
+    "paper_or_live_execution_allowed": false,
+    "review_only": true,
+    "schedule_mutation_allowed": false,
+    "skill_copy_or_merge_allowed": false
+  },
+  "updated_at_utc": "2026-09-26T02:25:00Z"
+}

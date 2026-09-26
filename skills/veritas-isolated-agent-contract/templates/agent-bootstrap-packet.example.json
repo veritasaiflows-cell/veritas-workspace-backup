@@ -10,11 +10,10 @@
   "doctrine_hierarchy": [
     "SOUL.md",
     "AGENTS.md",
-    "IDENTITY.md",
     "USER.md",
-    "TOOLS.md",
     "skills and playbooks",
     "MEMORY.md",
+    "HEARTBEAT.md (heartbeat behavior only)",
     "generated proof packets"
   ],
   "current_assignment": {

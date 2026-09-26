@@ -1,0 +1,15 @@
+# Accepted-Outcome Efficiency Review
+
+Read for an explicitly requested model-economics review or when checking a token/cost reducer. Use authoritative dispatch/Gateway usage and acceptance evidence, not collector volume or model claims. This is descriptive review, not permission to change capture depth or implement a repair.
+
+1. Define the cohort, attempted work, and acceptance unit before calculating ratios. Retain every failed attempt and retry in the numerator; divide by distinct accepted outcomes, not successful calls. Code changes, completed jobs, and dialogue trajectories are different units. Verify attempt identities against the dispatch records: a dictionary keyed only by model/task pair can overwrite retries. Finish with an auditable attempt set, denominator, and exclusions.
+
+2. Check every attempt's usage coverage and semantics. Preserve uncached input, cache reads/writes, output, and reported totals separately; determine whether input already includes cached tokens before summing. Input plus output alone can omit cache reads. Keep missing counters unavailable rather than converting them to zero. Finish with observed coverage and a reconciled total or an explicit partial/unavailable result.
+
+3. Separate billed cost, sourced API-equivalent estimates, runtime-reported cost, and token proxies. Record price provenance and cache pricing for estimates; a runtime zero without authoritative pricing or billing is not proof of free service. Preserve a verified numeric zero as zero, never through `sum(...) or None`. If required spend is missing for any cohort attempt, report the known subtotal and coverage separately and withhold the full-cohort cost-per-accepted-outcome value. With no accepted outcome, report spend and failures without a ratio. Finish with an honestly labeled metric rather than a cheap-looking incomplete estimate.
+
+4. Before trusting a changed reducer, exercise its real CLI and synthetic edge cases: repeated pair IDs with multiple attempts, incomplete token/cost rows, explicit zero, and no accepted outcome. Check that a parsed option exists before code dereferences it; a successful helper function does not prove the entry point works. Preserve observed failures and route repairs through implementation governance. Finish with reproducible arithmetic and entry-point proof, or mark the metric unaccepted.
+
+5. Compare like-for-like evidence using uncached input and gross replay tokens per Main-accepted job, first-pass acceptance, elapsed time to accepted proof, retry tax, and escaped defects. Include harness/setup overhead or identify its exclusion rather than implying it was free. Invalid or partial telemetry earns no efficiency-success credit. API-equivalent cost is not an invoice; OAuth capacity is advisory and tokens do not prove quota consumption. Finish with descriptive comparisons and remaining coverage limits, not inferred policy authority.
+
+Store only allowlisted metadata and privacy-safe hashes in routing or efficiency ledgers. Automatic route ranking/promotion remains governed by the parent skill; no fixed cohort pilot or minimum job count is required for an on-demand review.

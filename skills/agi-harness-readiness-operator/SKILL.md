@@ -1,6 +1,6 @@
 ---
 name: "agi-harness-readiness-operator"
-description: "Use prompt-book and token proof as readiness evidence."
+description: "Assess AGI/ASI harness readiness from local gates, including prompt-book and token-efficiency evidence; no authority expansion."
 ---
 
 # AGI Harness Readiness Operator
@@ -41,13 +41,19 @@ Read or refresh these surfaces before making readiness claims:
 - `tmp/agent-message-ledger-current.json`
 - checkpoint packets for WF74-WF88, WF84-WF85, and implementation closeout when relevant
 
-If the readiness packet is stale or missing, run:
+For an inspection-only phase-entry question:
+
+1. Open the phase plan, latest acceptance, and preparation contract; distinguish preparation authority, activation requirements, and eventual outcome criteria before interpreting the overall harness grade.
+2. Compare upstream packet timestamps and run `python scripts\agi_harness_readiness_packet.py --validate` without write flags for an in-memory gate summary. This recomposes existing sources; it does not refresh stale upstream evidence. Report remaining source-age limits.
+3. Check relevant live automation state through `automations` list/get, then verify OTEL health separately using `tmp/otel-ops-control.json` and a read-only connection check to its declared endpoint. Separate scheduler completion, producer validation, and collector reachability: a successful digest may retain non-blocking diagnostic failures. Report a failed connection as unreachable, not a proven process death.
+
+When a persisted readiness refresh is needed, run:
 
 ```powershell
 python scripts\agi_harness_readiness_packet.py --write --write-md --validate
 ```
 
-If cron or OTEL gates are warning or blocked, refresh only proof artifacts first:
+For a persisted refresh with warning or blocked cron/OTEL gates, refresh only proof artifacts first:
 
 ```powershell
 python scripts\otel_ops_control.py --write --write-db --multi-window --validate
@@ -141,14 +147,7 @@ Keep the response concise, blunt, and evidence-first.
 
 When AGI-harness or ASI/RSI-style work involves reusable prompts, self-prompts, helper packets, or internal challenge-solving loops, check prompt-book proof before claiming the loop is reusable.
 
-Recommended proof:
-
-```powershell
-python scripts\prompt_book_registry.py --write --write-md --validate
-python scripts\prompt_book_eval_fixtures.py --write --write-md --validate
-python scripts\prompt_book_linter.py --write --validate
-python scripts\prompt_book_eval_gap_packet.py --write --write-md --validate
-```
+Use the four-stage readiness subset in [Prompt Book Operations, procedure step 2](../veritas-prompt-book-operator/SKILL.md#procedure). That skill owns refresh ordering and output paths; do not run its metadata-edit or skill-apply branches merely to assess readiness.
 
 Interpretation:
 

@@ -13,10 +13,10 @@ Prevent a valid threshold, catalyst, thesis change, or freshness issue from bein
 
 ```powershell
 python scripts\finance_sql_canon_access.py --write --validate
-python scripts\run_alerts_recommendations_chain.py midday --timeout-seconds 120 --write --validate
+python scripts\run_alerts_recommendations_chain.py <morning|midday|post-close|weekly> --timeout-seconds 120 --write --validate
 ```
 
-Read the guarded SQL `reference_levels` proof, explicit quote snapshot, alert-level freshness controller, and current digest. Live numeric levels come from SQL. The Alert Bands markdown register is thesis/interpretation only and is never re-derived here.
+Read guarded SQL `reference_levels`, the explicit quote snapshot, the alert-level freshness controller, and the current digest. Live numeric levels come from SQL. The Alert Bands markdown register is thesis/interpretation only and is never re-derived here. Match the market session when refreshing the chain; do not default to midday.
 
 ## Visibility Rule
 

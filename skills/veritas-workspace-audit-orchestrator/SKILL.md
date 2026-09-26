@@ -1,35 +1,25 @@
 ---
 name: "veritas-workspace-audit-orchestrator"
-description: "Run workspace audits, classify findings, route proof-backed follow-ups, and preserve authority stop lines."
+description: "Workspace audits; performance and disk mass; lane debt; automation recovery; PM readiness. Diagnose exact failures and route evidence-backed repairs."
 ---
 
 # Veritas Workspace Audit Orchestrator
 
-Run evidence-backed audits of the Veritas workspace without turning generated proof into authority.
-
 ## Purpose
 
-Produce a trustworthy audit packet for broad workspace health or targeted findings:
-- current trust state
-- concrete risks
-- source-backed recommendations
-- next repairs with acceptance proof
-- explicit authority boundaries
-
-Default posture is review-only. Do not clean up, archive, delete, mutate config/auth/runtime, change portfolio/canon state, or imply finance/trade/account approval unless Randall explicitly approves the separate action and the proper gate exists.
+Produce source-backed findings, ranked repairs and acceptance proof for workspace health or targeted reviews. Default to review-only; generated proof grants no authority and the Stop Lines govern mutation.
 
 ## Read First
 
 For full workspace audits, read or route through:
 - `SOUL.md`
-- `AGENTS.md`
+- `AGENTS.md`, including its Tools section for local tool/runtime notes
 - `USER.md`
-- `TOOLS.md`
 - `06. Playbooks/Startup Truth Index.md`
 - today's and yesterday's `memory/YYYY-MM-DD.md`
 - `MEMORY.md` only when durable continuity matters
 - the latest relevant audit under `08. Audits/`
-- `python scripts\concurrent_lane_manager.py --status --write --validate`
+- `python -B scripts\concurrent_lane_manager.py --status --active-lease-safety --validate` (read-only; report full validation separately from active admission)
 
 For targeted reviews, start with the owning artifact, then read the smallest adjacent set of producers, consumers, validators, and governing notes needed to verify the claim.
 
@@ -37,15 +27,15 @@ For targeted reviews, start with the owning artifact, then read the smallest adj
 
 Use the narrowest mode that answers Randall's request:
 - **full workspace audit**: broad control-plane, continuity, skill, cron, PM, DB lifecycle, runtime, finance-boundary, memory, and workspace-governance review
-- **targeted finding review**: one finding or cluster, with root cause, current status, fix options, and acceptance proof
-- **control-plane health review**: PM, cron, runtime scorecards, lane register, artifact indexes, route registries, and boot surfaces
+- **targeted finding review**: one finding or cluster, with root cause, current status, fix options, and acceptance proof. For latency, throughput, startup or disk-mass findings, read `references/performance-and-disk-mass-review.md` before proposing an optimization; it owns the measurement floor, layer attribution and headroom checks.
+- **control-plane health review**: PM, cron, runtime scorecards, lane register, artifact indexes, route registries, and boot surfaces. When the request is the PM readiness score or band, or a target such as "bring PM to green", read `references/pm-readiness-band-interpretation.md` before proposing work: it owns the score arithmetic, the reachable ceiling, and the classify-before-repair rule.
 - **skill/procedure hardening review**: map audit residue into skills, operating procedures, validators, or queue items
 - **finance authority review**: verify generated artifacts, routing state, paper/live boundaries, portfolio/canon mutation gates, and owner approval lines
 
 ## Full Workspace Procedure
 
 1. Check lane state before any write or generated proof.
-   - Run `python scripts\concurrent_lane_manager.py --status --write --validate`.
+   - Use the read-only lane check under Read First.
    - If writing an audit note or proposal, lease exact writable surfaces first.
 
 2. Reconstruct the audit contract.
@@ -54,12 +44,13 @@ Use the narrowest mode that answers Randall's request:
    - Which generated artifacts are proof only?
    - Which surfaces carry authority?
 
-3. Refresh thin truth surfaces before broad scans.
+3. Refresh thin truth surfaces before broad scans. Verify control surfaces against `references/full-workspace-audit-checklist.md`.
    - PM: `python scripts\pm_control_packet.py --write --write-db --validate`
    - Cron: `python scripts\cron_control_packet.py --write --validate`
    - Cron freshness when cron claims matter: `python scripts\cron_freshness_scorecard.py --write --validate`
    - Runtime: `python scripts\runtime_performance_scorecard.py --timed-quick --write --validate`
    - Artifact index: `python scripts\artifact_index.py --write --validate`
+   - Workflow routes: `python scripts\workflow_routing_index.py --write --write-db --validate`; a `routing_index_stale` refusal from `workflow_router.py` means refresh, then re-query.
    - Go routes when Go validators are in scope: `python scripts\go_sql_helper_route_registry.py --validate`
    - DB lifecycle when SQLite ownership is in scope: `python scripts\db_lifecycle_manifest.py --write --validate`
    - Skills: `openclaw skills check`
@@ -88,18 +79,14 @@ Use the narrowest mode that answers Randall's request:
 7. Recommend concrete repairs.
    - Each recommendation needs owner surface, next action, stop line, and acceptance proof.
    - Prefer fixing the smallest real gap over broad restructuring.
-   - If the right fix is durable behavior, route it into a skill, operating procedure, validator, or queue item.
 
 8. Close honestly.
-   - State what was validated.
-   - State what was not checked.
-   - State what remains blocked.
-   - Close the lane with proof if a lane was opened.
+   - State validated, unchecked and blocked scope; close any lane opened with proof.
 
 ## Targeted Finding Review Procedure
 
 1. State the finding in one line.
-2. Verify whether it is still live using current artifacts.
+2. Verify current status through `references/targeted-finding-review-checklist.md`. For historical register errors or missing terminal proof, use [historical lane validation](references/historical-lane-validation.md); for automation failures or a fleet-status inventory question, active-lane recovery, a validator failing a value at a threshold, a guard blocked by an archived artifact, a recurring guard/keeper job whose success does not prove it acted, or a config/scheduler change that is a hypothesis needing live verification and rollback, use `references/automation-recovery-proof.md` before replaying commands or changing either side.
 3. Inspect the exact owner file, producer, consumer, validator, and latest proof.
 4. Classify the finding as live, stale, resolved, partially resolved, or superseded.
 5. Identify root cause, blast radius, and recurrence risk.
@@ -129,8 +116,6 @@ When Randall approves implementation of audit recommendations, start with a lane
 6. Rerun changed-file routing, validators, release contract, and closeout.
 7. Update project continuity and daily memory.
 
-For each material finding include severity, live proof, owner surface, root cause, blast radius, recommended lane type, stop line, acceptance proof, and whether a local eval case or Skill Workshop update is needed.
-
 Recommended lane types:
 - `Lane 0 governance repair`: deterministic local blocker that prevents control/release trust.
 - `V2 decision docket/routing`: classification logic that prevents noisy residue from becoming fake work.
@@ -142,15 +127,7 @@ Recommended lane types:
 
 ## Web Calibration Rule
 
-When the audit asks for external/web calibration, use current primary or high-quality sources for patterns, but translate them into local, validator-backed OpenClaw controls. External patterns do not override local finance authority, owner approval, or release-contract gates.
-
-Recommended calibration themes:
-- evals and regression suites for agents
-- tracing and guardrails
-- durable execution/stateful workflows
-- human-in-the-loop approval boundaries
-- routing/classification dockets
-- control-plane observability
+When the audit asks for external/web calibration, use current primary sources for patterns and translate them into local, validator-backed controls. External patterns never override local finance authority, owner approval, or release-contract gates. Theme list and handling: `references/web-calibration-branch.md`.
 
 ## V2 Acceptance Proof
 
@@ -167,21 +144,7 @@ A V2 audit implementation is complete only when:
 
 ## Output Format
 
-Return findings in this order:
-- conclusion
-- scope audited
-- proof refreshed
-- top findings by severity
-- recommendations
-- stop lines / authority limits
-- next concrete action
-- intentionally deferred checks
-
-For each finding include:
-- evidence
-- impact
-- recommendation
-- acceptance proof
+Return conclusion, scope, current trust state, authority limits and deferred checks. Each material finding names severity, live proof, owner, root cause, blast radius, repair lane, next action, stop line, acceptance proof and any needed eval or skill update.
 
 ## Stop Lines
 
@@ -193,6 +156,3 @@ Stop and ask before:
 - external/public action
 - installing third-party ClawHub skills directly
 
-## Good Audit Standard
-
-A good audit makes it harder for the workspace to lie about its own state. It names the gap, the proof, the owner, the next repair, and the boundary.

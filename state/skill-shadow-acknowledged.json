@@ -1,0 +1,54 @@
+{
+  "schema": "veritas.skill_shadow_acknowledged.v1",
+  "entries": [
+    {
+      "key": "main|ai-drop-service-os-contract|a08edf31bdabfdf567c5d63f9a7af6f4466a30bc40f188aaf59d8eed105c5146|6b26f7f25f53c0a37d5c4a6d94671e82bf4c6d88a1f3ffacd41abfa7c6f9288c",
+      "agent_id": "main",
+      "skill": "ai-drop-service-os-contract",
+      "reason": "Merged into the loaded copy 2026-09-25; Workshop sync proposals pending Randall apply: ai-drop 2d0d082c6d, routing 8bf2f2fc1f, isolated-agent 33eae82878, os2 453f3bdbb2",
+      "acknowledged_at_utc": "2026-09-26T02:21:54Z"
+    },
+    {
+      "key": "main|veritas-isolated-agent-contract|465bb73ca25d63db0465b1f5417e92406c1e4f6a98c43ff631aaf22ac98bb403|a8194d522d65596774fbe0f76118c506849a289c32dbd2c377b6311b2454c65b",
+      "agent_id": "main",
+      "skill": "veritas-isolated-agent-contract",
+      "reason": "Merged into the loaded copy 2026-09-25; Workshop sync proposals pending Randall apply: ai-drop 2d0d082c6d, routing 8bf2f2fc1f, isolated-agent 33eae82878, os2 453f3bdbb2",
+      "acknowledged_at_utc": "2026-09-26T02:21:54Z"
+    },
+    {
+      "key": "main|veritas-model-routing-helper-lanes|2a9fc4615d42a8345f3d315ded3df8464408b1d0138d2bf24b67c6c4e0e21531|f0292c499c0e4f9c17ddf242c9ee1d00c1489ceb38696092b754b68c7ad7f936",
+      "agent_id": "main",
+      "skill": "veritas-model-routing-helper-lanes",
+      "reason": "Merged into the loaded copy 2026-09-25; Workshop sync proposals pending Randall apply: ai-drop 2d0d082c6d, routing 8bf2f2fc1f, isolated-agent 33eae82878, os2 453f3bdbb2",
+      "acknowledged_at_utc": "2026-09-26T02:21:54Z"
+    },
+    {
+      "key": "main|veritas-os2-cleanup-router|84f120f9d9052b54e904ca79dbfa2ddeb672653030c9b9efa04108924774da3f|aa42d502b3efb1992f68069ee434fe39060c9f61db68787d03fdaefe566b3ace",
+      "agent_id": "main",
+      "skill": "veritas-os2-cleanup-router",
+      "reason": "Merged into the loaded copy 2026-09-25; Workshop sync proposals pending Randall apply: ai-drop 2d0d082c6d, routing 8bf2f2fc1f, isolated-agent 33eae82878, os2 453f3bdbb2",
+      "acknowledged_at_utc": "2026-09-26T02:21:54Z"
+    },
+    {
+      "key": "main|ai-drop-service-os-contract|a7746055cac84c7016de6cbfe4fcc1e0b546603c5fc8159544764de550c52110|6b26f7f25f53c0a37d5c4a6d94671e82bf4c6d88a1f3ffacd41abfa7c6f9288c",
+      "agent_id": "main",
+      "skill": "ai-drop-service-os-contract",
+      "reason": "Merged into the loaded copy 2026-09-25 (post-QA fixes); Workshop sync proposals pending Randall apply: ai-drop 2d0d082c6d, routing 8bf2f2fc1f, isolated-agent 33eae82878, os2 453f3bdbb2",
+      "acknowledged_at_utc": "2026-09-26T02:25:20Z"
+    },
+    {
+      "key": "main|veritas-isolated-agent-contract|a6aec265487e629b521a51f67b2a760d03ded83164dd1c2348bba197e9802249|a8194d522d65596774fbe0f76118c506849a289c32dbd2c377b6311b2454c65b",
+      "agent_id": "main",
+      "skill": "veritas-isolated-agent-contract",
+      "reason": "Merged into the loaded copy 2026-09-25 (post-QA fixes); Workshop sync proposals pending Randall apply: ai-drop 2d0d082c6d, routing 8bf2f2fc1f, isolated-agent 33eae82878, os2 453f3bdbb2",
+      "acknowledged_at_utc": "2026-09-26T02:25:20Z"
+    },
+    {
+      "key": "main|veritas-model-routing-helper-lanes|7fa71c213155fd5dfba190d8b13541fa649b466ca2b7d35995fda089b0c210a8|f0292c499c0e4f9c17ddf242c9ee1d00c1489ceb38696092b754b68c7ad7f936",
+      "agent_id": "main",
+      "skill": "veritas-model-routing-helper-lanes",
+      "reason": "Merged into the loaded copy 2026-09-25 (post-QA fixes); Workshop sync proposals pending Randall apply: ai-drop 2d0d082c6d, routing 8bf2f2fc1f, isolated-agent 33eae82878, os2 453f3bdbb2",
+      "acknowledged_at_utc": "2026-09-26T02:25:20Z"
+    }
+  ]
+}

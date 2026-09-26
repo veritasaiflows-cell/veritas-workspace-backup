@@ -35,11 +35,7 @@ Never capture or recommend capture of:
 
 ## Scoping Procedure
 
-1. Establish the current OTEL state:
-
-```powershell
-python scripts\otel_ops_control.py --write --write-db --multi-window --validate
-```
+1. Establish current state through [OTEL Operations Analyst's first route](../otel-operations-analyst/SKILL.md#first-route), then check its [telemetry ownership split](../otel-operations-analyst/SKILL.md#telemetry-ownership-split). Existing dispatch/Gateway usage or outcome records may already answer the question; deeper collector capture must not duplicate or invent job-level attribution. Record the current state and the actual evidence gap before proposing new capture.
 
 2. Identify the exact decision that deeper metadata would support:
 

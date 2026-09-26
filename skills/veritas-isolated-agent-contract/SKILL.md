@@ -1,190 +1,40 @@
 ---
 name: "veritas-isolated-agent-contract"
-description: "Isolated-agent transport, provenance, writeback, and validation contract."
+description: "Isolated agents; blocked handoffs; bootstrap packets; native lanes. Verify bounded transport, recovery, provenance, and acceptance."
 ---
 
-# Veritas Isolated Agent Contract
+# Isolated Agent Contract
 
-## Purpose
+## Procedure
 
-Use persistent isolated agents and Codex-native subagents without confusing workspace separation, context transport, model routing, provenance, authority, or a draft with an applied change. This skill governs isolation mechanics; `scripts/project_implementation_router.py` owns execution-route selection.
+1. Use `scripts/project_implementation_router.py` and `veritas.execution_efficiency_policy.v1`: model-free first, Codex-native second (fail-closed: its Terra model is in `LEGACY_DENIED_MODELS`), Main's live OpenClaw global/session-selected model for integration and acceptance third, then the configured persistent specialist with strict transport proof. Verify persistent identity, workspace, state, sessions, and tools against the live configured agent entry and runtime evidence. OpenClaw `sessions_spawn` with `context=isolated` starts clean model context; Main `tmp/` or `state/` is reachable only through separately proven transport, not the context setting. Codex-native children share Main's workspace. Bootstrap is context, not authority; workspace separation is not a sandbox.
 
-## Distinguish The Runtime Forms
+2. Resolve primaries from `scripts/agent_fleet_policy.py` and live config; `veritas-model-routing-helper-lanes` owns role assignments and recovery selection, including separate code-author and independent-QA roles. Require exact expected/live model equality and a bounded cost or quality benefit over Main. Build production spawn arguments only through `sessions_spawn_dispatch_contract`, and verify the actual model receipt at closeout. Missing transport authorizes neither substitution nor broader Main work. Record the runtime, role, and exact route.
 
-| Form | Runtime identity | Workspace/context | Best use | Not authority for |
-|---|---|---|---|---|
-| Persistent isolated agent | configured `agentId` with its own workspace, agent directory, session store, and tool policy | receives its own bootstrap; shared Main context requires proven transport | durable specialist persona or department | self-routing, self-acceptance, final truth |
-| Codex-native subagent | task-scoped Codex session sharing the Main workspace | bounded task context; actual rollout metadata may be imported | bounded non-QA read-only work; no code authorship | broad multi-file work, hidden model/backend changes |
-| OpenClaw sub-agent | child session of an OpenClaw agent | inherits the parent agent scope and bootstrap | background work inside that agent | a separate persistent persona |
-| Bootstrap/capability packet | generated read-only context | current bounded doctrine and task contract | cold-start orientation | approval, canon, or execution authority |
+3. Declare `patch_draft` by default: the helper returns a unified diff or structured proposal, Main applies accepted changes and validates the applied sources. Select `scoped_worktree_implementation` only with proof of the exact writeback mount, allowlist, and post-write diff/hash readback. If the allowlist omits the live target paths, keep `patch_draft` and have the helper return the exact diff or argv in its reply; do not spawn a writer against an unlisted path. Verify lane mode and write authority separately; a decoder, shell, or attachment draft proves no shared-workspace writeback.
 
-OpenClaw does not discover agents from a fixed workspace folder. Use configured `agents.list[]` truth. Each persistent agent has an explicit workspace and agent directory. Workspace separation is organizational unless a separately proven sandbox is active.
+4. Gate persistent transport on Main's explicit readiness expectation and a small strict-schema workspace-relative proof with status `ok`, matching agent and required capability. Attachment-readback proof expires after 24 hours. Scoped-writeback proof expires after 7 days and requires `python scripts/scoped_writeback_preflight.py --agent <id>` to return `ok` at every implementation dispatch. The preflight checks `evidence.config_fingerprint` against live sandbox/tool policy, sandbox image, Docker daemon, and every read-write bind source. Configuration drift, missing mounts, dead daemon, or expired proof requires a fresh canary. Reject malformed, escaping, stale, unsupported, or false-capability proof. Verify actual transport is available; proof alone does not enable it.
 
-## Route Selection
+5. Use [Frozen Handoff Transport](references/frozen-handoff-transport.md) for manifest fields, budgets, path checks and mounted/attachment/inline staging. Finish with immutable inputs and proven receiver paths, not assumed host access.
 
-Use `veritas.execution_efficiency_policy.v1` in this order:
+6. Apply that reference's receiver-proof checks in the same agent/runtime mode. For an occupied scoped worktree, use its recovery branch: preserve with approval, restage, then canary exact filenames. Verify source/output hashes with attribution. Finish with a typed blocker or proof of the tested capabilities; file read/write does not prove execution.
 
-1. deterministic model-free command;
-2. explicit eligible read-only Codex-native route, not code authorship or independent QA;
-3. Main/Sol for integration, acceptance and authority-sensitive judgment;
-4. the selected persistent role on its exact configured model with fresh strict transport proof.
+7. Supply wiki context from Main when needed. Isolated allowlists lack `memory_search`, bootstraps set `host_path_direct_reads_allowed=false`, and neither `wiki/**/*.md` nor `state/wiki-retrieval` nor Main `tmp/`/`state/` is directly reachable. Main uses `memory_search` with `corpus=wiki`, opens named owner artifacts, and attaches the smallest sufficient excerpt within the frozen budget. Retrieval is lexical: check `wiki/index.md` before treating a null paraphrased search as absence. Verify excerpts are routing/evidence only, not canon, approval, execution, finance, or freshness proof; current JSON/validator owners remain required. Missing context returns to Main, not an invented retrieval capability. Tool-allowlist expansion requires separate runtime/config approval.
 
-Resolve exact primaries and closed recovery lists through `scripts/agent_fleet_policy.py`, live config and `veritas-model-routing-helper-lanes`; never preserve an older role map in this skill or a spawn prompt. Treat `data/evals/model-arena/arena-six-20260919/results/incumbent-baseline-20260919/main-acceptance.json` as bounded role-rationale evidence only: DeepSeek 4.1 Flash was stronger overall for supervised reasoning/planning, while GLM 5.3 Flash was stronger for exact-format/tool recovery; neither result grants automatic promotion or config change. Default code authorship is Muse; default independent QA is GLM 5.3. Model routing grants no unattended-repair or runtime/config authority. Require `sessions_spawn_dispatch_contract` to produce production spawn arguments only after the policy primary matches live config, then require the actual model receipt at closeout. Do not silently use Main or substitute another model when persistent transport is unavailable. Do not select an isolated agent merely because parallelism is possible; the lane must be independently bounded and lower-cost or higher-quality than Main doing the same work.
+8. Keep persistent lanes shell-free unless live role-specific policy grants proven sandboxed execution. For an owner-approved shell/decoder pilot, verify Docker first and constrain one named agent: no network, elevation, host/Main workspace mount, credential/config/channel/cron/session tools; read-only root where feasible, ephemeral scratch, tight CPU/memory/PID/wall limits, exact harmless decoder/test allowlist, and denial of arbitrary process behavior. Prove benign attachment processing and negative tests for network, host reads, elevation, and forbidden commands. If sandbox proof fails, retain shell-free operation rather than host execution. A decoder pilot grants no implementation writeback or other-agent capability.
 
-## Persistent Context-Transport Gate
+9. Dispatch with a new session/run record for each attempt. Record attachment shape, byte/line limits, capability proof ID, typed failure, first-attempt outcome, retry count, timestamps, 90-second provisional incident SLA, and terminal result. A receiver preflight failure is local and does not count as a model attempt. Preserve the actual successful terminal identity rather than an earlier failed session. Use typed outcomes including `attachment_decode_unsupported`, `attachment_reader_limit`, `attachment_source_readback_failed`, `attachment_hash_mismatch`, `sandbox_unavailable`, `sandbox_policy_denied`, `scoped_writeback_unproven`, `patch_draft_returned`, and `main_applied_after_draft`. Verify retries are not first-pass successes and drafts are not applied changes; exact repeats remain idempotent while changed decisions/evidence receive new sequence and monotonic timestamp.
 
-A persistent isolated agent may dispatch only when:
+10. For Codex-native lanes, fail closed while the Terra route stays denied. Do not dispatch Terra/Codex-native work; use GLM 5.3 for helper review and Muse Spark 1.3 Contributor for code. Reject broad, multi-file implementation, forbidden-path, shared-contract, finance-sensitive, runtime/config/auth, external, destructive, or ambiguous work. Import only allowlisted metadata from a unique safe completed JSONL rollout; reconcile inclusive-cache usage and preserve reasoning separately from total tokens. Keep expected/actual backend immutable as `codex_native_subagent`; hash and remove raw caller session, task, run, label, and role at sanitization. Finish with truthful privacy-safe native provenance.
 
-- Main explicitly expects transport readiness;
-- a workspace-relative proof exists, is small, strict-schema, status `ok`, and no older than 24 hours;
-- the proof attests the actual required capability: attachment readback for a patch-draft lane, or verified scoped writeback for an implementation lane;
-- the referenced file resolves inside the workspace;
-- the handoff has an explicit base path and frozen file inventory.
+11. Validate completion against applied files. For Main-applied drafts, validate immutable handoff metadata separately from authorized changes: changed paths need frozen before-hash/size and actual post-apply hash/size; unchanged frozen files retain original hashes. Reject no-op completions, missing files, unlisted mutations, and paths outside scope. For v3, require exact manifest-schema/contract-version agreement without wrapper downgrade, a bounded hash-matched applied-diff artifact with normalized relative paths, and a separate hash-matched QA artifact tied to the same snapshot, diff hash, changed paths, and post-apply hashes. QA commands must show successful validation-runner invocation, output-artifact hash, and exact validated paths/hashes. Verify focused tests and risk-budgeted QA on applied sources and diff, not merely the proposal or self-attested command list.
 
-A tiny nonce proves only basic attachment delivery. It does not prove decompression, reader limits, source-file readback, hash verification, shell availability, or shared-workspace writeback. Missing, stale, malformed, path-escaping, unsupported, or false-capability proof fails closed. A valid proof attests capability; it does not itself enable transport. If transport is not actually available, rescope to an eligible native lane or stop. Never broaden Main implicitly.
+12. For bootstrap preparation, consult `templates/agent-bootstrap-packet.example.json`, `templates/agent-capability-manifest.example.json`, and `templates/agent-knowledge-base-index.example.md` as examples, not live authority. The capability example is read-only with no execution or write grant; its model strings are unresolved sentinels, not dispatchable models or automatic upgrade policy. Resolve the exact role route through step 2; populate any command/write scope only from the proven lease and capability gates above. Validate through `scripts/agent_bootstrap_generator.py` and `scripts/agent_bootstrap_linter.py`: current profile revision, the model-routing owner's efficiency policy and Main/fallback/role constraints, steps 4–8 transport/scope/wiki boundaries, and step 13 privacy/usage rules must hold. Check against `SOUL.md`, `AGENTS.md` including its Tools section, and exact owners; templates cannot restore retired `TOOLS.md` or compatibility `IDENTITY.md` as bootstrap authority or widen permissions.
 
-## Patch-Draft Versus Implementation Lanes
+13. Capture authoritative usage/outcome metadata when exposed: expected/actual backend/model/thinking, cache-inclusive tokens, uncached input, output, reasoning, handoff size, duration, QA result, Main acceptance, retries, and retry tax. Join by deterministic privacy-safe attempt identity; fail closed on ambiguity or conflict and mark unavailable usage honestly. Incidents retain cost evidence but receive no completion, first-pass, QA-pass, Main-acceptance, or cohort credit. Keep billed cost/OAuth impact unknown unless authoritatively observed. Finish with verified route conformance and metadata-only evidence.
 
-Every persistent lane declares one of these mutually exclusive modes:
+14. Close with runtime/lane mode, privacy-safe identity, expected/actual route, transport/sandbox proof, snapshot, attempts/retries, usage, validators, QA, Main acceptance, and remaining limits/gates. Any unproven required transport, scope, hash, route, identity, privacy, freshness, preflight, sandbox, or tool capability blocks acceptance.
 
-- **`patch_draft`** -- the agent reads the frozen handoff and returns a unified diff or structured change proposal. Main applies any accepted diff, then validates the applied sources. The agent must never be described as having changed the shared workspace.
-- **`scoped_worktree_implementation`** -- the agent may write only after a fresh proof verifies its exact scoped writeback mount, path allowlist, and post-write diff/hash readback. Main still independently validates and accepts the applied sources.
+## Isolation And Authority Checks
 
-Default to `patch_draft`. Granting a decoder or sandboxed shell does not grant shared-workspace writeback. Never solve a handoff problem by granting generic host shell, broad workspace access, elevation, network, session tooling, or execution authority.
-
-## Frozen Handoff And Receiver Preflight
-
-Each model-driven lane declares parent job, lane, phase, attempt, retry, expected backend/model/thinking, task shape, authority class, exact writes, deliverable, proof, next recipient, and stop lines.
-
-The immutable handoff contains:
-
-- workspace-relative base path;
-- no more than 6 files, 120,000 bytes, and 30,000 estimated context tokens;
-- sorted file paths, exact byte sizes, and SHA-256 hashes;
-- contract hash and frozen snapshot ID;
-- deterministic preflight fingerprint and status.
-
-For a shell-free attachment lane, use a small raw UTF-8 manifest plus one raw UTF-8 attachment per source file. Keep each attachment and each individual line at or below a conservative 40 KB cap. Do not send gzip, base64 envelopes, or a large one-line JSON blob unless the receiver has freshly proven that exact decoding and reader shape.
-
-Before dispatch, Main runs a receiver-capability preflight against the actual payload shape. It must prove, in the same agent/runtime mode:
-
-1. multiline attachment readback at the intended cap;
-2. each frozen source attachment can be read and hashes match the manifest;
-3. the manifest is readable and its paths stay inside the declared base;
-4. any required decoder/test command runs only in the approved sandbox; and
-5. when implementation mode is requested, exact scoped writeback and post-write diff/hash readback.
-
-A preflight failure is local and does not count as a model attempt. Record its typed reason and repair the handoff before dispatch.
-
-Reject absolute paths, `..` escapes, symlink/reparse escapes, directories, case-folded duplicate paths, or budgets one unit over. Re-hash the frozen sources immediately before dispatch. For a completed `patch_draft`, do not falsely treat an authorized Main-applied change as frozen-input drift: validate immutable handoff metadata separately, then require each changed path to include its frozen before-hash/size and its actual post-apply workspace hash/size. Unchanged frozen files must still match their original hashes. A no-op, missing file, unlisted mutation, or path outside the frozen scope fails closed.
-
-For v3 completion, the top-level manifest schema and handoff contract version must match exactly; compatibility wrappers cannot downgrade v3 proof. Require a real, bounded, hash-matched applied-diff artifact with normalized workspace-relative paths. Require a separate hash-matched QA-result artifact tied to the same frozen snapshot, applied-diff hash, changed paths, and post-apply hashes. QA commands must record a successful validation-runner invocation, output-artifact hash, and the exact changed paths/hashes they validated. Self-attested command lists, arbitrary hashes, and unrelated tests are not acceptance proof.
-
-## Sandboxed Shell/Decoder Pilot
-
-A persistent agent is shell-free unless its live role-specific configuration grants sandboxed execution. Enabling or changing a shell/decoder route requires explicit owner approval and all of the following:
-
-- Docker sandbox is live and independently verified before `exec` or `process` is permitted;
-- one named agent only; no policy change for other agents;
-- sandbox enabled for the agent, no network, no elevated tools, no host-workspace mount, no shared Main workspace, and no credential/config/channel/cron/session tooling;
-- read-only root filesystem where the task permits it, with only an ephemeral scratch area;
-- tight CPU, memory, PID, and wall-time limits;
-- an exact allowlist of harmless decoder/test commands and a documented denial of arbitrary process behavior;
-- positive proof that the allowed local command can process a benign supplied attachment; and
-- negative proof that network, host-workspace reads, elevation, and forbidden commands remain blocked.
-
-If Docker or the sandbox proof is unavailable, retain the shell-free path. Do not fall back to direct host execution. A successful canary proves only the configured role capability; it does not broaden another agent's tools, mount, network, or authority.
-
-## Retry Taxonomy And Attempt Accounting
-
-Create a new session/run record for every dispatched attempt. Preserve the actual final successful-attempt identity; do not retain an earlier failed session as terminal provenance. Record exact attachment shape, byte/line limits, capability proof ID, typed failure code, first-attempt outcome, retry count, incident timestamps, 90-second provisional SLA, and terminal result.
-
-Use at least these typed outcomes:
-
-- `attachment_decode_unsupported`
-- `attachment_reader_limit`
-- `attachment_source_readback_failed`
-- `attachment_hash_mismatch`
-- `sandbox_unavailable`
-- `sandbox_policy_denied`
-- `scoped_writeback_unproven`
-- `patch_draft_returned`
-- `main_applied_after_draft`
-
-Retries are never reported as first-pass success. A patch draft is not an applied patch. Exact repeats are idempotent; changed decisions/evidence receive a new sequence and monotonic timestamp.
-
-## Codex-Native Eligibility And Provenance
-
-Codex-native is opt-in for bounded read-only work at Terra low, excluding independent QA. Route all implementation code, including one-file fixes, to Muse Spark 1.3 Contributor; route all independent QA to GLM 5.3.
-
-Reject multi-file, forbidden-path, shared-contract, broad, finance-sensitive, runtime/config/auth, external, destructive, or ambiguous implementation. Actual JSONL rollout import must consume only allowlisted metadata, require a unique safe completed subagent rollout, reconcile inclusive-cache usage, and preserve reasoning separately from total tokens.
-
-For native imports, both expected and actual backend are immutable `codex_native_subagent`. Reject later attempts to relabel provenance. Hash and remove raw caller session, task, run, label, and role values at the sanitization boundary.
-
-## Auth And Tool Isolation
-
-- Each persistent agent loads its own agent-scoped auth profile surface; Main auth may only act as the configured fallback.
-- Do not clone OAuth refresh tokens.
-- Do not copy static credentials without explicit approval and need.
-- Tool policy must be least-privilege and role-specific.
-- External bindings, channels, cron schedules, services, network exposure, sandbox changes, and runtime/config/auth mutation require separate owner approval.
-
-## Wiki Context Supply
-
-Isolated agents cannot reach the WF88 wiki. Configured tool allowlists contain no `memory_search`, and bootstraps set `host_path_direct_reads_allowed=false`. Neither the canonical `wiki/**/*.md` pages nor the `state/wiki-retrieval` mirror is reachable from an isolated lane.
-
-Main is therefore the only wiki reader. When an assignment depends on accumulated WF88 routing knowledge:
-
-- Main runs `memory_search` with `corpus=wiki`, opens the named owner artifacts, and attaches the smallest sufficient excerpt inside the frozen handoff.
-- The excerpt counts against the handoff budget like any other context file.
-- A supplied excerpt is routing and evidence only. It is never canon, approval, execution, finance, or freshness proof, and it never substitutes for the current JSON/validator artifact it points to.
-- Wiki retrieval is lexical, not semantic. A paraphrased query can return nothing even when the content exists, so a null result is not evidence of absence; confirm against `wiki/index.md` before concluding a route is missing.
-- If a lane needs wiki context that was not supplied, it stops and requests it from Main rather than inferring it.
-
-Never write an agent instruction to query a corpus its tool policy does not grant. Expanding an agent allowlist to include retrieval tools is a runtime/config mutation and requires separate owner approval.
-
-## Bootstrap And Startup Truth
-
-Generated agent bootstraps must project:
-
-- current profile revision;
-- Main as sole router, final QC, acceptance, judgment, and user-facing integration owner;
-- the versioned efficiency policy;
-- Main on its explicit configured Sol primary and each specialist on its exact role primary from `scripts/agent_fleet_policy.py`; Muse Spark 1.3 Contributor authors code by default, GLM 5.3 performs independent QA by default, and silent model substitution remains disabled;
-- exact transport and handoff requirements;
-- role-specific read/write/tool boundaries;
-- the wiki context-supply route, including truthful direct-retrieval capability;
-- privacy-safe attribution and `provider_usage_unavailable` fallback;
-- no finance, external, runtime/config, or execution authority expansion.
-
-`scripts/agent_bootstrap_generator.py` produces these packets and `scripts/agent_bootstrap_linter.py` validates them. A generated packet never outranks `SOUL.md`, `AGENTS.md` and its local route map, this skill, or exact owner artifacts.
-
-## Usage And Outcome Attribution
-
-Capture expected and actual backend/model/thinking, cache-inclusive token counters, uncached input, output, reasoning metadata, handoff size, duration, QA result, Main acceptance, and retry tax when exposed. Join using deterministic privacy-safe attempt identity; ambiguous or conflicting identities fail closed. Never invent usage.
-
-Incidents and invalid telemetry retain cost evidence but never count as completion, first-pass success, QA pass, Main acceptance, or cohort eligibility. Actual billed cost and OAuth impact remain unknown unless directly observed by an authoritative source.
-
-## Validation
-
-Before acceptance verify:
-
-- live configured agent/workspace/tool policy;
-- route eligibility and transport/sandbox proof;
-- manifest-schema/contract-version match, frozen metadata, and actual post-apply file hashes;
-- expected/actual route conformance;
-- supplied wiki excerpts resolve to named owner artifacts and claim no authority;
-- typed attempt/retry and incident SLA;
-- metadata-only privacy boundary;
-- focused tests and risk-budgeted QA;
-- Main verification and acceptance evidence.
-
-For a Main-applied patch draft, QA must inspect and test the applied source files and their diff--not only the agent's proposed diff.
-
-## Stop Lines
-
-Stop when transport cannot be proven, context exceeds budget, source files mutate after freeze, actual route differs, identity is ambiguous, privacy-safe sanitization fails, required proof is stale, an instruction assumes a tool the agent's policy does not grant, a sandbox precondition fails, or work needs config/auth/channel/runtime/cron/finance/execution/external/destructive authority not explicitly granted.
-
-## Closeout
-
-Report selected runtime form, lane mode, exact agent/session privacy-safe reference, expected and actual route, transport/sandbox proof, handoff snapshot, attempts/retries, usage availability, validators, QA result, Main acceptance, remaining limitations, and owner-gated actions.
+At transport setup and dispatch, verify role-specific least privilege and agent-scoped auth profiles; Main auth is only the configured fallback. Keep OAuth refresh tokens un-cloned and static credentials outside copying without explicit need and approval. Require separate approval for external bindings, channels, cron schedules, services, network, sandbox, runtime/config/auth changes. Handoffs and capability canaries grant no finance, execution, external, destructive, unattended-repair, or approval authority; stop when requested work crosses an unapproved boundary.
