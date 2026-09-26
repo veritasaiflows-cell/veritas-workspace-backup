@@ -1,0 +1,60 @@
+QA-ONLY-FILES RESULT
+
+Reviewed all 17 WORKSHOP-ONLY files against live-facts.md. Cross-references were read from the bundle itself; loaded-copy inventories were not provided, so duplication-vs-loaded-copy checks are limited to within this bundle.
+
+**Q2 headline: no line in any file is contradicted by live-facts.md.** The closest items are unconfirmed, not wrong: route-change.md step 4 and policy-reconciliation.md step 2 name `SPECIALIST_PRIMARY`, `SPECIALIST_RECOVERY`, `LEGACY_DENIED_MODELS`; live facts confirm only `MAIN_PRIMARY`, `MAIN_MODEL`, `OPUS_ADVISORY` in `scripts/agent_fleet_policy.py`. performance-and-disk-mass-review.md's "installed 2026.9.4" matches the live version. The live `OPUS_ADVISORY` (opus-5 advisory, `main_chain_fallback: False`, chain carries opus-5-5) is consistent with policy-reconciliation step 4's advisory-scoping rule, not contradicted by it.
+
+## Per-file verdicts
+
+**otel-operations-analyst/references/collector-artifact-retention.md** — ADOPT. No stale claims. MEDIUM (retention route creation; prune steps). Overlap with performance-and-disk-mass-review's closing growth-rate rule is attributed ("as [Performance And Disk Mass Mass Review] prescribes"), complementary not duplicate. Reason: detailed owner-gated retention procedure that performance-and-disk-mass-review explicitly defers to.
+
+**task-intake-contract/references/chain-debugging.md** — ADOPT. No stale claims. MEDIUM. No in-bundle duplicate; it defers missing-proof work to historical-lane-validation.md. Reason: fail-closed chain-debugging triage rules (stale vs blocked input, healthy non-`ok` terminal states) not covered elsewhere in the bundle.
+
+**veritas-isolated-agent-contract/references/frozen-handoff-transport.md** — ADOPT (last; see UNDECIDED). No stale claims. MEDIUM. No in-bundle duplicate. Reason: comprehensive freeze/transport/receiver-proof procedure; its transport claims (attachment staging support, `~/.openclaw/sandboxes/workspace-<hash>/` mapping) are unverifiable from live facts but internally gated ("This branch grants no new mount, tool, configuration, or archive authority").
+
+**veritas-model-routing-helper-lanes** (5 files, one interlinked set — adopt as a set or links dangle):
+- **efficiency-evaluation.md** — ADOPT. MEDIUM. Owns missing-vs-zero accounting referenced by route-cache-reuse-review step 3 (deliberate division, not duplication). Reason: cohort/usage/cost-verification rules for economics reviews.
+- **policy-reconciliation.md** — ADOPT. HIGH (edits routing policy/model matrices; explicitly owner-gated: "Require an explicit owner authorization before editing the policy module… if it is absent, stop at the presented option set"). No duplicate. Reason: the "reconcile policy to live" branch route-change step 6 names.
+- **route-cache-reuse-review.md** — ADOPT. MEDIUM (diagnosis only; "every config, routing or parameter change it recommends is owner-gated"). No duplicate. Reason: per-route cache eligibility and hit-rate methodology with verified case data.
+- **route-change.md** — ADOPT. HIGH (applies model routing changes; owner-gated end to end). No duplicate. Reason: the operational core for approved route changes; matches live facts (policy `MAIN_PRIMARY` equals live primary, so no drift to reconcile today).
+- **task-role-contract-review.md** — ADOPT. HIGH (changes which model performs review roles; owner-directed-gated). No duplicate. Reason: frozen-contract handling and same-session-role rules.
+
+**veritas-os2-cleanup-router** (4 files):
+- **derived-manifest-deleted-sources-packet.md** — ADOPT. LOW (review-only evidence packet; "graph updates are outside this collection"). No duplicate. Reason: narrow owner-decision packet for `deleted_sources_need_review` refusals.
+- **partial-apply-recovery.md** — ADOPT. MEDIUM (recovery procedure with one deletion-permitting step). No duplicate; source-defect-verification step 4 explicitly separates proposed-repair ordering from this recovery. Reason: verified interrupted-apply recovery with read-only-first sequencing.
+- **retired-producer-manifest-removal.md** — ADOPT. MEDIUM. No duplicate (complements the parent skill's sweep). Reason: manifest/consumer surfaces for producer retirement with counted replace-all safety.
+- **source-defect-verification.md** — ADOPT. MEDIUM. No duplicate. Reason: static/mock-reproduction method for no-write defect verification.
+
+**veritas-workspace-audit-orchestrator** (5 files):
+- **automation-recovery-proof.md** — ADOPT-WITH-FIXES. No stale claims. MEDIUM. Fixes: (1) split the 29,751-byte file into per-topic references (inventory/escalation; ranker staleness; lease/lane transitions; ledger closure; keeper/watcher verification; hypothesis loop) so a single question doesn't load ~30KB; (2) keep content byte-identical in the split. No in-bundle duplicate; step 12 cross-references rather than restates the policy-reconciliation replay. Reason: dense verified procedure set whose size is the only defect.
+- **historical-lane-validation.md** — ADOPT. MEDIUM. Adjacent to automation-recovery-proof step 5 (expired leases) but distinct scope (register validation vs lease closure). Reason: read-only historical-proof diagnosis with a schema-constrained honest-amendment path.
+- **performance-and-disk-mass-review.md** — ADOPT. MEDIUM. Closing rule is restated-with-attribution in collector-artifact-retention (cross-reference, not duplication). Reason: measurement-first latency/disk review with corrected-error discipline ("That was **wrong**").
+- **pm-readiness-band-interpretation.md** — ADOPT. MEDIUM. No duplicate. Reason: band arithmetic and short-lane classification; preserves gates ("no score may be moved by reclassifying them without it").
+- **web-calibration-branch.md** — ADOPT. LOW. No duplicate. Reason: tiny conditional branch that keeps external patterns subordinate to local gates.
+
+## Adopt-first order
+
+1. **Routing set** (route-change, policy-reconciliation, route-cache-reuse-review, efficiency-evaluation, task-role-contract-review) — active routing surface per live facts; internal links resolve only as a set.
+2. **Audit set** (automation-recovery-proof with the split fix, historical-lane-validation, performance-and-disk-mass-review, pm-readiness-band-interpretation, web-calibration-branch).
+3. **Cleanup set** (partial-apply-recovery, source-defect-verification, retired-producer-manifest-removal, derived-manifest-deleted-sources-packet).
+4. **collector-artifact-retention.md** — in the same batch as performance-and-disk-mass-review (mutual reference).
+5. **chain-debugging.md** — with historical-lane-validation already in place.
+6. **frozen-handoff-transport.md** — last, pending UNDECIDED items.
+
+## Authority-expanding / gate-weakening wording
+
+No file weakens an approval or safety rule; every HIGH file keeps owner gates. Two lines warrant Main's attention:
+
+- task-role-contract-review.md: "run each named role as its own sequential inference in the same Main session" — dilutes clean-context independent review; the file itself discloses "same-session roles are not clean-context independent review" and bounds it ("it never becomes a persistent specialist, routing, or config change"), and it is Randall-directed-gated.
+- partial-apply-recovery.md step 7: "Delete an archive copy only when its size matches the restored file." — permits deletion inside an authorized recovery; bounded, but it is the bundle's only deletion-authorizing line outside owner-gated routes.
+
+## UNDECIDED (with settling evidence)
+
+1. `SPECIALIST_PRIMARY`, `SPECIALIST_RECOVERY`, `LEGACY_DENIED_MODELS` in `scripts/agent_fleet_policy.py` (named by route-change step 4 and policy-reconciliation step 2). Live facts confirm only `MAIN_PRIMARY`/`MAIN_MODEL`/`OPUS_ADVISORY`. Settle: grep the script for those constant names.
+2. route-change step 7's per-model key allowlist ("only `alias`, `params`, `agentRuntime`, `codeMode` and `streaming`"). Settle: current config schema / `openclaw config get` on a model block.
+3. frozen-handoff-transport's transport claims (staging support, sandbox path mapping, 40KB attachment caps). Live facts are silent. Settle: one live spawn preflight receipt showing actual staging behavior.
+4. automation-recovery-proof: adopt-as-one-file vs split. Settle: confirm whether the loaded skill loads references on demand or wholesale, and the measured context cost.
+5. Duplication vs loaded copies: I have only the workshop-only list, not the workspace/skills inventories, so I cannot rule out an existing loaded file carrying the same procedure under another name. Settle: per-skill file-list diff of `workspace/skills/<name>` vs the workshop copy.
+6. retired-producer-manifest-removal's cross-skill link `../../test-artifact-containment/SKILL.md` — bundle does not show whether that skill exists loaded. Settle: `openclaw skills info test-artifact-containment` or a directory listing.
+
+Handoff to Veritas main for verification and acceptance; nothing was written, posted, or changed. Provider usage counts were not exposed to this session (`provider_usage_unavailable`).

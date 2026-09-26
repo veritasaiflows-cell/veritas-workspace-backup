@@ -1,0 +1,13 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "5c4909a1-4359-45a0-85bf-d25f20671643",
+  "agent_id": "qa-redteam",
+  "session_key": "agent:qa-redteam:wf89-skill-split-onlyfiles-20260925",
+  "label": "WF89 skill-split QA: Workshop-only files",
+  "task_text_sha256": "0306af1dd0652bd2848afde5d4f43b65e3840a47a62eca3db6cf9965ae48c5d3",
+  "message_file": "tmp\\wf89-skill-split-20260925\\qa-only-files-brief.md",
+  "created_at_ms": 1790385245558,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority"
+}
