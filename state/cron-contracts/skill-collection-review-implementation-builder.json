@@ -47,8 +47,8 @@
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-09-24T23:20:00Z",
-  "contract_update_reason": "Owner-approved known_platform_failure for the rw-required review harness (Randall 2026-09-24 16:17 MST).",
+  "updated_at_utc": "2026-09-26T16:55:00Z",
+  "contract_update_reason": "Owner-approved extension of known_platform_failure to the post-option-D bind-root error (Randall 2026-09-26 09:32 MST); prior approval 2026-09-24 16:17 MST.",
   "declarationKey": "skill-collection-review:implementation-builder",
   "known_platform_failure": {
     "error_substring": "sandbox workspace is not read-write; collection review skipped",
@@ -56,6 +56,12 @@
     "upstream": "openclaw/openclaw#144515",
     "owner_approved_at": "2026-09-24",
     "reason": "Platform review requires workspaceAccess=rw; implementation-builder is deliberately workspaceAccess=none (owner requirement 2026-09-24: builder must not be able to rewrite its role files or skills; rw mounts the real agent workspace writable at /workspace). Same class as oxalpha-lab. Quieted to STALE_OR_NOISE only for this exact error on this exact version; any other error (including the earlier bind-root 'Sandbox security' rejection) or any OpenClaw version change re-escalates.",
-    "evidence": "memory/2026-09-24.md (builder correction + end-to-end test); tmp/builder-e2e-20260924/ (close-proof.json, protected-before/after.sha256)"
+    "evidence": "memory/2026-09-24.md (builder correction + end-to-end test); tmp/builder-e2e-20260924/ (close-proof.json, protected-before/after.sha256)",
+    "error_substrings": [
+      "Sandbox security: bind mount \"C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\AGENTS.md:/role/AGENTS.md:ro\" source \"C:/Users/Veritas/.openclaw/workspaces/implementation-builder/AGENTS.md\" is outside allowed roots ("
+    ],
+    "extended_at": "2026-09-26",
+    "extension_reason": "Owner-approved extension (Randall 2026-09-26 09:32 MST, 'Review job alert as recommended'). WF89 option D removed the builder's dangerouslyAllowExternalBindSources override on 2026-09-26, so the platform review now fails earlier, at bind validation: the review harness allows only its sandbox copy and workshop-skills as bind roots, and the builder's first role bind (/role/AGENTS.md) lives in its own workspace. Same defect class (#144515: review harness incompatible with a locked-down builder). Quieted only for this exact first-bind error on 2026.9.4; a different bind, any other error, or any version change re-escalates.",
+    "extension_evidence": "openclaw cron runs 1e2d0311-5cbd-4dc9-a459-31116268a4ae (2026-09-24 bind errors); WF89 note 2026-09-26 option D; tmp/wf89-oxfl-lockdown-20260926/"
   }
 }

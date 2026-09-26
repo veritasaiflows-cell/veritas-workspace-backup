@@ -1032,6 +1032,47 @@ def test_known_platform_failure_quiets_only_exact_error_on_recorded_version() ->
     assert merged[job["name"]]["known_platform_failure"] == contract["known_platform_failure"]
 
 
+def test_known_platform_failure_extra_substrings_quiet_only_listed_errors() -> None:
+    now = datetime.now(timezone.utc).replace(microsecond=0)
+    bind_error = 'Sandbox security: bind mount "C:\\lab\\AGENTS.md:/role/AGENTS.md:ro" source "C:/lab/AGENTS.md" is outside allowed roots (C:/x). Use a dangerous override'
+    with tempfile.TemporaryDirectory() as raw:
+        artifact = Path(raw) / "AGENTS.md"
+        artifact.write_text("# role\n", encoding="utf-8")
+        job = {
+            "name": "skill-collection-review-locked-lab",
+            "enabled": True,
+            "schedule": {"kind": "every", "everyMs": 604800000},
+            "last_status": "error",
+            "consecutive_errors": 2,
+            "last_run_utc": now.isoformat().replace("+00:00", "Z"),
+            "last_error": bind_error,
+        }
+        known = {
+            "error_substring": "sandbox workspace is not read-write",
+            "error_substrings": ['Sandbox security: bind mount "C:\\lab\\AGENTS.md:/role/AGENTS.md:ro" source "C:/lab/AGENTS.md" is outside allowed roots ('],
+            "openclaw_version": "2026.9.4",
+            "upstream": "openclaw/openclaw#144515",
+            "owner_approved_at": "2026-09-26",
+        }
+        contract = {
+            "owner_workflow": "test",
+            "freshness_hours": 192,
+            "expected_artifacts": [{"path": str(artifact), "required": True, "blocking": False}],
+            "known_platform_failure": known,
+        }
+        bind_quiet = classify_job(job, contract, "2026.9.4")
+        rw_quiet = classify_job({**job, "last_error": "sandbox workspace is not read-write; collection review skipped"}, contract, "2026.9.4")
+        other_bind = classify_job({**job, "last_error": bind_error.replace("AGENTS.md", "SOUL.md")}, contract, "2026.9.4")
+        new_version = classify_job(job, contract, "2026.9.5")
+        not_a_list = classify_job(job, {**contract, "known_platform_failure": {**known, "error_substrings": known["error_substrings"][0]}}, "2026.9.4")
+
+    assert bind_quiet["status"] == "known_platform_failure"
+    assert rw_quiet["status"] == "known_platform_failure"
+    for escalated in (other_bind, new_version, not_a_list):
+        assert escalated["status"] == "scheduler_error"
+        assert escalated["signal_class"] == "BLOCKED"
+
+
 def test_newer_warning_artifact_keeps_review_signal_without_scheduler_escalation() -> None:
     now = datetime.now(timezone.utc).replace(microsecond=0)
     with tempfile.TemporaryDirectory() as raw:

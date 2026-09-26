@@ -605,7 +605,7 @@
       "notable": {}
     },
     "oxalpha-functional-lab": {
-      "fingerprint": "524d4cbd82fd2d30b5a64f3de92e0f37bb7c55b384cc61a09dbb581579b233b0",
+      "fingerprint": "f3b8bb18bb8a8fcc88147bbecf1e30f62a563eb853ae61b09a0cb1eeafd27f23",
       "grant": {
         "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab",
         "agentDir": "C:\\Users\\Veritas\\.openclaw\\agents\\oxalpha-functional-lab\\agent",
@@ -619,7 +619,7 @@
         "sandbox": {
           "mode": "all",
           "backend": "docker",
-          "workspaceAccess": "rw",
+          "workspaceAccess": "none",
           "scope": "session",
           "docker": {
             "image": "openclaw-sandbox:bookworm-slim",
@@ -638,7 +638,11 @@
             "memory": "512m",
             "memorySwap": "512m",
             "cpus": 1,
-            "binds": []
+            "binds": [
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\runs:/runs:rw",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\fixtures:/fixtures:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\candidate-visible-bank.json:/candidate-visible-bank.json:ro"
+            ]
           }
         },
         "tools": {
@@ -680,7 +684,7 @@
             "timeoutSeconds": 30
           },
           "fs": {
-            "workspaceOnly": true
+            "workspaceOnly": false
           },
           "message": {
             "crossContext": {
@@ -722,8 +726,8 @@
           }
         }
       },
-      "recorded_at_utc": "2026-09-25T03:43:56Z",
-      "record_ref": "WF89 item 2 baseline, observed 2026-09-24 ~21:30 Phoenix (Randall 20:40 MST: continue)",
+      "recorded_at_utc": "2026-09-26T16:46:54Z",
+      "record_ref": "WF89 oxalpha-functional-lab lockdown 2026-09-26 (tmp/wf89-oxfl-lockdown-20260926/)",
       "notable": {
         "tools.write": {
           "value": [
@@ -731,15 +735,21 @@
             "edit",
             "write"
           ],
-          "approval_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending"
+          "approval_ref": "Randall 2026-09-26 09:32 MST: lockdown approved; write/exec retained only inside the no-network Docker sandbox, host writes limited to runs/ (precedent: docs-editor 07:11 re-record)"
         },
         "tools.exec": {
           "value": "sandbox",
-          "approval_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending"
+          "approval_ref": "Randall 2026-09-26 09:32 MST: lockdown approved; write/exec retained only inside the no-network Docker sandbox, host writes limited to runs/ (precedent: docs-editor 07:11 re-record)"
         },
-        "sandbox.workspaceAccess": {
-          "value": "rw",
-          "approval_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending"
+        "fs.workspaceOnly=false": {
+          "value": "sandboxed",
+          "approval_ref": "Randall 2026-09-26 09:32 MST Telegram: continue with ox alpha lab. Lockdown"
+        },
+        "docker.binds.rw": {
+          "value": [
+            "C:\\Users\\Veritas\\.openclaw\\workspaces\\model-arena-functional-lab\\runs:/runs:rw"
+          ],
+          "approval_ref": "Randall 2026-09-26 09:32 MST Telegram: continue with ox alpha lab. Lockdown"
         }
       }
     },
@@ -1219,6 +1229,36 @@
       ],
       "record_ref": "2026-09-26 WF89 Astra F1: grant monitor now also captures inherited global authority (tools.allow/alsoAllow/deny/byProvider/elevated/fs/exec/sandbox/message/web, agents.defaults.sandbox/tools). Monitoring change only; live config unchanged (sha matches pre-change backup chain).",
       "approval_ref": null
+    },
+    {
+      "at_utc": "2026-09-26T16:46:54Z",
+      "action": "record",
+      "agent": "oxalpha-functional-lab",
+      "old_fingerprint": "524d4cbd82fd2d30b5a64f3de92e0f37bb7c55b384cc61a09dbb581579b233b0",
+      "new_fingerprint": "f3b8bb18bb8a8fcc88147bbecf1e30f62a563eb853ae61b09a0cb1eeafd27f23",
+      "paths": [
+        "~sandbox.docker.binds",
+        "~sandbox.workspaceAccess",
+        "~tools.fs.workspaceOnly"
+      ],
+      "record_ref": "WF89 oxalpha-functional-lab lockdown 2026-09-26 (tmp/wf89-oxfl-lockdown-20260926/)",
+      "approval_ref": "Randall 2026-09-26 09:32 MST Telegram: continue with ox alpha lab. Lockdown"
+    },
+    {
+      "at_utc": "2026-09-26T16:47:04Z",
+      "action": "approve",
+      "agent": "oxalpha-functional-lab",
+      "flag": "tools.write",
+      "previous_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending",
+      "approval_ref": "Randall 2026-09-26 09:32 MST: lockdown approved; write/exec retained only inside the no-network Docker sandbox, host writes limited to runs/ (precedent: docs-editor 07:11 re-record)"
+    },
+    {
+      "at_utc": "2026-09-26T16:47:04Z",
+      "action": "approve",
+      "agent": "oxalpha-functional-lab",
+      "flag": "tools.exec",
+      "previous_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending",
+      "approval_ref": "Randall 2026-09-26 09:32 MST: lockdown approved; write/exec retained only inside the no-network Docker sandbox, host writes limited to runs/ (precedent: docs-editor 07:11 re-record)"
     }
   ]
 }

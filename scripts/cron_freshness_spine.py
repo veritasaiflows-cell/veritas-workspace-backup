@@ -1608,15 +1608,19 @@ def known_platform_failure_match(
 ) -> dict[str, Any] | None:
     """Owner-approved known platform defect: exact error text on the exact recorded OpenClaw version.
 
-    Any other error, a missing version, or a version change fails closed back to normal escalation so
-    the defect is re-checked after every OpenClaw update.
+    `error_substring` names one exact error; `error_substrings` may add further owner-approved exact
+    errors for the same defect. Any other error, a missing version, or a version change fails closed
+    back to normal escalation so the defect is re-checked after every OpenClaw update.
     """
     known = as_dict(contract.get("known_platform_failure"))
-    error_text = str(known.get("error_substring") or "")
+    extra = known.get("error_substrings")
+    error_texts = [str(known.get("error_substring") or "")]
+    error_texts += [str(item) for item in extra] if isinstance(extra, list) else []
+    error_texts = [text for text in error_texts if text]
     recorded_version = str(known.get("openclaw_version") or "")
-    if not (error_text and recorded_version and known.get("owner_approved_at")):
+    if not (error_texts and recorded_version and known.get("owner_approved_at")):
         return None
-    if not live_last_error or error_text not in live_last_error:
+    if not live_last_error or not any(text in live_last_error for text in error_texts):
         return None
     if not openclaw_version or openclaw_version != recorded_version:
         return None
