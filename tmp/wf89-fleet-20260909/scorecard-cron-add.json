@@ -1,0 +1,39 @@
+{
+  "id": "3f7a5c2f-0cbf-41f4-811b-c56ab232c345",
+  "name": "WF89 - Daily Fleet Scorecard",
+  "description": "Model-free daily capture of credited agent runs into data/state-history/wf89-credited-runs.jsonl (task records expire after 7 days) and per-lane token and duration scorecard tmp/wf89-fleet-scorecard.json. Read-only on OpenClaw stores. No delivery except failure alert.",
+  "enabled": true,
+  "createdAtMs": 1790384123304,
+  "updatedAtMs": 1790384123304,
+  "schedule": {
+    "kind": "cron",
+    "expr": "20 6 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts\\wf89_fleet_scorecard.py",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 180
+  },
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "state": {
+    "nextRunAtMs": 1790428800000
+  },
+  "configRevision": "sha256:t8rsiQaWEZbeTVA4J_PWE7efaxOdPqqCGAfkZ1EGTYc",
+  "nextRunAtMs": 1790428800000,
+  "deliveryPreview": {
+    "label": "not requested",
+    "detail": "not requested"
+  }
+}

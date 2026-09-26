@@ -1,0 +1,82 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "3f7a5c2f-0cbf-41f4-811b-c56ab232c345",
+  "name": "WF89 - Daily Fleet Scorecard",
+  "owner_workflow": "WF89 fleet efficiency measurement",
+  "contract_reason": "OpenClaw task records expire 7 days after a run ends (credited runs fell 98 -> 92 between 2026-09-24 and 09-25), so per-lane cost and speed evidence is lost unless captured. Daily model-free capture of credited runs into an append-only history plus a per-lane token/duration scorecard.",
+  "approval": "Randall Telegram 2026-09-25 17:52 MST: 'Proceed with recommendations' (decision 1 = nightly model-free scorecard, alert only on failure)",
+  "description": "Model-free daily capture of credited agent runs into data/state-history/wf89-credited-runs.jsonl (task records expire after 7 days) and per-lane token and duration scorecard tmp/wf89-fleet-scorecard.json. Read-only on OpenClaw stores. No delivery except failure alert.",
+  "enabled": true,
+  "required": true,
+  "deleteAfterRun": false,
+  "schedule": {
+    "kind": "cron",
+    "expr": "20 6 * * *",
+    "tz": "America/Phoenix"
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "none"
+  },
+  "failureAlert": {
+    "after": 1,
+    "channel": "telegram",
+    "to": "telegram:8650152206",
+    "accountId": "default",
+    "includeSkipped": false
+  },
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+      "scripts\\wf89_fleet_scorecard.py",
+      "--write",
+      "--validate"
+    ],
+    "cwd": "C:\\Users\\Veritas\\.openclaw\\workspace",
+    "timeoutSeconds": 180
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "failureAlert",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    "tmp/wf89-fleet-scorecard.json",
+    {
+      "path": "data/state-history/wf89-credited-runs.jsonl",
+      "role": "wf89_credited_run_history",
+      "required": true,
+      "blocking": true,
+      "existence_only": true,
+      "freshness_note": "Append-only; it grows only on days with new credited runs, so recency is carried by the scorecard json."
+    }
+  ],
+  "quiet_output": "Standing measurement gaps (lanes too small for a median; CLI runs without dispatch records) are reported as observations with status ok; exit 1 only on a corrupt history file.",
+  "rollback": "openclaw cron rm 3f7a5c2f-0cbf-41f4-811b-c56ab232c345; delete this contract file (history file is evidence; keep it)",
+  "authority_boundary": {
+    "agent_turn_model_spawn_required": false,
+    "brokerage_or_account_action_allowed": false,
+    "capital_deployment_allowed": false,
+    "command_payload": true,
+    "config_auth_runtime_mutation_allowed": false,
+    "delivery_mutation_allowed": false,
+    "enable_disable_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "owner_approval_inferred": false,
+    "owner_workflow": "WF89 fleet efficiency measurement",
+    "paper_or_live_execution_allowed": false,
+    "review_only": true,
+    "schedule_mutation_allowed": false
+  },
+  "updated_at_utc": "2026-09-26T00:55:00Z"
+}

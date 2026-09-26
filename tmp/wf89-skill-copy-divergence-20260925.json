@@ -1,0 +1,125 @@
+{
+ "generated": "2026-09-25",
+ "active_copy": "workspace/skills (openclaw skills info: Source openclaw-workspace)",
+ "rows": [
+  {
+   "skill": "agi-harness-readiness-operator",
+   "changed_lines": 21,
+   "workshop_only": [],
+   "workspace_only": [],
+   "workspace_mtime": "09-14",
+   "workshop_mtime": "09-19"
+  },
+  {
+   "skill": "ai-drop-service-os-contract",
+   "changed_lines": 380,
+   "workshop_only": [],
+   "workspace_only": [],
+   "workspace_mtime": "09-22",
+   "workshop_mtime": "09-18"
+  },
+  {
+   "skill": "otel-operations-analyst",
+   "changed_lines": 22,
+   "workshop_only": [
+    "references/collector-artifact-retention.md"
+   ],
+   "workspace_only": [],
+   "workspace_mtime": "09-14",
+   "workshop_mtime": "09-20"
+  },
+  {
+   "skill": "privacy-safe-telemetry-expansion",
+   "changed_lines": 6,
+   "workshop_only": [],
+   "workspace_only": [],
+   "workspace_mtime": "09-14",
+   "workshop_mtime": "09-15"
+  },
+  {
+   "skill": "task-intake-contract",
+   "changed_lines": 15,
+   "workshop_only": [
+    "references/chain-debugging.md"
+   ],
+   "workspace_only": [],
+   "workspace_mtime": "09-14",
+   "workshop_mtime": "09-21"
+  },
+  {
+   "skill": "veritas-entry-policy-opportunity-surface",
+   "changed_lines": 4,
+   "workshop_only": [],
+   "workspace_only": [],
+   "workspace_mtime": "09-18",
+   "workshop_mtime": "09-14"
+  },
+  {
+   "skill": "veritas-intelligence-effort-router",
+   "changed_lines": 38,
+   "workshop_only": [],
+   "workspace_only": [],
+   "workspace_mtime": "09-18",
+   "workshop_mtime": "09-20"
+  },
+  {
+   "skill": "veritas-isolated-agent-contract",
+   "changed_lines": 219,
+   "workshop_only": [
+    "references/frozen-handoff-transport.md"
+   ],
+   "workspace_only": [],
+   "workspace_mtime": "09-19",
+   "workshop_mtime": "09-20"
+  },
+  {
+   "skill": "veritas-model-routing-helper-lanes",
+   "changed_lines": 37,
+   "workshop_only": [
+    "references/efficiency-evaluation.md",
+    "references/policy-reconciliation.md",
+    "references/route-cache-reuse-review.md",
+    "references/route-change.md",
+    "references/task-role-contract-review.md"
+   ],
+   "workspace_only": [],
+   "workspace_mtime": "09-25",
+   "workshop_mtime": "09-25"
+  },
+  {
+   "skill": "veritas-os2-cleanup-router",
+   "changed_lines": 41,
+   "workshop_only": [
+    "references/derived-manifest-deleted-sources-packet.md",
+    "references/partial-apply-recovery.md",
+    "references/retired-producer-manifest-removal.md",
+    "references/source-defect-verification.md"
+   ],
+   "workspace_only": [],
+   "workspace_mtime": "09-14",
+   "workshop_mtime": "09-24"
+  },
+  {
+   "skill": "veritas-prompt-book-operator",
+   "changed_lines": 63,
+   "workshop_only": [],
+   "workspace_only": [],
+   "workspace_mtime": "09-14",
+   "workshop_mtime": "09-19"
+  },
+  {
+   "skill": "veritas-workspace-audit-orchestrator",
+   "changed_lines": 67,
+   "workshop_only": [
+    "references/automation-recovery-proof.md",
+    "references/historical-lane-validation.md",
+    "references/performance-and-disk-mass-review.md",
+    "references/pm-readiness-band-interpretation.md",
+    "references/web-calibration-branch.md"
+   ],
+   "workspace_only": [],
+   "workspace_mtime": "09-14",
+   "workshop_mtime": "09-24"
+  }
+ ]
+}
