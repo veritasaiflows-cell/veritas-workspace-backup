@@ -1,0 +1,65 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "3df080bc-3f69-4755-a732-ed991359dfd2",
+  "name": "Finance - Alert Ledger Scorer Readiness Check",
+  "required": true,
+  "owner_workflow": "Recommendation Readiness Before Ledger (item 8 successor) / WF88",
+  "contract_reason": "Randall 2026-09-25 17:36 MST approved retiring recommendation outcome grading (feeders stopped 2026-08-29) and scheduling its successor, an outcome scorer on the alert-event ledger, for mid-October once alert events have matured. This one-shot wakes Main on 2026-10-15 09:00 Phoenix to count matured events and draft a scorer design for owner approval, so the successor is not lost. Registered so the enabled one-shot is governed by the freshness spine.",
+  "description": "One-shot mid-October reminder (Randall approved 2026-09-25 17:36 MST): check alert-event ledger maturity and scope the alert-ledger outcome scorer that replaces retired recommendation outcome grading. Review-only planning; no build, schedule, canon, or authority change without owner approval.",
+  "enabled": true,
+  "deleteAfterRun": true,
+  "schedule": {
+    "kind": "at",
+    "at": "2026-10-15T16:00:00.000Z"
+  },
+  "sessionTarget": "current",
+  "wakeMode": "now",
+  "delivery": {
+    "mode": "announce",
+    "to": "telegram:8650152206",
+    "channel": "telegram",
+    "accountId": "default"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Reminder (set 2026-09-25 with Randall's approval): it is time to scope the alert-ledger outcome scorer. Background: the old recommendation outcome grader was retired 2026-09-25 because its feeders stopped 2026-08-29; its 2,967 grades stay frozen in data/state-history/recommendation-outcome-grades.jsonl. The successor scores alert events in state/finance/ledger/alert-events-v1.jsonl (started 2026-09-24) against later closes from the nightly Yahoo price snapshots (no new quote job), to calibrate funnel-v1 ranking weights, test the ATR20 band floor, and rate alert types. Steps: (1) count alert events and how many have at least 5 and 20 trading days of later closes; (2) if the sample is large enough, draft a short scorer design (grades, horizons, inputs, tests, where it runs) for Randall's approval; if not, say how many more weeks it needs. Review and planning only: no build, schedule, canon, alert, or authority change without Randall's approval. Report the result to Randall in plain English.",
+    "timeoutSeconds": 900
+  },
+  "compare_fields": [
+    "enabled",
+    "description",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "delivery.mode",
+    "payload.kind",
+    "payload.message",
+    "payload.timeoutSeconds"
+  ],
+  "expected_artifacts": [
+    {
+      "path": "state/finance/ledger/alert-events-v1.jsonl",
+      "role": "alert_event_ledger_input_read_by_the_woken_main_turn",
+      "required": false,
+      "blocking": false
+    }
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_contract_only": true,
+    "planning_only": true,
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "runtime_config_mutation_allowed": false,
+    "finance_canon_or_portfolio_mutation_allowed": false,
+    "alert_or_band_mutation_allowed": false,
+    "code_build_allowed": false,
+    "external_delivery_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-09-26T00:40:00Z",
+  "contract_update_reason": "Initial registration of the owner-approved one-shot (Randall 2026-09-25 17:36 MST 'Yes, proceed with recommendations'); values copied from the live Gateway job 3df080bc."
+}

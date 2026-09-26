@@ -19,7 +19,7 @@ def write_json(path: Path, payload: dict) -> Path:
 
 def paths(base: Path) -> dict[str, Path]:
     return {
-        "grading": base / "grading.json",
+        "grade_history": base / "grades.jsonl",
         "recommendation_ledger": base / "recommendation.json",
         "finance_digest": base / "digest.json",
         "wf88_os2": base / "os2.json",
@@ -71,10 +71,9 @@ def seed(
     stale_producers: tuple[str, ...] = (),
 ) -> dict[str, Path]:
     p = paths(base)
-    write_json(p["grading"], {
-        "validation": {"status": "ok"},
-        "summary": {"existing_grade_event_count": graded_rows, "total_grade_event_count_after_append": graded_rows},
-    })
+    p["grade_history"].parent.mkdir(parents=True, exist_ok=True)
+    rows = [json.dumps({"grade_event_id": f"g{i}"}) for i in range(graded_rows)]
+    p["grade_history"].write_text("".join(row + "\n" for row in rows), encoding="utf-8")
     write_json(p["recommendation_ledger"], {"durable_v2_ledger": {"later_outcome_graded_rows": graded_rows}})
     write_json(p["finance_digest"], {"wf55_recommendation_outcomes": {"outcome_grade_assigned_count": graded_rows}})
     write_json(p["wf88_os2"], {
@@ -135,6 +134,7 @@ def test_gate_blocks_leak_guard_or_missing_grades() -> None:
         assert "recommendation_leak_guard_pass" in payload["validation"]["errors"]
         assert "auto_apply_count_zero" in payload["validation"]["errors"]
         assert "recommendation_ledger_grade_count_positive" in payload["validation"]["errors"]
+        assert "grade_history_present" in payload["validation"]["errors"]
 
 
 def test_gate_blocks_stale_producer_evidence_despite_fresh_packet() -> None:

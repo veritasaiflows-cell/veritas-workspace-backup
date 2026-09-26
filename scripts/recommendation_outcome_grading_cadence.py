@@ -6,6 +6,14 @@ recomputes mature forward checkpoints from the local post-close quote ledger,
 and appends separate grade events to an audit ledger. It does not rewrite the
 original recommendation ledger and grants no approval, trading, portfolio/canon,
 or predictive-performance authority.
+
+RETIRED 2026-09-25 (Randall approval): removed from the WF88 nightly runner.
+Its feeders stopped with the alerts-OS pivot (WF55 recommendation rows and the
+post-close quote ledger both end 2026-08-29), so it graded 0 rows while
+reporting ok. data/state-history/recommendation-outcome-grades.jsonl stays as
+frozen evidence. The successor is a scorer on the alert-event ledger
+(state/finance/ledger/alert-events-v1.jsonl), planned for mid-October 2026.
+Not scheduled anywhere; do not re-add it to a runner.
 """
 from __future__ import annotations
 

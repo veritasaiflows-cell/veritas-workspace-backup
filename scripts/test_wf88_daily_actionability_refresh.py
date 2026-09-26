@@ -445,7 +445,7 @@ def test_os2_required_inputs_have_producer_coverage_within_sla() -> None:
         "tmp/wf88-retired-surface-cleanup-plan.json": ("wf88_retired_surface_cleanup_plan", 24 * 60),
         "tmp/wf88-route-contraction-packet.json": ("wf88_route_contraction_packet", 24 * 60),
         "tmp/wf88-delete-readiness-packet.json": ("wf88_delete_readiness_packet", 24 * 60),
-        "tmp/recommendation-outcome-ledger-current.json": ("recommendation_outcome_grading", 168 * 60),
+        "tmp/recommendation-outcome-ledger-current.json": ("wf55_outcome_ledger_current", 168 * 60),
         "tmp/wf74-wf88-loop-trace.json": ("wf74_wf88_loop_trace", 24 * 60),
         "tmp/long-work-job-status-packet.json": ("long_work_job_status", 24 * 60),
         "tmp/skill-workshop-body-guard.json": ("skill_workshop_body_guard", 24 * 60),
@@ -457,7 +457,9 @@ def test_os2_required_inputs_have_producer_coverage_within_sla() -> None:
         spec = by_id[producer]
         assert ids.index(producer) < os2_index, artifact
         flags = [part for part in spec["command"][2:] if part.startswith("--")]
-        assert flags and set(flags) <= allowed_flags, (artifact, flags)
+        # wf55 writes the ledger-current file through its positional preview command.
+        if spec["command"][2:] != ["preview"]:
+            assert flags and set(flags) <= allowed_flags, (artifact, flags)
         assert "reuse_fresh_artifacts" not in spec, artifact
         assert "requires_fresh_artifacts" not in spec, artifact
         assert spec["command"][1].endswith(".py"), artifact
@@ -489,9 +491,8 @@ def test_obsolete_wf85_producer_removed_chain_order_preserved() -> None:
     module = load_module()
     ids = [row["id"] for row in module.COMMANDS]
     assert "wf85_source_open_reconciliation_contract" not in ids
-    assert len(ids) == 45
+    assert len(ids) == 44
     assert ids == [
-        "recommendation_outcome_grading",
         "wf55_outcome_ledger_current",
         "finance_decision_performance",
         "cron_contract_validator",
@@ -542,7 +543,7 @@ def test_obsolete_wf85_producer_removed_chain_order_preserved() -> None:
 def test_routing_index_producer_runs_before_cleanup_contraction() -> None:
     module = load_module()
     ids = [row["id"] for row in module.COMMANDS]
-    assert len(ids) == 45
+    assert len(ids) == 44
     assert "wf85_source_open_reconciliation_contract" not in ids
     index_pos = ids.index("workflow_routing_index")
     assert index_pos < ids.index("wf88_retired_surface_cleanup_plan") < ids.index("wf88_route_contraction_packet")
@@ -579,8 +580,9 @@ def test_pm_control_packet_producer_runs_before_autonomy_router() -> None:
 def test_final_producer_coverage_order_flags_and_windows() -> None:
     module = load_module()
     ids = [row["id"] for row in module.COMMANDS]
-    assert len(ids) == 45
-    assert ids.index("recommendation_outcome_grading") < ids.index("wf55_outcome_ledger_current") < ids.index("wf74_improvement_queue")
+    assert len(ids) == 44
+    assert "recommendation_outcome_grading" not in ids  # retired 2026-09-25
+    assert ids.index("wf55_outcome_ledger_current") < ids.index("wf74_improvement_queue")
     queue_index = ids.index("wf74_improvement_queue")
     trio = ["cron_contract_validator", "cron_freshness_spine", "cron_control_packet"]
     assert [ids.index(ident) for ident in trio] == [queue_index - 6, queue_index - 5, queue_index - 4]
@@ -657,7 +659,7 @@ def test_os2_and_wiki_stale_source_producers_all_covered() -> None:
 def test_no_commands_declare_reuse_always_execute_by_default() -> None:
     module = load_module()
     ids = [row["id"] for row in module.COMMANDS]
-    assert len(ids) == 45
+    assert len(ids) == 44
     for spec in module.COMMANDS:
         assert "reuse_fresh_artifacts" not in spec, spec.get("id")
         assert "reuse_max_age_minutes" not in spec, spec.get("id")
@@ -680,7 +682,7 @@ def test_default_run_executes_every_command_without_skips() -> None:
 def test_loop_repair_token_attribution_producers_before_wf74_queue() -> None:
     module = load_module()
     ids = [row["id"] for row in module.COMMANDS]
-    assert len(ids) == 45
+    assert len(ids) == 44
     by_id = {row["id"]: row for row in module.COMMANDS}
     assert ids.index("cron_control_packet") < ids.index("coding_outcome_ledger") < ids.index("token_usage_ledger") < ids.index("implementation_token_attribution_bridge") < ids.index("wf74_improvement_queue") < ids.index("wf88_followup_triage")
     assert by_id["coding_outcome_ledger"]["command"][1:] == ["scripts\\coding_outcome_ledger.py", "--write", "--validate"]
@@ -696,7 +698,7 @@ def test_loop_repair_token_attribution_producers_before_wf74_queue() -> None:
 def test_loop_repair_final_routing_index_and_capsules_after_gate() -> None:
     module = load_module()
     ids = [row["id"] for row in module.COMMANDS]
-    assert len(ids) == 45
+    assert len(ids) == 44
     by_id = {row["id"]: row for row in module.COMMANDS}
     assert ids.index("wf88_os2_after_wiki") < ids.index("wf88_wiki_cron_gate") < ids.index("workflow_routing_index_final") < ids.index("wf74_workflow_router_capsules") < ids.index("wf88_workflow_router_capsules") < ids.index("future_session_packet") < ids.index("startup_brief") < ids.index("status_card")
     assert by_id["workflow_routing_index_final"]["command"][1:] == ["scripts\\workflow_routing_index.py", "--write", "--write-db", "--validate"]
@@ -709,10 +711,10 @@ def test_loop_repair_final_routing_index_and_capsules_after_gate() -> None:
         assert "requires_fresh_artifacts" not in spec, ident
 
 
-def test_loop_repair_all_45_always_execute_no_reuse() -> None:
+def test_loop_repair_all_44_always_execute_no_reuse() -> None:
     module = load_module()
     ids = [row["id"] for row in module.COMMANDS]
-    assert len(ids) == 45
+    assert len(ids) == 44
     for spec in module.COMMANDS:
         assert "reuse_fresh_artifacts" not in spec, spec.get("id")
         assert "reuse_max_age_minutes" not in spec, spec.get("id")
@@ -735,7 +737,7 @@ def test_closure_chain_ledger_appends_not_checks() -> None:
 def test_closure_chain_order_triage_ledger_downstream_capsules() -> None:
     module = load_module()
     ids = [row["id"] for row in module.COMMANDS]
-    assert len(ids) == 45
+    assert len(ids) == 44
     tri = ids.index("wf88_followup_triage")
     led = ids.index("improvement_ledger")
     aiq = ids.index("actionable_improvement_queue")
@@ -765,7 +767,7 @@ def test_closure_chain_stable_plan_idempotent_single_ledger() -> None:
     assert ids.count("improvement_ledger") == 1
     first = module.build_packet(execute=False, timeout_seconds=30)
     second = module.build_packet(execute=False, timeout_seconds=30)
-    assert first["command_count"] == second["command_count"] == 45
+    assert first["command_count"] == second["command_count"] == 44
     assert [r["id"] for r in first["results"]] == [r["id"] for r in second["results"]] == ids
     assert all(r.get("executed") is False and r.get("returncode") is None for r in first["results"])
     assert first["results"][ids.index("improvement_ledger")]["command"][2:] == ["--write", "--write-md", "--validate"]
@@ -912,7 +914,7 @@ def main() -> int:
     test_default_run_executes_every_command_without_skips()
     test_loop_repair_token_attribution_producers_before_wf74_queue()
     test_loop_repair_final_routing_index_and_capsules_after_gate()
-    test_loop_repair_all_45_always_execute_no_reuse()
+    test_loop_repair_all_44_always_execute_no_reuse()
     test_closure_chain_ledger_appends_not_checks()
     test_closure_chain_order_triage_ledger_downstream_capsules()
     test_closure_chain_fail_closed_triage_before_ledger()
@@ -987,4 +989,4 @@ def test_production_recovery_rebuilds_pages_and_packet_together() -> None:
     assert command[1].endswith("wf88_wiki_synthesis_packet.py")
     assert "--write-wiki" in command and "--write" in command
     assert [row["id"] for row in module.COMMANDS].count("wf88_wiki_synthesis") == 1
-    assert len(module.COMMANDS) == 45
+    assert len(module.COMMANDS) == 44

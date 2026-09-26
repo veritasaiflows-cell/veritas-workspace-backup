@@ -22,7 +22,7 @@ Status: in progress. Grants no canon, capital, order, account, execution, delive
 | 5 | Relative strength vs SPY/sector | Not started. |
 | 6 | Ranking + top-N | Not started; weights need owner approval. |
 | 7 | Digest truth fixes A-D1, A-D2 | **Done.** Suppressed line only when nothing is fire-eligible; dedup key hashes content, not timestamps. 31 tests pass; production untouched. |
-| 8 | Pivot-era outcome feeder quarantine (O-4) | Not started; per-item owner approval. |
+| 8 | Pivot-era outcome feeder quarantine (O-4) | Recommendation outcome grader retired 2026-09-25 (see update below); other pivot-era feeders still per-item owner approval. |
 
 ## Ledger start gate
 
@@ -53,3 +53,8 @@ Items 1, 2, 4, 6, 7 done and the Tier A five theses accepted. The genesis record
 - Item 2 **done**: digest prints a data-confidence line (median, lowest four, missing). Known display gap: the controller's `confidence_label()` still assumes a 1-5 scale, so every row labels "low" on 0-1 values (owner decision).
 - Live funnel run on the renewed controller: scheduled check 2026-09-24 07:00 PHX (automation `d6a06375`).
 - Ledger wiring diff ready for owner review: `tmp/ledger-wiring-20260923/ledger-wiring.diff`. Checkpoint commit `2e083ea9`.
+
+## Update 2026-09-25 ~17:45 MST
+
+- Item 8, first feeder: **recommendation outcome grading retired** (Randall 17:36 MST: "Yes, proceed with recommendations"). Its inputs stopped with the pivot (WF55 recommendation rows and `tmp/post-close-final-quote-ledger.json` end 2026-08-29), so it graded 0 of 415 rows while reporting ok. It was removed from the WF88 runner (45 -> 44 steps). `wf88_wiki_refresh_cron_gate.py` now checks the frozen `data/state-history/recommendation-outcome-grades.jsonl` directly (2,967 rows). The WF88 contract no longer expects the grading receipts, and the script carries a RETIRED header. Tests: runner and gate 59 pass. Checks: validator 57/0 drift, spine 0 blocked, control escalation 0.
+- **Successor: alert-ledger outcome scorer**, which calibrates the `funnel-v1` weights, tests the ATR20 band floor, and rates alert types. It uses nightly Yahoo price snapshots for later closes, so no new quote job is needed. It is scheduled for scoping once events mature: a one-shot reminder on 2026-10-15 09:00 PHX (automation `3df080bc`, contract `state/cron-contracts/finance-alert-ledger-scorer-readiness-check.json`). Building it needs Randall's approval of the design.

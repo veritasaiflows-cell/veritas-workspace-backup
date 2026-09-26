@@ -3,7 +3,7 @@
 
 Producer packets may carry unrelated workflow warnings or owner-gated hard
 stops. This gate checks only the conditions that decide whether the daily
-outcome-grading/wiki refresh can quietly complete: outcome grades exist, the
+outcome/wiki refresh can quietly complete: frozen outcome grades exist, the
 recommendation leak guard is clean, and no auto-apply/execution authority leaked
 into the refreshed surfaces.
 
@@ -30,7 +30,9 @@ from market_data_utils import atomic_write_json, load_json_artifact
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
-GRADING = TMP / "recommendation-outcome-grading-cadence.json"
+# The recommendation grading cadence was retired 2026-09-25 (its feeders stopped
+# 2026-08-29); the gate reads the frozen append-only grade history directly.
+GRADE_HISTORY = ROOT / "data" / "state-history" / "recommendation-outcome-grades.jsonl"
 RECOMMENDATION_LEDGER = TMP / "recommendation-outcome-ledger-current.json"
 FINANCE_DIGEST = TMP / "finance-decision-performance-digest.json"
 WF88_OS2 = TMP / "wf88-os2-control-packet.json"
@@ -100,6 +102,20 @@ def load(path: Path) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
+def jsonl_row_count(path: Path) -> int:
+    """Count parseable JSON object rows; a missing file counts zero."""
+    if not path.exists():
+        return 0
+    count = 0
+    with path.open(encoding="utf-8") as handle:
+        for line in handle:
+            try:
+                count += isinstance(json.loads(line), dict)
+            except json.JSONDecodeError:
+                continue
+    return count
+
+
 def int_value(value: Any) -> int:
     try:
         return int(value or 0)
@@ -161,13 +177,12 @@ def producer_evidence_freshness(descriptor: dict[str, Any], *, max_age_hours: fl
 
 
 def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
-    grading = load(paths["grading"])
+    grade_history_rows = jsonl_row_count(paths["grade_history"])
     recommendation = load(paths["recommendation_ledger"])
     digest = load(paths["finance_digest"])
     os2 = load(paths["wf88_os2"])
     wiki = load(paths["wf88_wiki"])
 
-    grading_summary = as_dict(grading.get("summary"))
     recommendation_durable = as_dict(recommendation.get("durable_v2_ledger"))
     os2_summary = as_dict(os2.get("summary"))
     wiki_summary = as_dict(wiki.get("summary"))
@@ -177,9 +192,7 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
         digest_wf55 = as_dict(digest.get("recommendation_outcomes"))
 
     hard_checks = {
-        "grading_validation_ok": as_dict(grading.get("validation")).get("status") == "ok",
-        "grading_events_present": int_value(grading_summary.get("total_grade_event_count_after_append")) > 0
-        or int_value(grading_summary.get("existing_grade_event_count")) > 0,
+        "grade_history_present": grade_history_rows > 0,
         "recommendation_ledger_grade_count_positive": int_value(recommendation_durable.get("later_outcome_graded_rows")) > 0,
         "finance_digest_grade_count_positive": int_value(digest_wf55.get("outcome_grade_assigned_count")) > 0,
         "os2_grade_count_positive": int_value(os2_summary.get("recommendation_later_outcome_graded_rows")) > 0,
@@ -234,6 +247,7 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
         "authority_boundary": AUTHORITY_BOUNDARY,
         "hard_checks": hard_checks,
         "summary": {
+            "grade_history_row_count": grade_history_rows,
             "recommendation_later_outcome_graded_rows": int_value(recommendation_durable.get("later_outcome_graded_rows")),
             "finance_digest_grade_count": int_value(digest_wf55.get("outcome_grade_assigned_count")),
             "os2_recommendation_later_outcome_graded_rows": int_value(os2_summary.get("recommendation_later_outcome_graded_rows")),
@@ -259,7 +273,7 @@ def build_payload(paths: dict[str, Path]) -> dict[str, Any]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--grading", type=Path, default=GRADING)
+    parser.add_argument("--grade-history", type=Path, default=GRADE_HISTORY)
     parser.add_argument("--recommendation-ledger", type=Path, default=RECOMMENDATION_LEDGER)
     parser.add_argument("--finance-digest", type=Path, default=FINANCE_DIGEST)
     parser.add_argument("--wf88-os2", type=Path, default=WF88_OS2)
@@ -277,7 +291,7 @@ def abs_path(path: Path) -> Path:
 def main() -> int:
     args = parse_args()
     paths = {
-        "grading": abs_path(args.grading),
+        "grade_history": abs_path(args.grade_history),
         "recommendation_ledger": abs_path(args.recommendation_ledger),
         "finance_digest": abs_path(args.finance_digest),
         "wf88_os2": abs_path(args.wf88_os2),

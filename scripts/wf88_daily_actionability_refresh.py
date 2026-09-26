@@ -67,8 +67,11 @@ DEPENDENCY_PRODUCER_SCRIPTS = {
     "tmp/rsi-outcome-scorecard.json": "scripts/rsi_outcome_scorecard.py",
 }
 
+# recommendation_outcome_grading was retired 2026-09-25 (Randall approval): its
+# quote and recommendation feeders stopped on 2026-08-29 with the alerts-OS pivot,
+# so it graded nothing while reporting ok. The grades history stays as frozen
+# evidence; the successor is a scorer on the alert-event ledger.
 COMMANDS: list[dict[str, Any]] = [
-    {"id": "recommendation_outcome_grading", "command": [sys.executable, "scripts\\recommendation_outcome_grading_cadence.py", "--write", "--write-md", "--validate"]},
     {"id": "wf55_outcome_ledger_current", "command": [sys.executable, "scripts\\wf55_outcome_ledger_v2.py", "preview"]},
     {"id": "finance_decision_performance", "command": [sys.executable, "scripts\\finance_decision_performance_digest.py", "--write", "--write-md", "--validate"]},
     {"id": "cron_contract_validator", "command": [sys.executable, "scripts\\cron_contract_validator.py", "--write", "--validate"]},
