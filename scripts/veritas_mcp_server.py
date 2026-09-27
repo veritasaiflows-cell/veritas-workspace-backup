@@ -28,6 +28,8 @@ ARTIFACTS = {
     "gap_repair": "tmp/yahoo-daily-gap-repair.json",
     "weekly_renewal": "tmp/weekly-band-renewal.json",
 }
+CONTROLLER_REL = "tmp/alert-level-freshness-controller.json"
+STALE_STATUS = "stale_suppressed"
 BOUNDARY = "read-only evidence; not approval, canon, capital, order, account, or execution authority"
 
 
@@ -47,6 +49,63 @@ def _read_json(rel: str) -> dict[str, Any]:
     if not path.is_file():
         return {"available": False, "path": rel}
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _parse_ts(value: Any) -> Any:
+    """Parse an ISO-8601 timestamp with explicit timezone (trailing Z accepted); None when missing, naive, or invalid."""
+    from datetime import datetime, timezone
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        text = value.strip()
+        if text.endswith("Z"):
+            text = text[:-1] + "+00:00"
+        dt = datetime.fromisoformat(text)
+        if dt.tzinfo is None:
+            return None
+        return dt.astimezone(timezone.utc)
+    except ValueError:
+        return None
+
+
+def _funnel_stale_reason(data: dict[str, Any]) -> str | None:
+    """Fail-closed staleness check for a stored funnel artifact; suppression reason or None."""
+    try:
+        renewal = _read_json(ARTIFACTS["weekly_renewal"])
+    except (OSError, ValueError):
+        renewal = {"available": False}
+    if not isinstance(renewal, dict) or renewal.get("available") is False:
+        return "band renewal packet missing or unreadable (tmp/weekly-band-renewal.json)"
+    applied, status = renewal.get("applied"), renewal.get("status")
+    if applied is False and status in ("needs_owner_review", "gate_passed_not_applied"):
+        return None
+    if not (applied is True and status == "applied"):
+        return "band renewal status inconsistent or malformed (applied/status)"
+    finished = _parse_ts(renewal.get("finished_at_utc")) or _parse_ts(renewal.get("finished_at"))
+    if finished is None:
+        return "applied band renewal provenance missing or invalid (finished_at_utc)"
+    try:
+        controller = _read_json(CONTROLLER_REL)
+    except (OSError, ValueError):
+        controller = {"available": False}
+    if not isinstance(controller, dict) or controller.get("available") is False:
+        return "controller provenance missing (no controller artifact)"
+    controller_ts = _parse_ts(controller.get("generated_at_utc")) or _parse_ts(controller.get("generated_at"))
+    if controller_ts is None:
+        return "controller provenance missing or invalid (generated_at_utc)"
+    funnel_ts = _parse_ts(data.get("generated_at_utc")) or _parse_ts(data.get("generated_at"))
+    if funnel_ts is None:
+        return "funnel provenance missing or invalid (generated_at_utc)"
+    if controller_ts < finished:
+        return (f"controller generated at "
+                f"{controller.get('generated_at_utc') or controller.get('generated_at')} "
+                f"precedes applied band renewal finished at "
+                f"{renewal.get('finished_at_utc') or renewal.get('finished_at')}")
+    if funnel_ts < finished:
+        return (f"funnel generated at {data.get('generated_at_utc') or data.get('generated_at')} "
+                f"precedes applied band renewal finished at "
+                f"{renewal.get('finished_at_utc') or renewal.get('finished_at')}")
+    return None
 
 
 def reference_band(ticker: str) -> dict[str, Any]:
@@ -83,10 +142,48 @@ def funnel() -> dict[str, Any]:
         return data
     keep = ("ticker", "stage", "rank", "score", "reasons", "flags", "conviction", "relationship",
             "price", "band", "invalidation", "days_to_earnings", "relative_strength_63d")
-    return {k: data.get(k) for k in ("generated_at_utc", "funnel_version", "weights_status", "macro_posture",
-                                      "counts", "candidates")} | {
-        "names": [{k: n.get(k) for k in keep if k in n} for n in data.get("names") or []
-                  if n.get("stage") != "monitor_only"],
+    base = {k: data.get(k) for k in ("generated_at_utc", "funnel_version", "weights_status", "macro_posture",
+                                     "counts", "candidates")}
+    if data.get("status") == STALE_STATUS:
+        return base | {
+            "candidates": [],
+            "counts": {s: 0 for s in ("review_candidate", "ranked_not_candidate", "board_only", "monitor_only")},
+            "names": [],
+            "status": STALE_STATUS,
+            "stale_reason": data.get("stale_reason") or
+                            "stored funnel artifact is marked stale_suppressed; regenerate after renewal",
+            "boundary": BOUNDARY}
+    stale_reason = _funnel_stale_reason(data)
+    if stale_reason is None:
+        try:
+            import sys as _sys
+            _parent = str(Path(__file__).resolve().parent)
+            if _parent not in _sys.path:
+                _sys.path.insert(0, _parent)
+            from recommendation_funnel import same_version_stale_reason as _same_version_reason
+        except Exception as exc:
+            stale_reason = f"same-version check failed: shared helper unavailable ({exc})"
+            _same_version_reason = None
+        if _same_version_reason is not None:
+            try:
+                _controller = _read_json(CONTROLLER_REL)
+            except (OSError, ValueError):
+                _controller = {"available": False}
+            try:
+                stale_reason = _same_version_reason(root(), _controller)
+            except Exception as exc:
+                stale_reason = f"same-version check failed: shared helper error ({exc})"
+    if stale_reason is None:
+        return base | {
+            "names": [{k: n.get(k) for k in keep if k in n} for n in data.get("names") or []
+                      if n.get("stage") != "monitor_only"],
+            "boundary": BOUNDARY}
+    return base | {
+        "candidates": [],
+        "counts": {s: 0 for s in ("review_candidate", "ranked_not_candidate", "board_only", "monitor_only")},
+        "names": [],
+        "status": STALE_STATUS,
+        "stale_reason": stale_reason,
         "boundary": BOUNDARY}
 
 

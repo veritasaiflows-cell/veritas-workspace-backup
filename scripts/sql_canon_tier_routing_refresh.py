@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""Refresh SQL-canon tier_routing_state from the validated WF78 router.
+"""Retired WF78 SQL-canon tier_routing_state DB writer \u2014 deny-only tombstone.
 
-This is intentionally narrower than sql_canon_phase2_backfill.py. It does not
-clear or reload reference_levels, evidence_freshness, consumer registry, schema,
-portfolio/canon notes, archives, cron, or answer-path behavior.
+The WF78 auto-tier-routing SQLite refresh path is retired and disabled.
+This module keeps import compatibility and the pure validation helpers so
+read-only inspection keeps working, but every database-apply and file-write
+path fails closed: no invocation opens the database for writing, reads the
+legacy source artifact as part of execution, creates a database backup,
+writes the legacy output artifact, or reports readiness or success.
+
+Use the current guarded SQL-canon routes instead of this retired writer.
+This module performs no data-plane mutation of any kind.
 """
 
 from __future__ import annotations
@@ -16,7 +22,25 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from market_data_utils import atomic_write_json, backup_sqlite_database
+
+RETIRED_STATUS = "retired"
+RETIRED_ERROR = "retired_wf78_tier_routing_writer_disabled"
+RETIRED_ERRORS = [RETIRED_ERROR]
+RETIRED_REASON = (
+    "retired: the WF78 sql_canon_tier_routing_refresh database writer is "
+    "disabled and performs no database, backup, or output-artifact mutation; "
+    "use the current guarded SQL-canon routes instead."
+)
+
+
+try:
+    from market_data_utils import atomic_write_json, backup_sqlite_database
+except Exception:  # dependency-absent fallback still fails closed
+    def atomic_write_json(*args: Any, **kwargs: Any) -> Any:
+        raise RuntimeError(RETIRED_REASON)
+
+    def backup_sqlite_database(*args: Any, **kwargs: Any) -> Any:
+        raise RuntimeError(RETIRED_REASON)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -59,20 +83,6 @@ def sha256(path: Path) -> str | None:
     return digest.hexdigest()
 
 
-def connect(write: bool = False) -> sqlite3.Connection:
-    if write:
-        conn = sqlite3.connect(DB_PATH)
-    else:
-        conn = sqlite3.connect(DB_PATH.resolve().as_uri() + "?mode=ro", uri=True)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA busy_timeout=5000")
-    conn.execute("PRAGMA foreign_keys=ON")
-    if write:
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA synchronous=NORMAL")
-    return conn
-
-
 def source_rows() -> tuple[dict[str, Any], list[dict[str, Any]]]:
     payload = load_json(SOURCE)
     rows = [
@@ -86,32 +96,6 @@ def table_digest(conn: sqlite3.Connection, table: str) -> str:
     rows = [dict(row) for row in conn.execute(f'SELECT * FROM "{table}" ORDER BY 1')]
     encoded = json.dumps(rows, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
-
-
-def backup_db(run_id: str) -> dict[str, Any]:
-    backup_dir = BACKUPS / run_id
-    backup_dir.mkdir(parents=True, exist_ok=True)
-    backup_path = backup_sqlite_database(DB_PATH, backup_dir / "finance-canon.sqlite")
-    items: list[dict[str, Any]] = [
-        {
-            "path": rel(DB_PATH),
-            "backup_path": rel(backup_path),
-            "sha256": sha256(backup_path),
-            "rollback": f"Restore {rel(backup_path)} over {rel(DB_PATH)} after closing SQL consumers.",
-        }
-    ]
-    manifest = {
-        "schema_version": "sql_canon_tier_routing_refresh_backup_manifest.v1",
-        "generated_at_utc": utc_now(),
-        "status": "ok",
-        "items": items,
-        "authority_boundary": {
-            "rollback_proof_only": True,
-            "capital_or_execution_authority": False,
-        },
-    }
-    atomic_write_json(backup_dir / "manifest.json", manifest)
-    return {"backup_dir": rel(backup_dir), "manifest": rel(backup_dir / "manifest.json"), "items": items}
 
 
 def expected_source_row_count(payload: dict[str, Any]) -> int | None:
@@ -172,174 +156,65 @@ def current_diffs(conn: sqlite3.Connection, rows: list[dict[str, Any]]) -> list[
     return diffs
 
 
-def apply_refresh() -> dict[str, Any]:
-    payload, rows = source_rows()
-    errors = validate_source(payload, rows)
-    if errors:
-        return {"applied": False, "errors": errors}
-
-    run_id = "tier-routing-" + utc_now().replace(":", "").replace("-", "").replace("T", "-").replace("Z", "Z")
-    backup = backup_db(run_id)
-    source_hash = sha256(SOURCE)
-    inserted_at = utc_now()
-    with connect(write=True) as conn:
-        before_reference_digest = table_digest(conn, "reference_levels")
-        before_diffs = current_diffs(conn, rows)
-        with conn:
-            conn.execute("DELETE FROM source_lineage WHERE field_family='tier_routing_state'")
-            for row in rows:
-                ticker = str(row.get("ticker") or "").upper()
-                conn.execute(
-                    """
-                    INSERT OR REPLACE INTO tier_routing_state(
-                        ticker, auto_tier, auto_state, route_reason, route_priority,
-                        data_confidence_rating, fundamentals_confidence, tier_a_confidence_status,
-                        critical_data_conflict_count, tier_c_attention_score, tier_c_attention_next_action,
-                        capital_deployment_approved, trade_or_execution_approved,
-                        requires_separate_capital_or_execution_approval, source_artifact_path,
-                        source_artifact_sha256, source_generated_at_utc, raw_json
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
-                    (
-                        ticker,
-                        row.get("auto_tier"),
-                        row.get("auto_state"),
-                        row.get("route_reason"),
-                        row.get("route_priority"),
-                        row.get("data_confidence_rating"),
-                        row.get("fundamentals_confidence"),
-                        row.get("tier_a_confidence_status"),
-                        row.get("critical_data_conflict_count"),
-                        row.get("tier_c_attention_score"),
-                        row.get("tier_c_attention_next_action"),
-                        int(bool(row.get("capital_deployment_approved"))),
-                        int(bool(row.get("trade_or_execution_approved"))),
-                        int(row.get("requires_separate_capital_or_execution_approval") is not False),
-                        rel(SOURCE),
-                        source_hash,
-                        payload.get("generated_at_utc"),
-                        json.dumps(row, sort_keys=True),
-                    ),
-                )
-                for field in LINEAGE_FIELDS:
-                    lineage_id = "|".join(["ticker", ticker, "tier_routing_state", field])
-                    conn.execute(
-                        """
-                        INSERT OR REPLACE INTO source_lineage(
-                            lineage_id, scope, scope_key, field_family, field_name,
-                            source_artifact_path, source_artifact_sha256, source_generated_at_utc,
-                            source_status, validator_status, authority_class, fallback_rule, inserted_at_utc
-                        )
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                        """,
-                        (
-                            lineage_id,
-                            "ticker",
-                            ticker,
-                            "tier_routing_state",
-                            field,
-                            rel(SOURCE),
-                            source_hash,
-                            payload.get("generated_at_utc"),
-                            payload.get("status"),
-                            "ok",
-                            "derived_non_capital_routing",
-                            "fallback_to_wf78_auto_tier_routing_json",
-                            inserted_at,
-                        ),
-                    )
-            conn.execute(
-                "INSERT OR REPLACE INTO finance_state_meta(key, value, updated_at_utc) VALUES (?, ?, ?)",
-                ("tier_routing_state_refreshed_at_utc", inserted_at, inserted_at),
-            )
-        after_reference_digest = table_digest(conn, "reference_levels")
-        after_diffs = current_diffs(conn, rows)
-        false_flags = int(
-            conn.execute(
-                """
-                SELECT COUNT(*) FROM tier_routing_state
-                WHERE capital_deployment_approved != 0 OR trade_or_execution_approved != 0
-                """
-            ).fetchone()[0]
-        )
-        routing_count = int(conn.execute("SELECT COUNT(*) FROM tier_routing_state").fetchone()[0])
-        lineage_count = int(conn.execute("SELECT COUNT(*) FROM source_lineage WHERE field_family='tier_routing_state'").fetchone()[0])
-        integrity = conn.execute("PRAGMA integrity_check").fetchone()[0]
-        fk_count = len(conn.execute("PRAGMA foreign_key_check").fetchall())
+def _deny_apply_result() -> dict[str, Any]:
     return {
-        "applied": True,
-        "backup": backup,
-        "before_diff_count": len(before_diffs),
-        "after_diff_count": len(after_diffs),
-        "reference_levels_preserved": before_reference_digest == after_reference_digest,
-        "reference_levels_digest_before": before_reference_digest,
-        "reference_levels_digest_after": after_reference_digest,
-        "routing_count": routing_count,
-        "tier_routing_lineage_count": lineage_count,
-        "authority_false_flag_count": false_flags,
-        "integrity_check": integrity,
-        "foreign_key_error_count": fk_count,
-        "errors": [],
+        "applied": False,
+        "status": RETIRED_STATUS,
+        "retired": True,
+        "reason": RETIRED_REASON,
+        "db_apply_performed": False,
+        "errors": list(RETIRED_ERRORS),
     }
 
 
-def build(apply_db: bool) -> dict[str, Any]:
-    payload, rows = source_rows()
-    source_errors = validate_source(payload, rows)
-    with connect(write=False) as conn:
-        diffs = current_diffs(conn, rows) if not source_errors else []
-        reference_digest = table_digest(conn, "reference_levels")
-    apply_result = apply_refresh() if apply_db and not source_errors else {"applied": False, "errors": source_errors}
-    errors = list(source_errors)
-    if apply_result.get("applied"):
-        for check_name in [
-            "reference_levels_preserved",
-        ]:
-            if apply_result.get(check_name) is not True:
-                errors.append(check_name)
-        if apply_result.get("after_diff_count") != 0:
-            errors.append("after_diff_count_not_zero")
-        if apply_result.get("authority_false_flag_count") != 0:
-            errors.append("authority_flags_not_false")
-        if apply_result.get("integrity_check") != "ok":
-            errors.append("integrity_check_failed")
-        if apply_result.get("foreign_key_error_count") != 0:
-            errors.append("foreign_key_check_failed")
-    status = "ok" if apply_result.get("applied") and not errors else ("ready_for_db_apply" if not source_errors else "blocked")
+def connect(write: bool = False) -> sqlite3.Connection:
+    if write:
+        raise RuntimeError(RETIRED_REASON)
+    conn = sqlite3.connect(DB_PATH.resolve().as_uri() + "?mode=ro", uri=True)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA busy_timeout=5000")
+    conn.execute("PRAGMA foreign_keys=ON")
+    return conn
+
+
+def backup_db(run_id: str) -> dict[str, Any]:
+    raise RuntimeError(RETIRED_REASON)
+
+
+def apply_refresh() -> dict[str, Any]:
+    return _deny_apply_result()
+
+
+def build(apply_db: bool = False) -> dict[str, Any]:
     return {
         "schema_version": "sql_canon_tier_routing_refresh.v1",
         "generated_at_utc": utc_now(),
-        "status": status,
+        "status": RETIRED_STATUS,
+        "retired": True,
+        "reason": RETIRED_REASON,
         "target_database": rel(DB_PATH),
         "source": {
             "path": rel(SOURCE),
-            "sha256": sha256(SOURCE),
-            "status": payload.get("status"),
-            "validation_status": (payload.get("validation") or {}).get("status") if isinstance(payload.get("validation"), dict) else None,
-            "row_count": len(rows),
-            "expected_row_count": expected_source_row_count(payload),
+            "status": RETIRED_STATUS,
+            "note": "the retired writer does not read the source artifact",
         },
-        "pre_apply_diff_count": len(diffs),
-        "pre_apply_reference_levels_digest": reference_digest,
-        "apply_result": apply_result,
+        "pre_apply_diff_count": 0,
+        "pre_apply_reference_levels_digest": None,
+        "apply_result": _deny_apply_result(),
+        "db_apply_performed": False,
+        "written": [],
         "validation": {
-            "status": "ok" if status == "ok" else ("warning" if status == "ready_for_db_apply" else "error"),
-            "errors": errors,
+            "status": "error",
+            "errors": list(RETIRED_ERRORS),
             "checks": {
-                "source_ok": not source_errors,
-                "source_row_count_matches_expected": (
-                    expected_source_row_count(payload) is not None
-                    and len(rows) == expected_source_row_count(payload)
-                ),
-                "routing_only": True,
-                "reference_levels_preserved": apply_result.get("reference_levels_preserved") if apply_result.get("applied") else None,
-                "after_diff_count": apply_result.get("after_diff_count") if apply_result.get("applied") else None,
+                "retired_writer_disabled": True,
+                "source_accepted": False,
+                "db_apply_performed": False,
             },
         },
         "authority_boundary": {
-            "derived_non_capital_routing_sql_refresh": True,
-            "tier_routing_state_only": True,
+            "derived_non_capital_routing_sql_refresh": False,
+            "tier_routing_state_only": False,
             "reference_levels_mutation_allowed": False,
             "schema_mutation_allowed": False,
             "portfolio_or_canon_markdown_mutation_allowed": False,
@@ -351,36 +226,24 @@ def build(apply_db: bool) -> dict[str, Any]:
     }
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--apply-db", action="store_true")
     parser.add_argument("--validate", action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     payload = build(apply_db=args.apply_db)
-    if args.write:
-        atomic_write_json(OUT, payload)
-    print(
-        json.dumps(
-            {
-                "status": payload["status"],
-                "db_apply_performed": bool(payload["apply_result"].get("applied")),
-                "pre_apply_diff_count": payload["pre_apply_diff_count"],
-                "after_diff_count": payload["apply_result"].get("after_diff_count"),
-                "reference_levels_preserved": payload["apply_result"].get("reference_levels_preserved"),
-                "errors": payload["validation"]["errors"],
-                "written": [rel(OUT)] if args.write else [],
-            },
-            indent=2,
-            sort_keys=True,
-        )
-    )
-    if args.validate and payload["status"] not in {"ok", "ready_for_db_apply"}:
-        return 1
-    if args.validate and args.apply_db and payload["status"] != "ok":
-        return 1
-    return 0
+    tombstone = {
+        "status": payload["status"],
+        "retired": True,
+        "reason": RETIRED_REASON,
+        "db_apply_performed": False,
+        "written": [],
+        "errors": list(payload["validation"]["errors"]),
+    }
+    print(json.dumps(tombstone, indent=2, sort_keys=True))
+    return 2
 
 
 if __name__ == "__main__":
