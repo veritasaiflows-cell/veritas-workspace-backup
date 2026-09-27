@@ -1,0 +1,94 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "MSFT",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "secular_growth",
+  "thesis_statement": "Microsoft combines the Azure cloud platform, Microsoft 365 and a deep enterprise distribution base, making it one of the most direct ways enterprises buy AI; Azure passing $100B in annual revenue and 30M+ paid Copilot seats show AI is already producing revenue.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Revenue grows in the mid-teens with operating margin near 45% as Azure AI demand offsets higher depreciation.",
+      "drivers": [
+        "Azure AI and core cloud consumption",
+        "Microsoft 365 Copilot seat growth",
+        "enterprise pricing power"
+      ]
+    },
+    "bull": {
+      "summary": "AI monetization accelerates and capex intensity peaks, lifting free cash flow growth.",
+      "drivers": [
+        "Copilot attach rates",
+        "Azure capacity additions converting to revenue"
+      ]
+    },
+    "bear": {
+      "summary": "Capex keeps rising faster than cloud revenue, compressing free cash flow and the multiple.",
+      "drivers": [
+        "AI capex without matching revenue",
+        "OpenAI partnership changes",
+        "enterprise IT budget slowdown"
+      ]
+    }
+  },
+  "key_risks": [
+    "Free cash flow fell 23% year over year in Q2 2026 as quarterly capex reached $35.8B.",
+    "GAAP results are affected by AI investment accounting (OpenAI losses and a $3.2B Anthropic gain); use non-GAAP for trend.",
+    "Valuation (forward P/E ~22) assumes AI returns arrive on schedule."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (458.55 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Operating margin falls below 40% for two consecutive quarters.",
+      "Free cash flow declines year over year for four consecutive quarters with no slowdown in capex growth."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q1 FY2027 earnings",
+      "expected_date": "2026-10-28",
+      "date_confidence": "provider_estimate"
+    }
+  ],
+  "conviction": "high",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_neutral_selective",
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLK"
+  },
+  "evidence": [
+    {
+      "claim": "FY26 Q4 (quarter ended 2026-06-30): revenue $90.0B +18%; operating income $40.6B +18%; net income $35.8B GAAP +31% ($35.3B non-GAAP +22%); EPS $4.81 GAAP / $4.74 non-GAAP; $3.2B Anthropic gain; Azure surpassed $100B revenue; M365 Copilot 30M+ paid seats",
+      "source": "Microsoft FY26 Q4 release (news.microsoft.com/source/2026/07/29/...)",
+      "as_of": "2026-07-29"
+    },
+    {
+      "claim": "Q2 OCF $55.4B, capex $35.8B, FCF $19.6B (-23.19% YoY); operating margin 45.1%; forward P/E 21.8; SEC reconciliation status sec_lag_wait",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-28 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 475.17-486.24, invalidation 458.55, reference_confidence 35; close 516.15 on 2026-09-25 is 6.2% above band high (no-chase)",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-27T08:05:00-07:00",
+  "owner_notes": "High conviction is on business quality, not timing: price is well above the SQL band (no-chase). Current Azure growth rate was not captured in this pass, so no Azure-growth invalidation is set; add one after the Q1 FY27 report. Accepted by Randall, WebChat 2026-09-27 ~08:05 Phoenix: 'Accept all except XOM. Proceed with next steps.'",
+  "fundamentals_period_end": "2026-06-30"
+}

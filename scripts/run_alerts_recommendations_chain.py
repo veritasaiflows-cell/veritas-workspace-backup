@@ -43,6 +43,10 @@ ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
 WINDOWS = {"morning", "midday", "post-close", "weekly"}
 PHASE3F_POLICY_RUN_ROOT = "tmp/phase3f-policy-runs"
+# The funnel is a weekly review surface. Refreshing it on the 15-minute
+# intraday lane would add avoidable Yahoo traffic; the Sunday weekly run is
+# the first coherent controller refresh after Saturday's band-renewal gate.
+RECOMMENDATION_FUNNEL_WINDOWS = frozenset({"weekly"})
 
 # Each component's upstream provider, so the policy's provider allowlist is
 # enforced on the real path rather than only describing intent. Alert-level
@@ -390,6 +394,18 @@ def emit_recurring_chain_receipts(
                    "digest_status": recurring_digest.get("status"),
                    "shared_promotion_status": promotion.get("status"),
                    "digest_errors": recurring_digest.get("errors") or []})
+    if window in RECOMMENDATION_FUNNEL_WINDOWS:
+        funnel = result.get("recommendation_funnel") or {}
+        stages.append({
+            "name": "recommendation_funnel",
+            "script": "recommendation_funnel.py",
+            "critical": True,
+            "status": "ok" if funnel.get("status") == "ok" else "error",
+            "reason": funnel.get("reason"),
+            "artifact": funnel.get("artifact"),
+            "artifact_sha256": funnel.get("artifact_sha256"),
+            "controller_sha256": funnel.get("controller_sha256"),
+        })
 
     coherence = digest_source_coherence(
         window,
@@ -884,6 +900,13 @@ def run_policy_canary(
                     controller_sha256=proof["shared_promotion"].get("controller_sha256"),
                     message=str(proof["recurring_digest"]["message_preview"]),
                 )
+        if str(recurring_window) in RECOMMENDATION_FUNNEL_WINDOWS:
+            proof["recommendation_funnel"] = _refresh_recommendation_funnel_after_promotion(
+                window=str(recurring_window),
+                promotion=proof["shared_promotion"],
+            )
+            if proof["recommendation_funnel"].get("status") != "ok":
+                proof_status = proof["status"] = "completed_with_visible_debt"
         proof["delivery"] = _stash_delivery_record(
             delivery_intent=delivery_intent,
             delivery_sender=delivery_sender,
@@ -911,6 +934,7 @@ def run_policy_canary(
             "recurring_reference_provenance_sha256": proof["recurring_reference_provenance_sha256"],
             "shared_promotion": proof.get("shared_promotion"),
             "alert_ledger": proof.get("alert_ledger"),
+            "recommendation_funnel": proof.get("recommendation_funnel"),
             "delivery": proof.get("delivery"),
             "acquisition_to_authorization_latency_seconds": proof.get("acquisition_to_authorization_latency_seconds"),
             "guarded_sql_membership_selection_evidence": proof.get("guarded_sql_membership_selection_evidence")}
@@ -920,6 +944,65 @@ def run_policy_canary(
 
 RECURRING_SHARED_CONTROLLER_REL = "tmp/alert-level-freshness-controller.json"
 RECURRING_PROMOTION_PREIMAGE_BYTES_CAP = 10 * 1024 * 1024
+
+
+def _refresh_recommendation_funnel_after_promotion(
+    *, window: str, promotion: dict[str, Any]
+) -> dict[str, Any]:
+    """Refresh the weekly funnel only from a verified, stable shared controller.
+
+    The funnel's own provenance and same-version checks remain authoritative:
+    they compare the applied-renewal timestamp, controller SQL reference,
+    guarded lineage, active baseline pin, and current read-only SQL before any
+    ranking/network fetch. This wrapper additionally binds the run to the exact
+    controller bytes just promoted and makes a suppressed/error result visible
+    to the scheduler instead of leaving an old artifact silently stale.
+    """
+    if window not in RECOMMENDATION_FUNNEL_WINDOWS:
+        return {"status": "skipped", "reason": "window_not_on_funnel_cadence"}
+    promotion_status = promotion.get("status") if isinstance(promotion, dict) else None
+    expected_hash = promotion.get("controller_sha256") if isinstance(promotion, dict) else None
+    if promotion_status not in {"ok", "ok_duplicate_suppressed"} or not isinstance(expected_hash, str):
+        return {"status": "error", "reason": "verified_shared_controller_promotion_required"}
+    controller_path = _shared_controller_path()
+    if file_sha256(controller_path) != expected_hash:
+        return {"status": "error", "reason": "shared_controller_hash_changed_before_funnel"}
+    try:
+        import recommendation_funnel as funnel
+
+        payload = funnel.evaluate(ROOT)
+        if file_sha256(controller_path) != expected_hash:
+            return {"status": "error", "reason": "shared_controller_hash_changed_during_funnel"}
+        authority = payload.get("authority") if isinstance(payload, dict) else None
+        expected_authority = {
+            "review_only": True,
+            "alert_or_canon_change": False,
+            "delivery": False,
+            "capital_or_execution": False,
+            "owner_approval_inferred": False,
+        }
+        if (not isinstance(payload, dict)
+                or payload.get("schema") != "veritas.recommendation_funnel.v1"
+                or authority != expected_authority):
+            return {"status": "error", "reason": "recommendation_funnel_contract_invalid"}
+        output = ROOT / funnel.OUT_REL
+        write_json(output, payload)
+        result = {
+            "status": "error" if payload.get("status") == "stale_suppressed" else "ok",
+            "reason": "stale_suppressed" if payload.get("status") == "stale_suppressed" else "fresh",
+            "artifact": rel_to_root(output),
+            "artifact_sha256": file_sha256(output),
+            "controller_sha256": expected_hash,
+            "controller_generated_at_utc": load_dict(controller_path).get("generated_at_utc"),
+            "funnel_generated_at_utc": payload.get("generated_at_utc"),
+            "candidates": list(payload.get("candidates") or []),
+            "authority": authority,
+        }
+        if payload.get("status") == "stale_suppressed":
+            result["stale_reason"] = payload.get("stale_reason")
+        return result
+    except Exception as exc:  # fail closed without retaining sensitive exception detail
+        return {"status": "error", "reason": f"recommendation_funnel_refresh_failed:{type(exc).__name__}"}
 
 
 def _shared_controller_path() -> Path:

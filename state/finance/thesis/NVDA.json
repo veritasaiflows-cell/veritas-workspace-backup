@@ -1,0 +1,96 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "NVDA",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "ai_infrastructure",
+  "thesis_statement": "NVIDIA supplies the dominant accelerated-computing platform (GPUs, networking and CUDA software) for AI training and inference; revenue doubled year over year to $96.2B in Q2 FY27 with 75% gross margins, and guidance points to further growth as the Vera Rubin generation ramps.",
+  "timeframe": "intermediate_3_12m",
+  "cases": {
+    "base": {
+      "summary": "Data-center revenue keeps growing sequentially through the Vera Rubin ramp with gross margins in the mid-70s.",
+      "drivers": [
+        "hyperscaler and AI-lab capex",
+        "Vera Rubin production ramp",
+        "networking attach"
+      ]
+    },
+    "bull": {
+      "summary": "More frontier labs, sovereign AI and physical-AI demand extend the build-out beyond current expectations.",
+      "drivers": [
+        "multiple frontier labs scaling in parallel",
+        "sovereign and enterprise AI",
+        "inference demand"
+      ]
+    },
+    "bear": {
+      "summary": "Customers slow AI capex or shift to custom chips, and revenue growth turns negative from a very high base.",
+      "drivers": [
+        "hyperscaler capex digestion",
+        "custom silicon (TPU, Trainium) substitution",
+        "export controls"
+      ]
+    }
+  },
+  "key_risks": [
+    "Customer concentration: revenue depends on a small number of hyperscalers and AI labs whose capex can pause.",
+    "Competition from custom accelerators built by its largest customers.",
+    "Export-control and geopolitical risk on China and other markets."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (200.02 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Revenue guidance for a quarter falls below the prior quarter's actual revenue.",
+      "Gross margin falls below 70% for two consecutive quarters."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 FY2027 earnings",
+      "expected_date": "2026-11-17",
+      "date_confidence": "provider_estimate"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": [
+      "defensive_review_bias"
+    ]
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLK"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 FY27 (quarter ended 2026-07-26): revenue $96.2B +106% YoY, +18% QoQ; Data Center $89.0B +117%; gross margin 75.0%; GAAP EPS $2.46, non-GAAP $2.22; returned ~$26.0B; $99.0B buyback remaining; Q3 FY27 revenue outlook $108.0B +/-2%; Vera Rubin in full production",
+      "source": "NVIDIA Q2 FY27 release, SEC 8-K exhibit 99.1 (sec.gov .../q2fy27pr.htm)",
+      "as_of": "2026-08-26"
+    },
+    {
+      "claim": "Operating margin 66.2%, ROIC proxy 82%, trailing P/E 28.5, forward P/E 14.35",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-11-17 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 208.93-215.79, invalidation 200.02, reference_confidence 50; close 225.04 on 2026-09-25 is 4.3% above band high (no-chase)",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-27T08:05:00-07:00",
+  "owner_notes": "fundamentals_period_end is 2026-07-31 to match the aggregator's month-end convention (actual fiscal quarter end 2026-07-26); a true date would falsely trigger new_quarter review. Medium conviction reflects AI-capex cycle risk, not execution. Sector benchmark XLK; SMH would be a closer peer if the quote pipeline carries it. Price is above band (no-chase). Accepted by Randall, WebChat 2026-09-27 ~08:05 Phoenix: 'Accept all except XOM. Proceed with next steps.'",
+  "fundamentals_period_end": "2026-07-31"
+}

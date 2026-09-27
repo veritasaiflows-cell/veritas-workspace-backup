@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "4d3616b9-8380-438d-89fe-52ae9179557a",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:phase4-tier-prototype-p2-20260926",
+  "label": "Phase4 tier prototype p2 retry",
+  "task_text_sha256": "a143028f0e6c3042ca660fc56628d585b7b697c98789507d2a8823c2a9ff2181",
+  "message_file": "tmp\\phase4-proposal-route-20260926\\tier-p2-retry.md",
+  "created_at_ms": 1790482589175,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

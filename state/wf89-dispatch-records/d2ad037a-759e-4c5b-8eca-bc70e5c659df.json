@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "d2ad037a-759e-4c5b-8eca-bc70e5c659df",
+  "agent_id": "qa-redteam",
+  "session_key": "agent:qa-redteam:phase4-dynamic-scope-qa2-20260927",
+  "label": "work:phase4-dynamic-scope-qa2",
+  "task_text_sha256": "6073a2684c53b9a3d00906e4eb5626e5e1b44d4c847f8fd757398a600b76152e",
+  "message_file": "tmp\\phase4-dynamic-scope-20260927\\task-qa.md",
+  "created_at_ms": 1790525880375,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

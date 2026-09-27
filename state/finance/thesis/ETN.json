@@ -1,0 +1,99 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "ETN",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "ai_infrastructure",
+  "thesis_statement": "Eaton is a leading electrical-equipment maker whose switchgear, power distribution and power-quality products are in short supply for data centers, utilities and industrial reshoring; record orders and backlog support multi-year organic growth, with aerospace as a second engine.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Low-double-digit organic growth and roughly 12% adjusted EPS growth as the electrical backlog converts.",
+      "drivers": [
+        "Electrical Americas backlog conversion",
+        "data center and utility demand",
+        "aerospace aftermarket"
+      ]
+    },
+    "bull": {
+      "summary": "Data-center and grid spending keeps accelerating and the Mobility separation lifts the growth and margin mix.",
+      "drivers": [
+        "AI data-center power build-out",
+        "Mobility Reverse Morris Trust close (expected Q1 2027)"
+      ]
+    },
+    "bear": {
+      "summary": "Data-center capex pauses while a premium multiple de-rates and acquisition leverage limits flexibility.",
+      "drivers": [
+        "hyperscaler capex cuts",
+        "valuation compression from ~27x forward earnings",
+        "integration margin dilution"
+      ]
+    }
+  },
+  "key_risks": [
+    "Premium valuation: GAAP trailing P/E ~45 and forward P/E ~27; a demand pause would hit the multiple hard.",
+    "Leverage is elevated after acquisitions (net debt ~$21.3B, ~3.7x annualized EBITDA on the aggregator's Q1 basis).",
+    "Q2 segment margin 23.1% was down 80 bp year over year despite record sales, reflecting acquisition mix."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (363.48 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Electrical twelve-month rolling orders turn negative year over year.",
+      "Full-year adjusted EPS guidance is cut, or segment margins stay below 21% for two quarters."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-11-03",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Mobility separation close (company guidance: Q1 2027)",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_neutral_selective",
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLI"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: sales $8.5B +21% (organic +14%); rolling orders +41% Electrical Americas, +33% Electrical Global, +17% Aerospace; backlog +43% Electrical, +28% Aerospace; segment margin 23.1%; adj EPS $3.15 (GAAP $2.11); FY26 adj EPS guide raised to $13.40-13.60; Mobility RMT announced",
+      "source": "Eaton Q2 2026 release, SEC 8-K exhibit 99 (sec.gov .../etn06302026exhibit99.htm)",
+      "as_of": "2026-07-31"
+    },
+    {
+      "claim": "Aggregator row still at Q1 2026 (period_end 2026-03-31, eps_yoy missing, data_quality partial); trailing P/E 44.85, forward 27.3, net debt $21.27B, debt/EBITDA 3.68",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-11-03 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 384.77-418.80, invalidation 363.48, reference_confidence 50; close 440.07 on 2026-09-25 is 5.1% above band high (no-chase)",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-27T08:05:00-07:00",
+  "owner_notes": "Written against official Q2 2026 figures because the aggregator row lags at Q1; fix that feed before relying on automated new-quarter review for ETN. Price is above band (no-chase). Overlaps with VRT (both data-center power), so do not count an ETN and a VRT signal as independent confirmation. Accepted by Randall, WebChat 2026-09-27 ~08:05 Phoenix: 'Accept all except XOM. Proceed with next steps.'",
+  "fundamentals_period_end": "2026-06-30"
+}

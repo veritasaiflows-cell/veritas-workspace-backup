@@ -2,8 +2,8 @@
 # What Changed Since Last Refresh
 
 Canonical page: `wiki/changes/What Changed Since Last Refresh.md`
-Canonical rendered SHA-256: `c281dffc9ca83aeb88c3d7bacc34bfa198cc46bdc6ffd609cdcb4f02617f847e`.
-Source snapshot SHA-256: `e1e5783c361c118d2fe7decaa3658414a1a39d794508f8edf2e81cf1edfa5ce7`.
+Canonical rendered SHA-256: `01f8aaa1e7a13c3bb2011a9eda938ffb749f294f2569aa4ec9aa65c56ad3e1a4`.
+Source snapshot SHA-256: `6d670804398925df4f3bc27dab7cc30bbe29f708f93a6ae28f56af63a0467218`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -28,7 +28,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `tmp/wf88-wiki-review-events.json`
 ## Claim-catalog delta
 
-- Baseline generated: `2026-09-26T05:12:57Z`.
+- Baseline generated: `2026-09-27T05:12:58Z`.
 - Added claim IDs: `none`.
 - Removed claim IDs: `none`.
 - Changed claim IDs: `action-state:maintain-wf88-retrieval-regression-corpus`.

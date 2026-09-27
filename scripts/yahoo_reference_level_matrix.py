@@ -1,4 +1,4 @@
-"""Build a Yahoo-only, review-only reference-level matrix for the fixed G6 scope.
+"""Build a Yahoo-only, review-only reference-level matrix for the guarded SQL scope.
 
 This script is deliberately a decision-packet generator.  It never writes the
 alert register, SQLite canon, controller, scheduler, account, or execution
@@ -21,13 +21,6 @@ from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
-SCOPED_TICKERS = (
-    "AMD", "AMZN", "BKNG", "BRK.B", "CAT", "CME", "CVX", "ECL",
-    "ETN", "GE", "GOOG", "GS", "ITA", "JPM", "KTOS", "LIN",
-    "LLY", "LMT", "LNG", "META", "MSFT", "NFLX", "NVDA", "PH",
-    "PLTR", "RTX", "SMCI", "TMUS", "VMC", "VRT", "WMB", "XOM",
-)
-YAHOO_SYMBOLS = {"BRK.B": "BRK-B"}
 MIN_BARS = 252
 LOOKBACK_DAYS = 500
 YAHOO_CHART_BASE = "https://query1.finance.yahoo.com/v8/finance/chart"
@@ -55,9 +48,56 @@ def load_repairs(path) -> dict:
     return repairs if isinstance(repairs, dict) else {}
 
 
-def provider_symbol(ticker: str) -> str:
-    """Return the fixed Yahoo request symbol for one canonical symbol."""
-    return YAHOO_SYMBOLS.get(ticker, ticker)
+def resolve_band_scope(db_path, *, access_factory=None, policy_loader=None, workspace_root=None) -> dict:
+    """Resolve the bounded SQL entitlement envelope and its provider identities."""
+    scope_error_type = None
+    if access_factory is None or policy_loader is None:
+        scripts_dir = str(Path(__file__).resolve().parent)
+        if scripts_dir not in sys.path:
+            sys.path.insert(0, scripts_dir)
+        if access_factory is None:
+            from finance_sql_canon_access import FinanceSqlCanonAccess, DynamicEntitlementScopeError
+            access_factory = FinanceSqlCanonAccess
+            scope_error_type = DynamicEntitlementScopeError
+        if policy_loader is None:
+            from dynamic_entitlement_provider_policy import load_provider_policy
+            policy_loader = load_provider_policy
+    if workspace_root is None:
+        workspace_root = Path(__file__).resolve().parents[1]
+    policy = policy_loader(workspace_root)
+    try:
+        scope = access_factory(db_path).dynamic_entitlement_scope(
+            envelope_name="band_renewal", envelope_count=policy.max_scope_count
+        )
+    except Exception as exc:
+        if (scope_error_type is not None and isinstance(exc, scope_error_type)) or type(exc).__name__ == "DynamicEntitlementScopeError":
+            raise ValueError("band_scope_error: guarded SQL refused the scope") from exc
+        raise
+    if not scope.memberships:
+        raise ValueError("band_scope_empty")
+    if scope.overflow_tickers:
+        raise ValueError("band_scope_overflow")
+    if len(scope.memberships) > policy.max_scope_count:
+        raise ValueError("band_scope_over_cap")
+    if scope.integrity_breaches:
+        raise ValueError("band_scope_integrity_breach")
+    tickers = tuple(sorted(scope.memberships))
+    symbols = {}
+    for ticker in tickers:
+        record = scope.memberships[ticker]
+        if not isinstance(record.yfinance_symbol, str) or not record.yfinance_symbol.strip():
+            raise ValueError("band_scope_blank_yfinance_symbol")
+        symbols[ticker] = record.yfinance_symbol
+    payload = scope.payload()
+    return {"tickers": tickers, "symbols": symbols,
+            "scope": {**payload, "tickers": list(tickers), "resolved_at_utc": utc_now_iso()}}
+
+
+def provider_symbol(ticker: str, symbols: dict[str, str] | None = None) -> str:
+    """Use guarded SQL symbols for contracts; fallback is diagnostic-only."""
+    if symbols is not None:
+        return symbols[ticker]
+    return ticker.replace(".", "-")
 
 
 def parse_iso_date(value: str) -> date:
@@ -404,7 +444,7 @@ def read_old_levels(db_path: str | Path, tickers: tuple[str, ...]) -> tuple[dict
 
 
 def has_complete_old_record(record: dict) -> bool:
-    """Require every old-side field needed for a reviewable 32-row diff."""
+    """Require every old-side field needed for a reviewable scope diff."""
     old = record.get("old") if isinstance(record, dict) else None
     if record.get("lookup_status") != "found" or not isinstance(old, dict):
         return False
@@ -455,8 +495,9 @@ def collect_one(
     http_get=None,
     now_fn=None,
     repairs: dict | None = None,
+    symbols: dict[str, str] | None = None,
 ) -> dict:
-    yahoo_symbol = provider_symbol(ticker)
+    yahoo_symbol = provider_symbol(ticker, symbols)
     source_url = build_source_url(yahoo_symbol, as_of)
     retrieved_at = utc_now_iso(now_fn)
     base_lineage = {
@@ -607,25 +648,28 @@ def collect_one(
     }
 
 
-def build_document(as_of_date: str, expected_session_date: str, tickers=None, db_path=DEFAULT_DB, http_get=None, now_fn=None, diagnostic=False, repairs_path=None) -> dict:
+def build_document(as_of_date: str, expected_session_date: str, tickers=None, db_path=DEFAULT_DB, http_get=None, now_fn=None, diagnostic=False, repairs_path=None, resolved_scope=None) -> dict:
     as_of = parse_iso_date(as_of_date)
     expected = parse_iso_date(expected_session_date)
     if expected >= as_of:
         raise ValueError("expected session date must precede as-of cutoff")
-    selected = tuple(tickers) if tickers is not None else SCOPED_TICKERS
-    if not selected or tuple(sorted(selected)) != selected or len(set(selected)) != len(selected) or any(ticker not in SCOPED_TICKERS for ticker in selected):
-        raise ValueError("tickers must be a unique sorted subset of the fixed G6 scope")
-    if not diagnostic and selected != SCOPED_TICKERS:
-        raise ValueError("a contract matrix must use the exact full 32-symbol G6 scope")
+    resolved = resolved_scope if resolved_scope is not None else resolve_band_scope(
+        db_path, workspace_root=Path(__file__).resolve().parents[1])
+    scope_tickers = tuple(resolved["tickers"])
+    selected = tuple(tickers) if tickers is not None else scope_tickers
+    if not selected or tuple(sorted(selected)) != selected or len(set(selected)) != len(selected) or any(ticker not in scope_tickers for ticker in selected):
+        raise ValueError("tickers must be a unique sorted subset of the resolved scope")
+    if not diagnostic and selected != scope_tickers:
+        raise ValueError("a contract matrix must use the exact full resolved scope")
     old_records, old_lookup_status = read_old_levels(db_path, selected)
     repairs = load_repairs(repairs_path)
     rows = {ticker: collect_one(ticker, as_of, expected, old_records[ticker], http_get=http_get, now_fn=now_fn,
-                                repairs=repairs.get(ticker)) for ticker in selected}
+                                repairs=repairs.get(ticker), symbols=resolved["symbols"]) for ticker in selected}
     counts = {"trend_qualified": 0, "monitor_only": 0, "blocked": 0}
     for row in rows.values():
         counts[row["classification"]] += 1
     exact_old_side_complete = old_lookup_status == "ok" and all(has_complete_old_record(old_records[ticker]) for ticker in selected)
-    full_scope_complete = selected == SCOPED_TICKERS and tuple(rows) == SCOPED_TICKERS
+    full_scope_complete = selected == scope_tickers and tuple(rows) == scope_tickers
     artifact_write_eligible = full_scope_complete and exact_old_side_complete and not diagnostic
     full_apply_blockers = [
         {"ticker": ticker, "blocked_reason": rows[ticker].get("blocked_reason")}
@@ -665,11 +709,11 @@ def build_document(as_of_date: str, expected_session_date: str, tickers=None, db
                 "Owner accepts every exact row in the diff.",
                 "Create timestamped backups and SHA-256 preimages for the Markdown register and SQLite canon mirror.",
                 "Use a paired guarded writer; the existing SQLite-only writer is not sufficient.",
-                "Record the exact 32-row preimage, approved patch, and planned postimage hashes before mutation.",
+                "Record the exact scope preimage, approved patch, and planned postimage hashes before mutation.",
             ],
             "required_after_future_apply": [
                 "Capture SHA-256 postimages for both Markdown and SQLite surfaces.",
-                "Validate exact 32-row Markdown-to-SQLite parity, guarded SQL integrity, and controller coherence.",
+                "Validate exact scope Markdown-to-SQLite parity, guarded SQL integrity, and controller coherence.",
                 "Validate that no delivery, account, execution, or scheduler action occurred.",
             ],
             "on_validation_failure": [
@@ -681,6 +725,7 @@ def build_document(as_of_date: str, expected_session_date: str, tickers=None, db
         "row_counts": counts,
         "scheduler_change_allowed": False,
         "scope_count": len(selected),
+        "scope": resolved["scope"],
         "source_confidence": SOURCE_CONFIDENCE,
         "source_mode": SOURCE_MODE,
         "tickers": rows,
@@ -689,9 +734,13 @@ def build_document(as_of_date: str, expected_session_date: str, tickers=None, db
 
 def markdown_for(document: dict) -> str:
     if not document.get("artifact_write_eligible"):
-        raise ValueError("a 32-symbol contract artifact requires exact scope and complete old-side canon diff")
-    if tuple(document.get("tickers", {})) != SCOPED_TICKERS:
-        raise ValueError("a 32-symbol contract artifact must contain every scoped ticker in order")
+        raise ValueError("a scope contract artifact requires exact scope and complete old-side canon diff")
+    scope = document.get("scope") or {}
+    scope_tickers = tuple(scope.get("tickers") or ())
+    if (not scope_tickers or tuple(sorted(scope_tickers)) != scope_tickers or
+        scope.get("count") != len(scope_tickers) or not isinstance(scope.get("fingerprint"), str) or
+        not scope["fingerprint"] or tuple(document.get("tickers", {})) != scope_tickers):
+        raise ValueError("a scope contract artifact must contain every resolved ticker in order")
     counts = document.get("row_counts", {}) or {}
     trend_n = counts.get("trend_qualified", 0)
     monitor_n = counts.get("monitor_only", 0)
@@ -703,9 +752,9 @@ def markdown_for(document: dict) -> str:
     proposal_count = trend_n + monitor_n
     if blocked_n > 0:
         decision_detail = (
-            f"NO APPLY NOW: {blocker_text} blocks any full 32-row apply. "
+            f"NO APPLY NOW: {blocker_text} blocks any full {len(scope_tickers)}-row apply. "
             f"The {proposal_count} numerical proposals are not an apply set; no owner has approved numbers. "
-            "Any blocked row makes the full 32-row numerical apply packet incomplete."
+            "Any blocked row makes the full scope numerical apply packet incomplete."
         )
     else:
         decision_detail = (
@@ -713,7 +762,8 @@ def markdown_for(document: dict) -> str:
             f"The {proposal_count} numerical proposals are not an apply set."
         )
     lines = [
-        "# G6 Yahoo-only 32-symbol reference-level matrix",
+        "# G6 Yahoo-only scope reference-level matrix",
+        f"Scope: {len(scope_tickers)} names; fingerprint: {scope.get('fingerprint', '-')}",
         "",
         "**Status:** review-only personal-use candidate matrix. It is not a canon update, alert-controller clear, trade recommendation, or authority for delivery, account, scheduling, or execution.",
         "",
@@ -722,7 +772,7 @@ def markdown_for(document: dict) -> str:
         decision_detail,
         "",
         f"Row counts: {trend_n} trend-qualified / {monitor_n} monitor-only / {blocked_n} blocked. "
-        f"Full-32 apply blockers: {blocker_text}.",
+        f"Full-scope apply blockers: {blocker_text}.",
         "",
         "Machine gates: `full_apply_ready=false`, "
         "`owner_numeric_approval_received=false`, `requires_exact_owner_approval=true`.",
@@ -752,16 +802,16 @@ def markdown_for(document: dict) -> str:
         "",
         "## Exact old-to-proposed review rows",
         "",
-        "Flags always include `review_required`. A blocked row also carries its block reason and `full_32_apply_blocker`. "
+        "Flags always include `review_required`. A blocked row also carries its block reason and `full_scope_apply_blocker`. "
         "`Valid final session` is only populated for structurally valid rows; blocked rows show no valid final session and point to the raw block date instead.",
         "",
         "| Canonical | Yahoo | Class | Old range / invalidation | Proposed range / invalidation | Valid final session | Flags |",
         "|---|---|---|---:|---:|---|---:|",
     ]
-    for ticker in SCOPED_TICKERS:
+    for ticker in scope_tickers:
         row = document["tickers"].get(ticker)
         if row is None:
-            raise ValueError("a 32-symbol contract artifact cannot omit a scope row")
+            raise ValueError("a scope contract artifact cannot omit a scope row")
         old = row["old_to_proposed"].get("old") or {}
         proposed = row["old_to_proposed"].get("proposed") or {}
         old_text = " / ".join(str(old.get(field, "-")) for field in ("reference_price_low", "reference_price_high", "reference_invalidation_level"))
@@ -769,7 +819,7 @@ def markdown_for(document: dict) -> str:
         flags = ["review_required"]
         if row["classification"] == "blocked":
             flags.append(row["blocked_reason"] or "blocked")
-            flags.append("full_32_apply_blocker")
+            flags.append("full_scope_apply_blocker")
         if row.get("price_below_support20"):
             flags.append("price_below_support20")
         if row.get("invalidation_ordering_warning"):
@@ -787,12 +837,12 @@ def markdown_for(document: dict) -> str:
         "",
         "All fields below are Yahoo transport evidence only. They do not independently verify adjustments, corporate actions, issuer events, or earnings.",
         "",
-        "For blocked rows the observed value is the raw block date at the point of failure, not a valid final session. Canonical `BRK.B` is transported as Yahoo `BRK-B`; both identities are retained on that row.",
+        "For blocked rows the observed value is the raw block date at the point of failure, not a valid final session. Canonical and Yahoo identities are retained on each row.",
         "",
         "| Canonical | Yahoo symbol | Expected / observed-or-raw-block-date | Retrieved UTC | Raw SHA-256 | Timezone / source | Adjustment-field presence | Source URL |",
         "|---|---|---|---|---|---|---|---|",
     ])
-    for ticker in SCOPED_TICKERS:
+    for ticker in scope_tickers:
         row = document["tickers"][ticker]
         fields = row.get("adjustment_fields_present") or {}
         field_text = ", ".join(f"{name}={str(bool(value)).lower()}" for name, value in sorted(fields.items())) or "-"
@@ -813,7 +863,7 @@ def markdown_for(document: dict) -> str:
         "| Ticker | Old level-as-of | Old source artifact | Old artifact SHA-256 | Old source generated UTC |",
         "|---|---|---|---|---|",
     ])
-    for ticker in SCOPED_TICKERS:
+    for ticker in scope_tickers:
         old = document["tickers"][ticker]["old_to_proposed"].get("old") or {}
         lines.append(
             f"| {ticker} | {old.get('level_as_of', '-')} | {old.get('source_artifact_path', '-')} | "
@@ -821,7 +871,7 @@ def markdown_for(document: dict) -> str:
         )
     blocked_evidence = {
         ticker: document["tickers"][ticker].get("invalid_bar_evidence")
-        for ticker in SCOPED_TICKERS
+        for ticker in scope_tickers
         if document["tickers"][ticker].get("classification") == "blocked"
     }
     if blocked_evidence:
@@ -853,7 +903,8 @@ def parse_args(argv=None):
     parser.add_argument("--expected-session-date", required=True, help="Last completed U.S. session YYYY-MM-DD")
     parser.add_argument("--json-output", default="tmp/yahoo_reference_level_matrix.json")
     parser.add_argument("--markdown-output", default="tmp/yahoo_reference_level_matrix.md")
-    parser.add_argument("--ticker", default=None, help="One fixed-scope ticker for a diagnostic run")
+    parser.add_argument("--ticker", default=None, help="One resolved-scope ticker for a diagnostic run")
+    parser.add_argument("--db", default=str(DEFAULT_DB), help="Guarded SQL canon path")
     parser.add_argument("--write", action="store_true", help="Required to write tmp artifacts")
     args = parser.parse_args(argv)
     try:
@@ -863,27 +914,34 @@ def parse_args(argv=None):
             raise ValueError("expected session must precede cutoff")
     except ValueError as exc:
         parser.error(str(exc))
-    if args.ticker is not None and args.ticker not in SCOPED_TICKERS:
-        parser.error("unscoped ticker rejected")
     if args.write and args.ticker is not None:
-        parser.error("a single-ticker diagnostic cannot write a 32-symbol contract artifact")
+        parser.error("a single-ticker diagnostic cannot write a scope contract artifact")
     return args
 
 
-def main(argv=None, http_get=None, now_fn=None) -> int:
+def main(argv=None, http_get=None, now_fn=None, scope_resolver=None) -> int:
     args = parse_args(argv)
-    selected = (args.ticker,) if args.ticker else SCOPED_TICKERS
-    document = build_document(
+    try:
+        resolved = (scope_resolver or resolve_band_scope)(
+            args.db, workspace_root=Path(__file__).resolve().parents[1])
+        if args.ticker is not None and args.ticker not in resolved["tickers"]:
+            raise ValueError("unscoped ticker rejected")
+        selected = (args.ticker,) if args.ticker else tuple(resolved["tickers"])
+        document = build_document(
         args.as_of_date,
         args.expected_session_date,
         selected,
-        DEFAULT_DB,
+        args.db,
         http_get=http_get,
         now_fn=now_fn,
         diagnostic=args.ticker is not None,
         # Injected fetchers are tests; only real runs read the repair overlay.
         repairs_path=DEFAULT_REPAIRS if http_get is None else None,
-    )
+        resolved_scope=resolved,
+        )
+    except Exception as exc:
+        sys.stderr.write(f"scope resolution refused: {exc}\n")
+        return 3
     serialized = json.dumps(document, sort_keys=True, indent=2)
     if not args.write:
         sys.stdout.write(serialized + "\n")

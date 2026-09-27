@@ -30,13 +30,13 @@ def test_primary_map_matches_approved_design(errors: list[str]) -> None:
         "implementation-builder": "meta/muse-spark-1.3-contributor",
         "docs-continuity-editor": "ollama-cloud/deepseek-v4.1-flash:cloud",
     }, "specialist primary map must equal the approved six-role map", errors)
-    expect(fleet.MAIN_PRIMARY == "openai/gpt-6-sol", "Main primary must be GPT-6 Sol", errors)
+    expect(fleet.MAIN_PRIMARY == "anthropic/claude-opus-5-5", "Main primary must be Opus 5.5", errors)
     expect(fleet.MAIN_FALLBACKS == [
-        "anthropic/claude-opus-5-5",
         "ollama-cloud/glm-5.3:cloud",
         "ollama-cloud/kimi-k3:cloud",
-        "openai/gpt-5.6-terra",
-    ], "Main fallbacks must equal the owner-directed GPT-6 Sol chain", errors)
+    ], "Main fallbacks must equal the owner-directed no-GPT chain", errors)
+    for fb in fleet.MAIN_FALLBACKS:
+        expect(not fb.startswith("openai/"), f"no GPT/OpenAI model may sit in a fallback position: {fb}", errors)
     expect(fleet.ON_DEMAND_ARCHITECTURE["primary"] == "ollama-cloud/glm-5.3:cloud", "on-demand architect must be GLM 5.3", errors)
     expect(fleet.OPUS_ADVISORY["main_spawn_only"] is True, "Opus must be Main-spawn only", errors)
     expect(fleet.OPUS_ADVISORY["automatic_fallback"] is False, "Opus must never be an automatic specialist fallback", errors)
@@ -100,7 +100,7 @@ def test_denied_models(errors: list[str]) -> None:
     ):
         expect(fleet.is_denied_persistent_model(legacy) is True, f"{legacy} must be denied", errors)
     expect(fleet.is_denied_persistent_model("xai/grok-4.6") is False, "Grok must not be denied", errors)
-    expect(fleet.is_denied_persistent_model("openai/gpt-6-sol") is False, "GPT-6 Sol must not be denied: it is the live Main primary", errors)
+    expect(fleet.is_denied_persistent_model("openai/gpt-6-sol") is True, "GPT-6 Sol denied in persistent scope; no GPT may sit in a fallback position (OPUS55-PRIMARY-REALIGN-20260926)", errors)
 
 
 def test_recovery_options_never_authorize(errors: list[str]) -> None:

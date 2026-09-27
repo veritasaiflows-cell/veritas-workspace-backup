@@ -18,6 +18,7 @@ import re
 import sqlite3
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 TICKER_RE = re.compile(r"^[A-Z][A-Z.]{0,9}$")
 CANON_REL = "state/finance/finance-canon.sqlite"
@@ -108,10 +109,21 @@ def _funnel_stale_reason(data: dict[str, Any]) -> str | None:
     return None
 
 
+def _readonly_uri(path: Path) -> str:
+    """Percent-encoded mode=ro URI; same contract as recommendation_funnel.readonly_sqlite_uri.
+
+    Quoting keeps '#'/'?' in the path from dropping mode=ro. No immutable=1:
+    the canon DB is WAL-mode and immutable would ignore committed -wal content.
+    """
+    posix = Path(path).resolve().as_posix()
+    if not posix.startswith("/"):
+        posix = "/" + posix
+    return "file://" + quote(posix, safe="/:") + "?mode=ro"
+
+
 def reference_band(ticker: str) -> dict[str, Any]:
     t = _ticker(ticker)
-    uri = f"file:{(root() / CANON_REL).as_posix()}?mode=ro"
-    con = sqlite3.connect(uri, uri=True)
+    con = sqlite3.connect(_readonly_uri(root() / CANON_REL), uri=True)
     try:
         row = con.execute(
             "SELECT reference_price_low, reference_price_high, reference_invalidation_level, "

@@ -455,6 +455,17 @@
       ],
       "runs": 34,
       "settled_calls": 34
+    },
+    "2026-09-27": {
+      "last_reserved_at_utc": "2026-09-27T15:00:00Z",
+      "last_settled_at_utc": "2026-09-27T15:00:01Z",
+      "open_reservations": {},
+      "reserved_calls": 1,
+      "run_ids": [
+        "recurring-c7cf203bbb0d468cb686391eb6af8dc0-quotes"
+      ],
+      "runs": 1,
+      "settled_calls": 1
     }
   },
   "schema": "veritas.dynamic_entitlement_provider_call_ledger.v1"

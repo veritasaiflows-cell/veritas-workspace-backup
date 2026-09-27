@@ -24,7 +24,9 @@ execution, or delivery authority.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import re
 import subprocess
 import sys
 from datetime import date, datetime, timedelta, timezone
@@ -86,11 +88,14 @@ def evaluate_gate(matrix: dict, dryrun: dict | None) -> dict[str, Any]:
         if not old or not new:
             continue
         move = {}
+        raw_move = {}
         for f in ("reference_price_low", "reference_price_high", "reference_invalidation_level"):
             if old.get(f):
-                move[f] = round((new[f] - old[f]) / old[f], 4)
+                raw = (new[f] - old[f]) / old[f]
+                raw_move[f] = raw
+                move[f] = round(raw, 4)
         moves[t] = move
-        if any(abs(v) > MAX_EDGE_MOVE for v in move.values()):
+        if any(abs(v) > MAX_EDGE_MOVE for v in raw_move.values()):
             over.append(t)
     if blocked:
         reasons.append(f"blocked names: {blocked}")
@@ -109,8 +114,82 @@ def evaluate_gate(matrix: dict, dryrun: dict | None) -> dict[str, Any]:
             "moved_over_limit": over, "floor_widened": widened, "repaired": repaired, "edge_moves": moves}
 
 
+def _prior_applied_names(root: Path, current_session: str) -> tuple[str | None, list[str], str | None]:
+    audit_dir = root / AUDIT_DIR_REL
+    candidates = []
+    for path in audit_dir.glob("*-applied.json"):
+        match = re.fullmatch(r"(\d{4}-\d{2}-\d{2})-applied\.json", path.name)
+        if not match:
+            continue
+        try:
+            date.fromisoformat(match.group(1))
+        except ValueError:
+            continue
+        if path.is_symlink() or not path.is_file() or path.resolve().parent != audit_dir.resolve():
+            continue
+        candidates.append((match.group(1), path))
+    if not candidates:
+        return None, [], None
+    session, path = max(candidates, key=lambda entry: entry[0])
+    prefix = f"newest applied audit record is invalid: {path.name}: "
+    if session > current_session:
+        return None, [], prefix + "future-dated session"
+    try:
+        prior = json.loads(path.read_bytes())
+        if not isinstance(prior, dict):
+            raise ValueError("record is not an object")
+        if prior.get("applied") is not True or prior.get("status") != "applied":
+            raise ValueError("applied/status fields disagree with applied record")
+        if prior.get("session") != session:
+            raise ValueError("session differs from filename")
+        scope = prior.get("scope")
+        if isinstance(scope, dict) and "tickers" in scope:
+            names = scope["tickers"]
+            if not isinstance(names, list):
+                raise ValueError("scope.tickers is not a list")
+        else:
+            gate = prior.get("gate")
+            moves = gate.get("edge_moves") if isinstance(gate, dict) else None
+            if not isinstance(moves, dict):
+                raise ValueError("gate.edge_moves is not a dict")
+            names = sorted(moves)
+        if not names or any(not isinstance(t, str) or not t for t in names) or len(names) != len(set(names)):
+            raise ValueError("names must be unique non-empty strings")
+        return session, sorted(names), None
+    except (OSError, ValueError, TypeError) as exc:
+        return None, [], prefix + str(exc)
+
+
+def _matrix_scope(matrix: dict) -> dict | None:
+    scope = matrix.get("scope")
+    if not isinstance(scope, dict):
+        return None
+    names = scope.get("tickers")
+    fingerprint = scope.get("fingerprint")
+    if (not isinstance(names, list) or not names or
+        any(not isinstance(t, str) or not t for t in names) or names != sorted(set(names)) or
+        not isinstance(fingerprint, str) or not fingerprint.strip() or
+        type(scope.get("count")) is not int or scope["count"] != len(names) or
+        not isinstance(scope.get("tier_breakdown"), dict) or
+        not isinstance(matrix.get("tickers"), dict) or sorted(matrix["tickers"]) != names):
+        return None
+    return scope
+
+
+def _live_scope_fingerprint(root: Path, resolver) -> str:
+    if resolver is None:
+        from yahoo_reference_level_matrix import resolve_band_scope
+        resolver = resolve_band_scope
+    live = resolver(root / DB_REL, workspace_root=root.resolve())
+    fingerprint = live["scope"]["fingerprint"]
+    if not isinstance(fingerprint, str) or not fingerprint:
+        raise ValueError("live scope has no fingerprint")
+    return fingerprint
+
+
 def run(root: Path, *, python: str, apply_if_gated: bool, session: str | None = None,
-        runner: Runner = default_runner, http_get=None, now: datetime | None = None) -> dict[str, Any]:
+        runner: Runner = default_runner, http_get=None, now: datetime | None = None,
+        scope_resolver=None) -> dict[str, Any]:
     started = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     gate_record = json.loads((root / GATE_REL).read_text(encoding="utf-8"))
     session = session or last_completed_session(http_get, now)
@@ -124,11 +203,49 @@ def run(root: Path, *, python: str, apply_if_gated: bool, session: str | None = 
                   "--expected-session-date", session, "--json-output", matrix_rel,
                   "--markdown-output", md_rel, "--write"], root)
     packet["steps"]["matrix"] = {"rc": gen.returncode, "tail": (gen.stdout or gen.stderr)[-400:]}
-    matrix = json.loads((root / matrix_rel).read_text(encoding="utf-8")) if gen.returncode == 0 else {}
+    matrix_sha = None
+    try:
+        if gen.returncode == 0:
+            raw = (root / matrix_rel).read_bytes()
+            matrix = json.loads(raw)
+            matrix_sha = hashlib.sha256(raw).hexdigest()
+        else:
+            matrix = {}
+    except (OSError, ValueError):
+        matrix = {}
+    packet["matrix_sha256"] = matrix_sha
+    if not isinstance(matrix, dict) or not isinstance(matrix.get("tickers", {}), dict):
+        matrix = {}
+    scope = _matrix_scope(matrix)
+    scope_reasons = []
+    if scope is None:
+        scope_reasons.append("matrix carries no scope block")
+    prior_session, prior_names, prior_error = _prior_applied_names(root, session)
+    if prior_error:
+        scope_reasons.append(prior_error)
+    elif not prior_names:
+        scope_reasons.append("no readable prior applied renewal to compare the name list")
+    current_names = scope["tickers"] if scope else []
+    added = sorted(set(current_names) - set(prior_names)) if scope and prior_names else []
+    removed = sorted(set(prior_names) - set(current_names)) if scope and prior_names else []
+    if scope and prior_names and current_names != prior_names:
+        scope_reasons.append(f"name list changed since last applied renewal ({prior_session}): added {added}, removed {removed}")
+    packet["scope"] = {"tickers": current_names, "count": scope["count"] if scope else 0,
+                       "fingerprint": scope["fingerprint"] if scope else None,
+                       "tier_breakdown": scope["tier_breakdown"] if scope else {},
+                       "prior_applied_session": prior_session, "added": added, "removed": removed}
     dryrun = None
-    if matrix:
+    if scope and not scope_reasons:
+        try:
+            if _live_scope_fingerprint(root, scope_resolver) != scope["fingerprint"]:
+                scope_reasons.append("scope changed between matrix generation and apply")
+        except Exception as exc:
+            scope_reasons.append(f"scope resolution failed: {exc}")
+    if scope and not scope_reasons:
         dr = runner([python, "scripts/g6_yahoo32_sql_apply.py", "--dry-run", "--write", "--validate",
                      "--matrix", matrix_rel, "--db", DB_REL, "--baseline-dir", BASELINE_DIR_REL,
+                     "--expected-scope-fingerprint", scope["fingerprint"],
+                     "--expected-matrix-sha256", matrix_sha, "--verify-live-scope",
                      "--dryrun-path", dry_rel], root)
         packet["steps"]["dryrun"] = {"rc": dr.returncode, "tail": (dr.stdout or dr.stderr)[-400:]}
         if dr.returncode == 0:
@@ -136,17 +253,30 @@ def run(root: Path, *, python: str, apply_if_gated: bool, session: str | None = 
             dryrun = {"drift": len(summary.get("old_drift_tickers") or []) + len(summary.get("missing_tickers") or []),
                       "no_mutation": summary.get("mutation_performed") is False}
     gate = evaluate_gate(matrix, dryrun)
+    if scope_reasons:
+        gate["passed"] = False
+        gate["reasons"].extend(scope_reasons)
     if not packet["gate_active"]:
         gate["passed"] = False
         gate["reasons"].append("standing gate inactive or revoked")
     packet["gate"] = gate
     if gate["passed"] and apply_if_gated:
-        ap = runner([python, "scripts/g6_yahoo32_sql_apply.py", "--apply", "--write", "--validate",
-                     "--matrix", matrix_rel, "--db", DB_REL, "--baseline-dir", BASELINE_DIR_REL], root)
-        packet["steps"]["apply"] = {"rc": ap.returncode, "tail": (ap.stdout or ap.stderr)[-600:]}
-        packet["applied"] = ap.returncode == 0
-        guard = runner([python, "scripts/alert_reference_baseline_freshness_guard.py", "--validate"], root)
-        packet["steps"]["guard"] = {"rc": guard.returncode, "tail": (guard.stdout or guard.stderr)[-600:]}
+        try:
+            if _live_scope_fingerprint(root, scope_resolver) != scope["fingerprint"]:
+                gate["passed"] = False
+                gate["reasons"].append("scope changed between matrix generation and apply")
+        except Exception as exc:
+            gate["passed"] = False
+            gate["reasons"].append(f"scope resolution failed: {exc}")
+        if gate["passed"]:
+            ap = runner([python, "scripts/g6_yahoo32_sql_apply.py", "--apply", "--write", "--validate",
+                         "--matrix", matrix_rel, "--db", DB_REL, "--baseline-dir", BASELINE_DIR_REL,
+                         "--expected-scope-fingerprint", scope["fingerprint"],
+                         "--expected-matrix-sha256", matrix_sha, "--verify-live-scope"], root)
+            packet["steps"]["apply"] = {"rc": ap.returncode, "tail": (ap.stdout or ap.stderr)[-600:]}
+            packet["applied"] = ap.returncode == 0
+            guard = runner([python, "scripts/alert_reference_baseline_freshness_guard.py", "--validate"], root)
+            packet["steps"]["guard"] = {"rc": guard.returncode, "tail": (guard.stdout or guard.stderr)[-600:]}
     packet["status"] = ("applied" if packet["applied"] else
                         "apply_failed" if "apply" in packet["steps"] else
                         "gate_passed_not_applied" if gate["passed"] else "needs_owner_review")
@@ -165,7 +295,10 @@ def run(root: Path, *, python: str, apply_if_gated: bool, session: str | None = 
 def render_md(p: dict) -> str:
     g = p["gate"]
     lines = [f"# Weekly band renewal - session {p['session']}", "", f"Status: **{p['status']}**", ""]
-    lines += [f"- Gate passed: {g['passed']}" + ("" if g["passed"] else f" ({'; '.join(g['reasons'])})"),
+    s = p.get("scope") or {}
+    lines += [f"- Scope: {s.get('count', 0)} names; fingerprint: {(s.get('fingerprint') or '-')[:12]}",
+              f"- Added: {s.get('added') or []}; removed: {s.get('removed') or []}",
+              f"- Gate passed: {g['passed']}" + ("" if g["passed"] else f" ({'; '.join(g['reasons'])})"),
               f"- Floor-widened: {', '.join(g['floor_widened']) or 'none'}",
               f"- Repaired days: {', '.join(f'{t} {d}' for t, d in g['repaired'].items()) or 'none'}",
               f"- Moved over 5%: {', '.join(g['moved_over_limit']) or 'none'}", ""]

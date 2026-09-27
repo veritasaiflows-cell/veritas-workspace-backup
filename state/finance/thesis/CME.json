@@ -1,7 +1,7 @@
 {
   "schema": "veritas.thesis_record.v1",
   "ticker": "CME",
-  "thesis_version": 1,
+  "thesis_version": 2,
   "status": "accepted",
   "thesis_type": "financial_franchise",
   "thesis_statement": "CME is the dominant US futures and options exchange: near-monopoly clearing in rates, equity-index, energy and ag contracts gives very high margins and pricing power, with volume that tends to rise when macro volatility rises.",
@@ -34,7 +34,7 @@
     "Competitive or regulatory pressure on clearing economics."
   ],
   "invalidation_reasons": {
-    "price": "Close below the band invalidation level (proposed 255.60) on the owner-approved baseline.",
+    "price": "Close below the live guarded-SQL reference_invalidation_level (249.92 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
     "fundamental": [
       "Two consecutive quarters of revenue decline with falling average daily volume.",
       "Material loss of share in rates or equity-index futures."
@@ -71,15 +71,15 @@
       "as_of": "2026-09-23"
     },
     {
-      "claim": "Proposed band 263.92-269.46 (floor-widened), invalidation 255.60, confidence 0.15; price 270.76 above band",
-      "source": "tmp/renewal-matrix-20260922close-v3.json (proposed band, not yet approved)",
-      "as_of": "2026-09-22"
+      "claim": "SQL band 258.87-267.88, invalidation 249.92, reference_confidence 40; close 264.48 on 2026-09-25 is inside band",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
     }
   ],
   "thesis_as_of": "2026-09-23",
   "review_due": "2026-12-23",
   "drafted_by": "Veritas Main (claude-opus-5-5)",
-  "owner_accepted_at": "2026-09-23T18:17:31-07:00",
-  "owner_notes": "Defensive, volatility-beneficiary franchise that suits today's defensive macro posture. Band confidence is lowest of the five (0.15): floor-widened, repaired day, not trend-qualified. Fundamentals are an aggregator snapshot; confirm against the Q2 filing. Accepted by Randall, Telegram 2026-09-23 evening: 'theses accepted, continue to repair ITA and PH'.",
+  "owner_accepted_at": "2026-09-27T08:17:00-07:00",
+  "owner_notes": "v2 (2026-09-27 band repair): price invalidation now points to live guarded SQL and the band evidence reflects the 2026-09-26 renewal; thesis content is otherwise unchanged from v1, which Randall accepted 2026-09-23. Defensive, volatility-beneficiary franchise that suits today's defensive macro posture. After the 2026-09-26 renewal the SQL band confidence is 40 (it was 0.15 on the 09-22 proposal). Fundamentals are an aggregator snapshot; confirm against the Q2 filing. Accepted by Randall 2026-09-27T08:17:00-07:00: 'Proceed with all three recommendations (recommendation 2: accept the band-repair versions)'",
   "fundamentals_period_end": "2026-06-30"
 }

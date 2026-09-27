@@ -59,6 +59,16 @@ def test_pure_assembly_deterministic_full_guard_scope_and_debt(full):
     assert scope["members"][1]["decision_grade_eligible"] is False
     assert scope["eligibility_debt"] == ["S001"]
     assert all(line["lineage_validation_ok"] for line in evidence["lineage"].values())
+    # All five canon reference fields, incl. reference_confidence, from the same SQL rows.
+    for ticker, line in evidence["lineage"].items():
+        names = [f["field_name"] for f in line["fields"]]
+        assert len(names) == len(canon.REFERENCE_LEVEL_LINEAGE_FIELDS), ticker
+        assert set(names) == canon.REFERENCE_LEVEL_LINEAGE_FIELDS, ticker
+        sql_rows = {r["field_name"]: r for r in json.loads(bundle.raw)["lineage_rows"][ticker]}
+        for f in line["fields"]:
+            src = sql_rows[f["field_name"]]
+            assert (f["source_artifact_path"], f["source_artifact_sha256"]) == (
+                src["source_artifact_path"], src["source_artifact_sha256"])
     manifest = a.verify(require_production=False)
     assert manifest["database_observation"]["meaning"] == "physical_main_file_observation_only_not_sql_snapshot"
     assert evidence["database_sha256"] == hashlib.sha256(db.read_bytes()).hexdigest()
@@ -112,6 +122,20 @@ def test_synthetic_missing_classes_preserve_consumer_all_or_none(full,missing):
     assert client.evidence_freshness("S001") is None
     assert lineage("S001")["fields"]==[]
     assert json.loads(assembled.evidence)["tickers"]==["S000","S001"]
+
+
+def test_missing_confidence_lineage_row_is_not_ready(full):
+    root,_=full
+    original=_bundle(root)
+    rows=original._rows()
+    rows["lineage_rows"]["S001"]=[r for r in rows["lineage_rows"]["S001"]
+                                  if r["field_name"]!="reference_confidence"]
+    raw=inputs.canonical_json_bytes(rows)
+    assembled=inputs.assemble(inputs._BoundCapture(raw,inputs._sha(raw),original.expires_monotonic,False,inputs._SEAL))
+    line=json.loads(assembled.evidence)["lineage"]["S001"]
+    assert line["lineage_validation_ok"] is False
+    assert "reference_confidence" not in {f["field_name"] for f in line["fields"]}
+    assert "lineage_not_ready" in json.loads(assembled.provenance)["missing_classes"]["S001"]
 
 
 @pytest.mark.skipif(os.name!="nt",reason="Windows native junction proof")

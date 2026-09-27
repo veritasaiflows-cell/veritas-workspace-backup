@@ -2,8 +2,8 @@
 # WF88 Wiki Source Map
 
 Canonical page: `wiki/source-map/WF88 Wiki Source Map.md`
-Canonical rendered SHA-256: `6f549e7936fffb0b46e99fb73a8e17037ace1ae5823afdecbb1a0696a01c9d17`.
-Source snapshot SHA-256: `e1e5783c361c118d2fe7decaa3658414a1a39d794508f8edf2e81cf1edfa5ce7`.
+Canonical rendered SHA-256: `6d4636a76852ab3cea35fb8d778281f486b14a5cbf4b32a5902647e2d7c04d1f`.
+Source snapshot SHA-256: `6d670804398925df4f3bc27dab7cc30bbe29f708f93a6ae28f56af63a0467218`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -55,34 +55,34 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `tmp/no-orphan-validator.json`
 ## Source freshness
 
-- `wf88_os2_control`: `fresh` / `control_packet_ready_no_apply_authority` / `tmp/wf88-os2-control-packet.json` / sha256 `58de7bbf0a37b2d24208a1d4b560b44e7f0df43eefb160db7bfcd12c0a3d623f`
-- `otel_ops_control`: `fresh` / `ok` / `tmp/otel-ops-control.json` / sha256 `1a33882f88851dc83c495a61f761b7acd3857b554ced9369abe7f5bf135fbec5`
-- `model_learning_metadata_ledger`: `fresh` / `ok` / `tmp/model-learning-metadata-ledger.json` / sha256 `a007d4dd3d585402a753732e446d529bb03d439489be0d7d2bf4187580dda591`
-- `wf74_improvement_opportunity_queue`: `fresh` / `ok` / `tmp/wf74-improvement-opportunity-queue.json` / sha256 `792a17d6cb1f7d2eef0e2e76624bc69a8890ea282ed6dd5b20bc7ecdabbb83da`
-- `wf74_reflection_to_proposal_autopilot`: `fresh` / `ok` / `tmp/wf74-reflection-to-proposal-autopilot.json` / sha256 `da6eed7bd65381716405a284931e990dfa46c2a27516bd3f2568fa61b5e47cce`
-- `wf74_auto_patch_proposer`: `fresh` / `ok` / `tmp/wf74-auto-patch-proposer.json` / sha256 `0464953080cdf7a61dffeda7a4566df648155e28caede964ef6a837f63f541f5`
-- `wf74_autonomy_work_router`: `fresh` / `ok` / `tmp/wf74-autonomy-work-router.json` / sha256 `61cbeeadf7fdc96e9f001b31c89cbe72da8d411917acf1947ad3116697b0e2ea`
-- `wf74_decision_docket`: `fresh` / `ok` / `tmp/wf74-decision-docket.json` / sha256 `92d496c64bfe01c812b49ae92159301a3bbc586e653e6153535ad9fbd0eeb633`
-- `wf74_wf88_loop_trace`: `fresh` / `loop_trace_warning_no_apply_authority` / `tmp/wf74-wf88-loop-trace.json` / sha256 `c5c8f4a82a1c7183f7e7b2feecaed73c2586ed9296fa8fa21841fe5041d175c5`
-- `long_work_job_status`: `fresh` / `long_work_jobs_ready` / `tmp/long-work-job-status-packet.json` / sha256 `bfc52212e1e7bb48ac744c87cbcb7d69ca8aec69ebd9087209dab5cefcf280e6`
+- `wf88_os2_control`: `fresh` / `control_packet_warning_no_apply_authority` / `tmp/wf88-os2-control-packet.json` / sha256 `fcd3add65d64873c06f88d4d2a7627285efc442ad64205af6ae7cdfbf3d2c7b9`
+- `otel_ops_control`: `fresh` / `ok` / `tmp/otel-ops-control.json` / sha256 `3414a561ca41e58d68c93f4ba88dbf7b4fbf1456a54e66c026b247814df64f1d`
+- `model_learning_metadata_ledger`: `fresh` / `ok` / `tmp/model-learning-metadata-ledger.json` / sha256 `1bb027eae4587c993faab89359084f17792e19793fe907444a17f3ebd61147c0`
+- `wf74_improvement_opportunity_queue`: `fresh` / `ok` / `tmp/wf74-improvement-opportunity-queue.json` / sha256 `5bd6acb6e9cd122724bcb9b6d25bb629cd33cd32a3f885f8a1fada2acc777db9`
+- `wf74_reflection_to_proposal_autopilot`: `fresh` / `ok` / `tmp/wf74-reflection-to-proposal-autopilot.json` / sha256 `cada9cc8c75108b80ca1fd583ab09d52d804b984e58e98435719b60b8437a236`
+- `wf74_auto_patch_proposer`: `fresh` / `ok` / `tmp/wf74-auto-patch-proposer.json` / sha256 `655fffdba2142e3e261f6b3bd54a884bd8c5929511bf83e2dc94da7e4691572e`
+- `wf74_autonomy_work_router`: `fresh` / `ok` / `tmp/wf74-autonomy-work-router.json` / sha256 `dc79f97efcc4e3fc36ffe48f5dd94545463207ac2a423d9dd265a827ffa09252`
+- `wf74_decision_docket`: `fresh` / `ok` / `tmp/wf74-decision-docket.json` / sha256 `d1896afc823b64b430b88d04c9d88cbd8a55958060efa17d271656f9faa7c0da`
+- `wf74_wf88_loop_trace`: `fresh` / `loop_trace_warning_no_apply_authority` / `tmp/wf74-wf88-loop-trace.json` / sha256 `fcfe372c4e4bd7c234b5bdb4fc3b64d50b233a951809abd5461183b805f31028`
+- `long_work_job_status`: `fresh` / `long_work_jobs_ready` / `tmp/long-work-job-status-packet.json` / sha256 `e31e810baaffa550801b1a4ff34e2c5cda2ca716b61a637dbf812b8173726a8b`
 - `wf74_learning_loop_eval_harness`: `stale` / `ok` / `tmp/wf74-learning-loop-eval-harness.json` / sha256 `f094c25cc9e6c0e86d12b52efd97ace9f52a447a3a2ce8f4ab01cb90bc8fcf8b`
 - `wf74_outcome_eval_suite_v2`: `fresh` / `ok` / `tmp/wf74-outcome-eval-suite-v2.json` / sha256 `7cd31744268a5b46d81a760f8dc4ea94ca8c1ecd83cb8340f82c69b7ef8243ee`
-- `model_quality_scorecard`: `fresh` / `scaffold_active` / `tmp/model-quality-scorecard.json` / sha256 `64e339107ff87f4f2303df783071dc7b0cf3a759bbf1ef9a76c045bb810d6980`
-- `retrieval_quality_scorecard`: `fresh` / `ok` / `tmp/retrieval-quality-scorecard.json` / sha256 `ebb2d89d2a268a60e3219c966519aa80aae1e93272a78feac987c30628bc07cb`
+- `model_quality_scorecard`: `fresh` / `scaffold_active` / `tmp/model-quality-scorecard.json` / sha256 `fe3c115aafe65d64b91e095d7af600694c1630acd9eae2972abeca0b4673d7be`
+- `retrieval_quality_scorecard`: `fresh` / `ok` / `tmp/retrieval-quality-scorecard.json` / sha256 `329613bbd53fa72880cec76a5b3a40637bf1c5ec64625bf620a32c320f3755a5`
 - `frontier_capability_eval_spine`: `stale` / `ready_to_collect` / `tmp/frontier-capability-eval-spine.json` / sha256 `4be2ca1e92b08c619474362d86f3441ea71fa8b153608c64684456eaedb7fcbd`
-- `wf88_decision_compiler`: `fresh` / `decision_objects_warning_review_only` / `tmp/wf88-decision-compiler.json` / sha256 `6665819f4356cc6d8b4429d67fd03eefbe425ff61c7665e00ecf0a9f5fbc2179`
-- `rsi_outcome_scorecard`: `fresh` / `warning` / `tmp/rsi-outcome-scorecard.json` / sha256 `83e99d082740bb2bdaa3fd1a56fb682e92057c81e4a56cf7430c1e13c4c7f9d5`
+- `wf88_decision_compiler`: `fresh` / `decision_objects_warning_review_only` / `tmp/wf88-decision-compiler.json` / sha256 `ad4ba5c6e537d8654acf792908017f3ef764b1e19f90b648bc90064ed5914049`
+- `rsi_outcome_scorecard`: `fresh` / `warning` / `tmp/rsi-outcome-scorecard.json` / sha256 `f564a8a9d15495ac27ca0833c4636d9a7e0520a259658ee37c0e791409dc32d6`
 - `advanced_capability_pilot_packet`: `stale` / `fixture_ready_no_execution_authority` / `tmp/advanced-capability-pilot-packet.json` / sha256 `cfb36689a049d069da80032f8e15907a856dd84773e4140f3bae135fa9197c2c`
 - `route_efficiency_scorecard`: `stale` / `warning` / `tmp/route-efficiency-scorecard.json` / sha256 `a3921910f328bdbd1c9580d1a6aaa617bf64c78ef0e62ab2b4ad723f7a569f5a`
-- `token_usage_ledger`: `fresh` / `warning` / `tmp/token-usage-ledger-current.json` / sha256 `dcc202b1fc1f8e5025323165338abea205d3a551ec87664ff172086354da0220`
-- `token_budget_status`: `fresh` / `warning` / `tmp/token-budget-status.json` / sha256 `0d9340fa1d2a595b88e71ddf74af988a79883262ab0dcf145e64e403583aaac7`
-- `token_efficiency_scorecard`: `fresh` / `warning` / `tmp/token-efficiency-scorecard.json` / sha256 `ee82d416a54210f00053b82960f5f323db65f320ae2a9c01fff833b5b3501107`
-- `implementation_token_attribution_bridge`: `fresh` / `warning` / `tmp/implementation-token-attribution-bridge.json` / sha256 `25ca0c81bd33ae35d13a4922ea7ffcc7bdad690ab18774a5731a63f033bf269c`
-- `coding_outcome_ledger`: `fresh` / `warning` / `tmp/coding-outcome-ledger-current.json` / sha256 `93d1b06158ea05d7dfaabad0bc6c424925b0a8365c459ae2fd9e2283b87b3591`
-- `pm_control_packet`: `fresh` / `ok` / `tmp/pm-control-packet.json` / sha256 `39f76dbcd7d4b2267ee3b9715fd8b981f58552e706b3e0bde79cbffe540c625f`
-- `recommendation_outcome_ledger`: `fresh` / `ok` / `tmp/recommendation-outcome-ledger-current.json` / sha256 `98c8e49cdb7bdf0207c0290edc798a2b7998562711e15071fda1cde5836fa660`
-- `improvement_ledger`: `fresh` / `warning` / `tmp/improvement-ledger-current.json` / sha256 `229f88b6da6a685aceaadbb57724d37786269944a48260a41260ad55ba6a92eb`
-- `actionable_improvement_queue`: `fresh` / `actionable_queue_ready_no_apply_authority` / `tmp/actionable-improvement-queue.json` / sha256 `00a8d47b40b0aa50188602a1757f55051ed3105692088adf05c48bfef1c6e919`
-- `no_orphan_validator`: `fresh` / `no_orphan_validation_ready` / `tmp/no-orphan-validator.json` / sha256 `905c1fdd8418e423441f83633d7289d1088d6e3bd608bf9aacf047589a3ca6cf`
+- `token_usage_ledger`: `fresh` / `warning` / `tmp/token-usage-ledger-current.json` / sha256 `c388e977b947c0b7a51d978b83589443c480a7969598755c331a9e54fb271063`
+- `token_budget_status`: `fresh` / `warning` / `tmp/token-budget-status.json` / sha256 `eeda4ce384192a653a0e9d0c73aa4e414e4726b37e967f1847bee9670aacbc17`
+- `token_efficiency_scorecard`: `fresh` / `warning` / `tmp/token-efficiency-scorecard.json` / sha256 `019d22cc1c7ed885857eb85a2459e104636e2cc9960cc4eb25e8018b9bc2f62d`
+- `implementation_token_attribution_bridge`: `fresh` / `warning` / `tmp/implementation-token-attribution-bridge.json` / sha256 `a05439213466970badbba23d4d41db25956fb9b21b74ddbd8ebcde306b82d650`
+- `coding_outcome_ledger`: `fresh` / `warning` / `tmp/coding-outcome-ledger-current.json` / sha256 `354fa12248579be9b23c5c3e00ffcbe824c9580e7094154fc5edaa1fe824db03`
+- `pm_control_packet`: `fresh` / `ok` / `tmp/pm-control-packet.json` / sha256 `d03244adde41036db8b8a616383f473cff44094f8f3b0f5c0343d8f685855f1b`
+- `recommendation_outcome_ledger`: `fresh` / `ok` / `tmp/recommendation-outcome-ledger-current.json` / sha256 `3ff3eedab285625983c78b7cf34761cc6391df992106c9aff937d2263df782c3`
+- `improvement_ledger`: `fresh` / `warning` / `tmp/improvement-ledger-current.json` / sha256 `0c0355b4be3c9e7e63e8e15c51717052cf43a2c788320cc7c9986611667eea56`
+- `actionable_improvement_queue`: `fresh` / `actionable_queue_ready_no_apply_authority` / `tmp/actionable-improvement-queue.json` / sha256 `846e08dc460f0b89b23b307f070f248a68bca9ef9111560f2e780ffa86c531d8`
+- `no_orphan_validator`: `fresh` / `no_orphan_validation_ready` / `tmp/no-orphan-validator.json` / sha256 `b5142e0e37ecab4d6023080141f5bdf72eeba135a5293182bfa457c80a6aef6d`
 
 The source map routes readers to exact artifacts. It does not replace source-open inspection when material claims depend on those artifacts.

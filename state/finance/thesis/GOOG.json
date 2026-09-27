@@ -1,0 +1,96 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "GOOG",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "secular_growth",
+  "thesis_statement": "Alphabet pairs a highly profitable Search and YouTube advertising franchise with a fast-growing Google Cloud business and its own full AI stack (Gemini models plus TPU chips), giving it several ways to turn AI demand into revenue; the open question is the return on record capital spending.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Revenue grows around 15-20% with Cloud leading while Search holds up and operating margin stays in the low-to-mid 30s.",
+      "drivers": [
+        "Google Cloud AI infrastructure and Gemini Enterprise",
+        "Search & other growth",
+        "YouTube and subscriptions"
+      ]
+    },
+    "bull": {
+      "summary": "Cloud sustains very high growth on AI demand and capex converts into margin expansion and renewed free cash flow.",
+      "drivers": [
+        "Cloud backlog conversion",
+        "TPU cost advantage",
+        "Gemini app monetization"
+      ]
+    },
+    "bear": {
+      "summary": "AI assistants erode search usage while capex keeps free cash flow negative and investors question the returns.",
+      "drivers": [
+        "search share loss",
+        "capex returns below cost of capital",
+        "antitrust remedies"
+      ]
+    }
+  },
+  "key_risks": [
+    "Free cash flow turned negative in Q2 2026 (-$5.9B): capex $44.9B exceeded operating cash flow $39.1B.",
+    "GAAP EPS (+294%) is dominated by a $98.0B net unrealized gain on equity securities; it is not operating growth and can reverse.",
+    "Regulatory risk from the US search and ad-tech antitrust cases and remedies."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (313.17 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Google Search & other revenue growth falls below 5% year over year for two consecutive quarters.",
+      "Google Cloud growth drops below 30% while quarterly capex keeps rising, or operating margin falls below 30% for two quarters."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-28",
+      "date_confidence": "provider_estimate"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": [
+      "defensive_review_bias"
+    ]
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLC"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: revenue $119.8B +24%; Services $94.5B +15% (Search +17%, YouTube ads +13%); Cloud $24.8B +82%; operating margin 34% (+2 pts); other income $98.0B mostly unrealized equity gains; EPS $9.11 +294%",
+      "source": "Alphabet Q2 2026 release, SEC 8-K exhibit 99.1 (sec.gov .../googexhibit991q22026.htm)",
+      "as_of": "2026-07-22"
+    },
+    {
+      "claim": "Q2 OCF $39.07B, capex $44.92B, FCF -$5.86B; trailing P/E 17.1 (distorted by gains), forward P/E 22.9; net margin 93.65% (gain-inflated)",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-28 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 325.63-341.85, invalidation 313.17, reference_confidence 50; close 341.03 on 2026-09-25 is inside band",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-27T08:05:00-07:00",
+  "owner_notes": "Business momentum is strong, but conviction is held at medium until capex shows returns, since Q2 free cash flow was negative. Ignore GAAP EPS and trailing P/E for this name while equity gains dominate other income. Accepted by Randall, WebChat 2026-09-27 ~08:05 Phoenix: 'Accept all except XOM. Proceed with next steps.'",
+  "fundamentals_period_end": "2026-06-30"
+}

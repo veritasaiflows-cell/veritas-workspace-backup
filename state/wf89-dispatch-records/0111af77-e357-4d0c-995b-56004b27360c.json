@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "0111af77-e357-4d0c-995b-56004b27360c",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:phase4-decision-ledger-p1-20260926",
+  "label": "Phase4 decision ledger r3 finish",
+  "task_text_sha256": "807de03801f394ef8b22491499bc0ba5ff1b0ee7453ebf618a75a0779fe8fa5f",
+  "message_file": "tmp\\phase4-proposal-route-20260926\\ledger-finish.md",
+  "created_at_ms": 1790479323243,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

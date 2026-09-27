@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """G6 Yahoo32 SQL-only gated apply (lane G6::yahoo32-sql-apply-20260910).
 
-Purpose: apply 32 Yahoo-proposed reference triples
+Purpose: apply a non-empty batch of Yahoo-proposed reference triples
 (reference_price_low / reference_price_high / reference_invalidation_level)
 to the SQLite reference-level canon with backup + rollback proof, and pin a
 SUCCESSOR numeric baseline in the SAME apply transaction.
 
-Why a successor pin: a live --apply of 32 numbers broke SQL guards because
+Why a successor pin: an earlier live --apply broke SQL guards because
 reference_levels provenance still pointed at the Yahoo matrix (or a mix of
 old pin + matrix). The guards require every reference_levels row (and every
 reference_levels-family lineage row, and finance_state_meta) to point at ONE
@@ -26,15 +26,16 @@ Canon doctrine:
     overwritten, renamed, or deleted by this script.
 
 Required CLI:
-  python scripts/g6_yahoo32_sql_apply.py --dry-run --write --validate --matrix <path> --db <sqlite> [--baseline-dir <dir>]
-  python scripts/g6_yahoo32_sql_apply.py --apply --write --validate --matrix <path> --db <sqlite> [--baseline-dir <dir>]
+  python scripts/g6_yahoo32_sql_apply.py --dry-run --write --validate --matrix <path> --db <sqlite> [--baseline-dir <dir>] [--expected-scope-fingerprint <hex>]
+  python scripts/g6_yahoo32_sql_apply.py --apply --write --validate --matrix <path> --db <sqlite> [--baseline-dir <dir>] [--expected-scope-fingerprint <hex>]
   python scripts/g6_yahoo32_sql_apply.py --rollback --write --rollback-path <path> --db <sqlite>
 
 Apply flow (single DB transaction after backup):
   1. backup sqlite (byte-exact copy + hash proof)
   2. build successor baseline JSON in tmp staging, hash it, commit it under
      its hash name: <baseline-dir>/alert-reference-levels-v1-<sha256>.json
-  3. UPDATE the 32 numeric triples
+  3. UPDATE the proposed numeric triples and set their reference_band_status to
+     NULL (a stale price observation must not survive a band rewrite)
   4. UPDATE ALL reference_levels rows' provenance to the successor pin
   5. UPDATE ONLY reference_levels-family lineage rows (source_lineage rows
      WHERE field_family='reference_levels', plus reference lineage tables
@@ -63,14 +64,12 @@ import sys
 import tempfile
 from pathlib import Path
 
-EXPECTED_TRIPLE_COUNT = 32
-
 LIVE_AUTHORITY_CLASS_KNOWN = (
     "alert_reference_metadata_review_only_no_execution_authority"
 )
 
 AUTHORITY = {
-    # This script IS the gated SQL apply path (backup + rollback + 32-count
+    # This script IS the gated SQL apply path (backup + rollback + non-empty
     # + missing-ticker refusal required). It is NOT a general apply path.
     "sql_reference_levels_apply_path": True,
     "gated_yahoo32_only": True,
@@ -110,6 +109,13 @@ META_LIFECYCLE = "immutable_active_alert_reference_baseline"
 
 CONFIDENCE_CANDIDATES = ("confidence", "reference_confidence", "level_confidence")
 DEFAULT_CONFIDENCE = None
+
+# reference_band_status is a point-in-time price observation, not a band
+# property. The numeric baseline carries no status, so a renewal that rewrites
+# a triple would leave the old label describing the old band (2026-09-27: 13 of
+# 32 labels contradicted price after the 09-26 renewal). Renewed rows are set
+# to NULL; readers compute status from live price and treat NULL as "compute".
+BAND_STATUS_COL = "reference_band_status"
 
 
 def _proposed_or_existing_confidence(triple: dict, existing: dict) -> float | None:
@@ -272,13 +278,17 @@ def baseline_authority() -> dict:
 
 # ---------------------------------------------------------------- matrix
 
-def load_matrix(matrix_path: str | Path) -> tuple[dict, str]:
+def load_matrix(matrix_path: str | Path, expected_sha256: str | None = None) -> tuple[dict, str]:
     refuse_markdown_path(matrix_path, "matrix path")
+    if expected_sha256 is not None and not re.fullmatch(r"[0-9a-f]{64}", expected_sha256):
+        raise ValueError("--expected-matrix-sha256 must be 64 lowercase hex characters")
     mp = Path(matrix_path)
     if not mp.is_file():
         raise FileNotFoundError(f"matrix not found: {mp}")
     raw = mp.read_bytes()
     digest = _sha256_bytes(raw)
+    if expected_sha256 is not None and digest != expected_sha256:
+        raise ValueError("matrix bytes mismatch with --expected-matrix-sha256")
     try:
         data = json.loads(raw.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as e:
@@ -290,6 +300,86 @@ def load_matrix(matrix_path: str | Path) -> tuple[dict, str]:
 
 def _is_number(v: object) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+# Must stay byte-identical to finance_sql_canon_access._dynamic_scope_fingerprint.
+def _dynamic_scope_fingerprint(triples):
+    serialized = json.dumps(
+        [[ticker, tier, eligible] for ticker, tier, eligible in triples],
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(serialized).hexdigest()
+
+
+def verify_scope(matrix: dict, expected_fingerprint: str | None = None) -> dict:
+    """Verify the exact matrix/scope membership before any backup or pin staging."""
+    if expected_fingerprint is not None and not re.fullmatch(r"[0-9a-f]{64}", expected_fingerprint):
+        raise ValueError("--expected-scope-fingerprint must be 64 lowercase hex characters")
+    if "scope" not in matrix and expected_fingerprint is None:
+        return {"scope_consistent": False, "scope_verified": False, "scope_fingerprint": None, "scope_count": None}
+    scope = matrix.get("scope")
+    if not isinstance(scope, dict):
+        raise ValueError("scope block required and must be an object")
+    if not isinstance(scope.get("source"), str):
+        raise ValueError("scope.source must be a string")
+    members = scope.get("members")
+    if not isinstance(members, list) or not members:
+        raise ValueError("scope.members must be a non-empty list")
+    triples = []
+    for i, member in enumerate(members):
+        if not isinstance(member, dict):
+            raise ValueError(f"scope.members[{i}] must be an object")
+        ticker, tier, eligible = (member.get(k) for k in
+                                  ("ticker", "tier", "decision_grade_eligible"))
+        if not isinstance(ticker, str) or not ticker.strip():
+            raise ValueError(f"scope.members[{i}].ticker must be a non-empty string")
+        if not isinstance(tier, str):
+            raise ValueError(f"scope.members[{i}].tier must be a string")
+        if type(eligible) is not bool:
+            raise ValueError(f"scope.members[{i}].decision_grade_eligible must be boolean")
+        triples.append((ticker, tier, eligible))
+    tickers = [ticker for ticker, _, _ in triples]
+    if tickers != sorted(set(tickers)):
+        raise ValueError("scope.members must be sorted by ticker and unique")
+    if scope.get("tickers") != tickers:
+        raise ValueError("scope.tickers must exactly match scope.members tickers")
+    if type(scope.get("count")) is not int or scope["count"] != len(members):
+        raise ValueError("scope.count must equal the number of members")
+    matrix_tickers = matrix.get("tickers")
+    if not isinstance(matrix_tickers, dict) or set(matrix_tickers) != set(tickers):
+        raise ValueError("matrix tickers must exactly match scope tickers (no extra or missing)")
+    fingerprint = scope.get("fingerprint")
+    if not isinstance(fingerprint, str) or not re.fullmatch(r"[0-9a-f]{64}", fingerprint):
+        raise ValueError("scope.fingerprint must be 64 lowercase hex characters")
+    if _dynamic_scope_fingerprint(triples) != fingerprint:
+        raise ValueError("scope.fingerprint mismatch with scope.members")
+    if expected_fingerprint is not None and fingerprint != expected_fingerprint:
+        raise ValueError("scope.fingerprint mismatch with --expected-scope-fingerprint")
+    return {"scope_consistent": True, "scope_verified": expected_fingerprint is not None,
+            "scope_fingerprint": fingerprint, "scope_count": len(members)}
+
+
+def _check_live_scope(db_path: Path, expected_fingerprint: str | None,
+                      verify_live_scope: bool, live_scope_resolver=None) -> bool:
+    if not verify_live_scope:
+        return False
+    if expected_fingerprint is None or not re.fullmatch(r"[0-9a-f]{64}", expected_fingerprint):
+        raise ValueError("--verify-live-scope requires --expected-scope-fingerprint")
+    try:
+        if live_scope_resolver is None:
+            # Import only when opted in; legacy unscoped calls need no companion module.
+            from yahoo_reference_level_matrix import resolve_band_scope
+            live_scope_resolver = lambda path: resolve_band_scope(
+                path, workspace_root=Path(__file__).resolve().parents[1])
+        live_fingerprint = live_scope_resolver(db_path)["scope"]["fingerprint"]
+    except Exception as e:
+        raise ValueError(f"live scope resolution refused: {e}") from e
+    if live_fingerprint != expected_fingerprint:
+        raise ValueError("live scope fingerprint mismatch with --expected-scope-fingerprint")
+    # A small window remains between this check and BEGIN IMMEDIATE; any future
+    # tier writer must serialize against renewal to close that window.
+    return True
 
 
 def validate_triple(d: object, where: str) -> dict[str, float]:
@@ -316,7 +406,7 @@ def validate_triple(d: object, where: str) -> dict[str, float]:
 
 
 def extract_triples(matrix: dict, *, ack_invalidation_ordering: bool = False) -> dict[str, dict]:
-    """Return {ticker: {'old': triple, 'proposed': triple}}; exactly 32.
+    """Return a non-empty {ticker: {'old': triple, 'proposed': triple}} batch.
 
     D9 option C (owner-approved 2026-09-23): a proposed invalidation level at
     or above the band low, or a generator invalidation_ordering_warning, is
@@ -325,11 +415,8 @@ def extract_triples(matrix: dict, *, ack_invalidation_ordering: bool = False) ->
     tickers = matrix.get("tickers")
     if not isinstance(tickers, dict):
         raise ValueError("matrix['tickers'] must be an object mapping ticker -> entry")
-    if len(tickers) != EXPECTED_TRIPLE_COUNT:
-        raise ValueError(
-            f"matrix must contain exactly {EXPECTED_TRIPLE_COUNT} tickers, "
-            f"got {len(tickers)}"
-        )
+    if not tickers:
+        raise ValueError("matrix must contain at least one ticker")
     out: dict[str, dict] = {}
     for ticker, entry in sorted(tickers.items()):
         if not isinstance(ticker, str) or not ticker.strip():
@@ -437,6 +524,7 @@ def resolve_schema(db_path: Path) -> dict:
             "prov_sha_col": prov_sha,
             "prov_ts_col": prov_ts,
             "conf_col": conf_col,
+            "status_col": BAND_STATUS_COL if BAND_STATUS_COL in columns else None,
             "lineage_path_cols": _pick_all_present(columns, LINEAGE_PATH_CANDIDATES),
             "lineage_sha_cols": _pick_all_present(columns, LINEAGE_SHA_CANDIDATES),
             "lineage_ts_cols": _pick_all_present(columns, LINEAGE_TS_CANDIDATES),
@@ -454,6 +542,8 @@ def read_rows(db_path: Path, schema: dict) -> dict[str, dict]:
         if schema["authority_col"]:
             cols.append(schema["authority_col"])
         cols += [schema["prov_path_col"], schema["prov_sha_col"], schema["prov_ts_col"]]
+        if schema.get("status_col"):
+            cols.append(schema["status_col"])
         cur = con.execute(
             f"SELECT {', '.join(cols)} FROM reference_levels"  # noqa: S608 (local canon table)
         )
@@ -807,7 +897,14 @@ def build_dry_run(
     matrix_path: Path,
     matrix_sha: str,
     baseline_dir: str | Path | None = None,
+    scope_info: dict | None = None,
+    matrix_sha256_verified: bool = False,
+    expected_scope_fingerprint: str | None = None,
+    verify_live_scope: bool = False,
+    live_scope_resolver=None,
 ) -> dict:
+    if verify_live_scope and expected_scope_fingerprint is None:
+        raise ValueError("--verify-live-scope requires --expected-scope-fingerprint")
     schema = resolve_schema(db_path)
     live = read_rows(db_path, schema)
     missing = [t for t in triples if t not in live]
@@ -837,8 +934,17 @@ def build_dry_run(
                 "would_change": any(
                     abs(current[f] - proposed[f]) > 1e-9 for f in NUMERIC_FIELDS
                 ),
+                "band_status_live": row.get(schema["status_col"])
+                if schema.get("status_col")
+                else None,
+                "band_status_after": None,
             }
         )
+    status_clear = (
+        sorted(t for t in triples if live[t].get(schema["status_col"]) is not None)
+        if schema.get("status_col")
+        else []
+    )
     # Successor preview only: computed in memory, NEVER written to the real
     # baseline pin location and never mutating sqlite.
     full = read_full_levels(db_path, schema)
@@ -875,6 +981,8 @@ def build_dry_run(
     preview_sha = _sha256_bytes(preview_bytes)
     preview_filename = successor_filename_for(preview_sha)
     target_dir = Path(baseline_dir) if baseline_dir is not None else default_baseline_dir(db_path)
+    live_scope_verified = _check_live_scope(
+        db_path, expected_scope_fingerprint, verify_live_scope, live_scope_resolver)
     return {
         "mode": "dry-run",
         "generated_at": _utc_now_iso(),
@@ -883,11 +991,16 @@ def build_dry_run(
         "db_sha256": _sha256_file(db_path),
         "matrix": str(matrix_path).replace("\\", "/"),
         "matrix_sha256": matrix_sha,
+        "matrix_sha256_verified": matrix_sha256_verified,
+        "live_scope_verified": live_scope_verified,
         "triple_count": len(triples),
+        **(scope_info or {"scope_consistent": False, "scope_verified": False, "scope_fingerprint": None, "scope_count": None}),
         "row_count": len(live),
         "missing_tickers": [],
         "old_drift_tickers": sorted(drift),
         "diffs": diffs,
+        "band_status_column_present": bool(schema.get("status_col")),
+        "band_status_clear_tickers": status_clear,
         "mutation_performed": False,
         "baseline_pin_written": False,
         "successor_baseline_preview": {
@@ -912,7 +1025,14 @@ def run_apply(
     rollback_path: Path | None,
     allow_write: bool,
     baseline_dir: str | Path | None = None,
+    scope_info: dict | None = None,
+    matrix_sha256_verified: bool = False,
+    expected_scope_fingerprint: str | None = None,
+    verify_live_scope: bool = False,
+    live_scope_resolver=None,
 ) -> dict:
+    if verify_live_scope and expected_scope_fingerprint is None:
+        raise ValueError("--verify-live-scope requires --expected-scope-fingerprint")
     if not allow_write:
         raise ValueError("--apply requires --write (backup + rollback proof are mandatory)")
     # Refuse markdown output targets BEFORE backup/mutation so a refusal
@@ -937,6 +1057,9 @@ def run_apply(
             f"apply refused: {len(missing)} matrix tickers missing from DB "
             f"(refusing to create new tickers): {missing[:8]}"
         )
+    # Last refusal before backup; the pin is not staged until after backup.
+    live_scope_verified = _check_live_scope(
+        db_path, expected_scope_fingerprint, verify_live_scope, live_scope_resolver)
     # Backup FIRST; any backup failure raises before any mutation.
     bkp = backup_db(db_path, backup_path or default_backup_path(db_path))
     full = read_full_levels(db_path, schema)
@@ -944,7 +1067,7 @@ def run_apply(
     lineage_tables = find_lineage_tables(db_path)
     meta = resolve_meta_table(db_path)
     generated_at = _utc_now_iso()
-    # Successor pin reflects POST-apply numbers: proposed overlay for the 32,
+    # Successor pin reflects POST-apply numbers: proposed overlay for the batch,
     # current values for every other row. Built + hash-named BEFORE the DB
     # transaction; the DB transaction then points every provenance cell at it.
     levels_final: list[dict] = []
@@ -993,9 +1116,15 @@ def run_apply(
             "authority_class": live[t].get(schema["authority_col"])
             if schema["authority_col"]
             else None,
+            **(
+                {BAND_STATUS_COL: live[t].get(schema["status_col"])}
+                if schema.get("status_col")
+                else {}
+            ),
         }
         for t in sorted(triples)
     }
+    status_col = schema.get("status_col")
     # ONE transaction after backup: numerics + all provenance + lineage + meta.
     # authority_class is never in any SET list. No INSERT into reference_levels.
     numeric_set = (
@@ -1045,6 +1174,16 @@ def run_apply(
                         f"apply aborted: UPDATE affected {cur.rowcount} rows for "
                         f"{ticker} (expected exactly 1)"
                     )
+                if status_col:
+                    cur = con.execute(
+                        f"UPDATE {_quote_ident('reference_levels')} SET {_quote_ident(status_col)} = NULL "  # noqa: S608 (gated canon apply)
+                        f"WHERE {_quote_ident(id_col)} = ?",
+                        (ticker,),
+                    )
+                    if cur.rowcount != 1:
+                        raise ValueError(
+                            f"apply aborted: band status clear affected {cur.rowcount} rows for {ticker}"
+                        )
             prov_params: list[object] = (
                 [pin_posix] * len(schema["lineage_path_cols"])
                 + [pin_sha] * len(schema["lineage_sha_cols"])
@@ -1142,6 +1281,16 @@ def run_apply(
             if abs(float(after[ticker][f]) - p[f]) > 1e-9:
                 raise ValueError(
                     f"apply verification FAILED: {ticker}.{f} not at proposed value"
+                )
+        if status_col and after[ticker].get(status_col) is not None:
+            raise ValueError(
+                f"apply verification FAILED: {ticker}.{status_col} not cleared on renewal"
+            )
+    if status_col:
+        for ticker, row in after.items():
+            if ticker not in triples and row.get(status_col) != live[ticker].get(status_col):
+                raise ValueError(
+                    f"apply verification FAILED: {ticker}.{status_col} changed outside the renewed set"
                 )
     after_levels = {e["ticker"]: e for e in read_full_levels(db_path, schema)}
     for ticker in sorted(triples):
@@ -1248,12 +1397,18 @@ def run_apply(
         "db_sha256_after": _sha256_file(db_path),
         "matrix": str(matrix_path).replace("\\", "/"),
         "matrix_sha256": matrix_sha,
+        "matrix_sha256_verified": matrix_sha256_verified,
+        "live_scope_verified": live_scope_verified,
         "backup_path": bkp["backup_path"],
         "backup_sha256": bkp["sha_backup"],
         "triple_count": len(triples),
+        **(scope_info or {"scope_consistent": False, "scope_verified": False, "scope_fingerprint": None, "scope_count": None}),
         "row_count_before": row_count_before,
         "row_count_after": row_count_after,
         "authority_class_preserved": True,
+        "band_status_cleared": sorted(triples) if status_col else [],
+        "band_status_policy": "renewed rows set to NULL; prior values in before_rows; "
+        "restored by the byte-exact backup on rollback" if status_col else "column absent; untouched",
         "before_rows": before_rows,
         "proposed_rows": {
             t: dict(triples[t]["proposed"]) for t in sorted(triples)
@@ -1322,14 +1477,25 @@ def run_rollback(db_path: Path, rollback_path: Path) -> dict:
 
 def validate_apply_artifact(rollback: dict, db_path: Path, matrix_sha: str) -> list[str]:
     errors: list[str] = []
-    if rollback.get("triple_count") != EXPECTED_TRIPLE_COUNT:
-        errors.append(
-            f"triple_count must be {EXPECTED_TRIPLE_COUNT}, "
-            f"got {rollback.get('triple_count')}"
-        )
     before = rollback.get("before_rows", {})
-    if len(before) != EXPECTED_TRIPLE_COUNT:
-        errors.append(f"before_rows must hold 32 entries, got {len(before)}")
+    proposed = rollback.get("proposed_rows", {})
+    count = rollback.get("triple_count")
+    if (not isinstance(before, dict) or not isinstance(proposed, dict)
+            or type(count) is not int or count < 1
+            or count != len(before) or count != len(proposed)):
+        errors.append("triple_count must be positive and equal len(before_rows) and len(proposed_rows)")
+    if rollback.get("scope_consistent") is True:
+        if type(rollback.get("scope_count")) is not int or count != rollback["scope_count"]:
+            errors.append("triple_count must equal consistent scope_count")
+        if not isinstance(rollback.get("scope_fingerprint"), str) or not re.fullmatch(
+            r"[0-9a-f]{64}", rollback["scope_fingerprint"]
+        ):
+            errors.append("consistent scope_fingerprint must be 64 lowercase hex characters")
+        if type(rollback.get("scope_verified")) is not bool:
+            errors.append("scope_verified must be boolean")
+    elif (rollback.get("scope_consistent") is not False or rollback.get("scope_verified") is not False
+          or rollback.get("scope_fingerprint") is not None or rollback.get("scope_count") is not None):
+        errors.append("unscoped fields must be false/false/null/null")
     if rollback.get("matrix_sha256") != matrix_sha:
         errors.append("matrix_sha256 mismatch vs matrix file on disk")
     if rollback.get("authority", {}).get("markdown_canon_write_allowed") is not False:
@@ -1476,15 +1642,21 @@ def validate_apply_artifact(rollback: dict, db_path: Path, matrix_sha: str) -> l
 
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
-        description="G6 Yahoo32 SQL-only gated apply (backup + successor-pin proof)"
+        description="G6 SQL-only gated apply for a non-empty batch (historical Yahoo32 module name)"
     )
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--dry-run", action="store_true", help="no SQL mutation; emit diff")
-    g.add_argument("--apply", action="store_true", help="backup first, then UPDATE 32 rows + successor pin")
+    g.add_argument("--apply", action="store_true", help="backup first, then UPDATE proposed rows + successor pin")
     g.add_argument("--rollback", action="store_true", help="byte-exact restore from backup")
     ap.add_argument("--write", action="store_true", help="allow artifact writes (mandatory for --apply)")
     ap.add_argument("--validate", action="store_true", help="validate artifacts after build")
-    ap.add_argument("--matrix", default=None, help="reference-level matrix JSON path")
+    ap.add_argument("--matrix", default=None, help="reference-level matrix JSON path (optional verified scope block)")
+    ap.add_argument("--expected-scope-fingerprint", default=None, metavar="HEX",
+                    help="require matrix scope with this lowercase SHA-256 fingerprint (dry-run/apply)")
+    ap.add_argument("--expected-matrix-sha256", default=None, metavar="HEX",
+                    help="require exact matrix bytes with this lowercase SHA-256 (dry-run/apply)")
+    ap.add_argument("--verify-live-scope", action="store_true",
+                    help="resolve live scope immediately before backup or dry-run artifact")
     ap.add_argument("--db", default=None, dest="db", help="sqlite canon path")
     ap.add_argument("--baseline-dir", default=None, help="successor pin directory (apply writes; dry-run never writes it)")
     ap.add_argument("--backup-path", default=None, help="backup sqlite destination (apply)")
@@ -1502,6 +1674,10 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
         if args.rollback:
+            if (args.expected_scope_fingerprint is not None or args.expected_matrix_sha256 is not None
+                    or args.verify_live_scope):
+                print("scope and matrix verification flags are only for --dry-run or --apply", file=sys.stderr)
+                return 2
             if args.db is None or args.rollback_path is None:
                 print("--rollback requires --db and --rollback-path", file=sys.stderr)
                 return 2
@@ -1513,8 +1689,12 @@ def main(argv: list[str] | None = None) -> int:
         if args.matrix is None or args.db is None:
             print("this mode requires --matrix and --db", file=sys.stderr)
             return 2
-        matrix, matrix_sha = load_matrix(args.matrix)
+        if args.verify_live_scope and args.expected_scope_fingerprint is None:
+            print("--verify-live-scope requires --expected-scope-fingerprint", file=sys.stderr)
+            return 2
+        matrix, matrix_sha = load_matrix(args.matrix, args.expected_matrix_sha256)
         try:
+            scope_info = verify_scope(matrix, args.expected_scope_fingerprint)
             triples = extract_triples(matrix, ack_invalidation_ordering=args.ack_invalidation_ordering)
         except ValueError as e:
             print(f"matrix refused: {e}", file=sys.stderr)
@@ -1533,7 +1713,11 @@ def main(argv: list[str] | None = None) -> int:
             sha_before = _sha256_file(db_path)
             try:
                 summary = build_dry_run(
-                    db_path, triples, Path(args.matrix), matrix_sha, args.baseline_dir
+                    db_path, triples, Path(args.matrix), matrix_sha, args.baseline_dir,
+                    scope_info,
+                    args.expected_matrix_sha256 is not None,
+                    args.expected_scope_fingerprint,
+                    args.verify_live_scope,
                 )
             except (ValueError, FileNotFoundError) as e:
                 print(f"dry-run FAILED CLOSED: {e}", file=sys.stderr)
@@ -1551,7 +1735,9 @@ def main(argv: list[str] | None = None) -> int:
                 if _sha256_file(db_path) != sha_before:
                     print("dry-run VALIDATION FAILED: DB mutated during dry-run", file=sys.stderr)
                     return 3
-                if summary["triple_count"] != EXPECTED_TRIPLE_COUNT:
+                if summary["triple_count"] < 1 or (
+                    summary["scope_consistent"] and summary["triple_count"] != summary["scope_count"]
+                ):
                     print("dry-run VALIDATION FAILED: triple count", file=sys.stderr)
                     return 3
                 preview = summary.get("successor_baseline_preview", {})
@@ -1586,6 +1772,10 @@ def main(argv: list[str] | None = None) -> int:
                     Path(args.rollback_path) if args.rollback_path else None,
                     args.write,
                     args.baseline_dir,
+                    scope_info,
+                    args.expected_matrix_sha256 is not None,
+                    args.expected_scope_fingerprint,
+                    args.verify_live_scope,
                 )
             except FileNotFoundError as e:
                 print(f"apply FAILED CLOSED: {e}", file=sys.stderr)
@@ -1593,7 +1783,7 @@ def main(argv: list[str] | None = None) -> int:
             except ValueError as e:
                 print(f"apply FAILED CLOSED: {e}", file=sys.stderr)
                 return 2
-            print(f"apply_ok: rows=32 backup={rollback['backup_path']}")
+            print(f"apply_ok: rows={rollback['triple_count']} backup={rollback['backup_path']}")
             print(f"pin_written: {rollback['baseline_path']}")
             print(f"rollback_written: {rollback['rollback_path']}")
             if args.validate:
@@ -1603,7 +1793,7 @@ def main(argv: list[str] | None = None) -> int:
                     for e in errs:
                         print(f"  - {e}", file=sys.stderr)
                     return 3
-                print("apply_valid: rows=32 authority_class_preserved=True rollback_ok=True pin_ok=True")
+                print(f"apply_valid: rows={rollback['triple_count']} authority_class_preserved=True rollback_ok=True pin_ok=True")
             return 0
     except (ValueError, FileNotFoundError) as e:
         print(f"FAILED CLOSED: {e}", file=sys.stderr)

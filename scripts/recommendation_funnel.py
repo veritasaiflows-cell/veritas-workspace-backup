@@ -179,6 +179,23 @@ def _is_finite_number(value: Any) -> bool:
         return False
 
 
+def readonly_sqlite_uri(path: Path) -> str:
+    """Percent-encoded read-only SQLite URI.
+
+    The path is quoted so '#', '?' or '%' in a directory name cannot end the
+    path early and drop mode=ro. immutable=1 is deliberately NOT set: the canon
+    DB runs in WAL mode, and immutable skips the -wal file, so readers could
+    see stale or torn state. mode=ro reads committed WAL content and never
+    writes the main DB. SQLite may create empty -wal/-shm sidecars when absent,
+    which is accepted: they hold no canon data and the main file bytes stay
+    unchanged.
+    """
+    posix = Path(path).resolve().as_posix()
+    if not posix.startswith("/"):
+        posix = "/" + posix  # Windows drive path -> file:///C:/...
+    return "file://" + url_quote(posix, safe="/:") + "?mode=ro"
+
+
 def same_version_stale_reason(root: Path, controller: dict) -> str | None:
     """Fail-closed CURRENT SAME-VERSION check.
 
@@ -267,9 +284,8 @@ def same_version_stale_reason(root: Path, controller: dict) -> str | None:
     except OSError:
         return "same-version check failed: canon DB missing or unreadable"
     try:
-        uri = f"file:{canon.as_posix()}?mode=ro"
-        con = sqlite3.connect(uri, uri=True)
-    except sqlite3.Error:
+        con = sqlite3.connect(readonly_sqlite_uri(canon), uri=True)
+    except (sqlite3.Error, OSError):
         return "same-version check failed: DB open failed (query/schema error)"
     try:
         try:

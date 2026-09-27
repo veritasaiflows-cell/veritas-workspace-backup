@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "0fd36a93-2191-43f1-8264-66b35da059d7",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:retired-writer-v3-probe-20260926",
+  "label": "retired-writer-v3-runtime-probe",
+  "task_text_sha256": "883bfa95316974b8c034eb5394cf19abdf0865fa31e73e6bd9cdb13078ff3ea7",
+  "message_file": "tmp\\implementation-builder-scoped-worktree\\retired-writer-v3-probe-task.md",
+  "created_at_ms": 1790466931476,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

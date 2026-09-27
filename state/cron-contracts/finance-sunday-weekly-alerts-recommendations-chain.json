@@ -4,7 +4,7 @@
   "name": "Finance - Sunday Weekly Alerts and Recommendations Refresh",
   "required": true,
   "owner_workflow": "WF84/WF85 alerts-and-recommendations OS",
-  "contract_reason": "Weekly bounded refresh of guarded SQL, explicit quote proof, alert freshness, and non-executing recommendation evidence.",
+  "contract_reason": "Weekly bounded refresh of guarded SQL, explicit quote proof, alert freshness, and a fail-closed recommendation funnel after coherent controller promotion.",
   "description": "Deterministic Sunday weekly alerts-and-recommendations chain over guarded SQL, explicit quote proof, the alert-level controller, and a non-delivery weekly digest. No portfolio state, paper/live execution, accounts, capital, or approval authority.",
   "enabled": true,
   "deleteAfterRun": false,
@@ -52,6 +52,7 @@
   "expected_artifacts": [
     "tmp/alerts-recommendations-chain-weekly.json",
     "tmp/alert-level-freshness-controller.json",
+    "tmp/recommendation-funnel.json",
     "tmp/finance-alert-os-weekly-digest.json",
     "tmp/intraday-alerts/quote-snapshot-proof.json",
     "tmp/intraday-alerts/quote-snapshot-proof-validation.json",
@@ -71,6 +72,6 @@
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-09-14T20:55:00Z",
-  "contract_update_reason": "G7 Path A: argv-only cutover to dynamic entitlement + recurring reference inputs; schedule, delivery, and timeoutSeconds unchanged. No --send."
+  "updated_at_utc": "2026-09-27T15:24:00Z",
+  "contract_update_reason": "Add the recommendation funnel as a weekly post-promotion expected artifact. Scheduler argv, schedule, delivery, timeout, and authority boundaries are unchanged."
 }

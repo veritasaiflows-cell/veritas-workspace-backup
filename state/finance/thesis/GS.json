@@ -1,0 +1,95 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "GS",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "financial_franchise",
+  "thesis_statement": "Goldman Sachs is the leading global investment bank and a top-tier trading house; a recovering M&A and capital-markets cycle plus a growing asset and wealth management business are producing record revenue and returns on equity above 20%.",
+  "timeframe": "intermediate_3_12m",
+  "cases": {
+    "base": {
+      "summary": "Deal and trading activity stays healthy and ROE holds in the high teens to low 20s, with steady buybacks.",
+      "drivers": [
+        "M&A and underwriting pipeline",
+        "equities and FICC client activity",
+        "asset & wealth management fee growth"
+      ]
+    },
+    "bull": {
+      "summary": "A multi-year M&A upcycle and capital relief lift ROE and buybacks further.",
+      "drivers": [
+        "strategic M&A wave",
+        "lighter capital requirements"
+      ]
+    },
+    "bear": {
+      "summary": "Capital-markets activity reverts after a record period and the premium to book compresses.",
+      "drivers": [
+        "deal drought or market shock",
+        "trading revenue normalization",
+        "regulatory capital tightening"
+      ]
+    }
+  },
+  "key_risks": [
+    "Earnings are cyclical: a record quarter (ROE 23.5%) is closer to peak than trough.",
+    "Valuation is already elevated at about 2.6x book value versus a long-run average near 1-1.5x.",
+    "Overlaps with JPM (both depend on investment banking and markets), so their signals are not independent."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (875.46 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Annualized ROE falls below 13% for two consecutive quarters.",
+      "Management reports a materially lower investment-banking backlog alongside falling advisory revenue."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-13",
+      "date_confidence": "provider_estimate"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": [
+      "defensive_review_bias"
+    ]
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLF"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: net revenues $20.34B, net earnings $6.63B, EPS $20.98, annualized ROE 23.5%; CEO cites record performance and strong pipelines",
+      "source": "Goldman Sachs press release 2026-07-14 (goldmansachs.com/pressroom/press-releases/2026/2026-07-14-q2-results)",
+      "as_of": "2026-07-14"
+    },
+    {
+      "claim": "Aggregator row still at Q1 2026 (period_end 2026-03-31, eps_yoy missing, data_quality partial); forward P/E 12.6, P/B 2.58; CET1/Tier 1 manual-confirmed from 1Q26 10-Q",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-13 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 914.68-1017.46, invalidation 875.46, reference_confidence 40; close 935.26 on 2026-09-25 is inside band",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-27T08:05:00-07:00",
+  "owner_notes": "Timeframe is intermediate because the earnings driver is cyclical. Written against official Q2 figures because the aggregator row lags at Q1. The band is wide (about 11%). Accepted by Randall, WebChat 2026-09-27 ~08:05 Phoenix: 'Accept all except XOM. Proceed with next steps.'",
+  "fundamentals_period_end": "2026-06-30"
+}

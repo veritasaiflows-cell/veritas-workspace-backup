@@ -193,7 +193,7 @@ def lint_known_profile(agent_id: str, manifest: dict[str, Any], agent: dict[str,
     if model_route.get("recovery_is_non_executing_option") is not True:
         errors.append("manifest must mark recovery candidates as non-executing options")
     if model_route.get("main_model") != generator.MAIN_MODEL:
-        errors.append("manifest main model mismatch; Veritas Main remains the configured Sol primary")
+        errors.append("manifest main model mismatch; must equal the shared fleet policy Main primary")
     if manifest.get("display_name") != generator.fleet_display_for(agent_id):
         errors.append("manifest display name mismatch with shared fleet policy")
     if manifest.get("stable_id") != agent_id:
@@ -379,7 +379,12 @@ def lint_agent(agent: dict[str, Any]) -> dict[str, Any]:
         for legacy in LEGACY_GENERAL_CONTEXT_TERMS:
             if legacy in manifest_text:
                 errors.append(f"manifest contains legacy general context: {legacy}")
-        if "opus" in manifest_text:
+        # Since 2026-09-26 the Main primary is Opus 5.5, so model_route
+        # legitimately carries an opus reference. Fire only on a NON-main opus
+        # mention; the specialist's own model/recovery opus denial is enforced
+        # upstream (lines ~186-192).
+        opus_stripped = manifest_text.replace(str(generator.MAIN_MODEL).lower(), "")
+        if "opus" in opus_stripped:
             errors.append("manifest must not reference Opus in persistent specialist routing")
         kb = manifest.get("agent_knowledge_base")
         if not isinstance(kb, dict):
@@ -451,7 +456,11 @@ def lint_agent(agent: dict[str, Any]) -> dict[str, Any]:
     for forbidden in FORBIDDEN_AUTHORITY_TRUE:
         if forbidden in bootstrap_lower:
             errors.append(f"BOOTSTRAP.md contains forbidden authority true: {forbidden}")
-    if "opus" in bootstrap_lower:
+    # Main's primary (Opus 5.5 since 2026-09-26) may legitimately appear as
+    # Main-supplied context; fire only on an opus mention that is not the
+    # policy Main model reference.
+    bootstrap_non_main = bootstrap_lower.replace(str(generator.MAIN_MODEL).lower(), "")
+    if "opus" in bootstrap_non_main:
         errors.append("BOOTSTRAP.md must not reference Opus in persistent specialist routing")
 
     return {

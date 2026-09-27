@@ -14,7 +14,7 @@ import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 import project_implementation_router as implementation_router
@@ -95,7 +95,7 @@ TMP_DIR = ROOT / "tmp" / "agent-bootstrap"
 AGENT_SHADOW_DIR = ROOT / "tmp" / "agent-shadow"
 AGENT_KB_DIR = ROOT / "06. Playbooks" / "Agent Knowledge Base"
 
-PROFILE_REVISION = "2026-09-06.tools-section.v6"
+PROFILE_REVISION = "2026-09-26.patch-draft-scratch.v8"
 DEFAULT_OWNER_ROUTE = "VERITAS-MAIN"
 DEFAULT_CONCEPT = (
     "Veritas finance-first multi-workflow market intelligence, research, "
@@ -214,6 +214,15 @@ IMPLEMENTATION_BUILDER_SKILL_MOUNTS = (
     "linux-workspace-proof-runner",
 )
 IMPLEMENTATION_BUILDER_SCOPED_SENTINEL = ".veritas-scoped-worktree.json"
+IMPLEMENTATION_BUILDER_EXACT_EDITOR_SOURCE = (
+    ROOT / "scripts" / "implementation_builder_exact_file_editor.py"
+)
+IMPLEMENTATION_BUILDER_EXACT_EDITOR_RELATIVE = (
+    "runtime/implementation_builder_exact_file_editor.py"
+)
+IMPLEMENTATION_BUILDER_EXACT_EDITOR_CONTAINER = (
+    "/role/bin/implementation_builder_exact_file_editor.py"
+)
 IMPLEMENTATION_BUILDER_PYTHON_ENV = {
     "PYTHONDONTWRITEBYTECODE": "1",
     "PYTHONPYCACHEPREFIX": "/tmp/veritas-implementation-builder-pycache",
@@ -516,12 +525,21 @@ PROFILES: dict[str, dict[str, Any]] = {
                 "translate an exact runtime label .openclaw/attachments/<id>/<filename> to the sandbox path "
                 "/attachments/<id>/<filename> before reading; do not enumerate sibling attachments"
             ),
-            "read and modify only the frozen task files staged under /worktree",
+            "read and modify only the exact manifest-allowlisted task files mounted read-write under /worktree",
+            (
+                "invoke only the pinned /role/bin/implementation_builder_exact_file_editor.py bridge for implementation writes; "
+                "the request must bind the active job id, exact allowed paths, and preimage hashes"
+            ),
             "run synchronous sandbox-local proof commands against /worktree; Main remains validation and acceptance owner",
+            (
+                "for a Main-declared patch_draft lease, copy the named frozen inputs into sandbox-local /workspace/<job-id>/ scratch, "
+                "edit only those copies, run synchronous proof there, and return a unified diff; Main applies, tests, and accepts"
+            ),
         ],
         "write_scope": [
-            "the exact frozen task tree mounted at /worktree",
-            "new task-local fixtures or proof outputs under /worktree when the assignment explicitly permits them",
+            "only existing exact files mounted read-write under /worktree and named by the active manifest",
+            "declared new outputs only through Main-created zero-byte exact-file placeholders",
+            "patch_draft leases only: sandbox-local scratch copies under /workspace/<job-id>/, never collected or applied by the sandbox",
         ],
         "routing_triggers": [
             "bounded code, script, validator, fixture, or proof implementation on exact leased paths",
@@ -1045,8 +1063,43 @@ def main_supplied_context(
     }
 
 
+def _implementation_builder_exact_write_paths(worktree: Path) -> list[str]:
+    """Return active manifest paths only when every exact bind source exists."""
+    manifest_path = worktree / "handoff-manifest.json"
+    try:
+        payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return []
+    if payload.get("schema") != "veritas.implementation_builder_worktree_manifest.v1":
+        return []
+    raw_paths = payload.get("allowed_write_paths")
+    if not isinstance(raw_paths, list) or not 1 <= len(raw_paths) <= 12:
+        return []
+    normalized: list[str] = []
+    for raw in raw_paths:
+        if not isinstance(raw, str) or raw != raw.strip().replace("\\", "/"):
+            return []
+        candidate = PurePosixPath(raw)
+        if (
+            candidate.is_absolute()
+            or any(part in {"", ".", ".."} or ":" in part for part in candidate.parts)
+            or any(part.casefold() == ".git" for part in candidate.parts)
+            or candidate.as_posix().casefold()
+            in {"handoff-manifest.json", IMPLEMENTATION_BUILDER_SCOPED_SENTINEL.casefold()}
+        ):
+            return []
+        relative_path = candidate.as_posix()
+        source = worktree.joinpath(*candidate.parts)
+        if not source.is_file() or source.is_symlink():
+            return []
+        normalized.append(relative_path)
+    if normalized != sorted(set(normalized)):
+        return []
+    return normalized
+
+
 def implementation_builder_scoped_worktree_binds(agent: dict[str, Any]) -> list[str]:
-    """Return the exact narrow bind set for the implementation-builder."""
+    """Return RO worktree plus exact active-job RW file binds for the builder."""
 
     workspace = Path(str(agent.get("workspace") or "")).expanduser()
     handoff = workspace / "handoff"
@@ -1057,8 +1110,9 @@ def implementation_builder_scoped_worktree_binds(agent: dict[str, Any]) -> list[
     ]
     binds.extend(
         [
+            f"{workspace / IMPLEMENTATION_BUILDER_EXACT_EDITOR_RELATIVE}:{IMPLEMENTATION_BUILDER_EXACT_EDITOR_CONTAINER}:ro",
             f"{workspace / '.openclaw' / 'attachments'}:/attachments:ro",
-            f"{worktree}:/worktree:rw",
+            f"{worktree}:/worktree:ro",
             f"{worktree / '.git'}:/worktree/.git:ro",
             f"{worktree / 'handoff-manifest.json'}:/worktree/handoff-manifest.json:ro",
             f"{handoff / IMPLEMENTATION_BUILDER_SCOPED_SENTINEL}:/worktree/{IMPLEMENTATION_BUILDER_SCOPED_SENTINEL}:ro",
@@ -1067,6 +1121,10 @@ def implementation_builder_scoped_worktree_binds(agent: dict[str, Any]) -> list[
     binds.extend(
         f"{workspace / 'skills' / name}:/skills/{name}:ro"
         for name in IMPLEMENTATION_BUILDER_SKILL_MOUNTS
+    )
+    binds.extend(
+        f"{worktree.joinpath(*PurePosixPath(relative_path).parts)}:/worktree/{relative_path}:rw"
+        for relative_path in _implementation_builder_exact_write_paths(worktree)
     )
     return binds
 
@@ -1389,6 +1447,9 @@ def build_manifest(
     supervised_template_feed = supervised_template_feed_for(agent_id, supervised_template_packet or {})
     workspace_path = Path(workspace) if workspace else Path("__missing_agent_workspace__")
     source_surfaces_first = existing_source_surfaces(workspace_path)
+    factory_managed_surfaces = list(FACTORY_MANAGED_SURFACES)
+    if agent_id == "implementation-builder":
+        factory_managed_surfaces.append(IMPLEMENTATION_BUILDER_EXACT_EDITOR_RELATIVE)
     return {
         "schema": "openclaw.agent_capabilities.v1",
         "profile_revision": PROFILE_REVISION,
@@ -1449,7 +1510,7 @@ def build_manifest(
         "tools_allowed": profile["tools_allowed"],
         "tools_denied": [*GLOBAL_DENIED, *profile_denied],
         "write_scope": profile["write_scope"],
-        "factory_managed_surfaces": list(FACTORY_MANAGED_SURFACES),
+        "factory_managed_surfaces": factory_managed_surfaces,
         "forbidden_surfaces": GLOBAL_FORBIDDEN_SURFACES,
         "source_surfaces_first": source_surfaces_first,
         "main_supplied_context": main_supplied_context(profile, supervised_template_feed),
@@ -1508,9 +1569,10 @@ def build_bootstrap_markdown(manifest: dict[str, Any], delta: list[dict[str, Any
     posture = manifest["runtime_tool_posture"]
     if posture.get("scoped_worktree_only"):
         pilot_lines = [
-            "- Writable filesystem scope is technically limited to `/worktree`; the Main workspace is not mounted.",
-            "- Factory role files, attachment transport, Git metadata, and frozen handoff controls are mounted read-only.",
+            "- `/worktree` is read-only except for exact manifest-allowlisted file binds; the Main workspace is not mounted.",
+            "- One pinned exact-file editor, factory role files, attachment transport, Git metadata, and frozen handoff controls are mounted read-only.",
             "- Synchronous tests may run inside the no-network sandbox; Main independently validates and applies accepted output.",
+            "- A Main-declared `patch_draft` lease uses sandbox-local `/workspace/<job-id>/` scratch copies (the edit tools reject `/tmp`) and returns a unified diff; nothing under `/worktree` changes.",
         ]
     elif posture.get("outbox_only"):
         pilot_lines = [
@@ -1765,9 +1827,13 @@ def build_bootstrap_markdown(manifest: dict[str, Any], delta: list[dict[str, Any
 def tools_shell_rule(posture: dict[str, Any]) -> str:
     if posture.get("scoped_worktree_only"):
         return (
-            "Use `exec` only for synchronous proof commands against `/worktree`. Write/edit/patch only under "
-            "`/worktree`; `/role`, `/attachments`, Git metadata, and handoff controls are read-only. No network, "
-            "host path, Main-workspace access, elevation, background process, or cross-session action is permitted."
+            "Use `exec` only for the pinned command `python /role/bin/implementation_builder_exact_file_editor.py "
+            "--request-b64 <base64-json>` against active manifest-allowlisted files, or for synchronous proof "
+            "commands against `/worktree`. For a Main-declared `patch_draft` lease, `exec` may also create `/workspace/<job-id>/`, "
+            "copy the named frozen inputs there, and run proof or `git diff --no-index` on those copies; edit the copies with "
+            "write/edit/apply_patch; if those tools are denied, stop and report blocked instead of writing through `exec`. Apart from that pinned editor, do not use shell, Python, or another executable to mutate anything outside `/workspace/<job-id>/`. "
+            "The `/worktree` parent, `/role`, `/attachments`, Git metadata, and handoff controls are read-only. "
+            "No network, host path, Main-workspace access, elevation, background process, or cross-session action is permitted."
         )
     if posture.get("outbox_only"):
         return (
@@ -1803,8 +1869,10 @@ def tools_guidance_lines(manifest: dict[str, Any]) -> list[str]:
     if posture.get("scoped_worktree_only"):
         lines.extend(
             [
-                "- Writable root: `/worktree` only.",
+                "- Writable implementation surface: exact manifest-allowlisted files under `/worktree` only; `/worktree` itself is read-only.",
                 "- Read-only roots: `/role`, `/attachments`, `/worktree/.git`, and frozen handoff controls.",
+                "- Implementation writes must use the pinned exact-file editor; generic `exec` remains proof-only.",
+                "- `patch_draft` leases: write only sandbox-local copies under `/workspace/<job-id>/` and return a unified diff; Main applies and accepts.",
                 "- When runtime context labels an attachment as `.openclaw/attachments/<id>/<filename>`, resolve that exact attachment inside this sandbox as `/attachments/<id>/<filename>`.",
             ]
         )
@@ -2019,7 +2087,14 @@ def _validate_live_output_workspaces(targets):
             raise ValueError(f"live workspace is Main root: {aid}")
         if root_resolved in resolved.parents:
             raise ValueError(f"live workspace nested in Main: {aid}")
-        for name in ["agent.capabilities.json", "BOOTSTRAP.md", *list(CORE_BOOTSTRAP_MARKDOWN_SURFACES)]:
+        live_names = [
+            "agent.capabilities.json",
+            "BOOTSTRAP.md",
+            *list(CORE_BOOTSTRAP_MARKDOWN_SURFACES),
+        ]
+        if aid == "implementation-builder":
+            live_names.append(IMPLEMENTATION_BUILDER_EXACT_EDITOR_RELATIVE)
+        for name in live_names:
             p = candidate / name
             if p.is_symlink() or p.exists():
                 if p.is_dir():
@@ -2028,6 +2103,8 @@ def _validate_live_output_workspaces(targets):
                 if r != resolved / name and resolved not in r.parents:
                     raise ValueError(f"live output aliases outside workspace: {aid}:{name}")
     return True
+
+
 def build_outputs(args: argparse.Namespace) -> dict[str, Any]:
     agents = run_openclaw_agents_list()
     targets = select_agents(agents, args.agents)
@@ -2055,6 +2132,11 @@ def build_outputs(args: argparse.Namespace) -> dict[str, Any]:
             name: output_workspace / name
             for name in CORE_BOOTSTRAP_MARKDOWN_SURFACES
         }
+        exact_editor_path = (
+            output_workspace / IMPLEMENTATION_BUILDER_EXACT_EDITOR_RELATIVE
+            if manifest["agent_id"] == "implementation-builder"
+            else None
+        )
         packet = {
             "schema": "openclaw.agent_bootstrap_packet.v1",
             "generated_at_utc": generated_at,
@@ -2065,6 +2147,7 @@ def build_outputs(args: argparse.Namespace) -> dict[str, Any]:
             "evidence_delta": delta,
             "bootstrap_markdown_path": str(agent_bootstrap_path),
             "core_document_paths": {name: str(path) for name, path in core_document_paths.items()},
+            "exact_file_editor_path": str(exact_editor_path) if exact_editor_path else None,
         }
         if planned:
             packet["creation_plan"] = {
@@ -2083,6 +2166,17 @@ def build_outputs(args: argparse.Namespace) -> dict[str, Any]:
             write_json(agent_manifest_path, manifest)
             for name, text in core_documents.items():
                 core_document_paths[name].write_text(text, encoding="utf-8")
+            if exact_editor_path is not None:
+                if (
+                    not IMPLEMENTATION_BUILDER_EXACT_EDITOR_SOURCE.is_file()
+                    or IMPLEMENTATION_BUILDER_EXACT_EDITOR_SOURCE.is_symlink()
+                ):
+                    raise ValueError("implementation-builder exact-file editor source is unavailable")
+                exact_editor_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(
+                    IMPLEMENTATION_BUILDER_EXACT_EDITOR_SOURCE,
+                    exact_editor_path,
+                )
             write_json(proof_json_path, packet)
             proof_md_path.parent.mkdir(parents=True, exist_ok=True)
             proof_md_path.write_text(bootstrap_md, encoding="utf-8")
@@ -2095,6 +2189,7 @@ def build_outputs(args: argparse.Namespace) -> dict[str, Any]:
                 "manifest_path": str(agent_manifest_path),
                 "bootstrap_path": str(agent_bootstrap_path),
                 "core_document_paths": {name: str(path) for name, path in core_document_paths.items()},
+                "exact_file_editor_path": str(exact_editor_path) if exact_editor_path else None,
                 "proof_json_path": str(proof_json_path),
                 "proof_md_path": str(proof_md_path),
                 "profile_revision": manifest["profile_revision"],

@@ -1,0 +1,95 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "JPM",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "financial_franchise",
+  "thesis_statement": "JPMorgan Chase is the largest and most diversified US bank, with leading consumer, investment-banking, markets, payments and asset-management franchises, a fortress balance sheet and structurally superior returns on tangible equity.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Loan and deposit growth plus fee businesses sustain ROTCE near 20% and steady capital return.",
+      "drivers": [
+        "loan growth",
+        "investment-banking and markets fees",
+        "asset & wealth management inflows"
+      ]
+    },
+    "bull": {
+      "summary": "Capital-markets upcycle and capital relief let excess CET1 fund larger buybacks.",
+      "drivers": [
+        "IB fee recovery",
+        "lower capital requirements",
+        "payments growth"
+      ]
+    },
+    "bear": {
+      "summary": "A consumer credit downturn and falling rates squeeze net interest income while the premium valuation de-rates.",
+      "drivers": [
+        "card charge-offs rising",
+        "rate cuts compressing NII",
+        "valuation compression from ~2.6x book"
+      ]
+    }
+  },
+  "key_risks": [
+    "Premium valuation at about 2.6x book leaves little room for a credit or earnings disappointment.",
+    "Consumer credit: Card Services net charge-off rate was 3.34% in Q2 2026.",
+    "Reported EPS is inflated by significant items (Visa and equity-investment gains): $7.70 reported vs $6.14 ex-items."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (325.12 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "ROTCE excluding significant items falls below 17% for two consecutive quarters.",
+      "Card net charge-off rate rises above 4.5%, or Standardized CET1 falls below 12.5%."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-13",
+      "date_confidence": "provider_estimate"
+    }
+  ],
+  "conviction": "high",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_neutral_selective",
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLF"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: net income $21.2B ($7.70), ex-significant items $16.9B ($6.14); ROTCE 29% (23% ex-items); CET1 Std 14.1%; avg loans +10% YoY; IB fees +30%; Markets +35%; Card NCO 3.34%; AUM $5.1T +18%",
+      "source": "JPMorgan Chase Q2 2026 release, SEC 8-K exhibit 99.1 (sec.gov .../a2q26erfexhibit991narrative.htm)",
+      "as_of": "2026-07-14"
+    },
+    {
+      "claim": "Q2 revenue +17.76%, EPS +46.95% (includes significant items), diluted shares -3.56%; forward P/E 13.7, P/B 2.58",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-13 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 335.28-353.34, invalidation 325.12, reference_confidence 50; close 342.88 on 2026-09-25 is inside band",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-27T08:05:00-07:00",
+  "owner_notes": "High conviction is on franchise quality, not timing or valuation. Use ex-significant-items figures for trend checks. Overlaps with GS on IB and markets exposure. Accepted by Randall, WebChat 2026-09-27 ~08:05 Phoenix: 'Accept all except XOM. Proceed with next steps.'",
+  "fundamentals_period_end": "2026-06-30"
+}

@@ -310,10 +310,26 @@ def test_funnel_suppresses_on_guard_tamper_and_pin_change(fake_root):
                 (json.dumps({"baseline_path": new_path, "baseline_sha256": new_sha}),))
     con.commit()
     con.close()
+    before = _db_hash(fake_root)
     out = srv.funnel()
     assert out["status"] == "stale_suppressed" and "LIN" in out["stale_reason"]
-    assert _db_hash(fake_root) == _db_hash(fake_root)
+    assert _db_hash(fake_root) == before
     _assert_no_wal(fake_root)
+
+
+def test_reference_band_read_only_under_hash_in_root_path(tmp_path, monkeypatch):
+    root = tmp_path / "we#ird"
+    (root / "tmp").mkdir(parents=True)
+    _write_same_version(root)
+    monkeypatch.setenv("VERITAS_ROOT", str(root))
+    before = _db_hash(root)
+    band = srv.reference_band("LIN")
+    assert band["found"] and band["low"] == 454.19
+    assert _db_hash(root) == before
+    assert not (tmp_path / "we").exists()
+    _assert_no_wal(root)
+    uri = srv._readonly_uri(root / srv.CANON_REL)
+    assert uri.endswith("?mode=ro") and uri.count("?") == 1 and "%23" in uri and "immutable" not in uri
 
 
 def test_funnel_suppresses_missing_guard_and_db(fake_root):

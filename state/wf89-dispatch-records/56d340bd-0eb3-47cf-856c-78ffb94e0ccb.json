@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "56d340bd-0eb3-47cf-856c-78ffb94e0ccb",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:phase4-lineage-p1-20260926",
+  "label": "Phase4 lineage guard proposal p1",
+  "task_text_sha256": "21c04cd7221b4a4ab14689d4a890c68226f08a9e1bc154c5c8643acb0ed743ba",
+  "message_file": "tmp\\phase4-proposal-route-20260926\\lineage-task.md",
+  "created_at_ms": 1790476279795,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

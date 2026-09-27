@@ -32,6 +32,7 @@ MAX_FILE_BYTES = MAX_TOTAL_BYTES
 MAX_LINE_BYTES = 40_000
 MAX_ESTIMATED_CONTEXT_TOKENS = 30_000
 MAX_ALLOWED_WRITE_PATHS = 12
+EMPTY_SHA256 = hashlib.sha256(b"").hexdigest()
 MANIFEST_FILENAME = "handoff-manifest.json"
 SENTINEL_FILENAME = ".veritas-scoped-worktree.json"
 WORKTREE_CONTROL_FILES = frozenset({MANIFEST_FILENAME})
@@ -166,6 +167,48 @@ def sentinel_path_for(handoff_root: Path) -> Path:
 def require_python_bytecode_environment(manifest: dict[str, Any]) -> None:
     if manifest.get("execution_environment") != PYTHON_BYTECODE_ENV:
         raise WorktreeError("manifest Python bytecode environment contract mismatch")
+
+
+def manifest_output_paths(
+    manifest: dict[str, Any],
+    *,
+    frozen_paths: Sequence[str],
+    allowed_write_paths: Sequence[str],
+) -> list[str]:
+    """Validate and return zero-byte transport placeholders for declared outputs."""
+    frozen_folded = {item.casefold() for item in frozen_paths}
+    expected_outputs = [
+        item for item in allowed_write_paths if item.casefold() not in frozen_folded
+    ]
+    rows = manifest.get("output_placeholders")
+    # Preserve close/verify compatibility for active pre-repair worktrees that
+    # contain only frozen inputs and therefore need no output placeholders.
+    if rows is None and not expected_outputs:
+        return []
+    if not isinstance(rows, list):
+        raise WorktreeError("manifest output placeholder list is missing")
+    output_paths: list[str] = []
+    for row in rows:
+        if (
+            not isinstance(row, dict)
+            or set(row) != {"relative_path", "bytes", "sha256"}
+            or row.get("bytes") != 0
+            or row.get("sha256") != EMPTY_SHA256
+        ):
+            raise WorktreeError("manifest output placeholder row is invalid")
+        output_paths.append(normalize_relative_path(str(row.get("relative_path") or "")))
+    normalized_outputs = normalize_path_list(
+        output_paths, label="manifest output placeholder list"
+    )
+    if normalized_outputs != output_paths:
+        raise WorktreeError(
+            "manifest output placeholder list is not normalized and sorted"
+        )
+    if normalized_outputs != expected_outputs:
+        raise WorktreeError(
+            "manifest output placeholders do not equal declared new outputs"
+        )
+    return normalized_outputs
 
 
 def _resolved_source_file(source_root: Path, relative_path: str) -> Path:
@@ -418,20 +461,29 @@ def capture_git_path_inventory(
     }
 
 
+GIT_INVENTORY_PROOF_FIELDS = {
+    "paths",
+    "status_paths",
+    "tracked_diff_paths",
+    "untracked_paths",
+    "status_porcelain_sha256",
+    "tracked_diff_output_sha256",
+    "untracked_output_sha256",
+}
+
+
+def git_inventory_proof_projection(inventory: Any) -> dict[str, Any]:
+    """Project host packaging metadata out of the router-bound proof shape."""
+    if not isinstance(inventory, dict) or not GIT_INVENTORY_PROOF_FIELDS.issubset(inventory):
+        raise WorktreeError("Git inventory cannot be projected into the proof contract")
+    return {name: inventory[name] for name in GIT_INVENTORY_PROOF_FIELDS}
+
+
 def git_inventory_matches_changed_paths(
     inventory: Any, changed_paths: Sequence[str]
 ) -> bool:
-    required_fields = {
-        "paths",
-        "status_paths",
-        "packaging_metadata_drift_paths",
-        "tracked_diff_paths",
-        "untracked_paths",
-        "status_porcelain_sha256",
-        "tracked_diff_output_sha256",
-        "untracked_output_sha256",
-    }
-    legacy_required_fields = required_fields - {"packaging_metadata_drift_paths"}
+    required_fields = GIT_INVENTORY_PROOF_FIELDS | {"packaging_metadata_drift_paths"}
+    legacy_required_fields = GIT_INVENTORY_PROOF_FIELDS
     if not isinstance(inventory, dict) or set(inventory) not in (
         required_fields,
         legacy_required_fields,
@@ -497,9 +549,13 @@ def git_inventory_checkpoints_sha256(
         or not git_inventory_matches_changed_paths(after, changed_paths)
     ):
         raise WorktreeError("Git inventory checkpoints do not match the declared changes")
+    proof_checkpoints = {
+        "before_binding_recheck": git_inventory_proof_projection(before),
+        "after_binding_recheck": git_inventory_proof_projection(after),
+    }
     canonical_payload = {
         "schema": "veritas.git_path_inventory_checkpoints.v1",
-        "checkpoints": checkpoints,
+        "checkpoints": proof_checkpoints,
     }
     try:
         canonical_bytes = json.dumps(
@@ -583,6 +639,10 @@ def prepare_worktree(
         shutil.copyfile(item.source_path, destination)
 
     total_bytes = sum(item.byte_count for item in frozen)
+    output_placeholders = [
+        {"relative_path": item, "bytes": 0, "sha256": EMPTY_SHA256}
+        for item in normalized_outputs
+    ]
     manifest = {
         "schema": MANIFEST_SCHEMA,
         "generated_at_utc": created_at,
@@ -601,6 +661,7 @@ def prepare_worktree(
         "estimated_context_tokens": (total_bytes + 3) // 4,
         "files": [item.manifest_row() for item in frozen],
         "allowed_write_paths": allowed_write_paths,
+        "output_placeholders": output_placeholders,
         "execution_environment": dict(PYTHON_BYTECODE_ENV),
         "authority": {
             "writable_root": "/worktree",
@@ -637,6 +698,20 @@ def prepare_worktree(
     if tracked_baseline != baseline_paths:
         raise WorktreeError("Git baseline does not exactly match the frozen manifest")
 
+    # Exact-file Docker binds require every declared destination to exist on
+    # the host. Create zero-byte untracked placeholders only after committing
+    # the frozen baseline, so closeout still renders each output as a new file.
+    for relative_path in normalized_outputs:
+        placeholder = target.joinpath(*PurePosixPath(relative_path).parts)
+        placeholder.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            with placeholder.open("xb"):
+                pass
+        except FileExistsError as exc:
+            raise WorktreeError(
+                f"declared output placeholder already exists: {relative_path}"
+            ) from exc
+
     proof = {
         "schema": PROOF_SCHEMA,
         "action": "prepare",
@@ -653,6 +728,7 @@ def prepare_worktree(
         "estimated_context_tokens": (total_bytes + 3) // 4,
         "files": [item.manifest_row() for item in frozen],
         "allowed_write_paths": allowed_write_paths,
+        "output_placeholders": output_placeholders,
         "writes_outside_target_attempted": False,
         "config_mutation_attempted": False,
         "network_attempted": False,
@@ -706,6 +782,23 @@ def verify_worktree(
         {item.casefold() for item in normalized_allowed}
     ):
         raise WorktreeError("manifest write allowlist omits a frozen input")
+    output_paths = manifest_output_paths(
+        manifest,
+        frozen_paths=frozen_paths,
+        allowed_write_paths=normalized_allowed,
+    )
+    for relative_path in output_paths:
+        placeholder = target.joinpath(*PurePosixPath(relative_path).parts)
+        if (
+            not placeholder.is_file()
+            or is_link_or_reparse(placeholder)
+            or placeholder.stat().st_size != 0
+            or sha256_file(placeholder) != EMPTY_SHA256
+        ):
+            raise WorktreeError(
+                f"declared output placeholder is missing, linked, or non-empty: {relative_path}"
+            )
+    verify_filesystem_scope(target, normalized_allowed)
     if not git_path_matches_head_blob(target, MANIFEST_FILENAME):
         raise WorktreeError(
             "worktree manifest bytes or content diff differ from the committed blob"
@@ -719,11 +812,15 @@ def verify_worktree(
         allow_identical_status_only_paths=(MANIFEST_FILENAME,),
     )
     inventory_checkpoints = {
-        "before_binding_recheck": inventory_before,
-        "after_binding_recheck": inventory_after,
+        "before_binding_recheck": git_inventory_proof_projection(inventory_before),
+        "after_binding_recheck": git_inventory_proof_projection(inventory_after),
     }
+    if not git_inventory_matches_changed_paths(inventory_before, output_paths):
+        raise WorktreeError(
+            "pre-dispatch Git inventory does not equal output placeholders"
+        )
     inventory_sha256 = git_inventory_checkpoints_sha256(
-        inventory_checkpoints, []
+        inventory_checkpoints, output_paths
     )
     baseline_commit = run_git(target, "rev-parse", "HEAD").strip()
     return {
@@ -740,6 +837,7 @@ def verify_worktree(
         "file_count": len(rows),
         "allowed_write_paths": normalized_allowed,
         "clean": True,
+        "transport_placeholder_paths": output_paths,
         "packaging_metadata_drift_paths": inventory_after[
             "packaging_metadata_drift_paths"
         ],
@@ -880,6 +978,11 @@ def close_worktree(
     )
     if len(frozen_paths) != len(rows):
         raise WorktreeError("manifest frozen file list contains invalid rows")
+    manifest_output_paths(
+        manifest,
+        frozen_paths=frozen_paths,
+        allowed_write_paths=allowed_write_paths,
+    )
 
     verify_filesystem_scope(target, allowed_write_paths)
 
@@ -988,8 +1091,8 @@ def close_worktree(
         allow_identical_status_only_paths=(MANIFEST_FILENAME,),
     )
     inventory_checkpoints = {
-        "before_binding_recheck": inventory_before,
-        "after_binding_recheck": inventory_after,
+        "before_binding_recheck": git_inventory_proof_projection(inventory_before),
+        "after_binding_recheck": git_inventory_proof_projection(inventory_after),
     }
     inventory_sha256 = git_inventory_checkpoints_sha256(
         inventory_checkpoints, changed_paths

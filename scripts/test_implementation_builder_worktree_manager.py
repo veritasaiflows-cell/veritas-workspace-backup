@@ -127,6 +127,10 @@ class PathContractTests(unittest.TestCase):
             [manager.MANIFEST_FILENAME],
         )
         self.assertTrue(manager.git_inventory_matches_changed_paths(inventory, []))
+        proof_inventory = manager.git_inventory_proof_projection(inventory)
+        self.assertEqual(set(proof_inventory), manager.GIT_INVENTORY_PROOF_FIELDS)
+        self.assertNotIn("packaging_metadata_drift_paths", proof_inventory)
+        self.assertTrue(manager.git_inventory_matches_changed_paths(proof_inventory, []))
         legacy_inventory = dict(inventory)
         legacy_inventory.pop("packaging_metadata_drift_paths")
         self.assertTrue(
@@ -257,11 +261,18 @@ class WorktreeLifecycleTests(unittest.TestCase):
                 tracked_baseline,
                 ["a.txt", manager.MANIFEST_FILENAME, "nested/b.txt"],
             )
+            self.assertTrue((target / "result.json").is_file())
+            self.assertEqual((target / "result.json").read_bytes(), b"")
             verified = manager.verify_worktree(target=target, handoff_root=handoff)
             self.assertTrue(verified["clean"])
+            self.assertEqual(verified["transport_placeholder_paths"], ["result.json"])
             self.assertEqual(
                 set(verified["git_path_inventory_checkpoints"]),
                 {"before_binding_recheck", "after_binding_recheck"},
+            )
+            self.assertEqual(
+                verified["git_path_inventory_checkpoints"]["before_binding_recheck"]["untracked_paths"],
+                ["result.json"],
             )
             self.assertEqual(verified["packaging_metadata_drift_paths"], [])
 
@@ -291,6 +302,14 @@ class WorktreeLifecycleTests(unittest.TestCase):
             self.assertEqual(
                 checkpoints["before_binding_recheck"]["paths"],
                 ["a.txt", "result.json"],
+            )
+            self.assertEqual(
+                set(checkpoints["before_binding_recheck"]),
+                manager.GIT_INVENTORY_PROOF_FIELDS,
+            )
+            self.assertNotIn(
+                "packaging_metadata_drift_paths",
+                checkpoints["before_binding_recheck"],
             )
             self.assertEqual(
                 closed["git_path_inventory_sha256"],
@@ -334,6 +353,35 @@ class WorktreeLifecycleTests(unittest.TestCase):
             self.assertEqual(sentinel["state"], "closed")
             with self.assertRaises(manager.WorktreeError):
                 manager.verify_worktree(target=target, handoff_root=handoff)
+
+    def test_verify_requires_untouched_declared_output_placeholders(self) -> None:
+        for mutation, expected in (
+            ("missing", "missing, linked, or non-empty"),
+            ("nonempty", "missing, linked, or non-empty"),
+        ):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as temp:
+                base = Path(temp)
+                source = base / "source"
+                handoff = base / "handoff"
+                target = handoff / "scoped-worktree"
+                source.mkdir()
+                (source / "a.txt").write_text("alpha\n", encoding="utf-8")
+                manager.prepare_worktree(
+                    job_id=f"probe-placeholder-{mutation}",
+                    source_root=source,
+                    source_base_label="tmp/probe-source",
+                    relative_paths=["a.txt"],
+                    allowed_output_paths=["nested/result.json"],
+                    target=target,
+                    handoff_root=handoff,
+                )
+                placeholder = target / "nested" / "result.json"
+                if mutation == "missing":
+                    placeholder.unlink()
+                else:
+                    placeholder.write_text("early\n", encoding="utf-8")
+                with self.assertRaisesRegex(manager.WorktreeError, expected):
+                    manager.verify_worktree(target=target, handoff_root=handoff)
 
     def test_verify_requires_manifest_blob_and_clean_content_diff(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -588,6 +636,7 @@ class WorktreeLifecycleTests(unittest.TestCase):
                 target=target,
                 handoff_root=handoff,
             )
+            (target / "Result.txt").unlink()
             (target / "result.txt").write_text("wrong case\n", encoding="utf-8")
             with self.assertRaises(manager.WorktreeError):
                 manager.close_worktree(

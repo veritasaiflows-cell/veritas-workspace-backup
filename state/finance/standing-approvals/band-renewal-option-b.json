@@ -26,6 +26,29 @@
     "adding or removing names from scope",
     "capital, orders, accounts, execution, external delivery"
   ],
+  "amendments": [
+    {
+      "at": "2026-09-27T08:17:00-07:00",
+      "recorded_at": "2026-09-27T08:24:00-07:00",
+      "granted_by": "Randall",
+      "channel": "WebChat direct",
+      "grant_text": "Proceed with all three recommendations, continue and prepare to remove the static 32-name list",
+      "recommendation_approved": "Implement a gated fix for the stale reference_band_status label in the renewal writer, with its own proof and rollback.",
+      "effect": "Each applied renewal also sets reference_band_status to NULL for the renewed rows only. The prior labels are recorded in the rollback record's before_rows and restored by the byte-exact backup on rollback. The column is a point-in-time price observation, not a band edge; readers compute status from live price.",
+      "does_not_change": "auto-apply conditions, band methodology, the numeric baseline pin, names in scope, or anything in not_granted",
+      "proof": "tmp/phase4-thesis-drafts-20260927/status-clear-live-preview.json; scripts/test_g6_yahoo32_sql_apply.py status_* checks"
+    },
+    {
+      "at": "2026-09-27T08:48:00-07:00",
+      "granted_by": "Randall",
+      "channel": "WebChat direct",
+      "grant_text": "Add a rule that the renewal stops for your review whenever the name list has changed since the last applied renewal.",
+      "effect": "Adds a fifth auto-apply condition: the renewed name list must equal the name list of the last applied renewal. If it differs, or no prior applied renewal can be read, the run stops at needs_owner_review and writes the review packet. A newly promoted name's first band therefore never auto-applies, and neither does the first renewal after a demotion.",
+      "additional_auto_apply_condition": "renewed name list equals the last applied renewal's name list (added and removed names both stop the run)",
+      "enforced_by": "scripts/weekly_band_renewal.py once lane PHASE4-DYNAMIC-SCOPE-20260927 slice 1a is accepted. Until then the matrix generator's hard-coded 32-name list means the renewed list cannot change, so the condition holds trivially.",
+      "does_not_change": "the four original conditions, names in scope, band methodology, or anything in not_granted"
+    }
+  ],
   "revocation": "Randall says so; set active=false. The weekly job then always stops at review.",
   "review_by": "2026-12-23"
 }

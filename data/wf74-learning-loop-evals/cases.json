@@ -1,6 +1,6 @@
 {
   "schema": "veritas.wf74_learning_loop_eval_cases.v1",
-  "generated_at_utc": "2026-09-26T04:41:04Z",
+  "generated_at_utc": "2026-09-27T04:41:09Z",
   "purpose": "Local regression cases for WF74 V2 review/routing classification. Cases come from observed OpenClaw failures and stop-line patterns.",
   "authority_boundary": {
     "review_only": true,

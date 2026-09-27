@@ -1,7 +1,7 @@
 {
   "schema": "veritas.thesis_record.v1",
   "ticker": "LIN",
-  "thesis_version": 1,
+  "thesis_version": 2,
   "status": "accepted",
   "thesis_type": "quality_compounder",
   "thesis_statement": "Linde is the largest industrial-gas company: long-term take-or-pay contracts, on-site plants and dense distribution give durable pricing power and steady high-return growth, with optional upside from clean-hydrogen and electronics gases.",
@@ -35,7 +35,7 @@
     "Free cash flow is lumpy because of heavy project capex."
   ],
   "invalidation_reasons": {
-    "price": "Close below the band invalidation level (proposed 443.52) on the owner-approved baseline.",
+    "price": "Close below the live guarded-SQL reference_invalidation_level (443.66 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
     "fundamental": [
       "Operating margin falls below 25% for two quarters.",
       "Project backlog shrinks materially or major contracts are cancelled."
@@ -73,15 +73,15 @@
       "as_of": "2026-09-23"
     },
     {
-      "claim": "Proposed band 454.19-485.87, invalidation 443.52, confidence 0.30; price 469.77 in band; not trend-qualified",
-      "source": "tmp/renewal-matrix-20260922close-v3.json (proposed band, not yet approved)",
-      "as_of": "2026-09-22"
+      "claim": "SQL band 454.19-482.98, invalidation 443.66, reference_confidence 40; close 469.77 on 2026-09-25 is inside band",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
     }
   ],
   "thesis_as_of": "2026-09-23",
   "review_due": "2026-12-23",
   "drafted_by": "Veritas Main (claude-opus-5-5)",
-  "owner_accepted_at": "2026-09-23T18:17:31-07:00",
-  "owner_notes": "Strongest business-quality case of the five, but the price trend is not qualified (confidence 0.30). High conviction is on the business, not on timing. Accepted by Randall, Telegram 2026-09-23 evening: 'theses accepted, continue to repair ITA and PH'.",
+  "owner_accepted_at": "2026-09-27T08:17:00-07:00",
+  "owner_notes": "v2 (2026-09-27 band repair): price invalidation now points to live guarded SQL and the band evidence reflects the 2026-09-26 renewal; thesis content is otherwise unchanged from v1, which Randall accepted 2026-09-23. Strongest business-quality case of the five, but the price trend is not qualified (confidence 0.30). High conviction is on the business, not on timing. Accepted by Randall 2026-09-27T08:17:00-07:00: 'Proceed with all three recommendations (recommendation 2: accept the band-repair versions)'",
   "fundamentals_period_end": "2026-06-30"
 }

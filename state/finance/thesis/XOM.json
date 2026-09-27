@@ -1,0 +1,105 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "XOM",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "commodity_linked",
+  "thesis_statement": "ExxonMobil is the largest US integrated oil major, with low-cost Permian and Guyana growth, $16B+ of structural cost savings and strong refining and chemicals integration; high oil prices tied to Middle East disruption are currently lifting earnings well above mid-cycle levels.",
+  "timeframe": "intermediate_3_12m",
+  "cases": {
+    "base": {
+      "summary": "Production growth and cost savings sustain strong free cash flow and about $9B per quarter of distributions, even as oil prices normalize.",
+      "drivers": [
+        "Permian growth (~9% CAGR plan)",
+        "structural cost savings",
+        "integrated refining and chemicals margins"
+      ]
+    },
+    "bull": {
+      "summary": "Middle East supply disruption keeps prices elevated and record upstream output drives outsized cash returns.",
+      "drivers": [
+        "sustained high crude prices",
+        "record Permian output above 1.8 MMboe/d"
+      ]
+    },
+    "bear": {
+      "summary": "The Middle East disruption resolves, crude and refining margins fall back, and earnings revert from a cyclical high.",
+      "drivers": [
+        "oil price normalization",
+        "refining margin reversal",
+        "high capex commitments"
+      ]
+    }
+  },
+  "key_risks": [
+    "Q2 2026 earnings ($14.5B, adjusted $14.68B vs $8.77B in Q1) are inflated by disruption-driven prices, so the base is cyclically high.",
+    "Commodity-price dependence: the thesis cannot be separated from oil and refining margins.",
+    "The current macro regime (restrictive pause, reduce cyclicals) does not favor energy; overlaps with CVX."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (149.59 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Quarterly share repurchases fall below $4B, or the dividend is cut.",
+      "Permian production falls short of the stated growth plan for two consecutive quarters."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-30",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Fifth Guyana FPSO production start-up (company plan: 4Q26, +250 kbd capacity)",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_review_bias",
+      "defensive_neutral_selective"
+    ],
+    "disfavored_postures": [
+      "constructive_but_owner_gated"
+    ]
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLE"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: earnings $14,525M ($3.48/share; Q1 $4,183M), adjusted $14,680M ($3.52; Q1 $8,772M); OCF $23.6B, FCF $17.2B; distributions $9.4B ($4.3B dividends + $5.1B buybacks); record Permian >1.8 Moebd; production 4,514 koebd (1Q 4,594) with Middle East disruptions; structural savings $16.3B; YTD cash capex $13.0B; fifth Guyana FPSO start-up planned 4Q26; Q3 dividend $1.03",
+      "source": "ExxonMobil Holdings Corporation Q2 2026 release, 8-K exhibit 99.1 (SEC CIK 2115436, accession 0002115436-26-000006; copy via investor.exxonmobil.com/sec-filings/all-sec-filings/content/0002115436-26-000006/livef8k2q26991.htm)",
+      "as_of": "2026-07-31"
+    },
+    {
+      "claim": "Q2 revenue +42.34% (SEC period-match override), EPS +112.2%, diluted shares -3.63%; forward P/E 14.5, FCF yield (quarterly) 2.58%, net debt $31.8B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-30 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "Macro regime restrictive_pause_benign_narrow: 'stay with high-conviction large-cap, reduce cyclicals'",
+      "source": "tmp/macro-regime.json (generated 2026-09-19)",
+      "as_of": "2026-09-19"
+    },
+    {
+      "claim": "SQL band 155.27-159.06, invalidation 149.59, reference_confidence 35; close 160.56 on 2026-09-25 is 0.9% above band high (no-chase)",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-27T08:17:00-07:00",
+  "owner_notes": "Q2 figures confirmed 2026-09-27 against the official 8-K exhibit 99.1; the earlier trade-press summary matched. The company re-domiciled to Texas on 2026-07-01 under a new parent, ExxonMobil Holdings Corporation (SEC CIK 2115436; ticker unchanged); SEC lookups must use the new CIK (the fundamentals feed already does). Earnings are at a cyclical high, so a rank built on current EPS growth overstates the name. Accepted by Randall, WebChat 2026-09-27 ~08:17 Phoenix: 'Proceed with all three recommendations' (recommendation 1: accept XOM after official 8-K confirmation).",
+  "fundamentals_period_end": "2026-06-30"
+}

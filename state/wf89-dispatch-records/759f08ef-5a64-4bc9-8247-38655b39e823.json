@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "759f08ef-5a64-4bc9-8247-38655b39e823",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:phase4-tier-prototype-p1-20260926",
+  "label": "Phase4 tier prototype rework r3",
+  "task_text_sha256": "40c24d037bb496041b90f3369d14337c72fb3efb7678df9f15e0644f1494ecab",
+  "message_file": "tmp\\phase4-proposal-route-20260926\\tier-rework3.md",
+  "created_at_ms": 1790479576863,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

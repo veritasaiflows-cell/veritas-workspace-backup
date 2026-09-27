@@ -1,0 +1,95 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "VRT",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "ai_infrastructure",
+  "thesis_statement": "Vertiv makes the power, thermal management and liquid-cooling equipment that high-density AI data centers need; it is growing sales more than 20% with expanding margins and has raised full-year guidance, but it is a high-multiple, cycle-exposed pure play.",
+  "timeframe": "intermediate_3_12m",
+  "cases": {
+    "base": {
+      "summary": "Organic growth near 30% for 2026 with adjusted operating margin in the low 20s, in line with raised guidance.",
+      "drivers": [
+        "AI data-center thermal and power demand",
+        "liquid cooling adoption",
+        "capacity expansion"
+      ]
+    },
+    "bull": {
+      "summary": "Liquid cooling becomes standard for AI racks and Vertiv takes share, beating guidance.",
+      "drivers": [
+        "high-density rack deployments",
+        "pipeline conversion"
+      ]
+    },
+    "bear": {
+      "summary": "Data-center capex slows or supply-chain problems delay projects, and the high multiple compresses sharply.",
+      "drivers": [
+        "hyperscaler capex pause",
+        "project timing slips",
+        "competitive cooling entrants"
+      ]
+    }
+  },
+  "key_risks": [
+    "Valuation: trailing P/E ~57, forward ~28, price-to-book ~20; a guidance cut would hit the stock hard.",
+    "Execution: Q2 revenue saw timing shifts from supply-chain congestion and multi-phase project execution.",
+    "Overlaps with ETN (both data-center power), so their signals are not independent."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (207.80 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Full-year sales or adjusted EPS guidance is cut.",
+      "Adjusted operating margin falls below 19% for two consecutive quarters."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-21",
+      "date_confidence": "provider_estimate"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": [
+      "defensive_review_bias"
+    ]
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLI"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: net sales $3,274M +24% (organic +18%); adj operating margin 22.6% (+410 bp); diluted EPS $1.27 +53%, adj $1.52 +60%; OCF $1,100M, adj FCF $925M; net cash position; FY26 guide raised: sales ~$14.0B, organic +31%, adj EPS $6.65-6.75",
+      "source": "Vertiv Q2 2026 release, SEC 8-K exhibit 99.1 (sec.gov .../q22026exhibit991vrt07292026.htm)",
+      "as_of": "2026-07-29"
+    },
+    {
+      "claim": "Trailing P/E 57.3, forward 27.8, P/B 20.5, ROIC proxy 38%, net debt $0.53B (aggregator), debt/EBITDA 1.11",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-21 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 226.94-265.89, invalidation 207.80, reference_confidence 40; close 253.24 on 2026-09-25 is inside band",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-27T08:05:00-07:00",
+  "owner_notes": "The SQL band is wide (about 17%) and the controller rates its confidence low. Earnings on 2026-10-21 fall inside the 30-day window. Accepted by Randall, WebChat 2026-09-27 ~08:05 Phoenix: 'Accept all except XOM. Proceed with next steps.'",
+  "fundamentals_period_end": "2026-06-30"
+}

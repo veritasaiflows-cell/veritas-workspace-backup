@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "7a61f2c6-7a41-4d29-a3fd-c86172a169ff",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:proposal-canary-20260926",
+  "label": "Phase4 proposal-route canary",
+  "task_text_sha256": "f7ecf55ef3056f2e24354941515186fa3e0a743ce22b9f882f66d6fcac84c97c",
+  "message_file": "tmp\\phase4-proposal-route-20260926\\canary-task.md",
+  "created_at_ms": 1790475856622,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

@@ -21,6 +21,7 @@ from finance_sql_canon_access import (
     DynamicEntitlementExternalGateError,
     EvidenceFreshness,
     FinanceSqlCanonAccess,
+    REFERENCE_LEVEL_LINEAGE_FIELDS,
     ReferenceLevel,
     connect_readonly,
     require_dynamic_entitlement_external_gate,
@@ -280,7 +281,9 @@ def quote_rows_by_ticker(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
 
 
 def reference_lineage(ticker: str) -> dict[str, Any]:
-    wanted = {"reference_price_low", "reference_price_high", "reference_invalidation_level"}
+    # All five canon reference fields (incl. reference_confidence), so the
+    # recommendation funnel's same-version lineage check can pass.
+    wanted = REFERENCE_LEVEL_LINEAGE_FIELDS
     with connect_readonly() as conn:
         rows = conn.execute(
             """

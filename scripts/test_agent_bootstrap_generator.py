@@ -71,23 +71,9 @@ def sandbox_exec_pilot_agent() -> dict[str, object]:
 
 def scoped_worktree_agent() -> dict[str, object]:
     agent = sandbox_exec_pilot_agent()
-    workspace = Path(str(agent["workspace"]))
-    handoff = workspace / "handoff"
-    worktree = handoff / "scoped-worktree"
-    role_binds = [
-        f"{workspace / name}:/role/{name}:ro"
-        for name in generator.IMPLEMENTATION_BUILDER_ROLE_MOUNT_FILES
-    ]
-    agent["sandbox"]["docker"]["binds"] = role_binds + [
-        f"{workspace / '.openclaw' / 'attachments'}:/attachments:ro",
-        f"{worktree}:/worktree:rw",
-        f"{worktree / '.git'}:/worktree/.git:ro",
-        f"{worktree / 'handoff-manifest.json'}:/worktree/handoff-manifest.json:ro",
-        f"{handoff / generator.IMPLEMENTATION_BUILDER_SCOPED_SENTINEL}:/worktree/{generator.IMPLEMENTATION_BUILDER_SCOPED_SENTINEL}:ro",
-    ] + [
-        f"{workspace / 'skills' / name}:/skills/{name}:ro"
-        for name in generator.IMPLEMENTATION_BUILDER_SKILL_MOUNTS
-    ]
+    agent["sandbox"]["docker"]["binds"] = (
+        generator.implementation_builder_scoped_worktree_binds(agent)
+    )
     agent["sandbox"]["docker"]["env"] = dict(
         generator.IMPLEMENTATION_BUILDER_PYTHON_ENV
     )
@@ -463,6 +449,13 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
         )
         self.assertIn(expected_sentinel_bind, agent["sandbox"]["docker"]["binds"])
         self.assertNotIn(old_sentinel_bind, agent["sandbox"]["docker"]["binds"])
+        self.assertIn(f"{worktree}:/worktree:ro", agent["sandbox"]["docker"]["binds"])
+        self.assertNotIn(f"{worktree}:/worktree:rw", agent["sandbox"]["docker"]["binds"])
+        self.assertIn(
+            f"{workspace / generator.IMPLEMENTATION_BUILDER_EXACT_EDITOR_RELATIVE}:"
+            f"{generator.IMPLEMENTATION_BUILDER_EXACT_EDITOR_CONTAINER}:ro",
+            agent["sandbox"]["docker"]["binds"],
+        )
         self.assertEqual(
             agent["sandbox"]["docker"]["env"],
             generator.IMPLEMENTATION_BUILDER_PYTHON_ENV,
@@ -479,15 +472,19 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
             generator.SCOPED_WORKTREE_TOOL_POSTURE,
         )
         bootstrap = generator.build_bootstrap_markdown(manifest, [])
-        self.assertIn("Writable filesystem scope is technically limited to `/worktree`", bootstrap)
+        self.assertIn("`/worktree` is read-only except for exact manifest-allowlisted file binds", bootstrap)
         self.assertIn("Git metadata", bootstrap)
         core = generator.build_core_markdown_documents(manifest, [])
-        self.assertIn("Writable root: `/worktree` only", core["AGENTS.md"])
+        self.assertIn("Writable implementation surface: exact manifest-allowlisted files", core["AGENTS.md"])
         self.assertIn("/attachments/<id>/<filename>", core["AGENTS.md"])
         self.assertIn("do not enumerate sibling attachments", core["AGENTS.md"])
         self.assertIn("## Tools", core["AGENTS.md"])
         self.assertIn("does not control which tools exist", core["AGENTS.md"])
-        self.assertIn("Write/edit/patch only under `/worktree`", core["AGENTS.md"])
+        self.assertIn("implementation_builder_exact_file_editor.py", core["AGENTS.md"])
+        self.assertIn("generic `exec` remains proof-only", core["AGENTS.md"])
+        self.assertIn("`patch_draft` leases: write only sandbox-local copies under `/workspace/<job-id>/`", core["AGENTS.md"])
+        self.assertIn("Apart from that pinned editor, do not use shell, Python, or another executable to mutate anything outside `/workspace/<job-id>/`", core["AGENTS.md"])
+        self.assertIn("nothing under `/worktree` changes", bootstrap)
         self.assertNotIn("TOOLS.md", core)
         self.assertNotIn("TOOLS.md", "\n".join(agent["sandbox"]["docker"]["binds"]))
         self.assertNotIn("C:\\Users\\", "\n".join(core.values()))
@@ -540,6 +537,43 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
             ),
             generator.WORKSPACE_ONLY_TOOL_POSTURE,
         )
+
+    def test_implementation_builder_active_manifest_adds_only_exact_rw_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            workspace = Path(temp) / "implementation-builder"
+            worktree = workspace / "handoff" / "scoped-worktree"
+            worktree.mkdir(parents=True)
+            (worktree / "nested").mkdir()
+            (worktree / "a.py").write_text("print('a')\n", encoding="utf-8")
+            (worktree / "nested" / "new.py").write_bytes(b"")
+            (worktree / "handoff-manifest.json").write_text(
+                json.dumps(
+                    {
+                        "schema": "veritas.implementation_builder_worktree_manifest.v1",
+                        "allowed_write_paths": ["a.py", "nested/new.py"],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            agent = scoped_worktree_agent()
+            agent["workspace"] = str(workspace)
+            agent["sandbox"]["docker"]["binds"] = (
+                generator.implementation_builder_scoped_worktree_binds(agent)
+            )
+            binds = agent["sandbox"]["docker"]["binds"]
+            self.assertIn(f"{worktree}:/worktree:ro", binds)
+            self.assertIn(f"{worktree / 'a.py'}:/worktree/a.py:rw", binds)
+            self.assertIn(
+                f"{worktree / 'nested' / 'new.py'}:/worktree/nested/new.py:rw",
+                binds,
+            )
+            self.assertTrue(
+                generator.implementation_builder_scoped_worktree_is_configured(agent)
+            )
+            (worktree / "nested" / "new.py").unlink()
+            self.assertFalse(
+                generator.implementation_builder_scoped_worktree_is_configured(agent)
+            )
 
     def test_outbox_sandbox_posture_requires_exact_containment(self) -> None:
         cases = {
@@ -799,7 +833,7 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
             self.assertEqual(generator.fleet_display_for(agent_id), expected_displays[agent_id])
             self.assertEqual(generator.fleet_recovery_for(agent_id), expected_recovery[agent_id])
             self.assertEqual(generator.fleet_automatic_for(agent_id), [])
-        self.assertEqual(generator.MAIN_MODEL, "openai/gpt-6-sol")
+        self.assertEqual(generator.MAIN_MODEL, "anthropic/claude-opus-5-5")
 
     def test_manifest_shows_display_name_and_non_executing_recovery(self) -> None:
         manifest = generator.build_manifest(
@@ -816,7 +850,7 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
         self.assertEqual(manifest["model_route"]["automatic_fallbacks"], [])
         self.assertEqual(manifest["model_route"]["recovery_candidates"], ["xai/grok-4.6"])
         self.assertTrue(manifest["model_route"]["recovery_is_non_executing_option"])
-        self.assertEqual(manifest["model_route"]["main_model"], "openai/gpt-6-sol")
+        self.assertEqual(manifest["model_route"]["main_model"], "anthropic/claude-opus-5-5")
         self.assertNotIn("main_fallbacks", manifest["model_route"])
         bootstrap = generator.build_bootstrap_markdown(manifest, [])
         self.assertIn("Display name:", bootstrap)
@@ -824,7 +858,12 @@ class AgentBootstrapGeneratorTests(unittest.TestCase):
         self.assertIn("Specialist automatic fallbacks: `[]`", bootstrap)
         self.assertIn("non-executing", bootstrap)
         self.assertIn("Veritas Main model:", bootstrap)
-        self.assertNotIn("opus", bootstrap.lower())
+        # Since 2026-09-26 the Main primary IS Opus 5.5, so bootstrap names it.
+        # Opus remains denied as the specialist's OWN model and as a recovery
+        # candidate; that protection is exercised by
+        # test_linter_rejects_opus_and_automatic_fallback below.
+        self.assertIn("anthropic/claude-opus-5-5", bootstrap)
+        self.assertNotIn("recovery candidates (non-executing options): `anthropic/claude-opus-5", bootstrap.lower())
 
     def test_linter_rejects_opus_and_automatic_fallback(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:

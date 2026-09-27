@@ -480,6 +480,63 @@ def test_tolerance_boundary_and_malformed_numeric(tmp_path):
     assert f.evaluate(root, closes=exploding_closes, today=TODAY)["status"] == "stale_suppressed"
 
 
+def test_guard_status_not_ok_suppresses(tmp_path):
+    root = seed(tmp_path, [ctl_row("AAA", 101)], [thesis("AAA", "high")])
+    guard = json.loads((root / GUARD_REL).read_text(encoding="utf-8"))
+    guard["status"] = "blocked"
+    (root / GUARD_REL).write_text(json.dumps(guard), encoding="utf-8")
+    out = f.evaluate(root, closes=exploding_closes, today=TODAY)
+    assert out["status"] == "stale_suppressed" and "guard status not ok" in out["stale_reason"]
+
+
+def test_non_dict_guard_suppresses(tmp_path):
+    root = seed(tmp_path, [ctl_row("AAA", 101)], [thesis("AAA", "high")])
+    (root / GUARD_REL).write_text(json.dumps(["not", "a", "dict"]), encoding="utf-8")
+    out = f.evaluate(root, closes=exploding_closes, today=TODAY)
+    assert out["status"] == "stale_suppressed" and "not a dict" in out["stale_reason"]
+
+
+def _link_dir(link: Path, target: Path) -> None:
+    try:
+        link.symlink_to(target, target_is_directory=True)
+    except OSError:
+        import _winapi  # Windows without symlink privilege: a junction is the same escape
+        _winapi.CreateJunction(str(target), str(link))
+
+
+def test_guard_link_escape_suppresses(tmp_path):
+    root = seed(tmp_path / "root", [ctl_row("AAA", 101)], [thesis("AAA", "high")])
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "test-guard.json").write_text((root / GUARD_REL).read_text(encoding="utf-8"), encoding="utf-8")
+    _link_dir(root / "tmp" / "linked", outside)
+    ctl = json.loads((root / f.CONTROLLER_REL).read_text(encoding="utf-8"))
+    ctl["source_artifacts"]["sql_guard"] = "tmp/linked/test-guard.json"
+    (root / f.CONTROLLER_REL).write_text(json.dumps(ctl), encoding="utf-8")
+    out = f.evaluate(root, closes=exploding_closes, today=TODAY)
+    assert out["status"] == "stale_suppressed"
+    assert "link/escape" in out["stale_reason"] or "escapes root" in out["stale_reason"]
+
+
+def test_readonly_uri_percent_encodes_and_keeps_mode_ro(tmp_path):
+    uri = f.readonly_sqlite_uri(tmp_path / "a#b?c%d" / "x.sqlite")
+    assert uri.startswith("file:///") and uri.endswith("/x.sqlite?mode=ro")
+    assert uri.count("?") == 1 and "#" not in uri
+    assert "%23" in uri and "%3F" in uri and "%25" in uri
+    assert "immutable" not in uri
+
+
+def test_same_version_passes_under_hash_in_root_path(tmp_path):
+    # Pre-hardening, '#' ended the URI path early: SQLite opened the wrong file and dropped mode=ro.
+    root = seed(tmp_path / "we#ird", [ctl_row("AAA", 101)], [thesis("AAA", "high")])
+    before = _db_hash(root)
+    out = f.evaluate(root, closes=flat, today=TODAY)
+    assert out.get("status") != "stale_suppressed" and out["candidates"] == ["AAA"]
+    assert _db_hash(root) == before
+    assert not (tmp_path / "we").exists()
+    _assert_no_wal(root)
+
+
 def test_db_byte_identity_preserved_on_success_and_failure(tmp_path):
     root = seed(tmp_path, [ctl_row("AAA", 101)], [thesis("AAA", "high")])
     before = _db_hash(root)

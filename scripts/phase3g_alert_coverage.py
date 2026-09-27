@@ -11,7 +11,8 @@ from pathlib import Path, PureWindowsPath
 from typing import Any, Callable, Mapping
 
 from finance_sql_canon_access import (
-    DynamicEntitlementScope, FinanceSqlCanonAccess, verify_dynamic_entitlement_payload,
+    DynamicEntitlementScope, FinanceSqlCanonAccess, REFERENCE_LEVEL_LINEAGE_FIELDS,
+    verify_dynamic_entitlement_payload,
 )
 from market_calendar_freshness import classify_quote_freshness
 from phase3f_external_canary_approval import (
@@ -246,7 +247,8 @@ def build_current_alerts_coverage(
         lreason = reference_error
         if not lineage or not fields:
             lreason = lreason or "lineage_record_missing"
-        elif len(field_names) != len(required_fields) or set(field_names) != required_fields:
+        elif (len(field_names) != len(REFERENCE_LEVEL_LINEAGE_FIELDS)
+              or set(field_names) != REFERENCE_LEVEL_LINEAGE_FIELDS):
             lreason = lreason or "lineage_field_set_incomplete_or_duplicate"
         elif lineage.get("lineage_validation_ok") is not True or not checks or any(
             c.get("hash_matches") is not True for c in checks if isinstance(c, Mapping)

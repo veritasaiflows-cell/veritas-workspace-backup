@@ -218,7 +218,9 @@ def assemble(bundle: _BoundCapture) -> ReferenceInputs:
             raise ReferenceInputError("capture_foreign_ticker")
     lineage = {}
     debt = {t:list(rows["missing_classes"][t]) for t in tickers}
-    wanted = {"reference_price_low", "reference_price_high", "reference_invalidation_level"}
+    # All five canon reference fields from the same captured SQL lineage rows;
+    # the recommendation funnel's same-version check needs reference_confidence.
+    wanted = canon.REFERENCE_LEVEL_LINEAGE_FIELDS
     for ticker, lines in rows["lineage_rows"].items():
         fields = [{k:v for k,v in line.items() if k!="scope_key"}
                   for line in lines if line["field_name"] in wanted]

@@ -1,7 +1,7 @@
 {
   "schema": "veritas.thesis_record.v1",
   "ticker": "PH",
-  "thesis_version": 2,
+  "thesis_version": 3,
   "status": "accepted",
   "thesis_type": "quality_compounder",
   "thesis_statement": "Parker-Hannifin is a leading motion-and-control and aerospace-components manufacturer whose decentralised operating system has steadily expanded margins, with a growing, high-margin aerospace aftermarket.",
@@ -34,7 +34,7 @@
     "Short-cycle industrial exposure."
   ],
   "invalidation_reasons": {
-    "price": "Close below the band invalidation level (proposed 877.28) on the owner-approved baseline.",
+    "price": "Close below the live guarded-SQL reference_invalidation_level (879.36 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
     "fundamental": [
       "Segment operating margins decline for two consecutive quarters.",
       "Aerospace aftermarket growth turns negative."
@@ -74,15 +74,15 @@
       "as_of": "2026-09-23"
     },
     {
-      "claim": "Proposed band 911.41-985.59, invalidation 877.28, confidence 0.40; price 971.45 in band",
-      "source": "tmp/renewal-matrix-20260922close-v3.json (proposed band, not yet approved)",
-      "as_of": "2026-09-22"
+      "claim": "SQL band 911.41-986.68, invalidation 879.36, reference_confidence 50; close 977.39 on 2026-09-25 is inside band",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
     }
   ],
   "thesis_as_of": "2026-09-23",
   "review_due": "2026-12-23",
   "drafted_by": "Veritas Main (claude-opus-5-5)",
-  "owner_accepted_at": "2026-09-23T18:17:31-07:00",
-  "owner_notes": "Refreshed 2026-09-23 with the June fiscal-Q4 report that the 08-28 snapshot lacked (repair of v1 gap). The quarter strengthens the base case; conviction left at medium because of the premium valuation and short-cycle exposure. Accepted by Randall, Telegram 2026-09-23 evening: 'theses accepted, continue to repair ITA and PH'.",
+  "owner_accepted_at": "2026-09-27T08:17:00-07:00",
+  "owner_notes": "v3 (2026-09-27 band repair): price invalidation now points to live guarded SQL and the band evidence reflects the 2026-09-26 renewal; thesis content is otherwise unchanged from v2, which Randall accepted 2026-09-23. Refreshed 2026-09-23 with the June fiscal-Q4 report that the 08-28 snapshot lacked (repair of v1 gap). The quarter strengthens the base case; conviction left at medium because of the premium valuation and short-cycle exposure. Accepted by Randall 2026-09-27T08:17:00-07:00: 'Proceed with all three recommendations (recommendation 2: accept the band-repair versions)'",
   "fundamentals_period_end": "2026-06-30"
 }

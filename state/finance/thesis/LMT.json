@@ -1,0 +1,92 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "LMT",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "defensive_income",
+  "thesis_statement": "Lockheed Martin is the largest US defense prime (F-35, missiles and missile defense, space), with a record $230B backlog and elevated US and allied demand for munitions and interceptors; the thesis is steady cash generation and dividends now that 2025's program charges are behind it.",
+  "timeframe": "intermediate_3_12m",
+  "cases": {
+    "base": {
+      "summary": "Mid-to-high single-digit sales growth with recovering segment margins and free cash flow above $7B.",
+      "drivers": [
+        "missiles and fire-control (THAAD, PAC-3) volume",
+        "F-35 production and sustainment",
+        "record backlog conversion"
+      ]
+    },
+    "bull": {
+      "summary": "Multi-year munitions contracts and allied demand push growth and margins above guidance.",
+      "drivers": [
+        "multi-year interceptor procurement",
+        "allied defense budget increases"
+      ]
+    },
+    "bear": {
+      "summary": "New fixed-price program charges return, or budget pressure hits F-35 or classified programs.",
+      "drivers": [
+        "classified aeronautics fixed-price losses",
+        "US budget continuing resolution or cuts"
+      ]
+    }
+  },
+  "key_risks": [
+    "Fixed-price development risk: Q2 2025 carried $1.6B of program losses, so year-over-year EPS (+444%) mostly reflects that base effect.",
+    "Budget and policy timing risk, including continuing resolutions and F-35 quantity changes.",
+    "Overlaps with ITA (LMT is about 4.7% of ITA), so their signals are not independent."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (496.71 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "A new program-loss charge above $500M in any quarter.",
+      "Full-year free cash flow guidance cut below $6B, or an enacted real-terms cut to the US defense budget."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-20",
+      "date_confidence": "provider_estimate"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_review_bias",
+      "defensive_neutral_selective"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "ITA"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: sales $20.1B +11%; net earnings $1.8B ($7.94/share) vs $342M ($1.46) in Q2 2025 which included $1.6B program losses; OCF $3.2B, FCF $2.9B; $65B new orders; record backlog $230B incl. multi-year THAAD; FY26 guide raised: sales ~+8%, segment operating profit +28%, FCF > $7B",
+      "source": "Lockheed Martin Q2 2026 release, SEC 8-K exhibit 99.1 (sec.gov .../ex991q22026.htm)",
+      "as_of": "2026-07-23"
+    },
+    {
+      "claim": "ROIC proxy 30.7%, forward P/E 15.9, dividend yield (quarterly proxy) 0.66%, net debt $16.7B, debt/EBITDA 1.81",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-20 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 515.60-555.06, invalidation 496.71, reference_confidence 40; close 519.49 on 2026-09-25 is inside band",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-27T08:05:00-07:00",
+  "owner_notes": "Sector benchmark set to ITA rather than XLI because defense trades on its own budget cycle; ITA is itself tracked, so treat LMT-vs-ITA relative strength as partly self-referential. The SQL band is reference_confidence 40 but the controller rates it low confidence; price sits near band low. Accepted by Randall, WebChat 2026-09-27 ~08:05 Phoenix: 'Accept all except XOM. Proceed with next steps.'",
+  "fundamentals_period_end": "2026-06-30"
+}

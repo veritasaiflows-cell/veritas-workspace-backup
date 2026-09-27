@@ -2,8 +2,8 @@
 # RSI Control Loop
 
 Canonical page: `wiki/self-improvement/RSI Control Loop.md`
-Canonical rendered SHA-256: `29398e005876aeadb507395a9545f84a9baa39378ce502bcdcd2d5a06b452741`.
-Source snapshot SHA-256: `e1e5783c361c118d2fe7decaa3658414a1a39d794508f8edf2e81cf1edfa5ce7`.
+Canonical rendered SHA-256: `3d7d1cda7228102455572d5470f558939453e2564dfaf867ed2f2b38b054d9f1`.
+Source snapshot SHA-256: `6d670804398925df4f3bc27dab7cc30bbe29f708f93a6ae28f56af63a0467218`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -45,7 +45,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - Rubric dimensions: `9`.
 - Primary first-hop eval: `tmp/wf74-learning-loop-eval-harness.json`.
 - Legacy RSI first-hop truth: `False`.
-- Decision docket rows: `16`.
+- Decision docket rows: `15`.
 - Decision docket active actions: `8`.
 - Decision docket hard stops: `0`.
 - Live RSI trace rows / stable closures: `5` / `0`.

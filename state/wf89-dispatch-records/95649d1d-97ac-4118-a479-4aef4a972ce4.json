@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "95649d1d-97ac-4118-a479-4aef4a972ce4",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:phase4-tier-prototype-p1-20260926",
+  "label": "Phase4 tier prototype proposal p1 resume",
+  "task_text_sha256": "fbb36d21be42490971466441f9e5b9f16642362e8911736c989f69dc25d6a449",
+  "message_file": "tmp\\phase4-proposal-route-20260926\\tier-resume.md",
+  "created_at_ms": 1790477615575,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

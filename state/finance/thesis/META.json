@@ -1,7 +1,7 @@
 {
   "schema": "veritas.thesis_record.v1",
   "ticker": "META",
-  "thesis_version": 1,
+  "thesis_version": 2,
   "status": "accepted",
   "thesis_type": "secular_growth",
   "thesis_statement": "Meta monetises the largest social and messaging audience in the world through advertising, with AI-driven ranking and ad tools lifting engagement and pricing; the open question is whether very heavy AI capex earns an adequate return.",
@@ -35,7 +35,7 @@
     "Regulatory and legal risk across the EU and US."
   ],
   "invalidation_reasons": {
-    "price": "Close below the band invalidation level (proposed 518.01) on the owner-approved baseline.",
+    "price": "Close below the live guarded-SQL reference_invalidation_level (515.67 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
     "fundamental": [
       "Revenue growth falls below 10% while capex keeps growing.",
       "Free cash flow negative for two consecutive quarters."
@@ -74,15 +74,15 @@
       "as_of": "2026-09-23"
     },
     {
-      "claim": "Proposed band 555.66-609.96, invalidation 518.01; price 746.14 far above band (no_chase)",
-      "source": "tmp/renewal-matrix-20260922close-v3.json (proposed band, not yet approved)",
-      "as_of": "2026-09-22"
+      "claim": "SQL band 555.66-615.32, invalidation 515.67, reference_confidence 40; close 751.26 on 2026-09-25 is 22.1% above band high (no-chase)",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
     }
   ],
   "thesis_as_of": "2026-09-23",
   "review_due": "2026-12-23",
   "drafted_by": "Veritas Main (claude-opus-5-5)",
-  "owner_accepted_at": "2026-09-23T18:17:31-07:00",
-  "owner_notes": "Price is ~22% above the proposed band high, so the mechanical band is not a useful entry reference right now. Disfavored under today's defensive posture because of capex/FCF risk. A candidate for a trend-anchored band method later. Accepted by Randall, Telegram 2026-09-23 evening: 'theses accepted, continue to repair ITA and PH'.",
+  "owner_accepted_at": "2026-09-27T08:17:00-07:00",
+  "owner_notes": "v2 (2026-09-27 band repair): price invalidation now points to live guarded SQL and the band evidence reflects the 2026-09-26 renewal; thesis content is otherwise unchanged from v1, which Randall accepted 2026-09-23. Price is ~22% above the SQL band high, so the mechanical band is not a useful entry reference right now. Disfavored under today's defensive posture because of capex/FCF risk. A candidate for a trend-anchored band method later. Accepted by Randall 2026-09-27T08:17:00-07:00: 'Proceed with all three recommendations (recommendation 2: accept the band-repair versions)'",
   "fundamentals_period_end": "2026-06-30"
 }

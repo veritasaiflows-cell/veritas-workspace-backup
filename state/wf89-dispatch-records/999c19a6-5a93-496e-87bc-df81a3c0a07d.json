@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "999c19a6-5a93-496e-87bc-df81a3c0a07d",
+  "agent_id": "qa-redteam",
+  "session_key": "agent:qa-redteam:phase4-lineage-glm53-20260926",
+  "label": "Phase4 lineage GLM53 QA",
+  "task_text_sha256": "4b5fd4a6b1435a21646fd4105c9b2e94ea587d7bca69a67b865c4ebc4fdc545a",
+  "message_file": "tmp\\phase4-proposal-route-20260926\\lineage-glm53-qa-task.md",
+  "created_at_ms": 1790483381079,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

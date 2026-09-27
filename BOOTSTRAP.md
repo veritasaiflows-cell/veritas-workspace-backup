@@ -15,7 +15,8 @@ Custom isolated agent for Veritas finance-first multi-workflow market intelligen
 - Department: `custom`
 - Owner workflow: `VERITAS-MAIN`
 - Authority class: `workspace_scoped`
-- Current configured model: `openai/gpt-6-sol`
+- Current configured model: `anthropic/claude-opus-5-5`
+- Main fallbacks (owner-directed, no GPT/OpenAI): `ollama-cloud/glm-5.3:cloud` → `ollama-cloud/kimi-k3:cloud`
 - Workspace: `agent-owned workspace (runtime configured)`
 - Agent dir: `agent-owned runtime directory`
 - External bindings count: `1`
@@ -47,7 +48,7 @@ Custom isolated agent for Veritas finance-first multi-workflow market intelligen
 
 - Main remains the routing, final-QC, sole-acceptance, and final-judgment owner.
 - Configured fleet: Main plus `6` isolated agents.
-- Route: model-free first; explicit bounded native when eligible; Main/Sol for bounded integration or judgment; otherwise the persistent specialist's exact configured role model with transport proof; risk-budgeted QA; Main acceptance.
+- Route: model-free first; explicit bounded native when eligible; Main for bounded integration or judgment; otherwise the persistent specialist's exact configured role model with transport proof; risk-budgeted QA; Main acceptance.
 - Finance route: Main -> Finance Source when needed -> Main analysis -> Finance Red-Team -> Main judgment.
 - Isolated output is unaccepted until Main verifies and accepts it.
 

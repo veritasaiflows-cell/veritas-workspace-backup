@@ -98,6 +98,86 @@ class AlertsRecommendationsChainTests(unittest.TestCase):
             bad = chain.digest_source_coherence("weekly", controller_path=controller_path, digest_path=digest_path)
             self.assertEqual(bad["status"], "error")
 
+    def test_weekly_funnel_refresh_requires_exact_promoted_controller(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            controller = root / chain.RECURRING_SHARED_CONTROLLER_REL
+            controller.parent.mkdir(parents=True)
+            controller.write_text(json.dumps({"generated_at_utc": "2026-09-27T15:00:01Z"}), encoding="utf-8")
+            with (
+                mock.patch.object(chain, "ROOT", root),
+                mock.patch("recommendation_funnel.evaluate") as evaluate,
+            ):
+                result = chain._refresh_recommendation_funnel_after_promotion(
+                    window="weekly", promotion={"status": "ok", "controller_sha256": "wrong"})
+            self.assertEqual(result["status"], "error")
+            self.assertEqual(result["reason"], "shared_controller_hash_changed_before_funnel")
+            evaluate.assert_not_called()
+            self.assertFalse((root / "tmp/recommendation-funnel.json").exists())
+
+    def test_weekly_funnel_refresh_writes_only_review_authority_output(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            controller = root / chain.RECURRING_SHARED_CONTROLLER_REL
+            controller.parent.mkdir(parents=True)
+            controller.write_text(json.dumps({"generated_at_utc": "2026-09-27T15:00:01Z"}), encoding="utf-8")
+            payload = {
+                "schema": "veritas.recommendation_funnel.v1",
+                "generated_at_utc": "2026-09-27T15:00:02Z",
+                "candidates": ["AAA"],
+                "authority": {
+                    "review_only": True,
+                    "alert_or_canon_change": False,
+                    "delivery": False,
+                    "capital_or_execution": False,
+                    "owner_approval_inferred": False,
+                },
+            }
+            expected_hash = chain.file_sha256(controller)
+            with (
+                mock.patch.object(chain, "ROOT", root),
+                mock.patch("recommendation_funnel.evaluate", return_value=payload) as evaluate,
+            ):
+                result = chain._refresh_recommendation_funnel_after_promotion(
+                    window="weekly", promotion={"status": "ok", "controller_sha256": expected_hash})
+            self.assertEqual(result["status"], "ok")
+            self.assertEqual(result["controller_sha256"], expected_hash)
+            self.assertEqual(json.loads((root / "tmp/recommendation-funnel.json").read_text()), payload)
+            evaluate.assert_called_once_with(root)
+
+    def test_weekly_funnel_suppression_is_written_and_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            controller = root / chain.RECURRING_SHARED_CONTROLLER_REL
+            controller.parent.mkdir(parents=True)
+            controller.write_text(json.dumps({"generated_at_utc": "2026-09-27T15:00:01Z"}), encoding="utf-8")
+            payload = {
+                "schema": "veritas.recommendation_funnel.v1",
+                "status": "stale_suppressed",
+                "stale_reason": "same-version mismatch",
+                "generated_at_utc": "2026-09-27T15:00:02Z",
+                "candidates": [],
+                "authority": {
+                    "review_only": True,
+                    "alert_or_canon_change": False,
+                    "delivery": False,
+                    "capital_or_execution": False,
+                    "owner_approval_inferred": False,
+                },
+            }
+            with (
+                mock.patch.object(chain, "ROOT", root),
+                mock.patch("recommendation_funnel.evaluate", return_value=payload),
+            ):
+                result = chain._refresh_recommendation_funnel_after_promotion(
+                    window="weekly",
+                    promotion={"status": "ok", "controller_sha256": chain.file_sha256(controller)},
+                )
+            self.assertEqual(result["status"], "error")
+            self.assertEqual(result["reason"], "stale_suppressed")
+            self.assertEqual(result["stale_reason"], "same-version mismatch")
+            self.assertEqual(json.loads((root / "tmp/recommendation-funnel.json").read_text()), payload)
+
     def test_dynamic_preview_resolves_once_and_never_runs_or_writes(self) -> None:
         client = FakeDynamicClient(FakeDynamicScope())
         scope, preview = chain.dynamic_entitlement_preview(client)

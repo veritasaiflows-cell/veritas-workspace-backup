@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "36a1108f-f79b-4995-8e42-2747be348bcd",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:transport-bridge-canary-20260926",
+  "label": "builder-transport-bridge-canary-20260926",
+  "task_text_sha256": "98517e56fea70886afff5bdabe04f77fec9ffc6e8fd8bea957ff4ed61dff3d3d",
+  "message_file": "tmp\\implementation-builder-scoped-worktree\\transport-repair-bridge-canary-task.md",
+  "created_at_ms": 1790465046252,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

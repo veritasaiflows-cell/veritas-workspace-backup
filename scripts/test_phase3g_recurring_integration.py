@@ -43,16 +43,24 @@ def quote_documents(tickers, *, generated):
 def bound(tmp_path,request):
     root=tmp_path/"synthetic"
     db=build_fixture(root)
-    if getattr(request,"param",True) is False:
-        with closing(sqlite3.connect(db)) as conn:
+    generated=datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z")
+    with closing(sqlite3.connect(db)) as conn:
+        if getattr(request,"param",True) is False:
             conn.execute("UPDATE universe_membership SET decision_grade_eligible=1 WHERE ticker='S001'")
-            conn.commit()
+        # This integration case exercises entitlement debt, not the independent
+        # 14-day level-age decay policy. Keep its synthetic reference snapshot
+        # aligned with the synthetic quote instead of inheriting the fixture's
+        # historical 2026-09-05 timestamp and becoming wall-clock dependent.
+        conn.execute("UPDATE reference_levels SET source_generated_at_utc=?",(generated,))
+        conn.execute("UPDATE evidence_freshness SET source_generated_at_utc=?",(generated,))
+        conn.execute("UPDATE source_lineage SET source_generated_at_utc=?, inserted_at_utc=?",(generated,generated))
+        conn.commit()
     deadline=time.monotonic()+30
     rows=inputs._collect(root,deadline,True)
     raw=inputs.canonical_json_bytes(rows)
     package=inputs.assemble(inputs._BoundCapture(raw,inputs._sha(raw),deadline,True,inputs._SEAL))
     write_policy(root)
-    quote,validation=quote_documents(("S000","S001"),generated=datetime.now(timezone.utc).isoformat())
+    quote,validation=quote_documents(("S000","S001"),generated=generated)
     return root,package,quote,validation
 
 
@@ -80,6 +88,10 @@ def test_full_guard_assembler_sealed_component_retained_digest_no_provider(bound
     assert proof["recurring_reference_provenance"]["readset_sha256"]
     controller_file=run/"recurring-synthetic-a1.alert_level_freshness.json"
     assert proof["recurring_digest"]["controller_sha256"]==hashlib.sha256(controller_file.read_bytes()).hexdigest()
+    controller=json.loads(controller_file.read_text())
+    assert all(row["level_as_of_utc"]==row["quote_as_of_utc"] for row in controller["rows"])
+    assert all(row["level_age_hours"] <= controller["policy"]["max_level_age_days"]*24
+               for row in controller["rows"])
     assert proof["recurring_digest"]["external_delivery"]=="not_run"
     assert proof["recurring_digest"]["status"]=="ok"
     assert proof["recurring_digest"]["message_preview"]
@@ -89,7 +101,9 @@ def test_full_guard_assembler_sealed_component_retained_digest_no_provider(bound
     assert evidence["second_selection_performed"] is False
     assert evidence["additional_membership_selections_in_this_run"]==0
     assert evidence["scope_payload_sha256"]==hashlib.sha256(package.scope).hexdigest()
-    assert not (root/"tmp/alert-level-freshness-controller.json").exists()
+    shared_controller=root/chain.RECURRING_SHARED_CONTROLLER_REL
+    assert json.loads(shared_controller.read_text())==controller
+    assert proof["shared_promotion"]["controller_sha256"]==hashlib.sha256(shared_controller.read_bytes()).hexdigest()
     assert not (root/"state/dynamic-entitlement-provider-call-ledger.json").exists()
 
 
@@ -162,3 +176,24 @@ def test_recurring_cli_rejects_explicit_quote_files_before_any_work(bound):
          mock.patch.object(inputs,"acquire_reference_inputs",side_effect=AssertionError("acquired")), \
          mock.patch.object(adapter,"_automatic_quote_intake",side_effect=AssertionError("intake")):
         assert adapter.dispatch(args,components=("alert_level_freshness","analyst_consensus"))==1
+
+
+def test_weekly_funnel_failure_is_visible_debt_in_canary_proof(bound):
+    import analyst_consensus_refresh as analyst
+    root,package,quote,validation=bound
+    funnel_result={"status":"error","reason":"stale_suppressed","stale_reason":"same-version mismatch"}
+    with mock.patch.object(chain,"ROOT",root), \
+         mock.patch.object(canon.FinanceSqlCanonAccess,"dynamic_entitlement_scope",side_effect=AssertionError("second selection")), \
+         mock.patch.object(chain,"reserve_provider_calls",side_effect=AssertionError("alert-only budget is zero")), \
+         mock.patch.object(analyst,"_build_phase3f_analyst_component_with_authorization",side_effect=AssertionError("weekly analyst invoked")), \
+         mock.patch.object(chain,"_refresh_recommendation_funnel_after_promotion",return_value=funnel_result) as refresh:
+        result=chain.run_policy_canary(components=("alert_level_freshness",),run_id="recurring-weekly-funnel-a1",
+            alert_quote_snapshot_json=quote,alert_quote_validation_json=validation,
+            dynamic_execution=True,recurring_reference_inputs=package,recurring_window="weekly")
+    assert result["status"]=="completed_with_visible_debt"
+    assert result["recommendation_funnel"]==funnel_result
+    refresh.assert_called_once()
+    proof=json.loads((root/chain.PHASE3F_POLICY_RUN_ROOT/
+                      "recurring-weekly-funnel-a1.canary_proof.json").read_text())
+    assert proof["status"]=="completed_with_visible_debt"
+    assert proof["recommendation_funnel"]==funnel_result

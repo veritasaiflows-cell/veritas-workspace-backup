@@ -21,15 +21,16 @@ denied in persistent specialist scope. research-scout moves from Grok to
 DeepSeek 4.1 Flash. Grok is retained as a recovery candidate only.
 Opus 5 sits in Main's owner-directed chain but is still never a persistent
 specialist primary or specialist automatic fallback (see OPUS_ADVISORY).
-Owner change: GPT6-SOL-PRIMARY-20260922 (Randall, 2026-09-22): Main primary
-is GPT-6 Sol (openai/gpt-6-sol, codex runtime) and GPT-6 Luna
-(openai/gpt-6-luna) joins the selectable roster. Main's live fallback chain
-is Opus 5.5 (anthropic/claude-opus-5-5), then Ollama Cloud GLM 5.3, then
-Ollama Cloud Kimi K3, then GPT-5.6 Terra last. GPT-5.6 Sol re-enters
-LEGACY_DENIED_MODELS for persistent specialist scope (it is no longer the
-Main primary) and GPT-6 Luna is denied there as well. Opus 5.5 sits in
-Main's owner-directed chain but, like Opus 5, is never a persistent
-specialist primary or specialist automatic fallback.
+Owner change: OPUS55-PRIMARY-REALIGN-20260926 (Randall, 2026-09-26 19:30 MST):
+Main primary is now Opus 5.5 (anthropic/claude-opus-5-5, claude-cli runtime);
+the owner directed that NO GPT/OpenAI model appear in any fallback position.
+Main's live fallback chain is Ollama Cloud GLM 5.3, then Ollama Cloud Kimi K3.
+GPT-6 Sol re-enters LEGACY_DENIED_MODELS for persistent specialist scope,
+joining the other OpenAI refs. Opus 5 remains Main-spawn advisory only and is
+not in the chain. Opus 5.5, as live Main primary, is no longer blanket-denied
+by is_denied_persistent_model for Main scope, but remains never a persistent
+specialist primary or specialist automatic fallback (OPUS_ADVISORY semantics
+preserved for Opus 5).
 Recommended fleet roles/models/display-names alignment. Muse Spark 1.3
 Contributor and Grok task helpers explicitly permitted. Opus excluded
 from persistent roles and automatic fallbacks (Main on-demand spawn
@@ -62,14 +63,14 @@ SOL6_MODEL = "openai/gpt-6-sol"
 SOL_MODEL = "openai/gpt-5.6-sol"
 TERRA_MODEL = "openai/gpt-5.6-terra"
 ZAI_MODEL = "zai/glm-5.3"
-MAIN_MODEL = SOL6_MODEL
+MAIN_MODEL = OPUS55_MODEL
 
-# Retired OpenAI refs denied in PERSISTENT SPECIALIST scope only. GPT-6 Sol is
-# not listed: it is the live Main primary. GPT-5.6 Sol returns to the denied
-# set as a former Main primary, and GPT-6 Luna is denied there too. Persistent
-# specialists never use an OpenAI model regardless, and Opus is denied
-# separately below.
+# Retired OpenAI refs denied in PERSISTENT SPECIALIST scope only. Per
+# OPUS55-PRIMARY-REALIGN-20260926 no GPT/OpenAI model may sit in any fallback
+# position anywhere; all OpenAI refs are denied in persistent specialist scope
+# and none appears in MAIN_FALLBACKS.
 LEGACY_DENIED_MODELS = frozenset({
+    SOL6_MODEL,
     "openai/gpt-6-astra",
     "openai/gpt-6-luna",
     "openai/gpt-5.6-sol",
@@ -80,8 +81,8 @@ LEGACY_DENIED_MODELS = frozenset({
     "openai/gpt-5.4-mini",
 })
 
-MAIN_PRIMARY = SOL6_MODEL
-MAIN_FALLBACKS = [OPUS55_MODEL, GLM_MODEL, KIMI_MODEL, TERRA_MODEL]
+MAIN_PRIMARY = OPUS55_MODEL
+MAIN_FALLBACKS = [GLM_MODEL, KIMI_MODEL]
 
 SPECIALIST_PRIMARY: dict[str, str] = {
     "research-scout": DEEPSEEK_FLASH_MODEL,
@@ -125,11 +126,11 @@ OPUS_ADVISORY = {
     "main_spawn_only": True,
     # Never a specialist automatic fallback; specialists keep fallbacks: [].
     "automatic_fallback": False,
-    # Owner-directed 2026-09-22: Opus 5 left Main's live chain; Opus 5.5
-    # (OPUS55_MODEL) is the Main-chain fallback. Opus 5 stays Main-spawn
-    # advisory only.
+    # Owner-directed 2026-09-26: Opus 5.5 (OPUS55_MODEL) is the live Main
+    # primary. Opus 5 stays Main-spawn advisory only and is not in the chain;
+    # no GPT/OpenAI model appears in any fallback position.
     "main_chain_fallback": False,
-    "main_chain_fallback_model": OPUS55_MODEL,
+    "main_chain_primary_model": OPUS55_MODEL,
     "requires_actual_runtime_model_verification": True,
 }
 
@@ -202,6 +203,9 @@ def automatic_fallbacks_for(role_id: str) -> list[str]:
 
 
 def is_denied_persistent_model(model: str) -> bool:
+    """True when a model must never be a PERSISTENT SPECIALIST primary.
+    Opus models stay denied there even while Opus 5.5 is the live Main
+    primary; persistent-specialist scope is the gate, not Main's chain."""
     return model in (OPUS_MODEL, OPUS55_MODEL) or model in LEGACY_DENIED_MODELS
 
 

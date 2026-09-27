@@ -1,0 +1,94 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "BRK.B",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "quality_compounder",
+  "thesis_statement": "Berkshire Hathaway is a diversified owner of insurance, rail (BNSF), energy and manufacturing businesses whose operating earnings compound steadily, backed by a very large cash reserve that the new CEO, Greg Abel, has started to deploy into buybacks, acquisitions and equities.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Operating earnings grow mid-to-high single digits while cash is deployed gradually into buybacks and acquisitions.",
+      "drivers": [
+        "BNSF, energy and manufacturing earnings growth",
+        "buybacks and acquisitions funded from cash",
+        "float-funded investment income"
+      ]
+    },
+    "bull": {
+      "summary": "Large accretive acquisitions or sustained buybacks at attractive prices raise per-share value faster than the market.",
+      "drivers": [
+        "capital deployment at scale under Abel",
+        "hard insurance pricing cycle"
+      ]
+    },
+    "bear": {
+      "summary": "Insurance underwriting keeps softening and falling short rates cut investment income on the cash pile, so operating earnings stall.",
+      "drivers": [
+        "soft insurance pricing or catastrophe losses",
+        "lower yields on ~$365B cash and T-bills"
+      ]
+    }
+  },
+  "key_risks": [
+    "Reported EPS swings with unrealized investment gains (Q2 net income +107%), so GAAP EPS and the aggregator's P/E are not usable signals; use operating earnings.",
+    "Capital-allocation risk under new management: a large acquisition at a full price would be hard to reverse.",
+    "Insurance is weakening: Q2 underwriting earnings -13% and insurance investment income -9%."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (491.72 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Operating earnings fall year over year for two consecutive quarters, excluding a quarter with disclosed major catastrophe losses.",
+      "Insurance underwriting turns to a loss for a full year outside a major catastrophe year."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-11-07",
+      "date_confidence": "provider_estimate"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_review_bias",
+      "defensive_neutral_selective"
+    ],
+    "disfavored_postures": [
+      "constructive_but_owner_gated"
+    ]
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLF"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026 operating earnings $12.98B vs $11.16B (+16%); manufacturing/service/retail +24%, BHE +27%, BNSF +6%; underwriting -13%, insurance investment income -9%; buybacks ~$4.5B; cash $365.5B (from $397.4B); net equity buyer ~$20B",
+      "source": "CNBC 2026-08-08 summarizing Berkshire Q2 news release (berkshirehathaway.com/news/aug0826.pdf)",
+      "as_of": "2026-08-08"
+    },
+    {
+      "claim": "Q2 revenue +10.04% (SEC period-match override), net income +107.49% (investment gains), diluted shares -0.12%; price_to_book reported 0.0 (aggregator defect)",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-11-07 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 500.55-506.44, invalidation 491.72, reference_confidence 35; close 505.43 on 2026-09-25 is inside band",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-27T08:05:00-07:00",
+  "owner_notes": "Medium conviction reflects low expected excess return versus SPY, not business quality. The SQL band is narrow (about 1.2% wide); check it against the readiness gate's width >= 1x ATR20 rule before any recommendation use. Aggregator price_to_book of 0.0 is a data defect to repair, not a valuation signal. Accepted by Randall, WebChat 2026-09-27 ~08:05 Phoenix: 'Accept all except XOM. Proceed with next steps.'",
+  "fundamentals_period_end": "2026-06-30"
+}

@@ -7,7 +7,7 @@ freshness rule; scoped-writeback proofs use 7-day event-keyed validity: the
 proof stays valid until the agent's sandbox/tool configuration drifts.
 
 Checks (any failure blocks, fail-closed):
-  1. proof exists, parses, schema/status ok
+  1. proof exists, parses, supported schema/status ok
   2. capabilities.scoped_worktree_implementation is true
   3. proof age <= 7 days (observed_at_utc)
   4. live agent sandbox+tools config fingerprint matches proof-attested fingerprint
@@ -30,7 +30,10 @@ import subprocess
 import sys
 
 SCHEMA = "veritas.scoped_writeback_preflight.v1"
-PROOF_SCHEMA = "veritas.persistent_transport_proof.v1"
+PROOF_SCHEMAS = {
+    "veritas.persistent_transport_proof.v1",
+    "veritas.persistent_transport_proof.v3",
+}
 MAX_PROOF_AGE_DAYS = 7
 
 
@@ -58,6 +61,60 @@ def config_fingerprint(entry):
     }
     canon = json.dumps(material, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(canon.encode("utf-8")).hexdigest()
+
+
+def file_sha256(path):
+    digest = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def proof_config_matches(proof, *, live_entry_fingerprint, config_path):
+    """Match the configuration binding used by each supported proof schema.
+
+    V1 proofs bind only the selected agent's sandbox/tool projection.  V3
+    calibration proofs bind the exact OpenClaw configuration bytes in
+    ``runtime.config_sha256``; accepting that stronger binding keeps this
+    lightweight dispatch check aligned with the implementation router.
+    """
+    schema = proof.get("schema")
+    if schema == "veritas.persistent_transport_proof.v1":
+        attested = ((proof.get("evidence") or {}).get("config_fingerprint") or {}).get(
+            "sha256"
+        )
+        return bool(attested) and attested == live_entry_fingerprint
+    if schema == "veritas.persistent_transport_proof.v3":
+        attested = (proof.get("runtime") or {}).get("config_sha256")
+        try:
+            return bool(attested) and attested == file_sha256(config_path)
+        except OSError:
+            return False
+    return False
+
+
+def proof_time_is_valid(proof, *, now=None):
+    """Require a recent observation and honor V3's explicit expiry."""
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    try:
+        observed = datetime.datetime.strptime(
+            proof["observed_at_utc"], "%Y-%m-%dT%H:%M:%SZ"
+        ).replace(tzinfo=datetime.timezone.utc)
+    except Exception:
+        return False
+    if now - observed > datetime.timedelta(days=MAX_PROOF_AGE_DAYS):
+        return False
+    if proof.get("schema") == "veritas.persistent_transport_proof.v3":
+        try:
+            expires = datetime.datetime.strptime(
+                proof["expires_at_utc"], "%Y-%m-%dT%H:%M:%SZ"
+            ).replace(tzinfo=datetime.timezone.utc)
+        except Exception:
+            return False
+        if now > expires:
+            return False
+    return True
 
 
 def parse_bind_host(bind):
@@ -116,7 +173,7 @@ def main():
     args = ap.parse_args()
 
     try:
-        config, _ = load_config()
+        config, config_path = load_config()
         entry = agent_entry(config, args.agent)
     except Exception as exc:
         return verdict("blocked", args.agent, {}, f"config load failed: {exc}")
@@ -137,26 +194,19 @@ def main():
     except Exception as exc:
         return verdict("blocked", args.agent, checks, f"proof parse failed: {exc}", proof_path)
 
-    checks["schema_status"] = proof.get("schema") == PROOF_SCHEMA and proof.get("status") == "ok"
+    checks["schema_status"] = proof.get("schema") in PROOF_SCHEMAS and proof.get("status") == "ok"
     checks["capability"] = bool(
         (proof.get("capabilities") or {}).get("scoped_worktree_implementation")
     )
     checks["agent_match"] = proof.get("agent_id") == args.agent
 
-    age_ok = False
-    try:
-        observed = datetime.datetime.strptime(
-            proof["observed_at_utc"], "%Y-%m-%dT%H:%M:%SZ"
-        ).replace(tzinfo=datetime.timezone.utc)
-        age_ok = (datetime.datetime.now(datetime.timezone.utc) - observed) <= datetime.timedelta(
-            days=MAX_PROOF_AGE_DAYS
-        )
-    except Exception:
-        age_ok = False
-    checks["age_within_7d"] = age_ok
+    checks["age_within_7d"] = proof_time_is_valid(proof)
 
-    attested_fp = ((proof.get("evidence") or {}).get("config_fingerprint") or {}).get("sha256")
-    checks["config_fingerprint_match"] = bool(attested_fp) and attested_fp == live_fp
+    checks["config_fingerprint_match"] = proof_config_matches(
+        proof,
+        live_entry_fingerprint=live_fp,
+        config_path=config_path,
+    )
 
     sandbox = entry.get("sandbox") or {}
     docker_cfg = sandbox.get("docker") or {}

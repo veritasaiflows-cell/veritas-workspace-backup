@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "d2ec1dd1-36f2-4650-af95-9ee84c42ccd5",
+  "agent_id": "implementation-builder",
+  "session_key": "agent:implementation-builder:retired-writer-v3-calibration-20260926",
+  "label": "retired-writer-v3-calibration",
+  "task_text_sha256": "6d9ca3a528fc9564177d31105ba0ae14aba19541e7b911bd8ef32d0b9e5d6e32",
+  "message_file": "tmp\\implementation-builder-scoped-worktree\\retired-writer-v3-calibration-task.md",
+  "created_at_ms": 1790466304395,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

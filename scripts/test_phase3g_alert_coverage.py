@@ -26,7 +26,7 @@ from unittest import mock
 
 import pytest
 
-from finance_sql_canon_access import DynamicEntitlementScope
+from finance_sql_canon_access import REFERENCE_LEVEL_LINEAGE_FIELDS, DynamicEntitlementScope
 from phase3g_alert_coverage import (
     build_current_alerts_coverage,
     safe_output_path,
@@ -98,8 +98,7 @@ def clean_lineage(**overrides: Any) -> dict[str, Any]:
     lineage = {
         "level_as_of_utc": LINEAGE_STAMP,
         "fields": [{"field_name": field, "source_generated_at_utc": LINEAGE_STAMP}
-                   for field in ("reference_price_low", "reference_price_high",
-                                 "reference_invalidation_level")],
+                   for field in sorted(REFERENCE_LEVEL_LINEAGE_FIELDS)],
         "artifact_checks": [{"path": "p", "expected_sha256": "e",
                              "actual_sha256": "e", "hash_matches": True}],
         "lineage_validation_ok": True,
@@ -507,12 +506,16 @@ def test_inverted_and_invalid_bands_never_read_ready() -> None:
 
 
 def test_lineage_quality_gates_are_evidence_backed() -> None:
-    scope = make_scope("ALPHA", "BRAVO", "CHARLIE", "DELTA")
+    scope = make_scope("ALPHA", "BRAVO", "CHARLIE", "DELTA", "ECHO")
     bad_fields = dict(clean_lineage(), fields=[
         {"field_name": "reference_price_low", "source_generated_at_utc": LINEAGE_STAMP}])
     stale_field = dict(clean_lineage(), fields=[
         {"field_name": f, "source_generated_at_utc": ("2026-01-01T00:00:00Z"
                                                      if f == "reference_price_high" else LINEAGE_STAMP)}
+        for f in sorted(REFERENCE_LEVEL_LINEAGE_FIELDS)])
+    # The pre-fix three-field shape (no reference_confidence/band_status) is incomplete.
+    legacy_three = dict(clean_lineage(), fields=[
+        {"field_name": f, "source_generated_at_utc": LINEAGE_STAMP}
         for f in ("reference_price_low", "reference_price_high", "reference_invalidation_level")])
     bad_checks = dict(clean_lineage(), artifact_checks=[
         {"path": "p", "expected_sha256": "e", "actual_sha256": "X", "hash_matches": False}])
@@ -520,10 +523,11 @@ def test_lineage_quality_gates_are_evidence_backed() -> None:
 
     def reader(ticker: str) -> Any:
         return {"ALPHA": bad_fields, "BRAVO": stale_field,
-                "CHARLIE": bad_checks, "DELTA": no_validation}[ticker]
+                "CHARLIE": bad_checks, "DELTA": no_validation, "ECHO": legacy_three}[ticker]
 
     proof, _ = run_build(scope, lineage=reader)
     assert cell(proof, "ALPHA", "lineage")["reason"] == "lineage_field_set_incomplete_or_duplicate"
+    assert cell(proof, "ECHO", "lineage")["reason"] == "lineage_field_set_incomplete_or_duplicate"
     assert cell(proof, "BRAVO", "lineage")["reason"] == "stale_evidence"
     assert cell(proof, "CHARLIE", "lineage")["reason"] == "lineage_not_clean"
     assert cell(proof, "DELTA", "lineage")["reason"] == "lineage_not_clean"

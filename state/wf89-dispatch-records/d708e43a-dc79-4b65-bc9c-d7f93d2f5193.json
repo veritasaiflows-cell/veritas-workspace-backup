@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "d708e43a-dc79-4b65-bc9c-d7f93d2f5193",
+  "agent_id": "qa-redteam",
+  "session_key": "agent:qa-redteam:subagent:8367dbb1-ef96-4755-8f2f-5b93eb6b90e4",
+  "label": "phase4-ledger-final-glm53-qa",
+  "task_text_sha256": "3d77a13bfbf7ec02448781848fce8a215c34326d9fe6fa3d09bab43d65ba9189",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspaces\\qa-redteam\\.openclaw\\attachments\\phase4-decision-ledger-final-qa-20260926\\TASK.md",
+  "created_at_ms": 1790485205872,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

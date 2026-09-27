@@ -306,6 +306,50 @@ def make_null_conf_db(path: Path, n: int = 32) -> Path:
     return path
 
 
+def make_status_db(path: Path, n: int = 200) -> Path:
+    """Fixture with reference_band_status labels, like live canon (2026-09-27)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    con = sqlite3.connect(str(path))
+    try:
+        con.execute(
+            "CREATE TABLE reference_levels ("
+            "ticker TEXT PRIMARY KEY, "
+            "reference_price_low REAL NOT NULL, "
+            "reference_price_high REAL NOT NULL, "
+            "reference_invalidation_level REAL NOT NULL, "
+            "reference_confidence INTEGER, "
+            "reference_band_status TEXT, "
+            "authority_class TEXT NOT NULL, "
+            "source_artifact_path TEXT NOT NULL DEFAULT '', "
+            "source_artifact_sha256 TEXT NOT NULL DEFAULT '', "
+            "source_generated_at_utc TEXT NOT NULL DEFAULT '')"
+        )
+        labels = ("BELOW_STOP", "IN_BAND", "ABOVE_BAND", None)
+        for i in range(1, n + 1):
+            low = 30.0 + i
+            con.execute(
+                "INSERT INTO reference_levels(ticker, reference_price_low, "
+                "reference_price_high, reference_invalidation_level, "
+                "reference_confidence, reference_band_status, authority_class, "
+                "source_artifact_path, source_artifact_sha256, source_generated_at_utc) "
+                "VALUES (?,?,?,?,?,?,?,?,?,?)",
+                (f"STAT_T{i:03d}", low, low + 5.0, low - 2.0, 50, labels[i % 4],
+                 AUTHORITY_CLASS, "seed", "seedsha", "2026-01-01T00:00:00+00:00"),
+            )
+        con.commit()
+    finally:
+        con.close()
+    return path
+
+
+def read_status(path: Path) -> dict[str, str | None]:
+    con = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    try:
+        return dict(con.execute("SELECT ticker, reference_band_status FROM reference_levels").fetchall())
+    finally:
+        con.close()
+
+
 def main() -> int:
     check("script_file_exists", SCRIPT.is_file())
     check("self_file_exists", SELF.is_file())
@@ -502,7 +546,7 @@ def main() -> int:
             con.close()
         check("missing_ticker_rowcount_still_32", n2 == 32, str(n2))
 
-        # 8. refuse wrong count (31 tickers)
+        # 8. accept variable count (31 tickers)
         short = json.loads(mx.read_text(encoding="utf-8"))
         short["tickers"].pop(tickers()[1])
         shortmx = tmp / "short_matrix.json"
@@ -511,7 +555,7 @@ def main() -> int:
             ["--dry-run", "--matrix", str(shortmx), "--db", str(db)],
             tmp,
         )
-        check("wrong_count_refused", r.returncode == 2, f"rc={r.returncode} {r.stderr[-300:]}")
+        check("variable_count_dry_run_accepted", r.returncode == 0, f"rc={r.returncode} {r.stderr[-300:]}")
 
         # 9. live provenance names: source_generated_at_utc accepted as ts
         live_db = tmp / "fixture_live.sqlite"
@@ -1081,6 +1125,68 @@ def main() -> int:
             check("conf_out_of_range_refused", False, "accepted 1.5")
         except ValueError as e:
             check("conf_out_of_range_refused", "reference_confidence" in str(e), str(e))
+
+    # Band status clear (2026-09-27): a renewal NULLs reference_band_status for
+    # the renewed rows only; the old labels are recorded and restored on rollback.
+    with tempfile.TemporaryDirectory() as std:
+        stmp = Path(std)
+        sdb = make_status_db(stmp / "status.sqlite", 200)
+        pre_sha = db_sha(sdb)
+        pre_status = read_status(sdb)
+        renewed = [f"STAT_T{i:03d}" for i in range(1, 33)]
+        smx = make_matrix_subset(stmp / "status_matrix.json", sdb, renewed)
+        sbase = stmp / "baselines"
+        sbase.mkdir()
+        (sbase / OLD_PIN_BASENAME).write_text(json.dumps({"sentinel": True}), encoding="utf-8")
+        r = run_cli(["--dry-run", "--write", "--validate", "--matrix", str(smx), "--db", str(sdb),
+                     "--baseline-dir", str(sbase), "--dryrun-path", str(stmp / "dry.json")], stmp)
+        check("status_dry_run_exit0", r.returncode == 0, r.stderr[-500:])
+        check("status_dry_run_no_mutation", db_sha(sdb) == pre_sha)
+        try:
+            sdj = json.loads((stmp / "dry.json").read_text(encoding="utf-8"))
+            want_clear = sorted(t for t in renewed if pre_status[t] is not None)
+            check("status_dry_run_reports_clears",
+                  sdj.get("band_status_column_present") is True
+                  and sdj.get("band_status_clear_tickers") == want_clear
+                  and all(d["band_status_after"] is None and d["band_status_live"] == pre_status[d["ticker"]]
+                          for d in sdj["diffs"]),
+                  str(sdj.get("band_status_clear_tickers"))[:200])
+        except Exception as e:  # noqa: BLE001
+            check("status_dry_run_reports_clears", False, repr(e))
+        r = run_cli(["--apply", "--write", "--validate", "--matrix", str(smx), "--db", str(sdb),
+                     "--baseline-dir", str(sbase), "--backup-path", str(stmp / "bk.sqlite"),
+                     "--rollback-path", str(stmp / "bk.json")], stmp)
+        check("status_apply_exit0", r.returncode == 0, r.stderr[-500:] + r.stdout[-300:])
+        post = read_status(sdb)
+        check("status_renewed_rows_null", all(post[t] is None for t in renewed),
+              str({t: post[t] for t in renewed[:4]}))
+        check("status_other_rows_untouched",
+              all(post[t] == pre_status[t] for t in pre_status if t not in renewed))
+        try:
+            srb = json.loads((stmp / "bk.json").read_text(encoding="utf-8"))
+            check("status_rollback_records_prior_labels",
+                  srb.get("band_status_cleared") == sorted(renewed)
+                  and {t: v["reference_band_status"] for t, v in srb["before_rows"].items()}
+                  == {t: pre_status[t] for t in renewed})
+            spin = json.loads(Path(str(srb.get("baseline_path"))).read_text(encoding="utf-8"))
+            check("status_not_in_successor_pin",
+                  all("reference_band_status" not in e for e in spin["rows"]))
+        except Exception as e:  # noqa: BLE001
+            check("status_rollback_records_prior_labels", False, repr(e))
+        r = run_cli(["--rollback", "--db", str(sdb), "--rollback-path", str(stmp / "bk.json")], stmp)
+        check("status_rollback_restores_labels",
+              r.returncode == 0 and db_sha(sdb) == pre_sha and read_status(sdb) == pre_status,
+              r.stderr[-300:])
+
+    # A canon without the status column is untouched and reports no clears.
+    with tempfile.TemporaryDirectory() as ntd:
+        ntmp = Path(ntd)
+        ndb = make_null_conf_db(ntmp / "nostatus.sqlite", 32)
+        nmx = make_matrix(ntmp / "m.json", ndb)
+        dr = mod.build_dry_run(ndb, mod.extract_triples(json.loads(nmx.read_text(encoding="utf-8"))),
+                               nmx, "x", ntmp / "baselines")
+        check("status_absent_column_noop",
+              dr.get("band_status_column_present") is False and dr.get("band_status_clear_tickers") == [])
 
     # D9 option C: inverted invalidation is refused unless owner-acknowledged.
     def _entry(lo: float, hi: float, inv: float, warn: bool = False) -> dict:

@@ -1,0 +1,85 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "CME",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "financial_franchise",
+  "thesis_statement": "CME is the dominant US futures and options exchange: near-monopoly clearing in rates, equity-index, energy and ag contracts gives very high margins and pricing power, with volume that tends to rise when macro volatility rises.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Flat-to-low-single-digit revenue growth with ~65% operating margins and steady cash returns; volume tracks rate and macro uncertainty.",
+      "drivers": [
+        "rate-path uncertainty keeps Treasury/SOFR futures volume elevated",
+        "pricing increases on stable market share"
+      ]
+    },
+    "bull": {
+      "summary": "A volatility or rate-repricing episode lifts volume and fees faster than costs.",
+      "drivers": [
+        "Fed policy surprises",
+        "energy/geopolitical volatility"
+      ]
+    },
+    "bear": {
+      "summary": "A calm, low-volatility regime shrinks volumes while competition or fee pressure compresses growth.",
+      "drivers": [
+        "prolonged low volatility",
+        "competitive clearing entrant or regulatory fee change"
+      ]
+    }
+  },
+  "key_risks": [
+    "Growth is near zero (Q2 revenue +0.8% YoY, EPS +2.5%), so the stock is priced for stability, not growth.",
+    "Competitive or regulatory pressure on clearing economics."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the band invalidation level (proposed 255.60) on the owner-approved baseline.",
+    "fundamental": [
+      "Two consecutive quarters of revenue decline with falling average daily volume.",
+      "Material loss of share in rates or equity-index futures."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-21",
+      "date_confidence": "provider_estimate"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_review_bias",
+      "defensive_neutral_selective"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLF"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026 revenue +0.84% YoY, EPS +2.49%, operating margin 64.9%, net margin 61.1%, forward P/E 22.1",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator snapshot 2026-08-28)",
+      "as_of": "2026-08-28"
+    },
+    {
+      "claim": "Next earnings 2026-10-21 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (provider estimate, 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "Proposed band 263.92-269.46 (floor-widened), invalidation 255.60, confidence 0.15; price 270.76 above band",
+      "source": "tmp/renewal-matrix-20260922close-v3.json (proposed band, not yet approved)",
+      "as_of": "2026-09-22"
+    }
+  ],
+  "thesis_as_of": "2026-09-23",
+  "review_due": "2026-12-23",
+  "drafted_by": "Veritas Main (claude-opus-5-5)",
+  "owner_accepted_at": "2026-09-23T18:17:31-07:00",
+  "owner_notes": "Defensive, volatility-beneficiary franchise that suits today's defensive macro posture. Band confidence is lowest of the five (0.15): floor-widened, repaired day, not trend-qualified. Fundamentals are an aggregator snapshot; confirm against the Q2 filing. Accepted by Randall, Telegram 2026-09-23 evening: 'theses accepted, continue to repair ITA and PH'.",
+  "fundamentals_period_end": "2026-06-30"
+}

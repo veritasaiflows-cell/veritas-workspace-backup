@@ -12,13 +12,27 @@ from contextlib import redirect_stdout
 from datetime import date, datetime, timezone
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 
 MODULE_PATH = Path(__file__).resolve().parents[0] / "yahoo_reference_level_matrix.py"
 matrix = SourceFileLoader("yahoo_reference_level_matrix", str(MODULE_PATH)).load_module()
+REAL_RESOLVE = matrix.resolve_band_scope
 AS_OF = "2026-09-10"
 EXPECTED = "2026-09-09"
 FIXED_NOW = datetime(2026, 9, 10, 1, 2, 3, tzinfo=timezone.utc)
+TICKERS = tuple(sorted(("AMD", "AMZN", "BKNG", "BRK.B", "CAT", "CME", "CVX", "ECL",
+                        "ETN", "GE", "GOOG", "GS", "ITA", "JPM", "KTOS", "LIN",
+                        "LLY", "LMT", "LNG", "META", "MSFT", "NFLX", "NVDA", "PH",
+                        "PLTR", "RTX", "SMCI", "TMUS", "VMC", "VRT", "WMB", "XOM")))
+
+
+def fake_scope(tickers=TICKERS):
+    names = tuple(sorted(tickers))
+    return {"tickers": names, "symbols": {t: t.replace(".", "-") for t in names},
+            "scope": {"tickers": list(names), "count": len(names), "fingerprint": "fixture-fingerprint",
+                      "tier_breakdown": {"A": len(names)}, "resolved_at_utc": "2026-09-10T00:00:00Z"}}
 
 
 def fixed_now():
@@ -54,7 +68,7 @@ def make_canon_db(root: str | Path):
     db.parent.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(db)
     connection.execute("CREATE TABLE reference_levels (ticker TEXT PRIMARY KEY, reference_price_low REAL, reference_price_high REAL, reference_invalidation_level REAL, source_artifact_path TEXT, source_artifact_sha256 TEXT, source_generated_at_utc TEXT, raw_json TEXT)")
-    for index, ticker in enumerate(matrix.SCOPED_TICKERS):
+    for index, ticker in enumerate(TICKERS):
         connection.execute(
             "INSERT INTO reference_levels VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             (
@@ -69,14 +83,132 @@ def make_canon_db(root: str | Path):
 
 
 class YahooReferenceLevelMatrixTests(unittest.TestCase):
+    def setUp(self):
+        self.resolver_patch = patch.object(matrix, "resolve_band_scope", return_value=fake_scope())
+        self.resolver_patch.start()
+        self.addCleanup(self.resolver_patch.stop)
+
     def test_scope_and_provider_mapping_are_exact(self):
-        self.assertEqual(len(matrix.SCOPED_TICKERS), 32)
-        self.assertEqual(tuple(sorted(matrix.SCOPED_TICKERS)), matrix.SCOPED_TICKERS)
+        self.assertEqual(len(fake_scope()["tickers"]), 32)
+        self.assertEqual(tuple(sorted(TICKERS)), TICKERS)
         self.assertEqual(matrix.provider_symbol("BRK.B"), "BRK-B")
         with self.assertRaises(ValueError):
             matrix.build_document(AS_OF, EXPECTED, ("AAPL",), http_get=mock_http(chart_raw()), now_fn=fixed_now)
         with self.assertRaises(ValueError):
             matrix.build_document(AS_OF, EXPECTED, ("NVDA",), http_get=mock_http(chart_raw()), now_fn=fixed_now)
+
+    def test_default_scope_root_is_real_path(self):
+        seen = []
+
+        class Access:
+            def __init__(self, db):
+                self.db = db
+
+            def dynamic_entitlement_scope(self, *, envelope_name, envelope_count):
+                self.outer = (envelope_name, envelope_count)
+                return SimpleNamespace(
+                    memberships={"NVDA": SimpleNamespace(yfinance_symbol="NVDA")},
+                    overflow_tickers=(), integrity_breaches=(),
+                    payload=lambda: {"fingerprint": "fixture", "count": 1, "tier_breakdown": {"A": 1}})
+
+        def policy_loader(root):
+            seen.append(root)
+            return SimpleNamespace(max_scope_count=1)
+
+        resolved = REAL_RESOLVE("fixture.sqlite", access_factory=Access, policy_loader=policy_loader)
+        self.assertEqual(resolved["tickers"], ("NVDA",))
+        self.assertEqual(seen, [MODULE_PATH.resolve().parents[1]])
+        self.assertIsInstance(seen[0], Path)
+        self.assertIsNotNone(seen[0])
+
+    def test_document_and_main_supply_explicit_scope_root(self):
+        with tempfile.TemporaryDirectory() as folder:
+            db = make_canon_db(folder)
+            with patch.object(matrix, "resolve_band_scope", return_value=fake_scope()) as resolver:
+                matrix.build_document(AS_OF, EXPECTED, ("NVDA",), db_path=db,
+                                      http_get=mock_http(chart_raw()), now_fn=fixed_now, diagnostic=True)
+                self.assertEqual(resolver.call_args.kwargs["workspace_root"], MODULE_PATH.resolve().parents[1])
+                with redirect_stdout(io.StringIO()):
+                    self.assertEqual(matrix.main(["--as-of-date", AS_OF, "--expected-session-date", EXPECTED,
+                                                  "--ticker", "NVDA", "--db", str(db)],
+                                                 http_get=mock_http(chart_raw()), now_fn=fixed_now), 0)
+                self.assertEqual(resolver.call_args.kwargs["workspace_root"], MODULE_PATH.resolve().parents[1])
+
+    def test_guarded_scope_resolution_and_refusals(self):
+        def resolve(names=("BRK.B", "NVDA"), cap=3, overflow=(), breaches=(), blank=False, error=None):
+            memberships = {t: SimpleNamespace(ticker=t, tier="A", decision_grade_eligible=True,
+                                              yfinance_symbol=" " if blank else t.replace(".", "-")) for t in names}
+            class Access:
+                def __init__(self, db):
+                    assert db == "fixture.sqlite"
+                def dynamic_entitlement_scope(self, *, envelope_name, envelope_count):
+                    assert (envelope_name, envelope_count) == ("band_renewal", cap)
+                    if error:
+                        raise error()
+                    return SimpleNamespace(memberships=memberships, overflow_tickers=overflow,
+                                           integrity_breaches=breaches,
+                                           payload=lambda: {"fingerprint": "abc", "count": len(names),
+                                                            "tier_breakdown": {"A": len(names)}})
+            return REAL_RESOLVE("fixture.sqlite", access_factory=Access,
+                                             policy_loader=lambda root: SimpleNamespace(max_scope_count=cap))
+        happy = resolve()
+        self.assertEqual(happy["tickers"], ("BRK.B", "NVDA"))
+        self.assertEqual(happy["symbols"]["BRK.B"], "BRK-B")
+        self.assertEqual(happy["scope"]["tickers"], ["BRK.B", "NVDA"])
+        class DynamicEntitlementScopeError(Exception):
+            pass
+        for code, kw in (("band_scope_error", {"error": DynamicEntitlementScopeError}),
+                         ("band_scope_empty", {"names": ()}),
+                         ("band_scope_overflow", {"overflow": ("X",)}),
+                         ("band_scope_over_cap", {"cap": 1}),
+                         ("band_scope_integrity_breach", {"breaches": ("bad",)}),
+                         ("band_scope_blank_yfinance_symbol", {"blank": True})):
+            with self.subTest(code=code), self.assertRaisesRegex(ValueError, code):
+                resolve(**kw)
+
+    def test_contract_scope_sizes_and_outside_diagnostic(self):
+        for names in (TICKERS[:-1], TICKERS, tuple(sorted((*TICKERS, "ZZZ")))):
+            with self.subTest(count=len(names)), tempfile.TemporaryDirectory() as folder:
+                db = make_canon_db(folder)
+                if "ZZZ" in names:
+                    con = sqlite3.connect(db)
+                    con.execute("INSERT INTO reference_levels VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                ("ZZZ", 1, 2, 0.5, "old/ZZZ", "hash", "oldtime", '{"level_as_of_utc":"oldtime"}'))
+                    con.commit()
+                    con.close()
+                scope = fake_scope(names)
+                doc = matrix.build_document(AS_OF, EXPECTED, db_path=db, http_get=mock_http(chart_raw()),
+                                            now_fn=fixed_now, resolved_scope=scope)
+                self.assertTrue(doc["artifact_write_eligible"])
+                self.assertEqual(len(doc["tickers"]), len(names))
+                self.assertIn(f"Scope: {len(names)} names; fingerprint: fixture-fingerprint", matrix.markdown_for(doc))
+                with self.assertRaisesRegex(ValueError, "exact full resolved scope"):
+                    matrix.build_document(AS_OF, EXPECTED, names[:-1], db_path=db,
+                                          resolved_scope=scope, http_get=mock_http(chart_raw()))
+                previous = os.getcwd()
+                os.chdir(folder)
+                try:
+                    code = matrix.main(["--as-of-date", AS_OF, "--expected-session-date", EXPECTED,
+                                        "--ticker", "OUTSIDE", "--db", str(db)],
+                                       scope_resolver=lambda path, *, workspace_root: scope, http_get=mock_http(chart_raw()))
+                    self.assertNotEqual(code, 0)
+                    self.assertFalse(Path("tmp").exists())
+                finally:
+                    os.chdir(previous)
+
+    def test_resolver_refusal_writes_nothing(self):
+        with tempfile.TemporaryDirectory() as folder:
+            previous = os.getcwd()
+            os.chdir(folder)
+            try:
+                def refuse(path, *, workspace_root):
+                    raise ValueError("band_scope_integrity_breach")
+                code = matrix.main(["--as-of-date", AS_OF, "--expected-session-date", EXPECTED, "--write"],
+                                   scope_resolver=refuse, http_get=mock_http(chart_raw()))
+                self.assertNotEqual(code, 0)
+                self.assertFalse(Path("tmp").exists())
+            finally:
+                os.chdir(previous)
 
     def test_valid_row_has_252_bars_and_all_authority_flags_false(self):
         document = matrix.build_document(AS_OF, EXPECTED, ("NVDA",), http_get=mock_http(chart_raw()), now_fn=fixed_now, diagnostic=True)
@@ -174,7 +306,9 @@ class YahooReferenceLevelMatrixTests(unittest.TestCase):
                 self.assertTrue(Path("tmp/yahoo_reference_level_matrix.md").is_file())
                 written = json.loads(Path("tmp/yahoo_reference_level_matrix.json").read_text(encoding="utf-8"))
                 self.assertTrue(written["artifact_write_eligible"])
-                self.assertEqual(tuple(written["tickers"]), matrix.SCOPED_TICKERS)
+                self.assertEqual(tuple(written["tickers"]), TICKERS)
+                self.assertEqual(written["scope"]["tickers"], list(TICKERS))
+                self.assertEqual(written["scope"]["fingerprint"], "fixture-fingerprint")
                 markdown = Path("tmp/yahoo_reference_level_matrix.md").read_text(encoding="utf-8")
                 self.assertIn("## Yahoo source lineage", markdown)
                 self.assertIn("## Current canonical lineage", markdown)
@@ -241,7 +375,7 @@ class YahooReferenceLevelMatrixTests(unittest.TestCase):
     def test_markdown_decision_dynamic_no_blocker_withholds_ita_and_incomplete(self):
         document = matrix.build_document(AS_OF, EXPECTED, ("NVDA",), http_get=mock_http(chart_raw()), now_fn=fixed_now, diagnostic=True)
         document["artifact_write_eligible"] = True
-        document["tickers"] = {ticker: dict(document["tickers"]["NVDA"], ticker=ticker, yahoo_symbol=matrix.provider_symbol(ticker)) for ticker in matrix.SCOPED_TICKERS}
+        document["tickers"] = {ticker: dict(document["tickers"]["NVDA"], ticker=ticker, yahoo_symbol=matrix.provider_symbol(ticker)) for ticker in TICKERS}
         document["row_counts"] = {"trend_qualified": 32, "monitor_only": 0, "blocked": 0}
         document["full_apply_blockers"] = []
         markdown = matrix.markdown_for(document)
