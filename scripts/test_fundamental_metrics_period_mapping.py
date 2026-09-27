@@ -144,8 +144,54 @@ def test_distinct_ticker_repairs_remain_isolated(errors: list[str]) -> None:
     expect(all(item.get("blocks_ticker_only") is True for item in repairs), f"ticker-only scope was widened: {repairs}", errors)
 
 
+def statement(columns: list[str], values: dict[str, list[float | None]]):
+    import pandas as pd
+
+    frame = pd.DataFrame(
+        {pd.Timestamp(col): [values[row][i] for row in ("revenue", "net_income", "eps")] for i, col in enumerate(columns)},
+        index=["Total Revenue", "Net Income", "Diluted EPS"],
+    )
+    return frame, {"revenue": "Total Revenue", "net_income": "Net Income", "diluted_eps": "Diluted EPS"}
+
+
+def test_fully_reported_newest_quarter_is_not_skipped(errors: list[str]) -> None:
+    cols = ["2026-06-30", "2026-03-31", "2025-12-31", "2025-09-30", "2025-06-30", "2025-03-31"]
+    nan = None
+    frame, rows = statement(cols, {
+        "revenue": [7.0e9, 6.5e9, 6.6e9, 6.4e9, 6.3e9, 6.0e9],
+        "net_income": [1.0e9, 0.9e9, 0.95e9, 0.9e9, nan, 0.8e9],
+        "eps": [2.6, 2.4, 2.5, 2.3, nan, 2.1],
+    })
+    current, prior, metrics = mod.latest_comparable_pair(frame, rows, lag=4)
+    expect(str(current.date()) == "2026-06-30" and str(prior.date()) == "2025-06-30",
+           f"newest fully reported quarter skipped for an older one: {current} vs {prior}", errors)
+    expect(metrics.get("net_income_prior") is None and metrics.get("diluted_eps_prior") is None,
+           f"year-ago gaps must stay missing, not be filled: {metrics}", errors)
+    # A newest quarter that is not fully reported keeps the completeness fallback.
+    frame, rows = statement(cols, {
+        "revenue": [7.0e9, 6.5e9, 6.6e9, 6.4e9, 6.3e9, 6.0e9],
+        "net_income": [nan, 0.9e9, 0.95e9, 0.9e9, nan, 0.8e9],
+        "eps": [nan, 2.4, 2.5, 2.3, nan, 2.1],
+    })
+    current, _, _ = mod.latest_comparable_pair(frame, rows, lag=4)
+    expect(str(current.date()) == "2026-03-31", f"partial newest quarter should fall back: {current}", errors)
+
+
+def test_implausible_price_to_book_is_missing_not_zero(errors: list[str]) -> None:
+    record: dict = {}
+    expect(mod.plausible_price_to_book(0.0011, record) is None, "BRK-B style 0.0011 P/B must be rejected", errors)
+    expect(record.get("price_to_book_provider_rejected") == 0.0011, f"rejected value not recorded: {record}", errors)
+    for value, want in ((1.534, 1.53), (0.05, 0.05), (-4.2, -4.2), (None, None)):
+        record = {}
+        got = mod.plausible_price_to_book(value, record)
+        expect(got == want and "price_to_book_provider_rejected" not in record,
+               f"plausible P/B {value!r} changed to {got!r} ({record})", errors)
+
+
 def main() -> int:
     errors: list[str] = []
+    test_fully_reported_newest_quarter_is_not_skipped(errors)
+    test_implausible_price_to_book_is_missing_not_zero(errors)
     test_period_alias_candidate_order(errors)
     test_sec_fact_alias_match_carries_mapping(errors)
     test_net_income_definition_match_prefers_like_for_like(errors)

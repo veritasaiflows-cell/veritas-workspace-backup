@@ -277,3 +277,14 @@ Randall (WebChat ~08:17): "Proceed with all three recommendations, continue and 
 - An append-only amendment to `state/finance/standing-approvals/band-renewal-option-b.json` records this approval. Auto-apply conditions are unchanged.
 
 **Static-32 removal: prepared, not executed.** Plan and inventory: `Phase 4 Static-32 Removal Plan - 2026-09-27.md`. The dynamic entitlement currently equals the hard-coded 32 (15 A + 17 B, 0 debt), so the change is behavior-neutral today. Owner decisions are listed there: D1 implementation route, D2 an Option B stop condition on scope change, D3 onboarding for names without a `reference_levels` row.
+
+### 2026-09-27 late morning Phoenix: static-32 removal accepted and repaired; aggregator fixes (Claude, GitHub session)
+
+Randall accepted the PHASE4-DYNAMIC-SCOPE-20260927 Muse Spark code as-is, waived further external QA, and kept implementation and QA with Claude in the GitHub session.
+
+- **Static-32 removal accepted.** Claude fixed both HIGH findings. A non-regular prior audit record now stops the renewal instead of falling back. Every apply now needs a scoped, fingerprint-matched and live-verified matrix. The scope-change stop (D2) is enforced. Proof, tests and the offline canon-copy end-to-end: `Phase 4 Static-32 Removal Plan - 2026-09-27.md`, section "Acceptance and repair".
+- **D3 blocked; owner decision.** `scripts/finance_sql_canon_access.py` guards exactly 200 reference, evidence and pin rows (new inventory row S7), so an onboarding insert fails the guard. The recommendation is to build D3 and the guard-contract change inside the P4-2 per-name writer lane. Until then, a promoted name without a row stays monitor-only.
+- **Aggregator quarter lag (ETN, GS): cause found, fix in code.** `latest_comparable_pair` in `scripts/fundamental_metrics_refresh.py` fell back to the prior quarter whenever the year-ago column had two or more gaps, even if the newest quarter was fully reported. A synthetic statement reproduced the 03-31 result. A fully reported newest quarter now wins, and missing year-over-year values stay visible as `partial`. Confirming ETN/GS specifically needs the next refresh on the Windows host (no yfinance access in the cloud).
+- **BRK.B P/B 0.0: fixed.** yfinance's `priceToBook` for BRK-B uses Class A book value per share, about 0.001. A non-negative provider P/B below 0.05 is now recorded as `price_to_book_provider_rejected`, and `price_to_book` is null, not 0.0. Negative P/B (negative equity) is kept.
+- **Still open:** 13 stale band-status labels, which clear at the 10-03 renewal. XOM's thesis source note is superseded by the official 8-K confirmation.
+- **Not done:** the P4-2 per-name tier writer. Its prerequisites (forward scorecard, the 2026-10-15 scorer-readiness gate) are unmet. Nothing was written to live canon, tiers, schedules, config or delivery.

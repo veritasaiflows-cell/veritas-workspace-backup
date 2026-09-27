@@ -116,6 +116,22 @@ def round_or_none(value: float | None, digits: int = 2) -> float | None:
     return round(float(value), digits)
 
 
+MIN_PLAUSIBLE_PRICE_TO_BOOK = 0.05
+
+
+def plausible_price_to_book(value: float | None, record: dict[str, Any]) -> float | None:
+    """Provider P/B, or None with a note when it cannot be a real ratio.
+
+    yfinance divides the BRK-B price by Class A book value per share, giving
+    about 0.001, which rounded to 0.0 (September 2026).
+    """
+    # Negative P/B (negative book equity) is a real ratio and is kept.
+    if value is None or value < 0 or value >= MIN_PLAUSIBLE_PRICE_TO_BOOK:
+        return round_or_none(value)
+    record["price_to_book_provider_rejected"] = value
+    return None
+
+
 def abs_or_none(value: float | None) -> float | None:
     if value is None:
         return None
@@ -1107,6 +1123,12 @@ def latest_comparable_pair(df: Any, rows: dict[str, Any], lag: int) -> tuple[Any
         core_count = sum(metrics.get(key) is not None for key in ("revenue", "revenue_prior", "net_income", "net_income_prior", "diluted_eps", "diluted_eps_prior"))
         if core_count == 0:
             continue
+        # A fully reported newest quarter is the current period even when its
+        # year-ago column has gaps; missing YoY stays visible as a partial
+        # record instead of silently reporting an older quarter (ETN/GS showed
+        # period 03-31 in September 2026).
+        if all(metrics.get(key) is not None for key in ("revenue", "net_income", "diluted_eps")):
+            return current, prior, metrics
         candidate = (core_count, current, prior, metrics)
         if best is None or core_count > best[0]:
             best = candidate
@@ -1510,7 +1532,7 @@ def fetch_equity_record(ticker: str, meta: dict[str, Any], generated_at: str, ir
                 base["trailing_pe"] = round_or_none(safe_float(info.get("trailingPE")))
                 base["forward_pe"] = round_or_none(safe_float(info.get("forwardPE")))
                 base["price_to_sales"] = round_or_none(safe_float(info.get("priceToSalesTrailing12Months")))
-                base["price_to_book"] = round_or_none(safe_float(info.get("priceToBook")))
+                base["price_to_book"] = plausible_price_to_book(safe_float(info.get("priceToBook")), base)
             base["market_cap"] = round_or_none(safe_float(market_cap))
         except Exception:
             base["market_cap"] = None
