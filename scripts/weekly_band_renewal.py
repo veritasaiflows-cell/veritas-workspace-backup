@@ -121,12 +121,15 @@ def _prior_applied_names(root: Path, current_session: str) -> tuple[str | None, 
         match = re.fullmatch(r"(\d{4}-\d{2}-\d{2})-applied\.json", path.name)
         if not match:
             continue
+        # Any entry named like an applied record must be a real, dated record.
+        # Skipping it would silently compare against an older renewal instead
+        # (QA 2026-09-27 PRIOR_AUDIT_NONREGULAR_STALE_FALLBACK), so stop instead.
         try:
             date.fromisoformat(match.group(1))
         except ValueError:
-            continue
+            return None, [], f"applied audit record is invalid: {path.name}: not a calendar date"
         if path.is_symlink() or not path.is_file() or path.resolve().parent != audit_dir.resolve():
-            continue
+            return None, [], f"applied audit record is invalid: {path.name}: not a regular file in the audit directory"
         candidates.append((match.group(1), path))
     if not candidates:
         return None, [], None

@@ -1,6 +1,6 @@
 # Phase 4 Static-32 Removal Plan - 2026-09-27
 
-Status: **applied to the live workspace 2026-09-27 ~09:36-09:42 by the PHASE4-DYNAMIC-SCOPE-20260927 lane (uncommitted; independent GPT-5.6 Sol QA verdict FAIL after 3 rounds with two HIGH findings open; NOT Main-accepted; implementer ran Muse Spark despite the owner-named GPT-6 Sol).** Owner direction: Randall, WebChat 2026-09-27 ~08:17, "continue and prepare to remove the static 32-name list" and ~08:40 "use GPT5.6 Sol for QA and GPT6-Sol for Implementation work". Parent record: `Phase 4 Tier Promotion and Demotion Design - 2026-09-07.md` (addendum 2026-09-23, "Static assumptions that must be removed").
+Status: **accepted 2026-09-27 (late morning Phoenix); repaired on GitHub branch `operating-procedure-spine`. The Windows host must pull this branch before the Sat 10-03 09:00 renewal, or it runs the unrepaired `65c20533` copy.** Randall accepted the Muse Spark builder code as-is, waived further external QA, and directed that implementation and QA for this work stay with Claude in the GitHub session. Claude repaired both open HIGH QA findings with regression tests (see "Acceptance and repair" below). History: applied to the workspace 09:36-09:42 by lane PHASE4-DYNAMIC-SCOPE-20260927; GPT-5.6 Sol QA failed three rounds on those two findings; the implementer ran Muse Spark, not the owner-named GPT-6 Sol. Owner direction: Randall, WebChat 2026-09-27 ~08:17, "continue and prepare to remove the static 32-name list" and ~08:40 "use GPT5.6 Sol for QA and GPT6-Sol for Implementation work". Parent record: `Phase 4 Tier Promotion and Demotion Design - 2026-09-07.md` (addendum 2026-09-23, "Static assumptions that must be removed").
 
 ## Conclusion
 
@@ -16,6 +16,7 @@ Removing the list is **behavior-neutral today**. The guarded-SQL dynamic entitle
 | S4 | `scripts/finance_sql_canon_access.py:1560-1561` | Default reporting envelope `phase3_initial_32` / `32` for `dynamic_entitlement_scope()` | This is a reporting envelope and never truncates. Default-argument callers are the controller (1042), analyst consensus (898, 915, 973), chain (109) and question router (115). They would report `overflow_tickers` once scope exceeds 32. `phase3f_external_canary_approval.py:479` treats overflow as a refusal; `phase3g_dynamic_execution.py:176` checks against the policy cap of 128. |
 | S5 | `scripts/tier_entitlement_phase3d_observed_coverage.py:536,627` | `envelope_count=32` default | Historical Phase 3d coverage tool. Reporting only. |
 | S6 | Tests | `test_g6_yahoo32_sql_apply.py` (fixture N=32, about 75 references), `test_yahoo_reference_level_matrix.py` (8), `test_yahoo_reference_evidence_collector.py` (4) | Most references are fixture sizes; the scope tests must change with S1-S2. |
+| S7 | `scripts/finance_sql_canon_access.py:602-605, 1222-1225` (found 2026-09-27 after acceptance) | The SQL guard requires exactly 200 `reference_levels` rows, 200 `evidence_freshness` rows and a 200-row baseline pin | Not part of the 32-name scope; the renewal is unaffected. It blocks D3: inserting a row for any of the 100 universe names without one fails the guard until the contract changes. |
 
 Already dynamic, no change: the recurring chain and controller scope (`run_alerts_recommendations_chain.py` with `policy.max_scope_count = 128`), nightly gap repair, the alert-event ledger, and `weekly_band_renewal.py`, which takes whatever scope the matrix produces.
 
@@ -48,3 +49,29 @@ Already dynamic, no change: the recurring chain and controller scope (`run_alert
 ## Not granted by this plan
 
 Tier changes, promotion or demotion, canon writes, schedule/config/runtime changes, thesis acceptance, capital, orders, accounts, execution, or external delivery.
+
+## Acceptance and repair - 2026-09-27 (Claude, GitHub session)
+
+Owner decision (Randall): "Proceed with all open items. Approved to accept code from Muse Spark as is and no need to rerun additional QA. Since we are in GitHub repository, all QA and implementation stays with Claude here. Proceed as recommended."
+
+Repairs (both HIGH findings from QA round 3):
+
+- **PRIOR_AUDIT_NONREGULAR_STALE_FALLBACK** (`scripts/weekly_band_renewal.py` `_prior_applied_names`). A symlink, directory, broken link or non-calendar date named like `<date>-applied.json` now stops the run at `needs_owner_review` ("applied audit record is invalid: ..."). Before, it was skipped and the name list was compared against an older renewal. The live audit directory holds only regular files (`2026-09-23-gate_passed_not_applied.json`, `2026-09-25-applied.json`), so the 10-03 run is unaffected. Replaced two tests that asserted the old fallback; 5 new tests fail on the pre-repair code.
+- **UNSCOPED_VARIABLE_APPLY_BYPASSES_SCOPE_VERIFICATION** (`scripts/g6_yahoo32_sql_apply.py` `run_apply`). Every apply now needs a matrix scope block, a matching `--expected-scope-fingerprint`, a scope count equal to the batch, and `--verify-live-scope`, all checked before backup. `validate_apply_artifact` also rejects an apply record that is not scope- and live-verified. The unscoped legacy apply path is gone; dry runs stay permissive. The weekly renewal already passes every flag. Test fixtures now carry scope blocks and run the CLI through a test-only live-scope shim. The shim is embedded in the test files, so production code has no bypass hook.
+
+Proof (Linux cloud checkout, 2026-09-27 ~11:40 Phoenix):
+
+- `python -B scripts/test_g6_yahoo32_sql_apply.py`: 125/125 (4 new; `unverified_apply_refused_unscoped` and `_no_live_check` fail on pre-repair code with rc=0).
+- `pytest scripts/test_weekly_band_renewal.py scripts/test_g6_dynamic_scope.py scripts/test_g6_hermetic_full_chain_packet.py scripts/test_alert_reference_baseline_freshness_guard.py`: 73 passed, 46 subtests. `test_yahoo_reference_level_matrix.py`: 24 OK. `test_alert_event_ledger.py` and `test_yahoo_daily_gap_repair.py`: 24 passed.
+- Offline end-to-end on a scratch copy of the live canon (live file never opened for write):
+  - dynamic scope is 32 (15 A + 17 B), identical to the 09-25 applied renewal's names, so the scope-change stop will not fire on 10-03;
+  - an unflagged `--apply` was refused with the database unchanged;
+  - a verified dry run reported 32 triples, 0 drift, no mutation;
+  - a verified apply passed `apply_valid`;
+  - `--rollback` was byte-exact.
+- Caveat for this check only: the checkout stores `data/finance/universe-v1.json` with LF endings and lacks the uncommitted `tmp/sql-canon-consumer-migration-backlog.json`, so the guard's lineage-hash check was patched in-process to hash the CRLF form. The Windows host is unaffected.
+- Not run here: the live Yahoo matrix (the cloud network policy denies `query1.finance.yahoo.com`). The first real proof is the Sat 10-03 09:00 Option B run.
+
+D2 (scope-change stop) is now enforced, as Randall's 08:48 amendment to `state/finance/standing-approvals/band-renewal-option-b.json` anticipated.
+
+**D3 is blocked by S7 and not built.** An insert-capable onboarding writer cannot pass the guarded-SQL contract, which is fixed at exactly 200 reference, evidence and pin rows. Onboarding also needs `evidence_freshness` rows and 5 + 4 lineage rows per name. No consumer exists yet: promotion needs the per-name tier writer (P4-2), which still waits on the scorer-readiness gate. Recommendation: build D3 together with a guard-contract change in the P4-2 lane. The new rule would say reference rows are a subset of the universe, the pin row count equals the reference row count, and every evaluated name has a row. Until then, a promoted name without a row stays monitor-only. Changing the guard contract needs Randall's explicit word.

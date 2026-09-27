@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import os
 import py_compile
 import re
 import shutil
@@ -54,6 +55,27 @@ def load_script():
 
 def tickers(n: int = N) -> list[str]:
     return [f"YHOO_T{i:02d}" for i in range(1, n + 1)]
+
+
+def scope_block(names: list[str]) -> dict:
+    """Matrix scope block; fingerprint mirrors finance_sql_canon_access."""
+    members = [{"ticker": t, "tier": "A", "decision_grade_eligible": True} for t in sorted(names)]
+    fingerprint = hashlib.sha256(json.dumps(
+        [[m["ticker"], m["tier"], m["decision_grade_eligible"]] for m in members],
+        ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
+    return {"source": "guarded-sql-dynamic-entitlement", "members": members,
+            "tickers": [m["ticker"] for m in members], "count": len(members),
+            "fingerprint": fingerprint}
+
+
+def rescope(matrix: dict) -> dict:
+    matrix["scope"] = scope_block(list(matrix["tickers"]))
+    return matrix
+
+
+def scope_flags(matrix_path: Path) -> list[str]:
+    fingerprint = json.loads(matrix_path.read_text(encoding="utf-8"))["scope"]["fingerprint"]
+    return ["--expected-scope-fingerprint", fingerprint, "--verify-live-scope"]
 
 
 def make_fixture_db(path: Path, ts: list[str] | None = None) -> Path:
@@ -201,7 +223,8 @@ def make_matrix(path: Path, db_path: Path, factor: float = 1.1) -> Path:
         }
     path.write_text(
         json.dumps(
-            {"generated_at": "2026-09-10T00:00:00+00:00", "tickers": tick}, indent=2
+            {"generated_at": "2026-09-10T00:00:00+00:00", "tickers": tick,
+             "scope": scope_block(list(tick))}, indent=2
         ),
         encoding="utf-8",
     )
@@ -237,20 +260,45 @@ def make_matrix_subset(path: Path, db_path: Path, wanted: list[str], factor: flo
         }
     path.write_text(
         json.dumps(
-            {"generated_at": "2026-09-10T00:00:00+00:00", "tickers": tick}, indent=2
+            {"generated_at": "2026-09-10T00:00:00+00:00", "tickers": tick,
+             "scope": scope_block(list(tick))}, indent=2
         ),
         encoding="utf-8",
     )
     return path
 
 
-def run_cli(args: list[str], cwd: Path) -> subprocess.CompletedProcess:
+# Test-only stand-in for guarded SQL: runs the real script with a fake live
+# scope resolver that reports the matrix scope (drift: G6_TEST_LIVE_FINGERPRINT).
+LIVE_SHIM = (
+    "import json, os, runpy, sys, types\n"
+    "script, args = sys.argv[1], sys.argv[2:]\n"
+    "def resolve_band_scope(db_path, **_):\n"
+    "    fp = os.environ.get('G6_TEST_LIVE_FINGERPRINT')\n"
+    "    if fp is None:\n"
+    "        with open(args[args.index('--matrix') + 1], encoding='utf-8') as f:\n"
+    "            fp = json.load(f)['scope']['fingerprint']\n"
+    "    return {'scope': {'fingerprint': fp}}\n"
+    "fake = types.ModuleType('yahoo_reference_level_matrix')\n"
+    "fake.resolve_band_scope = resolve_band_scope\n"
+    "sys.modules['yahoo_reference_level_matrix'] = fake\n"
+    "sys.argv = [script] + args\n"
+    "runpy.run_path(script, run_name='__main__')\n"
+)
+
+
+def run_cli(args: list[str], cwd: Path, live_fingerprint: str | None = None) -> subprocess.CompletedProcess:
+    env = dict(os.environ)
+    env.pop("G6_TEST_LIVE_FINGERPRINT", None)
+    if live_fingerprint is not None:
+        env["G6_TEST_LIVE_FINGERPRINT"] = live_fingerprint
     return subprocess.run(
-        [sys.executable, str(SCRIPT)] + args,
+        [sys.executable, "-c", LIVE_SHIM, str(SCRIPT)] + args,
         cwd=str(cwd),
         capture_output=True,
         text=True,
         timeout=60,
+        env=env,
     )
 
 
@@ -453,6 +501,7 @@ def main() -> int:
                 "--apply", "--write", "--validate",
                 "--matrix", str(mx), "--db", str(db),
                 "--backup-path", str(bkp), "--rollback-path", str(rbp),
+                *scope_flags(mx),
             ],
             tmp,
         )
@@ -501,6 +550,7 @@ def main() -> int:
             [
                 "--apply", "--write", "--matrix", str(mx), "--db", str(db),
                 "--backup-path", str(bkp), "--rollback-path", str(tmp / "evil.md"),
+                *scope_flags(mx),
             ],
             tmp,
         )
@@ -517,6 +567,7 @@ def main() -> int:
                 "--matrix", str(mx), "--db", str(db),
                 "--backup-path", str(blocker / "pre.sqlite"),
                 "--rollback-path", str(tmp / "bk2.json"),
+                *scope_flags(mx),
             ],
             tmp,
         )
@@ -528,16 +579,18 @@ def main() -> int:
         bad = json.loads(mx.read_text(encoding="utf-8"))
         bad["tickers"]["NOT_A_TICKER"] = bad["tickers"].pop(tickers()[0])
         badmx = tmp / "bad_matrix.json"
-        badmx.write_text(json.dumps(bad), encoding="utf-8")
+        badmx.write_text(json.dumps(rescope(bad)), encoding="utf-8")
         r = run_cli(
             [
                 "--apply", "--write", "--matrix", str(badmx), "--db", str(db),
                 "--backup-path", str(tmp / "bk3.sqlite"),
                 "--rollback-path", str(tmp / "bk3.json"),
+                *scope_flags(badmx),
             ],
             tmp,
         )
-        check("missing_ticker_refused", r.returncode == 2, f"rc={r.returncode} {r.stderr[-300:]}")
+        check("missing_ticker_refused", r.returncode == 2 and "missing from DB" in r.stderr,
+              f"rc={r.returncode} {r.stderr[-300:]}")
         check("missing_ticker_no_insert", db_sha(db) == pre7)
         con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
         try:
@@ -550,12 +603,35 @@ def main() -> int:
         short = json.loads(mx.read_text(encoding="utf-8"))
         short["tickers"].pop(tickers()[1])
         shortmx = tmp / "short_matrix.json"
-        shortmx.write_text(json.dumps(short), encoding="utf-8")
+        shortmx.write_text(json.dumps(rescope(short)), encoding="utf-8")
         r = run_cli(
             ["--dry-run", "--matrix", str(shortmx), "--db", str(db)],
             tmp,
         )
         check("variable_count_dry_run_accepted", r.returncode == 0, f"rc={r.returncode} {r.stderr[-300:]}")
+
+        # 8b. no unscoped or unverified apply, even at the old fixed count of 32
+        # (QA 2026-09-27 UNSCOPED_VARIABLE_APPLY_BYPASSES_SCOPE_VERIFICATION)
+        unscoped = json.loads(mx.read_text(encoding="utf-8"))
+        del unscoped["scope"]
+        unscopedmx = tmp / "unscoped_matrix.json"
+        unscopedmx.write_text(json.dumps(unscoped), encoding="utf-8")
+        for label, mpath, extra, live in (
+            ("unscoped", unscopedmx, [], None),
+            ("no_fingerprint", mx, ["--verify-live-scope"], None),
+            ("no_live_check", mx, scope_flags(mx)[:2], None),
+            ("live_drift", mx, scope_flags(mx), "0" * 64),
+        ):
+            pre8 = db_sha(db)
+            bk8 = tmp / f"bk8_{label}.sqlite"
+            r = run_cli(
+                ["--apply", "--write", "--validate", "--matrix", str(mpath), "--db", str(db),
+                 "--backup-path", str(bk8), "--rollback-path", str(tmp / f"bk8_{label}.json"), *extra],
+                tmp, live_fingerprint=live,
+            )
+            check(f"unverified_apply_refused_{label}",
+                  r.returncode == 2 and db_sha(db) == pre8 and not bk8.exists(),
+                  f"rc={r.returncode} {r.stderr[-300:]}")
 
         # 9. live provenance names: source_generated_at_utc accepted as ts
         live_db = tmp / "fixture_live.sqlite"
@@ -663,6 +739,7 @@ def main() -> int:
                 "--baseline-dir", str(base2),
                 "--backup-path", str(tmp / "bk32.sqlite"),
                 "--rollback-path", str(tmp / "bk32.json"),
+                *scope_flags(mx2),
             ],
             tmp,
         )
@@ -744,6 +821,7 @@ def main() -> int:
                 "--baseline-dir", str(base_big),
                 "--backup-path", str(tmp / "bk200.sqlite"),
                 "--rollback-path", str(tmp / "bk200.json"),
+                *scope_flags(mxbig),
             ],
             tmp,
         )
@@ -859,6 +937,7 @@ def main() -> int:
                 "--baseline-dir", str(null_base),
                 "--backup-path", str(tmp / "bk_null.sqlite"),
                 "--rollback-path", str(tmp / "bk_null.json"),
+                *scope_flags(null_mx),
             ],
             tmp,
         )
@@ -1008,6 +1087,7 @@ def main() -> int:
                 "--baseline-dir", str(fam_base),
                 "--backup-path", str(tmp / "bk_fam.sqlite"),
                 "--rollback-path", str(tmp / "bk_fam.json"),
+                *scope_flags(mxfam),
             ],
             tmp,
         )
@@ -1096,7 +1176,7 @@ def main() -> int:
         (cbase / OLD_PIN_BASENAME).write_text(json.dumps({"sentinel": True}), encoding="utf-8")
         r = run_cli(["--apply", "--write", "--validate", "--matrix", str(cmx_path), "--db", str(cdb),
                      "--baseline-dir", str(cbase), "--backup-path", str(ctmp / "bk.sqlite"),
-                     "--rollback-path", str(ctmp / "bk.json")], ctmp)
+                     "--rollback-path", str(ctmp / "bk.json"), *scope_flags(cmx_path)], ctmp)
         check("conf_apply_exit0", r.returncode == 0, r.stderr[-500:] + r.stdout[-300:])
         ccon = sqlite3.connect(f"file:{cdb}?mode=ro", uri=True)
         try:
@@ -1155,7 +1235,7 @@ def main() -> int:
             check("status_dry_run_reports_clears", False, repr(e))
         r = run_cli(["--apply", "--write", "--validate", "--matrix", str(smx), "--db", str(sdb),
                      "--baseline-dir", str(sbase), "--backup-path", str(stmp / "bk.sqlite"),
-                     "--rollback-path", str(stmp / "bk.json")], stmp)
+                     "--rollback-path", str(stmp / "bk.json"), *scope_flags(smx)], stmp)
         check("status_apply_exit0", r.returncode == 0, r.stderr[-500:] + r.stdout[-300:])
         post = read_status(sdb)
         check("status_renewed_rows_null", all(post[t] is None for t in renewed),

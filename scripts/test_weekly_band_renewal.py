@@ -238,17 +238,43 @@ class PriorAuditRefusalTests(unittest.TestCase):
                                     "scope": {"tickers": ["A"]}}))
         self.check_refusal(path.name, "session differs")
 
-    def test_symlink_not_considered(self):
+    def check_entry_refusal(self, filename, fragment):
+        calls = []
+        packet = w.run(self.root, python="py", apply_if_gated=True, session="2026-09-27",
+                       runner=fake_runner({"tickers": {"A": row()}}, calls), scope_resolver=live_scope)
+        self.assertEqual(packet["status"], "needs_owner_review")
+        self.assertTrue(any(reason.startswith(f"applied audit record is invalid: {filename}: {fragment}")
+                            for reason in packet["gate"]["reasons"]), packet["gate"]["reasons"])
+        self.assertFalse(any("--dry-run" in call or "--apply" in call for call in calls))
+
+    def test_symlink_newest_halts_not_fallback(self):
         path = self.audit / "2026-09-26-applied.json"
         try:
             path.symlink_to(self.audit / "2026-09-24-applied.json")
         except (OSError, NotImplementedError) as exc:
             self.skipTest(f"symlink creation unavailable: {exc}")
-        self.assertEqual(w._prior_applied_names(self.root, "2026-09-27"), ("2026-09-24", ["A"], None))
+        self.check_entry_refusal(path.name, "not a regular file")
 
-    def test_directory_not_considered(self):
+    def test_broken_symlink_halts(self):
+        path = self.audit / "2026-09-26-applied.json"
+        try:
+            path.symlink_to(self.audit / "missing.json")
+        except (OSError, NotImplementedError) as exc:
+            self.skipTest(f"symlink creation unavailable: {exc}")
+        self.check_entry_refusal(path.name, "not a regular file")
+
+    def test_directory_newest_halts_not_fallback(self):
         (self.audit / "2026-09-26-applied.json").mkdir()
-        self.assertEqual(w._prior_applied_names(self.root, "2026-09-27"), ("2026-09-24", ["A"], None))
+        self.check_entry_refusal("2026-09-26-applied.json", "not a regular file")
+
+    def test_older_nonregular_entry_also_halts(self):
+        (self.audit / "2026-09-20-applied.json").mkdir()
+        applied(self.root, "2026-09-26", ["A"])
+        self.check_entry_refusal("2026-09-20-applied.json", "not a regular file")
+
+    def test_non_calendar_date_halts(self):
+        (self.audit / "2026-02-30-applied.json").write_text(json.dumps({"applied": True}), encoding="utf-8")
+        self.check_entry_refusal("2026-02-30-applied.json", "not a calendar date")
 
     def test_malformed_newest_never_falls_back(self):
         path = self.audit / "2026-09-26-applied.json"

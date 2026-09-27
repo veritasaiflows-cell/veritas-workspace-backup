@@ -27,10 +27,12 @@ Canon doctrine:
 
 Required CLI:
   python scripts/g6_yahoo32_sql_apply.py --dry-run --write --validate --matrix <path> --db <sqlite> [--baseline-dir <dir>] [--expected-scope-fingerprint <hex>]
-  python scripts/g6_yahoo32_sql_apply.py --apply --write --validate --matrix <path> --db <sqlite> [--baseline-dir <dir>] [--expected-scope-fingerprint <hex>]
+  python scripts/g6_yahoo32_sql_apply.py --apply --write --validate --matrix <path> --db <sqlite> --expected-scope-fingerprint <hex> --verify-live-scope [--expected-matrix-sha256 <hex>] [--baseline-dir <dir>]
   python scripts/g6_yahoo32_sql_apply.py --rollback --write --rollback-path <path> --db <sqlite>
 
 Apply flow (single DB transaction after backup):
+  0. refuse unless the matrix scope block matches --expected-scope-fingerprint
+     and the live guarded-SQL scope (--verify-live-scope); no unscoped apply
   1. backup sqlite (byte-exact copy + hash proof)
   2. build successor baseline JSON in tmp staging, hash it, commit it under
      its hash name: <baseline-dir>/alert-reference-levels-v1-<sha256>.json
@@ -1035,6 +1037,20 @@ def run_apply(
         raise ValueError("--verify-live-scope requires --expected-scope-fingerprint")
     if not allow_write:
         raise ValueError("--apply requires --write (backup + rollback proof are mandatory)")
+    # With no fixed count, a mutation must prove its name list: a scoped matrix
+    # whose fingerprint matched --expected-scope-fingerprint, re-resolved against
+    # live guarded SQL before backup (QA 2026-09-27
+    # UNSCOPED_VARIABLE_APPLY_BYPASSES_SCOPE_VERIFICATION).
+    scope_info = scope_info or {}
+    if not (scope_info.get("scope_consistent") is True and scope_info.get("scope_verified") is True
+            and expected_scope_fingerprint is not None
+            and scope_info.get("scope_fingerprint") == expected_scope_fingerprint
+            and scope_info.get("scope_count") == len(triples)
+            and verify_live_scope):
+        raise ValueError(
+            "apply refused: --apply requires a matrix scope block, a matching "
+            "--expected-scope-fingerprint and --verify-live-scope"
+        )
     # Refuse markdown output targets BEFORE backup/mutation so a refusal
     # can never leave a mutated DB behind.
     if backup_path is not None:
@@ -1496,6 +1512,9 @@ def validate_apply_artifact(rollback: dict, db_path: Path, matrix_sha: str) -> l
     elif (rollback.get("scope_consistent") is not False or rollback.get("scope_verified") is not False
           or rollback.get("scope_fingerprint") is not None or rollback.get("scope_count") is not None):
         errors.append("unscoped fields must be false/false/null/null")
+    if (rollback.get("scope_consistent") is not True or rollback.get("scope_verified") is not True
+            or rollback.get("live_scope_verified") is not True):
+        errors.append("apply must be scope-verified and live-scope-verified")
     if rollback.get("matrix_sha256") != matrix_sha:
         errors.append("matrix_sha256 mismatch vs matrix file on disk")
     if rollback.get("authority", {}).get("markdown_canon_write_allowed") is not False:
@@ -1652,11 +1671,11 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--validate", action="store_true", help="validate artifacts after build")
     ap.add_argument("--matrix", default=None, help="reference-level matrix JSON path (optional verified scope block)")
     ap.add_argument("--expected-scope-fingerprint", default=None, metavar="HEX",
-                    help="require matrix scope with this lowercase SHA-256 fingerprint (dry-run/apply)")
+                    help="require matrix scope with this lowercase SHA-256 fingerprint (optional for dry-run; required for apply)")
     ap.add_argument("--expected-matrix-sha256", default=None, metavar="HEX",
                     help="require exact matrix bytes with this lowercase SHA-256 (dry-run/apply)")
     ap.add_argument("--verify-live-scope", action="store_true",
-                    help="resolve live scope immediately before backup or dry-run artifact")
+                    help="resolve live scope immediately before backup or dry-run artifact (required for apply)")
     ap.add_argument("--db", default=None, dest="db", help="sqlite canon path")
     ap.add_argument("--baseline-dir", default=None, help="successor pin directory (apply writes; dry-run never writes it)")
     ap.add_argument("--backup-path", default=None, help="backup sqlite destination (apply)")
