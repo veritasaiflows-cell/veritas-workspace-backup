@@ -211,3 +211,44 @@ def test_sqlite_probe_uses_bounded_large_db_checks() -> None:
     proof_table = next(row for row in probe["tables"] if row["name"] == "proof")
     assert proof_table["row_count"] is None
     assert proof_table["row_count_skipped_reason"] == "large_db_guard"
+
+
+def test_finance_canon_has_no_executable_rebuild_recovery_command() -> None:
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+        db = root / "state" / "finance" / "finance-canon.sqlite"
+        create_sqlite(db)
+        with mock.patch.object(module, "ROOT", root):
+            entry = module.classify(db, active_refs=1, operational_refs=1, sqlite_meta=module.sqlite_probe(db))
+            gc.collect()
+
+    assert entry["lifecycle"] == "live"
+    assert entry["status"] == "keep"
+    assert entry["archive_ready"] is False
+    assert entry["delete_ready"] is False
+    assert entry["rebuild_command"] is None
+    evidence = "\n".join(entry["evidence"])
+    assert "whole-database rebuild unavailable" in evidence
+    assert "finance_sql_canon_recovery_drill.py" in evidence
+    assert "no live restore command exists" in evidence
+    assert "separate owner approval" in evidence
+    assert "finance_sql_canon.py --write" not in evidence
+
+
+def test_recovery_drill_copies_are_proof_not_rebuild_or_cleanup_targets() -> None:
+    module = load_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+        path = root / "tmp" / "finance-canon-recovery-drills" / "run-1" / "verified-backup.sqlite"
+        create_sqlite(path)
+        with mock.patch.object(module, "ROOT", root):
+            entry = module.classify(path, active_refs=0, operational_refs=0, sqlite_meta={})
+            gc.collect()
+
+    assert entry["lifecycle"] == "proof"
+    assert entry["status"] == "keep"
+    assert entry["archive_ready"] is False
+    assert entry["delete_ready"] is False
+    assert entry["rebuild_command"] is None
+    assert any("report.json" in row for row in entry["evidence"])

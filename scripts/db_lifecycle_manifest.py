@@ -77,7 +77,8 @@ LIVE_STATE = {
     "finance-canon.sqlite": {
         "owner": "Guarded internal finance SQL-canon current-state layer",
         "reason": "durable internal SQL-primary current-state layer for answer-path scope, evidence freshness, reference levels, source lineage, tier routing, and universe membership; review-only, not approval/execution authority",
-        "rebuild": "python scripts\\finance_sql_canon.py --write --validate --approval-reference \"<owner approval reference>\"",
+        "rebuild": None,
+        "recovery": "legacy whole-canon rebuild retired for migrated canon; copy-only WAL-safe recovery proof: python scripts\\finance_sql_canon_recovery_drill.py --out tmp\\finance-canon-recovery-drills\\<new-id>; no live restore command exists; any live restore requires separate owner approval, writer quiescence, a verified pre-restore snapshot, rollback proof, and journal-mode validation",
     },
     "wf75-service-state.sqlite": {
         "owner": "WF75 anonymous service-state control plane",
@@ -845,7 +846,11 @@ def classify(path: Path, active_refs: int, operational_refs: int, sqlite_meta: d
         rebuild_command = rule["rebuild"]
         retention_policy = "protected active state; no archive/delete without replacing the authority route"
         evidence.append(rule["reason"])
-        evidence.append(f"rebuild path: {rebuild_command}")
+        if rebuild_command:
+            evidence.append(f"rebuild path: {rebuild_command}")
+        else:
+            evidence.append("whole-database rebuild unavailable for the migrated canon")
+            evidence.append(f"recovery boundary: {rule['recovery']}")
         blockers.append("active authority/state surface")
     elif name in DERIVED:
         rule = DERIVED[name]
@@ -871,6 +876,16 @@ def classify(path: Path, active_refs: int, operational_refs: int, sqlite_meta: d
         if retention_policy:
             evidence.append(f"retention policy: {retention_policy}")
         blockers.append("still documented and currently reusable")
+    elif path_rel.startswith("tmp/finance-canon-recovery-drills/") and name in {
+        "source-snapshot.sqlite", "verified-backup.sqlite", "recovery-target.sqlite"
+    }:
+        lifecycle = "proof"
+        owner = "Copy-only finance SQL canon recovery drill"
+        status = "keep"
+        recommendation = "retain as bounded recovery evidence; not live canon or live restore authority"
+        retention_policy = "owner-review proof; no archive/delete from a generated manifest"
+        evidence.append("disposable SQLite copy from the WAL-safe recovery drill; verify its sibling report.json")
+        blockers.append("audit proof of a migrated-canon recovery drill")
     elif path_rel.startswith("state/finance/backups/alerts-os-pivot-20260829/"):
         lifecycle = "rollback"
         owner = "Alerts-and-recommendations SQL lineage migration rollback proof"

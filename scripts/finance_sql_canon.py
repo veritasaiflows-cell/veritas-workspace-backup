@@ -54,6 +54,7 @@ REVIEW_100_SCOPE = "review_100_monitor"
 EXPECTED_RETIRED_LEGACY_COUNT = 0
 SUPPORTED_ACTIVE_COUNTS = {100, 200, 300, 400, 500}
 SUPPORTED_REVIEW_MONITOR_COUNTS = {58, 158, 258, 358, 458}
+MIGRATION_MARKER_EVENT_TYPE = "alerts_os_sql_canon_migration"
 
 AUTHORITY_BOUNDARY = {
     "workspace_sql_canon_promotion_allowed_by_owner_request": True,
@@ -807,9 +808,33 @@ def build_archive_plan(conn: sqlite3.Connection) -> dict[str, Any]:
     return plan
 
 
+def refuse_migrated_rebuild(conn: sqlite3.Connection) -> None:
+    """This JSON-era whole-DB builder must not overwrite a migrated canon."""
+    if table_exists(conn, "audit_events") and conn.execute(
+        "SELECT 1 FROM audit_events WHERE event_type=? LIMIT 1",
+        (MIGRATION_MARKER_EVENT_TYPE,),
+    ).fetchone():
+        raise RuntimeError(
+            "Refusing legacy whole-canon rebuild: migrated SQL canon detected. "
+            "Use the separately gated recovery route; approval-reference is not an override."
+        )
+
+
+def preflight_rebuild_target() -> None:
+    """Read only; reject before the report path writes JSON, backups, or plans."""
+    if not DB_PATH.exists():
+        return
+    with sqlite3.connect(DB_PATH.resolve().as_uri() + "?mode=ro", uri=True) as conn:
+        refuse_migrated_rebuild(conn)
+
+
 def build_db(universe: dict[str, Any], approval_reference: str, run_id: str) -> dict[str, Any]:
+    preflight_rebuild_target()
     STATE.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(DB_PATH) as conn:
+        # Recheck on the same connection before PRAGMAs or any DDL. Direct callers
+        # cannot bypass the report-level preflight, and a changed target fails shut.
+        refuse_migrated_rebuild(conn)
         apply_pragmas(conn)
         preserved_extension_rows = fetch_preserved_extension_rows(conn)
         with conn:
@@ -935,6 +960,8 @@ def validate_db() -> dict[str, Any]:
 
 
 def build_report(approval_reference: str, write: bool) -> dict[str, Any]:
+    if write:
+        preflight_rebuild_target()
     run_id = "finance-sql-canon-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     universe = load_json(UNIVERSE_PATH, {}) or {}
     universe, summary_was_stale = sync_universe_summary(universe)
