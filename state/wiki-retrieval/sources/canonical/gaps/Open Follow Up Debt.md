@@ -2,8 +2,8 @@
 # Open Follow Up Debt
 
 Canonical page: `wiki/gaps/Open Follow Up Debt.md`
-Canonical rendered SHA-256: `24480d1ee043b57ecaf8f2c158f65a57487b8f1910b68b846f5c0e35ec7e3526`.
-Source snapshot SHA-256: `6d670804398925df4f3bc27dab7cc30bbe29f708f93a6ae28f56af63a0467218`.
+Canonical rendered SHA-256: `dbb7a36ecd109d6dac13a51676617d6aec299eae6e3a25dbb87c926ebccddc8f`.
+Source snapshot SHA-256: `3601a6df6c84a49ca4416da23af657e1aaff9026ecf9c52e5f23dcc898744160`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -31,11 +31,11 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `tmp/wf88-os2-control-packet.json`
 ## Current debt
 
-- Improvement open count: `5`.
+- Improvement open count: `7`.
 - Follow-up-required open count: `0`.
 - High-priority overdue open count: `3`.
 - Pending skill proposal count: `0`.
-- Actionable queue items: `5`.
+- Actionable queue items: `7`.
 - Actionable queue orphans: `0`.
 - No-orphan validation: `ok`.
 - Top actionable destination: `wf74_decision_docket`.

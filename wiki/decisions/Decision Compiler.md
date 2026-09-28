@@ -19,8 +19,8 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 ## Current compiler state
 
 - Status / validation: `decision_objects_warning_review_only` / `warning`.
-- Decision objects: `5`; states: `{'monitor_only': 3, 'repair_ready_review_only': 1, 'review_ready': 1}`.
-- Conflicts / uncertainties: `1` / `5`.
+- Decision objects: `7`; states: `{'monitor_only': 3, 'repair_ready_review_only': 3, 'review_ready': 1}`.
+- Conflicts / uncertainties: `2` / `7`.
 - Owner review required / blocked: `0` / `0`.
 - Leak guard: `True`; wiki/OS2 runtime inputs forbidden: `['tmp/wf88-os2-control-packet.json', 'tmp/wf88-wiki-synthesis-packet.json']`.
 

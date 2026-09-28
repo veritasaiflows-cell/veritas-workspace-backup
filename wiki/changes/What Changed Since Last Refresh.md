@@ -12,7 +12,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `tmp/wf88-wiki-review-events.json`
 ## Claim-catalog delta
 
-- Baseline generated: `2026-09-27T05:12:58Z`.
+- Baseline generated: `2026-09-28T05:15:03Z`.
 - Added claim IDs: `none`.
 - Removed claim IDs: `none`.
 - Changed claim IDs: `action-state:maintain-wf88-retrieval-regression-corpus`.
