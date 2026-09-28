@@ -1,0 +1,101 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "LNG",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "commodity_linked",
+  "thesis_statement": "Cheniere is the scaled U.S. LNG exporter converting long-term contracted volumes into cash: raised 2026 guidance on strong margins (Adjusted EBITDA to $7.9-8.4B), CCL Stage 3 trains substantially complete, and 5 mtpa of FERC-authorized capacity expansion plus the SPL expansion EPC contract with Bechtel - a contracted-growth compounder whose earnings still swing on global gas spreads.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Full-year 2026 lands within the raised guidance as Stage 3 trains ramp to the tightened 53-54 mtpa production forecast, and buybacks plus the growing dividend compound per-share value.",
+      "drivers": [
+        "CCL Stage 3 Midscale Trains 1-6 substantially complete; Train 7 first LNG imminent",
+        "raised FY26 guidance: Adjusted EBITDA $7.9-8.4B, DCF $5.3-5.8B",
+        "capital returns ($550M buybacks in Q2; $0.555/quarter dividend)"
+      ]
+    },
+    "bull": {
+      "summary": "Global LNG demand (AI data-center power, Asian restocking) keeps TTF/Henry spreads wide, the FERC-authorized +5 mtpa expansion and SPL Stage V are sanctioned, and per-share value compounds through the cycle.",
+      "drivers": [
+        "FERC authorization to increase CCL Stage 3 + Trains 8&9 capacity by ~5 mtpa",
+        "SPL Expansion Phase 1 EPC contract with Bechtel (May 2026)",
+        "184 cargoes exported in Q2"
+      ]
+    },
+    "bear": {
+      "summary": "Global gas spreads normalize (Henry up, TTF/JKM down) compressing margin per cargo, new capacity from U.S. peers floods the late-decade market, and the ~35-confidence band offers little timing protection.",
+      "drivers": [
+        "commodity spread compression",
+        "2026-2030 global LNG supply wave",
+        "narrow band (263.91-271.99, ~3%) with reference confidence 35"
+      ]
+    }
+  },
+  "key_risks": [
+    "Margin structure is spread-dependent despite long-term contracts: a wide variance in net income (Q2 +$3.07B against a six-month loss of $434M) shows derivative-mark volatility that headline earnings do not describe.",
+    "Late-decade LNG supply wave (including Cheniere's own 8&9 and SPL expansions) is the structural risk to the post-2028 margin environment.",
+    "The band is narrow (~3% wide) with reference confidence 35 - it offers little statistical timing information.",
+    "Growth capital ($1.1B in Q2 alone) means distributable cash lags EBITDA; per-share compounding depends on execution discipline."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (251.78 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Full-year Consolidated Adjusted EBITDA guidance is cut below $7.9B.",
+      "LNG production forecast falls below 52 mtpa for 2026.",
+      "A major expansion sanction (SPL Stage V or Trains 8&9) is cancelled or materially delayed."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-29",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Midscale Train 7 first LNG production (company: imminent as of the Q2 release)",
+      "expected_date": null,
+      "date_confidence": "company_guidance"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_review_bias",
+      "defensive_neutral_selective"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLE"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: revenues $5.73B; net income $3.07B (six-month net loss $434M - derivative-mark variance); Consolidated Adjusted EBITDA $1.80B; DCF $1.17B; raised FY26 guidance to Adjusted EBITDA $7.9-8.4B (from $7.25-7.75B) and DCF $5.3-5.8B; 184 cargoes exported; FY26 production forecast tightened upward to 53-54 mtpa; Midscale Train 6 substantial completion (June 2026), Train 7 first LNG imminent; FERC authorization for +~5 mtpa (CCL Stage 3 + Trains 8&9); SPL Expansion Phase 1 Bechtel EPC signed with limited notice to proceed; $550M buybacks and $0.555/share quarterly dividend in Q2; ~$1.1B growth capital deployed",
+      "source": "Cheniere Q2 2026 news release, 8-K exhibit 99.1 (lngir.cheniere.com .../cei20262ndqtrerex991.htm, 2026-08-06)",
+      "as_of": "2026-08-06"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 20.33, forward P/E 12.75, P/B 9.02, net debt $25.46B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-29 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 263.91-271.99, invalidation 251.78, reference_confidence 35; close 268.52 on 2026-09-25 is inside band",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T14:39:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. Classified commodity_linked rather than quality_compounder because realized margins swing on global gas spreads even with long-term contracts; the contracted volume growth is the compounder, the margin is the commodity. Net income volatility from derivative marks is noise - judge Adjusted EBITDA and DCF. Overlaps with CVX/XOM on the energy complex but LNG's demand driver (global gas) is distinct from oil. Forward P/E ~12.75 is the cheapest in this batch; the discount prices the spread-compression risk. Earnings 10-29 falls inside the 30-day catalyst window. Accepted by Randall, WebChat 2026-09-27 ~14:39 Phoenix: 'Accepted. Proceed with batch 3.'",
+  "fundamentals_period_end": "2026-06-30"
+}

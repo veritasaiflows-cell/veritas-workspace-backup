@@ -1,0 +1,102 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "GE",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "quality_compounder",
+  "thesis_statement": "GE Aerospace is a services-led aftermarket compounder: a $210B+ backlog, commercial services revenue up 32% in H1 with record shop-visit output, and the LEAP-1B durability kit (~2x time-on-wing from 2027) converting the installed base into a multi-year high-margin spares and repair annuity, with guidance raised across the board.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Services growth in the mid-20s sustains revenue and EPS growth in the low-20s while margins recover from the 2026 supply-chain investment dip; LEAP durability-kit cutover in 2027 lifts time-on-wing economics.",
+      "drivers": [
+        "commercial services +32% H1, record internal shop-visit output",
+        "engine deliveries +31% H1, LEAP +41%",
+        "LEAP-1B durability kit certified, ~2x time-on-wing, full cutover from early 2027"
+      ]
+    },
+    "bull": {
+      "summary": "Aftermarket demand stays supply-constrained into 2027+, defense propulsion (XA102, GE426) adds a second growth engine, and margin expansion resumes past prior peak.",
+      "drivers": [
+        "$210B+ backlog",
+        "CPP castings acquisition adding mission-critical capacity",
+        "defense wins (HURJET F404, UK NMH CT7, USAF GE426)"
+      ]
+    },
+    "bear": {
+      "summary": "Supply-chain and ramp costs keep compressing margins (operating margin already -130bps YoY at 21.7%), aircraft build rates disappoint, and a ~39x trailing multiple de-rates on any services slowdown.",
+      "drivers": [
+        "operating profit margin declined 130 bps YoY despite +24% adjusted revenue",
+        "LEAP fleet time-on-wing drag before durability cutover",
+        "valuation at ~39x trailing / ~36x forward"
+      ]
+    }
+  },
+  "key_risks": [
+    "Margin compression is real: operating margin fell 130 bps YoY (21.7%) and 160 bps in H1 even with +24% adjusted revenue - growth is currently being bought with cost.",
+    "Valuation: ~38.6x trailing and ~36x forward for a mid-teens long-run grower is full; de-rating risk if services growth decelerates.",
+    "LEAP durability economics are back-loaded: the ~2x time-on-wing improvement cuts short-term spares demand when it arrives in 2027 before the base effect matures.",
+    "Momentum concentration in CES (+27% segment revenue) makes the thesis sensitive to any commercial air-traffic or fleet-utilization shock."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (294.72 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "CES services revenue growth falls below 10% for two consecutive quarters.",
+      "Operating profit margin falls below 19% for two consecutive quarters.",
+      "Full-year adjusted EPS guidance is cut."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-20",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "LEAP-1B durability-kit full cutover (company target: early 2027)",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "high",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_neutral_selective",
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "ITA"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: orders $16.5B +17%; GAAP revenue $13.3B +21% (adjusted $12.6B +24%); GAAP profit $2.8B +17%; operating profit $2.7B +18%, margin 21.7% -130bps; adjusted EPS $2.02 +22%; FCF $3.0B +43%; CES revenue +27%, services +32% H1; engine deliveries +31% H1, LEAP +41%; LEAP-1B durability kit certified (~2x time-on-wing, cutover early 2027); $210B backlog; full-year guidance raised across the board",
+      "source": "GE Aerospace Q2 2026 earnings release, SEC exhibit (sec.gov .../ge2q2026earningsrelease.htm, 2026-07-16)",
+      "as_of": "2026-07-16"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 38.62, forward P/E 36.0, P/B 19.24, net debt $9.8B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-20 (provider estimate); CPP castings acquisition announced 2026-09-08",
+      "source": "tmp/earnings-calendar.json (provider estimate, fetched 2026-09-23); GE Aerospace press release 2026-09-08",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 306.80-344.74, invalidation 294.72, reference_confidence 50; close 327.02 on 2026-09-25 is inside band",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T14:39:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. High conviction is on the aftermarket annuity quality (installed base + backlog), not on current margin - margins are being invested down and that is the main near-term watch item. Earnings 10-20 falls inside the 30-day catalyst window. Overlaps with ITA (aerospace/defense ETF members) but GE's engine aftermarket is a distinct economic engine from LMT's platform programs. The stale SQL IN_BAND label (08-21 snapshot) agrees with the current position. Accepted by Randall, WebChat 2026-09-27 ~14:39 Phoenix: 'Accepted. Proceed with batch 3.'",
+  "fundamentals_period_end": "2026-06-30"
+}

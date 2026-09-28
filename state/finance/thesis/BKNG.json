@@ -1,0 +1,106 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "BKNG",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "cyclical",
+  "thesis_statement": "Booking Holdings is the highest-margin, most capital-efficient online travel agency, growing modestly on gross bookings but compounding through buybacks and a Transformation Program now expected to deliver roughly $650M of annual run-rate savings by end-2027; the franchise is resilient, but travel demand is macro- and geopolitics-sensitive.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Room nights grow mid-single digits and adjusted EPS high-single digits, amplified by share repurchases, with the Transformation Program savings funding reinvestment.",
+      "drivers": [
+        "direct-booking mix gains (mid-50s percentage of room nights)",
+        "alternative accommodations growth (+4%)",
+        "buyback-driven EPS compounding ($3.7B repurchased in Q2; $14.5B authorization remaining)"
+      ]
+    },
+    "bull": {
+      "summary": "Travel demand resilience holds, savings land at or above $650M, and long-haul international normalizes once Middle East pressure fades, lifting gross bookings growth back to low double digits.",
+      "drivers": [
+        "Transformation Program run-rate savings",
+        "long-haul international recovery",
+        "36% adjusted EBITDA margin expansion via fixed-cost discipline (opex +7% vs revenue +8%)"
+      ]
+    },
+    "bear": {
+      "summary": "The Middle East conflict's indirect effects (elevated airfares, reduced flight capacity, softer long-haul demand) deepen, gross bookings growth stalls below 5%, and the consumer-travel cyclical turns down.",
+      "drivers": [
+        "geopolitical travel demand pressure",
+        "airfare/capacity headwinds cited in the release's outlook assumptions",
+        "cyclical consumer travel exposure"
+      ]
+    }
+  },
+  "key_risks": [
+    "GAAP net income +118% and EPS +131% are base effects from a depressed Q2 2025; adjusted net income +8% and adjusted EPS +15% are the real growth signal.",
+    "Middle East conflict is the company's own stated forward risk; its Q3 guidance assumes the indirect impacts persist through the quarter.",
+    "Current macro regime (reduce cyclicals) is unfriendly to travel exposure; the SQL band carries low reference confidence (40).",
+    "Negative price-to-book (-11.52) reflects negative book equity from buybacks, not distress; do not read it as a value signal either way."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (145.44 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Gross bookings growth falls below 3% for two consecutive quarters.",
+      "Adjusted EBITDA margin falls below 33% for two consecutive quarters.",
+      "The Transformation Program savings target is cut or withdrawn."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-27",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Middle East conflict de-escalation or escalation affecting long-haul travel",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_neutral_selective",
+      "selective_with_watch_flags"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLY"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: room nights 325M +5%; gross bookings $51.0B +9% (8% CC); revenue $7.4B +8%; GAAP net income $2.0B +118%, adjusted net income +8%, adjusted EPS $2.54 +15%; adjusted EBITDA $2.6B +9% (36.0% margin); FCF $3.6B +16%; Transformation Program run-rate savings raised to ~$650M by end-2027; 25-for-1 stock split effected 2026-04-02",
+      "source": "Booking Holdings Q2 2026 earnings release, SEC 8-K exhibit 99.1 (sec.gov .../q2-26bkngearningsrelease.htm, 2026-08-04)",
+      "as_of": "2026-08-04"
+    },
+    {
+      "claim": "Q2 capital returns: $3.7B repurchased (excl. excise taxes), $14.5B authorization remaining; quarterly dividend $0.42/share declared payable 2026-09-30; Q3 guidance assumes Middle East conflict indirect impacts (airfares, flight capacity, long-haul softness) persist",
+      "source": "Booking Holdings Q2 2026 earnings release, SEC 8-K exhibit 99.1",
+      "as_of": "2026-08-04"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 18.22, forward P/E 13.26, net debt $3.48B, P/B -11.52 (negative equity from buybacks)",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-27 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 155.37-190.88, invalidation 145.44, reference_confidence 40; close 163.89 on 2026-09-25 is inside band, nearer the low end",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T12:22:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. Type is cyclical, not quality_compounder, because the demand driver is consumer travel despite the franchise's capital-light economics. GAAP growth percentages flatter the base effect; the adjusted figures are the honest signal. Earnings 10-27 fall inside the 30-day catalyst window. The stale SQL NEAR_BAND label (08-21 snapshot) happens to agree with the current position here. Accepted by Randall, WebChat 2026-09-27 ~12:22 Phoenix: 'Yes, accepted. Proceed with remaining batches.'",
+  "fundamentals_period_end": "2026-06-30"
+}

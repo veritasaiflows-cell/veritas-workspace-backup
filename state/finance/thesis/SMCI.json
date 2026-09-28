@@ -1,0 +1,101 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "SMCI",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "ai_infrastructure",
+  "thesis_statement": "Supermicro is a leveraged play on AI-server unit demand: FQ4'26 net sales $11.1B (vs $5.8B a year ago) with gross margin recovered to 17.5% on a richer enterprise mix, $60B of FY orders and record backlog entering fiscal 2027 - but it is a low-margin hardware assembler whose profitability swings on component pricing and customer mix, and its accounting history demands a verification discount.",
+  "timeframe": "intermediate_3_12m",
+  "cases": {
+    "base": {
+      "summary": "FQ1'27 lands within the guided $14.5-15.5B on Data Center Building Block demand, holding gross margin in the mid-teens as the enterprise mix builds.",
+      "drivers": [
+        "FQ4'26 gross margin 17.5% (vs 9.5% a year ago) on enterprise mix",
+        "FY27 guidance $65-72B net sales",
+        "record backlog entering fiscal 2027 after >$60B of FY26 orders"
+      ]
+    },
+    "bull": {
+      "summary": "AI infrastructure demand stays supply-constrained, DCBBS architecture wins share against ODM competitors, and gross margin holds above 15% while revenue compounds - the operating-income leverage re-rates the stock from hardware-volatile to platform-stable.",
+      "drivers": [
+        "several hundred enterprise customers added in the past year",
+        "non-GAAP FQ4 EPS $1.70 vs $0.41 a year ago",
+        "$7.5B cash against $8.7B debt funding scale"
+      ]
+    },
+    "bear": {
+      "summary": "AI-server demand digests, hyperscaler custom-silicon and ODM competition compresses margins back toward 10%, and the thin-margin model shows its downside operating leverage.",
+      "drivers": [
+        "FY26 full-year gross margin was only 10.8% despite the strong Q4 exit",
+        "customer concentration in AI capex",
+        "accounting-history discount (2024 auditor resignation and filing delays) never fully leaves the multiple"
+      ]
+    }
+  },
+  "key_risks": [
+    "Margin fragility: the strong 17.5% Q4 exit rate follows a 10.8% full fiscal year; one quarter of mix improvement is not a trend.",
+    "The fiscal-Q4 print may embed quarter-boundary timing typical of AI-server lumpy revenue recognition; FQ1'27 guidance ($14.5-15.5B) implies continued ramp but with a wide band.",
+    "Accounting-history risk: the 2024 auditor resignation and late filings are why the market applies a discount; any recurrence is thesis-ending.",
+    "Aggregator row is data_quality partial - fundamentals should be reverified against the filed 10-K figures before heavy reliance."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (30.65 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Gross margin falls below 12% for two consecutive quarters.",
+      "Net sales decline quarter over quarter for two consecutive quarters.",
+      "Any new material-audit, disclosure or filing irregularity."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "FQ1 2027 earnings (quarter ending 2026-09-30)",
+      "expected_date": "2026-11-03",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Gross-margin trajectory through fiscal 2027",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLK"
+  },
+  "evidence": [
+    {
+      "claim": "FQ4 2026 (ended 2026-06-30): net sales $11.1B vs $10.2B in FQ3'26 and $5.8B in FQ4'25; gross margin 17.5% vs 9.5% a year ago (non-GAAP 17.6%); net income $1.178B, diluted EPS $1.62 (non-GAAP $1.70 vs $0.41); operating cash flow $747M; FY26 net sales $39.1B vs $22.0B, FY gross margin 10.8%, FY net income $2.2B ($3.26 diluted; non-GAAP $3.63); cash $7.5B vs bank debt + convertibles $8.7B; >$60B new orders in FY26 and record backlog; several hundred enterprise customers added; FQ1'27 guidance $14.5-15.5B net sales, GAAP EPS $0.89-0.98, non-GAAP $1.01-1.10; FY27 guidance $65-72B",
+      "source": "Supermicro FQ4 2026 results release (supermicro.com / IR, 2026-08-11; Business Wire exhibit)",
+      "as_of": "2026-08-11"
+    },
+    {
+      "claim": "Aggregator row at Q2 2026 (period_end 2026-06-30, data_quality partial); trailing P/E 13.27, forward P/E 8.12, P/B 2.77, net debt $1.24B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-11-03 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 34.06-36.33, invalidation 30.65, reference_confidence 35; close 43.26 on 2026-09-25 is 19.1% above band high (no-chase); the stale SQL ABOVE_BAND_WAIT label (08-21 snapshot) agrees with the live position",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T14:44:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. Speculative-grade: this is the widest-gap name in the batch between price (19.1% above band high, no-chase) and fundamental cheapness (trailing P/E ~13, forward ~8) - the market is paying hardware-volatile pricing while the optical multiple is cheap because margins are cyclical-fragile. The cheap multiple is the risk flag, not the opportunity flag. Accounting history (2024 auditor resignation) justifies a permanent verification discount. Overlaps heavily with NVDA (SMCI assembles around NVDA GPUs) and with VRT on AI hardware - do not count SMCI as independent confirmation of the same AI-capex signal. FQ1'27 earnings 11-03 inside the 30-day catalyst window. Accepted by Randall, WebChat 2026-09-27 ~14:44 Phoenix: 'Accepted. Proceed with phase 4 remaining work.'",
+  "fundamentals_period_end": "2026-06-30"
+}

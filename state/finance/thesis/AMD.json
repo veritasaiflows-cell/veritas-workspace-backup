@@ -1,0 +1,106 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "AMD",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "ai_infrastructure",
+  "thesis_statement": "AMD is the credible second-source for AI compute: record revenue driven by EPYC server share and the Instinct GPU ramp, with the Helios rackscale platform and an Anthropic partnership for up to 2 GW of MI450-series deployment opening a multi-year accelerator cycle against NVIDIA's dominance.",
+  "timeframe": "intermediate_3_12m",
+  "cases": {
+    "base": {
+      "summary": "Data Center growth continues above 50% while Client and Embedded hold, holding non-GAAP EPS near the Q2 annualized run rate.",
+      "drivers": [
+        "EPYC server CPU share gains",
+        "Instinct MI400 series ramp",
+        "Ryzen client strength"
+      ]
+    },
+    "bull": {
+      "summary": "Helios/MI450 deployments land broadly across the named customers and AMD takes a durable double-digit share of AI accelerator spend.",
+      "drivers": [
+        "Anthropic 2 GW MI450 commitment",
+        "Helios deployments cited with Meta, Microsoft, OpenAI, Oracle and others",
+        "MI430X sovereign/HPC demand"
+      ]
+    },
+    "bear": {
+      "summary": "AI accelerator competition (NVIDIA cadence, custom silicon) compresses AMD's share, an export-control episode repeats, and the multiple de-rates hard from here.",
+      "drivers": [
+        "hyperscaler customer concentration",
+        "export-control policy risk",
+        "trailing P/E ~162 leaves no room for disappointment"
+      ]
+    }
+  },
+  "key_risks": [
+    "Valuation: trailing P/E ~162 and forward P/E ~40 price in flawless execution.",
+    "AI-spending cycle concentration: Data Center is now 58% of revenue; a hyperscaler capex pause hits directly.",
+    "Export-control repeat risk: the Q2 2025 comparison base included an $800M MI308 inventory charge from U.S. government action, so YoY percentages flatter.",
+    "Close is 24.9% above band high; the 09-26 band (confidence 50) predates the post-Q2 rerating and the invalidation level sits far below the market."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (405.79 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Data Center segment revenue declines year over year for two consecutive quarters.",
+      "Major named MI400/Helios deployments are materially delayed or cancelled.",
+      "Non-GAAP gross margin falls below 50% for two consecutive quarters."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-11-03",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "MI400/Helios ramp milestones",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "SOXX"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: record revenue $11.5B +50% YoY; Data Center $6.7B +107% (58% of revenue); non-GAAP gross margin 56%, non-GAAP operating income $3.1B, non-GAAP EPS $1.66 +246%; Client +23%, Gaming -31%, Embedded +19%",
+      "source": "AMD Q2 2026 press release (ir.amd.com, 2026-08-04); 10-Q filed 2026-08-05",
+      "as_of": "2026-08-04"
+    },
+    {
+      "claim": "Launched Helios rackscale (deployments cited with Anthropic, Meta, Microsoft, OpenAI, Oracle and others), MI400 series incl. MI455X/MI430X, 6th-gen EPYC; strategic partnership with Anthropic for up to 2 GW of MI450-series GPUs in Helios racks",
+      "source": "AMD Q2 2026 press release recent-highlights section",
+      "as_of": "2026-08-04"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 161.7, forward P/E 40.48, net cash ~$0.8B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-11-03 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 440.50-504.71, invalidation 405.79, reference_confidence 50; close 630.47 on 2026-09-25 is 24.9% above band high (no-chase)",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T12:22:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. Timing is dramatically extended above the band; the band should widen at the 10-03 renewal (SQL governs). The SQL status label (IN_BAND) is a stale 08-21 snapshot and disagrees with the live above-band position. Overlaps with NVDA, VRT and ETN on AI-infrastructure exposure; do not count multiple AI-infra signals as independent confirmations. Accepted by Randall, WebChat 2026-09-27 ~12:22 Phoenix: 'Yes, accepted. Proceed with remaining batches.'",
+  "fundamentals_period_end": "2026-06-30"
+}

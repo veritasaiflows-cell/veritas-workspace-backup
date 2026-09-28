@@ -1,0 +1,102 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "ECL",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "quality_compounder",
+  "thesis_statement": "Ecolab is a pricing-power compounder: water, hygiene and infection-prevention franchises with an energy-surcharge mechanism that passed rising commodity costs through in one quarter, plus two AI-adjacent growth engines (Global High-Tech +29%, and the CoolIT liquid-cooling acquisition extending Ecolab into data-center thermal management).",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Mid-single-digit organic sales growth with 5-6% second-half pricing holds organic margins roughly stable and delivers the raised 7-10% adjusted EPS growth.",
+      "drivers": [
+        "energy surcharge implemented globally in one quarter",
+        "One Ecolab share gains in Food & Beverage, Institutional, Light Water",
+        "Global High-Tech (+29%) and Life Sciences (+15%) engines"
+      ]
+    },
+    "bull": {
+      "summary": "AI data-center cooling demand makes CoolIT a material third engine on top of the core franchise, and H2 pricing at the top of the 5-6% range expands organic gross margin.",
+      "drivers": [
+        "CoolIT extending into AI infrastructure liquid cooling",
+        "Ovivo Electronics performing above plan (mid-teens growth vs pre-acquisition)",
+        "volume growth strengthening as Middle East disruption fades"
+      ]
+    },
+    "bear": {
+      "summary": "Commodity costs keep rising faster than the surcharge can recover, Middle East disruption persists, and premium-multiple de-rating compounds an organic-growth stall.",
+      "drivers": [
+        "commodity cost pass-through lag",
+        "~38x trailing earnings for a mid-single-digit organic grower",
+        "acquisition amortization drag (Ovivo, CoolIT) on reported margins"
+      ]
+    }
+  },
+  "key_risks": [
+    "Valuation: ~37.6x trailing and ~29.7x forward for mid-single-digit organic growth leaves little room for execution error.",
+    "Adjusted gross margin declined 60 bps on the Ovivo Electronics acquisition impact; organic gross margin only stabilized after a transition quarter - the commodity pass-through is not yet proven over a full cycle.",
+    "Middle East conflict is a live, named headwind (~1% volume disruption in the quarter).",
+    "CoolIT/Ovivo integration and amortization costs are the stated drag on 3Q guidance (+3% to +8% EPS growth only)."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (260.02 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Organic sales growth falls below 2% for two consecutive quarters.",
+      "Organic operating income margin falls below 17.5% for two consecutive quarters.",
+      "The 2026 adjusted EPS outlook is cut below the raised $8.05-$8.25 range."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-27",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Second-half pricing at the 5-6% company target",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_neutral_selective",
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLI"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: reported sales $4.4B +10%, organic +5%; reported diluted EPS $1.90 +3%, adjusted $2.09 +11%; organic operating margin 18.8% +40bps; organic gross margin stabilized after Ovivo impact; pricing 4% improving to 5-6% expected in H2 via energy surcharge; Global High-Tech +29%, Life Sciences +15%; ~1% volume headwind from Middle East-disrupted customers; raised 2026 adjusted EPS outlook to $8.05-$8.25 (+7-10%); CoolIT closed, extending water tech into AI infrastructure",
+      "source": "Ecolab Q2 2026 news release, SEC exhibit 99.1 (sec.gov .../ecl_ex99x1.htm, 2026-07-28)",
+      "as_of": "2026-07-28"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 37.57, forward P/E 29.68, P/B 7.79, net debt $8.78B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-27 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 267.81-277.46, invalidation 260.02, reference_confidence 50; close 279.41 on 2026-09-25 is 0.7% above band high (marginal no-chase)",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T14:39:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. Core franchise thesis is pricing power and share gains; CoolIT adds genuine AI-infrastructure exposure but overlaps with VRT (liquid cooling) and ETN/CAT (data-center power chain) - do not count ECL and VRT cooling signals as independent. Close is marginally above band high; effectively at the top of the band. The stale SQL NEAR_BAND label (08-21 snapshot) roughly agrees with current position. Accepted by Randall, WebChat 2026-09-27 ~14:39 Phoenix: 'Accepted. Proceed with batch 3.'",
+  "fundamentals_period_end": "2026-06-30"
+}

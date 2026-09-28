@@ -1,0 +1,101 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "CVX",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "commodity_linked",
+  "thesis_statement": "Chevron printed its best quarter in six years on $104 Brent: record U.S. production with Hess assets integrated ahead of schedule, record refinery throughput, $18.1B free cash flow and record debt reduction - a structurally improved integrated major, but earnings are at a commodity-price cyclical high and the current regime disfavors energy.",
+  "timeframe": "intermediate_3_12m",
+  "cases": {
+    "base": {
+      "summary": "Production holds near 4,000 MBOED with Hess synergies banked, capex stays disciplined, and buybacks continue at the price-dependent rate.",
+      "drivers": [
+        "Hess integration ($1.5B synergies, 50% above target, ahead of schedule)",
+        "Permian and Gulf of America growth",
+        "$3B structural cost reduction achieved six months early"
+      ]
+    },
+    "bull": {
+      "summary": "Brent holds above $90 on Middle East disruption, downstream margins stay strong, and the Microsoft 20-year power agreement (2.67 GW) becomes the template for AI-adjacent energy demand.",
+      "drivers": [
+        "geopolitical price support",
+        "20-year Microsoft PPA for West Texas data-center power",
+        "downstream strength (record U.S. throughput, 97% utilization)"
+      ]
+    },
+    "bear": {
+      "summary": "Brent normalizes toward $70s, the favorable timing effects ($1.4B this quarter) reverse, and cyclical earnings mean-revert taking the multiple with them.",
+      "drivers": [
+        "commodity price normalization from $104 Brent",
+        "cyclical earnings peak",
+        "reduce-cyclicals macro regime"
+      ]
+    }
+  },
+  "key_risks": [
+    "Earnings are at a cyclical high: Q2 2026 came against $104 average Brent vs $68 a year ago, plus $1.4B of favorable timing effects; both normalize.",
+    "Current macro regime (reduce cyclicals) disfavors energy; XOM carries the same overlap warning.",
+    "The SQL band is very narrow (197.67-202.20, about 2.3% wide) with reference confidence 35; the close is already above band high, so the band offers little timing information.",
+    "Capex is rising ($4.5B this quarter vs $3.7B a year ago) including legacy Hess spend."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (190.87 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Brent-based upstream earnings collapse as average realized prices fall back below $70 for a full quarter.",
+      "Hess-related production or synergy targets are cut.",
+      "Quarterly free cash flow falls below $5B for two consecutive quarters at mid-cycle prices."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-30",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Brent crude price path (Middle East conflict disruption premium)",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_review_bias",
+      "defensive_neutral_selective"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLE"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: reported earnings $12.1B ($6.11 diluted; adjusted $6.06); ROCE 21.4%; production 4,070 MBOED +20% (record U.S. production; Hess contribution plus Permian and Gulf of America growth); record U.S. refinery throughput 1.07M bpd at 97%+ utilization; CFFO $22.6B; free cash flow $18.1B; total debt reduced a record $8.4B; Hess synergies $1.5B run-rate (50% above initial target, within one year of close); $3B structural cost reduction achieved six months early; 20-year 2.67 GW Microsoft power agreement for West Texas data center; average Brent $104 vs $68 a year ago",
+      "source": "Chevron Q2 2026 news release, SEC 8-K exhibit 99.1 (sec.gov .../a06302026ex9918-k.htm, 2026-07-31)",
+      "as_of": "2026-07-31"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 19.66, forward P/E 15.07, P/B 2.11, net debt $28.5B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-30 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 197.67-202.20, invalidation 190.87, reference_confidence 35; close 204.44 on 2026-09-25 is 1.1% above band high (no-chase)",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T12:22:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. Structurally better company than a year ago (Hess, costs, balance sheet), but the earnings level is commodity-cycle-dependent: conviction is on franchise quality at mid-cycle, not on the current run rate persisting. Overlaps with XOM on energy; do not count CVX and XOM signals as independent. Earnings 10-30 falls inside the 30-day catalyst window. The stale SQL NEAR_BAND label (08-21 snapshot) roughly agrees with the current above-band position. Accepted by Randall, WebChat 2026-09-27 ~12:22 Phoenix: 'Yes, accepted. Proceed with remaining batches.'",
+  "fundamentals_period_end": "2026-06-30"
+}

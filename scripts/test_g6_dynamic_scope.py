@@ -41,6 +41,19 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def logical_digest(path):
+    """Independent logical hash (committed content, WAL-inclusive)."""
+    con = sqlite3.connect(f"file:{Path(path).resolve().as_posix()}?mode=ro", uri=True)
+    try:
+        h = hashlib.sha256()
+        for line in con.iterdump():
+            h.update(line.encode("utf-8"))
+            h.update(b"\n")
+        return h.hexdigest()
+    finally:
+        con.close()
+
+
 def fixture(root, n=32, scoped=True):
     db = root / "levels.sqlite"
     con = sqlite3.connect(db)
@@ -97,12 +110,13 @@ class DynamicScopeTests(unittest.TestCase):
         self.assertEqual(writer._dynamic_scope_fingerprint(triples),
                          "336bb2c7eacb8d5602fab2c4b84e4e5f70b4282d1401ac3255f306ebaf1d5b2e")
 
-    def test_scoped_apply_counts_and_byte_exact_rollback(self):
+    def test_scoped_apply_counts_and_wal_safe_rollback(self):
         for n in (31, 32, 33):
             with self.subTest(n=n), tempfile.TemporaryDirectory() as tmp:
                 root = Path(tmp)
                 db, matrix = fixture(root, n)
                 original = digest(db)
+                original_logical = logical_digest(db)
                 backup, rb = root / "backup.sqlite", root / "rollback.json"
                 result = run(root, "--apply", db, matrix, "--write", "--validate",
                              "--backup-path", str(backup), "--rollback-path", str(rb),
@@ -115,7 +129,7 @@ class DynamicScopeTests(unittest.TestCase):
                                  (True, True, n, matrix["scope"]["fingerprint"]))
                 self.assertFalse(artifact["matrix_sha256_verified"])
                 self.assertTrue(artifact["live_scope_verified"])
-                self.assertEqual(digest(backup), original)
+                self.assertEqual(logical_digest(backup), original_logical)
                 con = sqlite3.connect(db)
                 try:
                     self.assertEqual(con.execute("SELECT COUNT(*) FROM reference_levels").fetchone()[0], 40)
@@ -127,7 +141,7 @@ class DynamicScopeTests(unittest.TestCase):
                     con.close()
                 restored = run(root, "--rollback", db, None, "--rollback-path", str(rb))
                 self.assertEqual(restored.returncode, 0, restored.stderr)
-                self.assertEqual(digest(db), original)
+                self.assertEqual(logical_digest(db), original_logical)
 
     def test_correct_flag_dry_run_and_apply(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -599,10 +599,9 @@ def _baseline_check(
         for row in reference_rows
     }
     ok = all([
-        len(reference_rows) == 200,
-        meta.get("row_count") == 200,
+        len(reference_rows) >= 1
+        and len(reference_rows) == meta.get("row_count") == len(baseline_rows),
         meta.get("lifecycle") == "immutable_active_alert_reference_baseline",
-        len(baseline_rows) == 200,
         actual_file_hash == expected_file_hash,
         path is not None and path.stem.endswith(expected_file_hash),
         actual_projection_hash == expected_projection_hash,
@@ -931,6 +930,41 @@ class FinanceSqlCanonAccess:
                 if "reference_levels" in tables
                 else -1
             )
+            evaluated_scope_count = (
+                int(conn.execute("SELECT COUNT(*) FROM universe_membership WHERE tier IN ('A','B')").fetchone()[0])
+                if "universe_membership" in tables
+                else -1
+            )
+            reference_without_evidence_count = (
+                int(conn.execute("SELECT COUNT(*) FROM reference_levels AS r WHERE NOT EXISTS (SELECT 1 FROM evidence_freshness AS e WHERE e.ticker=r.ticker)").fetchone()[0])
+                if "reference_levels" in tables and "evidence_freshness" in tables
+                else -1
+            )
+            evidence_without_reference_count = (
+                int(conn.execute("SELECT COUNT(*) FROM evidence_freshness AS e WHERE NOT EXISTS (SELECT 1 FROM reference_levels AS r WHERE r.ticker=e.ticker)").fetchone()[0])
+                if "reference_levels" in tables and "evidence_freshness" in tables
+                else -1
+            )
+            evaluated_scope_missing_reference_count = (
+                int(conn.execute("SELECT COUNT(*) FROM universe_membership AS u WHERE u.tier IN ('A','B') AND NOT EXISTS (SELECT 1 FROM reference_levels AS r WHERE r.ticker=u.ticker)").fetchone()[0])
+                if "universe_membership" in tables and "reference_levels" in tables
+                else -1
+            )
+            evaluated_scope_missing_evidence_count = (
+                int(conn.execute("SELECT COUNT(*) FROM universe_membership AS u WHERE u.tier IN ('A','B') AND NOT EXISTS (SELECT 1 FROM evidence_freshness AS e WHERE e.ticker=u.ticker)").fetchone()[0])
+                if "universe_membership" in tables and "evidence_freshness" in tables
+                else -1
+            )
+            reference_outside_universe_count = (
+                int(conn.execute("SELECT COUNT(*) FROM reference_levels AS r WHERE NOT EXISTS (SELECT 1 FROM universe_membership AS u WHERE u.ticker=r.ticker)").fetchone()[0])
+                if "reference_levels" in tables and "universe_membership" in tables
+                else -1
+            )
+            evidence_outside_universe_count = (
+                int(conn.execute("SELECT COUNT(*) FROM evidence_freshness AS e WHERE NOT EXISTS (SELECT 1 FROM universe_membership AS u WHERE u.ticker=e.ticker)").fetchone()[0])
+                if "evidence_freshness" in tables and "universe_membership" in tables
+                else -1
+            )
             neutral_columns = (
                 table_columns_from_conn(conn, "universe_membership")
                 if "universe_membership" in tables
@@ -1221,12 +1255,24 @@ class FinanceSqlCanonAccess:
         add(
             "alert_reference_levels_complete",
             alert_reference_nulls == 0
-            and counts.get("reference_levels") == 200
-            and counts.get("evidence_freshness") == 200,
+            and counts.get("reference_levels") == counts.get("evidence_freshness")
+            and reference_without_evidence_count == 0
+            and evidence_without_reference_count == 0
+            and evaluated_scope_missing_reference_count == 0
+            and evaluated_scope_missing_evidence_count == 0
+            and reference_outside_universe_count == 0
+            and evidence_outside_universe_count == 0,
             {
                 "null_alert_references": alert_reference_nulls,
                 "reference_row_count": counts.get("reference_levels"),
                 "evidence_freshness_row_count": counts.get("evidence_freshness"),
+                "evaluated_scope_count": evaluated_scope_count,
+                "reference_without_evidence": reference_without_evidence_count,
+                "evidence_without_reference": evidence_without_reference_count,
+                "evaluated_scope_missing_reference": evaluated_scope_missing_reference_count,
+                "evaluated_scope_missing_evidence": evaluated_scope_missing_evidence_count,
+                "reference_outside_universe": reference_outside_universe_count,
+                "evidence_outside_universe": evidence_outside_universe_count,
             },
         )
         add("authority_false_flags_clean", all(value == 0 for value in false_counts.values()), false_counts)

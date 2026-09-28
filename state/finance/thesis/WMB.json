@@ -1,0 +1,101 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "WMB",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "commodity_linked",
+  "thesis_statement": "Williams owns irreplaceable natural-gas infrastructure at the center of the AI-power demand corridor: Adjusted EBITDA +6% with the midpoint raised $200M on the Momentum Midstream acquisition connecting Haynesville supply to Gulf Coast LNG and power demand, a Blackstone JV adding $5.34B of low-cost capital, and take-or-pay contracts making growth increasingly fee-like - though earnings retain commodity-cyclic sensitivity through gathering volumes.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Transco expansions (Leidy Access, Garden Connector, Power Express upsized) and Momentum contribution deliver mid-single-digit EBITDA growth on the raised ~$8.4B midpoint with dividend coverage above 2x.",
+      "drivers": [
+        "Adjusted EBITDA $1.921B +6%; 2026 midpoint raised to $8.4B",
+        "AFFO $1.450B +10%; dividend coverage 2.26x",
+        "Socrates phase one complete; phase two on track for 4Q 2026"
+      ]
+    },
+    "bull": {
+      "summary": "AI data-center power demand keeps landing on Transco's corridor (Power Express upsizing), LNG expansion (Momentum, Gulf Coast) lifts Haynesville throughput, and the fee-based mix pushes the multiple toward premium infrastructure.",
+      "drivers": [
+        "Momentum Midstream acquisition (Haynesville take-or-pay contracts)",
+        "Blackstone Power Innovation JV with $5.34B low-cost capital",
+        "Power Express upsized on data-center demand"
+      ]
+    },
+    "bear": {
+      "summary": "Natural-g Prices stay depressed, drilling and gathering volumes fall, growth-project returns compress, and the elevated leverage against a heavy capex program limits flexibility.",
+      "drivers": [
+        "gathering volumes ride producer economics",
+        "large multi-project capex concurrent execution risk",
+        "net debt ~$30.6B"
+      ]
+    }
+  },
+  "key_risks": [
+    "Commodity-linked volumes: despite take-or-pay growth projects, the legacy gathering business rides producer drilling economics.",
+    "Concurrent-execution risk: Momentum integration, Socrates phase two, Transco expansions, and the Blackstone JV all executing simultaneously.",
+    "Net debt ~$30.6B with a ~26.9x forward earnings multiple that prices the growth already.",
+    "Regulatory (FERC) timing on Transco expansions is a recurring variable."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (66.17 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Adjusted EBITDA growth falls below 2% year over year for two consecutive quarters.",
+      "2026 Adjusted EBITDA guidance is cut below the raised ~$8.4B midpoint.",
+      "Dividend coverage (AFFO basis) falls below 1.8x for two consecutive quarters."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-11-02",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Momentum Midstream close and Socrates phase-two completion (4Q 2026)",
+      "expected_date": null,
+      "date_confidence": "company_guidance"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_review_bias",
+      "defensive_neutral_selective"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLE"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: GAAP net income $827M / EPS $0.68 +51%; adjusted net income $614M / $0.50 +8%; Adjusted EBITDA $1.921B +6%; CFFO $1.376B; AFFO $1.450B +10%; dividend coverage 2.26x; 2026 Adjusted EBITDA midpoint raised $200M to ~$8.4B reflecting Momentum; Socrates phase one complete (phase two 4Q26); Transco Leidy Access and Garden Connector customer agreements signed, Power Express upsized; Blackstone Power Innovation JV finalized ($5.34B low-cost capital); Momentum Midstream acquisition agreement (Haynesville-to-Gulf-Coast LNG/power corridor, take-or-pay); LEG gathering expansion and large Transco take-or-pay project announced",
+      "source": "Williams Q2 2026 results release, SEC exhibit 99.1 (sec.gov .../wmb_20260630xer.htm, 2026-08-03)",
+      "as_of": "2026-08-03"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 27.59, forward P/E 26.86, P/B 6.44, net debt $30.59B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-11-02 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 68.82-72.20, invalidation 66.17, reference_confidence 40; close 69.28 on 2026-09-25 is inside band, low end; the stale SQL IN_BAND label (08-21 snapshot) agrees with the live position",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T14:44:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. Classified commodity_linked rather than pure infrastructure because legacy gathering retains producer-economics sensitivity even as the growth projects shift toward take-or-pay; the mix is improving but not yet fully fee-based. The AI-power angle (Socrates, Power Express) is the genuine differentiator vs LNG: WMB moves the gas that powers data centers, overlapping thematically with CVX's Microsoft PPA and CAT's power-gen orders - treat the AI-power-demand theme as ONE signal across the complex, not three independent confirmations. Earnings 11-02 inside the 30-day catalyst window. Forward P/E ~26.9 is full for mid-single-digit EBITDA growth; the multiple prices the growth-project execution. Accepted by Randall, WebChat 2026-09-27 ~14:44 Phoenix: 'Accepted. Proceed with phase 4 remaining work.'",
+  "fundamentals_period_end": "2026-06-30"
+}

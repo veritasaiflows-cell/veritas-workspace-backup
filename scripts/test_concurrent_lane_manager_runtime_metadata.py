@@ -9,6 +9,7 @@ import sqlite3
 import subprocess
 import sys
 import tempfile
+import time
 from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
@@ -1936,6 +1937,106 @@ def test_active_admission_lock_fails_closed_without_register_write() -> None:
             lock_path.unlink()
 
 
+def _assert_interleaved_write_cannot_erase_a_lease(first_action: str) -> None:
+    """Two CLI processes must not both write from the same register snapshot."""
+    manager = load_manager_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+        register = root / "lane-register.json"
+        ready = root / "snapshot-loaded"
+        release = root / "release-writer"
+        manager.atomic_write_json(register, manager.empty_register())
+        if first_action == "--complete":
+            seeded = run_manager_raw(
+                "--lease", "RUNTIME", "--workstream", "existing", "--register", str(register),
+                "--owner", "test", "--allowed-write", "tmp/existing.json", "--write",
+            )
+            assert seeded.returncode == 0, seeded.stdout
+        # Pause a generic writer after its read, before it writes.  On the
+        # unfixed manager it has no lock and can erase the second process's
+        # successful lease; the fixed manager rejects the contender instead.
+        script = """
+import pathlib, sys, time
+sys.path.insert(0, sys.argv[1])
+import concurrent_lane_manager as manager
+original = manager.load_register
+ready, release = pathlib.Path(sys.argv[2]), pathlib.Path(sys.argv[3])
+def paused(path):
+    result = original(path)
+    ready.touch()
+    deadline = time.monotonic() + 15
+    while not release.exists():
+        if time.monotonic() > deadline:
+            raise RuntimeError('release timeout')
+        time.sleep(0.01)
+    return result
+manager.load_register = paused
+action = [sys.argv[5]] if sys.argv[5] == '--status' else [sys.argv[5], 'RUNTIME']
+sys.argv = ['lane-manager', *action, '--workstream', 'existing', '--register', sys.argv[4], '--write']
+raise SystemExit(manager.main())
+"""
+        process = subprocess.Popen(
+            [sys.executable, "-c", script, str(SCRIPT.parent), str(ready), str(release), str(register), first_action],
+            cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+        )
+        try:
+            deadline = time.monotonic() + 10
+            while not ready.exists() and process.poll() is None and time.monotonic() < deadline:
+                time.sleep(0.01)
+            assert ready.exists(), "first writer did not reach the snapshot barrier"
+            lease_args = (
+                "--lease", "RUNTIME", "--workstream", "interleaved-lease", "--register", str(register),
+                "--owner", "test", "--allowed-write", "tmp/interleaved-lease.json", "--write",
+            )
+            contender = run_manager_raw(*lease_args)
+            assert contender.returncode != 0, "lease must not write over an in-progress status transaction"
+            assert "active_lease_admission_lock_exists" in contender.stdout
+            release.touch()
+            stdout, stderr = process.communicate(timeout=20)
+            assert process.returncode == 0, (stdout, stderr)
+            retried = run_manager_raw(*lease_args)
+            assert retried.returncode == 0, retried.stdout
+            durable = manager.load_register(register)
+            assert manager.find_lane(durable, "RUNTIME", "interleaved-lease") is not None
+            if first_action == "--complete":
+                assert manager.find_lane(durable, "RUNTIME", "existing")["status"] == "complete"
+        finally:
+            release.touch()
+            if process.poll() is None:
+                process.kill()
+                process.communicate(timeout=10)
+
+
+def test_interleaved_status_write_cannot_erase_a_lease() -> None:
+    _assert_interleaved_write_cannot_erase_a_lease("--status")
+
+
+def test_interleaved_complete_cannot_erase_a_lease() -> None:
+    _assert_interleaved_write_cannot_erase_a_lease("--complete")
+
+
+def test_terminal_and_generic_writes_respect_admission_lock() -> None:
+    manager = load_manager_module()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        register = Path(tmpdir) / "lane-register.json"
+        seeded = run_manager_raw(
+            "--lease", "RUNTIME", "--workstream", "existing", "--register", str(register),
+            "--owner", "test", "--allowed-write", "tmp/existing.json", "--write",
+        )
+        assert seeded.returncode == 0, seeded.stdout
+        before = register.read_bytes()
+        lock_path = manager.active_lease_admission_lock_path(register)
+        lock_path.write_text("external writer", encoding="utf-8")
+        try:
+            for action in (("--complete", "RUNTIME"), ("--set-status", "RUNTIME", "--status-value", "blocked"), ("--status",)):
+                attempt = run_manager_raw(*action, "--workstream", "existing", "--register", str(register), "--write")
+                assert attempt.returncode != 0, attempt.stdout
+                assert "active_lease_admission_lock_exists" in attempt.stdout
+                assert register.read_bytes() == before
+        finally:
+            lock_path.unlink()
+
+
 def test_wf67_july_archive_apply_lane_allows_exact_archive_path() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         register = Path(tmpdir) / "lane-register.json"
@@ -3284,6 +3385,9 @@ def main() -> int:
     test_active_admission_requires_current_expiry_and_set_status_renews_it()
     test_safe_active_lease_persists_despite_terminal_ledger_debt()
     test_active_admission_lock_fails_closed_without_register_write()
+    test_interleaved_status_write_cannot_erase_a_lease()
+    test_interleaved_complete_cannot_erase_a_lease()
+    test_terminal_and_generic_writes_respect_admission_lock()
     test_wf67_july_archive_apply_lane_allows_exact_archive_path()
     test_portfolio_governance_lane_allows_exact_execution_board_marker_only()
     test_wf67_july_archived_proof_relocation_counts_as_existing()

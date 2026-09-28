@@ -105,3 +105,8 @@ data/evals/model-arena/**/transport-canary-state/
 
 # Alert event ledger append lock (runtime only); the ledger .jsonl and head are committed (2026-09-24)
 state/finance/ledger/*.lock
+
+# SQLite WAL/SHM sidecars are transient recovery artifacts; tracked historical
+# copies remain unaffected, while new sidecars stay out of checkpoints.
+state/finance/*.sqlite-shm
+state/finance/*.sqlite-wal

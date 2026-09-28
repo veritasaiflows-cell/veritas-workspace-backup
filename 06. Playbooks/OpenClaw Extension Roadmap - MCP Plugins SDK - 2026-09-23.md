@@ -1,15 +1,22 @@
 # OpenClaw Extension Roadmap - MCP Plugins SDK - 2026-09-23
 
-- **Status:** Roadmap / proposal. Nothing installed or enabled by this note. Every phase gate below requires Randall's explicit approval before any config, plugin, credential, or runtime change.
-- **Owner decision (2026-09-23):** Randall selected "Roadmap doc only" - no MCP servers, plugins, or SDK work started today.
+- **Status (reconciled 2026-09-27):** Extension roadmap and historical decision record. The approved local `veritas-data` MCP server is installed and registered with seven allowlisted read-only tools; further expansion remains proposal-only. This note grants no new approval for config, plugin, credential, or runtime changes.
+- **Initial owner decision (2026-09-23):** Randall selected "Roadmap doc only" at creation; later that day he approved the own-server path (see the dated decision log). The initial zero-install decision is historical, not current status.
+- **Current expansion owner:** [Veritas MCP Expansion Continuity Plan - 2026-09-27](<Project Continuity/Veritas MCP Expansion Continuity Plan - 2026-09-27.md>) owns expansion sequencing, trust gaps, acceptance gates, and next actions. This roadmap retains the broader extension options and dated decisions.
 - **Version anchor:** OpenClaw 2026.9.4 (3a9d69d), Windows native, gateway `RQs_Business`.
-- **Sources:** shipped docs at `C:\Users\Veritas\AppData\Roaming\npm\node_modules\openclaw\docs` - `tools/mcp.md`, `cli/mcp.md`, `plugins/manage-plugins.md`, `plugins/plugin-inventory.md`, `plugins/sdk-overview.md`, `gateway/external-apps.md`. Re-verify against current docs at execution time; OpenClaw updates may move surfaces.
+- **Sources:** shipped docs at `C:\Users\Veritas\AppData\Roaming\npm\node_modules\openclaw\docs` - `tools/mcp.md`, `cli/mcp.md`, `cli/mcp/registry.md`, `plugins/manage-plugins.md`, `plugins/plugin-inventory.md`, `plugins/sdk-overview.md`, `gateway/external-apps.md`. Registry command syntax rechecked against installed 2026.9.4 docs on 2026-09-27; re-verify at execution time because updates may move surfaces.
 
-## 1. Current state (measured 2026-09-23)
+## 1. Current state (reconciled 2026-09-27)
 
-- **MCP servers: 0 configured.** `openclaw mcp status --verbose` -> "No MCP servers configured". The entire MCP surface is greenfield.
-- **Plugins enabled: 16 bundled** - anthropic, codex, diagnostics-otel, memory-core, ollama, openai, telegram, google, microsoft, memory-wiki, kimi, meta, browser, xai, zai, opencode-go. `plugins.deny: [openrouter]`. No external packages installed.
-- **Custom SDK plugins: none.** Nothing we have built ships as a plugin package.
+- **MCP servers: 1 configured and enabled.** Read-only config inspection on 2026-09-27 confirms local stdio `veritas-data` with exactly seven names in `toolFilter.include`: `get_reference_band`, `get_thesis`, `get_recommendation_funnel`, `get_thesis_review`, `get_gap_repair_report`, `get_weekly_renewal_packet`, and `verify_alert_ledger`.
+- **Implementation and proof:** `scripts/veritas_mcp_server.py`, official Python MCP SDK `mcp` 1.30.0. The current expansion owner records same-day standalone doctor/probe success and an earlier 22-test passing baseline. This documentation correction did not rerun probes or tests; registration and read-only hints do not prove complete freshness, lineage, or access-control guarantees.
+- **Acceptance limits:** The original three-consecutive-day probe record is incomplete for 2026-09-24/25. Expansion is not implemented; current reliability gaps and the next proposal-only action belong to the expansion continuity plan, not the original phase order below.
+- **Custom SDK plugins / external MCP exposure:** The 2026-09-27 expansion review records no custom Veritas Plugin SDK package and no MCP endpoint exposed outside the local workspace.
+
+**Historical baseline (measured at roadmap creation, 2026-09-23; not a current inventory):**
+
+- **MCP servers: 0 configured at that time.** `openclaw mcp status --verbose` returned "No MCP servers configured" before the later approved installation.
+- **Plugins enabled: 16 bundled at that time** - anthropic, codex, diagnostics-otel, memory-core, ollama, openai, telegram, google, microsoft, memory-wiki, kimi, meta, browser, xai, zai, opencode-go. `plugins.deny: [openrouter]`. No external packages were installed at that measurement; plugin inventory was not re-audited for this documentation correction.
 
 ## 2. The three extension surfaces
 
@@ -19,7 +26,7 @@ An MCP server is an external program that exposes tools (data retrieval, docs lo
 
 - Transports: stdio (local command), SSE, Streamable HTTP (remote). OAuth supported via `openclaw mcp login`.
 - Key fact: MCP tools go through the same tool-profile and tool-policy controls as everything else. Connecting a server does not bypass our guardrails.
-- `toolFilter` include/expose controls which of a server's tools actually reach agents.
+- `toolFilter.include` and `toolFilter.exclude` control which of a server's tools actually reach agents.
 - Definitions live under `mcp.servers` in config; changes hot-reload; verify reachability with `openclaw mcp doctor <name> --probe` (saving a definition proves nothing - the probe does).
 - Reverse direction: `openclaw mcp serve` exposes OpenClaw conversations TO other MCP clients (see Surface C).
 
@@ -47,15 +54,17 @@ Publishing to ClawHub/npm exists if we ever want to distribute; not a current go
 
 ## 3. Phased plan (each phase gated on Randall's explicit approval)
 
+These are the original extension proposals, retained for history and future options, not the current MCP execution queue. The later own-server decision changed the order; the linked expansion continuity plan now owns MCP sequencing and next actions. No proposal or documented rollback command authorizes execution.
+
 ### Phase 1 - First MCP server pilot: docs retrieval (lowest risk, highest leverage)
 
 Goal: one remote docs-retrieval MCP server so any agent turn can pull current library/framework docs - direct fuel for SDK/plugin building.
 
 1. Verify the candidate server's current endpoint, tool names, and auth model against its live docs at execution time (do not trust a stale list).
-2. Add with a narrow tool filter, e.g. `openclaw mcp add <name> --url <endpoint> --transport streamable-http --include '<tool-allowlist>`.
+2. Add with a narrow tool filter, e.g. `openclaw mcp add <name> --url <endpoint> --transport streamable-http --include '<tool-allowlist>'`.
 3. Verify: `openclaw mcp doctor <name> --probe` lists exactly the expected tools.
 4. Confirm tool-policy posture: tools visible but policy-gated; per-session denial available via Control UI `+ -> Connectors -> Tool access`.
-5. Rollback: `openclaw mcp remove <name>` (or disable to keep the definition).
+5. Rollback, only with explicit approval: `openclaw mcp unset <name>` removes the saved server definition (not installed dependencies); alternatively, `enabled: false` keeps the definition but excludes it from embedded runtime discovery.
 
 Success criteria: probe green 3 consecutive days; at least one real task used the tools; zero policy surprises.
 
@@ -97,10 +106,13 @@ Goal: from consumer to builder.
 
 ## 5. Decision log
 
+Editorial note (2026-09-27): dated decisions and measured outcomes below are preserved. Rollback command spelling is corrected from the originally written `remove` to the installed docs' `unset`; this is a documentation correction, not a rollback or renewed approval.
+
 - **2026-09-23:** Roadmap created from shipped docs + live config evidence. Randall chose "Roadmap doc only" - zero installs. Next action when ready: approve Phase 1 docs-MCP pilot.
 - **2026-09-23 ~20:30 MST, Main review (Randall asked to review the five dashboard sessions' MCP/plugin/SDK recommendations):**
   - **Third-party finance MCPs: do not install now.** `yfinance-mcp` duplicates the in-house Yahoo pipeline and the installed `yfinance` 1.3.0 behind third-party stdio code (star counts in the shortlist were not independently verified). Alpha Vantage reverses the Yahoo-only cost decision and its free tier is too thin. The EDGAR and FRED packagings fail the scorecard, and the premise that we lack EDGAR is wrong: `fundamental_metrics_refresh.py` and related scripts already read SEC companyfacts. The real fundamentals gap was a dead dependency on the retired `tmp/portfolio-config.json`, fixed 2026-09-23; a weekly fundamentals + thesis review cron now exists.
   - **Build our own read-only MCP server first (recommended Phase 3 step 1, ahead of the Plugin SDK).** `veritas-data`: stdio, our code only, official Python MCP SDK, exposing typed read-only tools over existing proven artifacts: bands/confidence for a ticker (guarded SQL read), thesis record, recommendation funnel, thesis review flags, gap-repair report, weekly renewal packet, ledger verify. Value: isolated helper agents (claude-cli children have MCP tools but no filesystem) and dashboard sessions get the same evidence with argument validation, without shell. Why before the Plugin SDK: stable protocol, runs out-of-process (no Gateway restart, no in-gateway host trust), no experimental API; it can be wrapped as a plugin later if needed.
-  - Needs owner approval: `pip install mcp` (new host dependency) and `openclaw mcp add veritas-data ... --include <tool list>` (config change), then `openclaw mcp doctor veritas-data --probe` and a 3-day green window. Rollback: `openclaw mcp remove veritas-data`.
+  - Needs owner approval: `pip install mcp` (new host dependency) and `openclaw mcp add veritas-data ... --include <tool list>` (config change), then `openclaw mcp doctor veritas-data --probe` and a 3-day green window. Rollback: `openclaw mcp unset veritas-data`.
   - Phase 1 docs-retrieval MCP: low priority; OpenClaw docs are already local. `openclaw mcp serve` and Active Memory: defer until there is a concrete consumer or measured need.
-- **2026-09-23 ~21:05 MST:** Randall approved the own-server path. `veritas-data` built (`scripts/veritas_mcp_server.py`, official Python MCP SDK `mcp` 1.30.0), 7 read-only tools with readOnlyHint annotations, 8 tests; registered via `openclaw mcp add veritas-data` with an include allowlist; `openclaw mcp doctor veritas-data --probe` ok. Config preimage `tmp/openclaw.json.pre-veritas-mcp-20260923`. 3-day green window ends 2026-09-26. Rollback: `openclaw mcp remove veritas-data`.
+- **2026-09-23 ~21:05 MST:** Randall approved the own-server path. `veritas-data` built (`scripts/veritas_mcp_server.py`, official Python MCP SDK `mcp` 1.30.0), 7 read-only tools with readOnlyHint annotations, 8 tests; registered via `openclaw mcp add veritas-data` with an include allowlist; `openclaw mcp doctor veritas-data --probe` ok. Config preimage `tmp/openclaw.json.pre-veritas-mcp-20260923`. 3-day green window ends 2026-09-26. Rollback: `openclaw mcp unset veritas-data`.
+- **2026-09-27, documentation reconciliation:** Reconciled the opening status with the approved installation and current seven-tool registration, separated the original inventory from current evidence, corrected registry syntax, and linked the current expansion owner. No rollback, MCP/runtime/config change, or installation was performed.

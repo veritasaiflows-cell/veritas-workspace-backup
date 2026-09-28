@@ -288,3 +288,25 @@ Randall accepted the PHASE4-DYNAMIC-SCOPE-20260927 Muse Spark code as-is, waived
 - **BRK.B P/B 0.0: fixed.** yfinance's `priceToBook` for BRK-B uses Class A book value per share, about 0.001. A non-negative provider P/B below 0.05 is now recorded as `price_to_book_provider_rejected`, and `price_to_book` is null, not 0.0. Negative P/B (negative equity) is kept.
 - **Still open:** 13 stale band-status labels, which clear at the 10-03 renewal. XOM's thesis source note is superseded by the official 8-K confirmation.
 - **Not done:** the P4-2 per-name tier writer. Its prerequisites (forward scorecard, the 2026-10-15 scorer-readiness gate) are unmet. Nothing was written to live canon, tiers, schedules, config or delivery.
+
+### 2026-09-27 ~12:01-12:20 Phoenix: unified monitoring/scale-out plan (nothing executed)
+
+Randall (WebChat ~12:01): "review attach and plan a fix to ensure we integrate this into phase 4. This has to be fully functional alert system that is unified and is able to monitor up to thousands of names." The attached Q&A (untrusted external content) was verified number-for-number against the live canon: 15 A / 17 B / 268 C; 168 carried-over Tier C band rows (59 still carrying stale 08-21 status labels), 100 without rows, 200 total; promotion-only band path; no promotion rule until the scorecard.
+
+New owner artifact: `Phase 4 Unified Monitoring and Scale-Out Plan - 2026-09-27.md`. Three monitoring grades: decision-grade (evaluated scope only, feeds alerts), weekly screening bench-bands for all 300 (review-only, recomputed never persisted stale - the fix for the 168-row problem class), and a future universe-watch grade for thousands-name scale (batched snapshots; licensed/screener feed is the durable data answer). Stage 1 bundles the P4-2 per-name tier writer, D3 onboarding INSERT, and the 200-row guard contract change in one lane. Stage 2 needs one new standing permission (weekly screening refresh, ~268 extra Yahoo pulls/week). Owner decisions D-A through D-D pending. Nothing executed; no canon, tier, schedule, or config change.
+
+### 2026-09-27 ~14:44 Phoenix: Tier B coverage complete (32/32); P4-2 writer lane dispatched
+
+Randall accepted batch 3 (PLTR, RTX, SMCI, TMUS, VMC, WMB) and directed "Proceed with phase 4 remaining work." All 32 evaluated-scope names now have owner-accepted theses (validator 32/32 eligible, 0 errors) - the Tier B coverage milestone from the 12:09 reconciliation is complete.
+
+P4-2 writer lane dispatched to Muse Spark (explicit model override): slice A = weekly read-only tier proposal job with Tier Entitlement decision cards per the adopted two-test policy; slice B = owner-gated onboarding INSERT writer plus the S7 guard scope-derived contract change (unapplied patch, drafted against HEAD 3d7721c5). Drafts only; Main verifies and applies. Stage 2 screening (D-A) remains an ungranted standing permission. Oct-15 scorer readiness assessment unchanged.
+
+### 2026-09-27 ~17:12 Phoenix: P4-2 source landing accepted; activation blocked
+
+Main recovered and integrated both r3 builder outputs, then required three bounded GPT-6 Sol actual-diff reviews. The first reviews found unsafe authorization, rollback, path-containment, recency and proof-overstatement behavior. Main applied one bounded repair, then narrowed the contract after the fresh review still rejected production-grade claims. Final QA passed the narrowed code landing with no Critical/High finding.
+
+Accepted source behavior: the weekly proposal job is read-only/no-apply and emits honest missing/blocked proof slots; candidate bands are review-only/no-repair; S7 is now scope-derived (pin consistency, equal reference/evidence sets, full evaluated-scope coverage, universe containment); onboarding and tier transaction mechanics exist only as OS-temp hermetic test foundations. Both production apply and rollback CLIs fail closed with `exact_apply_authorization_not_implemented`.
+
+Main verification: 125 focused checks, compile, shared validator bundle 9/9, live guard `ok`, live proposal smoke 15/17/268 with no demotion/swap, production mutation probes refused with the canon logical hash unchanged. No live canon, tier, band, schedule, config, runtime or delivery mutation occurred.
+
+This closes the two implementation-draft slices, **not Phase 4 cutover**. Remaining cutover blockers are the contract's per-ticker lease, pending/timeout/restart recovery, producer-consumer and queue enrollment, exact owner authorization, live-safe atomic restore, complete source-owned recency/identity/census proof, scorer-readiness decision, and a separately owner-approved pilot transaction.

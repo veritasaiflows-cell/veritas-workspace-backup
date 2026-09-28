@@ -216,7 +216,11 @@ def apply_pragmas(conn: sqlite3.Connection) -> None:
     conn.execute("PRAGMA temp_store=MEMORY")
 
 
-PRESERVED_EXTENSION_TABLES = ("reference_levels", "evidence_freshness")
+# These tables survive a rebuild only through the fetch-before/restore-after mechanism below:
+# DROP TABLE securities fires their ON DELETE CASCADE foreign keys, so any ticker-keyed
+# extension table with that FK must be listed here or a rebuild silently empties it
+# (disciplined_reference_levels lost its rows exactly this way before 2026-09-27).
+PRESERVED_EXTENSION_TABLES = ("reference_levels", "evidence_freshness", "disciplined_reference_levels")
 
 
 def table_exists(conn: sqlite3.Connection, table: str) -> bool:
@@ -279,9 +283,7 @@ def restore_preserved_extension_rows(
     return restored
 
 
-def create_schema(conn: sqlite3.Connection) -> None:
-    conn.executescript(
-        """
+SCHEMA_SQL = """
         DROP VIEW IF EXISTS current_active_universe;
         DROP VIEW IF EXISTS current_answer_path;
         DROP VIEW IF EXISTS review_monitor_universe;
@@ -403,8 +405,27 @@ def create_schema(conn: sqlite3.Connection) -> None:
         SELECT *
         FROM current_active_universe
         WHERE review_100_monitor = 1;
-        """
-    )
+"""
+
+
+def create_schema(conn: sqlite3.Connection) -> None:
+    # executescript() would first COMMIT any pending transaction and then run every
+    # DROP/CREATE in autocommit, so a failure mid-insert left the canon with its tables
+    # already dropped (verified on a temp copy 2026-09-27: 300 securities -> 0, audit
+    # history gone). SQLite DDL is transactional, so execute the statements inside one
+    # explicit transaction that joins the caller's `with conn:` block: the rebuild then
+    # commits or rolls back as a whole.
+    if not conn.in_transaction:
+        conn.execute("BEGIN IMMEDIATE")
+    buffer = ""
+    for line in SCHEMA_SQL.splitlines():
+        buffer += line + "\n"
+        if sqlite3.complete_statement(buffer):
+            if buffer.strip():
+                conn.execute(buffer)
+            buffer = ""
+    if buffer.strip():
+        raise ValueError("SCHEMA_SQL ends with an incomplete statement")
 
 
 def normalize_routing_tier(value: Any) -> str | None:

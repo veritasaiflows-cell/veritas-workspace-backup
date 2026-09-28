@@ -1,0 +1,101 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "VMC",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "cyclical",
+  "thesis_statement": "Vulcan is the pure-play aggregates compounder: local pricing power (freight-adjusted price +5% mix-adjusted) with cash gross profit per ton above $12 despite energy inflation and disruptive weather, an active acquisition pipeline, and public-construction demand backing the reaffirmed full-year outlook - a high-quality franchise whose volumes still ride the construction cycle.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Volumes recover modestly as weather normalizes, pricing holds the 4-5% discipline, and the reaffirmed adjusted EPS outlook delivers with aggregates cash gross profit per ton above $12.",
+      "drivers": [
+        "freight-adjusted price per ton $22.97 +5% mix-adjusted (+4% reported)",
+        "cash gross profit per ton $12.02",
+        "public construction activity and large projects supporting shipments"
+      ]
+    },
+    "bull": {
+      "summary": "Infrastructure spending accelerates, the acquisition pipeline consolidates local reserves at value-accretive prices, and unit-margin expansion continues compounding the per-ton economics.",
+      "drivers": [
+        "aggregates gross profit per ton $9.47 (TTM $8.78)",
+        "portfolio-enhancing actions completed in Q2 with active M&A pipeline",
+        "SAG as % of revenue improving (6.6% vs 6.9%)"
+      ]
+    },
+    "bear": {
+      "summary": "Private-construction demand stays weak, weather and energy inflation keep pressuring unit costs (cash cost +7%, or +3% ex-diesel), and the cyclical volumes confirm the de-rating the stock has already taken.",
+      "drivers": [
+        "aggregates shipments only +1% with Texas/Southeast rain impact",
+        "freight-adjusted unit cash cost +7% YoY",
+        "~29x trailing for a volume-flat aggregates business"
+      ]
+    }
+  },
+  "key_risks": [
+    "Volume stagnation: shipments +1% in Q2 with weather disruption; the per-ton economics are carrying all the growth.",
+    "Cost inflation: freight-adjusted unit cash cost +7% (+3% ex-diesel); pricing of +4-5% is only barely outrunning it.",
+    "Private residential construction remains the weak leg; public demand is the offset but is budget-dependent.",
+    "Valuation: ~29x trailing and ~23x forward is full for a volume-cyclical; the market is pricing per-ton compounding continuing without interruption."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (230.81 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Aggregates shipments decline year over year for two consecutive quarters.",
+      "Aggregates gross profit per ton falls below $8.50 for two consecutive quarters.",
+      "Full-year adjusted EPS guidance is cut below the reaffirmed outlook."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-29",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Acquisition pipeline announcements and infrastructure spending signs",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_review_bias",
+      "defensive_neutral_selective"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLI"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: total revenues $2,156M vs $2,102M; net earnings $323M; adjusted EBITDA $654M (30.3% margin); adjusted EPS $2.59 vs $2.45; aggregates shipments 59.9M tons +1% (Texas/Southeast rainfall impact); freight-adjusted price $22.97/ton +5% mix-adjusted (+4% reported); aggregates gross profit $9.47/ton, cash gross profit $12.02/ton; freight-adjusted unit cash cost +7% (+3% ex-diesel); SAG 6.6% of revenue (improved); reaffirmed full-year earnings outlook; active strategic-acquisition pipeline with completed portfolio-enhancing actions in Q2",
+      "source": "Vulcan Materials Q2 2026 earnings release, SEC exhibit 99.1 (sec.gov .../ef20078928_ex99-1.htm, 2026-07-29)",
+      "as_of": "2026-07-29"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 29.20, forward P/E 23.00, P/B 3.75, net debt $4.69B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-29 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 240.69-268.54, invalidation 230.81, reference_confidence 40; close 244.98 on 2026-09-25 is inside band, low end; the stale SQL BELOW_STOP label (08-21 snapshot) is one of the five known-wrong labels and disagrees with the live in-band position",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T14:44:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. Medium conviction: the per-ton pricing model is genuinely durable (local oligopoly reserves), but this is a volume-cyclical at a full multiple with volumes currently flat - conviction is on franchise quality, not near-term earnings momentum. The stock's below-band position earlier in 2026 has recovered to the band's low end. Overlaps with CAT on construction exposure (CAT sells the equipment, VMC sells the material - correlated on the same construction cycle; do not count as independent). The stale SQL BELOW_STOP label is a known-wrong 08-21 snapshot. Earnings 10-29 inside the 30-day catalyst window. Accepted by Randall, WebChat 2026-09-27 ~14:44 Phoenix: 'Accepted. Proceed with phase 4 remaining work.'",
+  "fundamentals_period_end": "2026-06-30"
+}

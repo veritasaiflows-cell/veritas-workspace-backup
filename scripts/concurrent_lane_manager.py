@@ -3905,7 +3905,7 @@ def apply_requested_action(
 
 
 def action_requires_active_lease_admission(args: argparse.Namespace) -> bool:
-    """Return whether this write can introduce or reactivate a live lane."""
+    """Return whether this write needs active-lane collision validation."""
     if not args.write:
         return False
     if args.plan:
@@ -3918,11 +3918,12 @@ def active_lease_admission_lock_path(register_path: Path) -> Path:
 
 
 def acquire_active_lease_admission_lock(register_path: Path) -> Path:
-    """Acquire a short, fail-closed lock before read/admit/write.
+    """Acquire the shared register transaction lock before any read/write.
 
     A crash may leave this exact lock file behind.  That is intentional: the
-    next caller must resolve the stale lock explicitly rather than racing a
-    possibly incomplete active-lane write.
+    next writer must resolve the stale lock explicitly rather than racing a
+    possibly incomplete register write. Keep the existing lock path so older
+    active-admission callers and new terminal/status writers contend together.
     """
     lock_path = active_lease_admission_lock_path(register_path)
     descriptor = os.open(str(lock_path), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
@@ -4122,7 +4123,7 @@ def main() -> int:
     action_name = requested_action_name(args)
     admission_required = action_requires_active_lease_admission(args)
     admission_lock: Path | None = None
-    if admission_required:
+    if args.write:
         try:
             admission_lock = acquire_active_lease_admission_lock(register_path)
         except FileExistsError:
@@ -4199,6 +4200,10 @@ def main() -> int:
         post_write_refresh: dict[str, Any] | None = None
         if args.write:
             atomic_write_json(register_path, register)
+            # The durable register transaction is finished. Downstream outcome
+            # refresh can be slow; it must not monopolize the write lock.
+            release_active_lease_admission_lock(admission_lock)
+            admission_lock = None
             refresh_shadow_pilot_after_write(register_path)
             post_write_refresh = refresh_lane_outcome_surfaces(register_path, lane, action_name)
             if lane is not None and post_write_refresh.get("status") != "not_triggered":
@@ -4215,15 +4220,20 @@ def main() -> int:
                 }
                 lane["runtime"] = runtime
                 # Lost-update guard (LANE-RACE-20260913): the outcome-surface
-                # refresh above can take up to ~90s, during which concurrent
-                # admissions may have written new lanes to the register on
-                # disk.  Re-writing our stale in-memory copy here would
-                # clobber them, so reload the fresh register and merge ONLY
-                # our own lane's outcome_refresh runtime onto it.  No lock
-                # scope change: the admission lock (when held) is still
-                # released exactly once by the finally block below; usage
-                # receipts, validators, shadow-pilot fail-open, and all
-                # authority guards are untouched.
+                # refresh above can take up to ~90s. Reacquire the same lock
+                # BEFORE loading the fresh register, then merge ONLY our own
+                # outcome_refresh. A reload without this lock still races a
+                # terminal/status writer and can erase an intervening lease.
+                try:
+                    admission_lock = acquire_active_lease_admission_lock(register_path)
+                except FileExistsError:
+                    print_lock_admission_failure(action_name, active_lease_admission_lock_path(register_path),
+                                                 "active_lease_admission_lock_exists_after_refresh")
+                    return 1
+                except OSError as exc:
+                    print_lock_admission_failure(action_name, active_lease_admission_lock_path(register_path),
+                                                 f"active_lease_admission_lock_error_after_refresh:{type(exc).__name__}")
+                    return 1
                 fresh_register = load_register(register_path)
                 own_lane_id = lane.get("lane_id")
                 merged = False

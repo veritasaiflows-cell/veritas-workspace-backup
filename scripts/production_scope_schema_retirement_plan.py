@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any
 
 from market_data_utils import atomic_write_json, backup_sqlite_database
+from sqlite_snapshot import logical_sha256
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -136,16 +137,43 @@ def table_columns(conn: sqlite3.Connection, table: str) -> set[str]:
 
 def backup_db(run_id: str) -> dict[str, Any]:
     backup_dir = BACKUPS / run_id
+    # The shared backup helper replaces a pre-existing destination. Never let
+    # a repeated run ID overwrite an earlier backup while retaining its manifest.
+    if backup_dir.exists():
+        raise FileExistsError(f"backup run already exists: {backup_dir}")
     backup_dir.mkdir(parents=True, exist_ok=True)
     backup_path = backup_sqlite_database(DB_PATH, backup_dir / DB_PATH.name)
+    # The online backup includes committed WAL frames even when the main file
+    # does not. Refuse to emit a usable manifest if the source changed during
+    # the snapshot or the backup does not represent the committed source.
+    backup_logical = logical_sha256(backup_path)
+    source_logical = logical_sha256(DB_PATH)
+    if source_logical != backup_logical:
+        raise ValueError("backup FAILED: source/backup logical SHA-256 mismatch; no rollback manifest emitted")
     copied: list[dict[str, Any]] = [
         {
             "path": rel(DB_PATH),
             "backup_path": rel(backup_path),
             "sha256": sha256(DB_PATH),
             "backup_sha256": sha256(backup_path),
+            "logical_sha256_before": source_logical,
+            "backup_logical_sha256": backup_logical,
+            "backup_method": "sqlite_online_backup_api_wal_safe",
+            "restore_method": "scripts/sqlite_snapshot.py:wal_safe_restore",
             "bytes": DB_PATH.stat().st_size,
-            "rollback": f"Replace {rel(DB_PATH)} with {rel(backup_path)} after stopping writers.",
+            "rollback": (
+                "Separate owner approval for this exact target and backup is required; "
+                "this manifest is not restore authority. Stop all readers and writers, "
+                "close their SQLite connections, and preserve the live DB plus any "
+                "-wal/-shm sidecars as recovery evidence. Verify the recorded backup "
+                "file SHA-256 and backup_logical_sha256. In the separately approved "
+                "controlled rollback, use scripts/sqlite_snapshot.py "
+                f"wal_safe_restore({rel(backup_path)}, {rel(DB_PATH)}, "
+                "backup_logical_sha256), never a main-file replacement or sidecar "
+                "copy. Before reopening connections, verify logical_sha256(target) "
+                "equals backup_logical_sha256; fail closed on missing files, active "
+                "connections, mismatched hashes, or restore errors."
+            ),
         }
     ]
     manifest = {

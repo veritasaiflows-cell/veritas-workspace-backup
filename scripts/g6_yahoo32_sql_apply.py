@@ -33,7 +33,8 @@ Required CLI:
 Apply flow (single DB transaction after backup):
   0. refuse unless the matrix scope block matches --expected-scope-fingerprint
      and the live guarded-SQL scope (--verify-live-scope); no unscoped apply
-  1. backup sqlite (byte-exact copy + hash proof)
+  1. backup sqlite (WAL-safe SQLite backup API snapshot + logical hash proof;
+     never a main-file copy, which misses uncheckpointed WAL frames)
   2. build successor baseline JSON in tmp staging, hash it, commit it under
      its hash name: <baseline-dir>/alert-reference-levels-v1-<sha256>.json
   3. UPDATE the proposed numeric triples and set their reference_band_status to
@@ -65,6 +66,14 @@ import sqlite3
 import sys
 import tempfile
 from pathlib import Path
+
+# Shared WAL-safe snapshot helpers (scripts/sqlite_snapshot.py). scripts/ may
+# not be on sys.path when this module is loaded via importlib/runpy (test
+# harness), so make the sibling directory importable explicitly.
+_SCRIPTS_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_DIR)
+from sqlite_snapshot import logical_sha256, wal_safe_backup, wal_safe_restore  # noqa: E402
 
 LIVE_AUTHORITY_CLASS_KNOWN = (
     "alert_reference_metadata_review_only_no_execution_authority"
@@ -867,18 +876,24 @@ def backup_db(db_path: Path, backup_path: Path) -> dict:
         backup_path.parent.mkdir(parents=True, exist_ok=True)
     except OSError as e:
         raise ValueError(f"backup FAILED (no mutation performed): {e}")
-    sha_before = _sha256_file(db_path)
+    # WAL-safe backup (defect proven 2026-09-27): shutil.copyfile of the main
+    # file misses uncheckpointed -wal frames whenever another connection
+    # holds the DB open (e.g. a long-lived reader). The SQLite backup API
+    # captures committed state including WAL content; the backup is left in
+    # journal_mode=DELETE so it is a standalone file with no sidecars.
     try:
-        shutil.copyfile(db_path, backup_path)
-    except OSError as e:
+        snap = wal_safe_backup(db_path, backup_path)
+    except (ValueError, sqlite3.Error, OSError) as e:
         raise ValueError(f"backup FAILED (no mutation performed): {e}")
-    sha_backup = _sha256_file(backup_path)
-    if sha_backup != sha_before:
-        raise ValueError("backup FAILED: backup hash != source hash; no mutation performed")
+    # File hashes are informational only: under WAL the main-file hash does
+    # not change on commit while a reader pins the log, so it proves nothing.
     return {
         "backup_path": str(backup_path).replace("\\", "/"),
-        "sha_before": sha_before,
-        "sha_backup": sha_backup,
+        "sha_before": _sha256_file(db_path),
+        "sha_backup": _sha256_file(backup_path),
+        "logical_sha256_before": snap["logical_sha256_before"],
+        "logical_sha256_backup": snap["logical_sha256_backup"],
+        "backup_method": "sqlite_backup_api_wal_safe",
     }
 
 
@@ -1410,13 +1425,16 @@ def run_apply(
         "authority": dict(AUTHORITY),
         "db": str(db_path).replace("\\", "/"),
         "db_sha256_before": bkp["sha_before"],
+        "db_logical_sha256_before": bkp["logical_sha256_before"],
         "db_sha256_after": _sha256_file(db_path),
+        "db_logical_sha256_after": logical_sha256(db_path),
         "matrix": str(matrix_path).replace("\\", "/"),
         "matrix_sha256": matrix_sha,
         "matrix_sha256_verified": matrix_sha256_verified,
         "live_scope_verified": live_scope_verified,
         "backup_path": bkp["backup_path"],
         "backup_sha256": bkp["sha_backup"],
+        "backup_logical_sha256": bkp["logical_sha256_backup"],
         "triple_count": len(triples),
         **(scope_info or {"scope_consistent": False, "scope_verified": False, "scope_fingerprint": None, "scope_count": None}),
         "row_count_before": row_count_before,
@@ -1424,7 +1442,7 @@ def run_apply(
         "authority_class_preserved": True,
         "band_status_cleared": sorted(triples) if status_col else [],
         "band_status_policy": "renewed rows set to NULL; prior values in before_rows; "
-        "restored by the byte-exact backup on rollback" if status_col else "column absent; untouched",
+        "restored by the WAL-safe backup restore on rollback" if status_col else "column absent; untouched",
         "before_rows": before_rows,
         "proposed_rows": {
             t: dict(triples[t]["proposed"]) for t in sorted(triples)
@@ -1441,7 +1459,8 @@ def run_apply(
         "lineage_tables_updated": [lt["table"] for lt in lineage_tables],
         "meta_key": META_KEY if meta is not None else None,
         "meta_updated": meta is not None,
-        "restore_method": "byte-exact copy of backup_path over db",
+        "restore_method": "WAL-safe SQLite backup-API restore of backup_path over db "
+        "(logical sha256 verified; see scripts/sqlite_snapshot.py)",
     }
     rp = rollback_path or default_rollback_path(db_path)
     write_json_guarded(rp, rollback, allow_write)
@@ -1470,15 +1489,23 @@ def run_rollback(db_path: Path, rollback_path: Path) -> dict:
         raise ValueError("rollback FAILED: backup hash != recorded backup_sha256")
     if not db_path.is_file():
         raise FileNotFoundError(f"sqlite db not found: {db_path}")
+    # WAL-safe restore (defect proven 2026-09-27): copying backup bytes over
+    # the main file leaves -wal frames replayable on top, so a "restored" DB
+    # can still show the failed change. The SQLite backup API rewrites
+    # committed content transactionally; equality is proven on logical
+    # hashes, which see WAL-committed content.
+    expected_logical = rb.get("backup_logical_sha256")
+    legacy_backup = expected_logical is None
+    if legacy_backup:
+        # Rollback JSON predates WAL-safe fields: tie the expectation to the
+        # (file-hash-verified) backup artifact itself.
+        expected_logical = logical_sha256(backup)
     sha_before_restore = _sha256_file(db_path)
+    logical_before_restore = logical_sha256(db_path)
     try:
-        shutil.copyfile(backup, db_path)
-    except OSError as e:
-        raise ValueError(f"rollback copy FAILED: {e}")
-    sha_after = _sha256_file(db_path)
-    restored_exact = sha_after == rb["backup_sha256"]
-    if not restored_exact:
-        raise ValueError("rollback FAILED: restored hash != backup hash")
+        wal_safe_restore(backup, db_path, expected_logical)
+    except (ValueError, sqlite3.Error, OSError) as e:
+        raise ValueError(f"rollback FAILED: {e}")
     return {
         "mode": "rollback",
         "generated_at": _utc_now_iso(),
@@ -1486,7 +1513,12 @@ def run_rollback(db_path: Path, rollback_path: Path) -> dict:
         "rollback_path": str(rp).replace("\\", "/"),
         "backup_path": str(backup).replace("\\", "/"),
         "sha_before_restore": sha_before_restore,
-        "sha_after_restore": sha_after,
+        "sha_after_restore": _sha256_file(db_path),
+        "logical_sha256_before_restore": logical_before_restore,
+        "logical_sha256_after_restore": expected_logical,
+        "backup_logical_sha256": expected_logical,
+        "legacy_backup_without_logical_hash": legacy_backup,
+        "restore_method": "sqlite_backup_api_wal_safe",
         "restored_exact": True,
     }
 
@@ -1648,12 +1680,15 @@ def validate_apply_artifact(rollback: dict, db_path: Path, matrix_sha: str) -> l
                 errors.append("rollback JSON on-disk mismatch")
         except (OSError, json.JSONDecodeError) as e:
             errors.append(f"rollback JSON re-read failed: {e}")
+    # WAL-correct live check: the logical (committed-content) hash is
+    # authoritative; a main-file hash can both miss WAL commits and flag
+    # benign checkpoint timing, so it stays informational only.
     try:
-        if db_path.is_file() and rollback.get("db_sha256_after"):
-            if _sha256_file(db_path) != rollback["db_sha256_after"]:
-                errors.append("live DB hash != recorded db_sha256_after")
-    except OSError as e:
-        errors.append(f"live DB hash check failed: {e}")
+        if db_path.is_file() and rollback.get("db_logical_sha256_after"):
+            if logical_sha256(db_path) != rollback["db_logical_sha256_after"]:
+                errors.append("live DB logical hash != recorded db_logical_sha256_after")
+    except (sqlite3.Error, OSError) as e:
+        errors.append(f"live DB logical hash check failed: {e}")
     return errors
 
 
@@ -1666,7 +1701,7 @@ def build_parser() -> argparse.ArgumentParser:
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--dry-run", action="store_true", help="no SQL mutation; emit diff")
     g.add_argument("--apply", action="store_true", help="backup first, then UPDATE proposed rows + successor pin")
-    g.add_argument("--rollback", action="store_true", help="byte-exact restore from backup")
+    g.add_argument("--rollback", action="store_true", help="WAL-safe restore from backup (SQLite backup API, logical-hash verified)")
     ap.add_argument("--write", action="store_true", help="allow artifact writes (mandatory for --apply)")
     ap.add_argument("--validate", action="store_true", help="validate artifacts after build")
     ap.add_argument("--matrix", default=None, help="reference-level matrix JSON path (optional verified scope block)")
@@ -1729,7 +1764,7 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"FAILED CLOSED: {e}", file=sys.stderr)
                 return 2
         if args.dry_run:
-            sha_before = _sha256_file(db_path)
+            logical_before = logical_sha256(db_path)
             try:
                 summary = build_dry_run(
                     db_path, triples, Path(args.matrix), matrix_sha, args.baseline_dir,
@@ -1751,7 +1786,7 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print(json.dumps(summary, indent=2, sort_keys=True))
             if args.validate:
-                if _sha256_file(db_path) != sha_before:
+                if logical_sha256(db_path) != logical_before:
                     print("dry-run VALIDATION FAILED: DB mutated during dry-run", file=sys.stderr)
                     return 3
                 if summary["triple_count"] < 1 or (

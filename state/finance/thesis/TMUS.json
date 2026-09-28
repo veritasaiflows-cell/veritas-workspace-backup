@@ -1,0 +1,101 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "TMUS",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "quality_compounder",
+  "thesis_statement": "T-Mobile is the scaled US wireless share-taker converting best-network differentiation into industry-leading financial growth: postpaid service revenue +13%, Core Adjusted EBITDA +12%, record NPS of 46, with UScellular integration absorbing one-time costs while the 5G capacity lead and new-business lines (broadband, fiber JVs) extend the runway.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Postpaid ARPA (+2%) and account growth keep service revenue growing high-single to low-double digits, EBITDA margin holds, and UScellular merger costs fade from the comparisons.",
+      "drivers": [
+        "postpaid service revenue $15.9B +13%",
+        "postpaid ARPA $152.91 +2%",
+        "Adjusted Free Cash Flow $4.8B +4% despite merger costs"
+      ]
+    },
+    "bull": {
+      "summary": "Best-network lead compounds (record NPS 46, third consecutive Ookla Best Network award), broadband and fiber JVs scale into a second growth leg, and ARPA acceleration returns post-integration.",
+      "drivers": [
+        "record wireless NPS 46 (highest ever for a big-three carrier)",
+        "5G capacity advantage",
+        "new businesses runway (broadband, fiber JVs)"
+      ]
+    },
+    "bear": {
+      "summary": "Postpaid net account additions decelerate (-13% YoY this quarter) as the market saturates and cable/competition intensifies; ARPA growth slows below 1% and the growth premium de-rates toward utility.",
+      "drivers": [
+        "net account additions 277K, -13% YoY",
+        "UScellular integration costs ($146M net accelerated depreciation in the quarter)",
+        "market saturation with intensifying price competition"
+      ]
+    }
+  },
+  "key_risks": [
+    "Account growth is decelerating: postpaid net account additions fell 13% YoY; ARPA growth (+2%) must carry more of the revenue algorithm.",
+    "UScellular merger integration adds costs and execution risk (accelerated depreciation $146M net in Q2; EPS growth of 5% was held below service-revenue growth by these costs).",
+    "Net debt ~$116.6B is the structural feature of the wireless business model; rate sensitivity of that debt stack is a macro risk.",
+    "Saturation: with three national carriers plus cable MVNOs, the industry growth pool is mature; the thesis is share and ARPA, not market expansion."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (153.49 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Postpaid service revenue growth falls below 5% for two consecutive quarters.",
+      "Postpaid ARPA declines year over year for two consecutive quarters.",
+      "Core Adjusted EBITDA growth falls below 5% for two consecutive quarters."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-28",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "UScellular integration milestones and 2027 guidance framework",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_neutral_selective",
+      "selective_with_watch_flags"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLC"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: service revenues $19.0B +9% (postpaid service revenue $15.9B +13%, industry-leading); postpaid ARPA $152.91 +2%; postpaid net account additions 277K (-13% YoY); net income $3.2B +1% including UScellular merger-related costs (accelerated depreciation $146M net of tax); diluted EPS $2.99 +5% (merger costs -$0.14); Core Adjusted EBITDA $9.5B +12%; operating cash flow $7.5B +7%; Adjusted Free Cash Flow $4.8B +4%; record wireless NPS 46 (HarrisX, highest-ever big-three score); Ookla Best Mobile Network third consecutive time; P3 Test Champion sweeping all 13 categories including AI Services Champion",
+      "source": "T-Mobile US Q2 2026 press release, SEC 8-K exhibit 99.1 (sec.gov .../tmus06302026ex991.htm, 2026-07-23)",
+      "as_of": "2026-07-23"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 17.30, forward P/E 11.46, P/B 3.16, net debt $116.6B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-28 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 161.14-178.20, invalidation 153.49, reference_confidence 40; close 165.49 on 2026-09-25 is inside band, low end; the stale SQL BELOW_STOP label (08-21 snapshot) is one of the five known-wrong labels and disagrees with the live in-band position",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T14:44:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. Medium conviction: the franchise quality and network lead are real (record NPS, third consecutive Ookla award), but account-growth deceleration (-13%) and a $116.6B debt stack against a saturated market cap the upside; forward P/E ~11.5 is reasonable for high-single-digit growth with EBITDA margin discipline. CEO transition year (Srini Gopalan leading) - execution risk is slightly elevated. The stale SQL BELOW_STOP label (08-21 snapshot) is a known-wrong label; the live position is inside the band at the low end. Earnings 10-28 inside the 30-day catalyst window. Accepted by Randall, WebChat 2026-09-27 ~14:44 Phoenix: 'Accepted. Proceed with phase 4 remaining work.'",
+  "fundamentals_period_end": "2026-06-30"
+}

@@ -196,6 +196,23 @@ def db_sha(path: Path) -> str:
     return h.hexdigest()
 
 
+def logical_db_sha(path: Path) -> str:
+    """Independent logical hash: committed content via iterdump, WAL-inclusive.
+
+    Deliberately NOT imported from sqlite_snapshot so the tests cross-check
+    the module's own proof function with a second implementation.
+    """
+    con = sqlite3.connect(f"file:{Path(path).resolve().as_posix()}?mode=ro", uri=True)
+    try:
+        h = hashlib.sha256()
+        for line in con.iterdump():
+            h.update(line.encode("utf-8"))
+            h.update(b"\n")
+        return h.hexdigest()
+    finally:
+        con.close()
+
+
 def make_matrix(path: Path, db_path: Path, factor: float = 1.1) -> Path:
     con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
     try:
@@ -466,6 +483,7 @@ def main() -> int:
         t0 = tickers()[0]
         before_vals = read_triple(db, t0)
         sha_before = db_sha(db)
+        logical_before = logical_db_sha(db)
 
         # 1. dry-run: no mutation
         r = run_cli(
@@ -507,7 +525,7 @@ def main() -> int:
         )
         check("apply_exit0", r.returncode == 0, r.stderr[-500:] + r.stdout[-500:])
         check("apply_backup_written", bkp.is_file())
-        check("apply_backup_matches_pre", db_sha(bkp) == sha_before)
+        check("apply_backup_matches_pre", logical_db_sha(bkp) == logical_before)
         check("apply_rollback_written", rbp.is_file())
         after_vals = read_triple(db, t0)
         check(
@@ -535,13 +553,13 @@ def main() -> int:
             check("rollback_has_32_before", len(rb.get("before_rows", {})) == 32)
             check("rollback_authority_flag", rb.get("authority_class_preserved") is True)
 
-        # 4. restore via rollback copy (byte-exact) using --rollback mode
+        # 4. restore via WAL-safe rollback using --rollback mode
         r = run_cli(
             ["--rollback", "--write", "--db", str(db), "--rollback-path", str(rbp)],
             tmp,
         )
         check("rollback_exit0", r.returncode == 0, r.stderr[-500:])
-        check("rollback_restored_bytes", db_sha(db) == sha_before)
+        check("rollback_restored_logical", logical_db_sha(db) == logical_before)
         check("rollback_restored_values", read_triple(db, t0) == before_vals)
 
         # 5. refuse markdown output path (no mutation; snapshot fresh)
@@ -727,6 +745,7 @@ def main() -> int:
         db2 = make_fixture_db(tmp / "fixture2.sqlite")
         mx2 = make_matrix(tmp / "matrix2.json", db2)
         sha2_before = db_sha(db2)
+        logical2_before = logical_db_sha(db2)
         base2 = tmp / "baselines32"
         base2.mkdir(parents=True, exist_ok=True)
         old_sentinel = {"sentinel": "old-pin-must-survive", "schema": BASELINE_SCHEMA}
@@ -800,7 +819,7 @@ def main() -> int:
                          "pin32_authority", "pin32_projection", "pin32_not_old_name",
                          "pin32_all_rows_at_new_pin"):
                 check(name, False, "pin file missing")
-        check("pin32_backup_matches_pre", db_sha(tmp / "bk32.sqlite") == sha2_before)
+        check("pin32_backup_matches_pre", logical_db_sha(tmp / "bk32.sqlite") == logical2_before)
 
         # 13. live-like 200-row apply: numerics + all provenance + lineage + meta
         big = make_live_db(tmp / "live200.sqlite", 200)
@@ -810,6 +829,7 @@ def main() -> int:
         # snapshot 168 untouched numbers
         untouched_before = {t: read_triple(big, t) for t in all200[32:]}
         sha_big_before = db_sha(big)
+        logical_big_before = logical_db_sha(big)
         base_big = tmp / "state" / "finance" / "baselines"
         base_big.mkdir(parents=True, exist_ok=True)
         (base_big / OLD_PIN_BASENAME).write_text(json.dumps(old_sentinel), encoding="utf-8")
@@ -827,7 +847,7 @@ def main() -> int:
         )
         check("live200_apply_exit0", r.returncode == 0, r.stderr[-500:] + r.stdout[-500:])
         check("live200_old_pin_untouched", (base_big / OLD_PIN_BASENAME).read_bytes() == old_big_bytes)
-        check("live200_backup_matches_pre", db_sha(tmp / "bk200.sqlite") == sha_big_before)
+        check("live200_backup_matches_pre", logical_db_sha(tmp / "bk200.sqlite") == logical_big_before)
         rb200 = json.loads(Path(tmp / "bk200.json").read_text(encoding="utf-8"))
         pin200_path = Path(str(rb200.get("baseline_path", "")))
         check("live200_pin_exists", pin200_path.is_file(), str(rb200.get("baseline_path")))
@@ -903,14 +923,14 @@ def main() -> int:
                       str(mv)[:400])
             else:
                 check("live200_meta_updated", False, "meta row missing")
-            # rollback restores byte-exact pre-apply state
+            # rollback restores pre-apply committed state (logical proof)
             r = run_cli(
                 ["--rollback", "--write", "--db", str(big),
                  "--rollback-path", str(tmp / "bk200.json")],
                 tmp,
             )
             check("live200_rollback_exit0", r.returncode == 0, r.stderr[-500:])
-            check("live200_rollback_restored_bytes", db_sha(big) == sha_big_before)
+            check("live200_rollback_restored_logical", logical_db_sha(big) == logical_big_before)
         else:
             for name in ("live200_pin_schema", "live200_pin_rowcount_200",
                          "live200_pin_rows_200", "live200_rows_use_reference_confidence",
@@ -919,7 +939,7 @@ def main() -> int:
                          "live200_single_generated_at", "live200_lineage_1000_cells_at_new_pin",
                          "live200_32_changed_168_kept", "live200_changed_values_correct",
                          "live200_meta_updated", "live200_rollback_exit0",
-                         "live200_rollback_restored_bytes", "live200_null_confidence_ok",
+                         "live200_rollback_restored_logical", "live200_null_confidence_ok",
                          "live200_meta_projection_matches_rows"):
                 check(name, False, "pin file missing")
 
@@ -1163,6 +1183,7 @@ def main() -> int:
         ctmp = Path(ctd)
         cdb = make_null_conf_db(ctmp / "conf.sqlite", 32)
         pre_sha = db_sha(cdb)
+        pre_logical = logical_db_sha(cdb)
         cmx_path = make_matrix(ctmp / "conf_matrix.json", cdb)
         cmx = json.loads(cmx_path.read_text(encoding="utf-8"))
         want = {}
@@ -1197,7 +1218,7 @@ def main() -> int:
         except Exception as e:  # noqa: BLE001
             check("conf_in_successor_pin", False, repr(e))
         r = run_cli(["--rollback", "--db", str(cdb), "--rollback-path", str(ctmp / "bk.json")], ctmp)
-        check("conf_rollback_byte_exact", r.returncode == 0 and db_sha(cdb) == pre_sha, r.stderr[-300:])
+        check("conf_rollback_restored_logical", r.returncode == 0 and logical_db_sha(cdb) == pre_logical, r.stderr[-300:])
         bad = json.loads(cmx_path.read_text(encoding="utf-8"))
         next(iter(bad["tickers"].values()))["old_to_proposed"]["proposed"]["reference_confidence"] = 1.5
         try:
@@ -1212,6 +1233,7 @@ def main() -> int:
         stmp = Path(std)
         sdb = make_status_db(stmp / "status.sqlite", 200)
         pre_sha = db_sha(sdb)
+        pre_logical = logical_db_sha(sdb)
         pre_status = read_status(sdb)
         renewed = [f"STAT_T{i:03d}" for i in range(1, 33)]
         smx = make_matrix_subset(stmp / "status_matrix.json", sdb, renewed)
@@ -1255,8 +1277,178 @@ def main() -> int:
             check("status_rollback_records_prior_labels", False, repr(e))
         r = run_cli(["--rollback", "--db", str(sdb), "--rollback-path", str(stmp / "bk.json")], stmp)
         check("status_rollback_restores_labels",
-              r.returncode == 0 and db_sha(sdb) == pre_sha and read_status(sdb) == pre_status,
+              r.returncode == 0 and logical_db_sha(sdb) == pre_logical and read_status(sdb) == pre_status,
               r.stderr[-300:])
+
+    # WAL regression (defect proven 2026-09-27): with a long-lived reader
+    # pinning the WAL, a copyfile backup misses uncheckpointed commits and a
+    # copy-based restore reports a matching hash while the failed change
+    # stays visible. The WAL-safe paths must capture committed state, record
+    # logical hashes, and genuinely revert.
+    def make_wal_db(path: Path, n: int = 32) -> Path:
+        db = make_status_db(path, n)
+        con = sqlite3.connect(str(db))
+        try:
+            con.execute("PRAGMA journal_mode=wal")
+            con.commit()
+        finally:
+            con.close()
+        return db
+
+    wal_t0 = "STAT_T001"  # first ticker make_status_db creates
+
+    # A. reader open across apply + rollback: backup captures uncheckpointed
+    #    commits, rollback genuinely reverts while the WAL stays pinned.
+    with tempfile.TemporaryDirectory(prefix="g6wal_") as wtd:
+        wtmp = Path(wtd)
+        wdb = make_wal_db(wtmp / "wal.sqlite", 32)
+        # rw connection holding an open read snapshot (a mode=ro opener
+        # cannot create the -shm on its own); pins the WAL like a long-lived
+        # canon reader does.
+        wreader = sqlite3.connect(str(wdb))
+        try:
+            wreader.execute("BEGIN")
+            wreader.execute("SELECT COUNT(*) FROM reference_levels").fetchone()
+            # earlier uncheckpointed commit: exactly the content a copyfile
+            # backup of the main file misses
+            wcon = sqlite3.connect(str(wdb))
+            try:
+                wcon.execute(
+                    "UPDATE reference_levels SET reference_confidence = 77 WHERE ticker = ?",
+                    (wal_t0,),
+                )
+                wcon.commit()
+            finally:
+                wcon.close()
+            wm = make_matrix(wtmp / "wm.json", wdb)
+            w_pre_logical = logical_db_sha(wdb)
+            w_pre_vals = read_triple(wdb, wal_t0)
+            w_pre_sha = db_sha(wdb)
+            wbase = wtmp / "baselines"
+            wbase.mkdir()
+            (wbase / OLD_PIN_BASENAME).write_text(json.dumps({"sentinel": True}), encoding="utf-8")
+            r = run_cli(["--apply", "--write", "--validate", "--matrix", str(wm), "--db", str(wdb),
+                         "--baseline-dir", str(wbase), "--backup-path", str(wtmp / "wbk.sqlite"),
+                         "--rollback-path", str(wtmp / "wbk.json"), *scope_flags(wm)], wtmp)
+            check("wal_reader_open_apply_exit0", r.returncode == 0, r.stderr[-500:] + r.stdout[-300:])
+            # precondition: the apply commit stayed in the WAL (main-file hash
+            # unchanged) -- exactly the state where file-hash proof is blind
+            check("wal_apply_main_file_hash_stale", db_sha(wdb) == w_pre_sha,
+                  "main file changed; WAL precondition not established")
+            try:
+                wrb = json.loads((wtmp / "wbk.json").read_text(encoding="utf-8"))
+                check("wal_rollback_json_logical_fields",
+                      all(re.fullmatch(r"[0-9a-f]{64}", str(wrb.get(k) or "")) is not None
+                          for k in ("db_logical_sha256_before", "db_logical_sha256_after",
+                                    "backup_logical_sha256"))
+                      and wrb.get("db_logical_sha256_before") == w_pre_logical
+                      and wrb.get("backup_logical_sha256") == w_pre_logical
+                      and wrb.get("db_logical_sha256_after") == logical_db_sha(wdb),
+                      str({k: wrb.get(k) for k in ("db_logical_sha256_before",
+                                                   "db_logical_sha256_after",
+                                                   "backup_logical_sha256")}))
+                check("wal_apply_visible_through_wal",
+                      read_triple(wdb, wal_t0) != w_pre_vals
+                      and logical_db_sha(wdb) != w_pre_logical)
+                bcon = sqlite3.connect(f"file:{wtmp / 'wbk.sqlite'}?mode=ro", uri=True)
+                try:
+                    got_conf = bcon.execute(
+                        "SELECT reference_confidence FROM reference_levels WHERE ticker = ?",
+                        (wal_t0,),
+                    ).fetchone()[0]
+                finally:
+                    bcon.close()
+                check("wal_backup_captures_uncheckpointed_commit", got_conf == 77, str(got_conf))
+            except Exception as e:  # noqa: BLE001
+                check("wal_rollback_json_logical_fields", False, repr(e))
+                check("wal_apply_visible_through_wal", False, repr(e))
+                check("wal_backup_captures_uncheckpointed_commit", False, repr(e))
+            # rollback while the reader still pins the WAL: must genuinely revert
+            r = run_cli(["--rollback", "--write", "--db", str(wdb),
+                         "--rollback-path", str(wtmp / "wbk.json")], wtmp)
+            check("wal_rollback_exit0", r.returncode == 0, r.stderr[-500:])
+            check("wal_rollback_reverts_logical", logical_db_sha(wdb) == w_pre_logical)
+            check("wal_rollback_reverts_values", read_triple(wdb, wal_t0) == w_pre_vals)
+            rcon = sqlite3.connect(f"file:{wdb}?mode=ro", uri=True)
+            try:
+                got_conf2 = rcon.execute(
+                    "SELECT reference_confidence FROM reference_levels WHERE ticker = ?",
+                    (wal_t0,),
+                ).fetchone()[0]
+            finally:
+                rcon.close()
+            # the pre-apply uncheckpointed commit must survive the restore
+            check("wal_rollback_preserves_preapply_commit", got_conf2 == 77, str(got_conf2))
+        finally:
+            wreader.close()
+
+    # B. forced post-apply verification failure under WAL: the mutation is
+    #    committed, the rollback JSON is never written, and recovery through
+    #    the backup artifact must actually revert (Saturday-renewal net).
+    with tempfile.TemporaryDirectory(prefix="g6fail_") as ftd:
+        ftmp = Path(ftd)
+        fdb = make_wal_db(ftmp / "fail.sqlite", 32)
+        freader = sqlite3.connect(str(fdb))
+        try:
+            freader.execute("BEGIN")
+            freader.execute("SELECT COUNT(*) FROM reference_levels").fetchone()
+            fmx = make_matrix(ftmp / "fm.json", fdb)
+            f_pre_logical = logical_db_sha(fdb)
+            f_pre_vals = read_triple(fdb, wal_t0)
+            fbk = ftmp / "fbk.sqlite"
+            fbase = ftmp / "baselines"
+            fbase.mkdir()
+            fmatrix, fmatrix_sha = mod.load_matrix(fmx)
+            fp = json.loads(fmx.read_text(encoding="utf-8"))["scope"]["fingerprint"]
+            f_scope = mod.verify_scope(fmatrix, fp)
+            f_triples = mod.extract_triples(fmatrix)
+            real_read_rows = mod.read_rows
+            calls = {"n": 0}
+
+            def tampered_after(path, schema):
+                calls["n"] += 1
+                rows = real_read_rows(path, schema)
+                if calls["n"] >= 2:  # post-apply verification read
+                    t = wal_t0
+                    rows = dict(rows)
+                    rows[t] = dict(rows[t])
+                    rows[t]["reference_price_low"] = float(rows[t]["reference_price_low"]) + 1.0
+                return rows
+
+            mod.read_rows = tampered_after
+            forced_failure = None
+            try:
+                mod.run_apply(fdb, f_triples, fmx, fmatrix_sha, fbk, ftmp / "fr.json",
+                              True, fbase, f_scope, False, fp, True,
+                              lambda path, **_: {"scope": {"fingerprint": fp}})
+            except ValueError as e:
+                forced_failure = str(e)
+            finally:
+                mod.read_rows = real_read_rows
+            check("wal_forced_verification_failure_raised",
+                  forced_failure is not None and "apply verification FAILED" in forced_failure,
+                  str(forced_failure))
+            check("wal_failed_apply_left_mutation",
+                  read_triple(fdb, wal_t0) != f_pre_vals
+                  and logical_db_sha(fdb) != f_pre_logical)
+            check("wal_failed_apply_no_rollback_json", not (ftmp / "fr.json").is_file())
+            # recovery rollback JSON built from the backup artifact, then restore
+            frb = {
+                "backup_path": str(fbk).replace("\\", "/"),
+                "backup_sha256": db_sha(fbk),
+                "backup_logical_sha256": logical_db_sha(fbk),
+                "before_rows": {},
+            }
+            (ftmp / "fr.json").write_text(json.dumps(frb), encoding="utf-8")
+            res = mod.run_rollback(fdb, ftmp / "fr.json")
+            check("wal_forced_failure_restore_reverts",
+                  res.get("restored_exact") is True
+                  and logical_db_sha(fbk) == f_pre_logical
+                  and logical_db_sha(fdb) == f_pre_logical
+                  and read_triple(fdb, wal_t0) == f_pre_vals,
+                  str(res)[:200])
+        finally:
+            freader.close()
 
     # A canon without the status column is untouched and reports no clears.
     with tempfile.TemporaryDirectory() as ntd:

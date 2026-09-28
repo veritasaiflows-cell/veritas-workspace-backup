@@ -1,0 +1,106 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "AMZN",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "secular_growth",
+  "thesis_statement": "Amazon combines the reaccelerating AWS franchise (fastest growth in 18 quarters at a $169B annualized run rate) with high-margin advertising and scaled retail logistics; 43% operating income growth shows the margin flywheel, while AI capex temporarily drives trailing free cash flow negative.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "AWS sustains roughly 30% growth, consolidated operating margin holds, and capex growth plateaus in 2027 allowing free cash flow to recover.",
+      "drivers": [
+        "AWS reacceleration (37% in Q2)",
+        "advertising +26% YoY",
+        "retail logistics scale and delivery-speed gains"
+      ]
+    },
+    "bull": {
+      "summary": "AI demand keeps AWS accelerating above 40% with a Trainium cost advantage, and the Anthropic/OpenAI multi-gigawatt commitments anchor a decade of cloud growth.",
+      "drivers": [
+        "Trainium adoption by leading AI labs",
+        "Anthropic relationship and OpenAI partnership",
+        "AWS operating margin ~39%"
+      ]
+    },
+    "bear": {
+      "summary": "AI capex overrun persists, free cash flow stays negative into 2027, retail margin stalls and hyperscaler competition compresses AWS pricing.",
+      "drivers": [
+        "capex intensity (+$66.1B YoY)",
+        "TTM free cash flow -$7.6B",
+        "competitive pricing pressure"
+      ]
+    }
+  },
+  "key_risks": [
+    "Free cash flow is negative (TTM -$7.6B) on a $66.1B YoY capex increase; the thesis depends on that capex converting into revenue.",
+    "Q2 net income of $62.6B includes $53.4B of pre-tax other income, primarily Anthropic investment marks; diluted EPS of $5.75 is not an operating run rate. Operating income of $27.5B is the real signal.",
+    "Aggregator fundamentals lag at Q1 2026 (period_end 2026-03-31, data_quality partial) - the same feed lag already recorded for ETN and GS; this thesis uses the official Q2 release instead."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (235.59 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "AWS segment year-over-year growth decelerates below 25% for two consecutive quarters.",
+      "Trailing-twelve-month free cash flow remains negative beyond mid-2027 without a credible recovery path.",
+      "North America segment operating margin falls below 4% for two consecutive quarters."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-29",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Trainium/Anthropic capacity milestones",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "high",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_neutral_selective",
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLK"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: net sales $200.6B +20%; operating income $27.5B +43%; AWS $42.2B +37% (fastest in 18 quarters, $169B annualized run rate, AWS operating margin ~39%); North America $116.2B +16%, International $42.2B +15%; advertising +26%; net income $62.6B including $53.4B pre-tax other income primarily from Anthropic investments; TTM operating cash flow $161.4B +33%; TTM free cash flow -$7.6B vs +$18.2B a year ago",
+      "source": "Amazon Q2 2026 results release (aboutamazon.com official release copy, 2026-07-30)",
+      "as_of": "2026-07-30"
+    },
+    {
+      "claim": "AWS AI business and chips business each exceeded $25B annualized run rate, growing triple digits; Trainium commitments from Anthropic and OpenAI (multi-year, multi-gigawatt)",
+      "source": "Amazon Q2 2026 results release, CEO commentary",
+      "as_of": "2026-07-30"
+    },
+    {
+      "claim": "Aggregator row lags at Q1 2026 (period_end 2026-03-31, data_quality partial); trailing P/E 20.1, forward P/E 24.0",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-29 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 244.30-256.18, invalidation 235.59, reference_confidence 50; close 249.63 on 2026-09-25 is inside band",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T12:22:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. High conviction is on franchise quality, not valuation or timing. Reported net income is inflated by the Anthropic mark - judge operating income, not EPS. Overlaps with MSFT and GOOG on cloud/AI exposure; the Anthropic investment-gain distortion also appears in GOOG's record. Aggregator feed lag means automated new-quarter review is unreliable for AMZN until the next host refresh, same caveat as ETN/GS. Accepted by Randall, WebChat 2026-09-27 ~12:22 Phoenix: 'Yes, accepted. Proceed with remaining batches.'",
+  "fundamentals_period_end": "2026-06-30"
+}

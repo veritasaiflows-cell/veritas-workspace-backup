@@ -1,0 +1,101 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "KTOS",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "secular_growth",
+  "thesis_statement": "Kratos is a pure-play affordable-defense disruptor: 30.5% revenue growth (19.1% organic), a 1.3x trailing book-to-bill, and a growing backlog in drones, hypersonics and space, deliberately running near GAAP breakeven while funding its own R&D for programs like Valkyrie that incumbents cannot price against.",
+  "timeframe": "intermediate_3_12m",
+  "cases": {
+    "base": {
+      "summary": "High-teens organic growth converts to positive operating income as production ramps scale, and book-to-bill stays above 1.",
+      "drivers": [
+        "Defense Rocket Systems +50.2%, Turbine Technologies +43.3%, Microwave Products +29.5% organic growth",
+        "raised FY26 revenue guidance to $1.750-1.810B (18-23% organic growth)",
+        "Valkyrie production ramp and company-owned sales returning cash"
+      ]
+    },
+    "bull": {
+      "summary": "Affordable-mass defense budgets (drones, counter-drone, hypersonics) keep expanding and Kratos wins program-of-record status, driving operating margin into the mid-single digits and the multiple re-rates on proven profitability.",
+      "drivers": [
+        "LTM book-to-bill 1.3x, bookings $1.99B",
+        "increased internal R&D in Space, Satellite, Unmanned Systems, Microwave",
+        "joint-venture production partnerships scaling without balance-sheet strain"
+      ]
+    },
+    "bear": {
+      "summary": "Growth stays unprofitable: GAAP operating loss persists, free cash flow stays negative through working-capital build, and a ~268x trailing multiple collapses on any growth disappointment.",
+      "drivers": [
+        "Q2 operating loss of $1.6M; FCF used $18.9M",
+        "working-capital consumption from 30.5% growth",
+        "extreme valuation (trailing P/E ~268, forward ~41)"
+      ]
+    }
+  },
+  "key_risks": [
+    "Profitability is the entire story: the company ran a GAAP operating loss (-$1.6M) and used $18.9M of free cash in the quarter; net income was positive only on non-operating items.",
+    "Valuation leaves zero margin for error: ~268x trailing and ~41x forward earnings.",
+    "Government demand concentration: bookings hinge on defense-budget priorities that shift with politics.",
+    "The band is wide (44.81-51.60, ~15%) with reference confidence only 40, and the SQL status label is a stale 08-21 BELOW_STOP snapshot that disagrees with the current in-band position."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (41.48 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Organic revenue growth falls below 10% for two consecutive quarters.",
+      "Trailing-twelve-month book-to-bill falls below 1.0.",
+      "GAAP operating loss widens for two consecutive quarters despite revenue growth."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-11-03",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Valkyrie/drone program-of-record awards and hypersonic milestones",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "medium",
+  "regime_fit": {
+    "favored_postures": [
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XAR"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: revenues $458.8M, +30.5% (organic +19.1%); KGS organic +22.0% (Defense Rocket Systems +50.2%, Turbine Technologies +43.3%, Microwave Products +29.5%); KUS +8.1%; GAAP operating loss $1.6M; GAAP net income $4.4M ($0.02/sh) vs $2.9M; adjusted EPS $0.21 vs $0.11; adjusted EBITDA $38.2M; book-to-bill 1.1x quarter, 1.3x LTM ($1.99B bookings); FCF used $18.9M (working capital from 30.5% growth, inventory ramp); FY26 revenue guidance raised to $1.750-1.810B, organic +18-23%; Q2 included $16.3M stock comp, $13.6M company-funded R&D, $12.5M amortization",
+      "source": "Kratos Q2 2026 financial results, SEC 8-K exhibit 99.1 (sec.gov .../ktos202606288kexhibit991.htm, 2026-08-04)",
+      "as_of": "2026-08-04"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 268.35, forward P/E 41.43, P/B 2.5, net cash ~$1.24B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-11-03 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 44.81-51.60, invalidation 41.48, reference_confidence 40; close 45.63 on 2026-09-25 is inside band, near the low end",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T14:39:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. This is the most speculative thesis in Tier B so far: conviction is on the affordable-defense demand theme and bookings quality, explicitly NOT on current earnings, which are near breakeven. Speculative risk label applies; position-size discipline belongs to the owner, not this record. The aggregator net-cash figure (~$1.24B) looks anomalous against a company of this size - verify against the 10-Q balance sheet before relying on it. The stale SQL BELOW_STOP label (08-21) is one of the five known-wrong labels and disagrees with the live in-band position. Accepted by Randall, WebChat 2026-09-27 ~14:39 Phoenix: 'Accepted. Proceed with batch 3.'",
+  "fundamentals_period_end": "2026-06-30"
+}

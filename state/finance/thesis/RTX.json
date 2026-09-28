@@ -1,0 +1,102 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "RTX",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "quality_compounder",
+  "thesis_statement": "RTX pairs the two most durable aerospace and defense franchises - commercial aftermarket (Collins + Pratt spares and repair) and defense programs of record - under one $289B backlog (+22% YoY), delivering 16% organic growth with margin expansion across all three segments and a raised full-year outlook.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Backlog converts at the raised 8-9% organic pace with adjusted EPS of $7.10-7.25 and free cash flow near $8.6B; the dual-engine structure smooths any single-demand shock.",
+      "drivers": [
+        "backlog $289B ($170B commercial, $119B defense), +22% YoY",
+        "commercial OE +26%, aftermarket +10% (Collins)",
+        "raised FY26 outlook: adjusted sales $95-96B, adjusted EPS $7.10-7.25, FCF $8.50-8.75B"
+      ]
+    },
+    "bull": {
+      "summary": "Commercial air traffic growth and fleet aging keep aftermarket pricing firm while European and Pacific rearmament expand defense backlog; margins expand past prior peaks.",
+      "drivers": [
+        "defense backlog $119B",
+        "margin expansion across all three segments",
+        "Blue Canyon divestiture ($620M) sharpening the portfolio"
+      ]
+    },
+    "bear": {
+      "summary": "Air-traffic or airline-capex cyclicality cuts commercial OE (+26% is the cyclical part), defense budget priorities shift, and the acquisition-accounting EPS drag persists.",
+      "drivers": [
+        "GAAP EPS ($1.57) runs $0.32 below adjusted ($1.89) on acquisition accounting and restructuring",
+        "net debt ~$30.6B",
+        "commercial OE cyclicality"
+      ]
+    }
+  },
+  "key_risks": [
+    "GAAP-adjusted gap: $0.27 of acquisition accounting and $0.05 of restructuring drag on quarterly EPS; judge adjusted trends but watch the gap's persistence.",
+    "Commercial OE growth (+26% at Collins) is the cyclical component; the durable economics are in aftermarket and defense.",
+    "Net debt ~$30.6B with continued capacity investment; balance sheet is fine but not fortress.",
+    "Government-budget and export-licensing risk on the defense side (geopolitics-dependent in both directions)."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (181.09 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Organic sales growth falls below 4% for two consecutive quarters.",
+      "Adjusted segment operating margin declines year over year for two consecutive quarters.",
+      "Full-year adjusted EPS guidance is cut below $7.10."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-20",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Pratt GTF / Collins aftermarket developments",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "high",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_neutral_selective",
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "ITA"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: sales $24.7B +14% (+16% organic); GAAP EPS $1.57 (+29%), adjusted EPS $1.89 +21%; net income $2.1B, adjusted $2.6B +22%; operating cash flow $3.5B, free cash flow $2.9B; backlog $289B +22% YoY ($170B commercial, $119B defense); Collins sales $8.21B +8% (organic +13%: commercial OE +26%, aftermarket +10%, defense +7%), Collins operating profit $1.306B +11%, adjusted ROS 16.7% +30bps; margin expansion across all three segments; Blue Canyon Technologies sale agreed at $620M; FY26 outlook raised: adjusted sales $95-96B (organic +8-9%), adjusted EPS $7.10-7.25 (from $6.70-6.90), FCF $8.50-8.75B",
+      "source": "RTX Q2 2026 results release (rtx.com official release, 2026-07-23; 8-K filed same day)",
+      "as_of": "2026-07-23"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 33.35, forward P/E 24.12, P/B 3.85, net debt $30.55B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-20 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 187.04-207.36, invalidation 181.09, reference_confidence 40; close 189.37 on 2026-09-25 is inside band, near the low end; the stale SQL IN_BAND label (08-21 snapshot) agrees with the live position",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T14:44:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. High conviction on the dual-engine backlog quality: commercial aftermarket and defense are both durable, and the two demand cycles rarely turn together. Forward P/E ~24 for high-single-digit organic growth with FCF yield ~3.5% is reasonable, not cheap. Earnings 10-20 fall inside the 30-day catalyst window. Overlaps with GE (engine aftermarket: Pratt vs GE is competitor-adjacent - both ride the same commercial-services cycle; do not count RTX and GE aftermarket strength as independent signals) and with LMT on defense (ITA ETF members). Accepted by Randall, WebChat 2026-09-27 ~14:44 Phoenix: 'Accepted. Proceed with phase 4 remaining work.'",
+  "fundamentals_period_end": "2026-06-30"
+}

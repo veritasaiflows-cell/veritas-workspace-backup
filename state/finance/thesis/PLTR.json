@@ -1,0 +1,101 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "PLTR",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "secular_growth",
+  "thesis_statement": "Palantir is the operating-system layer of the AI adoption cycle: AIP-driven U.S. commercial revenue +149% with total revenue +93% at a 47% GAAP operating margin (Rule of 40 at 155%), $9.2B of net cash, and a U.S. commercial remaining-deal-value book (+124% YoY) that makes the growth partially pre-sold; the open question is only what multiple that franchise deserves.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Revenue growth decelerates from 93% toward the guided ~82% FY pace while GAAP margins hold near current levels; the stock digests its multiple rather than collapsing.",
+      "drivers": [
+        "FY26 revenue guidance $8.150-8.158B (+82%)",
+        "U.S. commercial RDV $6.238B, +124% YoY, +27% QoQ",
+        "GAAP operating margin 47% with GAAP profitability guided every quarter of 2026"
+      ]
+    },
+    "bull": {
+      "summary": "The sovereign-AI and enterprise-AI wave keeps widening Palantir's deal book (73 deals of $10M+ this quarter) and margins expand past 50% GAAP as the platform scales.",
+      "drivers": [
+        "U.S. commercial TCV $2.132B, +153% YoY",
+        "government revenue reacceleration (+90% YoY)",
+        "adjusted operating margin 62%"
+      ]
+    },
+    "bear": {
+      "summary": "AI-platform spending normalizes, growth decelerates toward 30-40%, and a ~162x trailing multiple de-rates severely even with execution intact.",
+      "drivers": [
+        "extreme valuation (trailing P/E ~162, forward ~82)",
+        "AI-narrative concentration in both government and commercial demand",
+        "any large-deal slippage visible in the RDV book"
+      ]
+    }
+  },
+  "key_risks": [
+    "Valuation is the dominant risk: ~162x trailing and ~82x forward earnings price in years of flawless execution; a growth miss is a multiple event, not an earnings event.",
+    "The close (189.63) is 13.1% above the SQL band high - the band predates the post-Q2 rerating and offers no timing support; 10-03 renewal should widen it.",
+    "Customer concentration in the AI buildout: both commercial AIP adoption and government demand ride the same AI-capex narrative; a broad AI-spending pause hits both.",
+    "Stock-based-compensation-heavy compensation model means adjusted margins (62%) flatter GAAP economics (47%); judge GAAP."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (150.66 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "U.S. commercial revenue growth falls below 40% year over year for two consecutive quarters.",
+      "GAAP operating margin falls below 30% for two consecutive quarters.",
+      "U.S. commercial remaining deal value declines quarter over quarter for two consecutive quarters."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-11-02",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "FY26 guidance raises (company has raised each quarter of 2026)",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "high",
+  "regime_fit": {
+    "favored_postures": [
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLK"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: revenue $1.935B +93% YoY (+19% QoQ); U.S. revenue $1.573B +115%; U.S. commercial $764M +149% (+28% QoQ); U.S. government $809M +90%; 220 deals >=$1M, 73 >=$10M; TCV $3.373B +49%, U.S. commercial TCV $2.132B +153%; U.S. commercial RDV $6.238B +124% YoY; GAAP operating income $912M (47% margin), adjusted $1.194B (62%); Rule of 40 score 155%; GAAP net income $1.062B (55% margin); GAAP EPS $0.41; adjusted FCF $1.220B (63% margin); cash + short-term Treasuries $9.2B; FY26 guidance raised: revenue $8.150-8.158B, U.S. commercial >$3.424B (+134%), adjusted operating income $4.889-4.897B, adjusted FCF $4.5-4.7B",
+      "source": "Palantir Q2 2026 press release, SEC exhibit 99.1 (sec.gov .../a2026q2ex991pressrelease.htm, 2026-08-03)",
+      "as_of": "2026-08-03"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 162.11, forward P/E 81.65, P/B 46.62, net cash ~$1.8B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-11-02 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 160.84-167.63, invalidation 150.66, reference_confidence 35; close 189.63 on 2026-09-25 is 13.1% above band high (no-chase); the stale SQL ABOVE_BAND_WAIT label (08-21 snapshot) agrees with the live position",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T14:44:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. High conviction on growth QUALITY (93% growth with 47% GAAP operating margin and 63%-of-revenue FCF is a rare combination), explicitly NOT on price - timing is deeply extended (13.1% above band high) and the valuation makes any entry an owner-decision on multiple risk. Overlaps with NVDA/AMD/MSFT on the AI buildout theme; PLTR's exposure is the software/execution layer, distinct from chips and cloud, but a broad AI-capex pause would hit all of them - do not count PLTR and NVDA signals as independent confirmation of AI demand. Band reference confidence is only 35 and the band predates the rerating. Accepted by Randall, WebChat 2026-09-27 ~14:44 Phoenix: 'Accepted. Proceed with phase 4 remaining work.'",
+  "fundamentals_period_end": "2026-06-30"
+}

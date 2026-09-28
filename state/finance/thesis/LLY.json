@@ -1,0 +1,107 @@
+{
+  "schema": "veritas.thesis_record.v1",
+  "ticker": "LLY",
+  "thesis_version": 1,
+  "status": "accepted",
+  "thesis_type": "secular_growth",
+  "thesis_statement": "Eli Lilly owns the incretin franchise (Mounjaro + Zepbound) at global scale: 48% revenue growth on 60% volume, raised guidance, retatrutide's complete Phase 3 obesity package ready for a Q1 2027 BLA, and $4.5B of additional Indiana manufacturing to serve demand it still cannot fully supply.",
+  "timeframe": "long_term_12m_plus",
+  "cases": {
+    "base": {
+      "summary": "Revenue grows 35-40% through 2026 as supply comes online, international Mounjaro volumes keep compounding, and price erosion stays manageable against volume.",
+      "drivers": [
+        "Mounjaro and Zepbound volume (+60% total volume growth)",
+        "retatrutide obesity BLA submission in Q1 2027",
+        "manufacturing expansion ($4.5B additional Indiana commitment)"
+      ]
+    },
+    "bull": {
+      "summary": "Retatrutide approval opens the next demand wave (obesity, sleep apnea, knee osteoarthritis) before any meaningful GLP-1 price war, and orforglipron's oral convenience expands the total market.",
+      "drivers": [
+        "retatrutide Phase 3 package complete for three indications",
+        "orforglipron U.S. submission for type 2 diabetes filed",
+        "international volume +113% (Mounjaro; China NRDL addition)"
+      ]
+    },
+    "bear": {
+      "summary": "GLP-1 competition and price erosion arrive faster than the pipeline monetizes: realized prices fell 13% in the quarter (U.S. -3%, ex-U.S. -36% on China NRDL), and a ~40x trailing multiple de-rates on any volume-growth deceleration.",
+      "drivers": [
+        "intensifying incretin competition (oral orforglipron peers, biosimilars)",
+        "realized-price decline (-13% worldwide)",
+        "IPR&D spend ($3.03/share in Q2) and acquisition integration risk"
+      ]
+    }
+  },
+  "key_risks": [
+    "Price erosion is real and accelerating outside the U.S. (-36% realized, China NRDL) and emerging in the U.S. (-3%, or ~-9% excluding rebate adjustments); the thesis needs volume growth to keep outrunning it.",
+    "Valuation: ~39.7x trailing and ~24.9x forward prices in continued dominance; forward ~25x is reasonable only if the growth persists.",
+    "Concentration: the incretin franchise dominates revenue; a safety signal or supply failure in Mounjaro/Zepbound is a franchise-level event.",
+    "Q2 EPS ($7.94 reported) includes $3.03 of acquired IPR&D charges - judge underlying non-GAAP ($8.38) and the raised revenue guidance, not the GAAP line."
+  ],
+  "invalidation_reasons": {
+    "price": "Close below the live guarded-SQL reference_invalidation_level (1070.49 at the 2026-09-26 renewal). SQL governs after any later renewal; this text does not.",
+    "fundamental": [
+      "Key Products revenue growth falls below 20% year over year for two consecutive quarters.",
+      "Full-year revenue guidance is cut below the raised $85.0-87.0B range.",
+      "A retatrutide regulatory submission is delayed beyond Q1 2027 or a material safety signal emerges in the incretin class."
+    ]
+  },
+  "catalysts": [
+    {
+      "event": "Q3 2026 earnings",
+      "expected_date": "2026-10-29",
+      "date_confidence": "provider_estimate"
+    },
+    {
+      "event": "Retatrutide U.S. BLA submission (company plan: Q1 2027)",
+      "expected_date": "2027-01-31",
+      "date_confidence": "company_guidance"
+    },
+    {
+      "event": "Orforglipron type 2 diabetes U.S. FDA action",
+      "expected_date": null,
+      "date_confidence": "unknown"
+    }
+  ],
+  "conviction": "high",
+  "regime_fit": {
+    "favored_postures": [
+      "defensive_neutral_selective",
+      "selective_with_watch_flags",
+      "constructive_but_owner_gated"
+    ],
+    "disfavored_postures": []
+  },
+  "benchmark": {
+    "market": "SPY",
+    "sector": "XLV"
+  },
+  "evidence": [
+    {
+      "claim": "Q2 2026: revenue $23.0B +48% (volume +60%, realized price -13%); Key Products $15.7B led by Mounjaro and Zepbound; U.S. revenue $14.4B +33%, ex-U.S. $8.6B +80% (Mounjaro China NRDL); reported EPS $7.94 +26%, non-GAAP $8.38 +33%, both including $3.03 acquired IPR&D; raised FY26 revenue guidance to $85.0-87.0B; retatrutide Phase 3 complete for obesity/OSA/knee OA, U.S. BLA planned Q1 2027; orforglipron T2D U.S. submission filed; Ebglyss 8-week maintenance approved (FDA); Jaypirca EC approval; acquired Orna, Ajax, Centessa, Kelonia plus three infectious-disease acquisitions and AtaiBeckley agreement; additional $4.5B Indiana manufacturing commitment",
+      "source": "Eli Lilly Q2 2026 results release (investor.lilly.com via official PRNewswire copy, 2026-08-05)",
+      "as_of": "2026-08-05"
+    },
+    {
+      "claim": "Aggregator row current at Q2 2026 (period_end 2026-06-30, data_quality clean); trailing P/E 39.69, forward P/E 24.89, P/B 31.14, net debt $45.96B",
+      "source": "tmp/fundamental-metrics-current.json (yfinance aggregator + SEC reconciliation, 2026-09-26)",
+      "as_of": "2026-09-26"
+    },
+    {
+      "claim": "Next earnings 2026-10-29 (provider estimate)",
+      "source": "tmp/earnings-calendar.json (yfinance provider estimate, fetched 2026-09-23)",
+      "as_of": "2026-09-23"
+    },
+    {
+      "claim": "SQL band 1113.29-1176.74, invalidation 1070.49, reference_confidence 50; close 1183.99 on 2026-09-25 is 0.6% above band high (marginal no-chase)",
+      "source": "state/finance/finance-canon.sqlite reference_levels (read-only) + tmp/alert-level-freshness-controller.json",
+      "as_of": "2026-09-27"
+    }
+  ],
+  "thesis_as_of": "2026-09-27",
+  "review_due": "2026-12-27",
+  "drafted_by": "Veritas Main (ollama-cloud/glm-5.3:cloud)",
+  "owner_accepted_at": "2026-09-27T14:39:00-07:00",
+  "owner_notes": "Draft pending Randall's acceptance; grants nothing until accepted. High conviction on franchise quality and pipeline durability; the timing is marginally extended (close 0.6% above band high). Watch items in order: ex-U.S. price erosion, U.S. net-price trajectory as competition launches, retatrutide submission timing. Net debt of ~$46B is a deliberate manufacturing-build decision, not distress; judge it against the revenue ramp it funds. The stale SQL NEAR_BAND label (08-21 snapshot) roughly agrees with the current marginal above-band position. Accepted by Randall, WebChat 2026-09-27 ~14:39 Phoenix: 'Accepted. Proceed with batch 3.'",
+  "fundamentals_period_end": "2026-06-30"
+}
