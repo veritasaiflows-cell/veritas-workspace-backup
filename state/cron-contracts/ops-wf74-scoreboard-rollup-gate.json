@@ -12,7 +12,7 @@
     "expr": "5 22 * * *",
     "tz": "America/Phoenix"
   },
-  "sessionTarget": "current",
+  "sessionTarget": "isolated",
   "wakeMode": "now",
   "payload": {
     "kind": "agentTurn",

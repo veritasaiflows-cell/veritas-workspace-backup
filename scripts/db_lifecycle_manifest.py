@@ -886,6 +886,26 @@ def classify(path: Path, active_refs: int, operational_refs: int, sqlite_meta: d
         retention_policy = "owner-review proof; no archive/delete from a generated manifest"
         evidence.append("disposable SQLite copy from the WAL-safe recovery drill; verify its sibling report.json")
         blockers.append("audit proof of a migrated-canon recovery drill")
+    elif path_rel.startswith("tmp/finance-sql-canon-rebuild-disposition-20260927/") and name.startswith("canon-"):
+        # Classified 2026-09-28 (Randall approved): pre/post copies of the live canon
+        # cited by "Finance SQL Canon Rebuild Disposition - 2026-09-27.md".
+        lifecycle = "proof"
+        owner = "Finance SQL canon rebuild disposition (2026-09-27)"
+        status = "keep"
+        recommendation = "retain as rebuild-disposition evidence; not live canon or restore authority"
+        retention_policy = "owner-review proof cited by the disposition note; no archive/delete from a generated manifest"
+        evidence.append("pre/post rebuild copy of finance-canon.sqlite; see sibling proof-pre.json / proof-post.json")
+        blockers.append("evidence cited by the Finance SQL Canon Rebuild Disposition note")
+    elif path_rel.startswith("tmp/p4-2-writer-lane-20260927/walproof/"):
+        # Classified 2026-09-28 (Randall approved): WAL-safe snapshot proof scratch.
+        # The parent lane dir is a live fixture for test_finance_sql_canon_access_scope_contract.py.
+        lifecycle = "proof"
+        owner = "P4-2 writer lane WAL snapshot proof (2026-09-27)"
+        status = "keep"
+        recommendation = "retain with the P4-2 lane evidence; parent directory is a live test fixture"
+        retention_policy = "keep with tmp/p4-2-writer-lane-20260927 (test fixture); no archive/delete from a generated manifest"
+        evidence.append("WAL-safe sqlite_snapshot reference proof (scripts/sqlite_snapshot.py cites walproof/)")
+        blockers.append("parent directory is a live test fixture")
     elif path_rel.startswith("state/finance/backups/alerts-os-pivot-20260829/"):
         lifecycle = "rollback"
         owner = "Alerts-and-recommendations SQL lineage migration rollback proof"

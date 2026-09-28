@@ -451,9 +451,16 @@ def read_cli(dispatch_dir: Path, global_db: Path = GLOBAL_DB,
     bypassed: dict[str, int] = {}
     bypass_rows: list[dict] = []
     exec_rows = 0
+    # Scheduler-launched turns (child key agent:<id>:cron:<jobId>:run:<n>) are
+    # attributed by the cron run ledger, not a dispatch record; since Main moved
+    # to the claude-cli runtime they land as runtime='cli' too.
+    cron_rows = 0
     for t in cli_rows:
         if t["task_kind"] == "exec":
             exec_rows += 1
+            continue
+        if ":cron:" in (t["child_session_key"] or ""):
+            cron_rows += 1
             continue
         if t["task_id"] not in bound_task_ids:
             agent = t["agent_id"] or "unknown"
@@ -470,6 +477,7 @@ def read_cli(dispatch_dir: Path, global_db: Path = GLOBAL_DB,
             "dispatch_records": len(dispatches), "dispatch_record_errors": errors,
             "counts": counts, "cli_rows_total": len(cli_rows),
             "cli_exec_background_rows": exec_rows,
+            "cli_cron_scheduled_rows": cron_rows,
             "cli_rows_without_dispatch_record_by_agent": unrecorded,
             "wrapper_go_live_ms": WRAPPER_GO_LIVE_MS,
             "cli_rows_bypassing_dispatch_wrapper_by_agent": bypassed,

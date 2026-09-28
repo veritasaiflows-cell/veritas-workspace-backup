@@ -117,11 +117,11 @@ When Randall approves implementation of audit recommendations, start with a lane
 7. Update project continuity and daily memory.
 
 Recommended lane types:
-- `Lane 0 governance repair`: deterministic local blocker that prevents control/release trust.
-- `V2 decision docket/routing`: classification logic that prevents noisy residue from becoming fake work.
+- `Lane 0 governance repair`: deterministic control/release blocker.
+- `V2 decision docket/routing`: classify noise before it becomes fake work.
 - `local eval harness`: regression cases from real failures.
-- `startup/status wiring`: boot surfaces show the new truth state without waking on monitor-only rows.
-- `Skill Workshop durability`: repeated operating behavior becomes a skill update proposal and is applied only with explicit approval.
+- `startup/status wiring`: expose truth without waking on monitor-only rows.
+- `Skill Workshop durability`: propose repeated behavior; apply only with explicit approval.
 - `monitor-only`: keep visible and refreshed; no code or schedule mutation.
 - `owner decision`: stop until Randall approves a specific authority boundary.
 

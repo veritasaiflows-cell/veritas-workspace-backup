@@ -7,7 +7,7 @@ description: "Model routing and route changes; policy reconciliation; cache, eff
 
 ## Purpose
 
-Choose the smallest reliable execution route that can earn Main acceptance without weakening truth, validation, privacy, or authority boundaries. The machine-readable owner is `scripts/project_implementation_router.py`; this skill explains how to apply its `veritas.execution_efficiency_policy.v1` contract.
+Choose the smallest reliable route that can earn Main acceptance within truth, validation, privacy and authority boundaries. Owner: `scripts/project_implementation_router.py`, contract `veritas.execution_efficiency_policy.v1`.
 
 Veritas Main remains the queue owner, final integrator, QC owner, acceptance owner, finance truth surface, and user-facing judgment owner. A route changes capability and cost, never authority.
 
@@ -18,7 +18,7 @@ Apply this order before spawning or implementing:
 1. `model_free_command` — use when an explicit deterministic command and proof are both available. Model is null; thinking is `none`.
 2. `codex_native_subagent` — fail-closed: its model `openai/gpt-5.6-terra` is in `LEGACY_DENIED_MODELS` and no fresh capability proof exists, so do not dispatch it. Use GLM 5.3 for helper review instead.
 3. `main` — resolve Main and any configured fallback from live OpenClaw global/session selection for integration, acceptance, and authority-sensitive judgment. Main does not author implementation code or substitute for independent QA.
-4. `persistent_isolated_agent` — resolve stable IDs, exact role primaries and closed recovery lists through `scripts/agent_fleet_policy.py` and the router. Preserve current role bindings and code-author/independent-QA separation. Require fresh strict agent-matched transport proof; writes additionally require scoped-writeback proof (7-day event-keyed validity with the `scoped_writeback_preflight.py` dispatch gate in `veritas-isolated-agent-contract`). Role rationale: the accepted six-family baseline (`data/evals/model-arena/arena-six-20260919/results/incumbent-baseline-20260919/main-acceptance.json`) rates DeepSeek 4.1 Flash stronger overall and GLM 5.3 Flash stronger on exact-format/tool work; evidence only.
+4. `persistent_isolated_agent` — resolve stable IDs, exact role primaries and closed recovery lists through `scripts/agent_fleet_policy.py` and the router. Preserve current role bindings and code-author/independent-QA separation. Require fresh strict agent-matched transport proof. Persistent host-worktree writes require scoped-writeback proof (7-day validity and `scoped_writeback_preflight.py`); an attachment-only `patch_draft` uses its 24-hour readback proof, returns a diff, and leaves host source application to Main. Use the lane-mode gate in `veritas-isolated-agent-contract` rather than treating a v1 draft as writeback. Role rationale: the accepted six-family baseline (`data/evals/model-arena/arena-six-20260919/results/incumbent-baseline-20260919/main-acceptance.json`) rates DeepSeek 4.1 Flash stronger overall and GLM 5.3 Flash stronger on exact-format/tool work; evidence only.
 
 Keep IDs/workspace/auth/history stable; use display names in prose. Specialist automatic fallbacks stay empty. The shared policy owns closed recovery lists. Build production spawn arguments only through `sessions_spawn_dispatch_contract`; require policy primary and live config to match before dispatch, and verify the actual model receipt at closeout. Main may select one listed backup only in a NEW clean-context attempt from a verified checkpoint, preserving role/scope and reacquiring model/runtime/transport/lease proof when changed or stale. Review cannot use the patch-author model. Options and structural checks prove no readiness or dispatch/write authority. Unproven recovery stays blocked; never silently substitute Main.
 
@@ -42,7 +42,7 @@ Require both an explicit readiness expectation and a workspace-relative strict J
 
 ### Main exception
 
-Main is not the default broad implementation lane. Record why Main is the smallest reliable route. The live-selected Main model owns final integration and authority-sensitive judgment; Muse Spark 1.3 Contributor authors implementation code and GLM 5.3 performs independent QA. A helper blockage authorizes no silent fallback or substitution.
+Main is not the default broad implementation lane. Record why Main is the smallest reliable route while preserving the role assignments above. A helper blockage authorizes no silent fallback or substitution.
 
 ### Owner-directed same-session model roles
 

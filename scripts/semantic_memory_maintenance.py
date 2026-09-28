@@ -33,10 +33,11 @@ RUNTIME_DIST_DIR = (
     / "openclaw"
     / "dist"
 )
-RUNTIME_TOOLS_GLOB = "tools-*.js"
+# OpenClaw 2026.9.6 emits dist chunks as .mjs (earlier builds used .js).
+RUNTIME_TOOLS_GLOB = "tools-*.*js"
 RUNTIME_TOOLS_EXPORT_MARKER = "function createMemorySearchTool"
 RUNTIME_TOOLS_LOADER_PATTERN = re.compile(
-    r'''createLazyRuntimeModule\(\(\)\s*=>\s*import\(["']\.\./\.\./(?P<chunk>tools-[A-Za-z0-9_-]+\.js)["']\)\)'''
+    r'''createLazyRuntimeModule\(\(\)\s*=>\s*import\(["']\.\./\.\./(?P<chunk>tools-[A-Za-z0-9_-]+\.m?js)["']\)\)'''
 )
 # Legacy overlay marker strings (pre-2026.9.2 tools-chunk layout). Still accepted
 # as behavior proof when present, but no longer required: OpenClaw 2026.9.2
@@ -62,9 +63,9 @@ RUNTIME_UPSTREAM_DEADLINE_MARKERS = (
     "AbortController",
 )
 RUNTIME_VISIBILITY_CHUNK_IMPORT_PATTERN = re.compile(
-    r'''from\s+["']\./(?P<chunk>session-search-visibility-[A-Za-z0-9_-]+\.js)["']'''
+    r'''from\s+["']\./(?P<chunk>session-search-visibility-[A-Za-z0-9_-]+\.m?js)["']'''
 )
-RUNTIME_VISIBILITY_CHUNK_GLOB = "session-search-visibility-*.js"
+RUNTIME_VISIBILITY_CHUNK_GLOB = "session-search-visibility-*.*js"
 # The guard must precede visibility resolution. The return expression is
 # intentionally open-ended: the legacy overlay returned `params.hits`, while
 # upstream 2026.9.2 returns `params.conversationRecall?.corpus === "sessions"

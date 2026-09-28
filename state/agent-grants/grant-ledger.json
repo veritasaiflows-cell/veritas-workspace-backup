@@ -332,7 +332,7 @@
       "notable": {}
     },
     "implementation-builder": {
-      "fingerprint": "015d9bf654f82e5b3635751c3f4fc52d9ca600c01c794184fd443c71ad05e5c5",
+      "fingerprint": "81efaa2c115777fbd03e53e893b3f8cc93849384232d2aa0fa9b481bc1f5169b",
       "grant": {
         "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder",
         "agentDir": "C:\\Users\\Veritas\\.openclaw\\agents\\implementation-builder\\agent",
@@ -391,14 +391,19 @@
               "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\USER.md:/role/USER.md:ro",
               "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\HEARTBEAT.md:/role/HEARTBEAT.md:ro",
               "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\agent.capabilities.json:/role/agent.capabilities.json:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\runtime\\implementation_builder_exact_file_editor.py:/role/bin/implementation_builder_exact_file_editor.py:ro",
               "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\.openclaw\\attachments:/attachments:ro",
-              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree:/worktree:rw",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree:/worktree:ro",
               "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree\\.git:/worktree/.git:ro",
               "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree\\handoff-manifest.json:/worktree/handoff-manifest.json:ro",
               "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\.veritas-scoped-worktree.json:/worktree/.veritas-scoped-worktree.json:ro",
               "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\skills\\disciplined-implementation-linux-steps:/skills/disciplined-implementation-linux-steps:ro",
               "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\skills\\patch-draft-bounded-linux:/skills/patch-draft-bounded-linux:ro",
-              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\skills\\linux-workspace-proof-runner:/skills/linux-workspace-proof-runner:ro"
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\skills\\linux-workspace-proof-runner:/skills/linux-workspace-proof-runner:ro",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree\\scripts\\recommendation_funnel.py:/worktree/scripts/recommendation_funnel.py:rw",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree\\scripts\\test_recommendation_funnel.py:/worktree/scripts/test_recommendation_funnel.py:rw",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree\\scripts\\test_veritas_mcp_server.py:/worktree/scripts/test_veritas_mcp_server.py:rw",
+              "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree\\scripts\\veritas_mcp_server.py:/worktree/scripts/veritas_mcp_server.py:rw"
             ]
           }
         },
@@ -475,8 +480,8 @@
           }
         }
       },
-      "recorded_at_utc": "2026-09-26T14:28:12Z",
-      "record_ref": "WF89 item 5 option D 2026-09-26: builder-scoped dangerouslyAllowExternalBindSources removed; all 15 binds already under the agent workspace allowed root; live eval canary optd-canary-20260926 ran 2/2 in sandbox",
+      "recorded_at_utc": "2026-09-28T15:14:28Z",
+      "record_ref": "Main cron repair 2026-09-28: builder sandbox.docker.binds changed (4 scoped-worktree rw file binds)",
       "notable": {
         "tools.write": {
           "value": [
@@ -496,9 +501,12 @@
         },
         "docker.binds.rw": {
           "value": [
-            "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree:/worktree:rw"
+            "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree\\scripts\\recommendation_funnel.py:/worktree/scripts/recommendation_funnel.py:rw",
+            "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree\\scripts\\test_recommendation_funnel.py:/worktree/scripts/test_recommendation_funnel.py:rw",
+            "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree\\scripts\\test_veritas_mcp_server.py:/worktree/scripts/test_veritas_mcp_server.py:rw",
+            "C:\\Users\\Veritas\\.openclaw\\workspaces\\implementation-builder\\handoff\\scoped-worktree\\scripts\\veritas_mcp_server.py:/worktree/scripts/veritas_mcp_server.py:rw"
           ],
-          "approval_ref": "Randall Telegram 2026-09-24 21:53 MST: 'Approved 1 to 3' (keep-set items 1-3 from Main 21:15 recommendation)"
+          "approval_ref": "Randall Telegram msg 11219 2026-09-28 08:13 MST: record WF89 builder bind drift as approved"
         }
       }
     },
@@ -1259,6 +1267,18 @@
       "flag": "tools.exec",
       "previous_ref": "UNPROVENANCED: present before the grant ledger existed; owner review pending",
       "approval_ref": "Randall 2026-09-26 09:32 MST: lockdown approved; write/exec retained only inside the no-network Docker sandbox, host writes limited to runs/ (precedent: docs-editor 07:11 re-record)"
+    },
+    {
+      "at_utc": "2026-09-28T15:14:28Z",
+      "action": "record",
+      "agent": "implementation-builder",
+      "old_fingerprint": "015d9bf654f82e5b3635751c3f4fc52d9ca600c01c794184fd443c71ad05e5c5",
+      "new_fingerprint": "81efaa2c115777fbd03e53e893b3f8cc93849384232d2aa0fa9b481bc1f5169b",
+      "paths": [
+        "~sandbox.docker.binds"
+      ],
+      "record_ref": "Main cron repair 2026-09-28: builder sandbox.docker.binds changed (4 scoped-worktree rw file binds)",
+      "approval_ref": "Randall Telegram msg 11219 2026-09-28 08:13 MST: record WF89 builder bind drift as approved"
     }
   ]
 }

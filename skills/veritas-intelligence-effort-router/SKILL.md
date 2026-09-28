@@ -1,6 +1,6 @@
 ---
 name: "veritas-intelligence-effort-router"
-description: "Finance recs, ticker reviews, weekly market freshness. Route through SQL live bands, thesis canon, and non-executing recommendation review."
+description: "Finance recs, ticker reviews, outcome audits, weekly freshness. Reconcile guarded bands, ranked funnel, and forward evidence."
 ---
 
 # Veritas Intelligence Effort Router
@@ -30,8 +30,9 @@ python scripts\run_alerts_recommendations_chain.py <morning|midday|post-close|we
 Match the market session. Do not run `midday` because a pass skill names it. If the current-window digest and controller are already fresh and complete for the asked tickers, stay Band 1 for ticker-alert state. That green chain does not prove policy, breadth, credit, or regime freshness.
 
 5. `tmp/alert-level-freshness-controller.json` for ticker-level alert state.
-6. `tmp/finance-alert-os-digest.json` for ranked review context.
-7. Current WF84 evidence and WF85 non-executing recommendation cards only when their sources, freshness, and authority flags are clean.
+6. `tmp/finance-alert-os-digest.json` for the level-state board and delivery context, not ranked recommendation eligibility. For ranking or outcome audits, read `tmp/recommendation-funnel.json` and accepted `state/finance/thesis/` records. Compare funnel, controller, macro, and earnings timestamps and the funnel's band values with the current guarded-SQL baseline; a renewal after funnel generation makes that rank historical, and the funnel then replaces the whole rank with `status: stale_suppressed`, a `stale_reason`, and zeroed counts/candidates/names - the `veritas-data` funnel call reports those same stale fields - so read it as a withheld rank, never as no names qualifying. Recompute from the workspace root with `python scripts\recommendation_funnel.py --write --root .` and re-read the artifact; a fresh rank carries `names` and no `status` field.
+7. For performance claims, count event types and `delivered` flags in `state/finance/ledger/alert-events-v1.jsonl` at a stated cutoff, then check for resolved forward scores. Hash-chain validity, transition records, and legacy semantic grades are not proof of delivered recommendations or benchmark-adjusted outcomes.
+8. Current WF84 evidence and WF85 non-executing recommendation cards only when their sources, freshness, and authority flags are clean.
 
 Indexes, caches, dashboards, old workflow packets, earnings scorecards, capital slates, quarantined analyst packets, and archived files are routing or history only. They never outrank active canon. Do not recursively search `tmp/` or Coverage Watchlist for a ticker thesis.
 
@@ -115,7 +116,7 @@ Owner-provided objectives or limits may inform the current answer transiently. N
 - Current-last-completed-session data is valid closed-market evidence when the market calendar confirms it.
 - Market-hours claims require current quote proof appropriate to the decision consequence.
 - Stale, missing, conflicted, or hash-mismatched inputs emit `freshness_decay`; they must not be hidden to make the chain green.
-- Live numeric bands are read from guarded SQL `reference_levels`. Do not silently re-derive them, auto-apply them, or treat the markdown register table as a live band. A markdown-versus-SQL number mismatch is stale-register residue; fail closed to SQL.
+- Live numeric bands come from guarded SQL `reference_levels`; never silently re-derive or auto-apply them.
 - A structurally green chain proves only that its checks passed, not that the recommendation is correct.
 
 ## Automation Allowed
