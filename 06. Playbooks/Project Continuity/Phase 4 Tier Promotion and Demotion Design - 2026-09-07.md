@@ -310,3 +310,21 @@ Accepted source behavior: the weekly proposal job is read-only/no-apply and emit
 Main verification: 125 focused checks, compile, shared validator bundle 9/9, live guard `ok`, live proposal smoke 15/17/268 with no demotion/swap, production mutation probes refused with the canon logical hash unchanged. No live canon, tier, band, schedule, config, runtime or delivery mutation occurred.
 
 This closes the two implementation-draft slices, **not Phase 4 cutover**. Remaining cutover blockers are the contract's per-ticker lease, pending/timeout/restart recovery, producer-consumer and queue enrollment, exact owner authorization, live-safe atomic restore, complete source-owned recency/identity/census proof, scorer-readiness decision, and a separately owner-approved pilot transaction.
+
+### 2026-09-28 ~10:02-11:30 Phoenix: D-A/D-B decided; Stage 2 live; P4-3a tier transaction core landed (activation blocked)
+
+Randall (Telegram msg 11233): "Proceed with the build. D-A approved. Proceed as recommended with D-b." D-A is the weekly screening standing permission. D-B is scorecard-first: no interim manual promotion rule, and the Oct-15 gate decides automated movement.
+
+Stage 2 screening:
+- Job `scripts/weekly_screening_refresh.py` is live as cron `e6532249`, Saturday 10:00.
+- First run: 297/300 names computed, 47 provisional review candidates, 27 Tier C bench breakdowns (12 utilities), and 3 no-bar identity-review names (EA, AVB, EQR).
+
+P4-3a lane:
+- Adds the transaction journal: lease, state machine, next-session timeout, recovery.
+- Adds owner-decision records and the cutover gate.
+- Writer wiring, including a live-safe inverse rollback.
+- Proof: 213 passed / 2 skipped; g6 138/138. Live canon unchanged (`595232b0...c302`).
+- The cutover gate file is absent, so every production mutation refuses with `activation_blocked:cutover_not_approved`.
+- Independent QA is running; acceptance is recorded in the unified plan once it returns.
+
+Full record: `Phase 4 Unified Monitoring and Scale-Out Plan - 2026-09-27.md`, section "2026-09-28 decisions and build". No live canon, tier, band, baseline or delivery mutation. One new cron job (screening) was created under the D-A grant.

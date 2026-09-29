@@ -1,0 +1,39 @@
+{
+  "schema": "veritas.standing_approval.v1",
+  "id": "weekly-screening-refresh",
+  "active": true,
+  "granted_by": "Randall",
+  "granted_at": "2026-09-28T10:02:16-07:00",
+  "grant_text": "Proceed with the build. D-A approved. Proceed as recommended with D-b.",
+  "channel": "Telegram direct (message 11233)",
+  "decision_ref": "D-A in 06. Playbooks/Project Continuity/Phase 4 Unified Monitoring and Scale-Out Plan - 2026-09-27.md",
+  "scope": "Weekly Stage 2 screening refresh: recompute review-only bench bands for every active universe_membership name (Tier A, B and C) with the existing band method (scripts/yahoo_reference_level_matrix.py, mech-v3-floor-atr20), via scripts/weekly_screening_refresh.py, and write a review-only packet and digest under tmp/.",
+  "limits": {
+    "max_names_per_run": 320,
+    "provider": "yahoo_chart_daily_bars",
+    "max_attempts_per_name": 1,
+    "min_seconds_between_requests": 0.5,
+    "max_run_duration_seconds": 1200,
+    "stop_when_failure_rate_exceeds": 0.25,
+    "failure_rate_min_sample": 40
+  },
+  "every_run_produces": [
+    "tmp/weekly-screening-refresh.json and tmp/weekly-screening-refresh.md (latest)",
+    "tmp/weekly-screening/<session>.json (per-session copy)"
+  ],
+  "never_writes": [
+    "state/finance/finance-canon.sqlite (reference_levels, evidence_freshness, universe_membership or any other table)",
+    "alert registers, thesis files, baselines, tier state"
+  ],
+  "not_granted": [
+    "decision-grade bands or any alert-canon write",
+    "tier promotion, demotion or any universe_membership change",
+    "feeding alerts or recommendations (screening output is review-only)",
+    "methodology or formula changes",
+    "adding names beyond the active universe (universe expansion is a separate owner decision)",
+    "capital, orders, accounts, execution, external delivery"
+  ],
+  "rollback": "Set active=false; the job then refuses to run (zero provider calls). Delete tmp/weekly-screening* outputs if wanted; nothing else is written.",
+  "revocation": "Randall says so; set active=false.",
+  "review_by": "2026-12-28"
+}

@@ -1,0 +1,70 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "e6532249-3b49-4187-9b7a-6528bc0540f1",
+  "declarationKey": "finance-weekly-screening-refresh-v1",
+  "name": "Finance - Weekly Screening Refresh (Stage 2)",
+  "required": true,
+  "owner_workflow": "WF85 alerts-and-recommendations OS / Phase 4 Stage 2 screening",
+  "contract_reason": "Weekly Saturday review-only screening of the whole universe under the D-A standing approval granted by Randall 2026-09-28 10:02 MST (Telegram msg 11233).",
+  "description": "Saturday review-only bench bands for every active universe name (Tier A/B/C) with the existing band method, under the D-A standing approval (state/finance/standing-approvals/weekly-screening-refresh.json). Writes tmp/weekly-screening-refresh.json/.md and tmp/weekly-screening/<session>.json. Never writes the finance canon, never feeds alerts; no tier, capital, execution, or delivery authority.",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 10 * * 6",
+    "tz": "America/Phoenix",
+    "staggerMs": 0
+  },
+  "sessionTarget": "isolated",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "command",
+    "argv": [
+      "C:/Users/Veritas/AppData/Local/Programs/Python/Python313/python.exe",
+      "scripts/weekly_screening_refresh.py",
+      "--write"
+    ],
+    "cwd": "C:/Users/Veritas/.openclaw/workspace",
+    "timeoutSeconds": 1500
+  },
+  "delivery": {
+    "mode": "none",
+    "channel": "last"
+  },
+  "compare_fields": [
+    "name",
+    "description",
+    "enabled",
+    "schedule",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind",
+    "payload.argv",
+    "payload.cwd",
+    "payload.timeoutSeconds",
+    "delivery.mode"
+  ],
+  "expected_artifacts": [
+    "tmp/weekly-screening-refresh.json",
+    "tmp/weekly-screening-refresh.md"
+  ],
+  "optional_artifacts": [
+    "tmp/weekly-screening/"
+  ],
+  "authority_boundary": {
+    "standing_gate": "state/finance/standing-approvals/weekly-screening-refresh.json",
+    "cron_state_mutation_allowed": false,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "thesis_mutation_allowed": false,
+    "scope_mutation_allowed": false,
+    "methodology_change_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "external_delivery_allowed": false,
+    "owner_approval_inferred": false,
+    "alert_canon_mutation_allowed": false
+  },
+  "updated_at_utc": "2026-09-28T17:35:00Z",
+  "contract_update_reason": "Initial owner-approved creation (D-A standing approval, Stage 2 screening)."
+}

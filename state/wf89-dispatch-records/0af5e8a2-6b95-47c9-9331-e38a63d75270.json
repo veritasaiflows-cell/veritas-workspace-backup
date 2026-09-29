@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "0af5e8a2-6b95-47c9-9331-e38a63d75270",
+  "agent_id": "qa-redteam",
+  "session_key": "agent:qa-redteam:p43a-round6-review-20260929",
+  "label": "P4-3a round-6 confirmation review (GPT6-Sol)",
+  "task_text_sha256": "5799102fd13cbaf9b8f219f485c52a471aab339e36115871a8ea036f990cb0d7",
+  "message_file": "tmp\\p4-3-tier-txn-core-20260928\\round6-review-packet.md",
+  "created_at_ms": 1790700359397,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

@@ -108,6 +108,41 @@ def run_writer(root: Path, *extra) -> subprocess.CompletedProcess:
         capture_output=True, text=True, env=env, cwd=str(root))
 
 
+def write_owner_decisions(root: Path, decisions: list[dict]) -> None:
+    """P4-3 fixture: record an owner decision matching each entry exactly.
+
+    Entries that already carry an ``owner_decision_id`` key (including None,
+    for negative tests) are left alone.
+    """
+    import datetime as dt
+    now = dt.datetime.now(dt.timezone.utc)
+    base = root / "state" / "finance" / "tier-decisions"
+    base.mkdir(parents=True, exist_ok=True)
+    for d in decisions:
+        if "owner_decision_id" in d:
+            continue
+        did = "test-%s-%s%s-%s" % (str(d.get("ticker", "x")).lower(),
+                                   str(d.get("from_tier", "")).lower(),
+                                   str(d.get("to_tier", "")).lower(),
+                                   str(d.get("card_id", "card")).lower()[:24])
+        did = "".join(ch if ch.isalnum() or ch in "._-" else "-" for ch in did)
+        d["owner_decision_id"] = did
+        (base / ("%s.json" % did)).write_text(json.dumps({
+            "schema": "veritas.tier_owner_decision.v1",
+            "decision_id": did, "decision": "approved",
+            "ticker": str(d.get("ticker", "")).upper(),
+            "from_tier": str(d.get("from_tier", "")).upper(),
+            "to_tier": str(d.get("to_tier", "")).upper(),
+            "card_id": d.get("card_id") or "missing",
+            "proposal_packet_sha256": d.get("proposal_packet_sha256") or "0" * 64,
+            "granted_by": "Randall", "channel": "test fixture",
+            "message_ref": "fixture", "grant_text": "fixture approval",
+            "granted_at": (now - dt.timedelta(hours=1)).isoformat(),
+            "expires_at": (now + dt.timedelta(days=6)).isoformat(),
+            "recorded_by": "Main", "recorded_at": now.isoformat(),
+        }, indent=2), encoding="utf-8")
+
+
 def write_decision(tmpdir: str, decisions: list[dict],
                    as_of: str = AS_OF) -> Path:
     root = Path(tmpdir) / "root"
@@ -147,6 +182,7 @@ def write_decision(tmpdir: str, decisions: list[dict],
         sha = hashlib.sha256(packet.read_bytes()).hexdigest()
         for d in decisions:
             d["proposal_packet_sha256"] = sha
+    write_owner_decisions(root, decisions)
     path.write_text(json.dumps(
         {"schema": "veritas.tier_decision_set.v1", "as_of": as_of,
          "decisions": decisions}, indent=2), encoding="utf-8")

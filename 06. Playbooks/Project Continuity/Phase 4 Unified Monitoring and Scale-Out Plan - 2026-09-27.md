@@ -97,3 +97,79 @@ Landed inert surfaces:
 Main proof: 125 focused checks pass (proposal 22, tier writer 21, guard scope 14, candidate band 23, onboarding 45), Python compile passes, final shared validator bundle executed 9/9 with 0 failures, the live proposal smoke is 15 A / 17 B / 268 C with 0 demotions and 0 swap pairs, and live production mutation probes refuse with the canon logical hash unchanged (`595232b0...c302`). Independent GPT-6 Sol final QA passed each narrowed actual-applied-diff packet with no remaining Critical/High finding. QA packet hashes and Main acceptance live under `tmp/p4-2-writer-lane-20260927/`.
 
 Still required before cutover: a separate exact apply authorization; per-ticker lease; pending state, timeout and restart recovery; producer/consumer and queue enrollment proof; authenticated owner decision binding; live-safe atomic restore semantics; dedicated recency/corporate-action/macro/analyst/census inputs; Oct-15 scorer-readiness decision; and one separately owner-approved pilot swap. Stage 2 standing permission remains ungranted.
+## 2026-09-28 decisions and build (Randall, Telegram msg 11233, 10:02 MST)
+
+Grant text: "Proceed with the build. D-A approved. Proceed as recommended with D-b."
+
+- **D-A approved.** Stage 2 weekly screening is a standing permission: `state/finance/standing-approvals/weekly-screening-refresh.json` (max 320 names, one attempt per name, 0.5 s pacing, 1,200 s cap, stop above 25% provider failures after 40 calls; review_by 2026-12-28).
+- **D-B decided: scorecard-first.** The promotion rule stays unset until the forward scorecard exists. The Oct-15 scorer-readiness gate decides whether automated tier movement can start. Until then every promotion is a manual owner decision under the adopted two-test policy. No interim manual rule.
+- **D-C unchanged (default):** the 168 carried-over Tier C band rows stay inert until Stage 2 has run for a while; cleanup is a later owner decision.
+- **D-D in effect:** implementation stays in the proposal route. Today Main (Claude, GitHub session) implemented and one fresh independent agent reviewed. Reason: the Muse Spark dispatch path, a one-shot isolated agentTurn, is down under the 2026.9.6 DataCloneError bug (#157067).
+
+### Stage 2 live
+
+- `scripts/weekly_screening_refresh.py` (+ 30 tests): the matrix band method, unchanged and with no repair list, runs across all active universe names. Position is judged against the bench band as it stood 5 sessions earlier, because a same-day band cannot be broken by the bar it was computed from. Flags (`screen-flags-v1-provisional`, uncalibrated):
+  - `review_candidate` (Tier C only): uptrend, in or near the band low, 20-day average dollar volume >= $20M.
+  - `bench_breakdown`: any tier, close below the prior-week bench invalidation.
+- Writes only `tmp/weekly-screening-refresh.json/.md` and `tmp/weekly-screening/<session>.json`.
+- Cron `e6532249` "Finance - Weekly Screening Refresh (Stage 2)" runs Saturday 10:00 Phoenix (after the 09:00 renewal). Contract `state/cron-contracts/finance-weekly-screening-refresh.json`; validator drift 0 across 60 contracts.
+- First live run, session 2026-09-25: 300/300 screened, 297 computed, 300 calls.
+  - 47 review candidates. That is loose; calibrate before relying on it.
+  - 27 bench breakdowns, all Tier C, 12 of them utilities (a sector move) plus TLT.
+  - 3 names with no bars (EA, AVB, EQR): Yahoo quote but no daily bars since ~July. EA's $209.70 sits on its $210 take-private price. Routed as `no_bars_identity_review`; the corporate-action/identity input is still missing.
+
+### P4-3a tier transaction core (source landed; activation still blocked)
+
+- `scripts/tier_transaction_journal.py`: separate `state/finance/tier-transactions.sqlite`.
+  - Per-ticker lease; `pending_coverage -> effective | blocked | expired`, `effective -> rolled_back`.
+  - Timeout = end of the next NYSE session (2026/2027 holidays; an unknown year means an earlier timeout).
+  - One-shot decision consumption; restart recovery from canon commit evidence.
+- `scripts/tier_owner_decision.py`:
+  - Cutover gate `state/finance/standing-approvals/phase4-tier-cutover.json`. It does not exist, so production stays blocked.
+  - Per-change owner-decision records under `state/finance/tier-decisions/`, bound to ticker, tiers, card and packet sha, valid 14 days at most, never overwritten.
+- `scripts/tier_membership_writer.py` changes:
+  - Needs a bound owner decision per entry, in every mode including dry run.
+  - Journal lease plus a re-check under `BEGIN IMMEDIATE`.
+  - Journal settled on every failure branch: blocked when canon is provably unchanged, pending (recovery decides) when unknown.
+  - New `--recover [--after-crash]`.
+  - New `--rollback-txn`: a live-safe compare-and-swap inverse that preserves later unrelated writes and requires paired swaps to be rolled back together.
+- Proof: 213 passed / 2 skipped (pre-existing) across the Phase 4 suites; g6 138/138. Live canon logical sha unchanged (`595232b0...c302`); guard ok; scope 15/17. No live journal, cutover or decision file exists.
+
+### Still required before any live tier change
+
+1. P4-3b: the onboarding writer on the same cutover gate, owner-decision binding and inverse (delete-inserted-rows) rollback.
+2. Dedicated inputs for recency, identity/corporate actions (today's EA/AVB/EQR case), macro, analyst, and the duplicate-surface census, so the proposal job's `missing` proof slots can turn `satisfied`.
+3. Producer/consumer and queue enrollment proof.
+4. Oct-15 scorer-readiness decision (D-B).
+5. Randall's explicit cutover approval (creates the gate file).
+6. One separately approved pilot swap.
+
+## Owner decisions recorded - 2026-09-28 10:02 Phoenix
+
+Randall, Telegram: "Proceed with the build. D-A approved. Proceed as recommended with D-b."
+
+- **D-A APPROVED:** Stage 2 weekly screening refresh is a standing permission. Review-only bench bands for all 300 universe names, recomputed weekly to a separate review-only surface, never persisted to reference_levels; ~268 extra Yahoo pulls/week, batched, off-peak, rate-limited.
+- **D-B CONFIRMED:** scorecard-first promotion rule stands. No automated tier movement before the Oct-15 scorer-readiness assessment passes.
+- **Cutover-safety build directed:** per-ticker lease, pending/timeout/restart recovery, exact owner-approval binding, live-safe atomic rollback, producer-consumer and queue enrollment proof, and dedicated recency/identity/corporate-action/census inputs. Code-only on hermetic copies; production apply stays refused.
+- **D-C unchanged:** the 168 carried-over Tier C band rows stay inert until screening is live, then a separate cleanup decision.
+
+These decisions grant no tier change, band write to reference_levels, canon mutation, cap raise, capital, order, account, or execution authority.
+
+## 2026-09-28 late: lane repair and P4-3a QA restart
+
+- **Parallel-session drift corrected.** A 12:10 session did not see P4-3a. It planned `scripts/p4_cutover_safety.py`, now **superseded; do not build it**. It also built a duplicate Stage 2 screener, `scripts/screening_bench_bands.py`, that no cron uses; the canonical screener is `weekly_screening_refresh.py` via cron `e6532249`. Archiving the duplicate awaits owner OK.
+- **Lanes:**
+  - S2 screening lane cancelled as superseded.
+  - Cutover-safety lane re-leased to 2026-10-01T05:26Z, scoped to the P4-3a files.
+  - Checkpoint `resume-0015` supersedes the stale ARENA `resume-0013`.
+- **P4-3a is not yet QA-accepted.** The first independent review left no verdict. A fresh read-only review writes to `tmp/p4-3-tier-txn-core-20260928/qa-verdict.json`. P4-3a is commit-ready only after its findings are closed.
+
+## 2026-09-29: P4-3a accepted and committed
+
+Randall, Telegram msg 11314 (16:56 MST): "Proceed with short confirmation and commit."
+
+- **Independent QA closed.** GPT-6 Sol reviewed P4-3a in 11 read-only rounds (qa-redteam agent, WF89 dispatch records). Rounds 1-10 returned REJECT with progressively narrower findings; Main confirmed each finding in code and fixed it with a regression test. Round 11 returned **ACCEPT** with no new findings: R8-1 (the whole decision record is now attested by a digest in canon's apply event) and R10-1 (canon attests the backup hash, and restore hashes the actual backup file content, lines 408-409) are both fixed; R6-1 and R7-1 stay fixed; the only exit-4 paths after a commit are the two intentional compensations.
+- **Proof:** the 4 P4-3a suites pass 155/155, the wider 7 suites 267/267, and the live canon logical sha is unchanged (`595232b0f823`). `tier-transactions.sqlite`, `tier-decisions/` and `phase4-tier-cutover.json` are all absent. Evidence (gitignored): `tmp/p4-3-tier-txn-core-20260928/qa-verdict-round4..11.json` and `main-acceptance-p43a.json`.
+- **Committed:** P4-3a (writer, journal, owner-decision and their tests) together with the Stage 2 screening job, its standing approval and its cron contract.
+- **Activation stays blocked.** Production apply and rollback refuse until Randall grants a separate `phase4-tier-cutover` approval. The Oct-15 scorer gate and one owner-approved pilot swap also still stand.
+- **Next:** P4-3b, the onboarding writer (same gate, owner-decision binding, and an inverse rollback that deletes the inserted rows). The duplicate screener `screening_bench_bands.py` stays uncommitted and still awaits the owner's OK to archive.
