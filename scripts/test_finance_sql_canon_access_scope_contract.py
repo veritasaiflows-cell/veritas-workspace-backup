@@ -15,7 +15,7 @@ import shutil
 import sqlite3
 import sys
 import tempfile
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve()
@@ -134,14 +134,25 @@ def _band_packet_for(root: Path, ticker: str):
 def test_onboarded_201_row_canon_ok() -> None:
     root = fresh_root(swap_guard=True)
     packet_path, packet_sha = _band_packet_for(root, "BAC")
+    decision = load_by_path("decision_for_b1", V2 / "onboarding_owner_decision.py")
+    now = datetime.now(timezone.utc)
+    did = "p4-bac-b1t2-20260929"
+    decision.write_record(root, {
+        "schema": decision.ONBOARDING_SCHEMA, "decision_id": did,
+        "decision": "approved", "ticker": "BAC", "mode": "insert",
+        "band_packet_sha256": packet_sha, "as_of": "2026-09-26",
+        "granted_by": "Randall", "channel": "direct", "message_ref": "fixture-b1t2",
+        "grant_text": "Fixture approval for BAC", "recorded_by": "Main",
+        "granted_at": (now - timedelta(hours=1)).isoformat(),
+        "expires_at": (now + timedelta(days=7)).isoformat(),
+    })
     writer = load_by_path("writer_for_b1", V2 / "reference_level_onboarding_writer.py")
     writer._TEST_ONLY_ACTIVATION = True
     with Cwd(root):
         rc = writer.main(["--root", str(root),
                           "--db", "state/finance/finance-canon.sqlite", "--ticker", "BAC",
                           "--band-packet", str(packet_path), "--band-packet-sha256", packet_sha,
-                          "--as-of", "2026-09-26", "--approval-reference", "B1T2",
-                          "--accepted-at", "2026-09-27T10:00:00+00:00",
+                          "--as-of", "2026-09-26", "--owner-decision-id", did,
                           "--baseline-dir", "state/finance/baselines",
                           "--output-dir", "tmp/b1t2",
                           "--apply", "--write", "--validate"])

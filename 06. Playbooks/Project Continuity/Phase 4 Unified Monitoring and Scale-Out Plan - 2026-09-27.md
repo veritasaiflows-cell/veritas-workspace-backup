@@ -173,3 +173,34 @@ Randall, Telegram msg 11314 (16:56 MST): "Proceed with short confirmation and co
 - **Committed:** P4-3a (writer, journal, owner-decision and their tests) together with the Stage 2 screening job, its standing approval and its cron contract.
 - **Activation stays blocked.** Production apply and rollback refuse until Randall grants a separate `phase4-tier-cutover` approval. The Oct-15 scorer gate and one owner-approved pilot swap also still stand.
 - **Next:** P4-3b, the onboarding writer (same gate, owner-decision binding, and an inverse rollback that deletes the inserted rows). The duplicate screener `screening_bench_bands.py` stays uncommitted and still awaits the owner's OK to archive.
+
+## 2026-09-29 evening: P4-3b built and QA-accepted (Randall, Telegram 17:10 and 18:04 MST)
+
+- **Route:** GPT-6 Sol (`openai/gpt-6-sol`, high) authored text-only patches; Main applied, fixed and ran every proof. Independent QA was GLM-5.3 (`zai/glm-5.3`, max). Grok 4.7 QA was abandoned after four provider idle timeouts; Randall redirected QA to GLM (the xAI timeout was NOT raised).
+- **What the onboarding writer (`scripts/reference_level_onboarding_writer.py`) now has.** B1 is a component-covering cutover gate and binding to a `--owner-decision-id` (`scripts/onboarding_owner_decision.py`, records under `state/finance/onboarding-decisions/`). B2 is a per-ticker lease, durable single-use decisions and crash recovery (`scripts/onboarding_transaction_journal.py`, `state/finance/onboarding-transactions.sqlite`), a cross-check of the tier lease, the canon event `onb_apply_<txn>` and `--recover`. B3a is an exact row-level inverse, captured in the apply transaction and attested in canon; the file is `<TICKER>.onboarding-inverse-<txn>.json`. B3b-1 is `--inverse-rollback <txn_id>` (CAS-all-then-write, the canon event `onb_inverse_<txn>`, compensation on verification failure, `canon_rollback_probe`). B3b-2 writes the inverse file (fsync) BEFORE COMMIT, replaces every post-COMMIT whole-DB restore with compensation, and removes the B1 production stop line. Compensation means: undo via the inverse, delete `onb_apply_`, add `onb_compensated_<txn>`, journal BLOCKED. Post-COMMIT verification and compensation now share one BEGIN IMMEDIATE; a failure to acquire that lock exits 5, and recovery settles it. Whole-DB `--rollback` remains hermetic-only.
+- **Production posture:** the writer CAN now mutate the production canon, but only when `state/finance/standing-approvals/phase4-tier-cutover.json` is active and covers `reference_level_onboarding_writer`, plus a bound, unconsumed, in-window owner decision. That file does not exist; Randall alone creates it (the ~Nov 9 cutover row below). No journal, decision directory or cutover file exists in production.
+- **Known limit:** an inverse is refused (CAS, fail-closed) once any later canon write touches its captured rows. Such writes include another onboarding, which repoints every reference row, and the weekly g6 renewal. Undo is therefore practical only until the next canon write.
+- **QA record:** B1 (A ACCEPT; B REJECT, then fixed, confirm ACCEPT). B2 (same pattern). B3a ACCEPT. B3b-1 ACCEPT (all low). B3b-2: A ACCEPT, B REJECT (3 medium test gaps), then a fix round, confirm ACCEPT. Residuals are low and optional:
+  - no orphan-inverse report in `--recover`;
+  - no test that raises the inverse-direction compensation COMMIT;
+  - two over-narrow test globs;
+  - one pre-recover id read.
+  Main found and fixed real bugs the tests exposed: `uri=True` read-only journal opens; txn-unique default output names; a closed-connection `in_transaction` in inverse COMMIT classification; the inverse lock-failure being swallowed into compensation; and three mocks that patched the wrong guard module instance.
+- **Proof:** writer runner 201/0; 313 passed across 10 pytest suites (incl. the P4-3a tier suites); scope contract 14/0; the whole-DB inverse-scope harness is ok for insert and refresh; live canon logical sha unchanged (`595232b0f823`). Evidence (gitignored): `tmp/p4-3b-onboarding-20260929/` (packets, author replies, `*-qa-*-reply.txt`, `b3b2-confirm-reply.txt`, snapshots).
+- **Next:** the Sat 10-03 renewal and screening check, then the Oct 5-9 row of the close-out plan.
+
+## Phase 4 close-out plan - drafted 2026-09-29 17:10 MST (proposal; dates are targets)
+
+**Definition of done:** (1) the cutover-safety build is complete and QA-accepted: P4-3a (done, 1646a4cd), P4-3b, S4 enrollment proof, S5 evidence inputs; (2) screening is calibrated and the D-C 168-row decision is made; (3) the alert-ledger outcome scorer is designed, owner-approved and built; (4) Randall has approved the cutover, and one pilot swap has run end to end (card, decision, apply, verify, D2 renewal stop, alerts live on the new name); (5) two clean weekly cycles have followed. Stage 3 (thousands of names, data-supply purchase) is handed to Phase 5 as a design artifact and not built here.
+
+| Window | Work | Proof / owner gate |
+|---|---|---|
+| Sep 30 - Oct 3 | ~~P4-3b onboarding writer + QA~~ DONE 09-29 (see above). Sat 10-03: Option B renewal check and first scheduled screening run. | Hermetic tests, independent QA; renewal applied, scope unchanged |
+| Oct 5 - 9 | Screening calibration (47 review candidates is too loose). Duplicate census + identity/corporate-action input (EA/AVB/EQR class). D-C cleanup proposal. Protect the Oct-15 trigger: automation `3df080bc` is an isolated agentTurn and fails on the 2026.9.6 DataCloneError; move it to the working systemEvent route. | Randall: D-C, trigger route change |
+| Oct 12 - 14 | S4 producer/consumer + queue enrollment proof; recency and macro/analyst evidence inputs wired into the weekly proposal job's 10 proof slots. | Proposal job shows no `missing` slot for a test candidate |
+| Oct 15 | Scorer readiness: count matured alert events (ledger started 09-24; 5-day horizons mature, 20-day just starting ~Oct 22); draft scorer design. | Randall approves design |
+| Oct 16 - Nov 6 | Build + QA the alert-ledger scorer; first calibration read of funnel-v1 weights and the ATR20 floor. | QA accept; calibration report |
+| ~Nov 9 | Cutover approval (`phase4-tier-cutover.json`) and ONE pilot swap. Caps are full (15/17), so the pilot needs a sourced demotion or an explicit cap raise. | Randall: cutover, cap/demotion, pilot decision |
+| ~Nov 9 - 20 | Two clean weekly cycles post-pilot; close-out note; Stage 3 design artifact handed to Phase 5. | Renewal + screening + alerts green |
+
+**Platform timing:** do the WSL migration Oct 5 - 9 (after the 10-03 renewal, before the S4/S5 proofs), so enrollment and cutover proofs run on the final platform instead of being re-proved.
