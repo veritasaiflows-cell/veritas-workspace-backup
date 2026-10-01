@@ -157,7 +157,7 @@ These decisions grant no tier change, band write to reference_levels, canon muta
 
 ## 2026-09-28 late: lane repair and P4-3a QA restart
 
-- **Parallel-session drift corrected.** A 12:10 session did not see P4-3a. It planned `scripts/p4_cutover_safety.py`, now **superseded; do not build it**. It also built a duplicate Stage 2 screener, `scripts/screening_bench_bands.py`, that no cron uses; the canonical screener is `weekly_screening_refresh.py` via cron `e6532249`. Archiving the duplicate awaits owner OK.
+- **Parallel-session drift corrected.** A 12:10 session did not see P4-3a. It planned `scripts/p4_cutover_safety.py`, now **superseded; do not build it**. It also built a duplicate Stage 2 screener, `scripts/screening_bench_bands.py`, that no cron uses; the canonical screener is `weekly_screening_refresh.py` via cron `e6532249`. Archived 2026-09-30 with owner approval to `09. Archive/Owner-Approved Archive 20260930 - Duplicate Stage 2 Screener/`.
 - **Lanes:**
   - S2 screening lane cancelled as superseded.
   - Cutover-safety lane re-leased to 2026-10-01T05:26Z, scoped to the P4-3a files.
@@ -172,7 +172,7 @@ Randall, Telegram msg 11314 (16:56 MST): "Proceed with short confirmation and co
 - **Proof:** the 4 P4-3a suites pass 155/155, the wider 7 suites 267/267, and the live canon logical sha is unchanged (`595232b0f823`). `tier-transactions.sqlite`, `tier-decisions/` and `phase4-tier-cutover.json` are all absent. Evidence (gitignored): `tmp/p4-3-tier-txn-core-20260928/qa-verdict-round4..11.json` and `main-acceptance-p43a.json`.
 - **Committed:** P4-3a (writer, journal, owner-decision and their tests) together with the Stage 2 screening job, its standing approval and its cron contract.
 - **Activation stays blocked.** Production apply and rollback refuse until Randall grants a separate `phase4-tier-cutover` approval. The Oct-15 scorer gate and one owner-approved pilot swap also still stand.
-- **Next:** P4-3b, the onboarding writer (same gate, owner-decision binding, and an inverse rollback that deletes the inserted rows). The duplicate screener `screening_bench_bands.py` stays uncommitted and still awaits the owner's OK to archive.
+- **Next:** P4-3b, the onboarding writer (same gate, owner-decision binding, and an inverse rollback that deletes the inserted rows). The duplicate screener `screening_bench_bands.py` was archived 2026-09-30 with owner approval to the Owner-Approved Archive; the canonical screener remains `weekly_screening_refresh.py` via cron `e6532249`.
 
 ## 2026-09-29 evening: P4-3b built and QA-accepted (Randall, Telegram 17:10 and 18:04 MST)
 

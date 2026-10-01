@@ -35,6 +35,7 @@ def seed_workspace(root: Path, module) -> None:
     module.WF74_DOCKET = module.TMP / "wf74-decision-docket.json"
     module.CRON_CONTROL = module.TMP / "cron-control-packet.json"
     module.OTEL_OPS = module.TMP / "otel-ops-control.json"
+    module.OTEL_LEARNING_LOOP = module.TMP / "otel-learning-loop.json"
     module.WF74_RUNNER = module.TMP / "wf74-model-quality-collection-cron-runner.json"
     module.FINANCE_RESPONSE_QUALITY_SLICE = module.TMP / "finance-response-quality-slice.json"
     module.FINANCE_RESPONSE_QUALITY_REPAIR_LOOP = module.TMP / "finance-response-quality-repair-loop.json"
@@ -61,6 +62,7 @@ def seed_workspace(root: Path, module) -> None:
     write_json(module.WF74_DOCKET, {"status": "ok", "generated_at_utc": generated, "validation": {"status": "ok"}})
     write_json(module.CRON_CONTROL, {"status": "ok", "generated_at_utc": generated, "summary": {"blocked_count": 1, "escalation_signal_count": 1, "should_wake_main_session": True}, "validation": {"status": "ok"}})
     write_json(module.OTEL_OPS, {"status": "blocked", "generated_at_utc": generated, "summary": {"event_count": 0}, "drift": {"daily_warning_or_error_count": 0, "daily_vs_weekly_event_rate_ratio": 0.0}, "validation": {"status": "blocked"}})
+    write_json(module.OTEL_LEARNING_LOOP, {"status": "ok", "generated_at_utc": generated, "validation": {"status": "ok"}})
     write_json(module.WF74_RUNNER, {"status": "ok", "generated_at_utc": generated, "summary": {"coding_runtime_validator_elapsed_seconds": 3.2, "planning_quality_followthrough_gap_count": 0, "steps_blocked": 0, "finance_response_quality_status": "ok", "finance_response_quality_source_open_blocked_count": 0, "finance_response_quality_source_freshness_blocked_count": 0, "finance_response_quality_remediation_tracks_needing_repair": 0}, "validation": {"status": "warning"}})
     write_json(module.FINANCE_RESPONSE_QUALITY_SLICE, {"schema": "veritas.finance_response_quality_slice.v1", "status": "ok", "generated_at_utc": generated, "summary": {"blocked_archetype_count": 0, "source_open_blocked_count": 0, "source_freshness_blocked_count": 0, "remediation_tracks_needing_repair": 0}, "validation": {"status": "ok", "errors": [], "warnings": []}})
     write_json(module.FINANCE_RESPONSE_QUALITY_REPAIR_LOOP, {"schema": "veritas.finance_response_quality_repair_loop.v1", "status": "noop_ok", "generated_at_utc": generated, "summary": {"proposal_count": 0, "high_priority_count": 0, "source_open_blocked_count": 0, "source_freshness_blocked_count": 0, "remediation_tracks_needing_repair": 0}, "validation": {"status": "warning", "errors": [], "warnings": ["no_repair_proposals_generated"]}})
@@ -541,3 +543,56 @@ def test_classify_planning_legacy_fixture_still_closes() -> None:
     item = module.classify_planning(planning_row_fixture(), planning_ctx_fixture(summary))
     assert item.get('closure_allowed') is True
     assert item['closure_status'] == 'verified_fix'
+
+
+def otel_seam_row() -> dict:
+    return {"source_type": "otel_learning_loop_recommendation", "source_key": "otel_telemetry_stale_or_missing",
+            "title": "otel_telemetry_stale_or_missing", "category": "otel_learning_loop", "priority": 75,
+            "decision": "follow_up_required_before_closure"}
+
+
+def otel_loop_fixture(module, **overrides) -> dict:
+    loop = {
+        "status": "ok", "generated_at_utc": module.utc_now(), "validation": {"status": "ok"},
+        "learning_summaries": {"otel_health": {"telemetry_status": "fresh_valid", "telemetry_fresh_valid": True,
+                                               "telemetry_depth_retired_by_owner_decision": True}},
+        "recommendations": [{"id": "cron_signal_learning_input"}],
+    }
+    loop.update(overrides)
+    return loop
+
+
+def test_otel_telemetry_seam_row_closes_on_live_proof() -> None:
+    module = load_module()
+    item = module.classify_item(otel_seam_row(), {"otel_learning_loop": otel_loop_fixture(module)})
+    assert item["closure_allowed"] is True
+    assert item["closure_status"] == "verified_fix"
+    assert item["closure_status"] in module.ALLOWED_CLOSURE_STATUSES
+    assert item["proof_artifacts"]
+
+
+def test_otel_telemetry_seam_row_fails_closed() -> None:
+    module = load_module()
+    retired_false = otel_loop_fixture(module)
+    retired_false["learning_summaries"]["otel_health"]["telemetry_depth_retired_by_owner_decision"] = False
+    cases = [
+        {},
+        otel_loop_fixture(module, status="warning"),
+        otel_loop_fixture(module, validation={"status": "blocked"}),
+        otel_loop_fixture(module, generated_at_utc="2026-01-01T00:00:00Z"),
+        otel_loop_fixture(module, generated_at_utc="garbage"),
+        otel_loop_fixture(module, recommendations=[{"id": "otel_telemetry_stale_or_missing"}]),
+        otel_loop_fixture(module, learning_summaries={}),
+        retired_false,
+    ]
+    for loop in cases:
+        item = module.classify_item(otel_seam_row(), {"otel_learning_loop": loop})
+        assert not item.get("closure_allowed"), loop
+        assert item["action_state"] == "otel_telemetry_seam_open"
+
+
+def test_other_otel_learning_rows_still_manual() -> None:
+    module = load_module()
+    row = {**otel_seam_row(), "source_key": "cron_signal_learning_input", "title": "cron_signal_learning_input"}
+    item = module.classify_item(row, {"otel_learning_loop": otel_loop_fixture(module)})
+    assert item["action_state"] == "manual_review_required"

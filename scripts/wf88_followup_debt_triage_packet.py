@@ -53,6 +53,8 @@ WF74_ROUTER = TMP / "wf74-autonomy-work-router.json"
 WF74_DOCKET = TMP / "wf74-decision-docket.json"
 CRON_CONTROL = TMP / "cron-control-packet.json"
 OTEL_OPS = TMP / "otel-ops-control.json"
+OTEL_LEARNING_LOOP = TMP / "otel-learning-loop.json"
+OTEL_LEARNING_LOOP_MAX_AGE_SECONDS = 24.0 * 3600.0
 WF74_RUNNER = TMP / "wf74-model-quality-collection-cron-runner.json"
 FINANCE_RESPONSE_QUALITY_SLICE = TMP / "finance-response-quality-slice.json"
 FINANCE_RESPONSE_QUALITY_REPAIR_LOOP = TMP / "finance-response-quality-repair-loop.json"
@@ -765,6 +767,72 @@ def classify_usage_source_reverification(row: dict[str, Any], ctx: dict[str, dic
     return item
 
 
+def otel_telemetry_seam_proof(loop: dict[str, Any], now: datetime | None = None) -> tuple[bool, str]:
+    """Fail-closed proof that the OTEL telemetry seam fix (2026-09-30) holds live.
+
+    Requires a fresh, validated learning-loop packet whose otel_health reports
+    fresh-valid telemetry with token depth retired by the owner's 2026-09-12
+    decision, and which no longer emits otel_telemetry_stale_or_missing.
+    """
+    if not isinstance(loop, dict) or not loop:
+        return (False, "learning_loop_missing")
+    if loop.get("status") != "ok" or as_dict(loop.get("validation")).get("status") != "ok":
+        return (False, "learning_loop_not_ok")
+    try:
+        generated = datetime.fromisoformat(str(loop.get("generated_at_utc")).replace("Z", "+00:00"))
+    except ValueError:
+        return (False, "learning_loop_timestamp_invalid")
+    if generated.tzinfo is None:
+        return (False, "learning_loop_timestamp_invalid")
+    age = ((now or datetime.now(timezone.utc)) - generated).total_seconds()
+    if age < -900 or age > OTEL_LEARNING_LOOP_MAX_AGE_SECONDS:
+        return (False, "learning_loop_stale_or_future")
+    health = as_dict(as_dict(loop.get("learning_summaries")).get("otel_health"))
+    if health.get("telemetry_fresh_valid") is not True or health.get("telemetry_status") != "fresh_valid":
+        return (False, "telemetry_not_fresh_valid")
+    if health.get("telemetry_depth_retired_by_owner_decision") is not True:
+        return (False, "token_depth_not_retired_by_owner_decision")
+    for rec in as_list(loop.get("recommendations")):
+        rec = as_dict(rec)
+        if "otel_telemetry_stale_or_missing" in {str(rec.get(k) or "") for k in ("id", "key", "source_key")}:
+            return (False, "stale_telemetry_recommendation_still_emitted")
+    return (True, "telemetry_fresh_valid_depth_retired_recommendation_absent")
+
+
+def classify_otel_telemetry_seam(row: dict[str, Any], ctx: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    item = base_item(row)
+    loop = ctx.get("otel_learning_loop", {})
+    proven, detail = otel_telemetry_seam_proof(loop)
+    proof_artifacts = [rel(OTEL_LEARNING_LOOP), rel(OTEL_OPS)]
+    context = {"proof_gate": detail, "learning_loop_generated_at_utc": as_dict(loop).get("generated_at_utc")}
+    if proven:
+        item.update({
+            "closure_allowed": True,
+            "closure_status": "verified_fix",
+            "action_state": "close_with_otel_telemetry_seam_proof",
+            "closure_reason": (
+                "OTEL telemetry seam fix (contract otel-telemetry-seam-v1, merged 2026-09-30, owner-approved closure): "
+                "the current learning loop reports fresh-valid telemetry, token-cost depth retired by the owner's "
+                "2026-09-12 decline_and_retire decision, and no longer emits otel_telemetry_stale_or_missing."
+            ),
+            "recommended_next_action": "Closed; reopens automatically if the learning loop emits the recommendation again.",
+            "proof_artifacts": proof_artifacts,
+            "successor_id": "otel-learning-loop-recommendations",
+            "successor_artifact": rel(OTEL_LEARNING_LOOP),
+            "successor_artifact_kind": "otel_learning_loop_packet",
+            "context": context,
+        })
+    else:
+        item.update({
+            "action_state": "otel_telemetry_seam_open",
+            "closure_reason": f"OTEL telemetry seam proof not satisfied ({detail}); fail closed.",
+            "recommended_next_action": "Keep open until a fresh validated learning loop proves the telemetry seam fix.",
+            "proof_artifacts": proof_artifacts,
+            "context": context,
+        })
+    return item
+
+
 def classify_item(row: dict[str, Any], ctx: dict[str, dict[str, Any]]) -> dict[str, Any]:
     category = str(row.get("category") or "")
     title = str(row.get("title") or "")
@@ -785,6 +853,8 @@ def classify_item(row: dict[str, Any], ctx: dict[str, dict[str, Any]]) -> dict[s
         return classify_finance_response_quality(row, ctx)
     if is_usage_source_reverification_row(row):
         return classify_usage_source_reverification(row, ctx)
+    if row.get("source_type") == "otel_learning_loop_recommendation" and key == "otel_telemetry_stale_or_missing":
+        return classify_otel_telemetry_seam(row, ctx)
     item = base_item(row)
     item.update({
         "action_state": "manual_review_required",
@@ -913,6 +983,7 @@ def build_packet() -> dict[str, Any]:
         "wf74_docket": load(WF74_DOCKET),
         "cron_control": load(CRON_CONTROL),
         "otel_ops": load(OTEL_OPS),
+        "otel_learning_loop": load(OTEL_LEARNING_LOOP),
         "wf74_runner": load(WF74_RUNNER),
         "finance_response_quality_slice": load(FINANCE_RESPONSE_QUALITY_SLICE),
         "finance_response_quality_repair_loop": load(FINANCE_RESPONSE_QUALITY_REPAIR_LOOP),
@@ -945,6 +1016,7 @@ def build_packet() -> dict[str, Any]:
             "wf74_docket": source_record(WF74_DOCKET),
             "cron_control": source_record(CRON_CONTROL),
             "otel_ops": source_record(OTEL_OPS),
+            "otel_learning_loop": source_record(OTEL_LEARNING_LOOP),
             "wf74_runner": source_record(WF74_RUNNER),
             "finance_response_quality_slice": source_record(FINANCE_RESPONSE_QUALITY_SLICE),
             "finance_response_quality_repair_loop": source_record(FINANCE_RESPONSE_QUALITY_REPAIR_LOOP),
