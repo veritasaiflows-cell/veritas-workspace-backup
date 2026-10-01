@@ -84,7 +84,7 @@ class ControllerStalenessTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "alert-level-freshness-controller.json"
             path.write_text(json.dumps(levels), encoding="utf-8")
-            with mock.patch.object(digest, "LEVELS", path):
+            with mock.patch.object(digest, "LEVELS", path), mock.patch.object(digest, "THESIS_DIR", Path(tmp)):
                 return digest.build_payload("morning", **kwargs)
 
     def test_fresh_controller_is_delivered(self) -> None:
@@ -425,11 +425,13 @@ class SendUnconfirmedTests(unittest.TestCase):
         )
         out = io.StringIO()
         with mock.patch.object(digest, "LEVELS", root / "alert-level-freshness-controller.json"):
-            with mock.patch.object(digest, "TMP", root):
+            with mock.patch.object(digest, "TMP", root), mock.patch.object(digest, "THESIS_DIR", root), \
+                    mock.patch.object(digest, "ROOT", root):
                 with mock.patch.object(digest, "deliver", return_value=result):
                     with mock.patch.object(
                         sys, "argv",
-                        ["finance_alert_os_digest.py", "--mode", "midday", "--send", "--validate"],
+                        ["finance_alert_os_digest.py", "--mode", "midday", "--send", "--validate",
+                         "--out", str(root / "digest.json")],
                     ):
                         with contextlib.redirect_stdout(out):
                             rc = digest.main()
@@ -486,6 +488,292 @@ class SendUnconfirmedTests(unittest.TestCase):
             entry = next(iter(keys.values()))
             self.assertTrue(entry["confirmed"])
             self.assertEqual(entry["mode"], "midday")
+
+
+class ThesisBlockTests(unittest.TestCase):
+    TODAY = datetime(2026, 9, 30).date()
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.dir = Path(self._tmp.name)
+
+    def _record(self, ticker: str, **over) -> dict:
+        rec = {
+            "schema": "veritas.thesis_record.v1",
+            "ticker": ticker,
+            "status": "accepted",
+            "thesis_statement": f"{ticker} statement.",
+            "cases": {
+                "base": {"summary": f"{ticker} base case"},
+                "bull": {"summary": f"{ticker} bull case"},
+                "bear": {"summary": f"{ticker} bear case"},
+            },
+            "catalysts": [
+                {"event": "Past event", "expected_date": "2026-08-01", "date_confidence": "confirmed"},
+                {"event": "Later event", "expected_date": "2026-11-05", "date_confidence": "provider_estimate"},
+                {"event": "Soon event", "expected_date": "2026-10-10", "date_confidence": "company_confirmed"},
+            ],
+            "conviction": "high",
+            "review_due": "2026-12-27",
+            "owner_accepted_at": "2026-09-27T12:22:00-07:00",
+        }
+        rec.update(over)
+        return rec
+
+    def _write(self, ticker: str, **over) -> None:
+        (self.dir / f"{ticker}.json").write_text(json.dumps(self._record(ticker, **over)), encoding="utf-8")
+
+    def _levels(self, band=(), inval=(), rows=None) -> dict:
+        return {
+            "generated_at_utc": "2026-09-30T00:00:00Z",
+            "rows": rows if rows is not None else [
+                {"ticker": t, "latest_price": 101.234, "invalidation_threshold": 90.5,
+                 "sql_reference": {"reference_invalidation_level": 91.25}}
+                for t in (*band, *inval)
+            ],
+            "summary": {
+                "alert_state_counts": {"band_entry": len(band), "invalidation": len(inval)},
+                "band_entry_signal_tickers": list(band),
+                "invalidation_signal_tickers": list(inval),
+                "no_chase_signal_tickers": [],
+                "monitor_only_tickers": [],
+                "freshness_review_tickers": [],
+            },
+        }
+
+    def _msg(self, levels: dict, previous=None) -> str:
+        with mock.patch.object(digest, "baseline_guard_line", return_value=None):
+            return build_message(
+                "midday", levels, previous_summary=previous, thesis_dir=self.dir, digest_date=self.TODAY,
+                thesis_context=True,
+            )
+
+    def test_thesis_context_is_opt_in(self) -> None:
+        # The recurring chain calls build_message(window, controller) for its
+        # proof preview and alert-ledger message_text; that must not change.
+        self._write("AAA")
+        levels = self._levels(band=["AAA"])
+        with mock.patch.object(digest, "baseline_guard_line", return_value=None):
+            plain = build_message("midday", levels, thesis_dir=self.dir, digest_date=self.TODAY)
+        self.assertNotIn("thesis context", plain)
+        self.assertNotIn("AAA (band entry)", plain)
+        self.assertEqual(plain, self._msg(levels, previous={"band_entry_signal_tickers": ["AAA"]}))
+
+    def test_new_band_entry_gets_full_block(self) -> None:
+        self._write("AAA")
+        msg = self._msg(self._levels(band=["AAA"]), previous={})
+        self.assertIn("New entries - thesis context:", msg)
+        self.assertIn("AAA (band entry) - high conviction, thesis accepted 2026-09-27:", msg)
+        self.assertIn("AAA statement.", msg)
+        for case in ("Base: AAA base case", "Bull: AAA bull case", "Bear: AAA bear case"):
+            self.assertIn("  " + case, msg)
+        self.assertIn("  Next catalyst: Soon event 2026-10-10 (company_confirmed)", msg)
+        self.assertIn("  Invalidation: 91.25 (guarded SQL); last price 101.23", msg)
+        self.assertNotIn("overdue", msg)
+
+    def test_name_in_previous_summary_gets_no_block(self) -> None:
+        self._write("AAA")
+        self._write("BBB")
+        prev = {"band_entry_signal_tickers": ["AAA"], "invalidation_signal_tickers": []}
+        msg = self._msg(self._levels(band=["AAA", "BBB"]), previous=prev)
+        self.assertNotIn("AAA (band entry)", msg)
+        self.assertIn("BBB (band entry)", msg)
+
+    def test_no_previous_summary_all_new_capped_at_five(self) -> None:
+        names = ["A1", "A2", "A3", "A4", "A5", "A6", "A7"]
+        for n in names:
+            self._write(n)
+        msg = self._msg(self._levels(band=names), previous=None)
+        self.assertEqual(sum(1 for n in names if f"{n} (band entry)" in msg), 5)
+        self.assertIn("Thesis blocks omitted for 2 more new entries: A6, A7", msg)
+
+    def test_invalidation_ordered_first(self) -> None:
+        for n in ("AAA", "BBB", "ZZZ"):
+            self._write(n)
+        msg = self._msg(self._levels(band=["AAA", "BBB"], inval=["ZZZ"]), previous={})
+        self.assertLess(msg.index("ZZZ (invalidation)"), msg.index("AAA (band entry)"))
+        self.assertLess(msg.index("AAA (band entry)"), msg.index("BBB (band entry)"))
+
+    def test_band_entry_to_invalidation_counts_as_new(self) -> None:
+        self._write("AAA")
+        prev = {"band_entry_signal_tickers": ["AAA"], "invalidation_signal_tickers": []}
+        msg = self._msg(self._levels(inval=["AAA"]), previous=prev)
+        self.assertIn("AAA (invalidation) - high conviction", msg)
+
+    def test_missing_and_non_accepted_thesis_give_no_accepted_line(self) -> None:
+        self._write("DRAFT", status="draft")
+        msg = self._msg(self._levels(band=["DRAFT", "GONE"]), previous={})
+        self.assertIn("DRAFT (band entry) - no accepted thesis on file.", msg)
+        self.assertIn("GONE (band entry) - no accepted thesis on file.", msg)
+
+    def test_malformed_thesis_degrades_only_that_ticker(self) -> None:
+        (self.dir / "BAD.json").write_text("{not json", encoding="utf-8")
+        self._write("OKK")
+        self._write("PART", cases={"base": {"summary": "only base"}})
+        msg = self._msg(self._levels(band=["BAD", "OKK", "PART"]), previous={})
+        self.assertIn("BAD (band entry) - thesis unavailable.", msg)
+        self.assertIn("PART (band entry) - thesis unavailable.", msg)
+        self.assertIn("OKK (band entry) - high conviction", msg)
+        self.assertEqual(msg.splitlines()[-1], digest.BOUNDARY)
+
+    def test_oversize_thesis_file_is_unavailable(self) -> None:
+        (self.dir / "BIG.json").write_text(json.dumps(self._record("BIG", pad="x" * 300000)), encoding="utf-8")
+        msg = self._msg(self._levels(band=["BIG"]), previous={})
+        self.assertIn("BIG (band entry) - thesis unavailable.", msg)
+
+    def test_dotted_ticker_maps_to_file(self) -> None:
+        self._write("BRK.B")
+        msg = self._msg(self._levels(band=["BRK.B"]), previous={})
+        self.assertIn("BRK.B (band entry) - high conviction", msg)
+
+    def test_overdue_review_shown_and_not_shown(self) -> None:
+        self._write("OLD", review_due="2026-09-01")
+        self._write("NEW", review_due="2026-09-30")
+        msg = self._msg(self._levels(band=["OLD", "NEW"]), previous={})
+        self.assertIn("  Thesis review overdue (due 2026-09-01)", msg)
+        self.assertEqual(msg.count("Thesis review overdue"), 1)
+
+    def test_catalyst_fallbacks(self) -> None:
+        self._write("UND", catalysts=[{"event": "Someday", "expected_date": None, "date_confidence": "unknown"}])
+        self._write("NOC", catalysts=[])
+        msg = self._msg(self._levels(band=["UND", "NOC"]), previous={})
+        self.assertIn("  Next catalyst: Someday date unknown (unknown)", msg)
+        self.assertEqual(msg.count("Next catalyst"), 1)
+
+    def test_price_omitted_when_absent(self) -> None:
+        self._write("AAA")
+        rows = [{"ticker": "AAA", "invalidation_threshold": 90.5}]
+        msg = self._msg(self._levels(band=["AAA"], rows=rows), previous={})
+        self.assertIn("  Invalidation: 90.50 (guarded SQL)", msg)
+        self.assertNotIn("last price", msg)
+
+    def test_truncation_lengths(self) -> None:
+        self._write("LNG", thesis_statement="s" * 500,
+                    cases={k: {"summary": "c" * 500} for k in ("base", "bull", "bear")})
+        lines = self._msg(self._levels(band=["LNG"]), previous={}).splitlines()
+        stmt = next(l for l in lines if l.startswith("sss"))
+        self.assertEqual(len(stmt), 220)
+        self.assertTrue(stmt.endswith("..."))
+        base = next(l for l in lines if l.startswith("  Base:"))
+        self.assertEqual(len(base), len("  Base: ") + 160)
+
+    def test_char_cap_enforced_with_omitted_line(self) -> None:
+        names = [f"T{i}" for i in range(5)]
+        for n in names:
+            self._write(n, thesis_statement="s" * 500,
+                        cases={k: {"summary": "c" * 500} for k in ("base", "bull", "bear")})
+        msg = self._msg(self._levels(band=names), previous={})
+        self.assertLessEqual(len(msg), 3500)
+        shown = [n for n in names if f"{n} (band entry)" in msg]
+        self.assertLess(len(shown), 5)
+        self.assertEqual(shown, names[: len(shown)])
+        omitted = names[len(shown):]
+        self.assertIn(
+            f"Thesis blocks omitted for {len(omitted)} more new entries: {', '.join(omitted)}", msg
+        )
+        self.assertEqual(msg.splitlines()[-1], digest.BOUNDARY)
+
+    def test_section_dropped_when_even_omitted_line_cannot_fit(self) -> None:
+        levels = self._levels(band=["AAA"])
+        with mock.patch.object(digest, "MESSAGE_MAX_CHARS", 10):
+            msg = self._msg(levels, previous={})
+        self.assertNotIn("thesis", msg)
+        self.assertEqual(msg.splitlines()[-1], digest.BOUNDARY)
+
+    def test_boundary_last_and_placement_before_confidence(self) -> None:
+        self._write("AAA")
+        levels = self._levels(band=["AAA"])
+        levels["rows"][0]["sql_reference"]["reference_confidence"] = 40
+        lines = self._msg(levels, previous={}).splitlines()
+        self.assertEqual(lines[-1], digest.BOUNDARY)
+        head = lines.index("New entries - thesis context:")
+        conf = next(i for i, l in enumerate(lines) if l.startswith("Data confidence"))
+        self.assertLess(lines.index(next(l for l in lines if l.startswith("Controller generated:"))), head)
+        self.assertLess(head, conf)
+
+    def test_no_new_entries_leaves_message_unchanged(self) -> None:
+        self._write("AAA")
+        levels = self._levels(band=["AAA"])
+        prev = {"band_entry_signal_tickers": ["AAA"]}
+        msg = self._msg(levels, previous=prev)
+        self.assertNotIn("thesis context", msg)
+
+    def test_semantic_key_unchanged_by_thesis_content(self) -> None:
+        levels = self._levels(band=["AAA"])
+        key = lambda: digest.semantic_digest_key("2026-09-30", "midday", {"summary": levels["summary"]}, "ok")
+        before = key()
+        self._write("AAA", thesis_statement="one")
+        self._msg(levels, previous={})
+        self._write("AAA", thesis_statement="two", status="draft")
+        self._msg(levels, previous={})
+        self.assertEqual(before, key())
+
+    def test_read_previous_summary(self) -> None:
+        path = self.dir / "prev.json"
+        self.assertIsNone(digest.read_previous_summary(path))
+        path.write_text("garbage", encoding="utf-8")
+        self.assertIsNone(digest.read_previous_summary(path))
+        path.write_text(json.dumps({"status": "sent", "summary": {"band_entry_signal_tickers": ["A"]}}), encoding="utf-8")
+        self.assertEqual(digest.read_previous_summary(path), {"band_entry_signal_tickers": ["A"]})
+        for undelivered in ("send_failed", "weekend_quiet", "blocked", "ok"):
+            path.write_text(json.dumps({"status": undelivered, "summary": {"band_entry_signal_tickers": ["A"]}}), encoding="utf-8")
+            self.assertIsNone(digest.read_previous_summary(path), undelivered)
+        # the state file's last delivered summary wins over the artifact
+        state = self.dir / "state.json"
+        self.assertIsNone(digest.read_previous_summary(path, state))
+        state.write_text(json.dumps({"sent_keys": {}, "last_delivered_summary": {"band_entry_signal_tickers": ["S"]}}), encoding="utf-8")
+        self.assertEqual(digest.read_previous_summary(path, state), {"band_entry_signal_tickers": ["S"]})
+
+    def test_main_reads_previous_before_overwrite(self) -> None:
+        import contextlib
+        import io
+        import sys
+        self._write("AAA")
+        self._write("BBB")
+        stamp = datetime.now(timezone.utc) - timedelta(minutes=5)
+        levels = self._levels(band=["AAA", "BBB"])
+        levels.update({"generated_at_utc": stamp.strftime("%Y-%m-%dT%H:%M:%SZ"), "status": "ok",
+                       "validation": {"status": "ok"}})
+        levels["summary"]["fresh_intraday_signal_eligible_tickers"] = ["AAA", "BBB"]
+        root = self.dir / "tmproot"
+        root.mkdir()
+        (root / "alert-level-freshness-controller.json").write_text(json.dumps(levels), encoding="utf-8")
+        out = root / "digest.json"
+        out.write_text(json.dumps({"status": "sent", "summary": {"band_entry_signal_tickers": ["AAA"]}}), encoding="utf-8")
+        sends: list[str] = []
+
+        def fake_deliver(target: str, message: str, timeout: float) -> dict:
+            sends.append(message)
+            return {"ok": True}
+
+        def run(*extra: str) -> dict:
+            buf = io.StringIO()
+            argv = ["x", "--mode", "midday", "--write", "--out", str(out), *extra]
+            with mock.patch.object(digest, "LEVELS", root / "alert-level-freshness-controller.json"), \
+                    mock.patch.object(digest, "GUARD", root / "no-guard.json"), \
+                    mock.patch.object(digest, "TMP", root), \
+                    mock.patch.object(digest, "THESIS_DIR", self.dir), \
+                    mock.patch.object(digest, "ROOT", root), \
+                    mock.patch.object(digest, "deliver", fake_deliver), \
+                    mock.patch.object(sys, "argv", argv), \
+                    contextlib.redirect_stdout(buf):
+                digest.main()
+            return json.loads(out.read_text(encoding="utf-8"))
+
+        first = run()["message_preview"]
+        self.assertIn("BBB (band entry)", first)
+        self.assertNotIn("AAA (band entry)", first)
+        # an undelivered run (status ok, no --send) does not consume BBB's first appearance
+        self.assertIn("BBB (band entry)", run()["message_preview"])
+        sent = run("--send")
+        self.assertEqual(sent["status"], "sent")
+        self.assertIn("BBB (band entry)", sends[-1])
+        state = json.loads((root / "finance-alert-os-digest-state.json").read_text(encoding="utf-8"))
+        self.assertEqual(state["last_delivered_summary"]["band_entry_signal_tickers"], ["AAA", "BBB"])
+        self.assertTrue(state["sent_keys"])
+        # after delivery both names are "previous"; the next run has no new entries
+        self.assertNotIn("thesis context", run()["message_preview"])
 
 
 if __name__ == "__main__":

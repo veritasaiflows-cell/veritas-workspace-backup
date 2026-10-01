@@ -6,10 +6,11 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -25,6 +26,10 @@ DEFAULT_TARGET = "8650152206"
 DEFAULT_MAX_CONTROLLER_AGE_HOURS = 6.0
 GUARD_MAX_AGE_HOURS = 36.0
 CLOCK_SKEW_TOLERANCE_HOURS = 0.25
+THESIS_DIR = ROOT / "state" / "finance" / "thesis"
+THESIS_MAX_BYTES = 256 * 1024
+THESIS_MAX_BLOCKS = 5
+MESSAGE_MAX_CHARS = 3500
 
 AUTHORITY = {
     "review_only": True,
@@ -162,7 +167,197 @@ def confidence_line(levels: dict[str, Any], lowest: int = 4) -> str | None:
     return "Data confidence (0-1, provisional, single-source cap 0.50): " + "; ".join(parts)
 
 
-def build_message(mode: str, levels: dict[str, Any]) -> str:
+DELIVERED_STATUSES = {"sent", "send_unconfirmed", "duplicate_quiet"}
+
+
+def read_previous_summary(path: Path, state_path: Path | None = None) -> dict[str, Any] | None:
+    """Return the summary Randall last RECEIVED, or None if unknown.
+
+    "New entries" means new relative to the last delivered digest, so runs
+    that wrote the artifact without delivering (weekend_quiet, blocked,
+    send_failed, manual runs without --send) must not consume a name's
+    first appearance. Primary source: `last_delivered_summary` in the digest
+    state file, written by main() on every sent/send_unconfirmed delivery.
+    Fallback (state written before this field existed): the prior artifact's
+    summary, only when that artifact records a delivered status. Read this
+    BEFORE main() overwrites either file.
+    """
+    if state_path is not None:
+        try:
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            state = None
+        delivered = state.get("last_delivered_summary") if isinstance(state, dict) else None
+        if isinstance(delivered, dict):
+            return delivered
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(value, dict) or value.get("status") not in DELIVERED_STATUSES:
+        return None
+    summary = value.get("summary")
+    return summary if isinstance(summary, dict) else None
+
+
+def _tickers(summary: dict[str, Any], key: str) -> set[str]:
+    return {str(v).strip().upper() for v in as_list(summary.get(key)) if str(v).strip()}
+
+
+def select_new_entries(summary: dict[str, Any], previous: dict[str, Any] | None) -> list[tuple[str, str]]:
+    """(ticker, state) for new invalidation entries first, then new band entries."""
+    prev = previous or {}
+    inval = sorted(_tickers(summary, "invalidation_signal_tickers") - _tickers(prev, "invalidation_signal_tickers"))
+    band = sorted(
+        _tickers(summary, "band_entry_signal_tickers")
+        - _tickers(prev, "band_entry_signal_tickers")
+        - set(inval)
+    )
+    return [(t, "invalidation") for t in inval] + [(t, "band entry") for t in band]
+
+
+def _clip(value: Any, limit: int) -> str:
+    text = " ".join(str(value).split())
+    return text if len(text) <= limit else text[: limit - 3].rstrip() + "..."
+
+
+def _parse_date(value: Any) -> date | None:
+    try:
+        return date.fromisoformat(str(value).strip()[:10])
+    except ValueError:
+        return None
+
+
+def _load_thesis(ticker: str, thesis_dir: Path) -> tuple[str, dict[str, Any] | None]:
+    """Return ("ok", record) | ("none", None) | ("unavailable", None)."""
+    if not re.fullmatch(r"[A-Z0-9][A-Z0-9.\-]{0,9}", ticker):
+        return "unavailable", None
+    path = thesis_dir / f"{ticker}.json"
+    try:
+        if not path.is_file():
+            return "none", None
+        with path.open("rb") as handle:
+            raw = handle.read(THESIS_MAX_BYTES + 1)
+        if len(raw) > THESIS_MAX_BYTES:
+            return "unavailable", None
+        record = json.loads(raw.decode("utf-8"))
+    except (OSError, ValueError):
+        return "unavailable", None
+    if not isinstance(record, dict):
+        return "unavailable", None
+    if record.get("status") != "accepted":
+        return "none", None
+    return "ok", record
+
+
+def _controller_row(levels: dict[str, Any], ticker: str) -> dict[str, Any]:
+    for row in as_list(levels.get("rows")):
+        entry = as_dict(row)
+        if str(entry.get("ticker") or "").strip().upper() == ticker:
+            return entry
+    return {}
+
+
+def _num(value: Any) -> str | None:
+    if isinstance(value, bool):
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return f"{number:.2f}" if number == number and abs(number) != float("inf") else None
+
+
+def thesis_block(ticker: str, state: str, levels: dict[str, Any], thesis_dir: Path, today: date) -> list[str]:
+    try:
+        kind, record = _load_thesis(ticker, thesis_dir)
+        if kind == "none":
+            return [f"{ticker} ({state}) - no accepted thesis on file."]
+        if kind != "ok" or record is None:
+            return [f"{ticker} ({state}) - thesis unavailable."]
+        accepted = _parse_date(record.get("owner_accepted_at"))
+        conviction = _clip(record["conviction"], 20)
+        statement = str(record["thesis_statement"]).strip()
+        cases = as_dict(record.get("cases"))
+        case_lines = []
+        for name in ("base", "bull", "bear"):
+            case_text = str(as_dict(cases.get(name))["summary"]).strip()
+            case_lines.append(f"  {name.title()}: {_clip(case_text, 160)}")
+        if accepted is None or not conviction or not statement:
+            return [f"{ticker} ({state}) - thesis unavailable."]
+        lines = [
+            f"{ticker} ({state}) - {conviction} conviction, thesis accepted {accepted.isoformat()}:",
+            f"{_clip(statement, 220)}",
+            *case_lines,
+        ]
+        catalysts = [as_dict(c) for c in as_list(record.get("catalysts")) if isinstance(c, dict)]
+        if catalysts:
+            dated = sorted(
+                ((_parse_date(c.get("expected_date")), i, c) for i, c in enumerate(catalysts)),
+                key=lambda item: (item[0] or date.max, item[1]),
+            )
+            upcoming = [item for item in dated if item[0] is not None and item[0] >= today]
+            when, _, pick = upcoming[0] if upcoming else (None, 0, catalysts[0])
+            when = when or _parse_date(pick.get("expected_date"))
+            lines.append(
+                f"  Next catalyst: {_clip(pick.get('event') or 'unnamed event', 120)} "
+                f"{when.isoformat() if when else 'date unknown'} ({_clip(pick.get('date_confidence') or 'unknown', 40)})"
+            )
+        row = _controller_row(levels, ticker)
+        level = _num(as_dict(row.get("sql_reference")).get("reference_invalidation_level"))
+        if level is None:
+            level = _num(row.get("invalidation_threshold"))
+        price = _num(row.get("latest_price"))
+        entry = f"  Invalidation: {level if level is not None else 'unavailable'} (guarded SQL)"
+        lines.append(entry + (f"; last price {price}" if price is not None else ""))
+        review_due = _parse_date(record.get("review_due"))
+        if review_due is not None and review_due < today:
+            lines.append(f"  Thesis review overdue (due {review_due.isoformat()})")
+        return lines
+    except (KeyError, TypeError, ValueError, AttributeError):
+        return [f"{ticker} ({state}) - thesis unavailable."]
+
+
+def thesis_section(
+    summary: dict[str, Any],
+    levels: dict[str, Any],
+    previous: dict[str, Any] | None,
+    thesis_dir: Path,
+    today: date,
+    fits: Any,
+) -> list[str]:
+    """Header + capped blocks (+ omitted line). `fits(lines)` bounds total length."""
+    entries = select_new_entries(summary, previous)
+    if not entries:
+        return []
+    shown = [thesis_block(t, s, levels, thesis_dir, today) for t, s in entries[:THESIS_MAX_BLOCKS]]
+    names = [t for t, _ in entries]
+    count = len(shown)
+
+    def assemble(n: int) -> list[str]:
+        lines = ["New entries - thesis context:"]
+        for block in shown[:n]:
+            lines.extend(block)
+        omitted = names[n:]
+        if omitted:
+            lines.append(f"Thesis blocks omitted for {len(omitted)} more new entries: {', '.join(omitted)}")
+        return lines
+
+    while count > 0 and not fits(assemble(count)):
+        count -= 1
+    section = assemble(count)
+    return section if fits(section) else []
+
+
+def build_message(
+    mode: str,
+    levels: dict[str, Any],
+    *,
+    previous_summary: dict[str, Any] | None = None,
+    thesis_dir: Path | None = None,
+    digest_date: date | None = None,
+    thesis_context: bool = False,
+) -> str:
     summary = as_dict(levels.get("summary"))
     counts = as_dict(summary.get("alert_state_counts"))
     label = mode.replace("-", " ").upper()
@@ -200,7 +395,30 @@ def build_message(mode: str, levels: dict[str, Any]) -> str:
             if not fire_eligible
             else f"Review-only (last-completed-session evidence, not fire-eligible): {compact(monitor_only)}",
         )
-    return "\n".join(lines)
+    # Thesis context (display-only, fail-closed): after the alert-state/count
+    # lines (i.e. right after "Controller generated"), before the data-confidence
+    # line; BOUNDARY stays last. Never alters alert state or the digest key.
+    # Opt-in: only the delivery path (build_payload) enables it. The recurring
+    # chain's proof preview and alert-ledger message_text stay byte-identical.
+    if not thesis_context:
+        return "\n".join(lines)
+    anchor = next(i for i, line in enumerate(lines) if line.startswith("Controller generated:"))
+
+    def compose(thesis_lines: list[str]) -> str:
+        return "\n".join(lines[: anchor + 1] + thesis_lines + lines[anchor + 1 :])
+
+    try:
+        section = thesis_section(
+            summary,
+            levels,
+            previous_summary,
+            thesis_dir if thesis_dir is not None else THESIS_DIR,
+            digest_date or datetime.now(PHOENIX).date(),
+            lambda candidate: len(compose(candidate)) <= MESSAGE_MAX_CHARS,
+        )
+    except Exception:
+        section = []
+    return compose(section)
 
 
 def semantic_digest_key(day: str, mode: str, levels: dict[str, Any], status: str) -> str:
@@ -405,6 +623,7 @@ def build_payload(
     *,
     generated_at_utc: str | None = None,
     max_controller_age_hours: float = DEFAULT_MAX_CONTROLLER_AGE_HOURS,
+    previous_summary: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     generated = generated_at_utc or now_utc()
     levels = load_json(LEVELS)
@@ -433,7 +652,7 @@ def build_payload(
         errors.extend(controller_semantic_errors(levels))
     controller_sha256 = hashlib.sha256(LEVELS.read_bytes()).hexdigest() if LEVELS.is_file() else None
     guard = load_json(GUARD)
-    message = build_message(mode, levels) if not errors else None
+    message = build_message(mode, levels, previous_summary=previous_summary, thesis_context=True) if not errors else None
     status = "blocked" if errors else "ok"
     return {
         "schema": "veritas.finance_alert_os_digest.v2",
@@ -490,12 +709,19 @@ def main() -> int:
     args = parser.parse_args()
 
     output = args.out if args.out.is_absolute() else ROOT / args.out
-    payload = build_payload(args.mode, max_controller_age_hours=args.max_controller_age_hours)
+    # Read the last delivered summary BEFORE anything below overwrites the
+    # artifact or the state file.
+    state_path = TMP / "finance-alert-os-digest-state.json"
+    previous_summary = read_previous_summary(output, state_path)
+    payload = build_payload(
+        args.mode,
+        max_controller_age_hours=args.max_controller_age_hours,
+        previous_summary=previous_summary,
+    )
     local_now = datetime.now(PHOENIX)
     if args.weekday_only and local_now.weekday() >= 5 and payload["status"] == "ok":
         payload["status"] = "weekend_quiet"
 
-    state_path = TMP / "finance-alert-os-digest-state.json"
     state = load_json(state_path)
     sent_keys = as_dict(state.get("sent_keys"))
     message = str(payload.get("message_preview") or "")
@@ -514,7 +740,11 @@ def main() -> int:
             payload["status"] = "sent" if result["ok"] else "send_unconfirmed" if unconfirmed else "send_failed"
             if result["ok"] or unconfirmed:
                 sent_keys[digest_key] = {"sent_at_utc": payload["generated_at_utc"], "mode": args.mode, "confirmed": bool(result["ok"])}
-                write_json(state_path, {"sent_keys": sent_keys})
+                write_json(state_path, {
+                    "sent_keys": sent_keys,
+                    "last_delivered_summary": as_dict(payload.get("summary")),
+                    "last_delivered_at_utc": payload["generated_at_utc"],
+                })
             if unconfirmed:
                 payload["validation"]["warnings"].append("delivery_unconfirmed_transport_timeout")
 
