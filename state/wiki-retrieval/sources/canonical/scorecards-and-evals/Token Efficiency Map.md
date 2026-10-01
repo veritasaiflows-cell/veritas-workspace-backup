@@ -2,8 +2,8 @@
 # Token Efficiency Map
 
 Canonical page: `wiki/scorecards-and-evals/Token Efficiency Map.md`
-Canonical rendered SHA-256: `cc1c502e196d5bc4fed81cc0cf89ca44b14c8f186016aba40b3c643fb80dbae3`.
-Source snapshot SHA-256: `3601a6df6c84a49ca4416da23af657e1aaff9026ecf9c52e5f23dcc898744160`.
+Canonical rendered SHA-256: `1e81732d1921150eca50538efe8c84c50a42ff620b471b4cad07cff61738c470`.
+Source snapshot SHA-256: `e442d9ad001864187ce0dce59b9a171b89dbe50557727e9e73c3dcd6febcef98`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -35,11 +35,11 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 
 - Token usage ledger status: `warning`.
 - Token efficiency scorecard status: `warning`.
-- Token events observed: `1272`.
-- Total observed tokens: `112263897`.
-- API-equivalent token benchmark (not an invoice): `15.974315` (`partial_unknown_input_semantics_or_missing_rate`; `203/1272` events priced).
-- Estimated ChatGPT credits (not an observed debit): `364.807706` (`partial_separate_no_public_rate_or_missing_rate`; `203/1272` events priced).
-- Rolling 5h / observed 7d tokens: `0` / `46176`; usage timestamp coverage `14.7013`%.
+- Token events observed: `1301`.
+- Total observed tokens: `114176013`.
+- API-equivalent token benchmark (not an invoice): `15.974315` (`partial_unknown_input_semantics_or_missing_rate`; `203/1301` events priced).
+- Estimated ChatGPT credits (not an observed debit): `364.807706` (`partial_separate_no_public_rate_or_missing_rate`; `203/1301` events priced).
+- Rolling 5h / observed 7d tokens: `0` / `0`; usage timestamp coverage `14.3736`%.
 - Actual billed cost (owner-entered only): `None`.
 - OAuth quota state / remaining / days to reset: `stale` / `58.0` / `0.0`.
 - Cron token events: `736`.

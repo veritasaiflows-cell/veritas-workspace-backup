@@ -38,6 +38,10 @@ DEFAULT_FIELD_DEPTH_PACKET = TMP / "otel-field-depth-limited-owner-packet.json"
 DEFAULT_TOOL_WORKFLOW_METADATA = TMP / "otel-tool-workflow-metadata.json"
 DEFAULT_RUNTIME_PROBE_SUMMARY = TMP / "otel-runtime-metadata-probe.json"
 DEFAULT_TOKEN_DEPTH_SUMMARY = TMP / "otel-token-cost-metadata-depth-owner-packet.json"
+OWNER_DECISIONS = ROOT / "state" / "owner-decisions" / "otel-recommendations.json"
+OWNER_DECISIONS_SCHEMA = "veritas.owner_decisions.otel_recommendations.v1"
+TOKEN_DEPTH_DECISION_ID = "token_cost_metadata_depth"
+RETIRE_DECISION = "decline_and_retire_the_recommendation"
 TELEMETRY_SUMMARY_FRESHNESS_SLA_HOURS = 24.0
 TELEMETRY_SUMMARY_MAX_BYTES = 262144
 TELEMETRY_SUMMARY_SCHEMAS = {"runtime_probe": "veritas.otel_runtime_metadata_probe.v1", "token_depth": "veritas.otel_token_cost_metadata_depth_owner_packet.v1"}
@@ -253,9 +257,40 @@ def load_telemetry_summary(path, expected_schema, sla_hours=TELEMETRY_SUMMARY_FR
             return dict(base, present=True, reason="depth_coverage_type_invalid", status=status)
         return {"present": True, "fresh": True, "valid": True, "reason": "fresh_valid_owner_gated", "generated_at_utc": raw.get("generated_at_utc"), "age_hours": round(age_hours, 3), "status": status, "scalars": {"patch_would_change_token_or_cost_coverage": cov}, "owner_gated": True}
 
-def build_telemetry_context(probe_path=DEFAULT_RUNTIME_PROBE_SUMMARY, depth_path=DEFAULT_TOKEN_DEPTH_SUMMARY):
+def load_token_depth_owner_decision(path=OWNER_DECISIONS) -> dict | None:
+    """Return the owner's recorded retirement of the token-depth recommendation, else None.
+
+    Fail-closed and never raises. Copies only id/decision/decided_by/decided_at_utc,
+    never the record's free-text fields.
+    """
+    try:
+        raw_bytes, over = _bounded_read_text(Path(path), TELEMETRY_SUMMARY_MAX_BYTES)
+        if over == "oversize" or raw_bytes is None:
+            return None
+        raw = json.loads(raw_bytes.decode("utf-8"))
+        if not isinstance(raw, dict) or raw.get("schema") != OWNER_DECISIONS_SCHEMA or not isinstance(raw.get("decisions"), list):
+            return None
+        rows = [row for row in raw["decisions"] if isinstance(row, dict) and row.get("id") == TOKEN_DEPTH_DECISION_ID]
+        if len(rows) != 1:
+            return None
+        row = rows[0]
+        decided_by, decided_at = row.get("decided_by"), row.get("decided_at_utc")
+        if row.get("decision") != RETIRE_DECISION or not isinstance(decided_by, str) or not decided_by.strip():
+            return None
+        decided_dt = parse_iso_utc(decided_at)
+        if decided_dt is None or decided_dt > datetime.now(timezone.utc):
+            return None
+        return {"id": TOKEN_DEPTH_DECISION_ID, "decision": RETIRE_DECISION, "decided_by": decided_by, "decided_at_utc": decided_at}
+    except Exception:
+        return None
+
+def build_telemetry_context(probe_path=DEFAULT_RUNTIME_PROBE_SUMMARY, depth_path=DEFAULT_TOKEN_DEPTH_SUMMARY, decisions_path=OWNER_DECISIONS):
     probe = load_telemetry_summary(probe_path, TELEMETRY_SUMMARY_SCHEMAS["runtime_probe"])
-    depth = load_telemetry_summary(depth_path, TELEMETRY_SUMMARY_SCHEMAS["token_depth"])
+    decision = load_token_depth_owner_decision(decisions_path)
+    if decision is not None:
+        depth = {"present": True, "fresh": True, "valid": True, "reason": "owner_decision_retired", "status": "owner_declined_retired", "owner_gated": False, "retired_by_owner_decision": True, "generated_at_utc": utc_now(), "decision": decision}
+    else:
+        depth = load_telemetry_summary(depth_path, TELEMETRY_SUMMARY_SCHEMAS["token_depth"])
     warnings = []
     for label, row in (("runtime_probe", probe), ("token_depth", depth)):
         if not row.get("valid"):
@@ -817,6 +852,7 @@ def volume_normalization_recommendation(summary: dict[str, Any], drift: dict[str
 
 def build_window_summary(events: list[dict[str, Any]], health: dict[str, Any], config: dict[str, Any], telemetry: dict[str, Any] | None = None) -> dict[str, Any]:
     telemetry = telemetry if isinstance(telemetry, dict) else build_telemetry_context()
+    depth_row = as_dict(telemetry.get("token_depth"))
     windows: list[dict[str, Any]] = []
     for spec in WINDOW_SPECS:
         summary = summarize_events(events, float(spec["window_hours"]))
@@ -871,7 +907,7 @@ def build_window_summary(events: list[dict[str, Any]], health: dict[str, Any], c
         "weekly_daily_buckets_utc": daily_buckets(events, 168.0),
         "trend_indicators": trend_indicators,
         "drift": drift,
-        "telemetry_context": {"status": telemetry.get("status"), "warnings": list(telemetry.get("warnings", [])), "runtime_probe": {"present": bool(as_dict(telemetry.get("runtime_probe")).get("present")), "fresh": bool(as_dict(telemetry.get("runtime_probe")).get("fresh")), "valid": bool(as_dict(telemetry.get("runtime_probe")).get("valid")), "reason": str(as_dict(telemetry.get("runtime_probe")).get("reason")), "scalars": dict(as_dict(as_dict(telemetry.get("runtime_probe")).get("scalars"))), "generated_at_utc": as_dict(telemetry.get("runtime_probe")).get("generated_at_utc")}, "token_depth": {"present": bool(as_dict(telemetry.get("token_depth")).get("present")), "fresh": bool(as_dict(telemetry.get("token_depth")).get("fresh")), "valid": bool(as_dict(telemetry.get("token_depth")).get("valid")), "reason": str(as_dict(telemetry.get("token_depth")).get("reason")), "status": as_dict(telemetry.get("token_depth")).get("status"), "owner_gated": True}},
+        "telemetry_context": {"status": telemetry.get("status"), "warnings": list(telemetry.get("warnings", [])), "runtime_probe": {"present": bool(as_dict(telemetry.get("runtime_probe")).get("present")), "fresh": bool(as_dict(telemetry.get("runtime_probe")).get("fresh")), "valid": bool(as_dict(telemetry.get("runtime_probe")).get("valid")), "reason": str(as_dict(telemetry.get("runtime_probe")).get("reason")), "scalars": dict(as_dict(as_dict(telemetry.get("runtime_probe")).get("scalars"))), "generated_at_utc": as_dict(telemetry.get("runtime_probe")).get("generated_at_utc")}, "token_depth": {"present": bool(as_dict(telemetry.get("token_depth")).get("present")), "fresh": bool(as_dict(telemetry.get("token_depth")).get("fresh")), "valid": bool(as_dict(telemetry.get("token_depth")).get("valid")), "reason": str(as_dict(telemetry.get("token_depth")).get("reason")), "status": as_dict(telemetry.get("token_depth")).get("status"), "owner_gated": depth_row.get("owner_gated") is True, "retired_by_owner_decision": depth_row.get("retired_by_owner_decision") is True, "generated_at_utc": depth_row.get("generated_at_utc"), "decision": dict(as_dict(depth_row.get("decision"))) if depth_row.get("retired_by_owner_decision") is True else None}},
         "next_safe_action": (
             "Keep 24h as the cron/PM control packet; use intraday windows manually after changes, "
             "use weekly trend for repeated friction, and use monthly baseline only for capacity/noise drift."
@@ -998,12 +1034,19 @@ def build_actions(summary: dict[str, Any], config: dict[str, Any], health: dict[
     depth_identity = field_depth_config_approval_identity(config)
     telemetry = telemetry if isinstance(telemetry, dict) else {"status": "warning", "warnings": ["telemetry_not_evaluated"], "runtime_probe": {"valid": False}, "token_depth": {"valid": False}}
     if telemetry.get("status") != "ok":
-        actions.append({"id": "otel_telemetry_summary_stale_or_missing", "severity": "warning", "action_type": "operator_review", "owner": "openclaw-operator / WF74", "rationale": "Agent-telemetry summary is missing/stale/malformed (" + ", ".join(str(w) for w in as_dict(telemetry).get("warnings", []) if isinstance(w, str)) + "); counts are fail-closed, collector err-log health remains the separate signal.", "recommended_command": "python scripts\\otel_runtime_metadata_probe.py --write --write-md --validate", "status": "review"})
+        warning_ids = [w for w in as_dict(telemetry).get("warnings", []) if isinstance(w, str)]
+        depth_only = bool(warning_ids) and all(w.startswith("token_depth_") for w in warning_ids)
+        rationale = "Agent-telemetry summary is missing/stale/malformed (" + ", ".join(warning_ids) + "); counts are fail-closed, collector err-log health remains the separate signal."
+        command = "python scripts\\otel_runtime_metadata_probe.py --write --write-md --validate"
+        if depth_only:
+            rationale += "; token-depth owner decision record state/owner-decisions/otel-recommendations.json absent or not a valid decline_and_retire record"
+            command = "python scripts\\otel_token_cost_metadata_depth_packet.py --write --validate"
+        actions.append({"id": "otel_telemetry_summary_stale_or_missing", "severity": "warning", "action_type": "operator_review", "owner": "openclaw-operator / WF74", "rationale": rationale, "recommended_command": command, "status": "review"})
     else:
         probe_row = as_dict(telemetry.get("runtime_probe"))
         scalars = as_dict(probe_row.get("scalars"))
         depth_row = as_dict(telemetry.get("token_depth"))
-        depth_note = "owner_gated_depth_no_approval" if depth_row.get("owner_gated") else "depth_unexpected"
+        depth_note = "owner_declined_retired" if depth_row.get("retired_by_owner_decision") is True else "owner_gated_depth_no_approval" if depth_row.get("owner_gated") else "depth_unexpected"
         actions.append({"id": "otel_telemetry_summary_fresh", "severity": "info", "action_type": "cron_digest", "owner": "cron-automation-manager", "rationale": "Fresh runtime metadata observed=" + str(scalars.get("runtime_metadata_observed")) + " allowed_fields=" + str(scalars.get("allowed_field_count")) + " depth=" + depth_note + "; operational freshness/coverage only.", "recommended_command": "python scripts\\otel_ops_control.py --write --write-db --multi-window --validate", "status": "ready"})
     if health.get("status") != "ok":
         actions.append({
@@ -1188,7 +1231,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     health = collector_health()
     config = collector_config_posture(args.collector_config)
     drift = drift_summary(events)
-    telemetry = build_telemetry_context(args.runtime_probe_summary, args.token_depth_summary)
+    telemetry = build_telemetry_context(args.runtime_probe_summary, args.token_depth_summary, decisions_path=args.owner_decisions)
     actions = build_actions(summary, config, health, drift, telemetry)
     tool_workflow_metadata = as_dict(load_json_artifact(args.tool_workflow_metadata))
     tool_workflow_summary = as_dict(tool_workflow_metadata.get("summary"))
@@ -1296,6 +1339,7 @@ def main() -> int:
     parser.add_argument("--tool-workflow-metadata", type=Path, default=DEFAULT_TOOL_WORKFLOW_METADATA)
     parser.add_argument("--runtime-probe-summary", type=Path, default=DEFAULT_RUNTIME_PROBE_SUMMARY)
     parser.add_argument("--token-depth-summary", type=Path, default=DEFAULT_TOKEN_DEPTH_SUMMARY)
+    parser.add_argument("--owner-decisions", type=Path, default=OWNER_DECISIONS)
     parser.add_argument("--window-hours", type=float, default=24.0)
     parser.add_argument("--multi-window", action="store_true", help="also write the 1h/6h/24h/7d/30d operational window summary")
     parser.add_argument("--write", action="store_true")
@@ -1313,7 +1357,7 @@ def main() -> int:
             all_events,
             payload.get("collector_health", {}),
             payload.get("collector_config", {}),
-            build_telemetry_context(args.runtime_probe_summary, args.token_depth_summary),
+            build_telemetry_context(args.runtime_probe_summary, args.token_depth_summary, decisions_path=args.owner_decisions),
         )
     compat_payload = build_control_loop_compat(payload, window_payload)
     if args.write:

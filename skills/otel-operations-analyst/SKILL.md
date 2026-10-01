@@ -24,6 +24,8 @@ Then read the needed packet fields from:
 - `tmp\otel-tool-workflow-metadata.json` when tool/workflow failure attribution matters
 - `tmp\otel\control-loop.json` for compatibility/control-loop status
 
+When the question includes collector durability or automatic recovery, also read `tmp\otel-collector-watchdog.json` and verify the live watchdog automation and at-logon Scheduled Task separately. A healthy receipt shows the latest check, not that either trigger is still enabled or that a reboot recovery has been observed.
+
 Use cron or PM packets only when the user asks for scheduled follow-through, PM impact, or escalation routing:
 
 ```powershell
@@ -124,15 +126,7 @@ If collector health is down, say the local collector appears down and identify t
 
 ### Collector Recovery (owner-gated)
 
-After explicit owner approval, restart through the existing launcher — never a hand-rolled `otelcol.exe` call or a different config path — and run it so it outlives the exec session, because a foreground exec dies with the session:
-
-```powershell
-.\scripts\start_local_otel_collector.cmd
-```
-
-Config stays `tools\otelcol\openclaw-local-otel-runtime-metadata.yaml` on loopback `127.0.0.1:4318`, no external export. Verify in order, claiming only what passes: (1) `otelcol` process present and 4318 reachable; (2) `python scripts\otel_ops_control.py --write --write-db --multi-window --validate` returns `status=ok` with all five windows ok; (3) rerun the blocked consumer — for a blocked WF74 collection step, `python scripts\wf74_model_quality_collection_cron_runner.py --write --write-md --validate` returns `steps_blocked: 0` and `otel_window_summary_status: ok`.
-
-Claim limit: no scheduled task supervises this collector, so a restart does not survive a gateway restart or reboot. Report restored-now, not durable, and flag supervision as separately owner-gated.
+Read [Collector Recovery](references/collector-recovery.md) when assessing a prior restart or an approved manual recovery. It owns the launcher, ordered checks, and supervision claim limits; reading it never authorizes a restart.
 
 ## Routing Recommendations Into Work
 

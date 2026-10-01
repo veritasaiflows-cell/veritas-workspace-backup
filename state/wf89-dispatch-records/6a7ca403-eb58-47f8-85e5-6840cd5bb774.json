@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "6a7ca403-eb58-47f8-85e5-6840cd5bb774",
+  "agent_id": "qa-redteam",
+  "session_key": "agent:qa-redteam:p43b-b1-qa-grok-r4-20260929",
+  "label": "P4-3b B1 independent QA (Grok 4.7, low thinking)",
+  "task_text_sha256": "6d830d612a25ca9af46916518fe0ebd6a994eea8e86fa9d1496eccbc842f535d",
+  "message_file": "tmp\\p4-3b-onboarding-20260929\\b1-qa-packet-r4.md",
+  "created_at_ms": 1790728824075,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

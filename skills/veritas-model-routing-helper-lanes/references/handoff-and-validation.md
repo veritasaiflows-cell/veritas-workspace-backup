@@ -14,7 +14,8 @@ Before dispatch, record:
 - sorted file inventory, sizes, SHA-256 hashes, manifest hash, and frozen snapshot ID;
 - deterministic preflight status and proof;
 - deliverable, acceptance criteria, stop lines, rollback note, next recipient, and timeout;
-- fresh persistent transport proof when that backend is selected.
+- fresh persistent transport proof when that backend is selected;
+- for an independent QA pass, the exact durable verdict path the reviewer must write before returning; Main confirms that artifact exists and parses before treating the review as done, because a verdict left only in a session transcript dies with the session.
 
 Re-use the same frozen snapshot for repair or QA when inputs did not change. If files changed, generate a new snapshot. Do not resend full transcript history when a bounded delta and exact owner files suffice.
 

@@ -12,18 +12,12 @@
     "kind": "at",
     "at": "2026-10-15T16:00:00.000Z"
   },
-  "sessionTarget": "isolated",
+  "sessionTarget": "main",
   "wakeMode": "now",
-  "delivery": {
-    "mode": "announce",
-    "to": "telegram:8650152206",
-    "channel": "telegram",
-    "accountId": "default"
-  },
+  "delivery": null,
   "payload": {
-    "kind": "agentTurn",
-    "message": "Reminder (set 2026-09-25 with Randall's approval): it is time to scope the alert-ledger outcome scorer. Background: the old recommendation outcome grader was retired 2026-09-25 because its feeders stopped 2026-08-29; its 2,967 grades stay frozen in data/state-history/recommendation-outcome-grades.jsonl. The successor scores alert events in state/finance/ledger/alert-events-v1.jsonl (started 2026-09-24) against later closes from the nightly Yahoo price snapshots (no new quote job), to calibrate funnel-v1 ranking weights, test the ATR20 band floor, and rate alert types. Steps: (1) count alert events and how many have at least 5 and 20 trading days of later closes; (2) if the sample is large enough, draft a short scorer design (grades, horizons, inputs, tests, where it runs) for Randall's approval; if not, say how many more weeks it needs. Review and planning only: no build, schedule, canon, alert, or authority change without Randall's approval. Report the result to Randall in plain English.",
-    "timeoutSeconds": 900
+    "kind": "systemEvent",
+    "text": "Reminder (set 2026-09-25 with Randall's approval): it is time to scope the alert-ledger outcome scorer. Background: the old recommendation outcome grader was retired 2026-09-25 because its feeders stopped 2026-08-29; its 2,967 grades stay frozen in data/state-history/recommendation-outcome-grades.jsonl. The successor scores alert events in state/finance/ledger/alert-events-v1.jsonl (started 2026-09-24) against later closes from the nightly Yahoo price snapshots (no new quote job), to calibrate funnel-v1 ranking weights, test the ATR20 band floor, and rate alert types. Steps: (1) count alert events and how many have at least 5 and 20 trading days of later closes; (2) if the sample is large enough, draft a short scorer design (grades, horizons, inputs, tests, where it runs) for Randall's approval; if not, say how many more weeks it needs. Review and planning only: no build, schedule, canon, alert, or authority change without Randall's approval. Report the result to Randall in plain English. (Delivered as a main-session system event: on OpenClaw 2026.9.6 isolated agentTurn runs for the main agent fail with DataCloneError.)"
   },
   "compare_fields": [
     "enabled",
@@ -31,10 +25,8 @@
     "schedule",
     "sessionTarget",
     "wakeMode",
-    "delivery.mode",
     "payload.kind",
-    "payload.message",
-    "payload.timeoutSeconds"
+    "payload.text"
   ],
   "expected_artifacts": [
     {
@@ -60,6 +52,6 @@
     "brokerage_or_account_action_allowed": false,
     "owner_approval_inferred": false
   },
-  "updated_at_utc": "2026-09-26T00:40:00Z",
-  "contract_update_reason": "Initial registration of the owner-approved one-shot (Randall 2026-09-25 17:36 MST 'Yes, proceed with recommendations'); values copied from the live Gateway job 3df080bc."
+  "updated_at_utc": "2026-09-30T23:59:00Z",
+  "contract_update_reason": "2026-09-30 (Randall approved via Telegram '2. proceed to set up alert'): moved from an isolated main-agent agentTurn to a main-session systemEvent because isolated main-agent runs fail with DataCloneError on OpenClaw 2026.9.6 (skill-collection-review-main, -qa-redteam and -docs-continuity-editor were failing that way on 2026-09-30). Same reminder text, same one-shot time. The woken main turn reports to Randall in this Telegram session, so runner fallback delivery is removed. Rollback: tmp/cron-repair-20260930/trigger-fix/3df080bc-contract-before.json."
 }

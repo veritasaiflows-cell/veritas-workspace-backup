@@ -74,6 +74,34 @@ class CliAttributionTests(unittest.TestCase):
         self.assertEqual(out["records"], [])
         self.assertEqual(out["cli_rows_without_dispatch_record_by_agent"], {"ag1": 1})
 
+    def test_crlf_message_file_binds_the_verbatim_store_row(self) -> None:
+        # The CLI stores a --message-file verbatim (CRLF kept); the launcher's
+        # read_text() sees LF. Both must hash the same or the record never binds.
+        crlf = "Scoped job: add farewell().\r\n\r\nSecond paragraph.\r\n"
+        self.msg.write_bytes(crlf.encode("utf-8"))
+        self.record()
+        mk_global(self.c.gdb, [cli_task(task=crlf.strip())], [])
+        executor(self.c)
+        out = self.run_cli()
+        self.assertEqual(out["records"][0]["state"], "CREDITABLE")
+        self.assertEqual(out["cli_rows_without_dispatch_record_by_agent"], {})
+
+    def test_lf_record_binds_crlf_store_row(self) -> None:
+        # Records written before the fix hashed the LF form of a CRLF packet.
+        text = "line one\nline two"
+        self.msg.write_text(text, encoding="utf-8")
+        self.record()
+        mk_global(self.c.gdb, [cli_task(task="line one\r\nline two")], [])
+        executor(self.c)
+        self.assertEqual(self.run_cli()["records"][0]["state"], "CREDITABLE")
+
+    def test_different_text_with_same_line_count_still_stays_pending(self) -> None:
+        self.msg.write_text("line one\nline two", encoding="utf-8")
+        self.record()
+        mk_global(self.c.gdb, [cli_task(task="line one\r\nline 2")], [])
+        executor(self.c)
+        self.assertEqual(self.run_cli()["records"][0]["state"], "PENDING")
+
     def test_task_text_mismatch_stays_pending(self) -> None:
         self.record()
         mk_global(self.c.gdb, [cli_task(task="a different task")], [])
@@ -231,6 +259,26 @@ class BypassAlarmTests(unittest.TestCase):
         self.assertEqual(out["cli_rows_bypassing_dispatch_wrapper_by_agent"], {})
         self.assertEqual(out["cli_bypass_rows"], [])
         self.assertEqual(out["cli_cron_scheduled_rows"], 1)
+
+    def test_heartbeat_scheduled_rows_are_not_bypasses(self) -> None:
+        mk_global(self.c.gdb, [cli_task(task_id="h1", run_id="rh1", created_at=6000,
+                                        child_session_key="agent:ag1:main:heartbeat")], [])
+        with mock.patch.object(wf89_credit_reader, "WRAPPER_GO_LIVE_MS", 5000):
+            out = read_cli(self.ddir, global_db=self.c.gdb, agent_root=self.c.aroot)
+        self.assertEqual(out["cli_rows_bypassing_dispatch_wrapper_by_agent"], {})
+        self.assertEqual(out["cli_bypass_rows"], [])
+        self.assertEqual(out["cli_rows_without_dispatch_record_by_agent"], {})
+        self.assertEqual(out["cli_heartbeat_scheduled_rows"], 1)
+
+    def test_dashboard_sessions_are_not_bypasses(self) -> None:
+        mk_global(self.c.gdb, [cli_task(task_id="d1", run_id="rd1", created_at=6000,
+                                        child_session_key="agent:ag1:dashboard:05d64ace-402b-4cf1-b20a-b173addc24cf")], [])
+        with mock.patch.object(wf89_credit_reader, "WRAPPER_GO_LIVE_MS", 5000):
+            out = read_cli(self.ddir, global_db=self.c.gdb, agent_root=self.c.aroot)
+        self.assertEqual(out["cli_rows_bypassing_dispatch_wrapper_by_agent"], {})
+        self.assertEqual(out["cli_bypass_rows"], [])
+        self.assertEqual(out["cli_rows_without_dispatch_record_by_agent"], {})
+        self.assertEqual(out["cli_dashboard_session_rows"], 1)
 
     def test_only_unrecorded_runs_after_go_live_count_as_bypass(self) -> None:
         mk_global(self.c.gdb, [cli_task(created_at=4000),

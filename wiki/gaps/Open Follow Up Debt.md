@@ -15,15 +15,15 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `tmp/wf88-os2-control-packet.json`
 ## Current debt
 
-- Improvement open count: `7`.
+- Improvement open count: `6`.
 - Follow-up-required open count: `0`.
-- High-priority overdue open count: `3`.
+- High-priority overdue open count: `2`.
 - Pending skill proposal count: `0`.
-- Actionable queue items: `7`.
+- Actionable queue items: `6`.
 - Actionable queue orphans: `0`.
 - No-orphan validation: `ok`.
 - Top actionable destination: `wf74_decision_docket`.
-- Top actionable next action: Treat this as a current cron regression against the completed migration plan: inspect the blocked cron artifacts, repair the failing proof surface, then refresh cron control.
+- Top actionable next action: Open a narrow implementation lane, patch the deterministic local blocker, then rerun release proof.
 
 ## Claim evidence
 

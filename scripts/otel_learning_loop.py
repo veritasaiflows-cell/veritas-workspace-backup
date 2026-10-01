@@ -288,7 +288,9 @@ def _tel_strict_bool(value):
 def _tel_finite_nonneg(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0 and value == value and value not in (float("inf"), float("-inf"))
 
-def revalidate_telemetry_context(embedded):
+def revalidate_telemetry_context(embedded, retired_ids=None):
+    if retired_ids is None:
+        retired_ids = set(owner_decision_suppressions().keys())
     base = {"present": False, "fresh": False, "valid": False, "reason": "unknown"}
     if not isinstance(embedded, dict) or not embedded:
         return dict(base, reason="missing")
@@ -321,15 +323,25 @@ def revalidate_telemetry_context(embedded):
         vv = scalars.get(k)
         if not _tel_finite_nonneg(vv) or vv != 0:
             return dict(base, reason="learning_raw_or_secret_marker_positive")
-    if depth.get("status") != "owner_decision_pending" or depth.get("owner_gated") is not True:
+    depth_retired = depth.get("retired_by_owner_decision") is True and depth.get("status") == "owner_declined_retired" and depth.get("owner_gated") is False
+    if depth_retired:
+        if "token_cost_metadata_depth" not in retired_ids:
+            return dict(base, reason="learning_depth_retirement_unconfirmed")
+        owner_gated_depth = False
+    elif depth.get("status") == "owner_decision_pending" and depth.get("owner_gated") is True:
+        owner_gated_depth = True
+    else:
         return dict(base, reason="learning_depth_not_owner_gated")
-    return {"present": True, "fresh": True, "valid": True, "reason": "fresh_valid", "runtime_metadata_observed": scalars.get("runtime_metadata_observed"), "allowed_field_count": scalars.get("allowed_field_count"), "owner_gated_depth": True}
+    return {"present": True, "fresh": True, "valid": True, "reason": "fresh_valid", "runtime_metadata_observed": scalars.get("runtime_metadata_observed"), "allowed_field_count": scalars.get("allowed_field_count"), "owner_gated_depth": owner_gated_depth, "depth_retired_by_owner_decision": depth_retired}
 
 def otel_health_summary(otel: dict[str, Any], windows: dict[str, Any], telemetry_context: dict[str, Any] | None = None) -> dict[str, Any]:
     drift = as_dict(otel.get("drift"))
     summary = as_dict(otel.get("summary"))
     trend = as_dict(windows.get("trend_indicators"))
-    embedded = telemetry_context if isinstance(telemetry_context, dict) else as_dict(otel.get("telemetry_context"))
+    embedded = (
+        telemetry_context if isinstance(telemetry_context, dict) and telemetry_context
+        else as_dict(windows.get("telemetry_context")) or as_dict(otel.get("telemetry_context"))
+    )
     reval = revalidate_telemetry_context(embedded) if embedded else {"present": False, "fresh": False, "valid": False, "reason": "missing"}
     return {
         "collector_health": as_dict(otel.get("collector_health")).get("status"),
@@ -348,6 +360,7 @@ def otel_health_summary(otel: dict[str, Any], windows: dict[str, Any], telemetry
         "telemetry_runtime_observed": reval.get("runtime_metadata_observed"),
         "telemetry_allowed_fields": reval.get("allowed_field_count"),
         "telemetry_owner_gated_depth": reval.get("owner_gated_depth", False),
+        "telemetry_depth_retired_by_owner_decision": bool(reval.get("depth_retired_by_owner_decision", False)),
     }
 
 
@@ -647,7 +660,7 @@ def build_recommendations(
         })
     _tel_ok = bool(health.get("telemetry_fresh_valid"))
     if not _tel_ok:
-        recommendations.append({"id": "otel_telemetry_stale_or_missing", "severity": "warning", "decision": "treat_telemetry_counts_fail_closed", "rationale": "Telemetry summary is not fresh/valid at consume time; use collector err-log health only.", "next_action": "Refresh runtime probe summary; do not infer model, finance, or execution readiness."})
+        recommendations.append({"id": "otel_telemetry_stale_or_missing", "severity": "warning", "decision": "treat_telemetry_counts_fail_closed", "rationale": "Telemetry summary is not fresh/valid at consume time; use collector err-log health only. (reason=" + str(health.get("telemetry_status")) + ")", "next_action": "Refresh runtime probe summary; do not infer model, finance, or execution readiness."})
     if health.get("telemetry_owner_gated_depth"):
         recommendations.append({"id": "otel_token_depth_owner_gated", "severity": "info", "decision": "keep_token_depth_owner_gated_no_approval", "rationale": "Token-depth packet is owner_decision_pending with validation warning; evidence only, not approval.", "next_action": "Await explicit owner decision; no capture, billing, allocation, or promotion claim."})
     recommendations.append({
@@ -810,7 +823,7 @@ def build_payload() -> dict[str, Any]:
 
     cost = model_cost_summary(model_run)
     latency = tool_latency_summary(tool_workflow, validator_timing, coding_runtime)
-    health = otel_health_summary(otel, windows, as_dict(otel.get("telemetry_context")))
+    health = otel_health_summary(otel, windows)
     friction = operational_friction_summary(cron_signal, workflow_advancement)
     recommendations = build_recommendations(cost, latency, health, queue, friction, model_run, bridge)
     suppressions = owner_decision_suppressions()

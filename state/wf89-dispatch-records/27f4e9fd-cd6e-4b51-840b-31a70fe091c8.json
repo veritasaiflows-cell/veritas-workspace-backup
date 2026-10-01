@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "27f4e9fd-cd6e-4b51-840b-31a70fe091c8",
+  "agent_id": "qa-redteam",
+  "session_key": "agent:qa-redteam:p43b-b2-author-20260929",
+  "label": "P4-3b B2 patch author (GPT-6 Sol, text-only)",
+  "task_text_sha256": "82f2f9d48bc423f0c37cba22f376f9410f458ddd3d0db2cf7fac22efef124aff",
+  "message_file": "tmp\\p4-3b-onboarding-20260929\\b2-author-packet.md",
+  "created_at_ms": 1790731539910,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

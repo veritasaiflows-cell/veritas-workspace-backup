@@ -30,7 +30,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 
 - WF88 action rows: `14`.
 - Open unrouted recommendations: `0`.
-- Loop trace rows: `6`.
+- Loop trace rows: `5`.
 - Loop trace missing lane links: `1`.
 - Long-work jobs active/resumable/blocked: `0` / `0` / `0`.
 - Auto-apply count: `0`.

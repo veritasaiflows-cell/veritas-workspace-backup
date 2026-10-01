@@ -228,8 +228,15 @@ def classify_witness(rec: dict, status: str, node: sqlite3.Row | None, node_erro
 
 
 def normalized_text_hash(text: str) -> str:
-    """The task store keeps CLI --message text stripped; hash both sides the same way."""
-    return task_text_hash(text.strip())
+    """The task store keeps CLI --message text stripped; hash both sides the same way.
+
+    Line endings are canonicalized to LF on both sides. The store keeps a
+    --message-file verbatim (CRLF stays CRLF) while Path.read_text() in the
+    launcher translates CRLF to LF, so a CRLF packet hashed differently on the
+    two sides and the dispatch record never bound (2026-09-29: 45 records left
+    PENDING and their runs alarmed as wrapper bypasses).
+    """
+    return task_text_hash(text.replace("\r\n", "\n").strip())
 
 
 def load_dispatch_records(dispatch_dir: Path) -> tuple[list[dict], list[str]]:
@@ -455,12 +462,25 @@ def read_cli(dispatch_dir: Path, global_db: Path = GLOBAL_DB,
     # attributed by the cron run ledger, not a dispatch record; since Main moved
     # to the claude-cli runtime they land as runtime='cli' too.
     cron_rows = 0
+    heartbeat_rows = 0
+    dashboard_rows = 0
     for t in cli_rows:
         if t["task_kind"] == "exec":
             exec_rows += 1
             continue
         if ":cron:" in (t["child_session_key"] or ""):
             cron_rows += 1
+            continue
+        # Heartbeat-scheduler turns (child key agent:<id>:...:heartbeat) are
+        # scheduler-launched like cron turns and carry no dispatch record;
+        # they land as runtime='cli' too and are not wrapper bypasses.
+        if (t["child_session_key"] or "").endswith(":heartbeat"):
+            heartbeat_rows += 1
+            continue
+        # Control UI dashboard sessions are interactive turns, not delegated
+        # launches that skipped the dispatch wrapper.
+        if ":dashboard:" in (t["child_session_key"] or ""):
+            dashboard_rows += 1
             continue
         if t["task_id"] not in bound_task_ids:
             agent = t["agent_id"] or "unknown"
@@ -478,6 +498,8 @@ def read_cli(dispatch_dir: Path, global_db: Path = GLOBAL_DB,
             "counts": counts, "cli_rows_total": len(cli_rows),
             "cli_exec_background_rows": exec_rows,
             "cli_cron_scheduled_rows": cron_rows,
+            "cli_heartbeat_scheduled_rows": heartbeat_rows,
+            "cli_dashboard_session_rows": dashboard_rows,
             "cli_rows_without_dispatch_record_by_agent": unrecorded,
             "wrapper_go_live_ms": WRAPPER_GO_LIVE_MS,
             "cli_rows_bypassing_dispatch_wrapper_by_agent": bypassed,

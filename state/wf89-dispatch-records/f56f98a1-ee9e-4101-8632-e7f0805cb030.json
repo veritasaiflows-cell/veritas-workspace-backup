@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "f56f98a1-ee9e-4101-8632-e7f0805cb030",
+  "agent_id": "qa-redteam",
+  "session_key": "agent:qa-redteam:p43b-b3a-author-20260929",
+  "label": "P4-3b B3a inverse capture author (GPT-6 Sol, text-only)",
+  "task_text_sha256": "518b9d69cf340c85f0390cf6f8d68382aeb1f16853d8f232dd75b2f9b8e14719",
+  "message_file": "tmp\\p4-3b-onboarding-20260929\\b3a-author-packet.md",
+  "created_at_ms": 1790733920651,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

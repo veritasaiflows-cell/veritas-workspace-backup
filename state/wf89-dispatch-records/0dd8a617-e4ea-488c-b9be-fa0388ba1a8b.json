@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "0dd8a617-e4ea-488c-b9be-fa0388ba1a8b",
+  "agent_id": "qa-redteam",
+  "session_key": "agent:qa-redteam:p43b-b2-qa-glm-a-20260929",
+  "label": "P4-3b B2 QA part A code (GLM-5.3 max)",
+  "task_text_sha256": "4f25b0eff077cdcf9a40f9f79eda3f7dba5733fcfcabc373d353a501971782a3",
+  "message_file": "tmp\\p4-3b-onboarding-20260929\\b2-qa-A.md",
+  "created_at_ms": 1790732346659,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

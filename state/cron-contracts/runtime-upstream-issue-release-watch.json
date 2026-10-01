@@ -3,11 +3,11 @@
   "job_id": "348e6192-4420-4485-a2d9-059557a52f93",
   "declarationKey": "veritas.upstream-issue-release-watch.v1",
   "name": "Runtime - Upstream Issue Release Watch",
-  "required": true,
+  "required": false,
   "owner_workflow": "Runtime upstream escalation watch (openclaw/openclaw#155478 release re-test)",
   "contract_reason": "Owner-directed 2026-09-21 upstream escalation lane. Enabled job was flagged enabled_job_missing_freshness_contract because it has no state/cron-contracts entry, so cron freshness cannot tell a live watcher from an ungoverned job. The job fires only when the installed OpenClaw version changes; it writes no tmp packet, so its durable proof surface is the Upstream Escalation Register it updates. Registration clears the P1 and pins schedule, payload, trigger, and delivery so silent drift is visible.",
   "description": "Re-test upstream issue #155478 when the installed OpenClaw version changes. Read-only trigger; no auto-posting. Filing/commenting stays owner-approved.",
-  "enabled": true,
+  "enabled": false,
   "schedule": {
     "kind": "every",
     "everyMs": 21600000,
@@ -82,6 +82,7 @@
     "No finance/canon/portfolio mutation, capital, account, order, or execution authority.",
     "No external delivery mutation and no owner-approval inference."
   ],
-  "updated_at_utc": "2026-09-22T20:25:00Z",
-  "contract_update_reason": "Initial registration of the live enabled watch to clear enabled_job_missing_freshness_contract; values copied verbatim from the live Gateway job (schedule every 21600000ms, agentTurn payload, version-change trigger, telegram announce delivery)."
+  "updated_at_utc": "2026-09-29T15:55:00Z",
+  "contract_update_reason": "Owner 2026-09-29: keep Runtime - Upstream Issue Release Watch disabled after repeated DataCloneError auto-disable. Contract expected state is disabled and not required, so Cron Reduction - Control Fail-Closed Dispatcher no longer fails closed on this job. Re-enable needs a new owner gate and an OpenClaw build newer than 2026.9.6."
+
 }

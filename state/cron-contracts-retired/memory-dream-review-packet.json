@@ -1,0 +1,24 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "5a27129c-3fd5-4556-acaa-b18a77b5e742",
+  "name": "Retired — Memory Dream Review Packet",
+  "required": false,
+  "enabled": false,
+  "owner_workflow": "OpenClaw Dreaming review packet",
+  "original_schedule": {
+    "kind": "cron",
+    "expr": "20 3 * * *",
+    "tz": "America/Phoenix",
+    "staggerMs": 0
+  },
+  "original_payload": [
+    "C:\\Users\\Veritas\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "scripts\\dream_review_packet.py",
+    "--write",
+    "--validate"
+  ],
+  "retired_at_local": "2026-09-29 America/Phoenix",
+  "retirement_reason": "Owner cancelled this job on 2026-09-29 and explicitly ordered dreaming to stay disabled. The nightly review exited 1 because dreaming_enabled=false. Do not re-enable this job or dreaming without a new owner gate.",
+  "rollback_requires_owner_gate": true,
+  "rollback": "openclaw cron edit 5a27129c-3fd5-4556-acaa-b18a77b5e742 --enable --name \"Memory Dream Review Packet\" only after a new owner gate. Do not re-enable dreaming as part of that rollback."
+}

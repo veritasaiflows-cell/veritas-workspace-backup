@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "7b8e79a4-d227-4f01-b3a3-cac8ab9595ee",
+  "agent_id": "qa-redteam",
+  "session_key": "agent:qa-redteam:p43b-b3b2-author-20260929",
+  "label": "P4-3b B3b-2 compensation + stop-line removal author (GPT-6 Sol, text-only)",
+  "task_text_sha256": "2aa74ea425b1bb324b0fa992abc0aaa78e0e2ddfffbdbfab0ff0700907dfed66",
+  "message_file": "tmp\\p4-3b-onboarding-20260929\\b3b2-author-packet.md",
+  "created_at_ms": 1790735931157,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "wf89_dispatch_record.launch"
+}

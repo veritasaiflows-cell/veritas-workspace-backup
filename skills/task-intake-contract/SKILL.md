@@ -76,12 +76,13 @@ For local implementation:
 - add regression proof
 - rerun the original failure
 - run proportionate broader acceptance
+- when a proof command's result must survive the run, redirect its output to a durable file under the task's proof directory and read the needed excerpt (for example the tally tail) instead of trusting the exec session to deliver stdout: a completed run's output can be lost when its session handle vanishes, and an oversized capture can exceed what the CLI will parse — killing the whole turn — while redirection also bounds what is captured
 
 For shared-file register lost updates, trace all write actions (including status-only and terminal) from load through atomic replace. Lock each read/modify/write span with one common lock; release it during slow downstream refresh and reacquire before any reload/merge/write. Use two-process barriers to test first-write and later-merge contention separately, then retry rejected writers. On merge-lock failure, report the first write as durable and refresh metadata as incomplete.
 
 For file-producing or freshness-sensitive tests, follow [Test Artifact Containment](../test-artifact-containment/SKILL.md): classify fixture clock/state before changing production logic, then verify redirected outputs and unchanged production artifacts.
 
-For a SQLite WAL backup/restore audit, trace each named wrapper to its actual backup helper before diagnosing a main-file copy. On a temporary WAL database, hold a reader across a committed write; compare the backup's logical rows with the live committed state, and test restore separately after another write. Check for backup sidecars before reopening it (opening a WAL-mode backup can create them), and explicitly close every test connection before temporary-directory cleanup on Windows. Treat a manifest's raw main-file replacement instruction as a separate restore risk, not proof its backup used `copyfile`; repair requires its own scoped authority.
+For a SQLite WAL backup/restore audit, use [WAL backup and restore proof](references/sqlite-wal-backup-audit.md) before attributing a defect.
 
 Preserve unrelated dirty work.
 

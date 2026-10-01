@@ -108,6 +108,153 @@ def test_owner_decision_record_suppresses_retired_recommendation() -> None:
             loop.OWNER_DECISIONS = original
 
 
+_DEPTH_ID = "token_cost_metadata_depth"
+
+
+def _tel_now():
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _tel_probe_row(ts=None):
+    scalars = {"runtime_metadata_observed": True, "allowed_field_count": 5, "raw_content_marker_count": 0, "secret_or_header_marker_count": 0, "metadata_depth_approved_enabled": False, "file_exporter_observed": True, "debug_log_observed": False, "runtime_metadata_learning_ready": True}
+    return {"present": True, "fresh": True, "valid": True, "reason": "fresh_valid", "generated_at_utc": ts or _tel_now(), "scalars": scalars}
+
+
+def _tel_pending_depth(ts=None):
+    return {"present": True, "fresh": True, "valid": True, "reason": "fresh_valid_owner_gated", "generated_at_utc": ts or _tel_now(), "status": "owner_decision_pending", "owner_gated": True}
+
+
+def _tel_retired_depth(ts=None):
+    return {"present": True, "fresh": True, "valid": True, "reason": "owner_decision_retired", "generated_at_utc": ts or _tel_now(), "status": "owner_declined_retired", "owner_gated": False, "retired_by_owner_decision": True, "decision": {"id": _DEPTH_ID, "decision": "decline_and_retire_the_recommendation", "decided_by": "randall", "decided_at_utc": "2026-09-12T15:17:06+00:00"}}
+
+
+def _tel_ctx(depth, probe=None):
+    return {"status": "ok", "warnings": [], "runtime_probe": probe if probe is not None else _tel_probe_row(), "token_depth": depth}
+
+
+def _health_with_decisions(otel, windows, tmp, retire):
+    """Run otel_health_summary with the loop's decisions path pointed at a hermetic temp record."""
+    record = Path(tmp) / "decisions.json"
+    if retire:
+        record.write_text(json.dumps({"schema": "veritas.owner_decisions.otel_recommendations.v1", "decisions": [{"id": _DEPTH_ID, "decision": "decline_and_retire_the_recommendation", "decided_by": "randall", "decided_at_utc": "2026-09-12T15:17:06+00:00"}]}), encoding="utf-8")
+    original = loop.OWNER_DECISIONS
+    try:
+        loop.OWNER_DECISIONS = record
+        return loop.otel_health_summary(otel, windows)
+    finally:
+        loop.OWNER_DECISIONS = original
+
+
+def _recs_for(health):
+    return loop.build_recommendations({"token_coverage_ratio": 1.0, "cost_coverage_ratio": 1.0}, {}, health, {}, {"cron": {}, "workflow_advancement": {}}, {}, {})
+
+
+def test_telemetry_context_source_resolution() -> None:
+    ctx = _tel_ctx(_tel_pending_depth())
+    with tempfile.TemporaryDirectory() as tmp:
+        from_windows = _health_with_decisions({"status": "ok"}, {"telemetry_context": ctx}, tmp, retire=False)
+        assert from_windows["telemetry_fresh_valid"] is True
+        assert from_windows["telemetry_owner_gated_depth"] is True
+        assert from_windows["telemetry_depth_retired_by_owner_decision"] is False
+        legacy = _health_with_decisions({"status": "ok", "telemetry_context": ctx}, {"trend_indicators": {}}, tmp, retire=False)
+        assert legacy["telemetry_fresh_valid"] is True
+        # windows wins over the legacy otel location when both are present
+        stale_legacy = _tel_ctx(_tel_pending_depth("2020-01-01T00:00:00Z"))
+        both = _health_with_decisions({"telemetry_context": stale_legacy}, {"telemetry_context": ctx}, tmp, retire=False)
+        assert both["telemetry_fresh_valid"] is True
+        # a non-empty explicit argument wins over both; an empty one falls through
+        original = loop.OWNER_DECISIONS
+        try:
+            loop.OWNER_DECISIONS = Path(tmp) / "missing.json"
+            explicit = loop.otel_health_summary({"telemetry_context": ctx}, {"telemetry_context": ctx}, stale_legacy)
+            assert explicit["telemetry_fresh_valid"] is False
+            assert explicit["telemetry_status"] == "learning_token_depth_stale"
+            fallthrough = loop.otel_health_summary({}, {"telemetry_context": ctx}, {})
+            assert fallthrough["telemetry_fresh_valid"] is True
+        finally:
+            loop.OWNER_DECISIONS = original
+        neither = _health_with_decisions({"status": "ok"}, {"trend_indicators": {}}, tmp, retire=False)
+        assert neither["telemetry_fresh_valid"] is False and neither["telemetry_status"] == "missing"
+
+
+def test_retired_depth_confirmed_is_fresh_and_quiet() -> None:
+    ctx = _tel_ctx(_tel_retired_depth())
+    verdict = loop.revalidate_telemetry_context(ctx, retired_ids={_DEPTH_ID})
+    assert verdict["valid"] is True and verdict["reason"] == "fresh_valid"
+    assert verdict["owner_gated_depth"] is False
+    assert verdict["depth_retired_by_owner_decision"] is True
+    with tempfile.TemporaryDirectory() as tmp:
+        health = _health_with_decisions({"status": "ok"}, {"telemetry_context": ctx}, tmp, retire=True)
+    assert health["telemetry_fresh_valid"] is True
+    assert health["telemetry_owner_gated_depth"] is False
+    assert health["telemetry_depth_retired_by_owner_decision"] is True
+    ids = {rec["id"] for rec in _recs_for(health)}
+    assert "otel_telemetry_stale_or_missing" not in ids
+    assert "otel_token_depth_owner_gated" not in ids
+
+
+def test_retired_depth_unconfirmed_fails_closed_with_reason() -> None:
+    ctx = _tel_ctx(_tel_retired_depth())
+    verdict = loop.revalidate_telemetry_context(ctx, retired_ids=set())
+    assert verdict["valid"] is False
+    assert verdict["reason"] == "learning_depth_retirement_unconfirmed"
+    assert loop.revalidate_telemetry_context(ctx, retired_ids={"some_other_id"})["reason"] == "learning_depth_retirement_unconfirmed"
+    with tempfile.TemporaryDirectory() as tmp:
+        health = _health_with_decisions({"status": "ok"}, {"telemetry_context": ctx}, tmp, retire=False)
+    assert health["telemetry_fresh_valid"] is False
+    assert health["telemetry_status"] == "learning_depth_retirement_unconfirmed"
+    assert health["telemetry_depth_retired_by_owner_decision"] is False
+    recs = {rec["id"]: rec for rec in _recs_for(health)}
+    assert "otel_telemetry_stale_or_missing" in recs
+    assert "(reason=learning_depth_retirement_unconfirmed)" in recs["otel_telemetry_stale_or_missing"]["rationale"]
+    assert "otel_token_depth_owner_gated" not in recs
+
+
+def test_retired_claim_with_wrong_shape_is_not_accepted() -> None:
+    for mutate in ({"owner_gated": True}, {"status": "owner_decision_pending"}, {"status": "ok"}, {"retired_by_owner_decision": False}):
+        depth = dict(_tel_retired_depth(), **mutate)
+        verdict = loop.revalidate_telemetry_context(_tel_ctx(depth), retired_ids={_DEPTH_ID})
+        # a row that is not exactly the retired shape (and not the pending shape) is never accepted, even with the id confirmed
+        assert verdict["valid"] is False and verdict["reason"] == "learning_depth_not_owner_gated", (mutate, verdict)
+
+
+def test_pending_depth_path_and_row_timestamp_checks() -> None:
+    pending = loop.revalidate_telemetry_context(_tel_ctx(_tel_pending_depth()), retired_ids=set())
+    assert pending["valid"] is True and pending["reason"] == "fresh_valid"
+    assert pending["owner_gated_depth"] is True and pending["depth_retired_by_owner_decision"] is False
+    # default retired_ids comes from the owner-decision helper; the pending path is unaffected by it
+    with tempfile.TemporaryDirectory() as tmp:
+        original = loop.OWNER_DECISIONS
+        try:
+            loop.OWNER_DECISIONS = Path(tmp) / "missing.json"
+            assert loop.revalidate_telemetry_context(_tel_ctx(_tel_pending_depth()))["valid"] is True
+        finally:
+            loop.OWNER_DECISIONS = original
+    missing_ts = _tel_pending_depth()
+    del missing_ts["generated_at_utc"]
+    verdict = loop.revalidate_telemetry_context(_tel_ctx(missing_ts), retired_ids=set())
+    assert verdict["valid"] is False and verdict["reason"] == "learning_token_depth_timestamp_malformed"
+    retired_missing_ts = _tel_retired_depth()
+    del retired_missing_ts["generated_at_utc"]
+    assert loop.revalidate_telemetry_context(_tel_ctx(retired_missing_ts), retired_ids={_DEPTH_ID})["reason"] == "learning_token_depth_timestamp_malformed"
+    stale = loop.revalidate_telemetry_context(_tel_ctx(_tel_pending_depth("2020-01-01T00:00:00Z")), retired_ids=set())
+    assert stale["valid"] is False and stale["reason"] == "learning_token_depth_stale"
+    stale_retired = loop.revalidate_telemetry_context(_tel_ctx(_tel_retired_depth("2020-01-01T00:00:00Z")), retired_ids={_DEPTH_ID})
+    assert stale_retired["reason"] == "learning_token_depth_stale"
+    assert loop.revalidate_telemetry_context({}, retired_ids=set())["reason"] == "missing"
+    plain = _tel_pending_depth()
+    plain.update(status="ok", owner_gated=False)
+    assert loop.revalidate_telemetry_context(_tel_ctx(plain), retired_ids=set())["reason"] == "learning_depth_not_owner_gated"
+
+
+def test_pending_health_still_emits_owner_gated_rec_only() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        health = _health_with_decisions({"status": "ok"}, {"telemetry_context": _tel_ctx(_tel_pending_depth())}, tmp, retire=False)
+    ids = {rec["id"] for rec in _recs_for(health)}
+    assert "otel_token_depth_owner_gated" in ids
+    assert "otel_telemetry_stale_or_missing" not in ids
+
+
 def _attribution_bridge_doc(summary, generated_at_utc, status="warning", validation=None):
     doc = {
         "schema": "veritas.implementation_token_attribution_bridge.v1",
@@ -208,6 +355,18 @@ def main() -> int:
         test_usage_source_recommendation_follows_bridge_state()
     except AssertionError as exc:
         errors.append(f"usage-source bridge-state regression failed: {exc}")
+    for name, label in (
+        (test_telemetry_context_source_resolution, "telemetry context source resolution"),
+        (test_retired_depth_confirmed_is_fresh_and_quiet, "retired depth confirmed"),
+        (test_retired_depth_unconfirmed_fails_closed_with_reason, "retired depth unconfirmed"),
+        (test_retired_claim_with_wrong_shape_is_not_accepted, "retired claim wrong shape"),
+        (test_pending_depth_path_and_row_timestamp_checks, "pending depth path and row timestamp"),
+        (test_pending_health_still_emits_owner_gated_rec_only, "pending health recommendations"),
+    ):
+        try:
+            name()
+        except AssertionError as exc:
+            errors.append(f"{label} regression failed: {exc}")
     out = ROOT / "tmp" / "test-otel-learning-loop.json"
     result = subprocess.run(
         [sys.executable, str(SCRIPT), "--json-out", str(out), "--write", "--validate"],
