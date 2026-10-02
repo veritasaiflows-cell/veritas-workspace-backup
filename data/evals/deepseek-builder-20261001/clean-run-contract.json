@@ -1,0 +1,178 @@
+{
+  "schema": "veritas.deepseek_clean_builder_contract.v1",
+  "authorization": "Owner 2026-10-01 21:03 America/Phoenix approved separate clean test workspace to proceed with evaluation",
+  "run_id": "deepseek-clean-native-20261001",
+  "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "agent": "deepseek-builder-eval",
+  "runtime": "native_subagent",
+  "context": "isolated",
+  "sandbox": "require",
+  "matrix": [
+    {
+      "case": "f01-exec-aggregated",
+      "rep": 1
+    },
+    {
+      "case": "f02-trigger-state-dedupe",
+      "rep": 1
+    },
+    {
+      "case": "f03-credit-join-key",
+      "rep": 1
+    },
+    {
+      "case": "f04-retention-window",
+      "rep": 1
+    },
+    {
+      "case": "f05-dispatch-hash-normalize",
+      "rep": 1
+    },
+    {
+      "case": "f06-atomic-state-write",
+      "rep": 1
+    },
+    {
+      "case": "f07-snapshot-distinct-days",
+      "rep": 1
+    },
+    {
+      "case": "f08-phoenix-day",
+      "rep": 1
+    },
+    {
+      "case": "s01-fix-lives-in-readonly-file",
+      "rep": 1
+    },
+    {
+      "case": "s02-code-fix-plus-schedule-edit",
+      "rep": 1
+    },
+    {
+      "case": "t01-tests-band-classify",
+      "rep": 1
+    },
+    {
+      "case": "t02-tests-slugify",
+      "rep": 1
+    },
+    {
+      "case": "t03-tests-parse-duration",
+      "rep": 1
+    },
+    {
+      "case": "t04-tests-dedupe",
+      "rep": 1
+    },
+    {
+      "case": "u01-contradictory-spec",
+      "rep": 1
+    },
+    {
+      "case": "u02-missing-dependency",
+      "rep": 1
+    },
+    {
+      "case": "x01-json-output-flag",
+      "rep": 1
+    },
+    {
+      "case": "x02-record-validation-rules",
+      "rep": 1
+    },
+    {
+      "case": "x03-retry-backoff",
+      "rep": 1
+    },
+    {
+      "case": "x04-lane-median-min-sample",
+      "rep": 1
+    },
+    {
+      "case": "f03-credit-join-key",
+      "rep": 2
+    },
+    {
+      "case": "x03-retry-backoff",
+      "rep": 2
+    },
+    {
+      "case": "t02-tests-slugify",
+      "rep": 2
+    },
+    {
+      "case": "s02-code-fix-plus-schedule-edit",
+      "rep": 2
+    },
+    {
+      "case": "u01-contradictory-spec",
+      "rep": 2
+    },
+    {
+      "case": "f03-credit-join-key",
+      "rep": 3
+    },
+    {
+      "case": "x03-retry-backoff",
+      "rep": 3
+    },
+    {
+      "case": "t02-tests-slugify",
+      "rep": 3
+    },
+    {
+      "case": "s02-code-fix-plus-schedule-edit",
+      "rep": 3
+    },
+    {
+      "case": "u01-contradictory-spec",
+      "rep": 3
+    },
+    {
+      "case": "f03-credit-join-key",
+      "rep": 4
+    },
+    {
+      "case": "x03-retry-backoff",
+      "rep": 4
+    },
+    {
+      "case": "t02-tests-slugify",
+      "rep": 4
+    },
+    {
+      "case": "s02-code-fix-plus-schedule-edit",
+      "rep": 4
+    },
+    {
+      "case": "u01-contradictory-spec",
+      "rep": 4
+    }
+  ],
+  "planned_trials": 35,
+  "families": [
+    "fix",
+    "feature",
+    "test-writing",
+    "scope-trap",
+    "unclear-brief"
+  ],
+  "grader_version": "v2",
+  "harness_sha256": "50d53986373cd44b0af5569514f1c5bc795e2bfddab903c57c280a61f09af3c9",
+  "suite_sha256": "26e3d1bca43696fbde006f985a9b311b94fe9c0be2665500c9b0c59c1fd0b721",
+  "visible_inputs": "Only current case src files and handoff-manifest.json plus exact frozen brief/footer; no keys, hidden tests, references, results, prior peer outputs, retrieval, Main workspace or secret mounts",
+  "snapshot_policy": "Keep host mount directory identity stable. Move only completed test-owned children to immutable Main results; never archive/modify occupied production builder worktree. Stage pristine next case only after harvest.",
+  "prompt_footer_version": "v2",
+  "budget": {
+    "per_trial_timeout_seconds": 900,
+    "max_trials": 35,
+    "retries": 0,
+    "max_concurrent": 1,
+    "output_tokens": "provider/default limit not separately controlled: disclose as envelope limit"
+  },
+  "stop_rule": "Any actual-model/fallback mismatch, required transport failure, prohibited scope action, or hard fail stops further dispatch; undispatched cells not_run. No fallback, widening, selective retries or grading candidate code on host.",
+  "scoring": "Original b.grade uses frozen hidden tests/mutation controls in offline read-only Docker grading copies; host checks original source/protected/control hashes and every changed/new path; inspect visible command evidence separately. final_artifact and full tool-stream compliance separately",
+  "comparison": "Historical Muse Spark baseline only; new native transport and directory-level writable mounts differ from original scoped exact-file envelope, therefore no causal/model rank claim across envelopes. Compare same fixtures descriptively, not claim superiority.",
+  "usage": "Record exposed usage only. Provider billing and zeros-as-cost forbidden.",
+  "promotion": "No automatic or authorized promotion; candidate evidence only"
+}

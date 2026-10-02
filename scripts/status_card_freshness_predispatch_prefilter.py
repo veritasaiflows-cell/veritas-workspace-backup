@@ -6,7 +6,9 @@ input manifest before refreshing the compact status card.  A skip
 is allowed only when the input hash is unchanged, the previous runner output
 was successful, and that output is still inside the bounded reuse window.
 
-The wrapper's execute mode may refresh the status-card packet directly. It does
+The wrapper's execute mode may refresh the status-card packet directly. When
+cron or PM control is newer than the WF74 opportunity queue, it refreshes that
+queue producer first so the card cannot go critical on a stale producer. It does
 not edit cron. The owner-approved status-card cron
 payload was activated as this command entrypoint on 2026-08-27, so scheduled
 invocations do not create a model or agent turn.
@@ -24,6 +26,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterable
 from zoneinfo import ZoneInfo
+
+import wf88_daily_actionability_refresh as nightly_sequence
 
 ROOT = Path(__file__).resolve().parents[1]
 TMP = ROOT / "tmp"
@@ -589,6 +593,98 @@ def run_existing_runner(
             "stdout_tail": "",
             "stderr_tail": str(exc),
         }
+    staleness = nightly_sequence.status_card_queue_staleness(root)
+    producer_steps: list[dict[str, Any]] = []
+
+    def finish(payload: dict[str, Any]) -> dict[str, Any]:
+        payload["producer_steps"] = producer_steps
+        payload["producer_order"] = staleness
+        return payload
+
+    if staleness.get("stale"):
+        producer_command = nightly_sequence.command_for_step(nightly_sequence.STATUS_CARD_QUEUE_STEP)
+        if not producer_command:
+            return finish({
+                "command": None,
+                "started_at_utc": utc_now(),
+                "completed_at_utc": utc_now(),
+                "duration_ms": 0,
+                "returncode": None,
+                "ok": False,
+                "error_code": "producer_order_blocked",
+                "producer_failure": "producer_command_missing",
+                "stdout_tail": "",
+                "stderr_tail": "status card queue producer is not declared",
+            })
+        producer_timeout = min(nightly_sequence.STATUS_CARD_PRODUCER_TIMEOUT_SECONDS, timeout_seconds)
+        producer_started = time.monotonic()
+        producer_started_at = utc_now()
+        try:
+            produced = subprocess.run(
+                producer_command,
+                cwd=root,
+                capture_output=True,
+                text=True,
+                timeout=producer_timeout,
+                check=False,
+            )
+            producer_result = {
+                "id": nightly_sequence.STATUS_CARD_QUEUE_STEP,
+                "command": producer_command,
+                "started_at_utc": producer_started_at,
+                "completed_at_utc": utc_now(),
+                "duration_ms": int((time.monotonic() - producer_started) * 1000),
+                "returncode": produced.returncode,
+                "ok": produced.returncode == 0,
+                "stdout_tail": (produced.stdout or "")[-2000:],
+                "stderr_tail": (produced.stderr or "")[-2000:],
+            }
+        except subprocess.TimeoutExpired as exc:
+            producer_result = {
+                "id": nightly_sequence.STATUS_CARD_QUEUE_STEP,
+                "command": producer_command,
+                "started_at_utc": producer_started_at,
+                "completed_at_utc": utc_now(),
+                "duration_ms": int((time.monotonic() - producer_started) * 1000),
+                "returncode": None,
+                "ok": False,
+                "timeout_seconds": producer_timeout,
+                "error_code": "step_timeout",
+                "stdout_tail": (exc.stdout or "")[-2000:] if isinstance(exc.stdout, str) else "",
+                "stderr_tail": (exc.stderr or "")[-2000:] if isinstance(exc.stderr, str) else "",
+            }
+        except (OSError, ValueError) as exc:
+            producer_result = {
+                "id": nightly_sequence.STATUS_CARD_QUEUE_STEP,
+                "command": producer_command,
+                "started_at_utc": producer_started_at,
+                "completed_at_utc": utc_now(),
+                "duration_ms": int((time.monotonic() - producer_started) * 1000),
+                "returncode": None,
+                "ok": False,
+                "error_code": "runner_launch_failed",
+                "error_type": type(exc).__name__,
+                "stdout_tail": "",
+                "stderr_tail": str(exc),
+            }
+        producer_steps.append(producer_result)
+        if not producer_result.get("ok"):
+            # Do not run the card against the stale queue. A failed producer is
+            # a typed block, not a false critical from the card.
+            return finish({
+                "command": producer_command,
+                "started_at_utc": producer_result.get("started_at_utc"),
+                "completed_at_utc": producer_result.get("completed_at_utc"),
+                "duration_ms": producer_result.get("duration_ms"),
+                "returncode": producer_result.get("returncode"),
+                "ok": False,
+                "error_code": "producer_order_blocked",
+                "producer_failure": producer_result.get("error_code") or "producer_nonzero_exit",
+                "timeout_seconds": producer_result.get("timeout_seconds"),
+                "stdout_tail": producer_result.get("stdout_tail", ""),
+                "stderr_tail": producer_result.get("stderr_tail", ""),
+            })
+
     command = [
         sys.executable,
         str(resolve_path("scripts/status_card_packet.py", root)),
@@ -619,7 +715,7 @@ def run_existing_runner(
             "authority": "review_only_alerts_os_status_refresh",
         }
         atomic_write_json(resolved_runner_out, runner_proof, root=root)
-        return {
+        return finish({
             "command": command,
             "started_at_utc": started_at,
             "completed_at_utc": completed_at,
@@ -628,9 +724,9 @@ def run_existing_runner(
             "ok": completed.returncode == 0,
             "stdout_tail": (completed.stdout or "")[-2000:],
             "stderr_tail": (completed.stderr or "")[-2000:],
-        }
+        })
     except subprocess.TimeoutExpired as exc:
-        return {
+        return finish({
             "command": command,
             "started_at_utc": started_at,
             "completed_at_utc": utc_now(),
@@ -640,9 +736,9 @@ def run_existing_runner(
             "timeout_seconds": timeout_seconds,
             "stdout_tail": (exc.stdout or "")[-2000:] if isinstance(exc.stdout, str) else "",
             "stderr_tail": (exc.stderr or "")[-2000:] if isinstance(exc.stderr, str) else "",
-        }
+        })
     except (OSError, ValueError) as exc:
-        return {
+        return finish({
             "command": command,
             "started_at_utc": started_at,
             "completed_at_utc": utc_now(),
@@ -653,7 +749,7 @@ def run_existing_runner(
             "error_type": type(exc).__name__,
             "stdout_tail": "",
             "stderr_tail": str(exc),
-        }
+        })
 
 
 def finalize_runner_execution(

@@ -10,6 +10,7 @@ Operate a measured, review-only learning, evaluation, wiki, route-contraction, a
 - Active inputs are OTEL, WF74, current PM/cron control, skill-governance proof, retrieval/evaluation proof, token-efficiency metadata, and the compiled wiki.
 - WF56/WF58/WF63/WF64/WF67/WF68/WF76/WF78/WF79/WF86/WF87 are retired or deny-only history and are not live WF88 inputs.
 - Finance learning may consume the current alerts-and-recommendations digest as review evidence only; it must not consume retired portfolio, paper, deployment, order, or tier-routing state.
+- September 30 OTEL/RSI review is complete. Collector health is verified; sustained outcome attribution remains insufficient and five weekly skill-review jobs have latest-run failures. The current prioritized plan is `06. Playbooks/Project Continuity/WF88 - OTEL Telemetry and RSI Review 20260930.md` (R88-01 through R88-08). Randall approved R88-02 at 22:29 Phoenix: local artifact recovery is verified, but durable source correction is blocked on the unavailable Builder Docker engine. Other proposal and runtime/config gates remain unchanged.
 
 ## Key Proof
 
@@ -21,10 +22,11 @@ Operate a measured, review-only learning, evaluation, wiki, route-contraction, a
 - `tmp/wf88-decision-compiler.json`
 - `tmp/rsi-outcome-scorecard.json`
 - `tmp/cron-control-packet.json`
+- `tmp/wf88-otel-rsi-review-20260930.json` - review snapshot and bounded verification evidence
 
 ## Next Action
 
-Keep current proof fresh. The September 6 AGI Readiness Opportunity Plan is in Phase 0 recovery acceptance and Phase 1 preparation only; neither starts a new wave nor proves a stable improvement loop. Any new automation, cleanup apply, schedule/runtime change, external delivery, or authority expansion requires a separate explicit decision.
+Resume approved R88-02 from `tmp/r88-02-20260930/checkpoint.json`, not from scratch. OTEL now consumes fresh-valid evidence; all three missing active Prompt Book sources were restored and lint passes. No source patch landed: starting the existing Docker Desktop Linux engine requires separate runtime approval, then fresh bounded Builder transport, source repair and independent QA. Keep R88-01 runtime/Workshop repair separately gated; R88-03 outcome linkage follows source acceptance. Preserve the landed DAG: daytime 20:30 and natural nightly 22:12 proof both passed; nightly completed 44/44 without retries. Phase 2 dedupe is done; G9 is accepted, but Phase 3 merge remains separately scoped. Use existing reviews and stable IDs; no new workflow/cohort or inferred authority. Automatic radar ingestion of the review annex is unverified. New automation, cleanup apply, schedule/runtime change, external delivery or authority expansion needs a separate decision.
 
 ## Attribution-chain repair and readiness convergence - 2026-09-12 ~17:05 Phoenix <!-- project: github.com/veritasaiflows-cell/veritas-workspace-backup -->
 
@@ -134,6 +136,21 @@ Keep current proof fresh. The September 6 AGI Readiness Opportunity Plan is in P
 - Fix: the WF88 contract marks the grades file `existence_only` (it must exist, but recency is not checked); the grading cadence receipts stay freshness-checked. Backup: `tmp/runtime-wf88-wiki-synthesis-refresh.pre-grades-frozen-20260925.json`. Spine: WF88 has no stale artifacts.
 - Open, not done: the grader still reports `ok` when its quote input is missing (and labels the missing file `present`). It was not changed because `wf88_wiki_refresh_cron_gate.py` requires grading validation == ok, so a status change would block the nightly run. Whether recommendation-outcome grading has an alerts-OS successor or is retired is an owner decision.
 - **Resolved 17:36 MST (Randall: "Yes, proceed with recommendations"):** the grader is retired from the runner, which now has 44 steps. The gate checks the frozen grade history instead of the grader's receipt, so the status report that said ok while grading nothing is gone. The successor alert-ledger scorer is scheduled for scoping on 2026-10-15; details are in `Recommendation Readiness Before Ledger - 2026-09-23.md`. Live proof is tonight's 22:12 run completing 44/44.
+
+## Producer-order DAG landed - 2026-09-30 ~19:35 Phoenix <!-- project: github.com/veritasaiflows-cell/veritas-workspace-backup -->
+
+- Randall said continue with #2. Scope stayed the producer-order DAG. No Phase 3 merge, no new workflow, no cron schedule or payload edit, and no loosening of the status-card critical check. No owner-decision marker was reversed; this tightens order rather than widening a gate.
+- `scripts/wf88_daily_actionability_refresh.py` now owns `PRODUCER_ORDER_EDGES`. `COMMANDS` must be a topological order of that graph. In the same run, a consumer is blocked unless each declared producer that is also in that run succeeded first. `status_card` depends on `wf74_improvement_queue`.
+- Today's 10 failures were not the nightly job. Status Card Freshness Refresh `01849102` (`*/30 6-22` Phoenix) read a queue last built 09-29 22:12. `scripts/status_card_freshness_predispatch_prefilter.py` now refreshes that queue producer before the card when `cron-control` or `pm-control` is newer than the queue. A failed producer blocks the card with `producer_order_blocked` instead of letting the card go false-critical. The cron contract description still says the prefilter refreshes the card directly; the payload argv is unchanged, so no contract drift was introduced.
+- Proof: `python scripts\test_wf88_daily_actionability_refresh.py` passed, and `python scripts\test_status_card_freshness_predispatch_prefilter.py` passed. Lane `WF88::producer-order-dag-20260930`.
+- Uncommitted. Next consumers of this tree: `01849102` at the next half hour through 22:00 Phoenix, and nightly `16c531e1` at 22:12 Phoenix (`scripts\wf88_daily_actionability_refresh.py --write --validate`). September 30 review observed the natural daytime 20:30 receipt passing with `queue_fresh`; nightly proof remains pending. Rollback must revert only the exact DAG implementation hunks, preserving unrelated user changes and the newer review sections; do not restore this whole continuity file from HEAD.
+
+## OTEL / telemetry / self-improvement review - 2026-09-30
+
+- Review and eight prioritized proposal contracts: `WF88 - OTEL Telemetry and RSI Review 20260930.md`; machine proof: `tmp/wf88-otel-rsi-review-20260930.json`. Main owns integration and acceptance; isolated Sol advisory is supplementary, not independent QA.
+- Verified collector/privacy health; five latest-run skill-review failures routed to a separate owner-gated repair task. The RSI scorecard still has zero verified stable completions and 21 missing link/metric items. Two stale-consumer flags cleared; the remaining lane-link signal is an undispatched planning candidate, not proof of lost work.
+- First priorities: repair review execution, correct retired/historical signals, and bind actual accepted work to later outcomes. Then propose forward attribution, the existing Phase 3 contraction, actual-invocation metadata, measured validator/runner optimization and real-task capability review. No new telemetry depth, paid pilot, route promotion, scheduler or implementation authority.
+- Preserve existing daily/nightly routes and Sunday radar cadence; next weekly review Oct 4, 16:10/16:30 Phoenix. Proposed items remain visible here even though unattended ingestion of the annex has not been verified. Oct 15 09:00 alerts-ledger scorer check already exists; no duplicate reminder.
 
 ## Stop Line
 

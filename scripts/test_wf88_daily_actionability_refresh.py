@@ -879,6 +879,86 @@ def test_build_packet_reports_retry_telemetry_fields() -> None:
     assert packet["recovered_after_retry_count"] == 0
 
 
+def test_producer_order_dag_matches_command_order() -> None:
+    module = load_module()
+    assert module.producer_order_problems() == []
+    ids = [row["id"] for row in module.COMMANDS]
+    assert "wf74_improvement_queue" in module.PRODUCER_ORDER_EDGES["status_card"]
+    assert ids.index("wf74_improvement_queue") < ids.index("status_card")
+    packet = module.build_packet(execute=False, timeout_seconds=30)
+    assert packet["status"] == "ok"
+    assert packet["producer_order"]["status"] == "ok"
+    assert packet["producer_order"]["problems"] == []
+    assert packet["producer_order"]["edge_count"] > 0
+
+
+def test_producer_order_dag_rejects_reversed_and_cyclic_edges() -> None:
+    module = load_module()
+    reversed_problems = module.producer_order_problems(
+        [{"id": "status_card", "command": ["x"]}, {"id": "startup_brief", "command": ["y"]}],
+        {"status_card": ("startup_brief",)},
+    )
+    assert "producer_after_consumer:startup_brief->status_card" in reversed_problems
+    cyclic = module.producer_order_problems(
+        [{"id": "a", "command": ["x"]}, {"id": "b", "command": ["y"]}],
+        {"a": ("b",), "b": ("a",)},
+    )
+    assert "producer_order_cycle" in cyclic
+
+
+def test_status_card_blocks_until_queue_succeeds_in_the_same_run() -> None:
+    module = load_module()
+    blocked, ok = module.run_sequence(
+        [
+            {"id": "status_card", "command": [sys.executable, "-c", "print('card')"]},
+            {"id": "wf74_improvement_queue", "command": [sys.executable, "-c", "print('queue')"]},
+        ],
+        execute=True,
+        timeout_seconds=30,
+    )
+    assert ok is False
+    assert blocked[0]["executed"] is False
+    assert blocked[0]["blocked"] is True
+    assert "wf74_improvement_queue" in blocked[0]["block_reason"]
+    results, ok = module.run_sequence(
+        [
+            {"id": "wf74_improvement_queue", "command": [sys.executable, "-c", "print('queue')"]},
+            {"id": "status_card", "command": [sys.executable, "-c", "print('card')"]},
+        ],
+        execute=True,
+        timeout_seconds=30,
+    )
+    assert ok is True
+    assert results[1]["executed"] is True
+    assert "card" in results[1]["stdout_tail"]
+
+
+def test_queue_older_than_cron_control_is_stale_for_the_status_card() -> None:
+    module = load_module()
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        (root / "tmp").mkdir()
+        (root / "tmp" / "cron-control-packet.json").write_text(
+            json.dumps({"generated_at_utc": "2026-09-30T18:00:00Z", "status": "ok"}),
+            encoding="utf-8",
+        )
+        (root / "tmp" / "wf74-improvement-opportunity-queue.json").write_text(
+            json.dumps({"generated_at_utc": "2026-09-29T22:12:00Z", "status": "ok"}),
+            encoding="utf-8",
+        )
+        stale = module.status_card_queue_staleness(root)
+        assert stale["stale"] is True
+        assert stale["reason"] == "queue_older_than_upstream"
+        (root / "tmp" / "wf74-improvement-opportunity-queue.json").write_text(
+            json.dumps({"generated_at_utc": "2026-09-30T18:05:00Z", "status": "ok"}),
+            encoding="utf-8",
+        )
+        fresh = module.status_card_queue_staleness(root)
+        assert fresh["stale"] is False
+        assert fresh["reason"] == "queue_fresh"
+        assert module.status_card_queue_staleness(root / "missing")["reason"] == "no_upstream_clock"
+
+
 def main() -> int:
     test_runner_completes_successful_sequence()
     test_runner_stops_on_first_failure()
@@ -925,6 +1005,10 @@ def main() -> int:
     test_timeout_failure_is_not_retried()
     test_default_run_sequence_keeps_fail_fast_no_retry()
     test_build_packet_reports_retry_telemetry_fields()
+    test_producer_order_dag_matches_command_order()
+    test_producer_order_dag_rejects_reversed_and_cyclic_edges()
+    test_status_card_blocks_until_queue_succeeds_in_the_same_run()
+    test_queue_older_than_cron_control_is_stale_for_the_status_card()
     print("wf88 daily actionability refresh tests passed")
     return 0
 

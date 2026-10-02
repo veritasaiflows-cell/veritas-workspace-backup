@@ -2,8 +2,8 @@
 # Action Promotion Map
 
 Canonical page: `wiki/recommendations/Action Promotion Map.md`
-Canonical rendered SHA-256: `39afe68f67270c8934faca14c8704e050653ad9a2e5b0149abe0162c303bd4c6`.
-Source snapshot SHA-256: `e442d9ad001864187ce0dce59b9a171b89dbe50557727e9e73c3dcd6febcef98`.
+Canonical rendered SHA-256: `0805f3259c1620a451c3f3a8ab7dd71445d7f987b14ddfecc0faf6dab030e8e8`.
+Source snapshot SHA-256: `c2f5083a99c97499f05ef2f7632fd70bbbf0cff8eb6b53a2b2392add476f2a38`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -37,7 +37,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `refresh-wf88-wiki-synthesis`: `active` - Run the wiki synthesis packet after WF88/WF74/PM/OTEL producers refresh or after material implementation closeout.
 - `grade-recommendation-outcomes`: `followup_required` - Grade mature outcomes represented in the current recommendation preview before making decision-quality claims; historical grades do not satisfy current-preview evidence.
 - `mature-rsi-eval-harness`: `proof_worker_ready` - Keep RSI guarded; supervised proof refresh may run, while cron proof execution still requires explicit graduation proof.
-- `route-open-improvement-followups`: `monitor` - Route open follow-up debt through WF74 docket, PM jobs, owner packets, or monitor-only rows; do not leave it as chat residue.
+- `route-open-improvement-followups`: `followup_required` - Route open follow-up debt through WF74 docket, PM jobs, owner packets, or monitor-only rows; do not leave it as chat residue.
 - `enforce-no-orphan-improvement-actions`: `clean` - Refresh the actionable improvement queue and no-orphan validator so every open improvement has a durable destination and next action.
 - `maintain-wf74-wf88-loop-trace`: `warning` - Use the stitched loop trace to verify each current opportunity has a durable destination, PM/lane link when applicable, and WF88 consumer refresh.
 - `maintain-long-work-job-status`: `clean` - Use the long-work status packet to resume provider-backed or full-source local jobs in bounded slices before rerunning expensive foreground commands.
@@ -55,7 +55,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `action-state:refresh-wf88-wiki-synthesis`: `{"state":"active"}`; authority `review_only`; source refs `wf88_os2_control#/status`.
 - `action-state:grade-recommendation-outcomes`: `{"state":"followup_required"}`; authority `review_only`; source refs `wf88_os2_control#/summary/recommendation_current_preview_later_outcome_graded_rows`.
 - `action-state:mature-rsi-eval-harness`: `{"state":"proof_worker_ready"}`; authority `review_only`; source refs `wf74_learning_loop_eval_harness#/rsi_maturity/status`.
-- `action-state:route-open-improvement-followups`: `{"state":"monitor"}`; authority `review_only`; source refs `improvement_ledger#/summary/followup_required_open_count`.
+- `action-state:route-open-improvement-followups`: `{"state":"followup_required"}`; authority `review_only`; source refs `improvement_ledger#/summary/followup_required_open_count`.
 - `action-state:enforce-no-orphan-improvement-actions`: `{"state":"clean"}`; authority `review_only`; source refs `no_orphan_validator#/validation/status`.
 - `action-state:maintain-wf74-wf88-loop-trace`: `{"state":"warning"}`; authority `review_only`; source refs `wf74_wf88_loop_trace#/summary/high_priority_unrouted_count`, `wf74_wf88_loop_trace#/summary/duplicate_pm_job_id_count`, `wf74_wf88_loop_trace#/summary/downstream_stale_after_router_count`, `wf74_wf88_loop_trace#/summary/lane_link_missing_count`.
 - `action-state:maintain-long-work-job-status`: `{"state":"clean"}`; authority `review_only`; source refs `long_work_job_status#/validation/status`, `long_work_job_status#/summary/blocked_job_count`, `long_work_job_status#/summary/resumable_job_count`, `long_work_job_status#/summary/stale_active_job_count`, `long_work_job_status#/summary/active_job_count`.
@@ -69,7 +69,7 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `action-state:preserve-zero-auto-apply`: `{"state":"clean"}`; authority `review_only`; source refs `wf74_auto_patch_proposer#/summary/auto_apply_count`.
 - `promotion-leak-guard-health`: `{"auto_apply_count":0,"open_unrouted_recommendation_count":0,"pass":true}`; authority `review_only`; source refs `wf74_autonomy_work_router#/summary/open_unrouted_recommendation_count`, `wf74_auto_patch_proposer#/summary/auto_apply_count`.
 - `recommendation-outcome-closure`: `{"current_preview_later_outcome_graded_rows":0,"durable_later_outcome_graded_rows":316,"grade_history_graded_ledger_event_count":316,"later_outcome_graded_rows":316}`; authority `review_only`; source refs `wf88_os2_control#/summary/recommendation_later_outcome_graded_rows`, `wf88_os2_control#/summary/recommendation_current_preview_later_outcome_graded_rows`, `wf88_os2_control#/summary/recommendation_durable_later_outcome_graded_rows`, `wf88_os2_control#/summary/recommendation_grade_history_graded_ledger_event_count`.
-- `followup-no-orphan-health`: `{"actionable_missing_contract_count":0,"actionable_orphan_count":0,"followup_required_open_count":0,"no_orphan_validation":"ok"}`; authority `review_only`; source refs `improvement_ledger#/summary/followup_required_open_count`, `actionable_improvement_queue#/summary/orphan_count`, `actionable_improvement_queue#/summary/missing_contract_count`, `no_orphan_validator#/validation/status`.
+- `followup-no-orphan-health`: `{"actionable_missing_contract_count":0,"actionable_orphan_count":0,"followup_required_open_count":1,"no_orphan_validation":"ok"}`; authority `review_only`; source refs `improvement_ledger#/summary/followup_required_open_count`, `actionable_improvement_queue#/summary/orphan_count`, `actionable_improvement_queue#/summary/missing_contract_count`, `no_orphan_validator#/validation/status`.
 
 ## Required rule
 

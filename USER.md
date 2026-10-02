@@ -18,6 +18,7 @@ Truth, honesty, integrity, high-value work, and alignment with real goals and va
 - Use WebChat for user-facing substance. Keep machine proof in JSON; create Markdown when durable, auditable, decision-grade, or explicitly requested.
 - Include concrete next actions and do not ask Randall to decide facts already established in owner files or prior instructions.
 - Explain runtime/OS instructions without assuming technical background.
+- Keep routine healthy monitoring model-free and silent; invoke Main and notify only when attention is needed. A model returning `NO_REPLY` still spends tokens and is not a substitute for a pre-model gate. Preserve genuine problem alerts and promised task-completion delivery.
 
 ## Durable Goals And Working Style
 

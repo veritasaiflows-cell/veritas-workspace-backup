@@ -8,7 +8,11 @@ a proof packet for the cron gate/front-door refresh path.
 Producer-before-consumer coverage: the retrieval, decision-compiler, and RSI
 outcome scorecards are refreshed here before the wiki synthesis/OS2 consumers,
 so the nightly packet reflects regenerated evidence rather than stale
-downstream scores. Fresh-packet reuse is invalidated when the producing script
+downstream scores. COMMANDS is a topological order of PRODUCER_ORDER_EDGES.
+A consumer in the same run is blocked unless each declared producer that is
+also in that run succeeded first. The status card depends on the WF74
+opportunity queue; a stale queue made the card false-critical on 2026-09-12
+and again on 2026-09-30. Fresh-packet reuse is invalidated when the producing script
 changed since the artifact was generated, and consumer steps declare required
 fresh dependencies that block with typed proof instead of greening on stale
 inputs. Timeouts are recorded as typed failed proof so the packet is never
@@ -147,6 +151,56 @@ COMMANDS: list[dict[str, Any]] = [
     {"id": "startup_brief", "command": [sys.executable, "scripts\\startup_brief_packet.py", "--write"]},
     {"id": "status_card", "command": [sys.executable, "scripts\\status_card_packet.py", "--write"]},
 ]
+
+# Consumer step -> producers that must precede it. COMMANDS must be a
+# topological order of this graph. status_card depends on the opportunity
+# queue because a stale queue made the card false-critical (2026-09-12 and
+# 2026-09-30, job 01849102). This does not suppress that critical check.
+PRODUCER_ORDER_EDGES: dict[str, tuple[str, ...]] = {
+    "coding_outcome_ledger": ("cron_control_packet",),
+    "token_usage_ledger": ("coding_outcome_ledger",),
+    "implementation_token_attribution_bridge": ("token_usage_ledger",),
+    "wf74_improvement_queue": ("implementation_token_attribution_bridge",),
+    "finance_response_quality_repair_loop": ("wf74_improvement_queue",),
+    "wf88_followup_triage": ("finance_response_quality_repair_loop",),
+    "improvement_ledger": ("wf88_followup_triage",),
+    "wf74_autonomy_router": ("pm_control_packet",),
+    "wf88_retired_surface_cleanup_plan": ("workflow_routing_index", "pm_implementation_jobs"),
+    "wf88_route_contraction_packet": ("wf88_retired_surface_cleanup_plan",),
+    "wf88_delete_readiness_packet": ("wf88_route_contraction_packet",),
+    "wf74_wf88_loop_trace": ("wf88_delete_readiness_packet",),
+    "long_work_job_status": ("wf74_wf88_loop_trace",),
+    "skill_workshop_body_guard": ("long_work_job_status",),
+    "wf88_os2_before_wiki": ("skill_workshop_body_guard", "otel_ops_control"),
+    "retrieval_live_eval": ("actionable_improvement_queue",),
+    "retrieval_quality_scorecard": ("retrieval_live_eval",),
+    "wf88_decision_compiler": ("retrieval_quality_scorecard",),
+    "rsi_outcome_scorecard": ("wf88_decision_compiler",),
+    "no_orphan_validator": ("rsi_outcome_scorecard",),
+    "wf88_wiki_synthesis": (
+        "retrieval_quality_scorecard",
+        "wf88_decision_compiler",
+        "rsi_outcome_scorecard",
+        "no_orphan_validator",
+    ),
+    "wiki_bootstrap_validator": ("wf88_wiki_synthesis",),
+    "wf88_os2_after_wiki": ("wiki_bootstrap_validator",),
+    "wf88_wiki_cron_gate": ("wf88_os2_after_wiki",),
+    "workflow_routing_index_final": ("wf88_wiki_cron_gate",),
+    "wf74_workflow_router_capsules": ("workflow_routing_index_final",),
+    "wf88_workflow_router_capsules": ("wf74_workflow_router_capsules",),
+    "future_session_packet": ("wf88_workflow_router_capsules",),
+    "startup_brief": ("future_session_packet",),
+    "status_card": ("startup_brief", "wf74_improvement_queue"),
+}
+
+STATUS_CARD_QUEUE_STEP = "wf74_improvement_queue"
+STATUS_CARD_QUEUE_ARTIFACT = "tmp/wf74-improvement-opportunity-queue.json"
+STATUS_CARD_UPSTREAM_ARTIFACTS = (
+    "tmp/cron-control-packet.json",
+    "tmp/pm-control-packet.json",
+)
+STATUS_CARD_PRODUCER_TIMEOUT_SECONDS = 90
 
 AUTHORITY_BOUNDARY = {
     "review_only": True,
@@ -424,6 +478,141 @@ def run_recovery(spec: dict[str, Any], *, timeout_seconds: int) -> dict[str, Any
     return record
 
 
+def producer_order_problems(
+    commands: list[dict[str, Any]] | None = None,
+    edges: dict[str, tuple[str, ...]] | None = None,
+) -> list[str]:
+    """Fail closed unless the sequence is a topological order of the DAG."""
+    sequence = COMMANDS if commands is None else commands
+    graph = PRODUCER_ORDER_EDGES if edges is None else edges
+    problems: list[str] = []
+    ids = [str(row.get("id") or "") for row in sequence]
+    if any(not step_id for step_id in ids):
+        problems.append("blank_step_id")
+    if len(ids) != len(set(ids)):
+        problems.append("duplicate_step_id")
+    index = {step_id: position for position, step_id in enumerate(ids)}
+    adjacency: dict[str, list[str]] = {step_id: [] for step_id in ids}
+    indegree = {step_id: 0 for step_id in ids}
+    for consumer, producers in graph.items():
+        if consumer not in index:
+            problems.append(f"edge_consumer_not_in_sequence:{consumer}")
+            continue
+        for producer in producers:
+            if producer not in index:
+                problems.append(f"edge_producer_not_in_sequence:{producer}->{consumer}")
+                continue
+            if index[producer] >= index[consumer]:
+                problems.append(f"producer_after_consumer:{producer}->{consumer}")
+            adjacency.setdefault(producer, []).append(consumer)
+            indegree[consumer] = indegree.get(consumer, 0) + 1
+    pending = [step_id for step_id, degree in indegree.items() if degree == 0]
+    seen = 0
+    while pending:
+        node = pending.pop()
+        seen += 1
+        for nxt in adjacency.get(node, []):
+            if nxt not in indegree:
+                continue
+            indegree[nxt] -= 1
+            if indegree[nxt] == 0:
+                pending.append(nxt)
+    if seen != len(indegree):
+        problems.append("producer_order_cycle")
+    return sorted(set(problems))
+
+
+def unmet_producer_edges(
+    spec: dict[str, Any],
+    commands: list[dict[str, Any]],
+    results: list[dict[str, Any]],
+) -> list[str]:
+    """Producers included in this run that have not yet succeeded.
+
+    A producer absent from this invocation is not blocked here. The daytime
+    status-card path uses status_card_queue_staleness for that case.
+    """
+    producers = PRODUCER_ORDER_EDGES.get(str(spec.get("id") or ""), ())
+    if not producers:
+        return []
+    command_ids = {str(row.get("id")) for row in commands}
+    succeeded = {
+        str(row.get("id"))
+        for row in results
+        if row.get("returncode") == 0 and not row.get("blocked")
+    }
+    return [producer for producer in producers if producer in command_ids and producer not in succeeded]
+
+
+def command_for_step(step_id: str) -> list[str] | None:
+    for spec in COMMANDS:
+        if spec.get("id") == step_id:
+            return [str(part) for part in spec.get("command") or []]
+    return None
+
+
+def artifact_clock(path: Path) -> datetime | None:
+    if not path.exists():
+        return None
+    generated = parse_generated_at(load_json(path).get("generated_at_utc"))
+    if generated is not None:
+        return generated
+    try:
+        return datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc)
+    except OSError:
+        return None
+
+
+def status_card_queue_staleness(root: Path) -> dict[str, Any]:
+    """Whether cron/PM control is newer than the queue the status card reads.
+
+    No upstream clock means there is nothing to compare. Callers must not
+    invent a refresh in that case, so fixture roots that only run the card
+    stay inert.
+    """
+    queue_path = root / STATUS_CARD_QUEUE_ARTIFACT
+    upstream_clocks: list[tuple[Path, datetime]] = []
+    for relative in STATUS_CARD_UPSTREAM_ARTIFACTS:
+        clock = artifact_clock(root / relative)
+        if clock is not None:
+            upstream_clocks.append((root / relative, clock))
+    base = {
+        "producer_step": STATUS_CARD_QUEUE_STEP,
+        "queue_artifact": STATUS_CARD_QUEUE_ARTIFACT,
+    }
+    if not upstream_clocks:
+        return {**base, "stale": False, "reason": "no_upstream_clock"}
+    newest_path, newest = max(upstream_clocks, key=lambda item: item[1])
+    queue_at = artifact_clock(queue_path)
+    if queue_at is None:
+        stale = True
+        reason = "queue_missing"
+    elif queue_at.timestamp() + PRODUCER_CODE_SKEW_GRACE_SECONDS < newest.timestamp():
+        stale = True
+        reason = "queue_older_than_upstream"
+    else:
+        stale = False
+        reason = "queue_fresh"
+    return {
+        **base,
+        "stale": stale,
+        "reason": reason,
+        "queue_generated_at_utc": None if queue_at is None else queue_at.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "upstream_path": str(newest_path),
+        "upstream_generated_at_utc": newest.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+    }
+
+
+def producer_order_proof(problems: list[str]) -> dict[str, Any]:
+    return {
+        "edge_count": sum(len(producers) for producers in PRODUCER_ORDER_EDGES.values()),
+        "consumer_count": len(PRODUCER_ORDER_EDGES),
+        "status_card_producers": list(PRODUCER_ORDER_EDGES.get("status_card", ())),
+        "problems": problems,
+        "status": "blocked" if problems else "ok",
+    }
+
+
 def run_sequence(
     commands: list[dict[str, Any]],
     *,
@@ -468,6 +657,15 @@ def run_sequence(
                 row["executed"] = False
                 row["blocked"] = True
                 row["block_reason"] = f"stale_or_missing_producer_evidence:{reasons}"
+                results.append(row)
+                ok = False
+                break
+            unmet = unmet_producer_edges(spec, commands, results)
+            if unmet:
+                row["executed"] = False
+                row["blocked"] = True
+                row["block_reason"] = "producer_order_unmet:" + ",".join(unmet)
+                row["producer_order_unmet"] = unmet
                 results.append(row)
                 ok = False
                 break
@@ -556,15 +754,20 @@ def build_packet(
     reuse_fresh_wf74: bool = True,
     fresh_max_age_minutes: int = WF74_REUSE_WINDOW_MINUTES,
 ) -> dict[str, Any]:
-    results, ok = run_sequence(
-        COMMANDS,
-        execute=execute,
-        timeout_seconds=timeout_seconds,
-        reuse_fresh_wf74=reuse_fresh_wf74,
-        fresh_max_age_minutes=fresh_max_age_minutes,
-        retry_limit=STEP_RETRY_LIMIT,
-        retry_wait_seconds=STEP_RETRY_WAIT_SECONDS,
-    )
+    order_problems = producer_order_problems(COMMANDS)
+    if order_problems:
+        results: list[dict[str, Any]] = []
+        ok = False
+    else:
+        results, ok = run_sequence(
+            COMMANDS,
+            execute=execute,
+            timeout_seconds=timeout_seconds,
+            reuse_fresh_wf74=reuse_fresh_wf74,
+            fresh_max_age_minutes=fresh_max_age_minutes,
+            retry_limit=STEP_RETRY_LIMIT,
+            retry_wait_seconds=STEP_RETRY_WAIT_SECONDS,
+        )
     skipped = [row for row in results if row.get("skipped")]
     retried = [row for row in results if row.get("retry_attempted")]
     recovered = [row for row in retried if row.get("returncode") == 0]
@@ -579,6 +782,8 @@ def build_packet(
             errors.append("command_launch_error")
     if blocked is not None:
         errors.append("stale_dependency_blocked")
+    if order_problems:
+        errors.append("producer_order_invalid")
     packet = {
         "schema": SCHEMA,
         "generated_at_utc": utc_now(),
@@ -601,6 +806,7 @@ def build_packet(
         "failed_command": failed,
         "blocked_command": blocked,
         "results": results,
+        "producer_order": producer_order_proof(order_problems),
         "validation": {"status": "ok" if ok else "blocked", "errors": errors, "warnings": []},
     }
     return packet

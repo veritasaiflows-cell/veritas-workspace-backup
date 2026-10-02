@@ -1,0 +1,13 @@
+{
+  "case": "f01-exec-aggregated",
+  "rep": 1,
+  "job_id": "deepseek-clean-native-f01-exec-aggregated-r1",
+  "attempt_dir": "data\\evals\\deepseek-builder-20261001\\results\\f01-exec-aggregated-r1",
+  "task_sha256": "9157ed180d14b2ea3f656061eff3fe320bef72154ce21716c5ae3e1eea982582",
+  "status": "stopped_after_frozen_scope_violation",
+  "session_key": "agent:deepseek-builder-eval:subagent:6cefa370-bf15-4419-ac44-e6f423abd28d",
+  "run_id": "44d205f4-60b7-4e94-ab90-0e8e37262aa2",
+  "resolved_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "started_utc": "2026-10-02T04:21:37.280640+00:00",
+  "deadline_utc": "2026-10-02T04:36:37.280649+00:00"
+}

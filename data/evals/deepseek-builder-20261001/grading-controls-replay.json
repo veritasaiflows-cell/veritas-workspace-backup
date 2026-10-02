@@ -1,0 +1,9 @@
+{
+  "status": "ok",
+  "cases": 20,
+  "failed_cases": [],
+  "command": "python -B scripts\\builder_eval_v1.py controls",
+  "exit_code": 0,
+  "suite_sha256": "26e3d1bca43696fbde006f985a9b311b94fe9c0be2665500c9b0c59c1fd0b721",
+  "grader_version": "v2"
+}

@@ -1,0 +1,199 @@
+{
+  "schema": "veritas.deepseek_eval_provision.v1",
+  "status": "read_write_exec_canary_verified",
+  "owner_approval": "2026-10-01 21:03 America/Phoenix: Okay, proceed with a separate, clean test workspace",
+  "agent_id": "deepseek-builder-eval",
+  "agent_projection": {
+    "name": "DeepSeek Builder Eval (disposable)",
+    "workspace": "C:\\Users\\Veritas\\.openclaw\\workspaces\\deepseek-builder-eval",
+    "agentDir": "C:\\Users\\Veritas\\.openclaw\\agents\\deepseek-builder-eval\\agent",
+    "model": {
+      "primary": "ollama-cloud/deepseek-v4.1-flash:cloud",
+      "fallbacks": []
+    },
+    "sandbox": {
+      "mode": "all",
+      "backend": "docker",
+      "workspaceAccess": "none",
+      "scope": "session",
+      "docker": {
+        "image": "openclaw-sandbox:bookworm-slim-python-calibration-r1",
+        "readOnlyRoot": true,
+        "tmpfs": [
+          "/tmp",
+          "/var/tmp",
+          "/run"
+        ],
+        "network": "none",
+        "user": "65534:65534",
+        "capDrop": [
+          "ALL"
+        ],
+        "env": {
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTHONPYCACHEPREFIX": "/tmp/deepseek-eval-pycache"
+        },
+        "pidsLimit": 64,
+        "memory": "512m",
+        "memorySwap": "512m",
+        "cpus": 1,
+        "binds": [
+          "C:\\Users\\Veritas\\.openclaw\\workspaces\\deepseek-builder-eval\\handoff\\scoped-worktree:/worktree:rw"
+        ]
+      }
+    },
+    "tools": {
+      "allow": [
+        "read",
+        "write",
+        "edit",
+        "apply_patch",
+        "exec"
+      ],
+      "deny": [
+        "process",
+        "cron",
+        "automations",
+        "gateway",
+        "message",
+        "sessions_list",
+        "sessions_history",
+        "session_status",
+        "sessions_send",
+        "sessions_spawn",
+        "subagents",
+        "skill_workshop",
+        "browser",
+        "view_image",
+        "media",
+        "nodes",
+        "web_search",
+        "web_fetch",
+        "memory_search",
+        "memory_get",
+        "secrets",
+        "plugins",
+        "openclaw",
+        "terminal",
+        "conversations_list",
+        "conversations_send",
+        "conversations_turn"
+      ],
+      "elevated": {
+        "enabled": false
+      },
+      "exec": {
+        "host": "sandbox",
+        "mode": "full",
+        "strictInlineEval": true,
+        "timeoutSeconds": 30
+      },
+      "fs": {
+        "workspaceOnly": false
+      },
+      "message": {
+        "crossContext": {
+          "allowWithinProvider": false,
+          "allowAcrossProviders": false
+        }
+      },
+      "sandbox": {
+        "tools": {
+          "allow": [
+            "read",
+            "write",
+            "edit",
+            "apply_patch",
+            "exec"
+          ],
+          "deny": [
+            "process",
+            "cron",
+            "automations",
+            "gateway",
+            "message",
+            "sessions_list",
+            "sessions_history",
+            "session_status",
+            "sessions_send",
+            "sessions_spawn",
+            "subagents",
+            "skill_workshop",
+            "browser",
+            "view_image",
+            "media",
+            "nodes",
+            "web_search",
+            "web_fetch",
+            "memory_search",
+            "memory_get",
+            "secrets",
+            "plugins",
+            "openclaw",
+            "terminal",
+            "conversations_list",
+            "conversations_send",
+            "conversations_turn"
+          ]
+        }
+      }
+    }
+  },
+  "main_spawn_allowlisted": true,
+  "agent_to_agent_allowlisted": true,
+  "bootstrap_hashes": {
+    "AGENTS.md": "2697aeb8a25cc284098eebf3e04dc1cab714afbaff162de188335a9c11f756f5",
+    "SOUL.md": "fd6b3add4ee363a690ee3320a5b5fe5f33291e96a7db5be9a8f079392562da56",
+    "USER.md": "6432b8fbf0f5873e251eac70118e227c35478f8362f9c2d1bc26d39dc43b9702",
+    "IDENTITY.md": "ee5e46fff5399be99c7c20e5b726f17b4226532edd4b3c91fdcdb567468029b2"
+  },
+  "recent_config_backup_metadata": [
+    {
+      "path": "C:\\Users\\Veritas\\.openclaw\\openclaw.json.bak",
+      "mtime": 1790914412.9716635
+    },
+    {
+      "path": "C:\\Users\\Veritas\\.openclaw\\openclaw.json.bak.1",
+      "mtime": 1790914368.0897882
+    },
+    {
+      "path": "C:\\Users\\Veritas\\.openclaw\\openclaw.json.last-good",
+      "mtime": 1790914326.8054912
+    },
+    {
+      "path": "C:\\Users\\Veritas\\.openclaw\\openclaw.json.bak.2",
+      "mtime": 1790914217.25945
+    },
+    {
+      "path": "C:\\Users\\Veritas\\.openclaw\\openclaw.json.bak.3",
+      "mtime": 1790914165.263882
+    },
+    {
+      "path": "C:\\Users\\Veritas\\.openclaw\\openclaw.json.bak.4",
+      "mtime": 1790914117.2075126
+    },
+    {
+      "path": "C:\\Users\\Veritas\\.openclaw\\openclaw.json.bak-20260928-ctx350k",
+      "mtime": 1790656476.8692396
+    },
+    {
+      "path": "C:\\Users\\Veritas\\.openclaw\\openclaw.json.bak-20260928-codex-args",
+      "mtime": 1790649874.036803
+    }
+  ],
+  "configuration_change_route": "OpenClaw custodian agents.create and scoped config.set, no restart",
+  "changed_config_paths": [
+    "agents.entries.deepseek-builder-eval",
+    "agents.entries.main.subagents.allowAgents:append deepseek-builder-eval",
+    "tools.agentToAgent.allow:append deepseek-builder-eval"
+  ],
+  "private_backup_limit": "Custodian did not provide a pre-all-edits backup; recent config backup files listed as metadata only, no claim of proven full preimage",
+  "rollback": "Scoped inverse patch: remove new id from the two dispatch lists and remove only the new agent entry, preserving later unrelated edits. Requires explicit rollback approval; do not restore a whole backup. Workspace/history retained unless separately authorized removal.",
+  "limitations": [
+    "Directory-level rw test mount; exact per-trial semantic leases require host hash validation",
+    "Read/write/exec runtime evidence pending; configuration does not prove readiness",
+    "No production model/fleet/default changes requested"
+  ],
+  "runtime_proof": "clean-canary-result.json",
+  "effective_mount_limit": "OpenClaw additionally creates per-session disposable /workspace rw and /workspace/skills ro; not Main workspace. Test doctrine forbids reads/writes there; no hidden test/reference inputs staged there. Candidate-visible allowlist must be checked against sandbox contents before held-out claims."
+}

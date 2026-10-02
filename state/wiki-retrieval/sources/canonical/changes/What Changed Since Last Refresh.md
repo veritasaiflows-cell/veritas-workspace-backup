@@ -2,8 +2,8 @@
 # What Changed Since Last Refresh
 
 Canonical page: `wiki/changes/What Changed Since Last Refresh.md`
-Canonical rendered SHA-256: `ecbe34395573612916043a2d6445d48a540bf0cd1fd5b7c4c2c9004526323b56`.
-Source snapshot SHA-256: `e442d9ad001864187ce0dce59b9a171b89dbe50557727e9e73c3dcd6febcef98`.
+Canonical rendered SHA-256: `1bd2a0609b24b58f4f0ea92c3d9bf279cb8288b26be140a74b113f3f7d987ac7`.
+Source snapshot SHA-256: `c2f5083a99c97499f05ef2f7632fd70bbbf0cff8eb6b53a2b2392add476f2a38`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases
@@ -28,10 +28,10 @@ Promotion path: wiki insight -> WF88 recommendation -> WF74/PM/Skill Workshop/va
 - `tmp/wf88-wiki-review-events.json`
 ## Claim-catalog delta
 
-- Baseline generated: `2026-09-30T03:46:07Z`.
+- Baseline generated: `2026-10-01T05:12:53Z`.
 - Added claim IDs: `none`.
 - Removed claim IDs: `none`.
-- Changed claim IDs: `none`.
+- Changed claim IDs: `action-state:route-open-improvement-followups, followup-no-orphan-health`.
 - Source-reference changes: `action-state:close-implementation-token-attribution-gap, action-state:close-rsi-outcome-linkage-debt, action-state:compile-wf88-decision-objects, action-state:enforce-no-orphan-improvement-actions, action-state:grade-recommendation-outcomes, action-state:maintain-long-work-job-status, action-state:maintain-wf74-wf88-loop-trace, action-state:maintain-wf88-retrieval-regression-corpus, action-state:preserve-zero-auto-apply, action-state:refresh-wf88-wiki-synthesis, action-state:route-open-improvement-followups, followup-no-orphan-health, promotion-leak-guard-health, recommendation-outcome-closure`.
 
 ## Review event references

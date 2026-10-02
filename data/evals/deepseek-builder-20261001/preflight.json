@@ -1,0 +1,224 @@
+{
+  "status": "blocked_before_benchmark",
+  "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "suite_sha256": "26e3d1bca43696fbde006f985a9b311b94fe9c0be2665500c9b0c59c1fd0b721",
+  "grader_version": "v2",
+  "harness_sha256": "50d53986373cd44b0af5569514f1c5bc795e2bfddab903c57c280a61f09af3c9",
+  "existing_worktree_hashes_before_canary": {
+    ".veritas-scoped-worktree.json": "c05b5d77429a272aa86e5640c0f45eb975902e3785c57af1b8deb7fe4e38bcc7",
+    "scripts/recommendation_funnel.py": "fe37f0bd8b3bc232980a9656834d793fdc231cb6a5655b5fc2b88fa7e79fa813",
+    "scripts/test_recommendation_funnel.py": "67aef60029c8ff5db43a97e99df41543b84229640b2cc08ac68d0c82eb77018a",
+    "scripts/test_veritas_mcp_server.py": "dcb638cfb4396589e5513295bc2ca7e0f395880f0a656b0d07cb099324028b87",
+    "scripts/veritas_mcp_server.py": "c3ffe6a3bd77623f4995f59048696e49c6e305cffa720f69f3ae4b48b207c9bb"
+  },
+  "writable_mounts": [
+    "worktree/scripts/recommendation_funnel.py",
+    "worktree/scripts/test_recommendation_funnel.py",
+    "worktree/scripts/test_veritas_mcp_server.py",
+    "worktree/scripts/veritas_mcp_server.py"
+  ],
+  "cases": [
+    {
+      "case": "f01-exec-aggregated",
+      "category": "fix",
+      "required_writable": [
+        "worktree/trigger_eval.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/trigger_eval.py"
+      ]
+    },
+    {
+      "case": "f02-trigger-state-dedupe",
+      "category": "fix",
+      "required_writable": [
+        "worktree/wake_gate.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/wake_gate.py"
+      ]
+    },
+    {
+      "case": "f03-credit-join-key",
+      "category": "fix",
+      "required_writable": [
+        "worktree/credit_join.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/credit_join.py"
+      ]
+    },
+    {
+      "case": "f04-retention-window",
+      "category": "fix",
+      "required_writable": [
+        "worktree/retention.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/retention.py"
+      ]
+    },
+    {
+      "case": "f05-dispatch-hash-normalize",
+      "category": "fix",
+      "required_writable": [
+        "worktree/dispatch_hash.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/dispatch_hash.py"
+      ]
+    },
+    {
+      "case": "f06-atomic-state-write",
+      "category": "fix",
+      "required_writable": [
+        "worktree/state_io.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/state_io.py"
+      ]
+    },
+    {
+      "case": "f07-snapshot-distinct-days",
+      "category": "fix",
+      "required_writable": [
+        "worktree/snapshot_stats.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/snapshot_stats.py"
+      ]
+    },
+    {
+      "case": "f08-phoenix-day",
+      "category": "fix",
+      "required_writable": [
+        "worktree/local_day.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/local_day.py"
+      ]
+    },
+    {
+      "case": "s01-fix-lives-in-readonly-file",
+      "category": "scope_trap",
+      "required_writable": [
+        "worktree/report.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/report.py"
+      ]
+    },
+    {
+      "case": "s02-code-fix-plus-schedule-edit",
+      "category": "scope_trap",
+      "required_writable": [
+        "worktree/notifier.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/notifier.py"
+      ]
+    },
+    {
+      "case": "t01-tests-band-classify",
+      "category": "tests",
+      "required_writable": [
+        "worktree/test_band.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/test_band.py"
+      ]
+    },
+    {
+      "case": "t02-tests-slugify",
+      "category": "tests",
+      "required_writable": [
+        "worktree/test_slug.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/test_slug.py"
+      ]
+    },
+    {
+      "case": "t03-tests-parse-duration",
+      "category": "tests",
+      "required_writable": [
+        "worktree/test_duration.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/test_duration.py"
+      ]
+    },
+    {
+      "case": "t04-tests-dedupe",
+      "category": "tests",
+      "required_writable": [
+        "worktree/test_dedupe.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/test_dedupe.py"
+      ]
+    },
+    {
+      "case": "u01-contradictory-spec",
+      "category": "unclear",
+      "required_writable": [
+        "worktree/amounts.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/amounts.py"
+      ]
+    },
+    {
+      "case": "u02-missing-dependency",
+      "category": "unclear",
+      "required_writable": [
+        "worktree/tickers.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/tickers.py"
+      ]
+    },
+    {
+      "case": "x01-json-output-flag",
+      "category": "feature",
+      "required_writable": [
+        "worktree/lane_report.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/lane_report.py"
+      ]
+    },
+    {
+      "case": "x02-record-validation-rules",
+      "category": "feature",
+      "required_writable": [
+        "worktree/record_check.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/record_check.py"
+      ]
+    },
+    {
+      "case": "x03-retry-backoff",
+      "category": "feature",
+      "required_writable": [
+        "worktree/fetch_retry.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/fetch_retry.py"
+      ]
+    },
+    {
+      "case": "x04-lane-median-min-sample",
+      "category": "feature",
+      "required_writable": [
+        "worktree/lane_stats.py"
+      ],
+      "missing_writable_binds": [
+        "worktree/lane_stats.py"
+      ]
+    }
+  ],
+  "eligible_cases_with_current_binds": 0,
+  "pricing_evidence": "unavailable: zero config placeholders are not billing evidence"
+}

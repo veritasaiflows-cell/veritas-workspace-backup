@@ -21,7 +21,7 @@ Material implementation sessions must consume the versioned efficiency route fro
 - `refresh-wf88-wiki-synthesis`: `active` - Run the wiki synthesis packet after WF88/WF74/PM/OTEL producers refresh or after material implementation closeout.
 - `grade-recommendation-outcomes`: `followup_required` - Grade mature outcomes represented in the current recommendation preview before making decision-quality claims; historical grades do not satisfy current-preview evidence.
 - `mature-rsi-eval-harness`: `proof_worker_ready` - Keep RSI guarded; supervised proof refresh may run, while cron proof execution still requires explicit graduation proof.
-- `route-open-improvement-followups`: `monitor` - Route open follow-up debt through WF74 docket, PM jobs, owner packets, or monitor-only rows; do not leave it as chat residue.
+- `route-open-improvement-followups`: `followup_required` - Route open follow-up debt through WF74 docket, PM jobs, owner packets, or monitor-only rows; do not leave it as chat residue.
 - `enforce-no-orphan-improvement-actions`: `clean` - Refresh the actionable improvement queue and no-orphan validator so every open improvement has a durable destination and next action.
 - `maintain-wf74-wf88-loop-trace`: `warning` - Use the stitched loop trace to verify each current opportunity has a durable destination, PM/lane link when applicable, and WF88 consumer refresh.
 - `maintain-long-work-job-status`: `clean` - Use the long-work status packet to resume provider-backed or full-source local jobs in bounded slices before rerunning expensive foreground commands.
@@ -39,7 +39,7 @@ Material implementation sessions must consume the versioned efficiency route fro
 - `action-state:refresh-wf88-wiki-synthesis`: `{"state":"active"}`; authority `review_only`; source refs `wf88_os2_control#/status`.
 - `action-state:grade-recommendation-outcomes`: `{"state":"followup_required"}`; authority `review_only`; source refs `wf88_os2_control#/summary/recommendation_current_preview_later_outcome_graded_rows`.
 - `action-state:mature-rsi-eval-harness`: `{"state":"proof_worker_ready"}`; authority `review_only`; source refs `wf74_learning_loop_eval_harness#/rsi_maturity/status`.
-- `action-state:route-open-improvement-followups`: `{"state":"monitor"}`; authority `review_only`; source refs `improvement_ledger#/summary/followup_required_open_count`.
+- `action-state:route-open-improvement-followups`: `{"state":"followup_required"}`; authority `review_only`; source refs `improvement_ledger#/summary/followup_required_open_count`.
 - `action-state:enforce-no-orphan-improvement-actions`: `{"state":"clean"}`; authority `review_only`; source refs `no_orphan_validator#/validation/status`.
 - `action-state:maintain-wf74-wf88-loop-trace`: `{"state":"warning"}`; authority `review_only`; source refs `wf74_wf88_loop_trace#/summary/high_priority_unrouted_count`, `wf74_wf88_loop_trace#/summary/duplicate_pm_job_id_count`, `wf74_wf88_loop_trace#/summary/downstream_stale_after_router_count`, `wf74_wf88_loop_trace#/summary/lane_link_missing_count`.
 - `action-state:maintain-long-work-job-status`: `{"state":"clean"}`; authority `review_only`; source refs `long_work_job_status#/validation/status`, `long_work_job_status#/summary/blocked_job_count`, `long_work_job_status#/summary/resumable_job_count`, `long_work_job_status#/summary/stale_active_job_count`, `long_work_job_status#/summary/active_job_count`.

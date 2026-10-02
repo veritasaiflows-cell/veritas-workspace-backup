@@ -591,6 +591,67 @@ def test_static_manifest_uses_active_alerts_os_proofs_only() -> None:
         assert "paper-execution" not in lowered
 
 
+def _script_name(command: list[str]) -> str:
+    return str(command[1]).replace("\\", "/")
+
+
+def test_stale_queue_is_refreshed_before_status_card() -> None:
+    with tempfile.TemporaryDirectory() as raw:
+        root = Path(raw)
+        (root / "tmp").mkdir()
+        (root / "scripts").mkdir()
+        write_json(root / "tmp" / "cron-control-packet.json", {"generated_at_utc": "2026-09-30T18:00:00Z", "status": "ok"})
+        write_json(
+            root / "tmp" / "wf74-improvement-opportunity-queue.json",
+            {"generated_at_utc": "2026-09-29T22:12:00Z", "status": "ok"},
+        )
+        completed = subprocess.CompletedProcess([], 0, stdout="ok", stderr="")
+        with patch.object(gate.subprocess, "run", return_value=completed) as run:
+            result = gate.run_existing_runner(root=root, runner_out=root / "runner.json")
+        assert result["ok"] is True
+        assert run.call_count == 2
+        first = _script_name(run.call_args_list[0].args[0])
+        second = _script_name(run.call_args_list[1].args[0])
+        assert first.endswith("wf74_improvement_opportunity_queue.py")
+        assert second.endswith("status_card_packet.py")
+        assert result["producer_order"]["reason"] == "queue_older_than_upstream"
+        assert result["producer_steps"][0]["ok"] is True
+
+
+def test_failed_queue_refresh_does_not_run_status_card() -> None:
+    with tempfile.TemporaryDirectory() as raw:
+        root = Path(raw)
+        (root / "tmp").mkdir()
+        write_json(root / "tmp" / "pm-control-packet.json", {"generated_at_utc": "2026-09-30T18:00:00Z"})
+        completed = subprocess.CompletedProcess([], 1, stdout="", stderr="queue failed")
+        with patch.object(gate.subprocess, "run", return_value=completed) as run:
+            result = gate.run_existing_runner(root=root, runner_out=root / "runner.json")
+        assert result["ok"] is False
+        assert result["error_code"] == "producer_order_blocked"
+        assert run.call_count == 1
+        assert _script_name(run.call_args.args[0]).endswith("wf74_improvement_opportunity_queue.py")
+        assert not (root / "runner.json").exists()
+
+
+def test_fresh_queue_does_not_prepend_the_producer() -> None:
+    with tempfile.TemporaryDirectory() as raw:
+        root = Path(raw)
+        (root / "tmp").mkdir()
+        (root / "scripts").mkdir()
+        write_json(root / "tmp" / "cron-control-packet.json", {"generated_at_utc": "2026-09-30T18:00:00Z"})
+        write_json(
+            root / "tmp" / "wf74-improvement-opportunity-queue.json",
+            {"generated_at_utc": "2026-09-30T18:05:00Z"},
+        )
+        completed = subprocess.CompletedProcess([], 0, stdout="ok", stderr="")
+        with patch.object(gate.subprocess, "run", return_value=completed) as run:
+            result = gate.run_existing_runner(root=root, runner_out=root / "runner.json")
+        assert result["ok"] is True
+        assert run.call_count == 1
+        assert _script_name(run.call_args.args[0]).endswith("status_card_packet.py")
+        assert result["producer_order"]["reason"] == "queue_fresh"
+
+
 def main() -> int:
     test_changed_then_unchanged_then_changed()
     test_stale_successful_output_cannot_be_reused()
@@ -607,6 +668,9 @@ def main() -> int:
     test_custom_runner_output_is_forwarded_and_launch_failures_are_structured()
     test_finalize_records_post_run_signature_and_rejects_invalid_output()
     test_static_manifest_uses_active_alerts_os_proofs_only()
+    test_stale_queue_is_refreshed_before_status_card()
+    test_failed_queue_refresh_does_not_run_status_card()
+    test_fresh_queue_does_not_prepend_the_producer()
     print("status_card_freshness_predispatch_prefilter_tests_passed")
     return 0
 

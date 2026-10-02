@@ -1,0 +1,20 @@
+{
+  "job_id": "deepseek-clean-native-f01-exec-aggregated-r1",
+  "files": [
+    {
+      "relative_path": "test_trigger_eval.py",
+      "sha256": "d40143d3e995478552282ad534caf4fe6ddd08177a2128efe597e2a05a2fe63c"
+    },
+    {
+      "relative_path": "trigger_eval.py",
+      "sha256": "8ac53ef07603bba27b597dc95e4f16ec7e4e9a2a1be36159616333203f171812"
+    }
+  ],
+  "allowed_write_paths": [
+    "trigger_eval.py"
+  ],
+  "readonly_paths": [
+    "test_trigger_eval.py"
+  ],
+  "no_other_files_or_actions": true
+}

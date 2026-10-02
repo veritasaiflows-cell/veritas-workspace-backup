@@ -1,0 +1,39 @@
+## Summary
+
+**Changed:** `/worktree/trigger_eval.py` — `parse_exec_result()` now reads the exec runtime's `"aggregated"` field instead of `"stdout"`/`"output"`/`"text"`.
+
+- Empty/absent `aggregated` → `None` (unchanged behaviour for unreadable input).
+- Takes the **last non-empty line** of `aggregated` and `json.loads` it; JSON parse failure → `None`.
+- Non-dict JSON (e.g. list, number) → `None` (unchanged).
+- No other files touched; no commit, no network.
+
+Final function body:
+```python
+def parse_exec_result(res):
+    """Return the parsed JSON object the command printed, or None."""
+    text = res.get("aggregated")
+    if not text:
+        return None
+    lines = [line for line in text.splitlines() if line.strip()]
+    if not lines:
+        return None
+    try:
+        doc = json.loads(lines[-1])
+    except ValueError:
+        return None
+    return doc if isinstance(doc, dict) else None
+```
+
+**Command run:** `cd /worktree && python3 -m unittest -v`
+
+**Exact output:**
+```
+test_actionable_fires (test_trigger_eval.Visible.test_actionable_fires) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+No BLOCKED items.

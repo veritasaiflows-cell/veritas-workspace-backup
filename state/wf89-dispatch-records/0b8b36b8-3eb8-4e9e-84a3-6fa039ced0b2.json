@@ -1,0 +1,14 @@
+{
+  "schema": "veritas.wf89_dispatch_record.v1",
+  "contract": "v0.3",
+  "dispatch_id": "0b8b36b8-3eb8-4e9e-84a3-6fa039ced0b2",
+  "agent_id": "main",
+  "session_key": "agent:main:cron:c295580b-fd61-4995-9a0e-f876873a5ea4:run:1790863201153",
+  "label": "cron wake: pm priority pickup",
+  "task_text_sha256": "3451f82bafb5a7b47b144f98d73615efad351110c29a5c53b16ec85ba68de0a6",
+  "message_file": "C:\\Users\\Veritas\\.openclaw\\workspace\\tmp\\pm-priority-pickup-wake-message.txt",
+  "created_at_ms": 1790863201160,
+  "dispatcher": "main",
+  "posture": "attribution evidence only; grants no credit, approval or authority",
+  "launched_by": "pm_priority_pickup_predispatch_prefilter"
+}

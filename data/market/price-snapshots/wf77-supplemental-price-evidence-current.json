@@ -1,6 +1,6 @@
 {
   "schema_version": "wf77_supplemental_price_evidence.v1",
-  "generated_at_utc": "2026-09-30T21:55:08Z",
+  "generated_at_utc": "2026-10-01T21:55:10Z",
   "status": "ok",
   "source_policy": {
     "source": "yfinance public market data",
@@ -785,7 +785,7 @@
       "ma_posture": "insufficient data for full posture",
       "data_date": "2026-08-14",
       "source": "yfinance",
-      "retrieved_at_utc": "2026-09-30T21:55:08Z",
+      "retrieved_at_utc": "2026-10-01T21:55:10Z",
       "notes": [
         "history latest row 2026-08-17 had no usable close after 2026-08-14",
         "Less than 200 trading days available."
@@ -2488,7 +2488,7 @@
       "ma_posture": "insufficient data for full posture",
       "data_date": "2026-08-04",
       "source": "yfinance",
-      "retrieved_at_utc": "2026-09-30T21:55:08Z",
+      "retrieved_at_utc": "2026-10-01T21:55:10Z",
       "notes": [
         "Less than 200 trading days available."
       ],
@@ -2660,7 +2660,7 @@
       "ma_posture": "insufficient data for full posture",
       "data_date": "2026-08-17",
       "source": "yfinance",
-      "retrieved_at_utc": "2026-09-30T21:55:08Z",
+      "retrieved_at_utc": "2026-10-01T21:55:10Z",
       "notes": [
         "Less than 200 trading days available."
       ],

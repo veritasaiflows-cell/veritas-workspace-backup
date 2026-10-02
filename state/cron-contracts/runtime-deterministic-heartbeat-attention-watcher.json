@@ -1,0 +1,44 @@
+{
+  "schema": "veritas.cron_contract.v1",
+  "job_id": "5d9f20f9-d27a-4875-8ed9-9f007487c510",
+  "name": "Runtime - Deterministic Heartbeat Attention Watcher",
+  "required": true,
+  "owner_workflow": "Deterministic heartbeat",
+  "contract_reason": "Owner-directed 2026-10-02 completion of the deterministic heartbeat. Read-only watcher. Quiet on valid NO_DELTA. Bounded review-only attention otherwise.",
+  "description": "One-minute read-only receipt watcher. No success delivery. Queue acceptance is not end-to-end Main completion.",
+  "enabled": true,
+  "schedule": {
+    "kind": "every",
+    "everyMs": 60000
+  },
+  "sessionTarget": "main",
+  "wakeMode": "now",
+  "payload": {
+    "kind": "script",
+    "timeoutSeconds": 30,
+    "toolBudget": 1
+  },
+  "delivery": {
+    "mode": "none"
+  },
+  "freshness_hours": 1,
+  "compare_fields": [
+    "enabled",
+    "schedule.kind",
+    "schedule.everyMs",
+    "sessionTarget",
+    "wakeMode",
+    "payload.kind"
+  ],
+  "authority_boundary": {
+    "review_only": true,
+    "cron_schedule_mutation_allowed": false,
+    "config_auth_runtime_mutation_allowed": false,
+    "canon_or_portfolio_mutation_allowed": false,
+    "capital_deployment_allowed": false,
+    "paper_or_live_execution_allowed": false,
+    "brokerage_or_account_action_allowed": false,
+    "owner_approval_inferred": false
+  },
+  "updated_at_utc": "2026-10-02T19:55:00Z"
+}

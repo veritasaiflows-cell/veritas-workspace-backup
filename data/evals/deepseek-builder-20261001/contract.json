@@ -1,0 +1,23 @@
+{
+  "schema": "veritas.deepseek_builder_diagnostic_contract.v1",
+  "owner_request": "Test Deepseek for possible cheaper coder/builder isolated-agent promotion",
+  "request_date_phoenix": "2026-10-01",
+  "model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "mode": "read_only_transport_canary",
+  "agent": "implementation-builder",
+  "runtime": "native_subagent",
+  "context": "isolated",
+  "sandbox": "require",
+  "timeout_seconds": 180,
+  "attempts": 1,
+  "retries": 0,
+  "writes_allowed": [],
+  "tools_required": ["read", "exec"],
+  "canary": "Read /worktree/handoff-manifest.json; execute python3 --version; report manifest job_id and exact observed version output. No source edits, tests, network, or other reads.",
+  "stop_rule": "Any model mismatch, inaccessible required mount, sandbox error, or missing exec evidence blocks benchmark dispatch.",
+  "benchmark_status": "not_dispatched_pending_transport_and_disposable_mount",
+  "known_blockers": ["Builder worktree occupied by phase4-lineage-v3-writeback-20260926 active sentinel", "Current exact-file writable binds name scripts/recommendation_funnel.py, scripts/test_recommendation_funnel.py, scripts/test_veritas_mcp_server.py, scripts/veritas_mcp_server.py rather than builder-v1 fixture paths"],
+  "comparison": "Existing builder-v1 Muse Spark results can be a historical reference only after matching grader and transport; no comparative capability score from this canary.",
+  "pricing": "Configured zero costs are placeholders; billed cost and savings unknown.",
+  "authority": "Evaluation only. No promotion, configuration changes, permission widening, occupied-worktree archive/replacement, or production application."
+}

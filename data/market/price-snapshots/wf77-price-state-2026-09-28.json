@@ -1,6 +1,6 @@
 {
   "schema_version": "wf77_price_freshness_bridge.v1",
-  "generated_at_utc": "2026-09-30T21:55:10Z",
+  "generated_at_utc": "2026-10-01T21:55:13Z",
   "status": "warning",
   "phase": "B",
   "phase_name": "WF77 freshness leap through price-state bridge",
@@ -46,16 +46,16 @@
   "source_freshness": {
     "status": "stale",
     "technical_generated_at_utc": "2026-08-29T21:43:58.075260+00:00",
-    "technical_age_hours": 768.19,
+    "technical_age_hours": 792.19,
     "supplemental": {
       "status": "ok",
-      "generated_at_utc": "2026-09-30T21:55:08Z",
+      "generated_at_utc": "2026-10-01T21:55:10Z",
       "latest_market_data_date": "2026-09-28",
       "problem_tickers": []
     },
     "latest_market_data_date": "2026-09-28",
     "source_blockers": [
-      "technical refresh age 768.19h exceeds 36.0h"
+      "technical refresh age 792.19h exceeds 36.0h"
     ]
   },
   "summary": {
@@ -1734,7 +1734,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -1986,7 +1986,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -2688,7 +2688,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 47d exceeds 3d",
+        "price data age 48d exceeds 3d",
         "ticker data date 2026-08-14 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -3540,7 +3540,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -3892,7 +3892,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -4394,7 +4394,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -5396,7 +5396,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -6698,7 +6698,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -7950,7 +7950,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 57d exceeds 3d",
+        "price data age 58d exceeds 3d",
         "ticker data date 2026-08-04 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -8052,7 +8052,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -8504,7 +8504,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 44d exceeds 3d",
+        "price data age 45d exceeds 3d",
         "ticker data date 2026-08-17 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -8706,7 +8706,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -9758,7 +9758,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -9910,7 +9910,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -10112,7 +10112,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -10814,7 +10814,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -10866,7 +10866,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -11168,7 +11168,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -11220,7 +11220,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -11272,7 +11272,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -11324,7 +11324,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -11726,7 +11726,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -11928,7 +11928,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -12130,7 +12130,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -12382,7 +12382,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -12834,7 +12834,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -12986,7 +12986,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -13088,7 +13088,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -13340,7 +13340,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -14192,7 +14192,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -14794,7 +14794,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -14896,7 +14896,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -14948,7 +14948,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -15000,7 +15000,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -15102,7 +15102,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -15204,7 +15204,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -15256,7 +15256,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -15308,7 +15308,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -15360,7 +15360,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -15412,7 +15412,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]
@@ -15464,7 +15464,7 @@
         "fresh_price_can_clear_staleness_context_only": false
       },
       "blockers": [
-        "price data age 33d exceeds 3d",
+        "price data age 34d exceeds 3d",
         "ticker data date 2026-08-28 lags latest snapshot date 2026-09-28",
         "missing ticker intelligence card"
       ]

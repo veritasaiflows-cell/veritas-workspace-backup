@@ -44,6 +44,8 @@ IMPLEMENTATION_COMPLETION_LEDGER = STATE / "implementation-completion-ledger.jso
 WF87_CAPSULE_PATH = STATE / "workflows" / "WF87.json"
 WF87_RETIRED_OPPORTUNITY_TITLE = "Keep WF87 runtime blockers visible as maturity blockers"
 WF87_RETIRED_OPPORTUNITY_SIGNAL = "wf87_runtime_or_maturity_blockers_present"
+WF87_SHADOW_OPPORTUNITY_TITLE = "Track WF87 shadow outcomes until regular-session follow-up thresholds are met"
+WF87_SHADOW_OPPORTUNITY_SIGNAL = "wf87_shadow_outcome_measurement_backlog"
 
 SOURCE_OPEN_REPAIR_TITLE = "Clear finance response quality source-open blockers so WF74 scorecard can pass"
 
@@ -722,6 +724,20 @@ def apply_completion_overlay(
                 completed_or_resolved.append(retired_row)
                 continue
             row["wf87_architecture_proof"] = wf87_proof
+        # The WF87 shadow-measurement backlog is retired history under the exact
+        # same fail-closed proof as the maturity row above: classify only the
+        # exact shadow title, never by substring, and keep it OPEN on any
+        # failed proof. The existing predicate is unchanged and called as-is.
+        if title == WF87_SHADOW_OPPORTUNITY_TITLE:
+            wf87_shadow_proof = load_wf87_retired_architecture_proof()
+            if wf87_shadow_proof.get("retired") is True:
+                retired_shadow_row = ensure_lifecycle_identity(row)
+                retired_shadow_row["completion_status"] = "completed_retired_architecture_no_routing"
+                retired_shadow_row["retired_architecture_proof"] = wf87_shadow_proof
+                retired_shadow_row["prior_completion"] = completion or None
+                completed_or_resolved.append(retired_shadow_row)
+                continue
+            row["wf87_architecture_proof"] = wf87_shadow_proof
         if not completion:
             current.append(annotate_open(row))
             continue
@@ -1114,9 +1130,9 @@ def build_opportunities(inputs: dict[str, Any]) -> list[dict[str, Any]]:
         outcome_priority = 84 if stale_followups or pending_followups >= 5 or scoreable_decisions < 5 or wf87_shadow_validation_status != "ok" else 68
         opportunities.append(opportunity(
             category="outcome_measurement",
-            title="Track WF87 shadow outcomes until regular-session follow-up thresholds are met",
+            title=WF87_SHADOW_OPPORTUNITY_TITLE,
             priority=outcome_priority,
-            signal="wf87_shadow_outcome_measurement_backlog",
+            signal=WF87_SHADOW_OPPORTUNITY_SIGNAL,
             evidence={
                 "decision_count": wf87_shadow_summary.get("decision_count"),
                 "scoreable_decision_count": scoreable_decisions,

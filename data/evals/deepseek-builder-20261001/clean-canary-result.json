@@ -1,0 +1,47 @@
+{
+  "status": "read_write_exec_canary_verified",
+  "requested_default_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "actual_model": "ollama-cloud/deepseek-v4.1-flash:cloud",
+  "read_write_receipt_exact": true,
+  "exec_output": "Python 3.11.2",
+  "exec_exit_code": null,
+  "tools_observed": [
+    "read",
+    "write",
+    "read",
+    "exec"
+  ],
+  "effective_container_evidence": [
+    {
+      "name": "/openclaw-sbx-workspace-adef17346e4d091aed7552bb3c3059ba",
+      "mounts": [
+        {
+          "Type": "bind",
+          "Source": "C:\\Users\\Veritas\\.openclaw\\sandboxes\\workspace-adef17346e4d091aed7552bb3c3059ba",
+          "Destination": "/workspace",
+          "RW": true
+        },
+        {
+          "Type": "bind",
+          "Source": "C:\\Users\\Veritas\\.openclaw\\sandboxes\\workspace-adef17346e4d091aed7552bb3c3059ba\\skills",
+          "Destination": "/workspace/skills",
+          "RW": false
+        },
+        {
+          "Type": "bind",
+          "Source": "C:\\Users\\Veritas\\.openclaw\\workspaces\\deepseek-builder-eval\\handoff\\scoped-worktree",
+          "Destination": "/worktree",
+          "RW": true
+        }
+      ],
+      "network_mode": "none",
+      "readonly_root": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "user": "65534:65534",
+      "image": "openclaw-sandbox:bookworm-slim-python-calibration-r1"
+    }
+  ],
+  "coding_cases_attempted": 0
+}

@@ -3,7 +3,7 @@
 
 Canonical page: `wiki/scorecards-and-evals/Frontier Capability Eval.md`
 Canonical rendered SHA-256: `9361ae59c74a2f686c596857d273cb37cf936b9f1f0cd69f084894e5cde142e6`.
-Source snapshot SHA-256: `e442d9ad001864187ce0dce59b9a171b89dbe50557727e9e73c3dcd6febcef98`.
+Source snapshot SHA-256: `c2f5083a99c97499f05ef2f7632fd70bbbf0cff8eb6b53a2b2392add476f2a38`.
 Authority: review-only retrieval mirror; canonical wiki and named owner artifacts remain authoritative.
 
 ## Query aliases

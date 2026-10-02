@@ -683,6 +683,148 @@ def test_wf87_retired_opportunity_stays_open_when_proof_missing() -> None:
     assert rows[0]["completion_status"] == "open"
 
 
+_WF87_RETIRED_CAPSULE_PROOF = {
+    "retired": True,
+    "reason": "retired_architecture_proof_holds",
+    "capsule_path": "state/workflows/WF87.json",
+}
+
+_EXACT_RETIRED_CAPSULE = {
+    "lifecycle": "paused",
+    "readiness": "paused",
+    "primary_route_artifact": None,
+    "effective_status_override": "on_hold",
+    "current_state": "**Retired 2026-08-29** with WF86.",
+}
+
+
+def _wf87_shadow_titles(payload):
+    return [row["title"] for row in payload["opportunities"]]
+
+
+def test_wf87_shadow_row_resolves_as_retired_history_when_proof_holds() -> None:
+    from unittest.mock import patch as _patch
+    inputs = deepcopy(sample_inputs())
+    with _patch.object(queue, "load_wf87_retired_architecture_proof", return_value=dict(_WF87_RETIRED_CAPSULE_PROOF)):
+        payload = queue.build_payload(inputs)
+    assert queue.WF87_SHADOW_OPPORTUNITY_TITLE not in _wf87_shadow_titles(payload)
+    assert queue.WF87_RETIRED_OPPORTUNITY_TITLE not in _wf87_shadow_titles(payload)
+    retired = [
+        row for row in payload["completed_or_resolved_opportunities"]
+        if row.get("completion_status") == "completed_retired_architecture_no_routing"
+    ]
+    retired_titles = {row["title"] for row in retired}
+    assert queue.WF87_SHADOW_OPPORTUNITY_TITLE in retired_titles
+    assert queue.WF87_RETIRED_OPPORTUNITY_TITLE in retired_titles
+    shadow = [row for row in retired if row["title"] == queue.WF87_SHADOW_OPPORTUNITY_TITLE][0]
+    assert shadow["retired_architecture_proof"] == _WF87_RETIRED_CAPSULE_PROOF
+    assert shadow["opportunity_id"] and shadow["origin_opportunity_id"] and shadow["lifecycle_id"]
+    assert shadow["lifecycle_id"].startswith("lifecycle-")
+    assert shadow["signal"] == queue.WF87_SHADOW_OPPORTUNITY_SIGNAL
+    assert "pending_regular_session_followup_count" in shadow["evidence"]
+
+
+def test_wf87_shadow_row_stays_open_across_adversarial_capsules() -> None:
+    from unittest.mock import patch as _patch
+    base = dict(_EXACT_RETIRED_CAPSULE)
+    missing_primary = dict(base)
+    del missing_primary["primary_route_artifact"]
+    missing_state = dict(base)
+    del missing_state["current_state"]
+    no_override = {k: v for k, v in base.items() if k != "effective_status_override"}
+    adversarial = [
+        ("missing_capsule", None),
+        ("malformed_capsule", {}),
+        ("non_dict_capsule", ["paused"]),
+        ("active_lifecycle", {**base, "lifecycle": "active"}),
+        ("active_readiness", {**base, "readiness": "active"}),
+        ("non_null_primary", {**base, "primary_route_artifact": "tmp/something.json"}),
+        ("missing_primary_key", missing_primary),
+        ("missing_current_state_key", missing_state),
+        ("missing_override_key", no_override),
+        ("override_not_on_hold", {**base, "effective_status_override": "active"}),
+        ("negated_not_retired", {**base, "current_state": "WF87 is not retired; still active."}),
+        ("negated_non_retired", {**base, "current_state": "WF87 non-retired pilot continues."}),
+        ("current_state_not_retired", {**base, "current_state": "WF87 pilot still active."}),
+    ]
+    for name, capsule in adversarial:
+        proof = queue.wf87_retired_architecture_proof(capsule)
+        assert proof["retired"] is False, name
+        inputs = deepcopy(sample_inputs())
+        with _patch.object(queue, "load_wf87_retired_architecture_proof", return_value=proof):
+            payload = queue.build_payload(inputs)
+        rows = [row for row in payload["opportunities"] if row["title"] == queue.WF87_SHADOW_OPPORTUNITY_TITLE]
+        assert rows, name
+        assert rows[0]["completion_status"] == "open", name
+
+
+def test_wf87_shadow_input_shapes_resolve_only_with_strict_proof() -> None:
+    from unittest.mock import patch as _patch
+    stale = deepcopy(sample_inputs())
+    stale["wf87_shadow_outcome"] = {
+        "summary": {
+            "decision_count": 20,
+            "scoreable_decision_count": 9,
+            "pending_regular_session_followup_count": 6,
+            "stale_pending_followup_count": 3,
+            "decision_quality_claim_allowed_now": False,
+            "model_performance_claim_allowed_now": False,
+        }
+    }
+    missing = deepcopy(sample_inputs())
+    del missing["wf87_shadow_outcome"]
+    empty = deepcopy(sample_inputs())
+    empty["wf87_shadow_outcome"] = {}
+    failed_proof = {"retired": False, "reason": "capsule_missing_or_malformed", "capsule_path": "state/workflows/WF87.json"}
+    for label, inputs in (("existing_backlog", deepcopy(sample_inputs())), ("stale_backlog", stale), ("missing_input", missing), ("empty_input", empty)):
+        with _patch.object(queue, "load_wf87_retired_architecture_proof", return_value=dict(failed_proof)):
+            payload = queue.build_payload(inputs)
+        rows = [row for row in payload["opportunities"] if row["title"] == queue.WF87_SHADOW_OPPORTUNITY_TITLE]
+        assert rows, label
+        assert rows[0]["completion_status"] == "open", label
+        with _patch.object(queue, "load_wf87_retired_architecture_proof", return_value=dict(_WF87_RETIRED_CAPSULE_PROOF)):
+            retired_payload = queue.build_payload(inputs)
+        assert queue.WF87_SHADOW_OPPORTUNITY_TITLE not in _wf87_shadow_titles(retired_payload), label
+        done = [
+            row for row in retired_payload["completed_or_resolved_opportunities"]
+            if row.get("title") == queue.WF87_SHADOW_OPPORTUNITY_TITLE
+            and row.get("completion_status") == "completed_retired_architecture_no_routing"
+        ]
+        assert done, label
+
+
+def test_unrelated_outcome_measurement_row_unaffected_by_retired_proof() -> None:
+    from unittest.mock import patch as _patch
+    unrelated = queue.opportunity(
+        category="outcome_measurement",
+        title="Track cron follow-up calibration until thresholds are met",
+        priority=68,
+        signal="cron_followup_calibration_backlog",
+        evidence={"pending_followup_count": 3},
+        recommended_action="Keep calibrating cron follow-ups.",
+        proposal_gate="measurement_only_no_execution",
+        validation_command="python scripts\\cron_control_packet.py --write --validate",
+    )
+    lookalike = queue.opportunity(
+        category="outcome_measurement",
+        title="WF87 shadow outcomes review (team sync)",
+        priority=68,
+        signal="wf87_shadow_review_sync",
+        evidence={"pending_followup_count": 1},
+        recommended_action="Weekly sync review.",
+        proposal_gate="measurement_only_no_execution",
+        validation_command="python scripts\\wf87_shadow_outcome_scorecard.py --write --validate",
+    )
+    inputs = {"implementation_completion_ledger": [], "pm_implementation_queue": {}}
+    with _patch.object(queue, "load_wf87_retired_architecture_proof", return_value=dict(_WF87_RETIRED_CAPSULE_PROOF)):
+        current, done, regressed = queue.apply_completion_overlay([unrelated, lookalike], inputs)
+    assert len(current) == 2
+    assert not done
+    for row in current:
+        assert row["completion_status"] == "open"
+    assert {row["title"] for row in current} == {unrelated["title"], lookalike["title"]}
+
+
 if __name__ == "__main__":
     test_queue_has_required_cadences_and_gates()
     test_completed_workflow_routing_with_only_maturity_residue_is_resolved()
@@ -703,6 +845,10 @@ if __name__ == "__main__":
     test_wf87_retired_architecture_proof_exact_holds()
     test_wf87_retired_opportunity_resolves_when_capsule_retired()
     test_wf87_retired_opportunity_stays_open_when_proof_missing()
+    test_wf87_shadow_row_resolves_as_retired_history_when_proof_holds()
+    test_wf87_shadow_row_stays_open_across_adversarial_capsules()
+    test_wf87_shadow_input_shapes_resolve_only_with_strict_proof()
+    test_unrelated_outcome_measurement_row_unaffected_by_retired_proof()
     print("wf74_improvement_opportunity_queue_tests_passed")
 
 
